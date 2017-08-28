@@ -1,0 +1,114 @@
+.app-role-permission {
+  color:#666;
+  .load8 {
+    transform:scale(0.5,0.5);
+    .loader8 {
+      border-left-color:#394144;
+    }
+  }
+  h3 {
+    padding:10px;
+    font-size:14px;
+    .anticon-reload {
+      margin:0;
+    }
+  }
+  $bgcolor:#DEE7ED;
+  .no-data {
+    padding:2px 6px 2px 12px;
+    background:$bgcolor;
+  }
+  .app-property-content {
+    background:$bgcolor;
+    padding:0;
+  }
+  .app-property-roles {
+    margin:0;
+    $active:#4D96D1;
+    .iconfont {
+      float:right;
+      font-size:16px;
+      cursor:pointer;
+      &:hover {
+        color: $active;
+        transform:scale(1.2,1.2);
+      }
+      position:relative;
+      margin-right:11px;
+    }
+  }
+  .ant-alert {
+    margin-bottom:0;
+    display:inline-block;
+  }
+  .ant-alert-error,.ant-alert-info {
+    border-color:transparent;
+    background:transparent;
+  }
+  .anticon-reload {
+    cursor:pointer;
+    float:right;
+    margin:11px 15px 0 0;
+  }
+  .app-role-permission-list {
+    padding:10px 0 0 10px;
+  }
+  .app-role-permission-permission {
+    .app-role-permission-list {
+      padding:0 0 4px 14px;
+    }
+  }
+  .rounded_item {
+    cursor:pointer;
+    display:inline-block;
+    vertical-align:top;
+    height:22px;
+    border:1px solid #5C5D5D;
+    border-radius:4px;
+    color:#777;
+    line-height:19px;
+    margin-right:10px;
+    margin-bottom:10px;
+    padding:0 9px;
+
+    $color:#4c8ec4;
+    &.selected {
+      border-color:$color;
+      background-color:$color;
+      color:#fff;
+    }
+    &.unselectable-item {
+      border-color:lighten($color , 30%);
+      background-color:lighten($color , 30%);
+      cursor:not-allowed;
+      color:#777;
+    }
+  }
+  .ant-tabs-content {
+    margin-top:-5px;
+  }
+  .ant-tabs-tabs-bar {
+    margin-top:0px !important;
+  }
+  .ant-tabs-tab-inner {
+    padding:8px 16px !important;
+  }
+  .ant-tabs-ink-bar {
+    background-color:#4d96d1;
+  }
+  .ant-tabs-tabpane {
+    margin-right:-14px;
+  }
+  .ant-tabs-tabs-bar {
+    border-bottom-color:#ccd6e5;
+  }
+  .app-role-permission-permission {
+    margin-top:20px;
+  }
+}
+
+.app-role-permission.theme-b {
+  h3 {
+    border-bottom:1px solid #777;
+  }
+}

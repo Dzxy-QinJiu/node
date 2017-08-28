@@ -1,0 +1,11 @@
+.logo {
+  display: inline-block;
+
+  > img {
+    margin-right: 10px;
+    vertical-align: top;
+  }
+  > span {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,54 @@
+.search-icon-list {
+  margin-top:19px;
+  .only_show_choosen {
+    margin-right:10px;
+  }
+  .search-icon-list-header {
+    padding:0 4px;
+    $color:#5C5D5D;
+    .search-wrap {
+      position:relative;
+      width:300px
+    }
+    label {
+      cursor:pointer;
+      span {
+        color:$color;
+        font-weight:normal;
+      }
+    }
+  }
+
+  .search-icon-list-content {
+    text-align:left;
+    margin:12px 13px 0 0;
+    background:#dee7ed;
+    padding:10px 0 17px 21px;
+    .ant-alert {
+      margin:0 9px -11px 0;
+      background-color:transparent;
+      border-color:transparent;
+    }
+    .icon-item {
+      display:inline-block;
+      border:1px solid #5c5d5d;
+      border-radius:4px;
+      height:22px;
+      line-height:19px;
+      cursor:pointer;
+      position:relative;
+      color:#777;
+      padding:0 9px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      &.selected {
+        border-color: #4c8ec4;
+        background-color: #4c8ec4;
+        color: #fff;
+      }
+    }
+    .icon-hide {
+      display:none;
+    }
+  }
+}

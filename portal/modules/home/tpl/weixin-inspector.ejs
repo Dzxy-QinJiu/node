@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ketao App</title>
+    <style type="text/css" media="screen">
+        *{padding:0; margin:0;}
+        body{background:#fff;}
+        div{text-align:center;width:80%;position:relative;display:none;margin:0 auto;}
+        div p{color:rgba(255,255,255,0.5);font-size:48px;margin-top:10%;}
+        .arrow{position:absolute;top:5%;right:0;}
+        .tips{padding-top:60%;}
+    </style>
+</head>
+<body>
+<div id="msg">
+    <img src="../../../static/images/arrow.png" alt="arrow" class="arrow">
+    <p class="tips">点击右上角，在浏览器中打开或者复制链接用其他浏览器打开。</p>
+</div>
+<script type="text/javascript">
+    var ua = navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == "micromessenger") {
+        document.body.style.background = "#000";
+        document.getElementById("msg").style.display = "block";
+    }else{
+        window.location.href = "http://oplate.antfact.com/app/android/latest";
+    }
+</script>
+</body>
+</html>

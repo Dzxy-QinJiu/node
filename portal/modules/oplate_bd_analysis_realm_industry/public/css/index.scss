@@ -1,0 +1,144 @@
+/**
+ * author:周连毅
+ * 说明：统计分析-安全域分析-当前安全域行业分析 的css文件
+ */
+/*引入bootstrap通用变量*/
+@import '../../../../public/css/bootstrap-variables';
+/*安全域行业分析外层节点*/
+.analysis_realm_industry_content {
+  padding:96px 43px 32px 43px;
+  /*小屏幕的时候去掉padding*/
+  @media (max-width:$screen-sm) {
+    padding-left:0;
+    padding-right:0;
+  }
+}
+/*安全域行业分析外层节点*/
+.analysis_realm_industry {
+  /*默认隐藏没有数据的提示*/
+  .nodata-msg-block {
+    display:none;
+    margin:50px auto 0 auto;
+  }
+  /*没有数据的时候，显示没有数据的提示*/
+  &.analysis_realm_industry_nodata {
+    .nodata-msg-block {
+      display:block;
+    }
+    .chartindustrywrap,.ranklistwrap {
+      display:none;
+    }
+  }
+  /*图表和排行榜设置背景颜色和圆角*/
+  .chartindustrywrap,.scrollwrap {
+    background:#fff;
+    border-radius:4px;
+  }
+  /*时间范围选择样式*/
+  .timepicker {
+    position:relative;
+    z-index:10;
+    //为了与全国区域统计保持一致
+    padding-left:15px;
+  }
+
+
+  /*loading的样式*/
+  .isloading {
+    position:absolute;
+    width:70px;
+    height:70px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    margin:auto;
+  }
+  /*排行榜的样式*/
+  .ranklistwrap {
+    padding:0 0 0 16px;
+  }
+  /*图表的外层区域样式*/
+  .chartindustrywrap {
+    padding:25px 0 15px 25px;
+  }
+  /*窗口宽度大于992px的样式*/
+  @media (max-width: $screen-md) {
+    /*排行榜的样式*/
+    .ranklistwrap {
+      padding:20px 0 0 0;
+    }
+    /*loading的样式*/
+    .isloading {
+      position:static;
+      padding:50px 0;
+      box-sizing:content-box;
+    }
+    /*只显示一个loading*/
+    .chartindustrywrap .isloading {
+      display:none;
+    }
+  }
+  /*窗口最大宽度600px的样式*/
+  @media (max-width: 600px) {
+    /*时间选择的后面的div*/
+    .timepicker + div {
+      display:none;
+    }
+    /*排行榜的样式*/
+    .ranklistwrap {
+      padding-top:0;
+    }
+  }
+  /*窗口最大宽度450px的样式*/
+  @media (max-width:450px) {
+    /*图表区域样式*/
+    .chartindustrywrap {
+      padding-left:15px;
+      padding-right:15px;
+    }
+    /*时间选择器的样式*/
+    .timepicker {
+      padding-left:0;
+    }
+  }
+  /*窗口宽度大于992px的样式*/
+  @media (min-width:$screen-md) {
+    /*没有数据的层水平、垂直居中*/
+    .nodata-msg-block {
+      position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+      margin:auto;
+    }
+  }
+  /*窗口宽度小于625px的样式*/
+  @media (max-width:625px) {
+    /*时间选择器的样式适配*/
+    .rc-calendar-range {
+      width:auto;
+    }
+    /*时间选择器的样式适配*/
+    .rc-calendar-range-middle {
+      display:none;
+    }
+    /*时间选择器的样式适配*/
+    .rc-calendar-date-input-wrap:before {
+      display:none;
+    }
+    /*时间选择器的样式适配*/
+    .rc-calendar-range-right .rc-calendar-date-input-wrap {
+      position:static;
+      left:auto;
+    }
+    /*时间选择器的样式适配*/
+    .rc-calendar-range-part {
+      width:auto;
+      float:none;
+    }
+  }
+
+
+}

@@ -1,0 +1,60 @@
+/*
+* 搜索框的样式设置
+*/
+@import "../../public/css/common-variables";
+.search-input-container {
+  width: 100%;
+  position: relative;
+
+  .search-input {
+    width: 100%;
+    height: $input-height;
+    padding: 6px 12px;
+    line-height: $input-height;
+    border: 1pt solid #cdd5d9;
+    border-radius: $border-radius;
+    font-size: $form_font_size;
+    &:hover {
+      border-color: #57c5f7;
+    }
+  }
+
+  .ant-select {
+    width: 100%;
+    height: $input-height;
+    .ant-select-selection {
+      font-size: $form_font_size;
+      line-height: normal;
+      height: $input-height;
+      background: #fff;
+      color: inherit;
+      cursor: default;
+      border-radius: $border-radius;
+    }
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    right: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #7f909a;
+    cursor: pointer;
+    z-index: 1;
+  }
+}
+
+.search-input-component.ant-select-dropdown-menu-item-active {
+  background-color: #fff;
+}
+
+.search-input-component.ant-select-dropdown-menu-item:hover {
+  background-color: #eaf8fc;
+}
+
+.search-input-component.ant-select-dropdown-menu-item.selected {
+  background-color: #d5f1fd;
+}
+

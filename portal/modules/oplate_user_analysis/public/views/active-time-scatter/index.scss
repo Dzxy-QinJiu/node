@@ -1,0 +1,27 @@
+.oplate_user_analysis {
+  .analysis_timerange_bar_chart {
+    .chart,.loadwrap {
+      position:relative;
+    }
+    .load8 {
+      transform:scale(0.5,0.5);
+      position:absolute;
+      margin:auto;
+      top:0;
+      bottom:0;
+      right:0;
+      left:0;
+    }
+    .nodata {
+      position:absolute;
+      width:100px;
+      height:75px;
+      margin:auto;
+      font-size:16px;
+      top:0;
+      bottom:0;
+      right:0;
+      left:0;
+    }
+  }
+}

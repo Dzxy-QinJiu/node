@@ -1,0 +1,17 @@
+@import "../../public/css/common-variables";
+.custom_radio_group {
+  .custom_radio {
+    cursor:pointer;
+    padding:4px 0;
+    color:#595959;
+    border-radius:$border-radius;
+    border:1px solid #d9dee1;
+    background:#fff;
+    display:inline-block;
+    &.custom_radio_active {
+      background:#67a3bf;
+      color:#fff;
+      border-color:#729fb4;
+    }
+  }
+}

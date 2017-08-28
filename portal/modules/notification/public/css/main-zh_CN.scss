@@ -1,0 +1,137 @@
+@import '../../../../public/css/bootstrap-variables.scss';
+@import '../../../../public/css/common-variables';
+
+.notification_customer_ico a,
+.notification_applyfor_ico a,
+.notification_system_ico a {
+  position: relative;
+}
+
+.notification_customer_ico a:before,
+.notification_applyfor_ico a:before,
+.notification_system_ico a:before {
+  display: none;
+  position: absolute;
+  top: 22px;
+  left: 0;
+  margin-left: 100%;
+  min-width: 16px;
+  height: 16px;
+  overflow: hidden;
+  background: #f41919;
+  border-radius: 8px;
+  color: #fff;
+  line-height: 16px;
+  font-size: 12px;
+  text-align: center;
+  font-family: $font-family-sans-serif;
+}
+
+//外层容器
+.notification_content {
+  margin-top: 76px;
+  padding: 21px 46px 10px 42px;
+  .loader8 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+  //申请消息的过滤
+  .notification-filter-div {
+    height: 45px;
+    padding-left: 20px;
+    .ant-select {
+      float: left;
+      width: 160px;
+    }
+    .search-notification-container {
+      position: relative;
+      float: left;
+      width: $edit_input_width;
+      margin-left: $filter_btn_internal;
+      .search-clear-icon {
+        position: absolute;
+        top: 1px;
+        right: 7px;
+        height: 28px;
+        line-height: 28px;
+        width: 20px;
+        font-size: 18px;
+        color: #7f909a;
+        background: #fff;
+        z-index: 2;
+      }
+    }
+  }
+  //全部标为已读
+  .mark-all-read{
+    margin-left: 15px;
+    font-size: 13px;
+    height: 30px;
+    border-radius: 3px;
+  }
+  .notification_customer{
+    .mark-all-read{
+      margin-bottom: 15px;
+      margin-left: 20px;
+    }
+  }
+  .apply-notice-update {
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 100px;
+    font-size: 14px;
+    color: #aaa;
+  }
+
+  //消息列表
+  .message_list {
+    //单条消息
+    li {
+      border-top: 1px solid #f1f1f1;
+      padding: 10px 0 10px 20px;
+      //消息内容
+      .message_body {
+        line-height: 22px;
+        font-size: 14px;
+        color: #525252;
+        word-break: break-all;
+        white-space: normal;
+      }
+      .message-title {
+        color: #000;
+      }
+      // 备注
+      .message-comment {
+        color: #7D7C7C;
+      }
+      //消息时间
+      p {
+        margin-top: 5px;
+        font-size: 12px;
+        line-height: 18px;
+        color: #a0a0a0;
+      }
+    }
+  }
+  //错误提示
+  .ant-alert {
+    display: inline-block;
+  }
+ // 共多少条的样式
+ .notification_customer, .notification_apply_message {
+    .summary_info {
+      position:fixed;
+      bottom:20px;
+      margin-left: 20px;
+      font-size: 14px;
+    }
+    .ant-alert {
+      width: 98%;
+      margin-left: 20px;
+    }
+  }
+}

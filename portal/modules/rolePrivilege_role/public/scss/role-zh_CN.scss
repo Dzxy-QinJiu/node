@@ -1,0 +1,388 @@
+@charset "UTF-8";
+//获取角色列表时，无数据和等待效果的样式
+@mixin role-list-mixin {
+  //正在加载角色列表的样式
+  .isloading {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+  }
+  //暂无角色列表的样式
+  .nodata-msg-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+
+}
+
+//角色管理展示区域样式
+.backgroundManagement_role_content {
+  .role-container-scroll {
+    margin-top: 22px;
+  }
+  .role-manage-container {
+    padding-right: 45px;
+    padding-left: 45px;
+    padding-top: 76px;
+    ul.topnav-links {
+      min-width: 288px;
+    }
+    @include role-list-mixin;
+  }
+}
+
+.backgroundManagement_role_content, .user-authority-container-div {
+  //角色中去权限的提示
+  .no-permissions-msg {
+    text-align: center;
+    color: #b6c2c9;
+    a {
+      text-decoration: underline;
+      color: #4d96d1;
+    }
+  }
+  //删除角色失败的提示样式设置
+  .role-container {
+    .alert-timer {
+      .ant-alert.ant-alert-error {
+        position: absolute;
+        height: 35px;
+        width: 255px;
+        right: 0;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+  }
+  .role-container-scroll {
+    @include role-list-mixin;
+    //角色信息列表展示区域
+    .role-container {
+      white-space: nowrap;
+
+      //单个角色信息展示区域
+      .role-container-div {
+        width: 360px;
+        height: 100%;
+        background-color: #FFF;
+        margin-left: 15px;
+        display: inline-block;
+        float: none;
+        border-radius: 2px;
+        border: 1px solid #edf0f0;
+
+        &:first-child {
+          margin-left: 0px;
+        }
+
+        //角色名称区域
+        .role-title-div {
+          float: left;
+          width: 100%;
+          height: 48px;
+          font-size: 16px;
+          padding-left: 40px;        
+          padding-top: 15px;
+          border-bottom: 1px #edf0f0 solid;
+
+          &:hover {
+            .role-operation {
+              display: block;
+            }
+          }
+          //角色名称
+          .role-title-name {
+            max-width: 230px;
+            float: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #506470;
+            font-size: 16px;
+          }
+
+          //操作按钮
+          .role-operation {
+            width: 75px;
+            float: right;
+            display: none;
+
+            span {
+              float: right;
+              margin-right: 5px;
+              cursor: pointer;
+            }
+
+            //修改删除按钮样式
+            .role-btn-class {
+              border: 0px;
+              width: 25px;
+              float: right;
+              background-color: #b6c2c9;
+              margin-right: 12px;
+              text-align: center;
+              padding: 0px;
+              color: #fff;
+              font-size: 16px;
+              border-radius: 100px;
+              &:hover {
+                background-color: #4d96d1;
+              }
+            }
+          }
+        }
+
+        //角色权限列表展示区域
+        .role-content {
+          float: left;
+          width: 360px;
+          font-size: 14px;
+          margin-top: 10px;
+
+          .authority-group-name-div {
+            width: 100%;
+            float: left;
+
+            .authority-group-name {
+              max-width: 280px;
+              padding-left: 40px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              height: 40px;
+              line-height: 40px;
+              color: #4d96d1;
+              font-size: 16px;
+            }
+
+            //权限名称展示区域
+            .role-content-list {
+              float: right;
+              width: 320px;
+              height: 30px;
+              line-height: 30px;
+              color: #81939e;
+              font-size: 14px;
+
+              //权限名称
+              .role-authorityName {
+                max-width: 255px;
+                float: left;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                height: 30px;
+              }
+
+              //是否有权限图标样式
+              .role-authorityName-operation {
+                width: 44px;
+                float: right;
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  //添加角色按钮区域样式
+  .role-add-div {
+    float: right;
+    height: 75px;
+    line-height: 69px;
+    z-index: 101;
+    border-left: 1px solid #edf0f0;
+    //添加按钮样式
+    .role-add-btn {
+      color: #4d96d1;
+      border-color: transparent;
+      width: 95px;
+      height: 32px;
+      font-size: 14px;
+    }
+    @media (max-width: 525px) {
+      height: 30px;
+      line-height: 30px;
+      .role-add-btn {
+        width: auto;
+        height: 30px;
+      }
+    }
+  }
+
+  .right-pannel-default {
+    .close-pannel {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      margin-right: 0;
+      margin-top: 0;
+    }
+    .role-form {
+      padding-top: 26px;
+      .ant-form-item{
+        width: 100%;
+        &>label {
+          padding-right: 13px;
+          margin-left: 5px;
+        }
+        input{
+        width: 430px;
+        }
+      }
+      .no-permissions-msg {
+        margin-top: 30px;
+      }
+      //保存结果提示信息的样式
+      .indicator {
+        position: absolute;
+        right: 130px;
+        top: 20px;
+        .ant-alert {
+          padding: 5px;
+        }
+      }
+      .right-form-scroll-div {
+        padding-top: 0;
+        width: 100%;
+      }
+      .role-auth-item {
+        > label {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+      }
+      //全部展开、收起的处理
+      .toggle-auth-btns {
+        font-size: 14px;
+        margin-bottom: 10px;
+        margin-top: -4px;
+        a {
+          color: #4d96d1;
+          .all-auth-toggle-btn {
+            font-size: 14px;
+            padding-left: 5px;
+          }
+        }
+      }
+      //  保存、取消按钮
+      .form-cancel-btn, .form-submit-btn {
+        margin-top: 0;
+      }
+      .form-cancel-btn {
+        margin-right: 90px;
+      }
+    }
+    .form-authority-group-div {
+      width: 100%;
+      float: left;
+      .authority-group-line {
+        content: " ";
+        position: absolute;
+        top: 50px;
+        left: 20px;
+        right: 20px;
+        border-bottom: 1px solid #d7dfe2;
+      }
+      .edit-classifyName {
+        height: 30px;
+      }
+      .form-authority-group-name-div {
+        max-width: 280px;
+        height: 30px;
+        font-size: 14px;
+
+        .form-authority-group-name {
+          max-width: 100px;
+          float: left;
+          height: 30px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #4d96d1;
+          cursor: pointer;
+        }
+        .form-authority-group-name-btn {
+          width: 170px;
+          float: left;
+          border-left: 1px solid #fff;
+          margin-left: 5px;
+          height: 20px;
+
+          .form-authority-group-name-btn-label {
+            background-color: transparent;
+            border: 0px;
+            padding: 0px;
+            width: 35px;
+            margin-left: 5px;
+            font-size: 10px;
+          }
+        }
+      }
+      .edit-role-content-label {
+        display: block;
+        cursor: pointer;
+        line-height: 30px;
+        height: 30px;
+
+        span.edit-role-checkbox {
+          display: inline-block;
+          margin-top: -20px;
+          input {
+            height: 15px;
+          }
+        }
+
+        .permission-item {
+          color: #5d5d5d;
+          font-weight: normal;
+          text-overflow: ellipsis;
+          width: 275px;
+          overflow: hidden;
+          margin-left: 0 !important;
+          padding-left: 8px;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+.crm-contact-default {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-width: 24px 29px;
+    border-color: #31a4dd transparent transparent #31a4dd;
+    border-style: solid;
+    border-top-left-radius: 4px;
+    color: #fff;
+    span {
+        display: block;
+        width: 58px;
+        height: 48px;
+        padding: 5px 0 0 6px;
+        margin-left: -18px;
+        margin-top: -14px;
+    }
+}
+.role-operation .default-btn-fix {
+    padding: 0 0 0 4px;
+    line-height: 1.7;
+    float: right;
+}

@@ -1,0 +1,148 @@
+<style type="text/css"> html {overflow: hidden} body { background:#222; } </style>
+<style type="text/css">
+    body {
+        font: 14px "SimHei","SimSun Verdana",Arial,Helvetica,sans-serif;
+    }
+    body.macintosh {
+        font: 14px STXihei,"Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    }
+    .alter_info_box {
+        padding: 0; margin: 0;
+        position: absolute; top: 50%; left: 50%; z-index: 99999;
+        color: white; font-size: 14px;
+    }
+    .alter_info_box p {
+        padding: 5px 15px; margin: 0 0 9px; font-size: 16px; line-height: 18px; overflow: hidden;
+    }
+    .alter_info_box, .alter_info_box .box {
+        width: 600px; height: 170px; padding: 20px 10px 10px 10px;
+    }
+    .alter_info_box .box {
+        -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box;
+        position: relative; margin: 0; text-align: center; margin: -110px -310px; border: 2px solid #666;
+    }
+    .alter_info_box a {
+        padding: 0 15px; text-decoration: none; outline: 0; cursor: pointer; color: #53a0e7;
+    }
+    .alter_info_box a:hover {
+        text-decoration: underline; color: white;
+    }
+    .alter_info_box .sorry {
+        font-size: 30px; height: 80px; line-height: 40px; text-align: left;
+    }
+    .alter_info_box .recommandLabel, .alter_info_box a {
+        margin-top: 40px; float: right;
+    }
+</style>
+<script>
+    (function () {
+        var jsType = '', browserType = '', browserVersion = '', osName = '';
+        var ua = navigator.userAgent.toLowerCase();
+        var check = function (r) {
+            return r.test(ua);
+        };
+        var DOC = document;
+        var isStrict = DOC.compatMode == "CSS1Compat";
+        var isOpera = check(/opera/);
+        var isChrome = check(/chrome/);
+        var isWebKit = check(/webkit/);
+        var isSafari = !isChrome && check(/safari/);
+        var isSafari2 = isSafari && check(/applewebkit\/4/); // unique to
+        // Safari 2
+        var isSafari3 = isSafari && check(/version\/3/);
+        var isSafari4 = isSafari && check(/version\/4/);
+        var isIE = !isOpera && (check(/msie/) || check(/trident/));
+        var isIE7 = isIE && check(/msie 7/);
+        var isIE8 = isIE && check(/msie 8/);
+        var isIE6 = isIE && !isIE7 && !isIE8;
+        var isGecko = !isWebKit && check(/gecko/);
+        var isGecko2 = isGecko && check(/rv:1\.8/);
+        var isGecko3 = isGecko && check(/rv:1\.9/);
+        var isBorderBox = isIE && !isStrict;
+        var isWindows = check(/windows|win32/);
+        var isMac = check(/macintosh|mac os x/);
+        var isAir = check(/adobeair/);
+        var isLinux = check(/linux/);
+        var isSecure = /^https/i.test(window.location.protocol);
+        var isIE7InIE8 = isIE7 && DOC.documentMode == 7;
+
+        if (isWindows) {
+            osName = 'Windows';
+            if (check(/windows nt/)) {
+                var start = ua.indexOf('windows nt');
+                var end = ua.indexOf(';', start);
+                osName = ua.substring(start, end);
+            }
+        } else {
+            osName = isMac ? 'Mac' : isLinux ? 'Linux' : 'Other';
+        }
+
+        var versionStart, versionEnd;
+        if (isIE) {
+            browserType = 'IE';
+            jsType = 'IE';
+
+            versionStart = ua.indexOf('msie') + 5;
+            if (versionStart == 4) {
+                versionStart = ua.indexOf('rv:') + 3;
+                versionEnd = ua.indexOf(')', versionStart);
+                if (versionEnd == -1) {
+                    versionEnd = ua.indexOf(';', versionStart);
+                }
+            } else {
+                versionEnd = ua.indexOf(';', versionStart);
+            }
+            browserVersion = ua.substring(versionStart, versionEnd);
+
+            jsType = isIE6 ? 'IE6' : isIE7 ? 'IE7' : isIE8 ? 'IE8' : 'IE';
+        } else if (isGecko) {
+            var isFF = check(/firefox/);
+            browserType = isFF ? 'Firefox' : 'Others';
+            jsType = isGecko2 ? 'Gecko2' : isGecko3 ? 'Gecko3' : 'Gecko';
+
+            if (isFF) {
+                versionStart = ua.indexOf('firefox') + 8;
+                versionEnd = ua.indexOf(' ', versionStart);
+                if (versionEnd == -1) {
+                    versionEnd = ua.length;
+                }
+                browserVersion = ua.substring(versionStart, versionEnd);
+            }
+        } else if (isChrome) {
+            browserType = 'Chrome';
+            jsType = isWebKit ? 'Web Kit' : 'Other';
+
+            versionStart = ua.indexOf('chrome') + 7;
+            versionEnd = ua.indexOf(' ', versionStart);
+            browserVersion = ua.substring(versionStart, versionEnd);
+        } else {
+            browserType = isOpera ? 'Opera' : isSafari ? 'Safari' : '';
+        }
+
+        <%// --------------- splite -------- %>
+
+        var oldWinOnLoad = window.onload;
+        window.onload = function () {
+            window.onload = oldWinOnLoad;
+            // ie only
+            if ((browserType == "IE" && parseFloat(browserVersion) >= 10) || isChrome || isFF || isWebKit) {
+                if (window.onload) {
+                    window.onload();
+                }
+            } else {
+                document.getElementsByTagName("body")[0].innerHTML = //
+                "<div class='alter_info_box'>" + //
+                "  <div class='box'>" + //
+                "    <p class='sorry'>O_o... 很抱歉，系统暂时还不支持您目前所使用的浏览器 (<span class='_browser'>" + browserType + "&nbsp;" + parseInt(browserVersion) + "</span>) 。</p>" + //
+                "    <p>" + //
+                "      <a href='http://firefox.com.cn/download/' title=''>最新火狐浏览器</a>" + //
+                "      <a href='http://windows.microsoft.com/zh-cn/internet-explorer/download-ie' title=''>最新IE浏览器</a>" + //
+                "      <a href='http://www.google.com.hk/chrome/eula.html?hl=zh-CN' title=''>最新谷歌浏览器</a>" + //
+                "      <span class='recommandLabel'>强烈建议使用: </span>" + //
+                "    </p>" + //
+                "  </div>" + //
+                "</div>";
+            }
+        };
+    })();
+</script>

@@ -1,0 +1,15 @@
+.nodata-msg-block {
+  width:246px;
+  height:231px;
+  background:no-repeat url(./ant.png) 0 0;
+  p {
+    width:147px;
+    height:24px;
+    line-height:24px;
+    font-size:14px;
+    color:#2c83b8;
+    transform: translate(4px, 19px) rotate(-9deg);
+    text-align:center;
+    margin-top: -14px;
+  }
+}

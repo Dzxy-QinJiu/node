@@ -1,0 +1,123 @@
+.oplate_user_analysis {
+  padding-top:76px;
+  .analysis_chart {
+    overflow:hidden;
+  }
+  .global_filter_btn {
+    margin:0 0 0 20px;
+    display:none;
+  }
+  .user_analysis_filter {
+    padding:15px 42px;
+    label {
+      font-weight:normal;
+      font-size:13px;
+    }
+    .ant-checkbox {
+      margin-top:-1px;
+    }
+    li {
+      margin-right:10px;
+    }
+  }
+  .analysis-selector-wrap {
+    display:inline-block;
+    position: absolute;
+    top: 20px;
+    right: 284px;
+  }
+  .date-range-wrap {
+    position:absolute;
+    top:21px;
+    right:33px;
+  }
+  .summary-numbers {
+    border-bottom:1px solid #f0f0f0;
+    .anticon {
+      position:absolute;
+      width:14px;
+      height:14px;
+      top:30px;
+      left:0;
+      right:0;
+      bottom:0;
+      margin:auto;
+    }
+  }
+  .summary-number {
+    cursor:pointer;
+    display:inline-block;
+    vertical-align:top;
+    height:86px;
+    width:164px;
+    border-right:1px solid #e1e2e4;
+    text-align:center;
+    background:#f3f5f4;
+    position:relative;
+    p {
+      color:#a6aaab;
+      line-height:16px;
+      margin-top:15px;
+    }
+    >div>div {
+      color:#45525b;
+      font-size:28px;
+      line-height:55px;
+    }
+    //防止由于字体太长，导致显示错乱
+    @for $i from 8 to 14 {
+      .f#{$i} {
+        font-size : #{24 - ($i - 8) * 2}px;
+      }
+    }
+  }
+  .summary-number:last-child {
+    border-right-color:rgba(0,0,0,0);
+  }
+  .summary-number.active {
+    background:#fff;
+  }
+  .chart_list {
+    padding:18px 33px 0 33px;
+    margin-bottom:-3px;
+  }
+  .chart-holder {
+    margin-bottom:21px;
+    border:1px solid #f0f0f0;
+    height:246px;
+    .title {
+      color:#62696f;
+      line-height:18px;
+      font-size:14px;
+      padding:12px 0 0 16px;
+    }
+  }
+  .activeness-chart-height , .active-time-scatter-height {
+    margin-bottom:21px;
+    border:1px solid #f0f0f0;
+    height:270px;
+    .title {
+      color:#62696f;
+      line-height:18px;
+      font-size:14px;
+      padding:12px 0 0 16px;
+    }
+  }
+  .retention_table_chart {
+    height:auto;
+    min-height:214px;
+  }
+  // 获取点击标签的样式
+  .show-click-lable {
+    margin-top: 15px;
+    font-size: 12px;
+    margin-left: 48px;
+    .show-click-type {
+      height: 30px;
+      background: #f3f5f4;
+      padding: 6px 10px;
+      margin-right: 10px;
+    }
+  }
+
+}

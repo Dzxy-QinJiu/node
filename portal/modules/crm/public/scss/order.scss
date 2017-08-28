@@ -1,0 +1,242 @@
+$block-bgColor: #dde6ed;
+$block-bgColor-edit: #d3dbe8;
+$block-line-color: #D1DADE;
+$block-line-color-edit: #C6CEDA;
+$font-color: #464b4e;
+$padding: 15px;
+.ant-tabs {
+  overflow: visible
+}
+
+.order-container {
+  float: left;
+  position: relative;
+  word-break: break-all;
+  white-space: normal;
+
+  label {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  label.color-gray {
+    color: #7a8589;
+  }
+
+  //滚动区域样式 及列表样式
+  .order-container-scroll {
+    width: 660px;
+  }
+  .crm-right-panel-addbtn.go-top {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+  }
+  //申请用户模态框大小的调整
+  .apply-user-modal {
+    .modal-dialog {
+      width: 320px;
+      height: 150px;
+      .modal-body {
+        color: #123;
+        text-align: left;
+        padding-left: 30px;
+        line-height: 30px;
+        .ant-radio-group {
+          white-space: normal;
+        }
+      }
+    }
+  }
+
+  .load8 {
+    position: absolute;
+    left: 50%;
+    margin-left: -36px;
+  }
+
+  .order-view .load8 {
+    top: 50px;
+  }
+
+  .order-form .anticon-loading {
+    float: right;
+    margin-top: 25px;
+    margin-right: 20px;
+    font-size: 20px;
+  }
+
+  //单个订单样式
+  .order-item {
+    background-color: $block-bgColor;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: $font-color;
+    padding-left: 10px;
+    padding-right: 10px;
+    float: left;
+    padding-bottom: 40px;
+    width: 660px;
+
+    //顶部区域样式 时间及单号
+    .order-title {
+      overflow: hidden;
+      padding-left: $padding;
+
+      .order-title-left {
+        width: 450px;
+        float: left;
+        margin: 10px 0;
+      }
+
+      .order-title-right-btn {
+        width: 100px;
+        float: right;
+        height: 40px;
+        padding-top: 8px;
+      }
+    }
+
+    .order-btn-class {
+      border: 0px;
+      width: 25px;
+      float: right;
+      background-color: #b6c2c9;
+      margin-right: 12px;
+      text-align: center;
+      padding: 0px;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 100px;
+      &:hover {
+        background-color: #4d96d1;
+      }
+    }
+
+    .btn-save {
+      margin-right: 5px;
+    }
+
+    .ant-alert {
+      top: 120px;
+      left: 230px;
+      text-align: left;
+    }
+
+    //应用列表样式
+    .order-application-list {
+      overflow: hidden;
+      label {
+        float: left;
+      }
+      .order-application-div {
+        float: left;
+        width: 500px;
+        .app-item {
+          display: inline-block;
+          background-color: #4c8ec4;
+          border-radius: 4px;
+          color: #fff;
+          padding: 2px 9px;
+          margin: 0 8px 8px 0;
+        }
+      }
+
+      .btn-save {
+        margin-right: 5px;
+      }
+    }
+
+    //销售阶段区域样式
+    .order-introduce {
+      padding-left: $padding;
+      border-top: 1px solid $block-line-color-edit;
+      .order-introduce-div {
+        line-height: 35px;
+      }
+
+      .order-introduce-btn {
+        color: #fff;
+        background-color: #2ea3e6;
+        border-color: #2ea3e6;
+        height: 25px;
+        line-height: 23px;
+        padding: 0px;
+        width: 80px;
+        margin-left: 20px;
+        margin-bottom: 5px;
+      }
+
+    }
+
+    //订单内容部分样式
+    .order-content {
+      padding-left: $padding;
+      line-height: 35px;
+
+      .order-content-div {
+        width: 100%;
+        float: left;
+        div {
+          float: left;
+          width: 44%;
+          padding-right: 20px
+        }
+
+        .order-label-salesRemarks {
+          float: left;
+        }
+
+        .order-div-salesRemarks {
+          width: 88%;
+          padding-left: 10px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  form {
+    position: relative;
+    .order-application-div {
+      padding-bottom: 0;
+    }
+    .order-introduce {
+      padding-top: 20px;
+      border-top: 1px solid $block-line-color-edit;
+      .ant-form-item {
+        width: 100%;
+        label {
+          text-align: left;
+        }
+        .remarks-wrapper {
+          width: 400px;
+        }
+      }
+    }
+  }
+
+  .search-icon-list {
+    width: 615px;
+    border-radius: 4px;
+    background: #e6edef;
+    margin-top: 8px;
+    .search-icon-list-header {
+      display: none;
+    }
+    .search-icon-list-content {
+      background: #e6edef;
+      margin: 0;
+    }
+  }
+
+  .user-number {
+    .ant-btn {
+      background: #2ea3e6;
+      margin-left: 15px;
+    }
+  }
+}

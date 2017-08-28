@@ -1,0 +1,23 @@
+.time-line {
+    .ant-timeline-item-content {
+        font-size: 14px;
+    }
+}
+.time-line.group-by-day {
+    .ant-timeline {
+        margin-left: 100px;
+    .ant-timeline-item{
+        .ant-timeline-item-tail{
+            border-left: 2px solid #B9BFC0;
+            top:6px;
+        }
+    }
+
+    }
+    .group-day {
+        position: absolute;
+        left: -90px;
+        top: -1px;
+    }
+}
+

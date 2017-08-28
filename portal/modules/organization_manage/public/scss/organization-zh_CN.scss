@@ -1,0 +1,858 @@
+$group-tree-width:300px;
+$group-tree-name-height:60px;
+$border-color:#f3f5f7;
+$img-height:45px;
+$img-width:45px;
+$edit-team-form-height:130px;
+$edit-teamName-form-height:90px;
+
+.organization-manage-container{
+  //正在加载的样式设置
+  .isloading{
+    position:absolute;
+    width:70px;
+    height:70px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    margin:auto;
+  }
+  //获取销售团队无数据或出错的提示
+  .nodata-msg-block{
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    margin:auto;
+  }
+
+  //保存结果提示信息的样式
+  .indicator{
+    position:absolute;
+    right:150px;
+    top:7px;
+    text-align:center;
+  }
+
+  //编辑组内成员列表的遮罩层
+  .member-list-edit-block{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    margin:auto;
+    z-index:10;
+    background-color:rgba(#4d96d1, 0.3);
+  }
+
+  //没有用户头像时默认展示用户昵称第一个字符 样式
+  .no-user-logo-div{
+    height:$img-height;
+    width:$img-width;
+    line-height:$img-height;
+    font-size:20px;
+  }
+
+  .organization-add-div{
+    float:right;
+    height:75px;
+    line-height:69px;
+    z-index:101;
+    border-left:1px solid #edf0f0;
+
+    .organization-add-btn{
+      color:#4d96d1;
+      border-color:transparent;
+      width:116px;
+      height:32px;
+      font-size:14px;
+    }
+  }
+
+  .public-overflow-hidden{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  padding-right:45px;
+  padding-left:45px;
+  padding-top:96px;
+
+  .organization-table-block{
+    min-width:720px;
+    font-size:0px;
+    border:1px solid $border-color;
+    border-radius:4px;
+    .organization-group, .organization-tree-container{
+      > .alert-timer{
+        position:absolute;
+        top:0;
+        bottom:0;
+        right:0;
+        left:0;
+        margin:auto;
+        width:255px;
+        height:30px;
+      }
+    }
+    .organization-group{
+      width:$group-tree-width;
+      float:left;
+      font-size:14px;
+      position:relative;
+      padding-right:0 !important;
+      .left-tree-ul{
+        position:relative;
+        float:left;
+        min-width:300px;
+        .organization-group-li{
+          display:block;
+          font-size:14px;
+          padding-left:10px;
+          .left-tree-children-ul{
+            display:none;
+          }
+
+          &.isLiSelect{
+            & > .left-tree-children-ul{
+              display:block;
+            }
+
+          }
+          //左侧树项的背景设置
+          .item-border-style{
+            position:absolute;
+            width:100%;
+            left:0;
+            border-bottom:1px solid #f3f5f7;
+          }
+          .organization-group-name-div{
+            width:100%;
+            cursor:pointer;
+            .item-border-style{
+              height:$group-tree-name-height;
+            }
+
+            &.select{
+              .item-border-style{
+                background-color:#ecf2f3 !important;
+              }
+            }
+
+            &:hover{
+              .item-border-style{
+                background-color:#EFF8F9;
+              }
+              .tree-operation-icon{
+                display:block !important;
+              }
+
+              .tree-operation-btn-div{
+                background-color:#ecf2f3 !important;
+              }
+            }
+            .left-tree-item-container{
+              min-width:240px;
+            }
+            .left-tree-arrow{
+              float:left;
+              width:25px;
+              height:$group-tree-name-height;
+              text-align:left;
+              line-height:$group-tree-name-height;
+              position:relative;
+              z-index:11;
+
+              .icon-tree-arrow{
+                font-size:10px;
+              }
+              &:hover{
+                .icon-tree-arrow{
+                  color:#4d96d1;
+                }
+              }
+            }
+
+            .organization-group-info{
+              position:relative;
+              height:$group-tree-name-height;
+              padding-top:14px;
+
+              .organization-group-name{
+                span{
+                  float:left;
+                  height:30px;
+                  line-height:30px;
+                }
+                .organization-name-text{
+                  max-width:100px;
+                  display:inline-block;
+                  @extend .public-overflow-hidden;
+                }
+                .organization-member-statistic{
+                  display:inline-block;
+                }
+              }
+              .organization-group-pen{
+                height:30px;
+                line-height:30px;
+                color:#B8BDBF;
+                @extend .public-overflow-hidden;
+
+              }
+            }
+
+            &.show-tree-operation{
+              .tree-operation-icon{
+                display:block !important;
+              }
+            }
+
+            .tree-operation-div{
+              width:70px;
+              height:30px;
+              line-height:30px;
+              text-align:center;
+              z-index:11;
+              position:relative;
+              float:right;
+              right:5px;
+              display:inline-block;
+              .icon-delete, .icon-update{
+                margin-left:5px;
+              }
+              .tree-operation-icon{
+                float:left;
+                font-size:20px;
+                display:none;
+
+                &:hover{
+                  color:#2377bd;
+                }
+              }
+
+              .tree-operation-btn-div{
+                width:80px;
+                height:81px;
+                margin-top:-1px;
+                position:absolute;
+                top:0px;
+                left:46px;
+                background-color:#ffffff;
+                border-bottom:1px solid $border-color;
+                border-right:1px solid $border-color;
+                border-top:1px solid $border-color;
+                padding-top:4px;
+
+                .tree-operation-btn-div-item{
+                  height:25px;
+                  line-height:25px;
+                  cursor:pointer;
+                  margin-top:5px;
+                  .operation-btn-item-span{
+                    padding-left:5px;
+                  }
+                  &:hover{
+                    color:#2377bd;;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .add-organization-div{
+        padding:10px;
+
+        .add-organization-div-btn{
+          height:30px;
+          line-height:30px;
+          text-align:center;
+          border:1px solid #dfe5e8;
+          border-radius:5px;
+          cursor:pointer;
+        }
+      }
+
+      //  form样式
+      .group-form-div{
+        height:$edit-team-form-height;
+        .item-border-style{
+          height:$edit-team-form-height;
+          background-color:#EFF8F9;
+        }
+      }
+      //没有上级团队的编辑界面高度去掉上级团队选项的高度
+      .group-form-no-superior.group-form-div{
+        height:$edit-teamName-form-height;
+        .edit-organization-form{
+          height:$edit-teamName-form-height;
+        }
+        .item-border-style{
+          height:$edit-teamName-form-height;
+        }
+
+      }
+      .edit-organization-form{
+        cursor:default;
+        height:$edit-team-form-height;
+        position:absolute;
+        left:0;
+        width:300px;
+
+        .form{
+          padding-top:15px;
+          padding:10px;
+
+          .ant-form-item{
+            margin-bottom:6px;
+            & > label{
+              text-align:center;
+              font-weight:normal;
+            }
+          }
+          .edit-organization-btn-item{
+            text-align:right;
+            padding-right:12px;
+            width:280px;
+            height:auto;
+            .anticon.anticon-loading{
+              font-size:18px;
+              margin-right:10px;
+            }
+            .indicator{
+              top:-5px;
+              right:120px;
+            }
+            .member-form-btn{
+              border-radius:4px;
+              margin-left:10px;
+            }
+          }
+        }
+
+      }
+    }
+    .organization-personnel{
+      position:relative;
+      min-width:418px;
+      float:left;
+      font-size:14px;
+      border-left:1px solid $border-color;
+      padding:20px;
+      padding-bottom:0px;
+
+      .member-top-operation-div{
+        height:46px;
+        border-bottom:1px solid $border-color;
+        padding-left:10px;
+        padding-right:10px;
+
+        .member-top-operation-div-title{
+          height:46px;
+          float:left;
+          line-height:46px;
+          font-size:14px;
+        }
+        //搜索框的搜索
+        .search-user-div{
+          float:right;
+          display:inline-block;
+          vertical-align:top !important;
+          position:relative;
+          margin-right:10px;
+          margin-top:2px;
+          width:257px;
+          font-size:12px;
+        }
+        .operation-top-btn-div{
+          float:right;
+          .operation-top-btn-div-label{
+            float:left;
+
+            .operation-top-btn{
+              width:30px;
+              color:#7d8e98;
+              font-size:24px;
+              float:left;
+              text-align:center;
+              margin-left:5px;
+              cursor:pointer;
+
+              &.active-btn{
+                color:#4d96d1;
+              }
+            }
+
+            .add-member-btn{
+              font-size:26px;
+              line-height:32px;
+            }
+            .edit-member-btn{
+              line-height:32px;
+            }
+          }
+
+        }
+
+      }
+      //团队内成员展示区域样式设置
+      .member-list-div{
+        position:relative;
+        padding-bottom:10px;
+        padding-top:10px;
+        //设置负责人、秘书、成员在不同行内展示,
+        //盛放 选择成员列表 的div与 设为xxx按钮 不在同一行
+        .organization-member-tier{
+          float:left;
+          width:100%;
+          //暂无数据，获取数据失败的提示样式
+          .member-list-tip{
+            position:absolute;
+            height:20px;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            margin:auto;
+            text-align:center;
+            color:rgba(102, 102, 102, 0.66);
+          }
+        }
+      }
+      .operation-bottom-btn-div{
+        position:relative;
+        text-align:right;
+        border-top:1px solid $border-color;
+        height:40px;
+        line-height:40px;
+        .indicator{
+          top:4px;
+        }
+        .operation-bottom-btn{
+          margin-left:14px;
+          border-radius:4px;
+          border-color:#71aad8;
+          color:#71aad8;
+        }
+        .operation-btn-enable{
+          &:hover{
+            border-color:#4d96d1 !important;
+            background-color:#4d96d1 !important;
+            color:#fff !important;
+          }
+        }
+        .select-member-length-div{
+          float:left;
+          max-width:200px;
+          text-align:left;
+          color:#7D8E98;
+          font-size:12px;
+        }
+      }
+    }
+  }
+
+  /*--成员头像、名称、选择框样式--start  */
+
+  //成员头像样式
+  .organization-member-info-img{
+    height:$img-height;
+    width:$img-width;
+    border-radius:50%;
+  }
+
+  //盛放展示成员头像及name的div样式
+  .organization-member-info{
+    position:relative;
+    float:left;
+    width:90px;
+    height:80px;
+    text-align:center;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  //成员名称的样式
+  .organization-member-info-name{
+    width:90px;
+    color:#7f9e9b;
+    font-size:12px;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    @extend .public-overflow-hidden;
+  }
+
+  //盛放带选择框的成员头像及name的div样式
+  .operation-organization-member-info{
+    @extend .organization-member-info;
+    //盛放选择框和名称的div样式
+    .organization-member-info-name-div{
+      height:20px;
+      line-height:20px;
+      width:90px;
+      padding-left:10px;
+      //名称前选择框样式
+      .select-icon-div{
+        width:15px;
+        height:15px;
+        float:left;
+        border-radius:50%;
+        background-color:#dfe5e8;
+        color:#ffffff;
+        line-height:17px;
+        font-size:10px;
+        margin-top:7px;
+        //选择框选中样式
+        &.select-member{
+          background-color:#4d96d1 !important;
+        }
+
+      }
+      //带选择框的名称样式
+      .organization-member-info-name{
+        @extend .organization-member-info-name;
+        width:60px;
+        text-align:left;
+      }
+    }
+  }
+
+  //停用成员的样式
+  .organization-member-stop{
+    position:absolute;
+    height:45px;
+    width:45px;
+    line-height:45px;
+    font-size:12px;
+    border-radius:50%;
+    top:0;
+    z-index:2;
+    left:22px;
+    background-color:rgba(0, 0, 0, 0.7);
+    color:#fff;
+  }
+  //负责人的样式
+  .icon-sale-team-owner{
+    position:absolute;
+    height:45px;
+    top:-22px;
+    left:10px;
+    font-size:40px;
+    color:#272636;
+  }
+
+  //秘书的样式
+  .icon-sale-team-manager{
+    position:absolute;
+    height:45px;
+    top:-21.5px;
+    left:9.5px;
+    font-size:60px;
+    color:#c44999;
+  }
+  /*--成员头像、名称、选择框样式--end  */
+
+  //搜索框样式
+  .organization-member-search-input-div{
+    width:315px;
+    height:32px;
+    margin-top:5px;
+    margin-left:22px;
+    margin-bottom:5px;
+    input{
+      height:30px;
+      line-height:30px;
+      border:1px solid #9aa2a4;
+      background:transparent;
+      color:#000;
+    }
+    .search-icon{
+      margin-top:-24px;
+    }
+  }
+
+  //销售团队按钮的样式
+  .organization-item{
+    width:80px;
+    height:25px;
+    line-height:1.5;
+    border:1px solid #A09D9D;
+    float:left;
+    margin-right:10px;
+    margin-bottom:5px;
+    margin-top:5px;;
+    border-radius:5px;
+    color:#5d5d5d;
+    text-align:center;
+    font-size:14px;
+    cursor:pointer;
+    @extend .public-overflow-hidden;
+
+    &.select-active{
+      background-color:#4d96d1;
+      border-color:#4d96d1;
+      color:#ffffff;
+    }
+  }
+  //加为xx按钮的样式
+  .set-select-member-btns{
+    float:right;
+    margin-left:10px;
+    .add-member-btn{
+      width:100px;
+      @extend .organization-item;
+      margin-left:10px;
+      margin-right:0;
+    }
+  }
+  //加为xx、删除按钮的hover事件
+  .member-btn-enable:hover{
+    color:#fff !important;
+    background-color:#4d96d1 !important;
+  }
+  .member-owner-disabled{
+    background-color:#aeb3b9;
+  }
+
+  //添加销售团队面板的样式设置
+  .right-pannel-default{
+    width:700px;
+    transform:translateX(700px);
+    transition:transform 0.6s;
+    padding-top:20px;
+
+    .right-panel-top-title{
+      height:40px;
+      border-bottom:2px solid #dcdcdc;
+      width:660px;
+      margin-left:20px;
+      font-size:14px;
+      padding-left:15px;
+      padding-top:5px;
+    }
+
+    .close-pannel{
+      margin-top:0px;
+    }
+
+    .add-organization-form{
+      padding:20px;
+
+      .ant-form-item{
+        width:auto;
+        height:45px;
+        margin-bottom:5px;
+
+        & > label{
+          text-align:center;
+        }
+      }
+
+      .add-organization-btn-item{
+        border-top:1px solid #dcdcdc;
+        position:absolute;
+        width:660px;
+        bottom:0px;
+
+        .form-submit-btn{
+          margin-top:10px;
+        }
+
+        .form-cancel-btn{
+          margin-top:10px;
+        }
+      }
+
+      //添加成员选择区及展示区基本样式
+      .add-memeber-container-basic{
+        float:left;
+        padding:10px 5px;
+        border-radius:5px;
+        background:#DEE6E8;
+      }
+      //选择成员圆圈样式
+      .select-icon-div{
+        background-color:#D6DCDB;
+        color:#f5f6f6;
+      }
+
+      //成员选择列表没有成员时的提示
+      .memeber-list-null-tip{
+        position:absolute;
+        height:20px;
+        margin:auto;
+        left:0;
+        top:0;
+        right:0;
+        bottom:0;
+        text-align:center;
+        color:#7f9e9b;
+      }
+      //团队添加成员选择列表区域
+      .select-members-list-container{
+        width:370px;
+        @extend .add-memeber-container-basic;
+      }
+      //销售团队添加成员后的展示区域
+      .organization-show-member-list{
+        width:280px;
+        margin-left:10px;
+        @extend .add-memeber-container-basic;
+        .organization-member-list-div{
+          margin-bottom:2px;
+        }
+        .del-member-btn{
+          width:100px;
+          float:right;
+          margin-right:80px;
+          @extend .organization-item;
+        }
+      }
+
+      .select-member-label{
+        float:left;
+        width:100%;
+        margin-bottom:0;
+      }
+
+      .select-sub-group-label{
+        height:auto;
+        @extend .select-member-label;
+      }
+
+    }
+
+  }
+
+  // 添加组织成员列表样式
+  .ant-table tbody tr{
+    cursor:pointer;
+  }
+  .organization-member-add-container{
+    .status{
+      display:inline;
+      margin:0 0 0 30px;
+    }
+    .ant-table td, .ant-table th{
+      padding:8px 4px;
+    }
+    .ant-table td{
+      color:#6e7377;
+    }
+    .ant-table .app_ellipsis{
+      max-width:100%;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+    .ant-table td .light_color{
+      color:#adb1b2;
+    }
+
+    .ant-table td li{
+      margin-bottom:10px;
+    }
+
+    .ant-table td li:last-child{
+      margin-bottom:0;
+    }
+
+    .ant-table-pagination{
+      margin:5px 0;
+    }
+  }
+
+  //无组织时，添加组织的样式设置、
+  .organization-null-add-container{
+    position:absolute;
+    width:300px;
+    height:200px;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    margin:auto;
+    .no-organization-tip{
+      width:100%;
+      height:20px;
+      margin-bottom:10px;
+      padding-left:8px;
+      font-size:14px;
+    }
+    .add-organization-div{
+      position:relative;
+      .indicator{
+        top:48px;
+      }
+      input{
+        margin-bottom:10px;
+        font-size:14px;
+      }
+      button{
+        float:right;
+        margin-top:10px;
+        padding:3px 15px;
+        border-radius:4px;
+      }
+    }
+  }
+
+  //添加根组织按钮样式设置
+  .organization-root-add{
+    border-bottom:1px solid #f3f5f7;
+    cursor:pointer;
+    .add-organization-root-div{
+      height:40px;
+      line-height:40px;
+      padding-left:2px;
+    }
+    //搜索按钮的样式设置
+    .search-organization-icon{
+      position:absolute;
+      top:0;
+      right:0;
+      width:40px;
+      height:40px;
+      line-height:40px;
+      font-size:16px;
+      font-weight:bold;
+      color:#666;
+      cursor:pointer;
+      &:hover{
+        color:#4d96d1;
+      }
+    }
+    //搜索框
+    .organization-search-input-container{
+      position:relative;
+      float:left;
+      width:220px;
+      padding:4.5px 5px;
+      .search-clear-icon{
+        position:absolute;
+        top:6px;
+        right:12px;
+        height:28px;
+        line-height:28px;
+        width:20px;
+        font-size:18px;
+        color:#7f909a;
+        background:#fff;
+        z-index:2;
+        &:hover{
+          color:#4d96d1;;
+        }
+      }
+    }
+    &:hover{
+      background-color:#EFF8F9;
+    }
+  }
+}

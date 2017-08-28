@@ -1,0 +1,19 @@
+.PrivilegeGet {
+  width:380px;
+  height:70px;
+  position:fixed;
+  top:50%;
+  left:50%;
+  text-align:center;
+  margin:-35px 0 0 -190px;
+
+  .fail {
+    font-size:16px;
+    margin:20px 0 0 0;
+  }
+
+  a {
+    margin:0 0 0 3px;
+  }
+
+}

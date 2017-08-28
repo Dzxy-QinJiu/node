@@ -1,0 +1,128 @@
+//客户查重界面
+.customer-repeat-container {
+  .return-btn-container {
+    float: left;
+    height: 75px;
+    line-height: 75px;
+    cursor: pointer;
+    &:hover {
+      color: #4d96d1;
+    }
+    .icon-return-btn {
+      font-size: 14px;
+    }
+    .return-btn-font {
+      padding-left: 5px;
+      font-size: 14px;
+    }
+  }
+  .customer-delete-btn, .customer-merge-btn {
+    float: right;
+    width: 110px;
+    height: 75px;
+    line-height: 75px;
+    border-left: 1px solid #edf1f2;
+    text-align: center;
+    color: #a9a9a9;
+    cursor: default;
+  }
+  .delete-active, .merge-active {
+    color: #4d96d1;
+    cursor: pointer;
+  }
+  //等待效果
+  .table-loading-wrap {
+    position: fixed;
+    top: 90px;
+    right: 0;
+    bottom: 90px;
+    left: 0;
+    z-index: 9;
+    .loader8 {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+    }
+  }
+  .customer-repeat-table {
+    position: relative;
+    padding: 96px 20px 20px 20px;
+
+    .repeat-customer-table-thead {
+      height: 50px;
+      border: 1px solid #eef0ef;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      overflow: hidden;
+      .ant-table-empty {
+        height: 50px;
+        margin-bottom: 0;
+      }
+      //去掉头部的全选按钮
+      .ant-table-thead {
+        .ant-checkbox {
+          display: none;
+        }
+        th {
+          padding: 9px 8px;
+          > div {
+            height: 30px;
+            line-height: 30px;
+            .filter-input-container {
+              position: relative;
+              //清空过滤内容的按钮
+              .anticon-cross-circle-o {
+                position: absolute;
+                height: 30px;
+                width: 20px;
+                right: 0;
+                line-height: 30px;
+                cursor: pointer;
+              }
+            }
+          }
+          //表头中搜索搜索按钮的样式
+          .repeat-customer-search-icon {
+            font-size: 16px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            float: right;
+          }
+        }
+      }
+
+    }
+    //隐藏数据列表中的table-header
+    .repeat-customer-table-tbody {
+      .ant-table-header, .ant-table-thead {
+        display: none;
+      }
+    }
+    //过滤框
+    .filter-input-container {
+      position: relative;
+      //清空过滤内容的按钮
+      .anticon-cross-circle-o {
+        position: absolute;
+        height: 30px;
+        width: 20px;
+        right: 0;
+        line-height: 30px;
+        cursor: pointer;
+      }
+    }
+  }
+  .ant-table tbody .current-row:hover,
+  .ant-table tbody .current-row {
+    background: #DFEAF3;
+  }
+  .total {
+    display: block;
+    position: relative;
+    margin-top: 10px;
+    bottom: 0;
+  }
+}

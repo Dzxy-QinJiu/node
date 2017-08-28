@@ -1,0 +1,187 @@
+/*
+* 卡片组件的样式设置
+*/
+
+@mixin position-left {
+  position: relative;
+  float: left;
+}
+
+.card-list-content {
+  .card-layout-container {
+    float: left;
+    padding-right: 15px;
+  }
+}
+
+.card-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  margin-top: 15px;
+  border: 1px solid #dfe5e8;
+  border-radius: 4px;
+  cursor: pointer;
+
+  //卡片停用时的样式
+  .card-stop-layer {
+    position: absolute;
+    width: 100%;
+    height: 114px;
+    z-index: 3;
+    .card-stop-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      background-color: #B6C2C9;
+      opacity: 0.2;
+    }
+    .stop-icon {
+      position: absolute;
+      float: right;
+      top: 17px;
+      right: -5px;
+      color: #fff;
+      z-index: 5;
+      transform:rotate(45deg);
+      -ms-transform:rotate(45deg); 	/* IE 9 */
+      -moz-transform:rotate(45deg); 	/* Firefox */
+      -webkit-transform:rotate(45deg); /* Safari 和 Chrome */
+      -o-transform:rotate(45deg); 	/* Opera */
+    }
+    //创建安全域右上角字体的样式
+    .building-icon{
+      position: absolute;
+      float: right;
+      top: 16px;
+      right: 2px;
+      color: #fff;
+      z-index: 5;
+    }
+    .stop-triangle {
+      position: absolute;
+      float: right;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-width: 35px;
+      border-color: #cfd7dc #cfd7dc transparent transparent;
+      border-style: solid;
+      border-top-right-radius: 4px;
+      z-index: 4;
+    }
+  }
+
+  //卡片内容的样式
+  .single-card {
+    @include position-left;
+    width: 100%;
+    height: 114px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #fff;
+    z-index: 2;
+    .img-container {
+      @include position-left;
+      height: 90px;
+      img {
+        height: 70px;
+        width: 70px;
+        margin-top: 10px;
+        border-radius: 50%;
+      }
+    }
+
+    .card-content {
+      @include position-left;
+      width: 70%;
+      margin-left: 15px;
+      text-align: left;
+      .card-title {
+        margin-bottom: 5px;
+        line-height: 20px;
+        font-size: 16px;
+        color: #506470;
+        display: inline-block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        overflow: hidden;
+        word-wrap: initial;
+      }
+      .card-item {
+        width: 100%;
+        font-size: 14px;
+        height: 20px;
+        line-height: 18px;
+        color: #81939e;
+        label {
+          font-weight: normal;
+          margin-bottom: 0;
+        }
+        .card-item-left {
+          display: inline-block;
+          overflow: hidden;
+          height: 20px;
+          line-height: 18px;
+        }
+        .card-item-right {
+          display: inline-block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 60%;
+          height: 20px;
+          line-height: 18px;
+          overflow: hidden;
+          word-wrap: initial;
+          padding-left: 6px;
+        }
+      }
+    }
+
+    .select-icon {
+      position: absolute;
+      float: right;
+      right: 5px;
+      bottom: 5px;
+      font-size: 20px;
+      color: #D2D4D6;
+      cursor: pointer;
+    }
+
+    .select-icon-stop {
+      color: #fff;
+      z-index: 5;
+    }
+
+    .select-icon:hover {
+      color: #45B4D8;
+    }
+    .active {
+      color: #0048F1 !important;
+    }
+    //我的应用中权限角色配置按钮样式
+    .icon-role-auth-config {
+      position: absolute;
+      float: right;
+      height: 20px;
+      line-height: 20px;
+      width: 20px;
+      right: 5px;
+      bottom: 5px;
+      color: #B6C2C5;
+      text-align: center;
+      z-index: 10;
+      &:hover {
+        color: #4d96d1;
+      }
+    }
+  }
+}
+
+.extend {
+  .card-container {
+    margin-right: 10px;
+  }
+}

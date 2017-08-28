@@ -1,0 +1,253 @@
+@import "../../../../public/css/common-variables";
+
+.app_user_manage_apply_wrap{
+  .app_user_manage_apply_update{
+    font-size:$form_font_size14;
+    color:#aaa;
+    text-align:center;
+    margin-top:6px;
+    a{
+      color:#4d96d1;
+    }
+  }
+  .ant-pwd-strength{
+    margin-top:-20px;
+  }
+  .apply_detail_operate, .apply_detail_uuid{
+    height:53px;
+    overflow:hidden;
+  }
+  .apply_detail_operate{
+    color:#4c8dc3;
+    .btn-icon-return, .btn-icon-role-auth{
+      cursor:pointer;
+      float:right;
+      padding:8px 6px 12px 6px;
+    }
+    .iconfont{
+      font-size:20px;
+    }
+  }
+  .apply_detail_margin{
+    margin:0 20px 0 29px;
+  }
+  .apply_detail_simple{
+    padding:50px 0 0 30px;
+    .modify-delay-time-style {
+      margin-top: -6px;
+      .ant-input-number {
+        border-radius: 3px;
+        height: 30px;
+      }
+      .select-modify-unit {
+        width: 70px;
+        margin-left: 5px;
+      }
+    }
+  }
+  .apply_detail_uuid{
+    line-height:46px;
+    border-bottom:1px solid #ced6da;
+    font-size:14px;
+    color:#5c5d5d;
+    span.order{
+      float:right;
+    }
+  }
+  .apply_detail_desp, .apply_detail_apps{
+    padding:0;
+  }
+  .apply_detail_desp{
+    padding-right:40px;
+    margin-top:-$label_padding_top;
+    color:#5c5d5d;
+  }
+  .apply_detail_desp dt{
+    font-weight:normal;
+  }
+  .apply_detail_desp dd{
+    padding-right:35px;
+    white-space:normal;
+    word-break:break-all;
+  }
+  .apply_detail_desp dt, .apply_detail_desp dd{
+    font-size:$form_font_size14;
+    line-height:$line_height14;
+  }
+  .no-user-logo-div{
+    $size:36px;
+    width:$size;
+    height:$size;
+    line-height:$size - 2px;
+    font-size:24px;
+  }
+  .apply_detail_apps > table{
+    border-color:#ced6da;
+    tr td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4){
+      border-right:1px dashed $table_dashed_color
+    }
+
+    .apply-detail-head > th{
+      text-align:center;
+      border:1px dashed $table_dashed_color;
+    }
+
+    td{
+      text-align:left;
+      vertical-align:middle;
+      color:#5d5d5d;
+      font-size:$form_font_size14;
+      border:none;
+    }
+    .apply-app-numbers{
+      text-align:right;
+    }
+    img{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+    }
+  }
+  td.desp_time{
+    font-size:12px;
+  }
+  h3 .anticon-reload{
+    margin-right:20px;
+  }
+  .app-property-custom-settings{
+    padding-bottom:20px;
+  }
+  .app-property-setting{
+    padding-top:0;
+  }
+  .icon-update{
+    margin-left:20px;
+  }
+  .user-name-edit-block{
+    .user-name-wrap{
+      display:table;
+      width:100%;
+      input[type=text]{
+        height:24px;
+      }
+      input[type=text], .distance{
+        display:table-cell;
+      }
+    }
+    .distance{
+      padding-left:10px;
+    }
+    .distance:nth-child(3){
+      padding-left:0px;
+    }
+    .iconfont{
+      cursor:pointer;
+    }
+  }
+  //回复列表外层容器
+  .reply_list_wrap{
+    margin:0 31px 0 29px;
+    //loading外层容器
+    .reply-loading-wrap{
+      margin:0 0 0 8px;
+      font-size:18px;
+    }
+    //loading文字容器
+    .reply-loading-text{
+      font-size:12px;
+      margin:0 0 0 10px;
+    }
+    //提示容器
+    .ant-alert{
+      display:inline-block;
+    }
+    //刷新样式
+    .anticon-reload{
+      cursor:pointer;
+      &.pull-right{
+        margin:10px 10px 0 0;
+        font-size:14px;
+      }
+    }
+    //回复列表样式
+    ul{
+      border-top:1px dashed #c9c9c9;
+      padding:9px 0 9px 8px;
+    }
+    //单条回复
+    li{
+      padding:9px 0 9px 0;
+      $width:60px;
+      border-bottom:1px solid #f1f2f4;
+      dt{
+        float:left;
+        width:$width;
+        overflow:hidden;
+        clear:left;
+      }
+      dd{
+        margin-left:$width;
+      }
+      dd:before, dd:after{
+        display:table;
+        content:" ";
+      }
+      dd:after{
+        clear:both;
+      }
+      dd div{
+        line-height:20px;
+        color:#4c4e54;
+        font-size:15px;
+        em{
+          font-weight:normal;
+          font-style:normal;
+        }
+        span{
+          color:#7f8fa4;
+          margin-left:8px;
+        }
+      }
+      p{
+        margin-top:5px;
+        font-size:14px;
+        color:#444;
+      }
+      img{
+        width:44px;
+        height:44px;
+        border-radius:50%;
+      }
+      &:last-child{
+        border-bottom:none;
+      }
+    }
+  }
+  .approval_person{
+    .anticon-loading{
+      color:#444;
+      font-size:16px;
+      margin:0 5px 0 0;
+      vertical-align:middle;
+    }
+    .alert-timer{
+      float:left;
+    }
+    .ant-alert{
+      display:inline-block;
+      vertical-align:top;
+      padding-top:6px;
+      padding-bottom:6px;
+      margin:0 5px 0 0;
+    }
+  }
+  .roles-notset-btn-continue{
+    margin:0 20px 0 0;
+  }
+  // 撤销申请
+  .backout-apply {
+    .modal-content {
+      background-color: #fff ;
+    }
+  }
+}

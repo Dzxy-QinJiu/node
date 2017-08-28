@@ -1,0 +1,17 @@
+//common tabs style
+.right-pannel-default {
+  .ant-tabs-nav .ant-tabs-tab-inner:hover {
+    color: #4d96d1;
+  }
+  .ant-tabs-nav .ant-tabs-tab-active .ant-tabs-tab-inner {
+    color: #4d96d1;
+  }
+  .ant-tabs-ink-bar {
+    background-color: #4d96d1;
+  }
+  .ant-tabs-tab-inner {
+    padding: 11px 4px;
+    color: #666;
+    font-weight: bold;
+  }
+}

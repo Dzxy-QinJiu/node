@@ -1,0 +1,29 @@
+.global_filter_btn {
+  font-size:14px;
+}
+
+.global_filter_adv {
+  padding: 20px 0 0 0;
+  border-bottom: 2px dotted #edf1f2;
+  dt {
+    display: table-cell;
+    width: 90px;
+    vertical-align: top;
+    font-size: 13px;
+  }
+  dd {
+    display: table-cell;
+    li {
+      float: left;
+      margin-right: 20px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      padding: 3px 10px;
+    }
+    li.selected {
+      background: #4d96d1;
+      color: #fff;
+      border-radius: 4px;
+    }
+  }
+}

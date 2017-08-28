@@ -1,0 +1,100 @@
+const orderUrl = "/rest/customer/v2/salesopportunity";
+//获取全部销售阶段，包括系统设置的和导入的旧数据中的
+const stageUrl = "/rest/customer/v2/salesopportunity/term/sale_stages";
+//获取系统设置的销售阶段
+const sysStageUrl = "/rest/customer/v2/salestage";
+const applyUserUrl = "/rest/base/v1/user/apply_users";
+const queryCustomerUrl = "/rest/customer/v2/customer/query";
+const callRecordGraphUrl = "/rest/customer/v2/callrecord/histogram/:start_time/:end_time/:interval";
+const callRecordListUrl = "/rest/customer/v2/callrecord/query/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
+//添加销售线索
+const addSalesClueUrl = "/rest/customer/v2/customer/clue";
+
+module.exports = [{
+    "method": "post",
+    "path": orderUrl,
+    "handler": "addOrder",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "put",
+    "path": orderUrl,
+    "handler": "editOrder",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "put",
+    "path": orderUrl + "/sale_stage",
+    "handler": "editOrderStage",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "delete",
+    "path": orderUrl + "/:id",
+    "handler": "deleteOrder",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "post",
+    "path": orderUrl + "/contract/:id",
+    "handler": "generateContract",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "post",
+    "path": applyUserUrl,
+    "handler": "applyUser",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "post",
+    "path": stageUrl,
+    "handler": "getStageList",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    "method": "get",
+    "path": sysStageUrl,
+    "handler": "getSysStageList",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    method: "get",
+    path: queryCustomerUrl,
+    handler: "getCustomerById",
+    passport: {
+        needLogin: true
+    },
+    privileges: [
+        "CRM_LIST_CUSTOMERS"
+    ]
+}, {
+    method: "post",
+    path: callRecordGraphUrl,
+    handler: 'getRecordGraph',
+    passport: {
+        needLogin: true
+    }
+}, {
+    method: "post",
+    path: callRecordListUrl,
+    handler: 'getRecordList',
+    passport: {
+        needLogin: true
+    }
+}, {
+    "method": "post",
+    "path": addSalesClueUrl,
+    "handler": "addSalesClue",
+    "passport": {
+        "needLogin": true
+    }
+}];

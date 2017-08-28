@@ -1,0 +1,64 @@
+.customer_searchbox_wrap {
+  //颜色是666
+  color:#666;
+  //loading效果
+  .anticon-loading {
+    color:#394144;
+    font-size:16px;
+    margin:0 0 0 10px;
+    top:8px;
+    position:absolute;
+  }
+  //提示样式
+  .customer_suggest_tip {
+    color:#666;
+    padding-top:7px;
+  }
+  //错误样式
+  .customer_suggest_error_tip {
+    color:#f50;
+  }
+  //已经选中了客户的样式
+  .customer_choosen {
+    display:inline-block;
+    margin-top:4px;
+    cursor:pointer;
+    background-color: #f3f3f3;
+    &:hover {
+      background-color: darken(#f3f3f3,5%);
+    }
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 3px 10px 3px 10px !important;
+    &>span {
+      vertical-align:middle;
+    }
+    .iconfont {
+      display:inline-block;
+      vertical-align:middle;
+      font-family:anticon !important;
+      &:before {
+        content:"\E62D";
+      }
+      transform:scale(.66666667) rotate(0deg);
+      text-transform: none;
+      text-rendering: auto;
+      zoom:1;
+      filter:none;
+    }
+  }
+  .ant-select-search__field__placeholder {
+    top:3px;
+    color:#cdcdcd;
+  }
+
+  &.customer_searchbox_error {
+    .ant-select-selection--single {
+      border:1px solid #f50;
+    }
+  }
+
+}
+.customer_combobox_search.ant-select-dropdown{
+  width:260px;
+}

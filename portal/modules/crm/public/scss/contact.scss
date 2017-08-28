@@ -1,0 +1,211 @@
+@import '../../../../public/css/bootstrap-variables.scss';
+@import '../../../../components/ModalDialog/modalDialog-zh_CN.scss';
+
+$block-bgColor: #dde6ed;
+$block-bgColor-edit: #d3dbe8;
+$block-line-color: #D1DADE;
+$block-line-color-edit: #C6CEDA;
+$font-color: #464b4e;
+/*联系人所在区域*/
+.crm-contacts-list li {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+/*默认联系人*/
+.crm-contact-default {
+  z-index: 1;
+  $width: 58px;
+  $height: 48px;
+  $triangle-color: #31a4dd;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-width: $height/2 $width/2;
+  border-color: $triangle-color rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) $triangle-color;
+  border-style: solid;
+  border-top-left-radius: 4px;
+  color: #fff;
+  span {
+    display: block;
+    width: $width;
+    height: $height;
+    padding: 5px 0 0 6px;
+    margin-left: -18px;
+    margin-top: -14px;
+  }
+}
+
+/*联系人条目基本样式*/
+.crm-contact-item {
+  position: relative;
+  background-color: $block-bgColor;
+  border-radius: 4px;
+
+  dl {
+    margin-bottom: 10px;
+    color: $font-color;
+    width: 100%;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 14px;
+  }
+
+  dl:last-child {
+    margin-bottom: 0;
+  }
+
+  dt, dd {
+    display: inline;
+  }
+
+  dt {
+    font-weight: normal;
+  }
+
+  .contact-left {
+    padding: 28px 0 27px 55px;
+  }
+
+  .contact-right {
+    padding: 28px 0 27px 45px;
+  }
+}
+
+/*联系人操作区域*/
+.crm-contact-operate {
+  display: none;
+  padding: 8px 10px 0 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  .ant-btn {
+    margin: 1px 0 0 10px;
+  }
+}
+
+@media (min-width: $screen-md) {
+  .crm-contact-line {
+    position: absolute;
+    top: 0;
+    left: $col5;
+    height: 100%;
+    width: 1px;
+    background: $block-line-color-edit;
+  }
+  .crm-contact-form .crm-contact-line {
+    transform: translateX(16px);
+  }
+}
+
+.crm-contact-item:hover {
+  .crm-contact-operate {
+    display: block;
+  }
+}
+
+.contact-modal-container {
+  position: relative;
+
+  .modal-dialog .modal-header {
+    padding-top: 5px;
+  }
+
+  .modal-dialog {
+    height: 93px;
+  }
+
+  .modal, .modal-backdrop {
+    position: absolute;
+  }
+
+  .modal-dialog .modal-content .modal-footer {
+    padding: 10px;
+  }
+
+}
+
+.crm-contact-input-list {
+  position: relative;
+  margin-top: 20px;
+}
+
+.crm-contact-form {
+  padding: 20px 0 27px 0;
+  border-radius: 4px;
+  background-color: $block-bgColor-edit;
+  .return-btn {
+    top: 10px;
+    right: 10px;
+  }
+
+  form .ant-form-item {
+    width: auto;
+    margin-bottom: 10px;
+    color: #4c4c4c;
+    .ant-select {
+      width: 170px;
+    }
+    input{
+      width: 170px;
+    }
+  }
+
+  .crm-contact-form-left {
+    padding: 0 15px 0 43px;
+    .ant-select-arrow { display: none; }
+  }
+  .ant-form-item > label {
+    padding-right: 12px;
+  }
+  .crm-contact-form-right {
+    padding: 0 40px 0 13px;
+  }
+  .crm-contact-contactway-plus {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .crm-contact-contactway-plus:first-child {
+    .circle-button {
+      margin-left: 0;
+    }
+  }
+  .crm-contact-contactway-plus i {
+    font-size: 13px;
+    vertical-align: middle;
+    font-weight: bold;
+    position: relative;
+    top: -2px;
+  }
+  .crm-contact-contactway-label {
+    margin: 0 0 0 4px;
+    line-height: 22px;
+  }
+  .crm-contact-contactway-minus {
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    $btn-color: #f05150;
+    background-color: $btn-color;
+    &:hover {
+      background-color: darken($btn-color, 20%);
+    }
+  }
+  .need-contact {
+    margin-left: 70px;
+    color: #f50;
+  }
+}
+
+.crm-contact-form-btns {
+  padding: 0 70px 0 20px;
+}
+

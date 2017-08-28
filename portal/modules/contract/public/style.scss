@@ -1,0 +1,654 @@
+@import '../../../components/antd-table-pagination/index.scss';
+@import "../../../public/css/common-variables";
+.contract-list {
+    .topNav {
+        line-height: 76px;
+        min-width: 1170px;
+        .btn {
+            color: #b6c2c9;
+        }
+        .btn:active {
+            box-shadow: none;
+        }
+    }
+
+    .sub-menu {
+        margin-left: 20px;
+        .current-active {
+            color: #4d96d1;
+        }
+    }
+
+    .filter {
+        display: inline-block;
+        .search-input-container {
+            display: inline-block;
+            margin-right:15px;
+            width: $edit_input_width;
+            .ant-select-search__field__placeholder {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .privilege-btns {
+        float: right;
+        .btn {
+            width: 110px;
+            height: 75px;
+            padding: 0;
+            display: inline-block;
+            line-height: 75px;
+            border-left: 1px solid #edf1f2;
+            font-size: 14px;
+            text-align: center;
+            color: #4d96d1;
+            cursor: pointer;
+        }
+        .ant-upload {
+            span:focus {
+                outline-width: 0;
+            }
+        }
+    }
+
+    .btn-filter {
+        display: inline-block;
+        margin-right: 15px;
+        border-radius: $border-radius;
+        font-size: 14px;
+        .anticon {
+            transform: scale(0.66666667) rotate(0deg);
+            font-size: 12px;
+        }
+    }
+
+    .date-filter {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 20px;
+        .border_wrap {
+            font-size: 14px;
+        }
+    }
+
+    .table-wrap {
+        margin-top: 86px;
+        padding: 0 50px;
+        table {
+            table-layout: fixed;
+        }
+        .ant-table-thead {
+            th {
+                background: #fff;
+            }
+        }
+        .ant-table-body {
+            overflow: auto;
+        }
+        .ant-table-tbody {
+            tr {
+                cursor: pointer;
+            }
+            tr.current-row {
+                background: #dfeaf3;
+            }
+        }
+        .custom-tfoot {
+            th {
+                border-right: none !important;
+            }
+            th.number-value {
+                border-right: 1px dashed #edf1f2 !important;
+            }
+            th.border-left {
+                border-left: 1px dashed #edf1f2;
+            }
+        }
+        .custom-thead-filter {
+            .ant-select {
+                width: 100%;
+            }
+        }
+        .number-value {
+            text-align: right;
+            padding-right: 15px;
+        }
+    }
+
+    .right-pannel-default {
+        width: 700px;
+        transform: translateX(700px);
+        font-size: 14px;
+        .load8 {
+            position: absolute;
+            top: 100px;
+            left: 300px;
+            transform: scale(0.5, 0.5);
+            .loader8 {
+                border-left-color: #394144;
+            }
+        }
+        .ant-tabs-nav {
+            margin-left: 10px;
+        }
+        .icon-close {
+            position: absolute;
+            margin: 0;
+            top: 15px;
+            right: 15px;
+        }
+        .icon-update {
+            position: absolute;
+            margin: 0;
+            top: 15px;
+            right: 50px;
+            z-index: 1;
+        }
+        .icon-return {
+            z-index: 1;
+        }
+        .ant-tabs-tabs-bar {
+            margin: 0 20px 16px;
+            border-bottom-color: #D2DBE6;
+            .ant-tabs-tab {
+                padding: 5px 0;
+            }
+            .ant-tabs-ink-bar {
+              background-color: #4D96D1;
+              height: 3px;
+            }
+        }
+        form {
+            padding-left: 20px;
+            padding-bottom: 20px;
+            .ant-form-item {
+                width: auto;
+                color: inherit;
+                .ant-calendar-picker{
+                    width: $edit_input_width;
+                }
+            }
+        }
+        .btn-primary-sure {
+            margin-left: 20px;
+            margin-right: 10px;
+        }
+        .circle-button-minus {
+            margin-right: 15px;
+            float: right;
+            background-color: #f05150;
+        }
+        .circle-button-minus:hover {
+            background-color: #c91211;
+        }
+        .choose-type {
+            .ant-tabs-tabpane {
+                padding: 10px 0 0 20px;
+            }
+            ul {
+                display: inline-block;
+            }
+            li {
+                display: inline-block;
+                width: 96px;
+                text-align: center;
+                background: #fff;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-left: 30px;
+                padding: 3px 0;
+            }
+            li.active {
+                background: #4d96d1;
+                color: #fff;
+            }
+        }
+        .step-button {
+            position: absolute;
+            bottom: 35px;
+            right: 20px;
+            button {
+                color: #71aad8;
+                background-color: transparent;
+                border-color: #71aad8;
+                margin-left: 15px;
+                font-size: 15px;
+                padding: 0 15px;
+            }
+        }
+        .add-form {
+            .ant-tabs-tab {
+                pointer-events: none;
+            }
+        }
+        .add-basic {
+            margin-top: 30px;
+            .ant-form-item {
+                label {
+                    margin-right: 20px;
+                }
+            }
+            .ant-select {
+                width: $edit_input_width;
+            }
+            input, .ant-select-selection--single {
+                height: $input_height;
+            }
+            .ant-select-selection--single {
+                .ant-select-selection__rendered {
+                    line-height: inherit;
+                }
+               .ant-select-selection__placeholder{
+                 line-height: $line_height30;
+               }
+            }
+            .ant-form-explain{
+              float: none;
+            }
+        }
+        .add-products {
+            width: 660px;
+            margin: 0 auto;
+            .add-product {
+                overflow: hidden;
+                button {
+                    float: right;
+                    padding: 1px 20px;
+                    margin: 0 10px 15px 0;
+                }
+            }
+            form {
+                background: #dde6ed;
+                padding-bottom: 0;
+                .circle-button {
+                    margin-top: 6px;
+                }
+                .ant-form-item {
+                    label {
+                        padding-right: 0;
+                    }
+                    input {
+                        width: 80%;
+                    }
+                }
+            }
+            form:first-child {
+                padding-top: 10px;
+                .circle-button {
+                    margin-top: 40px;
+                }
+            }
+            form:last-child {
+                padding-bottom: 20px;
+            }
+            .ant-form-item {
+                display: inline-block;
+                vertical-align: middle;
+                width: 80px;
+                line-height: 35px;
+                .ant-select {
+                    width: 100%;
+                }
+                .ant-form-explain {
+                    position: absolute;
+                }
+            }
+            .ant-form-item:first-child {
+                width: 200px;
+                margin-right: 17px;
+                .ant-select {
+                    margin-top: -3px;
+                }
+            }
+        }
+        @mixin finances {
+            width: 630px;
+            margin: 0 auto;
+            .add-finance {
+                position: relative;
+                margin-bottom: 20px;
+                input, .ant-select {
+                    margin: 0 5px;
+                    width: initial;
+                }
+                input {
+                    width: 120px;
+                    display: inline-block;
+                }
+                .ant-form-item {
+                    display: inline-block;
+                    vertical-align: top;
+                }
+                .ant-form-explain {
+                    float: none;
+                    text-align: center;
+                }
+                .ant-calendar-picker-input {
+                    width: 120px;
+                    margin-right: 5px;
+                }
+                button {
+                    position: absolute;
+                    top: 5px;
+                    right: 0;
+                    padding: 1px 20px;
+                }
+            }
+            .finance-list {
+                padding: 5px 0;
+                background: #dde6ed;
+                ul {
+                    margin: 20px 0 20px 40px;
+                }
+                li {
+                    position: relative;
+                    list-style-type: disc;
+                    margin-bottom: 20px;
+                    .ant-form-item {
+                        margin-bottom: 0;
+                    }
+                }
+                .icon-update {
+                    top: 0;
+                    right: 55px;
+                }
+                .icon-delete {
+                    position: absolute;
+                    top: 0;
+                    right: 20px;
+                }
+                .btn-save {
+                    position: absolute;
+                    top: 0;
+                    right: 55px;
+                }
+                .btn-cancel {
+                    position: absolute;
+                    top: 0;
+                    right: 20px;
+                }
+            }
+        }
+        .add-repayments {
+            @include finances;
+        }
+        .add-payments {
+            @include finances;
+        }
+        .detail-repayments {
+            @include finances;
+        }
+        .detail-payments {
+            @include finances;
+        }
+        .detail-invoice {
+            .invoice-info {
+                background: #dde6ed;
+                margin: 0 20px;
+                padding-bottom: 8px;
+                .info {
+                    margin: 0 5px;
+                    padding: 15px 20px;
+                    line-height: 30px;
+                    border-bottom: 1px #d1dade solid;
+                }
+                .info-blank {
+                    padding-left: 40px;
+                }
+                .extra {
+                    margin-top: 15px;
+                    .add-invoice {
+                        position: relative;
+                        margin-left: 43px;
+                        margin-bottom: 10px;
+                    }
+                    .render-form {
+                        .ant-form-item {
+                            display: inline-block;
+                        }
+                    }
+                    .has-error {
+                        position: relative;
+                        .ant-form-explain {
+                            position: absolute;
+                        }
+                    }
+                    .btn-add-invoice {
+                        position: absolute;
+                        top: 0;
+                        right: 20px;
+                    }
+                    ul {
+                        margin: 0 0 20px 40px;
+                    }
+                    li {
+                        position: relative;
+                        list-style-type: disc;
+                        margin-bottom: 20px;
+                        .ant-form-item {
+                            margin-bottom: 0;
+                        }
+                    }
+                    .icon-update {
+                        top: 0;
+                        right: 55px;
+                    }
+                    .icon-delete {
+                        position: absolute;
+                        top: 0;
+                        right: 20px;
+                    }
+                    .btn-save {
+                        position: absolute;
+                        top: 0;
+                        right: 55px;
+                    }
+                    .btn-cancel {
+                        position: absolute;
+                        top: 0;
+                        right: 20px;
+                    }
+                }
+            }
+            form {
+                input {
+                    height: 28px;
+                }
+            }
+            .ant-form-horizontal {
+                .ant-form-item {
+                    margin-bottom: 0;
+                }
+                padding-left: 50px;
+                margin-bottom: 8px;
+            }
+            .op-buttons {
+                overflow: hidden;
+                margin-top: 20px;
+                margin-right: 197px;
+            }
+        }
+        .detail-basic {
+            margin: 0 20px 20px;
+            line-height: 30px;
+            .basic-info {
+                background: #dde6ed;
+                padding: 20px;
+                margin-bottom: 15px;
+                .detail-item {
+                    margin-bottom: 5px;
+                    & > span:first-child {
+                        display: inline-block;
+                        margin-right: 4px;
+                    }
+                    & > span:last-child {
+                        margin-left: 4px;
+                    }
+                    textarea {
+                        display: inline-block;
+                        width: 463px;
+                        vertical-align: top;
+                    }
+                    .remarks {
+                        display: inline-block;
+                        width: 500px;
+                        vertical-align: top;
+                    }
+                }
+                .half {
+                    width: 50%;
+                    float: left;
+                }
+                input, .ant-select {
+                    width: 153px;
+                    margin-right: 5px;
+                }
+            }
+            th, td {
+                text-align: center;
+                border-right: none;
+            }
+            th {
+                background: #d7dee7;
+                border-right: none;
+            }
+            td {
+                background: #dde6ed;
+                border-right: none;
+            }
+            .ant-form-explain {
+                float: none;
+            }
+            .op-buttons {
+                overflow: hidden;
+                margin-top: 20px;
+                margin-right: 10px;
+                button {
+                    float: right;
+                }
+            }
+        }
+        .detail-cost {
+            padding-left: 40px;
+            .icon-update {
+                top: 0;
+                right: 55px;
+            }
+            .icon-delete {
+                z-index: 1;
+                position: absolute;
+                top: 0;
+                right: 20px;
+            }
+            .ant-form-item {
+                line-height: 30px;
+            }
+            button {
+                margin: 0;
+            }
+            .btn-primary-cancel {
+                margin-left: 15px;
+            }
+        }
+    }
+    .right-panel-cost {
+        width: 500px;
+    }
+}
+
+.contract-export-modal {
+    .ant-modal-body {
+        line-height: 30px;
+        font-size: 14px;
+        padding: 30px 20px 20px 40px;
+    }
+    .ant-radio + span {
+        font-size: 14px;
+        font-weight: normal;
+    }
+}
+
+// 合同模板样式
+.import-contract-template-panel .right-pannel-default {
+    width: 420px;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    font-size: 14px;
+    .import-tips {
+        margin-top: 60px;
+        margin-left: 20px;
+        a {
+            text-decoration: none;
+        }
+        p {
+            padding-bottom: 20px;
+        }
+    }
+    .import-file {
+        float:right;
+        margin-right: 20px;
+        .ant-btn {
+            margin-bottom: 3px;
+        }
+        .import-contract, .ant-btn .ant-btn-ghost {
+            border: 1px solid #4d96d1;
+            border-radius: 5px;
+            padding: 4px 11px;
+            font-size: 12px;
+        }
+        .import-contract {
+            margin-right: 12px;
+            color: #fff;
+            background-color: #4d96d1;
+            border-color: #4d96d1;
+        }
+    }
+}
+
+.contract-dashboard {
+    .analysis-filter {
+        left: 5px;
+    }
+    .main-content {
+        font-size: 14px;
+        margin: 96px 20px 20px;
+        $border: 1px solid #f0f0f0;
+        .main-left {
+            overflow: hidden;
+            width: 80%;
+            float: left;
+        }
+        .main-right {
+            width: 18.5%;
+            min-height: 200px;
+            float: right;
+            border: $border;
+        }
+        .chart-wrap {
+            width: 100%;
+            float: left;
+            border: $border;
+            padding: 10px;
+            margin: 0 15px 15px 0;
+            .chart-box {
+                border: $border;
+                padding: 10px;
+                .count-content {
+                    display: inline-block;
+                    margin-right: 15px;
+                }
+                .count-value {
+                    font-weight: bold;
+                    font-size: 20px;
+                }
+            }
+        }
+    }
+}
+
+.contract-import-modal.ant-modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+

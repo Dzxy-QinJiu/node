@@ -1,0 +1,1217 @@
+/*引入公共变量*/
+@import '../../../../public/css/bootstrap-variables';
+@import '../../../../public/css/common-variables';
+@import '../../../../components/antd-table-pagination/index.scss';
+@import '../../../../components/ModalDialog/modalDialog-zh_CN.scss';
+
+.user_manage_filter_block .customer-switch-search{
+  .search-input-container{
+    position:relative;
+    .anticon-search{
+      margin-top:0;
+      right:2px;
+      top:9px;
+    }
+  }
+}
+
+.user-detail-add-app, .user-detail-edit-app{
+  position:relative;
+  height:100%;
+  white-space:normal;
+  .form_btns{
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+  }
+}
+
+.user-detail-add-app{
+  .ant-pwd-strength{
+    margin-top:-20px;
+  }
+  .ant-form-item{
+    width:auto !important;
+  }
+  .grant_roles{
+    margin-top:20px;
+    padding-left:9px;
+  }
+  .batch-role-permission{
+    .batch-role-permission-apps .ant-alert-error{
+      display:inline-block;
+      margin:10px 0 0 0;
+    }
+    padding:20px 0 0 0;
+    .ant-form-item > label{
+      padding-left:20px !important;
+    }
+    .grant_roles{
+      margin-top:0;
+    }
+  }
+  .batch_app_select{
+    .ant-alert{
+      margin-top:5px;
+      margin-bottom:0;
+      display:inline-block;
+    }
+    .ant-form-item{
+      color:#5d5d5d;
+      margin-bottom:10px !important;
+      .ant-select{
+        width:$input_width;
+      }
+    }
+    .col-20{
+      padding-top:4px;
+    }
+    .ant-select-selection--multiple .ant-select-selection__choice{
+      margin:7px 4px 3px 4px;
+    }
+  }
+  .customer_searchbox_wrap .ant-select-search__field__placeholder{
+    top:0;
+  }
+  .delay_time_form{
+    $height:30px;
+    .ant-form-item .ant-select-selection--single{
+      height:$height;
+    }
+    .ant-input-number{
+      input{
+        height:$height !important;
+        line-height:$height !important;
+      }
+    }
+    .ant-form-item .ant-select-selection--single .ant-select-selection__rendered{
+      line-height:$height;
+    }
+    .ant-input-number, .ant-select{
+      vertical-align:middle;
+    }
+    .ant-select-selection--multiple .ant-select-selection__rendered{
+      padding-top:12px;
+    }
+  }
+  form {
+    .ant-calendar-picker {
+      width: 140px;
+      margin-right: 10px;
+      position: relative;
+      top: 2px;
+    }
+    .ant-form-item {
+      input {
+        width: 140px;
+      }
+      .ant-calendar-picker-icon {
+        display: inline;
+      }
+    }
+  }
+}
+
+//应用用户管理筛选按钮
+.app_user_filter_btn{
+  margin-right:10px;
+}
+
+//编辑单个应用
+.user-detail-edit-app{
+  //应用logo处，不显示设置角色的浮层
+  .setpermission{
+    display:none;
+  }
+  //应用不显示出边框
+  .application-img{
+    border-color:rgba(0, 0, 0, 0) !important;
+  }
+  .error_form_tip{
+    color:#f50;
+  }
+  //没有选择角色的时候，显示一个错误
+  .edit-single-app-roles-error{
+    margin:5px 0 5px 10px;
+  }
+
+}
+
+.customer-user-description{
+  margin-left:-23px;
+  padding:28px 0 0 0;
+  font-size:14px;
+}
+
+.user-list-table-wrap{
+  .current_row, .current_row:hover{
+    background:#DFEAF3 !important;
+  }
+  .no_valid_user {
+    td {
+      cursor:not-allowed;
+    }
+  }
+}
+
+.appuser-list-loading-wrap{
+  position:fixed;
+  top:90px;
+  right:0;
+  bottom:90px;
+  left:0;
+  z-index:9;
+  .loader8{
+    position:absolute;
+    top:0;
+    right:0;
+    left:0;
+    bottom:0;
+  }
+}
+
+.user_manage_user_detail_addapp, .user_manage_user_detail_editapp{
+  .app-selector .application-div{
+    padding-bottom:0;
+  }
+  .batch-update-tabs{
+    padding-left:16px;
+  }
+  .app-selector-nodata{
+    color:#666;
+    padding-top:13px;
+  }
+  .addapp_minor_items, .editapp_minor_items{
+    .app-selector-nodata{
+      padding-top:8px;
+    }
+    .ant-radio-group{
+      label{
+        padding-top:5px;
+      }
+    }
+  }
+  .addapp_major_items, .editapp_major_items{
+    .app-selector{
+      padding-left:17px;
+    }
+    dl:nth-child(1){
+      dt{
+        padding-top:14px;
+      }
+    }
+    dt{
+      font-weight:normal;
+      font-size:12px;
+      color:#76858c;
+      width:78px;
+      text-align:left;
+      padding:10px 0 10px 13px;
+    }
+    dd{
+      margin-left:78px;
+    }
+    .custom_radio_group{
+      padding-top:7px;
+    }
+    .app_selector_wrap .has-error{
+      margin-left:18px;
+    }
+  }
+  .addapp_minor_items, .editapp_minor_items{
+    margin:37px 5px 20px 8px;
+    padding:17px 0 17px 0;
+    background:#dfe7ec;
+    .ant-form-item{
+      & > label{
+        padding-left:10px;
+        color:#5d5d5d;
+      }
+      margin-bottom:$margin-bottom;
+      width:auto;
+      margin-right:20px;
+      textarea{
+        width:$input_width;
+      }
+    }
+    .col-17{
+      padding-left:8px;
+    }
+  }
+
+  .custom_radio_group .custom_radio{
+    color:#5d5d5d;
+    background-color:#e6edef;
+    border-color:#cfd7dc;
+    &.custom_radio_active{
+      color:#fff;
+      background-color:#33a3dc;
+      border-color:#33a3dc;
+    }
+  }
+
+  .pass-strength-wrap{
+    .ant-pwd-strength{
+      margin-left:0;
+      margin-bottom:0;
+    }
+  }
+}
+
+.app_user_manage_rightpanel.right-pannel-default{
+  $width:700px;
+  width:$width;
+  transform:translate($width, 0);
+  padding:0;
+  .full_size{
+    width:100%;
+    height:100%;
+    position:relative;
+  }
+  .app_user_full_size{
+    white-space:nowrap;
+  }
+  .app_user_full_size_item{
+    white-space:normal;
+  }
+  .wrap_padding{
+    padding:11px 33px 0 28px;
+  }
+  .close-pannel, .icon-return{
+    margin-right:0;
+    margin-top:0;
+    position:absolute;
+    float:none;
+    right:31px;
+    top:18px;
+  }
+  .icon-return{
+    right:62px;
+    z-index:2;
+  }
+
+  // 默认配置应用名称
+  .appTitle{
+    font-size:16px;
+    text-align:left;
+    color:#4d96d1;
+    height:25px;
+    line-height:25px;
+    margin-top:25px;
+    margin-left:25px;
+    display:inline-block;
+  }
+
+  .grantinfo-form{
+    .basic-data-form{
+      background:none;
+    }
+    .app-role-permission{
+      margin-left:16px;
+    }
+
+    .custom_radio_active{
+      display:inline-block;
+      padding:4px;
+      margin-right:4px !important;
+    }
+
+    .usertypeconfig-form-button{
+      margin-top:10px;
+      margin-right:10px;
+      float:right;
+      .ant-btn-primary{
+        margin-right:10px;
+      }
+    }
+    .custom_radio_active{
+      cursor:pointer;
+      border-radius:3px;
+      border:2px solid #729fb4;
+      display:inline-block;
+      padding:4px;
+      margin-right:4px !important;
+      background:#67a3bf;
+      color:#fff;
+    }
+  }
+}
+
+.user_detail_item_username{
+  .user-basic-edit-field{
+    float:left;
+  }
+}
+
+.right-pannel-default{
+  .user_manage_userform{
+    .customer_searchbox_wrap .has-error{
+      padding-top:7px;
+    }
+    //添加loading状态
+    .anticon-loading{
+      color:#394144;
+      font-size:16px;
+      margin:0 0 0 5px;
+      vertical-align:-2px;
+    }
+    .customer_choosen{
+      display:inline-block;
+      margin-top:4px;
+      cursor:pointer;
+      background-color:#f3f3f3;
+      &:hover{
+        background-color:darken(#f3f3f3, 5%);
+      }
+      border-radius:4px;
+      overflow:hidden;
+      padding:3px 10px 3px 10px !important;
+      & > span{
+        vertical-align:middle;
+      }
+      .iconfont{
+        display:inline-block;
+        vertical-align:middle;
+        font-family:anticon !important;
+        &:before{
+          content:"\E62D";
+        }
+        transform:scale(.66666667) rotate(0deg);
+        text-transform:none;
+        text-rendering:auto;
+        zoom:1;
+        filter:none;
+      }
+    }
+    .txt{
+      color:#666;
+      padding-top:7px;
+    }
+    .userform_error_tip{
+      color:#f50;
+      padding-top:7px;
+    }
+    .ant-form-item{
+      width:auto;
+      margin-right:12px;
+      padding:0 0 0 12px;
+    }
+    .ant-form-item > label{
+      text-align:left;
+      padding-top:7px;
+      padding-bottom:7px;
+    }
+    .ant-input-number-input{
+      border:none !important;
+      height:28px !important;
+    }
+    form .ant-input-number{
+      margin-top:3px;
+    }
+    form .ant-form-item .ant-select-selection--single .ant-select-selection__rendered{
+      line-height:32px;
+    }
+    .app-selector-nodata{
+      color:#666;
+      padding:8px 0 0 0;
+    }
+    .ant-form-item .ant-radio-group{
+      padding-top:7px;
+    }
+  }
+  .user_manage_userform, .user-detail-add-app, .user-detail-edit-app{
+    .form_btns{
+      position:fixed;
+      height:67px;
+      bottom:0;
+      left:28px;
+      right:28px;
+      background:#e6edef;
+      border-top:1px solid #cfd8d7;
+      .pull-left{
+        padding-top:20px;
+        color:#b2bdbf;
+      }
+    }
+  }
+
+  .user_manage_userform, .form_btns{
+    .indicator{
+      position:absolute;
+      width:200px;
+      top:15px;
+      left:50%;
+      text-align:center;
+      margin-left:-125px;
+      .anticon-loading{
+        font-size:18px;
+      }
+    }
+    .ant-alert{
+      display:inline-block;
+    }
+  }
+
+  .user_manage_userform, .addapp_minor_items, .editapp_minor_items{
+    .ant-radio + span{
+      color:#5d5d5d;
+      font-weight:normal;
+    }
+    .icon-arrow-up, .icon-arrow-down{
+      display:none;
+      position:absolute;
+      right:10px;
+      top:2px;
+      color:#000;
+      cursor:pointer;
+    }
+    .ant-calendar-picker-icon{
+      display:none;
+    }
+    .ant-calendar-picker-open{
+      opacity:1;
+    }
+    .customdate{
+      .icon-arrow-up, .icon-arrow-down{
+        display:block;
+        pointer-events:none;
+      }
+      .ant-input{
+        cursor:pointer;
+      }
+    }
+    .ant-radio-group label{
+      cursor:pointer;
+      min-width:50px;
+    }
+  }
+
+}
+
+.user_manage_user_detail_wrap{
+  font-size:0;
+  transition:transform 0.5s ease;
+  transform:translateX(0);
+
+  &.move_left{
+    transform:translateX(-700px);
+  }
+
+  .full_size{
+    display:inline-block;
+    font-size:12px;
+    vertical-align:top;
+  }
+  .user-customer{
+    margin-top:-5px;
+  }
+}
+
+.user_manage_filter_block{
+  height:100%;
+  .user_manage_droplist{
+    margin-top:$filter_area_margin_top;
+    vertical-align:top !important;
+    .ant-select-selection--single{
+      height:$input_height;
+    }
+  }
+  .app_user_filter_btn{
+    vertical-align:top !important;
+    margin-top:$filter_area_margin_top;
+    margin-right:$filter_btn_internal;
+    @include filter_btn;
+  }
+  .search-input-block{
+    width:$edit_input_width;
+    margin-right:$filter_btn_internal;
+    margin-left:$filter_btn_internal;
+    margin-top:$filter_area_margin_top;
+    vertical-align:top !important;
+    position:relative;
+  }
+
+  .add-btn{
+    width:110px;
+    height:75px;
+    line-height:75px;
+    border-left:1px solid #edf1f2;
+    font-size:14px;
+    text-align:center;
+    color:#4d96d1;
+    cursor:pointer;
+  }
+
+  .add-btn-mini{
+    margin:0 14px 0 0;
+    display:none !important;
+  }
+  .anticon-plus, .iconfont{
+    color:#4d96d1;
+    font-size:22px;
+  }
+  .gray, .gray .iconfont{
+    color:darkgray;
+  }
+}
+
+.app_user_manage_page{
+  .none{
+    display:none;
+  }
+  .global_filter_adv{
+    position:relative;
+    z-index:10;
+    .filter_roles_loading{
+      .anticon{
+        font-size:16px;
+      }
+    }
+    .filter_roles_error{
+      .ant-alert-error{
+        border:0;
+        background:rgba(0, 0, 0, 0);
+        padding:0;
+        display:inline-block !important;
+      }
+      li{
+        cursor:auto;
+      }
+      dt{
+        padding-top:2px;
+      }
+      a{
+        margin-left:5px;
+      }
+    }
+    .filter_teams_loading{
+      .anticon{
+        font-size:16px;
+      }
+    }
+    .filter_teams_error{
+      .ant-alert-error{
+        border:0;
+        background:rgba(0, 0, 0, 0);
+        padding:0;
+        display:inline-block !important;
+      }
+      li{
+        cursor:auto;
+      }
+      dt{
+        padding-top:2px;
+      }
+      a{
+        margin-left:5px;
+      }
+    }
+
+
+  }
+  .ant-table tbody tr{
+    cursor:pointer;
+    .unnormal-login {
+        margin-right: 5px;
+        color: red;
+        font-size: 12px;
+    }
+  }
+  .app_user_manage_contentwrap{
+    padding:77px 50px 25px 50px;
+
+    .status{
+      display:inline;
+      margin:0 0 0 30px;
+    }
+
+    .summary_info{
+      font-size:13px;
+      color:#7c8185;
+      position:fixed;
+      bottom:43px;
+    }
+    //下拉加载失败后，提示的样式
+    .scroll-loading-data-error{
+      text-align:center;
+      padding:5px 0;
+      line-height:20px;
+      a{
+        font-size:14px;
+      }
+    }
+    .operate-style, .operate-detail-style{
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      overflow:hidden;
+      word-wrap:initial;
+      width:90%;
+      display:inline-block;
+    }
+    .operate-detail-style{
+      cursor:text;
+    }
+    .show-copy-icon{
+      display:none;
+    }
+    .operate-detail:hover{
+      .show-copy-icon{
+        display:inline-block;
+        width:10%;
+        color:#2db7f5;
+        position:relative;
+        bottom:3px;
+      }
+    }
+    .ant-table .app_ellipsis{
+      max-width:100%;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+    .ant-table .is_disabled{
+      color:#F41919;
+    }
+
+    .ant-table td .light_color{
+      color:#adb1b2;
+    }
+    .ant-table td li{
+      margin-bottom:10px;
+    }
+    .ant-table td li:last-child{
+      margin-bottom:0;
+    }
+
+  }
+
+}
+
+.app_user_manage_apply_list_loading, .app_user_manage_apply_list_error, .app_user_manage_detail_loading, .app_user_manage_detail_error{
+  text-align:center;
+  padding:20px 0;
+  margin:0 auto;
+  .ant-alert-error, .ant-alert-message, .ant-alert-info{
+    display:inline-block;
+  }
+}
+
+.app_user_manage_apply_list_filter{
+  margin-left:-15px;
+  .ant-dropdown-menu-item{
+    font-size:14px;
+  }
+  .ant-dropdown-menu-item a:hover{
+    color:#57c5f7;
+  }
+}
+
+.user_apply_ico{
+  a{
+    position:relative;
+  }
+  a:before{
+    display:none;
+    position:absolute;
+    top:22px;
+    left:0;
+    margin-left:100%;
+    min-width:16px;
+    height:16px;
+    overflow:hidden;
+    background:#f41919;
+    border-radius:8px;
+    color:#fff;
+    line-height:16px;
+    font-size:12px;
+    text-align:center;
+    font-family:$font-family-sans-serif;
+  }
+}
+
+
+
+@media (max-width:1255px) {
+  .user_manage_filter_block{
+    .search-input-block{
+      .ant-select-selection{
+        width:200px;
+      }
+    }
+    .add-btn-mini{
+      display:inline-block !important;
+      cursor:pointer;
+      margin-top:26px;
+    }
+    .add-btn-common{
+      display:none !important;
+    }
+  }
+}
+
+.user_manage_user_detail_editapp{
+  .indicator{
+    left:0;
+    margin-left:0;
+    text-align:left;
+    width:auto;
+  }
+  .app_logo{
+    position:absolute;
+    top:0;
+    left:0;
+    width:102px;
+    padding-left:10px;
+    padding-top:16px;
+  }
+  .app_operation{
+    margin-left:102px;
+    padding-top:16px;
+  }
+  .app_status{
+    width:46px;
+    height:16px;
+    overflow:hidden;
+    text-align:center;
+    line-height:15px;
+    background:#4d96d1;
+    border-radius:5px;
+    color:#fff;
+    font-size:12px;
+    margin:6px 0 0 7px;
+  }
+  .editapp_minor_items{
+    transform:translate(-9px, 0);
+  }
+  .editapp_major_items dt{
+    width:105px;
+  }
+  .editapp_major_items dd{
+    margin-left:105px;
+    padding-left:0;
+  }
+  .col-5{
+    padding-left:15px !important;
+    padding-right:0 !important;
+  }
+}
+
+//check button的样式
+@mixin check_button{
+  .ant-checkbox-checked{
+    .ant-checkbox-inner{
+      border-color:#2db7f5;
+      background-color:#2db7f5;
+      &:after{
+        left:10px;
+        top:3px;
+        width:10px;
+        height:18px;
+        border:4px solid #fff;
+        -webkit-transform:rotate(45deg) scale(1);
+        transform:rotate(45deg) scale(1);
+        position:absolute;
+        display:table;
+        border-top:0;
+        border-left:0;
+        content:' ';
+        -webkit-transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+        transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+      }
+    }
+  }
+}
+
+.ant-select-dropdown-menu-item.user_search_select{
+  padding:0;
+  & > span{
+    display:block;
+    padding:7px 15px;
+    &[data-selected="false"]{
+      background:#fff;
+    }
+    &:hover, &[data-selected="true"]{
+      background:#eaf8fe;
+    }
+  }
+}
+
+// 用户审计日志样式
+.user_audit_log_container{
+  @mixin filter_btn_default{
+    display:inline-block;
+    margin-left:$filter_btn_internal;
+    position:relative;
+    float:left;
+    height:$input_height;
+  }
+  .user_audit_log_header{
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:11;
+     .select-user-type, .user_audit_log_select_time, .user_audit_log_select_app{
+      @include filter_btn_default;
+    }
+    .user_audit_log_search_content{
+      @include filter_btn_default;
+      .search-input-container{
+        .search-input{
+          height:$input_height;
+        }
+      }
+    }
+    .user_audit_log_all{
+      @include filter_btn_default;
+      .ant-checkbox{
+        height:$input_height;
+      }
+      .ant-checkbox-inner{
+        width:30px;
+        height:$input_height;
+      }
+      @include check_button;
+      .refresh-button{
+        margin-left: 15px;
+        border-radius: 3px;
+        height: 30px;
+      }
+    }
+  }
+  .user_audit_log_information{
+    margin-top:-30px;
+  }
+  .summary_info{
+    font-size:12px;
+    color:#7c8185;
+    position:fixed;
+    bottom:20px;
+  }
+}
+
+.user_audit_log_page, .single_user_log_page{
+  position:fixed;
+  bottom:43px;
+  right:20px;
+}
+
+.single-user-log-header{
+  text-align:right;
+  .single-user-log-select-time, .single-user-log-select-app{
+    display:inline-block;
+    padding:10px 0;
+    vertical-align:middle;
+  }
+  .single-user-log-select-app{
+    margin-left:15px;
+    .ant-select{
+      width: auto;
+      margin-right: 15px;
+      text-align:left;
+    }
+  }
+  .single-user-log-select-time{
+    .range_wrap{
+      text-align:left;
+    }
+  }
+}
+
+.right-panel-audit-log{
+  .single-log-info-header{
+    text-align:right;
+    margin-top:15px;
+    margin-bottom:-20px;
+    .single-user-log-search-content{
+      display:inline-block;
+      .search-input-container{
+        .search-input{
+          height:$input_height;
+        }
+      }
+    }
+    .ant-checkbox{
+      margin-left:$filter_btn_internal;
+      height:$input_height;
+      margin-top:-4px;
+    }
+    .ant-checkbox-inner{
+      width:30px;
+      height:$input_height;
+    }
+    @include check_button;
+  }
+}
+
+.single-user-log-information{
+  margin-bottom:15px;
+  padding:8px 0 2px 10px;
+  background:#dce4e7;
+}
+
+.single-user-log-time-operation{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.single-user-log-other-information{
+  font-size:14px;
+}
+
+.single-user-log-detail{
+  padding-right:20px;
+  word-wrap:break-word;
+  white-space:pre-wrap;
+}
+
+.user_audit_log_select_app .ant-select-selection--single,
+.single-user-log-select-app .ant-select-selection--single{
+  height:$input_height;
+  font-size:$form_font_size;
+  line-height:$line-height30;
+}
+
+.user_audit_log_select_app .ant-select-selection__rendered,
+.single-user-log-select-app .ant-select-selection__rendered{
+  line-height:$line-height30;
+}
+
+.right-panel-audit-log{
+  .load8{
+    transform:scale(0.5, 0.5);
+    .loader8{
+      border-left-color:#394144;
+    }
+  }
+  .duration-chart{
+    position:relative;
+    height:214px;
+    margin:0 20px 20px 0;
+    .ant-radio-group{
+      position:relative;
+      top:0;
+      left:526px;
+      label{
+        margin-right:-6px;
+      }
+    }
+    .echart_wrap{
+      margin-top:-30px;
+    }
+  }
+
+  .ant-alert-error, .ant-alert-message, .ant-alert-info{
+    display:inline-block;
+  }
+
+  .alert-wrap{
+    text-align:center;
+  }
+  .alert-wrap:first-child{
+    margin-top:20px;
+    position:absolute;
+    width:100%;
+  }
+
+  .total-summary{
+    margin-top:45px;
+    font-size:14px;
+  }
+
+  .no-more-data-tip{
+    .ant-alert-info{
+      margin-right:20px;
+      display:block;
+    }
+  }
+
+  .user-login{
+    height:340px;
+    font-size:14px;
+    .login-stress{
+      font-weight:bold;
+    }
+    .user-login-info{
+      .login-info{
+        padding:0 0 2px 10px;
+        background:#dce4e7;
+      }
+      height:100px;
+      border-bottom:1px solid #c6ceda;
+      margin-bottom:6px;
+    }
+  }
+  .user-log-list{
+    border-top:1px solid #c6ceda;
+    margin-top:-12px;
+    .log-tips{
+      font-size:14px;
+      margin-bottom:6px;
+    }
+  }
+}
+
+.user_audit_log_style{
+  .ant-table-pagination{
+    margin:20px 0;
+    float:right;
+  }
+  .alert-wrap{
+    text-align:center;
+    .ant-alert-error{
+      border:none;
+      background-color:#fff;
+    }
+    .ant-alert-error, .ant-alert-message, .ant-alert-info{
+      display:inline-block;
+    }
+  }
+}
+
+.user-batch-operator-style{
+  .selected-number{
+    margin-left:13px;
+    margin-bottom:15px;
+    font-size:14px;
+    .the-number{
+      color:#f4ba4a;
+      padding:5px;
+    }
+  }
+}
+
+//变更记录样式调整
+.user_manage_user_record{
+  .recordList{
+    position: relative;
+    word-wrap:break-word;
+    .intial-alert-wrap .ant-alert-error{
+      width: 350px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    //右侧下拉框样式
+    .ant-select{
+      float: right;
+      margin:0 20px 30px 0;
+      width: 160px !important;
+    }
+    .group-by-day{
+      padding: 0 20px 0 10px;
+      clear: both;
+    }
+    .load8{
+      position: absolute;
+      top:30px;
+      left:300px;
+      transform:scale(0.5, 0.5);
+      .loader8{
+        border-left-color:#394144;
+      }
+    }
+    .ant-alert-info{
+      clear: both;
+      width: 200px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    .ant-alert-error{
+      clear: both;
+      width: 350px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    .group-by-day{
+      padding: 0 20px 0 10px;
+      clear: both;
+    }
+    //时间线样式
+    ul {
+      margin-left: 7px;
+      li {
+        padding-top: 5px;
+        dl {
+          dt {
+            color: #aaafb3;
+            margin-top: 10px;
+            font-weight: normal;
+          }
+
+          dd {
+            color: #464b4e;
+            white-space: normal;
+          }
+        }
+
+      }
+
+    }
+
+  }
+}
+//异常登录样式调整
+.user_manage_login_abnormal{
+  .abnormalLoginList{
+    position: relative;
+    word-wrap: break-word;
+    min-height: 300px;
+    //loading效果的样式
+    .load8{
+      position: absolute;
+      top:30px;
+      left:300px;
+      transform:scale(0.5, 0.5);
+      .loader8{
+        border-left-color:#394144;
+      }
+    }
+    .ant-alert-info{
+      clear: both;
+      width: 200px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    //加载出错后的提示
+    .ant-alert-error{
+      clear: both;
+      width: 350px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    //右侧下拉框样式
+    .ant-select{
+      float: right;
+      margin:0 20px 30px 0;
+      width: 160px !important;
+    }
+    .group-by-day{
+      padding: 0 20px 0 10px;
+      clear: both;
+    }
+    .no-more-data-tip .ant-alert-info{
+      width: 100%;
+      margin: 0 0 70px 0;
+    }
+    //时间线样式
+    ul {
+      margin-left: 7px;
+      li {
+        padding-top: 5px;
+        dl {
+          dt {
+            color: #aaafb3;
+            margin-top: 10px;
+            font-weight: normal;
+          }
+
+          dd {
+            color: #464b4e;
+            white-space: normal;
+          }
+        }
+
+      }
+
+    }
+  }
+}

@@ -1,0 +1,399 @@
+@import "../../../../components/antd-table-pagination/index.scss";
+@import "../../../../public/css/common-variables";
+
+.crm_content{
+  .search-input-select-block{
+    float:left;
+    height:30px;
+    line-height:30px;
+    margin-top:$filter_area_margin_top;
+    margin-left:50px;
+    width:450px;
+    .search-input-container{
+      display:inline-block;
+      max-width:$filter_input_width;
+    }
+    .ant-btn{
+      @include filter_btn;
+    }
+  }
+  .filter-block{
+    .block{
+      display:inline-block;
+      vertical-align:middle;
+    }
+    //缩小浏览器时，操作按钮变图标后的样式设置
+    .handle-btn-mini{
+      float:right;
+      width:40px;
+      height:75px;
+      line-height:75px;
+      text-align:center;
+      color:#4d96d1;
+      cursor:pointer;
+      .iconfont, .anticon-plus{
+        font-size:22px;
+      }
+      .icon-merge-btn{
+        font-size:24px;
+      }
+      .anticon-plus{
+        vertical-align:middle;
+      }
+    }
+  }
+  .filter-block .gray{
+    color:#a9a9a9;
+    cursor:default;
+  }
+  .content-block{
+    margin:80px 50px auto 50px;
+    table{
+      background:#fff;
+    }
+    .ant-alert{
+      position:relative;
+      margin-bottom:0;
+      width:auto;
+      top:0;
+      left:0;
+      text-align:left;
+    }
+    .no-more-data-tip .ant-alert{
+      text-align: center;
+    }
+  }
+  .ant-alert{
+    position:absolute;
+    z-index:100;
+    width:180px;
+    top:20px;
+    left:70%;
+    text-align:center;
+  }
+  .handle-btn-container{
+    div:focus, span:focus{
+      outline:0;
+    }
+  }
+  .order-btn-class{
+    border:0px;
+    width:25px;
+    background-color:transparent;
+    text-align:center;
+    padding:0px;
+    color:#B6C2C9;
+    font-size:16px;
+    border-radius:100px;
+    &:hover{
+      color:#9BA4A8;
+      background-color:transparent;
+    }
+  }
+  .crm-add-form{
+    padding-top:33px;
+    padding-bottom:50px;
+    .check-only-error{
+      margin-top:-$margin-bottom;
+      line-height:20px;
+      margin-bottom:10px;
+      margin-left:100px;
+      color:#f50;
+      width:$edit_input_width;
+    }
+    .tip-customer-exist{
+      margin-top:-$margin-bottom;
+      line-height:20px;
+      margin-bottom:10px;
+      margin-left:100px;
+    }
+    .input-red-border{
+      position:relative;
+      display:inline-block;
+      padding:6px 7px;
+      border:1px solid #f50;
+      line-height:1.5;
+      color:#666;
+      background-color:#fff;
+      background-image:none;
+      box-shadow:0 0 0 2px #ffddcc;
+      cursor:text;
+
+    }
+    .industry-list-loading{
+      line-height:35px;
+      color:#666;
+      padding-left:10px;
+      .anticon-loading{
+        font-size:16px;
+        margin-left:10px;
+      }
+    }
+    .ant-select{
+      width:$edit_input_width;
+    }
+  }
+
+  /********* 表格样式 start *********/
+  .content-block{
+    .clearfix{
+      background-color:#ffffff;
+      border-radius:6px;
+      .ant-pagination-item{
+        background-color:transparent;
+        border-color:transparent;
+      }
+      .ant-pagination-item-active{
+        background-color:transparent;
+        border-color:#4d96d1;
+      }
+      .ant-pagination-item-active a, .ant-pagination-item-active:hover a{
+        color:#666;
+      }
+
+      .ant-table{
+        .ant-table-body{
+          overflow-x:hidden;
+          td.table-data-align-right {
+            text-align: right;
+          }
+        }
+        th{
+          border-bottom:2px solid #edf1f2;
+          border-right:1px solid transparent;
+          background-color:#ffffff;
+          color:#506470;
+
+        }
+
+        tr{
+
+          //选中行的样式
+          &.select-tr{
+            background:#DFEAF3;
+          }
+
+          &:hover{
+            background:transparent;
+          }
+
+          td{
+            border-bottom:1px solid #edf1f2;
+            border-right:1px dotted #edf1f2;
+            color:#81939e;
+
+            &:last-child{
+              border-right:1px dotted transparent;
+            }
+
+            //单行样式
+            &.odd-td{
+              background-color:#f9f9f9;
+            }
+
+            //双行样式
+            &.event-td{
+              background-color:#ffffff;
+            }
+
+            //根据此列排序时背景色
+            &.ant-table-column-sort{
+              //单行样式
+              &.odd-td{
+                background-color:#f1f4f4;
+              }
+
+              //双行样式
+              &.event-td{
+                background-color:#f7fafa;
+              }
+            }
+          }
+
+          .column-contact-way{
+            white-space:pre;
+          }
+        }
+      }
+    }
+
+    .ant-pagination-prev, .ant-pagination-next{
+      border:0px;
+    }
+  }
+
+  /********* 表格样式 end *********/
+
+  .content-block{
+    tbody{
+      cursor:pointer;
+    }
+  }
+  .total{
+    position:absolute;
+    bottom:30px;
+    left:150px;
+    display:none;
+  }
+
+  .content-block .clearfix .ant-table tbody .current-row:hover,
+  .content-block .ant-table tbody .current-row{
+    background:#DFEAF3 !important;
+  }
+
+  .ant-select-selection--multiple{
+    min-height:35px;
+    ul{
+      margin-top:3px;
+      input{
+        margin-top:-10px
+      }
+    ;
+    }
+  }
+
+  .customer-list-tags{
+    margin-top:10px;
+    .ant-tag{
+      border-radius:4px;
+      background:#d1d9db;
+    }
+  }
+
+  .customer_name {
+    overflow: hidden;
+    .focus-customer{
+      float: right;
+    }
+    .iconfont{
+      margin-top: -3px;
+    }
+    .icon-interested{
+      color:#F9B706;
+    }
+  }
+
+  .crm-filter-panel{
+    margin:85px 10px -75px;
+    padding:0 40px;
+    border-bottom:2px dotted #edf1f2;
+    dt{
+      display:table-cell;
+      width:90px;
+      vertical-align:top;
+      font-size:13px;
+      padding-top:3px;
+    }
+    dd{
+      display:table-cell;
+      li{
+        float:left;
+        margin-right:20px;
+        margin-bottom:10px;
+        cursor:pointer;
+        padding:3px 10px;
+      }
+      li.selected{
+        background:#4d96d1;
+        color:#fff;
+        border-radius:4px;
+      }
+    }
+  }
+  .table-loading-wrap{
+    position:fixed;
+    top:90px;
+    right:0;
+    bottom:90px;
+    left:0;
+    z-index:9;
+    .loader8{
+      position:absolute;
+      top:0;
+      right:0;
+      left:0;
+      bottom:0;
+    }
+  }
+  .call-out {
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .ant-pagination{
+    float: right;
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+  }
+  .ant-pagination-jump-next + li{
+    display: none;
+  }
+}
+
+// 导入客户下载模板文件
+.import-crm-template-panel .right-pannel-default{
+  width:420px;
+  transform:translateX(100%);
+  -webkit-transform:translateX(100%);
+  font-size:14px;
+  .import-tips{
+    margin-top:60px;
+    margin-left:20px;
+    a{
+      text-decoration:none;
+    }
+    p{
+      padding-bottom:20px;
+    }
+  }
+  .import-file{
+    float:right;
+    margin-right:20px;
+    .ant-btn{
+      margin-bottom:3px;
+    }
+    .import-crm, .ant-btn .ant-btn-ghost{
+      border:1px solid #4d96d1;
+      border-radius:5px;
+      padding:4px 11px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .import-crm{
+      margin-right:12px;
+      color:#fff;
+      background-color:#4d96d1;
+      border-color:#4d96d1;
+    }
+  }
+}
+
+.customer-import-modal.ant-modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .column-contact-way {
+        white-space: pre;
+    }
+
+    .customer-repeat {
+        color: red;
+    }
+
+    .import-warning {
+        float: left;
+        line-height: 28px;
+        color: red;
+    }
+}
+
+.customer-import-modal.ant-modal-footer {
+    .import-warning {
+        float: left;
+        margin-left: 5px;
+        line-height: 28px;
+        color: red;
+        font-size: 14px;
+    }
+}
+

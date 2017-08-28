@@ -1,0 +1,71 @@
+@import '../../../../components/antd-table-pagination/index.scss';
+@import '../../../../public/css/common-variables';
+.online-user-list-wrap {
+    table {
+        table-layout: fixed;
+    }
+    .current_row {
+        background:#DFEAF3 !important;
+    }
+    .ant-table-row {
+        cursor:pointer;
+    }
+    .list-content {
+        margin: 100px 50px auto;
+
+        .summary-info {
+          margin-top: -40px;
+          margin-left: 8px;
+        }
+    }
+    .search-input-select-block {
+        float: right;
+        height: $input_height;
+        margin-top: $filter_area_margin_top;
+        margin-right: 50px;
+        .search-input-container {
+            display: inline-block;
+            vertical-align: top;
+            width:$edit_input_width;
+            margin-left: $filter_btn_internal;
+        }
+        .search-select {
+            display: inline-block;
+            .ant-select {
+                margin-left: $filter_btn_internal;
+                vertical-align: middle;
+                .ant-select-selection--single {
+                    height: $input_height;
+                }
+            }
+        }
+        .refresh-button{
+            margin-left: 15px;
+            border-radius: 3px;
+            height: 30px;
+        }
+    }
+    .loader8 {
+        z-index:1;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+
+    .kick-btn-class {
+        border: 0;
+        width: 25px;
+        height: 30px;
+        background-color: transparent;
+        text-align: center;
+        padding: 0;
+        color: #B6C2C9;
+        font-size: 22px;
+        &:hover {
+            color: #2db7f5;
+            background-color: transparent;
+        }
+    }
+}

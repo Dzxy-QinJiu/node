@@ -1,0 +1,41 @@
+.app-property-setting {
+  padding-top:20px;
+  .antd-vertical-tabs-vertical .antd-vertical-tabs-tab .antd-vertical-tabs-tab-inner {
+    padding:8px 0;
+    .app_name_tooltip {
+      text-align: left;
+      margin-right:20px;
+      max-width:130px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .app-property-content {
+    .gm-scrollbar.-horizontal .thumb {
+      height: auto;
+    }
+  }
+
+  .app-property-other-property {
+    margin-top:10px;
+  }
+  .app-property-container-content {
+    transition:opacity 0.1s ease;
+    opacity:1;
+  }
+  
+  .change-current-app-loading {
+    opacity:0.2;
+  }
+}
+//单个应用的编辑状态，不展示左侧的应用列表
+.single-app-edit {
+  .antd-vertical-tabs-tabs-bar {
+    display:none;
+  }
+  .antd-vertical-tabs-vertical.antd-vertical-tabs-left .antd-vertical-tabs-content {
+    padding-left:0;
+  }
+}

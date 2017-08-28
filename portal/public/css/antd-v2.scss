@@ -1,0 +1,20 @@
+#app {
+    .ant-form-item-label label {
+      color: #666;
+    }
+    .ant-form-item-label label:after {
+      margin: 0;
+    }
+    .right-pannel-default .ant-form-item-label label {
+      padding-right: 20px;
+      font-weight: normal;
+      padding-top: 8px;
+      font-size: $form_font_size;
+      line-height: $form_font_size;
+      padding-bottom: 9px;
+    }
+    .right-pannel-default .ant-tabs-tab-inner {
+        padding: 11px 4px;
+    }
+}
+

@@ -1,0 +1,15 @@
+.team-tree {
+    .tree-title {
+        padding: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        .breadcrumb-item {
+            cursor: pointer;
+        }
+    }
+    .ant-tree {
+        margin-left: 5px;
+    }
+    .member-tree {
+        margin-left: -15px;
+    }
+}

@@ -1,0 +1,45 @@
+.operation-steps-footer {
+  position:absolute;
+  bottom:0;
+  left:21px;
+  right:19px;
+  z-index:1;
+  height:54px;
+  border-top:1px solid #d7dce0;
+  padding:13px 0 0 0;
+  .btns {
+    float:right;
+    margin-top:-1px;
+    .ant-btn {
+      margin-top:0;
+      min-width:60px;
+      transition-property: border,background,color;
+    }
+    .form-cancel-btn{
+      margin-right: 8px;
+    }
+    .form-submit-btn{
+      margin-right:0;
+    }
+  }
+  .anticon-loading,.alert-timer {
+    position:absolute;
+    margin:auto;
+    top:0;
+    right:0;
+    left:0;
+    bottom:0;
+  }
+  .anticon-loading {
+    font-size: 18px;
+    transform: translateY(13px);
+  }
+  .alert-timer {
+    width:150px;
+    height:34px;
+    transform: translateY(-3px);
+  }
+  .ant-alert {
+    margin-bottom:0;
+  }
+}

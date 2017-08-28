@@ -1,0 +1,53 @@
+/**
+ * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by zhangshujuan on 2017/5/11.
+ */
+var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
+var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restApis = {
+    //获取客户跟踪记录
+    getCustomerTraceList: "/rest/customer/v2/customer/query/trace",
+    // 添加客户跟踪记录
+    addCustomerTraceList: "/rest/customer/v2/customer/trace",
+    // 更新客户跟踪记录
+    updateCustomerTraceList: "/rest/customer/v2/customer/trace",
+};
+exports.restUrls = restApis;
+// 获取客户跟踪记录列表
+exports.getCustomerTraceList = function (req, res, obj) {
+    var data = req.body;
+    var id = '';
+    if (obj && obj.id) {
+        id = "?id=" + obj.id;
+    }
+    return restUtil.authRest.post(
+        {
+            url: restApis.getCustomerTraceList + id,
+            req: req,
+            res: res
+        },
+        data);
+};
+// 添加客户跟踪记录
+exports.addCustomerTraceList = function (req, res, obj) {
+    var data = req.body;
+    return restUtil.authRest.post(
+        {
+            url: restApis.addCustomerTraceList,
+            req: req,
+            res: res
+        },
+        data);
+};
+//更新客户跟踪记录
+exports.updateCustomerTraceList = function (req, res, obj) {
+    var data = req.body;
+    return restUtil.authRest.put(
+        {
+            url: restApis.updateCustomerTraceList,
+            req: req,
+            res: res
+        },
+        data);
+};

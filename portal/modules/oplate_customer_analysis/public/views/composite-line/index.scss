@@ -1,0 +1,129 @@
+.oplate_customer_analysis {
+  .analysis_composite_line_chart {
+    .chart,.loadwrap {
+      position:relative;
+    }
+    .nodata {
+      position:absolute;
+      width:100px;
+      height:30px;
+      margin:auto;
+      font-size:16px;
+      top:0;
+      bottom:0;
+      right:0;
+      left:0;
+      transform:translateX(44px);
+    }
+    .load8 {
+      transform:scale(0.5,0.5);
+      position:absolute;
+      margin:auto;
+      top:0;
+      bottom:0;
+      right:0;
+      left:0;
+    }
+    .legend {
+      position:absolute;
+      top:0;
+      right:15px;
+      bottom:0;
+      width:88px;
+      overflow:hidden;
+      text-align:center;
+      padding-top:6px;
+      .anticon {
+        color:#cfcfcf;
+        display: block;
+        cursor: pointer;
+        padding:5px 0 0 0;
+        customer-select: none;
+      }
+      ul {
+        margin-left:0;
+        text-align:left;
+        height:196px;
+        overflow:hidden;
+      }
+      li {
+        height:22px;
+        cursor:pointer;
+        padding-left:0;
+        padding-right:0;
+        margin-bottom:7px;
+        border:1px solid rgba(0,0,0,0);
+        em,span {
+          display:inline-block;
+          vertical-align:middle;
+          font-weight:normal;
+          font-style: normal;
+        }
+        em {
+          width:9px;
+          height:9px;
+          overflow:hidden;
+          border-radius:50%;
+          margin:0 6px 0 4px;
+          vertical-align:-2px;
+        }
+        span {
+          font-size:12px;
+          line-height:14px;
+          color:#939393;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          overflow:hidden;
+          width:66px;
+        }
+        &:hover {
+           border-color:#76a7d0;
+        }
+      }
+    }
+    .echarts-tooltip {
+      padding:0 !important;
+      transition: none !important;
+      max-height:214px;
+      min-width:220px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      color:#fff !important;
+      .title {
+        font-size:12px;
+        padding:0px 0 6px 14px ;
+        line-height:16px;
+        span {
+          margin-left:10px;
+        }
+        color:#dedede;
+      }
+      .col-xs-6 {
+        margin-bottom:6px;
+        padding:0;
+      }
+      .content {
+        padding-bottom:2px;
+        em {
+          display:inline-block;
+          vertical-align:middle;
+          width:12px;
+          height:12px;
+          border-radius:50%;
+          background:#4d96d1;
+          margin:0 6px 0 14px;
+        }
+        span {
+          display:inline-block;
+          vertical-align:middle;
+          text-overflow: ellipsis;
+          max-width: 76%;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+
+    }
+
+  }
+}

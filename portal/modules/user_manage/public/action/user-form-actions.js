@@ -1,0 +1,161 @@
+/**
+ * Created by wangliping on 2016/4/18.
+ */
+var userData = require("../../../../public/sources/user-data");
+var userAjax = require("../ajax/user-ajax");
+var UserActions = require("./user-actions");
+var cardEmitter = require("../../../../public/sources/utils/emitters").cardEmitter;
+
+function UserFormActions() {
+    this.generateActions(
+        //设置是否正在保存
+        'setSaveFlag',
+        //保存成员
+        'addUser',
+        //编辑成员
+        'editUser',
+        //清空保存后的提示信息
+        'resetSaveResult',
+        //用户名唯一性的验证
+        'checkOnlyUserName',
+        //邮箱唯一性的验证
+        'checkOnlyEmail',
+        //电话唯一性的验证
+        'checkOnlyPhone',
+        //坐席号唯一性的验证
+        'checkOnlyPhoneOrder',
+        //重置用户验证的标志
+        'resetUserNameFlags',
+        //重置电话验证的标志
+        'resetPhoneFlags',
+        //重置邮箱验证的标志
+        'resetEmailFlags',
+        //重置坐席号验证的标志
+        'resetPhoneOrderFlags',
+        //正在获取角色列表
+        'setRoleListLoading',
+        //是否正在获取销售团队列表的标志
+        'setTeamListLoading'
+    );
+
+    //获取团队列表
+    this.getUserTeamList = function () {
+        var _this = this;
+        var clientId = userData.getUserData().auth.client_id;
+        userAjax.getUserTeamList(clientId).then(function (salesTeamList) {
+            _this.dispatch(salesTeamList);
+        }, function (errorMsg) {
+            _this.dispatch(errorMsg || Intl.get("common.get.team.list.failed", "获取团队列表失败"));
+        });
+    };
+
+    //获取角色列表
+    this.getRoleList = function () {
+        var _this = this;
+        var clientId = userData.getUserData().auth.client_id;
+        userAjax.getRoleList(clientId).then(function (roleList) {
+            _this.dispatch(roleList);
+        });
+    };
+
+    //保存成员
+    this.addUser = function (user) {
+        var _this = this;
+        userAjax.addUser(user).then(function (savedUser) {
+            //保存成功后的处理
+            let email = Intl.get("member.add.member.email", "新增成员的邮箱") ;
+            if (savedUser && savedUser.email) {
+                email = savedUser.email;
+            }
+            if (user.phoneOrder && !savedUser.phoneOrder) {
+                _this.dispatch({saveResult: "warn", saveMsg: Intl.get("member.get.add.phone.order.failed","添加成员成功，添加坐席号失败！"), savedUser: savedUser});
+            } else {
+                _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email,email}), savedUser: savedUser});
+            }
+
+        }, function (errorMsg) {
+            //保存失败后的处理
+            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("member.add.failed", "添加失败！") });
+        });
+    };
+    //编辑成员
+    this.editUser = function (user) {
+        var _this = this;
+        userAjax.editUser(user).then(function (data) {
+            //修改成功data=true，false:修改失败
+            if (data) {
+                //保存成功后的处理
+                _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
+                //修改成功后刷新左侧列表对应成员卡片及其详情的数据
+                UserActions.afterEditUser(user);
+            } else {
+                _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed", '保存失败!')});
+            }
+        }, function (errorMsg) {
+            //保存失败后的处理
+            _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", '保存失败!')});
+        });
+    };
+
+    //清空提示
+    this.resetSaveResult = function (formType, saveResult) {
+        if (saveResult == "success") {
+            if (formType == "add") {
+                cardEmitter.emit(cardEmitter.ADD_CARD);
+                //清空搜索内容
+                UserActions.updateSearchContent("");
+            } else if (formType == "edit") {
+                //修改成功后返回详情
+                UserActions.returnInfoPanel();
+            }
+        }
+        this.dispatch();
+    };
+
+    //用户名唯一性的验证
+    this.checkOnlyUserName = function (userName) {
+        var _this = this;
+        userAjax.checkOnlyUserName(userName).then(function (result) {
+            _this.dispatch(result);
+        }, function (errorMsg) {
+            _this.dispatch(errorMsg);
+        });
+    };
+
+    //电话唯一性的验证
+    this.checkOnlyPhone = function (phone) {
+        var _this = this;
+        userAjax.checkOnlyPhone(phone).then(function (result) {
+            _this.dispatch(result);
+        }, function (errorMsg) {
+            _this.dispatch(errorMsg);
+        });
+    };
+
+    //邮箱唯一性的验证
+    this.checkOnlyEmail = function (email) {
+        var _this = this;
+        userAjax.checkOnlyEmail(email).then(function (result) {
+            _this.dispatch(result);
+            if (!result) {
+                //不存在邮箱为email的用户时，验证是否存在用户名为该邮箱的用户
+                _this.actions.checkOnlyUserName(email);
+            }
+        }, function (errorMsg) {
+            _this.dispatch(errorMsg);
+        });
+    };
+
+    //坐席号唯一性的校验
+    this.checkOnlyPhoneOrder = function (phoneOrder) {
+        var _this = this;
+        userAjax.checkOnlyPhoneOrder(phoneOrder).then(function (result) {
+            _this.dispatch({error:false, data: result});
+        },function (errorMsg) {
+            _this.dispatch({error:true, errMsg:errorMsg});
+        });
+    };
+
+}
+
+module.exports = alt.createActions(UserFormActions);

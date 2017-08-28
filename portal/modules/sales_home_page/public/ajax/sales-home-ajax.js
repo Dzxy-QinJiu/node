@@ -1,0 +1,201 @@
+let teamAjax = require("../../../common/public/ajax/team");
+/**
+ * 获取销售是什么角色
+ * 普通销售：sales
+ * 基层领导：salesleader
+ * 高层领导：salesseniorleader
+ * 舆情秘书：salesmanager
+ * @param callback
+ */
+exports.getSalesType = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/group_position',
+        dataType: 'json',
+        type: 'get',
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取客户统计总数
+var salesTeamListAjax;
+exports.getSalesTeamList = function (type) {
+    salesTeamListAjax && salesTeamListAjax.abort();
+    var Deferred = $.Deferred();
+    salesTeamListAjax = $.ajax({
+        url: '/rest/crm/sales_team_tree',
+        dataType: 'json',
+        type: 'get',
+        data: {type: type},
+        success: function (resData) {
+            Deferred.resolve(resData);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取某销售团队成员列表
+var salesTeamMembersAjax;
+exports.getSalesTeamMembers = function (teamId) {
+    salesTeamMembersAjax && salesTeamMembersAjax.abort();
+    var Deferred = $.Deferred();
+    salesTeamMembersAjax = teamAjax.getMemberListByTeamIdAjax().resolvePath({
+        group_id: teamId
+    }).sendRequest({
+        filter_manager: true//过滤掉舆情秘书
+    }).success(function (list) {
+        Deferred.resolve(list);
+    }).error(function (xhr, statusText) {
+        if (statusText !== 'abort') {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取客户统计总数
+var customerTotalAjax;
+exports.getCustomerTotal = function (reqData) {
+    customerTotalAjax && customerTotalAjax.abort();
+    reqData = reqData || {};
+    var Deferred = $.Deferred();
+    customerTotalAjax = $.ajax({
+        url: '/rest/analysis/customer/summary',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (resData) {
+            Deferred.resolve(resData);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取用户统计总数
+var userTotalAjax;
+exports.getUserTotal = function (reqData) {
+    userTotalAjax && userTotalAjax.abort();
+    reqData = reqData || {};
+    var Deferred = $.Deferred();
+    userTotalAjax = $.ajax({
+        url: '/rest/analysis/user/summary',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (resData) {
+            Deferred.resolve(resData);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取销售-客户列表
+exports.getSalesCustomerList = function (timeRange) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/customer',
+        dataType: 'json',
+        type: 'get',
+        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取销售-电话列表
+exports.getSalesPhoneList = function (reqData, type) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/phone/' + type,
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取销售-用户列表
+exports.getSalesUserList = function (timeRange) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/user',
+        dataType: 'json',
+        type: 'get',
+        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取销售-合同列表
+exports.getSalesContractList = function (timeRange) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/contract',
+        dataType: 'json',
+        type: 'get',
+        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+/**
+ * 过期用户列表
+ */
+exports.getExpireUser = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/expireuser',
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("sales.home.get.expired.list.failed", "获取过期用户列表失败!"));
+            }
+        }
+    });
+    return Deferred.promise();
+};

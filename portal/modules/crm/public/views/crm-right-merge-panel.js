@@ -1,0 +1,520 @@
+require('../scss/crm-right-panel.scss');
+import {Tabs,Select,Button,Icon} from "antd";
+var TabPane = Tabs.TabPane;
+var Option = Select.Option;
+var AlertTimer = require("../../../../components/alert-timer");
+var rightPanelUtil = require("../../../../components/rightPanel/index");
+var RightPanel = rightPanelUtil.RightPanel;
+var RightPanelClose = rightPanelUtil.RightPanelClose;
+
+var BasicData = require("./basic_data");
+var Contacts = require("./contacts");
+var Dynamic = require("./dynamic");
+var CrmAlert = require("./alert");
+var Order = require("./order");
+import CallRecord from "./call_record";
+var CustomerRepeatAction = require("../action/customer-repeat-action");
+import Trace from "LIB_DIR/trace";
+
+var CrmRightMergePanel = React.createClass({
+    getInitialState: function () {
+        return {
+            activeKey: "1",//tab激活页的key
+            apps: [],
+            curOrder: {},
+            isMergingCustomer: false,//正在合并客户
+            mergeErrorMsg: "",//合并失败的提示信息
+            originCustomerList: this.props.originCustomerList,//后端返回的重复列表的数据
+            mergeCustomerList: this.props.mergeCustomerList,//选中的要合并的客户
+            selectedCustomer: this.getMergedCustomer(this.props.mergeCustomerList, this.props.originCustomerList)//合并后保存的客户（默认第一个）
+        };
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        this.setState({
+            originCustomerList: nextProps.originCustomerList,//后端返回的重复列表的数据
+            mergeCustomerList: nextProps.mergeCustomerList,//选中的要合并的客户
+            selectedCustomer: this.getMergedCustomer(nextProps.mergeCustomerList, nextProps.originCustomerList)
+        });
+    },
+
+    /**
+     * 合并联系方式
+     * @param contact 要合并的联系人
+     * @param mergedContact 合并后的联系人
+     * @param key 联系方式（电话/qq/微信/邮箱）
+     */
+    mergeContactWay: function (contact, mergedContact, key) {
+        if (_.isArray(contact[key]) && contact[key].length > 0) {
+            if (_.isArray(mergedContact[key]) && mergedContact[key].length > 0) {
+                //过滤掉相同的联系方式
+                contact[key] = _.filter(contact[key], contactKey=>mergedContact[key].indexOf(contactKey) == -1);
+                mergedContact[key] = mergedContact[key].concat(contact[key])
+            } else {
+                mergedContact[key] = contact[key];
+            }
+        }
+        return mergedContact[key];
+    },
+
+    /**
+     * 合并客户
+     * @param mergedCustomer 合并后要保存的客户
+     * @param mergeCustomerList 需要合并的客户列表
+     * @param originCustomerList 所有展示的重复客户列表数据（完整）
+     */
+    mergeCustomer: function (mergedCustomer, mergeCustomerList, originCustomerList) {
+        //将其他重复的客户合并到要保存的客户上来
+        if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
+            let mergedRemarks = [];//所有需合并客户的备注组成的数组
+            if (mergedCustomer.remarks) {
+                mergedRemarks.push(mergedCustomer.remarks);
+            }
+            mergeCustomerList.forEach((curCustomer)=> {
+                if (curCustomer.id != mergedCustomer.id) {
+                    let customer = _.find(originCustomerList, (customer)=>customer.id == curCustomer.id);
+                    customer = $.extend(true, {}, customer);
+                    //合并客户下关联的应用
+                    if (_.isArray(customer.app_ids) && customer.app_ids.length > 0) {
+                        if (_.isArray(mergedCustomer.app_ids) && mergedCustomer.app_ids.length > 0) {
+                            mergedCustomer.app_ids = mergedCustomer.app_ids.concat(customer.app_ids);
+                            //去重
+                            mergedCustomer.app_ids = _.uniq(mergedCustomer.app_ids);
+                        } else {
+                            mergedCustomer.app_ids = customer.app_ids;
+                        }
+                    }
+                    //合并客户下关联的用户
+                    if (_.isArray(customer.app_user_ids) && customer.app_user_ids.length > 0) {
+                        if (_.isArray(mergedCustomer.app_user_ids) && mergedCustomer.app_user_ids.length > 0) {
+                            mergedCustomer.app_user_ids = mergedCustomer.app_user_ids.concat(customer.app_user_ids);
+                            //去重
+                            mergedCustomer.app_user_ids = _.uniq(mergedCustomer.app_user_ids);
+                        } else {
+                            mergedCustomer.app_user_ids = customer.app_user_ids;
+                        }
+                    }
+                    // 合并标签的处理
+                    if (_.isArray(customer.labels) && customer.labels.length > 0) {
+                        if (_.isArray(mergedCustomer.labels) && mergedCustomer.labels.length > 0) {
+                            //合并标签
+                            mergedCustomer.labels = mergedCustomer.labels.concat(customer.labels);
+                            //去重
+                            mergedCustomer.labels = _.uniq(mergedCustomer.labels);
+                        } else {
+                            mergedCustomer.labels = customer.labels;
+                        }
+                    }
+                    //合并备注
+                    if (customer.remarks) {
+                        mergedRemarks.push(customer.remarks);
+                    }
+                    //合并联系人
+                    if (_.isArray(customer.contacts) && customer.contacts.length > 0) {
+                        customer.contacts.forEach((contact)=> {
+                            //去掉默认联系方式
+                            contact.def_contancts = "false";
+                        });
+                        if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length > 0) {
+                            mergedCustomer.contacts = mergedCustomer.contacts.concat(customer.contacts);
+                        } else {
+                            mergedCustomer.contacts = customer.contacts;
+                        }
+                    }
+                    //合并订单
+                    if (_.isArray(customer.sales_opportunities) && customer.sales_opportunities.length > 0) {
+                        if (_.isArray(mergedCustomer.sales_opportunities) && mergedCustomer.sales_opportunities.length > 0) {
+                            mergedCustomer.sales_opportunities = mergedCustomer.sales_opportunities.concat(customer.sales_opportunities);
+                        } else {
+                            mergedCustomer.sales_opportunities = customer.sales_opportunities;
+                        }
+                        //TODO 过滤掉’信息阶段’的订单
+                        //mergedCustomer.sales_opportunities = _.filter(mergedCustomer.sales_opportunities, oppor=>oppor.sale_stages != "信息阶段");
+                    }
+                }
+            });
+            //所有备注的去重
+            mergedRemarks = _.uniq(mergedRemarks);
+            if (_.isArray(mergedRemarks) && mergedRemarks.length > 0) {
+                //将去重后的备注连起来赋值给合并后的客户
+                mergedCustomer.remarks = mergedRemarks.join(" ; ");
+            }
+
+            //联系人去重
+            let mergedContacts = [];//合并后的联系人
+            mergedCustomer.contacts.forEach(contact=> {
+                if (mergedContacts.length > 0) {
+                    //查找相同名称的联系人
+                    let existContact = _.find(mergedContacts, mergedContact=>mergedContact.name == contact.name);
+                    if (existContact) {
+                        //已存在该名称的联系人，合并联系方式
+                        //电话的合并
+                        existContact.phone = this.mergeContactWay(contact, existContact, "phone");
+                        //QQ的合并
+                        existContact.qq = this.mergeContactWay(contact, existContact, "qq");
+                        //微信的合并
+                        existContact.webChat = this.mergeContactWay(contact, existContact, "weChat");
+                        //邮箱的合并
+                        existContact.email = this.mergeContactWay(contact, existContact, "email");
+                    } else {
+                        //不存在该名称的联系人，直接加入
+                        mergedContacts.push(contact);
+                    }
+                } else {
+                    mergedContacts = [contact];
+                }
+            });
+            mergedCustomer.contacts = mergedContacts;
+            //默认联系方式的设置
+            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length > 0) {
+                let hasDefault = _.some(mergedCustomer.contacts, (contact)=> contact.def_contancts == "true");
+                if (!hasDefault) {
+                    mergedCustomer.contacts[0].def_contancts = "true";
+                }
+            }
+        }
+        return mergedCustomer;
+    },
+    /**
+     * 合并后保存的客户（默认第一个）
+     * @param mergeCustomerList 选中的需要合并的重复客户列表
+     * @param originCustomerList 所有展示的重复客户列表数据（完整）
+     * @param customerId 合并后要保存的客户id
+     */
+    getMergedCustomer: function (mergeCustomerList, originCustomerList, customerId) {
+        let mergedCustomer = {};
+        if (customerId) {
+            mergedCustomer = _.find(originCustomerList, (customer)=>customer.id == customerId);
+        } else if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
+            mergedCustomer = _.find(originCustomerList, (customer)=>customer.id == mergeCustomerList[0].id);
+        }
+        mergedCustomer = $.extend({}, true, mergedCustomer);
+        //将其他重复的客户合并到要保存的客户上来
+        mergedCustomer = this.mergeCustomer(mergedCustomer, mergeCustomerList, originCustomerList);
+        return mergedCustomer;
+    },
+
+    hideRightPanel: function (e) {
+        Trace.traceEvent(e,"关闭合并客户面板");
+        this.props.hideMergePanel();
+        this.setState({
+            activeKey: "1"
+        });
+    },
+    //切换tab时的处理
+    changeActiveKey: function (key) {
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"),"点击第" + key + "个tab页");
+        this.setState({
+            activeKey: key
+        });
+    },
+    //选择合并后要保存的客户
+    handleChange: function (customerId) {
+        Trace.traceEvent($(this.getDOMNode()).find(".merge-customer-select"),"切换合并后要保存的客户名称");
+        let mergedCustomer = this.getMergedCustomer(this.state.mergeCustomerList, this.state.originCustomerList, customerId);
+        this.setState({selectedCustomer: mergedCustomer});
+    },
+    //合并客户
+    mergeRepeatCustomer: function () {
+        let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList, selectedCustomer = this.state.selectedCustomer;
+        //获取合并后要删除的重复客户id
+        if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
+            mergeCustomerList.forEach((customer)=> {
+                if (customer.id != selectedCustomer.id) {
+                    deleteIds.push(customer.id);
+                }
+            });
+        }
+        //联系人的处理
+        if (_.isArray(selectedCustomer.contacts) && selectedCustomer.contacts.length) {
+            selectedCustomer.contacts.forEach(contact=> {
+                if (contact.customer_id != selectedCustomer.id) {
+                    //将联系方式对应的客户id改为要保存客户的id
+                    contact.customer_id = selectedCustomer.id;
+                }
+            });
+        }
+        //订单的处理
+        if (_.isArray(selectedCustomer.sales_opportunities) && selectedCustomer.sales_opportunities.length > 0) {
+            selectedCustomer.sales_opportunities.forEach((sales_oppor)=> {
+                if (sales_oppor.customer_id != selectedCustomer.id) {
+                    //将订单对应的客户id改为要保存客户的id
+                    sales_oppor.customer_id = selectedCustomer.id;
+                }
+            });
+        }
+        this.setState({isMergingCustomer: true});
+        let mergeObj = {
+            customer: selectedCustomer,
+            delete_ids: deleteIds
+        };
+        CustomerRepeatAction.mergeRepeatCustomer(mergeObj, resultObj=> {
+            if (resultObj.error) {
+                //合并失败的处理
+                this.setState({mergeErrorMsg: resultObj.errorMsg, isMergingCustomer: false});
+            } else {
+                //合并成功的处理
+                this.setState({mergeErrorMsg: "", isMergingCustomer: false});
+                //关闭合并面板
+                CustomerRepeatAction.setMergePanelShow(false);
+                if (this.props.afterMergeCustomer) {
+                    //客户列表界面，合并客户后的处理
+                    this.props.afterMergeCustomer(mergeObj);
+                } else {
+                    //重复客户列表，合并重复客户后的处理
+                    CustomerRepeatAction.afterMergeRepeatCustomer(mergeObj);
+                }
+            }
+        });
+    },
+    renderSelectOptions: function () {
+        let selectOptions = [], mergeCustomerList = this.props.mergeCustomerList;
+        if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
+            selectOptions = this.props.mergeCustomerList.map((customer, index)=>(
+                <Option key={index} value={customer.id}>{customer.name}</Option>));
+        }
+        return selectOptions;
+    },
+    hideSaveTooltip: function () {
+        CustomerRepeatAction.clearMergeFlags();
+    },
+    //修改要合并的客户
+    updateMergeCustomer: function (newBasic) {
+        let updateCustomer = this.state.selectedCustomer;
+        //客户名的修改
+        if (newBasic.name) {
+            updateCustomer.name = newBasic.name;
+        }
+        //客户标签的修改
+        if (newBasic.labels) {
+            updateCustomer.labels = newBasic.labels;
+        }
+        //客户行业的修改
+        if (newBasic.industry) {
+            updateCustomer.industry = newBasic.industry;
+        }
+        //客户地域的修改
+        if (newBasic.province) {
+            updateCustomer.province = newBasic.province;
+        }
+        if (newBasic.city) {
+            updateCustomer.city = newBasic.city;
+        }
+        if (newBasic.county) {
+            updateCustomer.county = newBasic.county;
+        }
+        //客户备注的修改
+        if (newBasic.remarks || newBasic.remarks == "") {
+            updateCustomer.remarks = newBasic.remarks;
+        }
+        //客户所属销售的修改
+        if (newBasic.user_id) {
+            updateCustomer.user_id = newBasic.user_id;
+        }
+        if (newBasic.user_name) {
+            updateCustomer.user_name = newBasic.user_name;
+        }
+        if (newBasic.sales_team_id) {
+            updateCustomer.sales_team_id = newBasic.sales_team_id;
+        }
+        if (newBasic.sales_team) {
+            updateCustomer.sales_team = newBasic.sales_team;
+        }
+        this.setState({selectedCustomer: updateCustomer});
+    },
+    //修改要合并客户的联系方式
+    updateMergeCustomerContact: function (newContact) {
+        if (newContact.id) {
+            let mergedCustomer = this.state.selectedCustomer;
+            //修改联系方式
+            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+                //找到修改的联系方式并更新
+                _.some(mergedCustomer.contacts, (contact, index)=> {
+                    if (contact.id == newContact.id) {
+                        mergedCustomer.contacts[index] = newContact;
+                        return true;
+                    }
+                });
+            }
+            this.setState({selectedCustomer: mergedCustomer});
+        }
+    },
+    //删除合并客户的联系方式
+    delMergeCustomerContact: function (delContactId) {
+        if (delContactId) {
+            let mergedCustomer = this.state.selectedCustomer;
+            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+                mergedCustomer.contacts = _.filter(mergedCustomer.contacts, contact=>contact.id != delContactId);
+            }
+            this.setState({selectedCustomer: mergedCustomer});
+        }
+    },
+    //设置合并客户的默认联系方式
+    setMergeCustomerDefaultContact: function (defaultContactId) {
+        if (defaultContactId) {
+            let mergedCustomer = this.state.selectedCustomer;
+            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+                mergedCustomer.contacts.forEach(contact=> {
+                    if (contact.id == defaultContactId) {
+                        contact.def_contancts = "true";
+                    } else {
+                        contact.def_contancts = "false";
+                    }
+                });
+            }
+            this.setState({selectedCustomer: mergedCustomer});
+        }
+    },
+    //修改合并客户的订单
+    updateMergeCustomerOrder: function (newOrder) {
+        let mergedCustomer = this.state.selectedCustomer;
+        if (newOrder.id) {
+            if (_.isArray(mergedCustomer.sales_opportunities) && mergedCustomer.sales_opportunities.length) {
+                //找到要修改的订单并更新
+                _.some(mergedCustomer.sales_opportunities, (order, index)=> {
+                    if (order.id == newOrder.id) {
+                        mergedCustomer.sales_opportunities[index] = newOrder;
+                        return true;
+                    }
+                });
+            }
+            this.setState({selectedCustomer: mergedCustomer});
+        }
+    },
+    //删除合并客户的订单
+    delMergeCustomerOrder: function (delOrderId) {
+        if (delOrderId) {
+            let mergedCustomer = this.state.selectedCustomer;
+            if (_.isArray(mergedCustomer.sales_opportunities)) {
+                //过滤掉要删除的订单
+                mergedCustomer.sales_opportunities = _.filter(mergedCustomer.sales_opportunities, order=>order.id != delOrderId);
+            }
+            this.setState({selectedCustomer: mergedCustomer});
+        }
+    },
+    render: function () {
+        var className = "right-panel-content";
+        if (this.state.applyUserShowFlag) {
+            //展示form面板时，整体左移
+            className += " crm-right-panel-content-slide";
+        }
+        return (
+            <RightPanel showFlag={this.props.showFlag}
+                        className="crm-right-panel white-space-nowrap crm-right-merge-panel" data-tracename="合并客户面板">
+                <div className={className}>
+                    <div className="select-customer-container">
+                        <span className="select-customer-label"><ReactIntl.FormattedMessage id="crm.63" defaultMessage="合并后保存的客户" />：</span>
+                        <Select prefixCls="merge-customer-select ant-select" value={this.state.selectedCustomer.id}
+                                style={{width:200}}
+                                onChange={this.handleChange}>
+                            {this.renderSelectOptions()}
+                        </Select>
+                        <Button type="primary" className="btn-primary-merge"
+                                onClick={this.mergeRepeatCustomer}
+                                data-tracename="点击合并按钮"
+                        ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并" /></Button>
+                    </div>
+                    {this.state.isMergingCustomer ?
+                        <Icon className="merge-customer-loading" type="loading"/> : null}
+                    { this.state.mergeErrorMsg ? (
+                        <div className="merge-customer-tooltip">
+                            <AlertTimer time={3000}
+                                        message={this.state.mergeErrorMsg}
+                                        type="error" showIcon
+                                        onHide={this.hideSaveTooltip}/></div>) : null}
+                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e)}}/>
+                    <div className="crm-right-panel-content">
+                        {this.state.selectedCustomer ? (
+                            <Tabs
+                                defaultActiveKey="1"
+                                activeKey={this.state.activeKey}
+                                onChange={this.changeActiveKey}
+                            >
+                                <TabPane
+                                    tab={Intl.get("user.basic.info", "基本资料")}
+                                    key="1"
+                                >
+                                    {this.state.activeKey == "1" ? (
+                                        <BasicData
+                                            isMerge={true}
+                                            curCustomer={this.state.selectedCustomer}
+                                            updateMergeCustomer={this.updateMergeCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("call.record.contacts", "联系人")}
+                                    key="2"
+                                >
+                                    {this.state.activeKey == "2" ? (
+                                        <Contacts
+                                            isMerge={true}
+                                            setMergeCustomerDefaultContact={this.setMergeCustomerDefaultContact}
+                                            delMergeCustomerContact={this.delMergeCustomerContact}
+                                            updateMergeCustomerContact={this.updateMergeCustomerContact}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                            curCustomer={this.state.selectedCustomer}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    key="3"
+                                >
+                                    {this.state.activeKey == "3" ? (
+                                        <Order
+                                            isMerge={true}
+                                            updateMergeCustomerOrder={this.updateMergeCustomerOrder}
+                                            delMergeCustomerOrder={this.delMergeCustomerOrder}
+                                            closeRightPanel={this.props.hideRightPanel}
+                                            curCustomer={this.state.selectedCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.39", "动态")}
+                                    key="4"
+
+                                >
+                                    {this.state.activeKey == "4" ? (
+                                        <Dynamic
+                                            isMerge={true}
+                                            currentId={this.state.selectedCustomer.id}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.40", "提醒")}
+                                    key="5"
+                                >
+                                    {this.state.activeKey == "5" ? (
+                                        <CrmAlert
+                                            isMerge={true}
+                                            curCustomer={this.state.selectedCustomer}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("menu.call", "通话记录")}
+                                    key="6"
+                                >
+                                    {this.state.activeKey == "6" ? (
+                                        <CallRecord
+                                            isMerge={true}
+                                            currentId={this.state.selectedCustomer.id}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                            </Tabs>
+                        ) : null}
+                    </div>
+                </div>
+            </RightPanel>
+        );
+    }
+});
+
+module.exports = CrmRightMergePanel;
+

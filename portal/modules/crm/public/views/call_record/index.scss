@@ -1,0 +1,109 @@
+.crm-right-panel-content .call_record_wrap {
+  .user-opening-daterange {
+    margin:0 0 0 20px;
+    width: 335px;
+  }
+  .call_chart {
+    position:relative;
+    height:214px;
+    margin:0 20px 10px 0px;
+  }
+  .call_record {
+    position:relative;
+    margin:5px 20px 20px 5px;
+    width: 620px;
+  }
+  .load8 {
+    height:74px;
+    position:absolute;
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+  }
+  .rc-calendar {
+    position:absolute;
+    top:30px;
+    right:0;
+    z-index:2;
+    white-space:normal;
+  }
+  .rc-calendar-range-right .rc-calendar-date-input-wrap {
+    position:absolute;
+    left:-109px;
+    overflow:visible;
+    &:before {
+      content:"~";
+      position:absolute;
+      left:-15px;
+    }
+  }
+
+  .rc-calendar-today-btn {
+    display:none;
+  }
+
+  .rc-calendar-ok-btn {
+    background:#2db7f5;
+    border:1px solid #2db7f5;
+    padding:1px 7px;
+    border-radius:6px;
+    color:#fff;
+    &:hover {
+      color:#fff;
+    }
+  }
+  .ant-alert {
+    position:static !important;
+    width:auto !important;
+    display:inline-block;
+  }
+  .alert-wrap {
+    text-align:center;
+  }
+  .alert-wrap:first-child {
+    margin-top:20px;
+    position: absolute;
+    width: 100%;
+  }
+
+  .table-tbody {
+    thead {
+      display:none;
+    }
+  }
+  .table-thead {
+      height:50px;
+      overflow:hidden;
+      .ant-table-placeholder {
+        display:none;
+      }
+      .ant-table-body {
+        height:auto !important;
+        border-bottom:none !important;
+      }
+      .ant-table th {
+        border-bottom:none !important;
+      }
+  }
+  .gm-scroll-view {
+    .gm-bottom-loading {
+      background:#fff;
+    }
+    .ant-table-body {
+      border-bottom:none !important;
+    }
+  }
+  .load8 {
+    transform:scale(0.5,0.5);
+  }
+  .total_summary {
+    margin-top:15px;
+    font-size:14px;
+  }
+
+  .range-datepicker {
+    margin-left: 5px;
+  }
+}

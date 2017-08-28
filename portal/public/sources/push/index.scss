@@ -1,0 +1,20 @@
+//登录踢出提示框样式的设置
+.ant-modal-container.offline-modal-container .ant-confirm {
+  .ant-confirm-body {
+    .anticon {
+      float: left;
+    }
+
+    .ant-confirm-content {
+      padding-top: 5px;
+    }
+  }
+
+  //提示框中的重新登录按钮居中
+  .ant-confirm-btns {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80px;
+  }
+}

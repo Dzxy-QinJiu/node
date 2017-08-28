@@ -1,0 +1,55 @@
+//时间组件的样式
+.nature-time-select-container {
+  float: left;
+  width: 100%;
+
+  .time-type-div {
+    float: left;
+    //年月日选择按钮样式
+    .ant-radio-button {
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
+
+  //年月日时间选择区样式
+  .time-select-div {
+    float: left;
+    margin-left: 20px;
+    .year-select-div {
+      float: left;
+      .ant-select {
+        width: 90px;
+      }
+    }
+    .month-select-div {
+      float: left;
+      margin-left: 10px;
+      .ant-select {
+        width: 80px;
+      }
+    }
+    .week-select-div {
+      float: left;
+      margin-left: 10px;
+      .ant-input-number {
+        float: left;
+        width: 60px;
+        margin-left: 5px;
+        margin-right: 5px;
+        border-radius: 3px;
+        .ant-input-number-input {
+          padding-left: 10px;
+        }
+      }
+      .week-time-label {
+        float: left;
+        line-height: 28px;
+      }
+      .week-time-content{
+        min-width:180px;
+      }
+    }
+
+  }
+}

@@ -1,0 +1,725 @@
+/**
+ * Created by xiaojinfeng on 2016/04/08.
+ */
+var SalesTeamActions = require("../action/sales-team-actions");
+//没有团队时的提示信息
+var salesTeamIsNull = "sales-team-is-null";
+function SalesTeamStore() {
+    this.salesTeamList = [];//团队分组列表
+    this.salesTeamListArray = [];//团队分组树形列表
+    this.searchSalesTeamTree = [];//搜索后的团队树列表
+    this.salesTeamMemberList = [];//团队成员列表 x
+    this.curShowTeamMemberObj = {};//当前展示团队id、name、owner、managers、users对象
+    this.addMemberList = [];//添加成员时成员列表
+    this.isEditMember = false;//是否是编辑成员操作
+    this.isAddMember = false;//是否是添加成员操作
+    this.deleteGroupItem = {};
+    this.showMemberOperationBtn = true;
+    this.isLoadingSalesTeam = false;//正在加载销售团队
+    this.isLoadingTeamMember = false;//正在加载销售团队成员
+    this.teamMemberListTipMsg = "";//获取团队成员列表时，错误/暂无数据的提示
+    this.addMemberListTipMsg = "";//获取可添加成员列表时，错误/暂无数据的提示
+    this.salesTeamLisTipMsg = "";//获取销售团队列表时，错误/暂无数据的提示
+    this.searchContent = "";//搜索内容
+    this.delTeamErrorMsg = "";//删除团队失败的错误提示
+    this.isAddSalesTeamRoot = false;//是否是添加根团队
+    this.salesGoals = {};//销售目标
+
+    this.bindActions(SalesTeamActions);
+}
+
+//获取销售目标
+SalesTeamStore.prototype.getSalesGoals = function (salesGoals) {
+    this.salesGoals = _.isObject(salesGoals) ? salesGoals : {};
+    //将第一个成员的销售目标作为个人销售目标放到外层，便于界面上的处理
+    if (_.isArray(salesGoals.users) && salesGoals.users.length) {
+        let userGoal = salesGoals.users[0];
+        this.salesGoals.member_goal = userGoal ? userGoal.goal : '';
+    }
+};
+//更新销售目标
+SalesTeamStore.prototype.updateSalesGoals = function (updateObj) {
+    let salesGoals = updateObj.salesGoals;
+    if (updateObj.type == "member") {
+        //个人销售目标
+        this.salesGoals.users = salesGoals.users;
+        //将第一个成员的销售目标作为个人销售目标放到外层，便于界面上的处理
+        if (_.isArray(salesGoals.users) && salesGoals.users.length) {
+            let userGoal = salesGoals.users[0];
+            this.salesGoals.member_goal = userGoal ? userGoal.goal : '';
+        } else {
+            this.salesGoals.member_goal = '';
+        }
+    } else if (updateObj.type == "team") {
+        //团队销售目标
+        this.salesGoals.id = salesGoals.id;
+        this.salesGoals.goal = salesGoals.goal;
+    }
+};
+//清空根据团队名称进行搜索的搜索条件时，还原所有团队及团队关系
+SalesTeamStore.prototype.resetSearchSalesTeam = function () {
+    this.salesTeamLisTipMsg = "";//清空搜索时，清空没有符合条件的团队的提示
+    this.salesTeamList.forEach(team=> {
+        delete team.select;
+        delete team.isLiSelect;
+    });
+    this.salesTeamTree();
+};
+
+//搜索内容的设置
+SalesTeamStore.prototype.setSearchContent = function (searchContent) {
+    this.searchContent = searchContent;
+};
+/**递归遍历树，根据团队名查找团队
+ * @param groupList 要过滤的团队列表
+ * @param name 过滤团队名中包含name的团队
+ * @param filterGroupArray 将团队名中包含name的团队存入filterGroupArray中
+ * @param delSelect 是否删除团队的选中标识
+ */
+SalesTeamStore.prototype.findGroupListByName = function (groupList, name, filterGroupArray) {
+    groupList.forEach(group=> {
+        if (group.title.indexOf(name) != -1) {
+            filterGroupArray.push(group);
+        } else if (_.isArray(group.children) && group.children.length > 0) {
+            this.findGroupListByName(group.children, name, filterGroupArray);
+        }
+    });
+};
+
+//递归遍历去掉之前选中的团队
+SalesTeamStore.prototype.delSelectSalesTeam = function (groupList) {
+    groupList.forEach(group=> {
+        delete group.select;
+        delete group.isLiSelect;
+        if (_.isArray(group.children) && group.children.length > 0) {
+            this.delSelectSalesTeam(group.children);
+        }
+    });
+};
+
+//根据团队名称搜索团队
+SalesTeamStore.prototype.filterByTeamName = function (teamName) {
+    //去掉之前选中的组织
+    this.salesTeamList.forEach(group=> {
+        delete group.select;
+        delete group.isLiSelect;
+    });
+    this.delSelectSalesTeam(this.salesTeamListArray);
+    //递归遍历组织树，根据组织名查找组织
+    var filterTeamArray = [];
+    this.findGroupListByName(this.salesTeamListArray, teamName, filterTeamArray);
+    //默认展示第一个团队的成员
+    if (filterTeamArray.length > 0) {
+        filterTeamArray[0].select = true;
+        filterTeamArray[0].isLiSelect = true;
+        //获取第一个团队的成员
+        this.setTeamMemberLoading(true);
+        //第一个团队的销售目标
+        SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
+        this.curShowTeamMemberObj = {
+            groupId: filterTeamArray[0].key,
+            groupName: filterTeamArray[0].title
+        }
+    }
+    this.searchSalesTeamTree = filterTeamArray;
+};
+
+//根据成员昵称、用户名搜索团队
+SalesTeamStore.prototype.filterByUserName = function (filterTeamList) {
+    var filterTeamArray = [];
+    if (_.isArray(filterTeamList) && filterTeamList.length > 0) {
+        filterTeamArray = filterTeamList.map(function (team) {
+            return {
+                title: team.group_name,
+                key: team.group_id,
+                userIds: team.user_ids,
+                ownerId: team.owner_id,
+                managerIds: team.manager_ids
+            };
+        });
+    }
+
+    //默认展示第一个团队的成员
+    if (filterTeamArray.length > 0) {
+        filterTeamArray[0].select = true;
+        filterTeamArray[0].isLiSelect = true;
+        //获取第一个团队的成员
+        this.setTeamMemberLoading(true);
+        //第一个团队的销售目标
+        SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
+        this.curShowTeamMemberObj = {
+            groupId: filterTeamArray[0].key,
+            groupName: filterTeamArray[0].title
+        }
+    } else {
+        this.curShowTeamMemberObj = {};
+        this.salesTeamLisTipMsg = Intl.get("sales.team.no.filtered.sale.team", "暂无符合条件销售团队");
+    }
+    this.salesTeamListArray = filterTeamArray;
+};
+/**
+ * 递归遍历树形团队列表，根据id找到添加子团队的团队并将新增的子团队加入
+ * @param treeGroupList
+ * @param parentId
+ * @param newTeam
+ */
+SalesTeamStore.prototype.findGroupByIdAddTeam = function (treeGroupList, parentId, newTeam) {
+    //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
+    _.some(treeGroupList, group=> {
+        //找到要添加子团队的团队
+        if (group.key == parentId) {
+            //有子团队时，直接push即可
+            if (group.children && _.isArray(group.children)) {
+                group.children.push(newTeam);
+            } else {
+                //没有子团队时，新建子团队
+                group.children = [newTeam];
+            }
+            return true;//中断list的遍历
+        } else if (_.isArray(group.children) && group.children.length > 0) {
+            //没找到，则查找其子团队中有没有要添加子团队的团队
+            this.findGroupByIdAddTeam(group.children, parentId, newTeam);
+        }
+    });
+};
+//添加后刷新团队列表
+SalesTeamStore.prototype.refreshTeamListAfterAdd = function (addTeam) {
+    this.salesTeamList.push(addTeam);
+    let newTeam = {
+        title: addTeam.group_name,
+        key: addTeam.group_id,
+        userIds: addTeam.user_ids,
+        ownerId: addTeam.owner_id,
+        managerIds: addTeam.manager_ids
+    };
+    //添加子团队
+    if (addTeam.parent_group) {
+        newTeam.parent_group = addTeam.parent_group;
+        this.findGroupByIdAddTeam(this.salesTeamListArray, newTeam.parent_group, newTeam);
+    } else {
+        //添加根团队
+        this.salesTeamListArray.push(newTeam);
+    }
+
+};
+//修改团队名称后更新列表中对应团队的名称
+SalesTeamStore.prototype.updateTeamNameAfterEdit = function (editTeam) {
+    let team = _.find(this.salesTeamList, team=>team.group_id == editTeam.key);
+    team.group_name = editTeam.title;
+    //递归遍历树形团队列表，根据id找团队并修改名称
+    this.findGroupByIdEditName(this.salesTeamListArray, editTeam);
+};
+/**
+ * 递归遍历树形团队列表，根据id找团队并修改名称
+ * @param treeGroupList
+ * @param editTeam
+ */
+SalesTeamStore.prototype.findGroupByIdEditName = function (treeGroupList, editTeam) {
+    //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
+    _.some(treeGroupList, group=> {
+        //找到要修改名称的团队
+        if (group.key == editTeam.key) {
+            group.title = editTeam.title;
+            return true;//中断list的遍历
+        } else if (_.isArray(group.children) && group.children.length > 0) {
+            //没找到，则查找其子团队中有没有要修改名称的团队
+            this.findGroupByIdEditName(group.children, editTeam);
+        }
+    });
+};
+
+//设置正在加载销售团队的标志
+SalesTeamStore.prototype.setSalesTeamLoading = function (flag) {
+    this.isLoadingSalesTeam = flag;
+    this.salesTeamLisTipMsg = "";
+};
+
+//获取团队分组列表
+SalesTeamStore.prototype.getSalesTeamList = function (resultData) {
+    this.isLoadingSalesTeam = false;
+    this.deleteGroupItem = {};
+    if (_.isString(resultData)) {
+        this.salesTeamLisTipMsg = resultData;
+    } else {
+        if (_.isArray(resultData) && resultData.length > 0) {
+            this.showMemberOperationBtn = false;
+            this.salesTeamLisTipMsg = "";
+            this.salesTeamList = resultData;
+            this.salesTeamTree();
+        } else {
+            this.salesTeamList = [];
+            this.showMemberOperationBtn = true;
+            this.isAddMember = false;
+            this.isEditMember = false;
+            this.curShowTeamMemberObj = {};
+            this.salesTeamLisTipMsg = salesTeamIsNull;
+        }
+    }
+
+};
+
+//添加成员时获取不属于任何团队的成员列表
+SalesTeamStore.prototype.getMemberList = function (resultData) {
+    if (_.isString(resultData)) {
+        this.addMemberListTipMsg = resultData;
+    } else {
+        if (_.isArray(resultData) && resultData.length > 0) {
+            this.addMemberList = resultData;
+            this.addMemberListTipMsg = "";
+        } else {
+            this.addMemberList = [];
+            this.addMemberListTipMsg = Intl.get("common.no.add.member", "暂无可添加成员");
+        }
+    }
+};
+
+//设置正在获取团队成员的标志
+SalesTeamStore.prototype.setTeamMemberLoading = function (flag) {
+    this.isLoadingTeamMember = flag;
+    this.teamMemberListTipMsg = "";
+};
+
+//修改团队成员成功后的处理
+SalesTeamStore.prototype.afterEditMember = function (data) {
+    if (data) {
+        this.isEditMember = false;
+        //当前展示组的信息
+        var curTeamId = data.groupId;
+        var curShowTeam = _.find(this.salesTeamList, function (team) {
+            if (team.group_id == curTeamId) {
+                return true;
+            }
+        });
+        curShowTeam.owner_id = data.ownerId;
+        curShowTeam.manager_ids = data.managerIds ? JSON.parse(data.managerIds) : [];
+        curShowTeam.user_ids = data.userIds ? JSON.parse(data.userIds) : [];
+        //更新左侧团队树中对应团队的成员信息
+        this.salesTeamTree(true);
+    }
+};
+
+//添加团队内的成员成功后的处理
+SalesTeamStore.prototype.afterAddMember = function (data) {
+    if (data) {
+        this.isAddFormShow = false;
+        //当前展示组的信息
+        var curTeamId = data.groupId;
+        var curShowTeam = _.find(this.salesTeamList, function (team) {
+            if (team.group_id == curTeamId) {
+                return true;
+            }
+        });
+        //添加负责人后
+        if (data.ownerId) {
+            //原来有负责人，将原负责人转到成员列表中
+            if (curShowTeam.owner_id) {
+                //该团队中原来就有成员则加入，原来无成员则新建成员列表
+                if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
+                    curShowTeam.user_ids.push(curShowTeam.owner_id);
+                } else {
+                    curShowTeam.user_ids = [curShowTeam.owner_id];
+                }
+            }
+            //将负责人设为新增负责人
+            curShowTeam.owner_id = data.ownerId;
+        }
+        //添加秘书后
+        var managerIds = JSON.parse(data.managerIds);
+        if (_.isArray(managerIds) && managerIds.length > 0) {
+            //该团队中原来就有秘书则加入新增秘书，原来无秘书则新建秘书列表
+            if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length > 0) {
+                managerIds.forEach(function (id) {
+                    curShowTeam.manager_ids.push(id);
+                });
+            } else {
+                curShowTeam.manager_ids = managerIds;
+            }
+
+        }
+
+        //添加成员后
+        var userIds = JSON.parse(data.userIds);
+        if (_.isArray(userIds) && userIds.length > 0) {
+            //该团队中原来就有成员则加入新增成员，原来无成员则新建成员列表
+            if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
+                userIds.forEach(function (id) {
+                    curShowTeam.user_ids.push(id);
+                });
+            } else {
+                curShowTeam.user_ids = userIds;
+            }
+        }
+        //更新左侧团队树中对应团队的成员信息
+        this.salesTeamTree(true);
+    }
+};
+
+//获取当前团队的成员列表
+SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
+    this.isLoadingTeamMember = false;
+    if (_.isString(resultData)) {
+        //获取失败、出错的提示信息
+        this.teamMemberListTipMsg = resultData;
+    } else {
+        if (_.isArray(resultData) && resultData.length > 0) {
+            this.salesTeamMemberList = resultData;
+            this.teamMemberListTipMsg = "";
+            var _this = this;
+            //当前展示组的信息
+            var curTeamId = _this.curShowTeamMemberObj.groupId;
+            var curShowTeam = _.find(_this.salesTeamList, function (team) {
+                if (team.group_id == curTeamId) {
+                    return true;
+                }
+            });
+            //负责人
+            if (curShowTeam.owner_id) {
+                this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function (member) {
+                    if (curShowTeam.owner_id == member.userId) {
+                        return true;
+                    }
+                });
+            }
+            //秘书
+            if (curShowTeam.manager_ids) {
+                var managers = [];
+                curShowTeam.manager_ids.forEach(function (id) {
+                    var manager = _.find(_this.salesTeamMemberList, function (member) {
+                        if (id == member.userId) {
+                            return true;
+                        }
+                    });
+                    if (manager) {
+                        managers.push(manager);
+                    }
+                });
+                this.curShowTeamMemberObj.managers = managers;
+            }
+            //成员
+            if (curShowTeam.user_ids) {
+                var users = [];
+                curShowTeam.user_ids.forEach(function (id) {
+                    var user = _.find(_this.salesTeamMemberList, function (member) {
+                        if (id == member.userId) {
+                            return true;
+                        }
+                    });
+                    if (user) {
+                        users.push(user);
+                    }
+                });
+                this.curShowTeamMemberObj.users = users;
+            }
+        } else {
+            //暂无数据的提示
+            this.teamMemberListTipMsg = Intl.get("common.no.member", "暂无成员");
+            this.salesTeamMemberList = [];
+        }
+    }
+    this.isAddMember = false;
+    this.isEditMember = false;
+};
+
+SalesTeamStore.prototype.deleteGroup = function (deleteGroupItem) {
+    deleteGroupItem.modalDialogFlag = true;
+    this.deleteGroupItem = deleteGroupItem;
+};
+
+SalesTeamStore.prototype.hideModalDialog = function (deleteGroupItem) {
+    deleteGroupItem.modalDialogFlag = false;
+};
+
+//编辑成员
+SalesTeamStore.prototype.getIsEditMember = function () {
+    this.isAddMember = false;
+    this.isEditMember = true;
+};
+
+//取消编辑成员
+SalesTeamStore.prototype.cancelEditMember = function () {
+    this.isEditMember = false;
+};
+
+//添加成员
+SalesTeamStore.prototype.getIsAddMember = function () {
+    this.isEditMember = false;
+    this.isAddMember = true;
+
+};
+
+//取消添加成员
+SalesTeamStore.prototype.cancelAddMember = function () {
+    this.isAddMember = false;
+
+};
+
+//当前查看的团队组ID
+SalesTeamStore.prototype.setSelectSalesTeamGroup = function (selectSalesTeamGroupId) {
+    this.curShowTeamMemberObj = {groupId: selectSalesTeamGroupId};
+    var curSalesTeam = _.find(this.salesTeamList, function (team) {
+        if (team.group_id == selectSalesTeamGroupId) {
+            return true;
+        }
+    });
+    this.curShowTeamMemberObj.groupName = curSalesTeam ? curSalesTeam.group_name : "";
+};
+
+//是否展示组编辑菜单
+SalesTeamStore.prototype.showOperationArea = function (item) {
+    if (item.isShowOperationArea) {
+        item.isShowOperationArea = false;
+    } else {
+        item.isShowOperationArea = true;
+    }
+};
+
+//隐藏所有展示组编辑菜单
+SalesTeamStore.prototype.hideAllOperationArea = function () {
+    (this.salesTeamList).map(function (item, key) {
+        if (item.isShowOperationArea) {
+            item.isShowOperationArea = false;
+        }
+    });
+    this.salesTeamTree(true);
+};
+
+//删除团队后的处理
+SalesTeamStore.prototype.saveDeleteGroup = function (result) {
+    if (result.success) {
+        //删除团队成功，过滤掉删除的团队
+        this.salesTeamList = _.filter(this.salesTeamList, team=> team.group_id != result.groupId);
+        //刷新团队树
+        this.salesTeamList.forEach(team=> {
+            delete team.select;
+            delete team.isLiSelect;
+        });
+        this.salesTeamTree();
+    }
+    //删除团队失败
+    this.delTeamErrorMsg = result.errorMsg;
+};
+//清空删除团队失败的错误提示
+SalesTeamStore.prototype.clearDelTeamErrorMsg = function () {
+    this.delTeamErrorMsg = "";
+
+};
+//添加跟组织的标识设置
+SalesTeamStore.prototype.addSalesTeamRoot = function () {
+    this.isAddSalesTeamRoot = true;
+};
+
+//展示组修改表单
+SalesTeamStore.prototype.editGroup = function (item) {
+    item.isEditGroup = true;
+    item.isShowOperationArea = false;
+};
+
+//取消展示组修改表单
+SalesTeamStore.prototype.cancelEditGroup = function (item) {
+    item.isEditGroup = false;
+};
+
+//展示组添加表单
+SalesTeamStore.prototype.addGroup = function (item) {
+    item.isAddGroup = true;
+    item.isShowOperationArea = false;
+};
+
+//取消展示组添加表单
+SalesTeamStore.prototype.cancelAddGroup = function (item) {
+    if (item) {
+        //关闭添加该组织添加子组织的面板
+        item.isAddGroup = false;
+    } else {
+        //关闭根组织添加面板
+        this.isAddSalesTeamRoot = false;
+    }
+};
+
+SalesTeamStore.prototype.selectTree = function (groupId) {
+    var parentGroup = "";
+    this.salesTeamList.map(function (item, key) {
+        if (item.group_id == groupId) {
+            item.select = true;
+            if (!item.isLiSelect) {
+                //点击展开该团队下的子团队
+                item.isLiSelect = true;
+                if (item.parent_group) {
+                    parentGroup = item.parent_group;
+                }
+            }
+        } else {
+            item.select = false;
+        }
+    });
+    //展开该团队下的子团队
+    if (parentGroup) {
+        this.checkIsLiSelect(parentGroup);
+    }
+    this.salesTeamTree(true);
+};
+
+SalesTeamStore.prototype.toggleGroupTree = function (groupId) {
+    var parentGroup = "";
+    this.salesTeamList.map(function (item, key) {
+        if (item.group_id == groupId) {
+            item.isLiSelect = !item.isLiSelect;
+            if (item.parent_group) {
+                parentGroup = item.parent_group;
+            }
+        }
+    });
+
+    if (parentGroup) {
+        this.checkIsLiSelect(parentGroup);
+    }
+    this.salesTeamTree(true);
+};
+
+//搜索条件下，搜索后组织树的设置
+SalesTeamStore.prototype.setSearchSalesTeamTree = function () {
+    if (this.searchContent) {
+        let filterGroupArray = [];
+        this.findGroupListByName(this.salesTeamListArray, this.searchContent, filterGroupArray);
+        this.searchSalesTeamTree = filterGroupArray;
+    }
+};
+
+SalesTeamStore.prototype.checkIsLiSelect = function (parentGroup) {
+    var nowParentGroup = "";
+    (this.salesTeamList).map(function (item, key) {
+        if (item.group_id == parentGroup) {
+            item.isLiSelect = true;
+            if (item.parent_group) {
+                nowParentGroup = item.parent_group;
+            }
+        }
+    });
+
+    if (nowParentGroup) {
+        this.checkIsLiSelect(nowParentGroup);
+    }
+};
+
+//判断当前是否有选中的团队
+SalesTeamStore.prototype.checkSelectTree = function () {
+    var selectObj = {
+        isFirstSelect: true,//是否是第一次渲染销售团队的成员展示
+        isFirstLiSelect: true//是否是第一次展开销售团队
+    };
+    (this.salesTeamList).map(function (item, kry) {
+        if (item.select != undefined) {
+            //有展示过则不是第一次
+            selectObj.isFirstSelect = false;
+        }
+        if (item.isLiSelect != undefined) {
+            //有展开过则不是第一次
+            selectObj.isFirstLiSelect = false;
+        }
+    });
+    return selectObj;
+};
+
+SalesTeamStore.prototype.salesTeamTree = function (flag) {
+    var isSelectObj = this.checkSelectTree();
+    var salesTeamList = this.salesTeamList;
+    var salesTeamArray = [];//所有根团队
+    var newSalesTeamList = [];//所有子团队
+    for (var i = 0; i < salesTeamList.length; i++) {
+        var salesTeam = salesTeamList[i];
+        if (!salesTeam.parent_group) {
+            salesTeamArray.push({
+                title: salesTeam.group_name,
+                key: salesTeam.group_id,
+                select: salesTeam.select,
+                isLiSelect: salesTeam.isLiSelect,
+                userIds: salesTeam.user_ids,
+                ownerId: salesTeam.owner_id,
+                managerIds: salesTeam.manager_ids
+            });
+        } else {
+            newSalesTeamList.push(salesTeam);
+        }
+    }
+    this.salesTeamChildrenTree(newSalesTeamList, salesTeamArray);
+
+    if (salesTeamArray.length > 0 && (isSelectObj.isFirstSelect || isSelectObj.isFirstLiSelect)) {
+        if (isSelectObj.isFirstSelect) {
+            //没有展示过成员的销售团队，没有默认展示第一个销售团队的成员
+            salesTeamArray[0].select = true;
+        }
+        if (isSelectObj.isFirstLiSelect) {
+            //没有展开过销售团队，默认展开第一个销售团队
+            salesTeamArray[0].isLiSelect = true;
+        }
+        for (var j = 0, len = this.salesTeamList.length; j < len; j++) {
+            var item = this.salesTeamList[j];
+            if (item.group_id == salesTeamArray[0].key) {
+                item.select = salesTeamArray[0].select;
+                item.isLiSelect = salesTeamArray[0].isLiSelect;
+                break;
+            }
+        }
+    }
+
+    this.salesTeamListArray = salesTeamArray;
+
+    if (salesTeamArray.length > 0 && !flag) {
+        this.setTeamMemberLoading(true);
+        //第一个团队的销售目标
+        SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
+        SalesTeamActions.getSalesTeamMemberList(salesTeamArray[0].key);
+        this.curShowTeamMemberObj = {
+            groupId: salesTeamArray[0].key,
+            groupName: salesTeamArray[0].title
+        }
+    }
+    this.setSearchSalesTeamTree();
+};
+//salesTeamList:子团队列表，salesTeamArray:根团队列表
+SalesTeamStore.prototype.salesTeamChildrenTree = function (salesTeamList, salesTeamArray) {
+    var newSalesTeamList = [];//二级子团队的列表
+    //遍历子团队
+    for (var i = 0; i < salesTeamList.length; i++) {
+        var salesTeam = salesTeamList[i];
+        var flag = false;//是否找到根团队
+        //遍历根团队
+        for (var j = 0; j < salesTeamArray.length; j++) {
+            //找到该子团队的父团队，将该团队设为父团队的children
+            if (salesTeam.parent_group == salesTeamArray[j].key) {
+                salesTeamArray[j].children = salesTeamArray[j].children ? salesTeamArray[j].children : [];
+                //一级子团队
+                salesTeamArray[j].children.push({
+                    title: salesTeam.group_name,
+                    key: salesTeam.group_id,
+                    select: salesTeam.select,
+                    isLiSelect: salesTeam.isLiSelect,
+                    ownerId: salesTeam.owner_id,
+                    userIds: salesTeam.user_ids,
+                    managerIds: salesTeam.manager_ids,
+                    superiorTeam: salesTeamArray[j].key//上级团队的id
+                });
+                flag = false;
+                break;
+            } else {
+                //未找到，说明是二级子团队
+                flag = true;
+            }
+        }
+        if (flag) {
+            newSalesTeamList.push(salesTeam);
+        }
+    }
+    if (newSalesTeamList.length > 0) {
+        for (var k = 0; k < salesTeamArray.length; k++) {
+            if (salesTeamArray[k].children) {
+                //递归遍历设置二级子团队
+                this.salesTeamChildrenTree(newSalesTeamList, salesTeamArray[k].children);
+            }
+        }
+    }
+};
+
+module.exports = alt.createStore(SalesTeamStore, 'SalesTeamStore');

@@ -1,0 +1,29 @@
+$bg-color: (a:#B8D3EA, b:#B8D3EA, c: #B8D3EA, d:#B8D3EA, e:#B8D3EA,
+        f: #B8D3EA, g: #B8D3EA, h: #B8D3EA, i:#B8D3EA, j:#B8D3EA,
+        k: #B8D3EA, l:#B8D3EA, m: #B8D3EA, n: #B8D3EA, o: #B8D3EA,
+        p: #B8D3EA, q:#B8D3EA, r :#B8D3EA, s:#B8D3EA, t:#B8D3EA,
+        u:#B8D3EA, v: #B8D3EA, w:#B8D3EA, x:#B8D3EA, y: #B8D3EA,
+        z:#B8D3EA, 0: #B8D3EA, 1:#B8D3EA, 2:#B8D3EA, 3: #B8D3EA,
+        4:#B8D3EA, 5: #B8D3EA, 6:#B8D3EA, 7:#B8D3EA, 8: #B8D3EA,
+        9: #B8D3EA);
+
+$img-height: 70px;
+$img-width: 70px;
+
+@each $header, $color in $bg-color {
+  .default-user-logo-title-#{$header} {
+    background-color: $color !important;
+  }
+}
+
+.no-user-logo-div {
+  height: $img-height;
+  width: $img-width;
+  border-radius: 50%;
+  display: inline-block;
+  font-size: 30px;
+  line-height: $img-height - 5px;
+  color: #ffffff;
+  background-color: #B8D3EA;
+  text-align: center;
+}

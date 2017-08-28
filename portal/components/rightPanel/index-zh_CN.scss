@@ -1,0 +1,153 @@
+$right-pannel-width: 420px;
+$crm-right-panel-width: 700px;
+$right-pannel-animationTime: 0.6s;
+$button-size: 25px;
+$icon-color: #fff;
+$icon-background-color: #b5c2ca;
+$button-hover-color: #4d96d1;
+@import "../../public/css/common-variables";
+@import "./tabs.scss";
+
+
+@mixin right-panel-button-size {
+  width: $button-size;
+  height: $button-size;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+}
+/*右侧面板样式 start*/
+.right-pannel-default {
+  position: fixed;
+  right: 0;
+  height: 100%;
+  width: $right-pannel-width;
+  overflow: hidden;
+  top: 0;
+  z-index: 111;
+  background-color: #e6edef;
+  transform: translateX($right-pannel-width);
+  transition: transform $right-pannel-animationTime;
+
+  .close-pannel {
+    @include right-panel-button-size;
+    position: relative;
+    float: right;
+    margin-top: 15px;
+    margin-right: 15px;
+    line-height: $button-size;
+    font-size: 14px;
+    color: $icon-color;
+    background-color: $icon-background-color;
+    z-index: 2;
+    &:hover {
+      background-color: $button-hover-color;
+    }
+  }
+  .return-btn {
+    position: absolute;
+    top: 15px;
+    right: 50px;
+  }
+
+  .circle-button {
+    float: left;
+    @include right-panel-button-size;
+    margin-left: 10px;
+    font-size: 16px;
+    line-height: 25px;
+    color: $icon-color;
+    background-color: $icon-background-color;
+    &:hover {
+      background-color: $button-hover-color;
+    }
+  }
+  .circle-button.active {
+    background-color: $button-hover-color;
+    &:hover {
+      background-color: $icon-background-color;
+    }
+  }
+
+  /* 右侧面板中信息切换动画 start*/
+  .right-panel-content {
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    transition: transform $right-pannel-animationTime;
+  }
+
+  .right-panel-content-slide {
+    transform: translateX(-$right-pannel-width);
+  }
+
+  .right-form-add {
+    transform: translateX(-$right-pannel-width);
+    transition: none;
+    background-color: #e6edef;
+    opacity: 0.98;
+    z-index: 1111;
+  }
+
+  /* 右侧面板中信息切换动画 end*/
+
+  .ant-form-item {
+    color: #EAEDEF;
+    & > label {
+      padding-right: 20px;
+      font-weight: normal;
+      padding-top: 8px;
+      font-size: $form_font_size;
+      line-height: $form_font_size;
+      padding-bottom: 9px;
+    }
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner {
+    border-color: #fff;
+    background-color: #fff;
+  }
+  .ant-checkbox-checked .ant-checkbox-inner:after {
+    border-color: #26AF9C;
+  }
+}
+
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
+.right-pannel-show {
+  transform: translate(0px) !important;
+}
+
+.crm-right-panel {
+  width: $crm-right-panel-width !important;
+  background-color: #e6edef !important;
+  transform: translate($crm-right-panel-width, 0);
+}
+
+//右侧面板的遮罩层
+.right-pannel-block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  z-index: 10;
+  background-color: rgba(#4d96d1, 0.3);
+}
+
+//右侧面板保存时的等待效果
+.right-panel-saving {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+}
+
+/*右侧面板样式 end*/

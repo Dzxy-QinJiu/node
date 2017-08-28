@@ -1,0 +1,14 @@
+.idea
+.vscode
+node_modules
+data
+.DS_Store
+*.swp
+*.swo
+dist
+upload
+*.bak
+.happypack
+dll
+*.gzip
+cache

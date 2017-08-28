@@ -1,0 +1,89 @@
+$border-color:#d6dbe1;
+$title-color:#a1a6a9;
+$title-font-size:14px;
+
+@mixin float {
+  float:left;
+}
+
+@mixin ball {
+  text-align:center;
+  display:inline-block;
+  $size:16;
+  font-family:arial;
+  font-size:#{$size - 2}px;
+  line-height:#{$size - 2}px;
+  width:#{$size}px;
+  border-radius:50%;
+  border:1px solid #a0a5a8;
+  color:#5a5e5f;
+  margin-right:2px;
+}
+
+.operation-steps {
+  position:absolute;
+  z-index:1;
+  top:0;
+  right:19px;
+  left:21px;
+  height:56px;
+  border-bottom:1px solid #d6dbe1;
+  .operation-steps-title {
+    @include float;
+    padding:21px 27px 0 25px;
+    line-height:26px;
+    font-size:$title-font-size;
+    color:$title-color;
+    border-right:1px solid $border-color;
+  }
+  .list-unstyled {
+    @include float;
+    li {
+      padding:25px 20px 8px;
+      font-size:13px;
+      color:#5a5e5f;
+      line-height:22px;
+      position:relative;
+      width: 130px;
+    }
+    li::after,.active-dot {
+      $size:8px;
+      overflow:hidden;
+      content : " ";
+      position:absolute;
+      width:$size;
+      height:$size;
+      background:#b4bfc5;
+      bottom:-$size/2;
+      left:50%;
+      transform:translate(-$size/2,0);
+      border-radius:50%;
+    }
+    .active-dot {
+      z-index:1;
+      background:#498cc3;
+      transition:all 0.1s ease-in-out;
+    }
+
+    li:nth-child(1)::before {content : "1";@include ball;}
+    li:nth-child(2)::before {content : "2";@include ball;}
+    li:nth-child(3)::before {content : "3";@include ball;}
+    li:nth-child(4)::before {content : "4";@include ball;}
+    li:nth-child(5)::before {content : "5";@include ball;}
+    li:nth-child(6)::before {content : "6";@include ball;}
+    li:nth-child(7)::before {content : "7";@include ball;}
+    li:nth-child(8)::before {content : "8";@include ball;}
+    li:nth-child(9)::before {content : "9";@include ball;}
+    li:nth-child(10)::before {content : "10";@include ball;}
+
+  }
+}
+
+@for $i from 0 to 9 {
+  .operation-steps-current-#{$i} {
+    .active-dot {
+      margin-left:#{$i*100%};
+    }
+  }
+}
+

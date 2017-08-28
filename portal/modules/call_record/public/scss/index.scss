@@ -1,0 +1,451 @@
+
+//check button的样式
+@mixin check_button{
+  .ant-checkbox-checked{
+    .ant-checkbox-inner{
+      border-color:#4d96d1;
+      background-color:#4d96d1;
+      &:after{
+        left:10px;
+        top:3px;
+        width:10px;
+        height:18px;
+        border:4px solid #fff;
+        -webkit-transform:rotate(45deg) scale(1);
+        transform:rotate(45deg) scale(1);
+        position:absolute;
+        display:table;
+        border-top:0;
+        border-left:0;
+        content:' ';
+        -webkit-transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+        transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+      }
+    }
+  }
+}
+
+
+.call_record_content {
+  .range-datepicker, .search-btn {
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+  .search-btn {
+    width: 72px;
+    span {
+      font-size: 12px;
+    }
+    border-radius: 3px;
+  }
+  .call_record_wrap {
+    padding: 77px 50px 10px 50px;
+    .filter-input-container {
+      position: relative;
+      //清空过滤内容的按钮
+      .anticon-cross-circle-o {
+        position: absolute;
+        height: 30px;
+        width: 20px;
+        right: 0;
+        line-height: 30px;
+        cursor: pointer;
+      }
+      .select-call-status {
+        width: 130px;
+      }
+    }
+
+    .table-thead {
+      .ant-table {
+        th {
+          padding: 9px 8px;
+          > div {
+            height: 30px;
+            line-height: 30px;
+          }
+        }
+      }
+    }
+    .custom-tbody .ant-table-tbody tr td{
+      .iconfont.icon-audio-play{
+        margin-left: 8px;
+        position: relative;
+        top:1px;
+        color:#4d96d1;
+        &:hover{
+          cursor:pointer;
+        }
+      }
+      .iconfont.icon-audio-play.icon-selected{
+        color:#C20C0C;
+      }
+    }
+
+    .load8 {
+      height: 74px;
+      position: absolute;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .rc-calendar {
+      position: absolute;
+      top: 30px;
+      right: 0;
+      z-index: 2;
+      white-space: normal;
+    }
+    .rc-calendar-range-right .rc-calendar-date-input-wrap {
+      position: absolute;
+      left: -109px;
+      overflow: visible;
+      &:before {
+        content: "~";
+        position: absolute;
+        left: -15px;
+      }
+    }
+
+    .rc-calendar-today-btn {
+      display: none;
+    }
+
+    .rc-calendar-ok-btn {
+      background: #2db7f5;
+      border: 1px solid #2db7f5;
+      padding: 1px 7px;
+      border-radius: 6px;
+      color: #fff;
+      &:hover {
+        color: #fff;
+      }
+    }
+    .ant-alert {
+      position: static;
+      width: auto;
+      display: inline-block;
+    }
+    .alert-wrap {
+      text-align: center;
+    }
+    .alert-wrap:first-child {
+      margin-top: 20px;
+      position: absolute;
+      width: 100%;
+    }
+
+    .table-tbody {
+      cursor: default;
+      .ant-table-header table {
+        border: none;
+      }
+      thead {
+        display: none;
+      }
+      .data-float-right {
+        text-align: right;
+        cursor: default;
+      }
+      .call-time, .call-user{
+        cursor: default;
+      }
+    }
+    .no-more-data-tip {
+      .ant-alert.ant-alert-info {
+        width: 100% !important;
+      }
+    }
+    .table-thead {
+      height: 50px;
+      //overflow: hidden;
+      .ant-table-placeholder {
+        display: none;
+      }
+      .ant-table-body {
+        height: auto !important;
+        border-bottom: none !important;
+      }
+    }
+    .gm-scroll-view {
+      .gm-bottom-loading {
+        background: #fff;
+      }
+      .ant-table-body {
+        .customer_column {
+          cursor: pointer;
+        }
+      .customer_column:hover{
+        color: #2db7f5;
+      }
+        border-bottom: none !important;
+        .current_row,.current_row:hover {
+          background: #b6d3f3 !important;
+        }
+      }
+    }
+    .load8 {
+      transform: scale(0.5, 0.5);
+    }
+    .total_summary {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  }
+
+  .filter-phone-button {
+    display:inline-block;
+    position:relative;
+    margin-top:20px;
+    margin-right:50px;
+    float:right;
+    height:30px;
+    .ant-checkbox{
+      height:30px;
+      margin-bottom: 3px;
+    }
+    .ant-checkbox-inner{
+      width:30px;
+      height:30px;
+    }
+    @include check_button;
+    .refresh-btn , .call-analysis-btn {
+      border: 1px solid #4d96d1;
+      padding: 8px 5px 7px;
+      border-radius: 3px;
+      margin-left: 15px;
+      .refresh, .call-analysis {
+        cursor: pointer;
+        color: #4d96d1;
+      }
+    }
+  }
+
+  .show-call-phone {
+    margin-left: 48px;
+    .call-phone {
+      margin-left: 18px;
+    }
+  }
+
+  .tip-customer-exist{
+    margin-top:-13px;
+    line-height:20px;
+    margin-bottom:10px;
+    margin-left:100px;
+  }
+  .ant-table-tbody {
+    .add-content input{
+      border: none;
+      outline:medium;
+      background: transparent;
+      height: 22px;
+      width: 100%;
+    }
+  }
+  .audio-play-container{
+    position: fixed;
+    _position: absolute;
+    zoom: 1;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    width: 23%;
+    margin: 0 auto;
+    z-index: 999;
+    background: #FAFAFA;
+    border-radius: 4px;
+    audio{
+      display: block;
+      margin: 6px auto;
+    }
+    .iconfont.icon-close{
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      font-size: 10px;
+    }
+  }
+}
+
+.call-record-wrap {
+  .right-pannel-default{
+    width: 700px;
+    transform: translate(700px, 0);
+    padding: 0;
+  }
+  .add-customer {
+    .right-pannel-default{
+      width: 420px;
+      transform: translate(420px, 0);
+      padding: 0;
+      .crm-add-form {
+        margin-top: 50px;
+      }
+    }
+  }
+  .call-analysis-panel.right-pannel-default {
+    width: auto;
+    left: 75px;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    background-color: #fff;
+    display: block;
+
+    .call-analysis-content {
+      .ant-select {
+        width: auto;
+      }
+      //时间控件
+      .date-range-wrap {
+        .call-type-select, .range-datepicker, .team-member-select {
+          float: left;
+          margin-top: 20px;
+          margin-left: 20px;
+        }
+        .team-member-select-options {
+          .ant-select-selection--multiple {
+            .ant-select-selection__rendered {
+              .ant-select-selection__choice {
+                background-color: #fff;
+                padding-top: 4px;
+              }
+            }
+            ul li {
+              margin-top: 0;
+              height: 24px;
+            }
+          }
+        }
+      }
+      //头部分隔线的样式
+      .topNav {
+        height: 75px !important;
+        padding-left: 20px !important;
+        &:before {
+          left: 0 !important;
+          right: 0 !important;
+        }
+        position: absolute;
+        margin-left: -55px;
+        .close-pannel {
+          margin-right: 33px;
+          margin-top: 24px;
+        }
+      }
+
+      .call-data-analysis {
+        margin-top: 10px;
+        margin-left: 20px;
+        padding-top: 76px;
+        .call-table-container {
+          width: 100%;
+          min-height: 150px;
+          padding-right: 50px;
+          padding-left: 20px;
+          .ant-table {
+            table {
+              border-radius: 0;
+            }
+            .ant-table-body {
+              border-bottom: none;
+            }
+            th, td {
+              padding: 8px;
+              cursor: default;
+              border-bottom: 1px solid #f8f9fb;
+            }
+            th.has-filter {
+              cursor: pointer;
+              background: #fff;
+            }
+            //列表中的数据列靠右展示的处理
+            td.table-data-align-right {
+              text-align: right;
+              padding-right: 10px;
+            }
+            //列表中的文字列靠左展示的处理
+            td.table-data-align-left {
+              text-align: left;
+              padding-left: 10px;
+            }
+          }
+          .call-type-select {
+            margin-bottom: 12px;
+          }
+          // 通话分析，趋势图
+          .duration-count-chart {
+            width: 100%;
+            margin-left: -48px;
+            height: 120px;
+            margin-bottom: 20px;
+            .duration-count-radio {
+              float: right;
+              margin-right: -45px;
+              .ant-radio-group {
+                .ant-radio + span {
+                  width: auto;
+                }
+              }
+            }
+            .trend-chart-title {
+              margin-left: 48px;
+              padding-top: 5px;
+            }
+          }
+          .call-info, .call-top, .call-service-rate {
+            min-height: 100px;
+          }
+
+          .alert-wrap{
+            text-align:center;
+            line-height: 90px;
+            .ant-alert-error, .ant-alert-message, .ant-alert-info{
+              display:inline-block;
+            }
+          }
+          // TOP10
+          .call-duration-top-ten {
+            .call-duration-title {
+              margin-top: 20px;
+              margin-bottom: 10px;
+            }
+          }
+          // 114占比
+          .call-rate {
+            .call-rate-title {
+              margin-top: 20px;
+            }
+          }
+        }
+        .ant-table {
+          margin-right: 12px;
+        }
+        .load8 {
+          height: 74px;
+          position: absolute;
+          margin: auto;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          transform:scale(0.5,0.5);
+        }
+      }
+    }
+
+  }
+}
+
+.ant-select-dropdown {
+  .ant-select-dropdown-menu {
+    max-height: 400px;
+  }
+}
+
+.ant-btn-sm {
+    border-radius: 3px;
+}

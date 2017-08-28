@@ -1,0 +1,65 @@
+.batch-change {
+    font-size: 14px;
+    .crm-right-panel-content .panel-title {padding-left: 20px;}
+    .info-block {
+        margin: 20px auto auto 20px;
+        .selected-number {
+            .the-number {color: #f4ba4a; padding: 5px;}
+            margin-bottom: 20px;
+        }
+        .op-type {
+            margin-bottom: 20px;
+            .op-title {margin-right: 20px}
+            .op-tab {padding: 2px 12px; border-radius: 4px; background: white; margin-right: 7px; cursor: pointer;}
+            .op-tab.current {color: #fff; background: #33a3dc;}
+        }
+    }
+    .op-block {
+        height: 175px;
+        padding: 20px;
+        background: #dfe6ec;
+        border-radius: 4px;
+        .op-pane {
+            .ant-form-item {
+                margin-top: -25px;
+                > label {
+                    width: 80px;
+                    text-align: left;
+                    padding-left: 15px;
+                }
+            }
+        }
+      .change-tag {
+        .ant-radio-group {
+          margin-left: 88px;
+          label{
+            font-weight: normal;
+          }
+        }
+        .ant-form-item {
+          margin-top: 10px;
+        }
+      }
+        .ant-select {min-width: 235px; margin-left: 20px;}
+        .select-salesman {margin-bottom: 20px;}
+        .area-selector .ant-form-item .anticon {
+            top: 10px;
+        }
+    }
+    .op-buttons {
+        height: 65px;
+        position: fixed;
+        border-top: 1px solid #d2dbe6;
+        bottom: 0;
+        width: 660px;
+        button {float: right; margin-top: 15px; font-size: 14px}
+        .btn-primary-sure {margin-right: 5px;}
+        .btn-primary-cancel {margin-right: 10px;}
+    }
+}
+
+.block-industry-edit {
+    .ant-select {
+        margin-left:0 !important;
+    }
+}

@@ -1,0 +1,43 @@
+.bootstrap-datepicker-wrap {
+  .datepicker {
+    border:1px solid rgba(0,0,0,0.15);
+    background:#fff;
+  }
+  .arrow,.arrow:before {
+    content : " ";
+    display:block;
+    position:absolute;
+    border:10px solid transparent;
+    width:0;
+    height:0;
+    border-bottom-color:rgba(0,0,0,0.15);
+    top:-20px;
+    left:10%;
+    z-index:1;
+  }
+  .arrow:before {
+    border-bottom-color: #fff;
+    top: -9px;
+    left: -10px;
+  }
+}
+.datepicker {
+  font-size:12px;
+}
+.datepicker table tr td.day:hover,
+.datepicker table tr td.day.focused,
+.datepicker table tr td span:hover,
+.datepicker table tr td span.focused {
+  background:#eaf8fe;
+}
+.datepicker table tr td.old,
+.datepicker table tr td span.disabled,
+.datepicker table tr td span.disabled:hover {
+  color:darkgrey !important;
+}
+.datepicker table tr td.active,
+.datepicker table tr td span.active {
+  background:#4af8fe !important;
+  color:#5c5c5c !important;
+  text-shadow: none;
+}

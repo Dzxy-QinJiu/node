@@ -1,0 +1,83 @@
+.analysis_active_arealine_chart {
+  .chart,.loadwrap {
+    position:relative;
+  }
+  .nodata {
+    position:absolute;
+    width:100px;
+    height:30px;
+    margin:auto;
+    font-size:16px;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+  }
+  .load8 {
+    transform:scale(0.5,0.5);
+    position:absolute;
+    margin:auto;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+  }
+  .legend {
+    padding-top:10px;
+    padding-bottom:51px;
+    margin-left:50px;
+    margin-right:50px;
+    border-bottom:1px solid #ededed;
+    ul {margin-left:-76px;}
+    li {
+      margin-left:76px;
+      padding:5px 0 5px 0;
+      cursor:pointer;
+      em,span,b {
+        display:inline-block;
+        vertical-align:middle;
+        font-weight:normal;
+        font-style: normal;
+      }
+      em {
+        width:15px;
+        height:15px;
+        border-radius:50%;
+        margin:0 10px 0 0;
+      }
+      span {
+        font-size:14px;
+        color:#939393;
+      }
+      b {
+        line-height:14px;
+        font-size:12px;
+        color:#fff;
+        background:#afafaf;
+        padding:4px 10px;
+        border-radius:11px;
+        margin-left:6px;
+      }
+    }
+  }
+  .activation_tooltip {
+    padding-right:3px;
+    max-height:240px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    color:#fff !important;
+    table {
+      margin-bottom:0;
+    }
+    .title {
+      color:#dedede;
+      line-height:14px;
+      font-size:12px;
+      padding:0;
+    }
+    .number_text {
+      text-align:right;
+    }
+  }
+
+}

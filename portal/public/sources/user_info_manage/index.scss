@@ -1,0 +1,7 @@
+.userInfoManage_userInfo_content {
+  padding-top: 76px;
+}
+
+.userInfoManage_userPwd_content {
+  @extend .userInfoManage_userInfo_content;
+}

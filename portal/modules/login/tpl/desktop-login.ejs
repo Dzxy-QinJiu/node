@@ -1,0 +1,139 @@
+<% // 页头1  %>
+<% addBrowserChecker = true %>
+<% include ../../common/public/tpl/common-header.begin.ejs %>
+
+<script type="text/javascript">
+    if (self != top) {
+        top.location = self.location;
+    }
+
+    Oplate = {
+        initialProps: {
+            loginErrorMsg: '<%- loginErrorMsg %>',
+            username: '<%- username %>',
+            captchaCode: '<%- captchaCode %>'
+        },
+        lang: '<%= lang %>',
+        hideLangQRcode: '<%- hideLangQRcode %>',
+        projectName: '<%= projectName %>'
+    };
+</script>
+<% if(addShowingIoCode == "true") { %>
+<!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    // tracker methods like "setCustomDimension" should be called before "trackPageView"
+    _paq.push(['setUserId', '<%= username %>']);
+    _paq.push(['setCustomDimension', 2, '<%= username %>']);
+    _paq.push(['setDocumentTitle', "/"]);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableHeartBeatTimer', 30]);
+    (function () {
+        var u = "//ustat.antfact.com/";
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', '<%= siteID %>']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<!-- End Piwik Code -->
+<% } %>
+<% // 页头2       %>
+<% include ../../common/public/tpl/common-header.end.ejs %>
+
+<style>
+    body{
+        font-size:18px;
+        background-color:#1d2b36;
+    }
+
+    .error{
+        color:red;
+        font-size:18px;
+    }
+
+    #loginForm{
+        text-align:center;
+    }
+
+    #loginForm .logo span{
+        font-size:24px !important;
+    }
+
+    #loginForm .input-area{
+        margin:16px 0 12px;
+    }
+
+    #loginForm .input-item{
+        margin-bottom:12px;
+    }
+
+    #loginForm .input-item:last-child{
+        margin-bottom:0;
+    }
+
+    #loginForm .input-item input{
+        border-radius:2px;
+    }
+
+    #loginForm .input-area input{
+        width:250px;
+        height:40px;
+        border:none;
+        background:#e8e9eb;
+        line-height:42px;
+        color:#333;
+        font-size:16px;
+        padding:0 15px;
+        outline:none;
+        text-align:left;
+    }
+
+    #loginForm button{
+        width:100%;
+        height:40px;
+        line-height:40px;
+        border-radius:5px;
+        background-color:#4e96d1;
+        color:#e0feff;
+        border:none;
+        font-size:14px;
+        cursor:pointer;
+        transition:0.3s;
+        outline:none;
+    }
+
+    #loginForm button:hover{
+        background-color:#3A89BF;
+        box-shadow:1px 2px 1px #102435;
+    }
+
+    #loginForm .input-area .captcha_wrap{
+        text-align:left;
+        overflow:hidden;
+    }
+
+    #loginForm .input-area .captcha_wrap input{
+        width:118px;
+        float:left;
+    }
+
+    #loginForm .input-area .captcha_wrap img{
+        float:right;
+        width:120px;
+        height:40px;
+        border-radius:2px;
+        cursor:pointer;
+        font-size:14px;
+    }
+</style>
+<div id="react-placeholder"><%- loginForm %></div>
+<% // 页脚        %>
+<% showFooterContent = hideLangQRcode ? false : true %>
+<script src="/dll/dll.vendor.js"></script>
+<script src="/resources/login.bundle.js"></script>
+<% include ../../common/public/tpl/common-footer.ejs %>
