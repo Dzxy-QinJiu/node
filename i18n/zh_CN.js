@@ -197,6 +197,7 @@ var zh_CN = {
     "common.label.times": "次",
     "common.label.days": "天",
     "common.label.hours": "小时",
+    "common.app.minute": "分钟",
     //公共部分--end
     "login.login": "登录",
     "login.service.error": "很抱歉,服务器出现了异常状况",
@@ -1189,6 +1190,9 @@ var zh_CN = {
     "oplate_customer_analysis.14": "客户统计",
     "oplate_customer_analysis.15": "客户总数",
     "oplate_customer_analysis.16": "新增客户行业分布",
+    "oplate_customer_analysis.tried": "试用阶段客户",
+    "oplate_customer_analysis.projected": "立项报价阶段客户",
+    "oplate_customer_analysis.negotiated": "谈判阶段客户",
     // 客户分析end
     "contract.4": "甲方",
     "contract.5": "更新",
