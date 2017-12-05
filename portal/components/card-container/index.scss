@@ -1,0 +1,49 @@
+.box-container {
+  background-color: #fff;
+  overflow: hidden;
+  .box-title {
+    font-weight: bold;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 10px 15px;
+    .title-name {
+      font-size: 16px;
+      padding: 10px 15px;
+    }
+    .additional-content {
+      display: inline-block;
+      float: right;
+      .type-switch {
+        margin-right: 10px;
+        .ant-radio-button-wrapper {
+          padding: 0 5px;
+        }
+        .ant-radio-button-wrapper, .ant-radio-button-wrapper-checked {
+          border: none;
+          box-shadow: none;
+          border-color: transparent;
+        }
+        .ant-radio-button-wrapper::before, .ant-radio-button-wrapper-checked::before {
+          width: 0;
+        }
+
+        .ant-radio-group {
+          label {
+            font-size: 13px;
+          }
+          .ant-radio-button-wrapper-checked {
+            color: #4d96d1;
+            border-color: #4d96d1;
+          }
+        }
+      }
+      .export-file {
+        color: #4d96d1;
+        cursor: pointer;
+        .icon-export {
+          font-size: 13px;
+          padding-right: 5px;
+        }
+      }
+    }
+  }
+}

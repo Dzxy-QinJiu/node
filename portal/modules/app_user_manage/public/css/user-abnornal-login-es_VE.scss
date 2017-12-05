@@ -1,0 +1,67 @@
+//异常登录样式调整
+.user_manage_login_abnormal{
+  .abnormalLoginList{
+    position: relative;
+    word-wrap: break-word;
+    min-height: 300px;
+    padding-bottom: 20px;
+    //loading效果的样式
+    .load8{
+      position: absolute;
+      top:30px;
+      left:300px;
+      transform:scale(0.5, 0.5);
+      .loader8{
+        border-left-color:#394144;
+      }
+    }
+    .ant-alert-info{
+      clear: both;
+      width: 200px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    //加载出错后的提示
+    .ant-alert-error{
+      clear: both;
+      width: 350px;
+      text-align: center;
+      margin: 90px auto;
+    }
+    //右侧下拉框样式
+    .ant-select{
+      float: right;
+      margin:0 20px 30px 0;
+      width: 160px !important;
+    }
+    .group-by-day{
+      padding: 0 20px 0 10px;
+      clear: both;
+    }
+    .no-more-data-tip .ant-alert-info{
+      width: 100%;
+      margin: 0 0 70px 0;
+    }
+    //时间线样式
+    ul {
+      margin-left: 7px;
+      li {
+        padding-top: 5px;
+        dl {
+          dt {
+            color: #aaafb3;
+            margin-top: 10px;
+            font-weight: normal;
+          }
+
+          dd {
+            color: #464b4e;
+            white-space: normal;
+          }
+        }
+
+      }
+
+    }
+  }
+}

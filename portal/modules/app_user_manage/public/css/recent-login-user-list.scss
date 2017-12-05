@@ -1,0 +1,65 @@
+// /近期登录用户列表的样式
+#app{
+  .recent_login_users_panel.right-pannel-default{
+    width:auto;
+    left:75px;
+    transform:translateX(100%);
+    -webkit-transform:translateX(100%);
+    background-color:#fff;
+    display:block;
+
+    .recent-login-users-container{
+      .topNav{
+        margin-left:-75px;
+        //时间选择组件
+        .recent-login-time-select{
+          margin-top:20px;
+          margin-left:25px;
+        }
+        //应用选择下拉框
+        .recent-login-app-select{
+          margin-top:20px;
+          margin-left:20px;
+          .ant-select{
+            width:auto;
+          }
+        }
+        //类型选择下拉框
+        .recent-login-type-select{
+          margin-top: 20px;
+          margin-left: 20px;
+          .ant-select{
+            width: auto;
+          }
+        }
+      }
+      //近期登录用户列表
+      .recent-login-users-table-wrap{
+        padding:77px 50px 0 50px;
+      }
+
+      .ant-table-empty{
+        .ant-table-large{
+          .ant-table-body{
+            border-bottom:none !important;
+          }
+        }
+      }
+      .ant-table-row.current_row:hover,
+      .ant-table-row.current_row {
+        background: #DFEAF3;
+      }
+      .unnormal-login{
+        margin-right: 5px;
+        color: #f41919;
+        font-size: 12px
+      }
+      .summary_info{
+        font-size:13px;
+        color:#7c8185;
+        position:fixed;
+        bottom:20px;
+      }
+    }
+  }
+}

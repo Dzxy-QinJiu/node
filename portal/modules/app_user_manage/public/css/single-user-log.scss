@@ -1,0 +1,53 @@
+/**
+* 单个用户审计日志样式
+*/
+.user-log-panel {
+  .load8 {
+    transform: scale(0.5, 0.5);
+    height: 36px;
+    .loader8 {
+      border-left-color: #394144;
+    }
+  }
+  .log-info-header {
+    text-align:right;
+    .search-content, .log-type-select, .select-app, .select-time {
+      float: right;
+      margin-left: 5px;
+    }
+    .log-type-select,.select-app {
+      .ant-select{
+        width: auto;
+      }
+    }
+  }
+  .user-log-list {
+    .alert-wrap {
+      display: inline-block;
+      margin-left: 300px;
+    }
+    .time-over-range-tips {
+      text-align: center;
+    }
+    .log-info {
+      margin-top: 10px;
+      .log-info-item{
+        margin-bottom:10px;
+        padding:8px 0 2px 10px;
+        background:#dce4e7;
+        font-size:14px;
+        .operation{
+          font-weight:bold;
+        }
+        .log-detail{
+          padding-right:20px;
+          word-wrap:break-word;
+          white-space:pre-wrap;
+        }
+      }
+    }
+  }
+  .total-summary {
+    margin-top: 10px;
+  }
+}

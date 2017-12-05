@@ -1,0 +1,13 @@
+@import "./common-variables";
+@import "./common";
+.right-pannel-default{
+  .ant-radio + span{
+    width:50px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+//表格字体样式
+.ant-table.ant-table-large{
+  font-size: $table_font_size;
+}

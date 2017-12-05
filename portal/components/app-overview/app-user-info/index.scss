@@ -1,0 +1,48 @@
+.app-user-info {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  margin-right: 5px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  .total-title {
+    clear: both;
+    font-weight: bold;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 10px 15px;
+    .view-detail {
+      float: right;
+      padding-right: 15px;
+      color: #4d96d1;
+      cursor: pointer;
+      font-size: 13px;
+      padding-top: 4px;
+    }
+  }
+  .total-content {
+    clear: both;
+    .app-content {
+      margin-right: 10px;
+      display: inline-block;
+      padding: 10px 15px;
+      .app-number, .app-type {
+        display: block;
+      }
+      .app-number {
+        font-size: 32px;
+      }
+      .app-type {
+        font-size: 14px;
+        margin-top: -10px;
+      }
+    }
+    .app-content:nth-child(2) {
+      float: right;
+      text-align: right;
+    }
+  }
+  .app-show-title {
+    float: right;
+    color: #00ABEA;
+  }
+}

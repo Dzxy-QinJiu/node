@@ -1,0 +1,142 @@
+.schedule-list {
+  .render-schedule-content{
+    width:650px;
+    font-size: 14px;
+    .is-loading-schedule-list{
+      .load8 {
+        transform: scale(0.5, 0.5);
+        height: 36px;
+        .loader8 {
+          border-left-color: #394144;
+        }
+      }
+    }
+    .is-loading-schedule-list.show-spinner{
+      margin-top: 200px;
+    }
+    .form-wrapper {
+      //添加日程的样式
+      .topic-wrap{
+        input[name="topic"]{
+          width: 320px;
+        }
+        .schedule-topic{
+          width: 80px;
+          margin-left: 24px;
+        }
+      }
+      .content-wrap{
+        textarea{
+          width: 320px;
+        }
+      }
+      //自定义部分样式
+      .define-timerange-area{
+        font-size: 13px;
+        margin-left: -66px;
+        >div{
+          margin-top: 10px;
+        }
+        .define-full-day{
+          .define-timerange-label{
+            position: relative;
+            top:2px;
+          }
+        }
+        .define-timerange-label{
+          display: inline-block;
+          text-align: right;
+          width: 64px;
+          margin-right: 2px;
+        }
+        .react-date-picker__date-format-spinner input{
+          width: 70px;
+        }
+      }
+    }
+    .form-wrapper::before {
+      content: "";
+    }
+    .item-wrapper{
+      padding: 5px 0 10px 10px;
+      border-bottom: 2px solid #D1DADE;
+      dl {
+        dt {
+          color: #aaafb3;
+          margin-top: 10px;
+          font-weight: normal;
+          .schedule-content-label{
+            color: #33A3DC;
+            margin-right: 10px;
+          }
+          .icon-content{
+            margin-top: 10px;
+            .anticon {
+              margin-left: 15px;
+              color: #aaafb3;
+              cursor: pointer;
+              position: relative;
+              top: 4px;
+            }
+            button{
+              margin-left: 15px;
+            }
+          }
+        }
+        dd {
+          color: #464b4e;
+          white-space: normal;
+        }
+      }
+    }
+    form {
+      background: #d3dbe7;
+      border-radius: 4px;
+      padding: 10px 0 1px;
+      margin-left: 10px;
+    }
+    .ant-form-item {
+      label {
+        padding-bottom: 0;
+      }
+      input {
+        width: auto;
+      }
+      select{
+        margin-left: 20px;
+      }
+      .ant-form-explain {
+        float: none;
+      }
+      width: 100% !important;
+      margin-bottom: 10px;
+    }
+    .alert-btn-block {
+      .ant-btn {
+        margin-left: 8px;
+      }
+      text-align: right;
+    }
+    .ant-alert {
+      left: 50%;
+      margin-left: -110px;
+      top: 200px;
+    }
+    .bootstrap-datepicker-input {
+      border: inherit;
+      margin-right: 10px;
+      padding: 5px;
+    }
+    .react-date-picker__date-format-spinner--theme-default {
+      border: inherit;
+      border-radius: 4px;
+      background: #fff;
+      .react-flex-v2--column {
+        margin-left: -20px;
+        margin-right: 5px;
+        line-height: 18px;
+      }
+    }
+  }
+
+}

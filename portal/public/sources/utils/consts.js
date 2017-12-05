@@ -1,0 +1,55 @@
+/**
+ * Created by wangliping on 2017/9/8.
+ */
+//用户类型的下拉选项
+export const userTypeList = [
+    {name: Intl.get("user.online.all.type", "全部类型"), value: ""},
+    {name: Intl.get("user.signed.user", "签约用户"), value: "正式用户"},
+    {name: Intl.get("common.trial.user", "试用用户"), value: "试用用户"},
+    {name: Intl.get("user.online.free", "赠送用户"), value: "special"},
+    {name: Intl.get("user.online.train", "培训用户"), value: "training"},
+    {name: Intl.get("user.online.employee", "员工用户"), value: "internal"},
+];
+
+export const ALL_LOG_INFO = Intl.get("user.log.all", "全部日志");
+export const AUDIT_LOG = Intl.get("user.log.audit.log", "审计日志");
+export const HEARTBEAT_LOG = Intl.get("user.log.heartbeat.service", "心跳服务");
+export const ROLE_AUTH_LOG = Intl.get("user.log.role.auth", "角色权限");
+// 审计日志的下拉加载
+export const logTypeList = [
+    {name: ALL_LOG_INFO, value: ALL_LOG_INFO},
+    {name: AUDIT_LOG, value: AUDIT_LOG},
+    {name: HEARTBEAT_LOG, value: '心跳服务'},
+    {name: ROLE_AUTH_LOG, value: '角色权限'}
+];
+
+//客户名验证的正则表达式
+export const nameRegex = /^[\sa-zA-Z0-9_\-()（）.\u4e00-\u9fa5]{1,50}$/;
+
+export const SYSTEM_NOTICE_TYPES = {
+    OFFSITE_LOGIN: "illegalLocation",//异地登录
+    DISABLE_CUSTOMER_LOGIN: "appIllegal",//停用客户登录
+    FOCUS_CUSTOMER_LOGIN: "concerCustomerLogin"//关注客户登录
+};
+
+//系统消息对应的几种类型
+export const SYSTEM_NOTICE_TYPE_MAP = {
+    "appIllegal": Intl.get("ketao.frontpage.illeagl.login", "停用客户登录"),
+    "concerCustomerLogin": Intl.get("ketao.frontpage.focus.customer.login", "关注客户登录"),
+    "illegalLocation": Intl.get("ketao.frontpage.illegal.location.login", "异地登录")
+};
+
+export const NO_SELECT_FULL_OPTIONS = [
+    {value:"not_remind",name:Intl.get("crm.not.alert","不提醒")},
+    {value:"ahead_5min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":5})},
+    {value:"ahead_10min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":10})},
+    {value:"ahead_15min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":15})},
+    {value:"ahead_30min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":30})},
+    {value:"ahead_1h",name:Intl.get("crm.ahead.n.hour","提前{n}小时",{"n":1})}];
+export const SELECT_FULL_OPTIONS = [
+    {value:"not_remind",name:Intl.get("crm.not.alert","不提醒")},
+    {value:"thatday_10",name:Intl.get("crm.today.10.clock","当天上午10点")},
+    {value:"ahead_1day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":1})},
+    {value:"ahead_2day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":2})},
+    {value:"ahead_3day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":3})},
+];

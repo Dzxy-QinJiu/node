@@ -1,0 +1,67 @@
+/**
+* 用户分析样式
+*/
+.user-analysis-panel {
+  .load8 {
+    transform: scale(0.5, 0.5);
+    height: 36px;
+    .loader8 {
+      border-left-color: #394144;
+    }
+  }
+  // 应用选择框的样式
+  .user-analysis-header {
+    text-align: right;
+    .select-app {
+      .ant-select{
+        width: auto;
+        text-align:right;
+      }
+    }
+  }
+  .user-no-login {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  .user-login-info {
+    margin-top: 10px;
+    font-size:14px;
+    .login-info {
+      .login-stress{
+        font-weight:bold;
+      }
+      padding:0 0 2px 10px;
+      mix-height:80px;
+    }
+    .login-chart {
+      .box-container {
+        background-color: #E6EDEF;
+        .box-title {
+          border: none;
+          padding: 0;
+          .additional-content {
+            position: relative;
+            bottom: -25px;
+            z-index: 10;
+            .type-switch {
+              margin-right: 0;
+            }
+            .ant-radio-group {
+              .ant-radio-button-wrapper, .ant-radio-button-wrapper {
+                background-color: #E6EDEF;
+              }
+            }
+          }
+        }
+      }
+      .duration-chart {
+        height:186px;
+      }
+    }
+    .alert-tip {
+      text-align: center;
+      margin-top: 80px;
+    }
+  }
+}
