@@ -3,8 +3,6 @@
  */
 "use strict";
 var userInfoManageServic = require("../service/user-info-manage-service");
-
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
 var oldPwd = "88881234";
 
 //获取用户信息

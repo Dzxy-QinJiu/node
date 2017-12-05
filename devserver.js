@@ -24,6 +24,9 @@ new WebpackDevServer(webpack(config), {
         aggregateTimeout: 300,
         poll: 1000
     },
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+    },
 }).listen(8081, function (err, result) {
     if (err) {
         return console.log(err);

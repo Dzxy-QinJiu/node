@@ -14,6 +14,14 @@ module.exports = {
             "needLogin": true
         },
         "privileges": []
+    },{
+        "method": "post",
+        "path": "/rest/invalid_call_record/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order",
+        "handler": "getInvalidCallRecordList",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": []
     }, {
         "method": "put",
         "path": "/rest/call/edit/content",

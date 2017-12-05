@@ -14,7 +14,7 @@ const ContractImport = React.createClass({
     },
     handleChange(info) {
         this.setState({isLoading: true});        
-        if (info.file.percent === 100) {
+        if (info.file.status === "done") {
             Trace.traceEvent(this.getDOMNode(),"点击导入合同按钮");
             if (info.file.response.code === 0) {
                 contractEmitter.emit(contractEmitter.IMPORT_CONTRACT, info.file.response.result);

@@ -396,12 +396,12 @@ exports.getAddedExpiredIndustry = function(obj) {
 
 //获取用户活跃度统计
 var activeNessAjax;
-exports.getUserActiveNess = function(dataType,dataRange,obj) {
+exports.getUserActiveNess = function(dataType,dateRange,obj) {
     activeNessAjax && activeNessAjax.abort();
     obj = obj || {};
     var Deferred = $.Deferred();
     activeNessAjax = $.ajax({
-        url: `/rest/analysis/user/activeness/${dataType}/${dataRange}`,
+        url: `/rest/analysis/user/activeness/${dataType}/${dateRange}`,
         dataType: 'json',
         type: 'get',
         data: obj,
@@ -555,12 +555,12 @@ exports.getAddedExpiredMember = function(obj) {
 
 //获取用户登录时长统计
 var loginLongAjax;
-exports.getUserLoginLong = function(dataType,dataRange,obj) {
+exports.getUserLoginLong = function(dataType,dateRange,obj) {
     loginLongAjax && loginLongAjax.abort();
     obj = obj || {};
     var Deferred = $.Deferred();
     loginLongAjax = $.ajax({
-        url: `/rest/analysis/user/${dataType}/login_long/${dataRange}`,
+        url: `/rest/analysis/user/${dataType}/login_long/${dateRange}`,
         dataType: 'json',
         type: 'get',
         data: obj,
@@ -706,6 +706,29 @@ exports.getAppsZone = function(dataType, obj) {
             Deferred.resolve(data);
         },
         error: function (xhr,textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(xhr.responseText);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取应用下载的统计
+let appsDownloadAjax;
+exports.getAppsDownloadStatistics = (obj) => {
+    appsDownloadAjax && appsDownloadAjax.abort();
+    obj = obj || {};
+    let Deferred = $.Deferred();
+    appsDownloadAjax = $.ajax({
+        url: '/rest/app/download/statistics',
+        dataType: 'json',
+        type: 'get',
+        data: obj,
+        success:  (data) => {
+            Deferred.resolve(data);
+        },
+        error:  (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

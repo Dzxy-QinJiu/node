@@ -126,7 +126,7 @@ OplateUserAnalysisStore.prototype.resetChartData = function(type) {
         //总用户、新用户、过期用户
         dataType : "total",
         //数据类型（日活、周活、月活）
-        dataRange : "daily",
+        dateRange : "daily",
         //loading error ''
         resultType : type || '',
         //错误信息
@@ -143,7 +143,7 @@ OplateUserAnalysisStore.prototype.resetChartData = function(type) {
     //登录时长统计
     this.loginLong = {
         dataType : 'total',
-        dataRange : 1,
+        dateRange : 1,
         resultType : type || '',
         errorMsg : '',
         data : []
@@ -169,6 +169,13 @@ OplateUserAnalysisStore.prototype.resetChartData = function(type) {
     // 应用的启停用状态
     this.appStatus = {
         dataType : 'total',
+        resultType : type || '',
+        errorMsg : '',
+        data : []
+    };
+    
+    // 应用app下载统计
+    this.appDownload = {
         resultType : type || '',
         errorMsg : '',
         data : []
@@ -310,12 +317,12 @@ OplateUserAnalysisStore.prototype.getUserActiveNess = function(result) {
     if(result.loading) {
         activeNess.resultType = 'loading';
         activeNess.dataType = result.dataType;
-        activeNess.dataRange = result.dataRange;
+        activeNess.dateRange = result.dateRange;
         activeNess.errorMsg = '';
         activeNess.data = [];
     } else if(result.error) {
         activeNess.resultType = 'error';
-        activeNess.errorMsg = result.errorMsg;
+        activeNess.errorMsg = result.errorMsg || Intl.get("contract.111", "获取数据失败");
         activeNess.data = [];
     } else {
         activeNess.resultType = '';
@@ -642,6 +649,23 @@ OplateUserAnalysisStore.prototype.setLinkageTeam = function(team){
     this.team = team;
 };
 
+// 获取应用下载的统计
+OplateUserAnalysisStore.prototype.getAppsDownloadStatistics = function(result){
+    var appDownload = this.appDownload;
+    if(result.loading) {
+        appDownload.resultType = 'loading';
+        appDownload.errorMsg = '';
+        appDownload.data = [];
+    } else if(result.error) {
+        appDownload.resultType = 'error';
+        appDownload.errorMsg = result.errorMsg;
+        appDownload.data = [];
+    } else {
+        appDownload.resultType = '';
+        appDownload.errorMsg = '';
+        appDownload.data = result.data;
+    }
+};
 
 //导出 用户分析-用户构成 的store
 module.exports = alt.createStore(OplateUserAnalysisStore , 'OplateUserAnalysisStore');

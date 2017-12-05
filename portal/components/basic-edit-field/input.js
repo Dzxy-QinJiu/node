@@ -1,16 +1,16 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * input(输入框)显示、编辑 的组件
  * 可切换状态
  */
-import {Form, Input, Validation, Icon} from "antd";
+import {Form, Input, Icon} from "antd";
 var crypto = require("crypto");
 var classNames = require("classnames");
 var secretPassword = "";
 var FormItem = Form.Item;
-var Validator = Validation.Validator;
 import FieldMixin from "../antd-form-fieldmixin/index";
-var PasswordStrengthBar = require("../password-strength-bar/index").PassStrengthBar;
-var getPassStrenth = require("../password-strength-bar/index").getPassStrenth;
+import {PassStrengthBar} from "CMP_DIR/password-strength-bar";
 var autosize = require("autosize");
 import Trace from "LIB_DIR/trace";
 require("./css/basic-edit-field.scss");
@@ -137,6 +137,12 @@ var UserBasicEditField = React.createClass({
             } else {
                 user[_this.props.field] = value;
             }
+            //用于多传几个参数，以对象的格式传进来
+            if (!_.isEmpty(_this.props.extraParameter)){
+                for (var key in _this.props.extraParameter){
+                    user[key] = _this.props.extraParameter[key];
+                }
+            }
             _this.setState({
                 loading: true
             });
@@ -152,22 +158,27 @@ var UserBasicEditField = React.createClass({
 
             if ((_this.props.type === 'password' && value != secretPassword)
                 || (value != _this.state.value)) {
-                _this.props.saveEditInput(user).then(function (result) {
-                    if (result) {
-                        setDisplayState();
-                        _this.props.modifySuccess(user);
-                    } else {
+                if(_this.props.isMerge){//合并客户面板的处理
+                    _this.props.updateMergeCustomer(user);
+                    setDisplayState();
+                } else {
+                    _this.props.saveEditInput(user).then(function (result) {
+                        if (result) {
+                            setDisplayState();
+                            _this.props.modifySuccess(user);
+                        } else {
+                            _this.setState({
+                                loading: false,
+                                submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
+                            });
+                        }
+                    }, function (errorMsg) {
                         _this.setState({
                             loading: false,
-                            submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
+                            submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
                         });
-                    }
-                }, function (errorMsg) {
-                    _this.setState({
-                        loading: false,
-                        submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
                     });
-                });
+                }
             } else {
                 setDisplayState();
             }
@@ -214,12 +225,6 @@ var UserBasicEditField = React.createClass({
         }
     },
     onInputChange: function (e) {
-        if (this.props.type === 'password' && this.state.formData.input) {
-            var passStrength = getPassStrenth(e.target.value);
-            this.setState({
-                passStrength: passStrength
-            });
-        }
         this.setField.bind(this, 'input', e);
         this.props.onValueChange();
     },
@@ -281,7 +286,6 @@ var UserBasicEditField = React.createClass({
                                 <Input name="input"
                                        rows={this.props.type === 'textarea' ? this.props.rows : null}
                                        type={this.props.type}
-                                       maxLength={this.props.type==='password'?18:''}
                                        placeholder={this.props.placeholder}
                                        value={formData.input}
                                        onChange={this.onInputChange}
@@ -301,7 +305,7 @@ var UserBasicEditField = React.createClass({
         ) : null;
 
         var passwordStrengthBlock = this.props.showPasswordStrength && this.state.displayType === 'edit' && this.state.formData.input && this.state.passStrength.passBarShow ? (
-            <PasswordStrengthBar passStrength={this.state.passStrength.passStrength}/>
+            <PassStrengthBar passStrength={this.state.passStrength.passStrength}/>
         ) : null;
 
         return (

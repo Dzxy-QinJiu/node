@@ -148,19 +148,16 @@ $border-color:#d2d3d5;
           width:92px;
           display:inline-block;
           .ant-radio{
-            display:block;
+            display:inline-block;
             position:relative;
-            float:left;
-            width:20px;
-            height:30px;
-            line-height:30px;
+            width:14px;
+            height:14px;
             margin-right:0px;
+            margin-left: 5px;
           }
           span:nth-child(2){
-            display:block;
+            display:inline-block;
             position:relative;
-            float:left;
-            width:72px;
             line-height:25px;
             margin-left:0px;
           }

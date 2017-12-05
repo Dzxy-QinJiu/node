@@ -1,8 +1,6 @@
 var AppUserUtil = require("../util/app-user-util");
 import UserDetailAddAppActions from "../action/user-detail-add-app-actions";
 var userData = require("../../../../public/sources/user-data");
-var AppUserPanelSwitchAction = require("../action/app-user-panelswitch-actions");
-var AppUserDetailAction = require("../action/app-user-detail-actions");
 var AppUserAction = require("../action/app-user-actions");
 var DateSelectorUtils = require("../../../../components/date-selector/utils");
 var privilegeChecker = require("../../../../components/privilege/checker");
@@ -14,8 +12,6 @@ function UserDetailAddAppStore() {
     //绑定action
     this.bindActions(UserDetailAddAppActions);
 }
-
-const FORMAT = oplateConsts.DATE_FORMAT;
 
 //获取当前用户批量操作默认展示哪个tab
 function getMultipleSubType() {
@@ -130,7 +126,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //延期时间范围，默认是天
         delayTimeRange : "days",
         // 到期时间(选择到期时间)
-        delayDeadlineTime: '',
+        delayDeadlineTime: moment().add('days',1).valueOf(),
         //销售申请的备注
         remark : {
             //延期备注
@@ -271,7 +267,6 @@ UserDetailAddAppStore.prototype.setDelayDeadlineTime = function(val) {
     this.formData.delayDeadlineTime = val;
 };
 
-
 //批量操作的应用改变
 UserDetailAddAppStore.prototype.batchAppChange = function(appIds) {
     this.formData.batchSelectedApps = appIds;
@@ -294,8 +289,8 @@ UserDetailAddAppStore.prototype.setBatchSelectedAppError = function(error) {
 };
 
 //权限设置的应用改变
-UserDetailAddAppStore.prototype.rolePermissionAppChange = function(arr) {
-    this.formData.rolePermissionApp = arr[0];
+UserDetailAddAppStore.prototype.rolePermissionAppChange = function(appId) {
+    this.formData.rolePermissionApp = appId;
     this.roleSelectedAppError = false;
     this.formData.roles = [];
     this.formData.permissions = [];

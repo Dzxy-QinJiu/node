@@ -1,6 +1,6 @@
 //应用的所有者列表
 var owners = require("../../../user_manage/server/nock/data").userList;
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
+var uuid = require('uuid/v4');
 var App = require("../dto/appObj").App;
 
 var appList = [

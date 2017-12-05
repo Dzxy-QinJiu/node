@@ -1,4 +1,4 @@
-import {Validation, Form, Input, Button, Select, Icon, message} from "antd";
+import {Form, Input, Button, Select, Icon, message} from "antd";
 require("../../../../components/version-upgrade/version-upgrade-list.scss");
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;

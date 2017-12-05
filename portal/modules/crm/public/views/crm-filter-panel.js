@@ -1,12 +1,35 @@
-import { Button, Icon } from "antd";
-import { getSelected } from "../../../../lib/utils/filter-utils";
+import {Button, Icon} from "antd";
+import {getSelected} from "../../../../lib/utils/filter-utils";
 var FilterStore = require("../store/filter-store");
 var FilterAction = require("../action/filter-actions");
 import Trace from "LIB_DIR/trace";
-const PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
-const clueFilter = ["", Intl.get("user.distributed", "已分配销售跟进"),
-    Intl.get("user.undistributed", "未分配销售跟进")];
-var CrmFilterPanel = React.createClass({
+import {administrativeLevels} from "../utils/crm-util";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import userData from "PUB_DIR/sources/user-data";
+//行政级别筛选项
+let filterLevelArray = [{id: "", level: Intl.get("common.all", "全部")}].concat(administrativeLevels);
+const UNKNOWN = Intl.get("user.unknown", "未知");
+const otherFilterArray = [{
+    name: Intl.get("common.all", "全部"),
+    value: ""
+}, {
+    name: Intl.get("crm.over.day.without.contact", "超{day}天未联系", {day: 30}),
+    value: "thirty_uncontact"
+}, {
+    name: Intl.get("crm.over.day.without.contact", "超{day}天未联系", {day: 15}),
+    value: "fifteen_uncontact"
+}, {
+    name: Intl.get("crm.over.day.without.contact", "超{day}天未联系", {day: 7}),
+    value: "seven_uncontact"
+}];
+//只有管理员可以过滤未分配的客户
+if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+    otherFilterArray.push({
+        name: Intl.get("crm.213", "未分配客户"),
+        value: "undistributed"
+    });
+}
+const CrmFilterPanel = React.createClass({
     getInitialState: function () {
         return FilterStore.getState();
     },
@@ -19,6 +42,13 @@ var CrmFilterPanel = React.createClass({
         FilterAction.getStageList();
         FilterAction.getTagList();
         FilterAction.getIndustries();
+        //地域列表的获取
+        let type = "user";
+        //管理员获取地域列表的权限
+        if (hasPrivilege("CUSTOMER_MANAGER_PROVINCE_GET")) {
+            type = "manager";
+        }
+        FilterAction.getFilterProvinces(type);
     },
     componentDidUpdate: function (prevProps) {
         var filterPanelHeight = $(".crm-filter-panel").outerHeight(true);
@@ -37,9 +67,13 @@ var CrmFilterPanel = React.createClass({
     },
     stageSelected: function (stage) {
         const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
-
-        const newSelectedStages = getSelected(curSelectedStages, stage);
-
+        let newSelectedStages = getSelected(curSelectedStages, stage);
+        //未知的处理
+        if (stage == UNKNOWN || curSelectedStages == UNKNOWN) {
+            newSelectedStages = stage;
+        } else {
+            newSelectedStages = getSelected(curSelectedStages, stage);
+        }
         if (newSelectedStages === curSelectedStages) return;
 
         FilterAction.setStage(newSelectedStages);
@@ -59,6 +93,19 @@ var CrmFilterPanel = React.createClass({
 
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按团队筛选客户");
+    },
+    //行政级别的筛选
+    levelSelected: function (level) {
+        const curSelectedLevels = this.state.condition.administrative_level;
+
+        const newSelectedLevels = getSelected(curSelectedLevels, level);
+
+        if (newSelectedLevels === curSelectedLevels) return;
+
+        FilterAction.setLevel(newSelectedLevels);
+
+        setTimeout(() => this.props.search());
+        Trace.traceEvent($(this.getDOMNode()).find("li"), "按行政级别筛选客户");
     },
     tagSelected: function (tag) {
         let labels = this.state.condition.labels;
@@ -92,9 +139,13 @@ var CrmFilterPanel = React.createClass({
     },
     industrySelected: function (industry) {
         const curSelectedIndustrys = this.state.condition.industry;
-
-        const newSelectedIndustrys = getSelected(curSelectedIndustrys, industry);
-
+        let newSelectedIndustrys = "";
+        //未知的处理
+        if (industry == UNKNOWN || curSelectedIndustrys == UNKNOWN) {
+            newSelectedIndustrys = industry;
+        } else {
+            newSelectedIndustrys = getSelected(curSelectedIndustrys, industry);
+        }
         if (newSelectedIndustrys === curSelectedIndustrys) return;
 
         FilterAction.setIndustry(newSelectedIndustrys);
@@ -105,13 +156,15 @@ var CrmFilterPanel = React.createClass({
     },
     provinceSelected: function (province) {
         const curSelectedProvince = this.state.condition.province;
-
-        const newSelectedProvince = getSelected(curSelectedProvince, province);
-
+        let newSelectedProvince = "";
+        //未知的处理
+        if (province == UNKNOWN || curSelectedProvince == UNKNOWN) {
+            newSelectedProvince = province;
+        } else {
+            newSelectedProvince = getSelected(curSelectedProvince, province);
+        }
         if (newSelectedProvince === curSelectedProvince) return;
-
         FilterAction.setProvince(newSelectedProvince);
-
         setTimeout(() => this.props.search());
         province = province ? province : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按地域筛选");
@@ -130,19 +183,22 @@ var CrmFilterPanel = React.createClass({
         contact = contact ? contact : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按联系方式筛选");
     },
-    //线索客户的筛选
-    clueSelect: function (clue) {
-        const curSelectedClue = this.state.condition.clue;
-
-        const newSelectedClue = getSelected(curSelectedClue, clue);
-
-        if (newSelectedClue === curSelectedClue) return;
-
-        FilterAction.setClue(newSelectedClue);
-
+    otherSelected: function (item) {
+        //当前选择的是之前选择的时
+        if (item === this.state.condition.otherSelectedItem) {
+            if (item) {//不是全部时，则取消当前选项的选择
+                item = "";
+            } else {//全部时，不做处理
+                return;
+            }
+        }
+        FilterAction.setOtherSelectedItem(item);
         setTimeout(() => this.props.search());
-        clue = clue ? clue : "全部";
-        Trace.traceEvent($(this.getDOMNode()).find("li"), "按线索筛选");
+        if (item === otherFilterArray[1].value) {//超30天未联系
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
+        } else if (item === otherFilterArray[2].value) {
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
+        }
     },
     render: function () {
         const appListJsx = this.state.appList.map((app, idx) => {
@@ -181,7 +237,13 @@ var CrmFilterPanel = React.createClass({
             return <li key={idx} onClick={this.industrySelected.bind(this, item)}
                        className={className}>{item || Intl.get("common.all", "全部")}</li>
         });
-        const provinceListJsx = ["", Intl.get("user.unknown", "未知")].map((item, idx) => {
+        //行政级别
+        const levelListJsx = filterLevelArray.map((item, idx) => {
+            let className = this.state.condition.administrative_level.split(",").indexOf(item.id) > -1 ? "selected" : "";
+            return <li key={idx} onClick={this.levelSelected.bind(this, item.id)}
+                       className={className}>{item.level}</li>
+        });
+        const provinceListJsx = ["", Intl.get("user.unknown", "未知")].concat(this.state.provinceList).map((item, idx) => {
             let className = this.state.condition.province.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
                        className={className}>{item || Intl.get("common.all", "全部")}</li>
@@ -191,14 +253,6 @@ var CrmFilterPanel = React.createClass({
             let className = this.state.condition.contact.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.contactSelected.bind(this, item)}
                        className={className}>{item || Intl.get("common.all", "全部")}</li>
-        });
-        //线索筛选
-        const clueFilterJsx = clueFilter.map((item, idx) => {
-            let className = this.state.condition.clue.split(",").indexOf(item) > -1 ? "selected" : "";
-            return (
-                <li key={idx} onClick={this.clueSelect.bind(this, item)}
-                    className={className}>{item || "全部"}</li>
-            )
         });
         return (
             <div data-tracename="筛选">
@@ -238,6 +292,12 @@ var CrmFilterPanel = React.createClass({
                         </dd>
                     </dl>
                     <dl>
+                        <dt>{Intl.get("crm.administrative.level", "行政级别")} :</dt>
+                        <dd>
+                            <ul>{levelListJsx}</ul>
+                        </dd>
+                    </dl>
+                    <dl>
                         <dt>{Intl.get("crm.96", "地域")} :</dt>
                         <dd>
                             <ul>{provinceListJsx}</ul>
@@ -249,14 +309,20 @@ var CrmFilterPanel = React.createClass({
                             <ul>{contactListJsx}</ul>
                         </dd>
                     </dl>
-                    <PrivilegeChecker check="CUSTOMER_GET_CLUE">
-                        <dl>
-                            <dt>{Intl.get("crm.clue", "线索")} :</dt>
-                            <dd>
-                                <ul>{clueFilterJsx}</ul>
-                            </dd>
-                        </dl>
-                    </PrivilegeChecker>
+                    <dl>
+                        <dt>{Intl.get("crm.186", "其他")} :</dt>
+                        <dd>
+                            <ul>
+                                {otherFilterArray.map(item => {
+                                    return (
+                                        <li onClick={this.otherSelected.bind(this, item.value)}
+                                            className={this.state.condition.otherSelectedItem === item.value ? "selected" : ""}>
+                                            {item.name}
+                                        </li>);
+                                })}
+                            </ul>
+                        </dd>
+                    </dl>
                 </div>
             </div>
         );

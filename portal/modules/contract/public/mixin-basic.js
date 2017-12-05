@@ -1,14 +1,15 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 合同基本资料相关面板共用部分
  *
  * 包括共用状态和方法的定义以及共用字段的渲染
  */
 
-import { Form, Validation, Input, Select, DatePicker, Radio } from "antd";
+import { Form, Input, Select, DatePicker, Radio } from "antd";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const Validator = Validation.Validator;
 const AutosizeTextarea = require("../../../components/autosize-textarea");
 import ajax from "../common/ajax";
 import routeList from "../common/route";
@@ -240,7 +241,7 @@ export default {
                  label={Intl.get("contract.34", "签订时间")}
             >
                 <DatePicker
-                    value={new Date(this.state.formData.date)}
+                    value={moment(this.state.formData.date)}
                     onChange={this.setField.bind(this, "date")}
                 />
             </FormItem>

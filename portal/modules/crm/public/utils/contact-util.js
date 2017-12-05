@@ -81,7 +81,7 @@ exports.deleteContactFromContactListView = function (list, contact) {
 //将所有的默认联系人设置为非默认联系人
 exports.unsetDefaultContacts = function (list) {
     _.each(list, function (item) {
-        item.contact.def_contancts = false;
+        item.contact.def_contancts = "false";
     });
 };
 

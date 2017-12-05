@@ -1,5 +1,8 @@
-import {Alert,Icon} from "antd";
-import {Button as BootstrapButton,Modal as BootstrapModal} from "react-bootstrap";
+/**
+ * Oplate.hideSomeItem 用来判断西语的运行环境
+ * */
+import {Alert, Icon} from "antd";
+import {Button as BootstrapButton, Modal as BootstrapModal} from "react-bootstrap";
 import UserStatusSwitch from "./user-status-switch";
 var AppUserDetailStore = require("../store/app-user-detail-store");
 var AppUserStore = require("../store/app-user-store");
@@ -17,6 +20,7 @@ var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
 var measureText = require("PUB_DIR/sources/utils/measure-text");
 var Organization = require("./v2/organization");
 import UserCustomer from "CMP_DIR/user_manage_components/user-customer";
+import {getPassStrenth, passwordRegex} from "CMP_DIR/password-strength-bar";
 var UserDetailFieldSwitch = require("./user-detail-field-switch");
 var language = require("PUB_DIR/language/getLanguage");
 var AppUserAjax = require("../ajax/app-user-ajax");
@@ -204,7 +208,7 @@ var UserDetailBasic = React.createClass({
     },
     renderOverDraft: function (app) {
         var over_draft = /^[210]$/.test((app.over_draft + '')) ? app.over_draft + '' : '1';
-        if(over_draft == '0'){
+        if (over_draft == '0') {
             return Intl.get("user.status.immutability", "不变");
         } else if (over_draft == '1') {
             return Intl.get("user.status.stop", "停用");
@@ -272,16 +276,17 @@ var UserDetailBasic = React.createClass({
                     <span><ReactIntl.FormattedMessage id="user.start.time"
                                                       defaultMessage="启用时间"/>：{displayStartTime}</span>
                     <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间"/>：{displayEndTime}</span>
-                    <span><ReactIntl.FormattedMessage id="user.user.type"
-                                                      defaultMessage="用户类型"/>：{this.getUserTypeText(app)}</span>
-                     <span><ReactIntl.FormattedMessage id="user.expire.status"
-                                                       defaultMessage="到期状态"/>：{this.renderOverDraft(app)}</span>
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
+                                                                               defaultMessage="用户类型"/>：{this.getUserTypeText(app)}</span>}
+                    <span><ReactIntl.FormattedMessage id="user.expire.status"
+                                                      defaultMessage="到期状态"/>：{this.renderOverDraft(app)}</span>
                     <span><ReactIntl.FormattedMessage id="common.app.status"
                                                       defaultMessage="开通状态"/>：{this.renderStatus(app)}</span>
-                    <span><ReactIntl.FormattedMessage id="user.two.step.certification"
-                                                      defaultMessage="二步认证"/>：{this.renderIsTwoFactor(app)}</span>
-                    <span><ReactIntl.FormattedMessage id="user.multi.login"
-                                                      defaultMessage="多人登录"/>：{this.renderMultiLogin(app)}</span>
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
+                                                                               defaultMessage="二步认证"/>：{this.renderIsTwoFactor(app)}</span>}
+
+                    {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.multi.login"
+                                                                               defaultMessage="多人登录"/>：{this.renderMultiLogin(app)}</span> }
                 </div>
             </div>
         );
@@ -328,9 +333,9 @@ var UserDetailBasic = React.createClass({
                                     nickName={app.app_name}
                                     userLogo={app.app_logo}
                                 />
-                                <p style={{width:maxWidth}}>{app.app_name}</p>
+                                <p style={{width: maxWidth}}>{app.app_name}</p>
                             </div>
-                            <div className="desp pull-left" style={{width:despWidth}}>
+                            <div className="desp pull-left" style={{width: despWidth}}>
                                 {
                                     _this.renderAppInfo(app)
                                 }
@@ -348,7 +353,7 @@ var UserDetailBasic = React.createClass({
                                 className="operate"
                             >
                                 <a href="javascript:void(0)"
-                                   onClick={_this.editSingleApp.bind(_this,app)}
+                                   onClick={_this.editSingleApp.bind(_this, app)}
                                    title={Intl.get("user.app.change", "变更应用")}>
                                     <span className="iconfont icon-guanli"></span>
                                 </a>
@@ -383,7 +388,7 @@ var UserDetailBasic = React.createClass({
             ) : null
         );
     },
-    userBelongChange: function ({tag,customer_id,customer_name,sales_id,sales_name,sales_team_id,sales_team_name}) {
+    userBelongChange: function ({tag, customer_id, customer_name, sales_id, sales_name, sales_team_id, sales_team_name}) {
         //更改用户所属
         AppUserDetailAction.changeUserBelong({
             tag,
@@ -412,7 +417,7 @@ var UserDetailBasic = React.createClass({
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, userObj);
     },
     //修改组织成功
-    organizationChangeSuccess: function ({organization_id,organization_name}) {
+    organizationChangeSuccess: function ({organization_id, organization_name}) {
         AppUserDetailAction.changeUserOrganization({
             group_id: organization_id,
             group_name: organization_name
@@ -440,12 +445,29 @@ var UserDetailBasic = React.createClass({
         this.setState({isConfirmPasswordShow: false});
         this.refs.password.setState({displayType: "text"});
     },
-    //对确认密码 进行校验
+
+    //对密码 进行校验
     checkPass(rule, value, callback) {
-        if (value && value !== this.refs.password.state.formData.input) {
-            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-        } else {
+        if (value && value.match(passwordRegex)) {
+            let passStrength = getPassStrenth(value);
+            this.refs.password.setState({passStrength: passStrength});
             callback();
+        } else {
+            this.refs.password.setState({
+                passStrength: {
+                    passBarShow: false,
+                    passStrength: 'L'
+                }
+            });
+            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
+        }
+    },
+    //对确认密码 进行校验
+    checkRePass(rule, value, callback) {
+        if (value && value == this.refs.password.state.formData.input) {
+            callback();
+        } else {
+            callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
         }
     },
 
@@ -454,7 +476,7 @@ var UserDetailBasic = React.createClass({
         if (!hasPrivilege("APP_USER_EDIT")) {
             return userStatus === '1' ? Intl.get("common.enabled", "启用") : Intl.get("common.stop", "停用");
         }
-        return (<UserStatusSwitch userId={user.user_id} status={userStatus==='1'?true:false}/>);
+        return (<UserStatusSwitch userId={user.user_id} status={userStatus === '1' ? true : false}/>);
     },
     render: function () {
         var LoadingBlock = this.state.isLoading ? (
@@ -511,7 +533,7 @@ var UserDetailBasic = React.createClass({
                             field="nick_name"
                             type="text"
                             modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege("APP_USER_EDIT")?false:true}
+                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
                             validators={[{required: true, message: Intl.get("user.nickname.write.tip", "请填写昵称")}]}
                             placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
                             title={Intl.get("user.nickname.set.tip", "设置昵称")}
@@ -537,8 +559,12 @@ var UserDetailBasic = React.createClass({
                             value={userInfo.email}
                             field="email"
                             type="text"
-                            disabled={hasPrivilege("APP_USER_EDIT")?false:true}
-                            validators={[{type:"email",required:true,message:Intl.get("common.correct.email", "请输入正确的邮箱")}]}
+                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            validators={[{
+                                type: "email",
+                                required: true,
+                                message: Intl.get("common.correct.email", "请输入正确的邮箱")
+                            }]}
                             placeholder={Intl.get("member.input.email", "请输入邮箱")}
                             title={Intl.get("user.email.set.tip", "修改邮箱")}
                             saveEditInput={AppUserAjax.editAppUser}
@@ -555,8 +581,8 @@ var UserDetailBasic = React.createClass({
                             value={userInfo.phone}
                             field="phone"
                             type="text"
-                            disabled={hasPrivilege("APP_USER_EDIT")?false:true}
-                            validators={[{validator:this.checkPhone}]}
+                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            validators={[{validator: this.checkPhone}]}
                             placeholder={Intl.get("user.input.phone", "请输入手机号")}
                             title={Intl.get("user.phone.set.tip", "修改手机号")}
                             saveEditInput={AppUserAjax.editAppUser}
@@ -576,8 +602,8 @@ var UserDetailBasic = React.createClass({
                             type="password"
                             hideButtonBlock={true}
                             showPasswordStrength={true}
-                            disabled={hasPrivilege("APP_USER_EDIT")?false:true}
-                            validators={[{required: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}]}
+                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
+                            validators={[{validator: this.checkPass}]}
                             placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
                             title={Intl.get("user.batch.password.reset", "重置密码")}
                             onDisplayTypeChange={this.onPasswordDisplayTypeChange}
@@ -598,7 +624,7 @@ var UserDetailBasic = React.createClass({
                                 field="password"
                                 type="password"
                                 placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
-                                validators={[{required: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}, {validator: this.checkPass}]}
+                                validators={[{validator: this.checkRePass}]}
                                 onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                                 modifySuccess={this.onConfirmPasswordDisplayTypeChange}
                                 saveEditInput={AppUserAjax.editAppUser}
@@ -621,21 +647,17 @@ var UserDetailBasic = React.createClass({
                         {Intl.get("user.organization", "组织")}
                     </dt>
                     <dd>
-                        <PrivilegeChecker
-                            check="APP_USER_EDIT"
-                        >
-                            <Organization
-                                user_id={userInfo.user_id}
-                                showBtn={true}
-                                organization_id={userInfo.group_id}
-                                organization_name={userInfo.group_name}
-                                onModifySuccess={this.organizationChangeSuccess}
-                            />
-                        </PrivilegeChecker>
+                        <Organization
+                            user_id={userInfo.user_id}
+                            showBtn={true}
+                            organization_id={userInfo.group_id}
+                            organization_name={userInfo.group_name}
+                            onModifySuccess={this.organizationChangeSuccess}
+                        />
                     </dd>
                 </dl>
                 <dl className="dl-horizontal user_detail_item detail_item"
-                    style={{whiteSpace:"normal",wordBreak:"break-all"}}>
+                    style={{whiteSpace: "normal", wordBreak: "break-all"}}>
                     <dt>
                         {Intl.get("common.remark", "备注")}
                     </dt>
@@ -647,7 +669,7 @@ var UserDetailBasic = React.createClass({
                             field="description"
                             type="textarea"
                             modifySuccess={this.changeUserFieldSuccess}
-                            disabled={hasPrivilege("APP_USER_EDIT")?false:true}
+                            disabled={hasPrivilege("APP_USER_EDIT") ? false : true}
                             validators={[{message: Intl.get("user.remark.write.tip", "请填写备注")}]}
                             placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
                             title={Intl.get("user.remark.set.tip", "设置备注")}
@@ -693,7 +715,7 @@ var UserDetailBasic = React.createClass({
         var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
 
         return (
-            <div style={{height:fixedHeight}}>
+            <div style={{height: fixedHeight}}>
                 <GeminiScrollbar>
                     {LoadingBlock}
                     {ErrorBlock}

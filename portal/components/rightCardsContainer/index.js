@@ -85,6 +85,7 @@ var RihgtCardsContainer = React.createClass({
                             modalType={this.props.modalType}
                             type={this.props.type}
                             removeFailRealm={this.props.removeFailRealm}
+                            showAppOverViewPanel={this.props.showAppOverViewPanel}
                         />
                     </div>
                 </div>

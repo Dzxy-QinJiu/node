@@ -218,12 +218,14 @@ function getPrivileges(req) {
 }
 
 exports.getUserInfo = function (req, res, userId) {
+    //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
+    var queryObj = {with_extentions:false};
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.getUserInfo + "/" + userId,
             req: req,
             res: res
-        }, {}, {
+        }, queryObj, {
             success: function (userEventEmitter, userData) {
                 //获取详细角色信息
                 //能从中区分出销售主管、舆情秘书等细分角色

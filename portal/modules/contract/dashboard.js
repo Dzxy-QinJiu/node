@@ -8,7 +8,8 @@ import TopNav from "../../components/top-nav";
 import { CHART_HEIGHT } from "./consts";
 import AnalysisFilter from "../../components/analysis/filter";
 import TeamTree from "../../components/team-tree";
-import { formatAmount } from "./public/utils";
+import { formatAmount } from "LIB_DIR/func";
+import CardContainer from 'CMP_DIR/card-container'; // 容器
 
 const threeMonthAgo = moment().subtract(3, "month").valueOf();
 const now = moment().valueOf();
@@ -65,6 +66,13 @@ const ContractDashboard = React.createClass({
             item.value = formatAmount(item.value);
             return item;
         });
+    },
+    renderChartContent(content) {
+        return (
+            <div className="chart-content">
+                {content}
+            </div>
+        );
     },
     render: function () {
         const countBoxStyle = {
@@ -201,6 +209,7 @@ const ContractDashboard = React.createClass({
                     type: "cost",
                     property: "team=amount",
                     autoAdjustXaxisLabel: true,
+                    xAxisRotateLength: 8,
                     gridY2: 70,
                 })
             },
@@ -238,6 +247,19 @@ const ContractDashboard = React.createClass({
                     endTime: now,
                 })
             },
+            {
+                title: Intl.get("contract.166", "签单情况统计表") + "(" + Intl.get("contract.160", "单位") + ": " + Intl.get("contract.155", "元") + ")",
+                style: {
+                    width: "100%",
+                    marginRight: 0
+                },
+                content: this.getComponent(Analysis, {
+                    chartType: "signingStatistics",
+                    target: "Contract",
+                    type: "team",
+                    property: "amount",
+                })
+            },
         ];
 
         return (
@@ -251,13 +273,10 @@ const ContractDashboard = React.createClass({
                         return chart.hide? null : (
                             <div className="chart-wrap" style={chart.style || {}}>
                                 {chart.title && !chart.isTitleHide ? (
-                                <div className="chart-title">
-                                    {chart.title}
-                                </div>
-                                ) : null}
-                                <div className="chart-content">
-                                    {chart.content}
-                                </div>
+                                    <CardContainer title={chart.title}>
+                                        {this.renderChartContent(chart.content)}
+                                    </CardContainer>
+                                ) : this.renderChartContent(chart.content) }
                             </div>
                         );
                     })}

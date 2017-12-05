@@ -7,8 +7,17 @@
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 
-var url = "/rest/customer/v1/contacts";
 const v2Url = "/rest/customer/v2/contacts";
+
+//获取联系人列表
+exports.getContactList = function (req, res, reqBody) {
+    return restUtil.authRest.post(
+        {
+            url: v2Url + "/query/" + req.params.type + "/all/10",
+            req: req,
+            res: res
+        }, reqBody);
+};
 
 //设置默认联系人
 exports.setDefault = function (req, res, id) {

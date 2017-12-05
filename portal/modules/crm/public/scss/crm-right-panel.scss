@@ -61,7 +61,7 @@ $font-color: #5D5D5D;
   .crm-right-panel-content {
     width: 100%;
     height: 100%;
-    padding: 20px;
+    padding: 0 20px 20px;
     .ant-form-item {
       color: $font-color;
     }
@@ -178,5 +178,33 @@ $font-color: #5D5D5D;
     .form-cancel-btn{
       margin-right:16px;
     }
+  }
+}
+
+//某个客户下的用户列表
+.customer-user-list-panel.right-pannel-default {
+  width: auto;
+  left: 75px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background-color: #fff;
+  display: block;
+  .no-more-data-tip .ant-alert{
+    width: 100%;
+    top:0;
+    left:0;
+  }
+  .user_manage_return_block{
+    .icon-return.return-btn{
+      margin-top: 22px;
+      margin-left: 14px;
+    }
+    .customer_name_wrap{
+      font-size: 15px;
+      margin-top: 40px;
+    }
+  }
+  .topNav .topnav-links-wrap{
+    display: none!important;
   }
 }

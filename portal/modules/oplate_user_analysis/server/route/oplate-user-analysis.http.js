@@ -295,6 +295,15 @@ module.exports = {
         }
     }, {
         "method": "get",
+        //路径 用户类型统计（新增用户类型）
+        "path": "/rest/new/user/:analysis_type/type",
+        "handler": "getAddedUserTypeStatistics",
+        //是否需要登录
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        "method": "get",
         //路径 应用的启停用状态统计
         "path": "/rest/analysis/app/:analysis_type/status",
         "handler": "getAppStatus",
@@ -304,7 +313,7 @@ module.exports = {
     }, {
         "method": "get",
         //路径 全部应用下的，团队统计
-        "path": "/rest/analysis/user/v1/apps/:analysis_type/:team",
+        "path": "/rest/analysis/user/v1/apps/:analysis_type/team",
         "handler": "getAppsTeam",
         "passport": {
             "needLogin": true
@@ -312,7 +321,7 @@ module.exports = {
     }, {
         "method": "get",
         //路径 全部应用下的，行业统计
-        "path": "/rest/analysis/user/v1/apps/:analysis_type/:industry",
+        "path": "/rest/analysis/user/v1/apps/:analysis_type/industry",
         "handler": "getAppsIndustry",
         "passport": {
             "needLogin": true
@@ -320,8 +329,16 @@ module.exports = {
     }, {
         "method": "get",
         //路径 全部应用下的，地域统计
-        "path": "/rest/analysis/user/v1/apps/:analysis_type/:zone",
+        "path": "/rest/analysis/user/v1/apps/:analysis_type/zone",
         "handler": "getAppsZone",
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        "method": "get",
+        //路径 获取应用下载的统计
+        "path": "/rest/app/download/statistics",
+        "handler": "getAppsDownloadStatistics",
         "passport": {
             "needLogin": true
         }

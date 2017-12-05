@@ -2,6 +2,7 @@
  * Created by wangliping on 2016/10/18.
  */
 "use strict";
+const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 var organizationRestApis = {
@@ -9,10 +10,13 @@ var organizationRestApis = {
     getOrganizationMemberList: "/rest/base/v1/usergroup/users",
     getMemberList: "/rest/base/v1/user/search",
     addMember: "/rest/base/v1/usergroup/user",
-    editMember: "/rest/base/v1/usergroup/user",
+    setUserToManager: "/rest/base/v1/usergroup/user/exchange",
+    setManagerToUser: "/rest/base/v1/usergroup/manager/exchange",
     deleteGroup: "/rest/base/v1/usergroup",
     editGroup: "/rest/base/v1/usergroup",
-    addGroup: "/rest/base/v1/usergroup"
+    addGroup: "/rest/base/v1/usergroup",
+    addDepartment: "/rest/base/v1/usergroup/department",
+    addTeam: "/rest/base/v1/usergroup/team"
 };
 exports.urls = organizationRestApis;
 
@@ -101,10 +105,14 @@ exports.addMember = function (req, res, obj) {
         obj);
 };
 
-exports.editMember = function (req, res, obj) {
+exports.editMember = function (req, res, obj, type) {
+    let url = organizationRestApis.setUserToManager;
+    if (type == "manager") {
+        url = organizationRestApis.setManagerToUser;
+    }
     return restUtil.authRest.put(
         {
-            url: organizationRestApis.editMember,
+            url: url,
             req: req,
             res: res
         },
@@ -130,10 +138,18 @@ exports.editGroup = function (req, res, organization) {
         organization);
 };
 
-exports.addGroup = function (req, res, organization) {
+exports.addGroup = function (req, res, organization, category) {
+    let addUrl = organizationRestApis.addGroup;
+    if (category == CATEGORY_TYPE.DEPARTMENT) {
+        //部门
+        addUrl = organizationRestApis.addDepartment;
+    } else if (category == CATEGORY_TYPE.TEAM) {
+        //团队
+        addUrl = organizationRestApis.addTeam;
+    }
     return restUtil.authRest.post(
         {
-            url: organizationRestApis.addGroup,
+            url: addUrl,
             req: req,
             res: res
         },

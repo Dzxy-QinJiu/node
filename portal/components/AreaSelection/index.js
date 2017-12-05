@@ -4,8 +4,6 @@ var Input = require("antd").Input;
 var Icon = require("antd").Icon;
 var TabPane = Tabs.TabPane;
 var FormItem = Form.Item;
-var Validation = require("antd").Validation;
-var Validator = Validation.Validator;
 require("./css/index.scss");
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
@@ -19,9 +17,10 @@ var AreaSelection = React.createClass({
             prov: null,
             city: null,
             county: null,
-            provName: this.props.prov ? this.props.prov : null,
-            cityName: this.props.city ? this.props.city : null,
-            countyName: this.props.county ? this.props.county : null
+            provName: this.props.prov || null,
+            cityName: this.props.city || null,
+            countyName: this.props.county || null,
+            isAlwayShow: this.props.isAlwayShow || false//地域下拉框是否一直展示
         };
     },
     componentWillMount: function () {
@@ -36,8 +35,10 @@ var AreaSelection = React.createClass({
         });
     },
     componentWillReceiveProps: function (nextProps) {
-        this.switchLayer("none");
-        const state = {};
+        if(!nextProps.isAlwayShow){
+            this.switchLayer("none");
+        }
+        const state = {isAlwayShow: nextProps.isAlwayShow || false};
 
         if (nextProps.prov !== this.props.prov) {
             state.provName = nextProps.prov || null;
@@ -111,6 +112,9 @@ var AreaSelection = React.createClass({
         if ((typeof status) === "string") {
             $(".area-selector-container").css("display", status);
         } else {
+            if (this.state.isAlwayShow) {
+                return;
+            }
             $(".area-selector-container").toggle();// 地区选择容器展示/隐藏
         }
         $(".area-selector .anticon").toggleClass("active");// 箭头方向调整
@@ -121,6 +125,9 @@ var AreaSelection = React.createClass({
         addressVal += this.state.cityName ? "/" + this.state.cityName : "";
         addressVal += this.state.countyName ? "/" + this.state.countyName : "";
         return addressVal;
+    },
+    onChange: function (activeKey) {
+        this.setState({activeKey});
     },
     render: function () {
         var data = this.state.areaData;
@@ -179,25 +186,25 @@ var AreaSelection = React.createClass({
         return (
             <div className="area-selector" style={style}>
                 <FormItem
-                    id={this.props.id?this.props.id : "location"}
-                    labelCol={{span: this.props.labelCol?this.props.labelCol : 6}}
-                    wrapperCol={{span:this.props.wrapperCol?this.props.wrapperCol: 17}}
+                    id={this.props.id ? this.props.id : "location"}
+                    labelCol={{span: this.props.labelCol ? this.props.labelCol : 6}}
+                    wrapperCol={{span: this.props.wrapperCol ? this.props.wrapperCol : 17}}
                     className="input-arrow"
-                    label={this.props.label?this.props.label : Intl.get("realm.address", "地址")}
+                    label={this.props.label ? this.props.label : Intl.get("realm.address", "地址")}
                     hasFeedback
-                    help={this.props.help?this.props.help : ""}
+                    help={this.props.help ? this.props.help : ""}
                 >
                     <Input
-                        placeholder={this.props.placeholder?this.props.placeholder:Intl.get("realm.edit.address.placeholder", "请选择地址")}
+                        placeholder={this.props.placeholder ? this.props.placeholder : Intl.get("realm.edit.address.placeholder", "请选择地址")}
                         id="area-input"
                         name="area-input"
                         readOnly=""
                         onClick={this.switchLayer}
                         value={this.getAddressVal()}/>
-                    <Icon type="down"/>
+                    {this.props.isAlwayShow?null:<Icon type="down"/>}
 
                     <div className="area-selector-container">
-                        <Tabs activeKey={this.state.activeKey} type="card">
+                        <Tabs activeKey={this.state.activeKey} type="card" onChange={this.onChange}>
                             <TabPane tab={Intl.get("realm.select.address.province", "省份")} key="1">
                                 <div onClick={this.selectProv}>
                                     <div className="address-prov"><span className="prov-nav-span">A-G</span>

@@ -829,7 +829,7 @@ class DateSelector extends React.Component{
             );
             popover = (
                 <Popover
-                    overlay={overlay}
+                    content={overlay}
                 >
                     <Icon type="question-circle-o" />
                 </Popover>

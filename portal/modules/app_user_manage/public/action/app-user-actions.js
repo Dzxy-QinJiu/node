@@ -83,7 +83,11 @@ function AppUserAction() {
         //获取团队列表,用于页面展示
         'getTeamLists',
         // 获取安全域列表
-        'getRealmList'
+        'getRealmList',
+        //设置是否展示近期登录用户列表的标识
+        'setRecentLoginPanelFlag',
+        //恢复初始数据
+        'setInitialData'
     );
 
     //关闭右侧面板

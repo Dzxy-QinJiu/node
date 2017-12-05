@@ -1,8 +1,7 @@
 var language = require("../../../../public/language/getLanguage");
+require('PUB_DIR/css/card-info-common.scss');
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../components/cardInfo/cardInfo-es_VE.scss");
-}else if (language.lan() == "zh"){
-    require("../../../../components/cardInfo/cardInfo-zh_CN.scss");
+    require('PUB_DIR/css/card-info-es.scss');
 }
 import {Spin,Icon,Pagination,Form,Input,Tag,Alert} from "antd";
 var FormItem = Form.Item;
@@ -20,15 +19,8 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var userData = require('../../../../public/sources/user-data');
 var ModalDialog = require("../../../../components/ModalDialog");
 var saveTimer = null;
-import {defineMessages,injectIntl} from 'react-intl';
-import reactIntlMixin from '../../../../components/react-intl-mixin';
 import Trace from "LIB_DIR/trace";
-
-const messages = defineMessages({
-    member_is_or_not:{id:'member.is.or.not'},//"是否{modalStr}{modalType}"
-});
 var AppInfo = React.createClass({
-        mixins: [reactIntlMixin],
         getInitialState: function () {
             return {
                 appInfo: $.extend(true, {}, this.props.appInfo),
@@ -311,7 +303,10 @@ var AppInfo = React.createClass({
         render: function () {
             //当前要展示的信息
             var appInfo = this.state.appInfo;
-            var modalContent = this.props.intl['formatMessage'](messages.member_is_or_not,{modalStr:this.state.modalStr,modalType:this.props.modalType});
+            var modalContent = Intl.get("member.is.or.not","是否{modalStr}{modalType}",{
+                "modalStr":this.state.modalStr,
+                "modalType":this.props.modalType
+            });
             var className = "right-panel-content";
             if (!this.props.appInfoShow) {
                 if (this.props.appFormShow ||
@@ -336,15 +331,19 @@ var AppInfo = React.createClass({
                                 <RightPanelForbid onClick={this.showForbidModalDialog}
                                                        isActive={this.state.appInfo.status==0}/>
                          </PrivilegeChecker>
+                        {/**v8环境，不显示系统公告、版本升级记录、用户类型设置*/}
+                        { !Oplate.hideSomeItem &&
                         <PrivilegeChecker check={"GET_APPLICATION_RECORD" || "ADD_APPLICATION_RECORD"}>
                            <RightPanelVersionUpgrade onClick={this.showVersionUpgradePanel}/>
-                        </PrivilegeChecker>
+                        </PrivilegeChecker>}
+                        { !Oplate.hideSomeItem &&
                         <PrivilegeChecker check={"GET_APPLICATION_NOTICE" || "ADD_APPLICATION_NOTICE"}>
                            <RightPanelAppNotice onClick={this.showAppNoticePanel}/>
-                        </PrivilegeChecker>
+                        </PrivilegeChecker>}
+                        { !Oplate.hideSomeItem &&
                         <PrivilegeChecker check={"GET_APP_EXTRA_GRANTS"}>
                            <RightPanelUserTypeConfig  onClick={this.showUserTypeConfigPanel}/>
-                        </PrivilegeChecker>
+                        </PrivilegeChecker> }
                     </div>
                     <HeadIcon headIcon={this.state.appInfo.image} iconDescr={this.state.appInfo.name}
                               userName={userName}
@@ -391,4 +390,4 @@ var AppInfo = React.createClass({
     })
     ;
 
-module.exports = injectIntl(AppInfo);
+module.exports = AppInfo;

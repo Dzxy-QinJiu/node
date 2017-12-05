@@ -6,17 +6,7 @@ import OnlineUserIndexStore from "./store";
 import OnlineUserIndexAction from "./action";
 import UserDetail from "../../app_user_manage/public/views/user-detail";
 import {RightPanel} from "../../../components/rightPanel";
-import "../../app_user_manage/public/css/main-es_VE.scss";
-
-//生成类型下拉选项
-const typeList = [
-    {name: Intl.get("user.online.all.type", "全部类型"), value: ""},
-    {name: Intl.get("user.signed.user", "签约用户"), value: Intl.get("common.trial.official", "正式用户")},
-    {name: Intl.get("common.trial.user", "试用用户"), value: Intl.get("common.trial.user", "试用用户")},
-    {name: Intl.get("user.online.free", "赠送用户"), value: "special"},
-    {name: Intl.get("user.online.train", "培训用户"), value: "training"},
-    {name: Intl.get("user.online.employee", "员工用户"), value: "internal"},
-];
+import {userTypeList} from "PUB_DIR/sources/utils/consts";
 
 //生成状态下拉选项
 const statusList = [
@@ -78,6 +68,10 @@ const UserOnlineList = React.createClass({
     onStoreChange: function () {
         this.setState(this.getInitialState());
     },
+    //选中某个应用
+    appSelected:function (appObj) {
+        OnlineUserIndexAction.setSelectedAppId(appObj);
+    },
     render: function () {
         return (
             <div data-tracename="在线用户列表页面">
@@ -86,19 +80,21 @@ const UserOnlineList = React.createClass({
                         <TopNav.MenuList/>
                         <OnlineUserFilter
                             appList={this.state.appList}
-                            typeList={typeList}
-                            statusList={statusList}/>
+                            typeList={userTypeList}
+                            statusList={statusList}
+                            appSelected={this.appSelected}
+                        />
                     </TopNav>
                     <OnlineUserList
                         appList={this.state.appList}
-                        typeList={typeList}
+                        typeList={userTypeList}
                         statusList={statusList}/>
                 </div>
                 <RightPanel className="app_user_manage_rightpanel white-space-nowrap online_user_list_rightpanel"
                             showFlag={this.state.showRightPanel}>
                     {
                         this.state.selectedUserId ? (
-                            <UserDetail userId={this.state.selectedUserId}/>
+                            <UserDetail userId={this.state.selectedUserId} selectedAppId={this.state.selectedAppId}/>
                         ) : null
                     }
                 </RightPanel>

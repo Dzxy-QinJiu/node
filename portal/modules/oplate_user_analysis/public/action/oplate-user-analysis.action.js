@@ -242,10 +242,10 @@ function OplateUserAnalysisActions() {
     };
     //获取用户活跃度统计
     // 类型(数据类型 (总数、新增、新增过期)  数据类型 (日活、周活、月活) )
-    this.getUserActiveNess = function(dataType,dataRange,obj) {
+    this.getUserActiveNess = function(dataType,dateRange,obj) {
         var _this = this;
-        _this.dispatch({loading:true,error:false , dataType : dataType , dataRange : dataRange});
-        OplateUserAnalysisAjax.getUserActiveNess(dataType,dataRange,obj).then(function(data) {
+        _this.dispatch({loading:true,error:false , dataType : dataType , dateRange : dateRange});
+        OplateUserAnalysisAjax.getUserActiveNess(dataType,dateRange,obj).then(function(data) {
             _this.dispatch({loading:false,error:false,data:data});
         } , function(errorMsg) {
             _this.dispatch({loading:false,error:true,errorMsg:errorMsg});
@@ -308,10 +308,10 @@ function OplateUserAnalysisActions() {
 
     //获取用户登录时长统计
     // 类型(数据类型 (总数、新增、新增过期)  时长 (数字，单位：小时) )
-    this.getUserLoginLong = function(dataType,dataRange,obj) {
+    this.getUserLoginLong = function(dataType,dateRange,obj) {
         var _this = this;
-        _this.dispatch({loading:true,error:false,dataType:dataType,dataRange:dataRange});
-        OplateUserAnalysisAjax.getUserLoginLong(dataType,dataRange,obj).then(function(data) {
+        _this.dispatch({loading:true,error:false,dataType:dataType,dateRange:dateRange});
+        OplateUserAnalysisAjax.getUserLoginLong(dataType,dateRange,obj).then(function(data) {
             _this.dispatch({loading:false,error:false,data:data});
         } , function(errorMsg) {
             _this.dispatch({loading:false,error:true,errorMsg:errorMsg});
@@ -374,6 +374,16 @@ function OplateUserAnalysisActions() {
     this.getAppsZone = function(dataType,obj) {
         this.dispatch({loading:true,error:false});
         OplateUserAnalysisAjax.getAppsZone(dataType,obj).then( (data) => {
+            this.dispatch({loading:false,error:false,data:data});
+        } , (errorMsg) => {
+            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        });
+    };
+
+    // 获取应用下载的统计
+    this.getAppsDownloadStatistics = function(obj) {
+        this.dispatch({loading:true,error:false});
+        OplateUserAnalysisAjax.getAppsDownloadStatistics(obj).then( (data) => {
             this.dispatch({loading:false,error:false,data:data});
         } , (errorMsg) => {
             this.dispatch({loading:false,error:true,errorMsg:errorMsg});

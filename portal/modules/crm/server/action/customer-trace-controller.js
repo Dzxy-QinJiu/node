@@ -34,3 +34,9 @@ exports.updateCustomerTraceList = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+/*
+ *
+ * 获取电话录音*/
+exports.getPhoneRecordAudio = function (req, res) {
+    customerTraceService.getPhoneRecordAudio(req, res);
+};

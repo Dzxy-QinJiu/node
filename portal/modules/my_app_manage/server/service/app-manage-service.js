@@ -26,7 +26,9 @@ var appRestApis = {
     // 导出角色
     exportRoleList: '/rest/base/v1/role/export',
     // 导入角色
-    importRole: "/rest/base/v1/role/import"
+    importRole: "/rest/base/v1/role/import",
+    // 获取应用piwik收集key值
+    getCurAppKey: "/rest/base/v1/application/piwik/key",
 };
 exports.urls = appRestApis;
 
@@ -145,4 +147,12 @@ exports.uploadRole = function (req, res, clientID, data) {
         req: req,
         res: res
     }, data);
+};
+// 获取用户类型配置
+exports.getCurAppKey = function(req, res, appId){
+    return restUtil.authRest.get({
+        url: appRestApis.getCurAppKey+ "/" + appId,
+        req: req,
+        res: res
+    }, null);
 };

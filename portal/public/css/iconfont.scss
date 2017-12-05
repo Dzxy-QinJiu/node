@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 58332 */
-  src: url('//at.alicdn.com/t/font_58332_nahxqid6mgyzaor.eot');
-  src: url('//at.alicdn.com/t/font_58332_nahxqid6mgyzaor.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_58332_nahxqid6mgyzaor.woff') format('woff'),
-  url('//at.alicdn.com/t/font_58332_nahxqid6mgyzaor.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_58332_nahxqid6mgyzaor.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_58332_9azvmld50o83erk9.eot');
+  src: url('//at.alicdn.com/t/font_58332_9azvmld50o83erk9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_58332_9azvmld50o83erk9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_58332_9azvmld50o83erk9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_58332_9azvmld50o83erk9.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -13,87 +13,105 @@
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  border-radius: 50% !important;
 }
 
-.icon-setting:before { content: "\e621"; }
-.icon-add:before { content: "\e605"; }
-.icon-member:before { content: "\e77f"; }
-.icon-close-pannel:before { content: "\e606"; }
-.icon-arrow-up:before { content: "\e60a"; }
-.icon-arrow-down:before { content: "\e608"; }
-.icon-tree-arrow-close:before { content: "\e615"; }
-.icon-stage:before { content: "\e6b9"; }
-.icon-add-btn:before { content: "\e620"; }
-.icon-crm:before { content: "\e7c8"; }
-.icon-tongzhi:before { content: "\e614"; }
-.icon-guanli:before { content: "\e61d"; }
-.icon-app:before { content: "\e671"; }
-.icon-role-auth-config:before { content: "\e61b"; }
-.icon-zone:before { content: "\e664"; }
-.icon-xiajiantou:before { content: "\e603"; }
-.icon-time:before { content: "\e632"; }
-.icon-tuichu:before { content: "\e602"; }
-.icon-sys-notice:before { content: "\ea2f"; }
-.icon-app-view:before { content: "\e612"; }
-.icon-circle-unselect:before { content: "\e609"; }
-.icon-circle-selected:before { content: "\e610"; }
-.icon-close:before { content: "\e60b"; }
-.icon-forbid:before { content: "\e60c"; }
-.icon-choose:before { content: "\e60d"; }
-.icon-delete:before { content: "\e60e"; }
-.icon-update:before { content: "\e60f"; }
-.icon-o6:before { content: "\e600"; }
-.icon-app-grant:before { content: "\e680"; }
-.icon-organization:before { content: "\e68c"; }
-.icon-return:before { content: "\e601"; }
-.icon-hangye:before { content: "\e629"; }
-.icon-piliangcaozuo:before { content: "\e617"; }
-.icon-turn-user-list:before { content: "\e604"; }
-.icon-realm:before { content: "\e74f"; }
-.icon-dynamic-more:before { content: "\e607"; }
-.icon-basicinfo:before { content: "\e6be"; }
-.icon-team:before { content: "\e648"; }
-.icon-select-member:before { content: "\e611"; }
-.icon-tree-arrow-open:before { content: "\e613"; }
-.icon-app-upgrade:before { content: "\e63d"; }
-.icon-turn-arrow:before { content: "\e616"; }
-.icon-auditlog:before { content: "\e814"; }
-.icon-app-forced-upgrade:before { content: "\e62a"; }
-.icon-user:before { content: "\e626"; }
-.icon-upgrade:before { content: "\e61c"; }
-.icon-app-auth:before { content: "\e61e"; }
-.icon-sale-team-manager:before { content: "\e618"; }
-.icon-sale-team-owner:before { content: "\e619"; }
-.icon-iconfontlishijilv:before { content: "\e61a"; }
-.icon-privilege:before { content: "\e623"; }
-.icon-role:before { content: "\e90b"; }
-.icon-notice:before { content: "\e61f"; }
-.icon-up-twoline:before { content: "\e622"; }
-.icon-down-twoline:before { content: "\e624"; }
-.icon-dashboard:before { content: "\e642"; }
-.icon-online:before { content: "\e625"; }
-.icon-apply:before { content: "\e628"; }
-.icon-analysis:before { content: "\e627"; }
-.icon-contract:before { content: "\e654"; }
-.icon-return-btn:before { content: "\e62b"; }
-.icon-shenqing:before { content: "\e780"; }
-.icon-radio:before { content: "\e62c";}
-.icon-import-btn:before { content: "\e62d";}
-.icon-search-repeat:before { content: "\e63a";}
-.icon-merge-btn:before { content: "\e62e";}
+.iconfont:before {
+  display: inherit !important;
+  background: none !important;
+  opacity: 1 !important;
+  position: relative !important;
+}
+
+.icon-setting:before { content: "\e621" !important; }
+.icon-add:before { content: "\e605" !important; }
+.icon-member:before { content: "\e77f" !important; }
+.icon-close-pannel:before { content: "\e606" !important; }
+.icon-arrow-up:before { content: "\e60a" !important; }
+.icon-arrow-down:before { content: "\e608" !important; }
+.icon-tree-arrow-close:before { content: "\e615" !important; }
+.icon-stage:before { content: "\e6b9" !important; }
+.icon-add-btn:before { content: "\e620" !important; }
+.icon-crm:before { content: "\e7c8" !important; }
+.icon-tongzhi:before { content: "\e614" !important; }
+.icon-guanli:before { content: "\e61d" !important; }
+.icon-app:before { content: "\e671" !important; }
+.icon-role-auth-config:before { content: "\e61b" !important; }
+.icon-zone:before { content: "\e664" !important; }
+.icon-xiajiantou:before { content: "\e603" !important; }
+.icon-time:before { content: "\e632" !important; }
+.icon-tuichu:before { content: "\e602" !important; }
+.icon-sys-notice:before { content: "\ea2f" !important; }
+.icon-app-view:before { content: "\e612" !important; }
+.icon-circle-unselect:before { content: "\e609" !important; }
+.icon-circle-selected:before { content: "\e610" !important; }
+.icon-close:before { content: "\e60b" !important; }
+.icon-forbid:before { content: "\e60c" !important; }
+.icon-choose:before { content: "\e60d" !important; }
+.icon-delete:before { content: "\e60e" !important; }
+.icon-update:before { content: "\e60f" !important; }
+.icon-o6:before { content: "\e600" !important; }
+.icon-app-grant:before { content: "\e680" !important; }
+.icon-organization:before { content: "\e68c" !important; }
+.icon-return:before { content: "\e601" !important; }
+.icon-hangye:before { content: "\e629" !important; }
+.icon-piliangcaozuo:before { content: "\e617" !important; }
+.icon-turn-user-list:before { content: "\e604" !important; }
+.icon-realm:before { content: "\e74f" !important; }
+.icon-dynamic-more:before { content: "\e607" !important; }
+.icon-basicinfo:before { content: "\e6be" !important; }
+.icon-team:before { content: "\e648" !important; }
+.icon-select-member:before { content: "\e611" !important; }
+.icon-tree-arrow-open:before { content: "\e613" !important; }
+.icon-app-upgrade:before { content: "\e63d" !important; }
+.icon-turn-arrow:before { content: "\e616" !important; }
+.icon-auditlog:before { content: "\e814" !important; }
+.icon-app-forced-upgrade:before { content: "\e62a" !important; }
+.icon-user:before { content: "\e626" !important; }
+.icon-upgrade:before { content: "\e61c" !important; }
+.icon-app-auth:before { content: "\e61e" !important; }
+.icon-sale-team-manager:before { content: "\e618" !important; }
+.icon-sale-team-owner:before { content: "\e619" !important; }
+.icon-iconfontlishijilv:before { content: "\e61a" !important; }
+.icon-privilege:before { content: "\e623" !important; }
+.icon-role:before { content: "\e90b" !important; }
+.icon-notice:before { content: "\e61f" !important; }
+.icon-up-twoline:before { content: "\e622" !important; }
+.icon-down-twoline:before { content: "\e624" !important; }
+.icon-dashboard:before { content: "\e642" !important; }
+.icon-online:before { content: "\e625" !important; }
+.icon-apply:before { content: "\e628" !important; }
+.icon-analysis:before { content: "\e627" !important; }
+.icon-contract:before { content: "\e654" !important; }
+.icon-return-btn:before { content: "\e62b" !important; }
+.icon-shenqing:before { content: "\e780" !important; }
+.icon-radio:before { content: "\e62c" !important;}
+.icon-import-btn:before { content: "\e62d" !important;}
+.icon-search-repeat:before { content: "\e63a" !important;}
+.icon-merge-btn:before { content: "\e62e" !important;}
 .icon-usertypeconfig:before{content:"\e68e"}
 .icon-warn-icon:before{content:"\e62f"}
-.icon-kick-user:before { content: "\e630";}
+.icon-kick-user:before { content: "\e630" !important;}
 .icon-applyentry:before{content:"\e699"}
-.icon-call-back:before{content:"\e763";}
-.icon-visit:before{content:"\e633";}
-.icon-ketao-app:before{content:"\e634";}
+.icon-call-back:before{content:"\e763" !important;}
+.icon-visit:before{content:"\e633" !important;}
+.icon-ketao-app:before{content:"\e634" !important;}
 .icon-other:before{content:"\e635"}
-.icon-all:before { content: "\e636"; }
-.icon-refresh:before { content: "\e639"; }
-.icon-call-analysis:before { content: "\e63b"; }
-.icon-sales-goals:before { content: "\e673"; }
-.icon-call-out:before { content: "\e6ea"; }
-.icon-interested:before{ content:"\e63e";}
-.icon-uninterested:before{ content:"\e63c";}
-.icon-audio-play:before{content: "\e63f";}
+.icon-all:before { content: "\e636" !important; }
+.icon-refresh:before { content: "\e639" !important; }
+.icon-call-analysis:before { content: "\e63b" !important; }
+.icon-sales-goals:before { content: "\e673" !important; }
+.icon-call-out:before { content: "\e6ea" !important; }
+.icon-interested:before{ content:"\e63e" !important;}
+.icon-uninterested:before{ content:"\e63c" !important;}
+.icon-audio-play:before{content: "\e63f" !important;}
+.icon-phone-busy:before{content:"\e68a" !important;}
+.icon-phone-waiting:before{content:"\e69e" !important; }
+.icon-phone-answering:before{content:"\e8f1" !important; }
+.icon-phone-bye:before{content:"\e640" !important; }
+.icon-export:before { content: "\e641" !important; }
+.icon-zuzhi:before { content: "\e672"; }
+.icon-bumen:before { content: "\e69a"; }
+.icon-trace:before {content: "\e638";}
+.icon-app-detail:before { content: "\e703"; }
+.icon-hamburger:before{content:"\e661";}

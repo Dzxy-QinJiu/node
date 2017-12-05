@@ -3,6 +3,7 @@
 @import '../../../../public/css/common-variables';
 @import '../../../../components/antd-table-pagination/index.scss';
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.scss';
+@import "../../../../public/css/iconfont";
 
 .user_manage_filter_block .customer-switch-search{
   .search-input-container{
@@ -254,6 +255,17 @@
     .ant-pwd-strength{
       margin-left:0;
       margin-bottom:0;
+    }
+  }
+  .addapp_minor_items{
+    #password1,#password2{
+      width:100%;
+    }
+    .pass-strength-wrap{
+      .ant-pwd-strength{
+        padding-left: 100px;
+        margin-top: -40px;
+      }
     }
   }
 }
@@ -531,6 +543,19 @@
     position:relative;
   }
 
+  .recent-login-btn{
+    width: 28px;
+    height: 28px;
+    border: 1px solid #4d96d1;
+    border-radius: 3px;
+    text-align: center;
+    line-height: 27px;
+    margin-right: 15px;
+    cursor:pointer;
+    vertical-align: top !important;
+    margin-top: 23px;
+  }
+
   .add-btn{
     width:110px;
     height:75px;
@@ -554,6 +579,13 @@
     color:darkgray;
   }
 }
+.user_manage_return_block{
+  position: absolute;
+  .return-btn{
+    left: -50px;
+  }
+}
+
 
 .app_user_manage_page{
   .none{
@@ -629,7 +661,7 @@
       font-size:13px;
       color:#7c8185;
       position:fixed;
-      bottom:43px;
+      bottom:20px;
     }
     //下拉加载失败后，提示的样式
     .scroll-loading-data-error{
@@ -796,31 +828,6 @@
   }
 }
 
-//check button的样式
-@mixin check_button{
-  .ant-checkbox-checked{
-    .ant-checkbox-inner{
-      border-color:#2db7f5;
-      background-color:#2db7f5;
-      &:after{
-        left:10px;
-        top:3px;
-        width:10px;
-        height:18px;
-        border:4px solid #fff;
-        -webkit-transform:rotate(45deg) scale(1);
-        transform:rotate(45deg) scale(1);
-        position:absolute;
-        display:table;
-        border-top:0;
-        border-left:0;
-        content:' ';
-        -webkit-transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
-        transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
-      }
-    }
-  }
-}
 
 .ant-select-dropdown-menu-item.user_search_select{
   padding:0;
@@ -832,238 +839,6 @@
     }
     &:hover, &[data-selected="true"]{
       background:#eaf8fe;
-    }
-  }
-}
-
-// 用户审计日志样式
-.user_audit_log_container{
-  @mixin filter_btn_default{
-    display:inline-block;
-    margin-left:$filter_btn_internal;
-    position:relative;
-    float:left;
-    height:$input_height;
-  }
-  .user_audit_log_header{
-    position:absolute;
-    top:20px;
-    right:20px;
-    z-index:11;
-     .select-user-type, .user_audit_log_select_time, .user_audit_log_select_app{
-      @include filter_btn_default;
-    }
-    .user_audit_log_search_content{
-      @include filter_btn_default;
-      .search-input-container{
-        .search-input{
-          height:$input_height;
-        }
-      }
-    }
-    .user_audit_log_all{
-      @include filter_btn_default;
-      .ant-checkbox{
-        height:$input_height;
-      }
-      .ant-checkbox-inner{
-        width:30px;
-        height:$input_height;
-      }
-      @include check_button;
-      .refresh-button{
-        margin-left: 15px;
-        border-radius: 3px;
-        height: 30px;
-      }
-    }
-  }
-  .user_audit_log_information{
-    margin-top:-30px;
-  }
-  .summary_info{
-    font-size:12px;
-    color:#7c8185;
-    position:fixed;
-    bottom:20px;
-  }
-}
-
-.user_audit_log_page, .single_user_log_page{
-  position:fixed;
-  bottom:43px;
-  right:20px;
-}
-
-.single-user-log-header{
-  text-align:right;
-  .single-user-log-select-time, .single-user-log-select-app{
-    display:inline-block;
-    padding:10px 0;
-    vertical-align:middle;
-  }
-  .single-user-log-select-app{
-    margin-left:15px;
-    .ant-select{
-      width: auto;
-      margin-right: 15px;
-      text-align:left;
-    }
-  }
-  .single-user-log-select-time{
-    .range_wrap{
-      text-align:left;
-    }
-  }
-}
-
-.right-panel-audit-log{
-  .single-log-info-header{
-    text-align:right;
-    margin-top:15px;
-    margin-bottom:-20px;
-    .single-user-log-search-content{
-      display:inline-block;
-      .search-input-container{
-        .search-input{
-          height:$input_height;
-        }
-      }
-    }
-    .ant-checkbox{
-      margin-left:$filter_btn_internal;
-      height:$input_height;
-      margin-top:-4px;
-    }
-    .ant-checkbox-inner{
-      width:30px;
-      height:$input_height;
-    }
-    @include check_button;
-  }
-}
-
-.single-user-log-information{
-  margin-bottom:15px;
-  padding:8px 0 2px 10px;
-  background:#dce4e7;
-}
-
-.single-user-log-time-operation{
-  font-size:14px;
-  font-weight:bold;
-}
-
-.single-user-log-other-information{
-  font-size:14px;
-}
-
-.single-user-log-detail{
-  padding-right:20px;
-  word-wrap:break-word;
-  white-space:pre-wrap;
-}
-
-.user_audit_log_select_app .ant-select-selection--single,
-.single-user-log-select-app .ant-select-selection--single{
-  height:$input_height;
-  font-size:$form_font_size;
-  line-height:$line-height30;
-}
-
-.user_audit_log_select_app .ant-select-selection__rendered,
-.single-user-log-select-app .ant-select-selection__rendered{
-  line-height:$line-height30;
-}
-
-.right-panel-audit-log{
-  .load8{
-    transform:scale(0.5, 0.5);
-    .loader8{
-      border-left-color:#394144;
-    }
-  }
-  .duration-chart{
-    position:relative;
-    height:214px;
-    margin:0 20px 20px 0;
-    .ant-radio-group{
-      position:relative;
-      top:0;
-      left:526px;
-      label{
-        margin-right:-6px;
-      }
-    }
-    .echart_wrap{
-      margin-top:-30px;
-    }
-  }
-
-  .ant-alert-error, .ant-alert-message, .ant-alert-info{
-    display:inline-block;
-  }
-
-  .alert-wrap{
-    text-align:center;
-  }
-  .alert-wrap:first-child{
-    margin-top:20px;
-    position:absolute;
-    width:100%;
-  }
-
-  .total-summary{
-    margin-top:45px;
-    font-size:14px;
-  }
-
-  .no-more-data-tip{
-    .ant-alert-info{
-      margin-right:20px;
-      display:block;
-    }
-  }
-
-  .user-login{
-    height:340px;
-    font-size:14px;
-    .login-stress{
-      font-weight:bold;
-    }
-    .user-login-info{
-      .login-info{
-        padding:0 0 2px 10px;
-        background:#dce4e7;
-      }
-      height:100px;
-      border-bottom:1px solid #c6ceda;
-      margin-bottom:6px;
-    }
-  }
-  .user-log-list{
-    border-top:1px solid #c6ceda;
-    margin-top:-12px;
-    .log-tips{
-      font-size:14px;
-      margin-bottom:6px;
-    }
-  }
-}
-
-.user_audit_log_style{
-  .ant-table-pagination{
-    margin:20px 0;
-    float:right;
-  }
-  .alert-wrap{
-    text-align:center;
-    .ant-alert-error{
-      border:none;
-      background-color:#fff;
-    }
-    .ant-alert-error, .ant-alert-message, .ant-alert-info{
-      display:inline-block;
     }
   }
 }
@@ -1080,138 +855,3 @@
   }
 }
 
-//变更记录样式调整
-.user_manage_user_record{
-  .recordList{
-    position: relative;
-    word-wrap:break-word;
-    .intial-alert-wrap .ant-alert-error{
-      width: 350px;
-      text-align: center;
-      margin: 90px auto;
-    }
-    //右侧下拉框样式
-    .ant-select{
-      float: right;
-      margin:0 20px 30px 0;
-      width: 160px !important;
-    }
-    .group-by-day{
-      padding: 0 20px 0 10px;
-      clear: both;
-    }
-    .load8{
-      position: absolute;
-      top:30px;
-      left:300px;
-      transform:scale(0.5, 0.5);
-      .loader8{
-        border-left-color:#394144;
-      }
-    }
-    .ant-alert-info{
-      clear: both;
-      width: 200px;
-      text-align: center;
-      margin: 90px auto;
-    }
-    .ant-alert-error{
-      clear: both;
-      width: 350px;
-      text-align: center;
-      margin: 90px auto;
-    }
-    .group-by-day{
-      padding: 0 20px 0 10px;
-      clear: both;
-    }
-    //时间线样式
-    ul {
-      margin-left: 7px;
-      li {
-        padding-top: 5px;
-        dl {
-          dt {
-            color: #aaafb3;
-            margin-top: 10px;
-            font-weight: normal;
-          }
-
-          dd {
-            color: #464b4e;
-            white-space: normal;
-          }
-        }
-
-      }
-
-    }
-
-  }
-}
-//异常登录样式调整
-.user_manage_login_abnormal{
-  .abnormalLoginList{
-    position: relative;
-    word-wrap: break-word;
-    min-height: 300px;
-    //loading效果的样式
-    .load8{
-      position: absolute;
-      top:30px;
-      left:300px;
-      transform:scale(0.5, 0.5);
-      .loader8{
-        border-left-color:#394144;
-      }
-    }
-    .ant-alert-info{
-      clear: both;
-      width: 200px;
-      text-align: center;
-      margin: 90px auto;
-    }
-    //加载出错后的提示
-    .ant-alert-error{
-      clear: both;
-      width: 350px;
-      text-align: center;
-      margin: 90px auto;
-    }
-    //右侧下拉框样式
-    .ant-select{
-      float: right;
-      margin:0 20px 30px 0;
-      width: 160px !important;
-    }
-    .group-by-day{
-      padding: 0 20px 0 10px;
-      clear: both;
-    }
-    .no-more-data-tip .ant-alert-info{
-      width: 100%;
-      margin: 0 0 70px 0;
-    }
-    //时间线样式
-    ul {
-      margin-left: 7px;
-      li {
-        padding-top: 5px;
-        dl {
-          dt {
-            color: #aaafb3;
-            margin-top: 10px;
-            font-weight: normal;
-          }
-
-          dd {
-            color: #464b4e;
-            white-space: normal;
-          }
-        }
-
-      }
-
-    }
-  }
-}

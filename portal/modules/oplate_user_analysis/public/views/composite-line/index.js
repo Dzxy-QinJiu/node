@@ -39,7 +39,9 @@ var LineChart = React.createClass({
             list : [],
             title : Intl.get("customer.analysis.add.customer", "新增客户"),
             height:214,
-            resultType : 'loading'
+            resultType : 'loading',
+            isShowSplitLine: false,
+            isShowSplitArea: false
         };
     },
     getLegend : function() {
@@ -155,10 +157,11 @@ var LineChart = React.createClass({
             xAxis: [
                 {
                     type: "category",
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     splitLine : {
-                        lineStyle : {
-                            color:'#f2f2f2'
-                        }
+                        show: this.props.isShowSplitLine
                     },
                     axisLine : {
                         lineStyle : {
@@ -181,10 +184,11 @@ var LineChart = React.createClass({
             yAxis: [
                 {
                     type: "value",
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     splitLine : {
-                        lineStyle : {
-                            color:'#f2f2f2'
-                        }
+                        show: this.props.isShowSplitLine
                     },
                     axisLine : {
                         lineStyle : {

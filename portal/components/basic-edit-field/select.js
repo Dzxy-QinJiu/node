@@ -1,13 +1,14 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * select(下拉选择框)显示、编辑 的组件
  * 可切换状态
  */
 require("./css/basic-edit-field.scss");
-import {Form, Validation, Icon, Select} from "antd";
+import {Form, Icon, Select} from "antd";
 var classNames = require("classnames");
 import FieldMixin from "../antd-form-fieldmixin";
 var FormItem = Form.Item;
-var Validator = Validation.Validator;
 import Trace from "LIB_DIR/trace";
 
 let BasicEditSelectField = React.createClass({
@@ -17,6 +18,10 @@ let BasicEditSelectField = React.createClass({
             id: '1',
             //是否是多选(默认：单选)
             multiple: false,
+            //是否是输入框自动提示模式
+            combobox: false,
+            //是否匹配选项
+            filterOption: false,
             //字段
             field: "role",
             //是否能修改
@@ -65,13 +70,25 @@ let BasicEditSelectField = React.createClass({
         };
     },
     componentWillReceiveProps: function (nextProps) {
-        this.setState({
-            displayText: nextProps.displayText,
-            formData: {
-                select: nextProps.value
-            },
-            selectOptions: nextProps.selectOptions
-        });
+        if (nextProps.id !== this.props.id) {
+            this.setState({
+                loading: false,
+                displayText: nextProps.displayText,
+                formData: {
+                    select: nextProps.value
+                },
+                value: nextProps.value,
+                status: {
+                    select: {}
+                },
+                selectOptions: nextProps.selectOptions,
+                submitErrorMsg: ''
+            });
+        } else {
+            this.setState({
+                selectOptions: nextProps.selectOptions,
+            });
+        }
     },
     setEditable: function (e) {
         var formData = this.state.formData;
@@ -105,23 +122,28 @@ let BasicEditSelectField = React.createClass({
             }
 
             if (value != this.state.value) {
-                this.props.saveEditSelect(user).then(function (result) {
-                    if (result) {
-                        setDisplayState();
-                        _this.props.modifySuccess(user);
-                    }else{
+                if(_this.props.isMerge){//合并客户面板的处理
+                    _this.props.updateMergeCustomer(user);
+                    setDisplayState();
+                } else {
+                    this.props.saveEditSelect(user).then(function (result) {
+                        if (result) {
+                            setDisplayState();
+                            _this.props.modifySuccess(user);
+                        }else{
+                            _this.setState({
+                                loading: false,
+                                submitErrorMsg: ( Intl.get("common.edit.failed", "修改失败"))
+                            });
+                        }
+
+                    }, function (errorObj) {
                         _this.setState({
                             loading: false,
-                            submitErrorMsg: ( Intl.get("common.edit.failed", "修改失败"))
+                            submitErrorMsg: errorObj.message || ( Intl.get("common.edit.failed", "修改失败"))
                         });
-                    }
-
-                }, function (errorObj) {
-                    _this.setState({
-                        loading: false,
-                        submitErrorMsg: errorObj.message || ( Intl.get("common.edit.failed", "修改失败"))
                     });
-                });
+                }
             } else {
                 setDisplayState();
             }
@@ -179,7 +201,6 @@ let BasicEditSelectField = React.createClass({
             </div>
         );
 
-
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
                 <Form horizontal autoComplete="off">
@@ -192,8 +213,12 @@ let BasicEditSelectField = React.createClass({
                             help={status.select.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.select.errors && status.select.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
-                                <Select multiple={this.props.multiple} name="select"
+                                <Select multiple={this.props.multiple}
+                                        combobox={this.props.combobox}
+                                        filterOption={this.props.filterOption}
+                                        name="select"
                                         className="edit-select-item"
+                                        showSearch
                                         optionFilterProp="children"
                                         searchPlaceholder={this.props.placeholder}
                                         placeholder={this.props.placeholder}

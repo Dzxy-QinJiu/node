@@ -67,9 +67,6 @@ function UserStore() {
     this.userRoleList = [];
     //获取成员详情失败的错误提示
     this.getUserDetailError = "";
-    //当前成员的坐席号
-    this.curphoneOrder = "";
-
     this.isContinueAddButtonShow = false;
 
     this.bindActions(UserActions);
@@ -198,6 +195,7 @@ UserStore.prototype.getCurUserById = function (user) {
         curUser.roleNames = user.roleNames;
         curUser.teamName = user.teamName;
         curUser.teamId = user.teamId;
+        curUser.phoneOrder = user.phoneOrder;
         //获取成员详情中没有创建时间，所以用列表中获取的创建时间
         user.createDate = curUser.createDate;
         this.currentUser = user;
@@ -276,7 +274,6 @@ UserStore.prototype.afterEditUser = function (modifiedUser) {
                         }
                         this.curUserList[j].email = modifiedUser.email;
                     }
-                    this.curphoneOrder = modifiedUser.phone_order || '';
                     this.currentUser = this.curUserList[j];
                 }
                 break;
@@ -378,7 +375,6 @@ UserStore.prototype.returnInfoPanel = function (newAddUser) {
             newAddUser.emailEnable = false;
         }
         this.currentUser = newAddUser;
-        this.curphoneOrder = newAddUser.phoneOrder;
     }
     this.userInfoShow = true;
     this.userFormShow = false;
@@ -387,8 +383,6 @@ UserStore.prototype.returnInfoPanel = function (newAddUser) {
 UserStore.prototype.changeLogNum = function (num) {
     this.logNum = num;
 };
-UserStore.prototype.getPhoneOrderById = function (obj) {
-    this.curphoneOrder = obj.phone_order;
-}
+
 
 module.exports = alt.createStore(UserStore, 'UserStore');

@@ -286,15 +286,56 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
     if (data) {
         this.isEditMember = false;
         //当前展示组的信息
-        var curTeamId = data.groupId;
+        var curTeamId = data.group_id;
         var curShowTeam = _.find(this.salesTeamList, function (team) {
             if (team.group_id == curTeamId) {
                 return true;
             }
         });
-        curShowTeam.owner_id = data.ownerId;
-        curShowTeam.manager_ids = data.managerIds ? JSON.parse(data.managerIds) : [];
-        curShowTeam.user_ids = data.userIds ? JSON.parse(data.userIds) : [];
+        if (data.user_ids) {
+            data.user_ids = JSON.parse(data.user_ids);
+        }
+        if (data.type == "owner") {//所有者的处理
+            //删除所有者
+            delete curShowTeam.owner_id;
+            if (data.operate == "move_manager") {//将所有者设为管理员
+                if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
+                    curShowTeam.manager_ids.push(data.owner_id);
+                } else {
+                    curShowTeam.manager_ids = [data.owner_id];
+                }
+            } else if (data.operate == "move_member") {//将所有者设为普通成员
+                if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
+                    curShowTeam.user_ids.push(data.owner_id);
+                } else {
+                    curShowTeam.user_ids = [data.owner_id];
+                }
+            }
+        } else if (data.type == "manager") {//管理员的处理
+            //删除选中的管理员
+            curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, data.user_ids);
+            if (data.operate == "exchange_owner") {//将管理员设为所有者
+                curShowTeam.owner_id = data.user_ids[0];
+            } else if (data.operate == "exchange") {//将管理员设为普通成员
+                if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
+                    curShowTeam.user_ids = curShowTeam.user_ids.concat(data.user_ids);
+                } else {
+                    curShowTeam.user_ids = data.user_ids;
+                }
+            }
+        } else if (data.type == "user") {//普通成员的处理
+            //删除选中的普通成员
+            curShowTeam.user_ids = _.difference(curShowTeam.user_ids, data.user_ids);
+            if (data.operate == "exchange_owner") {//将普通成员设为所有者
+                curShowTeam.owner_id = data.user_ids[0];
+            } else if (data.operate == "exchange") {//将普通成员设为管理员
+                if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
+                    curShowTeam.manager_ids = curShowTeam.manager_ids.concat(data.user_ids);
+                } else {
+                    curShowTeam.manager_ids = data.user_ids;
+                }
+            }
+        }
         //更新左侧团队树中对应团队的成员信息
         this.salesTeamTree(true);
     }
@@ -311,34 +352,6 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
                 return true;
             }
         });
-        //添加负责人后
-        if (data.ownerId) {
-            //原来有负责人，将原负责人转到成员列表中
-            if (curShowTeam.owner_id) {
-                //该团队中原来就有成员则加入，原来无成员则新建成员列表
-                if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
-                    curShowTeam.user_ids.push(curShowTeam.owner_id);
-                } else {
-                    curShowTeam.user_ids = [curShowTeam.owner_id];
-                }
-            }
-            //将负责人设为新增负责人
-            curShowTeam.owner_id = data.ownerId;
-        }
-        //添加秘书后
-        var managerIds = JSON.parse(data.managerIds);
-        if (_.isArray(managerIds) && managerIds.length > 0) {
-            //该团队中原来就有秘书则加入新增秘书，原来无秘书则新建秘书列表
-            if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length > 0) {
-                managerIds.forEach(function (id) {
-                    curShowTeam.manager_ids.push(id);
-                });
-            } else {
-                curShowTeam.manager_ids = managerIds;
-            }
-
-        }
-
         //添加成员后
         var userIds = JSON.parse(data.userIds);
         if (_.isArray(userIds) && userIds.length > 0) {

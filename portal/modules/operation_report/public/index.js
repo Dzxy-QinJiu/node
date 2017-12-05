@@ -7,11 +7,8 @@ import {Select,Table,Button,Modal,Progress,message} from "antd";
 const ProgressLine = Progress.Line;
 import TopNav from "../../../components/top-nav";
 import NatureTimeSelect from "../../../components/nature-time-select";
-import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
-import reportAjax from "./ajax/ajax"
 import BarChart from "./view/bar";
 import CompositeLine from "../../oplate_user_analysis/public/views/composite-line";
-import SingleLine from "../../oplate_customer_analysis/public/views/single_line";
 import AreaLine from "./view/arealine";
 import OperationReportAction from "./action/operation-report-action";
 import OperationReportStore from "./store/operation-report-store";
@@ -19,6 +16,7 @@ import userData from "../../../public/sources/user-data"
 import html2canvasExport from "html2canvas";
 import jsPDF from "jspdf";
 import Trace from "LIB_DIR/trace";
+import { hasPrivilege } from "CMP_DIR/privilege/checker";
 
 let Option = Select.Option;
 const chartWidth = '100%', chartHeight = 214, rowHeight = 35;
@@ -84,6 +82,13 @@ let OperationReport = React.createClass({
         selectAppObj = selectAppObj ? JSON.parse(selectAppObj) : {};
         return selectAppObj[user.user_id];
     },
+    getAnalysisDataType() {
+        let type = "common";//USER_ANALYSIS_COMMON
+        if (hasPrivilege("USER_ANALYSIS_MANAGER")) {
+            type = "manager";
+        }
+        return type;
+    },
     //获取报告的数据,首次获取数据时，会先获取应用列表后，传入第一个应用作为默认应用
     getReportData(selectAppList){
         let isInit = false;//是否是首次加载
@@ -119,7 +124,8 @@ let OperationReport = React.createClass({
             OperationReportAction.getAppsUserCount({
                 app_id: appId,
                 starttime: oneWeekParams.start_time,
-                endtime: oneWeekParams.end_time
+                endtime: oneWeekParams.end_time,
+                authType:this.getAnalysisDataType()
             });
             //近四周用户活跃度
             OperationReportAction.getUserActive(fourWeekParams);

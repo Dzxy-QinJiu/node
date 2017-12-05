@@ -361,7 +361,8 @@ $edit-teamName-form-height:90px;
       padding-bottom:0px;
 
       .member-top-operation-div{
-        height:46px;
+        float: left;
+        width: 100%;
         border-bottom:1px solid $border-color;
         padding-left:10px;
         padding-right:10px;
@@ -385,6 +386,10 @@ $edit-teamName-form-height:90px;
           .sales-goals-item{
             display:inline-block;
             margin-right: 5px;
+            .ant-input-number-input-wrap {
+                height: 25px;
+                overflow: hidden;
+            }
             .team-goals-input, .member-goals-input{
               float:left;
               width:70px;
@@ -432,6 +437,8 @@ $edit-teamName-form-height:90px;
       //团队内成员展示区域样式设置
       .member-list-div{
         position:relative;
+        float: left;
+        width: 100%;
         padding-bottom:10px;
         padding-top:10px;
         //设置负责人、秘书、成员在不同行内展示,
@@ -454,13 +461,15 @@ $edit-teamName-form-height:90px;
         }
       }
       .operation-bottom-btn-div{
-        position:relative;
-        text-align:right;
-        border-top:1px solid $border-color;
-        height:40px;
-        line-height:40px;
+        position: relative;
+        float: right;
+        height: 40px;
+        line-height: 40px;
         .indicator{
-          top:4px;
+          top: 4px;
+          position: relative;
+          float: left;
+          right: 0;
         }
         .operation-bottom-btn{
           margin-left:14px;
@@ -619,13 +628,21 @@ $edit-teamName-form-height:90px;
   }
   //加为xx按钮的样式
   .set-select-member-btns{
+    position: relative;
     float:right;
-    margin-left:10px;
     .add-member-btn{
       width:100px;
       @extend .sales-team-item;
       margin-left:10px;
       margin-right:0;
+    }
+    .indicator {
+      position: relative;
+      float: left;
+      left: 0px;
+      top: 0;
+      right: auto;
+      text-align: center;
     }
   }
   //加为xx、删除按钮的hover事件
@@ -795,6 +812,7 @@ $edit-teamName-form-height:90px;
         margin-left:5px;
         font-size:$form_font_size;
         width:70px;
+        padding: 0;
       }
     }
     //搜索按钮的样式设置

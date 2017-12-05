@@ -1,8 +1,10 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 采购合同基本信息添加表单
  */
 
-import { Form, Validation } from "antd"
+import { Form } from "antd"
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import BasicMixin from "./mixin-basic";
 

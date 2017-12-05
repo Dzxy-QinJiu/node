@@ -19,12 +19,20 @@ $img-size: 70px;
   margin-bottom: 15px;
   .upload-img-container {
     position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
   }
   .update-logo-desr {
-    line-height: 70px;
     text-align: center;
     color: #ffffff;
     z-index: 1;
+    background-color: #99a5ad;
+    height: 20px;
+    bottom: 0;
+    top: auto;
     @extend .upload-img-public;
   }
   .upload-img-select {
@@ -34,12 +42,7 @@ $img-size: 70px;
     cursor: pointer;
     @extend .upload-img-public;
   }
-  .upload-img-layer {
-    border-radius: 50%;
-    background-color: #084E86;
-    opacity: 0.5;
-    @extend .upload-img-public;
-  }
+
   .cirle-image {
     margin-left: 175px;
     width: $img-size;
@@ -54,12 +57,5 @@ $img-size: 70px;
     text-align: center;
     margin-top: 10px;
     color: #5d5d5d;
-  }
-  .upload-img-tooltip {
-    float: right;
-    width: 110px;
-    margin-right: 50px;
-    margin-top: -78px;
-    white-space: normal;
   }
 }

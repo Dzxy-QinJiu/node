@@ -22,9 +22,8 @@ function AppActions() {
         'showVersionUpgradePanel',
         'setSelectStatus',
         // 系统公告
-        'showAppNoticePanel', 
+        'showAppNoticePanel',
         'showUserTypeConfigPanel'
-        
     );
 
     this.getCurAppList = function (searchObj) {
@@ -50,7 +49,7 @@ function AppActions() {
             _this.dispatch(errorMsg || Intl.get("app.get.app.detail.failed", "获取应用详情失败!"));
         });
     };
-
+    
     this.updateAppStatus = function (app) {
         var _this = this;
         appAjax.editApp(app).then(function (appModified) {
@@ -59,7 +58,6 @@ function AppActions() {
             }
         });
     };
-
 }
 
 module.exports = alt.createActions(AppActions);

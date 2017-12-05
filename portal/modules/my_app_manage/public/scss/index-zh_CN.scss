@@ -183,7 +183,7 @@
       .custom-top-menu-add-btn {
         position: absolute;
         right: 100px;
-        top: 22px;
+        top: 11px;
         z-index: 10;
         .my-app-manage-authority-style, .my-app-manage-role-style {
           display: inline;
@@ -361,6 +361,9 @@
   #add-app-notice-content {
     white-space: normal;
     word-break: break-all;
+  }
+  label.btn-default {
+    padding: 0 12px;
   }
 }
 

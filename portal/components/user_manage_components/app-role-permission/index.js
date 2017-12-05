@@ -27,7 +27,7 @@ var CONSTANTS = {
     NO_ROLE_DATA : Intl.get("user.curr.app.no.role", "当前应用没有角色数据"),
     NO_PERMISSION_DATA : Intl.get("user.curr.app.no.auth", "当前应用没有权限数据"),
     CONTACT_APP_ADMIN : Intl.get("user.contact.app.manager", "请联系应用管理员"),
-    RELOAD_TITLE : Intl.get("user.get.again.tip", "重新获取")
+    RELOAD_TITLE : Intl.get("common.get.again", "重新获取")
 };
 
 /**

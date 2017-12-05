@@ -59,12 +59,9 @@ exports.getMemberList = function (req, res) {
 exports.addMember = function (req, res) {
     var addMemberObj = {
         group_id: req.body.groupId,
-        owner_id: req.body.ownerId,
-        manager_ids: JSON.parse(req.body.managerIds),
         user_ids: JSON.parse(req.body.userIds)
     };
-    var flag = req.params.flag;
-    SalesTeamManageServic.addMember(req, res, addMemberObj, flag)
+    SalesTeamManageServic.addMember(req, res, addMemberObj)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (codeMessage) {
@@ -74,13 +71,7 @@ exports.addMember = function (req, res) {
 };
 
 exports.editMember = function (req, res) {
-    var editMemberObj = {
-        group_id: req.body.groupId,
-        owner_id: req.body.ownerId,
-        manager_ids: JSON.parse(req.body.managerIds),
-        user_ids: JSON.parse(req.body.userIds)
-    };
-    SalesTeamManageServic.editMember(req, res, editMemberObj)
+    SalesTeamManageServic.editMember(req, res, req.body)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (codeMessage) {

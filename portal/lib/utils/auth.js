@@ -65,6 +65,11 @@ function hasRole(req,role) {
     return roles.indexOf(role) >= 0;
 }
 
+// 获取项目运行的语言
+function getLang() {
+    return global.config.lang;
+}
+
 //角色对应单词
 const ROLE_CONSTANTS = {
     //应用管理员
@@ -99,3 +104,4 @@ exports.getToken = getAccesstoken;
 exports.clean = clean;
 exports.saveUserInfo = saveUserInfo;
 exports.getUser = getUser;
+exports.getLang = getLang;

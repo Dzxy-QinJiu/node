@@ -3,7 +3,6 @@
  */
 var echarts = require("echarts-eefung");
 require("./index.scss");
-var Color = require("color");
 var emitter = require("../../utils/emitter");
 var Spinner = require("../../../../../components/spinner");
 var immutable = require("immutable");
@@ -17,14 +16,16 @@ var SingleLineChart = React.createClass({
             list : [],
             title : Intl.get("user.analysis.total", "用户统计"),
             width:'100%',
-            height:214,
+            height:234,
             resultType : 'loading',
             /**
              * [
              *  {name : Intl.get("user.analysis.formal", "正式"),key : 'formal'}
              * ]
              */
-            legend : null
+            legend : null,
+            isShowSplitLine: false,
+            isShowSplitArea: false
         };
     },
     getLegend : function() {
@@ -96,8 +97,11 @@ var SingleLineChart = React.createClass({
             xAxis : [
                 {
                     type : 'category',
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     data : this.getCategorys(),
-                    splitLine : false,
+                    splitLine : this.props.isShowSplitLine,
                     axisLine : {
                         lineStyle : {
                             width:1,
@@ -118,7 +122,10 @@ var SingleLineChart = React.createClass({
             yAxis : [
                 {
                     type : 'value',
-                    splitLine : false,
+                    splitLine : this.props.isShowSplitLine,
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,

@@ -3,6 +3,7 @@ import DateSelectorUtils from '../../../../components/datepicker/utils';
 
 function SalesCallRecordStore() {
     this.filter_phone = false;
+    this.phone_type = "all";
     // 是否显示通话分析, 默认情况下不显示
     this.isShowCallAnalysisPanel = false;
     this.resetState();
@@ -40,8 +41,8 @@ SalesCallRecordStore.prototype.resetCallRecord = function() {
 
 //恢复状态
 SalesCallRecordStore.prototype.resetState = function () {
-    //默认展示本周的时间
-    var timeRange = DateSelectorUtils.getThisWeekTime(true);
+    //默认展示今天的时间
+    var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间
@@ -87,7 +88,7 @@ SalesCallRecordStore.prototype.getCallRecordList = function (serverData) {
 
 // 过滤电话
 SalesCallRecordStore.prototype.filterPhone = function(status) {
-    this.filter_phone = status ? true : false;
+    this.phone_type = status;
     this.resetCallRecord();
     this.callRecord.listenScrollBottom = false;
 };

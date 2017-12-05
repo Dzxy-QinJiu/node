@@ -1,22 +1,19 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/10/18.
  */
 
-var Validation = require("antd").Validation;
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Select = require("antd").Select;
-var Button = require("antd").Button;
-var Validator = Validation.Validator;
+import {Radio,Form,Input,Select,Button,Icon} from "antd";
+const RadioGroup = Radio.Group;
 var FormItem = Form.Item;
 var classNames = require("classnames");
 var AlertTimer = require("../../../../components/alert-timer");
-var Icon = require("antd").Icon;
 var OrganizationActions = require("../action/organization-actions");
-
+var language = require("PUB_DIR/language/getLanguage");
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
-
+const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 const messages = defineMessages({
     common_is_validiting: {id: 'common.is.validiting'},//正在校验中..
     common_input_character_rules: {id: 'common.input.character.rules'},//最少1个字符,最多8个字符
@@ -55,6 +52,7 @@ var OrganizationForm = React.createClass({
         } else {
             return {
                 title: '',
+                category: CATEGORY_TYPE.DEPARTMENT,
                 saveOrganizationMsg: "",
                 saveOrganizationResult: "",
                 isOrganizationSaving: false
@@ -146,7 +144,16 @@ var OrganizationForm = React.createClass({
                         groupName: formData.title
                     };
                     if (_this.props.organization) {
-                        addGroupData.parentGroup = _this.props.organization.key;//上级组织
+                        if (_this.props.organization.key) {
+                            addGroupData.parentGroup = _this.props.organization.key;//上级
+                        }
+                        if (_this.props.organization.category == CATEGORY_TYPE.ORGANIZATION) {
+                            // 组织上添加（团队、部门）时
+                            addGroupData.category = formData.category;
+                        } else if (_this.props.organization.category == CATEGORY_TYPE.DEPARTMENT) {
+                            //部门上添加子部门时
+                            addGroupData.category = CATEGORY_TYPE.DEPARTMENT;
+                        }
                     }
                     formData.isOrganizationSaving = true;
                     _this.setState({formData: formData});
@@ -187,14 +194,14 @@ var OrganizationForm = React.createClass({
             }
         }
     },
-    //渲染上级组织列表
+    //渲染上级部门列表
     renderSuperiorTeam: function () {
         var teamOptions = [];
         var organizationList = this.props.organizationList, curOrganization = this.props.organization;
         if (_.isArray(organizationList) && organizationList.length > 0) {
             organizationList.forEach(team=> {
-                //过滤掉当前组织及其下级组织
-                if (!this.findChildren(team.group_id, curOrganization)) {
+                //过滤掉当前部门的下级部门
+                if (team.category == CATEGORY_TYPE.DEPARTMENT && !this.findChildren(team.group_id, curOrganization)) {
                     teamOptions.push(<Option key={team.group_id} value={team.group_id}>
                         {team.group_name}
                     </Option>);
@@ -215,6 +222,10 @@ var OrganizationForm = React.createClass({
     cancelEnter: function (event) {
         event.preventDefault();
     },
+    onCategoryChange: function (event) {
+        this.state.formData.category = event.target.value;
+        this.setState({formData: this.state.formData});
+    },
     render: function () {
         var _this = this;
         var formData = this.state.formData;
@@ -227,6 +238,21 @@ var OrganizationForm = React.createClass({
             <div className={formClass}>
                 <Form horizontal className="form" onSubmit={this.cancelEnter}>
                     <Validation ref="validation" onValidate={this.handleValidate}>
+                        {//在组织上添加时，需要选择添加的是团队还是部门
+                            this.props.organization.isAddGroup && this.props.organization.category == CATEGORY_TYPE.ORGANIZATION ?
+                                <FormItem
+                                    label=" "
+                                    id="category"
+                                    labelCol={{span: language.lan() == "zh" ? 5 : 1}}
+                                    wrapperCol={{span: language.lan() == "zh" ? 18 : 23}}
+                                    colon={false}
+                                >
+                                    <RadioGroup onChange={this.onCategoryChange}
+                                                value={formData.category}>
+                                        <Radio value={CATEGORY_TYPE.DEPARTMENT}>{Intl.get("crm.113", "部门")}</Radio>
+                                        <Radio value={CATEGORY_TYPE.TEAM}>{Intl.get("user.user.team", "团队")}</Radio>
+                                    </RadioGroup>
+                                </FormItem> : null}
                         <FormItem
                             label={this.formatMessage(messages.common_definition)}
                             id="title"
@@ -241,35 +267,36 @@ var OrganizationForm = React.createClass({
                                        placeholder={this.formatMessage(messages.common_required_tip)}/>
                             </Validator>
                         </FormItem>
-                        {
-                            formData.superiorTeam ? (<FormItem
-                                label={this.formatMessage(messages.organization_sub_organization)}
-                                id="superiorTeam"
-                                labelCol={{span: 5}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle("superiorTeam")}
-                                help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
-                            >
-                                <Validator
-                                    rules={[{required: true, message: this.formatMessage(messages.organization_select_sub_organization)}]}>
-                                    <Select size="large" style={{width: '100%'}}
-                                            name="superiorTeam"
-                                            value={formData.superiorTeam}
-                                            placeholder={this.formatMessage(messages.organization_select_sub_organization)}
-                                            showSearch
-                                            optionFilterProp="children"
-                                            notFoundContent={this.formatMessage(messages.common_not_found)}
-                                            searchPlaceholder={this.formatMessage(messages.common_input_keyword)}
-                                    >
-                                        {this.renderSuperiorTeam()}
-                                    </Select>
-                                </Validator>
-                            </FormItem>) : null
+                        {//修改部门，上级也是部门时，可以修改上级部门
+                            formData.isEditGroup && formData.category == CATEGORY_TYPE.DEPARTMENT && this.props.parentGroup.category == CATEGORY_TYPE.DEPARTMENT ? (
+                                <FormItem
+                                    label={Intl.get("organization.parent.department", "上级部门")}
+                                    id="superiorTeam"
+                                    labelCol={{span: 5}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle("superiorTeam")}
+                                    help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
+                                >
+                                    <Validator
+                                        rules={[{required: true, message: Intl.get("organization.select.parent.department", "请选择上级部门")}]}>
+                                        <Select size="large" style={{width: '100%'}}
+                                                name="superiorTeam"
+                                                value={formData.superiorTeam}
+                                                placeholder={Intl.get("organization.select.parent.department", "请选择上级部门")}
+                                                showSearch
+                                                optionFilterProp="children"
+                                                notFoundContent={this.formatMessage(messages.common_not_found)}
+                                                searchPlaceholder={this.formatMessage(messages.common_input_keyword)}
+                                        >
+                                            {this.renderSuperiorTeam()}
+                                        </Select>
+                                    </Validator>
+                                </FormItem>) : null
                         }
 
                         <FormItem
                             prefixCls="edit-organization-btn-item ant-form"
-                            wrapperCol={{span: 24}}>
+                            wrapperCol={{span: 23}}>
                             {this.state.formData.isOrganizationSaving ? (<Icon type="loading"/>) : (
                                 editResult ? (<div className="indicator">
                                     <AlertTimer time={editResult=="error"?3000:600}
@@ -278,11 +305,11 @@ var OrganizationForm = React.createClass({
                                                 onHide={this.hideSaveTooltip}/>
                                 </div>) : null)
                             }
-                            <Button type="primary" className="btn-primary-sure member-form-btn"
+                            <Button type="primary" size="default" className="btn-primary-sure member-form-btn"
                                     onClick={_this.handleSubmit}>
                                 <ReactIntl.FormattedMessage id="common.confirm" defaultMessage="确认"/>
                             </Button>
-                            <Button type="ghost" className="btn-primary-cancel member-form-btn"
+                            <Button type="ghost" size="default" className="btn-primary-cancel member-form-btn"
                                     onClick={_this.handleCancel}>
                                 <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                             </Button>

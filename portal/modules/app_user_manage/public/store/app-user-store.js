@@ -5,6 +5,12 @@ var AppUserUtil = require("../util/app-user-util");
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 //app用户的store
 function AppUserStore() {
+    this.resetState();
+    //绑定action方法
+    this.bindActions(AppUserActions);
+}
+
+AppUserStore.prototype.resetState = function () {
     //是否处于loading状态
     this.appUserListResult = "loading";
     //获取app列表错误信息
@@ -80,9 +86,17 @@ function AppUserStore() {
     this.sort_order = '';
     // 安全域列表
     this.realmList = [];
-    //绑定action方法
-    this.bindActions(AppUserActions);
-}
+    //是否展示近期登录列表
+    this.isShowRecentLoginPanel = false;
+};
+//恢复初始值
+AppUserStore.prototype.setInitialData = function() {
+    this.resetState();
+};
+//设置是否展示近期登录用户列表面板
+AppUserStore.prototype.setRecentLoginPanelFlag = function(flag) {
+    this.isShowRecentLoginPanel = flag;
+};
 
 //关键词改变
 AppUserStore.prototype.keywordValueChange = function(keyword) {

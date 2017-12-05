@@ -25,7 +25,8 @@ function AppActions() {
         'showAppNoticePanel',
         'showUserTypeConfigPanel',
         'setAppSecretRefreshing',
-        'afterUpdateAppExpireDate'
+        'afterUpdateAppExpireDate',
+        'showAppCodeTrace'
     );
 
     this.getMyAppList = function (searchObj) {
@@ -75,6 +76,15 @@ function AppActions() {
             }
         });
     }
+    this.getCurAppKeyById = function (appId) {
+        var _this = this;
+        _this.dispatch({error: false, loading: true});
+        appAjax.getCurAppKeyById(appId).then(function (data) {
+            _this.dispatch({error: false, loading: false, data: data});
+        }, function (errorMsg) {
+            _this.dispatch({error:true, loading: false, errorMsg:errorMsg || Intl.get("app.get.app.key.failed","获取piwik信息失败")});
+        });
+    };
 
 }
 

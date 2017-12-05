@@ -2,12 +2,12 @@
  * Created by wangliping on 2016/11/8.
  */
 var language = require("../../../../public/language/getLanguage");
+require('PUB_DIR/css/card-info-common.scss');
 if (language.lan() == "es" || language.lan() == "en") {
-    require('../../../../components/cardInfo/cardInfo-es_VE.scss');
-} else if (language.lan() == "zh") {
-    require("../../../../components/cardInfo/cardInfo-zh_CN.scss");
+    require('PUB_DIR/css/card-info-es.scss');
 }
 import {Spin,Icon,Pagination,Select,Alert,Popconfirm,message} from "antd";
+import {getPassStrenth, passwordRegex} from "CMP_DIR/password-strength-bar";
 var Option = Select.Option;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -17,22 +17,14 @@ var UserDetailEditField = require("../../../../components/basic-edit-field/input
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 var BasicEditSelectField = require("../../../../components/basic-edit-field/select");
 var HeadIcon = require("../../../../components/headIcon");
-var LogItem = require("../../../../components/cardInfo/logItem");
+import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var ModalDialog = require("../../../../components/ModalDialog");
 var UserFormStore = require("../store/user-form-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
-var User = require("../util/user");
 import Trace from "LIB_DIR/trace";
-import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
-import reactIntlMixin from '../../../../components/react-intl-mixin';
-const messages = defineMessages({
-    member_is_or_not: {id: 'member.is.or.not'},//"是否{modalStr}{modalType}"
-});
-
 var UserInfo = React.createClass({
-        mixins: [reactIntlMixin],
         getInitialState: function () {
             return {
                 userInfo: $.extend(true, {}, this.props.userInfo),
@@ -41,15 +33,13 @@ var UserInfo = React.createClass({
                 isDel: false,//是否删除
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
-                isConfirmPasswordShow: false,//确认密码的展示标识
-                curphoneOrder:this.props.curphoneOrder
+                isConfirmPasswordShow: false//确认密码的展示标识
             };
         },
         componentWillReceiveProps: function (nextProps) {
             this.setState({
                 userInfo: $.extend(true, {}, nextProps.userInfo),
-                logList: nextProps.logList,
-                curphoneOrder: nextProps.curphoneOrder
+                logList: nextProps.logList
             });
             this.layout();
         },
@@ -204,14 +194,32 @@ var UserInfo = React.createClass({
             this.setState({isConfirmPasswordShow: false});
             this.refs.password.setState({displayType: "text"});
         },
-        //对确认密码 进行校验
+
+        //对密码 进行校验
         checkPass(rule, value, callback) {
-            if (value && value !== this.refs.password.state.formData.input) {
-                callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
-            } else {
+            if (value && value.match(passwordRegex)) {
+                let passStrength = getPassStrenth(value);
+                this.refs.password.setState({passStrength: passStrength});
                 callback();
+            } else {
+                this.refs.password.setState({
+                    passStrength:{
+                        passBarShow: false,
+                        passStrength: 'L'
+                    }
+                });
+                callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
             }
         },
+        //对确认密码 进行校验
+        checkRePass(rule, value, callback) {
+            if (value && value == this.refs.password.state.formData.input) {
+                callback();
+            } else {
+                callback(Intl.get('common.password.unequal', '两次输入密码不一致！'));
+            }
+        },
+
         checkPhone: function (rule, value, callback) {
             value = $.trim(value);
             if (value) {
@@ -225,6 +233,22 @@ var UserInfo = React.createClass({
             } else {
                 callback();
             }
+        },
+        getRoleUserId: function () {
+            let roleList = this.state.roleList;
+            //角色列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
+            if (_.isArray(roleList) && roleList.length > 0) {
+                return this.state.userInfo.id;
+            }
+            return "";
+        },
+        getTeamUserId: function () {
+            let userTeamList = this.state.userTeamList;
+            //团队列表获取出数据后再往组件里传id（避免一开始渲染的时候就传了id，取出数据后组件内相同id不重新赋值渲染的问题）
+            if (_.isArray(userTeamList) && userTeamList.length > 0) {
+                return this.state.userInfo.id;
+            }
+            return "";
         },
         renderUserItems: function () {
             let userInfo = this.state.userInfo;
@@ -276,7 +300,7 @@ var UserInfo = React.createClass({
                                 hideButtonBlock={true}
                                 showPasswordStrength={true}
                                 disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                validators={[{required: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}]}
+                                validators={[{validator:this.checkPass}]}
                                 placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
                                 title={Intl.get("user.batch.password.reset", "重置密码")}
                                 onDisplayTypeChange={this.onPasswordDisplayTypeChange}
@@ -297,7 +321,7 @@ var UserInfo = React.createClass({
                                     field="password"
                                     type="password"
                                     placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
-                                    validators={[{required: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}, {validator: this.checkPass}]}
+                                    validators={[{validator: this.checkRePass}]}
                                     onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
                                     modifySuccess={this.onConfirmPasswordDisplayTypeChange}
                                     saveEditInput={UserInfoAjax.editUser}
@@ -359,7 +383,8 @@ var UserInfo = React.createClass({
                             />
                         </dd>
                     </dl>
-                    <dl className="dl-horizontal detail_item member-detail-item">
+                    {/** v8环境下，不显示所属团队*/}
+                    { !Oplate.hideSomeItem && <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>{Intl.get("common.belong.team", "所属团队")}</dt>
                         <dd>
                             <BasicEditSelectField
@@ -377,26 +402,11 @@ var UserInfo = React.createClass({
                                 modifySuccess={this.afterEditTeamSuccess}
                             />
                         </dd>
+                    </dl> }
+                    <dl className="dl-horizontal detail_item member-detail-item">
+                        <dt>{Intl.get("user.manage.phone.order", "坐席号")}</dt>
+                        <dd>{userInfo.phoneOrder}</dd>
                     </dl>
-                    {hasPrivilege("GET_MEMBER_PHONE_ORDER")?(
-                        <dl className="dl-horizontal detail_item member-detail-item">
-                            <dt>{Intl.get("user.manage.phone.order", "坐席号")}</dt>
-                            <dd>
-                                <UserDetailEditField
-                                    user_id={userInfo.id}
-                                    value={this.state.curphoneOrder}
-                                    field="phone_order"
-                                    type="text"
-                                    disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                    validators={[{validator:User.checkPhoneOrder}]}
-                                    placeholder={Intl.get("user.manage.phone.order.rule","请输入7位以内的数字")}
-                                    saveEditInput={UserInfoAjax.editUserPhoneOrder}
-                                    modifySuccess={this.changeUserFieldSuccess}
-                                />
-                            </dd>
-                        </dl>
-                    ):(null)
-                    }
                     <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>{Intl.get("member.create.time", "创建时间")}</dt>
                         <dd>
@@ -450,14 +460,14 @@ var UserInfo = React.createClass({
                 logItems = this.props.getLogErrorMsg;
             } else if (_.isArray(logList) && logList.length > 0) {
                 for (var i = 0, iLen = logList.length; i < iLen; i++) {
-                    logItems.push(<LogItem key={i} log={logList[i]}/>);
+                    logItems.push(<UserLog key={i} log={logList[i]}/>);
                 }
             } else {
                 logItems = Intl.get("common.no.data", "暂无数据");
             }
-            var modalContent = this.props.intl['formatMessage'](messages.member_is_or_not, {
-                modalStr: this.state.modalStr,
-                modalType: this.props.modalType
+            var modalContent = Intl.get("member.is.or.not", "是否{modalStr}{modalType}",{
+                "modalStr": this.state.modalStr,
+                "modalType": this.props.modalType
             });
             var className = "right-panel-content";
 
@@ -534,4 +544,4 @@ var UserInfo = React.createClass({
     })
     ;
 
-module.exports = injectIntl(UserInfo);
+module.exports = UserInfo;

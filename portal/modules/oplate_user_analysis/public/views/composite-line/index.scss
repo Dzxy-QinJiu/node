@@ -1,11 +1,15 @@
 .oplate_user_analysis,.report-chart-container {
   .analysis_composite_line_chart {
+    padding-top: 10px;
     .chart,.loadwrap {
       position:relative;
     }
+    .chart {
+      padding-left: 15px;
+    }
     .nodata {
       position:absolute;
-      width:100px;
+      width:110px;
       height:30px;
       margin:auto;
       font-size:16px;
@@ -26,10 +30,10 @@
     }
     .legend {
       position:absolute;
-      top:0;
+      top:35px;
       right:15px;
       bottom:0;
-      width:88px;
+      width:104px;
       overflow:hidden;
       text-align:center;
       padding-top:6px;
@@ -41,7 +45,6 @@
         user-select: none;
       }
       ul {
-        margin-left:0;
         text-align:left;
         height:196px;
         overflow:hidden;
@@ -71,10 +74,9 @@
           font-size:12px;
           line-height:14px;
           color:#939393;
-          text-overflow:ellipsis;
           white-space:nowrap;
           overflow:hidden;
-          width:66px;
+          width:80px;
         }
         &:hover {
            border-color:#76a7d0;

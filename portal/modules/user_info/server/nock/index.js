@@ -2,7 +2,7 @@
  * Created by 肖金峰 on 2016/01/29.
  */
 var Log = require("../dto/log");
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
+var uuid = require('uuid/v4');
 var nock = require('nock');
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
 var userInfoManageServic = require("../service/user-info-manage-service");

@@ -1,4 +1,4 @@
-import { removeCommaFromNum } from "LIB_DIR/func";
+import { removeCommaFromNum, parseAmount } from "LIB_DIR/func";
 
 function merge() {
   var ret = {};
@@ -43,12 +43,20 @@ export default {
 
         let value;
 
-        //如果是日期选择组件，则需要用getTime方法取值
-        if (_.isFunction(e.getTime)) {
-            value = e.getTime();
+        //如果是日期选择组件，则需要用valueOf方法取值
+        if (e._isAMomentObject) {
+            value = e.valueOf();
         } else {
             //如果e为dom事件对象，则取其target属性下的值，否则认为e本身即为值
-            value = _.isObject(e)? e.target.value : e;
+            value = e;
+            const target = e && e.target;
+            if (target) {
+                if (target.type === "checkbox") {
+                    value = target.checked;
+                } else {
+                    value = target.value;
+                }
+            }
         }
 
         value = removeCommaFromNum(value);
@@ -103,14 +111,7 @@ export default {
     },
   
     //处理金额，未定义时赋空值及转成千分位格式等
-    parseAmount(amount) {
-        if (!amount) amount = "";
-
-        //每3位数字间用逗号分隔
-        amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        return amount;
-    },
+    parseAmount: parseAmount,
   
     //获取数字验证规则
     getNumberValidateRule() {

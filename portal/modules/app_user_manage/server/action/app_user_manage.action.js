@@ -12,12 +12,19 @@ exports.getAppUserList = function (req, res) {
         }
     }
     AppUserService.getUsers(req, res, queryObj).on("success", function (data) {
-        res.json(data);
+        res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+//获取近期登录用户列表
+exports.getRecentLoginUsers = function (req, res) {
+    AppUserService.getRecentLoginUsers(req, res, req.query).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 
 /**
  * 添加应用用户
@@ -111,13 +118,7 @@ exports.getCustomerUsers = function (req, res) {
 
 //获取用户申请列表
 exports.getApplyList = function (req, res) {
-    var queryObj = {
-        status: req.params.status,
-        page_size: req.params.page_size,
-        page: req.params.page,
-        keyword: req.query.keyword
-    };
-    AppUserService.getApplyList(req, res, queryObj).on("success", function (data) {
+    AppUserService.getApplyList(req, res, req.query).on("success", function (data) {
         res.json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -255,6 +256,15 @@ exports.applyChangePassword = function (req, res) {
     });
 };
 
+//申请修改其他类型
+exports.applyChangeOther = function (req, res) {
+    AppUserService.applyChangeOther(req, res, req.body).on("success", function (data) {
+        res.json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 //申请修改开通状态
 exports.applyChangeStatus = function (req, res) {
     AppUserService.applyChangeStatus(req, res, req.body).on("success", function (data) {
@@ -303,7 +313,7 @@ exports.getteamlists = function (req, res) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function(req, res) {
+exports.saleBackoutApply = function (req, res) {
     AppUserService.saleBackoutApply(req, res, req.body).on("success", function (data) {
         res.json(data);
     }).on("error", function (codeMessage) {
@@ -311,7 +321,7 @@ exports.saleBackoutApply = function(req, res) {
     });
 };
 
-exports.checkUserName = function(req, res) {
+exports.checkUserName = function (req, res) {
     AppUserService.checkUserName(req, res, req.query).on("success", function (data) {
         res.json(data);
     }).on("error", function (codeMessage) {
@@ -320,7 +330,7 @@ exports.checkUserName = function(req, res) {
 };
 
 // 添加一个用户时，提示用户名信息
-exports.addOneUserSuggestName = function(req, res) {
+exports.addOneUserSuggestName = function (req, res) {
     AppUserService.addOneUserSuggestName(req, res, req.query).on("success", function (data) {
         res.json(data);
     }).on("error", function (codeMessage) {

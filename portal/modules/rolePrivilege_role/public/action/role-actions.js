@@ -82,7 +82,7 @@ function RoleActions() {
      //查询默认角色
     this.getDefaultRole = function (clientId) {
         var _this = this;
-        const ROLE = "GET_APPLICATION_BASE_ROLE";//查询默认角色的权限
+        const ROLE = "APPLICATION_BASE_ROLE_MANAGEMENT";//查询默认角色的权限
         //没有权限不发出请求
         if(!hasPrivilege(ROLE)) {
             _this.dispatch({

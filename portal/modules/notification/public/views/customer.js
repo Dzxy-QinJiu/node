@@ -194,13 +194,15 @@ var CustomerNotification = React.createClass({
                         />
                     </GeminiScrollbar>
                 </div>
-                <div className="summary_info">
-                    <ReactIntl.FormattedMessage
-                        id="notification.total.customer.alert"
-                        defaultMessage={`共{x}条客户提醒`}
-                        values={{'x':this.state.notificationCount}}
-                    />
-                </div>
+                {this.state.notificationCount ?
+                    <div className="summary_info">
+                        <ReactIntl.FormattedMessage
+                            id="notification.total.customer.alert"
+                            defaultMessage={`共{x}条客户提醒`}
+                            values={{'x':this.state.notificationCount}}
+                        />
+                    </div> : null
+                }
             </div>
         );
     }

@@ -12,8 +12,10 @@ function FilterAction() {
         "setRange",
         'setInputCondition',
         'setClue',
+        'setLevel',
         'showPanel',
-        'hidePanel'
+        'hidePanel',
+        'setOtherSelectedItem'
     );
 
     this.getAppList = function () {
@@ -73,9 +75,18 @@ function FilterAction() {
             const list = data && _.isArray(data.result) ? data.result : [];
             this.dispatch(list);
         }, (errorMsg) => {
-            this.dispatch({error: true, errorMsg: errorMsg});
+            console.log(errorMsg);
         });
     };
+    //获取地域列表
+    this.getFilterProvinces= function (type) {
+        FilterAjax.getFilterProvinces(type).then((data) => {
+            const list = data && _.isArray(data.result) ? data.result : [];
+            this.dispatch(list);
+        }, (errorMsg) => {
+            console.log(errorMsg);
+        });
+    }
 }
 
 module.exports = alt.createActions(FilterAction);

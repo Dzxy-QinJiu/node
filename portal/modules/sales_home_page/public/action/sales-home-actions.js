@@ -1,5 +1,7 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
+var userData = require("../../../../public/sources/user-data");
 var _ = require("underscore");
+import {message } from "antd";
 
 function SalesHomeActions() {
     this.generateActions(
@@ -10,7 +12,9 @@ function SalesHomeActions() {
         'selectSalesman',//选择要展示的销售人员
         'returnSalesTeamList',//返回销售团队列表
         'returnSalesMemberList',//返回销售成员列表
-        'getExpireUser'//获取过期用户列表
+        'getExpireUser',//获取过期用户列表
+        'getWebsiteConfig',//获取网站个性化设置
+        'setWebsiteConfig',//对网站进行个性化设置
     );
 
     //获取当前登录销售的角色（销售/经理/总监）
@@ -122,16 +126,65 @@ function SalesHomeActions() {
         );
     };
     //获取过期用户列表
-    this.getExpireUser = function () {
+    this.getExpireUser = function (queryObj) {
         var _this = this;
         _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getExpireUser().then(function (resData) {
+        salesHomeAjax.getExpireUser(queryObj).then(function (resData) {
                 _this.dispatch({loading: false, error: false, resData: resData});
             }, function (errorMsg) {
                 _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             }
         );
     };
+    //获取用户信息
+    this.getUserInfo = function () {
+        var user_id = userData.getUserData().user_id;
+        salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
+            this.dispatch(userInfo);
+        });
+    };
+    //邮箱激活
+    this.activeUserEmail = function (callback) {
+        salesHomeAjax.activeUserEmail().then(function (data) {
+            if (callback) {
+                if (data) {
+                    callback({error: false, data: data});
+                } else {
+                    callback({error: true, errorMsg: Intl.get("user.info.active.user.email.failed","激活失败")});
+                }
+            }
+        }, function (errorMsg) {
+            if (callback) {
+                callback({error: true, errorMsg: errorMsg || Intl.get("user.info.active.user.email.failed","激活失败")});
+            }
+        });
+    };
+    //获取是否已经设置过邮箱不再提醒
+    this.getWebsiteConfig = function () {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getWebsiteConfig().then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            },(errorMsg) => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            }
+        );
+
+    };
+    //设置邮箱激活不再提醒
+    this.setWebsiteConfig = function (queryObj,callback) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.setWebsiteConfig(queryObj).then((resData) => {
+                if (callback && _.isFunction(callback)){
+                    callback();
+                }
+            },(errorMsg) => {
+            if (callback && _.isFunction(callback)){
+                callback(errorMsg || Intl.get("failed.set.no.email.tip","设置不再提示邮箱激活提醒失败"));
+            }
+            }
+        );
+
+    }
 }
 
 module.exports = alt.createActions(SalesHomeActions);

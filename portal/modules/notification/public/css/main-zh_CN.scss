@@ -2,13 +2,11 @@
 @import '../../../../public/css/common-variables';
 
 .notification_customer_ico a,
-.notification_applyfor_ico a,
 .notification_system_ico a {
   position: relative;
 }
 
 .notification_customer_ico a:before,
-.notification_applyfor_ico a:before,
 .notification_system_ico a:before {
   display: none;
   position: absolute;
@@ -38,42 +36,16 @@
     left: 0;
     bottom: 0;
   }
-  //申请消息的过滤
-  .notification-filter-div {
-    height: 45px;
-    padding-left: 20px;
-    .ant-select {
-      float: left;
-      width: 160px;
-    }
-    .search-notification-container {
-      position: relative;
-      float: left;
-      width: $edit_input_width;
-      margin-left: $filter_btn_internal;
-      .search-clear-icon {
-        position: absolute;
-        top: 1px;
-        right: 7px;
-        height: 28px;
-        line-height: 28px;
-        width: 20px;
-        font-size: 18px;
-        color: #7f909a;
-        background: #fff;
-        z-index: 2;
-      }
-    }
-  }
   //全部标为已读
-  .mark-all-read{
+  .mark-all-read {
     margin-left: 15px;
     font-size: 13px;
     height: 30px;
     border-radius: 3px;
+    float: left;
   }
-  .notification_customer{
-    .mark-all-read{
+  .notification_customer {
+    .mark-all-read {
       margin-bottom: 15px;
       margin-left: 20px;
     }
@@ -82,7 +54,7 @@
     float: left;
     height: 30px;
     line-height: 30px;
-    margin-left: 100px;
+    margin-left: 50px;
     font-size: 14px;
     color: #aaa;
   }
@@ -121,11 +93,11 @@
   .ant-alert {
     display: inline-block;
   }
- // 共多少条的样式
- .notification_customer, .notification_apply_message {
+  // 共多少条的样式
+  .notification_customer{
     .summary_info {
-      position:fixed;
-      bottom:20px;
+      position: fixed;
+      bottom: 20px;
       margin-left: 20px;
       font-size: 14px;
     }
@@ -133,5 +105,96 @@
       width: 98%;
       margin-left: 20px;
     }
+  }
+}
+
+//系统消息
+.notification_system {
+  margin-top: -15px;
+  .notification-status-select, .notification-type-select {
+    position: absolute;
+    top: 20px;
+    z-index: 11;
+  }
+  .notification-status-select {
+    right: 46px;
+    .ant-select {
+      width: 70px;
+    }
+  }
+  .notification-type-select {
+    right: 140px;
+  }
+  //刷新新系统消息的提示
+  .system-notice-update {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .system_message_list {
+    .system-notice-handled-item {
+      .system-notice-type {
+        width: 100%;
+      }
+    }
+    li {
+      display: inline-block;
+      width: 100%;
+      border-bottom: 1px solid #f1f1f1;
+      padding: 15px 0 5px 20px;
+      font-size: 14px;
+      .system-notice-title {
+        display: inline-block;
+        width: 100%;
+        a {
+          float: left;
+        }
+      }
+      .system-notice-type {
+        float: left;
+        margin-right: 10px;
+        padding-bottom: 5px;
+        font-size: 16px;
+      }
+      .system-notice-content {
+        display: inline-block;
+        color: #7D7C7C;
+        > a {
+          float: right;
+          color: #8fd5f1;
+          &:hover {
+            color: #108ee9;
+          }
+        }
+        .notice-split-line {
+          float: right;
+          padding: 0 5px;
+          color: #8fd5f1;
+        }
+        .notice-handled-set {
+          .anticon-loading {
+            padding: 0 5px;
+          }
+        }
+        .system-notice-item {
+          > a {
+            padding-right: 5px;
+          }
+          .system-notice-time {
+            padding-left: 10px;
+          }
+        }
+      }
+      .system-notice-time {
+        color: #a0a0a0;
+        font-size: 13px;
+      }
+    }
+  }
+  .summary_info {
+    position: fixed;
+    bottom: 20px;
+    margin-left: 20px;
+    font-size: 14px;
   }
 }

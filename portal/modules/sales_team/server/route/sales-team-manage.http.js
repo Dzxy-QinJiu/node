@@ -46,7 +46,7 @@ module.exports = {
         }
     }, {
         "method": "post",
-        "path": "/rest/sales_team_member/:flag",
+        "path": "/rest/sales_team_member",
         "handler": "addMember",
         "passport": {
             "needLogin": true

@@ -1,9 +1,9 @@
 @import '../../css/bootstrap-variables.scss';
 @import '../../css/iconfont.scss';
-@import '../../css/common.scss';
+@import '../../css/common-zh.scss';
 
-$font-family:"SimHei", "Tahoma", "Arial", "SimSun", "Arial Narrow" !important;
-$font-family-macintosh:STXihei, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+$font-family:"SimHei", "SimSun", "Arial Narrow" !important;
+$font-family-macintosh: "SimHei",STXihei, "Helvetica Neue", Helvetica, sans-serif !important;
 body, pre{
   font-family:$font-family;
 }
@@ -356,7 +356,7 @@ body.macintosh, body.macintosh pre{
     right:16px !important;
     background:rgba(0, 0, 0, 0) !important;
     &:after{
-      content:"\E62D";
+      content:"\E633";
       font-size:12px;
       font-family:"anticon";
       cursor:pointer;

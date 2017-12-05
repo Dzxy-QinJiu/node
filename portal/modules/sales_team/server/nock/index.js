@@ -5,7 +5,6 @@
 var SalesTeam = require("../dto/sales-team");
 var SalesTeamPersonnel = require("../dto/sales-team-personnel");
 var nock = require('nock');
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
 var SalesTeamManageService = require("../service/sales-team-manage-service");
 

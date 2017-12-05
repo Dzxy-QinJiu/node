@@ -66,17 +66,17 @@ exports.uploadVersionUpgrade = function(req, res){
             //调用上传请求服务
             versionUpgradeLog.uploadVersionUpgrade(req, res,formData)
                 .on("success", function (data) {
-                    res.json(data);
+                    res.status(200).json(data);
                     // 删除临时文件
                     fs.unlinkSync(tmpPath);
                 })
                 .on("error", function (err) {
-                    res.json(false);
+                    res.status(500).json(false);
                     // 删除临时文件
                     fs.unlinkSync(tmpPath);
                 });
         } else {
-            res.json(false);
+            res.status(500).json(false);
             return;
         }
 

@@ -12,15 +12,28 @@ let SalesHomeAction = require("../action/sales-home-actions");
 let constantUtil = require("../util/constant");
 let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型常量（销售团队列表、团队成员列表、销售的待办事宜）
 let _ = require('underscore');
-let history = require("../../../../public/sources/history");
-let Alert = require("antd").Alert;
-let Spinner = require("../../../../components/spinner");
+
+var delayConstant = constantUtil.DELAY.TIMERANG;
 
 let CrmRightList = React.createClass({
     getInitialState: function () {
         return {
             searchInputShow: false,
             searchValue: "",
+            updateScrollBar:false
+        }
+    },
+    componentWillReceiveProps:function (nextProps) {
+        if (nextProps.updateScrollBar){
+            this.setState({
+                updateScrollBar:true
+            },()=>{
+                setTimeout(()=>{
+                    this.setState({
+                        updateScrollBar:false
+                    })
+                },delayConstant)
+            })
         }
     },
     //渲染等待效果、暂无数据的提示
@@ -144,6 +157,8 @@ let CrmRightList = React.createClass({
         } else {
             let salesTeamMemberList = salesTeamMembersObj.data;
             if (_.isArray(salesTeamMemberList) && salesTeamMemberList.length > 0) {
+                //对团队列表进行排序，启用的放在前面，停用的放在后面
+                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item)=>{ return -item.status});
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
                         let name = salesman.nickName, color = this.getBgColor(i);
@@ -212,108 +227,8 @@ let CrmRightList = React.createClass({
         this.setState({ searchInputShow: false, searchValue: "" });
         //$(".sales-team-top .search-input").val("");
     },
-    gotoUserList: function (item) {
-
-        //跳转到用户列表
-        history.pushState({
-            app_id: item.app_id,
-            user_type: item.user_type,
-            start_date: item.start_date,
-            end_date: item.end_date,
-            page_size: item.total
-        }, "/user/list", {});
-    },
-
     showSearchInput: function () {
         this.setState({ searchInputShow: true });
-    },
-    showExpireUserItem: function (items) {
-        var _this = this;
-        return items.map(function (item) {
-            let num = item.user_type == Intl.get("common.trial.official", "正式用户") ? item.formalNum : item.trialNum;
-            return (<div>
-                <ReactIntl.FormattedMessage
-                    id="sales.home.expired.tip"
-                    defaultMessage={`{appName}有{num}名{userType}过期!`}
-                    values={{
-                        "appName": item.app_name,
-                        "num": <i data-tracename="跳转到用户列表" onClick={_this.gotoUserList.bind(this, item)}>{num}</i>,
-                        "userType": item.user_type == '正式用户' ? '签约用户' : item.user_type
-                    }}
-                />
-            </div>);
-        });
-    },
-    //重新获取过期用户
-    retry: function () {
-        SalesHomeAction.getExpireUser();
-    },
-    showExpireUsers: function () {
-        var _this = this;
-        var expireUserLists = this.props.expireUserLists;
-        var errMsg = <span>{_this.props.errMsg}<a onClick={_this.retry}
-            data-tracename="重新获取过期用户"
-            style={{ marginLeft: "20px", marginTop: "20px" }}>{Intl.get("user.info.retry", "请重试")} </a></span>;
-        //获取用户列表错误提示
-        if (_this.props.isLoadingExpireUserList) {
-            return <div>
-                <Spinner />
-            </div>
-        } else if (_this.props.errMsg != '') {
-            return <div>
-                <Alert
-                    message={errMsg}
-                    type="error"
-                    showIcon
-                />
-            </div>
-        } else {
-            //不是错误或者加载中状态的显示
-            //没有到期用户提醒
-            if (_.isEmpty(expireUserLists)) {
-                return <div>
-                    {Intl.get("sales.home.no.expired.alert", "没有过期用户提醒!")}
-                </div>;
-            } else {
-                //有到期用户提醒
-                return (
-                    <div>
-                        {!expireUserLists['day'] ? null :
-                            <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.today1", "今日")}:</div>
-                                <div className="tipcontent">
-                                    {_this.showExpireUserItem(expireUserLists['day'])}
-                                </div>
-                            </div>
-                        }
-                        {!expireUserLists['week'] ? null :
-                            <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.this.week", "本周")}:</div>
-                                <div className="tipcontent">
-                                    {_this.showExpireUserItem(expireUserLists['week'])}
-                                </div>
-                            </div>
-                        }
-                        {!expireUserLists['month'] ? null :
-                            <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.this.month", "本月")}:</div>
-                                <div className="tipcontent">
-                                    {_this.showExpireUserItem(expireUserLists['month'])}
-                                </div>
-                            </div>
-                        }
-                        {!expireUserLists['half_year'] ? null :
-                            <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.half.year", "半年")}:</div>
-                                <div className="tipcontent">
-                                    {_this.showExpireUserItem(expireUserLists['half_year'])}
-                                </div>
-                            </div>
-                        }
-                    </div>
-                )
-            }
-        }
     },
     renderListContent: function () {
         let salesTitle = "", salesListLi = [], isShowSearch = true;
@@ -325,9 +240,6 @@ let CrmRightList = React.createClass({
                 //如果是通过点击团队成员列表 显示出来的销售，什么都不展示
                 if (this.props.currShowSalesman) {
                     salesListLi = "";
-                } else {
-                    //如果是普通销售或者舆情秘书登录，展示过期用户
-                    salesListLi = this.showExpireUsers();
                 }
                 break;
             case showTypeConstant.SALES_MEMBER_LIST:
@@ -354,12 +266,25 @@ let CrmRightList = React.createClass({
                         : null}
                 </div>
                 <ul className="sales-list-container" style={{ height: salesListHeight }}>
-                    <GeminiScrollbar enabled={this.props.scrollbarEnabled}>
-                        {salesListLi}
-                    </GeminiScrollbar>
+                    {this.renderContent(salesListLi)}
                 </ul>
             </div>
         );
+    },
+    renderContent:function (salesListLi) {
+        if (this.state.updateScrollBar){
+            return (
+                <div>
+                    {salesListLi}
+                </div>
+            )
+        }else{
+            return (
+                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                    {salesListLi}
+                </GeminiScrollbar>
+            )
+        }
     },
     //获取颜色（从echart的颜色列表中循环获取）
     getBgColor: function (i) {

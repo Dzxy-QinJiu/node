@@ -7,7 +7,7 @@ var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 var restApis = {
     //获取客户跟踪记录
-    getCustomerTraceList: "/rest/customer/v2/customer/query/trace",
+    getCustomerTraceList: "/rest/customer/v2/customer/query/trace/customer",
     // 添加客户跟踪记录
     addCustomerTraceList: "/rest/customer/v2/customer/trace",
     // 更新客户跟踪记录
@@ -51,3 +51,13 @@ exports.updateCustomerTraceList = function (req, res, obj) {
         },
         data);
 };
+//获取播放录音
+exports.getPhoneRecordAudio = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: req.url,
+            req: req,
+            res: res,
+            'pipe-download-file':true
+        },null);
+}

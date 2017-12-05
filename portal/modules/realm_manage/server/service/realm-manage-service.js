@@ -24,8 +24,13 @@ var realmRestApis = {
     //通过id获取该安全域的详细信息
     getCurRealmById: "rest/base/v1/realm",
     //所有者属性唯一性验证的url
-    checkOnlyUser: "rest/base/v1/user/unique_info"
-
+    checkOnlyUser: "rest/base/v1/user/unique_info",
+    // 修改安全域邮箱服务器设置信息
+    settingEmailServer: '/rest/base/v1/realm/config/emailServer',
+    // 修改安全域短信服务器配置信息
+    settingSmsServer: '/rest/base/v1/realm/config/smsServer',
+    // 修改安全域微信配置信息
+    settingWeChat: '/rest/base/v1/realm/config/wechat'
 };
 exports.urls = realmRestApis;
 //获取安全域
@@ -140,4 +145,19 @@ exports.updateRealmStatus = function (req, res, frontRealm) {
         }, null);
 };
 
+// 修改邮箱服务器、短信服务器和微信配置信息
+exports.setServer = (req, res, realmId, reqBody, flag) => {
+    let url = realmRestApis.settingEmailServer;
+    if (flag == 'sms') {
+        url = realmRestApis.settingSmsServer;
+    } else if (flag == 'wechat') {
+        url = realmRestApis.settingWeChat;
+    }
+    return restUtil.authRest.post(
+        {
+            url: url + "/" + realmId,
+            req: req,
+            res: res
+        }, reqBody);
+};
 

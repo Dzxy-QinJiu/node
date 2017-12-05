@@ -1,6 +1,7 @@
-import {Icon, Alert, Select, Form, Validation} from 'antd';
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
+import {Icon, Alert, Select, Form} from 'antd';
 let FormItem = Form.Item;
-let Validator = Validation.Validator;
 let Option = Select.Option;
 let CrmAction = require('../../action/crm-actions');
 import FieldMixin from '../../../../../components/antd-form-fieldmixin';
@@ -108,6 +109,11 @@ var IndustrySelectField = React.createClass({
                 Trace.traceEvent(this.getDOMNode(),"保存对行业的修改");
                 if (this.props.isMerge) {
                     this.props.updateMergeCustomer(submitData);
+                    this.setState({
+                        loading: false,
+                        displayType: 'text',
+                        submitErrorMsg: ''
+                    });
                 } else {
                     this.setState({loading: true});
                     CrmBasicAjax.updateCustomer(submitData).then(result=> {

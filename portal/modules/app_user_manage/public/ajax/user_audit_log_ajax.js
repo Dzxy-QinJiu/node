@@ -81,18 +81,44 @@ exports.getSingleUserAppList = function(searchObj){
     return Deferred.promise();
 };
 
-// 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
+// 用户登录信息（时长、次数、首次和最后一次登录时间）
 let UserLoginInfoAjax = null;
 exports.getUserLoginInfo = function(queryobj){
-    let user_id = queryobj.user_id;
-    delete queryobj.user_id;
+    let loginInfoObj =  _.clone(queryobj);
+    let user_id = loginInfoObj.user_id;
+    delete loginInfoObj.user_id;
     let Deferred = $.Deferred();
     UserLoginInfoAjax && UserLoginInfoAjax.abort();
     UserLoginInfoAjax = $.ajax({
         url: '/rest/user/login/info/' + user_id,
         type: 'get',
         dataType: 'json',
-        data: queryobj,
+        data: loginInfoObj,
+        success: function(data){
+            Deferred.resolve(data);
+        },
+        error: function (xhr,status) {
+            if(status !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取登录信息失败！'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 用户登录统计图中登录时长、登录频次
+let UserLoginChartAjax = null;
+exports.getUserLoginChartInfo = function(queryobj){
+    let loginInfoChartObj =  _.clone(queryobj);
+    let user_id = loginInfoChartObj.user_id;
+    delete loginInfoChartObj.user_id;
+    let Deferred = $.Deferred();
+    UserLoginChartAjax && UserLoginChartAjax.abort();
+    UserLoginChartAjax = $.ajax({
+        url: '/rest/user/login/chart/' + user_id,
+        type: 'get',
+        dataType: 'json',
+        data: loginInfoChartObj,
         success: function(data){
             Deferred.resolve(data);
         },

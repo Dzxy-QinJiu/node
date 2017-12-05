@@ -72,8 +72,8 @@ const CONTRACT_BASE_COLUMNS = [
     },
 ];
 
-//合同表格列
-export const CONTRACT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
+//合同表格扩展信息列
+const CONTRACT_EXTEND_COLUMNS = [
     {
         title: Intl.get("contract.120", "开始时间"),
         dataIndex: "start_time",
@@ -90,6 +90,10 @@ export const CONTRACT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
         title: Intl.get("contract.36", "合同阶段"),
         dataIndex: "stage",
     },
+];
+
+//合同表格财务基本信息列
+export const CONTRACT_FINANCIAL_BASE_COLUMNS = [
     {
         title: Intl.get("contract.25", "合同额"),
         dataIndex: "contract_amount",
@@ -106,6 +110,10 @@ export const CONTRACT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
         title: Intl.get("common.gross_profit_rate", "毛利率"),
         dataIndex: "gross_profit_rate",
     },
+];
+
+//合同表格财务扩展信息列
+const CONTRACT_FINANCIAL_EXTEND_COLUMNS = [
     {
         title: Intl.get("contract.28", "回款额"),
         dataIndex: "total_amount",
@@ -122,10 +130,20 @@ export const CONTRACT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
         title: Intl.get("contract.31", "已开发票额"),
         dataIndex: "total_invoice_amount",
     },
-]);
+];
+
+//合同表格列
+export const CONTRACT_COLUMNS = CONTRACT_BASE_COLUMNS
+    .concat(CONTRACT_EXTEND_COLUMNS)
+    .concat(CONTRACT_FINANCIAL_BASE_COLUMNS)
+    .concat(CONTRACT_FINANCIAL_EXTEND_COLUMNS);
 
 //回款表格列
-export const REPAYMENT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
+export const REPAYMENT_COLUMNS = CONTRACT_BASE_COLUMNS.concat(CONTRACT_FINANCIAL_BASE_COLUMNS).concat([
+    {
+        title: Intl.get("contract.165", "成本构成"),
+        dataIndex: "cost_structure",
+    },
     {
         title: Intl.get("contract.122", "回款时间"),
         dataIndex: "repayment_date",
@@ -137,6 +155,10 @@ export const REPAYMENT_COLUMNS = CONTRACT_BASE_COLUMNS.concat([
     {
         title: Intl.get("contract.29", "回款毛利"),
         dataIndex: "repayment_gross_profit",
+    },
+    {
+        title: Intl.get("contract.167", "首笔回款"),
+        dataIndex: "repayment_is_first",
     },
 ]);
 

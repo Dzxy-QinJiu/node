@@ -262,3 +262,10 @@ exports.uploadRole = function (req, res) {
         fs.unlinkSync(tmpPath);
     });
 };
+exports.getCurAppKey = function (req, res) {
+    appManageServic.getCurAppKey(req, res, req.params.app_id).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

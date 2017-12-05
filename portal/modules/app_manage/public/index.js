@@ -91,7 +91,7 @@ var AppManage = React.createClass({
         showUserTypeConfigPanel:function () {
             AppAction.showUserTypeConfigPanel();
         },
-
+        
         //status:0->停用、1->启用
         updateAppStatus: function (appId, status) {
             AppAction.updateAppStatus({id: appId, status: status}, "appManage");

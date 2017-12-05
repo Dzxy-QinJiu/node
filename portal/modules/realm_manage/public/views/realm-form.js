@@ -1,11 +1,11 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 require("../scss/index.scss");
-var Validation = require("antd").Validation;
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Select = require("antd").Select;
 var Col = require("antd").Col;
 var Option = Select.Option;
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -22,7 +22,7 @@ var AlertTimer = require("../../../../components/alert-timer");
 var classNames = require("classnames");
 var professionArray = [Intl.get("realm.select.industry1", "计算机/互联网/通信/电子"), Intl.get("realm.select.industry2", "贸易/消费/制造/营运"), Intl.get("realm.select.industry3", "制药/医疗"), Intl.get("realm.select.industry4", "广告/媒体"),
     Intl.get("realm.select.industry5", "房地产/建筑"), Intl.get("realm.select.industry6", "专业服务/教育/培训"), Intl.get("realm.select.industry7", "服务业"), Intl.get("realm.select.industry8", "物流/运输"), Intl.get("realm.select.industry9", "能源/原材料"), Intl.get("realm.select.industry10", "政府/非盈利机构/其他")];
-var realmSuffix = ".oplate.com";//域名后缀
+var realmSuffix = ".com";//域名后缀
 var batchOperate = require("../../../../public/sources/push/batch");
 import Trace from "LIB_DIR/trace";
 

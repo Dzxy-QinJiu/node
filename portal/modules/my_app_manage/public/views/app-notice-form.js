@@ -1,10 +1,10 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 // 添加应用系统公告的信息
 import {Form,Input, Radio,Icon} from 'antd';
 var RadioGroup = Radio.Group;
 var FormItem = Form.Item;
 var Button = require("antd").Button;
-var Validation = require("antd").Validation;
-var Validator = Validation.Validator;
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 var NoticeAjax = require("../ajax/app-notice-ajax");
 var AppNoticeAction = require("../action/app-notice-action");

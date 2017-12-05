@@ -1,3 +1,4 @@
+import {nameRegex} from "PUB_DIR/sources/utils/consts";
 //手机 13877775555
 var phoneRegex = /^1[3|4|5|7|8][0-9]\d{8}$/;
 exports.phoneRegex = phoneRegex;
@@ -9,10 +10,6 @@ exports.telephoneRegex = telephoneRegex;
 //400电话 400-777-5555
 var telephone400Regex = /^400\-?\d{3}\-?\d{4}$/;
 exports.telephone400Regex = telephone400Regex;
-
-//客户名验证的正则表达式
-var nameRegex = /^[\sa-zA-Z0-9_\-()（）.\u4e00-\u9fa5]{1,50}$/;
-exports.nameRegex = nameRegex;
 
 //验证电话号码
 exports.checkPhone = function (rule, value, callback) {
@@ -36,6 +33,7 @@ exports.checkPhone = function (rule, value, callback) {
 
 //验证客户名
 exports.checkCustomerName = function (rule, value, callback) {
+    value = $.trim(value);
     if (value) {
         if (nameRegex.test(value)) {
             callback();

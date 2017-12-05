@@ -77,7 +77,8 @@ const TeamTree = React.createClass({
         });
     },
     handleTeamSelect(e) {
-        const teamId = e.selectedKeys[0];
+        const selectedKeys = e.selectedKeys || e;
+        const teamId = selectedKeys[0];
 
         if (teamId) {
             if (!this.props.disableEmitter) {
@@ -90,7 +91,8 @@ const TeamTree = React.createClass({
         }
     },
     handleMemberSelect(e) {
-        const memberId = e.selectedKeys[0];
+        const selectedKeys = e.selectedKeys || e;
+        const memberId = selectedKeys[0];
 
         if (memberId) {
             if (!this.props.disableEmitter) {

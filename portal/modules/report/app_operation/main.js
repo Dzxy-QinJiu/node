@@ -21,7 +21,7 @@ const OperationReport = React.createClass({
     },
     getComponent(component, props) {
         if (!props) props = {};
-        props.height = 290;
+        if (!props.height) props.height = 290;
         props.localStorageAppIdKey = localStorageAppIdKey;
 
         return React.createElement(component, props, null);
@@ -261,6 +261,18 @@ const OperationReport = React.createClass({
                         })
                     },
                     {
+                        name: Intl.get("app_operation.15", "各操作类别占比"),
+                        content: this.getComponent(Analysis, {
+                            chartType: "bar_pie",
+                            target: "User",
+                            property: "operation_dis",
+                            dataField: "data",
+                            subField: "sub_property",
+                            height: 450,
+                            legend: false
+                        })
+                    },
+                    {
                         name: Intl.get("app_operation.11", "用户平均登录时长为") + this.state.avgLoginTime,
                         style: {width: "50%"},
                         content: this.getComponent(Analysis, {
@@ -271,19 +283,6 @@ const OperationReport = React.createClass({
                             excludeKey: ["appId", "total", "avg"],
                             processData: this.processLoginLongDisData
                         }),
-                    },
-                    {
-                        name: Intl.get("app_operation.15", "各操作类别占比"),
-                        style: {width: "50%"},
-                        content: this.getComponent(Analysis, {
-                            chartType: "pie",
-                            target: "User",
-                            property: "operation_dis",
-                            dataField: "data",
-                            subField: "sub_property",
-                            maxSeries: 5,
-                            legend: false
-                        })
                     },
                 ]
             },

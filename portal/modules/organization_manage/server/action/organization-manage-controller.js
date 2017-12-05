@@ -54,10 +54,10 @@ exports.addOrganizeMember = function (req, res) {
 exports.editOrganizationMember = function (req, res) {
     var editMemberObj = {
         group_id: req.body.groupId,
-        owner_id: req.body.ownerId,
-        user_ids: JSON.parse(req.body.userIds)
+        user_ids: JSON.parse(req.body.userIds),
+        operate: req.body.operate
     };
-    OrganizationManageService.editMember(req, res, editMemberObj)
+    OrganizationManageService.editMember(req, res, editMemberObj, req.body.type)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (codeMessage) {
@@ -89,11 +89,12 @@ exports.editOrganization = function (req, res) {
 };
 
 exports.addOrganization = function (req, res) {
-    var organization = {
+    const organization = {
         group_name: req.body.groupName,
         parent_group: req.body.parentGroup
-    };
-    OrganizationManageService.addGroup(req, res, organization)
+    }
+    const category = req.body.category;
+    OrganizationManageService.addGroup(req, res, organization, category)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (codeMessage) {

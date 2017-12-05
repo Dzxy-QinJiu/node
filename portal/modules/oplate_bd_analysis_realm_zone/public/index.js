@@ -31,7 +31,6 @@ require("./css/index.scss");
 
 //地图的formatter
 function mapFormatter(obj) {
-
     var percent = ((obj.value / obj.total) * 100).toFixed(1);
     if(percent === 'NaN' || percent === '0.0') {
         percent = '0%';

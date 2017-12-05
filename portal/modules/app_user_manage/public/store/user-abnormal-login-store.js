@@ -15,7 +15,6 @@ UserAbnormalLoginStore.prototype.resetState = function() {
     this.abnormalLoginLoading = true;//是否正在加载异常登录
     this.abnormalLoginErrMsg = '';//加载错误后的提示信息
     this.page_size = 10;//加载记录每页的条数
-    this.app='';//默认显示的app名称
     this.appId = '';//选中app的id
     this.getAppErrorMsg='';//加载app列表出错
     this.getAppLoading = true;//正在加载app列表
@@ -40,15 +39,14 @@ UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function (result) {
         this.abnormalLoginList = this.abnormalLoginList.concat(result.data || []);
     }
 };
-UserAbnormalLoginStore.prototype.setApp = function (obj) {
+UserAbnormalLoginStore.prototype.setApp = function (appId) {
 
-    this.app = obj.app_name;
     this.abnormalLoginList =[];//变更记录展示的列表
     this.abnormalLoginLoading = true;//是否正在加载变更记录
     this.abnormalLoginErrMsg = '';//加载错误后的提示信息
     this.isNoMoreTipShow = false;
     this.listenScrollBottom = true;
-    this.appId = obj.app_id;
+    this.appId = appId;
 
 };
 UserAbnormalLoginStore.prototype.getUserApp = function (result) {

@@ -72,6 +72,11 @@ var LocationSelectField = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"保存对地域的修改");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
+            this.setState({
+                loading: false,
+                displayType: 'text',
+                submitErrorMsg: ''
+            });
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result=> {

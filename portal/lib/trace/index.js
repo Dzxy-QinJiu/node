@@ -12,8 +12,6 @@ function getTraceLines(target) {
         traces.root = parentNames[0];
         traces.traceLine = parentNames.join(">");
     }
-    //todo 暂时增加控制台日志，完成后删掉
-    console.log(JSON.stringify(traces));
     return traces;
 }
 //获取父元素的跟踪路线集合
@@ -76,30 +74,22 @@ module.exports = {
         if (typeof element == "string") {
             parentNames.push(element);
         } else {
-            // 如果是事件
-            // var target = event.target;
-
-            //改为可以直接传dom
             let dom;
             //如果传入event,从event中取出target
             if (element) {
                 if (element.target) {
                     dom = element.target;
-                }
-                else {
+                } else {
                     dom = element;
                 }
                 parentNames = getParentsTraceLines(dom);
             }
-
         }
         parentNames.push(traceName);
         var traceObj = {
             root: parentNames[0] || "",
             traceLine: parentNames.join(">")
         };
-        //todo 暂时增加控制台日志，完成后删掉
-        console.log(JSON.stringify(traceObj));
         if (typeof _paq == "object") {
             _paq.push(['trackEvent', traceObj.root || traceName, 'clicked', traceObj.traceLine || traceName]);
         }

@@ -14,45 +14,56 @@ production模式  node app production
 */
 
 var path = require('path');
+var webpack = require("webpack");
  
-module.exports = 
-{
-        // The configuration for the server-side rendering
-        name: "server-side rendering",
-        entry: "./portal/components/Login/index",
-        target: "node",
-        output: {
-            path:path.join(__dirname, 'dist'),
-            filename: "server-render/login.js",
-            publicPath:  '/resources/' ,
-            libraryTarget: "commonjs2"
-        },
-        externals: /^[a-z\-0-9]+$/ ,
-        resolveLoader: {
-            moduleExtensions: ["-loader"]
-        },
-        module: {
-              rules: [
-               {
-                  test: /\.(png|jpg)$/,
-                  use: [
-                      {loader: "url-loader"}
-                  ]
-               },
-               {
-                  test: /\.js$/,
-                  use: [
-                      {loader: 'babel?compact=false'}
-                  ]
-               },
-               {
-                  test: /\.css$/,
-                  use: [
-                      "style-collector" ,
-                      "css-loader"
-                  ]
-               }
-             ]
-        }
-        
+module.exports = {
+    // The configuration for the server-side rendering
+    name: "server-side rendering",
+    entry: "./portal/components/Login/index",
+    target: "node",
+    output: {
+        path:path.join(__dirname, 'dist'),
+        filename: "server-render/login.js",
+        publicPath:  '/resources/' ,
+        libraryTarget: "commonjs2"
+    },
+    externals: /^[a-z\-0-9]+$/ ,
+    resolveLoader: {
+        moduleExtensions: ["-loader"]
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(png|jpg)$/,
+                use: [
+                    {loader: "url-loader"}
+                ]
+            },
+            {
+                test: /\.js$/,
+                use: [
+                    {loader: 'babel?compact=false'}
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    "style-collector" ,
+                    "css-loader"
+                ]
+            },
+            {
+                test: /\.less$/,
+                use: [ "style-collector", "css-loader", "less-loader" ],
+            },
+        ]
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            React: "react",
+            "_": "underscore",
+            Intl: [path.resolve(__dirname, "portal/public/intl/intl.js"), "default"],
+            Trace: path.resolve(__dirname, "portal/lib/trace"),
+        }),
+    ],
 }

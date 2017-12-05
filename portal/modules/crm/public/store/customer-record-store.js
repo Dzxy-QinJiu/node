@@ -17,8 +17,8 @@ CustomerRecordStore.prototype.resetState = function () {
     this.addCustomerLoading = false;//正在保存增加的用户跟踪记录
     this.addCustomerErrMsg = '';//保存增加的用户跟踪记录错误
     this.addCustomerSuccMsg = '';//保存增加的用户跟踪记录成功
-    this.selectedtracetype = 'phone';//下拉框选中的类型
-    this.initialType = 'phone';//下拉框默认选中的类型
+    this.selectedtracetype = 'other';//下拉框选中的类型
+    this.initialType = 'other';//下拉框默认选中的类型
     this.total = 0;//共获取的数据总数
     this.addErrTip ='';//添加内容为空的提示
     this.inputContent = '';//输入框中的内容
@@ -46,22 +46,21 @@ CustomerRecordStore.prototype.dismiss = function() {
 CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
     this.addCustomerErrMsg = "";
     this.addCustomerSuccMsg ="";
-    if (result.loading){
-        this.customerRecordLoading = true;
-    } else if (result.error){
+    if (!result.loading){
         this.customerRecordLoading = false;
-        this.customerRecordErrMsg = result.errorMsg;
-        this.customerRecord = [];
-    } else {
-        this.customerRecordLoading = false;
-        this.customerRecordErrMsg = "";
-        this.curPage++;
-        var customerRecord = _.isArray(result.data.result)?result.data.result:[];
-        customerRecord.forEach(function(item){
-            item.showAdd = false;
-        });
-        this.customerRecord = this.customerRecord.concat(customerRecord);
-        this.total = result.data.total;
+        if (result.error){
+            this.customerRecordErrMsg = result.errorMsg;
+            this.customerRecord = [];
+        } else {
+            this.customerRecordErrMsg = "";
+            this.curPage++;
+            var customerRecord = _.isArray(result.data.result)?result.data.result:[];
+            customerRecord.forEach(function(item){
+                item.showAdd = false;
+            });
+            this.customerRecord = this.customerRecord.concat(customerRecord);
+            this.total = result.data.total;
+        }
     }
 };
 CustomerRecordStore.prototype.addCustomerTrace = function (result) {
@@ -81,7 +80,7 @@ CustomerRecordStore.prototype.addCustomerTrace = function (result) {
         this.customerRecord.unshift(result.data.customer_trace);
         this.total += 1;
         this.inputContent = '';
-        this.selectedtracetype = 'phone';
+        this.selectedtracetype = 'other';
     }
 };
 CustomerRecordStore.prototype.updateCustomerTrace = function (result) {
@@ -130,6 +129,7 @@ CustomerRecordStore.prototype.setDetailContent = function (content) {
     this.addCustomerErrMsg = "";
     this.addCustomerSuccMsg ="";
     this.detailContent = content;
+    this.isEdit = true;
 };
 CustomerRecordStore.prototype.setUpdateId = function (id) {
     this.updateId = id;
@@ -150,4 +150,8 @@ CustomerRecordStore.prototype.setModalDialogFlag = function (state) {
 CustomerRecordStore.prototype.updateItem = function (item) {
     this.edittingItem = item;
 };
+CustomerRecordStore.prototype.setLoading = function () {
+    this.customerRecordLoading = true;
+};
+
 module.exports = alt.createStore(CustomerRecordStore, 'CustomerRecordStore');

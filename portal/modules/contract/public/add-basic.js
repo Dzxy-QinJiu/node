@@ -1,12 +1,13 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 销售合同基本信息添加表单
  */
 
-import { Form, Validation, Input, Select, DatePicker, Radio } from "antd";
+import { Form, Input, Select, DatePicker, Radio } from "antd";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import BasicMixin from "./mixin-basic";
 
@@ -65,6 +66,16 @@ const AddBasic = React.createClass({
                 </FormItem>
                 <FormItem 
                      {...formItemLayout2}
+                    label={Intl.get("contract.165", "成本构成")}
+                >
+                    <Input
+                        name="cost_structure"
+                        value={this.parseAmount(formData.cost_structure)}
+                        onChange={this.setField.bind(this, "cost_structure")}
+                    />
+                </FormItem>
+                <FormItem 
+                     {...formItemLayout2}
                     label={Intl.get("contract.154", "合同毛利")}
                      validateStatus={this.getValidateStatus("gross_profit")}
                      help={this.getHelpMessage("gross_profit")}
@@ -83,7 +94,7 @@ const AddBasic = React.createClass({
                      label={Intl.get("contract.35", "起始时间")}
                 >
                     <DatePicker
-                        value={formData.start_time? moment(formData.start_time).format(oplateConsts.DATE_FORMAT) : ""}
+                        value={formData.start_time? moment(formData.start_time) : ""}
                         onChange={this.setField.bind(this, "start_time")}
                     />
                 </FormItem>
@@ -92,7 +103,7 @@ const AddBasic = React.createClass({
                      label={Intl.get("contract.105", "结束时间")}
                 >
                     <DatePicker
-                        value={formData.end_time? moment(formData.end_time).format(oplateConsts.DATE_FORMAT) : ""}
+                        value={formData.end_time? moment(formData.end_time) : ""}
                         onChange={this.setField.bind(this, "end_time")}
                     />
                 </FormItem>

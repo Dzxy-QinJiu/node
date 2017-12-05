@@ -9,16 +9,17 @@ import { getTeamName } from "./utils";
 const extend = require("extend");
 const userData = require("../../../public/sources/user-data");
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
-import { CONTRACT_STAGE, CONTRACT_COLUMNS, COST_COLUMNS } from "../consts";
-import { formatAmount } from "./utils";
-import { decimalToPercent } from "LIB_DIR/func";
+import { CONTRACT_STAGE, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from "../consts";
+import { formatAmount, decimalToPercent } from "LIB_DIR/func";
 import { contractEmitter } from "../../../public/sources/utils/emitters";
 import routeList from "../common/route";
 import ajax from "../common/ajax";
 import Trace from "LIB_DIR/trace";
 
 let searchTimeout = null;
-
+const LAYOUT_CONSTNTS = {
+    BOTTOM: 20
+};
 const List = React.createClass({
     getInitialState: function () {
         return {
@@ -33,6 +34,7 @@ const List = React.createClass({
             stage: "all",
             isPreviewShow: false,
             previewList: [],
+            selectedItemId: ""//选中的合同id
         };
     },
     componentWillReceiveProps: function (nextProps) {
@@ -52,7 +54,6 @@ const List = React.createClass({
     },
     componentDidMount: function () {
         $(window).on("resize", this.setTableHeight);
-        $(this.refs.listTable).on("click", "td", this.onRowClick);
         TableUtil.zoomInSortArea(this.refs.listTable);
         contractEmitter.on(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
     },
@@ -67,26 +68,33 @@ const List = React.createClass({
         }
     },
     setTableHeight: function () {
-        let newHeight = $(window).height() - $(".custom-tbody").offset().top - $(".custom-tfoot").outerHeight();
+        let newHeight = $(window).height() 
+            - $(".custom-tbody").offset().top 
+            - $(".custom-tfoot").outerHeight() 
+            - LAYOUT_CONSTNTS.BOTTOM;
         $(this.refs.listTable).find(".custom-tbody").height(newHeight);
         this.refs.gemiScrollBar.update();
     },
     getRowKey: function (record, index) {
         return index;
     },
-    onRowClick: function (e) {
+    onRowClick: function (record, index, e) {
         if (e.currentTarget.className === "ant-table-selection-column") return;
         const $tr = $(e.target).closest("tr");
         $tr.addClass("current-row").siblings().removeClass("current-row");
-        let rowIndex = e.currentTarget.parentNode.rowIndex;
-
-        //显示表头的时候，行索引减1，不计算表头行
-        if ($tr.closest("table").children("thead").length) {
-            rowIndex = rowIndex - 1;
-        }
-
         const view = this.props.type === "cost"? "detailCost" : "detail";
-        this.props.showRightPanel(view, rowIndex);
+        this.state.selectedItemId = record.id;
+        this.setState(this.state);
+        this.props.showRightPanel(view, index);
+    },
+    //处理选中行的样式
+    handleRowClassName: function (record, index) {
+        if ((record.id == this.state.selectedItemId) && this.props.isRightPanelShow) {
+            return "current-row";
+        }
+        else {
+            return "";
+        }
     },
     onChange: function(pagination, filters, sorter) {
         this.props.getContractList(true, sorter);
@@ -262,45 +270,64 @@ const List = React.createClass({
 
     render: function () {
         const _this = this;
-        let columns = CONTRACT_COLUMNS.map(item => {
-            const column = {
-                title: item.title,
-                dataIndex: item.dataIndex,
-                key: item.dataIndex,
-            };
+        let columns = CONTRACT_COLUMNS;
 
-            if (["num", "customer_name", "user_name", "sales_team", "stage"].indexOf(item.dataIndex) > -1) {
+        //销售查看自己的合同列表时不显示负责人列
+        const firstContract = this.props.contractList[0];
+        const currentUser = userData.getUserData().nick_name;
+        if (firstContract && firstContract.user_name === currentUser) {
+            columns = _.filter(columns, column => column.dataIndex !== "user_name");
+        }
+
+        if (this.props.type === "buy") {
+            //采购合同不显示成本、毛利、回款等字段
+            const excludeColumns = ["cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount"];
+
+            columns = _.filter(columns, column => {
+                return excludeColumns.indexOf(column.dataIndex) < 0;
+            });
+        } else if (this.props.type === "repayment") {
+            //定义回款表格列
+            columns = REPAYMENT_COLUMNS;
+        } else if (this.props.type === "cost") {
+            //定义费用表格列
+            columns = COST_COLUMNS;
+        }
+
+        columns = columns.map(column => {
+            column.key = column.dataIndex;
+
+            //带表头搜索的列
+            const filterColumns = ["num", "customer_name", "user_name", "sales_team", "stage", "contract_amount", "cost_price", "gross_profit", "sales_name", "repayment_amount", "repayment_gross_profit"];
+
+            if (filterColumns.indexOf(column.dataIndex) > -1) {
                 column.hasFilter = true;
             }
 
-            if (item.dataIndex === "category" && this.props.type === "sell") {
+            if (column.dataIndex === "category" && this.props.type === "sell") {
                 column.hasFilter = true;
             }
 
-            if (item.dataIndex === "num") {
+            if (column.dataIndex === "num") {
                 column.width = 120;
             }
 
-            if (item.dataIndex === "customer_name") {
-                column.width = 180;
+            if (column.dataIndex === "customer_name") {
+                column.width = 160;
             }
 
-            if (["date", "start_time", "end_time", "total_invoice_amount"].indexOf(item.dataIndex) > -1) {
-                column.width = 85;
+            if (["date", "start_time", "end_time", "total_invoice_amount"].indexOf(column.dataIndex) > -1) {
+                column.width = 90;
             }
 
-            if (["date", "start_time", "end_time"].indexOf(item.dataIndex) > -1) {
+            if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
                 column.render = function (text) {
                     let time = text? moment(text).format(DATE_FORMAT) : "";
                     return <span>{time}</span>;
                 }
             }
 
-            if (["start_time", "end_time"].indexOf(item.dataIndex) > -1) {
-                column.sorter = true;
-            }
-
-            if (item.dataIndex === "data" && this.props.type === "repayment") {
+            if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
                 column.sorter = true;
             }
 
@@ -308,15 +335,21 @@ const List = React.createClass({
                 column.className = "has-filter";
             }
 
-            if (["contract_amount", "cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount"].indexOf(item.dataIndex) > -1) {
+            if (["contract_amount", "cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount", "repayment_amount", "repayment_gross_profit", "cost"].indexOf(column.dataIndex) > -1) {
                 column.className = "number-value";
                 column.render = function (text) {
-                    text = formatAmount(text);
+                    if (column.dataIndex === "cost") {
+                        text = parseFloat(text);
+                        text = isNaN(text)? "" : text.toFixed(2);
+                    } else {
+                        text = formatAmount(text);
+                    }
+
                     return <span>{text}</span>;
                 }
             }
 
-            if (["gross_profit_rate"].indexOf(item.dataIndex) > -1) {
+            if (["gross_profit_rate"].indexOf(column.dataIndex) > -1) {
                 column.className = "number-value";
                 column.render = function (text) {
                     text = decimalToPercent(text);
@@ -324,15 +357,11 @@ const List = React.createClass({
                 }
             }
 
-            if (["contract_amount", "cost_price", "gross_profit"].indexOf(item.dataIndex) > -1) {
-                column.hasFilter = true;
-            }
-
-            if (item.dataIndex === "contract_amount") {
+            if (column.dataIndex === "contract_amount") {
                 column.className += " border-left";
             }
 
-            if (item.dataIndex === "category") {
+            if (column.dataIndex === "category") {
                 column.render = function (text) {
                     text = text? text : "";
                     return <span>{text}</span>;
@@ -343,103 +372,15 @@ const List = React.createClass({
                 column.className = "has-filter";
             }
 
+            if (column.dataIndex === "repayment_is_first") {
+                column.render = function(text, record) {
+                    text = text === "true"? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                    return <span>{text}</span>;
+                };
+            }
+
             return column;
         });
-
-        //销售查看自己的合同列表时不显示负责人列
-        const firstContract = this.props.contractList[0];
-        const currentUser = userData.getUserData().nick_name;
-        if (firstContract && firstContract.user_name === currentUser) {
-            columns = _.filter(columns, column => column.dataIndex !== "user_name");
-        }
-
-        //采购合同不显示成本、毛利、回款等字段
-        if (this.props.type === "buy") {
-            columns = _.filter(columns, column => {
-                return ["cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount"].indexOf(column.dataIndex) < 0;
-            });
-        }
-
-        //对合同回款列表要显示的字段进行处理
-        if (this.props.type === "repayment") {
-            //不显示成本、毛利、合同类型等字段
-            columns = _.filter(columns, column => {
-                return ["start_time", "end_time", "category", "stage", "contract_amount", "cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount"].indexOf(column.dataIndex) < 0;
-            });
-
-            //显示回款时间、回款额、回款毛利字段
-            const repayColumns = [
-                {
-                    title: Intl.get("contract.122", "回款时间"),
-                    dataIndex: "repayment_date",
-                    key: "repayment_date",
-                    sorter: true,
-                    className: 'has-filter',
-                    width: 85,
-                    render: function (text) {
-                        let time = text? moment(text).format(DATE_FORMAT) : "";
-                        return <span>{time}</span>;
-                    }
-                },
-                {
-                    title: Intl.get("contract.28", "回款额"),
-                    dataIndex: "repayment_amount",
-                    key: "repayment_amount",
-                    hasFilter: true,
-                    className: "number-value",
-                    render: function (text) {
-                        text = formatAmount(text);
-                        return <span>{text}</span>;
-                    }
-                },
-                {
-                    title: Intl.get("contract.29", "回款毛利"),
-                    dataIndex: "repayment_gross_profit",
-                    key: "repayment_gross_profit",
-                    hasFilter: true,
-                    className: "number-value",
-                    render: function (text) {
-                        text = formatAmount(text);
-                        return <span>{text}</span>;
-                    }
-                },
-            ];
-
-            columns = columns.concat(repayColumns);
-        }
-
-        //费用表格列
-        if (this.props.type === "cost") {
-            columns = COST_COLUMNS.map(item => {
-                const column = {
-                    title: item.title,
-                    dataIndex: item.dataIndex,
-                    key: item.dataIndex,
-                };
-    
-                if (["date"].indexOf(item.dataIndex) > -1) {
-                    column.render = function (text) {
-                        let time = text? moment(text).format(DATE_FORMAT) : "";
-                        return <span>{time}</span>;
-                    }
-                }
-    
-                if (["cost"].indexOf(item.dataIndex) > -1) {
-                    column.className = "number-value";
-                    column.render = function (text) {
-                        text = parseFloat(text);
-                        text = isNaN(text)? "" : text.toFixed(2);
-                        return <span>{text}</span>;
-                    }
-                }
-
-                if (["sales_name", "sales_team"].indexOf(item.dataIndex) > -1) {
-                    column.hasFilter = true;
-                }
-    
-                return column;
-            });
-        }
 
         const filterColumns = extend(true, [], columns).map(column => {
             if (column.hasFilter) {
@@ -469,14 +410,16 @@ const List = React.createClass({
         });
 
         const sum = this.state.sum;
-        const sumColumns = extend(true, [], columns).map(column => {
+        let sumColumns = extend(true, [], columns).map(column => {
             column.title = formatAmount(sum[column.dataIndex]);
-
-            if (column.sorter) delete column.sorter;
-
+            if (column.sorter) delete column.sorter;        
+            if (!_.has(sum, column.dataIndex)) {
+                column.colSpan = 0;
+            }    
             return column;
         });
-
+        //将第一个不计算合计的单元格colSpan设置为所有不计算合计的单元格数量
+        sumColumns.find(x => !x.title).colSpan = sumColumns.filter(x => !_.has(sum, x.dataIndex)).length;
         let typeName = Intl.get("contract.125", "合同");
         if (this.props.type === "repayment") {
             typeName = Intl.get("contract.108", "回款");
@@ -516,6 +459,8 @@ const List = React.createClass({
                         rowKey={this.getRowKey}
                         loading={this.props.isListLoading}
                         pagination={false}
+                        rowClassName={this.handleRowClassName}
+                        onRowClick={this.onRowClick}
                     />
                     </GeminiScrollBar>
                 </div>
@@ -528,7 +473,7 @@ const List = React.createClass({
                         <ReactIntl.FormattedMessage
                             id="contract.124"
                             values={{
-                            "num":this.props.contractCount,
+                            "num":this.props.contractCount + '',
                             "type": typeName
                             }}
                             defaultMessage={`共{num}个符合当前查询条件的{type}`} />

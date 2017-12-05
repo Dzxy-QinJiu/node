@@ -1,11 +1,12 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 产品信息添加表单
  */
 
-import { Form, Validation, Input, Select, Button, Icon } from "antd"
+import { Form, Input, Select, Button, Icon } from "antd"
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 
 const AddProduct = React.createClass({

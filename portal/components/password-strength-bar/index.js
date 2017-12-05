@@ -20,9 +20,9 @@ var PassStrengthBar = React.createClass({
             'ant-pwd-strength-high': strength === 'H'
         });
         var level = {
-            L: Intl.get('common.password.low','低'),
-            M: Intl.get('common.password.middle','中'),
-            H: Intl.get('common.password.high','高')
+            L: Intl.get('common.password.low', '低'),
+            M: Intl.get('common.password.middle', '中'),
+            H: Intl.get('common.password.high', '高')
         };
 
         return (
@@ -82,11 +82,6 @@ exports.getPassStrenth = function (value) {
 
 };
 
-
-
-
-
-
 exports.PassStrengthBar = PassStrengthBar;
-
-
+//6到18位字母、数字、符号组成的密码验证规则
+exports.passwordRegex = /^([a-z]|[A-Z]|[0-9]|[! @#$%^&*-_]){6,18}$/;

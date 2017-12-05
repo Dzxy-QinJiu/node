@@ -65,9 +65,28 @@ function AppStore() {
     this.appNoticePanelShow = false;
     //是否正在刷新应用密钥
     this.appSecretRefreshing = false;
+    //生成应用piwik收集key值
+    this.appPiwikKey = "";
+    //生成应用piwik收集key值错误的提示
+    this.appPiwikKeyErrMsg = "";
+    //正在加载中
+    this.getPiwikKeyLoading = false;
+    //应用代码跟踪
+    this.appCodeTraceShow = false;
     this.bindActions(AppActions);
 }
 
+AppStore.prototype.showAppCodeTrace = function () {
+    this.isAppFormShow = false;
+    this.appInfoShow = false;
+    this.appFormShow = false;
+    this.versionUpgradeShow = false;
+    this.isAppNoticePanelShow = false;
+    this.appNoticePanelShow = false;
+    this.userTypeConfigShow = false;
+    this.rightPanelShow = true;
+    this.appCodeTraceShow = true;
+};
 //修改应用到期时间后的更新
 AppStore.prototype.afterUpdateAppExpireDate = function (appObj) {
     if (appObj.client_id) {
@@ -103,6 +122,7 @@ AppStore.prototype.showAppAuthPanel = function () {
     this.versionUpgradeShow = false;
     this.isAppNoticePanelShow = false;
     this.appNoticePanelShow = false;
+    this.appCodeTraceShow = false;
 };
 //是否展示我的应用的角色、权限面板
 AppStore.prototype.showAuthRolePanel = function (appId) {
@@ -194,8 +214,24 @@ AppStore.prototype.getCurAppById = function (app) {
 AppStore.prototype.closeAddPanel = function () {
     this.appFormShow = false;
     this.rightPanelShow = false;
+    
 };
 
+AppStore.prototype.getCurAppKeyById = function (result) {
+    if (result.loading){
+        this.getPiwikKeyLoading = result.loading;
+        this.appPiwikKeyErrMsg = "";
+    }else if (result.error){
+        this.appPiwikKey = "";
+        this.appPiwikKeyErrMsg = result.errorMsg;
+        this.getPiwikKeyLoading = result.loading;
+    }else if (_.isObject(result.data) && _.isString(result.data.key)){
+        this.appPiwikKey = result.data.key;
+        this.getPiwikKeyLoading = result.loading;
+        this.appPiwikKeyErrMsg = "";
+    }
+};
+//通过id获取其姓名
 //通过id获取其姓名
 AppStore.prototype.getNickName = function (id) {
     var nickName = '';
@@ -278,6 +314,7 @@ AppStore.prototype.showAppForm = function (type) {
     this.rightPanelShow = true;
     this.isAppNoticePanelShow = false;
     this.appNoticePanelShow = false;
+    this.appCodeTraceShow = false;
 
 };
 
@@ -293,6 +330,7 @@ AppStore.prototype.showVersionUpgradePanel = function () {
     this.isAppNoticePanelShow = false;
     this.appNoticePanelShow = false;
     this.userTypeConfigShow = false;
+    this.appCodeTraceShow = false;
 };
 
 // 系统公告
@@ -307,6 +345,7 @@ AppStore.prototype.showAppNoticePanel = function () {
     this.isAppNoticePanelShow = true;
     this.appNoticePanelShow = true;
     this.userTypeConfigShow = false;
+    this.appCodeTraceShow = false;
 };
 
 //用户类型设置
@@ -314,11 +353,14 @@ AppStore.prototype.showUserTypeConfigPanel = function () {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
+    this.isAppAuthPanelShow = false;
+    this.appAuthPanelShow = false;
     this.versionUpgradeShow = false;
     this.isAppNoticePanelShow = false;
     this.appNoticePanelShow = false;
     this.rightPanelShow = true;
     this.userTypeConfigShow = true;
+    this.appCodeTraceShow = false;
 };
 
 AppStore.prototype.showModalDialog = function () {
@@ -346,6 +388,7 @@ AppStore.prototype.showAppInfo = function () {
     this.appAuthPanelShow = false;
     this.appNoticePanelShow = false;
     this.userTypeConfigShow = false;
+    this.appCodeTraceShow = false;
 };
 
 AppStore.prototype.updateSearchContent = function (searchContent) {
@@ -358,6 +401,7 @@ AppStore.prototype.closeRightPanel = function () {
     this.appNoticePanelShow = false;
     this.userTypeConfigShow = false;
     this.rightPanelShow = false;
+    this.appCodeTraceShow = false;
 };
 
 AppStore.prototype.returnInfoPanel = function () {
@@ -367,6 +411,7 @@ AppStore.prototype.returnInfoPanel = function () {
     this.appAuthPanelShow = false;
     this.appNoticePanelShow = false;
     this.userTypeConfigShow = false;
+    this.appCodeTraceShow = false;
 };
 
 module.exports = alt.createStore(AppStore, 'MyAppStore');

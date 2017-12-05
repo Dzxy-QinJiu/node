@@ -20,10 +20,20 @@ module.exports = {
         "privileges": [
             "USER_AUDIT_LOG_LIST"
         ]
-    },{   // 获取用户登录相关的信息
+    },{   // 获取用户登录相关的信息（时长、次数、首次和最后一次登录时间）
         "method": "get",
         "path": "/rest/user/login/info/:user_id",
         "handler": "getUserLoginInfo",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "USER_AUDIT_LOG_LIST"
+        ]
+    },{   // 获取用户登录统计图中登录时长、登录频次
+        "method": "get",
+        "path": "/rest/user/login/chart/:user_id",
+        "handler": "getUserLoginChartInfo",
         "passport": {
             "needLogin": true
         },

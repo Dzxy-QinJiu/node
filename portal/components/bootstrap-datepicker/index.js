@@ -39,6 +39,10 @@ var BootstrapDatepicker = React.createClass({
             options.endDate = new Date();
         }
 
+        if (props.dateSelectRange) {
+            options.startDate = new Date(Date.now() - props.dateSelectRange) ;
+        }
+
         if (_.isObject(props.options)) {
             _.extend(options, props.options);
         }
@@ -117,7 +121,9 @@ var BootstrapDatepicker = React.createClass({
             onChange: function () {
             },
             //不让选择今天之后的时间(默认：false)
-            disableDateAfterToday: false
+            disableDateAfterToday: false,
+            // 选择查看的时间范围（默认： 0）
+            dateSelectRange: 0
         };
     }
     ,

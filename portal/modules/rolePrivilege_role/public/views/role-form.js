@@ -1,13 +1,13 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
 var Link = require("react-router").Link;
-var Validation = require("antd").Validation;
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Button = require("antd").Button;
 var Checkbox = require("antd").Checkbox;
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var classNames = require("classnames");
 var AlertTimer = require("../../../../components/alert-timer");

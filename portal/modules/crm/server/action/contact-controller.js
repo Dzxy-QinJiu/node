@@ -1,5 +1,15 @@
 var contactService = require("../service/contact-service");
 
+exports.getContactList = function (req, res) {
+    contactService.getContactList(req, res, req.body)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err && err.message);
+    });
+};
+
+
 /**
  * 删除联系人
  */
@@ -79,24 +89,13 @@ exports.editContact = function (req, res) {
         name: name,
         position: position,
         role: role,
-        //phone: phone,
-        //qq: qq,
-        //weChat: weChat,
-        //email: email,
+        phone: phone,
+        qq: qq,
+        weChat: weChat,
+        email: email,
         def_contancts: def_contancts
     };
-    if (phone.length > 0) {
-        contact.phone = phone;
-    }
-    if (qq.length > 0) {
-        contact.qq = qq;
-    }
-    if (weChat.length > 0) {
-        contact.weChat = weChat;
-    }
-    if (email.length > 0) {
-        contact.email = email;
-    }
+
     contactService.updateContact(req, res, contact)
         .on("success", function (data) {
             res.json(contact);

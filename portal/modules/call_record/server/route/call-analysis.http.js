@@ -49,6 +49,20 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
+        }, { // 导出通话率
+            "method": "get",
+            "path": "/rest/export/call_rate/:call_type",
+            "handler": "getCallRateFile",
+            "passport": {
+                "needLogin": true
+            }
+        }, { //获取通话数量和时长的统计数据
+            "method": "get",
+            "path": "/rest/call/interval_data/:authType",
+            "handler": "getCallIntervalData",
+            "passport": {
+                "needLogin": true
+            }
         }
     ]
 };

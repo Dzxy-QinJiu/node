@@ -2,12 +2,10 @@
  * Created by wangliping on 2017/2/25.
  */
 var language = require("../../../../public/language/getLanguage");
+require('PUB_DIR/css/card-info-common.scss');
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../components/cardInfo/cardInfo-es_VE.scss");
-}else if (language.lan() == "zh"){
-    require("../../../../components/cardInfo/cardInfo-zh_CN.scss");
+    require('PUB_DIR/css/card-info-es.scss');
 }
-
 import {Spin,Icon,Pagination,Form,Input,Tag,Alert,DatePicker,message,Popconfirm} from "antd";
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -16,6 +14,7 @@ var RightPanelVersionUpgrade = rightPanelUtil.RightPanelVersionUpgrade;
 var RightPanelAppAuth = rightPanelUtil.RightPanelAppAuth;
 var RightPanelAppNotice = rightPanelUtil.RightPanelAppNotice;
 var RightPanelUserTypeConfig = rightPanelUtil.RightPanelUserTypeConfig;
+var RightPanelAppCodeTrace = rightPanelUtil.RightPanelAppCodeTrace;
 var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 var HeadIcon = require("../../../../components/headIcon");
@@ -72,8 +71,12 @@ var AppInfo = React.createClass({
         this.props.showUserTypeConfigPanel();
     },
     //到期时间的修改
+    showAppCodeTrace:function () {
+        this.props.showAppCodeTrace();
+    },
+    //到期时间的修改
     expireDateChange: function (field, value) {
-        let expireDate = value.getTime();
+        let expireDate = value.valueOf();
         this.setState({expireDate: expireDate});
     },
     confirm: function () {
@@ -99,10 +102,12 @@ var AppInfo = React.createClass({
 
         let disabledDate = function (current) {
             //应用到期时间的选择不能小于当前时间
-            return current && current.getTime() < Date.now();
+            return current && current.valueOf() < Date.now();
         };
 
         let expireDate = this.state.expireDate ? moment(this.state.expireDate).format(FORMAT) : "";
+
+        let expireDateMoment = this.state.expireDate ? moment(this.state.expireDate) : moment();
         return (<div>
             <div className="card-item">
                 <span className="card-item-left"> URL: </span>
@@ -137,7 +142,7 @@ var AppInfo = React.createClass({
             <div className="card-item">
                 <span className="card-item-left"><ReactIntl.FormattedMessage id="my.app.app.secret.key"
                                                                              defaultMessage="密钥"/>:</span>
-                    <span className="card-item-right" title={appInfo.appSecret}>
+                    <span className="card-item-right" title={_.isArray(appInfo.appSecret) && (appInfo.appSecret).join('') || appInfo.appSecret}>
                         {appInfo.appSecret}
                     </span>
                 <i></i>
@@ -216,7 +221,7 @@ var AppInfo = React.createClass({
                     <span className="card-item-right">
                         {this.state.isEditExpireDate ? (<span>
                             <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
-                                        value={expireDate}
+                                        value={expireDateMoment}
                                         disabledDate={disabledDate}
                                         onChange={this.expireDateChange.bind(this,'expireDate')}/>
                             {this.state.isSaving ? <Icon className="saving-expire-date-icon" type="loading"/> : (<span>
@@ -279,7 +284,9 @@ var AppInfo = React.createClass({
                 this.props.versionUpgradeShow ||
                 this.props.isAppAuthPanelShow ||
                 this.props.isAppNoticePanelShow ||
-                this.props.userTypeConfigShow) {
+                this.props.userTypeConfigShow ||
+                this.props.appCodeTraceShow
+                 ) {
                 //展示form面板时，整体左移
                 className += " right-panel-content-slide";
             }
@@ -292,15 +299,23 @@ var AppInfo = React.createClass({
                         <RightPanelEdit onClick={this.showEditForm}/>
                         <RightPanelAppAuth onClick={this.props.showAppAuthPanel}/>
                     </PrivilegeChecker>
+                    {/**v8环境，不显示系统公告、版本升级记录、用户类型设置、应用跟踪代码*/}
+                    { !Oplate.hideSomeItem &&
                     <PrivilegeChecker check={"GET_APPLICATION_RECORD" || "ADD_APPLICATION_RECORD"}>
                         <RightPanelVersionUpgrade onClick={this.showVersionUpgradePanel}/>
-                    </PrivilegeChecker>
+                    </PrivilegeChecker> }
+                    { !Oplate.hideSomeItem &&
                     <PrivilegeChecker check={"GET_APPLICATION_NOTICE" || "ADD_APPLICATION_NOTICE"}>
                         <RightPanelAppNotice onClick={this.showAppNoticePanel}/>
-                    </PrivilegeChecker>
+                    </PrivilegeChecker> }
+                    { !Oplate.hideSomeItem &&
                     <PrivilegeChecker check={"GET_APP_EXTRA_GRANTS"}>
                         <RightPanelUserTypeConfig onClick={this.showUserTypeConfigPanel}/>
-                    </PrivilegeChecker>
+                    </PrivilegeChecker> }
+                    { !Oplate.hideSomeItem &&
+                    <PrivilegeChecker check={"GENERATE_PIWIK_KEY"}>
+                        <RightPanelAppCodeTrace onClick={this.showAppCodeTrace}/>
+                    </PrivilegeChecker>}
                 </div>
                 <HeadIcon headIcon={this.state.appInfo.image} iconDescr={this.state.appInfo.name}
                           isUserHeadIcon={true}

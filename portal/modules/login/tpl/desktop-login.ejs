@@ -45,92 +45,10 @@
 <% // 页头2       %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
 
-<style>
-    body{
-        font-size:18px;
-        background-color:#1d2b36;
-    }
-
-    .error{
-        color:red;
-        font-size:18px;
-    }
-
-    #loginForm{
-        text-align:center;
-    }
-
-    #loginForm .logo span{
-        font-size:24px !important;
-    }
-
-    #loginForm .input-area{
-        margin:16px 0 12px;
-    }
-
-    #loginForm .input-item{
-        margin-bottom:12px;
-    }
-
-    #loginForm .input-item:last-child{
-        margin-bottom:0;
-    }
-
-    #loginForm .input-item input{
-        border-radius:2px;
-    }
-
-    #loginForm .input-area input{
-        width:250px;
-        height:40px;
-        border:none;
-        background:#e8e9eb;
-        line-height:42px;
-        color:#333;
-        font-size:16px;
-        padding:0 15px;
-        outline:none;
-        text-align:left;
-    }
-
-    #loginForm button{
-        width:100%;
-        height:40px;
-        line-height:40px;
-        border-radius:5px;
-        background-color:#4e96d1;
-        color:#e0feff;
-        border:none;
-        font-size:14px;
-        cursor:pointer;
-        transition:0.3s;
-        outline:none;
-    }
-
-    #loginForm button:hover{
-        background-color:#3A89BF;
-        box-shadow:1px 2px 1px #102435;
-    }
-
-    #loginForm .input-area .captcha_wrap{
-        text-align:left;
-        overflow:hidden;
-    }
-
-    #loginForm .input-area .captcha_wrap input{
-        width:118px;
-        float:left;
-    }
-
-    #loginForm .input-area .captcha_wrap img{
-        float:right;
-        width:120px;
-        height:40px;
-        border-radius:2px;
-        cursor:pointer;
-        font-size:14px;
-    }
+<style id="css-style-collector-data">
+    <%- styleContent %>
 </style>
+
 <div id="react-placeholder"><%- loginForm %></div>
 <% // 页脚        %>
 <% showFooterContent = hideLangQRcode ? false : true %>

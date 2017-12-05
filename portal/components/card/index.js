@@ -72,7 +72,7 @@ var Card = React.createClass({
         if (card.createMsg === 'error') {
             //右上角通知3s后关闭，在通知关闭后再在页面上移除创建失败的安全域card
             setTimeout(()=>{
-            this.props.removeFailRealm(card.taskId);
+                this.props.removeFailRealm(card.taskId);
             }, DELETE_CREATEREALM_DELAYTIME)
         }
         var userName = card.userName ? card.userName.value : "";
@@ -83,7 +83,7 @@ var Card = React.createClass({
                         <div className="card-stop-bg"></div>
                         <div className="stop-icon">
                             <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
-                            </div>
+                        </div>
                         <div className="stop-triangle"></div>
                     </div>
                     {card.id? null:(

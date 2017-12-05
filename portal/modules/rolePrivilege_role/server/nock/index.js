@@ -4,7 +4,7 @@
 var Role = require("../dto/role");
 var Authority = require("../dto/authority");
 var nock = require('nock');
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
+var uuid = require('uuid/v4');
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
 var roleManageServic = require("../service/role-manage-service");
 

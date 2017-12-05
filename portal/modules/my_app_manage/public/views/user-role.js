@@ -112,8 +112,8 @@ var UserRolePage = React.createClass({
                         roleListDivHeight={roleListDivHeight}
                         delRoleStr="USER_INFO_MYAPP_ROLE_DELETE"
                         editRoleStr="USER_INFO_MYAPP_ROLE_EDIT"
-                        setDefaultRoleStr="APPLICATION_BASE_ROLE_CONFIG"
-                        delDefaultRoleStr="APPLICATION_BASE_ROLE_DELETE"
+                        setDefaultRoleStr="APPLICATION_BASE_ROLE_MANAGEMENT"
+                        delDefaultRoleStr="APPLICATION_BASE_ROLE_MANAGEMENT"
                     />
                 );
             })

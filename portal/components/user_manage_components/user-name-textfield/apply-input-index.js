@@ -1,9 +1,10 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 渲染用户名输入框
  */
-import {Form,Input,Validation} from 'antd';
+import {Form,Input} from 'antd';
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import UserNameTextFieldUtil from './util';
 import ApplyViewDetailStore from '../../../modules/user_apply/public/store/apply-view-detail-store';
 let number = 1;

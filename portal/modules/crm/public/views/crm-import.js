@@ -10,7 +10,7 @@ var CrmImport = React.createClass({
     },
     handleChange(info) {
         this.setState({isLoading: true});
-        if (info.file.percent === 100) {
+        if (info.file.status === "done") {
             const response = info.file.response;
             Trace.traceEvent(this.getDOMNode(),"点击导入按钮");
             if (_.isArray(response) && response.length) {

@@ -3,7 +3,6 @@
  */
 var SalesStage = require("../dto/sales-stage");
 var nock = require('nock');
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
 var nockParser = require(require('path').join(portal_root_path, './lib/utils/nockParser'));
 var SalesStageManageServic = require("../service/sales-stage-manage-service");
 

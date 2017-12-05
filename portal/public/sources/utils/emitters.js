@@ -8,6 +8,12 @@ var EventEmitter = require("events");
 exports.scrollBarEmitter = new EventEmitter();
 exports.scrollBarEmitter.STOP_LOADED_DATA = "stopScrollLoadedData";
 exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = "scrollBar.hideBottomLoading";
+//拨打电话emitter
+exports.phoneMsgEmitter = new EventEmitter();
+exports.phoneMsgEmitter.SEND_PHONE_NUMBER = "sendPhoneNumber";
+//添加客户成功后emitter
+exports.addCustomerEmitter = new EventEmitter();
+exports.addCustomerEmitter.SEND_ADD_CUSTOMER = "sendAddCustomer";
 //用户信息emitter
 exports.userInfoEmitter = new EventEmitter();
 exports.userInfoEmitter.CHANGE_USER_LOGO = "changeUserInfoLogo";
@@ -19,6 +25,8 @@ exports.notificationEmitter = new EventEmitter();
 exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = "updateNotificationUnread";
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = "showUnhandledApplyCount";
 exports.notificationEmitter.APPLY_UPDATED = "applyUpdated";
+//刷新系统消息的emitter
+exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = "systemNoticeUpdated";
 //用户批量推送的emitter
 exports.batchPushEmitter = new EventEmitter();
 //用户管理批量-所属客户

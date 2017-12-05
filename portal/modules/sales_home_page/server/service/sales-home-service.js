@@ -22,7 +22,9 @@ var restApis = {
     // 获取应用列表
     getGrantApplications: "/rest/base/v1/application/grant_applications",
     //获取即将过期用户列表
-    getExpireUser: "/rest/base/v1/view/expireuser"
+    getExpireUser: "/rest/base/v1/view/expireuser",
+    //获取网站个性化配置 或对网站进行个性化设置
+    websiteConfig:"/rest/base/v1/user/website/config",
 };
 exports.restUrls = restApis;
 
@@ -119,9 +121,19 @@ exports.getSalesContract = function (req, res, timeRange) {
 
 //获取过期用户列表
 exports.getExpireUser = function (req, res) {
+    var queryObj = req.query;
+    var url = restApis.getExpireUser ;
+    if (!_.isEmpty(queryObj)){
+        if (queryObj.team_id){
+            url += "?team_id=" + queryObj.team_id;
+        }
+        if (queryObj.member_id){
+            url += "?member_id=" + queryObj.member_id;
+        }
+    }
     return restUtil.authRest.get(
         {
-            url: restApis.getExpireUser,
+            url: url,
             req: req,
             res: res
         }, null, {
@@ -131,4 +143,30 @@ exports.getExpireUser = function (req, res) {
                 eventEmitter.emit("success", expireUser);
             }
         });
+};
+//获取网站个性化设置
+exports.getWebsiteConfig = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.websiteConfig,
+            req: req,
+            res: res
+        }, null,{
+            success:function (eventEmitter, data) {
+              //空值的处理
+                if (!data){
+                    data = {};
+                }
+                eventEmitter.emit("success", data);
+            }
+        });
+};
+//对网站进行个性化设置
+exports.setWebsiteConfig = function (req, res ,reqObj) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.websiteConfig,
+            req: req,
+            res: res
+        }, reqObj);
 };

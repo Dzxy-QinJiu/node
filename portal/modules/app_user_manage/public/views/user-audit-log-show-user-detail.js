@@ -3,26 +3,28 @@ import {RightPanel} from "../../../../components/rightPanel";
 import LogVIew from "./user_audit_log";
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/main-es_VE.scss");
+    require("../css/user-audit-log-es_VE.scss");
 }else if (language.lan() == "zh"){
-    require("../css/main-zh_CN.scss");
+    require("../css/user-audit-log-zh_CN.scss");
 }
+var UserAuditLogStore = require("../store/user_audit_log_store");
+
 const UserAuditLog = React.createClass({
     selectedUserId : '',
-    showRightPanel : false,
+    isShowRightPanel : false,
     getInitialState: function () {
         return {
             selectedUserId : this.selectedUserId,
-            showRightPanel : this.showRightPanel
+            isShowRightPanel : this.isShowRightPanel
         };
     },
     closeRightPanel : function() {
         $(this.refs.wrap).find(".current_row").removeClass("current_row");
         this.selectedUserId = '';
-        this.showRightPanel = false;
+        this.isShowRightPanel = false;
         this.setState({
             selectedUserId : '',
-            showRightPanel : false
+            isShowRightPanel : false
         });
     },
     componentWillMount: function () {
@@ -41,10 +43,10 @@ const UserAuditLog = React.createClass({
                 if (user_id){
                     $tr.addClass("current_row");
                     _this.selectedUserId = user_id;
-                    _this.showRightPanel = true;
+                    _this.isShowRightPanel = true;
                     _this.setState({
                         selectedUserId : user_id,
-                        showRightPanel : _this.showRightPanel
+                        isShowRightPanel : _this.isShowRightPanel
                     });
                 }
             }
@@ -53,21 +55,22 @@ const UserAuditLog = React.createClass({
 
     componentWillUnmount: function () {
         this.selectedUserId = '';
-        this.showRightPanel = false;
+        this.isShowRightPanel = false;
         emitter.removeListener("user_detail_close_right_panel" , this.closeRightPanel);
     },
    
     render: function () {
+        let selectedAppId = UserAuditLogStore.getState().selectAppId;
         return (
             <div>
                 <div className="user-audit-log-wrap" ref="wrap">
-                    <LogVIew />
+                    <LogVIew isShowRightPanel={this.state.isShowRightPanel}/>
                 </div>
-                <RightPanel className="app_user_manage_rightpanel white-space-nowrap"
-                            showFlag={this.state.showRightPanel}>
+                <RightPanel className="right-pannel-default app_user_manage_rightpanel white-space-nowrap"
+                            showFlag={this.state.isShowRightPanel}>
                     {
                         this.state.selectedUserId ? (
-                            <UserDetail userId={this.state.selectedUserId}/>
+                            <UserDetail userId={this.state.selectedUserId} selectedAppId={selectedAppId}/>
                         ) : null
                     }
                 </RightPanel>

@@ -12,6 +12,14 @@ module.exports = {
             }
         },
         {
+            "method": "get",
+            "path": "/rest/crm/user_list",
+            "handler": "getCrmUserList",
+            "passport": {
+                "needLogin": true
+            }
+        },
+        {
             method: 'get',
             path: '/rest/crm/customer_list',
             handler: 'getCustomerList',
@@ -26,6 +34,14 @@ module.exports = {
             method: 'get',
             path: '/rest/crm/repeat_customer',
             handler: 'getRepeatCustomerList',
+            passport: {
+                needLogin: true
+            },
+            privileges: []
+        },{
+            method: 'get',
+            path: '/rest/crm/repeat_customer/:customerId',
+            handler: 'getRepeatCustomerById',
             passport: {
                 needLogin: true
             },
@@ -144,6 +160,14 @@ module.exports = {
             method: 'get',
             path: '/rest/crm_filter/industries',
             handler: 'getFilterIndustries',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
+            method: 'get',
+            path: '/rest/crm_filter/provinces/:type',
+            handler: 'getFilterProvinces',
             passport: {
                 needLogin: true
             }

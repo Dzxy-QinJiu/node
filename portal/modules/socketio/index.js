@@ -18,6 +18,12 @@ var offlineChannel = "com.antfact.oplate.notify.socketio.offline";
 //var messageCountChannel = "com.antfact.oplate.message.count.channel";
 //用户批量操作的消息
 var userBatchChannel = "com.antfact.oplate.batchtask";
+//电话拨号弹屏功能
+var phoneEventChannel = "com.antfact.oplate.phone.agent.event";
+//系统消息的推送通道
+const systemNoticeChannel = "com.antfact.ketao.notice";
+//待办日程提醒的推送通道
+const scheduleNoticeChannel = "com.antfact.ketao.schedule";
 //批量操作处理文件
 var userBatch = require("./batch");
 var _ = require("underscore");
@@ -60,7 +66,10 @@ function getPushServerByEureka() {
     var oplateServerUrl = global.config.coordinator.getServerByAppId(global.config.appId);
     if (oplateServerUrl) {
         var strArray = oplateServerUrl.split(":");
-        pushServerUrl = strArray[0] + ":" + strArray[1] + ":9093";
+        if (_.isArray(strArray) && strArray.length) {
+            pushServerUrl = strArray[0] + ":" + strArray[1] + ":9093";
+        }
+
     }
     pushLogger.info("与后台建立连接的服务地址：" + pushServerUrl);
     return pushServerUrl;
@@ -92,11 +101,58 @@ function notifyChannelListener(data) {
     }
 }
 
+/*
+ *
+ * 拨打电话消息监听器
+ * */
+function phoneEventChannelListener(data) {
+    pushLogger.debug("后端推送的拨打电话的数据:" + JSON.stringify(data));
+    // 将查询结果返给浏览器
+    var phonemsgObj = JSON.parse(data) || {};
+    if (phonemsgObj.user_id) {
+        //找到该用户对应的socket，将数据推送到浏览器
+        var socketArray = socketStore[phonemsgObj.user_id] || [];
+        if (socketArray.length > 0) {
+            socketArray.forEach(function (socketObj) {
+                var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
+                if (socket) {
+                    socket.emit("phonemsg", phonemsgObj);
+                }
+            });
+        }
+
+    }
+
+
+}
+
+/*
+ *
+ * 日程管理提醒的消息监听器*/
+function scheduleAlertListener(data) {
+    // pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
+    // 将查询结果返给浏览器
+    var scheduleAlertObj = data || {};
+    if (scheduleAlertObj.member_id) {
+        //找到该用户对应的socket，将数据推送到浏览器
+        var socketArray = socketStore[scheduleAlertObj.member_id] || [];
+        if (socketArray.length > 0) {
+            socketArray.forEach(function (socketObj) {
+                var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
+                if (socket) {
+                    socket.emit("scheduleAlertMsg", scheduleAlertObj);
+                }
+            });
+        }
+
+    }
+
+}
+
 /**
  * 登录踢出消息监听器
  * @param data 踢出消息
  */
-
 function offlineChannelListener(data) {
     pushLogger.debug("后端推送的登录踢出的数据:" + JSON.stringify(data));
     // 将查询结果返给浏览器
@@ -147,6 +203,26 @@ function offlineChannelListener(data) {
         }
     }
 }
+
+/**
+ * 系统消息监听器
+ * @param data 系统消息
+ */
+function systemNoticeListener(notice) {
+    pushLogger.debug("后端推送的系统消息数据:" + JSON.stringify(notice));
+    if (notice && notice.member_id) {//消息接收者
+        //找到消息接收者对应的socket，将数据推送到浏览器
+        let socketArray = socketStore[notice.member_id] || [];
+        if (socketArray.length > 0) {
+            socketArray.forEach(function (socketObj) {
+                let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
+                if (socket) {
+                    socket.emit("system_notice", notice);
+                }
+            });
+        }
+    }
+}
 /*
  * 建立到后端的连接。
  * @ioServer socketIO服务
@@ -165,6 +241,12 @@ function createBackendClient() {
     client.on(offlineChannel, offlineChannelListener);
     //创建用户批量操作的通道
     client.on(userBatchChannel, userBatch.listener.bind(userBatch));
+    //创建电话拨号通道
+    client.on(phoneEventChannel, phoneEventChannelListener);
+    //创建系统消息的通道
+    client.on(systemNoticeChannel, systemNoticeListener);
+    //创建日程管理提醒的通道
+    client.on(scheduleNoticeChannel, scheduleAlertListener);
     //监听 disconnect
     client.on('disconnect', function () {
         pushLogger.info('断开后台连接');

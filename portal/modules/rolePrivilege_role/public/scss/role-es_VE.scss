@@ -255,6 +255,10 @@
       .right-form-scroll-div {
         padding-top: 0;
         width: 480px;
+        .ant-checkbox-wrapper {
+          display: inline-block;
+          vertical-align: top;
+        }
       }
       .role-auth-item {
         > label {

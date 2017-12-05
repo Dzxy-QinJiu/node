@@ -6,13 +6,11 @@ var rightPanelUtil = require("../../../../components/rightPanel/index");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-
 var BasicData = require("./basic_data");
 var Contacts = require("./contacts");
 var Dynamic = require("./dynamic");
-var CrmAlert = require("./alert");
+var CrmSchedule = require("./schedule");
 var Order = require("./order");
-import CallRecord from "./call_record";
 var ApplyUserForm = require("./apply-user-form");
 var CustomerRecord = require("./customer_record");
 var crmAjax = require("../ajax");
@@ -29,7 +27,7 @@ var CrmRightPanel = React.createClass({
             curCustomer: this.props.curCustomer,
         };
     },
-    
+
     componentWillMount: function () {
         if (!this.state.curCustomer) {
             if(this.props.currentId){
@@ -39,13 +37,13 @@ var CrmRightPanel = React.createClass({
             }
         }
     },
-    
+
     componentWillReceiveProps: function (nextProps) {
         this.state.applyUserShowFlag = false;
         if (nextProps.curCustomer) {
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
-        } else {
+        } else if(nextProps.currentId){
             this.getCurCustomer(nextProps.currentId);
         }
     },
@@ -54,7 +52,7 @@ var CrmRightPanel = React.createClass({
         this.state.curCustomer = this.props.clickCustomerData;
         this.setState(this.state);
     },
-    
+
     getCurCustomer: function (id) {
         let condition = {id: id};
         crmAjax.queryCustomer(condition).then(resData => {
@@ -100,9 +98,8 @@ var CrmRightPanel = React.createClass({
           "2":"联系人",
           "3":"订单",
           "4":"动态",
-          "5":"提醒",
-          "6":"通话记录",
-          "7":"跟进记录" ,
+          "5":"联系计划",
+          "6":"跟进记录" ,
         };
         Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"),"查看" + tabNameList[key]);
         this.setState({
@@ -116,7 +113,7 @@ var CrmRightPanel = React.createClass({
             className += " crm-right-panel-content-slide";
         }
         return (
-            <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap" data-tracename="客户详情">
+            <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap table-btn-fix" data-tracename="客户详情">
                 <div className={className}>
                     <RightPanelClose onClick={(e)=>{this.hideRightPanel(e)}}/>
                     <div className="crm-right-panel-content">
@@ -135,6 +132,8 @@ var CrmRightPanel = React.createClass({
                                     isRepeat={this.props.isRepeat}
                                     curCustomer={this.state.curCustomer}
                                     refreshCustomerList={this.props.refreshCustomerList}
+                                    editCustomerBasic={this.props.editCustomerBasic}
+                                    ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                 />
                             ) : null}
                             </TabPane>
@@ -144,10 +143,9 @@ var CrmRightPanel = React.createClass({
                             >
                             {this.state.activeKey=="2"? (
                                 <Contacts
+                                    updateCustomerDefContact={this.props.updateCustomerDefContact}
                                     refreshCustomerList={this.props.refreshCustomerList}
                                     curCustomer={this.state.curCustomer}
-                                    callNumber={this.props.callNumber}
-                                    getCallNumberError={this.props.getCallNumberError}
                                 />
                             ) : null}
                             </TabPane>
@@ -167,7 +165,7 @@ var CrmRightPanel = React.createClass({
                             <TabPane
                                 tab={Intl.get("crm.39", "动态")}
                                 key="4"
-                                
+
                             >
                             {this.state.activeKey=="4"? (
                                 <Dynamic
@@ -176,30 +174,20 @@ var CrmRightPanel = React.createClass({
                             ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("crm.40", "提醒")}
+                                tab={Intl.get("crm.right.schedule","联系计划")}
                                 key="5"
                             >
                             {this.state.activeKey=="5"? (
-                                <CrmAlert
+                                <CrmSchedule
                                     curCustomer={this.state.curCustomer}
                                 />
                             ) : null}
                             </TabPane>
                             <TabPane
-                                tab={Intl.get("menu.call", "通话记录")}
+                                tab={Intl.get("menu.trace", "跟进记录")}
                                 key="6"
                             >
                                 {this.state.activeKey=="6"? (
-                                    <CallRecord
-                                        curCustomer={this.state.curCustomer}
-                                    />
-                                ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("menu.trace", "跟进记录")}
-                                key="7"
-                            >
-                                {this.state.activeKey=="7"? (
                                     <CustomerRecord
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}

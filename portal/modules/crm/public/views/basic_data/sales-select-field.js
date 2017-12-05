@@ -1,11 +1,9 @@
 import {Icon, Alert, Select} from 'antd';
 let Option = Select.Option;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
-let AreaSelection = require("../../../../../components/AreaSelection");
-let BatchChangeStore = require("../../store/batch-change-store");
-let BatchChangeActions = require("../../action/batch-change-actions");
 let userData = require("../../../../../public/sources/user-data");
 let CrmBasicAjax = require("../../ajax/index");
+import batchChangeAjax from '../../ajax/batch-change-ajax';
 import Trace from "LIB_DIR/trace";
 
 var SalesSelectField = React.createClass({
@@ -18,9 +16,24 @@ var SalesSelectField = React.createClass({
             }
         };
     },
+    getSalesTeamList: function (userId, salesManList) {
+        let salesTeamList = [];
+        if (userData.isSalesManager()) {
+            //销售领导、域管理员角色时，客户所属销售团队的修改
+            _.each(salesManList, (salesMan) => {
+                if (salesMan.user_info && salesMan.user_info.user_id === userId) {
+                    salesMan.user_groups.forEach(function (group) {
+                        salesTeamList.push({
+                            group_id: group.group_id,
+                            group_name: group.group_name
+                        });
+                    });
+                }
+            });
+        }
+        return salesTeamList;
+    },
     getInitialState: function () {
-        const salesManList = BatchChangeStore.getState().salesManList;
-
         return {
             list: [],//下拉列表中的数据
             displayType: "text",
@@ -32,64 +45,117 @@ var SalesSelectField = React.createClass({
             userId: this.props.userId,
             salesTeam: this.props.salesTeam,
             salesTeamId: this.props.salesTeamId,
-            salesManList: salesManList.length? salesManList : [],
-            salesTeamList: [{group_id: this.props.salesTeamId, group_name: this.props.salesTeam}],
+            salesManList: [],
+            salesTeamList: [],
             loading: false,
             submitErrorMsg: ''
         };
     },
-    onStoreChange: function () {
-        this.setState({salesManList: BatchChangeStore.getState().salesManList});
-    },
     componentDidMount: function () {
-        BatchChangeStore.listen(this.onStoreChange);
-        BatchChangeActions.getSalesManList();
-    },
-    componentWillUnmount: function () {
-        BatchChangeStore.unlisten(this.onStoreChange);
+        // 普通销售(多角色时：非销售领导、域管理员)获取其团队里的成员列表
+        if (this.isSales()) {
+            this.getSalesTeamMembers();
+        } else {//销售领导、域管理员角色时，客户所属销售下拉列表的数据获取
+            this.getSalesManList();
+        }
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
-            let stateData = this.getInitialState();
-            stateData.isMerge = nextProps.isMerge;
-            stateData.customerId = nextProps.customerId;
-            stateData.userName = nextProps.userName;
-            stateData.userId = nextProps.userId;
-            stateData.salesTeam = nextProps.salesTeam;
-            stateData.salesTeamId = nextProps.salesTeamId;
-            stateData.salesTeamList = [{group_id: nextProps.salesTeamId, group_name: nextProps.salesTeam}];
-            stateData.disabled = nextProps.disabled;
-            this.setState(stateData);
+            this.setState({
+                isMerge: nextProps.isMerge,
+                customerId: nextProps.customerId,
+                userName: nextProps.userName,
+                userId: nextProps.userId,
+                salesTeam: nextProps.salesTeam,
+                salesTeamId: nextProps.salesTeamId,
+                salesTeamList: this.getSalesTeamList(nextProps.userId, this.state.salesManList),
+                disabled: nextProps.disabled,
+                list: [],//下拉列表中的数据
+                displayType: "text",
+                isLoadingList: true,//正在获取下拉列表中的数据
+                loading: false,
+                submitErrorMsg: ''
+            });
         }
     },
+
     //是否是普通销售(多角色时：非销售领导、域管理员)的判断
     isSales: function () {
         return userData.hasRole("sales") && !userData.isSalesManager()
     },
+    //获取客户所属销售及其团队下拉列表
+    getSalesManList: function () {
+        batchChangeAjax.getSalesManList().then(list => {
+            if (_.isArray(list) && list.length) {
+                //过滤掉停用的成员
+                list = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
+            } else {
+                list = [];
+            }
+            this.setState({salesManList: list, salesTeamList: this.getSalesTeamList(this.props.userId, list)});
+        }, errorMsg => {
+            this.setState({salesManList: []});
+        });
+    },
+    // 获取普通销售所在团队里的成员列表
+    getSalesTeamMembers: function () {
+        let userInfo = userData.getUserData();
+        let teamId = userInfo.team_id;
+        batchChangeAjax.getSalesTeamMembers(teamId).then(list => {
+            if (_.isArray(list) && list.length) {
+                //过滤掉停用的成员
+                list = _.filter(list, sales => sales && sales.status == 1);
+            } else {
+                list = [];
+            }
+            this.setState({
+                salesManList: list,
+                salesTeamList: [{
+                    group_id: teamId,
+                    group_name: userInfo.team_name
+                }]
+            });
+        }, errorMsg => {
+            this.setState({salesManList: []});
+        });
+    },
     //更新销售人员
-    handleSalesManChange: function (userId, nickName) {
+    handleSalesManChange: function (userId) {
+        this.state.userId = userId;
         if (this.isSales()) {
-            Trace.traceEvent(this.getDOMNode(),"修改销售人员");
+            Trace.traceEvent(this.getDOMNode(), "修改销售人员");
             //普通销售，只修改销售人员
-            this.state.userId = userId;
-            this.state.userName = nickName;
+            const salesman = _.find(this.state.salesManList, item => item.userId === userId);
+            this.state.userName = salesman ? salesman.nickName : "";
         } else {
-            Trace.traceEvent(this.getDOMNode(),"修改销售人员及其团队");
+            Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
             //销售领导、域管理员，修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
-            BatchChangeActions.setSalesMan({sales_id: userId, sales_name: nickName});
-            this.state.userId = BatchChangeStore.getState().salesman_id;
-            this.state.userName = BatchChangeStore.getState().salesman_nick_name;
-            this.state.salesTeamList = BatchChangeStore.getState().sales_team_list;
-            this.state.salesTeamId = BatchChangeStore.getState().sales_team_id;
-            this.state.salesTeam = BatchChangeStore.getState().sales_team;
+            const salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === userId);
+            if (salesman) {
+                this.state.userName = salesman.user_info ? salesman.user_info.nick_name : "";
+                if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
+                    let teamList = salesman.user_groups.map(team => {
+                        return {
+                            group_id: team.group_id,
+                            group_name: team.group_name
+                        }
+                    });
+                    this.state.salesTeamList = teamList;
+                    if (teamList[0]) {
+                        this.state.salesTeam = teamList[0].group_name;
+                        this.state.salesTeamId = teamList[0].group_id;
+                    }
+                }
+            }
         }
         this.setState(this.state);
     },
 
     changeDisplayType: function (type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(),"取消对销售人员/团队的修改");
+            Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
+
             this.setState({
                 loading: false,
                 displayType: type,
@@ -97,11 +163,11 @@ var SalesSelectField = React.createClass({
                 userId: this.props.userId,
                 salesTeam: this.props.salesTeam,
                 salesTeamId: this.props.salesTeamId,
-                salesTeamList: [{group_id: this.props.salesTeamId, group_name: this.props.salesTeam}],
+                salesTeamList: this.getSalesTeamList(this.props.userId, this.state.salesManList),
                 submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(),"点击设置销售按钮");
+            Trace.traceEvent(this.getDOMNode(), "点击设置销售按钮");
             this.setState({
                 displayType: type
             });
@@ -117,12 +183,17 @@ var SalesSelectField = React.createClass({
             sales_team_id: this.state.salesTeamId,
             sales_team: this.state.salesTeam
         };
-        Trace.traceEvent(this.getDOMNode(),"保存对销售人员/团队的修改");
+        Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
+            this.setState({
+                loading: false,
+                displayType: 'text',
+                submitErrorMsg: ''
+            });
         } else {
             this.setState({loading: true});
-            CrmBasicAjax.updateCustomer(submitData).then(result=> {
+            CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.setState({
                         loading: false,
@@ -132,7 +203,7 @@ var SalesSelectField = React.createClass({
                     //更新列表中的客户地域
                     this.props.modifySuccess(submitData);
                 }
-            }, errorMsg=> {
+            }, errorMsg => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: errorMsg || Intl.get("crm.172", "修改客户所属销售失败")
@@ -141,13 +212,10 @@ var SalesSelectField = React.createClass({
         }
     },
     //更新团队
-    handleTeamChange: function (value, text) {
-        BatchChangeActions.changeSalesTeam({
-            sales_team_name: text,
-            sales_team_id: value
-        });
-        this.state.salesTeamId = BatchChangeStore.getState().sales_team_id;
-        this.state.salesTeam = BatchChangeStore.getState().sales_team;
+    handleTeamChange: function (value) {
+        const team = _.find(this.state.salesTeamList, item => item.group_id === value);
+        this.state.salesTeamId = value;
+        this.state.salesTeam = team ? team.group_name : "";
         this.setState(this.state);
     },
 
@@ -174,22 +242,24 @@ var SalesSelectField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
+                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose"
+                   onClick={this.handleSubmit}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={this.changeDisplayType.bind(this,"text")}/>
+                   onClick={this.changeDisplayType.bind(this, "text")}/>
             </div>
         );
         return (<div className="crm-basic-sales-content client-info-content">
             <div className=" block-split-line"></div>
             <dl className="dl-horizontal crm-basic-item detail_item crm-basic-sales">
-                <dt><ReactIntl.FormattedMessage id="user.salesman" defaultMessage="销售人员" /></dt>
+                <dt><ReactIntl.FormattedMessage id="user.salesman" defaultMessage="销售人员"/></dt>
                 <dd>
                     {this.state.displayType === 'text' ? (
                         <div className="basic-sales-field">
                             <span>{this.state.userName}</span>
-                            {hasPrivilege("CUSTOMER_UPDATE_SALES") ? (
+
+                            {!this.state.disabled ? (
                                 <i className="iconfont icon-update" title={Intl.get("crm.173", "设置销售")}
-                                   onClick={this.changeDisplayType.bind(this , "edit")}/>) : null}
+                                   onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
@@ -199,7 +269,7 @@ var SalesSelectField = React.createClass({
                                 onChange={this.handleSalesManChange}
                                 value={this.state.userId}
                                 optionFilterProp="children"
-                                notFoundContent={salesmanOptions.length ? Intl.get("crm.30", "无相关销售"):Intl.get("crm.29", "暂无销售") }
+                                notFoundContent={salesmanOptions.length ? Intl.get("crm.30", "无相关销售") : Intl.get("crm.29", "暂无销售") }
                             >
                                 {salesmanOptions}
                             </Select>
@@ -216,7 +286,7 @@ var SalesSelectField = React.createClass({
                 </dd>
             </dl>
             <dl className="dl-horizontal crm-basic-item detail_item crm-basic-sales-team">
-                <dt><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队" /></dt>
+                <dt><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队"/></dt>
                 <dd>
                     {this.state.displayType === 'text' ? (
                         <div className="basic-sales-field">

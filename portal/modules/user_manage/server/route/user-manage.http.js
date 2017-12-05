@@ -56,16 +56,6 @@ module.exports = {
         ]
     },{
         "method": "put",
-        "path": "/rest/user/phone_order",
-        "handler": "editUserPhoneOrder",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": [
-            "MEMBER_ADD_PHONE_ORDER"
-        ]
-    },{
-        "method": "put",
         "path": "/rest/user/user_team/:user_id/:group_id",
         "handler": "updateUserTeam",
         "passport": {
@@ -134,26 +124,6 @@ module.exports = {
         },
         "privileges": [
             "USER_MANAGE_LIST_USERS"
-        ]
-    }, {
-        "method": "get",
-        "path": "/rest/phoneorder/check",
-        "handler": "checkOnlyPhoneOrder",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": [
-            "MEMBER_ADD_PHONE_ORDER"
-        ]
-    }, {
-        "method": "get",
-        "path": "/rest/member/phoneorder",
-        "handler": "getPhoneOrderById",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": [
-            "GET_MEMBER_PHONE_ORDER"
         ]
     }]
 };

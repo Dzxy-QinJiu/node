@@ -10,7 +10,6 @@ var PrivilegeChecker = require("../../../components/privilege/checker").Privileg
 var UserFormAction = require("./action/user-form-actions");
 var Spinner = require("../../../components/spinner");
 var UserFilterAdv = require("./views/user-filter-adv");
-var hasPrivilege = require("../../../components/privilege/checker").hasPrivilege;
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var CONSTANTS = {
@@ -42,8 +41,10 @@ var UserManage = React.createClass({
             if (type === "add") {
                 Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
                 //获取团队列表
-                UserFormAction.setTeamListLoading(true);
-                UserFormAction.getUserTeamList();
+                if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                    UserFormAction.setTeamListLoading(true);
+                    UserFormAction.getUserTeamList();
+                }
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
@@ -94,9 +95,6 @@ var UserManage = React.createClass({
             });
             //获取用户的详情
             UserAction.setUserLoading(true);
-            if (hasPrivilege("GET_MEMBER_PHONE_ORDER")) {
-                UserAction.getPhoneOrderById({member_id: user.id});
-            }
             UserAction.getCurUserById(user.id);
             if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                 $(".right-panel-content").removeClass("right-panel-content-slide");
@@ -110,8 +108,10 @@ var UserManage = React.createClass({
                 UserAction.showUserInfoPanel();
             }
             //获取团队列表
-            UserFormAction.setTeamListLoading(true);
-            UserFormAction.getUserTeamList();
+            if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                UserFormAction.setTeamListLoading(true);
+                UserFormAction.getUserTeamList();
+            }
             //获取角色列表
             UserFormAction.setRoleListLoading(true);
             UserFormAction.getRoleList();
@@ -272,7 +272,6 @@ var UserManage = React.createClass({
                             logTotal={this.state.logTotal}
                             pageSize={CONSTANTS.LOG_PAGE_SIZE}
                             showAddMemberButton={this.state.isContinueAddButtonShow}
-                            curphoneOrder={this.state.curphoneOrder}
                             showEditForm={this.events.showUserForm}
                         />
                         <AddUserForm

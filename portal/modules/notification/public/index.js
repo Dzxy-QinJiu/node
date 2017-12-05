@@ -1,35 +1,28 @@
-
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("./css/main-es_VE.scss");
-}else if (language.lan() == "zh"){
+} else if (language.lan() == "zh") {
     require("./css/main-zh_CN.scss");
 }
 //顶部导航
 var TopNav = require("../../../components/top-nav");
 
-var classNames = require("classnames");
-var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
 var url = require("url");
 
 var Notification = React.createClass({
-    componentDidMount : function() {
-        $("body").css("overflow","hidden");
+    componentDidMount: function () {
+        $("body").css("overflow", "hidden");
     },
-    componentWillUnmount : function() {
-        $("body").css("overflow","auto");
+    componentWillUnmount: function () {
+        $("body").css("overflow", "auto");
     },
     render: function () {
         var pathname = url.parse(window.location.href).pathname;
         var View;
-        switch(pathname) {
+        switch (pathname) {
             case '/notification/customer':
                 var CustomerNotification = require("./views/customer");
                 View = (<CustomerNotification/>);
-                break;
-            case '/notification/applyfor':
-                var ApplyForNotification = require("./views/applyfor");
-                View = (<ApplyForNotification/>);
                 break;
             case '/notification/system':
                 var SystemNotification = require("./views/system");

@@ -135,7 +135,8 @@ var loadersLists = [
             path.resolve(__dirname, "node_modules/bootstrap"),
             path.resolve(__dirname, "node_modules/antd"),
             path.resolve(__dirname, "node_modules/rc-calendar"),
-            path.resolve(__dirname, "node_modules/react-date-picker")
+            path.resolve(__dirname, "node_modules/react-date-picker"),
+            path.resolve(__dirname, "node_modules/antc")
         ]
     }, {
         test: /\.less$/,
@@ -143,7 +144,8 @@ var loadersLists = [
             {loader: "happypack/loader?id=less"}
         ],
         include: [
-            path.resolve(__dirname, "portal")
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/antc")
         ]
     },
     {
@@ -176,6 +178,7 @@ var pluginLists = [
         moment: 'moment',
         ReactIntl: 'react-intl',
         Intl: [path.resolve(__dirname, "portal/public/intl/intl.js"), "default"],
+        Trace: path.resolve(__dirname, "portal/lib/trace"),
         oplateConsts: path.resolve(__dirname, "portal/lib/consts.js"),
     }),
     new webpack.DllReferencePlugin({
@@ -189,12 +192,6 @@ var pluginLists = [
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
     new CopyWebpackPlugin([
         {from: 'portal/public/sources/piwik.js'},
-        {from: 'node_modules/antd/lib/index.css', to: 'antdv011.css', transform: function(content, path) {
-            content = content.toString();
-            //删掉sourceMap声明
-            content = content.replace(/\/\*#.*/, "");
-            return content;
-        }},
     ]),
 ];
 //热替换插件

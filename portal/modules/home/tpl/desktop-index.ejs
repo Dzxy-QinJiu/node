@@ -1,4 +1,4 @@
-<% // 页头1   %>
+<% // 页头1     %>
 <% addBrowserChecker = false %>
 <% include ../../common/public/tpl/common-header.begin.ejs %>
 
@@ -11,8 +11,16 @@
         isProduction: '<%= locals.isProduction %>',
         webpackMode: '<%= locals.webpackMode %>',
         lang: '<%= lang %>',
-        hideUserManageItem: '<%- hideUserManageItem %>'
+        hideSomeItem: '<%- hideSomeItem %>',
+        projectName: '<%= projectName %>'
     };
+</script>
+<script type="text/javascript">
+    if (typeof String.prototype.startsWith !== 'function') {
+        String.prototype.startsWith = function (prefix) {
+            return this.slice(0, prefix.length) === prefix;
+        };
+    }
 </script>
 <% if(addShowingIoCode == "true") { %>
 <!-- Piwik -->
@@ -39,13 +47,13 @@
 </script>
 <!-- End Piwik Code -->
 <% } %>
-<% // 页头2       %>
+<% // 页头2         %>
 <% include ../../common/public/tpl/common-header.end.ejs %>
-<link rel="stylesheet" href="/resources/antdv011.css"/>
 <div id="app"></div>
+<div id="phone-alert-modal"></div>
 <script src="/dll/dll.vendor.js"></script>
 <script src="/resources/app.bundle.js"></script>
 
-<% // 页脚        %>
+<% // 页脚          %>
 <% showFooterContent = false %>
 <% include ../../common/public/tpl/common-footer.ejs %>

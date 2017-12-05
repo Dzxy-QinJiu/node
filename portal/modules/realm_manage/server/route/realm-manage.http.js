@@ -72,5 +72,26 @@ module.exports = {
         "privileges": [
             "REALM_MANAGE_EDIT_REALM"
         ]
+    }, { // 修改邮箱服务器设置信息
+        "method": "post",
+        "path": "/rest/realm/set/email/server/:realm_id",
+        "handler": "setEmailServer",
+        "passport": {
+            "needLogin": true
+        }
+    }, { // 修改安全域短信服务器配置信息
+        "method": "post",
+        "path": "/rest/realm/set/sms/server/:realm_id",
+        "handler": "setSmsServer",
+        "passport": {
+            "needLogin": true
+        }
+    }, { // 修改安全域微信配置信息
+        "method": "post",
+        "path": "/rest/realm/set/wechat/:realm_id",
+        "handler": "setWeChat",
+        "passport": {
+            "needLogin": true
+        }
     }]
 };

@@ -10,7 +10,6 @@
     //socket的emitter
     var socketEmitter = require("./utils/emitters").socketEmitter;
     let userData = require("./user-data");
-    let socketConnect = require("./push");
     //不允许多人登录，被下线的错误码
     var RELOGIN_ERROR = "login-only-one-error";
     const BASE64_PREFIX = "data:image/png;base64,";
@@ -129,7 +128,7 @@
             success: function () {
                 userData.getUserDataByAjax().done(function () {
                     //重新建立socket连接
-                    socketConnect.startSocketIo();
+                    !Oplate.hideSomeItem &&  require("./push").startSocketIo();
                     $error.html("");
                     $submitBtn.html(Intl.get("retry.submit.again","提交"));
                     var $modal = $("body >#session-invalid-modal");

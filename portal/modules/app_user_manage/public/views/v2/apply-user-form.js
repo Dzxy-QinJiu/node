@@ -1,8 +1,9 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 require("../../css/apply-user-form.scss");
-import {Form, Input, Validation, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from "antd";
+import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from "antd";
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
-const Validator = Validation.Validator;
 const RadioGroup = Radio.Group;
 const RightPanelSubmit = require("../../../../../components/rightPanel").RightPanelSubmit;
 const RightPanelCancel = require("../../../../../components/rightPanel").RightPanelCancel;

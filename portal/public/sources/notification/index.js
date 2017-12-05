@@ -10,7 +10,6 @@ function getChildRoutes() {
     var childRoutes = Checker.getChildRoutes('notification',
         [
             Notification('customer'),
-            Notification('applyfor'),
             Notification('system'),
         ]
     );

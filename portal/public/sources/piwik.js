@@ -4252,8 +4252,8 @@ if (typeof window.Piwik !== 'object') {
                     }
                 }
                 // send appData
-                if (appData&&appData['app_key']) {
-                    request += '&app_key=' + encodeWrapper(appData['app_key']);
+                if (appData&&appData['key']) {
+                    request += '&key=' + encodeWrapper(appData['key']);
                 }
                 var customDimensionIdsAlreadyHandled = [];
                 if (customData) {

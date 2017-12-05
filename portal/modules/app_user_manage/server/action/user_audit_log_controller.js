@@ -21,13 +21,25 @@ exports.getSingleAuditLogList = function (req, res) {
     });
 };
 
-// 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
+// 用户登录信息（时长、次数、首次和最后一次登录时间）
 exports.getUserLoginInfo = function(req, res){
     let obj = req.query;
     obj.user_id = req.params.user_id;
-    userAuditLog.getUserLoginInfo(req, res, obj).on("success", function (data) {
+    userAuditLog.getUserLoginInfo(req, res, obj).on("success",  (data) => {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error",  (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//  用户登录统计图中登录时长、登录频次
+exports.getUserLoginChartInfo = function(req, res){
+    let obj = req.query;
+    obj.user_id = req.params.user_id;
+    userAuditLog.getUserLoginChartInfo(req, res, obj).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+

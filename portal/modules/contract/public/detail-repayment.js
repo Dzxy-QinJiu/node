@@ -1,10 +1,11 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 已回款信息展示及编辑页面
  */
 
-import { Form, Validation, Input, Button, DatePicker, Icon, message } from "antd";
+import { Form, Input, Button, DatePicker, Icon, message, Checkbox } from "antd";
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 const hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import rightPanelUtil from "../../../components/rightPanel";
@@ -105,11 +106,12 @@ const DetailRepayment = React.createClass({
 
         if (!formData && !repayment) {
             formData = this.state[key] = {type: "repay"};
+            formData.date = moment().valueOf();
         }
 
         const disabledDate = function (current) {
             //不允许选择大于当前天的日期
-            return current && current.getTime() > Date.now();
+            return current && current.valueOf() > Date.now();
         };
 
         return (
@@ -118,14 +120,12 @@ const DetailRepayment = React.createClass({
                      validateStatus={this.getValidateStatus("date" + index)}
                      help={this.getHelpMessage("date" + index)}
                 >
-                    <Validator rules={[{required: true, type: "date", message: Intl.get("contract.42", "请选择日期")}]}>
                         <DatePicker
                             name={"date" + index}
                             onChange={this.setField.bind(this, "date", index)}
-                            value={formData.date? new Date(formData.date) : ""}
+                            value={formData.date? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
-                    </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
                 <FormItem 
@@ -155,6 +155,16 @@ const DetailRepayment = React.createClass({
                     </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                <FormItem 
+                >
+                    <Checkbox
+                        name="is_first"
+                        checked={["true", true].indexOf(formData.is_first) > -1}
+                        onChange={this.setField.bind(this, "is_first", index)}
+                    >
+                        {Intl.get("contract.167", "首笔回款")}
+                    </Checkbox>
+                </FormItem>
             </Validation>
         );
     },
@@ -170,7 +180,7 @@ const DetailRepayment = React.createClass({
                         className="btn-primary-sure"
                         onClick={this.handleSubmit.bind(this, "add")}
                     >
-                        <ReactIntl.FormattedMessage id="contract.110" defaultMessage="添加回款" />
+                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
                     </Button>
                 </div>
                 ) : null}
@@ -196,6 +206,11 @@ const DetailRepayment = React.createClass({
                                         <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
                                         {repayment.gross_profit || 0}
                                         <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                                        {repayment.is_first === "true"? (
+                                        <span>
+                                        , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
+                                        </span>
+                                        ) : null}
                                     </span>
                                     )}
         

@@ -20,6 +20,7 @@ var TimeSeriesBarchart = React.createClass({
     getDefaultProps : function() {
         return {
             dataList : [],
+            isShowSplitArea: false,
             tooltip : function() {}
         };
     },
@@ -114,6 +115,9 @@ var TimeSeriesBarchart = React.createClass({
                     interval: xInterval,
                     type : 'time',  // 类型为time，时间轴
                     splitLine : false,
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,
@@ -154,6 +158,9 @@ var TimeSeriesBarchart = React.createClass({
                     max: yMax,
                     type : 'value',
                     splitLine : false,
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,

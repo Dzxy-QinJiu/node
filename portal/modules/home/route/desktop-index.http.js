@@ -63,8 +63,10 @@ module.exports = {
 
         //遍历所有react-router的路由，这些路由，都渲染index.html
         var MenusAll = require(require("path").join(config_root_path, "menu.js"));
+        var leftMenus = new MenusAll();
+        var leftMenuList = leftMenus.getLeftMenuList();
         var treeWalk = require("tree-walk");
-        treeWalk.preorder(MenusAll, function (value, key, parent) {
+        treeWalk.preorder(leftMenuList, function (value, key, parent) {
             if (key === "routePath") {
                 list.push({
                     "method": "get",

@@ -75,4 +75,3 @@ exports.editApp = function (req, res) {
         }
     );
 };
-

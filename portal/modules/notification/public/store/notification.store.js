@@ -30,8 +30,9 @@ function NotificationStore() {
 NotificationStore.prototype.resetLastNotificationId = function () {
     this.lastNotificationId = "";
 };
-//获取申请消息列表
-NotificationStore.prototype.getApplyForMessageList = function (result) {
+
+//获取客户提醒列表
+NotificationStore.prototype.getCustomerMessageList = function (result) {
     if (result.loading) {
         this.notificationListResult = "loading";
         this.notificationErrorMsg = '';
@@ -64,21 +65,6 @@ NotificationStore.prototype.getApplyForMessageList = function (result) {
         this.listenScrollBottom = this.notificationCount > this.notificationList.length;
     }
 };
-
-// 申请消息的类型
-NotificationStore.prototype.handleSelectChange = function () {
-    this.lastNotificationId = "";
-    this.notificationList = [];
-};
-
-// 申请消息的搜索
-NotificationStore.prototype.searchEvent = function () {
-    this.lastNotificationId = "";
-    this.notificationList = [];
-};
-
-//获取客户提醒列表
-NotificationStore.prototype.getCustomerMessageList = NotificationStore.prototype.getApplyForMessageList;
 //清除未读数
 NotificationStore.prototype.clearUnreadNum = function (result) {
     if (result) {

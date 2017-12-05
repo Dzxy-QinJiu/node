@@ -3,6 +3,7 @@ import {Icon,Alert,Select} from 'antd';
 import SelectFullWidth from '../../../../../components/select-fullwidth';
 import classNames from 'classnames';
 import OrganizationAjax from '../../../../common/public/ajax/organization';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AlertTimer from '../../../../../components/alert-timer';
 const Option = Select.Option;
 const ID = 'user-organization';
@@ -175,7 +176,10 @@ var Organization = React.createClass({
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.state.organization_name}</span>
-                    <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,"edit")}></i>
+                    { hasPrivilege("USER_ORGANIZATION_MEMBER_EDIT")&&hasPrivilege("APP_USER_EDIT")?
+                        <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,"edit")}/>
+                        :null
+                    }
                 </div>
             );
         }

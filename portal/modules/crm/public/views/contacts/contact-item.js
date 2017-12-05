@@ -7,6 +7,8 @@ var Spinner = require('../../../../../components/spinner');
 import { addHyphenToPhoneNumber } from "LIB_DIR/func";
 import Trace from "LIB_DIR/trace";
 import crmAjax from '../../ajax/index';
+import CrmAction from "../../action/crm-actions";
+var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 var ContactItem = React.createClass({
     getInitialState: function () {
         return {
@@ -31,14 +33,13 @@ var ContactItem = React.createClass({
             this.props.setMergeCustomerDefaultContact(this.props.contact.contact.id);
         } else {
             this.setState({isLoading: true});
-
-            let customerId = this.props.contact.contact.customer_id;
             ContactAction.toggleDefaultContact(this.props.contact.contact, (result) => {
                 this.setState({isLoading: false});
-
                 if (_.isObject(result) && result.code === 0) {
                     message.success( Intl.get("crm.117", "修改默认联系人成功"));
-                    this.props.refreshCustomerList(customerId);
+                    //修改默认联系人的信息时，更新列表中的联系人数据
+                    this.props.contact.contact.def_contancts = "true";
+                    this.props.updateCustomerDefContact(this.props.contact.contact);
                 } else {
                     message.error( Intl.get("crm.118", "修改默认联系人失败"));
                 }
@@ -52,6 +53,7 @@ var ContactItem = React.createClass({
     deleteContact: function () {
         if (this.props.isMerge) {
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
+            ContactAction.hideDeleteContactConfirm(this.props.contact.contact);
         } else {
             Trace.traceEvent(this.getDOMNode(),"确认删除某个联系人");
             let customerId = this.props.contact.contact.customer_id;
@@ -65,9 +67,19 @@ var ContactItem = React.createClass({
     handleClickCallOut(phone) {
         Trace.traceEvent(this.getDOMNode(),"拨打电话");
         if (this.props.getCallNumberError) {
-            message.error( this.props.getCallNumberError ||  Intl.get("crm.get.phone.failed", " 获取座机号失败!") );
+            message.error( this.props.getCallNumberError ||  Intl.get("crm.get.phone.failed", "获取座机号失败!") );
         } else {
             if (this.props.callNumber) {
+                var contact = "";
+                if (this.props.contact && this.props.contact.contact){
+                    contact = this.props.contact.contact.name;
+                }
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        phoneNum : phone.replace('-',''),
+                        contact : contact
+                    }
+                );
                 let reqData = {
                     from: this.props.callNumber,
                     to: phone
@@ -100,7 +112,7 @@ var ContactItem = React.createClass({
                     <dt><ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话" />：</dt>
                     <dd>
                         {addHyphenToPhoneNumber(phone)}
-                        <i className="iconfont icon-call-out call-out" title={Intl.get("crm.click.call.phone", "点击拨打电话")} onClick={this.handleClickCallOut.bind(this,phone)}></i>
+                        {this.props.callNumber? <i className="iconfont icon-call-out call-out" title={Intl.get("crm.click.call.phone", "点击拨打电话")} onClick={this.handleClickCallOut.bind(this,phone)}></i> : null}
                     </dd>
                 </dl>
             );

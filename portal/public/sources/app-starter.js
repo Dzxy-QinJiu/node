@@ -161,6 +161,10 @@ function init(options) {
             case 'crm':
                 childRoutes.push(require("../../modules/crm"));
                 break;
+            //线索客户管理
+            case 'clue_customer':
+                childRoutes.push(require("../../modules/clue_customer"));
+                break;
             //通话记录
             case 'call_record':
                 childRoutes.push(require("../../modules/call_record"));
@@ -193,6 +197,9 @@ function init(options) {
                 break;
             case 'app_user_manage_apply':
                 childRoutes.push(require("../../modules/user_apply"));
+                break;
+            case 'app_overview':
+                childRoutes.push(require("../../modules/app_overview"));
                 break;
         }
     });

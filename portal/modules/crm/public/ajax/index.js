@@ -1,7 +1,8 @@
 const hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 const AUTHS = {
-    "GETALL": "CUSTOMER_ALL"
-}
+    "GETALL": "CUSTOMER_ALL",
+    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL"
+};
 //添加客户
 exports.addCustomer = function (newCus) {
     var Deferred = $.Deferred();
@@ -27,7 +28,7 @@ exports.deleteCustomer = function (ids) {
         url: '/rest/crm/delete_customer',
         dataType: 'json',
         type: 'delete',
-        data: { ids: JSON.stringify(ids) },
+        data: {ids: JSON.stringify(ids)},
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -40,6 +41,11 @@ exports.deleteCustomer = function (ids) {
 
 //更新客户
 exports.updateCustomer = function (newCus) {
+    if (hasPrivilege(AUTHS.UPDATE_ALL)) {
+        newCus.urlType = "manager";
+    }else{
+        newCus.urlType = "user";
+    }
     if (!newCus.type) {
         let keys = _.keys(newCus);
         if (keys.indexOf("administrative_level") != -1) {
@@ -55,7 +61,7 @@ exports.updateCustomer = function (newCus) {
         url: '/rest/crm/update_customer',
         dataType: 'json',
         type: 'put',
-        data: { newCus: JSON.stringify(newCus) },
+        data: {newCus: JSON.stringify(newCus)},
         success: function (result) {
             Deferred.resolve(result);
         },
@@ -82,6 +88,24 @@ exports.getRepeatCustomerList = function (queryParams) {
     });
     return Deferred.promise();
 };
+
+//通过重复客户的id获取重复的客户列表
+exports.getRepeatCustomersById = function (customerId) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/crm/repeat_customer/${customerId}`,
+        dataType: 'json',
+        type: 'get',
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //根据客户id获取客户信息
 exports.getCustomerById = function (customerId) {
     var Deferred = $.Deferred();
@@ -101,7 +125,7 @@ exports.getCustomerById = function (customerId) {
 //查询客户
 exports.queryCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
     pageSize = pageSize || 10;
-    sorter = sorter ? sorter : { field: "id", order: "ascend" };   
+    sorter = sorter ? sorter : {field: "id", order: "ascend"};
     var data = {
         data: JSON.stringify(condition),
         rangParams: JSON.stringify(rangParams),
@@ -109,7 +133,7 @@ exports.queryCustomer = function (condition, rangParams, pageSize, sorter, query
     };
     if (hasPrivilege(AUTHS.GETALL)) {
         data.hasManageAuth = true;
-    };
+    }
     var Deferred = $.Deferred();
 
     $.ajax({
@@ -150,7 +174,7 @@ exports.delRepeatCustomer = function (customerIdArray) {
         url: '/rest/crm/repeat_customer/delete',
         dataType: 'json',
         type: 'put',
-        data: { ids: JSON.stringify(customerIdArray) },
+        data: {ids: JSON.stringify(customerIdArray)},
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -167,7 +191,7 @@ exports.mergeRepeatCustomer = function (mergeObj) {
         url: '/rest/crm/repeat_customer/merge',
         dataType: 'json',
         type: 'put',
-        data: { customer: JSON.stringify(mergeObj.customer), delete_ids: JSON.stringify(mergeObj.delete_ids) },
+        data: {customer: JSON.stringify(mergeObj.customer), delete_ids: JSON.stringify(mergeObj.delete_ids)},
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -194,7 +218,6 @@ exports.checkOnlyCustomer = function (queryObj) {
     });
     return Deferred.promise();
 };
-
 //获取后台管理中配置的行业列表
 exports.getIndustries = function () {
     var Deferred = $.Deferred();
@@ -260,6 +283,26 @@ exports.getUserPhoneNumber = function (member_id) {
         },
         error: function (xhr) {
             Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+let crmUserListAjax;
+exports.getCrmUserList = function (reqData) {
+    crmUserListAjax&&crmUserListAjax.abort();
+    let Deferred = $.Deferred();
+    crmUserListAjax= $.ajax({
+        url: '/rest/crm/user_list',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr , textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+            }
         }
     });
     return Deferred.promise();

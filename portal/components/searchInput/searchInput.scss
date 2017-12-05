@@ -9,7 +9,7 @@
   .search-input {
     width: 100%;
     height: $input-height;
-    padding: 6px 12px;
+    padding: 6px 25px 6px 5px;
     line-height: $input-height;
     border: 1pt solid #cdd5d9;
     border-radius: $border-radius;
@@ -37,24 +37,12 @@
     position: absolute;
     top: 50%;
     margin-top: -9px;
-    right: 8px;
+    right: 5px;
     font-size: 18px;
     font-weight: bold;
     color: #7f909a;
     cursor: pointer;
     z-index: 1;
   }
-}
-
-.search-input-component.ant-select-dropdown-menu-item-active {
-  background-color: #fff;
-}
-
-.search-input-component.ant-select-dropdown-menu-item:hover {
-  background-color: #eaf8fc;
-}
-
-.search-input-component.ant-select-dropdown-menu-item.selected {
-  background-color: #d5f1fd;
 }
 

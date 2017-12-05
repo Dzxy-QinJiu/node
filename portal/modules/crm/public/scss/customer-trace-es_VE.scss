@@ -1,4 +1,5 @@
-.customer-container{
+@import '../../../../public/css/common-variables';
+#customer-container{
   font-size: 14px;
   //取消按钮样式
   .cancel-btn {
@@ -13,7 +14,7 @@
     border-radius: 4px;
     margin-right: 10px;
   }
-  .add-container{
+  #add-container{
     height: 150px;
     margin-bottom: 10px;
     border-radius: 4px;
@@ -25,14 +26,20 @@
       //texare 的样式
       .add-content{
         position: relative;
-        textarea{
-          width: 100%;
-          height: 70px;
+        padding-right: 2px;
+        .add-content-input{
+          width: 99%;
+          height: 36px;
           border-color: #fff;
           outline: none;
           border-width: 0;
-          border-radius: 3px;
+          border-radius: $border-radius;
           padding: 6px 9px;
+          background-color: #fff;
+          margin-left: 0;
+        }
+        .add-content-input::-webkit-input-placeholder{
+          color:#A9A9A9;
         }
         //提示内容不能为空
         .ant-alert{
@@ -74,7 +81,7 @@
     }
   }
   //下部时间线的样式
-  .show-container{
+  #show-container{
     padding:0 20px 20px 20px;
     position: relative;
     .ant-alert-error{
@@ -110,6 +117,19 @@
         //时间线样式
         .time-line{
           margin-top: 14px;
+          .ant-timeline{
+            margin-left: 85px;
+          }
+          .ant-timeline-item-content{
+            padding-right: 18px;
+            .group-day{
+              left:-80px;
+              font-size: 15px;
+            }
+            .sale-name{
+              margin-right: 9px;
+            }
+          }
           dl {
             position: relative;
             top:-14px;
@@ -123,7 +143,7 @@
               color: #464b4e;
               white-space: normal;
               .item-detail-tip{
-                padding: 14px 0 10px 10px;
+                padding: 11px 0 0px 10px;
                 font-size: 15px;
                 min-height: 44px;
                 width: 92%;
@@ -147,12 +167,32 @@
                 .ant-btn{
                   float: right;
                 }
+                //播放录音图标的样式
+                .audio-container{
+                  .iconfont.icon-audio-play {
+                    margin-left: 8px;
+                    font-size: 16px;
+                    color: $blue;
+                    cursor: pointer;
+                  }
+                  .iconfont.icon-audio-play.icon-selected {
+                    color: #C20C0C;
+                  }
+                }
               }
               .item-detail-content{
                 padding: 0 0 0 10px;
+                >span{
+                  word-wrap:break-word;
+                }
+                .add-detail-tip{
+                  font-size: 14px;
+                  color:#4a8ec4;
+                  cursor: pointer;
+                }
                 .add-detail-container{
                   width: 480px;
-                  padding: 12px 18px 8px 6px;
+                  padding: 0 18px 8px 6px;
                   position: relative;
                   //输入内容不能为空的提示
                   .ant-alert{
@@ -210,6 +250,34 @@
       .show-foot{
         height: 40px;
         padding: 10px 0 0 20px;
+        >span{
+          float: left;
+        }
+        //底部录音播放状态的组件展示样式
+        .audio-play-container {
+          float: left;
+          position: fixed;
+          height: 0;
+          bottom: 14px;
+          left: 152px;
+          border-radius: 4px;
+          background: #FAFAFA;
+          width: 322px;
+          audio {
+            display: block;
+            margin: 2px 3px;
+          }
+          .iconfont.icon-close {
+            position: absolute;
+            top: -1px;
+            right: 0px;
+            font-size: 10px;
+            color:#aaa;
+          }
+        }
+        .audio-play-container.is-playing-audio{
+          height: 36px;
+        }
       }
     }
   }

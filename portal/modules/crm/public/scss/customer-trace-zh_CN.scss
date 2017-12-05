@@ -1,5 +1,5 @@
 @import '../../../../public/css/common-variables';
-.customer-container{
+#customer-container{
   font-size: 14px;
   //取消按钮样式
   .cancel-btn {
@@ -14,7 +14,7 @@
     border-radius: $border-radius;
     margin-right: 6px;
   }
-  .add-container{
+  #add-container{
     min-height: 60px;
     margin-bottom: 10px;
     border-radius: $border-radius;
@@ -35,6 +35,8 @@
           border-width: 0;
           border-radius: $border-radius;
           padding: 6px 9px;
+          background-color: #fff;
+          margin-left: 0;
         }
         .add-content-input::-webkit-input-placeholder{
           color:#A9A9A9;
@@ -88,7 +90,7 @@
     }
   }
   //下部时间线的样式
-  .show-container{
+  #show-container{
     padding:0 20px 20px 20px;
     position: relative;
     .ant-alert-error{
@@ -133,6 +135,9 @@
               left:-80px;
               font-size: 15px;
             }
+            .sale-name{
+              margin-right: 9px;
+            }
           }
           dl {
             position: relative;
@@ -147,7 +152,7 @@
               color: #464b4e;
               white-space: normal;
               .item-detail-tip{
-                padding: 11px 0 10px 10px;
+                padding: 11px 0 0px 10px;
                 font-size: 15px;
                 min-height: 44px;
                 width: 100%;
@@ -178,8 +183,19 @@
                 }
                 &:hover{
                   .ant-btn{
-
                     display:block;
+                  }
+                }
+                //播放录音图标的样式
+                .audio-container{
+                  .iconfont.icon-audio-play {
+                    margin-left: 8px;
+                    font-size: 16px;
+                    color: $blue;
+                    cursor: pointer;
+                  }
+                  .iconfont.icon-audio-play.icon-selected {
+                    color: #C20C0C;
                   }
                 }
               }
@@ -188,9 +204,14 @@
                 >span{
                   word-wrap:break-word;
                 }
+                .add-detail-tip{
+                  font-size: 14px;
+                  color:#4d96d1;
+                  cursor: pointer;
+                }
                 .add-detail-container{
                   width: 480px;
-                  padding: 12px 18px 8px 0;
+                  padding: 0 18px 8px 0;
                   position: relative;
                   //输入内容不能为空的提示
                   .ant-alert{
@@ -248,6 +269,34 @@
       .show-foot{
         height: 40px;
         padding: 10px 0 0 0;
+        >span{
+          float: left;
+        }
+        //底部录音播放状态的组件展示样式
+        .audio-play-container {
+          float: left;
+          position: fixed;
+          height: 0;
+          bottom: 14px;
+          left: 152px;
+          border-radius: 4px;
+          background: #FAFAFA;
+          width: 322px;
+          audio {
+            display: block;
+            margin: 2px 3px;
+          }
+          .iconfont.icon-close {
+            position: absolute;
+            top: -1px;
+            right: 0px;
+            font-size: 10px;
+            color:#aaa;
+          }
+        }
+        .audio-play-container.is-playing-audio{
+          height: 36px;
+        }
       }
     }
   }

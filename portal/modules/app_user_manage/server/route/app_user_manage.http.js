@@ -14,6 +14,13 @@ module.exports = {
         "privileges": [
             "APP_USER_LIST"
         ]
+    },{
+        "method": "get",
+        "path": "/rest/recent/login/users",
+        "handler": "getRecentLoginUsers",
+        "passport": {
+            "needLogin": true
+        }
     },
     {
         "method": "get",
@@ -98,10 +105,10 @@ module.exports = {
             "APP_USER_LIST", //列出用户
             "CRM_LIST_CUSTOMERS" //列出客户
         ]
-    }, 
+    },
     {
         "method": "get",
-        "path": "/rest/appuser/apply/:status/:page_size/:page",
+        "path": "/rest/appuser/apply_list",
         "handler": "getApplyList",
         "passport": {
             "needLogin": true
@@ -153,7 +160,7 @@ module.exports = {
         "privileges": [
             "APP_USER_EDIT"//为用户修改应用
         ]
-    }, 
+    },
     {
         "method": "post",
         "path": "/rest/base/v1/user/apply_grants",
@@ -186,6 +193,13 @@ module.exports = {
         "method":"post",
         "path":"/rest/user/apply/password",
         "handler":"applyChangePassword",
+        "passport": {
+            "needLogin":true
+        }
+    },{
+        "method":"post",
+        "path":"/rest/user/apply/other",
+        "handler":"applyChangeOther",
         "passport": {
             "needLogin":true
         }

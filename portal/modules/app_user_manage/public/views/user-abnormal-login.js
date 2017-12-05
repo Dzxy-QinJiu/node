@@ -3,7 +3,12 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/8/8.
  */
-
+var language = require("../../../../public/language/getLanguage");
+if (language.lan() == "es" || language.lan() == "en") {
+    require("../css/user-abnornal-login-es_VE.scss");
+}else if (language.lan() == "zh"){
+    require("../css/user-abnornal-login-zh_CN.scss");
+}
 var UserAbnormalLoginStore = require("../store/user-abnormal-login-store");
 var UserAbnormalLoginAction = require("../action/user-abnormal-login-actions");
 var TimeLine = require("CMP_DIR/time-line");
@@ -41,6 +46,11 @@ var UserAbnormalLogin = React.createClass({
             user_id: this.props.userId,
             page_size:this.state.page_size,
         };
+        let app_id = this.props.selectedAppId;
+        if(app_id){
+            searchObj.app_id = app_id;
+            UserAbnormalLoginAction.setApp(app_id);
+        }
         var userId = this.props.userId;
         UserAbnormalLoginAction.getUserApp(userId,()=>{
             this.getAbnormalLoginLists(searchObj);
@@ -59,13 +69,20 @@ var UserAbnormalLogin = React.createClass({
                         user_id: userId,
                         page_size:this.state.page_size,
                     };
+                    let app_id = this.props.selectedAppId;
+                    if(app_id){
+                        searchObj.app_id = app_id;
+                        UserAbnormalLoginAction.setApp(app_id);
+                    }
                     this.getAbnormalLoginLists(searchObj);
                 });
             })
         }
     },
     componentWillUnmount: function () {
-        UserAbnormalLoginAction.resetState();
+        setTimeout(()=>{
+            UserAbnormalLoginAction.resetState();
+        })
         UserAbnormalLoginStore.unlisten(this.onStateChange);
     },
     retryGetAbnormalLogin: function () {
@@ -84,7 +101,7 @@ var UserAbnormalLogin = React.createClass({
         }else if (this.state.getAppErrorMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.getAppErrorMsg}
-                        <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
+                <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
                         <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                         </a>
                          </span>;
@@ -117,7 +134,7 @@ var UserAbnormalLogin = React.createClass({
         this.getAbnormalLoginLists(searchObj);
     },
     handleChange: function (app_id, app_name) {
-        UserAbnormalLoginAction.setApp({app_id, app_name});
+        UserAbnormalLoginAction.setApp(app_id);
         var searchObj = {
             user_id: this.props.userId,
             page_size:this.state.page_size,
@@ -179,7 +196,7 @@ var UserAbnormalLogin = React.createClass({
                 <div>
                     <Select style={{width:120}}
                             onChange={this.handleChange}
-                            value={this.state.app}
+                            value={this.state.appId}
                     >
                         {list}
                     </Select>
@@ -189,7 +206,7 @@ var UserAbnormalLogin = React.createClass({
         }else if (this.state.abnormalLoginErrMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.abnormalLoginErrMsg}
-                        <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
+                <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
                         <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                         </a>
                          </span>;
@@ -204,31 +221,31 @@ var UserAbnormalLogin = React.createClass({
             );
         }else if (this.state.abnormalLoginList.length){
             return (
-                    <div>
-                        <Select style={{width:120}}
-                                onChange={this.handleChange}
-                                value={this.state.app}
+                <div>
+                    <Select style={{width:120}}
+                            onChange={this.handleChange}
+                            value={this.state.appId}
+                    >
+                        {list}
+                    </Select>
+                    <div style={{height:divHeight,marginBottom:40}}>
+                        <GeminiScrollbar
+                            handleScrollBottom={this.handleScrollBarBottom}
+                            listenScrollBottom={this.state.listenScrollBottom}
                         >
-                            {list}
-                        </Select>
-                        <div style={{height:divHeight,marginBottom:40}}>
-                            <GeminiScrollbar
-                                handleScrollBottom={this.handleScrollBarBottom}
-                                listenScrollBottom={this.state.listenScrollBottom}
-                            >
-                                <TimeLine
-                                    list={this.state.abnormalLoginList}
-                                    groupByDay={true}
-                                    timeField="timeStamp"
-                                    render={this.renderTimeLineItem}
-                                />
-                                <NoMoreDataTip
-                                    fontSize="12"
-                                    show={this.showNoMoreDataTip}
-                                />
-                            </GeminiScrollbar>
-                        </div>
+                            <TimeLine
+                                list={this.state.abnormalLoginList}
+                                groupByDay={true}
+                                timeField="timeStamp"
+                                render={this.renderTimeLineItem}
+                            />
+                            <NoMoreDataTip
+                                fontSize="12"
+                                show={this.showNoMoreDataTip}
+                            />
+                        </GeminiScrollbar>
                     </div>
+                </div>
             )
         }else{
             return (

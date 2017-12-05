@@ -10,8 +10,10 @@
       color:#4d96d1;
     }
   }
-  .ant-pwd-strength{
-    margin-top:-20px;
+  .apply-change-password-style{
+    .ant-pwd-strength{
+      margin-top:-20px;
+    }
   }
   .apply_detail_operate, .apply_detail_uuid{
     height:53px;
@@ -38,6 +40,11 @@
       .ant-input-number {
         border-radius: 3px;
         height: 30px;
+        vertical-align: middle;
+        .ant-input-number-input-wrap {
+            height: 28px;
+            overflow: hidden;
+        }
       }
       .select-modify-unit {
         width: 70px;
@@ -50,6 +57,9 @@
     border-bottom:1px solid #ced6da;
     font-size:14px;
     color:#5c5d5d;
+    span.last-contact-time{
+      margin-left: 20px;
+    }
     span.order{
       float:right;
     }

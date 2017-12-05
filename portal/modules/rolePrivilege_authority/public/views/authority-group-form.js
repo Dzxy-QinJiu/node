@@ -1,17 +1,11 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * Created by jinfeng on 2015/12/28.
  */
 
-var Validation = require("antd").Validation;
-var Validator = Validation.Validator;
-var Form = require("antd").Form;
+import {Form, Icon, Input, Button,Checkbox,Dropdown, Menu,Popconfirm} from 'antd';
 var FormItem = Form.Item;
-var Icon = require("antd").Icon;
-var Input = require("antd").Input;
-var Button = require("antd").Button;
-var Checkbox = require("antd").Checkbox;
-var Dropdown = require("antd").Dropdown;
-var Menu = require("antd").Menu;
 var classNames = require("classnames");
 var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
 var rightPanelUtil = require("../../../../components/rightPanel/index");
@@ -56,6 +50,7 @@ var AuthorityGroupForm = React.createClass({
             saveGroupNameMsg: "",//保存组名的提示信息
             saveGroupNameResult: "",//修改组名时的保存结果
             searchContent: this.props.searchContent,
+            isShowPopConfirm: false, // 是否显示确认框
         };
     },
     componentWillReceiveProps: function (nextProps) {
@@ -248,6 +243,9 @@ var AuthorityGroupForm = React.createClass({
             var _this = this;
             var oldFormData = this.props.authorityGroup;
             var formData = _this.state.formData;
+            this.setState({
+                isShowPopConfirm: false
+            });
             //组名没有修改时，不保存
             if (oldFormData.permissionGroupName == formData.permissionGroupName) {
                 return;
@@ -281,6 +279,15 @@ var AuthorityGroupForm = React.createClass({
                             _this.events.afterSaveGroupName(_this, resultObj);
                         });
                     }
+                }
+            });
+        },
+
+        cancelSaveGroupName() {
+            this.setState({
+                isShowPopConfirm: false,
+                formData: {
+                    permissionGroupName: this.props.authorityGroup.permissionGroupName
                 }
             });
         },
@@ -498,6 +505,12 @@ var AuthorityGroupForm = React.createClass({
         inputContent = inputContent ? inputContent.trim() : '';
         AuthorityAction.setSearchContent(inputContent);
     },
+    // 显示确认框
+    showConfirm() {
+        this.setState({
+            isShowPopConfirm: true
+        });
+    },
     render: function () {
         var _this = this;
         var formData = this.state.formData;
@@ -511,12 +524,14 @@ var AuthorityGroupForm = React.createClass({
         var menu = (<Menu className="authority-group-drop-list">
             {
                 authorityGroupList.map(function (group, key) {
-                    return (<Menu.Item key={key}>
-                        <div className="authority-group-item"
-                             onClick={_this.events.handleChangeGroup.bind(_this,group)}>
-                            { Intl.get("authority.turn.to", "转移到") + group.permissionGroupName}
-                        </div>
-                    </Menu.Item>);
+                   if (group.permissionGroupName != formData.permissionGroupName) {
+                       return (<Menu.Item key={key}>
+                           <div className="authority-group-item"
+                                onClick={_this.events.handleChangeGroup.bind(_this,group)}>
+                               { Intl.get("authority.turn.to", "转移到") + group.permissionGroupName}
+                           </div>
+                       </Menu.Item>);
+                   }
                 })
             }
         </Menu>);
@@ -527,31 +542,38 @@ var AuthorityGroupForm = React.createClass({
                 <div className="right-form-scroll-div" data-tracename="添加/编辑权限">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <Form horizontal className="authority-group-form" onSubmit={this.events.cancelEnter}>
-                            <Validation ref="validation" onValidate={this.handleValidate}>
-                                <FormItem
-                                    label={Intl.get("authority.auth.group.name", "权限组名")}
-                                    id="permissionGroupName"
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 18}}
-                                    validateStatus={this.renderValidateStyle('permissionGroupName')}
-                                    help={status.permissionGroupName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.permissionGroupName.errors && status.permissionGroupName.errors.join(','))}
-                                >
-                                    <Validator
-                                        rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
-                                        <Input name="permissionGroupName" id="permissionGroupName"
-                                               disabled={this.state.isSavingGroupName}
-                                               value={formData.permissionGroupName}
-                                               onChange={this.setField.bind(this, 'permissionGroupName')}
-                                               onBlur={this.events.saveGroupName.bind(this)}
-                                               placeholder={Intl.get("common.required.tip", "必填项*")}/>
-                                    </Validator>
-                                    {this.state.isSavingGroupName ? (
-                                        <div className="group-name-saving">
-                                            正在保存组名...</div>) : this.state.saveGroupNameResult ? (<div
-                                        className={"group-name-save-"+this.state.saveGroupNameResult}>
-                                        {this.state.saveGroupNameMsg}</div>) : null}
-                                </FormItem>
-                            </Validation>
+                            <Popconfirm title={Intl.get("authority.edit.is.save", "是否保存修改的权限组名")}
+                                        visible={this.state.isShowPopConfirm}
+                                        onConfirm={this.events.saveGroupName.bind(this)}
+                                        onCancel={this.events.cancelSaveGroupName.bind(this)}
+                                        okText={Intl.get("user.yes", "是")}
+                                        cancelText={Intl.get("user.no", "否")}>
+                                <Validation ref="validation" onValidate={this.handleValidate}>
+                                    <FormItem
+                                        label={Intl.get("authority.auth.group.name", "权限组名")}
+                                        id="permissionGroupName"
+                                        labelCol={{span: 5}}
+                                        wrapperCol={{span: 18}}
+                                        validateStatus={this.renderValidateStyle('permissionGroupName')}
+                                        help={status.permissionGroupName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.permissionGroupName.errors && status.permissionGroupName.errors.join(','))}
+                                    >
+                                        <Validator
+                                            rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                            <Input name="permissionGroupName" id="permissionGroupName"
+                                                   disabled={this.state.isSavingGroupName}
+                                                   value={formData.permissionGroupName}
+                                                   onChange={this.setField.bind(this, 'permissionGroupName')}
+                                                   onBlur={this.showConfirm}
+                                                   placeholder={Intl.get("common.required.tip", "必填项*")}/>
+                                        </Validator>
+                                        {this.state.isSavingGroupName ? (
+                                            <div className="group-name-saving">
+                                                {Intl.get("authority.saving.group.name", "正在保存组名")}...</div>) : this.state.saveGroupNameResult ? (<div
+                                            className={"group-name-save-"+this.state.saveGroupNameResult}>
+                                            {this.state.saveGroupNameMsg}</div>) : null}
+                                    </FormItem>
+                                </Validation>
+                            </Popconfirm>
                         </Form>
                         <div className="form-authority-group-div">
                             <div className="authority-group-line"></div>

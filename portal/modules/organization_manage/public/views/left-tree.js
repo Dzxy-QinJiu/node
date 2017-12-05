@@ -13,6 +13,7 @@ var OrganizationAction = require("../action/organization-actions");
 import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import commonMethodUtil from "../../../../public/sources/utils/common-method-util";
+const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 const messages = defineMessages({
     organization_add_child_organization: {id: 'organization.add.child.organization'},//添加子组织
     organization_edit_organization: {id: 'organization.edit.organization'},//编辑组织
@@ -23,6 +24,7 @@ const messages = defineMessages({
 });
 function noop() {
 }
+
 var LeftTree = React.createClass({
     mixins: [reactIntlMixin],
     getDefaultProps: function () {
@@ -156,8 +158,13 @@ var LeftTree = React.createClass({
             </div>
         )
     },
-
     element: function (item, type) {
+        let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get("user.organization","组织")}></i>;
+        if (item.category == CATEGORY_TYPE.DEPARTMENT) {
+            iconflag = <i className="iconfont icon-bumen" title={Intl.get("crm.113","部门")}></i>
+        } else if (item.category == CATEGORY_TYPE.TEAM){
+            iconflag = <i className="iconfont icon-team" title={Intl.get("call.record.team","团队")}></i>
+        }
 
         //组织人数的统计,递归遍历组织，加上所有子组织的人数
         var groupMemberCount = commonMethodUtil.getTeamMemberCount(item);
@@ -176,23 +183,27 @@ var LeftTree = React.createClass({
                 </div>
                 <div className="organization-group-info">
                     <div className="organization-group-name" title={item.title}>
+                        <span className="organization-name-icon">{iconflag}</span>
                         <span className="organization-name-text">{item.title}</span>
                         <span className="organization-member-statistic"> ({groupMemberCount}人)</span>
                     </div>
                     <div className="tree-operation-div">
-                        <PrivilegeChecker check="USER_ORGANIZATION_ADD">
+                        {//团队下没有字团队，因此，团队上没有添加按钮
+                            item.category == CATEGORY_TYPE.TEAM ? null :
+                                <PrivilegeChecker check="USER_ORGANIZATION_ADD">
                             <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                  title={this.formatMessage(messages.organization_add_child_organization)}
+                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.add.department","添加部门"):Intl.get("common.add","添加")}
                                   onClick={this.addGroup.bind(this, item)}/>
-                        </PrivilegeChecker>
+                                </PrivilegeChecker>
+                        }
                         <PrivilegeChecker check="USER_ORGANIZATION_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                  title={this.formatMessage(messages.organization_edit_organization)}
+                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.edit.department","编辑部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.edit.team","编辑团队"):Intl.get("organization.edit.organization","编辑组织")}
                                   onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                  title={this.formatMessage(messages.organization_del_organization)}
+                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.del.department","删除部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.del.team","删除团队"):Intl.get("organization.del.organization","删除组织")}
                                   onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                     </div>
@@ -206,12 +217,23 @@ var LeftTree = React.createClass({
         if (!type) {
             btnClass += " no-has-children";
         }
-
-        var formClass = 'group-form-div';
-        if (!item.superiorTeam || item.isAddGroup) {
-            //没有上级组织的样式设置，高度去掉上级组织的一行
-            formClass += ' group-form-no-superior'
+        let isMinusHeight = true;//是否减高度
+        let parentGroup;//上级(修改部门时需要通过上级判断是否可以修改上级部门)
+        //组织下添加团队/部门时，需要展示单选框，所以不需要减高
+        if (item.isAddGroup && item.category == CATEGORY_TYPE.ORGANIZATION) {
+            isMinusHeight = false;
+        } else if (item.isEditGroup && item.category == CATEGORY_TYPE.DEPARTMENT) {//修改的是部门
+            if (item.superiorTeam) {
+                parentGroup = _.find(this.props.organizationList, (group)=>group.group_id == item.superiorTeam);
+                // 并且上级也是部门时，可以修改上级部门，所以不需要减高
+                if (parentGroup.category == CATEGORY_TYPE.DEPARTMENT) {
+                    isMinusHeight = false;
+                }
+            }
         }
+        var formClass = classNames('group-form-div', {
+            'group-form-no-superior': isMinusHeight
+        });
         return (
             item.isEditGroup || item.isAddGroup ? (
                 <div className={formClass}>
@@ -219,6 +241,7 @@ var LeftTree = React.createClass({
                     <GroupFrom
                         cancelOrganizationForm={this.cancelOrganizationForm.bind(this,item )}
                         organization={item}
+                        parentGroup={parentGroup}
                         organizationList={this.props.organizationList}
                     >
                     </GroupFrom>
@@ -283,7 +306,7 @@ var LeftTree = React.createClass({
                 </li>
             );
         });
-        var modalContent = this.formatMessage(messages.organization_whether_del_organization) + '?';
+        var modalContent = Intl.get("organization.whether.del.organization", "确定要删除'{groupName}'？", {groupName: this.props.deleteGroupItem.title});
         var scrollHeight = this.props.containerHeight;
         if (this.props.isAddOrganizationRoot) {
             scrollHeight -= 60;//60:添加根组织form表单的高度
@@ -308,11 +331,10 @@ var LeftTree = React.createClass({
                                 searchEvent={this.searchEvent}/>
 
                         </div>
-                        <div className="add-organization-root-div">
-                            <Button type="ghost" className="add-root-organization-btn"
-                                    onClick={this.addOrganizationRoot}>
-                                <ReactIntl.FormattedMessage id="organization.add.organization" defaultMessage="添加组织"/>
-                            </Button>
+                        <div className="add-root-organization-btn"
+                             title={Intl.get("organization.add.organization", "添加组织")}
+                             onClick={this.addOrganizationRoot}>
+                            <span className="iconfont icon-add"/>
                         </div>
                     </div>)
                     }

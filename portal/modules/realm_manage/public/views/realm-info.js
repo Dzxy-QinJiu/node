@@ -4,12 +4,11 @@
  * Created by zhangshujuan on 2017/6/22.
  */
 var language = require("../../../../public/language/getLanguage");
+require('PUB_DIR/css/card-info-common.scss');
 if (language.lan() == "es" || language.lan() == "en") {
-    require('../../../../components/cardInfo/cardInfo-es_VE.scss');
-}else if (language.lan() == "zh"){
-    require("../../../../components/cardInfo/cardInfo-zh_CN.scss");
+    require('PUB_DIR/css/card-info-es.scss');
 }
-import {Spin,Icon,Pagination,Form,Input,Tag,Alert} from "antd";
+import {Spin,Icon,Pagination,Form,Input,Tag,Alert,Button} from "antd";
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelEdit = rightPanelUtil.RightPanelEdit;
@@ -23,9 +22,12 @@ import {defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import Trace from "LIB_DIR/trace";
 const messages = defineMessages({
-    member_is_or_not:{id:'member.is.or.not'},//"是否{modalStr}{modalType}"
+    member_is_or_not:{id:'member.is.or.not'}//"是否{modalStr}{modalType}"
 });
-
+import EmailServer from './email-server-form';
+import SmsServer from  './sms-server-form';
+import WeChat from  './wechat-server-form';
+import * as  LAN_GLOBAL  from '../consts';
 
 var RealmInfo = React.createClass({
         mixins: [reactIntlMixin],
@@ -38,12 +40,19 @@ var RealmInfo = React.createClass({
                 //是否保存成功,error:失败，success:成功
                 saveResult: "",
                 //保存后的提示信息
-                saveMsg: ""
+                saveMsg: "",
+                isShowSetOrUpdateEmailFlag: false,  // 显示或更新邮箱服务器的设置的标志
+                isShowSetOrUpdateSmsFlag: false, // 显示或更新短信服务器的设置的标志
+                isShowSetOrUpdateWeChatFlag: false, // 显示或更新微信设置的标志
+
             };
         },
         componentWillReceiveProps: function (nextProps) {
             this.setState({
                 realmInfo: $.extend(true, {}, nextProps.realmInfo),
+                isShowSetOrUpdateEmailFlag: false,
+                isShowSetOrUpdateSmsFlag: false,
+                isShowSetOrUpdateWeChatFlag: false
             });
             this.layout();
         },
@@ -164,11 +173,61 @@ var RealmInfo = React.createClass({
             Trace.traceEvent(e,"关闭安全域详情");
             this.props.closeRightPanel(e);
         },
+
+        // 设置或更新邮箱服务器配置信息
+        handleSetOrUpdateEmail(flag, e) {
+            if ( flag == 'update') {
+                Trace.traceEvent(e,"更新邮箱服务器配置信息");
+            } else if (flag == 'set') {
+                Trace.traceEvent(e,"设置邮箱服务器配置信息");
+            }
+            this.setState({
+                isShowSetOrUpdateEmailFlag: true
+            });
+        },
+        handleEmailCancel() {
+            this.setState({
+                isShowSetOrUpdateEmailFlag: false
+            });
+        },
+
+        // 设置或更新短信服务器配置信息
+        handleSetOrUpdateSms(flag, e) {
+            if ( flag == 'update') {
+                Trace.traceEvent(e,"更新短信服务器配置信息");
+            } else if (flag == 'set') {
+                Trace.traceEvent(e,"设置短信服务器配置信息");
+            }
+            this.setState({
+                isShowSetOrUpdateSmsFlag: true
+            });
+        },
+        handleSmsCancel() {
+            this.setState({
+                isShowSetOrUpdateSmsFlag: false
+            });
+        },
+
+        // 设置或更新微信配置信息
+        handleSetOrUpdateWeChat(flag, e) {
+            if ( flag == 'update') {
+                Trace.traceEvent(e,"更新微信配置信息");
+            } else if (flag == 'set') {
+                Trace.traceEvent(e,"设置微信配置信息");
+            }
+            this.setState({
+                isShowSetOrUpdateWeChatFlag: true
+            });
+        },
+        handleWeChatCancel() {
+            this.setState({
+                isShowSetOrUpdateWeChatFlag: false
+            });
+        },
+
         render: function () {
             //当前要展示的信息
-            var modalContent = this.props.intl['formatMessage'](messages.member_is_or_not,{modalStr:this.state.modalStr,modalType:this.props.modalType});
-            var className = "right-panel-content";
-
+            var modalContent = this.formatMessage(messages.member_is_or_not,{modalStr:this.state.modalStr,modalType:this.props.modalType});var className = "right-panel-content";
             if (!this.props.realmInfoShow) {
                 if (this.props.realmFormShow ||
                     this.props.versionUpgradeShow ||
@@ -180,8 +239,8 @@ var RealmInfo = React.createClass({
                     className += " right-panel-content-slide";
                 }
             }
-
-            var userName = this.state.realmInfo.userName ? this.state.realmInfo.userName : "";
+            let realmInfo = this.state.realmInfo;
+            var userName = realmInfo.userName ? realmInfo.userName : "";
             return (
                 <div className={className}>
                     <RightPanelClose onClick={this.closeRightPanel}/>
@@ -190,14 +249,14 @@ var RealmInfo = React.createClass({
                             <PrivilegeChecker check={"REALM_MANAGE_EDIT_REALM"}>
                                 <RightPanelEdit onClick={this.showEditForm}/>
                                 <RightPanelForbid onClick={this.showForbidModalDialog}
-                                                  isActive={this.state.realmInfo.status==0}/>
+                                                  isActive={realmInfo.status==0}/>
                             </PrivilegeChecker>
                         ) : null}
                         <PrivilegeChecker check={"REALM_MANAGE_DELETE_REALM"}>
                             <RightPanelDelete onClick={this.showDelModalDialog}/>
                         </PrivilegeChecker>
                     </div>
-                    <HeadIcon headIcon={this.state.realmInfo.image} iconDescr={this.state.realmInfo.company}
+                    <HeadIcon headIcon={realmInfo.image} iconDescr={realmInfo.company}
                               userName={userName}
                               isUserHeadIcon={true}
                     />
@@ -218,6 +277,139 @@ var RealmInfo = React.createClass({
                                     </div>
                                 </div>
                             ) : null}
+                            {/**配置邮箱服务器*/}
+                            {_.isObject(realmInfo.config) && realmInfo.config.email ? (
+                                <div className="card-infor-list ">
+                                    <div className="card-item">{LAN_GLOBAL.EMAIL.title}:
+                                        {!this.state.isShowSetOrUpdateEmailFlag ?
+                                        <div className="icon-update circle-button iconfont"
+                                           onClick={this.handleSetOrUpdateEmail.bind(this, 'update')}
+                                           title={LAN_GLOBAL.EMAIL.editTitle}>
+                                        </div> : null}
+                                    </div>
+                                    {this.state.isShowSetOrUpdateEmailFlag ? (
+                                        <div className="email-server">
+                                            <EmailServer realmId={realmInfo.id} realmConfigInfo={realmInfo.config || {}}
+                                                         cancelSetOrUpdateEmail={this.handleEmailCancel.bind(this)}/>
+                                        </div>
+                                        ) :
+                                        (<div className="email-server">
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.EMAIL.emailLabel}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.email}</span>
+                                                </div>
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.COMMON.password}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.email_password ? LAN_GLOBAL.COMMON.passwordSercet : null}</span>
+                                                </div>
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.EMAIL.hostLabel}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.email_host || ''}</span>
+                                                </div>
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.EMAIL.portLabel}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.email_port || ''}</span>
+                                                </div>
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.EMAIL.protocolLabel}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.email_protocol || ''}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                </div>
+                            ) : (
+                                <div className="card-infor-list">
+                                    <div>{LAN_GLOBAL.EMAIL.setTitle}
+                                        { !this.state.isShowSetOrUpdateEmailFlag &&
+                                        <div className="icon-setting circle-button iconfont"
+                                           onClick={this.handleSetOrUpdateEmail.bind(this, 'set')} title={LAN_GLOBAL.EMAIL.setTitle}>
+                                        </div> }
+                                    </div>
+                                    {this.state.isShowSetOrUpdateEmailFlag ? <div className="email-server">
+                                        <EmailServer realmId={realmInfo.id} realmConfigInfo={realmInfo.config || {}} cancelSetOrUpdateEmail={this.handleEmailCancel.bind(this)}/>
+                                    </div> : null}
+                                </div>
+                            )}
+                            {/**配置短信服务器*/}
+                            {_.isObject(realmInfo.config) && realmInfo.config.sms_gate_username ? (
+                                <div className="card-infor-list">
+                                    <div className="card-item">{LAN_GLOBAL.SMS.title}:
+                                        { this.state.isShowSetOrUpdateSmsFlag ? null :
+                                        <div className="icon-update circle-button iconfont"
+                                           onClick={this.handleSetOrUpdateSms.bind(this, 'update')}
+                                           title={LAN_GLOBAL.SMS.editTitle}>
+                                        </div> }
+                                    </div>
+                                    {this.state.isShowSetOrUpdateSmsFlag ? (<div className="sms-server">
+                                        <SmsServer realmId={realmInfo.id}
+                                                   realmConfigInfo={realmInfo.config || {}}
+                                                   cancelSetOrUpdateSms={this.handleSmsCancel.bind(this)}/>
+                                    </div>) :
+                                        (<div className="sms-server">
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{Intl.get("common.username", "用户名")}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.sms_gate_username}</span>
+                                                </div>
+                                                <div className="card-item">
+                                                    <span className="card-item-left">{LAN_GLOBAL.COMMON.password}:</span>
+                                                    <span className="card-item-right">{realmInfo.config && realmInfo.config.sms_gate_password ? LAN_GLOBAL.COMMON.passwordSercet : null}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                </div>
+                            ) : (
+                                <div className="card-infor-list">
+                                    <div>{LAN_GLOBAL.SMS.setTitle}
+                                        { this.state.isShowSetOrUpdateSmsFlag ? null :
+                                        <div className="icon-setting circle-button iconfont"
+                                             onClick={this.handleSetOrUpdateSms.bind(this, 'set')} title={LAN_GLOBAL.SMS.setTitle}>
+                                        </div> }
+                                    </div>
+                                    {this.state.isShowSetOrUpdateSmsFlag ? <div className="sms-server">
+                                        <SmsServer realmId={realmInfo.id} realmConfigInfo={realmInfo.config || {} } cancelSetOrUpdateSms={this.handleSmsCancel.bind(this)}/>
+                                    </div> : null}
+                                </div>
+                            )}
+                            {/**微信配置*/}
+                            {_.isObject(realmInfo.config) && realmInfo.config.wechat_client_id ? (
+                                <div className="card-infor-list">
+                                    <div className="card-item">{LAN_GLOBAL.WECHAT.title}:
+                                        {!this.state.isShowSetOrUpdateWeChatFlag &&
+                                        <div className="icon-update circle-button iconfont"
+                                           onClick={this.handleSetOrUpdateWeChat.bind(this, 'update')}
+                                           title={LAN_GLOBAL.WECHAT.editTitle}>
+                                        </div> }
+                                    </div>
+                                    {this.state.isShowSetOrUpdateWeChatFlag ? (<div className="wechat-server">
+                                        <WeChat realmId={realmInfo.id}
+                                                realmConfigInfo={realmInfo.config || {}}
+                                                cancelSetOrUpdateWeChat={this.handleWeChatCancel.bind(this)}/>
+                                    </div>) :
+                                        (<div className="wechat-server">
+                                            <div className="card-item">
+                                                <span className="card-item-left">{LAN_GLOBAL.WECHAT.wechatLabel}:</span>
+                                                <span className="card-item-right">{realmInfo.config && realmInfo.config.wechat_client_id}</span>
+                                            </div>
+                                            <div className="card-item">
+                                                <span className="card-item-left">{LAN_GLOBAL.WECHAT.secretLabel}:</span>
+                                                <span className="card-item-right">{realmInfo.config && realmInfo.config.wechat_client_secret}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="card-infor-list">
+                                    <div>{LAN_GLOBAL.WECHAT.setTitle}
+                                        { !this.state.isShowSetOrUpdateWeChatFlag &&
+                                        <div className="icon-setting circle-button iconfont"
+                                           onClick={this.handleSetOrUpdateWeChat.bind(this, 'set')} title={LAN_GLOBAL.WECHAT.setTitle}>
+                                        </div> }
+                                    </div>
+                                    {this.state.isShowSetOrUpdateWeChatFlag ? <div className="wechat-server">
+                                        <WeChat realmId={realmInfo.id} realmConfigInfo={realmInfo.config || {}} cancelSetOrUpdateWeChat={this.handleWeChatCancel.bind(this)}/>
+                                    </div> : null}
+                                </div>
+                            )}
                         </GeminiScrollbar>
                     </div>
                     <ModalDialog modalContent={modalContent}
@@ -229,7 +421,5 @@ var RealmInfo = React.createClass({
                 </div>
             );
         }
-    })
-    ;
-
+    });
 module.exports = injectIntl(RealmInfo);

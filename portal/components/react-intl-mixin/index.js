@@ -15,8 +15,8 @@ const reactIntlMixin = {
      *       defineMessageKey即： message.input_user_name
      * @returns {*}
      */
-    formatMessage(defineMessageKey){
-        return this.props.intl['formatMessage'](defineMessageKey);
+    formatMessage(defineMessageKey, messageObj){
+        return this.props.intl['formatMessage'](defineMessageKey, messageObj);
     }
 }
 export default reactIntlMixin;

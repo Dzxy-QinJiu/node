@@ -28,6 +28,8 @@
  如果是自定义日期，需要多传两个参数 start_time 和 end_time
  <DatePicker
  range="custom"
+ start_time={1442843728}
+ end_time={1443823721}
  onSelect={this.onSelectDate}>
  <DatePicker.Option value="all">全部时间</DatePicker.Option>
  <DatePicker.Option value="quarter">季度</DatePicker.Option>
@@ -45,6 +47,19 @@
  false 时表示能选择今天之后的时间
  默认值是 false
 
+ dateSelectRange 表示是否只能在某个时间范围值选择时间
+ > 0 表示从现在到dateSelectRange范围内的时间时可选的
+ 0 时是表示对时间范围不禁用
+ 默认值是 0
+
+ 比如：
+ // 日志范围，从当前时间，3个月内的数据
+ const THREE_MONTH_TIME_RANGE = 3 * 30 * 24 * 60 * 60 * 1000;
+  dateSelectRange = THREE_MONTH_TIME_RANGE
+ 现在是2017/09/27
+ 表示可选的时间范围是2017/06/29 -- 2017/09/29
+ 2017/06/29之前的日期是不可选的
+
  getEndTimeTip  默认值null
  可以提供一个函数，对结束时间进行一个tooltip的说明
  getEndTimeTip(date){return 'xxx' + date + 'xxx'}
@@ -56,8 +71,8 @@ require("./index.scss");
 import BootstrapDatepicker from "../bootstrap-datepicker";
 import classNames from 'classnames';
 import Dropdown from 'rc-dropdown';
-import { Button, Radio, Popover, Icon } from 'antd';
-import Menu, { Item as MenuItem } from 'rc-menu';
+import {Button, Radio, Popover, Icon} from 'antd';
+import Menu, {Item as MenuItem} from 'rc-menu';
 import Utils from './utils';
 const RadioGroup = Radio.Group;
 
@@ -109,8 +124,6 @@ class DatePicker extends React.Component {
             menu_lists.push(allMenu);
         }
         this.componentId = _.uniqueId("DatePicker");
-
-
         //验证时间范围
         let timeRange = props.range || "day";
         var hasRange = _.find(timeRanges, function (range) {
@@ -141,6 +154,9 @@ class DatePicker extends React.Component {
                 case 'year':
                     timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
                     break;
+                case 'custom':
+                    timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
+                    break;
                 default:
                     timeObj = Utils.getTodayTime();
                     break;
@@ -162,8 +178,8 @@ class DatePicker extends React.Component {
             showYear: false,
             showYearRecord: false,
             //两个日历
-            showTwoCalendar: false,
-            showTwoCalendarRecord: false,
+            showTwoCalendar: timeRange == "custom" ? true : false,
+            showTwoCalendarRecord: timeRange == "custom" ? true : false,
             //显示天日历
             showDate: true,
             showDateRecord: true,
@@ -186,13 +202,13 @@ class DatePicker extends React.Component {
     componentWillReceiveProps(nextProps) {
         const newState = {};
         if (this.props.range != nextProps.range) {
-            newState.timeRange = nextProps.range;
+            newState.timeRange = newState.timeRangeRecord = nextProps.range;
         }
         if (this.props.start_time != nextProps.start_time) {
-            newState.start_time = Utils.getDateStr(nextProps.start_time);
+            newState.start_time = newState.start_time_record = Utils.getDateStr(nextProps.start_time);
         }
         if (this.props.end_time != nextProps.end_time) {
-            newState.end_time = Utils.getDateStr(nextProps.end_time);
+            newState.end_time = newState.end_time_record = Utils.getDateStr(nextProps.end_time);
         }
         if (!_.isEmpty(newState)) {
             this.setState(newState);
@@ -241,18 +257,9 @@ class DatePicker extends React.Component {
         //如果是自定义时，需要展示两个日期选择器
         if (whichRange === "custom") {
             options.showTwoCalendar = true;
-            let start_time = moment(this.state.start_time_record);
-            let end_time = moment(this.state.end_time_record);
-            if (start_time.isValid()) {
-                options.start_time = start_time.format(DATE_FORMAT);
-            } else {
-                options.start_time = moment().format(DATE_FORMAT);
-            }
-            if (end_time.isValid()) {
-                options.end_time = end_time.format(DATE_FORMAT);
-            } else {
-                options.end_time = moment().format(DATE_FORMAT);
-            }
+            let customTimeObj = Utils.getCustomTime(this.state.start_time_record, this.state.end_time_record);
+            options.start_time = customTimeObj.start_time;
+            options.end_time = customTimeObj.end_time;
         } else {
             options.showTwoCalendar = false;
             //使用之前记录的结束时间和当前的时间范围计算出要显示的时间
@@ -584,13 +591,14 @@ class DatePicker extends React.Component {
             two_calendar: this.state.showTwoCalendar === true
         });
         let disableDateAfterToday = this.props.disableDateAfterToday;
+        let dateSelectRange = this.props.dateSelectRange;
         let datepickerDisplay = (this.state.isShowCalendar) ? 'block' : 'none';
         //时间选择器类型，选择周或月时，能在一个选择器中展示两个日期，所以要展示一个datepicker，且展示两个日期，datepickerType设置为dateRange
         let multidate = this.state.timeRange === "week" ? true : false;
         let datepickerCls = multidate ? classNames("single_datepicker week_datepicker") : classNames("single_datepicker");
         return (
-            <div ref="datepicker_wrap" className="datepicker_wrap" style={{ display: datepickerDisplay }}>
-                <div className={cls} style={{ display: this.state.showDate ? 'block' : 'none' }}>
+            <div ref="datepicker_wrap" className="datepicker_wrap" style={{display: datepickerDisplay}}>
+                <div className={cls} style={{display: this.state.showDate ? 'block' : 'none'}}>
                     <BootstrapDatepicker
                         id="firstBootstrapDatepicker"
                         multidate={multidate}
@@ -601,6 +609,7 @@ class DatePicker extends React.Component {
                         value={moment(this.state.start_time, DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this, 'start_time')}
                         disableDateAfterToday={disableDateAfterToday}
+                        dateSelectRange={dateSelectRange}
                     />
                     <BootstrapDatepicker
                         id="secondBootstrapDatepicker"
@@ -608,9 +617,10 @@ class DatePicker extends React.Component {
                         value={moment(this.state.end_time, DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this, 'end_time')}
                         disableDateAfterToday={disableDateAfterToday}
+                        dateSelectRange={dateSelectRange}
                     />
                 </div>
-                <div className={cls} style={{ display: this.state.showYear ? 'block' : 'none' }}>
+                <div className={cls} style={{display: this.state.showYear ? 'block' : 'none'}}>
                     <BootstrapDatepicker
                         id="onlyYearBootstrapDatepicker"
                         className="single_datepicker"
@@ -618,6 +628,7 @@ class DatePicker extends React.Component {
                         value={moment(this.state.start_time, DATE_FORMAT).toDate()}
                         onChange={this.onCalendarYearOK.bind(this)}
                         disableDateAfterToday={disableDateAfterToday}
+                        dateSelectRange={dateSelectRange}
                     />
                 </div>
                 {this.renderQuarterMenu()}
@@ -632,7 +643,7 @@ class DatePicker extends React.Component {
         let range = "选择日期范围" + this.state.timeRange;
         return (
             <div className="period-type"
-                 style={{ display: (this.state.isShowCalendar || this.state.showYear) ? 'block' : 'none' }}>
+                 style={{display: (this.state.isShowCalendar || this.state.showYear) ? 'block' : 'none'}}>
                 {menu}
                 <Button type="primary" className="btn_calendar_apply"
                         data-tracename={range}
@@ -762,17 +773,17 @@ class DatePicker extends React.Component {
 
     render() {
         const props = this.props;
-        const { start_time, end_time, timeRange, onSelect, children, className, endTimeEndOfDay, getEndTimeTip, disableDateAfterToday, ...restProps } = props;
+        const {start_time, end_time, timeRange, onSelect, children, className, endTimeEndOfDay, getEndTimeTip, disableDateAfterToday, dateSelectRange,  ...restProps} = props;
         const cls = classNames(CLASS_PREFIX, className, CLASS_PREFIX + '_' + this.state.timeRange);
         var timeObj = this.getDisplayDateText();
         var popover = null;
         if (this.props.getEndTimeTip && timeObj.end_time && timeObj.end_time !== '无') {
             var overlay = (
-                <div style={{ 'whiteSpace': 'nowrap' }}>{this.props.getEndTimeTip(timeObj.end_time)}</div>
+                <div style={{'whiteSpace': 'nowrap'}}>{this.props.getEndTimeTip(timeObj.end_time)}</div>
             );
             popover = (
                 <Popover
-                    overlay={overlay}
+                    content={overlay}
                 >
                     <Icon type="question-circle-o"/>
                 </Popover>
@@ -818,6 +829,7 @@ function getDefaultProps() {
     const getEndTimeTip = null;
     //禁止选择今天之后的时间
     const disableDateAfterToday = false;
+    const dateSelectRange = 0;
     return {
         start_time,
         end_time,
@@ -826,7 +838,8 @@ function getDefaultProps() {
         className,
         endTimeEndOfDay,
         getEndTimeTip,
-        disableDateAfterToday
+        disableDateAfterToday,
+        dateSelectRange
     };
 }
 
@@ -849,7 +862,9 @@ DatePicker.propTypes = {
     //获取结束时间提示信息
     getEndTimeTip: PropTypes.func,
     //禁止选择今天之后的时间
-    disableDateAfterToday: PropTypes.bool
+    disableDateAfterToday: PropTypes.bool,
+    //禁止选择某个时间之前的时间范围
+    dateSelectRange:PropTypes.number
 };
 
 /**

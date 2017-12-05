@@ -155,3 +155,69 @@ exports.checkOnlyOwnerEmail = function (email) {
     });
     return Deferred.promise();
 };
+
+// 修改邮箱服务器配置信息
+let SettingEmailServerAjax = null;
+exports.settingEmailServer = (realmId, reqData) => {
+    let Deferred = $.Deferred();
+    SettingEmailServerAjax && SettingEmailServerAjax.abort();
+    SettingEmailServerAjax = $.ajax({
+        url: '/rest/realm/set/email/server/' + realmId,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error:  (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 修改安全域短信服务器配置信息
+let SettingSmsServerAjax = null;
+exports.settingSmsServer = (realmId, reqData) => {
+    let Deferred = $.Deferred();
+    SettingSmsServerAjax && SettingSmsServerAjax.abort();
+    SettingSmsServerAjax = $.ajax({
+        url: '/rest/realm/set/sms/server/' + realmId,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error:  (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 修改安全域微信配置信息
+let SettingWeChatAjax = null;
+exports.settingWeChat = (realmId, reqData) => {
+    let Deferred = $.Deferred();
+    SettingWeChatAjax && SettingWeChatAjax.abort();
+    SettingWeChatAjax = $.ajax({
+        url: '/rest/realm/set/wechat/' + realmId,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error:  (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

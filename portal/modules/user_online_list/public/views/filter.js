@@ -7,6 +7,7 @@ import SearchInput from "../../../../components/searchInput";
 import SelectFullWidth from "../../../../components/select-fullwidth";
 var ShareObj = require("../../../app_user_manage/public/util/app-id-share-util");
 import Trace from "LIB_DIR/trace";
+import RefreshButton from 'CMP_DIR/refresh-button';
 
 //应用下拉选项
 let appOptions = [];
@@ -27,11 +28,14 @@ const searchFields = [
         name: Intl.get("common.nickname", "昵称"),
         field: "nick_name",
     },
-    {
-        name: Intl.get("common.ip.location", "IP归属地"),
-        field: "ip_address",
-    },
 ];
+
+if(!Oplate.hideSomeItem) {
+    searchFields.push( {
+        name: Intl.get("common.ip.location", "IP归属地"),
+        field: "ip_address"
+    });
+}
 
 //构造组件
 const OnlineUserFilter = React.createClass({
@@ -87,6 +91,8 @@ const OnlineUserFilter = React.createClass({
     appSelected: function (app) {
         ShareObj.share_online_app_id = app;
         OnlineUserFilterAction.setCondition({client_id: app});
+        //选中某个应用后，再打开右侧详情的变更记录时，默认展示此应用
+        this.props.appSelected({client_id: app});
         Trace.traceEvent($(this.getDOMNode()).find(".search-select .ant-select"),"根据应用筛选");
         this.search();
     },
@@ -101,7 +107,6 @@ const OnlineUserFilter = React.createClass({
         this.search();
     },
     handleRefresh: function () {
-        Trace.traceEvent($(this.getDOMNode()).find("button"),"点击刷新按钮");
         OnlineUserListAction.handleRefresh();
         setTimeout(() => {
             this.search();
@@ -122,9 +127,9 @@ const OnlineUserFilter = React.createClass({
                     >
                         {appOptions}
                     </SelectFullWidth>
-                    <SelectFullWidth value={this.state.condition.tag} onChange={this.typeSelected}>
+                    { !Oplate.hideSomeItem && <SelectFullWidth value={this.state.condition.tag} onChange={this.typeSelected}>
                         {typeOptions}
-                    </SelectFullWidth>
+                    </SelectFullWidth> }
                     <SelectFullWidth value={this.state.condition.is_expire}
                             onChange={this.statusSelected}
                     >
@@ -137,9 +142,7 @@ const OnlineUserFilter = React.createClass({
                     searchFields={searchFields}
                     searchEvent={this.search}
                 />
-                <Button type="primary" className="refresh-button" onClick={this.handleRefresh}>
-                    {Intl.get(" common.refresh", "刷新")}
-                </Button>
+                <RefreshButton handleRefresh={this.handleRefresh}/>
             </div>
         );
     }

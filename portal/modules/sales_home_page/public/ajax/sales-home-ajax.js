@@ -182,12 +182,13 @@ exports.getSalesContractList = function (timeRange) {
 /**
  * 过期用户列表
  */
-exports.getExpireUser = function () {
+exports.getExpireUser = function (queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/expireuser',
         dataType: 'json',
         type: 'get',
+        data: queryObj,
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -199,3 +200,71 @@ exports.getExpireUser = function () {
     });
     return Deferred.promise();
 };
+//获取用户信息
+exports.getUserInfo = function (userId) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user_info/' + userId,
+        dataType: 'json',
+        type: 'get',
+        success: function (usrInfo) {
+            Deferred.resolve(usrInfo);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    })
+    ;
+    return Deferred.promise();
+};
+exports.activeUserEmail = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user_email/active',
+        dataType: 'json',
+        type: 'post',
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取网站的个性化设置
+exports.getWebsiteConfig = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/getWebsiteConfig',
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//对网站进行个性化设置
+var setWebSiteConfigAjax ;
+exports.setWebsiteConfig = function (queryObj) {
+    var Deferred = $.Deferred();
+    setWebSiteConfigAjax && setWebSiteConfigAjax.abort();
+    setWebSiteConfigAjax = $.ajax({
+        url: '/rest/setWebsiteConfig',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+

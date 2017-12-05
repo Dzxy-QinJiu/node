@@ -27,5 +27,12 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },{
+            method: 'get',
+            path: '/record/*',
+            handler: 'getPhoneRecordAudio',
+            passport: {
+                needLogin: true
+            },
         }]
 }

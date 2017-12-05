@@ -161,8 +161,9 @@ $font-color: #464b4e;
       cursor: text;
 
     }
-    .crm-name-textarea {
+    .input-customer-name textarea {
       resize: none !important;
+      vertical-align: top;
     }
     .industry-list-loading {
       line-height: 30px;
@@ -235,6 +236,16 @@ $font-color: #464b4e;
     }
     .remarks-wrapper {
       width: 400px;
+    }
+  }
+  .area-selector {
+    float: left;
+    .ant-tabs-bar {
+      margin-bottom: 0;
+    }
+    .ant-tabs-tab {
+      padding: 7px !important;
+      text-align: center;
     }
   }
 }

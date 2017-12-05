@@ -76,6 +76,8 @@ var urls = {
     getAppStatus: "/rest/analysis/user/v1/:auth_type/:analysis_type/status",
     // 获取全部应用下的团队、地域和行业统计 analysis_type是指：总用户、新增用户、过期用户、新增过期用户
     getAppsStatistics: "/rest/analysis/user/v1/:auth_type/apps/:analysis_type",
+    // 获取应用下载的统计
+    getAppsDownloadStatistics: "/rest/base/v1/application/download/statistic",
     v2: {
         // 获取 统计数字（总用户、新增用户、过期用户、新增过期用户）
         getSummaryNumbers: '/rest/analysis/user/v2/summary',
@@ -794,6 +796,16 @@ exports.getAppsZone = function (req, res, analysis_type, zone, queryParams) {
     return restUtil.authRest.get(
         {
             url: url.replace(":analysis_type", analysis_type) + '/' + zone,
+            req: req,
+            res: res
+        }, queryParams);
+};
+
+// 获取应用下载的统计
+exports.getAppsDownloadStatistics = (req, res, queryParams) => {
+    return restUtil.authRest.get(
+        {
+            url: urls.getAppsDownloadStatistics,
             req: req,
             res: res
         }, queryParams);

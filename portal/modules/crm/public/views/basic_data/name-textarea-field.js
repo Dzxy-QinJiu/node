@@ -1,14 +1,15 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 显示、编辑 的组件
  * 可切换状态
  */
-import {Form,Input,Validation,Icon} from "antd";
+import {Form,Input,Icon} from "antd";
 let FormItem = Form.Item;
-let Validator = Validation.Validator;
 let crypto = require("crypto");
 let autosize = require("autosize");
 import FieldMixin from "../../../../../components/antd-form-fieldmixin";
-let ValidateUtil = require("../../utils/validate-util");
+import {nameRegex} from "PUB_DIR/sources/utils/consts";
 let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmAction = require("../../action/crm-actions");
 let CrmBasicAjax = require("../../ajax/index");
@@ -73,6 +74,11 @@ let NameTextareaField = React.createClass({
             };
             if (this.props.isMerge) {
                 this.props.updateMergeCustomer(submitData);
+                this.setState({
+                    loading: false,
+                    displayType: 'text',
+                    submitErrorMsg: ""
+                });
             } else {
                 this.setState({loading: true});
                 CrmBasicAjax.updateCustomer(submitData).then(result=> {
@@ -115,7 +121,7 @@ let NameTextareaField = React.createClass({
     checkCustomerName: function (rule, value, callback) {
         value = $.trim(value);
         if (value) {
-            if (ValidateUtil.nameRegex.test(value)) {
+            if (nameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({submitErrorMsg: ''});
@@ -158,6 +164,7 @@ let NameTextareaField = React.createClass({
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""
+                            className="input-customer-name"
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('name')}
@@ -166,7 +173,6 @@ let NameTextareaField = React.createClass({
                             <Validator rules={[{validator: this.checkCustomerName}]}>
                                 <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"
                                                   width={300}
-                                                  prefixCls={this.state.customerNameExist||this.state.checkNameError?"input-red-border crm-name-textarea ant":"crm-name-textarea ant"}
                                                   onBlur={this.checkOnlyCustomerName}
                                                   onChange={this.setField.bind(this, 'name')}
                                 />

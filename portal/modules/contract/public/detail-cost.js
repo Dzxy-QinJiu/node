@@ -1,12 +1,13 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 费用信息添加、展示及编辑页面
  */
 
 import routeList from "../common/route";
 import ajax from "../common/ajax";
-import { Form, Validation, Input, Icon, DatePicker, Button, Select, message, Row, Col } from "antd"
+import { Form, Input, Icon, DatePicker, Button, Select, message, Row, Col } from "antd"
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import rightPanelUtil from "../../../components/rightPanel";
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
@@ -133,7 +134,7 @@ const DetailCost = React.createClass({
                 </Select>
                 </Validator>
                 ) : (
-                <span>
+                <span className="value-text">
                     {this.props.cost.sales_name}
                 </span>
                 )}
@@ -173,7 +174,7 @@ const DetailCost = React.createClass({
                     {teamOptions}
                 </Select>
                 ) : (
-                <span>
+                <span className="value-text">
                     {this.props.cost.sales_team}
                 </span>
                 )}
@@ -209,7 +210,7 @@ const DetailCost = React.createClass({
                 />
                 </Validator>
                 ) : (
-                <span>
+                <span className="value-text">
                     {this.props.cost.cost}
                 </span>
                 )}
@@ -218,7 +219,7 @@ const DetailCost = React.createClass({
     },
     renderDateField: function () {
         if (!this.state.formData.date) {
-            this.state.formData.date = new Date().getTime();
+            this.state.formData.date = moment().valueOf();
         }
 
         return (
@@ -228,11 +229,11 @@ const DetailCost = React.createClass({
             >
                 {this.state.isFormShow? (
                 <DatePicker
-                    value={new Date(this.state.formData.date)}
+                    value={moment(this.state.formData.date)}
                     onChange={this.setField.bind(this, "date")}
                 />
                 ) : (
-                <span>
+                <span className="value-text">
                     {this.props.cost.date? moment(this.props.cost.date).format(DATE_FORMAT) : null}
                 </span>
                 )}
@@ -259,7 +260,7 @@ const DetailCost = React.createClass({
                     {typeOptions}
                 </Select>
                 ) : (
-                <span>
+                <span className="value-text">
                     {this.props.cost.type}
                 </span>
                 )}

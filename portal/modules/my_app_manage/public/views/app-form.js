@@ -1,13 +1,14 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("../scss/index-es_VE.scss");
 } else if (language.lan() == "zh") {
     require("../scss/index-zh_CN.scss");
 }
-import {Icon,Validation,Form,Input,Select,InputNumber,Radio} from "antd";
+import {Icon,Form,Input,Select,InputNumber,Radio} from "antd";
 var RadioGroup = Radio.Group;
 var Option = Select.Option;
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var AlertTimer = require("../../../../components/alert-timer");
 var Spinner = require("../../../../components/spinner");

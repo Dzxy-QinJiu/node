@@ -5,7 +5,6 @@
 
 "use strict";
 
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
 var authorityManageServic = require("../service/authority-manage-service");
 var Promise = require('bluebird');
 

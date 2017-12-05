@@ -1,20 +1,20 @@
 require('../scss/crm-right-panel.scss');
-import {Tabs,Select,Button,Icon} from "antd";
+import {Tabs, Select, Button, Icon, message} from "antd";
 var TabPane = Tabs.TabPane;
 var Option = Select.Option;
 var AlertTimer = require("../../../../components/alert-timer");
 var rightPanelUtil = require("../../../../components/rightPanel/index");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
-
 var BasicData = require("./basic_data");
 var Contacts = require("./contacts");
 var Dynamic = require("./dynamic");
-var CrmAlert = require("./alert");
+var CrmSchedule = require("./schedule");
 var Order = require("./order");
-import CallRecord from "./call_record";
+var CustomerRecord = require("./customer_record");
 var CustomerRepeatAction = require("../action/customer-repeat-action");
 import Trace from "LIB_DIR/trace";
+import ajax from "../ajax/index";
 
 var CrmRightMergePanel = React.createClass({
     getInitialState: function () {
@@ -30,12 +30,28 @@ var CrmRightMergePanel = React.createClass({
         };
     },
 
+    componentDidMount: function () {
+        this.getRepeatCustomersById(this.props.mergeCustomerList);
+    },
+    getRepeatCustomersById: function (mergeCustomerList) {
+        let mergedCustomerIds = _.pluck(mergeCustomerList, 'id');
+        ajax.getRepeatCustomersById(mergedCustomerIds.join(',')).then((data) => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.state.originCustomerList = data.result;
+                this.state.selectedCustomer = this.getMergedCustomer(mergeCustomerList, data.result);
+                this.setState(this.state);
+            }
+        }, (errorMsg) => {
+            message.error(errorMsg);
+        });
+    },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
             originCustomerList: nextProps.originCustomerList,//后端返回的重复列表的数据
             mergeCustomerList: nextProps.mergeCustomerList,//选中的要合并的客户
             selectedCustomer: this.getMergedCustomer(nextProps.mergeCustomerList, nextProps.originCustomerList)
         });
+        this.getRepeatCustomersById(nextProps.mergeCustomerList);
     },
 
     /**
@@ -48,7 +64,7 @@ var CrmRightMergePanel = React.createClass({
         if (_.isArray(contact[key]) && contact[key].length > 0) {
             if (_.isArray(mergedContact[key]) && mergedContact[key].length > 0) {
                 //过滤掉相同的联系方式
-                contact[key] = _.filter(contact[key], contactKey=>mergedContact[key].indexOf(contactKey) == -1);
+                contact[key] = _.filter(contact[key], contactKey => mergedContact[key].indexOf(contactKey) == -1);
                 mergedContact[key] = mergedContact[key].concat(contact[key])
             } else {
                 mergedContact[key] = contact[key];
@@ -70,9 +86,9 @@ var CrmRightMergePanel = React.createClass({
             if (mergedCustomer.remarks) {
                 mergedRemarks.push(mergedCustomer.remarks);
             }
-            mergeCustomerList.forEach((curCustomer)=> {
+            mergeCustomerList.forEach((curCustomer) => {
                 if (curCustomer.id != mergedCustomer.id) {
-                    let customer = _.find(originCustomerList, (customer)=>customer.id == curCustomer.id);
+                    let customer = _.find(originCustomerList, (customer) => customer.id == curCustomer.id);
                     customer = $.extend(true, {}, customer);
                     //合并客户下关联的应用
                     if (_.isArray(customer.app_ids) && customer.app_ids.length > 0) {
@@ -111,7 +127,7 @@ var CrmRightMergePanel = React.createClass({
                     }
                     //合并联系人
                     if (_.isArray(customer.contacts) && customer.contacts.length > 0) {
-                        customer.contacts.forEach((contact)=> {
+                        customer.contacts.forEach((contact) => {
                             //去掉默认联系方式
                             contact.def_contancts = "false";
                         });
@@ -142,32 +158,34 @@ var CrmRightMergePanel = React.createClass({
 
             //联系人去重
             let mergedContacts = [];//合并后的联系人
-            mergedCustomer.contacts.forEach(contact=> {
-                if (mergedContacts.length > 0) {
-                    //查找相同名称的联系人
-                    let existContact = _.find(mergedContacts, mergedContact=>mergedContact.name == contact.name);
-                    if (existContact) {
-                        //已存在该名称的联系人，合并联系方式
-                        //电话的合并
-                        existContact.phone = this.mergeContactWay(contact, existContact, "phone");
-                        //QQ的合并
-                        existContact.qq = this.mergeContactWay(contact, existContact, "qq");
-                        //微信的合并
-                        existContact.webChat = this.mergeContactWay(contact, existContact, "weChat");
-                        //邮箱的合并
-                        existContact.email = this.mergeContactWay(contact, existContact, "email");
+            if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
+                mergedCustomer.contacts.forEach(contact => {
+                    if (mergedContacts.length > 0) {
+                        //查找相同名称的联系人
+                        let existContact = _.find(mergedContacts, mergedContact => mergedContact.name == contact.name);
+                        if (existContact) {
+                            //已存在该名称的联系人，合并联系方式
+                            //电话的合并
+                            existContact.phone = this.mergeContactWay(contact, existContact, "phone");
+                            //QQ的合并
+                            existContact.qq = this.mergeContactWay(contact, existContact, "qq");
+                            //微信的合并
+                            existContact.webChat = this.mergeContactWay(contact, existContact, "weChat");
+                            //邮箱的合并
+                            existContact.email = this.mergeContactWay(contact, existContact, "email");
+                        } else {
+                            //不存在该名称的联系人，直接加入
+                            mergedContacts.push(contact);
+                        }
                     } else {
-                        //不存在该名称的联系人，直接加入
-                        mergedContacts.push(contact);
+                        mergedContacts = [contact];
                     }
-                } else {
-                    mergedContacts = [contact];
-                }
-            });
+                });
+            }
             mergedCustomer.contacts = mergedContacts;
             //默认联系方式的设置
             if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length > 0) {
-                let hasDefault = _.some(mergedCustomer.contacts, (contact)=> contact.def_contancts == "true");
+                let hasDefault = _.some(mergedCustomer.contacts, (contact) => contact.def_contancts == "true");
                 if (!hasDefault) {
                     mergedCustomer.contacts[0].def_contancts = "true";
                 }
@@ -184,9 +202,9 @@ var CrmRightMergePanel = React.createClass({
     getMergedCustomer: function (mergeCustomerList, originCustomerList, customerId) {
         let mergedCustomer = {};
         if (customerId) {
-            mergedCustomer = _.find(originCustomerList, (customer)=>customer.id == customerId);
+            mergedCustomer = _.find(originCustomerList, (customer) => customer.id == customerId);
         } else if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
-            mergedCustomer = _.find(originCustomerList, (customer)=>customer.id == mergeCustomerList[0].id);
+            mergedCustomer = _.find(originCustomerList, (customer) => customer.id == mergeCustomerList[0].id);
         }
         mergedCustomer = $.extend({}, true, mergedCustomer);
         //将其他重复的客户合并到要保存的客户上来
@@ -195,7 +213,7 @@ var CrmRightMergePanel = React.createClass({
     },
 
     hideRightPanel: function (e) {
-        Trace.traceEvent(e,"关闭合并客户面板");
+        Trace.traceEvent(e, "关闭合并客户面板");
         this.props.hideMergePanel();
         this.setState({
             activeKey: "1"
@@ -203,23 +221,24 @@ var CrmRightMergePanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function (key) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"),"点击第" + key + "个tab页");
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "点击第" + key + "个tab页");
         this.setState({
             activeKey: key
         });
     },
     //选择合并后要保存的客户
     handleChange: function (customerId) {
-        Trace.traceEvent($(this.getDOMNode()).find(".merge-customer-select"),"切换合并后要保存的客户名称");
+        Trace.traceEvent($(this.getDOMNode()).find(".merge-customer-select"), "切换合并后要保存的客户名称");
         let mergedCustomer = this.getMergedCustomer(this.state.mergeCustomerList, this.state.originCustomerList, customerId);
         this.setState({selectedCustomer: mergedCustomer});
     },
     //合并客户
     mergeRepeatCustomer: function () {
-        let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList, selectedCustomer = this.state.selectedCustomer;
+        let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList,
+            selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id
         if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
-            mergeCustomerList.forEach((customer)=> {
+            mergeCustomerList.forEach((customer) => {
                 if (customer.id != selectedCustomer.id) {
                     deleteIds.push(customer.id);
                 }
@@ -227,7 +246,7 @@ var CrmRightMergePanel = React.createClass({
         }
         //联系人的处理
         if (_.isArray(selectedCustomer.contacts) && selectedCustomer.contacts.length) {
-            selectedCustomer.contacts.forEach(contact=> {
+            selectedCustomer.contacts.forEach(contact => {
                 if (contact.customer_id != selectedCustomer.id) {
                     //将联系方式对应的客户id改为要保存客户的id
                     contact.customer_id = selectedCustomer.id;
@@ -236,7 +255,7 @@ var CrmRightMergePanel = React.createClass({
         }
         //订单的处理
         if (_.isArray(selectedCustomer.sales_opportunities) && selectedCustomer.sales_opportunities.length > 0) {
-            selectedCustomer.sales_opportunities.forEach((sales_oppor)=> {
+            selectedCustomer.sales_opportunities.forEach((sales_oppor) => {
                 if (sales_oppor.customer_id != selectedCustomer.id) {
                     //将订单对应的客户id改为要保存客户的id
                     sales_oppor.customer_id = selectedCustomer.id;
@@ -248,7 +267,7 @@ var CrmRightMergePanel = React.createClass({
             customer: selectedCustomer,
             delete_ids: deleteIds
         };
-        CustomerRepeatAction.mergeRepeatCustomer(mergeObj, resultObj=> {
+        CustomerRepeatAction.mergeRepeatCustomer(mergeObj, resultObj => {
             if (resultObj.error) {
                 //合并失败的处理
                 this.setState({mergeErrorMsg: resultObj.errorMsg, isMergingCustomer: false});
@@ -270,7 +289,7 @@ var CrmRightMergePanel = React.createClass({
     renderSelectOptions: function () {
         let selectOptions = [], mergeCustomerList = this.props.mergeCustomerList;
         if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
-            selectOptions = this.props.mergeCustomerList.map((customer, index)=>(
+            selectOptions = this.props.mergeCustomerList.map((customer, index) => (
                 <Option key={index} value={customer.id}>{customer.name}</Option>));
         }
         return selectOptions;
@@ -293,6 +312,10 @@ var CrmRightMergePanel = React.createClass({
         if (newBasic.industry) {
             updateCustomer.industry = newBasic.industry;
         }
+        //客户的行政级别
+        if (newBasic.administrative_level) {
+            updateCustomer.administrative_level = newBasic.administrative_level;
+        }
         //客户地域的修改
         if (newBasic.province) {
             updateCustomer.province = newBasic.province;
@@ -302,6 +325,10 @@ var CrmRightMergePanel = React.createClass({
         }
         if (newBasic.county) {
             updateCustomer.county = newBasic.county;
+        }
+        //地址
+        if (newBasic.address|| newBasic.address == "") {
+            updateCustomer.address = newBasic.address;
         }
         //客户备注的修改
         if (newBasic.remarks || newBasic.remarks == "") {
@@ -329,7 +356,7 @@ var CrmRightMergePanel = React.createClass({
             //修改联系方式
             if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
                 //找到修改的联系方式并更新
-                _.some(mergedCustomer.contacts, (contact, index)=> {
+                _.some(mergedCustomer.contacts, (contact, index) => {
                     if (contact.id == newContact.id) {
                         mergedCustomer.contacts[index] = newContact;
                         return true;
@@ -344,7 +371,7 @@ var CrmRightMergePanel = React.createClass({
         if (delContactId) {
             let mergedCustomer = this.state.selectedCustomer;
             if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
-                mergedCustomer.contacts = _.filter(mergedCustomer.contacts, contact=>contact.id != delContactId);
+                mergedCustomer.contacts = _.filter(mergedCustomer.contacts, contact => contact.id != delContactId);
             }
             this.setState({selectedCustomer: mergedCustomer});
         }
@@ -354,7 +381,7 @@ var CrmRightMergePanel = React.createClass({
         if (defaultContactId) {
             let mergedCustomer = this.state.selectedCustomer;
             if (_.isArray(mergedCustomer.contacts) && mergedCustomer.contacts.length) {
-                mergedCustomer.contacts.forEach(contact=> {
+                mergedCustomer.contacts.forEach(contact => {
                     if (contact.id == defaultContactId) {
                         contact.def_contancts = "true";
                     } else {
@@ -371,7 +398,7 @@ var CrmRightMergePanel = React.createClass({
         if (newOrder.id) {
             if (_.isArray(mergedCustomer.sales_opportunities) && mergedCustomer.sales_opportunities.length) {
                 //找到要修改的订单并更新
-                _.some(mergedCustomer.sales_opportunities, (order, index)=> {
+                _.some(mergedCustomer.sales_opportunities, (order, index) => {
                     if (order.id == newOrder.id) {
                         mergedCustomer.sales_opportunities[index] = newOrder;
                         return true;
@@ -387,7 +414,7 @@ var CrmRightMergePanel = React.createClass({
             let mergedCustomer = this.state.selectedCustomer;
             if (_.isArray(mergedCustomer.sales_opportunities)) {
                 //过滤掉要删除的订单
-                mergedCustomer.sales_opportunities = _.filter(mergedCustomer.sales_opportunities, order=>order.id != delOrderId);
+                mergedCustomer.sales_opportunities = _.filter(mergedCustomer.sales_opportunities, order => order.id != delOrderId);
             }
             this.setState({selectedCustomer: mergedCustomer});
         }
@@ -403,16 +430,17 @@ var CrmRightMergePanel = React.createClass({
                         className="crm-right-panel white-space-nowrap crm-right-merge-panel" data-tracename="合并客户面板">
                 <div className={className}>
                     <div className="select-customer-container">
-                        <span className="select-customer-label"><ReactIntl.FormattedMessage id="crm.63" defaultMessage="合并后保存的客户" />：</span>
+                        <span className="select-customer-label"><ReactIntl.FormattedMessage id="crm.63"
+                                                                                            defaultMessage="合并后保存的客户"/>：</span>
                         <Select prefixCls="merge-customer-select ant-select" value={this.state.selectedCustomer.id}
-                                style={{width:200}}
+                                style={{width: 200}}
                                 onChange={this.handleChange}>
                             {this.renderSelectOptions()}
                         </Select>
                         <Button type="primary" className="btn-primary-merge"
                                 onClick={this.mergeRepeatCustomer}
                                 data-tracename="点击合并按钮"
-                        ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并" /></Button>
+                        ><ReactIntl.FormattedMessage id="crm.54" defaultMessage="合并"/></Button>
                     </div>
                     {this.state.isMergingCustomer ?
                         <Icon className="merge-customer-loading" type="loading"/> : null}
@@ -422,7 +450,9 @@ var CrmRightMergePanel = React.createClass({
                                         message={this.state.mergeErrorMsg}
                                         type="error" showIcon
                                         onHide={this.hideSaveTooltip}/></div>) : null}
-                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e)}}/>
+                    <RightPanelClose onClick={(e) => {
+                        this.hideRightPanel(e)
+                    }}/>
                     <div className="crm-right-panel-content">
                         {this.state.selectedCustomer ? (
                             <Tabs
@@ -486,24 +516,24 @@ var CrmRightMergePanel = React.createClass({
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={Intl.get("crm.40", "提醒")}
+                                    tab={Intl.get("crm.right.schedule","联系计划")}
                                     key="5"
                                 >
                                     {this.state.activeKey == "5" ? (
-                                        <CrmAlert
+                                        <CrmSchedule
                                             isMerge={true}
                                             curCustomer={this.state.selectedCustomer}
                                         />
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={Intl.get("menu.call", "通话记录")}
+                                    tab={Intl.get("menu.trace", "跟进记录")}
                                     key="6"
                                 >
                                     {this.state.activeKey == "6" ? (
-                                        <CallRecord
-                                            isMerge={true}
-                                            currentId={this.state.selectedCustomer.id}
+                                        <CustomerRecord
+                                            curCustomer={this.state.selectedCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
                                         />
                                     ) : null}
                                 </TabPane>

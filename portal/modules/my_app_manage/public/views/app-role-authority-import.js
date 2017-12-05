@@ -39,7 +39,7 @@ var ImportData = React.createClass({
     // 检查文件是否上传成功
     handleChange(info) {
         this.setState({isLoading: true});
-        if (info.file.percent === 100) {
+        if (info.file.status === "done") {
             if (info.file.response == true) {
                 message.success(info.file.name + Intl.get("common.upload.success", ' 上传成功!'));
                 this.refreshData(this.props.type);

@@ -22,16 +22,12 @@ function UserFormActions() {
         'checkOnlyEmail',
         //电话唯一性的验证
         'checkOnlyPhone',
-        //坐席号唯一性的验证
-        'checkOnlyPhoneOrder',
         //重置用户验证的标志
         'resetUserNameFlags',
         //重置电话验证的标志
         'resetPhoneFlags',
         //重置邮箱验证的标志
         'resetEmailFlags',
-        //重置坐席号验证的标志
-        'resetPhoneOrderFlags',
         //正在获取角色列表
         'setRoleListLoading',
         //是否正在获取销售团队列表的标志
@@ -67,11 +63,7 @@ function UserFormActions() {
             if (savedUser && savedUser.email) {
                 email = savedUser.email;
             }
-            if (user.phoneOrder && !savedUser.phoneOrder) {
-                _this.dispatch({saveResult: "warn", saveMsg: Intl.get("member.get.add.phone.order.failed","添加成员成功，添加坐席号失败！"), savedUser: savedUser});
-            } else {
-                _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email,email}), savedUser: savedUser});
-            }
+            _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email,email}), savedUser: savedUser});
 
         }, function (errorMsg) {
             //保存失败后的处理
@@ -145,17 +137,6 @@ function UserFormActions() {
             _this.dispatch(errorMsg);
         });
     };
-
-    //坐席号唯一性的校验
-    this.checkOnlyPhoneOrder = function (phoneOrder) {
-        var _this = this;
-        userAjax.checkOnlyPhoneOrder(phoneOrder).then(function (result) {
-            _this.dispatch({error:false, data: result});
-        },function (errorMsg) {
-            _this.dispatch({error:true, errMsg:errorMsg});
-        });
-    };
-
 }
 
 module.exports = alt.createActions(UserFormActions);

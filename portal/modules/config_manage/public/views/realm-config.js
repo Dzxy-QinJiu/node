@@ -3,7 +3,7 @@ import RealmConfigAction from '../action/realm-config-action';
 import RealmConfigAjax from '../ajax/realm-config-ajax';
 import Spinner from '../../../../components/spinner';
 import { Alert, Icon, Checkbox, Popconfirm, message } from 'antd';
-import { Radio } from 'antd-eefung';
+import { Radio } from 'antd';
 import AlertTimer from '../../../../components/alert-timer';
 import Trace from "LIB_DIR/trace";
 const RadioGroup = Radio.Group;

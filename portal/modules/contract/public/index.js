@@ -20,6 +20,7 @@ import rightPanelUtil from "../../../components/rightPanel";
 import Trace from "LIB_DIR/trace";
 const RightPanel = rightPanelUtil.RightPanel;
 const salesmanAjax = require("../../common/public/ajax/salesman");
+const querystring = require("querystring");
 
 const Contract = React.createClass({
     getInitialState: function () {
@@ -65,10 +66,23 @@ const Contract = React.createClass({
     },
     componentDidMount: function () {
         this.getTeamList();
-        this.getContractList(true);
         this.getAppList();
         this.getUserList();
         this.getTypeList();
+
+        const queryParams = this.getQueryParams();
+
+        if ( _.isEmpty(queryParams) ) {
+            this.getContractList(true);
+        } else {
+            this.getContractList(true, "", queryParams);
+        }
+    },
+    getQueryParams: function () {
+        const queryStr = location.search.slice(1);
+        const queryParams = querystring.parse(queryStr);
+
+        return queryParams;
     },
     getCondition: function () {
         let reqData = {query: {}};
@@ -112,7 +126,7 @@ const Contract = React.createClass({
             this.getContractList(true);
         });
     },
-    getContractList: function (reset, sorter) {
+    getContractList: function (reset, sorter, queryParams) {
         if (reset) {
             this.setState({
                 isListLoading: true,
@@ -150,6 +164,24 @@ const Contract = React.createClass({
 
         if (viewType === "cost") {
             delete reqData.query.type;
+        }
+
+        if (queryParams) {
+            reqData.query.sales_team = queryParams.team_name;
+
+            const timestamp = parseInt(queryParams.time);
+
+            if (timestamp) {
+                const momentObj = moment(timestamp);
+                const from = momentObj.startOf("month").valueOf();
+                const to = momentObj.endOf("month").valueOf();
+                reqData.rang_params = [{
+                    name: "date",
+                    type: "time",
+                    from: from,
+                    to: to,
+                }];
+            }
         }
 
         const params = {
@@ -565,7 +597,7 @@ const Contract = React.createClass({
                         <Select
                             value={this.state.dateType}
                             onChange={this.onDateTypeChange}
-                            style={{fontSize: 14}}
+                            className="date-type"
                         >
                             {dateTypes.map(dateType => {
                                 return <Option key="dateType.field" value={dateType.field}>{dateType.name}</Option>

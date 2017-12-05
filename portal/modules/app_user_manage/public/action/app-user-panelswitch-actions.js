@@ -11,6 +11,8 @@ function AppUserPanelSwitchActions() {
         'switchToEditAppPanel',
         'cancelEditAppPanel',
         'submitEditAppPanel',
+        // 第三方应用配置
+        'switchToThirdAppPanel',
         //重置
         "resetState"
     );

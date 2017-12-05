@@ -1,12 +1,36 @@
 var AppUserUtil = require("../util/app-user-util");
 var appAjaxTrans = require("../../../common/public/ajax/app");
 
-//用户ajax请求返回值
-var appUserAjax = null;
+
+//获取近期登录的用户列表
+var recentLoginUsersAjax = null;
+exports.getRecentLoginUsers= function (params) {
+    var Deferred = $.Deferred();
+    if(recentLoginUsersAjax) {
+        recentLoginUsersAjax.abort();
+    }
+    recentLoginUsersAjax = $.ajax({
+        url: '/rest/recent/login/users',
+        dataType: 'json',
+        type: 'get',
+        data: params,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr , textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+            }
+        }
+    });
+    return Deferred.promise();
+};
 
 /**
  * 获取应用用户列表
  */
+//用户ajax请求返回值
+var appUserAjax = null;
 exports.getAppUserList = function (obj) {
     obj = obj || {};
     if(appUserAjax) {
@@ -340,38 +364,6 @@ exports.getCustomerUserList = function (obj) {
     return Deferred.promise();
 };
 
-/**
- * 获取用户审批列表
- */
-var applyListAjax;
-exports.getApplyList = function(obj) {
-    var page_size = obj.page_size || 10;
-    var page = obj.page || 1;
-    var status = obj.status || "all";
-
-    var Deferred = $.Deferred();
-    applyListAjax && applyListAjax.abort();
-    applyListAjax = $.ajax({
-        url: '/rest/appuser/apply/' + status + '/' + page_size + '/' + page,
-        dataType: 'json',
-        type: 'get',
-        data: {
-            keyword: obj.keyword,
-        },
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (data,textStatus) {
-            if(textStatus !== 'abort') {
-                Deferred.reject(data && data.message || Intl.get("common.get.user.apply.failed", "获取用户审批列表失败"));
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
-
-
 //修改用户的单个应用
 exports.editApp = function (appInfo) {
     var Deferred = $.Deferred();
@@ -480,6 +472,30 @@ exports.applyChangePassword = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/apply/password',
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        success: function (result) {
+            //操作成功返回true
+            if(result === true) {
+                Deferred.resolve(result);
+            } else {
+                Deferred.reject(ERROR_MSG);
+            }
+        },
+        error: function (xhr) {
+            Deferred.reject(xhr.responseJSON || ERROR_MSG);
+        }
+    });
+    return Deferred.promise();
+};
+
+//申请其他类型的修改
+exports.applyChangeOther= function(data) {
+    const ERROR_MSG = Intl.get("user.apply.other.failed", "申请修改其他类型失败");
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/user/apply/other',
         type: 'post',
         dataType: 'json',
         data: data,

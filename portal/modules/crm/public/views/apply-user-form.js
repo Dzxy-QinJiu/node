@@ -1,9 +1,10 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 require("../scss/apply-user-form.scss");
 require("../../../../public/css/antd-vertical-tabs.css");
-import {Tabs, Tooltip, Form, Input, Validation, Radio, InputNumber, Icon, message,Checkbox} from "antd";
+import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Icon, message,Checkbox} from "antd";
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 const RadioGroup = Radio.Group;
 const RightPanelSubmit = require("../../../../components/rightPanel").RightPanelSubmit;
 const RightPanelCancel = require("../../../../components/rightPanel").RightPanelCancel;
@@ -15,6 +16,12 @@ const OrderAction = require("../action/order-actions");
 const DatePickerUtils = require("../../../../components/date-selector/utils");
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
+const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
+const OVER_DRAFT_TYPES = {
+    UN_CHANGED: 0,//到期不变
+    STOP_USE: 1,//到期停用
+    DEGRADE: 2//降级
+};
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
@@ -39,12 +46,13 @@ const ApplyUserForm = React.createClass({
         const begin_date = DatePickerUtils.getMilliseconds(timeObj.start_time);
         const end_date = DatePickerUtils.getMilliseconds(timeObj.end_time);
         const order = props.order;
+        const isTrailUserType = TRIAL_USER_TYPES.indexOf(props.applyType) !== -1;
         let formData = {
             customer_id: order.customer_id,
             order_id: order.id,
             sales_opportunity: order.sale_stages,
             remark: "",
-            tag: [0, 2].indexOf(props.applyType) > -1 ? Intl.get("common.trial.user", "试用用户") : Intl.get("common.trial.official", "正式用户"),
+            tag: isTrailUserType? Intl.get("common.trial.user", "试用用户") : Intl.get("common.trial.official", "正式用户"),
             user_name: "",
             nick_name: props.customerName
         };
@@ -56,7 +64,7 @@ const ApplyUserForm = React.createClass({
                 begin_date: begin_date,
                 end_date: end_date,
                 range: "0.5m",
-                over_draft: 1,
+                over_draft: isTrailUserType ? OVER_DRAFT_TYPES.UN_CHANGED : OVER_DRAFT_TYPES.STOP_USE, //0：到期不变，1：到期停用
             };
         });
 

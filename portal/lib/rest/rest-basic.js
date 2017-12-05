@@ -7,9 +7,13 @@ var restLogger = require("./../utils/logger").getLogger('rest');
 var config = require("../../../conf/config");
 var _ = require("underscore");
 const Metric = require("./../utils/metric-util");
+const extend = require("extend");
 //外部添加的头信息
 var customGlobalHeaders = null;
-
+//替换为6个星号
+const starStrings = "******";
+//需要替换的key
+const needReplaceKey = ["client_id", "client_secret", "Authorization", "realm", "password"];
 var RequestOverride = {
     /**
      * 重新整理 options 参数
@@ -62,17 +66,8 @@ var RequestOverride = {
         }
         //打印参数日志
         if (config.logLevel == "DEBUG") {
-            var params = {};
-            Object.keys(options).forEach(function (key) {
-                if (key !== "formData") {
-                    if (key == 'form') {
-                        params[key] = _.extend({}, options[key]);
-                        params.form.password && (params.form.password = '******');
-                    } else {
-                        params[key] = options[key];
-                    }
-                }
-            });
+            //替换或隐藏部分字符
+            var params = hideString(extend(true, {}, options));
             restLogger.debug("sessionID: " + (req && req.sessionID) + ",request params:", JSON.stringify(params));
         }
         return options;
@@ -125,9 +120,10 @@ var RequestOverride = {
                 var spendTime = elapseTime / 1000;
                 restLogger.info("sessionID: " + sid + ",request url(%s) taking %ss", options.url, spendTime);
                 //正式环境发送度量数据
-                if (config.formal && config.metricAddress) {
+                if (config && config.formal == "true" && config.metricAddress) {
                     const metric = new Metric(config.metricAddress);
                     metric.sendMetrics({
+                        app: config.processTitle || "myapp",
                         path: options.url,
                         sessionID: sid,
                         method: options.method,
@@ -218,6 +214,65 @@ function userDefaultPath() {
         }
     }
     return proxy;
+}
+/**
+ * 隐藏密码及auth2相关的id和秘钥等字符
+ * @param params
+ * @returns {*}
+ */
+function hideString(params) {
+    if (_.isObject(params)) {
+        _.each(params, function (value, key) {
+            if (key === "formData") {
+                //如果是formData直接删除
+                delete params[key];
+            } else {
+                if (_.isObject(value)) {
+                    //如果value是对象，递归调用hideString
+                    hideString(value);
+                } else {
+                    if (needReplaceKey.indexOf(key) != -1) {
+                        //如果key是password时，直接替换为星号
+                        if (key === "password") {
+                            params[key] = starStrings;
+                        } else {
+                            //其他的隐藏部分字符
+                            params[key] = replacePartialString(value);
+                        }
+                    }
+                }
+            }
+        });
+    }
+    return params;
+}
+/**
+ * 替换部分字符串
+ * @param idOrCode
+ * @returns {*}
+ */
+function replacePartialString(idOrCode) {
+    if (_.isNumber(idOrCode)) {
+        idOrCode = idOrCode.toString();
+    }
+    if (_.isString(idOrCode)) {
+        var len = idOrCode.length;
+        if (len > 16) {
+            //大于16个字符时,保留前7个(auth2需要加"oauth2 "7个字符)及后4个字符
+            return idOrCode.replace(/(.{7})(.+)(.{4})/g, "$1" + starStrings + "$3");
+        } else if (len <= 16 && len >= 8) {
+            //在8-16字符之间时,保留前后各2个字符
+            return idOrCode.replace(/(.{2})(.+)(.{2})/g, "$1" + starStrings + "$3");
+        } else if (len >= 4) {
+            //在4-7个字符之间时,保留前后各1个字符
+            return idOrCode.replace(/(.)(.+)(.)/g, "$1" + starStrings + "$3");
+        } else {
+            //小于3个字符直接替换为starStrings
+            return starStrings;
+        }
+    } else {
+        return idOrCode;
+    }
 }
 // 重载 get 方法
 request.get = RequestOverride.get;

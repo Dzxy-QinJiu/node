@@ -1,3 +1,6 @@
+/**
+ * Oplate.hideSomeItem 用来判断西语的运行环境
+ * */
 require("./index.scss");
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
@@ -281,7 +284,7 @@ const AppPropertySetting = React.createClass({
         }
     },
     componentDidUpdate(prevProps , prevState) {
-        if(!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
+        if (!this.compareEquals(this.state.appPropSettingsMap, prevState.appPropSettingsMap)) {
             this.props.onAppPropertyChange(this.state.appPropSettingsMap);
         }
         if(this.state.currentApp.app_id != prevState.currentApp.app_id) {
@@ -347,19 +350,18 @@ const AppPropertySetting = React.createClass({
                             </div>
                         ) : null}
                         {this.props.isSingleAppEdit ? (
-                            <div className="form-item">
-                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
-                                <div className="form-item-content">
-                                    {
-                                        this.renderUserTypeRadioBlock({
-                                            isCustomSetting : true,
-                                            appId : currentApp.app_id,
-                                            globalUserType : defaultSettings.user_type
-                                        })
-                                    }
-
-                                </div>
-                            </div>
+                         !Oplate.hideSomeItem && <div className="form-item">
+                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
+                             <div className="form-item-content">
+                                 {
+                                     this.renderUserTypeRadioBlock({
+                                         isCustomSetting : true,
+                                         appId : currentApp.app_id,
+                                         globalUserType : defaultSettings.user_type
+                                     })
+                                 }
+                             </div>
+                         </div>
                         ) : null}
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
@@ -374,7 +376,7 @@ const AppPropertySetting = React.createClass({
                             </div>
                         </div>
                         <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.status" defaultMessage="到期状态" /></div>
+                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
                             <div className="form-item-content">
                                 {
                                     this.renderUserOverDraftBlock({
@@ -387,7 +389,7 @@ const AppPropertySetting = React.createClass({
                         </div>
                         {
                             this.props.showIsTwoFactor ? (
-                                <div className="form-item">
+                            !Oplate.hideSomeItem && <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
                                     <div className="form-item-content">
                                         {
@@ -416,7 +418,7 @@ const AppPropertySetting = React.createClass({
                         ) : null}
                         {
                             this.props.showMultiLogin ? (
-                                <div className="form-item">
+                            !Oplate.hideSomeItem && <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                                     <div className="form-item-content">
                                         {

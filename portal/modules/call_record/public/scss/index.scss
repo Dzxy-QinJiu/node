@@ -1,32 +1,59 @@
-
+@import "../../../../public/css/iconfont";
+@import "../../../../public/css/common-variables";
 //check button的样式
-@mixin check_button{
-  .ant-checkbox-checked{
-    .ant-checkbox-inner{
-      border-color:#4d96d1;
-      background-color:#4d96d1;
-      &:after{
-        left:10px;
-        top:3px;
-        width:10px;
-        height:18px;
-        border:4px solid #fff;
-        -webkit-transform:rotate(45deg) scale(1);
-        transform:rotate(45deg) scale(1);
-        position:absolute;
-        display:table;
-        border-top:0;
-        border-left:0;
-        content:' ';
-        -webkit-transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
-        transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+@mixin check_button {
+  .ant-checkbox-checked {
+    .ant-checkbox-inner {
+      border-color: $blue;
+      background-color: $blue;
+      &:after {
+        left: 10px;
+        top: 3px;
+        width: 10px;
+        height: 18px;
+        border: 4px solid #fff;
+        -webkit-transform: rotate(45deg) scale(1);
+        transform: rotate(45deg) scale(1);
+        position: absolute;
+        display: table;
+        border-top: 0;
+        border-left: 0;
+        content: ' ';
+        -webkit-transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+        transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
       }
     }
   }
 }
-
-
 .call_record_content {
+  .spin-fix {
+    z-index: 1!important;
+    background-color: white;
+    top: 70px!important;
+  }
+  .total_summary {
+    position: relative;
+    top: 70px;
+  }
+  .add-content .text-show {
+    min-height: 41px;
+    margin-left: -5px;
+    padding: 0 5px 0 3px;   
+  }
+  .add-content textarea.textarea-fix {
+    overflow: hidden;     
+    width: 100%;
+    margin-left: -5px;
+    padding: 0 3px;
+    outline: medium;
+    resize: none;
+    border: initial;
+    border-radius: 3px;
+    background-color: initial;
+  }
+  .filter-select-fix {
+    top: -2px;
+  }
   .range-datepicker, .search-btn {
     float: left;
     margin-top: 20px;
@@ -52,8 +79,8 @@
         line-height: 30px;
         cursor: pointer;
       }
-      .select-call-status {
-        width: 130px;
+      .ant-select {
+        display: inherit;
       }
     }
 
@@ -68,18 +95,16 @@
         }
       }
     }
-    .custom-tbody .ant-table-tbody tr td{
-      .iconfont.icon-audio-play{
+    .ant-table-tbody tr td {
+      .iconfont.icon-audio-play {
         margin-left: 8px;
         position: relative;
-        top:1px;
-        color:#4d96d1;
-        &:hover{
-          cursor:pointer;
-        }
-      }
-      .iconfont.icon-audio-play.icon-selected{
-        color:#C20C0C;
+        top: 1px;
+        color: $blue;
+        cursor: pointer;
+       }
+      .iconfont.icon-audio-play.icon-selected {
+        color: #C20C0C;
       }
     }
 
@@ -150,7 +175,7 @@
         text-align: right;
         cursor: default;
       }
-      .call-time, .call-user{
+      .call-time, .call-user {
         cursor: default;
       }
     }
@@ -178,11 +203,11 @@
         .customer_column {
           cursor: pointer;
         }
-      .customer_column:hover{
-        color: #2db7f5;
-      }
+        .customer_column:hover {
+          color: #2db7f5;
+        }
         border-bottom: none !important;
-        .current_row,.current_row:hover {
+        .current_row, .current_row:hover {
           background: #b6d3f3 !important;
         }
       }
@@ -194,32 +219,56 @@
       margin-top: 15px;
       font-size: 14px;
     }
+    .ant-table-tbody {
+      .customer_column {
+        cursor: pointer;
+      }
+      .customer_column:hover {
+        color: $blue !important;
+      }
+      td.has-filter {
+        cursor: default !important;
+      }
+    }
+    .ant-table-header {
+      .ant-table-thead {
+        th.has-filter {
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   .filter-phone-button {
-    display:inline-block;
-    position:relative;
-    margin-top:20px;
-    margin-right:50px;
-    float:right;
-    height:30px;
-    .ant-checkbox{
-      height:30px;
+    display: inline-block;
+    position: relative;
+    margin-top: 20px;
+    margin-right: 50px;
+    float: right;
+    height: 30px;
+    .ant-checkbox {
+      height: 30px;
       margin-bottom: 3px;
     }
-    .ant-checkbox-inner{
-      width:30px;
-      height:30px;
+    .ant-checkbox-inner {
+      width: 30px;
+      height: 30px;
     }
     @include check_button;
-    .refresh-btn , .call-analysis-btn {
-      border: 1px solid #4d96d1;
-      padding: 8px 5px 7px;
+    .call-analysis-btn {
+      border: 1px solid $blue;
+      padding: 7px 5px;
       border-radius: 3px;
       margin-left: 15px;
-      .refresh, .call-analysis {
+      .call-analysis {
         cursor: pointer;
-        color: #4d96d1;
+        color: $blue;
+      }
+    }
+    .ant-select-selection__rendered {
+      line-height: 23px;
+      .ant-select-selection-selected-value {
+        padding-top: 3px;
       }
     }
   }
@@ -231,22 +280,25 @@
     }
   }
 
-  .tip-customer-exist{
-    margin-top:-13px;
-    line-height:20px;
-    margin-bottom:10px;
-    margin-left:100px;
+  .tip-customer-exist {
+    margin-top: -13px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-left: 100px;
   }
   .ant-table-tbody {
-    .add-content input{
+    .current_row, .current_row:hover {
+      background: #b6d3f3 !important;
+    }
+    .add-content input {
       border: none;
-      outline:medium;
+      outline: medium;
       background: transparent;
       height: 22px;
       width: 100%;
     }
   }
-  .audio-play-container{
+  .audio-play-container {
     position: fixed;
     _position: absolute;
     zoom: 1;
@@ -258,11 +310,11 @@
     z-index: 999;
     background: #FAFAFA;
     border-radius: 4px;
-    audio{
+    audio {
       display: block;
       margin: 6px auto;
     }
-    .iconfont.icon-close{
+    .iconfont.icon-close {
       position: absolute;
       top: 3px;
       right: 3px;
@@ -272,13 +324,21 @@
 }
 
 .call-record-wrap {
-  .right-pannel-default{
+  .call_record_content{
+    .right-pannel-default {
+      width: 700px;
+      transform: translate(700px, 0);
+      padding: 0;
+    }
+  }
+  //点击查看客户详情时候的右侧面板
+  .call-record-crm-detail.right-pannel-default {
     width: 700px;
     transform: translate(700px, 0);
     padding: 0;
   }
   .add-customer {
-    .right-pannel-default{
+    .right-pannel-default {
       width: 420px;
       transform: translate(420px, 0);
       padding: 0;
@@ -381,7 +441,7 @@
             width: 100%;
             margin-left: -48px;
             height: 120px;
-            margin-bottom: 20px;
+            margin-bottom: 45px;
             .duration-count-radio {
               float: right;
               margin-right: -45px;
@@ -400,11 +460,24 @@
             min-height: 100px;
           }
 
-          .alert-wrap{
-            text-align:center;
+          .export-file {
+            position: relative;
+            top: 140px;
+            right: 20px;
+            a {
+              color: $blue;
+            }
+            .icon-export {
+              color: $blue;
+              margin-right: 5px;
+            }
+          }
+
+          .alert-wrap {
+            text-align: center;
             line-height: 90px;
-            .ant-alert-error, .ant-alert-message, .ant-alert-info{
-              display:inline-block;
+            .ant-alert-error, .ant-alert-message, .ant-alert-info {
+              display: inline-block;
             }
           }
           // TOP10
@@ -420,6 +493,18 @@
               margin-top: 20px;
             }
           }
+
+          //通话时段点图
+          .call-interval-block{
+            min-height: 200px;
+          }
+          .call-interval-title {
+            margin-top: 20px;
+          }
+          .call-interval-radio {
+            float: right;
+            margin-right: 25px;
+          }
         }
         .ant-table {
           margin-right: 12px;
@@ -432,12 +517,16 @@
           bottom: 0;
           left: 0;
           right: 0;
-          transform:scale(0.5,0.5);
+          transform: scale(0.5, 0.5);
         }
       }
     }
 
   }
+}
+
+.call-record-fix tr>td {
+  padding: 6px 8px!important;
 }
 
 .ant-select-dropdown {
@@ -447,5 +536,5 @@
 }
 
 .ant-btn-sm {
-    border-radius: 3px;
+  border-radius: 3px;
 }

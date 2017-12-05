@@ -57,6 +57,17 @@ function CallAnalysisActions() {
         );
     };
 
+    //获取通话时段（数量和时长）的统计数据
+    this.getCallIntervalData = function (authType, reqData) {
+        this.dispatch({ loading: true ,error: false});
+        callAnalysisAjax.getCallIntervalData(authType, reqData).then( (resData) => {
+                this.dispatch({ loading: false, error: false, resData: resData.list});
+            }, (errorMsg) => {
+                this.dispatch({ loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
+
     // 团队信息
     this.getSaleGroupTeams = function (reqData) {
         callAnalysisAjax.getSaleGroupTeams(reqData).then( (resData) => {
@@ -76,7 +87,7 @@ function CallAnalysisActions() {
             }
         );
     };
-   
+
 }
 
 module.exports = alt.createActions(CallAnalysisActions);

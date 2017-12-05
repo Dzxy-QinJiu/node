@@ -4,19 +4,13 @@
  */
 var applyListAjax;
 exports.getApplyList = function(obj) {
-    var page_size = obj.page_size || 10;
-    var page = obj.page || 1;
-    var status = obj.status || "all";
-
     var Deferred = $.Deferred();
     applyListAjax && applyListAjax.abort();
     applyListAjax = $.ajax({
-        url: '/rest/appuser/apply/' + status + '/' + page_size + '/' + page,
+        url: '/rest/appuser/apply_list',
         dataType: 'json',
         type: 'get',
-        data: {
-            keyword: obj.keyword,
-        },
+        data: obj,
         success: function (data) {
             Deferred.resolve(data);
         },

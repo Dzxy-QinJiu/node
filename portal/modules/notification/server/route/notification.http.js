@@ -9,19 +9,6 @@ module.exports = {
     //定义路由信息
     routes: [{
         //http方法
-        "method": "get",
-        //获取申请消息列表
-        "path": "/rest/notification/applyfor",
-        //action中的方法
-        "handler": "getApplyForMessageList",
-        //是否需要登录
-        "passport": {
-            "needLogin": true
-        },
-        //需要权限
-        "privileges": []
-    },{
-        //http方法
         "method": "put",
         //清除未读数
         "path": "/rest/notification/unread_num/:type",
@@ -33,7 +20,7 @@ module.exports = {
         },
         //需要权限
         "privileges": []
-    },{
+    }, {
         //http方法
         "method": "get",
         //获取申请消息、客户提醒未读数
@@ -44,13 +31,39 @@ module.exports = {
         "passport": {
             "needLogin": true
         }
-    },{
+    }, {
         //http方法
         "method": "get",
         //获取客户提醒列表
         "path": "/rest/notification/customer",
         //action中的方法
         "handler": "getCustomerMessageList",
+        //是否需要登录
+        "passport": {
+            "needLogin": true
+        },
+        //需要权限
+        "privileges": []
+    }, {
+        //http方法
+        "method": "get",
+        //获取系统消息列表
+        "path": "/rest/notification/system/:status",
+        //action中的方法
+        "handler": "getSystemNotices",
+        //是否需要登录
+        "passport": {
+            "needLogin": true
+        },
+        //需要权限
+        "privileges": []
+    }, {
+        //http方法
+        "method": "put",
+        //获取系统消息列表
+        "path": "/rest/notification/system/handle/:noticeId",
+        //action中的方法
+        "handler": "handleSystemNotice",
         //是否需要登录
         "passport": {
             "needLogin": true

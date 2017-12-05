@@ -14,18 +14,3 @@ export const getLabelName = function (value) {
     return labelName;
 }
 
-//格式化金额
-export const formatAmount = function (amount) {
-    amount = parseFloat(amount);
-    amount = isNaN(amount)? "" : amount / 10000;
-    
-    amount = amount.toString();
-
-    //对转换结果出现多位小数（如0.010020000000000001）的情况进行处理
-    if (amount.length >= 20 && amount.indexOf(".") > -1) {
-        amount = amount.replace(/0+[1-9]+$/, "");
-    }
-
-    return amount;
-}
-

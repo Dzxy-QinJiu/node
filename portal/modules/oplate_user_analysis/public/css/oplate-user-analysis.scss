@@ -1,6 +1,13 @@
 .oplate_user_analysis {
+  background-color: rgb(243, 245, 245);
   padding-top:76px;
+  .topNav{
+    &:before{
+      border-bottom: 0 !important;
+    }
+  }
   .analysis_chart {
+    padding-right: 0;
     overflow:hidden;
   }
   .global_filter_btn {
@@ -32,7 +39,10 @@
     right:33px;
   }
   .summary-numbers {
+    margin: 20px 24px 10px;
+    background-color: #fff;
     border-bottom:1px solid #f0f0f0;
+    border-top:1px solid #f0f0f0;
     .anticon {
       position:absolute;
       width:14px;
@@ -49,15 +59,16 @@
     display:inline-block;
     vertical-align:top;
     height:86px;
-    width:164px;
+    width:100%;
     border-right:1px solid #e1e2e4;
+    border-bottom: 1px solid #e1e2e4;
     text-align:center;
-    background:#f3f5f4;
     position:relative;
     p {
       color:#a6aaab;
       line-height:16px;
       margin-top:15px;
+      font-size: 16px;
     }
     >div>div {
       color:#45525b;
@@ -72,35 +83,47 @@
     }
   }
   .summary-number:last-child {
-    border-right-color:rgba(0,0,0,0);
+    border-right:1px solid #e1e2e4;
   }
   .summary-number.active {
-    background:#fff;
+    border-bottom: 5px solid #4887b9;
   }
   .chart_list {
-    padding:18px 33px 0 33px;
+    padding:0 24px 0 9px;
     margin-bottom:-3px;
+  }
+  .charts-select-fix>.ant-select {    
+    position: absolute;
+    right: 10px;
+    top: 7px;
   }
   .chart-holder {
     margin-bottom:21px;
-    border:1px solid #f0f0f0;
-    height:246px;
-    .title {
-      color:#62696f;
-      line-height:18px;
-      font-size:14px;
-      padding:12px 0 0 16px;
+    height:285px;
+    background-color: #fff;
+    &.zone-fix {
+      height: initial;
+    }
+    &.height-fix {
+      height: 285px!important;
+      overflow: hidden;
     }
   }
-  .activeness-chart-height , .active-time-scatter-height {
+  .activeness-chart-height , .active-time-scatter-height {     
     margin-bottom:21px;
     border:1px solid #f0f0f0;
-    height:270px;
-    .title {
-      color:#62696f;
-      line-height:18px;
-      font-size:14px;
-      padding:12px 0 0 16px;
+    height:300px;
+    .box-container {
+      .arealine-chart, .analysis_timerange_bar_chart {
+        height: 256px;
+      }
+    }
+  }
+  .expired-activeness-chart-height {
+    .box-container {
+      .arealine-chart {
+        height: 246px;
+      }
     }
   }
   .retention_table_chart {
@@ -109,15 +132,17 @@
   }
   // 获取点击标签的样式
   .show-click-lable {
-    margin-top: 15px;
-    font-size: 12px;
-    margin-left: 48px;
+    font-size: 16px;
+    background-color: #fff;
+    margin: 10px 24px;
     .show-click-type {
       height: 30px;
-      background: #f3f5f4;
       padding: 6px 10px;
       margin-right: 10px;
     }
   }
-
+  .error-tips-message {
+    text-align: center;
+    margin-top: 100px;
+  }
 }

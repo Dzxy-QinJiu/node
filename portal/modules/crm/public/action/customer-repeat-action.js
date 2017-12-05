@@ -3,6 +3,7 @@ var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scro
 function CustomerRepeatAction() {
     this.generateActions(
         'setSelectedCustomer',//设置选中的客户
+        'setMergeRepeatCustomers',//设置要合并的客户们
         'setDelModalShow',//是否展示确认删除客户的提示
         'setRightPanelShow',//是否展示右侧面板的设置
         'setCurCustomer',//设置当前要展示的客户
@@ -12,8 +13,8 @@ function CustomerRepeatAction() {
         'setFilterObj',//搜索内容的设置
         'resetPage',//重置获取数据的页数
         'afterMergeRepeatCustomer',//合并完重复客户后的处理
-        //修改基本资料后，更新重复客户列表
-        "editBasicSuccess"
+        "editBasicSuccess",//修改基本资料后，更新重复客户列表
+        'updateCustomerDefContact'//修改默认联系人后，更新重复客户列表
     );
     //获取重复客户列表
     this.getRepeatCustomerList = function (queryParams) {
@@ -29,7 +30,7 @@ function CustomerRepeatAction() {
     this.delRepeatCustomer = function (customerIdArray, callback) {
         var _this = this;
         customerAjax.delRepeatCustomer(customerIdArray).then(function (data) {
-            if (_.isObject(data) && data.result == "success") {
+            if (_.isObject(data) && data.result === "success") {
                 _this.dispatch(customerIdArray);
                 callback({error: false, successMsg: Intl.get("crm.138", "删除成功")});
             } else {

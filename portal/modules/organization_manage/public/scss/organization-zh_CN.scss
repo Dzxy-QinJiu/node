@@ -6,6 +6,16 @@ $img-width:45px;
 $edit-team-form-height:130px;
 $edit-teamName-form-height:90px;
 
+//将提示框的样式提出
+@mixin ant-alert {
+  .ant-alert{
+    padding: 5px 15px 5px 48px;
+    .ant-alert-icon{
+      top: 7px;
+    }
+  }
+}
+
 .organization-manage-container{
   //正在加载的样式设置
   .isloading{
@@ -96,7 +106,7 @@ $edit-teamName-form-height:90px;
         left:0;
         margin:auto;
         width:255px;
-        height:30px;
+        height:28px;
       }
     }
     .organization-group{
@@ -187,6 +197,9 @@ $edit-teamName-form-height:90px;
                   float:left;
                   height:30px;
                   line-height:30px;
+                }
+                .organization-name-icon {
+                  margin-right: 5px;
                 }
                 .organization-name-text{
                   max-width:100px;
@@ -315,11 +328,16 @@ $edit-teamName-form-height:90px;
               text-align:center;
               font-weight:normal;
             }
+            .ant-radio-group{
+              padding-left:10px;
+              margin-top:5px;
+              > label{
+                margin-right:30px;
+              }
+            }
           }
           .edit-organization-btn-item{
             text-align:right;
-            padding-right:12px;
-            width:280px;
             height:auto;
             .anticon.anticon-loading{
               font-size:18px;
@@ -328,6 +346,7 @@ $edit-teamName-form-height:90px;
             .indicator{
               top:-5px;
               right:120px;
+              z-index:2;
             }
             .member-form-btn{
               border-radius:4px;
@@ -348,7 +367,8 @@ $edit-teamName-form-height:90px;
       padding-bottom:0px;
 
       .member-top-operation-div{
-        height:46px;
+        float: left;
+        width: 100%;
         border-bottom:1px solid $border-color;
         padding-left:10px;
         padding-right:10px;
@@ -404,6 +424,8 @@ $edit-teamName-form-height:90px;
       //团队内成员展示区域样式设置
       .member-list-div{
         position:relative;
+        float: left;
+        width: 100%;
         padding-bottom:10px;
         padding-top:10px;
         //设置负责人、秘书、成员在不同行内展示,
@@ -423,16 +445,21 @@ $edit-teamName-form-height:90px;
             text-align:center;
             color:rgba(102, 102, 102, 0.66);
           }
+          .ant-pagination-options-size-changer{
+            margin-right: 0;
+          }
         }
       }
       .operation-bottom-btn-div{
         position:relative;
-        text-align:right;
-        border-top:1px solid $border-color;
+        float: right;
+        width: 100%;
         height:40px;
         line-height:40px;
+        border-top:1px solid $border-color;
+        text-align:right;
         .indicator{
-          top:4px;
+          @include ant-alert;
         }
         .operation-bottom-btn{
           margin-left:14px;
@@ -552,7 +579,7 @@ $edit-teamName-form-height:90px;
   .icon-sale-team-manager{
     position:absolute;
     height:45px;
-    top:-21.5px;
+    top:-23px;
     left:9.5px;
     font-size:60px;
     color:#c44999;
@@ -581,8 +608,8 @@ $edit-teamName-form-height:90px;
   //销售团队按钮的样式
   .organization-item{
     width:80px;
-    height:25px;
-    line-height:1.5;
+    height:30px;
+    line-height:30px;
     border:1px solid #A09D9D;
     float:left;
     margin-right:10px;
@@ -610,6 +637,15 @@ $edit-teamName-form-height:90px;
       @extend .organization-item;
       margin-left:10px;
       margin-right:0;
+    }
+    .indicator{
+      position: relative;
+      float: left;
+      left: 0;
+      top: 5px;
+      right: auto;
+      text-align: center;
+      @include ant-alert;
     }
   }
   //加为xx、删除按钮的hover事件
@@ -741,7 +777,7 @@ $edit-teamName-form-height:90px;
       margin:0 0 0 30px;
     }
     .ant-table td, .ant-table th{
-      padding:8px 4px;
+      padding: 8px 4px 7px 4px;
     }
     .ant-table td{
       color:#6e7377;
@@ -781,7 +817,6 @@ $edit-teamName-form-height:90px;
     margin:auto;
     .no-organization-tip{
       width:100%;
-      height:20px;
       margin-bottom:10px;
       padding-left:8px;
       font-size:14px;
@@ -808,10 +843,25 @@ $edit-teamName-form-height:90px;
   .organization-root-add{
     border-bottom:1px solid #f3f5f7;
     cursor:pointer;
-    .add-organization-root-div{
-      height:40px;
-      line-height:40px;
-      padding-left:2px;
+    .add-root-organization-btn{
+      float: right;
+      width: 30px;
+      height: 30px;
+      margin-top: 5px;
+      margin-right: 5px;
+      padding: 0;
+      border-radius: 3px;
+      border: 1px solid #cdd5d9;
+      color: #939a9e;
+      text-align: center;
+      &:hover{
+        border: 1px solid #4d96d1;
+        color: #4d96d1;
+      }
+      .icon-add{
+        line-height: 30px;
+        font-size: 24px;
+      }
     }
     //搜索按钮的样式设置
     .search-organization-icon{
@@ -833,8 +883,8 @@ $edit-teamName-form-height:90px;
     .organization-search-input-container{
       position:relative;
       float:left;
-      width:220px;
-      padding:4.5px 5px;
+      width:265px;
+      padding: 5px;
       .search-clear-icon{
         position:absolute;
         top:6px;

@@ -5,86 +5,6 @@
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.scss';
 
 
-.app_user_manage_rightpanel.right-pannel-default{
-  $width:700px;
-  width:$width;
-  transform:translate($width, 0);
-  padding:0;
-  .full_size{
-    width:100%;
-    height:100%;
-    position:relative;
-  }
-  .app_user_full_size{
-    white-space:nowrap;
-  }
-  .app_user_full_size_item{
-    white-space:normal;
-  }
-  .wrap_padding{
-    padding:11px 33px 0 28px;
-  }
-  .close-pannel, .icon-return{
-    margin-right:0;
-    margin-top:0;
-    position:absolute;
-    float:none;
-    right:31px;
-    top:18px;
-  }
-  .icon-return{
-    right:62px;
-    z-index:2;
-  }
-
-  // 默认配置应用名称
-  .appTitle{
-    font-size:16px;
-    text-align:left;
-    color:#4d96d1;
-    height:25px;
-    line-height:25px;
-    margin-top:25px;
-    margin-left:25px;
-    display:inline-block;
-  }
-
-  .grantinfo-form{
-    .basic-data-form{
-      background:none;
-    }
-    .app-role-permission{
-      margin-left:16px;
-    }
-
-    .custom_radio_active{
-      display:inline-block;
-      padding:4px;
-      margin-right:4px !important;
-    }
-
-    .usertypeconfig-form-button{
-      margin-top:10px;
-      margin-right:10px;
-      float:right;
-      .ant-btn-primary{
-        margin-right:10px;
-      }
-    }
-    .custom_radio_active{
-      cursor:pointer;
-      border-radius:3px;
-      border:2px solid #729fb4;
-      display:inline-block;
-      padding:4px;
-      margin-right:4px !important;
-      background:#67a3bf;
-      color:#fff;
-    }
-  }
-}
-
-
 .right-pannel-default{
   .user_manage_userform{
     .customer_searchbox_wrap .has-error{
@@ -578,7 +498,7 @@
       box-shadow:none !important;
     }
     .apply-change-password-style{
-      width:220px;
+      width:230px;
       .ant-form-item{
         margin-bottom:5px;
       }
@@ -824,6 +744,9 @@
     }
   }
 
+}
+.app_user_manage_apply_list_error{
+  height: 80px;
 }
 .app_user_manage_apply_list_loading, .app_user_manage_apply_list_error, .app_user_manage_detail_loading, .app_user_manage_detail_error{
   text-align:center;

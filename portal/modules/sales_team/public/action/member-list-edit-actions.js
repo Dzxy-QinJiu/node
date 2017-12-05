@@ -52,7 +52,7 @@ function SalesTeamMemberAction() {
             }
             //刷新团队成员列表
             SalesTeamActions.setTeamMemberLoading(true);
-            SalesTeamActions.getSalesTeamMemberList(obj.groupId);
+            SalesTeamActions.getSalesTeamMemberList(obj.groupId || obj.group_id);
             //刷新添加时展示的不属于任何团队的成员列表
             SalesTeamActions.getMemberList();
         }

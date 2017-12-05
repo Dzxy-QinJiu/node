@@ -4,7 +4,7 @@
 //是否是线上环境  isProduction=true表示是线上环境
 var webpackMode = "dev", isProduction = false;
 //是否正式环境
-var isFormal = process.env.FORMALENV || false;
+var isFormal = process.env.FORMALENV || "false";
 
 if (process.argv.indexOf("p") >= 0
     ||
@@ -29,15 +29,22 @@ trace.init({
 });
 //获取hazelcast的地址
 function getHazelcastAddress() {
+    // 一开始用的鹰眼的caster地址和端口：172.19.105.138 : 5712
+    // 后oplate和ketao的caster地址和端口修改为：（用来给：蚁坊识微官网、公共应用（告警、sso等））
+    //  ["172.19.141.4,172.19.141.5,172.19.141.6"] : ["5762,5762,5762"]
     if (process.env.CASTER_IP && process.env.CASTER_PORT) {
-        return [{host: process.env.CASTER_IP, port: process.env.CASTER_PORT}];
+        var ipArray = process.env.CASTER_IP.split(","), portArray = process.env.CASTER_PORT.split(",");
+        return ipArray.map((ip, idx) => {
+            return {host: ip, port: portArray[idx]};
+        });
     }
-
     //默认为测试环境
     return [{host: "172.19.106.110", port: "5766"}];
 }
 //获取hazelcast的认证信息
 function getHazelcastGroupConfig() {
+    //一开始用的鹰眼的caster用户名和密码都是：caster-eageye-session
+    //后oplate和ketao的caster的用户名和密码改为：caster-eefung
     if (process.env.CASTER_USERNAME && process.env.CASTER_PASSWORD) {
         return {"name": process.env.CASTER_USERNAME, "password": process.env.CASTER_PASSWORD};
     }
@@ -123,7 +130,7 @@ var config = {
     webpackMode: webpackMode,
     //session配置
     session: {
-        casterMapName: "oplate_session",//hazelcast中的map名
+        casterMapName: process.env.CASTER_MAP_NAME || "oplate_session",//hazelcast中的map名
         maxAge: process.env.SESSIONTTL || 60 * 60 * 1000, //session默认一小时
         secret: "CV193WIC"   //加密session id使用的秘钥
     },
@@ -154,15 +161,15 @@ var config = {
     appId: "COM.ANTFACT.OPLATE.NOTIFY",//从协调服务中获取推送服务地址时所需的id
     loginParams: {
         realm: process.env.LOGIN_REALM || "3722pgujaa",//安全域Id
-        clientId: process.env.LOGIN_CLIENT_ID || "3722pgujaa3722cqj3c2aps5k6Wb57Uc1e0nPsXOSfB",//应用Id
-        clientSecret: process.env.LOGIN_CLIENT_SECRET || "3mEHKG6Bn505auh17tH3wyVU",//应用密钥
+        clientId: process.env.LOGIN_CLIENT_ID || "3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9",//应用Id
+        clientSecret: process.env.LOGIN_CLIENT_SECRET || "477qpz3uC5fZcaz0w1YloKWA",//应用密钥
         grantType: process.env.LOGIN_GRANT_TYPE || "client_credentials"//授权类型
     },
-    gateway: getGateway() || 'http://172.19.103.21:9090',//服务网关,测试环境：http://172.19.103.57:9090,公网'https://gtoplate.antfact.com',
+    gateway: getGateway() || 'http://gateway-ketao.antfact.com',//服务网关,测试环境：http://172.19.103.57:9090,公网'https://gtoplate.antfact.com',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || "oplate-web",//日志标签,用来区分是oplate的还是ketao的
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS,//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
+    pushServerAddress: process.env.PUSH_SERVER_ADDRESS||"http://notify-ketao.antfact.com:80",//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG //语言环境(优先)
 };
 

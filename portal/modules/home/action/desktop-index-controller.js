@@ -23,18 +23,18 @@ let moment = require("moment");
  */
 exports.home = function (req, res) {
     var user = auth.getUser(req);
-    // 用户管理界面（已有用户和审计日志，委内维拉项目隐藏一些项）
-    let hideUserManageItem = '';
+    // 委内维拉项目隐藏一些项的属性
+    let hideSomeItem = '';
     if (global.config.lang && global.config.lang == "es_VE") {
-        hideUserManageItem = 'true';
+        hideSomeItem = 'true';
     }
     res.render('home/tpl/desktop-index', {
         addShowingIoCode: global.config.formal,
         userid: user.user_id,
         username: user.user_name,
         siteID: global.config.siteID,
-        lang: '',
-        hideUserManageItem: hideUserManageItem,
+        lang: global.config.lang || '',
+        hideSomeItem: hideSomeItem,
         projectName: global.config.processTitle || "oplate"
     });
 };
@@ -47,13 +47,13 @@ exports.getUserData = function (req, res) {
     var user = extend(true, {}, userSession);
     DesktopIndexService.getUserLanguage(req, res, user.user_id)
         .on("success", function (data) {
-            let lang = "zh_CN";
+            let lang = global.config.lang || "zh_CN";
             if (data && data.language) {
                 lang = data.language;
             }
             setLang(lang);
         }).on("error", function (codeMessage) {
-        setLang("zh_CN");
+        setLang(global.config.lang || "zh_CN");
     });
     //设置语言环境
     function setLang(lang) {

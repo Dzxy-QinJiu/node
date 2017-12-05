@@ -2,7 +2,7 @@ var UserAuditLogAction = require("../action/user_audit_log_action");
 var ShareObj = require("../util/app-id-share-util");
 var DateSelectorUtils = require("../../../../components/datepicker/utils");
 var AppUserUtil = require("../util/app-user-util");
-
+import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
 // 用户审计日志的store
 function UserAuditLogStore(){
     this.resetState();
@@ -16,8 +16,6 @@ UserAuditLogStore.prototype.resetAuditLog = function () {
     this.appUserListResult = "loading";
     // 获取用户日志
     this.auditLogList = [];
-    // 记录input框中的输入的内容
-    this.searchName = '';
     // 当前数据最后一条数据的id
     this.sortId = '';
     // 获取用户审计日志出错的处理
@@ -32,8 +30,9 @@ UserAuditLogStore.prototype.resetAuditLog = function () {
     this.sortField = 'timestamp';
     //排序方向
     this.sortOrder = 'desc';
-    // 类型是否过滤，默认过滤心跳服务，this.typeFilter = ''显示全部日志
-    this.typeFilter = "心跳服务";
+    // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
+    this.typeFilter = ['心跳服务', '角色权限'];
+    this.selectLogType = ''; // 选择的日志类型
     // 下拉加载
     this.listenScrollBottom = true;
 },
@@ -48,6 +47,8 @@ UserAuditLogStore.prototype.resetState = function () {
     this.userAppArray = [];
     //选中用户的应用产品
     this.selectAppId = '';
+    // 记录input框中的输入的内容
+    this.searchName = '';
     this.resetAuditLog();
 },
 // 获取应用产品的信息
@@ -90,18 +91,16 @@ UserAuditLogStore.prototype.getAuditLogList = function (result) {
         this.appUserListResult = "";
         this.getUserLogErrorMsg = "";
         this.auditLogList = this.auditLogList.concat(result.data.user_logs);
+        if (!result.data.user_logs.length) {
+            this.listenScrollBottom = false;
+        }
+        else {
+            this.listenScrollBottom = true;
+        }
         var length = this.auditLogList.length;
         this.sortId = length > 0 ? this.auditLogList[length - 1].sort_id : '';
         this.total = result && result.data && result.data.total || 0;
     }
-};
-
-// 过滤心跳服务
-UserAuditLogStore.prototype.filterType = function(status){
-    this.typeFilter = status ? "心跳服务": '';
-    this.sortId = '';
-    this.firstLoading = true;
-    this.auditLogList = [];
 };
 
 // 记录搜索框中输入的内容
@@ -113,9 +112,10 @@ UserAuditLogStore.prototype.handleSearchEvent = function (searchName) {
 };
 
 // 根据时间选择日志
-UserAuditLogStore.prototype.changeSearchTime = function({startTime,endTime}) {
+UserAuditLogStore.prototype.changeSearchTime = function({startTime,endTime, range}) {
     this.startTime = startTime;
     this.endTime = endTime;
+    this.defaultRange = range;
     this.sortId = '';
     this.firstLoading = true;
     this.auditLogList = [];
@@ -149,6 +149,27 @@ UserAuditLogStore.prototype.handleFilterUserType = function () {
     this.sortId = '';
     this.auditLogList = [];
     this.firstLoading = true;
+};
+
+// 过滤日志类型
+UserAuditLogStore.prototype.handleFilterLogType = function () {
+    this.sortId = '';
+    this.auditLogList = [];
+    this.firstLoading = true;
+};
+
+// 设置过滤字段的值
+UserAuditLogStore.prototype.setTypeFilterValue = function (value) {
+    if (value == AUDIT_LOG) {
+        this.typeFilter = ['心跳服务', '角色权限'];
+        this.selectLogType = '';
+    } else if (value == ALL_LOG_INFO) {
+        this.typeFilter = '';
+        this.selectLogType = '';
+    } else {
+        this.typeFilter = '';
+        this.selectLogType = value;
+    }
 };
 
 module.exports = alt.createStore(UserAuditLogStore);

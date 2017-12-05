@@ -57,5 +57,26 @@ module.exports = {
         "privileges": [
             "GET_EXPIRE_USER_STATISTIC"
         ]
-    }]
+    }, {
+        "method": "get",
+        "path": "/rest/getWebsiteConfig",
+        "handler": "getWebsiteConfig",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "MEMBER_WEBSITE_CONFIG"
+        ]
+    }, {
+        "method": "post",
+        "path": "/rest/setWebsiteConfig",
+        "handler": "setWebsiteConfig",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "MEMBER_WEBSITE_CONFIG"
+        ]
+    },
+    ]
 };

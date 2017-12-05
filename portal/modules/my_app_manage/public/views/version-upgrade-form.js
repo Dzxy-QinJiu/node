@@ -1,8 +1,8 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 // 添加版本升级日志信息
 import {Form, Input, Button, Checkbox, message, Icon} from 'antd';
 const FormItem = Form.Item;
-var Validation = require("antd").Validation;
-var Validator = Validation.Validator;
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 var Markdown = require("../../../../components/markdown");
 var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
@@ -11,6 +11,8 @@ var Alert = require("antd").Alert;
 var inputStyle = require("bootstrap-filestyle");
 var versionAjax = require("../ajax/version-upgrade-log-ajax");
 import Trace from "LIB_DIR/trace";
+
+const UPLOAD_ERROR_TIPS = Intl.get("common.upload.error", "上传失败，请重试!");
 
 var VersionUpgradeForm = React.createClass({
     mixins:[FieldMixin],
@@ -40,48 +42,50 @@ var VersionUpgradeForm = React.createClass({
         this.setState({
             isLoading: true
         });
-        var _this = this;
         e.preventDefault();
         Trace.traceEvent(e,"保存添加版本升级记录");
         $("#uploadVersionUpgrade").attr("disabled", "disabled");
         var validation = this.refs.validation;
-        validation.validate(function(valid){
+        validation.validate((valid) => {
             if(!valid){
                 return;
             } else {
-                if(_this.state.formData.apk == ""){ // 只上传版本号和内容时
+                if(this.state.formData.apk == ""){ // 只上传版本号和内容时
                     var newContent = {
-                        application_id: _this.props.appId,
-                        version: _this.state.formData.version,
-                        content: _this.state.formData.content
+                        application_id: this.props.appId,
+                        version: this.state.formData.version,
+                        content: this.state.formData.content
                     };
-                    versionAjax.addAppVersion(newContent).then(function(){
-                        _this.setState({
+                    versionAjax.addAppVersion(newContent).then( () =>{
+                        this.setState({
                             isLoading: false
                         });
                         VersionUpgradeLogAction.hideForm();
-                        setTimeout( _this.getData(),2000);
-                    },function(errorMessage){
-                        _this.setState({
-                            errorMessage:errorMessage,
+                        setTimeout( this.getData(),2000);
+                    }, (errorMessage) => {
+                        this.setState({
+                            errorMessage:errorMessage || UPLOAD_ERROR_TIPS,
                             isLoading: false
                         });
                     });
                 }else {
                     var formData = new FormData($("#add-version-upgrade-form")[0]);
-                    formData.append("application_id",_this.props.appId);
-                    if(_this.state.formData.forced == false){
+                    formData.delete('forced');
+                    formData.append("application_id",this.props.appId);
+                    if(this.state.formData.forced == false){
                         formData.append("forced","false");
+                    } else {
+                        formData.append("forced","true");
                     }
-                    if(_this.state.isPreview) {
-                        formData.append('content', _this.state.formData.content);
+                    if(this.state.isPreview) {
+                        formData.append('content', this.state.formData.content);
                     }
-                    versionAjax.addUploadVersion(formData).then(function(result){
-                        VersionUpgradeLogAction.hideForm()
-                        setTimeout( _this.getData(),2000);
-                    },function(errorMessage){
-                        _this.setState({
-                            errorMessage:errorMessage,
+                    versionAjax.addUploadVersion(formData).then( (result) => {
+                        VersionUpgradeLogAction.hideForm();
+                        setTimeout( this.getData(),2000);
+                    }, (errorMessage) => {
+                        this.setState({
+                            errorMessage:errorMessage || UPLOAD_ERROR_TIPS,
                             isLoading: false
                         });
                     });
@@ -138,6 +142,14 @@ var VersionUpgradeForm = React.createClass({
     togglePreview : function(){
         this.setState({isPreview: !this.state.isPreview}, () => {
             autosize($('#add-version-upgrade-content'));
+        });
+    },
+
+    handleCheckBox(event) {
+        var formData = this.state.formData;
+        formData.forced = event.target.checked;
+        this.setState({
+            formData:formData
         });
     },
 
@@ -214,7 +226,7 @@ var VersionUpgradeForm = React.createClass({
                                     < Checkbox
                                         name="forced"
                                         value={this.state.formData.forced}
-                                        onChange={this.setField.bind(this, 'forced')}
+                                        onChange={this.handleCheckBox}
                                     />
                                         <span  style={{"fontSize":"14px","color":"#5d5d5d"}}>
                                             客户端强制升级

@@ -60,14 +60,14 @@ var TimeSeriesLinechart = React.createClass({
     getEchartOptions : function() {
         return {
             title : null,
-            animation : false,
             toolbox: {
                 show : false
             },
             calculable : false,
             tooltip : { // 图表中的提示数据信息
-                trigger: 'item',
+                trigger: 'axis',
                 formatter : (params) =>{
+                    var params = params[0];
                     var timeText = moment(params && params.data && params.data[0] || Date.now()).format(oplateConsts.DATE_FORMAT);
                     var count = params && params.data && params.data[1] || '0';
                     return this.props.tooltip(timeText , count);
@@ -137,12 +137,13 @@ var TimeSeriesLinechart = React.createClass({
                 {
                     name: '',
                     type: 'line',
-                    data:  this.getSeries(),
+                    symbolSize: 6,
                     itemStyle : {
                         normal : {
                             color : '#4d96d1'
                         }
-                    }
+                    },
+                    data:  this.getSeries()
                 }
             ]
         };

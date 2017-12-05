@@ -1,5 +1,10 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
+/**
+ * Oplate.hideSomeItem 用来判断西语的运行环境
+ * */
 import {RightPanelClose,RightPanelReturn} from "../../../../../components/rightPanel";
-import {Form,Validation,Icon,Alert} from 'antd';
+import {Form,Icon,Alert} from 'antd';
 import Spinner from '../../../../../components/spinner';
 import AlertTimer from '../../../../../components/alert-timer';
 import {Carousel,CarouselItem} from 'react-bootstrap';
@@ -24,7 +29,6 @@ import UserOverDraftField from '../../../../../components/user_manage_components
 import UserTwoFactorField from '../../../../../components/user_manage_components/user-two-factorfield';
 import UserMultiLoginField from '../../../../../components/user_manage_components/user-multilogin-radiofield';
 import insertStyle from '../../../../../components/insert-style';
-
 import UserData from '../../../../../public/sources/user-data';
 
 //动态添加的样式
@@ -111,7 +115,7 @@ const UserDetailAddApp = React.createClass({
                                      id="user.app.list.error.tip"
                                      defaultMessage={`应用列表获取失败，{retry}`}
                                      values={{
-                                     'retry':<a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="user.get.again.tip" defaultMessage="重新获取" /></a>}}
+                                     'retry':<a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
                                      />
                 </span>}/>
             );
@@ -143,12 +147,12 @@ const UserDetailAddApp = React.createClass({
         return (
             <OperationScrollBar className="basic-data-form-wrap">
                 <div className="basic-data-form">
-                    <div className="form-item">
+                    { !Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型" /></div>
                         <div className="form-item-content">
                             {this.renderUserTypeRadioBlock()}
                         </div>
-                    </div>
+                    </div> }
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
                         <div className="form-item-content">
@@ -161,18 +165,18 @@ const UserDetailAddApp = React.createClass({
                             {this.renderUserOverDraftBlock()}
                         </div>
                     </div>
-                    <div className="form-item">
+                    { !Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
                         <div className="form-item-content">
                             {this.renderUserTwoFactorBlock()}
                         </div>
-                    </div>
-                    <div className="form-item">
+                    </div> }
+                    { !Oplate.hideSomeItem &&  <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                         <div className="form-item-content">
                             {this.renderMultiLoginRadioBlock()}
                         </div>
-                    </div>
+                    </div> }
                 </div>
             </OperationScrollBar>
         );
@@ -257,7 +261,10 @@ const UserDetailAddApp = React.createClass({
         //formData
         const formData = this.state.formData;
         //用户类型
-        const user_type = formData.user_type;
+        let user_type = formData.user_type;
+        if (Oplate.hideSomeItem) {
+            user_type = '正式用户';
+        }
         //开通状态（开通）
         const status = '1';
         //选中的应用列表
@@ -318,8 +325,10 @@ const UserDetailAddApp = React.createClass({
             //面板向右滑
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //添加应用成功后，返回详情页面
-            UserDetailAddAppActions.resetState();
             AppUserPanelSwitchAction.resetState();
+            setTimeout(()=>{
+                UserDetailAddAppActions.resetState();
+            });
         });
     },
     //render函数

@@ -241,6 +241,16 @@ exports.getUserTypeStatistics = function (req, res) {
     });
 };
 
+// 获取新增用户类型
+exports.getAddedUserTypeStatistics  = function (req, res) {
+    let analysis_type = req.params.analysis_type;
+    OplateUserAnalysisService.getUserTypeStatistics(req, res, analysis_type, req.query).on("success",function(data) {
+        res.json(data);
+    }).on("error",function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 获取用户类型统计
 exports.getAppStatus = function (req, res) {
     let analysis_type = req.params.analysis_type;
@@ -254,8 +264,7 @@ exports.getAppStatus = function (req, res) {
 // 全部应用下，获取团队统计
 exports.getAppsTeam = function(req, res) {
     let analysis_type = req.params.analysis_type;
-    let team =  req.params.team;
-    OplateUserAnalysisService.getAppsTeam(req, res, analysis_type,team, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsTeam(req, res, analysis_type, 'team' , req.query).on("success",function(data) {
         res.json(data);
     }).on("error",function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -265,8 +274,7 @@ exports.getAppsTeam = function(req, res) {
 // 全部应用下，获取行业统计
 exports.getAppsIndustry = function(req, res) {
     let analysis_type = req.params.analysis_type;
-    let industry =  req.params.industry;
-    OplateUserAnalysisService.getAppsIndustry(req, res, analysis_type,industry, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsIndustry(req, res, analysis_type,'industry', req.query).on("success",function(data) {
         res.json(data);
     }).on("error",function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -277,10 +285,18 @@ exports.getAppsIndustry = function(req, res) {
 // 全部应用下，获取地域统计
 exports.getAppsZone = function(req, res) {
     let analysis_type = req.params.analysis_type;
-    let zone =  req.params.zone;
-    OplateUserAnalysisService.getAppsZone(req, res, analysis_type,zone, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsZone(req, res, analysis_type,'zone', req.query).on("success",function(data) {
         res.json(data);
     }).on("error",function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取应用下载的统计
+exports.getAppsDownloadStatistics = (req,res) => {
+    OplateUserAnalysisService.getAppsDownloadStatistics(req,res,req.query).on("success", (data) =>{
+        res.json(data);
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

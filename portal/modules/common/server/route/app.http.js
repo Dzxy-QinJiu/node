@@ -9,7 +9,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges":[]
-    },{
+    }, {
         //根据当前用户数据权限，获取“我的应用”列表
         "method": "get",
         "path": "/rest/global/my_applications",
@@ -18,5 +18,21 @@ module.exports = {
             "needLogin": true
         },
         "privileges":[]
+    }, {
+        //路径 获取新增用户的团队统计
+        "method": "get",
+        "path": "/rest/new/user/team",
+        "handler": "getAddedTeam",
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        //路径 获取当前应用的在线用户的地域数据
+        "method": "get",
+        "path": "/rest/user/online/zone",
+        "handler": "getOnLineUserZone",
+        "passport": {
+            "needLogin": true
+        }
     }]
 };

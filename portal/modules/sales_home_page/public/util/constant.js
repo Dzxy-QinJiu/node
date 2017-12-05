@@ -16,12 +16,17 @@ exports.SHOW_TYPE_CONSTANT = {
 
 //布局常量
 exports.LAYOUTS = {
-    TOP: 76 + 10,//76:topNav,10:paddingTop
+    TOP: 73 + 10,//73:topNav,10:paddingTop
+    LEFT_TOP:76 + 10 +58,//左侧过期用户列表布局上下需要减去的高度
     BOTTOM: 10,
     THEAD: 50,
     //统计图的padding
     CHART_PADDING: 10,
     TITLE_HEIGHT: 45//销售团队列表头部标题的高度
+};
+//更新页面的延迟时间
+exports.DELAY = {
+    TIMERANG: 800
 };
 //颜色值
 exports.COLOR_LIST = [

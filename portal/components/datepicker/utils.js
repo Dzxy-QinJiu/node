@@ -121,6 +121,38 @@ exports.getAllTime = function () {
         end_time: ''
     };
 };
+/**
+ * 根据给定开始结束时间获取自定义时间范围,
+ * 如果时间有效直接使用时间，如果无效则使用当前时间；
+ * 如果开始时间大于结束时间时，会将时间翻转
+ */
+exports.getCustomTime = function (start_time, end_time) {
+    let options = {
+        start_time: "",
+        end_time: ""
+    };
+    let start_time_moment = moment(start_time);
+    let end_time_moment = moment(end_time);
+    if (!start_time_moment.isValid()) {
+        start_time_moment = moment();
+    }
+    if (!end_time_moment.isValid()) {
+        end_time_moment = moment();
+    }
+    let temp = start_time_moment.clone();
+    //如果开始时间大于结束时间,互换开始和结束时间
+    if (start_time_moment.isAfter(end_time_moment)) {
+        start_time_moment = end_time_moment.format(MOMENT_DATE_FORMAT);
+        end_time_moment = temp.format(MOMENT_DATE_FORMAT);
+    } else {
+        start_time_moment = start_time_moment.format(MOMENT_DATE_FORMAT);
+        end_time_moment = end_time_moment.format(MOMENT_DATE_FORMAT);
+    }
+    return {
+        start_time: start_time_moment,
+        end_time: end_time_moment
+    };
+}
 
 //获取最近时间
 exports.getLastTime = function (word) {
@@ -308,4 +340,36 @@ exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
         dateObj.end_time = end_time;
     }
     return dateObj;
-}
+};
+
+// 近一周的时间
+exports.getNearlyWeekTime = function() {
+    return {
+        start_time: moment().add(-7, "days"),
+        end_time: moment().format(MOMENT_DATE_FORMAT)
+    };
+};
+
+// 近一月的时间
+exports.getNearlyMonthTime = function() {
+    return {
+        start_time: moment().subtract(1, 'months').format(MOMENT_DATE_FORMAT),
+        end_time: moment().format(MOMENT_DATE_FORMAT)
+    };
+};
+
+// 近一季度的时间
+exports.getNearlyQuarterTime = function() {
+    return {
+        start_time: moment().subtract(1, 'quarter').format(MOMENT_DATE_FORMAT),
+        end_time: moment().format(MOMENT_DATE_FORMAT)
+    };
+};
+
+// 近一年的时间
+exports.getNearlyYearTime = function() {
+    return {
+        start_time: moment().subtract(1, 'year').format(MOMENT_DATE_FORMAT),
+        end_time: moment().format(MOMENT_DATE_FORMAT)
+    };
+};

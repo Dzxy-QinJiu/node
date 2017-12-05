@@ -51,15 +51,11 @@
     padding: 96px 20px 20px 20px;
 
     .repeat-customer-table-thead {
-      height: 50px;
-      border: 1px solid #eef0ef;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-      overflow: hidden;
-      .ant-table-empty {
-        height: 50px;
-        margin-bottom: 0;
-      }
+      padding-left: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eef0ef;
+      font-size: 14px;
+      font-weight: 700;
       //去掉头部的全选按钮
       .ant-table-thead {
         .ant-checkbox {
@@ -95,10 +91,67 @@
       }
 
     }
-    //隐藏数据列表中的table-header
+    .repeat-customer-col {
+      padding-right: 10px;
+    }
+    //重复客户列表的样式设置
     .repeat-customer-table-tbody {
-      .ant-table-header, .ant-table-thead {
-        display: none;
+      .alert-tip-wrap {
+        margin-top: 20px;
+        text-align: center;
+        .ant-alert {
+          display: inline-block;
+        }
+      }
+      .customer-repeat-row {
+        font-size: 14px;
+        padding: 15px 0 5px 10px;
+        border-bottom: 1px solid #eef0ef;
+        color: #75797c;
+        &:hover {
+          background-color: #ebf6fd;
+        }
+        .customer-row {
+          padding-bottom: 10px;
+          .repeat-customer-col {
+            line-height: 18px;
+          }
+          .customer-name-click {
+            cursor: pointer;
+            &:hover {
+              color: #4d96d1;
+            }
+          }
+          .customer-name-active {
+            color: #4d96d1;
+          }
+          //删除按钮
+          .repeat-del-btn {
+            border: 0;
+            padding: 0;
+            width: 25px;
+            height: 20px;
+            line-height: 20px;
+            margin-right: 10px;
+            background-color: transparent;
+            font-size: 17px;
+            color: #a9a9a9;
+            cursor: pointer;
+            float: right;
+            &:hover {
+              color: #4d96d1;
+            }
+          }
+        }
+        //合并
+        .repeat-merge-btn {
+          font-size: 15px;
+          color: #a9a9a9;
+          cursor: pointer;
+          &:hover {
+            color: #4d96d1;
+          }
+        }
       }
     }
     //过滤框
@@ -117,7 +170,7 @@
   }
   .ant-table tbody .current-row:hover,
   .ant-table tbody .current-row {
-    background: #DFEAF3;
+    background: #DFEAF3 !important;
   }
   .total {
     display: block;

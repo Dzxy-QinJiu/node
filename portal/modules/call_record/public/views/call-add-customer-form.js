@@ -1,4 +1,6 @@
-import {Icon,Form,Input,Select,message,Validation}from "antd";
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
+import {Icon,Form,Input,Select,message}from "antd";
 var AreaSelection = require("../../../../components/AreaSelection");
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanel = rightPanelUtil.RightPanel;
@@ -7,12 +9,11 @@ var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var FormItem = Form.Item;
 var Option = Select.Option;
-var Validator = Validation.Validator;
 var CrmAction = require("../../../crm/public/action/crm-actions");
-var ValidateUtil = require("../../../crm/public/utils/validate-util");
+import {nameRegex} from "PUB_DIR/sources/utils/consts";
 var ContactUtil = require("../../../crm/public/utils/contact-util");
 var Spinner = require('../../../../components/spinner');
-var crmUtil = require("../../../crm/public/utils/crm-util");
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from "../../../common/route";
 import ajax from "../../../common/ajax";
 const userData = require("../../../../public/sources/user-data");
@@ -102,7 +103,7 @@ var CallAddCustomerForm = React.createClass({
                 validation.reset();
                 let formData = _this.state.formData;
                 //去除表单数据中值为空的项
-                crmUtil.removeEmptyItem(formData);
+                commonMethodUtil.removeEmptyItem(formData);
                 CrmAction.addCustomer(formData, function (result) {
                     _this.state.isLoading = false;
                     if (result.code == 0) {
@@ -151,7 +152,7 @@ var CallAddCustomerForm = React.createClass({
     checkOnlyCustomerName: function () {
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
-        if (customerName && ValidateUtil.nameRegex.test(customerName)) {
+        if (customerName && nameRegex.test(customerName)) {
             CrmAction.checkOnlyCustomerName(customerName, (data)=> {
                 if (_.isString(data)) {
                     //唯一性验证出错了
@@ -224,7 +225,7 @@ var CallAddCustomerForm = React.createClass({
     checkCustomerName: function (rule, value, callback) {
         value = $.trim(value);
         if (value) {
-            if (ValidateUtil.nameRegex.test(value)) {
+            if (nameRegex.test(value)) {
                 callback();
             } else {
                 this.setState({customerNameExist: false, checkNameError: false});
@@ -289,7 +290,6 @@ var CallAddCustomerForm = React.createClass({
                     <Form horizontal className="crm-add-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                className="form-item-label"
                                 label={Intl.get("crm.4", "客户名称")}
                                 id="crm-name"
                                 labelCol={{span: 6}}
@@ -356,7 +356,7 @@ var CallAddCustomerForm = React.createClass({
                                 validateStatus={this.renderValidateStyle('contacts0_name')}
                                 help={status.contacts0_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                             >
-                                <Validator rules={[{required: false,min:1, message: Intl.get("crm.90", "请输入姓名")}]}>
+                                <Validator rules={[{required: false,min:1,max:50, message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}]}>
                                     <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")} value={formData.contacts0_name}
                                            onChange={this.setField.bind(this, 'contacts0_name')}/>
                                 </Validator>

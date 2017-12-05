@@ -88,23 +88,6 @@ exports.editUser = function (user) {
     return Deferred.promise();
 };
 
-//修改用户的坐席号
-exports.editUserPhoneOrder = function (phoneOrder) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user/phone_order',
-        dataType: 'json',
-        type: 'put',
-        data: phoneOrder,
-        success: function (data) {
-            Deferred.resolve(data);
-        }, error: function (errorInfo) {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 //修改成员的所属团队
 exports.updateUserTeam = function (user) {
     var Deferred = $.Deferred();
@@ -231,38 +214,3 @@ exports.checkOnlyEmail = function (email) {
     });
     return Deferred.promise();
 };
-
-//验证坐席号唯一性
-exports.checkOnlyPhoneOrder = function (phoneOrder) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/phoneorder/check',
-        dataType: 'json',
-        type: 'get',
-        data: phoneOrder,
-        success: function (result) {
-            Deferred.resolve(result);
-        }, error: function (errorInfo) {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
-//根据用户的id获取坐席号
-exports.getPhoneOrderById = function (memberId) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/member/phoneorder',
-        dataType: 'json',
-        type: 'get',
-        data: memberId,
-        success: function (result) {
-            Deferred.resolve(result);
-        }, error: function (errorInfo) {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-}
-

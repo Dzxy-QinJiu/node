@@ -5,9 +5,11 @@
 import LineChart from "../chart/line";
 import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
+import { AntcBarPieChart } from "antc";
 import Retention from "../chart/retention";
 import Funnel from  "../chart/funnel";
 import Box from "../chart/box";
+import SigningStatistics from "../chart/signing-statistics";
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 const Emitters = require("../../public/sources/utils/emitters");
@@ -24,8 +26,10 @@ const CHART_TYPE_MAP = {
     bar: BarChart,
     line: LineChart,
     pie: PieChart,
+    bar_pie: AntcBarPieChart,
     retention: Retention,
-    funnel: Funnel
+    funnel: Funnel,
+    signingStatistics: SigningStatistics
 };
 
 const Analysis = React.createClass({
@@ -111,7 +115,7 @@ const Analysis = React.createClass({
 
         const handler = "get" + props.target + "AnalysisData";
 
-        const route = _.find(routeList, route => route.handler === handler);
+        const route = _.find(routeList, item => item.handler === handler);
 
         let startTime = props.startTime || this.state.starttime;
         let endTime = props.endTime || this.state.endtime;
@@ -120,6 +124,7 @@ const Analysis = React.createClass({
         if (minStartTime && !startTime) {
             startTime = minStartTime
         }
+
         const arg = {
             url: route.path,
             params: {

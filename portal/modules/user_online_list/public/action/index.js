@@ -1,6 +1,9 @@
 import onlineUserListAjax from "../ajax";
 import Utils from "../utils";
 function OnlineUserIndexAction() {
+    this.generateActions(
+      'setSelectedAppId'
+    );
     //获取应用列表
     this.getAppList = function () {
         const _this = this;

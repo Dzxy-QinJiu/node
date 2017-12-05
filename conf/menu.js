@@ -22,6 +22,15 @@ class LeftMenuClass {
                 ],
                 //有这个权限，才显示入口图标
                 showPrivileges: ["REALM_MANAGE_LIST_REALMS"]
+            }, {
+                id: "APP_OVERVIEW", //唯一标识
+                name: "应用概览",
+                routePath: "app_overview",
+                privileges: [
+                    "GET_APPLICATION_RECORD"//查
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ["GET_APPLICATION_RECORD"]
             },
             {
                 id: "APP_MANAGE", //唯一标识
@@ -79,6 +88,18 @@ class LeftMenuClass {
                 showPrivileges: ["CRM_LIST_CUSTOMERS"]
             },
             {
+                id: "ClUE_CUSTOMER",
+                name: backendIntl.get("sales.lead.customer","线索客户"),
+                routePath: "clue_customer",
+                privileges: [
+                    "CLUECUSTOMER_VIEW",
+                    "CUSTOMER_ACCESS_CHANNEL_GET",//获取接入渠道
+                    "CUSTOMER_CLUE_SOURCE_GET"//获取线索来源
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ["CLUECUSTOMER_VIEW"]
+            },
+            {
                 id: "CALL_RECORD",
                 name: backendIntl.get("menu.call", "通话记录"),
                 routePath: "call_record",
@@ -119,8 +140,7 @@ class LeftMenuClass {
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ["USER_ORGANIZATION_LIST"]
-                },
-                    {
+                }, {
                         id: "USER_AUDIT_LOG",  // 用户审计日志的唯一标识
                         name: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
                         displayName: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
@@ -130,7 +150,18 @@ class LeftMenuClass {
                         ],
                         //有这个权限，才显示入口图标
                         showPrivileges: ["USER_AUDIT_LOG_LIST"]
-                    }]
+                    }, {
+                            id: "POSITION_MANAGE",  // 座席号管理的唯一标识
+                            name: backendIntl.get("menu.appuser.position", "座席号管理"),
+                            displayName: backendIntl.get("menu.appuser.position", "座席号管理"),
+                            routePath: "user/position",
+                            privileges: [
+                                "MEMBER_PHONE_ORDER_MANAGE"  // （实际权限）座席号添加、修改、删除、绑定，显示列表
+                            ],
+                            //有这个权限，才显示入口图标
+                            showPrivileges: ["MEMBER_PHONE_ORDER_MANAGE"]
+                        }
+                ]
             },
             {
                 id: "BACKGROUND_MANAGEMENT",//唯一标识
@@ -418,15 +449,6 @@ class LeftMenuClass {
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ["NOTIFICATION_CUSTOMER_LIST"]
-                }, {
-                    id: "NOTIFICATION_APPLYFOR",
-                    name: backendIntl.get("menu.apply.notification", "申请消息"),
-                    routePath: "notification/applyfor",
-                    privileges: [
-                        "NOTIFICATION_APPLYFOR_LIST"//查看通知-申请消息
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ["NOTIFICATION_APPLYFOR_LIST"]
                 }, {
                     id: "NOTIFICATION_SYSTEM",
                     name: backendIntl.get("menu.system.notification", "系统消息"),

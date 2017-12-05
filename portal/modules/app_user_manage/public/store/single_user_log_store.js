@@ -1,6 +1,7 @@
 var SingleUserLogAction = require('../action/single_user_log_action');
 var ShareObj = require("../util/app-id-share-util");
-var _ = require('underscore');
+const datePickerUtils= require("CMP_DIR/datepicker/utils");
+import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
 
 function SingleUserLogStore(){
     //初始化state数据
@@ -9,36 +10,31 @@ function SingleUserLogStore(){
     this.bindActions(SingleUserLogAction);
 }
 
+// 操作日志相关的初始变量
+SingleUserLogStore.prototype.logInitialState = function () {
+    this.curPage = 1;
+    this.pageSize = 10;
+    this.total = 0;
+    this.auditLogList = [];
+    this.logListLoading = "loading";
+    this.listenScrollBottom = true;
+    // 获取单个用户日志失败的错误提示
+    this.getUserLogErrorMsg = '';
+};
+
 SingleUserLogStore.prototype.resetState = function() {
     this.isLoading = true;
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
-    this.auditLogList = [];
     this.searchName='';
-    this.curPage = 1;
-    this.pageSize = 10;
-    this.total = 0;
-    this.appUserListResult = "loading";
-    this.listenScrollBottom = true;
-    // 类型是否过滤，默认过滤心跳服务，this.typeFilter = ''显示全部日志
-    this.typeFilter = "心跳服务"
-    //开始时间
-    this.startTime = '';
-    //结束时间
-    this.endTime = '';
-    // 获取单个用户日志失败的错误提示
-    this.getUserLogErrorMsg = '';
-    // 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
-    this.loginInfo = {
-        isLoading : true,  //是否加载中
-        duration: 0 ,  // 时长
-        count: 0,  // 次数
-        first: -1, // 首次登录时间
-        last: -1, // 最后一次登录时间
-        loginDuration: [], // 登录时长统计
-        loginCount: [], // 登录频次统计
-        errorMsg : ""   //错误信息
-    };
+    this.defaultRange = 'week';
+    // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
+    this.typeFilter = ['心跳服务', '角色权限'];
+    this.selectLogType = ''; // 选择的日志类型
+    var timeObj = datePickerUtils.getThisWeekTime();  // 本周
+    this.startTime = datePickerUtils.getMilliseconds(timeObj.start_time);  //开始时间
+    this.endTime = datePickerUtils.getMilliseconds(timeObj.end_time, true); //结束时间
+    this.logInitialState();
 };
 
 //恢复默认状态
@@ -46,84 +42,37 @@ SingleUserLogStore.prototype.dismiss = function() {
     this.resetState();
 };
 
-SingleUserLogStore.prototype.getLogsByTime = function() {
-    this.curPage = 1;
-    this.pageSize = 10;
-    this.total = 0;
-    this.isLoading = true;
-    this.auditLogList = [];
-    this.appUserListResult = "loading";
-    this.listenScrollBottom = true;
-    // 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
-    this.loginInfo = {
-        isLoading : true,  //是否加载中
-        duration: 0 ,  // 时长
-        count: 0,  // 次数
-        first: -1, // 首次登录时间
-        last: -1, // 最后一次登录时间
-        loginDuration: [], // 登录时长统计
-        loginCount: [], // 登录频次统计
-        errorMsg : ""   //错误信息
-    };
-};
-
-SingleUserLogStore.prototype.getLogsByApp = function() {
-    this.curPage = 1;
-    this.pageSize = 10;
-    this.total = 0;
-    this.auditLogList = [];
-    this.appUserListResult = "loading";
-    this.listenScrollBottom = true;
-    // 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
-    this.loginInfo = {
-        isLoading : true,  //是否加载中
-        duration: 0 ,  // 时长
-        count: 0,  // 次数
-        first: -1, // 首次登录时间
-        last: -1, // 最后一次登录时间
-        loginDuration: [], // 登录时长统计
-        loginCount: [], // 登录频次统计
-        errorMsg : ""   //错误信息
-    };
-};
-
 SingleUserLogStore.prototype.getLogsBySearch = function() {
-    this.curPage = 1;
-    this.pageSize = 10;
-    this.total = 0;
-    this.auditLogList = [];
-    this.appUserListResult = "loading";
-    this.listenScrollBottom = true;
+    this.logInitialState();
+};
+
+SingleUserLogStore.prototype.resetLogState = function() {
+    this.logInitialState();
 };
 
 SingleUserLogStore.prototype.changUserIdKeepSearch = function() {
     this.isLoading = true;
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
-    this.auditLogList = [];
-    this.curPage = 1;
-    this.pageSize = 10;
-    this.total = 0;
-    this.appUserListResult = "loading";
-    this.listenScrollBottom = true;
+    this.logInitialState();
+
 };
 
 // 获取单个用户审计日志的信息
 SingleUserLogStore.prototype.getSingleAuditLogList = function (result) {
     this.isLoading = false;
     if (result.loading){
-        this.appUserListResult = "loading";
+        this.logListLoading = "loading";
     } else if (result.error){
-        this.appUserListResult = "";
+        this.logListLoading = "";
         this.getUserLogErrorMsg = result.errorMsg;
     } else {
         this.getUserLogErrorMsg = "";
-        this.appUserListResult = "";
+        this.logListLoading = "";
         this.auditLogList = this.auditLogList.concat(result.data.user_logs);
         this.curPage++;
         this.total = result.data.total;
     }
-
 };
 
 //获取用户应用列表
@@ -143,80 +92,24 @@ SingleUserLogStore.prototype.handleSearchEvent = function (searchName) {
 };
 
 // 根据时间选择日志
-SingleUserLogStore.prototype.changeSearchTime = function({startTime,endTime}) {
+SingleUserLogStore.prototype.changeSearchTime = function({startTime,endTime,range}) {
     this.startTime = startTime;
     this.endTime = endTime;
+    this.defaultRange = range;
 };
 
-// 用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录频次统计）
-SingleUserLogStore.prototype.getUserLoginInfo = function(result){
-    this.loginInfo.isLoading = result.loading;
-    if(result.loading){
-        this.loginInfo.errorMsg = '';
-    } else {
-        if (result.error) {
-            this.loginInfo.errorMsg = result.errorMsg;
-        } else {
-            if(_.isArray(result.data)){
-                let loginList = result.data;
-                let loginInfo = _.extend({},loginList[0], loginList[1], loginList[2], loginList[3], loginList[4], loginList[5]);
-                // 时长
-                this.loginInfo.duration = loginInfo.duration.login_long;
-                // 次数
-                this.loginInfo.count = loginInfo.count.logins || 0;
-                // 首次登录
-                if (loginInfo.first != -1) {
-                    this.loginInfo.first = moment(loginInfo.first).format(oplateConsts.DATE_TIME_FORMAT);
-                }
-                // 最后一次登录
-                if (loginInfo.last != -1) {
-                    this.loginInfo.last = moment(loginInfo.last).format(oplateConsts.DATE_TIME_FORMAT);
-                }
-                // 登录时长统计
-                let loginDuration = loginInfo.loginDuration;
-                let durationArray = [];
-                if (_.isArray(loginDuration) && loginDuration.length > 0) {
-                    _.each(loginDuration, (data) => {
-                        let seconds = Math.floor(data.loginLong / 1000);
-                        durationArray.push({date: data.timestamp, sum: seconds});
-                    });
-                }
-                this.loginInfo.loginDuration = durationArray;
-
-                let lastLoginTime = '';
-                if (durationArray.length) {
-                    let lastLoginObj = durationArray[durationArray.length - 1];
-                    if(lastLoginObj && lastLoginObj.date) {
-                        lastLoginTime = lastLoginObj.date;
-                    }
-                }
-                // 登录次数统计
-                let loginCount = loginInfo.loginCount;
-                let frequencyArray = [];
-                if (_.isArray(loginCount) && loginCount.length > 0) {
-                    _.each(loginCount, (data) => {
-                        if (lastLoginTime) {
-                            if (lastLoginTime >= data.timestamp) {
-                                frequencyArray.push({date: data.timestamp, sum:  data.count});
-                            }
-                        } else {
-                            if (this.loginInfo.count) { // 有登录次数的情况
-                                frequencyArray.push({date: data.timestamp, sum:  data.count});
-                            }
-                        }
-                    });
-                }
-                this.loginInfo.loginCount = frequencyArray;
-            }
-        }
+// 设置过滤字段的值
+SingleUserLogStore.prototype.setTypeFilterValue = function (value) {
+    if (value == AUDIT_LOG) {
+        this.typeFilter = ['心跳服务', '角色权限'];
+        this.selectLogType = '';
+    }  else if (value == ALL_LOG_INFO) {
+        this.typeFilter = '';
+        this.selectLogType = '';
+    }else {
+        this.typeFilter = '';
+        this.selectLogType = value;
     }
-};
-
-// 过滤心跳服务
-SingleUserLogStore.prototype.filterType = function(status){
-    this.typeFilter = status ? "心跳服务": '';
-    this.curPage = 1;
-    this.auditLogList = [];
 };
 
 //使用alt导出store

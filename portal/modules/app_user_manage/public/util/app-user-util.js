@@ -1,6 +1,8 @@
 var EventEmitter = require("events");
 var CryptoJS = require("crypto-js");
+var classNames = require("classnames");
 var UserData = require('../../../../public/sources/user-data').getUserData();
+import { ALL_LOG_INFO } from "PUB_DIR/sources/utils/consts";
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
 //缓存在localStorage中的客户对应的用户列表每页多少条的key
@@ -8,12 +10,11 @@ exports.localStorageCustomerViewPageSizeKey = 'app_user_manage.customer_view.pag
 //缓存在localStorage中的用户审计日志列表每页多少条的key
 exports.localStorageLogViewPageSizeKey = 'app_user_manage.log_view.page_size';
 // 审计日志和在线用户选择应用时，将应用保存到localStorage中，将当前用户user_id作为key
-exports.saveSelectAppKeyUserId = JSON.stringify(UserData.user_id);
-
+exports.saveSelectAppKeyUserId = JSON.stringify(UserData ? UserData.user_id : "");
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
 exports.getLocalStorageObj = function (property ,selectApp){
     let localObj = {};
-    let localValue = localStorage.getItem(JSON.stringify(UserData.user_id));
+    let localValue = localStorage.getItem(JSON.stringify(UserData ? UserData.user_id : ""));
     if(localValue){
         localObj =  JSON.parse(localValue);
     }
@@ -74,11 +75,8 @@ exports.LAYOUT_CONSTANTS = {
 };
 // 单个用户的日志面板固定高度常量
 exports.USER_LOG_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 205,
+    TOP_DELTA: 135,
     BOTTOM_DELTA: 26,
-    CHART_HEIGHT: 232,
-    LOG_MARGIN_BOTTOM: 50,
-    LOG_TOTAL_BOTTOM: 20
 };
 //暴露一个emitter，做自定义事件
 exports.emitter = new EventEmitter();
@@ -113,10 +111,11 @@ exports.USER_TYPE_VALUE_MAP = USER_TYPE_VALUE_MAP;
 exports.USER_TYPE_TEXT_MAP = USER_TYPE_TEXT_MAP;
 
 //根据数据库中保存的值，获取用户类型的文本
-exports.getUserTypeText = function(user_type_value) {
+function getUserTypeText(user_type_value){
     var KEY = _.findKey(USER_TYPE_VALUE_MAP , (value) => value === user_type_value);
     return KEY && USER_TYPE_TEXT_MAP[KEY] || '';
-};
+}
+exports.getUserTypeText = getUserTypeText;
 
 //批量操作权限
 var BATCH_PRIVILEGE = {
@@ -179,3 +178,115 @@ function formatTaskParams(batch_data , app_id , extranInfo) {
 
 //整合task保存的参数，有一些额外信息，是不需要发送到服务端的
 exports.formatTaskParams = formatTaskParams;
+
+//用户表格中，获取应用名称的列表
+exports.getAppNameList = function(apps,rowData) {
+    let appList = [];
+    if(_.isArray(apps)){
+        let cls = classNames({
+            app_ellipsis : apps.length > 1
+        });
+        appList = apps.map(function(app, i) {
+            return (
+                <li key={i} className={cls} title={app.app_name}>
+                    {app.app_name}
+                </li>
+            );
+        });
+    }
+    return (
+        <ul className="appList">
+            {appList}
+        </ul>
+    );
+};
+
+//用户表格中，获取用户类型的列表
+exports.getAccountTypeList = function(apps,rowData) {
+    let appList = [];
+    if(_.isArray(apps)){
+        let cls = classNames({
+            app_ellipsis : apps.length > 1
+        });
+        appList = apps.map(function(app, i) {
+            var text = getUserTypeText(app.user_type);
+            return (
+                <li key={i} className={cls} title={text}>
+                    {text ? text : <span>&nbsp;</span>}
+                </li>
+            );
+        });
+    }
+    return (
+        <ul className="appList">
+            {appList}
+        </ul>
+    );
+};
+
+//用户表格中，获取时间的列表
+exports.getTimeList = function(field,rowData) {
+    let apps = rowData ? rowData.apps : [];
+    let appList = [];
+    if(_.isArray(apps)){
+        let cls = classNames({
+            app_ellipsis : apps.length > 1
+        });
+        appList = apps.map(function(app, i) {
+            let time = moment(new Date(+app[field])).format(oplateConsts.DATE_FORMAT);
+            if(time === 'Invalid date') {
+                time = Intl.get("common.unknown", "未知");
+            }
+            if(app[field] == 0) {
+                time = Intl.get("user.nothing", "无");
+            }
+            return (
+                <li key={i} className={cls} title={time}>
+                    {time}
+                </li>
+            );
+        });
+    }
+    return (
+        <ul className="appList">
+            {appList}
+        </ul>
+    );
+};
+//用户表格中，获取用户状态的列表
+exports.getAppStatusList = function(apps,rowData) {
+    let appList = [];
+    if(_.isArray(apps)){
+        let cls = classNames({
+            app_ellipsis : apps.length > 1
+        });
+        appList = apps.map(function(app, i) {
+            var text = app.is_disabled === true || app.is_disabled === 'true' ? Intl.get("common.stop", "停用"): (app.is_disabled === false || app.is_disabled === 'false'? Intl.get("common.enabled", "启用"): '');
+            var disabled = (text === Intl.get("common.stop", "停用") ? 'is_disabled':'');
+            return (
+                <li key={i} className={cls +' '+ disabled} title={text}>
+                    {text ? text : <span>&nbsp;</span>}
+                </li>
+            );
+        });
+    }
+    return (
+        <ul className="appList">
+            {appList}
+        </ul>
+    );
+};
+
+// 审计日志和单个用户审计日志中，过滤心跳服务和角色权限多选框中全部和其他选项的处理
+exports.handleFilterLogOptions = (option) => {
+    const optionLength = option.length;
+    const firstItem = option[0];
+    const lastItem = option[optionLength - 1];
+
+    if (optionLength === 0 || lastItem === ALL_LOG_INFO) {
+        option = ALL_LOG_INFO;
+    } else if (firstItem === ALL_LOG_INFO) {
+        option.shift();
+    }
+    return option;
+};

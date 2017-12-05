@@ -1,16 +1,16 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("../scss/index-es_VE.scss");
 } else if (language.lan() == "zh") {
     require("../scss/index-zh_CN.scss");
 }
-var Validation = require("antd").Validation;
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Select = require("antd").Select;
 var Icon = require("antd").Icon;
 var Option = Select.Option;
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -25,8 +25,6 @@ var UserFormStore = require("../store/user-form-store");
 var UserFormAction = require("../action/user-form-actions");
 var AlertTimer = require("../../../../components/alert-timer");
 var classNames = require("classnames");
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-var User = require("../util/user");
 import Trace from "LIB_DIR/trace";
 function noop() {
 }
@@ -44,8 +42,7 @@ var UserForm = React.createClass({
                     phone: "",
                     email: "",
                     role: [],
-                    team: "",
-                    phoneOrder:""
+                    team: ""
                 }
             };
         },
@@ -59,8 +56,7 @@ var UserForm = React.createClass({
                     phone: {},
                     email: {},
                     role: {},
-                    team: {},
-                    phoneOrder: {}
+                    team: {}
                 },
                 formData: {
                     userName: "",
@@ -69,8 +65,7 @@ var UserForm = React.createClass({
                     phone: "",
                     email: "",
                     role: [],
-                    team: "",
-                    phoneOrder:""
+                    team: ""
                 },
                 phoneEmailCheck: true//电话邮箱必填一项的验证
 
@@ -123,7 +118,6 @@ var UserForm = React.createClass({
             UserFormAction.resetUserNameFlags();
             UserFormAction.resetPhoneFlags();
             UserFormAction.resetEmailFlags();
-            UserFormAction.resetPhoneOrderFlags();
         },
         handleCancel: function (e) {
             e.preventDefault();
@@ -137,9 +131,12 @@ var UserForm = React.createClass({
             //必填一项的验证
             this.checkPhoneEmail();
             validation.validate(function (valid) {
+                if (_this.state.userNameExist || _this.state.phoneExist || _this.state.emailExist || _this.state.userNameError || _this.state.phoneError || _this.state.emailError) {
+                    valid = false;
+                }
                 if (!valid) {
                     return;
-                } else if (!_this.state.userNameExist && !_this.state.phoneExist && !_this.state.emailExist && !_this.state.phoneOrderExist && !_this.state.userNameError && !_this.state.phoneError && !_this.state.emailError && !_this.state.phoneOrderError) {
+                } else {
                     //所有者各项唯一性验证均不存在且没有出错再添加
                     var user = _.extend({}, _this.state.formData);
                     if (user.phone) {
@@ -252,17 +249,6 @@ var UserForm = React.createClass({
             var nickname = this.state.formData.name;
             Trace.traceEvent(e,"填写姓名");
         },
-        //坐席号唯一性验证
-        checkOnlyPhoneOrder: function (e) {
-            var phoneOrder = $.trim(this.state.formData.phoneOrder);
-            if (phoneOrder) {
-                Trace.traceEvent(e,"填写坐席号");
-                //坐席号唯一性验证
-                UserFormAction.checkOnlyPhoneOrder({phone_order:phoneOrder});
-            } else {
-                UserFormAction.resetPhoneOrderFlags();
-            }
-        },
 
         //邮箱唯一性验证
         checkOnlyEmail: function (e) {
@@ -324,19 +310,7 @@ var UserForm = React.createClass({
                 return "";
             }
         },
-
-        //坐席号唯一性验证的展示
-        renderPhoneOrderMsg: function () {
-            if (this.state.phoneOrderExist) {
-                return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="errorcode.138"
-                                                                                       defaultMessage="座席号已存在！"/></div>)
-            } else if (this.state.phoneOrderError) {
-                return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.phone.order.is.unique"
-                                                                                       defaultMessage="坐席号唯一性校验出错！"/></div>)
-            } else {
-                return "";
-            }
-        },
+    
         //邮箱唯一性验证的展示
         renderEmailMsg: function () {
             if (this.state.emailExist || this.state.userNameExist) {
@@ -493,27 +467,6 @@ var UserForm = React.createClass({
                                         </Validator>
                                     </FormItem>
                                     {this.renderEmailMsg()}
-                                    {hasPrivilege("GET_MEMBER_PHONE_ORDER")?(
-                                    <div>
-                                        <FormItem
-                                            label={Intl.get("user.manage.phone.order", "坐席号")}
-                                            id="phoneOrder"
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 18}}
-                                            validateStatus={this.renderValidateStyle('phoneOrder')}
-                                            help={status.phoneOrder.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phoneOrder.errors && status.phoneOrder.errors.join(','))}
-                                        >
-                                            <Validator rules={[{validator:User.checkPhoneOrder}]}>
-                                                <Input name="phoneOrder" id="phoneOrder" value={formData.phoneOrder}
-                                                       className={this.state.phoneOrderExist || this.state.phoneOrderError?"input-red-border":""}
-                                                       onChange={this.setField.bind(this, 'phoneOrder')}
-                                                       onBlur={(e)=>{this.checkOnlyPhoneOrder(e)}}
-                                                />
-                                            </Validator>
-                                        </FormItem>
-                                        {this.renderPhoneOrderMsg()}
-                                    </div>
-                                    ):null}
                                     <FormItem
                                         label={Intl.get("common.role", "角色")}
                                         id="role"
@@ -543,7 +496,8 @@ var UserForm = React.createClass({
                                             </Validator>
                                         )}
                                     </FormItem>
-                                    {this.props.formType == "add" ? (<FormItem
+                                    {/** v8环境下，不显示所属团队 */}
+                                    {this.props.formType == "add" ? ( !Oplate.hideSomeItem && <FormItem
                                         label={Intl.get("common.belong.team", "所属团队")}
                                         id="team"
                                         labelCol={{span: 4}}

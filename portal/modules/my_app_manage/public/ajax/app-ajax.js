@@ -65,7 +65,6 @@ exports.getAppManagerList = function () {
     });
     return Deferred.promise();
 };
-
 //修改应用
 exports.editApp = function (app) {
     var Deferred = $.Deferred();
@@ -108,6 +107,22 @@ exports.updateAppExpireDate = function (app) {
         data: app,
         success: function (data) {
             Deferred.resolve(data);
+        }, error: function (errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//根据id获取piwik字符串
+exports.getCurAppKeyById = function (appId) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/appcodetrace/' + appId,
+        dataType: 'json',
+        type: 'get',
+        success: function (app) {
+            Deferred.resolve(app);
         }, error: function (errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }

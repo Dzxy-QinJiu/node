@@ -32,7 +32,7 @@ exports.filterSalesTeamList = function (userName) {
     return Deferred.promise();
 };
 //获取销售目标
-exports.getSalesGoals=function(teamId){
+exports.getSalesGoals = function (teamId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals/' + teamId,
@@ -78,7 +78,7 @@ exports.getMemberList = function () {
 exports.addMember = function (obj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/sales_team_member/true',//false：负责人替换后从该组内删除，true：替换后不删除转为该组的成员
+        url: '/rest/sales_team_member',
         dataType: 'json',
         contentType: 'application/json',
         type: 'post',
@@ -160,7 +160,7 @@ exports.deleteGroup = function (groupId) {
 };
 
 //保存销售目标
-exports.saveSalesGoals=function(salesGoals){
+exports.saveSalesGoals = function (salesGoals) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals',

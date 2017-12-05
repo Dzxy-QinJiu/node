@@ -5,12 +5,11 @@ exports.toRestObject = function (list) {
     list = list || [];
     list.forEach(function (item) {
         result.push({
-            topic: item.message_topic,
-            presenter: item.producer_name,
+            topic: item.topic,
+            presenter: item.producer ? item.producer.nick_name : "",
             time: item.produce_date,
-            id: item.message_id,
+            id: item.id,
             order_id: item.message.order_id,
-            message_status_id: item.id,
             isConsumed: (item.approval_state !== 'false') + '',
             approval_state: transferApprovalStateToNumber(item.approval_state)
         });
@@ -209,10 +208,10 @@ exports.toDetailDelayRestObject = function (obj) {
     return result;
 };
 
-//销售申请修改密码详情转换
-exports.toDetailChangePwdRestObject = function (obj) {
+//销售申请修改密码(其他类型)详情转换
+exports.toDetailChangePwdOtherRestObject = function (obj) {
     //审批单内容
-    var serverResult = obj|| {};
+    var serverResult = obj || {};
     //申请单详情
     var detail = serverResult.message || {};
     //转换之后的数据

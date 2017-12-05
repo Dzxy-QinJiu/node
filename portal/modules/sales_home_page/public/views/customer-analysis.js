@@ -15,6 +15,9 @@ var emitter = require("../../../oplate_customer_analysis/public/utils/emitter");
 let userData = require("../../../../public/sources/user-data");
 var DATE_FORMAT = oplateConsts.DATE_FORMAT;
 var legend = [{name: Intl.get("sales.home.new.add", "新增"), key: "total"}];
+var constantUtil = require("../util/constant");
+//这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
+var delayConstant = constantUtil.DELAY.TIMERANG;
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function () {
@@ -24,7 +27,8 @@ var CustomerAnalysis = React.createClass({
             timeType: this.props.timeType,
             startTime: this.props.startTime,
             endTime: this.props.endTime,
-            originSalesTeamTree: this.props.originSalesTeamTree
+            originSalesTeamTree: this.props.originSalesTeamTree,
+            updateScrollBar:false
         };
     },
     onStateChange: function () {
@@ -42,6 +46,17 @@ var CustomerAnalysis = React.createClass({
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
         this.setState(timeObj);
+        if (nextProps.updateScrollBar){
+            this.setState({
+                updateScrollBar:true
+            },()=>{
+                setTimeout(()=>{
+                  this.setState({
+                      updateScrollBar:false
+                  })
+                },delayConstant)
+            })
+        }
     },
     getDataType: function () {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
@@ -92,7 +107,9 @@ var CustomerAnalysis = React.createClass({
                 customerType: customerType,
                 customerProperty: customerProperty
             });
-            OplateCustomerAnalysisAction.getAnalysisData(reqData);
+            setTimeout(()=>{
+                OplateCustomerAnalysisAction.getAnalysisData(reqData);
+            })
         });
     },
     //缩放延时，避免页面卡顿
@@ -321,6 +338,85 @@ var CustomerAnalysis = React.createClass({
         OplateCustomerAnalysisAction.changeCurrentTab(tabName);
         this.getChartData();
     },
+    renderChartContent:function(){
+      //销售不展示团队的数据统计
+      let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+      return (
+          <div className="chart_list">
+              {this.state.timeType != "day" ? (
+                  <div className="analysis_chart col-md-6 col-sm-12"
+                       data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
+                      <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
+                          <div className="title"><ReactIntl.FormattedMessage
+                              id="customer.analysis.add.trend" defaultMessage="新增趋势"/></div>
+                          {this.getCustomerChart()}
+                      </div>
+                  </div>) : null}
+              <div className="analysis_chart col-md-6 col-sm-12"
+                   data-title={Intl.get("customer-analysis.sale.stage", "销售阶段统计")}>
+                  <div className="chart-holder" data-tracename="销售阶段统计">
+                      <div className="title"><ReactIntl.FormattedMessage id="customer-analysis.sale.stage"
+                                                                         defaultMessage="销售阶段统计"/></div>
+                      {this.getStageChart()}
+                  </div>
+              </div>
+              <div className="analysis_chart col-md-6 col-sm-12"
+                   data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                  <div className="chart-holder">
+                      <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
+                                                                         defaultMessage="地域-新增"/></div>
+                      {this.getZoneChart()}
+                  </div>
+              </div>
+              <div className="analysis_chart col-md-6 col-sm-12"
+                   data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                  <div className="chart-holder" data-tracename="行业-新增统计">
+                      <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
+                                                                         defaultMessage="行业-新增"/></div>
+                      {this.getIndustryChart()}
+                  </div>
+              </div>
+              {hideTeamChart ? null : (
+                  <div className="analysis_chart col-md-6 col-sm-12"
+                       data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                      <div className="chart-holder" data-tracename="团队-新增统计">
+                          <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
+                                                                             defaultMessage="团队-新增"/>
+                          </div>
+                          {this.getTeamChart()}
+                      </div>
+                  </div>
+              )}
+              {
+                  //hideTeamChart ? null : (
+                  //<div className="analysis_chart col-md-6 col-sm-12"
+                  //     data-title={Intl.get("user.analysis.active.customer","活跃客户")+"-"+Intl.get("sales.home.new.add", "新增")}>
+                  //    <div className="chart-holder">
+                  //        <div
+                  //            className="title">{Intl.get("user.analysis.active.customer", "活跃客户") + "-" + Intl.get("sales.home.new.add", "新增")}</div>
+                  //        {this.getActiveCustomerChart()}
+                  //    </div>
+                  //</div>)
+              }
+          </div>
+      )
+    },
+    renderContent:function () {
+
+        if(this.state.updateScrollBar){
+            return (
+                <div>
+                    {this.renderChartContent()}
+                </div>
+            )
+        }else{
+            return (
+                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                    {this.renderChartContent()}
+                </GeminiScrollbar>
+            )
+        }
+    },
     render: function () {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
@@ -329,65 +425,7 @@ var CustomerAnalysis = React.createClass({
         return (
             <div className="oplate_customer_analysis">
                 <div ref="chart_list" style={{height: layoutParams.chartListHeight}}>
-                    <GeminiScrollbar enabled={this.props.scrollbarEnabled}>
-                        <div className="chart_list">
-                            {this.state.timeType != "day" ? (
-                                <div className="analysis_chart col-md-6 col-sm-12"
-                                     data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
-                                    <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
-                                        <div className="title"><ReactIntl.FormattedMessage
-                                            id="customer.analysis.add.trend" defaultMessage="新增趋势"/></div>
-                                        {this.getCustomerChart()}
-                                    </div>
-                                </div>) : null}
-                            <div className="analysis_chart col-md-6 col-sm-12"
-                                 data-title={Intl.get("customer-analysis.sale.stage", "销售阶段统计")}>
-                                <div className="chart-holder" data-tracename="销售阶段统计">
-                                    <div className="title"><ReactIntl.FormattedMessage id="customer-analysis.sale.stage"
-                                                                                       defaultMessage="销售阶段统计"/></div>
-                                    {this.getStageChart()}
-                                </div>
-                            </div>
-                            <div className="analysis_chart col-md-6 col-sm-12"
-                                 data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
-                                <div className="chart-holder">
-                                    <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
-                                                                                       defaultMessage="地域-新增"/></div>
-                                    {this.getZoneChart()}
-                                </div>
-                            </div>
-                            <div className="analysis_chart col-md-6 col-sm-12"
-                                 data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
-                                <div className="chart-holder" data-tracename="行业-新增统计">
-                                    <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
-                                                                                       defaultMessage="行业-新增"/></div>
-                                    {this.getIndustryChart()}
-                                </div>
-                            </div>
-                            {hideTeamChart ? null : (
-                                <div className="analysis_chart col-md-6 col-sm-12"
-                                     data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
-                                    <div className="chart-holder" data-tracename="团队-新增统计">
-                                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
-                                                                                           defaultMessage="团队-新增"/>
-                                        </div>
-                                        {this.getTeamChart()}
-                                    </div>
-                                </div>
-                            )}
-                            {
-                                //hideTeamChart ? null : (
-                                //<div className="analysis_chart col-md-6 col-sm-12"
-                                //     data-title={Intl.get("user.analysis.active.customer","活跃客户")+"-"+Intl.get("sales.home.new.add", "新增")}>
-                                //    <div className="chart-holder">
-                                //        <div
-                                //            className="title">{Intl.get("user.analysis.active.customer", "活跃客户") + "-" + Intl.get("sales.home.new.add", "新增")}</div>
-                                //        {this.getActiveCustomerChart()}
-                                //    </div>
-                                //</div>)
-                            }
-                        </div>
-                    </GeminiScrollbar>
+                    {this.renderContent()}
                 </div>
             </div>
         );

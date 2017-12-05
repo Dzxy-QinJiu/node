@@ -5,16 +5,16 @@ if (language.lan() == "es" || language.lan() == "en") {
     require("../css/user-detail-es_VE.scss");
 }else if (language.lan() == "zh"){
     require("../css/user-detail-zh_CN.scss");
+    require("../css/third-party-app-config.scss");
 }
 var Tabs = require("antd").Tabs;
 var TabPane = Tabs.TabPane;
-var classNames = require("classnames");
-var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
 var AppUserAction = require("../action/app-user-actions");
 var AppUserDetailAction = require("../action/app-user-detail-actions");
 var UserDetailBasic = require("./user-detail-basic");
-var SingleUserLogBasic = require('./single_user_log_basic');
+var SingleUserLog = require('./single-user-log');
+import UserLoginAnalysis from './user-login-analysis';
 var UserDetailChangeRecord = require('./user-detail-change-record');
 var UserAbnormalLogin = require('./user-abnormal-login');
 var AppUserPanelSwitchStore = require("../store/app-user-panelswitch-store");
@@ -24,7 +24,8 @@ var UserDetailEditApp = require("./v2/user-detail-edit-app");
 var SingleUserLogAction = require("../action/single_user_log_action");
 var AppUserUtil = require("../util/app-user-util");
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-
+import ThirdPartyAppConfig from './third_app/third-party-app-config';
+import ThirdAppDetail from "./third_app/third-app-detail";
 
 var UserDetail = React.createClass({
     getDefaultProps : function() {
@@ -37,7 +38,10 @@ var UserDetail = React.createClass({
         this.onStoreChange();
     },
     getInitialState : function() {
-        return AppUserPanelSwitchStore.getState();
+        return {
+            activeKey: "1",//tab激活页的key
+            ...AppUserPanelSwitchStore.getState()
+        };
     },
     onStoreChange : function() {
         var stateData =  AppUserPanelSwitchStore.getState();
@@ -82,15 +86,19 @@ var UserDetail = React.createClass({
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
     },
     closeRightPanel : function() {
-        AppUserAction.closeRightPanel();
+        if(_.isFunction(this.props.closeRightPanel)){
+            this.props.closeRightPanel();
+        }else{
+            AppUserAction.closeRightPanel();
+        }
         AppUserDetailAction.dismiss();
         SingleUserLogAction.dismiss();
         emitter.emit("user_detail_close_right_panel");
     },
 
-    changeTab : function(){
+    changeTab : function(key){
         this.setState({
-            
+            activeKey: key
         });
     },
 
@@ -106,60 +114,85 @@ var UserDetail = React.createClass({
                     var initialUser = AppUserDetailStore.getState().initialUser;
                     var appInfo = this.state.panel_switch_appToEdit;
                     moveView = (
-                                    <UserDetailEditApp
-                                        initialUser={initialUser}
-                                        appInfo={appInfo}/>
-                                );
+                        <UserDetailEditApp
+                            initialUser={initialUser}
+                            appInfo={appInfo}/>
+                    );
                     break;
+                case 'thirdapp':
+                    let {thirdApp} = this.state;
+                    moveView = (
+                        <ThirdAppDetail {...thirdApp}/>
+                    )
             }
         }
 
         var tabPaneList = [
-            <TabPane tab={Intl.get("user.basic.info", "基本资料")} key="detail">
-                <div className="user_manage_user_detail">
+            <TabPane tab={Intl.get("user.basic.info", "基本资料")} key="1">
+                {this.state.activeKey=="1" ? <div className="user_manage_user_detail">
                     <UserDetailBasic userId={this.props.userId}/>
-                </div>
+                </div>: null}
             </TabPane>
         ];
         if(hasPrivilege("USER_AUDIT_LOG_LIST")) {
             tabPaneList.push(
-                <TabPane tab={Intl.get("user.detail.analysis", "分析")} key="user_log">
-                    <div className="user_manage_user_log">
-                        <SingleUserLogBasic userId={this.props.userId} />
-                    </div>
+                <TabPane tab="用户分析" key="2">
+                    {this.state.activeKey=="2" ? <div className="user-analysis">
+                        <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
+                    </div>: null}
+                </TabPane>
+            );
+            tabPaneList.push(
+                <TabPane tab="审计日志" key="3">
+                    {this.state.activeKey=="3" ? <div className="user-log">
+                        <SingleUserLog userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
+                    </div>: null}
                 </TabPane>
             );
         }
         if(hasPrivilege("USER_TIME_LINE")) {
             tabPaneList.push(
-                <TabPane tab={Intl.get("user.change.record", "变更记录")} key="change_record">
-                    <div className="user_manage_user_record">
+                <TabPane tab={Intl.get("user.change.record", "变更记录")} key="4">
+                    {this.state.activeKey=="4" ?  <div className="user_manage_user_record">
                         <UserDetailChangeRecord
                             userId={this.props.userId}
-                            appLists={this.props.appLists}
+                            selectedAppId={this.props.selectedAppId}
                         />
-                    </div>
+                    </div>: null}
                 </TabPane>
             );
         }
         //异常登录isShownExceptionTab
         if (hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && this.props.isShownExceptionTab){
             tabPaneList.push(
-                <TabPane tab={Intl.get("user.login.abnormal", "异常登录")} key="login_abnormal">
-                    <div className="user_manage_login_abnormal">
+                <TabPane tab={Intl.get("user.login.abnormal", "异常登录")} key="5">
+                    {this.state.activeKey=="5" ?   <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
+                            userId={this.props.userId}
+                            selectedAppId={this.props.selectedAppId}
+                        />
+                    </div>: null}
+                </TabPane>
+            );
+        }
+
+        // 权限控制
+        if (hasPrivilege("GET_USER_THIRDPARTYS") || hasPrivilege("THIRD_PARTY_MANAGE")) {
+            tabPaneList.push(
+                <TabPane tab={Intl.get("third.party.app", "开放应用平台")} key="6">
+                    <div className="third_party_app_config">
+                        <ThirdPartyAppConfig
                             userId={this.props.userId}
                         />
                     </div>
                 </TabPane>
             );
         }
-
         return (
             <div className="full_size app_user_full_size user_manage_user_detail_wrap" ref="wrap">
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="full_size app_user_full_size_item wrap_padding">
-                    <Tabs defaultActiveKey="detail" onChange={this.changeTab}>
+                    <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                         {tabPaneList}
                     </Tabs>
                 </div>

@@ -100,7 +100,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "APPLICATION_BASE_ROLE_CONFIG"//设置默认角色
+           "APPLICATION_BASE_ROLE_MANAGEMENT"//设置默认角色
         ]
     },
     {
@@ -111,7 +111,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "APPLICATION_BASE_ROLE_DELETE"//删除默认角色
+           "APPLICATION_BASE_ROLE_MANAGEMENT"//删除默认角色
         ]
     },
     {
@@ -122,7 +122,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "GET_APPLICATION_BASE_ROLE"//获取默认角色
+           "APPLICATION_BASE_ROLE_MANAGEMENT"//获取默认角色
         ]
     }
     ]

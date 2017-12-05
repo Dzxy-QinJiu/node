@@ -24,7 +24,9 @@ var BarChart = React.createClass({
             resultType : 'loading',
             startDate: '',
             endDate : '',
-            showLabel: false//是否展示柱状图上的数据
+            showLabel: false,//是否展示柱状图上的数据
+            //超过多少的柱子时横轴文字需要倾斜显示
+            xAxisRotateLength: 12,
         };
     },
     componentDidMount : function() {
@@ -53,7 +55,8 @@ var BarChart = React.createClass({
         if (length < 40) {
             //横坐标展示所有的种类
             xAxisOptions.interval = 0;
-            if (length > 12) {
+            const adjustLength = this.props.xAxisRotateLength;
+            if (length > adjustLength) {
                 xAxisOptions.labelAlign = "left";
                 if (length <= 25) {
                     xAxisOptions.rotate = -30;

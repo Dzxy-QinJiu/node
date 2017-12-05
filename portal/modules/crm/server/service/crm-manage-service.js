@@ -8,57 +8,80 @@ var uploadTimeOut = 5 * 60 * 1000;
 
 var crmRestApis = {
     customer: "/rest/customer/v2/customer",
+    //获取客户开通的用户列表
+    getCrmUserList: "/rest/base/v1/user/customer_users/:customer_id",
     list: "/rest/customer/v2/customer/all",
+    //我可以查看的客户列表（已分配销售的客户）
     query: "/rest/customer/v2/customer/range",
+    //获取所有的客户列表（包括：未分配给销售的客户）
     managerQuery: "/rest/customer/v2/customer/range/manager",
     dynamic: "/rest/customer/v2/customerdynamic",
     upload: "/rest/customer/v2/customer/upload/preview",
     repeatCustomer: "/rest/customer/v2/customer/query/repeat",
+    getRepeatCustomerById: "/rest/customer/v2/customer/:customerId",
     delRepeatCustomer: "/rest/customer/v2/customer/delete",
     getCustomerById: "/rest/customer/v2/customer/query/1/name/descend",
     mergeRepeatCustomer: "/rest/customer/v2/customer/merge/customer",
     checkCustomerRepeat: "/rest/customer/v2/customer/repeat/search",
     getFilterIndustries: "/rest/customer/v2/customer/industries",
+    //type:manager(管理员调用)，type:user(非管理员调用)
+    getFilterProvinces: "/rest/customer/v2/customer/provinces/:type/40/1",
     // 查询客户精确匹配（通话记录中查询客户详情）
     getCustomerByPhone: "/rest/customer/v2/customer/query/term/customer",
-    // 根据客户的id查询客户详情
-    getQueryCustomerById: "/rest/customer/v2/customer/query",
     //根据客户名获取行政级别
     getAdministrativeLevel: "/rest/customer/v2/customer/administrative_level/:customer_name",
-    basic: {
+    basic: {//type:manager(管理员调用)，type:user(非管理员调用)
         //修改客户名
-        updateName: "/rest/customer/v2/customer/name",
+        updateName: "/rest/customer/v2/customer/:url_type/name",
         //修改客户标签
-        updateLabel: "/rest/customer/v2/customer/label/",
+        updateLabel: "/rest/customer/v2/customer/:url_type/label",
         //修改客户地域
-        updateAddress: "/rest/customer/v2/customer/address",
+        updateAddress: "/rest/customer/v2/customer/:url_type/address",
         //更新客户行业
-        updateIndustry: "/rest/customer/v2/customer/industry",
+        updateIndustry: "/rest/customer/v2/customer/:url_type/industry",
         //更新客户备注
-        updateComment: "/rest/customer/v2/customer/remark",
+        updateComment: "/rest/customer/v2/customer/:url_type/remark",
         //修改客户所属销售（团队）
-        updateSales: "/rest/customer/v2/customer/sales",
+        updateSales: "/rest/customer/v2/customer/:url_type/sales",
         //修改客户的行政级别
-        updateAdministrativeLevel: "/rest/customer/v2/customer/administrative_level",
+        updateAdministrativeLevel: "/rest/customer/v2/customer/:url_type/administrative_level",
         //修改客户的详细地址
-        updateDetailAddress: "/rest/customer/v2/customer/detail_address",
+        updateDetailAddress: "/rest/customer/v2/customer/:url_type/detail_address",
         //关注或者取消关注某客户
-        updateInterest: "/rest/customer/v2/customer/interest",
+        updateInterest: "/rest/customer/v2/customer/:url_type/interest",
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
     // 获取电话座机号
     getUserPhoneNumber: '/rest/base/v1/user/member/phoneorder',
-    // 根据线索筛选客户
-    getCustomersByClue: "/rest/customer/v2/customer/range/clue"
 };
 exports.urls = crmRestApis;
 
+exports.getCrmUserList = function (req, res, queryObj) {
+    let url = crmRestApis.getCrmUserList.replace(":customer_id", queryObj.customer_id);
+    delete queryObj.customer_id;
+    return restUtil.authRest.get(
+        {
+            url: url,
+            req: req,
+            res: res
+        }, queryObj);
+};
 //获取筛选面板的行业列表
 exports.getFilterIndustries = function (req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterIndustries,
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取筛选面板的地域列表
+exports.getFilterProvinces = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getFilterProvinces.replace(":type", req.params.type),
             req: req,
             res: res
         }, null);
@@ -119,6 +142,17 @@ exports.getRepeatCustomerList = function (req, res, queryParams) {
             res: res
         }, filterObj);
 };
+
+//通过重复客户的客户id获取重复客户
+exports.getRepeatCustomerById = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getRepeatCustomerById.replace(":customerId", req.params.customerId),
+            req: req,
+            res: res
+        }, null);
+};
+
 //删除重复客户
 exports.deleteRepeatCustomer = function (req, res, customerIdArray) {
     return restUtil.authRest.put(
@@ -150,28 +184,36 @@ exports.queryCustomer = function (req, res, condition) {
         url = crmRestApis.getCustomerByPhone + "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
         queryObj = _.clone(condition);
     } else if (id) {  // 根据客户的id查询客户详情
-        url = crmRestApis.getQueryCustomerById + "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
-        queryObj.id = id;
+        url = crmRestApis.query;
+        if (req.body.hasManageAuth) {
+            url = crmRestApis.managerQuery;
+        }
+        url += "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
+        queryObj.query = {"id": id};
     } else {  // 客户列表
         let baseUrl = "";
-        if(req.body.hasManageAuth) {
+        if (req.body.hasManageAuth) {
             baseUrl = crmRestApis.managerQuery;
-        }else {
+        } else {
             baseUrl = crmRestApis.query;
-        }
-        //线索客户的筛选
-        if(condition.exist_feilds||condition.unexist_feilds){
-            baseUrl= crmRestApis.getCustomersByClue;
         }
         url = baseUrl + "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
         var query = JSON.parse(req.body.queryObj);
-        url += "?cursor=" +  query.cursor;
-        if (query.id){
-            url += "&id=" +  query.id;
+        url += "?cursor=" + query.cursor;
+        if (query.id) {
+            url += "&id=" + query.id;
         }
-        if (query.total_size){
-            url +="&total_size=" + query.total_size;
-        };
+        if (query.total_size) {
+            url += "&total_size=" + query.total_size;
+        }
+        if (condition.exist_fields) {
+            queryObj.exist_fields = condition.exist_fields;
+            delete condition.exist_fields;
+        }
+        if (condition.unexist_fields) {
+            queryObj.unexist_fields = condition.unexist_fields;
+            delete condition.unexist_fields;
+        }
         queryObj.query = condition;
         queryObj.rang_params = JSON.parse(req.body.rangParams);
     }
@@ -186,16 +228,14 @@ exports.queryCustomer = function (req, res, condition) {
 //修改客户
 exports.updateCustomer = function (req, res, newCustomer) {
     let type = newCustomer.type;
+    let urlType = newCustomer.urlType;
     let url = crmRestApis.basic.updateComment;
     switch (type) {
         case "name":
             url = crmRestApis.basic.updateName;
             break;
         case "label":
-            let labels = encodeURI(newCustomer.labels) || "null";
-            url = crmRestApis.basic.updateLabel + labels;
-            //修改标签时，body里传[id]
-            newCustomer = [newCustomer.id];
+            url = crmRestApis.basic.updateLabel;
             break;
         case "industry":
             url = crmRestApis.basic.updateIndustry;
@@ -214,10 +254,14 @@ exports.updateCustomer = function (req, res, newCustomer) {
             break;
         case "detail_address":
             url = crmRestApis.basic.updateDetailAddress;
+            break;
         case "customer_interest":
             url = crmRestApis.basic.updateInterest;
+            break;
     }
+    url = url.replace(":url_type", urlType);
     delete newCustomer.type;
+    delete newCustomer.urlType;
     return restUtil.authRest.put(
         {
             url: url,

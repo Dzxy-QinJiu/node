@@ -2,15 +2,12 @@ var RightContent = require("../../../components/privilege/right-content");
 var RightCardsContainer = require("../../../components/rightCardsContainer");
 var rightPanelUtil = require("../../../components/rightPanel");
 var RightPanel = rightPanelUtil.RightPanel;
-
 var RealmStore = require("./store/realm-store");
 var RealmAction = require("./action/realm-actions");
-
 var AddRealmForm = require("./views/realm-form");
 var OwnerForm = require("./views/owner-form");
 var RealmInfo = require("./views/realm-info");
 var Spinner = require("../../../components/spinner");
-
 var batchPushEmitter = require("../../../public/sources/utils/emitters").batchPushEmitter;
 import Trace from "LIB_DIR/trace";
 var openTimeout = null;//打开面板时的时间延迟设置

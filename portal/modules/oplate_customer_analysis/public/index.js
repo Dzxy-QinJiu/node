@@ -309,10 +309,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         )
     },
     getDataAuthType: function () {
-        let type = "";
-        if(hasPrivilege("CUSTOMER_ANALYSIS_COMMON")){
-            type = "Common";
-        }else if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
+        let type = "Common";//CUSTOMER_ANALYSIS_COMMON
+        if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
             type = "Manager";
         }
         return type;

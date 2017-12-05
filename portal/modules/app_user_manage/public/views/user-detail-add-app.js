@@ -1,5 +1,6 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
-var RightPanelReturn = require("../../../../components/rightPanel").RightPanelReturn;
 var RightPanelCancel = require("../../../../components/rightPanel").RightPanelCancel;
 var RightPanelSubmit = require("../../../../components/rightPanel").RightPanelSubmit;
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
@@ -20,7 +21,6 @@ import UserDetailAddAppStore from "../store/user-detail-add-app-store";
 var CustomRadioGroup = require("../../../../components/custom_radio_group");
 import DateSelector from "../../../../components/date-selector";
 var crypto = require("crypto");
-var classNames = require("classnames");
 var Tabs = require("antd").Tabs;
 var TabPane = Tabs.TabPane;
 var Form = require("antd").Form;
@@ -29,8 +29,6 @@ var Input = require("antd").Input;
 var InputNumber = require("antd").InputNumber;
 var Select = require("antd").Select;
 var Option = Select.Option;
-var Validation = require("antd").Validation;
-var Validator = Validation.Validator;
 import { DatePicker } from "antd";
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 var Radio = require("antd").Radio;
@@ -45,11 +43,11 @@ var language = require("../../../../public/language/getLanguage");
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
 
-
 var labelCol = {span: 4};
 var wrapperCol = {span: 11};
 
 var CustomerSuggest = require("./customer_suggest/customer_suggest");
+const SELECT_CUSTOM_TIME_TYPE = 'custom';
 
 var UserDetailAddApp = React.createClass({
     getDefaultProps : function() {
@@ -107,13 +105,12 @@ var UserDetailAddApp = React.createClass({
             //添加申请延期块
             if(_this.state.multipleSubType === 'grant_delay') {
                 //向data中添加delay字段
-                if (formData.delayDeadlineTime) {
+                if (formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
                     result.end_date = formData.delayDeadlineTime;
                 } else {
                     let delayMillis = _this.getDelayTimeMillis();
                     result.delay = delayMillis;
                 }
-
 
                 //向data中添加备注
                 result.remark = _this.state.formData.remark.delayRemark;
@@ -171,6 +168,9 @@ var UserDetailAddApp = React.createClass({
             if(_this.hasApplyTypeBlock()) {
                 //开户类型
                 var userType = formData.user_type;
+                if (Oplate.hideSomeItem) {
+                    userType = '正式用户';
+                }
                 result.user_type = userType;
             }
             if(_this.hasApplyTimeBlock()) {
@@ -577,19 +577,24 @@ var UserDetailAddApp = React.createClass({
 
     //检验密码
     checkPass : function(rule, value, callback) {
-
-        //获取密码强度及是否展示
-        var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
-        this.setState({
-            passBarShow: passStrengthObj.passBarShow,
-            passStrength: passStrengthObj.passStrength
-        });
-
-        if (this.state.formData.password) {
-            this.refs.validation.forceValidate(['repassword']);
+        if (value && value.match(passwdStrengthFile.passwordRegex)) {
+            //获取密码强度及是否展示
+            var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
+            this.setState({
+                passBarShow: passStrengthObj.passBarShow,
+                passStrength: passStrengthObj.passStrength
+            });
+            if (this.state.formData.password) {
+                this.refs.validation.forceValidate(['repassword']);
+            }
+            callback();
+        } else {
+            this.setState({
+                passBarShow: false,
+                passStrength: 'L'
+            });
+            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
         }
-
-        callback();
     },
     checkPass2 : function(rule, value, callback) {
         if (value && value !== this.state.formData.password) {
@@ -618,10 +623,7 @@ var UserDetailAddApp = React.createClass({
                     help={status.password.errors ? status.password.errors.join(',') : null}
                 >
                     <Validator
-                        rules={[
-                                {required: true, whitespace: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")},
-                                {validator: this.checkPass}
-                              ]}
+                        rules={[{validator: this.checkPass}]}
                     >
                         <Input
                             name="password"
@@ -689,6 +691,7 @@ var UserDetailAddApp = React.createClass({
         return (
             <div>
                 {this.renderMultiAppSelectBlock()}
+                { !Oplate.hideSomeItem &&
                 <FormItem
                     label={Intl.get("user.batch.open.type", "开通类型")}
                     labelCol={labelCol}
@@ -700,7 +703,7 @@ var UserDetailAddApp = React.createClass({
                         marginRight={14}
                         onChange={this.customRadioValueChange.bind(this,'user_type')}
                     />
-                </FormItem>
+                </FormItem>}
             </div>
 
         );
@@ -868,7 +871,6 @@ var UserDetailAddApp = React.createClass({
     //延期时间范围改变
     delayTimeRangeChange : function(value,text) {
         UserDetailAddAppAction.delayTimeRangeChange(value);
-        UserDetailAddAppAction.setDelayDeadlineTime('');
     },
     //延期时间数字改变
     delayTimeNumberChange : function(value) {
@@ -876,12 +878,12 @@ var UserDetailAddApp = React.createClass({
     },
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
-        let timestamp = value.getTime();
+        let timestamp = value && value.valueOf() || '';
         UserDetailAddAppAction.setDelayDeadlineTime(timestamp);
     },
     // 设置不可选时间的范围
     disabledDate(current){
-        return current && current.getTime() < Date.now();
+        return current && current.valueOf() < Date.now();
     },
 
     getBatchAppJsonList : function() {
@@ -950,7 +952,7 @@ var UserDetailAddApp = React.createClass({
         var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
         var divWidth = (language.lan() == "zh")?'80px':'74px';
         let label = '';
-        if (this.state.formData.delayTimeRange == 'custom') {
+        if (this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
             label = Intl.get(" user.time.end", "到期时间");
         } else {
             label =  Intl.get("common.delay.time", "延期时间");
@@ -964,10 +966,13 @@ var UserDetailAddApp = React.createClass({
                         labelCol={labelCol}
                         wrapperCol={{span:20}}
                     >
-                        {this.state.formData.delayTimeRange == 'custom' ? (
-                            <DatePicker placeholder="请选择到期时间"
+                        {this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE ? (
+                            <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
                                         onChange={this.setDelayDeadlineTime}
                                         disabledDate={this.disabledDate}
+                                        defaultValue={moment(this.state.formData.delayDeadlineTime)}
+                                        allowClear={false}
+                                        showToday={false}
                             />
                         ) : (
                             <InputNumber

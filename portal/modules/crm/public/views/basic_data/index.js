@@ -91,12 +91,11 @@ var BasicData = React.createClass({
             });
         }
     },
-    //跳转到用户，并按照客户名称进行查询
+    //展示按客户搜索到的用户列表
     triggerUserList: function () {
         //获取客户基本信息
         var basicData = this.state.basicData || {};
-        //跳转到用户列表
-        history.pushState({customer_id: basicData.id || ''}, "/user/list", {});
+        this.props.ShowCustomerUserListPanel({customerObj: basicData || {}});
     },
     //修改客户基本资料成功后的处理
     editBasicSuccess: function (newBasic) {
@@ -111,6 +110,9 @@ var BasicData = React.createClass({
             //如果修改的是标签，则刷新标签列表
             if (newBasic.labels) {
                 FilterAction.getTagList();
+            }
+            if (_.isFunction(this.props.editCustomerBasic)){
+                this.props.editCustomerBasic(newBasic);
             }
         }
     },
@@ -190,6 +192,8 @@ var BasicData = React.createClass({
                                         <dt>{Intl.get("crm.administrative.level", "行政级别")}</dt>
                                         <dd>
                                             <BasicEditSelectField
+                                                isMerge={this.props.isMerge}
+                                                updateMergeCustomer={this.props.updateMergeCustomer}
                                                 id={basicData.id}
                                                 displayText={this.getAdministrativeLevel(basicData.administrative_level)}
                                                 value={basicData.administrative_level?basicData.administrative_level+'':''}
@@ -224,6 +228,8 @@ var BasicData = React.createClass({
                                         <dt>{Intl.get("realm.address", "地址")}</dt>
                                         <dd>
                                             <BasicEditInputField
+                                                isMerge={this.props.isMerge}
+                                                updateMergeCustomer={this.props.updateMergeCustomer}
                                                 user_id={basicData.id}
                                                 value={basicData.address}
                                                 field="address"
@@ -252,6 +258,7 @@ var BasicData = React.createClass({
 
                                 </div>
                                 <SalesSelectField
+                                    disabled={hasPrivilege("CUSTOMER_UPDATE_SALES")?false:true}
                                     isMerge={this.props.isMerge}
                                     updateMergeCustomer={this.props.updateMergeCustomer}
                                     customerId={basicData.id}

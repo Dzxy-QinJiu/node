@@ -41,8 +41,6 @@
       font-size: $form_font_size;
       color: #666;
       background-color: #C5C5C5;
-      padding-top: 5px;
-      padding-bottom: 6px;
     }
     .indicator {
       position: absolute;
@@ -106,6 +104,37 @@
     top: 40%;
     left: 50%;
     z-index:999;
+  }
+  .right-panel-content {
+    .ant-form-item-control {
+      button {
+        border-radius: 3px;
+      }
+      .ant-btn-primary {
+        margin-right: 6px;
+      }
+    }
+    .card-infor-list {
+      .iconfont {
+        float: right;
+      }
+      .icon-update {
+        margin-right: -16px;
+      }
+     .email-server, .sms-server, .wechat-server {
+       padding-top: 20px;
+       .ant-form-item {
+         width: 347px;
+         margin-bottom: 8px;
+       }
+       .ant-col-6 {
+         text-align: left;
+       }
+       .submit-button {
+         text-align: right;
+       }
+     }
+    }
   }
 }
 

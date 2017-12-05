@@ -5,6 +5,7 @@ import crmAjax from '../../crm/public/ajax'
 var callReordEmitter = require("../../../public/sources/utils/emitters").callReordEmitter;
 import { message } from 'antd';
 import Trace from "LIB_DIR/trace";
+import AppUserManage from "MOD_DIR/app_user_manage/public";
 
 const CallRecordList = React.createClass({
     // 通话记录，通过phone查看客户详情
@@ -15,12 +16,13 @@ const CallRecordList = React.createClass({
         return {
             rightPanelCustomerPhone: this.rightPanelCustomerPhone,
             showRightPanel: this.showRightPanel,
-            clickCustomerData: '' // 点击客户的数据
+            clickCustomerData: '' ,// 点击客户的数据
+            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
         };
     },
     // 关闭客户详情面板
-    closeRightPanel : function() {
-        $(this.refs.wrap).find(".current_row").removeClass("current_row");
+    closeRightPanel : function() {        
         this.rightPanelCustomerPhone = '';
         this.showRightPanel = false;
         this.setState({
@@ -35,13 +37,11 @@ const CallRecordList = React.createClass({
     componentDidMount : function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
-        $wrap.on("click" , ".customer_column" , function() {
-            $(this).closest("tr").siblings().removeClass("current_row");
+        $wrap.on("click" , ".customer_column" , function() {            
             var $phone_hidden = $(this).find(".phone_hidden");
             var $customer_name_hidden = $(this).find('.customer_name_hidden');
             if($phone_hidden[0] && $customer_name_hidden.val() != '') {
-                Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"),"打开客户详情");
-                $(this).parent().addClass("current_row");
+                Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"),"打开客户详情");                
                 _this.rightPanelCustomerPhone =$phone_hidden.val();
                  let condition = {};
                 // 通话记录，查看客户详情，传phoneNumber
@@ -76,14 +76,26 @@ const CallRecordList = React.createClass({
         this.showRightPanel = false;
         callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL , this.closeRightPanel);
     },
-    
+    ShowCustomerUserListPanel:function(data) {
+        this.setState({
+            isShowCustomerUserListPanel: true,
+            CustomerInfoOfCurrUser: data.customerObj
+        });
+
+    },
+    closeCustomerUserListPanel:function() {
+        this.setState({
+            isShowCustomerUserListPanel: false
+        })
+    },
     render: function () {
         return (
-            <div className='call-record-wrap' data-tracename="通话记录界面">
+            <div>
+            <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
                 <div ref="wrap">
-                    <CallRecord />
+                    <CallRecord showRightPanel={this.state.showRightPanel}/>
                 </div>
-                <RightPanel showFlag={this.state.showRightPanel}>
+                <RightPanel showFlag={this.state.showRightPanel} className="call-record-crm-detail">
                 {
                      this.state.rightPanelCustomerPhone ? (
                         <CrmRightPanel
@@ -92,10 +104,25 @@ const CallRecordList = React.createClass({
                                 hideRightPanel={this.closeRightPanel}
                                 refreshCustomerList={function() {}}
                                 clickCustomerData={this.state.clickCustomerData}
+                                ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                             /> 
                      ): null
                 }
                 </RightPanel>
+            </div>
+            {/*该客户下的用户列表*/}
+            <RightPanel
+                className="customer-user-list-panel"
+                showFlag={this.state.isShowCustomerUserListPanel}
+            >
+                {this.state.isShowCustomerUserListPanel?
+                    <AppUserManage
+                        customer_id={this.state.CustomerInfoOfCurrUser.id}
+                        hideCustomerUserList={this.closeCustomerUserListPanel}
+                        customer_name={this.state.CustomerInfoOfCurrUser.name}
+                    />:null
+                }
+            </RightPanel>
             </div>
         );
     }

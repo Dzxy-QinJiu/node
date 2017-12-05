@@ -1,3 +1,5 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 创建用户
  */
@@ -26,9 +28,8 @@ import AppUserFormActions from '../../action/v2/app-user-form-actions';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import OperationSteps from '../../../../../components/user_manage_components/operation-steps';
 import AppUserUtil from '../../util/app-user-util';
-import {Form,Validation,Icon,Input,Alert} from 'antd';
+import {Form,Icon,Input,Alert} from 'antd';
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import FieldMixin  from '../../../../../components/antd-form-fieldmixin';
 import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
 import UserNameTextField from '../../../../../components/user_manage_components/user-name-textfield';
@@ -593,7 +594,7 @@ const AddOrEditUser = React.createClass({
                         ) : null
                     }
                     {/**委内维拉项目,不显示所属客户*/}
-                    {Oplate.hideUserManageItem ? null : (
+                    {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className={customerLabelClass}><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" /></div>
                             <div className="form-item-content">
@@ -633,7 +634,7 @@ const AddOrEditUser = React.createClass({
                         </div>
                     </div>
                     {/**委内维拉项目,不显示类型*/}
-                    {Oplate.hideUserManageItem ? null : (
+                    {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型" /></div>
                             <div className="form-item-content">
@@ -654,7 +655,7 @@ const AddOrEditUser = React.createClass({
                         </div>
                     </div>
                     {/**委内维拉项目,不显示二步认证*/}
-                    {Oplate.hideUserManageItem ? null : (
+                    {Oplate.hideSomeItem ? null : (
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
                         <div className="form-item-content">
@@ -663,7 +664,7 @@ const AddOrEditUser = React.createClass({
                     </div>
                     )}
                     {/**委内维拉项目,不显示多人登录*/}
-                    {Oplate.hideUserManageItem ? null : (
+                    {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                             <div className="form-item-content">
@@ -719,7 +720,7 @@ const AddOrEditUser = React.createClass({
                                      id="user.app.list.error.tip"
                                      defaultMessage={`应用列表获取失败，{retry}`}
                                      values={{
-                                     'retry':<a href="javascript:void(0)" onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="user.get.again.tip" defaultMessage="重新获取" /></a>}}
+                                     'retry':<a href="javascript:void(0)" onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
                                      />
                                      </span>}/>
                         ) : (

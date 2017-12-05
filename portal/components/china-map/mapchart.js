@@ -143,7 +143,7 @@ MapChart.prototype.getEchartOptions = function() {
             itemWidth:22,
             itemHeight:19,
             splitList: _this.getSplitList(),
-            color: ['#f05050', '#f8d289 ', '#c1e7ce','#b6d9f7','#edf1f2'],
+            color: ['#385993', '#8da2c8', '#8fa8ca', '#cad8ed','#cddaef'],
             text : ['多','少'],
             textStyle : {
                 color:'#80949d'

@@ -54,6 +54,9 @@ class Realm {
         frontObj.profession = restObject.profession || "";
         frontObj.comment = restObject.comment;
         frontObj.company = restObject.realm_name || "";
+        // 邮箱设置
+        frontObj.config = restObject.config || {};
+        
         return frontObj;
     }
 

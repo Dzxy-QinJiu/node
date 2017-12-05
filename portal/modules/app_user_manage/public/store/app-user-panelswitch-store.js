@@ -17,6 +17,11 @@ AppUserPanelSwitchStore.prototype.resetState = function() {
     this.panel_switch_appToAdd = null;
     //修改应用的数据
     this.panel_switch_appToEdit = null;
+    // 第三方应用的信息
+    this.thirdApp = {
+        userId: '',
+        appId: ''
+    };
 };
 
 //切换到添加应用面板
@@ -27,6 +32,11 @@ AppUserPanelSwitchStore.prototype.switchToAddAppPanel = function() {
 AppUserPanelSwitchStore.prototype.cancelAddAppPanel = function() {
     this.panel_switch_currentView = '';
     this.panel_switch_appToAdd = null;
+};
+//切换到第三方应用面板
+AppUserPanelSwitchStore.prototype.switchToThirdAppPanel = function(thirdObj) {
+    this.panel_switch_currentView = 'thirdapp';
+    this.thirdApp = thirdObj
 };
 //提交添加应用
 AppUserPanelSwitchStore.prototype.submitAddAppPanel = function(appInfo) {

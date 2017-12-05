@@ -10,14 +10,13 @@ function CallAnalysisStore() {
 //设置初始化数据
 CallAnalysisStore.prototype.setInitState = function () {
     this.loading = false; // 通话信息的loading
-    //默认展示本周的时间（true:本周截止到今天为止）
-    var timeRange = DateSelectorUtils.getThisWeekTime(true);
+    //默认展示今天的时间
+    this.timeType = "day";
+    var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间
     this.end_time = DateSelectorUtils.getMilliseconds(timeRange.end_time, true);
-    var timeType = "thisweek";//默认时间类型是本周
-
     // 获取通话时长TOP10的数据
     this.callDurList = {
         loading: false, // loading
@@ -47,6 +46,13 @@ CallAnalysisStore.prototype.setInitState = function () {
             list: [],
             errMsg: ''  // 获取失败的提示
         }
+    };
+    //通话时段（数量和时长）的数据
+    this.callIntervalData = {
+        loading: false, // loading
+        timeList: [],//时长的列表
+        countList: [],//数量的列表
+        errMsg: ''  // 获取失败的提示
     };
 
     // 团队数据
@@ -93,8 +99,8 @@ CallAnalysisStore.prototype.getCallCountAndDur = function (result) {
             let countArray = [];
             if (_.isArray(resData) && resData.length > 0) {
                 _.each(resData, (item) => {
-                    durationArray.push({ timestamp: item.date, count: item.sum });
-                    countArray.push({ timestamp: item.date, count: item.docments });
+                    durationArray.push({timestamp: item.date, count: item.sum});
+                    countArray.push({timestamp: item.date, count: item.docments});
                 });
             }
             callList.duration = durationArray;
@@ -195,7 +201,7 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
                             name: nameMap[result.type],
                             count: resData[0].invalid_docs
                         }
-                    ]                   
+                    ]
                     this.callRateList[result.type].list = list;
                 }
                 else {
@@ -217,6 +223,24 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
     }
 };
 
+//获取通话时段（数量\时长）的统计数据
+CallAnalysisStore.prototype.getCallIntervalData = function (result) {
+    this.callIntervalData.loading = result.loading;
+    if (result.error) {
+        this.callIntervalData.errMsg = result.errMsg || Intl.get("call.record.count.failed", "获取通话数量失败");
+        this.callIntervalData.timeList = [];
+        this.callIntervalData.countList = [];
+    } else {
+        this.callIntervalData.errMsg = '';
+        let data = result.resData, timeList = [], countList = [];
+        _.each(data, item => {
+            timeList.push({week: item.week, hour: item.hour, time: item.billsec_sum});
+            countList.push({week: item.week, hour: item.hour, count: item.count});
+        });
+        this.callIntervalData.timeList = timeList;
+        this.callIntervalData.countList = countList;
+    }
+};
 
 // 获取团队信息
 CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
@@ -225,7 +249,6 @@ CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
     } else if (result.resData) {
         this.teamList.errMsg = '';
         let resData = result.resData;
-        let teamList = [];
         if (_.isArray(resData) && resData.length) {
             this.teamList.list = _.map(resData, (item) => {
                 return {
@@ -248,7 +271,7 @@ CallAnalysisStore.prototype.getSaleMemberList = function (result) {
         if (_.isArray(resData) && resData.length) {
             _.each(resData, (item) => {
                 if (item.status) {
-                    memberList.push({ name: item.nick_name, id: item.user_id, user_name: item.user_name });
+                    memberList.push({name: item.nick_name, id: item.user_id, user_name: item.user_name});
                 }
             });
         }

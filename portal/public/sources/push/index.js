@@ -11,16 +11,24 @@ var timeout = 1000;//1秒后修改发送数据
 var notificationEmitter = require("../../../public/sources/utils/emitters").notificationEmitter;
 var notificationUtil = require("./notification");
 var socketEmitter = require("../../../public/sources/utils/emitters").socketEmitter;
+var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
 let ajaxGlobal = require("../jquery.ajax.global");
 var hasPrivilege = require("../../../components/privilege/checker").hasPrivilege;
+import Translate from '../../intl/i18nTemplate';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
+import logoSrc from "./notification.png";
+import userData from "../user-data";
+const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 var NotificationType = {};
-var applyTipCount = 0;
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
-    closeTimeDelay : 5000,
-    renderTimeDelay :　2000
+    closeTimeDelay: 5000,
+    renderTimeDelay: 2000,
+    phoneRenderDelay: 2000,
 };
-
+import PhoneAlert from "MOD_DIR/phone-alert/public";
+//当前正在拨打的电话及联系人信息，从点击事件emitter出来
+var phoneObj = {};
 //socketIo对象
 var socketIo;
 //推送过来新的消息后，将未读数加/减一
@@ -56,19 +64,21 @@ function listenOnMessage(data) {
     if (_.isObject(data)) {
         switch (data.message_type) {
             case "apply":
-                //未处理的申请消息
-                notifyInfo(data);
-                //申请消息列表弹出，有新数据，是否刷新数据的提示
+                //有新的未处理的申请消息时,只修改待审批数，不用展示
+                //申请审批列表弹出，有新数据，是否刷新数据的提示
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                //将申请消息的未读数加一（true）
-                updateUnreadByPushMessage("apply", true);
                 //将待审批数加一（true）
                 updateUnreadByPushMessage("approve", true);
                 break;
             case "reply":
                 //批复类型
-                notifyInfo(data);
+                if(!userData.hasRole("realm_manager")){
+                    //批复类型的通知，不通知管理员
+                    notifyReplyInfo(data);
+                }
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                //将审批后的申请消息未读数加一（true）
+                updateUnreadByPushMessage("apply", true);
                 //待审批数减一
                 updateUnreadByPushMessage("approve", false);
                 break;
@@ -89,6 +99,69 @@ function listenOnMessage(data) {
         }
     }
 }
+//监听系统消息
+function listenSystemNotice(notice) {
+    if (_.isObject(notice)) {
+        //申请消息列表弹出，有新数据，是否刷新数据的提示
+        notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
+        let title = notice.type ? SYSTEM_NOTICE_TYPE_MAP[notice.type] : "";
+        let tipContent = notice.customer_name;//xxx（客户）
+        //是否是异地登录的类型
+        let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
+        //异地登录
+        if (isOffsetLogin) {
+            //在 xxx (地名)
+            tipContent += Intl.get("notification.system.on", "在") + notice.content.current_location;
+        }
+        if (notice.user_name) {
+            //用账号xxx
+            tipContent += Intl.get("notification.system.use.account", "用账号") + notice.user_name;
+        }
+        if (notice.app_name) {
+            //登录了 xxx (应用)
+            tipContent += Intl.get("notification.system.login", "登录了") + notice.app_name;
+        }
+        //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
+        if (canPopDesktop()) {
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent);
+        } else {//系统弹出通知
+            notificationUtil.showNotification({
+                title: title,
+                content: tipContent,
+                closeWith: ["button"],
+                timeout: TIMEOUTDELAY.closeTimeDelay
+            });
+        }
+    }
+}
+//桌面通知的展示
+function showDesktopNotification(title, tipContent) {
+    let notification = new Notification(title, {
+        body: tipContent,
+        tag: title,
+        icon: logoSrc,
+    });
+    notification.onerror = function () {
+        notification.close();
+    };
+    notification.onclick = function () {
+        //如果通知消息被点击,通知窗口将被激活
+        window.focus();
+        notification.close();
+    },
+        notification.onshow = function () {
+            setTimeout(function () {
+                notification.close();
+            }, TIMEOUTDELAY.closeTimeDelay);
+        }
+}
+// 标签页是否可见（各种浏览器兼容）
+function documentIsHidden() {
+    return document.hidden || document.mozHidden || document.msHidden
+        || document.webkitHidden;
+};
+
 //获取申请用户的名称
 function getUserNames(message) {
     let userNames = "";
@@ -102,96 +175,135 @@ function getUserNames(message) {
     }
     return userNames;
 }
-//获取提醒中的内容
-function getTipContent(data) {
-    var tipContent = "";
-    //申请的消息
-    //xxx(销售) 给客户 xxx 申请了 正式/试用 用户 xxx,xxx
-    if (data.approval_state == "false"){
-        let salesName = data.message.sales_name || "";//谁发的申请(销售)
-        let customerName = data.message.customer_name || "";//给哪个客户开通的用户
-        let userType = data.message.tag || "";//申请用户的类型：正式、试用用户
-        let userNames = getUserNames(data.message);//申请用户的名称
-        tipContent = salesName + " 给客户 " + customerName
-            + " 申请了 " + userType + " " + userNames;
-    }else {
-        //审批的消息
-        tipContent = data.approval_person || "";//谁批复的
-        //审批通过
-        if (data.approval_state == "pass") {
-            //xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            tipContent += " 通过了 ";
-        } else if (data.approval_state == "reject") {//审批驳回
+//获取审批消息提醒中的内容
+function getReplyTipContent(data) {
+    //审批的消息
+    let tipContent = "";
+    let approvalPerson = data.approval_person || "";//谁批复的
+    let salesName = data.message.sales_name || "";//谁发的申请(销售)
+    let customerName = data.message.customer_name || "";//给哪个客户开通的用户
+    let userType = data.message.tag || "";//申请用户的类型：正式、试用用户
+    let userNames = getUserNames(data.message);//申请用户的名称
+    switch (data.approval_state) {
+        case "pass"://审批通过
+                    // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get("reply.pass.tip.content",
+                "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case "reject"://审批驳回
             //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            tipContent += " 驳回了 ";
-        } else if (data.approval_state == "cancel") {//撤销
+            tipContent = Intl.get("reply.reject.tip.content",
+                "{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                    approvalPerson: approvalPerson,
+                    salesName: salesName,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
+        case "cancel"://撤销申请
             //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            tipContent += " 撤销了";
-        }
-        let salesName = data.message.sales_name || "";//谁发的申请(销售)
-        let customerName = data.message.customer_name || "";//给哪个客户开通的用户
-        let userType = data.message.tag || "";//申请用户的类型：正式、试用用户
-        let userNames = getUserNames(data.message);//申请用户的名称
-        if (data.approval_state !== "cancel") {//只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
-            tipContent += salesName;
-        }
-        tipContent += " 给客户 " + customerName
-            + " 申请的 " + userType + " " + userNames;
+            //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
+            tipContent = Intl.get("reply.cancel.tip.content",
+                "{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                    approvalPerson: approvalPerson,
+                    customerName: customerName,
+                    userType: userType,
+                    userNames: userNames
+                });
+            break;
     }
     return tipContent;
 }
+function listPhoneNum(data) {
+    if (data) {
+        phoneObj = data;
+    }
+}
+function setInitialPhoneObj() {
+    phoneObj = {};
+}
 /*
-*申请和审批的提示 */
-function notifyInfo(data) {
-    if(_.isObject(data.message)){
-        var notify = NotificationType['exist'];
-        //记录不同推送的种类的数量
-        if (data.approval_state == "false"){
-            applyTipCount++;
-        }else{
-            approveTipCount++;
-        }
-        //如果界面上没有提示框，就显示推送的具体内容
-        if (!notify){
-            //根据不同类型，获得不同的标题
-            var title = "";
-            if (data.approval_state == "false"){
-                title = data.topic;
-            }else{
-                title = "用户申请审批";
-            }
-            //根据不同类型，获取提醒提示框中的内容
-            var tipContent = getTipContent(data);
-            notify =  notificationUtil.showNotification({
-                title: title,
-                content: tipContent,
-                closeWith: ["button"],
-                timeout: TIMEOUTDELAY.closeTimeDelay,
-                callback:{
-                    onClose: function () {
-                        delete NotificationType['exist'];
-                        approveTipCount=0;
-                        applyTipCount=0;
+ * 监听拨打电话消息的推送*/
+function phoneEventListener(phonemsgObj) {
+    console.log("后端推送", phonemsgObj);
+    if (hasPrivilege("CRM_LIST_CUSTOMERS")) {
+        ReactDOM.render(
+            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
+                                             setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
+            document.getElementById('phone-alert-modal')
+        );
+    }
 
-                    }
-                }
-            });
-            NotificationType['exist'] = notify;
-        }else{
-            setTimeout(()=>{
-                //如果页面上存在提示框，只显示有多少条消息
-                var tipContent = '';
-                //只有大于0条才显示
-                if (applyTipCount>0){
-                    tipContent = `<p>有${applyTipCount}条申请消息</p>`;
-                }
-                if (approveTipCount>0){
-                    tipContent = tipContent +`<p>有${approveTipCount}条审批消息</p>`;
-                }
-                notificationUtil.updateText(notify,{
+}
+
+//可否弹出桌面通知
+function canPopDesktop() {
+    //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
+    return documentIsHidden() && window.Notification && Notification.permission === 'granted';
+}
+
+function scheduleAlertListener(scheduleAlertMsg) {
+    var title = Intl.get("customer.contact.somebody", "联系") + scheduleAlertMsg.customer_name;
+    var tipContent = scheduleAlertMsg.content || "";
+    if (canPopDesktop()) {
+        //桌面通知的展示
+        showDesktopNotification(title, tipContent);
+    } else {//系统弹出通知
+        notificationUtil.showNotification({
+            title: title,
+            content: tipContent,
+            closeWith: ["button"],
+            timeout: TIMEOUTDELAY.closeTimeDelay
+        });
+    }
+}
+/*
+ *审批的提示 */
+function notifyReplyInfo(data) {
+    if (_.isObject(data.message)) {
+        //记录推送的审批通知的数量
+        approveTipCount++;
+        //标签页不可见时，有桌面通知，且允许弹出桌面通知时
+        if (canPopDesktop()) {//桌面通知的展示
+            showDesktopNotification(Intl.get("user.apply.approve", "用户申请审批"), getReplyTipContent(data));
+        } else {//系统弹出通知
+            let notify = NotificationType['exist'];
+            //如果界面上没有提示框，就显示推送的具体内容
+            if (!notify) {
+                //获取提醒提示框中的内容
+                let tipContent = getReplyTipContent(data);
+                notify = notificationUtil.showNotification({
+                    title: Intl.get("user.apply.approve", "用户申请审批"),
                     content: tipContent,
+                    closeWith: ["button"],
+                    timeout: TIMEOUTDELAY.closeTimeDelay,
+                    callback: {
+                        onClose: function () {
+                            delete NotificationType['exist'];
+                            approveTipCount = 0;
+                        }
+                    }
                 });
-            },TIMEOUTDELAY.renderTimeDelay)
+                NotificationType['exist'] = notify;
+            } else {
+                setTimeout(() => {
+                    //如果页面上存在提示框，只显示有多少条消息
+                    let tipContent = '';
+                    if (approveTipCount > 0) {
+                        tipContent = tipContent + `<p>${Intl.get("user.apply.approve.count", "有{approveCount}条审批消息", {approveCount: approveTipCount})}</p>`;
+                    }
+                    notificationUtil.updateText(notify, {
+                        content: tipContent,
+                    });
+                }, TIMEOUTDELAY.renderTimeDelay)
+            }
         }
     }
 }
@@ -212,17 +324,6 @@ function notifyRepayInfo(data) {
 function notifyCustomerInfo(data) {
     notificationUtil.showNotification({
         title: "客户提醒",
-        content: data.topic,
-        closeWith: ["button"],
-        timeout: 5 * 1000
-    });
-}
-/**
- *系统通知
- */
-function notifySystemInfo(data) {
-    notificationUtil.showNotification({
-        title: "系统通知",
         content: data.topic,
         closeWith: ["button"],
         timeout: 5 * 1000
@@ -292,6 +393,10 @@ function disconnectListener() {
         socketIo.off('sessionExpired', handleSessionExpired);
         socketIo.off('batchOperate', batch.batchOperateListener);
         socketIo.off('disconnect', disconnectListener);
+        socketIo.off('phonemsg', phoneEventListener);
+        socketIo.off('scheduleAlertMsg', scheduleAlertListener);
+        socketIo.off('system_notice', listenSystemNotice);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
 }
@@ -306,24 +411,33 @@ function startSocketIo() {
         //待审批数、及未读数的权限
         if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") || hasPrivilege("APP_USER_APPLY_LIST")) {
             let type = "";
-            if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") && hasPrivilege("APP_USER_APPLY_LIST")) {
-                //获取未读数和未审批数
-                type = "all";
-            } else if (hasPrivilege("APP_USER_APPLY_LIST")) {
-                //只获取待审批数
-                type = "unapproved";
-            } else if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST")) {
-                //只获取未读数
+            if (userData.hasRole("salesmanager")) {
+                //只获取未读数，舆情秘书不展示待审批的申请
                 type = "unread";
+            } else {
+                if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") && hasPrivilege("APP_USER_APPLY_LIST")) {
+                    //获取未读数和未审批数
+                    type = "all";
+                } else if (hasPrivilege("APP_USER_APPLY_LIST")) {
+                    //只获取待审批数
+                    type = "unapproved";
+                } else if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST")) {
+                    //只获取未读数
+                    type = "unread";
+                }
             }
             //获取消息未读数
             getNotificationUnread({type: type}, () => {
                 //获取完未读数后，监听node端推送的弹窗消息
                 socketIo.on('mes', listenOnMessage);
+                //监听系统消息
+                socketIo.on('system_notice', listenSystemNotice);
             });
         } else {
             //获取完未读数后，监听node端推送的弹窗消息
             socketIo.on('mes', listenOnMessage);
+            //监听系统消息
+            socketIo.on('system_notice', listenSystemNotice);
         }
         //监听node端推送的登录踢出的信息
         socketIo.on('offline', listenOnOffline);
@@ -333,11 +447,29 @@ function startSocketIo() {
         socketIo.on('batchOperate', batch.batchOperateListener);
         //监听 disconnect
         socketIo.on('disconnect', disconnectListener);
+        //监听拨打电话
+        socketIo.on('phonemsg', phoneEventListener);
+        //监听日程管理
+        socketIo.on('scheduleAlertMsg', scheduleAlertListener);
+        //监听后端消息
+        phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
         socketEmitter.on(socketEmitter.DISCONNECT, socketEmitterListener);
+        // 判断是否已启用桌面通知
+        notificationCheckPermission();
     });
 }
-
+// 判断是否已启用桌面通知
+function notificationCheckPermission() {
+    if (window.Notification) {
+        // Notification.permission granted 允许弹窗 default 默认状态需要通过主动事件触发
+        // denied 禁止弹窗 需要在浏览器设置中修改设置
+        if (Notification.permission !== 'granted') {
+            // 如果用户设置启用桌面通知，浏览器没有启用，则提示用户是否启用桌面通知。
+            Notification.requestPermission();
+        }
+    }
+}
 //获取未读数
 function getNotificationUnread(queryObj, callback) {
     $.ajax({
@@ -346,7 +478,7 @@ function getNotificationUnread(queryObj, callback) {
         dataType: 'json',
         timeout: 10 * 1000,
         data: queryObj,
-        success: data=> {
+        success: data => {
             var messages = {};
             _.each(['apply', 'customer', 'system', 'approve'], function (key) {
                 var value = data[key];
@@ -369,7 +501,7 @@ function getNotificationUnread(queryObj, callback) {
                 callback();
             }
         },
-        error: ()=> {
+        error: () => {
             if (callback) {
                 callback();
             }

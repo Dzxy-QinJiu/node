@@ -61,6 +61,7 @@
     .ant-input-number-input {
       border: none !important;
       height: 28px !important;
+      width: 78px;
     }
     form .ant-input-number {
       margin-top: 3px;
@@ -186,6 +187,12 @@
     .app-user-info {
       padding-top: 15px;
       position: relative;
+      .app_name_tooltip{
+        max-width: 124px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+      }
       &>b{
         position: absolute;
         border-left: 1px solid #E6EDEF;

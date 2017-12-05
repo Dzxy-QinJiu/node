@@ -59,6 +59,11 @@ let BasicEditInputField = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"点击保存备注按钮");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
+            this.setState({
+                loading: false,
+                displayType: 'text',
+                submitErrorMsg: "",
+            });
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result=> {

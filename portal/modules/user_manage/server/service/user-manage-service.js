@@ -31,13 +31,7 @@ var userRestApis = {
     //修改成员的所属团队
     updateUserTeam: "rest/base/v1/group/user",
     //修改成员角色
-    updateUserRoles: "rest/base/v1/user/member/roles",
-    //跟据成员的id获取坐席号
-    getPhoneOrderById: "/rest/base/v1/user/member/phoneorder",
-    //修改用户的坐席号
-    modifyUserPhoneOrder: "/rest/base/v1/user/member/phoneorder",
-    //成员坐席号唯一性的校验
-    checkOnlyPhoneOrder: "rest/base/v1/user/member/phoneorder/check",
+    updateUserRoles: "rest/base/v1/user/member/roles"
 };
 
 exports.urls = userRestApis;
@@ -90,15 +84,6 @@ exports.getCurUserById = function (req, res, userId) {
         });
 };
 
-//通过成员id获取成员的坐席号
-exports.getPhoneOrderById = function (req, res, memberId) {
-    return restUtil.authRest.get(
-        {
-            url: userRestApis.getPhoneOrderById,
-            req: req,
-            res: res
-        }, memberId);
-};
 
 //添加用户
 exports.addUser = function (req, res, frontUser) {
@@ -138,15 +123,7 @@ exports.editUser = function (req, res, user) {
             res: res
         }, user);
 };
-//修改用户的坐席号
-exports.editUserPhoneOrder = function (req, res, phoneOrder) {
-    return restUtil.authRest.put(
-        {
-            url: userRestApis.modifyUserPhoneOrder,
-            req: req,
-            res: res
-        }, phoneOrder);
-};
+
 //修改用户所属团队
 exports.updateUserTeam = function (req, res, params) {
     return restUtil.authRest.put(
@@ -256,16 +233,6 @@ exports.checkOnlyEmail = function (req, res, email) {
             res: res
         }, null);
 };
-
-//坐席号唯一性校验
-exports.checkOnlyPhoneOrder = function (req, res, phoneOrder) {
-    return restUtil.authRest.get(
-        {
-            url: userRestApis.checkOnlyPhoneOrder,
-            req: req,
-            res: res
-        }, phoneOrder);
-}
 
 
 

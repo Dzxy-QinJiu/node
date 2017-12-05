@@ -5,12 +5,17 @@ const stageUrl = "/rest/customer/v2/salesopportunity/term/sale_stages";
 const sysStageUrl = "/rest/customer/v2/salestage";
 const applyUserUrl = "/rest/base/v1/user/apply_users";
 const queryCustomerUrl = "/rest/customer/v2/customer/query";
-const callRecordGraphUrl = "/rest/customer/v2/callrecord/histogram/:start_time/:end_time/:interval";
-const callRecordListUrl = "/rest/customer/v2/callrecord/query/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
 //添加销售线索
-const addSalesClueUrl = "/rest/customer/v2/customer/clue";
+const addSalesClueUrl = "/rest/customer/v2/clue";
 
 module.exports = [{
+    "method": "post",
+    "path": orderUrl + "/query/:type/10",
+    "handler": "getOrderList",
+    "passport": {
+        "needLogin": true
+    }
+}, {
     "method": "post",
     "path": orderUrl,
     "handler": "addOrder",
@@ -76,20 +81,6 @@ module.exports = [{
     privileges: [
         "CRM_LIST_CUSTOMERS"
     ]
-}, {
-    method: "post",
-    path: callRecordGraphUrl,
-    handler: 'getRecordGraph',
-    passport: {
-        needLogin: true
-    }
-}, {
-    method: "post",
-    path: callRecordListUrl,
-    handler: 'getRecordList',
-    passport: {
-        needLogin: true
-    }
 }, {
     "method": "post",
     "path": addSalesClueUrl,

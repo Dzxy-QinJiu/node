@@ -87,4 +87,3 @@ exports.editApp = function (app) {
     });
     return Deferred.promise();
 };
-

@@ -1,10 +1,11 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * Created by wangliping on 2016/5/19.
  */
-import { Radio, Validation, Form, Input, Select, Icon} from 'antd';
+import { Radio, Form, Input, Select, Icon} from 'antd';
 const RadioGroup = Radio.Group;
 var classNames = require("classnames");
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var AlertTimer = require("../../../../components/alert-timer");
 var rightPanelUtil = require("../../../../components/rightPanel/index");

@@ -1,11 +1,12 @@
 /**
  * Created by wangliping on 2017/3/9.
  */
-import {Tag, Icon, Input} from "antd";
+import {Tag, Icon, Input, message} from "antd";
 let BatchChangeStore = require("../../store/batch-change-store");
 let BatchChangeActions = require("../../action/batch-change-actions");
 let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
+import {isClueTag} from "../../utils/crm-util";
 
 let TagEditField = React.createClass({
     getDefaultProps: function () {
@@ -58,13 +59,21 @@ let TagEditField = React.createClass({
 
         const tag = e.target.value.trim();
         if (!tag) return;
-
+        //”线索标签“不可以添加
+        if(isClueTag(tag)) {
+            message.error(Intl.get("crm.sales.clue.add.disable","不能手动添加'线索'标签"));
+            return;
+        }
         this.toggleTag(tag, true);
         Trace.traceEvent($(this.getDOMNode()).find(".tag-input"),"按enter键添加新标签");
         //清空输入框
         this.refs.newTag.refs.input.value = "";
     },
     toggleTag: function (tag, isAdd) {
+        //不可以操作'线索'标签
+        if(isClueTag(tag)) {
+            return;
+        }
         Trace.traceEvent($(this.getDOMNode()).find(".block-tag-edit"),"点击选中/取消选中某个标签");
         let labels = this.state.labels || [];
 
@@ -97,6 +106,11 @@ let TagEditField = React.createClass({
         Trace.traceEvent(e,"保存对标签的添加");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
+            this.setState({
+                loading: false,
+                displayType: 'text',
+                submitErrorMsg: ""
+            });
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result=> {
@@ -165,6 +179,8 @@ let TagEditField = React.createClass({
         );
         var selectedTagsArray = this.state.labels ? this.state.labels : [];
         var recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
+        //过滤掉线索标签，如果selectedTagsArray中有”线索“标签，则只展示
+        recommendTagsArray = _.filter(recommendTagsArray, tag =>tag!=Intl.get("crm.sales.clue", "线索"));
         var unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
         var tagsJsx = unionTagsArray.map((tag, index)=> {
             let className = "customer-tag";

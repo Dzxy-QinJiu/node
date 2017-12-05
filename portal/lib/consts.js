@@ -11,5 +11,18 @@ module.exports = {
     DATE_YEAR_MONTH_FORMAT: "YYYY-MM",
     //只包含月和日的日期格式
     DATE_MONTH_DAY_FORMAT: "MM-DD",
-}
-
+    //组织列表中的类型判断
+    CATEGORY_TYPE: {
+        ORGANIZATION: "0",//组织
+        DEPARTMENT: "1",//部门
+        TEAM: "2"//团队
+    },
+    PAGE_ID: {
+        //用户审计日志
+        USER_AUDIT_LOG: "audit-log",
+        //销售首页页面
+        SALES_HOME:"sales-home",
+        //线索客户
+        CLUE_CUSTOMER: "clue-customer"
+    }
+};

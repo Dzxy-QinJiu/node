@@ -18,8 +18,10 @@ var BarChart = React.createClass({
             list : [],
             title : Intl.get("user.analysis.team", "团队统计"),
             width:'100%',
-            height:214,
+            height:234,
             resultType : 'loading',
+            isShowSplitLine: false,
+            isShowSplitArea: false,
             startDate: '',
             endDate : '',
             xAxisInterval:'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
@@ -80,7 +82,10 @@ var BarChart = React.createClass({
                 {
                     type : 'category',
                     data : this.getCategorys(),
-                    splitLine : false,
+                    splitLine : this.props.isShowSplitLine,
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,
@@ -111,7 +116,10 @@ var BarChart = React.createClass({
             yAxis : [
                 {
                     type : 'value',
-                    splitLine : false,
+                    splitLine : this.props.isShowSplitLine,
+                    splitArea : {
+                        show: false
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,

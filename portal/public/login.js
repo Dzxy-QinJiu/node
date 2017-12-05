@@ -8,3 +8,10 @@ var props = {
 };
 
 ReactDOM.render(<Translate Template={<LoginDetail {...props}/>}/>, $('#react-placeholder')[0]);
+
+var styleEl = document.getElementById("css-style-collector-data");
+
+if (styleEl) {
+    styleEl.remove();
+}
+

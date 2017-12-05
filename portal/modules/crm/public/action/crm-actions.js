@@ -15,15 +15,21 @@ function CrmActions() {
         "editBasicSuccess",
         //设置页码
         "setPageNum",
-        //添加完销售线索后的处理
-        "afterAddSalesClue"
+        //设置点击的页码
+        "setNextPageNum",
+        //拨打电话完增加跟进记录成功后更新列表的跟进内容
+        "updateCurrentCustomerRemark",
+        //修改默认联系人后，更新客户列表中该客户的默认联系人
+        "updateCustomerDefContact"
     );
 
     this.queryCustomer = function (condition, rangParams, pageSize, sorter,queryObj) {
-        var _this = this;
-        crmAjax.queryCustomer(condition, rangParams,pageSize, sorter,queryObj).then(function (result) {
+        this.dispatch({error : false , loading:true});
+        crmAjax.queryCustomer(condition, rangParams,pageSize, sorter,queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            _this.dispatch(result);
+            this.dispatch({error: false, loading:false, result:result});
+        },(errorMsg)=>{
+            this.dispatch({error: true, loading:false, errorMsg: errorMsg || Intl.get("failed.get.crm.list","获取客户列表失败")});
         });
     };
 

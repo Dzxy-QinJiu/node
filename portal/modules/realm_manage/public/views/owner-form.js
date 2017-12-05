@@ -1,9 +1,9 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 require("../scss/index.scss");
-var Validation = require("antd").Validation;
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Col = require("antd").Col;
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -161,18 +161,24 @@ var OwnerForm = React.createClass({
         },
 
         checkPass(rule, value, callback) {
-            //获取密码强度及是否展示
-            var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
-            this.setState({
-                passBarShow: passStrengthObj.passBarShow,
-                passStrength: passStrengthObj.passStrength
-            });
-
-            if (this.state.formData.password) {
-                this.refs.validation.forceValidate(['rePassword']);
+            if (value && value.match(passwdStrengthFile.passwordRegex)) {
+                //获取密码强度及是否展示
+                var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
+                this.setState({
+                    passBarShow: passStrengthObj.passBarShow,
+                    passStrength: passStrengthObj.passStrength
+                });
+                if (this.state.formData.password) {
+                    this.refs.validation.forceValidate(['rePassword']);
+                }
+                callback();
+            } else {
+                this.setState({
+                    passBarShow: false,
+                    passStrength: 'L'
+                });
+                callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
             }
-
-            callback();
         },
 
         checkPass2(rule, value, callback) {
@@ -413,7 +419,7 @@ var OwnerForm = React.createClass({
                                             help={status.password.errors ? status.password.errors.join(',') : null}
                                         >
                                             <Validator
-                                                rules={[{required: true, whitespace: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}, {validator: this.checkPass}]}>
+                                                rules={[{validator: this.checkPass}]}>
                                                 <Input
                                                     name="password"
                                                     id="password"
@@ -439,7 +445,7 @@ var OwnerForm = React.createClass({
                                             help={status.rePassword.errors ? status.rePassword.errors.join(',') : null}
                                         >
                                             <Validator
-                                                rules={[{required: true,whitespace: true,message: '两次输入密码不一致!'}, {validator: this.checkPass2}]}
+                                                rules={[{required: true,whitespace: true,message: Intl.get("common.password.unequal", "两次输入密码不一致！")}, {validator: this.checkPass2}]}
                                             >
                                                 <Input
                                                     name="rePassword"

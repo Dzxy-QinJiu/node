@@ -1,5 +1,6 @@
-import {Validation, Form, Input, Button, Select, Icon, message} from "antd";
+const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
+import {Form, Input, Button, Select, Icon, message} from "antd";
 const FormItem = Form.Item;
 const classnames = require("classnames");
 const Spinner = require('../../../../../components/spinner');
@@ -49,6 +50,7 @@ const OrderForm = React.createClass({
                             this.setState({isLoading: false});
                             if (result.code === 0) {
                                 message.success( Intl.get("common.save.success", "保存成功"));
+                                OrderAction.afterEditOrder(reqData);
                                 //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                                 setTimeout(() => {
                                     this.props.refreshCustomerList(reqData.customer_id);
@@ -63,10 +65,11 @@ const OrderForm = React.createClass({
                     //保存
                     reqData.customer_id = this.props.customerId;
                     this.setState({isLoading: true});
-                    OrderAction.addOrder(reqData, {}, (result) => {
+                    OrderAction.addOrder(reqData, {}, (data) => {
                         this.setState({isLoading: false});
-                        if (result.code === 0) {
+                        if (data.code === 0) {
                             message.success( Intl.get("user.user.add.success", "添加成功"));
+                            OrderAction.afterAddOrder(data.result);
                             //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                             setTimeout(() => {
                                 this.props.refreshCustomerList(reqData.customer_id);
@@ -122,10 +125,9 @@ const OrderForm = React.createClass({
                                 <label><ReactIntl.FormattedMessage id="crm.147" defaultMessage="订单号" />：{formData.id}</label>
                             </div>
                             <div className="order-title-right-btn">
-                                <Button className="order-btn-class icon-return iconfont"
+                                <div className="order-btn-class icon-return iconfont"
                                         onClick={this.handleCancel}
-                                >
-                                </Button>
+                                />
                             </div>
                         </div>
                         <div className="order-introduce">

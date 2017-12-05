@@ -3,8 +3,6 @@
  */
 var echarts = require("echarts-eefung");
 require("../bar/index.scss");
-var Color = require("color");
-var emitter = require("../../utils/emitter");
 var Spinner = require("../../../../../components/spinner");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
@@ -17,11 +15,13 @@ var SingleAppBarChart = React.createClass({
             list : [],
             title : Intl.get("user.analysis.team", "团队统计"),
             width:'100%',
-            height:214,
+            height:234,
             resultType : 'loading',
             xAxisInterval:'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
             xAxisLabelAlign:'center',//x轴坐标label位置，默认：剧中（居左、右）
-            xAxisRotate:0//x轴坐标label倾斜的角度（避免重叠时设置）
+            xAxisRotate:0, //x轴坐标label倾斜的角度（避免重叠时设置）
+            isShowSplitLine: false,
+            isShowSplitArea: false
         };
     },
     getLegend : function() {
@@ -82,7 +82,10 @@ var SingleAppBarChart = React.createClass({
                 {
                     type : 'category',
                     data : this.getCategorys(),
-                    splitLine : false,
+                    splitLine : this.props.isShowSplitLine,
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
                     axisLine : {
                         lineStyle : {
                             width:1,
@@ -115,6 +118,10 @@ var SingleAppBarChart = React.createClass({
                     minInterval: 1,
                     max: yMax,
                     type : 'value',
+                    splitArea : {
+                        show: this.props.isShowSplitArea
+                    },
+                    splitLine : this.props.isShowSplitLine,
                     axisLine : {
                         lineStyle : {
                             width:1,

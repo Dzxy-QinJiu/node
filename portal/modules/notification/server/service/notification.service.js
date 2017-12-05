@@ -5,8 +5,7 @@ var Promise = require("bluebird");
 
 //通知相关的api
 var NotificationRestApis = {
-    //获取申请消息列表
-    getApplyMessageList: "/rest/base/v1/message/notice/user",
+
     //获取客户提醒列表
     getCustomerMessageList: "/rest/base/v1/message/notice/customer",
     //清除未读数
@@ -14,18 +13,16 @@ var NotificationRestApis = {
     //获取客户提醒、申请消息未读数
     getUnreadCount: "/rest/base/v1/message/notice/unread",
     //获取申请的待审批数
-    getUnapprovedCount: "/rest/base/v1/message/status/false/0/0"
+    getUnapprovedCount: "/rest/base/v1/message/applylist?page_size=0&approval_state=false",
+    //获取系统消息列表(未处理)
+    getUnHandledSystemNotices: "/rest/base/v1/notice/customernotice/grouping",
+    //获取系统消息列表(已处理)
+    getHandledSystemNotices: "/rest/base/v1/notice/customernotice/history",
+    //将系统消息设为已处理
+    handleSystemNotice: "/rest/base/v1/notice/customernotice/handle/:noticeId"
 };
 exports.urls = NotificationRestApis;
 
-//获取申请消息列表
-exports.getApplyForMessageList = function (req, res, queryObj) {
-    return restUtil.authRest.get({
-        url: NotificationRestApis.getApplyMessageList,
-        req: req,
-        res: res
-    }, queryObj);
-};
 //获取客户提醒列表
 exports.getCustomerMessageList = function (req, res, queryObj) {
     return restUtil.authRest.get({
@@ -33,6 +30,27 @@ exports.getCustomerMessageList = function (req, res, queryObj) {
         req: req,
         res: res
     }, queryObj);
+};
+
+//获取系统消息列表
+exports.getSystemNotices = function (req, res, queryObj) {
+    let url = NotificationRestApis.getUnHandledSystemNotices;//未处理的系统消息
+    if (req.params.status === "handled") {//已处理
+        url = NotificationRestApis.getHandledSystemNotices;
+    }
+    return restUtil.authRest.get({
+        url: url,
+        req: req,
+        res: res
+    }, queryObj);
+};
+//将系统消息设为已处理
+exports.handleSystemNotice = function (req, res, noticeId) {
+    return restUtil.authRest.put({
+        url: NotificationRestApis.handleSystemNotice.replace(":noticeId", noticeId),
+        req: req,
+        res: res
+    }, null);
 };
 //清除未读数
 exports.clearUnreadNum = function (req, res, type) {

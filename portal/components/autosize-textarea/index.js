@@ -6,6 +6,7 @@
  */
 
 import { Input } from "antd";
+const { TextArea } = Input;
 const autosize = require("autosize");
 
 const AutosizeTextarea = React.createClass({
@@ -13,7 +14,7 @@ const AutosizeTextarea = React.createClass({
         autosize($(this.getDOMNode()).find("textarea"));
     },
     render: function () {
-        return <Input type="textarea" {...this.props} />
+        return <TextArea {...this.props} />
     }
 });
 

@@ -51,7 +51,7 @@ class ApplyViewDetailStore {
             //延期时间的单位，默认是天
             delayTimeUnit : "days",
             // 到期时间(选择到期时间)
-            end_date: '',
+            end_date: moment().add('days',1).valueOf(),
             // 延期时间
             delay_time: '',
             //审批修改密码

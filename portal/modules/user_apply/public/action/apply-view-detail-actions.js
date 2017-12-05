@@ -3,7 +3,7 @@ import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
 import UserData from '../../../../public/sources/user-data';
 var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
-import { message } from "antd";
+import {message} from "antd";
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 //更新申请的待审批数，通过、驳回、撤销后均减一
@@ -14,7 +14,7 @@ function updateUnapprovedCount() {
             clearTimeout(timeoutFunc);
         }
         timeoutFunc = setTimeout(function () {
-            //触发展示的组件未读数的刷新
+            //触发展示的组件待审批数的刷新
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
         }, timeout);
     }

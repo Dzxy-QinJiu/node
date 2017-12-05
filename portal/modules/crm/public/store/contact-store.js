@@ -32,6 +32,7 @@ function ContactStore() {
      }
      ]
      */
+    this.contactListLoading = false;
     this.contactList = [];
     //获取联系人列表出错的提示，默认不出错
     this.getContactListErrorMsg = "";
@@ -55,8 +56,6 @@ function ContactStore() {
         , 'submitEditContact': ContactActions.submitEditContact
         //添加一个联系方式
         , 'addContactWay': ContactActions.addContactWay
-        //去掉一个联系方式
-        , 'removeContactWay': ContactActions.removeContactWay
         //显示删除一个联系人的对话框
         , 'showDeleteContactConfirm': ContactActions.showDeleteContactConfirm
         //隐藏删除一个联系人的对话框
@@ -84,16 +83,22 @@ ContactStore.prototype.getIsShowAddContactForm = function () {
 };
 
 //FromAction-通过ajax获取联系人列表
-ContactStore.prototype.getContactList = function (list) {
-    if (typeof list === 'string') {
-        this.getContactListErrorMsg = list;
+ContactStore.prototype.getContactList = function (data) {
+    if (data.isLoading) {
+        this.contactListLoading = data.isLoading;
+    } else if (data.errorMsg) {
+        this.getContactListErrorMsg = data.errorMsg;
+        this.contactListLoading = false;
         this.contactList = [];
     } else {
         this.getContactListErrorMsg = '';
-        var viewList = [];
-        _.each(list, function (contact) {
-            viewList.push(ContactUtils.newViewContactObject(contact));
-        });
+        this.contactListLoading = false;
+        let viewList = [];
+        if (_.isArray(data.list) && data.list.length) {
+            viewList = data.list.map((contact) => {
+                return ContactUtils.newViewContactObject(contact);
+            });
+        }
         this.contactList = viewList;
     }
 };
@@ -141,7 +146,12 @@ ContactStore.prototype.submitEditContact = function (contact) {
     } else {
         this.hideEditContactForm(targetContact);
         targetContact.submitEditContactErrorMsg = "";
-        _.extend(targetContact.contact, contact);
+        //将修改后返回的联系人对象转换为界面上所需的数据格式
+        let afterEditContact = ContactUtils.newViewContactObject(contact);
+        targetContact.contact = afterEditContact.contact;//联系人对象
+        //该联系人对应的联系方式数组对象
+        // contactWayAddObj: {phone: [], email: [],qq: [],weChat: []}
+        targetContact.contactWayAddObj = afterEditContact.contactWayAddObj;
     }
 };
 
@@ -149,15 +159,6 @@ ContactStore.prototype.submitEditContact = function (contact) {
 ContactStore.prototype.addContactWay = function (array) {
     var obj = array[0], type = array[1];
     obj.contactWayAddObj[type].push("");
-};
-
-//FromAction-去掉一个联系方式
-ContactStore.prototype.removeContactWay = function (array) {
-    var obj = array[0], type = array[1], index = array[2];
-    var contactArray = obj.contactWayAddObj[type];
-    if (_.isArray(contactArray) && contactArray.length >= (index + 1)) {
-        obj.contactWayAddObj[type].splice(index, 1);
-    }
 };
 
 //FromAction-显示删除一个联系人的对话框
@@ -178,9 +179,9 @@ ContactStore.prototype.deleteContact = function (contactData) {
 
 //FromAction-设置为默认联系人
 ContactStore.prototype.toggleDefaultContact = function (contact) {
-    //var def_contancts = contact.def_contancts;
     ContactUtils.unsetDefaultContacts(this.contactList);
-    contact.def_contancts = "true";
+    let curContact = _.find(this.contactList, item => item.contact.id === contact.id);
+    curContact.contact.def_contancts = "true";
 };
 
 module.exports = alt.createStore(ContactStore, 'ContactStore');

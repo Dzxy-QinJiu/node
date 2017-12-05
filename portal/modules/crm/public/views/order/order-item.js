@@ -29,11 +29,13 @@ const OrderItem = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        this.setState({
-            formData: JSON.parse(JSON.stringify(nextProps.order)),
-            stage: nextProps.order.sale_stages,
-            apps: nextProps.order.apps
-        });
+        if (nextProps.isMerge||nextProps.order && nextProps.order.id !== this.props.order.id) {
+            this.setState({
+                formData: JSON.parse(JSON.stringify(nextProps.order)),
+                stage: nextProps.order.sale_stages,
+                apps: nextProps.order.apps
+            });
+        }
     },
 
     //展示是否删除的模态框
@@ -47,7 +49,7 @@ const OrderItem = React.createClass({
     },
 
     hideModalDialog: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"),"取消删除某个订单");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"), "取消删除某个订单");
         this.setState({
             modalDialogFlag: false
         });
@@ -55,7 +57,7 @@ const OrderItem = React.createClass({
 
     //模态提示框确定后的处理
     handleModalOK: function (order, apps) {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"),"确定删除某个订单");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除某个订单");
         switch (this.state.modalDialogType) {
             case 1:
                 //删除订单
@@ -67,12 +69,16 @@ const OrderItem = React.createClass({
                     OrderAction.deleteOrder({}, {id: order.id}, result => {
                         this.setState({isLoading: false});
                         if (result.code === 0) {
-                            message.success( Intl.get("crm.138", "删除成功"));
-                            //删除订单后，更新客户列表中的客户信息
-                            CrmAction.updateAfterDelOrder(order);
+                            message.success(Intl.get("crm.138", "删除成功"));
+                            OrderAction.afterDelOrder(order.id);
+                            //稍后后再去重新获取数据，以防止后端更新未完成从而取到的还是旧数据
+                            setTimeout(() => {
+                                //删除订单后，更新客户列表中的客户信息
+                                this.props.refreshCustomerList(order.customer_id);
+                            }, 1000);
                         }
                         else {
-                            message.error( Intl.get("crm.139", "删除失败"));
+                            message.error(Intl.get("crm.139", "删除失败"));
                         }
                     });
                 }
@@ -93,35 +99,36 @@ const OrderItem = React.createClass({
     },
 
     showStageSelect: function () {
-        Trace.traceEvent(this.getDOMNode(),"点击编辑销售阶段按钮");
+        Trace.traceEvent(this.getDOMNode(), "点击编辑销售阶段按钮");
         this.setState({isStageSelectShow: true});
     },
 
     closeStageSelect: function () {
-        Trace.traceEvent(this.getDOMNode(),"取消客户详情中订单页面销售阶段修改的保存");
-        this.setState({isStageSelectShow: false});
+        Trace.traceEvent(this.getDOMNode(), "取消客户详情中订单页面销售阶段修改的保存");
+        this.setState({
+            isStageSelectShow: false,
+            stage: this.state.formData.sale_stages
+        });
     },
 
     onStageChange: function (stage) {
-        Trace.traceEvent(this.getDOMNode(),"修改销售阶段");
+        Trace.traceEvent(this.getDOMNode(), "修改销售阶段");
         this.state.stage = stage;
         this.setState(this.state);
     },
 
     showAppPanel: function () {
-        Trace.traceEvent(this.getDOMNode(),"点击修改应用");
+        Trace.traceEvent(this.getDOMNode(), "点击修改应用");
         this.setState({isAppPanelShow: true});
-        this.props.onChange();
     },
 
     closeAppPanel: function () {
-        Trace.traceEvent(this.getDOMNode(),"取消客户详情中订单页面应用修改的保存");
-        this.setState({isAppPanelShow: false});
-        this.props.onChange();
+        Trace.traceEvent(this.getDOMNode(), "取消客户详情中订单页面应用修改的保存");
+        this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
     },
 
     onAppsChange: function (selectedApps) {
-        Trace.traceEvent(this.getDOMNode(),"点击选中/取消选中某个应用");
+        Trace.traceEvent(this.getDOMNode(), "点击选中/取消选中某个应用");
         this.state.apps = _.pluck(selectedApps, "client_id");
         this.setState(this.state);
     },
@@ -135,11 +142,11 @@ const OrderItem = React.createClass({
             this.props.updateMergeCustomerOrder(reqData);
             if (updateTarget === "stage") {
                 this.state.isStageSelectShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"),"保存客户详情中订单页面销售阶段的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面销售阶段的修改");
             }
             if (updateTarget === "app") {
                 this.state.isAppPanelShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"),"保存客户详情中订单页面应用的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面应用的修改");
             }
         } else {
             //客户详情中修改订单的销售阶段或应用
@@ -147,25 +154,22 @@ const OrderItem = React.createClass({
             if (updateTarget === "stage") {
                 //修改订单的销售阶段
                 this.editOrderStage(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"),"保存客户详情中订单页面销售阶段的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面销售阶段的修改");
             } else if (updateTarget === "app") {
                 //修改订单的应用
                 this.editOrderApp(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"),"保存客户详情中订单页面应用的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面应用的修改");
             }
         }
     },
     //修改订单的销售阶段
     editOrderStage: function (reqData) {
-        OrderAction.editOrderStage({
-            customer_id: reqData.customer_id,
-            id: reqData.id,
-            sale_stages: reqData.sale_stages
-        }, {}, result=> {
+        let {customer_id, id, sale_stages} = reqData;
+        OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
             this.state.isLoading = false;
             if (result.code === 0) {
-                message.success( Intl.get("common.save.success", "保存成功"));
-                this.state.formData = reqData;
+                message.success(Intl.get("common.save.success", "保存成功"));
+                this.state.formData.sale_stages = reqData.sale_stages;
                 //关闭编辑状态，返回展示状态
                 this.state.isStageSelectShow = false;
                 //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
@@ -173,7 +177,7 @@ const OrderItem = React.createClass({
                     this.props.refreshCustomerList(reqData.customer_id);
                 }, 1000);
             } else {
-                message.error( Intl.get("common.save.failed", "保存失败"));
+                message.error(Intl.get("common.save.failed", "保存失败"));
             }
             this.setState(this.state);
         });
@@ -181,18 +185,19 @@ const OrderItem = React.createClass({
     //修改订单的应用
     editOrderApp: function (reqData) {
         //修改订单的应用
-        OrderAction.editOrder(reqData, {}, (result) => {
+        let {customer_id, id, apps} = reqData;
+        OrderAction.editOrder({customer_id, id, apps}, {}, (result) => {
             this.state.isLoading = false;
             if (result.code === 0) {
-                message.success( Intl.get("common.save.success", "保存成功"));
-                this.state.formData = reqData;
+                message.success(Intl.get("common.save.success", "保存成功"));
+                this.state.formData.apps = reqData.apps;
                 this.state.isAppPanelShow = false;
                 //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                 setTimeout(() => {
                     this.props.refreshCustomerList(reqData.customer_id);
                 }, 1000);
             } else {
-                message.error( Intl.get("common.save.failed", "保存失败"));
+                message.error(Intl.get("common.save.failed", "保存失败"));
             }
             this.setState(this.state);
         });
@@ -213,22 +218,22 @@ const OrderItem = React.createClass({
             type: route.method,
             params: params
         };
-        
+
         ajax(arg).then(result => {
-            this.setState({isLoading: false});
+                this.setState({isLoading: false});
 
-            message.success( Intl.get("crm.140", "生成合同成功"));
-            //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                message.success(Intl.get("crm.140", "生成合同成功"));
+                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
 
-            setTimeout(() => {
-                this.props.refreshCustomerList(this.props.order.customer_id);
-            }, 1000);
-        },
-        errorMsg => {
-            this.setState({isLoading: false});
+                setTimeout(() => {
+                    this.props.refreshCustomerList(this.props.order.customer_id);
+                }, 1000);
+            },
+            errorMsg => {
+                this.setState({isLoading: false});
 
-            message.error(errorMsg);
-        });
+                message.error(errorMsg);
+            });
     },
 
     //转到合同
@@ -278,7 +283,7 @@ const OrderItem = React.createClass({
 
         //是否显示生成合同的按钮
         let showGenerateContractBtn = false;
-        if (this.props.order.sale_stages ===Intl.get("crm.141", "成交阶段") && !this.props.order.contract_id && hasPrivilege("SALESOPPORTUNITY_CONTRACT")) {
+        if (this.props.order.sale_stages === Intl.get("crm.141", "成交阶段") && !this.props.order.contract_id && hasPrivilege("SALESOPPORTUNITY_CONTRACT")) {
             showGenerateContractBtn = true;
         }
 
@@ -291,24 +296,25 @@ const OrderItem = React.createClass({
                 }
                 <div className="order-title">
                     <div className="order-title-left">
-                        <label><ReactIntl.FormattedMessage id="crm.146" defaultMessage="日期" />：{moment(order.time).format(oplateConsts.DATE_FORMAT)}</label>
+                        <label><ReactIntl.FormattedMessage id="crm.146"
+                                                           defaultMessage="日期"/>：{moment(order.time).format(oplateConsts.DATE_FORMAT)}
+                        </label>
                         <br />
-                        <label><ReactIntl.FormattedMessage id="crm.147" defaultMessage="订单号" />：{order.id}</label>
+                        <label><ReactIntl.FormattedMessage id="crm.147" defaultMessage="订单号"/>：{order.id}</label>
                     </div>
                     <div className="order-title-right-btn">
-                        <Button className="order-btn-class icon-delete iconfont"
-                                onClick={this.showDelModalDialog}
-                                data-tracename="点击删除某个订单按钮"
-                        >
-                        </Button>
-                        <Button className="order-btn-class icon-update iconfont"
-                                onClick={this.props.showForm.bind(null, order.id)}
+                        <div className="order-btn-class icon-delete iconfont"
+                             onClick={this.showDelModalDialog}
+                             data-tracename="点击删除某个订单按钮"
+                        />
+                        <div className="order-btn-class icon-update iconfont"
+                             onClick={this.props.showForm.bind(null, order.id)}
                         />
                     </div>
                 </div>
                 <div className="order-introduce">
                     <div className="order-introduce-div">
-                        <label><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段" />：</label>
+                        <label><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段"/>：</label>
                         {!this.state.isStageSelectShow ? (
                             <label style={{marginRight: 8}}>{order.sale_stages}</label>
                         ) : (
@@ -353,10 +359,13 @@ const OrderItem = React.createClass({
                     </div>
                     <div className="order-introduce-div">
                         <label
-                            className={(order.budget ? "" : " color-gray")}><ReactIntl.FormattedMessage id="crm.148" defaultMessage="预算金额" />：{order.budget ? Intl.get("crm.149", "{num}万", {num: order.budget}) : null}</label>
+                            className={(order.budget ? "" : " color-gray")}><ReactIntl.FormattedMessage id="crm.148"
+                                                                                                        defaultMessage="预算金额"/>：{order.budget ? Intl.get("crm.149", "{num}万", {num: order.budget}) : null}
+                        </label>
                     </div>
                     <div className="order-application-list">
-                        <label className={(apps ? "" : "color-gray")}><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用" />：</label>
+                        <label className={(apps ? "" : "color-gray")}><ReactIntl.FormattedMessage id="common.app"
+                                                                                                  defaultMessage="应用"/>：</label>
                         <div className="order-application-div">
                             {apps.map(function (app, i) {
                                 return (
@@ -410,34 +419,36 @@ const OrderItem = React.createClass({
 
                     {applyBtnText && this.props.isApplyButtonShow ? (
                         <div className="order-introduce-div">
-                            <label><ReactIntl.FormattedMessage id="crm.150" defaultMessage="用户申请" />：</label>
+                            <label><ReactIntl.FormattedMessage id="crm.150" defaultMessage="用户申请"/>：</label>
                             <Button type="ghost" className="order-introduce-btn"
-                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
+                                    onClick={this.showApplyForm.bind(this, applyType, order, apps)}
                             >
                                 {applyBtnText}
                             </Button>
                         </div>
                     ) : null}
                     <div className="order-introduce-div">
-                        <label className={"order-label-salesRemarks" + (order.remarks ? "" : " color-gray")}><ReactIntl.FormattedMessage id="common.remark" defaultMessage="备注" />：</label>
+                        <label
+                            className={"order-label-salesRemarks" + (order.remarks ? "" : " color-gray")}><ReactIntl.FormattedMessage
+                            id="common.remark" defaultMessage="备注"/>：</label>
                         <div
                             className="order-div-salesRemarks">{order.remarks}</div>
                     </div>
 
-                    {this.props.order.contract_id? (
-                    <Button type="ghost" className="order-introduce-btn pull-right"
-                        onClick={this.gotoContract}
-                    >
-                        <ReactIntl.FormattedMessage id="crm.151" defaultMessage="查看合同" />
-                    </Button>
+                    {this.props.order.contract_id ? (
+                        <Button type="ghost" className="order-introduce-btn pull-right"
+                                onClick={this.gotoContract}
+                        >
+                            <ReactIntl.FormattedMessage id="crm.151" defaultMessage="查看合同"/>
+                        </Button>
                     ) : null}
 
-                    {showGenerateContractBtn? (
-                    <Button type="ghost" className="order-introduce-btn pull-right"
-                        onClick={this.generateContract}
-                    >
-                        <ReactIntl.FormattedMessage id="crm.152" defaultMessage="生成合同" />
-                    </Button>
+                    {showGenerateContractBtn ? (
+                        <Button type="ghost" className="order-introduce-btn pull-right"
+                                onClick={this.generateContract}
+                        >
+                            <ReactIntl.FormattedMessage id="crm.152" defaultMessage="生成合同"/>
+                        </Button>
                     ) : null}
                 </div>
 

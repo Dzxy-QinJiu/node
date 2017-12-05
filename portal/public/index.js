@@ -1,20 +1,22 @@
 require("bootstrap/dist/css/bootstrap.min.css");
 require("bootstrap/dist/js/bootstrap.min.js");
-require("./sources/jquery.ajax.global.js");
+require("antd/dist/antd.min.css");
+var Alt = require("alt");
+window.alt = new Alt();
 require("./sources/jquery.ajax.trans.js");
+require("./sources/jquery.ajax.global.js");
 require("./sources/browser.sniff.js");
 require("es6-shim");
 require("./sources/push/index.scss");
-var Alt = require("alt");
-window.alt = new Alt();
 var userData = require("./sources/user-data");
 var AppStarter = require("./sources/app-starter");
 var PrivilegeGet = require("./sources/privilege-get");
 var EventEmitter = require('events');
 window.emitter = new EventEmitter();
-var pushJS = require('./sources/push');
 var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
+var websiteConfig = require("../lib/utils/websiteConfig");
+var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -55,7 +57,6 @@ function suppressWarnings() {
 }
 
 function getUserPrivilegeAndStart() {
-
     loginTime++;
 
     unmountPrivilegeGet();
@@ -70,11 +71,12 @@ function getUserPrivilegeAndStart() {
         moment.locale(Oplate.lang);
         unmountPrivilegeGet();
         suppressWarnings();
+        getWebsiteConfig();
         AppStarter.init({
             goIndex: false
         });
         //启动socketio接收数据
-        pushJS.startSocketIo();
+        !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
     }).fail(function (errorTip) {
         //错误处理
         hideLoading(errorTip);

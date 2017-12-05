@@ -2,13 +2,13 @@
  * Created by wangliping on 2016/9/26.
  */
 
+const Validation = require("rc-form-validation");
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("../scss/app-auth-panel-es_VE.scss");
 }else if (language.lan() == "zh"){
     require("../scss/app-auth-panel-zh_CN.scss");
 }
-var Validation = require("antd").Validation;
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Select = require("antd").Select;

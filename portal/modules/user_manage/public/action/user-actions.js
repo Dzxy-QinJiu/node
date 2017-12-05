@@ -78,16 +78,7 @@ function UserActions() {
             _this.dispatch(errorMsg);
         });
     };
-
-    this.getPhoneOrderById = function (memberId) {
-        var _this = this;
-        userAjax.getPhoneOrderById(memberId).then(function (phoneOrder) {
-            _this.dispatch(phoneOrder);
-        }, function (errorMsg) {
-            _this.dispatch(errorMsg || Intl.get("member.get.phone.order.failed", "获取成员的坐席号失败!"));
-        })
-    };
-
+    
 }
 
 module.exports = alt.createActions(UserActions);

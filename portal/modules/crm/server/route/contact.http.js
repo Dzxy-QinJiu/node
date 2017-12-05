@@ -5,6 +5,14 @@
 module.exports = {
     module: "crm/server/action/contact-controller",
     routes: [{
+        "method": "post",
+        "path": "/rest/crm/contact_list/:type",
+        "handler": "getContactList",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": []
+    },{
         "method": "delete",
         "path": "/rest/contact/:contactId",
         "handler": "deleteContact",

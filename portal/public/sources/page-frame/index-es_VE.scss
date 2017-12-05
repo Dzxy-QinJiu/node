@@ -2,8 +2,8 @@
 @import '../../css/iconfont.scss';
 @import '../../css/common-es';
 
-$font-family:"SimHei", "Tahoma", "Arial", "SimSun", "Arial Narrow" !important;
-$font-family-macintosh:STXihei, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+$font-family:"SimHei", "SimSun", "Arial Narrow" !important;
+$font-family-macintosh: "SimHei",STXihei, "Helvetica Neue", Helvetica, sans-serif !important;
 body, pre{
   font-family:$font-family;
 }
@@ -66,13 +66,13 @@ body.macintosh, body.macintosh pre{
       font-weight:normal;
     }
     .second-line-title{
-      padding-left:31px;
+      padding-left:7px;
     }
     .modal-password-input{
-      width:295px;
+      width:315px;
       height:30px;
       margin-top:5px;
-      margin-left:31px;
+      margin-left:7px;
       padding:0 5px;
     }
     //验证码的样式设置
@@ -156,7 +156,6 @@ body.macintosh, body.macintosh pre{
     background:#fff;
     padding-left:30px;
     max-height: 76px;
-    overflow: hidden;
 
     &:before{
       content:" ";
@@ -358,7 +357,7 @@ body.macintosh, body.macintosh pre{
     right:16px !important;
     background:rgba(0, 0, 0, 0) !important;
     &:after{
-      content:"\E62D";
+      content:"\E633";
       font-size:12px;
       font-family:"anticon";
       cursor:pointer;

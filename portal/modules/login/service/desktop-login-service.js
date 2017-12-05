@@ -4,6 +4,7 @@ var request = require("request");
 var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require("../../../lib/utils/backend_intl");
+const ipUtil = require("../../../lib/utils/common-utils").ip;
 
 //定义url
 var urls = {
@@ -14,7 +15,19 @@ var urls = {
     //获取验证码
     getLoginCaptcha: "/auth2/authc/captcha/get",
     //刷新验证码
-    refreshLoginCaptcha: "/auth2/authc/captcha/refresh"
+    refreshLoginCaptcha: "/auth2/authc/captcha/refresh",
+    //获取重置密码验证码
+    getResetPasswordCaptcha: "/auth2/authc/reset_password/captcha",
+    //检查联系方式是否存在
+    checkContactInfoExists: "/auth2/rs/users/",
+    //获取操作码
+    getOperateCode: "/auth2/authc/reset_password/getPhoneAndEmail",
+    //发送验证信息
+    sendResetPasswordMsg: "/auth2/authc/reset_password/send_msg",
+    //通过验证码换取临时票据
+    getTicket: "/auth2/authc/reset_password/ticket",
+    //重置密码
+    resetPassword: "/auth2/authc/reset_password/update",
 };
 //验证码的高和宽
 var captcha = {
@@ -123,17 +136,27 @@ exports.getAppToken = function (req, res) {
  * 获取验证码
  *
  */
-exports.getLoginCaptcha = function (req, res, user_name, appToken) {
+exports.getLoginCaptcha = function (req, res, user_name, appToken, type) {
+    var url = urls.getLoginCaptcha;
+    var headers = {
+        Authorization: appTokenPrefix + appToken,
+        realm: config.loginParams.realm,
+        session_id: req.sessionID
+    };
+
+    if (type) {
+        url = urls.getResetPasswordCaptcha;
+
+        headers.remote_addr = ipUtil.getServerAddresses();
+        headers.user_id = ipUtil.getClientIp(req);
+    }
+
     return restUtil.baseRest.get(
         {
-            url: urls.getLoginCaptcha,
+            url: url,
             req: req,
             res: res,
-            headers: {
-                Authorization: appTokenPrefix + appToken,
-                realm: config.loginParams.realm,
-                session_id: req.sessionID
-            }
+            headers: headers
         }, {
             user_name: user_name,
             width: captcha.width,
@@ -145,24 +168,33 @@ exports.getLoginCaptcha = function (req, res, user_name, appToken) {
  * 刷新验证码
  *
  */
-exports.refreshLoginCaptcha = function (req, res, user_name, appToken) {
+exports.refreshLoginCaptcha = function (req, res, user_name, appToken, type) {
+    var url = urls.refreshLoginCaptcha;
+    var headers = {
+        Authorization: appTokenPrefix + appToken,
+        realm: config.loginParams.realm,
+        session_id: req.sessionID
+    };
+
+    if (type) {
+        url = urls.getResetPasswordCaptcha;
+
+        headers.remote_addr = ipUtil.getServerAddresses();
+        headers.user_id = ipUtil.getClientIp(req);
+    }
+
     return restUtil.baseRest.get(
         {
-            url: urls.refreshLoginCaptcha,
+            url: url,
             req: req,
             res: res,
-            headers: {
-                Authorization: appTokenPrefix + appToken,
-                realm: config.loginParams.realm,
-                session_id: req.sessionID
-            }
+            headers: headers
         }, {
             user_name: user_name,
             width: captcha.width,
             height: captcha.height
         });
 };
-
 
 //获取登录时的formData
 function getLoginFormData(username, password, captchaCode) {
@@ -179,3 +211,125 @@ function getLoginFormData(username, password, captchaCode) {
     }
     return formData;
 }
+
+/**
+ * 检测联系方式是否存在
+ *
+ */
+exports.checkContactInfoExists = function (req, res, appToken) {
+    const contactType = req.query.contactType;
+    const contactInfo = req.query.contactInfo;
+    const url = urls.checkContactInfoExists + contactType + "/" + contactInfo;
+
+    return restUtil.baseRest.get(
+        {
+            url: url,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+                realm: config.loginParams.realm,
+                session_id: req.sessionID
+            }
+        }, null);
+};
+
+/**
+ * 获取操作码
+ *
+ */
+exports.getOperateCode = function (req, res, appToken, user_name, captcha) {
+    const url = urls.getOperateCode;
+
+    return restUtil.baseRest.post(
+        {
+            url: url,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+                session_id: req.sessionID,
+                remote_addr: ipUtil.getServerAddresses(),
+                user_ip: ipUtil.getClientIp(req),
+            },
+            form: {
+                user_name: user_name,
+                captcha: captcha,
+            }
+        }, null);
+};
+
+/**
+ * 发送验证信息
+ *
+ */
+exports.sendResetPasswordMsg = function (req, res, appToken, user_name, send_type, operate_code) {
+    const url = urls.sendResetPasswordMsg;
+
+    return restUtil.baseRest.post(
+        {
+            url: url,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+                remote_addr: ipUtil.getServerAddresses(),
+                user_ip: ipUtil.getClientIp(req),
+            },
+            form: {
+                user_name: user_name,
+                send_type: send_type,
+                operate_code: operate_code,
+            }
+        }, null);
+};
+
+/**
+ * 获取凭证
+ *
+ */
+exports.getTicket = function (req, res, appToken, user_id, code) {
+    const url = urls.getTicket;
+
+    return restUtil.baseRest.post(
+        {
+            url: url,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+                remote_addr: ipUtil.getServerAddresses(),
+                user_ip: ipUtil.getClientIp(req),
+            },
+            form: {
+                user_id,
+                code,
+            }
+        }, null);
+};
+
+/**
+ * 重置密码
+ *
+ */
+exports.resetPassword = function (req, res, appToken, user_id, ticket, new_password) {
+    const url = urls.resetPassword;
+
+    return restUtil.baseRest.post(
+        {
+            url: url,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+                remote_addr: ipUtil.getServerAddresses(),
+                user_ip: ipUtil.getClientIp(req),
+            },
+            form: {
+                user_id,
+                ticket,
+                new_password,
+            }
+        }, null);
+};
+

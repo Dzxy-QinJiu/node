@@ -25,7 +25,7 @@ module.exports = {
         ],
         extensions: ['.js', '.jsx'],
         alias: {
-            moment: 'moment/min/moment-with-locales.min.js',
+            moment$: 'moment/min/moment-with-locales.min.js',
             alt: 'alt/dist/alt.min.js',
             jquery: 'jquery/dist/jquery.min.js',
             underscore: 'underscore/underscore-min.js',

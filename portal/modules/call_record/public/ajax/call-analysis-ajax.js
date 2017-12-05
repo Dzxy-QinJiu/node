@@ -1,5 +1,5 @@
 // 获取通话时长为TOP10的列表
-let  callDurTopTenAjax = null;
+let callDurTopTenAjax = null;
 exports.getCallDurTopTen = function (reqData, reqBody) {
     callDurTopTenAjax && callDurTopTenAjax.abort();
     let url = '/rest/call/duration/top/ten/' + reqData.start_time + '/' +
@@ -21,10 +21,10 @@ exports.getCallDurTopTen = function (reqData, reqBody) {
 };
 
 // 获取通话数量和通话时长趋势图统计
-let  callCountAndDurAjax = null;
+let callCountAndDurAjax = null;
 exports.getCallCountAndDur = function (reqData, reqBody) {
     callCountAndDurAjax && callCountAndDurAjax.abort();
-    let url = '/rest/call/duration/count/' + reqData.start_time + '/' +  reqData.end_time;
+    let url = '/rest/call/duration/count/' + reqData.start_time + '/' + reqData.end_time;
     var Deferred = $.Deferred();
     callCountAndDurAjax = $.ajax({
         url: url,
@@ -68,7 +68,7 @@ exports.getCallRate = function (reqData, reqBody, type) {
     callRateAjax[type] && callRateAjax[type].abort();
     var Deferred = $.Deferred();
     callRateAjax[type] = $.ajax({
-        url: '/rest/call/rate/' + reqData.start_time + '/' +  reqData.end_time,
+        url: '/rest/call/rate/' + reqData.start_time + '/' + reqData.end_time,
         dataType: 'json',
         type: 'post',
         data: reqBody,
@@ -77,6 +77,27 @@ exports.getCallRate = function (reqData, reqBody, type) {
         },
         error: function (errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取通话时段（数量和时长）的统计数据
+let callIntervalAjax = null;
+exports.getCallIntervalData = function (authType, reqData) {
+    callIntervalAjax && callIntervalAjax.abort();
+    var Deferred = $.Deferred();
+    callIntervalAjax = $.ajax({
+        url: '/rest/call/interval_data/' + authType,
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();

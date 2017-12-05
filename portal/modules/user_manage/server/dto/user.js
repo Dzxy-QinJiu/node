@@ -15,6 +15,8 @@ exports.User = function (opts) {
     this.email = opts.email || "";
     //角色
     this.roles = opts.roles || [];
+    // 座席号
+    this.phoneOrder = opts.opts || "";
 };
 
 exports.toFrontObject = function (restObject) {
@@ -27,6 +29,7 @@ exports.toFrontObject = function (restObject) {
     frontObj.rePassword = "密码******";
     frontObj.phone = restObject.phone || "";
     frontObj.email = restObject.email || "";
+    frontObj.phoneOrder = restObject.phone_order || "";
     //邮箱是否激活的状态
     frontObj.emailEnable = restObject.email_enable;
     let roles = restObject.roles || [];

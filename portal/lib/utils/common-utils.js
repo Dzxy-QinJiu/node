@@ -38,7 +38,7 @@ var IPUtil = {
         if (!req || !req.headers || !req.connection || !req.socket) {
             return "0.0.0.0";
         }
-        var ip = req.header('x-forwarded-for') || req.headers['x-real-ip'];
+        var ip = req.headers['x-real-ip'] || req.header('x-forwarded-for');
         if (ip) {
             var forwardedIps = ip.split(',');
             ip = forwardedIps[0];

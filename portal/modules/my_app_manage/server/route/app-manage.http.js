@@ -119,5 +119,16 @@ module.exports = {
         }, "privileges": [
             "USER_INFO_MYAPP_EDIT"
         ]
+    },{
+        //获取用户类型配置
+        "method": "get",
+        "path": "/rest/appcodetrace/:app_id",
+        "handler": "getCurAppKey",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "GENERATE_PIWIK_KEY"
+        ]
     }]
 };

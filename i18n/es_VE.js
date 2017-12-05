@@ -3,9 +3,10 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2017/4/11.
  */
-const en_VE = {
+var en_VE = {
+    //system
+    "service.not.available": "Lo siento,el servidor no está disponible por ahora,reinténtelo más tarde.",
     //菜单
-
     "menu.realm": "Administración de dominio",//安全域管理
 
     "menu.app": "Administración de aplicación",//应用管理
@@ -20,7 +21,7 @@ const en_VE = {
 
     "menu.appuser.list": "Usuarios existentes",//已有用户
 
-    "menu.appuser.org": "Administración de grupos",//组织管理
+    "menu.appuser.org": "Administración de organizaciones",//组织管理
 
     "menu.appuser.auditlog": "Registro de supervisión de usuarios",//用户审计日志
 
@@ -80,8 +81,8 @@ const en_VE = {
 
     "menu.system.notification": "Mensajede sistema",//系统消息
 
-    "menu.appuser.apply": "la aprobación de los usuarios",//用户审批
-    "menu.download.app":"Descargar APP",//下载APP
+    "menu.appuser.apply": "La aprobación de los usuarios",//用户审批
+    "menu.download.app": "Descargar APP",//下载APP
 
 
     //公共部分提取start
@@ -103,6 +104,8 @@ const en_VE = {
     "common.password.length": "La contraseña debe ser no menos de 6 carácteres de menos de 18",//密码长度应大于6位小于18位
 
     "common.password.compose.rule": "6-18 carácteres(números,letras y símbolos)",//6-18位字符(由数字，字母，符号组成)
+
+    "common.password.validate.rule": "Introduzca una contraseña de 6 a 18 carácteres que compuesta con números, letras y símbolos",
 
     "common.confirm.password": "Confirmar",//确认密码
 
@@ -129,6 +132,8 @@ const en_VE = {
     "common.image.upload.size": "Nota:El tamaño de foto menos de 300kb",//注：请上传小于300kb的图片
 
     "common.edit": "Editar",//编辑
+
+    "common.filter.by.key": "Buscar por {key}",//根据{key}过滤
 
     //密码安全等级
 
@@ -221,9 +226,9 @@ const en_VE = {
 
     "common.image.tip.size": "El tamaño de imagen debe ser menos de {size}kb",//图片大小必须小于{size}kb!
 
-    "common.input.character.prompt": "la longitud de carácteres debe ser ≥1 y ≤20",//最少1个字符,最多20个字符
+    "common.input.character.prompt": "La longitud de carácteres debe ser ≥1 y ≤20",//最少1个字符,最多20个字符
 
-    "common.input.character.rules": "la longitud de carácteres debe ser ≥1 y ≤8",//最少1个字符,最多8个字符
+    "common.input.character.rules": "La longitud de carácteres debe ser ≥1 y ≤8",//最少1个字符,最多8个字符
 
     "common.phone.email.tip": "Seleccionar móvil o email",//电话、邮箱必填其中一项
 
@@ -261,13 +266,13 @@ const en_VE = {
 
     "common.name": "Nombre",//姓名
 
-    "common.get.again":"Obtener de nuevo",//重新获取
+    "common.get.again": "Obtener de nuevo",//重新获取
 
-    "common.refresh":"Actualizar",//刷新
+    "common.refresh": "Actualizar",//刷新
 
-    "common.no.more.data":"No hay más datos",//没有更多数据了
+    "common.no.more.data": "No hay más datos",//没有更多数据了
 
-    "common.yesno":"sí no",//是否
+    "common.yesno": "sí no",//是否
     //添加 by zhshj start
     "common.add.member": "Agregar miembro",//添加成员
     "common.input.keyword": "Introduzca palabras claves",//输入关键词
@@ -281,18 +286,18 @@ const en_VE = {
     "common.apply.user.trial": "Aplicar para los usuarios de ensayo",//申请试用用户 @@@
     "common.apply.app.trial": "Los usuarios existentes se aplican a los usuarios de ensayo",//已有用户申请试用用户 @@@
     "common.apply.grant.delay": "Los usuarios solicitan una extensión",//用户申请延期  @@@
-    "common.apply.reject": "desautorizar",//驳回 @@@
-    "common.belong.customer": "nombre de cliente",//所属客户
-    "common.belong.sales": "nombre de vendedor",//所属销售
-    "common.belong.team":  "El equipo",//所属团队
+    "common.apply.reject": "Desautorizar",//驳回 @@@
+    "common.belong.customer": "Nombre de cliente",//所属客户
+    "common.belong.sales": "Nombre de vendedor",//所属销售
+    "common.belong.team": "El equipo",//所属团队
     "common.app.name": "Nombre de aplicación",//应用名称
     "common.type": "Tipo",//类型
     "common.official": "Firmar",//签约
     "common.trial": "Probar",//试用
     "common.delay.time": "Tiempo de vencimiento retrasado",//延期时间
     "common.time.unit.day": "Día",//天
-    "common.time.unit.week":  "Semana",//周
-    "common.time.unit.month":  "Mes",//月
+    "common.time.unit.week": "Semana",//周
+    "common.time.unit.month": "Mes",//月
     "common.time.unit.year": "Año",//年
     "common.time.unit.quarter": "Trimestre",//季度
     "common.app.count": "cantidad",//数量
@@ -306,12 +311,13 @@ const en_VE = {
     "common.app.status": "Estado de apertura",//开通状态
     "common.app.status.open": "Abrir",//开启
     "common.app.status.close": "Cerrar",//关闭
-    "common.retry": "Intentar de nuevo",//重试
+    "common.retry": "Inténtalo de nuevo",//重试
     "common.get.filter.ip.err": "No se pudo obtener el segmento de filtro de configuración",//获取配置过滤网段失败@@@
     "common.ip.location": "Ubicación de IP", // IP归属地
-    "common.download.template": "descargar {template}",//点击下载模板@@@
-    "common.email.is.used":"Este Email está ocupado, seleccione otro",//邮箱已被使用"
-    "common.email.validate.error":"Fallo en verificación email",//邮箱校验失败,
+    "common.download.template": "Descargar {template}",//点击下载模板@@@
+    "common.email.is.used": "Este Email está ocupado, seleccione otro",//邮箱已被使用"
+    "common.email.validate.error": "Fallo en verificación email",//邮箱校验失败,
+    "common.user.lang": "Idioma",//语言
 
     //添加 by zhshj  end
     //公共部分--end
@@ -411,7 +417,7 @@ const en_VE = {
     "user.user.exist.tip": "El usuario ya existe",//用户已存在
 
     "user.user.exist.check.tip": "El usuario ya existe,si quiere {check}?",//用户已存在，是否{check}
-    "user.user.check":"Ver este usuario",
+    "user.user.check": "Ver este usuario",
 
     "user.username.write.tip": "Rellene nombre de usuario",//请填写用户名
 
@@ -427,11 +433,11 @@ const en_VE = {
 
     "user.salesman": "Vendedor",//销售人员
 
-    "user.organization": "Grupo",//组织
+    "user.organization": "Organización",//组织
 
-    "user.no.organization": "No hay grupo por el momento",//暂无组织
+    "user.no.organization": "No hay organización por el momento",//暂无组织
 
-    "user.no.related.organization": "No hay grupos correspondientes",//无相关组织
+    "user.no.related.organization": "No hay organizaciones correspondientes",//无相关组织
 
     "user.open.cycle": "Periodo de apertura",//开通周期
 
@@ -491,10 +497,6 @@ const en_VE = {
 
     "user.two.step.certification": "Verificación con 2 pasos",//二步认证 
 
-    "user.open": "Abrir",//开启 
-
-    "user.close": "Cerrar",//关闭 
-
     "user.open.code": "ON",//开   Abrir
 
     "user.close.code": "OFF",//关  Cerrar
@@ -505,9 +507,7 @@ const en_VE = {
 
     "user.app.list.error.tip": "Fallo en conseguir la lista de aplicaciones,{retry}",//应用列表获取失败，重新获取 
 
-    "user.get.again.tip": "Volver a conseguirlo",//重新获取 
-
-    "user.user.add.next": "Siguiente",//下一步 
+    "user.user.add.next": "Siguiente",//下一步
 
     "user.user.add.back": "Volver",//上一步 
 
@@ -517,11 +517,13 @@ const en_VE = {
 
     "user.show.select": "Sólo muestra los seleccionados",//只显示选中 
 
-    "user.apply.user": "solicitar usuario",//申请用户 
+    "user.apply.user": "Solicitar usuario",//申请用户
 
     "user.apply.type": "Tipo de solicitud",//申请类型 
 
     "user.apply.success": "Solicitar con éxito",//申请成功
+
+    "user.apply.detail.delay.month.show": "mes", // 个月
 
     "user.selected.user": "Usuario seleccionado",//已选用户
 
@@ -547,7 +549,7 @@ const en_VE = {
 
     "user.first.login": "Primer inicio de sesión",//首次登录 
 
-    "user.last.login": "último inicio de sesión",//最近登录  
+    "user.last.login": "Último inicio de sesión",//最近登录
 
     "user.no.login": "El usuario todavía no ha iniciado la sesión",//用户暂无登录
 
@@ -555,7 +557,7 @@ const en_VE = {
 
     "user.detail.analysis": "Análisis",//分析 
 
-    "user.password.tip": "en secreto",//保密中 
+    "user.password.tip": "En secreto",//保密中
 
     "user.failed": "Fallido",//失败 
 
@@ -667,7 +669,7 @@ const en_VE = {
 
     "user.batch.delay.failed": "Fallo en extender vencimientos por lote ",//批量延期失败 
 
-    "user.apply.password.failed": "Fallo en solicitar la modificación de contraseña",//申请修改密码失败 
+    "user.apply.password.failed": "Fallo en solicitar la modificación de contraseña",//申请修改密码失败
 
     "user.apply.status.failed": "Fallo en solicitar la modificación de estado de apertura",//申请修改开通状态失败 
 
@@ -681,11 +683,11 @@ const en_VE = {
 
     "user.curr.app.get.role.failed": "La aplicación actual falló en conseguir los datos de papel",//当前应用获取角色数据失败 
 
-    "user.curr.app.get.auth.failed": "la aplicación actual falló en conseguir los datos de autorización ",//当前应用获取权限数据失败 
+    "user.curr.app.get.auth.failed": "La aplicación actual falló en conseguir los datos de autorización ",//当前应用获取权限数据失败
 
     "user.curr.app.get.role.auth.failed": "La aplicación actual falló en conseguir los datos de papel y autorizaciones",//当前应用获取角色、权限数据失败 
 
-    "user.curr.app.no.role.auth.data": "la aplicación actual no tiene datos de papel Y autorización",//当前应用没有角色和权限数据 
+    "user.curr.app.no.role.auth.data": "La aplicación actual no tiene datos de papel Y autorización",//当前应用没有角色和权限数据
 
     "user.curr.app.no.role": "La aplicación actual no tiene datos de papel",//当前应用没有角色数据 
 
@@ -705,21 +707,40 @@ const en_VE = {
 
     "user.number.four": "Cuarto",//四
 
+    "user.expire.select": "Opciones al expirar", // 到期可选
+
+    "user.expire.status": "Estado al expirar", // 到期状态
+
+    "user.status.stop": "Inhabilitación", // 停用
+
+    "user.status.degrade": "Descenso de grado", // 降级
+
+    "user.status.immutability": "Sin cambio", // 不变
+
+    //在线用户
     "user.online.all.type": "Todo", // 全部类型
-
-    /*用户管理模块-end*/
-
+    "user.online.free": "Usuario de regalo",
+    "user.online.train": "Usuario de formación",
+    "user.online.employee": "Usuario como personal",
+    "user.online.all.status": "Todos los estados",
+    "user.online.expired": "Caducado",
+    "user.online.kick.success": "Cierre de sesión exitosa",
+    "user.online.kick.error": "Cierre de sesión fallida",
+    "user.online.login.time": "Tiempo de inicio de sesión",
+    "user.online.kick": "Cerrar la sesión",
+    "user.online.modal.tip": "Si quiere cerrar la sesión del usuario?",
+    "user.online.total": "En total,{number} usuarios están en línea",
+    /*客户-end*/
     /*角色管理模块-start*/
-
-    "role.add.role": "Agregar papel",//添加角色 
+    "role.add.role": "Agregar papel",//添加角色
     "role.add.auth": "Agregar por favor", // 添加权限
     "role.no.auth.set": "Configura la autorización{setting}", // 未设置权限，请先{setting}
-    
-    "role.set.auth": "primero por favor" , // 设置权限
+
+    "role.set.auth": "primero por favor", // 设置权限
 
     "role.no.auth.add": "Agregue la autorización {add}",//未设置权限，请先添加权限
 
-    "role.no.set.auth.add": "Agregue la autorización{add}" ,// 暂无权限,请先添加权限 *****
+    "role.no.set.auth.add": "Agregue la autorización{add}",// 暂无权限,请先添加权限 *****
 
     "role.del.role.tip": "¿Si quiere eliminar este papel?",//确定要删除这个角色吗
 
@@ -748,9 +769,9 @@ const en_VE = {
 
     /*权限管理模块-start*/
 
-    "authority.add.group": "Agregar grupo de autorización",//添加权限组 
+    "authority.add.group": "Agregar organización de autorización",//添加权限组
 
-    "authority.del.group": "¿Si quiere eliminar este grupo de autorización?",//确定要删除这个权限组吗 
+    "authority.del.group": "¿Si quiere eliminar este organización de autorización?",//确定要删除这个权限组吗
 
     "authority.del.auth": "¿Si quiere eliminar la autorización?",//确定要删除该权限吗 
 
@@ -768,11 +789,11 @@ const en_VE = {
 
     "authority.turn.to": "Trasladar a",//转移到 
 
-    "authority.auth.group.name": "Nombre de grupo de autorización",//权限组名 
+    "authority.auth.group.name": "Nombre de organización de autorización",//权限组名
 
     "authority.input.length.tip": "1≤ Carácteres ≤ 200 ",//最少1个字符,最多200个字符   
 
-    "authority.saving.group.name": "Guardando el nombre de grupo",//正在保存组名 
+    "authority.saving.group.name": "Guardando el nombre de organización",//正在保存组名
 
     "authority.current.auth": "La autorización actual",//当前权限 
 
@@ -790,7 +811,7 @@ const en_VE = {
 
     "authority.auth.name": "Nombre de autorización",//权限名称 
 
-    "authority.group.name": "Nombre de grupo",//分组名称 
+    "authority.group.name": "Nombre de organización",//分组名称
 
     "authority.add.new.module": "Agregar un módulo de informaciones sobre autorización",//添加一个权限信息模块 
 
@@ -798,7 +819,7 @@ const en_VE = {
 
     "authority.del.auth.failed": "Fallo en eliminar autorización",//删除权限失败 
 
-    "authority.del.group.failed": "Fallo en eliminar grupo de autorización",//删除权限组失败 
+    "authority.del.group.failed": "Fallo en eliminar organización de autorización",//删除权限组失败
 
     "authority.add.auth.failed": "Fallo en agregar autorización",//添加权限失败 
 
@@ -849,9 +870,7 @@ const en_VE = {
 
     "member.no.groups": "No hay equipo por el momento",//暂无团队 
 
-    "member.head.logo": "Avatar",//头像 
-
-    "member.upload.head.logo": "subir{upLoadDescr}",//上传
+    "member.head.logo": "Avatar",//头像
 
     "member.type.password.again": "Introduzca la contraseña otra vez por favor",//请再次输入密码 
 
@@ -873,63 +892,73 @@ const en_VE = {
 
     "member.no.suitable.member": "No hay miembro que cumple con los requisitos",//没有符合条件的成员! 
 
-    "member.get.role.lists":"Está consiguiendo la lista de papeles",// 正在获取角色列表 
+    "member.get.role.lists": "Está consiguiendo la lista de papeles",// 正在获取角色列表
 
-    "member.is.building":"Está creando",//创建中 
+    "member.is.building": "Está creando",//创建中
 
     //后台管理-成员end
 
     //组织管理start
 
-    "organization.no.organization.tip": "no hay grupo,agregar una primero por favor",//暂无组织，请先添加 
+    "crm.113": "Departamento",//部门
 
-    "organization.input.placeholder": "introduzca nombre de grupo",//请输入组织名称 
+    "organization.no.organization.tip": "No hay organización,agregar una primero por favor",//暂无组织，请先添加
 
-    "organization.add.organization": "agregar grupo",//添加组织 
+    "organization.input.placeholder": "Introduzca nombre de organización",//请输入组织名称
 
-    "organization.organization.name": "nombre de grupo",//组织名称 
+    "organization.add.organization": "Agregar organización",//添加组织
 
-    "organization.input.rule": "1 ≤ carácter ≤ 8",//最少1个字符,最多8个字符  
+    "organization.organization.name": "Nombre de organización",//组织名称
 
-    "organization.sub.organization": "grupo de instancia superior",//上级组织 
+    "organization.sub.organization": "Organización de instancia superior",//上级组织
 
-    "organization.select.sub.organization": "Seleccionar el grupo de instancia superior por favor",//请选择上级组织 
+    "organization.select.sub.organization": "Seleccionar el organización de instancia superior por favor",//请选择上级组织
 
+    "organization.add.child.organization": "Agregar sub-organización",//添加子组织
 
-    "organization.add.child.organization": "Agregar sub-grupo",//添加子组织 
+    "organization.edit.organization": "Editar organización",//编辑组织
 
-    "organization.edit.organization": "Editar grupo",//编辑组织 
+    "organization.del.organization": "Eliminar organización",//删除组织
 
-    "organization.del.organization": "Eliminar grupo",//删除组织 
+    "organization.add.department": "Agregar departamento",//添加部门@
 
-    "organization.whether.del.organization": "¿Si quiere eliminar este grupo",//是否删除此组织
+    "organization.edit.department": "Editar departamento",//编辑部门@
 
-    "organization.search.organization.placeholder": "Buscar grupo según nombre de grupo",//根据 组织名称 搜索组织 
+    "organization.del.department": "Eliminar departamento",//删除部门@
 
-    "organization.edit.organization.member": "Editar miembro de grupo",//编辑组织成员 
+    "organization.parent.department": "Departamento superior",//上级部门@
 
-    "organization.add.organization.member": "Agregar miembro a grupo",//添加组织成员 
+    "organization.select.parent.department": "Seleccionar departamento superior", //请选择上级部门@
 
-    "organization.setting.leader": "Establecer como director",//设为负责人 
+    "organization.edit.team": "Editar equipo",//编辑团队@
+
+    "organization.del.team": "Eliminar equipo",//删除团队@
+
+    "organization.whether.del.organization": "¿Seguro que quiere eliminar'{groupName}'?",//确定要删除'{groupName}'?@
+
+    "organization.search.organization.placeholder": "Nombre de organización",//组织名称
+
+    "organization.edit.organization.member": "Editar miembro de organización",//编辑组织成员
+
+    "organization.add.organization.member": "Agregar miembro a organización",//添加组织成员
+
+    "organization.setting.leader": "Establecer como director",//设为负责人
+
+    "organization.setting.manager": "Establecer como Administrador",//设为管理员@
 
     "organization.add.member": "Agregar miembro para {title}",//为“{title}”添加成员
 
     "organization.search.placeholder": "Buscar por nombre de usuario,apodo,nota",//根据用户名、昵称、备注进行搜索
 
-    "organization.get.organization.list.failed": "Fallo en conseguir la lista de grupo",//获取组织列表失败 
+    "organization.get.organization.list.failed": "Fallo en conseguir la lista de organización",//获取组织列表失败
 
-    "organization.get.organization.member.list.failed": "Fallo en conseguir miembros de grupo",//获取组织成员失败 
+    "organization.get.organization.member.list.failed": "Fallo en conseguir miembros de organización",//获取组织成员失败
 
-    "organization.save.delete.group.failed": "Fallo en eliminar grupo",//删除组织失败 
+    "organization.save.delete.group.failed": "Fallo en eliminar organización",//删除组织失败
 
     "organization.get.add.organization.member.list.failed": "Fallo en conseguir la lista",//获取可加入组织的成员列表失败
 
-    "organization.no.member": "No hay miembro por el momento",//暂无成员 
-
-    "organization.no.realms": "Todavía no hay dominio de seguridad",//还没有安全域诶.. 
-
-    "organization.according": "Buscar según {name}",//根据{name}搜索
-
+    "organization.no.realms": "Todavía no hay dominio de seguridad",//还没有安全域诶..
     //组织管理end
 
     //应用管理start
@@ -989,11 +1018,12 @@ const en_VE = {
 
     "user.log.total": "Registros en total son {number}",//共有{number}条日志记录
 
+    "user.log.login.fail": "Falló en consguir la información de inico de sesión.", // 获取登录信息失败
+
     //用户管理---用户审计日志end
 
     //我的应用start
-
-    "my.app.role.auth.config.title": "Configurar papel y autorización",//设置角色、权限 
+    "my.app.role.auth.config.title": "Configurar papel y autorización",//设置角色、权限
 
     "my.app.app.auth.title": "Autorización de aplicación",//应用权限
 
@@ -1019,8 +1049,7 @@ const en_VE = {
 
     "my.app.get.app.failed": "Fallo en conseguir mis aplicaciones",//获取我的应用失败 
 
-    "my.app.captcha": "Código de captcha",//验证码
-
+    "my.app.no.app": "No hay aplicación por el momento", // 暂无应用
     //我的应用end
 
     // 安全域start
@@ -1112,7 +1141,7 @@ const en_VE = {
 
     "user.info.consult.phone": "Teléfono de consulta para clientes",//客服咨询电话 
 
-    "user.info.get.user.info.failed": "Fallo en conseguir información de usuario",//获取用户信息失败 
+    "user.info.get.user.info.failed": "Falló en conseguir los detalles de usuario",//获取用户信息失败
 
     "user.info.get.managed.realm.failed": "Fallo en conseguir informaciones de dominio",//获取安全域信息失败 
 
@@ -1141,8 +1170,35 @@ const en_VE = {
     "user.password.new.password": "Contraseña nueva ",//新密码 
 
     "user.password.save.password": "Guardar ",//保存密码 
-
     //密码管理end
+    //组织
+    "sales.team.no.sales.team.tip": "No hay organización por ahora, por favor agregue organización:",
+    "sales.team.search.placeholder": "Introducir nombre de organización",
+    "sales.team.add.sales.team": "Agregar",
+    "sales.team.add.owner": "Agregado como persona responsable",
+    "sales.team.add.manager": "Agregado como secretario",
+    "sales.team.add.to.member": "Agregado como miembro",
+    "sales.team.sales.team.search.placeholder": "Introducir el alias o nombre de usario para realizar la filtración",
+    "sales.team.memeber.list.null.tip": "No hay miembro disponible por ahora",
+    "sales.team.del.select.member": "Eliminar",
+    "sales.team.add.team": "Agregar organización",
+    "sales.team.add.child.team": "Agregar subgrupo",
+    "sales.team.edit.team": "Editar organización",
+    "sales.team.del.team": "Eliminar organización",
+    "sales.team.team.name": "Nombre de organización",
+    "sales.team.sub.group": "Organización superior",
+    "sales.team.select.sub.group": "Seleccionar organización superior",
+    "sales.team.member.count": "{teamMemberCount}personas",
+    "sales.team.whether.del.team": "Si quiere eliminar el organización?",
+    "sales.team.search.team.placeholder": "Buscar organización por nombre",
+    "sales.team.edit.team.member": "Editar los miembros de organización",
+    "sales.team.add.team.member": "Agregar los miembros de organización",
+    "sales.team.filter.by.username.failed": "Falló en buscar los organizaciones de venta por alias y nombres de usuario",
+    "sales.team.get.sales.team.member.list.failed": "Falló en conseguir los miembro de organización",
+    "sales.team.no.filtered.sale.team": "No hay organización que cumple con las condiciones por ahora",
+    "sales.team.search": "Buscar",//搜索
+    "sales.team.del.team.failed": "Falló en eliminar organización",
+
     //错误码
     "errorcode.0": "Error de parámetro",
     "errorcode.1": "Fallo en conseguir la lista de miembros",
@@ -1165,7 +1221,6 @@ const en_VE = {
     "errorcode.20": "Fallo de operación por lotes",
     "errorcode.21": "Fallo en solicitar abrir la cuenta de usuario",
     "errorcode.25": "Este número de telefono está ocupado, seleccione otro",
-    "errorcode.26": "Este email está ocupado, seleccione otro",
     "errorcode.28": "Fallo en modificar el número de teléfono",
     "errorcode.29": "Fallo en modificar el correo electrónico",
     "errorcode.30": "Este nombre de usuario está ocupado, seleccione otro",
@@ -1173,8 +1228,8 @@ const en_VE = {
     "errorcode.32": "Fallo en modificar autorización",
     "errorcode.33": "La solicitud de abrir la cuenta  ha sido enviada, por favor, no repita la operación",
     "errorcode.35": "Lo siento, se le ocurre la anormalidad al servidor.",
-    "errorcode.37": "el token no existe",
-    "errorcode.38": "el token ha caducado",
+    "errorcode.37": "El token no existe",
+    "errorcode.38": "El token ha caducado",
     "errorcode.39": "Error de usuario o contraseña",
     "errorcode.40": "La autorización al usuario ha caducado",
     "errorcode.41": "El usuario ha sido inhabilitado, póngase en contacto con el administrador",
@@ -1238,16 +1293,16 @@ const en_VE = {
     "errorcode.103": "Fallo en eliminar el equipo de venta",
     "errorcode.104": "Fallo en modificar los miembros del equipo de venta",
     "errorcode.105": "Fallo en conseguir los miembros del equipo de venta",
-    "errorcode.106": "Fallo en conseguir los miembros que no pertenezcan a ningún grupo",
-    "errorcode.107": "Fallo en conseguir las informaciones del grupo de usuarios en lo cual está el miembro",
-    "errorcode.108": "Fallo en determinar si el miembro es el responsable del grupo de usuarios",
+    "errorcode.106": "Fallo en conseguir los miembros que no pertenezcan a ningún organización",
+    "errorcode.107": "Fallo en conseguir las informaciones del organización de usuarios en lo cual está el miembro",
+    "errorcode.108": "Fallo en determinar si el miembro es el responsable del organización de usuarios",
     "errorcode.110": "Fallo en conseguir equipos",
     "errorcode.111": "El nombre del equipo ya existe",
     "errorcode.112": "No se permite la eliminación, el presente equipo cuenta con un subequipo",
-    "errorcode.113": "No se permite la eliminación, el presente grupo cuenta con un subgrupo",
-    "errorcode.114": "Fallo en eliminar grupo",
-    "errorcode.115": "Fallo en modificar grupo",
-    "errorcode.116": "El nombre de grupo ya existe",
+    "errorcode.113": "No se permite la eliminación, el presente organización cuenta con un subgrupo",
+    "errorcode.114": "Fallo en eliminar organización",
+    "errorcode.115": "Fallo en modificar organización",
+    "errorcode.116": "El nombre de organización ya existe",
     "errorcode.118": "Fallo en conseguir  sobre",
     "errorcode.119": "Fallo en conseguir la usuarios en línea",
     "errorcode.120": "Fallo en conseguir la lista de usuarios",
@@ -1269,46 +1324,45 @@ const en_VE = {
     "errorcode.135": "Fallo en conseguir el registro de seguimiento del cliente",//获取客户跟踪记录失败
     "errorcode.136": "Fallo en actualizar el registro de seguimiento del cliente",//更新客户跟踪记录失败
     "errorcode.137": "No ha abierto la aplicación",//您尚未开通此应用
-    "errorcode.138": "座席号已存在！",
     //待补充的
     "call.record.customer": "Cliente",//客户
-    "user.input.phone":"Introduzca el número de teléfono",//请输入手机号
-    "customer.search.by.customer.name":"Introduzca el nombre del cliente para buscar",//请输入客户名称搜索
-    "user.user.info":"Información de apertura de la cuenta",//开通信息
+    "user.input.phone": "Introduzca el número de teléfono",//请输入手机号
+    "customer.search.by.customer.name": "Introduzca el nombre del cliente para buscar",//请输入客户名称搜索
+    "user.user.info": "Información de apertura de la cuenta",//开通信息
     "member.create.time": "Tiempo de creación",//创建时间
-    "user.input.remark":"Introduzca observación por favor",//请输入备注
-    "user.complete.ratio":"Grado completado de progreso",//完成进度
-    "user.fail.create.realms":"Fallo en crear el dominio de seguridad",//安全域创建失败
+    "user.input.remark": "Introduzca observación por favor",//请输入备注
+    "user.complete.ratio": "Grado completado de progreso",//完成进度
+    "user.fail.create.realms": "Fallo en crear el dominio de seguridad",//安全域创建失败
     "sales.stage.sales.stage": "Etapa de venta",//销售阶段
-    "user.user.lists":"Lista de usuarios",//用户列表
-    "user.user.applies":"Solicitudes de usuario",//用户申请
-    "user.change.record":"Registro de modificación",//变更记录
-    "user.role.is":"papel como {role}.",//，角色为{role}
-    "user.tag.is":"tipo como {tag}.",//，类型为{tag}
-    "user.create.this.user":"creó la cuenta",//创建了该用户
-    "user.disabled.this.user":"Suspendió la cuenta",//停用了该用户。
-    "user.enabled.this.user":"activó la cuenta",//启用了该用户。
-    "user.change.role.to":"modificó el papel de usuario a {role}",//修改了该用户的角色，改为{role}。
-    "user.change.tag.to":"modificó el tipo de usuario a {tag}.",//修改了该用户的类型，改为{tag}
-    "user.change.user.password":"modificó la contraseña de usuario.",//修改了该用户的密码。
-    "user.change.nick_name.to":"modificó el apodo cariñoso de usuario a {nick_name}. ",//修改了该用户的昵称，改为{nick_name}。
-    "user.change.email.to":"modificó el email de usuario a {email}.",//修改了该用户的邮箱，改为{email}。
-    "user.change.phone.to":"modificó el teléfono de usuario a {phone}.",//修改了该用户的电话，改为{phone}。
-    "user.change.desc.to":"modificó la nota de usuario a {description}.",//修改了该用户的备注，改为{description}。
-    "fail.to.get.record":"Fallo en conseguir el registro de modificaciones del usuario.",//获取用户变更记录失败
-    "realm.create.realms":"Crear el dominio de seguridad",//安全域创建
+    "user.user.lists": "Lista de usuarios",//用户列表
+    "user.user.applies": "Solicitudes de usuario",//用户申请
+    "user.change.record": "Registro de modificación",//变更记录
+    "user.role.is": "Papel como {role}.",//，角色为{role}
+    "user.tag.is": "Tipo como {tag}.",//，类型为{tag}
+    "user.create.this.user": "Creó la cuenta",//创建了该用户
+    "user.disabled.this.user": "Suspendió la cuenta",//停用了该用户。
+    "user.enabled.this.user": "Activó la cuenta",//启用了该用户。
+    "user.change.role.to": "Modificó el papel de usuario a {role}",//修改了该用户的角色，改为{role}。
+    "user.change.tag.to": "Modificó el tipo de usuario a {tag}.",//修改了该用户的类型，改为{tag}
+    "user.change.user.password": "Modificó la contraseña de usuario.",//修改了该用户的密码。
+    "user.change.nick_name.to": "Modificó el apodo cariñoso de usuario a {nick_name}. ",//修改了该用户的昵称，改为{nick_name}。
+    "user.change.email.to": "Modificó el email de usuario a {email}.",//修改了该用户的邮箱，改为{email}。
+    "user.change.phone.to": "Modificó el teléfono de usuario a {phone}.",//修改了该用户的电话，改为{phone}。
+    "user.change.desc.to": "Modificó la nota de usuario a {description}.",//修改了该用户的备注，改为{description}。
+    "fail.to.get.record": "Fallo en conseguir el registro de modificaciones del usuario.",//获取用户变更记录失败
+    "realm.create.realms": "Crear el dominio de seguridad",//安全域创建
     "user.batch.opener": "El titular de la cuenta",//开户人
-    "user.account.type":"Tipo de la cuenta abierta",//开户类型
-    "user.open.assets":"Cantidad de usuarios abiertos",//开通套数
-    "user.open.customer":"cuenta cliente",//开户客户
+    "user.account.type": "Tipo de la cuenta abierta",//开户类型
+    "user.open.assets": "Cantidad de usuarios abiertos",//开通套数
+    "user.open.customer": "Cuenta cliente",//开户客户
     "user.open.account": "Abrir una cuenta",//开户账号
-    "user.add.only.one":"Cuando el nombre de usuario es correo electrónico, sólo se puede agregar un usuario.",//用户名是邮箱格式时，只能添加1个用户
-    "common.search":"búsqueda",//搜索
-    "company.name":"Eefung software 湘ICP备14007253号-1",//© 蚁坊软件 湘ICP备14007253号-1
-    "companay.hotline":"Servicios al cliente:{phone}",//服务热线: {phone}
-    "company.qq":"QQ:{qq}",//企业QQ:{qq}
-    "login.fail.login":"El servicio de inicio de sesión no está disponible temporalmente.Por favor inténtelo de nuevo más tarde",//登录服务暂时不可用，请稍后重试
-    "user.change.grant.time":"Cambiar el tiempo de autorización del usuario de {begin} a {end}",//将该用户授权时间改为从{begin}到{end}
+    "user.add.only.one": "Cuando el nombre de usuario es correo electrónico, sólo se puede agregar un usuario.",//用户名是邮箱格式时，只能添加1个用户
+    "common.search": "Búsqueda",//搜索
+    "company.name": "Eefung software 湘ICP备14007253号-1",//© 蚁坊软件 湘ICP备14007253号-1
+    "companay.hotline": "Servicios al cliente:{phone}",//服务热线: {phone}
+    "company.qq": "QQ:{qq}",//企业QQ:{qq}
+    "login.fail.login": "El servicio de inicio de sesión no está disponible temporalmente.Por favor inténtelo de nuevo más tarde",//登录服务暂时不可用，请稍后重试
+    "user.change.grant.time": "Cambiar el tiempo de autorización del usuario de {begin} a {end}",//将该用户授权时间改为从{begin}到{end}
     "user.cancel.overdraft": "Ha cancelado el estado de cierre por caducidad",//取消了到期停用。
     "user.setting.overdraft": "Ha configurado el estado de cierre por caducidad",//设置了到期停用。
     "user.close.twofactor": "Ha cerrado la verificación con 2 pasos",//关闭了二步认证。
@@ -1316,65 +1370,43 @@ const en_VE = {
     "user.close.multilogin": "Ha cerrado inicio de sesión por múltiples usuarios",//关闭了多人登录。
     "user.open.multilogin": "Ha abierto inicio de sesión por múltiples usuarios",//开启了多人登录。
     "user.total.data": "En total {number} usuarios",//共{number}个用户
-    "user.setting.roles":"Opciones",//设置角色
-    "fail.create.realms":"Failed to create this realm",//安全域创建失败
+    "user.setting.roles": "Opciones",//设置角色
+    "fail.create.realms": "Failed to create this realm",//安全域创建失败
     "rightpanel_app_auth": "Las competencias", // 应用权限
-    "data.selector.none":"Ninguno",//无
+    "data.selector.none": "Ninguno",//无
     "contact.phone": "Número de contacto",//联系电话
     "customer.visit": "Visitar",//拜访
     "customer.phone.system": "Sistema de teléfono",//电话系统
     "customer.ketao.app": "ketao",//客套
     "customer.other": "Otros",//其他
-    "customer.visit.customer": "los clientes que visitan",//拜访客户
+    "customer.visit.customer": "Los clientes que visitan",//拜访客户
     "customer.follow.customer": "Seguimiento de clientes",//跟进客户
     "customer.contact.customer": "Contacto con el cliente",//联系客户
     "customer.call.duration": "Llame {num} segundos",//通话{num}秒
-    "customer.contact.somebody": "contacto",//联系
-    "customer.no.connect": "no está en",//未接通
+    "customer.contact.somebody": "Contacto",//联系
+    "customer.no.connect": "No está en",//未接通
     "customer.input.customer.trace.content": "Por favor, rellene los clientes de seguimiento contenido grabado",//请填写客户跟进记录内容
     "customer.add.customer.trace.detail": "Por favor, añada al Cliente Acompañamiento de detalles del registro",//请补充客户跟进记录详情
-    "customer.contact.phone": "teléfono",//联系电话
-    "user.customer.suggest.not.found":"No se encuentra el cliente",//未找到该客户
-    "user.customer.suggest.reselect":"Haga clic para volver a seleccionar",//点击重新选择
-    "user.customer.suggest.create.customer":"crear cliente",//创建客户
-    "user.set.single.app":"Nota: Si desea configurar una única aplicación, por favor seleccione este elemento Cancelar",//注：若想设置单个应用，请取消此项的勾选
-    "authority.search.by.server.address":"Entrar en el servicio de búsqueda de direcciones",//请输入服务地址搜索
-    "user.username.length.tip":"Longitud nombre de usuario debe ser mayor de 3 y menos de 30 caracteres caracteres",//用户名长度应大于3位小于30位
-    "customer.confirm.trace":"是否添加此跟进内容？",
-    "user.manage.phone.order":"座席号",
-    "user.manage.phone.order.rule":"请输入小于7位的数字",
-    "common.phone.order.is.unique":"座席号唯一性校验出错！",
-    "member.get.phone.order.failed":"获取成员的座席号失败!",
-    "member.get.add.phone.order.failed":"添加座席号失败！",
-    "retry.no.login.for.longtime":"您已长时间没有进行操作，为了您的帐号安全",
-    "retry.input.login.password.again":"请重新输入密码:",
-    "retry.input.login.password":"请输入登录密码",
-    "retry.submit.again":"提交",
-    "retry.is.submitting":"提交中...",
-    "retry.failed.get.code":"获取验证码错误",
-    "retry.login.again":"重新登录",
-    "retry.modify.password":"您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！",
-    "retry.token.expired":"Token过期",
-    "retry.token.status":"status:403,Token过期",
-    "retry.input.captcha":"请输入验证码",
-    "authority.permission.exist":"该权限名已存在",
-    "user.login.abnormal":"异常登录",
-    "user.retry.login":"停用后登录。该用户的{appName}账号已经停用，仍尝试登录。",
-    "user.exception.login":"登录地异常。该用户的{client_name}账号，不在常用登录地登录。",
-    "user.usual.location":"常用登录地为{usuallocation}。",
-    "user.current.location":"该次登录地为{currentlocation}。",
-    "user.failed.frequent.login":"登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。",
-    "user.success.frequent.login":"登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。",
-    "crm.customer.interested":"添加关注",
-    "crm.customer.uninterested":"取消关注",
-    "crm.customer.failed.interested":"修改失败",
-    "common.get.data.error": "请求数据错误",
-    "seconds.after.tip":'{logoutTime}秒后',
-    "user.expire.select": "Opciones al expirar", // 到期可选
-    "user.expire.status": "Estado al expirar", // 到期状态
-    "user.status.stop": "Inhabilitación", // 停用
-    "user.status.degrade": "Descenso de grado", // 降级
-    "user.status.immutability": "Sin cambio", // 不变
-    "call.record.play":"播放录音"
+    "customer.contact.phone": "Teléfono",//联系电话
+    "user.customer.suggest.not.found": "No se encuentra el cliente",//未找到该客户
+    "user.customer.suggest.reselect": "Haga clic para volver a seleccionar",//点击重新选择
+    "user.customer.suggest.create.customer": "Crear cliente",//创建客户
+    "user.set.single.app": "Nota: Si desea configurar una única aplicación, por favor seleccione este elemento Cancelar",//注：若想设置单个应用，请取消此项的勾选
+    "authority.search.by.server.address": "Entrar en el servicio de búsqueda de direcciones",//请输入服务地址搜索
+    "user.username.length.tip": "Longitud nombre de usuario debe ser mayor de 3 y menos de 30 caracteres caracteres",//用户名长度应大于3位小于30位
+
+    //重新登录
+    "retry.no.login.for.longtime": "Usted ha estado mucho tiempo sin realizar las operaciones, por la seguridad de cuenta", // 您已长时间没有进行操作，为了您的帐号安全
+    "retry.input.login.password.again": "Por favor vuelva a introducir la contraseña:",
+    "retry.input.login.password": "Introducir la contraseña de inico de sesión",
+    "retry.submit.again": "Entregar",
+    "retry.is.submitting": "Entregando...",
+    "retry.failed.get.code": "Falló en conseguir el código de captcha",
+    "retry.login.again": "Reiniciar sesión",
+    "retry.modify.password": "Su cuenta está iniciando sesión desde otro lugar, si no fuera la operación suya, le sugería que cambiara la contraseña tan pronto como sea posible..",
+    "retry.token.expired": "Token caducado",
+    "retry.token.status": "403,Token caducado",
+    "retry.input.captcha": "Introducir el código de captcha",
+    "seconds.after.tip": "{logoutTime}segundos depúes",
 };
 export default en_VE;

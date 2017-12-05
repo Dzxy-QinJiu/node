@@ -234,6 +234,10 @@ exports.exportData = function (req, res, next) {
                     value = moment(value).format(DATE_FORMAT);
                 }
 
+                if (column.dataIndex === "repayment_is_first") {
+                    value = value === "true"? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                }
+
                 return value;
             });
 

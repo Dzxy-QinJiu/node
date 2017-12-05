@@ -2,9 +2,8 @@
  * 销售合同基本信息展示及编辑页面
  */
 
-import { Form, Validation, Input, Select, Table } from "antd";
+import { Form, Input, Select, Table } from "antd";
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import rightPanelUtil from "../../../components/rightPanel";
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
@@ -182,12 +181,16 @@ const DetailBasic = React.createClass({
                             values={{"num":(isNaN(contract.contract_amount)? "" : contract.contract_amount.toFixed(2))}}
                             defaultMessage={`{num}元`} />
                     </div>
-                    <div className="detail-item half">
+                    <div className="detail-item">
                         {Intl.get("contract.26", "成本额")}:
                         <ReactIntl.FormattedMessage
                             id="contract.159"
                             values={{"num":(isNaN(contract.cost_price)? "" : contract.cost_price.toFixed(2))}}
                             defaultMessage={`{num}元`} />
+                    </div>
+                    <div className="detail-item">
+                        {Intl.get("contract.165", "成本构成")}:
+                        {contract.cost_structure}
                     </div>
                     <div className="detail-item">
                         {Intl.get("contract.27", "合同毛利")}:

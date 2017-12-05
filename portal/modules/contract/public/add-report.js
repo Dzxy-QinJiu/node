@@ -1,11 +1,12 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 服务信息添加表单
  */
 
-import { Form, Validation, Input, Select, Button } from "antd"
+import { Form, Input, Select, Button } from "antd"
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import { REPORT_SERVICE, SERVICE_TYPE, REPORT_TYPE } from "../consts";
 

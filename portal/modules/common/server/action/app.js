@@ -20,3 +20,21 @@ exports.getMyApplications = function(req , res) {
         res.status(500).json(codeMessage && codeMessage.message || "获取我的应用列表失败");
     });
 };
+
+// 获取当前应用的新增用户的团队数据
+exports.getAddedTeam = (req, res) => {
+    appService.getAddedTeam(req, res, req.query).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取当前应用的在线用户的地域数据
+exports.getOnLineUserZone = (req, res) => {
+    appService.getOnLineUserZone(req, res, req.query).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

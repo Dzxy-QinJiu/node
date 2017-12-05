@@ -73,7 +73,9 @@ function AppStore() {
     this.appNoticePanelShow = false;
     //获取成员详情失败的错误提示
     this.getAppDetailError = "";
-
+    this.isShowAppOverViewPanel = false; // 是否展示应用概览页
+    this.AppOverViewAppId = ''; // 应用概览页的id
+    this.appList = [];  //应用列表
     this.bindActions(AppActions);
 }
 
@@ -395,7 +397,6 @@ AppStore.prototype.showAppInfo = function () {
     //展示详情时，先清空上次的错误提示
     this.getAppDetailError = "";
     this.userTypeConfigShow = false;
-
 };
 
 AppStore.prototype.updateSearchContent = function (searchContent) {

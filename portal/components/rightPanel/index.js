@@ -157,6 +157,15 @@ var RightPanelAppVersionDelete = React.createClass({
             );
         }
     });
+//应用代码的跟踪
+var RightPanelAppCodeTrace = React.createClass({
+    render: function () {
+        return (
+            <div {...this.props} className="icon-trace circle-button iconfont" title={Intl.get("rightpanel_codetrace","跟踪代码")}>
+            </div>
+        );
+    }
+});
 
 
 exports.RightPanel = RightPanel;
@@ -172,3 +181,5 @@ exports.RightPanelAppAuth = RightPanelAppAuth;
 exports.RightPanelAppNotice = RightPanelAppNotice;
 exports.RightPanelAppVersionDelete = RightPanelAppVersionDelete;
 exports.RightPanelUserTypeConfig = RightPanelUserTypeConfig;
+exports.RightPanelAppCodeTrace = RightPanelAppCodeTrace;
+

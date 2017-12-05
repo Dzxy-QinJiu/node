@@ -82,17 +82,7 @@ exports.editUser = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-/*
-* 修改用户的坐席号
-*/
-exports.editUserPhoneOrder = function (req, res) {
-    userManageService.editUserPhoneOrder(req, res, req.body).on("success", function (data) {
-        res.status(200).json(data);
-    }).on("error", function (codeMessage) {
-        // res.status(200).json(true);
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
+
 
 /**
  * edit user team handler
@@ -163,33 +153,6 @@ exports.checkOnlyPhone = function (req, res) {
 exports.checkOnlyEmail = function (req, res) {
     userManageService.checkOnlyEmail(req, res, req.params.email).on("success", function (data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
-//坐席号唯一性校验
-exports.checkOnlyPhoneOrder = function (req, res) {
-    userManageService.checkOnlyPhoneOrder(req, res, req.query).on("success", function (data) {
-        if (data) {
-            res.status(200).json(data);
-        }else {
-            res.status(200).json("");
-        }
-    }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
-//跟据成员的id获取坐席号
-exports.getPhoneOrderById = function (req, res) {
-    userManageService.getPhoneOrderById(req, res, req.query).on("success", function (data) {
-        if (data || data == 0) {
-            res.status(200).json(data);
-        } else {
-            res.status(200).json("");
-        }
-
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -127,12 +127,16 @@ function getConfigJson(req) {
         "80003": {"httpCode": 500, "message": backendIntl.get("errorcode.136", "更新客户跟踪记录失败")},
 
     // 客户管理，拨打电话
-    "90001": {"httpCode": 500, "message": backendIntl.get("errorcode.139", "通话系统出现未知异常")},
-    "90002": {"httpCode": 500, "message": backendIntl.get("errorcode.140", "通话系统没有响应")},
-    "90003": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "座机繁忙")}, // 分机振铃或者通话中
-    "90004": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "座机繁忙")}, // 分机等待拨号
-    "90005": {"httpCode": 500, "message": backendIntl.get("errorcode.142", "分机离线")}, 
-    "90006": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "座机繁忙")}, // 分机听催挂音时的状态
+    "90001": {"httpCode": 500, "message": backendIntl.get("errorcode.143", "通话系统出现未知异常")},
+    "90002": {"httpCode": 500, "message": backendIntl.get("errorcode.144", "通话系统没有响应")},
+    "90003": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机振铃或者通话中
+    "90004": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机等待拨号
+    "90005": {"httpCode": 500, "message": backendIntl.get("errorcode.146", "分机离线")}, 
+    "90006": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机听催挂音时的状态
+    "90021": {"httpCode": 500, "message": backendIntl.get("errorcode.140", "没有权限执行分配线索客户的操作")},
+    "90022": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "该成员不属于您管理")},
+    "90023": {"httpCode": 500, "message": backendIntl.get("errorcode.139", "被分配的用户ID不能为空")},
+    "90024": {"httpCode": 500, "message": backendIntl.get("errorcode.142", "线索客户不存在")},
 
 
         /*************************** 角色权限 *****************************/

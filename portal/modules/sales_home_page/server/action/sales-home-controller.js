@@ -63,4 +63,20 @@ exports.getExpireUser = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取网站的个性化设置
+exports.getWebsiteConfig = function (req, res) {
+    salesHomeService.getWebsiteConfig(req, res).on("success", function (data) {
+        res.json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//对网站进行个性化设置
+exports.setWebsiteConfig = function (req, res) {
+    salesHomeService.setWebsiteConfig(req, res, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 

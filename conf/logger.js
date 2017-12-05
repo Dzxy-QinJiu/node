@@ -7,7 +7,7 @@ var _ = require("underscore");
 
 var path = require("path"),
     fs = require("fs");
-var uuid = require('node-uuid');
+var uuidV4 = require('uuid/v4');
 var serverIp = commonUtil.ip.getServerAddresses[0];
 
 var isProduction = config.isProduction, logDir;
@@ -118,7 +118,7 @@ var esType = {
     },
     url: global.config.esUrl,
     logId: function (loggingEvent) {
-        return uuid.v4();
+        return uuidV4();
     },
     buffersize: 1024,
     timeout: 45000,

@@ -19,11 +19,7 @@ function BatchChangeStore() {
 
 //重置客户批量变更数据
 BatchChangeStore.prototype.resetState = function () {
-    this.salesman_id = "";
-    this.salesman_nick_name = "";
-    this.sales_team_list = [];
-    this.sales_team_id = "";
-    this.sales_team = "";
+    this.sales_man = "";//普通销售：userId，非普通销售（销售领导及运营人员）：userId&&teamId
     this.tags = [];
     this.currentTab = "changeTag";
     this.isLoading = false;
@@ -39,6 +35,12 @@ BatchChangeStore.prototype.resetState = function () {
         city: "",
         county: ""
     };
+    this.unSelectDataTip = "";//未选择数据就保存的提示信息
+};
+
+//设置未选择数据就保存的提示信息
+BatchChangeStore.prototype.setUnSelectDataTip = function (tip) {
+    this.unSelectDataTip = tip;
 };
 
 BatchChangeStore.prototype.getSalesManList = function (list) {
@@ -46,52 +48,17 @@ BatchChangeStore.prototype.getSalesManList = function (list) {
     //过滤掉停用的成员
     if (userData.isSalesManager()) {
         //销售领导、域管理员角色时，客户所属销售下拉列表的过滤
-        this.salesManList = _.filter(list, sales=>sales && sales.user_info && sales.user_info.status == 1);
+        this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
     } else if (userData.hasRole("sales")) {
         //销售角色，所属销售下拉列表的过滤
-        this.salesManList = _.filter(list, sales=>sales.status == 1);
+        this.salesManList = _.filter(list, sales => sales.status == 1);
     }
 };
 
-BatchChangeStore.prototype.setSalesMan = function ({sales_id,sales_name}) {
-    this.salesman_id = sales_id;
-    this.salesman_nick_name = sales_name;
-    if (userData.isSalesManager()) {
-        //销售领导、域管理员角色时，客户所属销售团队的修改
-        var list = [];
-        var _this = this;
-        this.salesManList.forEach(function (salesMan) {
-            if (salesMan.user_info.nick_name == _this.salesman_nick_name) {
-                salesMan.user_groups.forEach(function (group) {
-                    list.push({
-                        group_id: group.group_id,
-                        group_name: group.group_name,
-                        user_id: salesMan.user_id,
-                        user_name: salesMan.user_name,
-                        nick_name: salesMan.nick_name
-                    });
-                });
-            }
-        });
-        this.sales_team_list = list;
-        if (list[0]) {
-            this.sales_team_id = list[0].group_id;
-            this.sales_team = list[0].group_name;
-        }
-    } else if (userData.hasRole("sales")) {
-        this.sales_team_id = userData.getUserData().team_id;
-        this.sales_team = userData.getUserData().team_name;
-        this.sales_team_list = [{
-            group_id: this.sales_team_id,
-            group_name: this.sales_team,
-            user_id: this.salesman_id,
-            nick_name: this.salesman_nick_name
-        }];
-    }
-};
-
-BatchChangeStore.prototype.setSalesTeam = function (value) {
-    this.sales_team = value;
+BatchChangeStore.prototype.setSalesMan = function (sales_man) {
+    this.sales_man = sales_man;
+    //去掉未选销售的提示
+    this.unSelectDataTip = "";
 };
 
 BatchChangeStore.prototype.setCurrentTab = function (value) {
@@ -105,15 +72,18 @@ BatchChangeStore.prototype.getRecommendTags = function (list) {
 BatchChangeStore.prototype.setLoadingState = function (state) {
     this.isLoading = state;
 };
-
-//更改select中的销售团队
-BatchChangeStore.prototype.changeSalesTeam = function ({sales_team_name , sales_team_id}) {
-    this.sales_team_id = sales_team_id;
-    this.sales_team = sales_team_name;
-};
 //切换行业选中状态
 BatchChangeStore.prototype.industryChange = function (industries) {
     this.selected_industries = industries;
+    this.unSelectDataTip = "";
+};
+//地址修改
+BatchChangeStore.prototype.locationChange = function (address) {
+    let location = address.split('/');
+    this.territoryObj.province = location[0] || "";
+    this.territoryObj.city = location[1] || "";
+    this.territoryObj.county = location[2] || "";
+    this.unSelectDataTip = "";
 };
 
 //变更标签
@@ -137,8 +107,16 @@ BatchChangeStore.prototype.toggleTag = function ({tag, isAdd}) {
         if (this.recommendTags.indexOf(tag) === -1) {
             this.recommendTags.push(tag);
         }
+        //去掉未选标签的提示
+        this.unSelectDataTip = "";
     }
 
+};
+//清空选择的标签
+BatchChangeStore.prototype.clearSelectedTag = function () {
+    this.tags = [];
+    //去掉未选标签的提示
+    this.unSelectDataTip = "";
 };
 
 //获取行业列表

@@ -47,9 +47,35 @@ function getUserName() {
 var ExcludeLinkList = [
     {"name": Intl.get("menu.sales.homepage", "销售主页"), path: "sales/home"},
     {"name": Intl.get("common.my.app", "我的应用"), path: "my_app"},
+    {"name": Intl.get("menu.backend", "后台管理"), path: "background_management"},
     {"name": Intl.get("menu.userinfo.manage", "个人信息管理"), path: "user_info_manage"},
     {"name": Intl.get("menu.notification", "通知"), path: "notification"},
     {"name": Intl.get("menu.appuser.apply", "用户审批"), path: "apply"}
+];
+
+//后台管理配置
+const BackendConfigLinkList = [
+    {
+        name: Intl.get("menu.user", "成员管理"),
+        href: "/background_management/user",
+        key: "user",
+        privilege: "USER_MANAGE_LIST_USERS"
+    }, {
+        name: Intl.get("menu.salesstage", "销售阶段管理"),
+        href: "/background_management/sales_stage",
+        key: "sales_stage",
+        privilege: "BGM_SALES_STAGE_ADD"
+    }, {
+        name: Intl.get("menu.salesteam", "团队管理"),
+        href: "/background_management/sales_team",
+        key: "sales_team",
+        privilege: "BGM_SALES_TEAM_LIST"
+    }, {
+        name: Intl.get("menu.config", "配置"),
+        href: "/background_management/configaration",
+        key: "configaration",
+        privilege: "CREATE_CONFIG_INDUSTRY"
+    }
 ];
 
 //通知类型
@@ -59,12 +85,6 @@ var NotificationLinkList = [
         href: "/notification/customer",
         key: "customer",
         privilege: 'NOTIFICATION_CUSTOMER_LIST'
-    },
-    {
-        name: Intl.get("menu.apply.notification", "申请消息"),
-        href: "/notification/applyfor",
-        key: "apply",
-        privilege: 'NOTIFICATION_APPLYFOR_LIST'
     },
     {
         name: Intl.get("menu.system.notification", "系统消息"),
@@ -166,7 +186,7 @@ var NavSidebar = React.createClass({
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         $(window).on('resize', this.resizeFunction);
-        var notificationPrivileges = this.getNotificationByPrivilege();
+        var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
         this.needSendNotificationRequest = notificationPrivileges.length >= 1;
         this.refreshNotificationUnread();
         //响应式设计 logo占据的实际高度
@@ -205,7 +225,7 @@ var NavSidebar = React.createClass({
     hasUnread: function () {
         var numbers = this.state.messages;
         for (var key in numbers) {
-            if (numbers[key] > 0 && key !== 'approve') {
+            if (numbers[key] > 0 && key !== 'approve' && key !== 'apply') {
                 return true;
             }
         }
@@ -219,17 +239,10 @@ var NavSidebar = React.createClass({
             return "";
         }
     },
-    getNotificationByPrivilege: function () {
-        var userPrivileges = userData.getUserData().privileges;
-        return NotificationLinkList.filter(function (item) {
-            if (userPrivileges.indexOf(item.privilege) >= 0) {
-                return true;
-            }
-        });
-    },
-    getApplyByPrivilege: function () {
-        var userPrivileges = userData.getUserData().privileges;
-        return applyentryLink.filter(function (item) {
+
+    getLinkListByPrivilege: function (linkList) {
+        let userPrivileges = userData.getUserData().privileges;
+        return linkList.filter(function (item) {
             if (userPrivileges.indexOf(item.privilege) >= 0) {
                 return true;
             }
@@ -297,7 +310,7 @@ var NavSidebar = React.createClass({
         );
     },
     getNotificationBlock: function () {
-        var notificationLinks = this.getNotificationByPrivilege();
+        var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
         if (!notificationLinks.length) {
             return null;
         }
@@ -308,7 +321,7 @@ var NavSidebar = React.createClass({
 
         return (
             <div className="notification">
-                <Popover overlay={notificationList} trigger="hover"
+                <Popover content={notificationList} trigger="hover"
                          placement="rightBottom"
                          overlayClassName="nav-sidebar-notification">
                     <Link to={notificationLinks[0].href} activeClassName="active" extraClass={notificationCls}>
@@ -321,19 +334,55 @@ var NavSidebar = React.createClass({
         );
     },
     getApplyBlock: function () {
-        var applyLinks = this.getApplyByPrivilege();
+        var applyLinks = this.getLinkListByPrivilege(applyentryLink);
         if (!applyLinks.length) {
             return null;
         }
         return (
             <div className="sidebar-applyentry">
                 <Link to={applyLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply","用户审批")}>
+                    <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}>
                     </i>
                 </Link>
 
             </div>
         );
+    },
+    getBackendConfigLinks: function (backendConfigLinks) {
+        return (
+            <ul className="ul-unstyled">
+                {
+                    backendConfigLinks.map(function (obj) {
+                        return (
+                            <li key={obj.key}>
+                                <Link to={obj.href} activeClassName="active">
+                                    {obj.name}
+                                </Link>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        );
+    },
+    //后台管理配置模块
+    renderBackendConfigBlock: function () {
+        let backendConfigLinks = this.getLinkListByPrivilege(BackendConfigLinkList);
+        if (!backendConfigLinks.length) {
+            return null;
+        }
+        let backendConfigList = this.getBackendConfigLinks(backendConfigLinks);
+        let defaultLink = backendConfigLinks[0];
+        return (
+            <div className="sidebar-backend-config">
+                <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
+                         overlayClassName="nav-sidebar-backend-config">
+                    <Link to={defaultLink.href} activeClassName="active">
+                        <i className="iconfont icon-role-auth-config"/>
+                    </Link>
+                </Popover>
+            </div>
+        )
     },
 
     //侧边导航左下个人信息
@@ -341,7 +390,7 @@ var NavSidebar = React.createClass({
         var userinfoList = this.getUserInfoLinks();
         return (
             <div className="sidebar-userinfo">
-                <Popover overlay={userinfoList} trigger="hover"
+                <Popover content={userinfoList} trigger="hover"
                          placement="rightBottom"
                          overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
@@ -405,7 +454,7 @@ var NavSidebar = React.createClass({
                                             NavSidebarLists.push(menu)
                                         }
                                         return (
-                                            <li key={i} className={`ico ${menu.routePath.replace(/\//g,'_')}_ico`}>
+                                            <li key={i} className={`ico ${menu.routePath.replace(/\//g, '_')}_ico`}>
                                                 <Link to={`/${menu.routePath}`}
                                                       activeClassName={extraClass}
                                                       className={extraClass}
@@ -418,7 +467,7 @@ var NavSidebar = React.createClass({
                                     })
                                 }
                             </ul>
-                            <Popover overlay={this.getNavbarLists()} trigger="hover" placement="rightTop"
+                            <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
                                      overlayClassName="nav-sidebar-lists">
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
@@ -433,6 +482,7 @@ var NavSidebar = React.createClass({
                     <div className="sidebar-user" ref="userInfo">
                         {_this.getApplyBlock()}
                         {_this.getNotificationBlock()}
+                        {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}
                     </div>
                 </div>

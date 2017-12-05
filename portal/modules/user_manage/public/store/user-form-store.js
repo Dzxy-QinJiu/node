@@ -14,11 +14,9 @@ function UserFormStore() {
     this.userNameExist = false;//用户名是否已存在
     this.phoneExist = false;//电话是否已存在
     this.emailExist = false;//邮箱是否已存在
-    this.phoneOrderExist = false;//坐席号是否已存在
     this.userNameError = false;//用户名唯一性验证出错
     this.phoneError = false;//电话唯一性验证出错
     this.emailError = false;//邮件唯一性验证出错
-    this.phoneOrderError = false;//坐席号唯一性验证出错
     this.savedUser = {};//添加用户成功后返回的用户信息
     //角色列表
     this.roleList = [];
@@ -117,22 +115,6 @@ UserFormStore.prototype.checkOnlyPhone = function (result) {
     }
 };
 
-//坐席号唯一性的验证
-UserFormStore.prototype.checkOnlyPhoneOrder = function (result) {
-    if (result.error){
-        //表示校验错误
-        this.phoneOrderError = true;
-        this.phoneOrderExist = false;
-    }else if (result.data && _.isObject(result.data)){
-        //返回有该坐席号的成员id
-        this.phoneOrderExist = true;
-        this.phoneOrderError = false;
-    }else{
-        this.phoneOrderExist = false;
-        this.phoneOrderError = false;
-    }
-};
-
 //重置用户验证的标志
 UserFormStore.prototype.resetUserNameFlags = function () {
     this.userNameExist = false;
@@ -151,10 +133,5 @@ UserFormStore.prototype.resetEmailFlags = function () {
     this.emailError = false;
 };
 
-//重置坐席号验证的标志
-UserFormStore.prototype.resetPhoneOrderFlags = function () {
-    this.phoneOrderExist = false;
-    this.phoneOrderError = false;
-};
 module.exports = alt.createStore(UserFormStore, 'UserFormStore');
 

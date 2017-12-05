@@ -3,6 +3,12 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+var language = require("../../../../public/language/getLanguage");
+if (language.lan() == "es" || language.lan() == "en") {
+    require("../css/user-detail-change-record-es_VE.scss");
+}else if (language.lan() == "zh"){
+    require("../css/user-detail-change-record-zh_CN.scss");
+}
 var UserDetailChangeRecordStore = require("../store/user-detail-change-record-store");
 var UserDetailChangeRecordAction = require("../action/user-detail-change-record-actions");
 var TimeLine = require("../../../../components/time-line");
@@ -38,13 +44,31 @@ var UserDetailChangeRecord = React.createClass({
         UserDetailChangeRecordStore.listen(this.onStateChange);
         var userId = this.props.userId;
         UserDetailChangeRecordAction.getUserApp(userId,(queryObj)=>{
-            UserDetailChangeRecordAction.setApp(this.state.app);
-            this.getUserDetailChangeRecord({
-                app_id : queryObj.app_id+',everyapp',
-                user_id: this.props.userId,
-                page_size:this.state.page_size,
-            });
+            this.showSelectedApp(this.props, queryObj);
         });
+    },
+    //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
+    showSelectedApp:function (props, queryObj) {
+        var appId = props.selectedAppId;
+        //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
+        if (appId){
+            var selectedApp = _.find(this.state.appLists,(item)=>{
+                return item.app_id == appId;
+            });
+            var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : "";
+            if (appName){
+                UserDetailChangeRecordAction.setApp(appName);
+            }
+        }else{
+            appId = queryObj.app_id;
+            UserDetailChangeRecordAction.setApp(this.state.app);
+        }
+        this.getUserDetailChangeRecord({
+            app_id : appId +',everyapp',
+            user_id: props.userId,
+            page_size:this.state.page_size,
+        });
+
     },
     getUserDetailChangeRecord:function (queryObj) {
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);
@@ -55,12 +79,7 @@ var UserDetailChangeRecord = React.createClass({
             var userId = nextProps.userId;
             setTimeout(() => {
                 UserDetailChangeRecordAction.getUserApp(userId, (queryObj)=> {
-                    UserDetailChangeRecordAction.setApp(this.state.app);
-                    this.getUserDetailChangeRecord({
-                        app_id: queryObj.app_id + ',everyapp',
-                        user_id: nextProps.userId,
-                        page_size: this.state.page_size,
-                    });
+                    this.showSelectedApp(nextProps, queryObj);
                 });
             })
         }
@@ -105,7 +124,7 @@ var UserDetailChangeRecord = React.createClass({
             }else if (item.operate =='GrantUpdate' && item.detail){
                 //授权的更新
                 //修改了用户的状态
-                item.detail.status && (item.detail.status ==0?(status+=Intl.get("user.disabled.this.user", "停用了该用户。")):(status+=Intl.get("user.enabled.this.user", "启用了该用户。")));
+                item.detail.status && (item.detail.status ==0?(status+=Intl.get("user.disabled.this.user.on.app","停用了该用户在此应用的授权")):(status+=Intl.get("user.enabled.this.user.on.app","启用了该用户在此应用的授权")));
                 //修改了用户的角色
                 item.detail.roles && (role+=Intl.get("user.change.role.to", "修改了该用户的角色，改为{role}。",{"role":item.detail.roles}));
                 //修改了用户的类型
@@ -128,6 +147,8 @@ var UserDetailChangeRecord = React.createClass({
                 desc=desc+status+role+tags+timerange+overdraft+istwofactor+mutilogin;
             }else if (item.operate =='UserInfoUpdate' && item.detail){
                 //基本信息的修改
+                //修改了用户的状态
+                item.detail.status && (item.detail.status ==0?(status+=Intl.get("user.disabled.this.user", "停用了该用户。")):(status+=Intl.get("user.enabled.this.user", "启用了该用户。")));
                 //修改了昵称
                 item.detail.nick_name && (nickname +=Intl.get("user.change.nick_name.to", "修改了该用户的昵称，改为{nick_name}。",{"nick_name":item.detail.nick_name}));
                 // 修改了密码
@@ -138,8 +159,9 @@ var UserDetailChangeRecord = React.createClass({
                 item.detail.phone && (phone +=Intl.get("user.change.phone.to", "修改了该用户的电话，改为{phone}。",{"phone":item.detail.phone}));
                 // 修改了备注
                 item.detail.description && (description +=Intl.get("user.change.desc.to", "修改了该用户的备注，改为{description}。",{"description":item.detail.description}));
+                //
 
-                desc=desc+nickname+password+email+phone+description;
+                desc=desc+status+nickname+password+email+phone+description;
             }
             return (
                 <dl>
@@ -150,10 +172,12 @@ var UserDetailChangeRecord = React.createClass({
                 </dl>
             );
     },
-    handleChange:function (item,appName) {
+    handleChange:function (value) {
+        const app = _.find(this.state.appLists, item => item.app_id === value);
+        const appName = app? app.app_name : "";
         let queryObj = {
             user_id: this.props.userId,
-            app_id:item+','+'everyapp',
+            app_id:value+','+'everyapp',
             page_size:this.state.page_size,
         };
         UserDetailChangeRecordAction.getUserDetailChangeRecord(queryObj);

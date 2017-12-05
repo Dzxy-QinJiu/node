@@ -9,8 +9,8 @@ $title-font-size:14px;
 @mixin ball {
   text-align:center;
   display:inline-block;
+  font-family: "SimHei";
   $size:16;
-  font-family:arial;
   font-size:#{$size - 2}px;
   line-height:#{$size - 2}px;
   width:#{$size}px;

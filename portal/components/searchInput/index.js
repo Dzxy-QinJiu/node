@@ -225,8 +225,7 @@ const SearchInput = React.createClass({
                     <Select
                         combobox
                         filterOption={false}
-                        prefixCls="search-input-component ant-select"
-                        searchPlaceholder={this.state.placeholder}
+                        placeholder={this.state.placeholder}
                         value={this.state.keyword}
                         onSearch={this.onKeywordChange}
                         onSelect={this.onKeywordSelect}

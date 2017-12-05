@@ -5,25 +5,17 @@ var AppUserUtil = require("../util/app-user-util");
 
 function UserAuditLogAction() {
     this.generateActions(
-        // 获取用户的应用
-        "getUserApp",
-        // 获取用户审计日志
-        "getAuditLogList",
-        // 处理搜索框中内容的变化
-        "handleSearchEvent",
-        // 某个时间内显示
-        "changeSearchTime",
-        //设置选中的appid
-        'setUserLogSelectedAppId',
-        // 设置排序选项
-        "setSort",
-        // 过滤类型
-        'filterType',
-        // 用户类型的过滤
-        'handleFilterUserType',
-        //刷新用户审计日志
-        'handleRefresh',
+        "getUserApp", // 获取用户的应用
+        "getAuditLogList",  // 获取用户审计日志
+        "handleSearchEvent", // 处理搜索框中内容的变化
+        "changeSearchTime",   // 某个时间内显示
+        'setUserLogSelectedAppId',   //设置选中的appid
+        "setSort",   // 设置排序选项
+        'handleFilterUserType',  // 用户类型的过滤
+        'handleRefresh', //刷新用户审计日志
         'resetState',
+        'handleFilterLogType', // 审计日志类型的过滤
+        'setTypeFilterValue' // 设置过滤字段的值
     );
 
     //获取应用appID

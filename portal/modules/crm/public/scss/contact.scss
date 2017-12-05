@@ -149,15 +149,16 @@ $font-color: #464b4e;
     margin-bottom: 10px;
     color: #4c4c4c;
     .ant-select {
-      width: 170px;
+      width: 180px;
     }
     input{
-      width: 170px;
+      width: 180px;
     }
   }
 
   .crm-contact-form-left {
-    padding: 0 15px 0 43px;
+    padding-right: 5px;
+    padding-left: 43px;
     .ant-select-arrow { display: none; }
   }
   .ant-form-item > label {
@@ -190,7 +191,7 @@ $font-color: #464b4e;
   .crm-contact-contactway-minus {
     position: absolute;
     top: 3px;
-    right: 6px;
+    right: 32px;
     font-weight: bold;
     font-size: 13px;
     $btn-color: #f05150;
@@ -206,6 +207,9 @@ $font-color: #464b4e;
 }
 
 .crm-contact-form-btns {
-  padding: 0 70px 0 20px;
+  padding: 0 15px 0 20px;
+  .form-cancel-btn, .form-submit-btn {
+    margin-top: 10px;
+  }
 }
 

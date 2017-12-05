@@ -1,5 +1,5 @@
 var Realm = require("../dto/realm").default;
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
+var uuid = require('uuid/v4');
 var userData = require("../../../user_manage/server/nock/data");
 
 var realmList = [

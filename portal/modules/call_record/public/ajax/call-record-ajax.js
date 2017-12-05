@@ -4,23 +4,39 @@ var userData = require("../../../../public/sources/user-data");
 var getCallRecordAjax = null;
 
 exports.getCallRecordList = function (params, filterObj) {
-    let  queryObj = {};
-    $.extend(queryObj, filterObj);
-    if (queryObj.type &&  queryObj.type == 'all' || queryObj.disposition &&  queryObj.disposition == 'ALL') {
+    let queryObj = {};
+    $.extend(queryObj, filterObj, { phone_type: params.phone_type });
+    if (queryObj.type && queryObj.type == 'all' || queryObj.disposition && queryObj.disposition == 'ALL') {
         delete queryObj.type;
         delete queryObj.disposition;
     }
     var Deferred = $.Deferred();
-
     getCallRecordAjax && getCallRecordAjax.abort();
-    let url = '/rest/call_record/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
-    if (params.lastId) {
-        url += "?id=" + params.lastId;
-        if (params.filter_phone === false) {
-            url += "&filter_phone=" + params.filter_phone;
+    const querAll = params.phone_type === "all";
+    const queryCustomer = params.phone_type === "customer";//客户电话的类型过滤
+    let url = "";
+    //查询全部和客户电话记录
+    if (querAll || queryCustomer) {
+        let filter_phone = queryCustomer;//是否过滤114和无效的电话号码
+        url = '/rest/call_record/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
+        if (params.lastId) {
+            url += "?id=" + params.lastId;            
+            url += "&filter_phone=" + queryCustomer; //是否过滤114和无效的电话号码(客户电话需要过滤)
         }
-    }else if (params.filter_phone === false) {
-        url += "?filter_phone=" + params.filter_phone;
+        else {
+            url += "?filter_phone=" + queryCustomer; //是否过滤114和无效的电话号码(客户电话需要过滤)
+        }
+    }
+    //查询无效电话记录
+    else {
+        url = '/rest/invalid_call_record/' + params.type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
+        if (params.lastId) {
+            url += "?id=" + params.lastId;
+            url += "&phone_type=" + params.phone_type;
+        }
+        else {
+            url += "?phone_type=" + params.phone_type;
+        }
     }
     getCallRecordAjax = $.ajax({
         url: url,
@@ -40,17 +56,17 @@ exports.getCallRecordList = function (params, filterObj) {
 };
 
 // 编辑通话记录中跟进内容
-exports.editCallTraceContent = function(queryObj) {
+exports.editCallTraceContent = function (queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/call/edit/content',
-        dataType : 'json',
-        type : 'put',
-        data : queryObj,
-        success : function(data) {
+        url: '/rest/call/edit/content',
+        dataType: 'json',
+        type: 'put',
+        data: queryObj,
+        success: function (data) {
             Deferred.resolve(data);
         },
-        error : function(xhr) {
+        error: function (xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -58,17 +74,17 @@ exports.editCallTraceContent = function(queryObj) {
 };
 
 // 搜索电话号码号码时，提供推荐列表
-exports.getRecommendPhoneList = function(params, queryObj) {
+exports.getRecommendPhoneList = function (params, queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/call/search/phone_number/' + params.filter_phone,
-        dataType : 'json',
-        type : 'post',
-        data : queryObj,
-        success : function(data) {
+        url: '/rest/call/search/phone_number/' + params.filter_phone,
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function (data) {
             Deferred.resolve(data);
         },
-        error : function(xhr) {
+        error: function (xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

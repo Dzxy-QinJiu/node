@@ -1,5 +1,5 @@
 var User = require("../dto/user").User;
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
+var uuid = require('uuid/v4');
 
 var userList = [
     new User({

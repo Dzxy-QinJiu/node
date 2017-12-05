@@ -1,36 +1,32 @@
-var Table = require('antd').Table;
-var Checkbox = require('antd').Checkbox;
-var Icon = require('antd').Icon;
-// 调整表格的head和body对齐
-var TableUtil = require("../../../../components/antd-table-pagination");
+import { AntcTable } from "antc";
+import { Icon, Select, Alert, Button, message } from 'antd';
 // 加载时的动作显示
 var Spinner = require("../../../../components/spinner");
-var Select = require("antd").Select;
 var SelectFullWidth = require("../../../../components/select-fullwidth");
 var Option = Select.Option;
 var UserAuditLogAction = require("../action/user_audit_log_action");
 var UserAuditLogStore = require("../store/user_audit_log_store");
 import DatePicker from "../../../../components/datepicker";
 var SearchInput = require("../../../../components/searchInput");
-var Alert = require("antd").Alert;
 var GeminiScrollBar = require("../../../../components/react-gemini-scrollbar");
-// 没有数据的提示信息
-var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 //顶部导航
 var TopNav = require("../../../../components/top-nav");
 var classnames = require("classnames");
 var AppUserUtil = require("../util/app-user-util");
-var Button = require("antd").Button;
-
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { userTypeList, logTypeList, ALL_LOG_INFO , AUDIT_LOG, HEARTBEAT_LOG, ROLE_AUTH_LOG} from "PUB_DIR/sources/utils/consts";
+import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
+import RefreshButton from 'CMP_DIR/refresh-button';
+var websiteConfig = require("../../../../lib/utils/websiteConfig");
+var setWebsiteConfig = websiteConfig.setWebsiteConfig;
+var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 150,
-    BOTTOM_DISTANCE: 50
+    BOTTOM_DISTANCE: 40
 };
-
 
 // 用户类型的常量
 const USER_TYPE_OPTION = {
@@ -45,8 +41,10 @@ const USER_TYPE_OPTION = {
 var LogView = React.createClass({
     getInitialState: function () {
         return {
-            checked: true,
             userType: USER_TYPE_OPTION.ALL, // 用户类型类型
+            logType: AUDIT_LOG, // 默认显示审计日志类型(全部日志、审计日志、认证授权、心跳服务)
+            selectedRowIndex: null, // 点击的行索引
+            isShowRightPanel: this.props.isShowRightPanel,
             ...UserAuditLogStore.getState()
         }
 
@@ -61,7 +59,6 @@ var LogView = React.createClass({
         $("body").css("overflow", "hidden");
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on("resize", this.changeTableHeight);
-        TableUtil.zoomInSortArea(this.refs.userListTable);
         var _this = this;
         UserAuditLogAction.getUserApp(function (app_id) {
             _this.getAuditLog({
@@ -71,7 +68,11 @@ var LogView = React.createClass({
         });
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
-
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            isShowRightPanel: newProps.isShowRightPanel || false
+        });
+    },
     componentWillUnmount: function () {
         $("body").css("overflow", "auto");
         UserAuditLogStore.unlisten(this.onStoreChange);
@@ -97,23 +98,28 @@ var LogView = React.createClass({
         searchObj.search = search ? (search.toString().trim()).toLowerCase() : '';
         // 日志信息的id
         var sort_id = queryParams && 'sort_id' in queryParams ? queryParams.sort_id : this.state.sortId;
-        if(sort_id){
+        if (sort_id) {
             searchObj.sort_id = sort_id
         }
         // 开始时间
         var starttime = queryParams && 'starttime' in queryParams ? queryParams.starttime : this.state.startTime;
-        if(starttime){
+        if (starttime) {
             searchObj.starttime = starttime
         }
         // 结束时间
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
-        if(endtime){
+        if (endtime) {
             searchObj.endtime = endtime
         }
-        // 过滤类型
+        // 审计日志、全部日志
         var type_filter = queryParams && 'type_filter' in queryParams ? queryParams.type_filter : this.state.typeFilter;
-        if(type_filter){
-            searchObj.type_filter = type_filter
+        if (type_filter) {
+            searchObj.type_filter = type_filter.join();
+        }
+        // 心跳服务、认证授权
+        let log_type = queryParams && 'log_type' in queryParams ? queryParams.log_type : this.state.selectLogType;
+        if (log_type) {
+            searchObj.log_type = log_type;
         }
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
     },
@@ -121,8 +127,8 @@ var LogView = React.createClass({
         $(".userNoIdClass").parents(".ant-table-row").addClass("no_valid_user");
     },
     // 应用下拉框的选择
-    getAppOptions : function() {
-        var list = this.state.userAppArray.map(function(item) {
+    getAppOptions: function () {
+        var list = this.state.userAppArray.map(function (item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -157,8 +163,18 @@ var LogView = React.createClass({
         }
     },
     // 更改时间
-    onSelectDate: function (startTime, endTime) {
-        UserAuditLogAction.changeSearchTime({startTime, endTime});
+    onSelectDate: function (start_time, end_time, range) {
+        let startTime = start_time;
+        if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
+            startTime = Date.now() - THREE_MONTH_TIME_RANGE;
+            message.info(SELECT_TIME_TIPS.range, message.config({ top: 50 }));
+        }
+        let endTime = end_time;
+        if (endTime - startTime > THIRTY_ONE_DAY_TIME_RANGE) {
+            startTime = endTime - THIRTY_DAY_TIME_RANGE;
+            message.info(SELECT_TIME_TIPS.time, message.config({ top: 50 }));
+        }
+        UserAuditLogAction.changeSearchTime({ startTime, endTime, range });
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.getAuditLog({
             starttime: startTime,
@@ -174,7 +190,7 @@ var LogView = React.createClass({
                 dataIndex: 'user_name',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '10%',
+                width: '100px',
                 key: 'user_name',
                 render: function ($1, row) {
                     var userInputClass = classnames({
@@ -184,7 +200,7 @@ var LogView = React.createClass({
                     return (
                         <div>
                             {row.user_name}
-                            <input type="hidden" value={row.user_id} className={userInputClass}/>
+                            <input type="hidden" value={row.user_id} className={userInputClass} />
                         </div>
                     )
                 }
@@ -194,16 +210,16 @@ var LogView = React.createClass({
                 dataIndex: 'nick_name',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '10%',
+                width: '130px',
                 key: 'nick_name'
             },
             {
                 title: Intl.get("common.type", "类型"),
                 dataIndex: 'tags',
                 className: 'has-filter click-show-user-detail',
-                width: '3%',
+                width: '90px',
                 key: 'tags',
-                render : function(userType, record, index) {
+                render: function (userType, record, index) {
                     let text = '';
                     if (_.isArray(userType) && userType.length) {
                         text = AppUserUtil.getUserTypeText(userType[0]);
@@ -220,7 +236,7 @@ var LogView = React.createClass({
                 dataIndex: 'operate',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '5%',
+                width: '100px',
                 key: 'operation_name',
                 render: function (operate, rowData, idx) {
                     return (<span title={operate}>
@@ -233,21 +249,21 @@ var LogView = React.createClass({
                 dataIndex: 'operate_detail',
                 className: 'has-filter operate-detail',
                 sorter: true,
-                width: '8%',
+                width: '200px',
                 key: 'operate_detail',
                 render: function (text, record, index) {
                     return (
                         <div>
                             <span title={text} className="operate-detail-style">
-                                 {text}
+                                {text}
                             </span>
-                             <span className="show-copy-icon">
-                                 {text ? (
-                                     <CopyToClipboard text={text}>
-                                         <Icon type="copy" style={{cursor: 'pointer'}}
-                                               title={Intl.get("user.log.copy", "点击可复制")}/>
-                                     </CopyToClipboard>
-                                 ) : null}
+                            <span className="show-copy-icon">
+                                {text ? (
+                                    <CopyToClipboard text={text}>
+                                        <Icon type="copy" style={{ cursor: 'pointer' }}
+                                            title={Intl.get("user.log.copy", "点击可复制")} />
+                                    </CopyToClipboard>
+                                ) : null}
                             </span>
                         </div>
                     );
@@ -258,7 +274,7 @@ var LogView = React.createClass({
                 dataIndex: 'user_ip',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '8%',
+                width: '120px',
                 key: 'user_ip'
             },
             {
@@ -266,15 +282,15 @@ var LogView = React.createClass({
                 dataIndex: 'location',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '8%',
+                width: '110px',
                 key: 'location',
                 render: function (text, record, index) {
                     return (
                         <div>
-                            { (record.country ? record.country : '') +
-                              (record.province ? record.province : '' ) +
-                              (record.city ? record.city : '')  +
-                              (record.county ? record.county : '')
+                            {(record.country ? record.country : '') +
+                                (record.province ? record.province : '') +
+                                (record.city ? record.city : '') +
+                                (record.county ? record.county : '')
                             }
                         </div>
                     );
@@ -285,7 +301,7 @@ var LogView = React.createClass({
                 dataIndex: 'area',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '8%',
+                width: '100px',
                 key: 'area'
             },
             {
@@ -293,12 +309,12 @@ var LogView = React.createClass({
                 dataIndex: 'browser',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '11%',
+                width: '210px',
                 key: 'browser',
                 render: function (text, record, index) {
                     return (
                         <div>
-                            { record.browser_version ? (text + ' ' + record.browser_version) : text }
+                            {record.browser_version ? (text + ' ' + record.browser_version) : text}
                         </div>
                     );
                 }
@@ -308,7 +324,7 @@ var LogView = React.createClass({
                 dataIndex: 'os',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '6%',
+                width: '120px',
                 key: 'os'
             },
             {
@@ -316,11 +332,11 @@ var LogView = React.createClass({
                 dataIndex: 'timestamp',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '10%',
+                width: '150px',
                 key: 'timestamp',
                 render: function (timestamp, rowData, idx) {
                     return (<span>
-                        {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)  }
+                        {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
                     </span>);
                 }
             },
@@ -329,14 +345,14 @@ var LogView = React.createClass({
                 dataIndex: 'type',
                 className: 'has-filter click-show-user-detail',
                 sorter: true,
-                width: '5%',
+                width: '100px',
                 key: 'type'
             },
             {
                 title: Intl.get("authority.auth.api", "服务地址"),
                 dataIndex: 'remote_addr',
                 className: 'has-filter click-show-user-detail',
-                width: '7%',
+                width: '120px',
                 key: 'remote_addr'
             }
         ];
@@ -345,21 +361,20 @@ var LogView = React.createClass({
 
     // 委内维拉项目，显示的列表项（不包括类型、IP归属地、运营商）
     getTableColumnsVe: function () {
-        return  _.filter(this.getTableColumns(), (item) => {
-            return item.dataIndex != 'location' && item.dataIndex != 'area' && item.dataIndex != 'tags' ;
-        } );
+        return _.filter(this.getTableColumns(), (item) => {
+            return item.dataIndex != 'location' && item.dataIndex != 'area' && item.dataIndex != 'tags';
+        });
     },
 
     handleTableChange: function (pagination, filters, sorter) {
-        GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         const sortField = sorter.field || this.state.sortField;
         //将ascend、descend转换成后端要求的asc、desc
         const sortOrder = (sorter.order && sorter.order.replace("end", "")) || this.state.sortOrder;
-        UserAuditLogAction.setSort({sortField, sortOrder});
+        UserAuditLogAction.setSort({ sortField, sortOrder });
         this.getAuditLog({
             sort_id: '',
             sort_field: sortField,
-            sort_order: sortOrder,
+            sort_order: sortOrder
         });
     },
 
@@ -383,33 +398,8 @@ var LogView = React.createClass({
         );
     },
 
-    selectShowLogsType: function (e) {
-        var status = e.target.checked;
-        UserAuditLogAction.filterType(status);
-        this.setState({
-            checked: e.target.checked
-        }, ()=> {
-            this.getAuditLog({
-                type_filter: this.state.typeFilter
-            })
-        });
-
-    },
-
     onSelectFilterUserType(value) {
-        if (value == USER_TYPE_OPTION.ALL){
-            this.state.userType = USER_TYPE_OPTION.ALL;
-        } else if (value == USER_TYPE_OPTION.TRIAL) {
-            this.state.userType = USER_TYPE_OPTION.TRIAL;
-        } else if (value == USER_TYPE_OPTION.OFFICIAL) {
-            this.state.userType = USER_TYPE_OPTION.OFFICIAL;
-        } else if (value == USER_TYPE_OPTION.PRESENTED) {
-            this.state.userType = USER_TYPE_OPTION.PRESENTED;
-        } else if (value == USER_TYPE_OPTION.TRAIN) {
-            this.state.userType = USER_TYPE_OPTION.TRAIN;
-        }else if (value == USER_TYPE_OPTION.EMPLOYEE) {
-            this.state.userType = USER_TYPE_OPTION.EMPLOYEE;
-        }
+        this.state.userType = value;
         UserAuditLogAction.handleFilterUserType();
         this.setState({
             userType: value
@@ -422,24 +412,59 @@ var LogView = React.createClass({
     },
 
     // 渲染过滤用户类型
-    renderFilterUserType(){
+    renderFilterUserType() {
         return (
-            <SelectFullWidth
+            <Select
                 className="select-user-type"
                 value={this.state.userType}
-                showSearch
                 onChange={this.onSelectFilterUserType}
             >
-                <Option value={USER_TYPE_OPTION.ALL}> {Intl.get("user.online.all.type", "全部类型")} </Option>
-                <Option value={USER_TYPE_OPTION.TRIAL}> {Intl.get("common.trial", "试用")} </Option>
-                <Option value={USER_TYPE_OPTION.OFFICIAL}> {Intl.get("common.official", "签约")} </Option>
-                <Option value={USER_TYPE_OPTION.PRESENTED}> {Intl.get("user.type.presented", "赠送")} </Option>
-                <Option value={USER_TYPE_OPTION.TRAIN}> {Intl.get("user.type.train", "培训")} </Option>
-                <Option value={USER_TYPE_OPTION.EMPLOYEE}> {Intl.get("user.type.employee", "员工")} </Option>
+                {
+                    userTypeList.map((userType, idx) => {
+                        return (<Option key={idx} value={userType.value}> {userType.name} </Option>);
+                    })
+                }
+            </Select>
+        );
+    },
+   
+    onSelectLogType(value) {
+        this.state.logType = value;
+        UserAuditLogAction.handleFilterLogType();
+        UserAuditLogAction.setTypeFilterValue(value);
+        if (value == HEARTBEAT_LOG || value == ROLE_AUTH_LOG) {
+            this.setState({
+                logType: value
+            }, () => {
+                this.getAuditLog({
+                    log_type: this.state.logType
+                });
+            });
+        } else if (value == AUDIT_LOG || value == ALL_LOG_INFO) {
+            setTimeout(() => {
+                this.getAuditLog({
+                    type_filter: this.state.typeFilter,
+                });
+            });
+        }
+    },
+    
+    // 渲染日志的类型（全部日志、审计日志、认证授权、心跳服务）
+    renderAuditLogType() {
+        return (
+            <SelectFullWidth
+                value={this.state.logType}
+                onChange={this.onSelectLogType}
+            >
+                {
+                    logTypeList.map((logType, idx) => {
+                        return (<Option key={idx} value={logType.value} title={logType.name}> {logType.name} </Option>);
+                    })
+                }
             </SelectFullWidth>
         );
     },
-
+    
     renderLogHeader: function () {
         var appOptions = this.getAppOptions();
         return (
@@ -447,24 +472,21 @@ var LogView = React.createClass({
                 <TopNav>
                     <TopNav.MenuList />
                     <div className="user_audit_log_header">
-                        {Oplate.hideUserManageItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
                         <div className="user_audit_log_select_time">
                             <DatePicker
                                 disableDateAfterToday={true}
+                                dateSelectRange={THREE_MONTH_TIME_RANGE}
                                 range={this.state.defaultRange}
                                 onSelect={this.onSelectDate}
+                                start_time={this.state.startTime}
+                                end_time={this.state.endTime}
                             >
-                                <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
                                 <DatePicker.Option
                                     value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
                                 <DatePicker.Option
                                     value="week">{Intl.get("common.time.unit.week", "周")}</DatePicker.Option>
                                 <DatePicker.Option
                                     value="month">{Intl.get("common.time.unit.month", "月")}</DatePicker.Option>
-                                <DatePicker.Option
-                                    value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                                <DatePicker.Option
-                                    value="year">{Intl.get("common.time.unit.year", "年")}</DatePicker.Option>
                                 <DatePicker.Option
                                     value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
                             </DatePicker>
@@ -481,7 +503,10 @@ var LogView = React.createClass({
                                 {appOptions}
                             </SelectFullWidth>
                         </div>
-
+                        {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
+                        <div className="user-audit-log-select">
+                            {this.renderAuditLogType()}
+                        </div>
                         <div className="user_audit_log_search_content">
                             <SearchInput
                                 type="input"
@@ -490,27 +515,29 @@ var LogView = React.createClass({
                             />
                         </div>
                         <div className="user_audit_log_all">
-                            <Checkbox
-                                title={Intl.get("user.filter.heartbeat.service", "过滤心跳服务")}
-                                checked={this.state.checked}
-                                onChange={this.selectShowLogsType}
-                            />
-                            <Button type="primary" className="refresh-button" onClick={this.handleRefresh}>
-                                {Intl.get("common.refresh", "刷新")}
-                            </Button>
+                            <RefreshButton handleRefresh={this.handleRefresh} />
                         </div>
+                        <span className="refresh-btn customize-btn">
+                            <i
+                                className="iconfont icon-down-twoline"
+                                id="audit-log"
+                                data-tracename="点击自定义表格列按钮"
+                                title={Intl.get("common.table.customize", "自定义表格列")}
+                            ></i>
+                        </span>                       
                     </div>
                 </TopNav>
 
             </div>
         );
     },
-    handleRefresh:function () {
+    handleRefresh: function () {
         UserAuditLogAction.handleRefresh();
         setTimeout(() => {
             this.getAuditLog({
                 appid: this.state.selectAppId,
-                sort_id: ''
+                sort_id: '',
+                search: this.state.searchName
             });
         });
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
@@ -538,56 +565,71 @@ var LogView = React.createClass({
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
     },
 
+    //处理选中行的样式
+    handleRowClassName: function (record, index) {
+        if ((index == this.state.selectedRowIndex) && this.state.isShowRightPanel) {
+            return "current_row";
+        }
+        else {
+            return "";
+        }
+    },
+    //记录点击行的索引
+    handleRowClick: function (record, index) {
+        this.setState({
+            selectedRowIndex: index
+        });
+    },
     renderTableContent: function () {
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
         if (isLoading && this.state.sortId === '') {
             doNotShow = true;
         }
-        var columns = Oplate.hideUserManageItem ? this.getTableColumnsVe() : this.getTableColumns();
+        var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        const dropLoadConfig = {
+            listenScrollBottom: this.state.listenScrollBottom,
+            handleScrollBottom: this.handleScrollBottom,
+            loading: this.state.appUserListResult === "loading",
+            showNoMoreDataTip: this.showNoMoreDataTip(),
+        }
         return (
             <div
-                className="user-list-table-wrap splice-table "
-                style={{display : doNotShow ? 'none' : 'block'}}
+                className="user-list-table-wrap scroll-load"
+                id="new-table"
+                style={{ display: doNotShow ? 'none' : 'block' }}
             >
-                <div className="user-list-thead custom-thead">
-                    <Table
-                        rowKey={this.getRowKey}
-                        columns={columns}
-                        dataSource={this.state.auditLogList}
-                        pagination={false}
-                        onChange={this.handleTableChange}
-                    />
-                </div>
-                <div className="user-list-tbody custom-tbody" style={{height:tableHeight}} ref="tableWrap">
-                    <GeminiScrollBar
-                        listenScrollBottom={this.state.listenScrollBottom}
-                        handleScrollBottom={this.handleScrollBottom}
-                        itemCssSelector=".ant-table-tbody .ant-table-row"
-                    >
-                        <Table
-                            dataSource={this.state.auditLogList}
-                            rowKey={this.getRowKey}
-                            columns={columns}
-                            pagination={false}
-                            locale={{ emptyText: Intl.get("common.no.data", "暂无数据") }}
-                        />
-                        <NoMoreDataTip
-                            fontSize="12"
-                            show={this.showNoMoreDataTip}
-                        />
-                    </GeminiScrollBar>
-                </div>
-                <div className="summary_info">
-                    <ReactIntl.FormattedMessage
-                        id="user.log.total"
-                        defaultMessage={`共有{number}条日志记录`}
-                        values={{
-                            'number':  this.state.total
+                <div className="" style={{ height: tableHeight }} ref="tableWrap">
+                    <AntcTable
+                        websiteConfig={getLocalWebsiteConfig()}
+                        setWebsiteConfig={setWebsiteConfig}
+                        buttonIdRef="audit-log"
+                        dropLoad={dropLoadConfig}
+                        util={{
+                            zoomInSortArea: true
                         }}
+                        dataSource={this.state.auditLogList}
+                        rowKey={this.getRowKey}
+                        onChange={this.handleTableChange}
+                        onRowClick={this.handleRowClick}
+                        columns={columns}
+                        pagination={false}
+                        rowClassName={this.handleRowClassName}
+                        locale={{ emptyText: Intl.get("common.no.data", "暂无数据") }}
+                        scroll={{ x: 1600, y: tableHeight }}
                     />
                 </div>
+                {this.state.total ?
+                    <div className="summary_info">
+                        <ReactIntl.FormattedMessage
+                            id="user.log.total"
+                            defaultMessage={`共有{number}条日志记录`}
+                            values={{
+                                'number': this.state.total
+                            }}
+                        />
+                    </div>:null}
             </div>
         );
     },

@@ -1,13 +1,14 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 渲染用户名输入框
  */
-import {Form,Input,Validation} from 'antd';
+import {Form,Input} from 'antd';
 import Ajax from './ajax';
 import AppUserActions from '../../../modules/app_user_manage/public/action/app-user-actions';
 import AppUserFormActions from '../../../modules/app_user_manage/public/action/v2/app-user-form-actions';
 import history from '../../../public/sources/history';
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import UserNameTextFieldUtil from './util';
 
 const UserNameTextFieldMixin = {

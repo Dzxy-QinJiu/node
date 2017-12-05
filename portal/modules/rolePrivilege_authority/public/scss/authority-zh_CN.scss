@@ -264,6 +264,7 @@ $apis_content_width:320px;
             .authority-btn-class{
               border:0px;
               width:25px;
+              height:25px;
               float:right;
               background-color:#b6c2c9;
               margin-right:12px;
@@ -601,8 +602,8 @@ $apis_content_width:320px;
             text-overflow:ellipsis;
             color:#4d96d1;
             cursor:default;
-            margin-top:5px;
-
+            margin-top:8px;
+            font-size:15px;
           }
           .form-authority-group-name-btn{
             position:relative;
@@ -610,20 +611,20 @@ $apis_content_width:320px;
             float:left;
             border-left:1px solid #999ea1;
             margin-left:10px;
-            margin-top:5px;
+            margin-top:6px;
             padding-top:3px;
 
             .form-authority-group-name-btn-label{
               float:left;
               position:relative;
-              height:15px;
-              line-height:15px;
+              height:18px;
+              line-height:18px;
               background-color:transparent;
               border:0;
               padding:0;
               width:35px;
               margin-left:5px;
-              font-size:12px;
+              font-size:14px;
             }
           }
           //删除、转换按钮
@@ -647,9 +648,10 @@ $apis_content_width:320px;
             margin-top: 2px;
             color:#b7bfc2;
             .icon-turn-arrow{
-              font-size:18px;
+              font-size:20px;
             }
             .icon-delete{
+              font-size: 18px;
               margin-left:5px;
             }
           }
@@ -681,7 +683,6 @@ $apis_content_width:320px;
               vertical-align:middle;
               font-weight:700;
               position:relative;
-              top:-2px;
             }
           }
           .authority-add-descr{
@@ -802,6 +803,9 @@ $apis_content_width:320px;
               padding-left: 30px;
               label{
                 margin-bottom:0;
+              }
+              .ant-checkbox {
+                margin-bottom: 10px;
               }
             }
             .authority-detail-info-block{

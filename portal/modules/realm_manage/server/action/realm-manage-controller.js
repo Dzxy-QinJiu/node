@@ -6,7 +6,7 @@
 "use strict";
 require('../nock');
 //域管理服务
-var realmManageServic = require("../service/realm-manage-service");
+var realmManageService = require("../service/realm-manage-service");
 
 /*
  * show list realm handler.
@@ -23,14 +23,14 @@ exports.getCurRealmList = function (req, res) {
     if (filterContent) {
         params.filter_content = filterContent;
     }
-    realmManageServic.getRealms(req, res, params === {} ? null : params).on("success", function (data) {
+    realmManageService.getRealms(req, res, params === {} ? null : params).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
 exports.getCurRealmById = function (req, res) {
-    realmManageServic.getCurRealmById(req, res, req.params.realm_id).on("success", function (data) {
+    realmManageService.getCurRealmById(req, res, req.params.realm_id).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.json(codeMessage && codeMessage.message);
@@ -41,7 +41,7 @@ exports.getCurRealmById = function (req, res) {
  * add realm handler
  */
 exports.addRealm = function (req, res) {
-    realmManageServic.addRealm(req, res, req.body).on("success", function (data) {
+    realmManageService.addRealm(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -52,7 +52,7 @@ exports.addRealm = function (req, res) {
  * add owner handler
  */
 exports.addOwner = function (req, res) {
-    realmManageServic.addOwner(req, res, req.body).on("success", function (data) {
+    realmManageService.addOwner(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -62,7 +62,7 @@ exports.addOwner = function (req, res) {
  * edit realm handler
  */
 exports.editRealm = function (req, res) {
-    realmManageServic.editRealm(req, res, req.body).on("success", function (data) {
+    realmManageService.editRealm(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -73,10 +73,36 @@ exports.editRealm = function (req, res) {
  * start/stop realm handler
  */
 exports.updateRealmStatus = function (req, res) {
-    realmManageServic.updateRealmStatus(req, res, req.body).on("success", function (data) {
+    realmManageService.updateRealmStatus(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
+// 修改邮箱服务器设置信息
+exports.setEmailServer = (req, res) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error", (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 修改安全域短信服务器配置信息
+exports.setSmsServer = (req, res) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'sms').on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 修改安全域微信配置信息
+exports.setWeChat = (req, res) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'wechat').on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -127,7 +127,8 @@ OrganizationStore.prototype.refreshGroupListAfterAdd = function (addGroup) {
         key: addGroup.group_id,
         userIds: addGroup.user_ids,
         ownerId: addGroup.owner_id,
-        managerIds: addGroup.manager_ids
+        managerIds: addGroup.manager_ids,
+        category: addGroup.category
     };
     //添加子组织
     if (addGroup.parent_group) {
@@ -213,8 +214,36 @@ OrganizationStore.prototype.afterEditMember = function (data) {
                 return true;
             }
         });
-        curShowTeam.owner_id = data.ownerId;
-        curShowTeam.user_ids = data.userIds ? JSON.parse(data.userIds) : [];
+        let useIds = data.userIds ? JSON.parse(data.userIds) : [];
+        if (data.operate == "exchange") {
+            //修改
+            if (data.type == "user") {
+                //成员设为管理员
+                if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
+                    curShowTeam.manager_ids = curShowTeam.manager_ids.concat(useIds);
+                } else {
+                    curShowTeam.manager_ids = useIds;
+                }
+                curShowTeam.user_ids = _.difference(curShowTeam.user_ids, useIds);
+            } else {
+                //管理员设为成员
+                if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
+                    curShowTeam.user_ids = curShowTeam.user_ids.concat(useIds);
+                } else {
+                    curShowTeam.user_ids = useIds;
+                }
+                curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, useIds);
+            }
+        } else {
+            //删除
+            if (data.type == "user") {
+                //成员
+                curShowTeam.user_ids = _.difference(curShowTeam.user_ids, useIds);
+            } else {
+                //管理员
+                curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, useIds);
+            }
+        }
         //更新左侧组织树中对应组织的成员信息
         this.organizationTree(true);
     }
@@ -236,23 +265,23 @@ OrganizationStore.prototype.afterAddMember = function (data) {
         //添加成员后
         var userIds = JSON.parse(data.userIds);
         if (_.isArray(userIds) && userIds.length) {
-            if (_.isArray(this.organizationList) && this.organizationList.length) {
-                //从其他组织中，过滤掉添加成员组织里新加入的成员（避免一个人存在多个组织中）
-                userIds.forEach(userId=> {
-                    //更新组织列表中组织的人数
-                    _.each(this.organizationList, organization=> {
-                        if (organization.group_id != curShowTeam.group_id) {
-                            if (organization.owner_id && organization.owner_id == userId) {
-                                //如果新增成员中，有一个是该组织的负责人，则删除
-                                delete organization.owner_id;
-                            } else if (_.isArray(organization.user_ids) && organization.user_ids.length) {
-                                //成员列表的过滤
-                                organization.user_ids = _.filter(organization.user_ids, id=> id != userId);
-                            }
-                        }
-                    });
-                });
-            }
+            //if (_.isArray(this.organizationList) && this.organizationList.length) {
+            //    //从其他组织中，过滤掉添加成员组织里新加入的成员（避免一个人存在多个组织中）
+            //    userIds.forEach(userId=> {
+            //        //更新组织列表中组织的人数
+            //        _.each(this.organizationList, organization=> {
+            //            if (organization.group_id != curShowTeam.group_id) {
+            //                if (organization.owner_id && organization.owner_id == userId) {
+            //                    //如果新增成员中，有一个是该组织的负责人，则删除
+            //                    delete organization.owner_id;
+            //                } else if (_.isArray(organization.user_ids) && organization.user_ids.length) {
+            //                    //成员列表的过滤
+            //                    organization.user_ids = _.filter(organization.user_ids, id=> id != userId);
+            //                }
+            //            }
+            //        });
+            //    });
+            //}
             //该组织中原来就有成员则加入新增成员，原来无成员则新建成员列表
             if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
                 curShowTeam.user_ids = _.union(curShowTeam.user_ids, userIds);
@@ -292,6 +321,21 @@ OrganizationStore.prototype.getOrganizationMemberList = function (resultData) {
                 });
             } else {
                 delete this.curShowTeamMemberObj.owner;
+            }
+            //管理员
+            if (curShowTeam.manager_ids) {
+                var managers = [];
+                curShowTeam.manager_ids.forEach(function (id) {
+                    var manager = _.find(_this.organizationMemberList, function (member) {
+                        if (id == member.userId) {
+                            return true;
+                        }
+                    });
+                    if (manager) {
+                        managers.push(manager);
+                    }
+                });
+                this.curShowTeamMemberObj.managers = managers;
             }
             //成员
             if (curShowTeam.user_ids) {
@@ -532,7 +576,9 @@ OrganizationStore.prototype.organizationTree = function (flag) {
                 select: organization.select,
                 isLiSelect: organization.isLiSelect,
                 userIds: organization.user_ids,
-                ownerId: organization.owner_id
+                managerIds: organization.manager_ids,
+                ownerId: organization.owner_id,
+                category: organization.category
             });
         } else {
             newOrganizationList.push(organization);
@@ -587,7 +633,9 @@ OrganizationStore.prototype.organizationChildrenTree = function (organizationLis
                     select: organization.select,
                     isLiSelect: organization.isLiSelect,
                     ownerId: organization.owner_id,
+                    managerIds: organization.manager_ids,
                     userIds: organization.user_ids,
+                    category: organization.category,
                     superiorTeam: organizationArray[j].key//上级组织的id
                 });
                 flag = false;

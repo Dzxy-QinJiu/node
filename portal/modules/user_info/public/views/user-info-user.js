@@ -1,5 +1,6 @@
-import {Button, Validation, Form, Input, Icon, message} from "antd";
-var Validator = Validation.Validator;
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
+import {Button, Form, Input, Icon, message} from "antd";
 var FormItem = Form.Item;
 var HeadIcon = require("../../../../components/headIcon");
 var AlertTimer = require("../../../../components/alert-timer");
@@ -21,7 +22,6 @@ const messages = defineMessages({
     common_required_tip: {id: 'common.required.tip'},//必填项*
     common_phone: {id: 'common.phone'}, //电话
     user_info_input_phone: {id: 'user.info.input.phone'},//请输入电话
-    user_info_active_email: {id: 'user.info.active.email'},//激活邮件已发送至{email}
     common_input_correct_phone: {id: 'common.input.correct.phone'},//请输入正确的电话号码
     common_nickname: {id: 'common.nickname'},//昵称
     user_info_nickname_required: {id: 'user.info.nickname.required'},//昵称不能为空
@@ -183,7 +183,7 @@ var UserInfo = React.createClass({
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    _this.props.intl['formatMessage'](messages.user_info_active_email, {email: _this.state.formData.email})
+                    Intl.get("user.info.active.email", "激活邮件已发送至{email}",{"email": _this.state.formData.email})
                 );
             }
         });
@@ -335,7 +335,7 @@ var UserInfo = React.createClass({
                             <ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱"/>
                             ：</span>
                         <span>{formData.email}</span>
-                        {formData.emailEnable ? <span>（
+                        {formData.email ? (formData.emailEnable ? <span>（
                             <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>
                             ）</span> :
                             <span>
@@ -352,7 +352,7 @@ var UserInfo = React.createClass({
 
                                 ）
 
-                            </span>}
+                            </span>) : null}
                     </div>
                     <div className="user-info-item">
                         <span>
@@ -366,7 +366,7 @@ var UserInfo = React.createClass({
                             ：</span>
                         <span>{formData.rolesName}</span>
                     </div>
-                    <dl className="dl-horizontal user-info-item">
+                    {  !Oplate.hideSomeItem &&  <dl className="dl-horizontal user-info-item">
                         <dt>{Intl.get("common.user.lang", "语言")}：</dt>
                         <dd>
                             <BasicEditSelectField
@@ -382,7 +382,7 @@ var UserInfo = React.createClass({
                                 modifySuccess={this.afterEditLangSuccess}
                             />
                         </dd>
-                    </dl>
+                    </dl>}
                     <PrivilegeChecker check="GET_MANAGED_REALM">
                         <div className="user-info-item">
                             <span>

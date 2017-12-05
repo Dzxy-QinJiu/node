@@ -8,9 +8,11 @@ var salesTeamRestApis = {
     getSalesTeamList: "/rest/base/v1/group/list",
     filterSalesTeamList: "/rest/base/v1/group",
     getMemberList: "/rest/base/v1/group/nonmember",
-    addMember: "/rest/base/v1/group/users",
+    addMember: "/rest/base/v1/group/members",
     deleteMember: "/rest/base/v1/group/users",
-    editMember: "/rest/base/v1/group/users",
+    editOwner: "/rest/base/v1/group/owner/exchange",
+    editManager: "/rest/base/v1/group/manager/exchange",
+    editUser: "/rest/base/v1/group/user/exchange",
     deleteGroup: "/rest/base/v1/group",
     editGroup: "/rest/base/v1/group",
     addGroup: "/rest/base/v1/group",
@@ -86,11 +88,10 @@ exports.getMemberList = function (req, res) {
             }
         });
 };
-//flag=false：负责人替换后从该组内删除，true：替换后不删除转为该组的成员
-exports.addMember = function (req, res, obj, flag) {
+exports.addMember = function (req, res, obj) {
     return restUtil.authRest.post(
         {
-            url: salesTeamRestApis.addMember + "/" + flag,
+            url: salesTeamRestApis.addMember,
             req: req,
             res: res
         },
@@ -98,13 +99,27 @@ exports.addMember = function (req, res, obj, flag) {
 };
 
 exports.editMember = function (req, res, obj) {
+    var editObj = {
+        group_id: obj.group_id,
+        operate: obj.operate
+    };
+    var url = "";
+    if (obj.type == "owner") {
+        url = salesTeamRestApis.editOwner;
+        editObj.owner_id = obj.owner_id;
+    } else if (obj.type == "manager") {
+        url = salesTeamRestApis.editManager;
+        editObj.user_ids = JSON.parse(obj.user_ids);
+    } else if (obj.type == "user") {
+        url = salesTeamRestApis.editUser;
+        editObj.user_ids = JSON.parse(obj.user_ids);
+    }
     return restUtil.authRest.put(
         {
-            url: salesTeamRestApis.editMember,
+            url: url,
             req: req,
             res: res
-        },
-        obj);
+        }, editObj);
 };
 
 exports.deleteGroup = function (req, res, groupId) {

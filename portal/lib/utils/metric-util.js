@@ -35,6 +35,7 @@ class Metric {
             value: 'f'
         };
         const tagSchema = {
+            app: '*',
             root: '*',
             path: '*',
             sessionID: '*',
@@ -45,6 +46,7 @@ class Metric {
         });
         client.write('response_time', 'ms')
             .tag({
+                app: metric.app,
                 root: metric.root,
                 path: metric.path,
                 sessionID: metric.sessionID,

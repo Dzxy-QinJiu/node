@@ -4,13 +4,13 @@
  * Created by liwenjun on 2016/5/25.
  */
 require("alt");
+require("antd");
 require("react");
 require("react-dom");
 require("react-intl");
 require("intl-messageformat");
 require("react-router");
 require("react-bootstrap");
-require("antd");
 require("jquery");
 require("bootstrap");
 require("underscore");

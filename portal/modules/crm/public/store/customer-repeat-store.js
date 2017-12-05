@@ -7,6 +7,7 @@ function CustomerRepeatStore() {
     this.originCustomerList = [];//后台返回的重复客户列表
     this.repeatCustomerList = [];//转换为界面使用的重复客户列表
     this.selectedCustomers = [];//选择的客户
+    this.mergeRepeatCustomers = [];//要合并的客户们
     this.delModalShow = false;//是否展示删除客户的提示
     this.rightPanelIsShow = false;//是否展示右侧面板
     this.curCustomer = {};//当前要展示的客户
@@ -23,16 +24,24 @@ function CustomerRepeatStore() {
     this.filterObj = {};//搜索对象
     this.bindActions(CustomerRepeatAction);
 }
+//修改默认联系人后，更新列表
+CustomerRepeatStore.prototype.updateCustomerDefContact = function (contact) {
+    if (contact && contact.customer_id) {
+        let updateCustomer = _.find(this.originCustomerList, customer => customer.id === contact.customer_id);
+        updateCustomer.contacts = [contact];
+        this.repeatCustomerList = this.processForList(this.originCustomerList);
+    }
+};
 
 CustomerRepeatStore.prototype.editBasicSuccess = function (newBasic) {
     if (newBasic && newBasic.id) {
-        let updateCustomer = _.find(this.originCustomerList, customer=>customer.id == newBasic.id);
+        let updateCustomer = _.find(this.originCustomerList, customer => customer.id == newBasic.id);
         for (var key in newBasic) {
             if (newBasic[key] || newBasic[key] == "") {
                 updateCustomer[key] = newBasic[key];
             }
         }
-        this.repeatCustomerList = CrmStore.processForList(this.originCustomerList);
+        this.repeatCustomerList = this.processForList(this.originCustomerList);
     }
 };
 //重置页数
@@ -112,11 +121,11 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function (data) {
             if (this.page === 1) {
                 //加载首页
                 this.originCustomerList = data_list;
-                this.repeatCustomerList = CrmStore.processForList(data_list);
+                this.repeatCustomerList = this.processForList(data_list);
             } else {
                 //累加
                 this.originCustomerList = this.originCustomerList.concat(data_list);
-                this.repeatCustomerList = this.repeatCustomerList.concat(CrmStore.processForList(data_list));
+                this.repeatCustomerList = this.repeatCustomerList.concat(this.processForList(data_list));
             }
             this.page++;
         }
@@ -132,16 +141,33 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function (data) {
         }
     }
 };
+
+//对客户字段进行处理，以便在客户列表上显示
+CustomerRepeatStore.prototype.processForList = function (curCustomers) {
+    if (!_.isArray(curCustomers)) return [];
+    let repeatCustomerObj = _.groupBy(curCustomers, (item) => item.repeat_id);
+    return _.map(repeatCustomerObj, (repeatList, repeatId) => {
+        if (_.isArray(repeatList) && repeatList.length) {
+            repeatList = _.map(repeatList, customer => {
+                customer.start_time = customer.start_time ? moment(customer.start_time).format(oplateConsts.DATE_FORMAT) : "";
+                customer.last_contact_time = customer.last_contact_time ? moment(customer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
+                return customer;
+            });
+        }
+        return {repeatId: repeatId, repeatList: repeatList};
+    });
+};
+
 //刷新客户列表
 CustomerRepeatStore.prototype.refreshRepeatCustomer = function (data) {
     if (data) {
-        _.some(this.originCustomerList, (customer, index)=> {
+        _.some(this.originCustomerList, (customer, index) => {
             if (customer.id == data.id) {
                 this.originCustomerList[index] = data;
                 return true;
             }
         });
-        this.repeatCustomerList = CrmStore.processForList(this.originCustomerList);
+        this.repeatCustomerList = this.processForList(this.originCustomerList);
         if (data.id == this.curCustomer.id) {
             this.setCurCustomer(data.id);
         }
@@ -151,15 +177,26 @@ CustomerRepeatStore.prototype.refreshRepeatCustomer = function (data) {
 CustomerRepeatStore.prototype.delRepeatCustomer = function (delCustomerIds) {
     //删除成功后的处理
     if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
-        this.originCustomerList = _.filter(this.originCustomerList, customer=> delCustomerIds.indexOf(customer.id) === -1);
-        this.repeatCustomerList = _.filter(this.repeatCustomerList, customer=> delCustomerIds.indexOf(customer.id) === -1);
-        this.selectedCustomers = [];
+        this.originCustomerList = _.filter(this.originCustomerList, customer => delCustomerIds.indexOf(customer.id) === -1);
+        _.each(this.repeatCustomerList, (repeatObj) => {
+            let repeatList = repeatObj.repeatList;
+            if (_.isArray(repeatList) && repeatList.length) {
+                repeatObj.repeatList = _.filter(repeatList, customer => delCustomerIds.indexOf(customer.id) === -1);
+            }
+        });
+        //重复客户全部删没后，过滤掉整条重复客户的记录
+        this.repeatCustomerList = _.filter(this.repeatCustomerList, repeatObj => (_.isArray(repeatObj.repeatList) && repeatObj.repeatList.length > 0));
         this.repeatCustomersSize -= delCustomerIds.length;//重复客户的总数去掉删除的客户数
     }
 };
 //设置选中的客户
 CustomerRepeatStore.prototype.setSelectedCustomer = function (selectRows) {
     this.selectedCustomers = selectRows;
+};
+
+//设置要合并的客户们
+CustomerRepeatStore.prototype.setMergeRepeatCustomers = function (repeatCustomers) {
+    this.mergeRepeatCustomers = repeatCustomers;
 };
 //设置是否展示删除客户的确认框
 CustomerRepeatStore.prototype.setDelModalShow = function (flag) {
@@ -171,6 +208,7 @@ CustomerRepeatStore.prototype.setRightPanelShow = function (flag) {
 };
 //设置当前要展示的客户
 CustomerRepeatStore.prototype.setCurCustomer = function (id) {
-    this.curCustomer = _.find(this.originCustomerList, customer => customer.id === id);
+    let curCustomer = _.find(this.originCustomerList, customer => customer.id === id);
+    this.curCustomer = curCustomer ? curCustomer : {};
 };
 module.exports = alt.createStore(CustomerRepeatStore, 'CustomerRepeatStore');

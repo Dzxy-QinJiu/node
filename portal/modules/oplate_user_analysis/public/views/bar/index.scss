@@ -1,7 +1,11 @@
 .oplate_user_analysis {
   .analysis_bar_chart {
+    padding-top: 10px;
     .chart,.loadwrap {
       position:relative;
+    }
+    .chart {
+      padding-left: 15px;
     }
     .nodata {
       position:absolute;

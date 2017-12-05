@@ -1,3 +1,5 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 新版审批详情界面
  */
@@ -10,7 +12,7 @@ import userData from '../../../../public/sources/user-data';
 import GeminiScrollbar from '../../../../components/react-gemini-scrollbar';
 import AppProperty from '../../../../components/user_manage_components/app-property-setting';
 import {Modal} from 'react-bootstrap';
-import {Alert, Tooltip, Form, Button, Input, Validation, InputNumber, Select, Icon, message, DatePicker} from 'antd';
+import {Alert, Tooltip, Form, Button, Input, InputNumber, Select, Icon, message, DatePicker} from 'antd';
 const Option = Select.Option;
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 import UserNameTextField from '../../../../components/user_manage_components/user-name-textfield/apply-input-index';
@@ -24,9 +26,8 @@ require("../css/main.scss");
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
 import CrmRightPanel  from '../../../crm/public/views/crm-right-panel';
 import {RightPanel} from "../../../../components/rightPanel";
-const Validator = Validation.Validator;
-var getPassStrenth = require("../../../../components/password-strength-bar").getPassStrenth;
-var PasswordStrengthBar = require("../../../../components/password-strength-bar").PassStrengthBar;
+import {getPassStrenth, PassStrengthBar, passwordRegex} from "CMP_DIR/password-strength-bar";
+import AppUserManage from "MOD_DIR/app_user_manage/public";
 /*在审批界面显示用户的右侧面板结束*/
 //默认头像图片
 var DefaultHeadIconImage = require("../../../common/public/image/default-head-icon.png");
@@ -38,18 +39,8 @@ var UserData = require("../../../../public/sources/user-data");
 // 应用的默认配置
 var UserTypeConfigForm = require('../../../my_app_manage/public/views/user-type-config-form');
 var BootstrapButton = require('react-bootstrap').Button;
-import BatchChangeActions from '../../../crm/public/action/batch-change-actions';
 import Trace from "LIB_DIR/trace";
-
-import {defineMessages,injectIntl} from 'react-intl';
-import reactIntlMixin from '../../../../components/react-intl-mixin';
-
-const messages = defineMessages({
-    "delay_year":{id: 'user.apply.detail.delay.year'},  // "{year}年",
-    "delay_month":{id: 'user.apply.detail.delay.month'},  // "{month}个月",
-    "delay_week":{id: 'user.apply.detail.delay.week'}, // "{week}周",
-    "delay_day":{id: 'user.apply.detail.delay.day'}  // "{day}天"
-});
+var moment = require("moment");
 
 //表单默认配置
 var appConfig = {
@@ -92,6 +83,7 @@ var CONSTANTS = {
     // 详单的高度（当底部无批注内容时）
     DETAIL_NO_COMMENT_HEIGHT: 55
 };
+const SELECT_CUSTOM_TIME_TYPE = 'custom';
 //获取查看申请详情的路径,回复,审批，驳回中需要添加
 function getApplyDetailUrl(detailInfo) {
     //申请id
@@ -101,7 +93,7 @@ function getApplyDetailUrl(detailInfo) {
     return basePath + (applyId ? "?id=" + applyId : "");
 };
 //获取延期时间
-function getDelayDisplayTime(delay,_this) {
+function getDelayDisplayTime(delay) {
     //年毫秒数
     var YEAR_MILLIS = 365 * 24 * 60 * 60 * 1000;
     //月毫秒数
@@ -122,18 +114,14 @@ function getDelayDisplayTime(delay,_this) {
     //计算天
     var days = Math.floor(left_millis / DAY_MILLIS);
     //按情况显示
-    return (
-        <span>
-            {years ? _this.props.intl['formatMessage'](messages.delay_year,{year:years}) : ''}
-            {months ? _this.props.intl['formatMessage'](messages.delay_month,{month:months}) : ''}
-            {weeks ? _this.props.intl['formatMessage'](messages.delay_week,{week:weeks}) : ''}
-            {days ? _this.props.intl['formatMessage'](messages.delay_day,{day:days}) : ''}
-        </span>
-    );
+    return `${years ? years + Intl.get("common.time.unit.year", "年") : ''}
+            ${months ? months + Intl.get("user.apply.detail.delay.month.show", "个月") : ''}
+            ${weeks ? weeks + Intl.get("common.time.unit.week", "周") : ''}
+            ${days ? days + Intl.get("common.time.unit.day", "天") : ''}`;
 }
 
 const ApplyViewDetail = React.createClass({
-    mixins: [FieldMixin, UserNameTextField, reactIntlMixin],
+    mixins: [FieldMixin, UserNameTextField],
     getDefaultProps() {
         return {
             showNoData: false,
@@ -144,6 +132,8 @@ const ApplyViewDetail = React.createClass({
     getInitialState() {
         return {
             appConfig: appConfig,
+            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -152,7 +142,7 @@ const ApplyViewDetail = React.createClass({
     },
     getApplyDetail(detailItem, applyData) {
 
-        setTimeout(()=> {
+        setTimeout(() => {
             ApplyViewDetailActions.showDetailLoading(detailItem);
             ApplyViewDetailActions.getApplyDetail(detailItem.id, applyData);
             //获取回复列表
@@ -166,7 +156,6 @@ const ApplyViewDetail = React.createClass({
         if (this.props.detailItem.id) {
             this.getApplyDetail(this.props.detailItem, this.props.applyData);
         }
-        BatchChangeActions.getSalesManList();
         emitter.on("user_detail_close_right_panel", this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
     },
@@ -196,7 +185,7 @@ const ApplyViewDetail = React.createClass({
             if (height != 'auto') {
                 height += 60;
             }
-            return (<div className="app_user_manage_detail app_user_manage_detail_loading" style={{height:height}}>
+            return (<div className="app_user_manage_detail app_user_manage_detail_loading" style={{height: height}}>
                 <Spinner/></div>);
         }
         return null;
@@ -214,11 +203,12 @@ const ApplyViewDetail = React.createClass({
             var retry = (
                 <span>
                     {this.state.detailInfoObj.errorMsg}，<a href="javascript:void(0)"
-                                                           onClick={this.retryFetchDetail}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
+                                                           onClick={this.retryFetchDetail}><ReactIntl.FormattedMessage
+                    id="common.retry" defaultMessage="重试"/></a>
                 </span>
             );
             return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height:height}}>
+                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
                     <Alert
                         message={retry}
                         type="error"
@@ -236,7 +226,7 @@ const ApplyViewDetail = React.createClass({
                 height += 60;
             }
             return (
-                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height:height}}>
+                <div className="app_user_manage_detail app_user_manage_detail_error" style={{height: height}}>
                     <Alert
                         message={Intl.get("common.no.data", "暂无数据")}
                         type="info"
@@ -294,7 +284,8 @@ const ApplyViewDetail = React.createClass({
         if (replyListInfo.result === 'loading') {
             return <div className="reply-loading-wrap">
                 <Icon type="loading"/>
-                <span className="reply-loading-text"><ReactIntl.FormattedMessage id="user.apply.reply.loading" defaultMessage="正在努力加载回复列表 ......" /></span>
+                <span className="reply-loading-text"><ReactIntl.FormattedMessage id="user.apply.reply.loading"
+                                                                                 defaultMessage="正在努力加载回复列表 ......"/></span>
             </div>;
         }
         if (replyListInfo.result === 'error') {
@@ -317,7 +308,8 @@ const ApplyViewDetail = React.createClass({
             //</div>;
         }
         return <div>
-            <Icon type="reload" onClick={this.refreshReplyList} className="pull-right" title={Intl.get("common.get.again", "重新获取")}/>
+            <Icon type="reload" onClick={this.refreshReplyList} className="pull-right"
+                  title={Intl.get("common.get.again", "重新获取")}/>
             <ul>
                 {
                     replyListInfo.list.map((replyItem) => {
@@ -357,7 +349,7 @@ const ApplyViewDetail = React.createClass({
             //计算详情高度
             applyDetailHeight = this.getApplyDetailHeight();
             // approval_state：0待审批，1通过 2驳回 3撤销，当是0时，保持高度不变，非0时，要增加回复框
-            if (detailInfo.approval_state != CONSTANTS.APPLY_STATUS ) {
+            if (detailInfo.approval_state != CONSTANTS.APPLY_STATUS) {
                 if (detailInfo.approval_comment) {
                     applyDetailHeight -= CONSTANTS.DETAIL_CONTAIN_COMMENT_HEIGHT;
                 } else {
@@ -374,21 +366,28 @@ const ApplyViewDetail = React.createClass({
         return (
             <div>
                 <div className="apply_detail_uuid apply_detail_margin">
-                   <span><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" />：&nbsp;
-                        <a href="javascript:void(0)"
-                           onClick={this.showCustomerDetail.bind(this,detailInfo.customer_id)}
-                           data-tracename="查看客户详情"
-                        >{detailInfo.customer_name}</a>
+                   <span><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：&nbsp;
+                       <a href="javascript:void(0)"
+                          onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
+                          data-tracename="查看客户详情"
+                       >{detailInfo.customer_name}</a>
                    </span>
+                    {detailInfo.last_contact_time ? (
+                        <span className="last-contact-time">
+                          <ReactIntl.FormattedMessage id="crm.7" defaultMessage="最后联系时间"/>：
+                            {moment(detailInfo.last_contact_time).format(oplateConsts.DATE_FORMAT)}
+                        </span>
+                    ) : null}
                     {this.state.selectedDetailItem.order_id ? (
-                        <span className="order"><ReactIntl.FormattedMessage id="user.apply.detail.order" defaultMessage="订单" />：&nbsp;{this.state.selectedDetailItem.order_id}</span>) : null}
+                        <span className="order"><ReactIntl.FormattedMessage id="user.apply.detail.order"
+                                                                            defaultMessage="订单"/>：&nbsp;{this.state.selectedDetailItem.order_id}</span>) : null}
                 </div>
-                <div style={{height:applyDetailHeight}} ref="geminiWrap">
+                <div style={{height: applyDetailHeight}} ref="geminiWrap">
                     <GeminiScrollbar enabled={GeminiScrollbarEnabled} ref="gemini">
                         <div>
                             {this.renderDetailCenter()}
                             <div className="reply_list_wrap"
-                                 style={{display : this.state.applyIsExpanded ? 'none' : 'block'}}>
+                                 style={{display: this.state.applyIsExpanded ? 'none' : 'block'}}>
                                 {this.renderReplyList()}
                             </div>
                         </div>
@@ -408,7 +407,7 @@ const ApplyViewDetail = React.createClass({
         if (this.state.applyIsExpanded) {
             return (
                 <Tooltip title={Intl.get("user.apply.detail.expanded.title", "返回缩略内容")}>
-                    <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this,false)}>
+                    <div className="btn-icon-return" onClick={this.toggleApplyExpanded.bind(this, false)}>
                         <span className="iconfont icon-return" data-tracename="查看应用详细内容"></span>
                     </div>
                 </Tooltip>
@@ -416,7 +415,8 @@ const ApplyViewDetail = React.createClass({
         }
         return (
             <Tooltip title={Intl.get("user.apply.detail.show.role.auth.title", "查看详细内容")}>
-                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this,true)} data-tracename="点击返回按钮">
+                <div className="btn-icon-role-auth" onClick={this.toggleApplyExpanded.bind(this, true)}
+                     data-tracename="点击返回按钮">
                     <span className="iconfont icon-role-auth-config"></span>
                 </div>
             </Tooltip>
@@ -438,7 +438,7 @@ const ApplyViewDetail = React.createClass({
     editUserName(e) {
         Trace.traceEvent(e, '点击修改用户名');
         ApplyViewDetailActions.setUserNameEdit(true);
-        setTimeout(()=> {
+        setTimeout(() => {
             this.refs.validation.validate(function () {
             });
         })
@@ -507,7 +507,7 @@ const ApplyViewDetail = React.createClass({
                         info.user_names.map((name, idx) => {
                             return (
                                 <li key={name}><a href="javascript:void(0)"
-                                                  onClick={this.showUserDetail.bind(this , user_ids[idx])}
+                                                  onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                                   data-tracename="查看用户详情">{name}</a>
                                 </li>
                             );
@@ -663,7 +663,7 @@ const ApplyViewDetail = React.createClass({
             } else if (displayStartTime === {UNKNOWN} && displayEndTime === {UNKNOWN}) {
                 displayText = {UNKNOWN};
             } else {
-                displayText = displayStartTime + CONNECTOR +  displayEndTime;
+                displayText = displayStartTime + CONNECTOR + displayEndTime;
             }
         } else {
             //如果没有特殊配置
@@ -735,12 +735,13 @@ const ApplyViewDetail = React.createClass({
             <Table striped bordered>
                 <tbody>
                 <tr className="apply-detail-head">
-                    <th ><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用" /></th>
-                    {isExistUserApply ? null : <th><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量" /></th>}
-                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.time" defaultMessage="周期" /></th>
+                    <th ><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用"/></th>
+                    {isExistUserApply ? null :
+                        <th><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量"/></th>}
+                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.time" defaultMessage="周期"/></th>
                 </tr>
                 {
-                    detailInfo.apps.map((app)=> {
+                    detailInfo.apps.map((app) => {
                         //获取开通个数
                         //如果有应用的特殊配置，使用特殊配置
                         //没有特殊配置，使用申请单的配置
@@ -786,17 +787,19 @@ const ApplyViewDetail = React.createClass({
             <Table striped bordered>
                 <tbody>
                 <tr className="apply-detail-head">
-                    <th><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用" /></th>
-                    {isExistUserApply ? null : <th><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量" /></th>}
-                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.time" defaultMessage="周期" /></th>
-                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.role" defaultMessage="角色" /></th>
+                    <th><ReactIntl.FormattedMessage id="common.app" defaultMessage="应用"/></th>
+                    {isExistUserApply ? null :
+                        <th><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量"/></th>}
+                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.time" defaultMessage="周期"/></th>
+                    <th><ReactIntl.FormattedMessage id="user.apply.detail.table.role" defaultMessage="角色"/></th>
                     {
-                        permissionNameIndex ? (<th><ReactIntl.FormattedMessage id="common.app.auth" defaultMessage="权限" /></th>) : null
+                        permissionNameIndex ? (
+                            <th><ReactIntl.FormattedMessage id="common.app.auth" defaultMessage="权限"/></th>) : null
                     }
 
                 </tr>
                 {
-                    detailInfo.apps.map((app)=> {
+                    detailInfo.apps.map((app) => {
                         //获取开通个数
                         //如果有应用的特殊配置，使用特殊配置
                         //没有特殊配置，使用申请单的配置
@@ -828,10 +831,11 @@ const ApplyViewDetail = React.createClass({
                                     {detailInfo.approval_state == '0' && rolesNames.length == 0 ? <a
                                         href="javascript:void(0)"
                                         title={Intl.get("user.apply.detail.table.no.role.title", "配置应用")}
-                                        onClick={this.showAppConfigPanel.bind(this, app,detailInfo.account_type)}
+                                        onClick={this.showAppConfigPanel.bind(this, app, detailInfo.account_type)}
                                         data-tracename="点击了请配置"
                                     >
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.table.no.role" defaultMessage="请配置" />
+                                        <ReactIntl.FormattedMessage id="user.apply.detail.table.no.role"
+                                                                    defaultMessage="请配置"/>
                                     </a> : (
                                         rolesNames.map((item) => {
                                             return (
@@ -882,20 +886,20 @@ const ApplyViewDetail = React.createClass({
             <div>
                 <div className="col-xs-6 col-md-5 apply_detail_desp">
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
                         <dd>{detailInfo.sales_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
                         <dd>{detailInfo.sales_team_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight:0}}>{this.renderApplyDetailUsernames()}</dd>
+                        <dd style={{paddingRight: 0}}>{this.renderApplyDetailUsernames()}</dd>
                     </dl>
                     {isExistUserApply ? (null) : ( <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.nickname" defaultMessage="昵称"/></dt>
-                        <dd style={{paddingRight:0}}>{this.renderApplyDetailNicknames()}</dd>
+                        <dd style={{paddingRight: 0}}>{this.renderApplyDetailNicknames()}</dd>
                     </dl>)}
 
 
@@ -912,10 +916,10 @@ const ApplyViewDetail = React.createClass({
                      detailInfo.approval_state == '2'表示是已驳回的应用，
                      detailInfo.approval_state == '3'表示是已撤销的应用，
                      */}
-                    { detailInfo.approval_state == '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") ||
+                    { detailInfo.approval_state == '0' && !hasPrivilege("GET_APP_EXTRA_GRANTS") ||
                     detailInfo.approval_state == '2' ||
                     detailInfo.approval_state == '3' ?
-                        this.renderAppTable(): this.renderAppTableRolePermission()
+                        this.renderAppTable() : this.renderAppTableRolePermission()
                     }
                 </div>
             </div>
@@ -948,7 +952,7 @@ const ApplyViewDetail = React.createClass({
 
         return (
             <div className="apply_custom_setting_wrap"
-                 style={{display : this.state.applyIsExpanded ? 'block' : 'none'}}>
+                 style={{display: this.state.applyIsExpanded ? 'block' : 'none'}}>
                 <AppProperty {...appComponentProps}/>
             </div>
         );
@@ -995,6 +999,51 @@ const ApplyViewDetail = React.createClass({
             </div>
         );
     },
+    //渲染销售申请修改其他信息
+    renderDetailChangeOther: function () {
+        return (
+            <div className="clearfix">
+                <div className="apply_detail_simple">
+                    {this.renderChangeOtherContent()}
+                </div>
+            </div>
+        );
+    },
+    //渲染申请密码详情
+    renderChangeOtherContent: function () {
+        var detailInfo = this.state.detailInfoObj.info;
+        var user_ids = detailInfo.user_ids;
+        return (
+            <div>
+                <div className="col-xs-6 col-md-12 apply_detail_desp">
+                    <dl className="dl-horizontal detail_item">
+                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
+                        <dd>{detailInfo.sales_name}</dd>
+                    </dl>
+                    <dl className="dl-horizontal detail_item">
+                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
+                        <dd>{detailInfo.sales_team_name}</dd>
+                    </dl>
+                    <dl className="dl-horizontal detail_item">
+                        <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
+                        <dd style={{paddingRight: 0}}>
+                            <ul className="list-unstyled">
+                                {
+                                    detailInfo.user_names.map((item, idx) => {
+                                        return <li><a href="javascript:void(0)"
+                                                      onClick={this.showUserDetail.bind(this, user_ids[idx])}
+                                                      data-tracename="查看用户详情">{item}</a>
+                                        </li>;
+                                    })
+                                }
+                            </ul>
+                        </dd>
+                    </dl>
+                    {this.renderComment()}
+                </div>
+            </div>
+        );
+    },
     //渲染用户延期
     renderDetailDelayTime: function () {
         return (
@@ -1027,7 +1076,7 @@ const ApplyViewDetail = React.createClass({
     //保存修改的延迟时间
     saveModifyDelayTime(e) {
         Trace.traceEvent(e, '保存修改延期时间');
-        if (this.state.formData.delayTimeUnit == 'custom') {
+        if (this.state.formData.delayTimeUnit == SELECT_CUSTOM_TIME_TYPE) {
             ApplyViewDetailActions.saveModifyDelayTime(this.state.formData.end_date);
         } else {
             ApplyViewDetailActions.saveModifyDelayTime(this.getDelayTimeMillis());
@@ -1049,13 +1098,13 @@ const ApplyViewDetail = React.createClass({
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
-        let timestamp = value.getTime();
+        let timestamp = value && value.valueOf() || '';
         ApplyViewDetailActions.setDelayDeadlineTime(timestamp);
     },
 
     // 设置不可选时间的范围
     disabledDate(current){
-        return current && current.getTime() < Date.now();
+        return current && current.valueOf() < Date.now();
     },
 
     renderModifyDelayTime(){
@@ -1064,10 +1113,13 @@ const ApplyViewDetail = React.createClass({
         }
         return this.state.isModifyDelayTime ? (
             <div className="modify-delay-time-style">
-                {this.state.formData.delayTimeUnit == 'custom' ? (
+                {this.state.formData.delayTimeUnit == SELECT_CUSTOM_TIME_TYPE ? (
                     <DatePicker placeholder="请选择到期时间"
                                 onChange={this.setDelayDeadlineTime}
                                 disabledDate={this.disabledDate}
+                                defaultValue={moment(+this.state.formData.end_date)}
+                                allowClear={false}
+                                showToday={false}
                     />
                 ) : (
                     <InputNumber
@@ -1082,15 +1134,19 @@ const ApplyViewDetail = React.createClass({
                     onChange={this.delayTimeUnitModify}
                     className="select-modify-unit"
                 >
-                    <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
-                    <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
-                    <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
-                    <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year" defaultMessage="年" /></Option>
-                    <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></Option>
+                    <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day"
+                                                                     defaultMessage="天"/></Option>
+                    <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week"
+                                                                      defaultMessage="周"/></Option>
+                    <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月"/></Option>
+                    <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year"
+                                                                      defaultMessage="年"/></Option>
+                    <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom"
+                                                                       defaultMessage="自定义"/></Option>
                 </Select>
-                <span style={{'marginLeft':'10px'}} className="iconfont icon-choose"
+                <span style={{'marginLeft': '10px'}} className="iconfont icon-choose"
                       onClick={this.saveModifyDelayTime}></span>
-                <span style={{'marginLeft':'10px'}} className="iconfont icon-close"
+                <span style={{'marginLeft': '10px'}} className="iconfont icon-close"
                       onClick={this.cancelModifyDelayTime}></span>
             </div>
         ) : (
@@ -1105,14 +1161,24 @@ const ApplyViewDetail = React.createClass({
     },
     //密码的验证
     checkPassword: function (rule, value, callback) {
-        var passStrength = getPassStrenth(value);
-        this.setState({
-            passStrength: passStrength
-        });
-        if (this.state.formData.confirmPassword) {
-            this.refs.validation.forceValidate(['confirmPassword']);
+        if (value && value.match(passwordRegex)) {
+            var passStrength = getPassStrenth(value);
+            this.setState({
+                passStrength: passStrength
+            });
+            if (this.state.formData.confirmPassword) {
+                this.refs.validation.forceValidate(['confirmPassword']);
+            }
+            callback();
+        } else {
+            this.setState({
+                passStrength: {
+                    passBarShow: false,
+                    passStrength: 'L'
+                }
+            });
+            callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
         }
-        callback();
     },
 
     //渲染密码区域
@@ -1129,7 +1195,7 @@ const ApplyViewDetail = React.createClass({
                     help={status.apply_detail_password.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.apply_detail_password.errors && status.apply_detail_password.errors.join(','))}
                 >
                     <Validator
-                        rules={[{required: true, whitespace: true,min:6,max:18, message: Intl.get("common.password.length", "密码长度应大于6位小于18位")}, {validator: this.checkPassword}]}>
+                        rules={[{validator: this.checkPassword}]}>
                         <Input
                             id="apply_detail_password"
                             name="apply_detail_password"
@@ -1142,7 +1208,7 @@ const ApplyViewDetail = React.createClass({
                 </FormItem>
                 {
                     this.state.passStrength.passBarShow ? (
-                        <PasswordStrengthBar passStrength={this.state.passStrength.passStrength}/>) : null
+                        <PassStrengthBar passStrength={this.state.passStrength.passStrength}/>) : null
                 }
             </div>
         );
@@ -1161,10 +1227,10 @@ const ApplyViewDetail = React.createClass({
                 help={status.confirmPassword.errors ? status.confirmPassword.errors.join(',') : null}
             >
                 <Validator rules={[{
-                                required: true,
-                                whitespace: true,
-                                message: Intl.get("common.password.unequal", "两次输入密码不一致！")
-                              }, {validator: this.checkConfirmPassword}]}
+                    required: true,
+                    whitespace: true,
+                    message: Intl.get("common.password.unequal", "两次输入密码不一致！")
+                }, {validator: this.checkConfirmPassword}]}
                 >
                     <Input
                         name="confirmPassword"
@@ -1181,7 +1247,7 @@ const ApplyViewDetail = React.createClass({
     //确认密码验证
     checkConfirmPassword: function (rule, value, callback) {
         if (value && value !== this.state.formData.apply_detail_password) {
-            callback( Intl.get("common.password.unequal", "两次输入密码不一致！"));
+            callback(Intl.get("common.password.unequal", "两次输入密码不一致！"));
         } else {
             callback();
         }
@@ -1194,27 +1260,27 @@ const ApplyViewDetail = React.createClass({
             <div>
                 <div className="col-xs-6 col-md-12 apply_detail_desp">
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
                         <dd>{detailInfo.sales_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
                         <dd>{detailInfo.sales_team_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split("、").map((app_name) => {
                             return <p>{app_name}</p>
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight:0}}>
+                        <dd style={{paddingRight: 0}}>
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
                                         return <li><a href="javascript:void(0)"
-                                                      onClick={this.showUserDetail.bind(this , user_ids[idx])}
+                                                      onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                                       data-tracename="查看用户详情">{item}</a>
                                         </li>;
                                     })
@@ -1224,7 +1290,7 @@ const ApplyViewDetail = React.createClass({
                     </dl>
                     {this.renderComment()}
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.app.status" defaultMessage="开通状态"/></dt>
                         <dd>{detailInfo.status == '1' ? Intl.get("common.app.status.open", "开启") : Intl.get("common.app.status.close", "关闭")}</dd>
                     </dl>
                 </div>
@@ -1240,21 +1306,21 @@ const ApplyViewDetail = React.createClass({
             <div>
                 <div className="col-xs-6 col-md-12 apply_detail_desp">
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
                         <dd>{detailInfo.sales_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
                         <dd>{detailInfo.sales_team_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight:0}}>
+                        <dd style={{paddingRight: 0}}>
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
                                         return <li><a href="javascript:void(0)"
-                                                      onClick={this.showUserDetail.bind(this , user_ids[idx])}
+                                                      onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                                       data-tracename="查看用户详情">{item}</a>
                                         </li>;
                                     })
@@ -1269,11 +1335,12 @@ const ApplyViewDetail = React.createClass({
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <dl className="dl-horizontal detail_item">
                                         <dt>
-                                            {Intl.get("common.password","密码")}</dt>
+                                            {Intl.get("common.password", "密码")}</dt>
                                         <dd>{this.renderPasswordBlock()}</dd>
                                     </dl>
                                     <dl className="dl-horizontal detail_item">
-                                        <dt><ReactIntl.FormattedMessage id="common.confirm.password" defaultMessage="确认密码" /></dt>
+                                        <dt><ReactIntl.FormattedMessage id="common.confirm.password"
+                                                                        defaultMessage="确认密码"/></dt>
                                         <dd>{this.renderConfirmPasswordBlock()}</dd>
                                     </dl>
                                 </Validation>
@@ -1293,14 +1360,14 @@ const ApplyViewDetail = React.createClass({
         if (detailInfo.customer_name) {
             if (!detailInfo.customer_id) {
                 return <dl className="dl-horizontal detail_item">
-                    <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" /></dt>
+                    <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/></dt>
                     <dd>{detailInfo.customer_name}</dd>
                 </dl>;
             } else {
                 return <dl className="dl-horizontal detail_item">
-                    <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" /></dt>
+                    <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/></dt>
                     <dd><a href="javascript:void(0)"
-                           onClick={this.showCustomerDetail.bind(this,detailInfo.customer_id)}
+                           onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
                            data-tracename="查看客户详情">{detailInfo.customer_name}</a>
                     </dd>
                 </dl>
@@ -1312,7 +1379,7 @@ const ApplyViewDetail = React.createClass({
     // 渲染延期时间前的标题
     renderApplyDelayName(){
         let delayName = '';
-        if (this.state.formData.delayTimeUnit == 'custom') {
+        if (this.state.formData.delayTimeUnit == SELECT_CUSTOM_TIME_TYPE) {
             delayName = Intl.get("user.time.end", "到期时间");
         } else {
             delayName = Intl.get("common.delay.time", "延期时间");
@@ -1322,10 +1389,10 @@ const ApplyViewDetail = React.createClass({
 
     renderApplyDelayModifyTime() {
         let delayTime;
-        if (this.state.formData.end_date) {
-            delayTime =  moment(new Date(+this.state.formData.end_date)).format(oplateConsts.DATE_FORMAT);
+        if (this.state.formData.delayTimeUnit == SELECT_CUSTOM_TIME_TYPE) {
+            delayTime = moment(new Date(+this.state.formData.end_date)).format(oplateConsts.DATE_FORMAT);
         } else {
-            delayTime = getDelayDisplayTime(this.getDelayTimeMillis(), this);
+            delayTime = getDelayDisplayTime(this.getDelayTimeMillis());
         }
         return delayTime;
     },
@@ -1342,27 +1409,27 @@ const ApplyViewDetail = React.createClass({
             <div>
                 <div className="col-xs-6 col-md-12 apply_detail_desp">
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.sales" defaultMessage="所属销售"/></dt>
                         <dd>{detailInfo.sales_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.belong.team" defaultMessage="所属团队"/></dt>
                         <dd>{detailInfo.sales_team_name}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split("、").map((app_name) => {
                             return <p>{app_name}</p>
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/></dt>
-                        <dd style={{paddingRight:0}}>
+                        <dd style={{paddingRight: 0}}>
                             <ul className="list-unstyled">
                                 {
                                     detailInfo.user_names.map((item, idx) => {
                                         return <li><a href="javascript:void(0)"
-                                                      onClick={this.showUserDetail.bind(this , user_ids[idx])}
+                                                      onClick={this.showUserDetail.bind(this, user_ids[idx])}
                                                       data-tracename="查看用户详情">{item}</a>
                                         </li>;
                                     })
@@ -1388,6 +1455,8 @@ const ApplyViewDetail = React.createClass({
         var detailInfoObjInfo = detailInfoObj.info || {};
         if (detailInfoObjInfo.type === 'apply_pwd_change') {
             return this.renderDetailChangePassword();
+        } else if (detailInfoObjInfo.type === 'apply_sth_else') {
+            return this.renderDetailChangeOther();
         } else if (detailInfoObjInfo.type === 'apply_grant_delay') {
             return this.renderDetailDelayTime();
         } else if (detailInfoObjInfo.type === 'apply_grant_status_change') {
@@ -1398,7 +1467,7 @@ const ApplyViewDetail = React.createClass({
     },
     //添加一条回复
     addReply: function (e) {
-        Trace.traceEvent(e,"点击回复按钮");
+        Trace.traceEvent(e, "点击回复按钮");
         //如果ajax没有执行完，则不提交
         if (this.state.replyFormInfo.result === 'loading') {
             return;
@@ -1454,14 +1523,14 @@ const ApplyViewDetail = React.createClass({
 
     // 确认撤销申请
     saleConfirmBackoutApply(e){
-        Trace.traceEvent(e,"点击撤销申请按钮");
+        Trace.traceEvent(e, "点击撤销申请按钮");
         this.state.showBackoutConfirm = true;
         this.setState(this.state);
     },
 
     // 隐藏撤销申请的模态框
     hideBackoutModal: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".btn-cancel"),"点击取消按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".btn-cancel"), "点击取消按钮");
         this.state.showBackoutConfirm = false;
         this.setState(this.state);
     },
@@ -1469,7 +1538,7 @@ const ApplyViewDetail = React.createClass({
     // 撤销申请
     saleBackoutApply(e) {
         e.stopPropagation();
-        Trace.traceEvent(e,"点击撤销按钮");
+        Trace.traceEvent(e, "点击撤销按钮");
         this.state.showBackoutConfirm = false;
         this.setState(this.state);
         let backoutObj = {
@@ -1494,11 +1563,13 @@ const ApplyViewDetail = React.createClass({
                     <Modal.Title />
                 </Modal.Header>
                 <Modal.Body>
-                    <p><ReactIntl.FormattedMessage id="user.apply.detail.modal.content" defaultMessage="是否撤销此申请？" /></p>
+                    <p><ReactIntl.FormattedMessage id="user.apply.detail.modal.content" defaultMessage="是否撤销此申请？"/></p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <BootstrapButton className="btn-ok" onClick={this.saleBackoutApply}><ReactIntl.FormattedMessage id="user.apply.detail.modal.ok" defaultMessage="撤销" /></BootstrapButton>
-                    <BootstrapButton className="btn-cancel" onClick={this.hideBackoutModal}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></BootstrapButton>
+                    <BootstrapButton className="btn-ok" onClick={this.saleBackoutApply}><ReactIntl.FormattedMessage
+                        id="user.apply.detail.modal.ok" defaultMessage="撤销"/></BootstrapButton>
+                    <BootstrapButton className="btn-cancel" onClick={this.hideBackoutModal}><ReactIntl.FormattedMessage
+                        id="common.cancel" defaultMessage="取消"/></BootstrapButton>
                 </Modal.Footer>
             </Modal>
         );
@@ -1534,7 +1605,7 @@ const ApplyViewDetail = React.createClass({
                 <div className="approval_block">
                     <p className="approval_text"></p>
                     <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见" /></dt>
+                        <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/></dt>
                         <dd>
                             {detailInfoObj.approval_state == '0' && ''}
                             {detailInfoObj.approval_state == '1' && Intl.get("user.apply.pass", "已通过")}
@@ -1544,7 +1615,7 @@ const ApplyViewDetail = React.createClass({
                     </dl>
                     {detailInfoObj.approval_comment ? (
                         <dl className="dl-horizontal detail_item">
-                            <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注" /></dt>
+                            <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/></dt>
                             <dd>
                                 <span>
                                     {detailInfoObj.approval_comment}
@@ -1560,13 +1631,15 @@ const ApplyViewDetail = React.createClass({
                         <div className="col-6">
                             {/**已审批*/}
                             {detailInfoObj.approval_state == '3' ? (
-                                <div className="approval_person" style={{paddingTop:'10px'}}>
-                                    <ReactIntl.FormattedMessage id="user.apply.detail.backout.person" defaultMessage="撤销人" />
+                                <div className="approval_person" style={{paddingTop: '10px'}}>
+                                    <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
+                                                                defaultMessage="撤销人"/>
                                     <em>{detailInfoObj.sales_name}</em>
                                 </div>
                             ) : (
-                                <div className="approval_person" style={{paddingTop:'10px'}}>
-                                    <ReactIntl.FormattedMessage id="user.apply.detail.approval.person" defaultMessage="审批人" />
+                                <div className="approval_person" style={{paddingTop: '10px'}}>
+                                    <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
+                                                                defaultMessage="审批人"/>
                                     <em>{detailInfoObj.approval_person}</em>
                                 </div>
                             )}
@@ -1577,7 +1650,8 @@ const ApplyViewDetail = React.createClass({
                                 {
                                     hasPrivilege("CREATE_APPLY_COMMENT") ?
                                         <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.addReply}><ReactIntl.FormattedMessage id="user.apply.reply.button" defaultMessage="回复" /></Button> : null
+                                                onClick={this.addReply}><ReactIntl.FormattedMessage
+                                            id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
                                 }
                             </div>
                         </div>
@@ -1597,13 +1671,15 @@ const ApplyViewDetail = React.createClass({
                         <div className="col-6">
                             {
                                 isRealmAdmin ? <span>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.approval.person" defaultMessage="审批人" />
+                                        <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
+                                                                    defaultMessage="审批人"/>
                                         <em>{userData.getUserData().nick_name}</em>
                                     </span> : <span>&nbsp;</span>
                             }
                             {
                                 hasPrivilege("APPLY_CANCEL") && showBackoutApply ? <span>
-                                        <ReactIntl.FormattedMessage id="user.apply.detail.backout.person" defaultMessage="撤销人" />
+                                        <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
+                                                                    defaultMessage="撤销人"/>
                                         <em>{userData.getUserData().nick_name}</em>
                                     </span> : <span>&nbsp;</span>
                             }
@@ -1614,21 +1690,25 @@ const ApplyViewDetail = React.createClass({
                                 {
                                     hasPrivilege("CREATE_APPLY_COMMENT") ?
                                         <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.addReply}><ReactIntl.FormattedMessage id="user.apply.reply.button" defaultMessage="回复" /></Button> : null
+                                                onClick={this.addReply}><ReactIntl.FormattedMessage
+                                            id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
                                 }
                                 {
                                     hasPrivilege("APPLY_CANCEL") && showBackoutApply ?
                                         <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage id="user.apply.detail.backout" defaultMessage="撤销申请" /></Button> : null
+                                                onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
+                                            id="user.apply.detail.backout" defaultMessage="撤销申请"/></Button> : null
                                 }
 
                                 {
                                     isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                           onClick={this.submitApprovalForm.bind(this , "1")}><ReactIntl.FormattedMessage id="user.apply.detail.button.pass" defaultMessage="通过" /></Button> : null
+                                                           onClick={this.submitApprovalForm.bind(this, "1")}><ReactIntl.FormattedMessage
+                                        id="user.apply.detail.button.pass" defaultMessage="通过"/></Button> : null
                                 }
                                 {
                                     isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                           onClick={this.submitApprovalForm.bind(this , "2")}><ReactIntl.FormattedMessage id="common.apply.reject" defaultMessage="驳回" /></Button> : null
+                                                           onClick={this.submitApprovalForm.bind(this, "2")}><ReactIntl.FormattedMessage
+                                        id="common.apply.reject" defaultMessage="驳回"/></Button> : null
                                 }
                             </div>
                         </div>
@@ -1641,7 +1721,7 @@ const ApplyViewDetail = React.createClass({
     renderDuplicationName(errorMsg){
         this.toggleApplyExpanded(false);
         this.renderEditUserName();
-        message.warn(Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！")|| errorMsg, 3);
+        message.warn(Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！") || errorMsg, 3);
     },
 
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
@@ -1653,12 +1733,12 @@ const ApplyViewDetail = React.createClass({
         let userInfoData = [], errMsg = '';
         // 同步请求，得到结果后，进行判断是否重名
         $.ajax({
-            url : '/rest/apply/user_name/valid',
-            dataType : "json",
+            url: '/rest/apply/user_name/valid',
+            dataType: "json",
             type: 'get',
-            async:false,
+            async: false,
             data: obj,
-            success : (data) => {
+            success: (data) => {
                 userInfoData = data;
             },
             error: (errorMsg) => {
@@ -1667,18 +1747,18 @@ const ApplyViewDetail = React.createClass({
         });
         if (errMsg) {
             return errMsg;
-        }else{
+        } else {
             return userInfoData.length;
         }
     },
 
     submitApprovalForm(approval) {
-        if(approval == '1') {
-            Trace.traceEvent($(this.getDOMNode()).find(".btn-primary-sure"),"点击通过按钮");
+        if (approval == '1') {
+            Trace.traceEvent($(this.getDOMNode()).find(".btn-primary-sure"), "点击通过按钮");
         } else if (approval == '2') {
-            Trace.traceEvent($(this.getDOMNode()).find(".btn-primary-sure"),"点击驳回按钮");
+            Trace.traceEvent($(this.getDOMNode()).find(".btn-primary-sure"), "点击驳回按钮");
         }
-        const realSubmit = ()=> {
+        const realSubmit = () => {
             //详情信息
             var detailInfo = this.state.detailInfoObj.info;
             //获取用户选择的审批状态
@@ -1744,7 +1824,7 @@ const ApplyViewDetail = React.createClass({
             }
 
             // 点击通过时，当用户数量大于1，并且改为用户数量为1时
-            if ( approval != "2" && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1 ) {
+            if (approval != "2" && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1) {
                 if (this.state.isChangeUserName) { // 更改用户名时，校验
                     if (UserNameTextfieldUtil.userInfo.length) {  // 同一客户下，用户名重名时
                         this.renderDuplicationName();
@@ -1776,7 +1856,7 @@ const ApplyViewDetail = React.createClass({
             };
             // 延期时间(需要修改到期时间的字段)
             if (detailInfo.type == 'apply_grant_delay') {
-                if (this.state.formData.end_date) {
+                if (this.state.formData.delayTimeUnit == SELECT_CUSTOM_TIME_TYPE) {
                     obj.end_date = this.state.formData.end_date;
                 } else {
                     obj.delay_time = this.state.formData.delay_time;
@@ -1796,8 +1876,15 @@ const ApplyViewDetail = React.createClass({
         var validation = this.refs.validation;
         if (!validation) {
             realSubmit();
+        } else if (approval == "2") {
+            //当点击驳回按钮时，不用对输入的密码进行校验
+            //如果之前密码验证有错误提示，先将错误提示去掉
+            this.state.status.apply_detail_password = {};
+            this.state.status.confirmPassword = {};
+            this.setState({status: this.state.status});
+            realSubmit();
         } else {
-            validation.validate((valid)=> {
+            validation.validate((valid) => {
                 if (!valid) {
                     return;
                 }
@@ -1838,14 +1925,17 @@ const ApplyViewDetail = React.createClass({
                     <div className="approval_loading">
                         <p>
                             {this.state.rolesNotSettingModalDialog.appNames.join('、')}
-                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.cancel" defaultMessage="中，没有为用户分配角色，是否继续" />
+                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.cancel"
+                                                        defaultMessage="中，没有为用户分配角色，是否继续"/>
                         </p>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="primary" className="roles-notset-btn-continue"
-                            onClick={this.continueSubmit}><ReactIntl.FormattedMessage id="user.apply.detail.role.modal.continue" defaultMessage="继续" /></Button>
-                    <Button type="ghost" onClick={this.cancelShowRolesModal}><ReactIntl.FormattedMessage id="user.apply.detail.role.modal.cancel" defaultMessage="我再改改" /></Button>
+                            onClick={this.continueSubmit}><ReactIntl.FormattedMessage
+                        id="user.apply.detail.role.modal.continue" defaultMessage="继续"/></Button>
+                    <Button type="ghost" onClick={this.cancelShowRolesModal}><ReactIntl.FormattedMessage
+                        id="user.apply.detail.role.modal.cancel" defaultMessage="我再改改"/></Button>
                 </Modal.Footer>
             </Modal>;
         }
@@ -1859,7 +1949,8 @@ const ApplyViewDetail = React.createClass({
                     <Modal.Body>
                         <div className="approval_loading">
                             <Spinner type="line-spin"/>
-                            <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.sending" defaultMessage="审批中..." /></p>
+                            <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.sending"
+                                                           defaultMessage="审批中..."/></p>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -1870,8 +1961,9 @@ const ApplyViewDetail = React.createClass({
                 <div className="approval_result">
                     <div className="approval_result_wrap">
                         <div className="bgimg"></div>
-                        <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.success" defaultMessage="审批成功" /></p>
-                        <Button type="ghost" onClick={this.viewApprovalResult}><ReactIntl.FormattedMessage id="user.apply.detail.show.content" defaultMessage="查看审批结果" /></Button>
+                        <p><ReactIntl.FormattedMessage id="user.apply.detail.submit.success" defaultMessage="审批成功"/></p>
+                        <Button type="ghost" onClick={this.viewApprovalResult}><ReactIntl.FormattedMessage
+                            id="user.apply.detail.show.content" defaultMessage="查看审批结果"/></Button>
                     </div>
                 </div>
             );
@@ -1882,8 +1974,12 @@ const ApplyViewDetail = React.createClass({
                     <div className="approval_result_wrap">
                         <div className="bgimg error"></div>
                         <p>{this.state.applyResult.errorMsg}</p>
-                        <Button type="ghost" className="re_send" onClick={this.reSendApproval}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></Button>
-                        <Button type="ghost" className="cancel_send" onClick={this.cancelSendApproval}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></Button>
+                        <Button type="ghost" className="re_send"
+                                onClick={this.reSendApproval}><ReactIntl.FormattedMessage id="common.retry"
+                                                                                          defaultMessage="重试"/></Button>
+                        <Button type="ghost" className="cancel_send"
+                                onClick={this.cancelSendApproval}><ReactIntl.FormattedMessage id="common.cancel"
+                                                                                              defaultMessage="取消"/></Button>
                     </div>
                 </div>
             );
@@ -1925,11 +2021,23 @@ const ApplyViewDetail = React.createClass({
         return _.max(_.pluck(detailInfoApps, 'number'));
     },
 
+    ShowCustomerUserListPanel(data) {
+        this.setState({
+            isShowCustomerUserListPanel: true,
+            CustomerInfoOfCurrUser: data.customerObj
+        });
+
+    },
+    closeCustomerUserListPanel() {
+        this.setState({
+            isShowCustomerUserListPanel: false
+        })
+    },
     // 获取更改或是没有更改的用户数最大值
     getChangeMaxUserNumber(){
         let userNumber = [];
         _.each(this.appsSetting, (custom_setting) => {
-            if (custom_setting.number && custom_setting.number.value){
+            if (custom_setting.number && custom_setting.number.value) {
                 userNumber.push(custom_setting.number.value);
             }
         });
@@ -1970,7 +2078,9 @@ const ApplyViewDetail = React.createClass({
                             currentId={this.state.rightPanelCustomerId}
                             showFlag={true}
                             hideRightPanel={this.closeRightPanel}
-                            refreshCustomerList={function() {}}
+                            refreshCustomerList={function () {
+                            }}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         /> : null
                     }
                     {
@@ -1985,10 +2095,23 @@ const ApplyViewDetail = React.createClass({
                         /> : null
                     }
                 </RightPanel>
+                {/*该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    {this.state.isShowCustomerUserListPanel?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        />:null
+                    }
+                </RightPanel>
             </div>
 
         );
     }
 });
 
-export default injectIntl(ApplyViewDetail);
+export default ApplyViewDetail;

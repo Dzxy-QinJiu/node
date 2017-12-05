@@ -6,24 +6,31 @@ function FilterStore() {
     this.stageList = [];
     this.tagList = [];
     this.industryList = [];//行业列表
+    this.provinceList = [];//地域列表
     this.inputCondition = {};
     this.condition = {
         sales_team_id: "",
         industry: "",
         province: "",
-        contact:"",//联系方式
+        contact: "",//联系方式
         app_ids: [""],
         labels: [""],
         sales_opportunities: [{
             sale_stages: "",
-            apps:[""]
+            apps: [""]
         }],
-        clue:""
+        administrative_level: "",//行政级别
+        otherSelectedItem:"",//其他类型的筛选
     };
     this.isPanelShow = false;
 
     this.bindActions(FilterActions);
 }
+
+//获取地域列表
+FilterStore.prototype.getFilterProvinces = function (list) {
+    this.provinceList = list;
+};
 
 //获取行业列表
 FilterStore.prototype.getIndustries = function (list) {
@@ -78,6 +85,14 @@ FilterStore.prototype.setInputCondition = function (value) {
 FilterStore.prototype.setClue = function (value) {
     this.condition.clue = value;
 };
+FilterStore.prototype.setLevel = function (value) {
+    this.condition.administrative_level = value;
+};
+
+FilterStore.prototype.setOtherSelectedItem = function (item) {
+    this.condition.otherSelectedItem = item;
+};
+
 FilterStore.prototype.showPanel = function () {
     this.isPanelShow = true;
 };

@@ -1,12 +1,13 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 发票信息添加、展示及编辑页面
  */
 
 import routeList from "../common/route";
 import ajax from "../common/ajax";
-import { Form, Validation, Input, Icon, DatePicker, Button, message } from "antd"
+import { Form, Input, Icon, DatePicker, Button, message } from "antd"
 const FormItem = Form.Item;
-const Validator = Validation.Validator;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import rightPanelUtil from "../../../components/rightPanel";
 const RightPanelEdit = rightPanelUtil.RightPanelEdit;
@@ -113,11 +114,12 @@ const DetailInvoice = React.createClass({
 
         if (_.isEmpty(formData) && !invoice) {
             formData = this.state[key] = {contract_id: this.props.contract.id};
+            formData.date = moment().valueOf();
         }
 
         const disabledDate = function (current) {
             //不允许选择大于当前天的日期
-            return current && current.getTime() > Date.now();
+            return current && current.valueOf() > Date.now();
         };
 
         return (
@@ -127,14 +129,12 @@ const DetailInvoice = React.createClass({
                      validateStatus={this.getValidateStatus("date" + index)}
                      help={this.getHelpMessage("date" + index)}
                 >
-                    <Validator rules={[{required: true, type: "date", message: Intl.get("contract.42", "请选择日期")}]}>
                         <DatePicker
                             name={"date" + index}
                             onChange={this.setField.bind(this, "date", index)}
-                            value={formData.date? new Date(formData.date) : ""}
+                            value={formData.date? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
-                    </Validator>
                 </FormItem>
                 &nbsp;
                 <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />

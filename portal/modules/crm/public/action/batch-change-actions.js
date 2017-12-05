@@ -6,10 +6,12 @@ function BatchChangeAction() {
         'setCurrentTab',
         'setSalesMan',
         'setLoadingState',
-        'changeSalesTeam',
         'toggleTag',
         'industryChange',
-        'resetState'
+        'resetState',
+        'clearSelectedTag',
+        'setUnSelectDataTip',
+        'locationChange'
     );
 
     this.getSalesManList = function (cb) {
@@ -47,8 +49,11 @@ function BatchChangeAction() {
         var _this = this;
         batchChangeAjax.getRecommendTags().then(function (data) {
             _this.dispatch(data.result);
-            if (cb) cb();
+            if (cb) cb(data.result);
         }, function (errorMsg) {
+            if (cb){
+                cb(errorMsg)
+            }
             console.log(errorMsg);
         });
     };

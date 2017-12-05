@@ -1,10 +1,11 @@
+const Validation = require("rc-form-validation");
+const Validator = Validation.Validator;
 /**
  * 添加权限组面板
  */
-import { Radio, Validation, Button, Form, Input, Select, Icon} from 'antd';
+import { Radio, Button, Form, Input, Select, Icon} from 'antd';
 const RadioGroup = Radio.Group;
 var classNames = require("classnames");
-var Validator = Validation.Validator;
 var FormItem = Form.Item;
 var AlertTimer = require("../../../../components/alert-timer");
 var Spinner = require("../../../../components/spinner");

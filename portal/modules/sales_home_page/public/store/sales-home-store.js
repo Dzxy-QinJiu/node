@@ -14,14 +14,13 @@ SalesHomeStore.prototype.setInitState = function () {
     //设置客户、用户、电话、合同总数的初始化数据
     this.setInitTotalData("loading");
     this.activeView = viewConstant.CUSTOMER;//默认展示客户分析视图
-    //默认展示本周的时间（true:本周截止到今天为止）
-    var timeRange = DateSelectorUtils.getThisWeekTime(true);
+    //默认展示今天的时间
+    this.timeType = "day";
+    var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
     this.start_time = DateSelectorUtils.getMilliseconds(timeRange.start_time);
     //结束时间
     this.end_time = DateSelectorUtils.getMilliseconds(timeRange.end_time, true);
-    var timeType = "thisweek";//默认时间类型是本周
-
     this.userType = "";//当前登录销售的角色，销售总监：senior_leader、销售经理：junior_leader
     this.saleStageList = [];//销售阶段列表
     this.salesCustomerList = [];//销售-客户列表
@@ -40,6 +39,12 @@ SalesHomeStore.prototype.setInitState = function () {
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
+    this.emailEnable = true;//该用户邮箱是否已激活 默认值 true 表示邮箱已激活，
+    this.email = "";//该用户的邮箱地址
+    this.getWebConfigStatus = "";//获取个人配置的状态
+    this.getWebConfigObj = {};//个人配置信息
+    this.setWebConfigStatus = "";//设置个人配置的状态
+    this.hasNoEmail = false;//此账号是否有邮箱
 };
 //销售团队列表对象数据
 SalesHomeStore.prototype.resetSalesTeamListObj = function () {
@@ -188,9 +193,6 @@ SalesHomeStore.prototype.getSalesTeamList = function (result) {
                     } else {
                         //普通销售或者是舆情秘书，要展示过期用户提醒
                         this.currShowType = showTypeConstant.SALESMAN;
-                        setTimeout(() => {
-                            SalesHomeActions.getExpireUser();
-                        });
                     }//end of  if (isOwner) else
                 }// end of if (_.isArray(teamObj.child_groups) && teamObj.child_groups.length > 0) else
             }// end of if (_.isArray(result.resData) && result.resData[0])
@@ -521,6 +523,43 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
     } else {
         this.errMsg = data.errorMsg;
         this.expireUserLists = {};
+    }
+};
+//获取用户的个人信息
+SalesHomeStore.prototype.getUserInfo = function (userInfo) {
+    if (userInfo){
+        this.email = userInfo.email || "";
+        if (!this.email){
+            this.hasNoEmail = true;
+        }
+        if (userInfo.emailEnable){
+            //邮箱已激活
+            this.emailEnable = true;
+        }else{
+            //邮箱未激活
+            this.emailEnable = false;
+        }
+    }
+};
+//获取个人信息配置
+SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
+    if (userInfo.loading){
+        this.getWebConfigStatus = "loading";
+        this.getWebConfigObj = {};
+    }else if (userInfo.error){
+        //获取错误的情况
+        this.getWebConfigStatus = "error";
+        this.getWebConfigObj = {};
+    }else{
+        //获取正确的情况
+        this.getWebConfigObj = userInfo.resData;
+        this.getWebConfigStatus = "";
+    }
+};
+//设置个人信息配置
+SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
+    if (userInfo.loading){
+        this.setWebConfigStatus = "loading";
     }
 };
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

@@ -69,6 +69,16 @@ exports.getCurCustomers = function (req, res) {
         res.json(err.message);
     });
 };
+//获取客户的用列表
+exports.getCrmUserList = function (req, res) {
+    crmService.getCrmUserList(req, res, req.query)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+
 //根据客户名获取行政级别
 exports.getAdministrativeLevel = function (req, res) {
     crmService.getAdministrativeLevel(req, res, encodeURI(req.query.name))
@@ -81,6 +91,15 @@ exports.getAdministrativeLevel = function (req, res) {
 //获取筛选面板的行业列表
 exports.getFilterIndustries = function (req, res) {
     crmService.getFilterIndustries(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+//获取筛选面板的地域列表
+exports.getFilterProvinces = function (req, res) {
+    crmService.getFilterProvinces(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (err) {
@@ -111,6 +130,15 @@ exports.getCustomerById = function (req, res) {
 //获取重复客户
 exports.getRepeatCustomerList = function (req, res) {
     crmService.getRepeatCustomerList(req, res, req.query)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//通过重复客户的客户id获取重复客户
+exports.getRepeatCustomerById = function (req, res) {
+    crmService.getRepeatCustomerById(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (codeMessage) {
@@ -208,10 +236,10 @@ exports.queryCustomer = function (req, res) {
     var condition = JSON.parse(reqData);
     crmService.queryCustomer(req, res, condition)
         .on("success", function (data) {
-            res.json(data);
+            res.status(200).json(data);
         })
         .on("error", function (err) {
-            res.json(err.message);
+            res.status(500).json(err.message);
         });
 };
 // 处理上传文件
@@ -240,7 +268,7 @@ exports.getCrmTemplate = function (req, res) {
 
 
 // 拨打电话
-exports.callOut = function(req, res) {
+exports.callOut = function (req, res) {
     crmService.callOut(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
@@ -249,7 +277,7 @@ exports.callOut = function(req, res) {
 };
 
 // 获取电话座机号
-exports.getUserPhoneNumber = function(req, res) {
+exports.getUserPhoneNumber = function (req, res) {
     crmService.getUserPhoneNumber(req, res, req.params).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {

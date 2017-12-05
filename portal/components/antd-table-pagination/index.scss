@@ -25,7 +25,12 @@
   .ant-table td,.ant-table th {
     border-right:1px dashed #edf1f2 !important;
   }
-  
+
+  //将复选框列的边框隐藏
+  .ant-table td.ant-table-selection-column,
+  .ant-table th.ant-table-selection-column {
+      border-right: none!important;
+  }
   .ant-table td:last-child,.ant-table th:last-child {
     border-right:none !important;
   }
@@ -39,7 +44,6 @@
   }
   
   .ant-table .ant-checkbox-inner {
-    border-radius:18px;
     width:18px;
     height:18px;
   }

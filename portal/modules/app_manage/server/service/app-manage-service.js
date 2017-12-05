@@ -106,4 +106,3 @@ exports.editApp = function (req, res, frontApp) {
             res: res
         }, editApp);
 };
-

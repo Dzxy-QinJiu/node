@@ -24,9 +24,10 @@ exports.doBatch = function (req,res) {
 exports.getRecommendTags = function (req, res) {
     var pageSize = req.params.pageSize;
     var num = req.params.num;
+    var type = req.params.type;
     return restUtil.authRest.get(
         {
-            url: "/rest/customer/v2/customer/label/proposal/" + pageSize + "/" + num,
+            url: "/rest/customer/v2/customer/label/" + type + "/proposal/" + pageSize + "/" + num,
             req: req,
             res: res
         }, null);

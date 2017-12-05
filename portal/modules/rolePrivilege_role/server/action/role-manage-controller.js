@@ -5,8 +5,6 @@
 
 var roleManageServic = require("../service/role-manage-service");
 
-var uuid = require(require("path").join(portal_root_path, "lib/utils/uuid"));
-
 //获取角色列表
 exports.getRoleList = function (req, res) {
 

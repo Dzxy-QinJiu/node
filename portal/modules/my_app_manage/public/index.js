@@ -23,6 +23,8 @@ var Spinner = require("../../../components/spinner");
 var classNames = require("classnames");
 var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
+var AppCodeTrace = require('./views/app-code-trace');
+
 import Trace from "LIB_DIR/trace";
 //我的应用的自定义事件处理
 var myAppEmitter = require("../../../public/sources/utils/emitters").myAppEmitter;
@@ -136,6 +138,10 @@ var MyAppManage = React.createClass({
         hideModalDialog: function () {
             AppAction.hideModalDialog();
         },
+        //应用代码跟踪
+        showAppCodeTrace:function () {
+            AppAction.showAppCodeTrace();
+        },
 
         showAppInfo: function (app) {
             //正在获取其他应用详情，则先不展示当前应用详情
@@ -148,7 +154,7 @@ var MyAppManage = React.createClass({
                 AppAction.getCurAppById(app.id);
             });
             if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
-                if (!this.state.versionUpgradeShow && !this.state.appNoticePanelShow && !this.state.userTypeConfigShow) {
+                if (!this.state.versionUpgradeShow && !this.state.appNoticePanelShow && !this.state.userTypeConfigShow && !this.state.appCodeTraceShow) {
                     $(".right-panel-content").removeClass("right-panel-content-slide");
                     if (openTimeout) {
                         clearTimeout(openTimeout);
@@ -266,6 +272,16 @@ var MyAppManage = React.createClass({
 
             )
 
+        }else if (this.state.appCodeTraceShow){
+            return (
+                <AppCodeTrace
+                    closeRightPanel={this.events.closeRightPanel}
+                    returnInfoPanel={this.events.returnInfoPanel}
+                    appId={this.state.currentApp.id}
+                    appName={this.state.currentApp.name}
+                    appCodeTraceShow={this.state.appCodeTraceShow}
+                />
+            )
         }
     },
     //获取卡片展示所需的应用列表
@@ -325,7 +341,8 @@ var MyAppManage = React.createClass({
                 _this.state.appAuthPanelShow ||
                 _this.state.versionUpgradeShow ||
                 _this.state.appNoticePanelShow ||
-                _this.state.userTypeConfigShow
+                _this.state.userTypeConfigShow ||
+                _this.state.appCodeTraceShow
 
             )
         });
@@ -366,10 +383,12 @@ var MyAppManage = React.createClass({
                                     userTypeConfigShow={this.state.userTypeConfigShow}
                                     isAppAuthPanelShow={this.state.appAuthPanelShow}
                                     isAppNoticePanelShow={this.state.appNoticePanelShow}
+                                    appCodeTraceShow={this.state.appCodeTraceShow}
                                     infoIsloading={this.state.appIsLoading}
                                     showEditForm={this.events.showAppForm}
                                     showVersionUpgradePanel={this.events.showVersionUpgradePanel}
                                     showUserTypeConfigPanel={this.events.showUserTypeConfigPanel}
+                                    showAppCodeTrace={this.events.showAppCodeTrace}
                                     updateStatus={this.events.updateAppStatus}
                                     closeRightPanel={this.events.closeDetailRightPanel}
                                     showAppAuthPanel={this.events.showAppAuthPanel}

@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 var compression = require("compression");
 var coordinator = require("./portal/lib/middlewares/coordinator-client");
 var commonUtils = require("./portal/lib/utils/common-utils");
+var auth = require("./portal/lib/utils/auth");
 
 //让config模块使用conf/config.js里的配置，而不用去找config/default.js文件
 process.env.NODE_CONFIG = JSON.stringify(config);
@@ -96,7 +97,10 @@ var server = app.listen(app.get('port'), function () {
 });
 
 //初始化coordinator
-coordinator(function () {
-    //Coordinator启动后，创建socketIO,启动推送
-    require("./portal/modules/socketio").startSocketio(server);
-});
+if ( auth.getLang() !== "es_VE") {
+    coordinator(function () {
+        //Coordinator启动后，创建socketIO,启动推送
+        require("./portal/modules/socketio").startSocketio(server);
+    });
+}
+

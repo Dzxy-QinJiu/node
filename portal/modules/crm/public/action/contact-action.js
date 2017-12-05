@@ -26,8 +26,6 @@ function ContactAction() {
         , 'submitEditContact'
         //添加一个联系方式
         , 'addContactWay'
-        //去掉一个联系方式
-        , 'removeContactWay'
         //显示删除一个联系人的对话框
         , 'showDeleteContactConfirm'
         //隐藏删除一个联系人的对话框
@@ -38,11 +36,27 @@ function ContactAction() {
         , 'toggleDefaultContact'
     );
     //获取联系人列表
-    this.getContactList = function (curCustomer) {
-        var contactList = curCustomer && curCustomer.contacts || [];
-        setTimeout(() => {
-            this.dispatch(contactList);
-        });
+    this.getContactList = function (curCustomer, isMerge) {
+        if (isMerge) {
+            let contactList = curCustomer && curCustomer.contacts || [];
+            setTimeout(() => {
+                this.dispatch({list: contactList});
+            });
+        } else {
+            this.dispatch({isLoading: true});
+            contactAjax.getContactList(curCustomer.id).then((data) => {
+                if (data && data.result) {
+                    this.dispatch({list: data.result});
+                } else {
+                    this.dispatch({errorMsg: Intl.get("crm.contact.list.failed", "获取联系人列表失败")});
+                }
+            }, (errorMsg) => {
+                this.dispatch({
+                    isLoading: false,
+                    errorMsg: errorMsg || Intl.get("crm.contact.list.failed", "获取联系人列表失败")
+                });
+            });
+        }
     };
 
     //展示添加联系人表单
@@ -58,10 +72,10 @@ function ContactAction() {
         var _this = this;
         contactAjax.addContact(contact).then(function (contact) {
             _this.dispatch(contact.result[0]);
-            if (_.isFunction(cb)) cb(null);
+            if (_.isFunction(cb)) cb({contact: contact.result[0]});
         }, function (errorMsg) {
             _this.dispatch(errorMsg);
-            if(_.isFunction(cb)) cb(errorMsg);
+            if (_.isFunction(cb)) cb({errorMsg: errorMsg});
         });
     };
     //展示修改联系人表单
@@ -77,19 +91,15 @@ function ContactAction() {
         var _this = this;
         contactAjax.editContact(contact).then(function (contact) {
             _this.dispatch(contact);
-            if (_.isFunction(cb)) cb(null);
+            if (_.isFunction(cb)) cb({contact: contact});
         }, function (errorMsg) {
             _this.dispatch(errorMsg);
-            if (_.isFunction(cb)) cb(errorMsg);
+            if (_.isFunction(cb)) cb({errorMsg: errorMsg});
         });
     };
     //添加一个联系方式
     this.addContactWay = function (contact, contactWayType) {
         this.dispatch([contact, contactWayType]);
-    };
-    //移除一个联系方式
-    this.removeContactWay = function (contact, contactWayType, index) {
-        this.dispatch([contact, contactWayType, index]);
     };
     //显示删除一个联系人的对话框
     this.showDeleteContactConfirm = function (contact) {
@@ -113,6 +123,7 @@ function ContactAction() {
     this.toggleDefaultContact = function (contact, cb) {
         var _this = this;
         contactAjax.toggleDefaultContact(contact).then(function (result) {
+            _this.dispatch(contact);
             if (_.isFunction(cb)) cb(result);
         }, function (errorMsg) {
             if (_.isFunction(cb)) cb(errorMsg);
