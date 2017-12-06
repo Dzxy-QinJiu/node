@@ -10,7 +10,12 @@ export const userTypeList = [
     {name: Intl.get("user.online.train", "培训用户"), value: "training"},
     {name: Intl.get("user.online.employee", "员工用户"), value: "internal"},
 ];
-
+//到期后的处理类型
+export const OVER_DRAFT_TYPES = {
+    UN_CHANGED: 0,//到期不变
+    STOP_USE: 1,//到期停用
+    DEGRADE: 2//降级
+};
 export const ALL_LOG_INFO = Intl.get("user.log.all", "全部日志");
 export const AUDIT_LOG = Intl.get("user.log.audit.log", "审计日志");
 export const HEARTBEAT_LOG = Intl.get("user.log.heartbeat.service", "心跳服务");
