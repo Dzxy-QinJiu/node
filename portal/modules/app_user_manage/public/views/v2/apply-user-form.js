@@ -15,6 +15,7 @@ const Spinner = require("../../../../../components/spinner");
 const history = require("../../../../../public/sources/history");
 const UserApplyAction = require("../../action/user-apply-actions");
 import DateSelectorPicker from '../../../../../components/date-selector/utils';
+import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
@@ -74,7 +75,19 @@ const ApplyUserForm = React.createClass({
     },
 
     onUserTypeChange: function (e) {
-        this.state.formData.tag = e.target.value;
+        let formData = this.state.formData;
+        formData.tag = e.target.value;
+        if (formData.tag === Intl.get("common.trial.official", "正式用户")) {
+           formData.products = formData.products.map(app => {
+               app.over_draft = OVER_DRAFT_TYPES.STOP_USE;//默认到期停用
+               return app;
+           });
+        } else if (formData.tag === Intl.get("common.trial.user", "试用用户")) {
+            formData.products = formData.products.map(app => {
+                app.over_draft = OVER_DRAFT_TYPES.UN_CHANGED;//默认到期不变
+                return app;
+            });
+        }
         this.setState(this.state);
     },
 

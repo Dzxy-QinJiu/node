@@ -15,13 +15,10 @@ const history = require("../../../../public/sources/history");
 const OrderAction = require("../action/order-actions");
 const DatePickerUtils = require("../../../../components/date-selector/utils");
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
+import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
-const OVER_DRAFT_TYPES = {
-    UN_CHANGED: 0,//到期不变
-    STOP_USE: 1,//到期停用
-    DEGRADE: 2//降级
-};
+
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
