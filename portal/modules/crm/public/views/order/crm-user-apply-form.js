@@ -27,8 +27,8 @@ class CrmUserApplyForm extends React.Component {
             delayTimeRange: "days",
             // 到期时间(选择到期时间)
             delayDeadlineTime: moment().add('days', 1).valueOf(),
-            //到期停用
-            over_draft: "1",
+            //到期不变
+            over_draft: "0",
             //销售申请的备注
             remark: {
                 //延期备注
