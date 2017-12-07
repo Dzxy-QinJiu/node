@@ -197,6 +197,7 @@ var zh_CN = {
     "common.label.times": "次",
     "common.label.days": "天",
     "common.label.hours": "小时",
+    "common.app.minute": "分钟",
     //公共部分--end
     "login.login": "登录",
     "login.service.error": "很抱歉,服务器出现了异常状况",
