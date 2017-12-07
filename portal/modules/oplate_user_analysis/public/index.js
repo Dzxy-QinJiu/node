@@ -1702,15 +1702,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 }
                 break;
         }
-        const zoneMapClassName = function () {
-            //总数和新增延期不显示
-            if (this.state.currentTab != "total" && this.state.currentTab != "added_expired") {
-                return "analysis_chart col-md-6 col-sm-12"
-            }
-            else {
-                return "analysis_chart col-md-6 col-sm-12"
-            }
-        };
         //活跃用户统计(只在选择了应用后显示,新增过期用户tab下不显示)
         if (this.state.selectedApp && this.state.selectedApp.indexOf(",") < 0 && this.state.currentTab != "added_expired") {
             chartList.push((
