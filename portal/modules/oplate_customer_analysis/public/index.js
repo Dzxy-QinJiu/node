@@ -9,15 +9,16 @@ var GeminiScrollbar = require("../../../components/react-gemini-scrollbar");
 var AnalysisLayout = require("./utils/analysis-layout");
 var OplateCustomerAnalysisAction = require("./action/oplate-customer-analysis.action");
 var OplateCustomerAnalysisStore = require("./store/oplate-customer-analysis.store");
-var SummaryNumber = require("./views/summary-number");
 var emitter = require("./utils/emitter");
 import Analysis from "../../../components/analysis";
 import AnalysisFilter from "../../../components/analysis/filter";
-import Trace from "LIB_DIR/trace";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
-
+import SummaryNumber from "CMP_DIR/analysis-summary-number";
+import {Row, Col} from "antd";
+import CardContainer from "CMP_DIR/card-container";
 const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
+const CHART_HEIGHT=240;
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange : function() {
@@ -81,6 +82,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 chartType: "line",
                 target: "Customer"+this.getDataAuthType(),
                 type: this.state.currentTab,
+                height: CHART_HEIGHT,
                 property: "trend",
                 valueField: "count",
                 showLabel:false,
@@ -113,6 +115,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 type: this.state.currentTab,
                 property: "zone",
                 valueField: "total",
+                height: CHART_HEIGHT,
                 gridY2:30,
                 legend: false,
                 name:Intl.get("oplate_customer_analysis.2", "总数"),
@@ -145,6 +148,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 type: this.state.currentTab,
                 property: userType,
                 valueField: "total",
+                height: CHART_HEIGHT,
                 gridY2:30,
                 showLabel:false,
                 name:Intl.get("oplate_customer_analysis.2", "总数"),
@@ -172,6 +176,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 type: this.state.currentTab,
                 property: "industry",
                 valueField: "total",
+                height: CHART_HEIGHT,
                 legend: false,
                 name:Intl.get("oplate_customer_analysis.2", "总数"),
                 showLabel:false,
@@ -245,7 +250,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 showLabel:false,
                 valueField: "total",
                 width:this.chartWidth,
-                height:260,
+                height: CHART_HEIGHT,
                 minSize:"5%",
                 title:"",
                 processData: this.processStageChartData,
@@ -280,50 +285,64 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     },
     renderSummaryCountBoxContent:function () {
         return (
-            <div>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.7", "总客户")}
-                    num={this.state.summaryNumbers.data.total}
-                    active={this.state.currentTab === 'total'}
-                    onClick={this.changeCurrentTab.bind(this , 'total')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.8", "新增客户")}
-                    num={this.state.summaryNumbers.data.added}
-                    active={this.state.currentTab === 'added'}
-                    onClick={this.changeCurrentTab.bind(this , 'added')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.tried", "试用阶段客户")}
-                    num={this.state.summaryNumbers.data.tried}
-                    active={this.state.currentTab === 'tried'}
-                    onClick={this.changeCurrentTab.bind(this , 'tried')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.projected", "立项报价阶段客户")}
-                    num={this.state.summaryNumbers.data.projected}
-                    active={this.state.currentTab === 'projected'}
-                    onClick={this.changeCurrentTab.bind(this , 'projected')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.negotiated", "谈判阶段客户")}
-                    num={this.state.summaryNumbers.data.negotiated}
-                    active={this.state.currentTab === 'negotiated'}
-                    onClick={this.changeCurrentTab.bind(this , 'negotiated')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.9", "成交阶段客户")}
-                    num={this.state.summaryNumbers.data.dealed}
-                    active={this.state.currentTab === 'dealed'}
-                    onClick={this.changeCurrentTab.bind(this , 'dealed')}/>
-                <SummaryNumber
-                    resultType={this.state.summaryNumbers.resultType}
-                    desp={Intl.get("oplate_customer_analysis.10", "执行阶段客户")}
-                    num={this.state.summaryNumbers.data.executed}
-                    active={this.state.currentTab === 'executed'}
-                    onClick={this.changeCurrentTab.bind(this , 'executed')}/>
-            </div>
+            <Row>
+                <Col xs={24} sm={8} md={4}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.7", "总客户")}
+                        num={this.state.summaryNumbers.data.total}
+                        active={this.state.currentTab === 'total'}
+                        onClick={this.changeCurrentTab.bind(this , 'total')}/>
+                </Col>
+                <Col xs={24} sm={8} md={4}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.8", "新增客户")}
+                        num={this.state.summaryNumbers.data.added}
+                        active={this.state.currentTab === 'added'}
+                        onClick={this.changeCurrentTab.bind(this , 'added')}/>
+                </Col>
+                <Col xs={24} sm={8} md={3}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.tried", "试用阶段客户")}
+                        num={this.state.summaryNumbers.data.tried}
+                        active={this.state.currentTab === 'tried'}
+                        onClick={this.changeCurrentTab.bind(this , 'tried')}/>
+                </Col>
+                <Col xs={24} sm={6} md={4}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.projected", "立项报价阶段客户")}
+                        num={this.state.summaryNumbers.data.projected}
+                        active={this.state.currentTab === 'projected'}
+                        onClick={this.changeCurrentTab.bind(this , 'projected')}/>
+                </Col>
+                <Col xs={24} sm={6} md={3}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.negotiated", "谈判阶段客户")}
+                        num={this.state.summaryNumbers.data.negotiated}
+                        active={this.state.currentTab === 'negotiated'}
+                        onClick={this.changeCurrentTab.bind(this , 'negotiated')}/>
+                </Col>
+                <Col xs={24} sm={6} md={3}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.9", "成交阶段客户")}
+                        num={this.state.summaryNumbers.data.dealed}
+                        active={this.state.currentTab === 'dealed'}
+                        onClick={this.changeCurrentTab.bind(this , 'dealed')}/>
+                </Col>
+                <Col xs={24} sm={6} md={3}>
+                    <SummaryNumber
+                        resultType={this.state.summaryNumbers.resultType}
+                        desp={Intl.get("oplate_customer_analysis.10", "执行阶段客户")}
+                        num={this.state.summaryNumbers.data.executed}
+                        active={this.state.currentTab === 'executed'}
+                        onClick={this.changeCurrentTab.bind(this , 'executed')}/>
+                </Col>
+            </Row>
         )
     },
     getDataAuthType: function () {
@@ -334,7 +353,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return type;
     },
     render : function() {
-        var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP - AnalysisLayout.LAYOUTS.BOTTOM;
+        var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
         var windowWidth = $(window).width();
         if(windowWidth >= Oplate.layout['screen-md']) {
             this.chartWidth = Math.floor(($(window).width() - AnalysisLayout.LAYOUTS.LEFT_NAVBAR - AnalysisLayout.LAYOUTS.CHART_LIST_PADDING * 2 - AnalysisLayout.LAYOUTS.CHART_PADDING * 4) / 2);
@@ -384,33 +403,42 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                             <div className="chart_list">
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.1", "趋势统计")}>
                                     <div className="chart-holder" ref="chartWidthDom" data-tracename="趋势统计信息">
-                                        <div className="chart-title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.1" defaultMessage="趋势统计" /></div>
-                                        {this.getCustomerChart()}
+                                        <CardContainer
+                                            title={Intl.get("oplate_customer_analysis.1", "趋势统计")}
+                                        >
+                                            {this.getCustomerChart()}
+                                        </CardContainer>
                                     </div>
                                 </div>
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.3", "地域统计")}>
                                     <div className="chart-holder" data-tracename="地域统计信息">
-                                        <div className="chart-title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.3" defaultMessage="地域统计" /></div>
-                                        {this.getZoneChart()}
+                                        <CardContainer
+                                            title={Intl.get("oplate_customer_analysis.3", "地域统计")}
+                                        >
+                                            {this.getZoneChart()}
+                                        </CardContainer>
                                     </div>
                                 </div>
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.5", "行业统计")}>
                                     <div className="chart-holder" data-tracename="行业统计信息">
-                                        <div className="chart-title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.5" defaultMessage="行业统计" /></div>
-                                        {this.getIndustryChart()}
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.5", "行业统计")}>
+                                            {this.getIndustryChart()}
+                                        </CardContainer>
                                     </div>
                                 </div>
                                 {true?<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
                                     <div className="chart-holder" data-tracename="销售阶段统计信息">
-                                        <div className="chart-title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="销售阶段统计" /></div>
-                                        {this.getStageChart()}
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
+                                            {this.getStageChart()}
+                                        </CardContainer>
                                     </div>
                                 </div>:null}
                                 {this.state.userType.indexOf("sales") === -1? (
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
                                     <div className="chart-holder" data-tracename="销售团队统计信息">
-                                        <div className="chart-title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.4" defaultMessage="团队统计" /></div>
-                                        {this.getTeamChart()}
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
+                                            {this.getTeamChart()}
+                                        </CardContainer>
                                     </div>
                                 </div>
                                 ) : null}

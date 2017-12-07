@@ -54,40 +54,7 @@
       margin:auto;
     }
   }
-  .summary-number {
-    cursor:pointer;
-    display:inline-block;
-    vertical-align:top;
-    height:86px;
-    width:100%;
-    border-right:1px solid #e1e2e4;
-    border-bottom: 1px solid #e1e2e4;
-    text-align:center;
-    position:relative;
-    p {
-      color:#a6aaab;
-      line-height:16px;
-      margin-top:15px;
-      font-size: 16px;
-    }
-    >div>div {
-      color:#45525b;
-      font-size:28px;
-      line-height:55px;
-    }
-    //防止由于字体太长，导致显示错乱
-    @for $i from 8 to 14 {
-      .f#{$i} {
-        font-size : #{24 - ($i - 8) * 2}px;
-      }
-    }
-  }
-  .summary-number:last-child {
-    border-right:1px solid #e1e2e4;
-  }
-  .summary-number.active {
-    border-bottom: 5px solid #4887b9;
-  }
+
   .chart_list {
     padding:0 24px 0 9px;
     margin-bottom:-3px;

@@ -56,7 +56,7 @@ const Analysis = React.createClass({
             team_id: "",
             starttime: startTime,
             endtime: endTime,
-            resultType: "",
+            resultType: "loading",
             endDate: endDate
         };
     },
