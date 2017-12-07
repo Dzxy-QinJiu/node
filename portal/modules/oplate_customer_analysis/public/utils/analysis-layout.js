@@ -1,6 +1,6 @@
 //布局常量
 exports.LAYOUTS = {
-    TOP : 83 + 76,
+    TOP : 86 + 76 + 30,//86：总数统计区，76：头部导航，30：总数统计的margin
     BOTTOM : 19,
     //左侧的导航
     LEFT_NAVBAR : 75,

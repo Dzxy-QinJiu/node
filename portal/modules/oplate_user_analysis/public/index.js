@@ -14,7 +14,7 @@ var AnalysisLayout = require("./utils/analysis-layout");
 var OplateUserAnalysisAction = require("./action/oplate-user-analysis.action");
 var OplateUserAnalysisAjax = require("./ajax/oplate-user-analysis.ajax");
 var OplateUserAnalysisStore = require("./store/oplate-user-analysis.store");
-var SummaryNumber = require("./views/summary-number");
+import SummaryNumber from "CMP_DIR/analysis-summary-number";
 var CompositeLine = require("./views/composite-line");
 var BarChart = require("./views/bar");
 var CloudChart = require("./views/cloud");

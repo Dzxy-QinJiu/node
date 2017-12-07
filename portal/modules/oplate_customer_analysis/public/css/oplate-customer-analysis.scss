@@ -1,6 +1,15 @@
+#app{
+  .oplate_customer_analysis {
+    .topNav:before{
+      border-bottom: none;
+    }
+  }
+}
 .oplate_customer_analysis {
   padding-top:76px;
+  background-color: #f3f5f5;
   .analysis_chart {
+    padding-right: 0;
     overflow:hidden;
   }
   .stageHide{
@@ -16,7 +25,8 @@
     right:50px;
   }
   .summary-numbers {
-    border-bottom:1px solid #f0f0f0;
+    margin: 20px 24px 10px;
+    background-color: #fff;
     .anticon {
       position:absolute;
       width:14px;
@@ -28,53 +38,16 @@
       margin:auto;
     }
   }
-  .summary-number {
-    cursor:pointer;
-    display:inline-block;
-    vertical-align:top;
-    height:86px;
-    width:164px;
-    border-right:1px solid #e1e2e4;
-    text-align:center;
-    background:#f3f5f4;
-    position:relative;
-    p {
-      color:#a6aaab;
-      line-height:16px;
-      margin-top:15px;
-    }
-    >div>div {
-      color:#45525b;
-      font-size:28px;
-      line-height:55px;
-    }
-    //防止由于字体太长，导致显示错乱
-    @for $i from 8 to 14 {
-      .f#{$i} {
-        font-size : #{24 - ($i - 8) * 2}px;
-      }
-    }
-  }
-  .summary-number:last-child {
-    border-right-color:rgba(0,0,0,0);
-  }
-  .summary-number.active {
-    background:#fff;
-  }
   .chart_list {
-    padding:18px 33px 0 33px;
+    padding: 0 24px 0 9px;
     margin-bottom:-3px;
   }
   .chart-holder {
-    margin-bottom:21px;
-    border:1px solid #f0f0f0;
-    height:246px;
-    overflow:hidden;
-    .chart-title {
-      color:#62696f;
-      line-height:18px;
-      font-size:14px;
-      padding:12px 0 0 16px;
+    margin-bottom: 21px;
+    height: 285px;
+    .analysis-chart{
+      padding-left: 10px;
+      padding-bottom: 10px;
     }
   }
 }
