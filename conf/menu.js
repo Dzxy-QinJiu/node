@@ -471,7 +471,17 @@ class LeftMenuClass {
                 //有这个权限，才显示入口图标
                 showPrivileges: ["APP_USER_APPLY_LIST"]
 
-            }
+            },
+            {
+                id: "SCHEDULE_MANAGEMENT",
+                name: backendIntl.get("schedule.list.management","日程管理"),
+                routePath: "schedule_management",
+                privileges: [
+                    "MEMBER_SCHEDULE_MANAGE"//日程管理的查询
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ["MEMBER_SCHEDULE_MANAGE"]
+            },
         ];
 
         var user_info_idx = -1;
