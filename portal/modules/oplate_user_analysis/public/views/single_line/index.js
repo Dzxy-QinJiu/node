@@ -58,15 +58,7 @@ var SingleLineChart = React.createClass({
                 data : _.pluck(_this.props.list , legendInfo.key),
             };
             series.push(bar);
-        });
-        //添加折线图，能够体现出趋势
-        var line = {
-            name : Intl.get("app_operation.1", "用户总数"),
-            type : "line",
-            smooth: true,
-            data : _.pluck(_this.props.list , 'total')
-        };
-        series.push(line);
+        });        
         return series;
     },
     getEchartOptions : function() {

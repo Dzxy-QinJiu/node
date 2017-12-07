@@ -1872,7 +1872,14 @@ var zh_CN = {
     "crm.today.10.clock":"当天上午10点",
     "crm.n.day.10.clock":"{n}天前上午10点",
     "phone.delay.save":"通话记录正在同步，请稍等再保存！",
-    "crm.schedule.fill.content":"请填写联系内容"
+    "crm.schedule.fill.content":"请填写联系内容",
+    "schedule.list.management":"日程管理",
+    "schedule.expired.list.failed":"获取超时日程管理列表失败",
+    "schedule.expired.list":"超时未完成",
+    "schedule.list.remind":"提醒",
+    "schedule.list.mark.finish":"标记为完成",
+    "schedule.create.person":"创建人"
+
 
 };
 export default zh_CN;

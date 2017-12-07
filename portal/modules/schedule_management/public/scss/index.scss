@@ -1,0 +1,130 @@
+.schedule-list-content{
+  overflow: hidden;
+  #expire-list-content{
+    float: left;
+    width: 25%;
+    //margin: 15px 10px 0 0;
+    //padding: 15px 10px 0 0;
+    border-right: 1px solid #aaa;
+    padding: 10px 20px;
+    background: #DEDFE3;
+    //过期日程标题
+    .expire-list-title{
+      font-size: 16px;
+      border-bottom: 1px solid #aaa;
+      height: 30px;
+      line-height: 30px;
+      color: #636768;
+    }
+    //过期日程内容
+    .expire-list-content{
+      font-size: 14px;
+      .is-loading-schedule-list{
+        .load8 {
+          transform: scale(0.5, 0.5);
+          height: 36px;
+          .loader8 {
+            border-left-color: #394144;
+          }
+        }
+      }
+      .is-loading-schedule-list.show-spinner{
+        margin-top: 200px;
+      }
+      .list-container{
+        .list-item{
+          //height: 170px;
+          background: #fff;
+          margin-bottom: 16px;
+          .iconfont{
+            padding-right: 10px;
+            font-size: 26px;
+            position: relative;
+            top: 4px;
+          }
+          .icon-phone-busy{
+            color:#5DD778;
+          }
+          .icon-visit{
+            color:#9C5DF5;
+          }
+          //标题的样式
+          .item-title{
+            height: 26px;
+            line-height: 26px;
+            padding: 0px 15px;
+            overflow: hidden;
+            color:#fff;
+            background: #F9AC58;
+            font-size: 14px;
+          }
+          .item-customer-content{
+            padding: 0px 0 0 10px;
+            height: 50px;
+            line-height: 50px;
+            span{
+              font-weight: 500;
+              font-size: 16px;
+            }
+          }
+          .item-schedule-content{
+            background: #F7F7F9;
+            padding: 10px;
+            font-size: 14px;
+            >span{
+             display: block;
+              .label{
+                font-size: 14px;
+                font-weight: normal;
+                color:#94AEC8;
+              }
+            }
+          }
+          .item-handle-content{
+            height: 50px;
+            line-height: 50px;
+            padding: 0px 0 0 20px;
+          }
+        }
+      }
+    }
+  }
+  #calendar{
+    float: left;
+    width:70%;
+    margin:20px 0 0 5px;
+    .fc-time-grid-event.fc-short .fc-time:after{
+      content:""
+    }
+    .fc-time-grid-event.fc-short .fc-time:before{
+      content:""
+    }
+    .fc-time-grid-event.fc-short .fc-time span{
+      display: inline-block;
+    }
+    .fc-title{
+      margin: 0px 20px;
+    }
+    .fc-toolbar.fc-header-toolbar{
+      .fc-center{
+        >div{
+          position:relative;
+          .fc-button{
+            position:absolute;
+            top:3px;
+          }
+          .fc-prev-button.fc-button{
+            left: -40px;
+          }
+          .fc-next-button.fc-button{
+            right: -40px;
+          }
+          .fc-today-button.fc-button{
+            right: -120px;
+          }
+
+        }
+      }
+    }
+  }
+}

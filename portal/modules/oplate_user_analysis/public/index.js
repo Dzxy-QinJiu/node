@@ -32,8 +32,9 @@ const AppRecordsListAjax = require("../../app_manage/public/ajax/version-upgrade
 import Trace from "LIB_DIR/trace";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 import CardContainer from "CMP_DIR/card-container";
-import {handleUserStatis, handleExportData, handlePieChartData, handleActivelyData, handleActiveTimesData, handleRetentionData, handleAppDownLoadData} from './utils/export-data-util'
+import {handleUserStatis, handleExportData, handlePieChartData, handleActivelyData, handleActiveTimesData, handleRetentionData, handleAppDownLoadData, handleZoneExportData} from './utils/export-data-util'
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
+import { AntcTable } from "antc";
 var SelectFullWidth = require("../../../components/select-fullwidth");
 import ajax from "../../common/ajax";
 import routeList from "../../common/route";
@@ -43,6 +44,7 @@ const LEGEND = [{ name: Intl.get("common.official", "签约"), key: "formal" },
 { name: Intl.get("user.type.train", "培训"), key: "training" },
 { name: Intl.get("user.type.employee", "员工"), key: "internal" },
 { name: Intl.get("user.unknown", "未知"), key: "unknown" }];
+
 
 //用户类型常量
 var USER_TYPE_CONSTANTS = {
@@ -57,10 +59,10 @@ var USER_STATUS = [
     { name: Intl.get("common.stop", '停用'), value: "0" },
 ];
 const deviceTypeLegend = [
-    { name: "数量", key: "count" }
+    { name: Intl.get("common.app.count", "数量"), key: "count" }
 ];
 const onlineTimeLegend = [
-    { name: "小时数", key: "count" }
+    { name: Intl.get("common.app.minute", "分钟"), key: "count" }
 ];
 // ""表示不确定，member表示要获取成员数据，team表示要获取团队数据
 var fetchTeamOrMember = "";
@@ -945,7 +947,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             type: route.method,
             data: queryData,
         }).then(...this.resultHandler("onlineTime", result => {
-            return result.map(x => ({ name: moment(x.timestamp).format(dateFormatMap[this.state.selectedOnlineTimeRange]), count: parseInt(x.count / 1000 / 60) }))
+            return result.map(x => ({ 
+                name: moment(x.timestamp).format(dateFormatMap[this.state.selectedOnlineTimeRange]),
+                count: parseInt(x.count / 1000 / 60) //毫秒数转换为分钟
+            }))
         }))
     },
     //地域统计
@@ -1474,13 +1479,24 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         if (this.state.activeZone.errorMsg) {
             return this.renderGetDataErrorMessage(this.state.activeZone.errorMsg, this.getActiveZoneData);
         }
+        const columns = [
+            {title: '地域', dataIndex: 'name', key: 'name'},
+            {title: '用户数', dataIndex: 'value', key: 'value', className: 'text-align-right'}
+        ]
         return (
-            <ChinaMap
-                width={this.f}
-                height="546"
-                dataList={this.state.activeZone.data}
-                formatter={mapFormatter}
-            />
+            <div className="user-map-distribute cleardfix" ref="chartmap">
+                <div className="map-distribute">
+                    <ChinaMap
+                        width={this.f}
+                        height="546"
+                        dataList={this.state.activeZone.data}
+                        formatter={mapFormatter}
+                    />
+                </div>
+                <div className="user-area-number-table cleardfix">
+                    <AntcTable columns={columns} dataSource={this.state.activeZone.data}  pagination={{pageSize: 12}}/>
+                </div>
+            </div>
         )
     },
     //登录次数
@@ -1686,15 +1702,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 }
                 break;
         }
-        const zoneMapClassName = function () {
-            //总数和新增延期不显示
-            if (this.state.currentTab != "total" && this.state.currentTab != "added_expired") {
-                return "analysis_chart col-md-6 col-sm-12"
-            }
-            else {
-                return "analysis_chart col-md-6 col-sm-12 hide"
-            }
-        };
         //活跃用户统计(只在选择了应用后显示,新增过期用户tab下不显示)
         if (this.state.selectedApp && this.state.selectedApp.indexOf(",") < 0 && this.state.currentTab != "added_expired") {
             chartList.push((
@@ -1725,10 +1732,14 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         </div>
                     </div>
                 ), (
-                    <div className={zoneMapClassName.call(this)}
-                        data-title={Intl.get("oplate_customer_analysis.3", "地域统计")}>
+                    <div className="analysis_chart col-md-6 col-sm-12"
+                        data-title="活跃用户地域统计">
                         <div className="chart-holder zone-fix">
-                            <CardContainer title={Intl.get("oplate_customer_analysis.3", "地域统计")}>
+                            <CardContainer 
+                                title="活跃用户地域统计"
+                                exportData={handleZoneExportData(this.state.activeZone.data)}
+                                csvFileName="actively_zone_statis.csv"
+                            >
                                 {this.getActiveZoneChart()}
                             </CardContainer>
                         </div>

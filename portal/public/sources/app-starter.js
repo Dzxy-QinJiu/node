@@ -201,6 +201,10 @@ function init(options) {
             case 'app_overview':
                 childRoutes.push(require("../../modules/app_overview"));
                 break;
+            //日程管理
+            case 'schedule_management':
+                childRoutes.push(require("../../modules/schedule_management"));
+                break;
         }
     });
 

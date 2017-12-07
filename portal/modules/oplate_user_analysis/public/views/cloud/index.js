@@ -31,7 +31,7 @@ class CloudChart extends React.Component {
     }
     componentDidMount() {
         if (this.props.resultType != 'loading') {
-            this.renderchart(this.props);
+            this.renderChart(this.props);
         }
     }
     componentDidUpdate(prevProps) {

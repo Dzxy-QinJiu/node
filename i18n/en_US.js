@@ -196,7 +196,7 @@ var en_US = {
     "common.label.times": "times",//"次",
     "common.label.days": "days",//"天",
     "common.label.hours": "hours",//"小时",
-    "common.app.minute": "minute",//分钟
+    "common.app.minute": "minutes",//"分钟",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
@@ -1833,4 +1833,4 @@ var en_US = {
     "crm.schedule.fill.content":"Please fill in schedule content!"//请填写联系内容
 
 };
-export default en_US;
+export default en_US;

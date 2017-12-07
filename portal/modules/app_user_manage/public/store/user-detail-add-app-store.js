@@ -99,8 +99,8 @@ UserDetailAddAppStore.prototype.resetState = function() {
         start_time : DateSelectorUtils.getMilliseconds(timeObj.start_time),
         //到期时间
         end_time : DateSelectorUtils.getMilliseconds(timeObj.end_time),
-        //到期停用
-        over_draft : "1",
+        //到期不变
+        over_draft : "0",
         //账号状态
         user_status : "1",
         //密码

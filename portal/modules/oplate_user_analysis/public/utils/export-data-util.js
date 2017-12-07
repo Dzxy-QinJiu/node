@@ -232,3 +232,15 @@ export function handleAppDownLoadData(processData, appTitleName) {
     });
     return exportData;
 }
+
+//地域统计
+export function handleZoneExportData(processData) {
+    let exportData = [];
+    if (_.isArray(processData) && processData.length) {
+        exportData.push(["地域","人数"]);    
+        exportData = exportData.concat(processData.map(x => [
+            x.name, x.value
+        ]));
+    }
+    return exportData;
+}
