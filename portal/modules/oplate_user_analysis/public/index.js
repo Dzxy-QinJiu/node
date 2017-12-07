@@ -57,10 +57,10 @@ var USER_STATUS = [
     { name: Intl.get("common.stop", '停用'), value: "0" },
 ];
 const deviceTypeLegend = [
-    { name: "数量", key: "count" }
+    { name: Intl.get("common.app.count", "数量"), key: "count" }
 ];
 const onlineTimeLegend = [
-    { name: "小时数", key: "count" }
+    { name: Intl.get("common.app.minute", "分钟"), key: "count" }
 ];
 // ""表示不确定，member表示要获取成员数据，team表示要获取团队数据
 var fetchTeamOrMember = "";
@@ -945,7 +945,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             type: route.method,
             data: queryData,
         }).then(...this.resultHandler("onlineTime", result => {
-            return result.map(x => ({ name: moment(x.timestamp).format(dateFormatMap[this.state.selectedOnlineTimeRange]), count: parseInt(x.count / 1000 / 60) }))
+            return result.map(x => ({ 
+                name: moment(x.timestamp).format(dateFormatMap[this.state.selectedOnlineTimeRange]),
+                count: parseInt(x.count / 1000 / 60) //毫秒数转换为分钟
+            }))
         }))
     },
     //地域统计
