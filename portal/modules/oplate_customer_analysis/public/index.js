@@ -295,6 +295,24 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     onClick={this.changeCurrentTab.bind(this , 'added')}/>
                 <SummaryNumber
                     resultType={this.state.summaryNumbers.resultType}
+                    desp={Intl.get("oplate_customer_analysis.tried", "试用阶段客户")}
+                    num={this.state.summaryNumbers.data.tried}
+                    active={this.state.currentTab === 'tried'}
+                    onClick={this.changeCurrentTab.bind(this , 'tried')}/>
+                <SummaryNumber
+                    resultType={this.state.summaryNumbers.resultType}
+                    desp={Intl.get("oplate_customer_analysis.projected", "立项报价阶段客户")}
+                    num={this.state.summaryNumbers.data.projected}
+                    active={this.state.currentTab === 'projected'}
+                    onClick={this.changeCurrentTab.bind(this , 'projected')}/>
+                <SummaryNumber
+                    resultType={this.state.summaryNumbers.resultType}
+                    desp={Intl.get("oplate_customer_analysis.negotiated", "谈判阶段客户")}
+                    num={this.state.summaryNumbers.data.negotiated}
+                    active={this.state.currentTab === 'negotiated'}
+                    onClick={this.changeCurrentTab.bind(this , 'negotiated')}/>
+                <SummaryNumber
+                    resultType={this.state.summaryNumbers.resultType}
                     desp={Intl.get("oplate_customer_analysis.9", "成交阶段客户")}
                     num={this.state.summaryNumbers.data.dealed}
                     active={this.state.currentTab === 'dealed'}

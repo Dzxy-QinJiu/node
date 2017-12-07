@@ -41,6 +41,9 @@ OplateCustomerAnalysisStore.prototype.resetChartData = function(type) {
         errorMsg : "",
         data : type === 'loading' ? {} : {
             "added":0,
+            "tried":0,//试用
+            "projected":0,//立项
+            "negotiated":0,//谈判
             "dealed":0,
             "executed":0,
             "total":0
@@ -106,6 +109,9 @@ OplateCustomerAnalysisStore.prototype.getSummaryNumbers = function(result) {
         if(!_.isObject(summaryNumbers.data)) {
             summaryNumbers.data = {
                 "added":0,
+                "tried":0,//试用
+                "projected":0,//立项
+                "negotiated":0,//谈判
                 "dealed":0,
                 "executed":0,
                 "total":0

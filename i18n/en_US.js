@@ -1170,6 +1170,9 @@ var en_US = {
     "oplate_customer_analysis.14": "Customer Statistics ", // 客户统计
     "oplate_customer_analysis.15": "Total customer", // 客户总数
     "oplate_customer_analysis.16": "New customer industry distribution", // 新增客户行业分布
+    "oplate_customer_analysis.tried": "Trial stage customer",//试用阶段客户
+    "oplate_customer_analysis.projected": "Quotation stage Customer",//立项报价阶段客户
+    "oplate_customer_analysis.negotiated": "Negotiation stage customer",//谈判阶段客户
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@
@@ -1830,4 +1833,4 @@ var en_US = {
     "crm.schedule.fill.content":"Please fill in schedule content!"//请填写联系内容
 
 };
-export default en_US;
+export default en_US;
