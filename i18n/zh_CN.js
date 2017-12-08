@@ -1874,7 +1874,9 @@ var zh_CN = {
     "schedule.expired.list":"超时未完成",
     "schedule.list.remind":"提醒",
     "schedule.list.mark.finish":"标记为完成",
-    "schedule.create.person":"创建人"
+    "schedule.create.person":"创建人",
+    "schedule.get.schedule.list.failed":"获取日程管理列表失败",
+    "schedule.management.schedule.content":"日程内容"
 
 
 };

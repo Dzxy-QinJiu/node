@@ -5,16 +5,16 @@
     width: 25%;
     //margin: 15px 10px 0 0;
     //padding: 15px 10px 0 0;
-    border-right: 1px solid #aaa;
-    padding: 10px 20px;
-    background: #DEDFE3;
+    padding: 10px 0;
+    background: rgba(222,223,227,0.5);
     //过期日程标题
     .expire-list-title{
-      font-size: 16px;
+      font-size: 24px;
       border-bottom: 1px solid #aaa;
       height: 30px;
       line-height: 30px;
       color: #636768;
+      margin: 0px 16px 0 16px;
     }
     //过期日程内容
     .expire-list-content{
@@ -33,9 +33,8 @@
       }
       .list-container{
         .list-item{
-          //height: 170px;
+          margin: 0px 16px 16px 16px;
           background: #fff;
-          margin-bottom: 16px;
           .iconfont{
             padding-right: 10px;
             font-size: 26px;
@@ -65,6 +64,7 @@
             span{
               font-weight: 500;
               font-size: 16px;
+              cursor: pointer;
             }
           }
           .item-schedule-content{
@@ -81,8 +81,8 @@
             }
           }
           .item-handle-content{
-            height: 50px;
-            line-height: 50px;
+            height:43px;
+            line-height: 43px;
             padding: 0px 0 0 20px;
           }
         }
@@ -105,6 +105,16 @@
     .fc-title{
       margin: 0px 20px;
     }
+    .handle-finish-btn{
+      float: right;
+      margin-right: 20px;
+      background: #fff;
+      color:#333
+    }
+    //设置字体大小
+    //.fc-content,.fc-time,.fc-inner-content{
+    //  font-size: 13px;
+    //}
     .fc-toolbar.fc-header-toolbar{
       .fc-center{
         >div{
@@ -126,5 +136,29 @@
         }
       }
     }
+  };
+  //在周视图时，只展示客户名称
+  #calendar.weekView-calendar {
+    .fc-time,.fc-inner-content,.handle-finish-btn{
+      display: none;
+    }
+    .fc-title{
+      margin: 0;
+    }
   }
+  //月视图
+  #calendar.monthView-calendar{
+    .fc-time,.fc-inner-content,.handle-finish-btn{
+      display: none;
+    }
+    .fc-title{
+      margin: 0;
+    }
+  }
+  .fc-event.handle-schedule{
+    background-color: #FBFBFB;
+    color:#999;
+    border-color:#FBFBFB ;
+  }
+
 }

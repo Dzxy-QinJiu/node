@@ -9,21 +9,40 @@ let userData = require("PUB_DIR/sources/user-data");
 function ScheduleManagementActions() {
     this.generateActions(
         'getState',
-        'afterHandleStatus'
+        'afterHandleStatus',
     );
     //获取日程列表
-    this.getScheduleList = function (queryObj, callback) {
+    this.getScheduleList = function (queryObj, listType) {
+        //右侧日程列表会传第二个参数
+        if (listType){
+            this.dispatch({error: false, loading: true,isScheduleTableData:true});
+        }else{
+            this.dispatch({error: false, loading: true});
+        }
         this.dispatch({error: false, loading: true});
         scheduleManagementAjax.getScheduleList(queryObj).then((result) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, scheduleListObj: result});
-            _.isFunction(callback) && callback(result.list);
+            if (listType){
+                this.dispatch({error: false, loading: false, scheduleListObj: result,isScheduleTableData:true});
+            }else{
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+                this.dispatch({error: false, loading: false, scheduleListObj: result});
+            }
+
         }, (errorMsg) => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get("schedule.expired.list.failed","获取超时日程管理列表失败")
-            });
+            if (listType){
+                this.dispatch({
+                    error: true,
+                    loading: false,
+                    errorMsg: errorMsg || Intl.get("schedule.get.schedule.list.failed","获取日程管理列表失败"),
+                    isScheduleTableData:true
+                });
+            }else{
+                this.dispatch({
+                    error: true,
+                    loading: false,
+                    errorMsg: errorMsg || Intl.get("schedule.expired.list.failed","获取超时日程管理列表失败")
+                });
+            }
         });
     };
     //修改某条日程管理的状态
