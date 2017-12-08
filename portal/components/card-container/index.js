@@ -65,7 +65,7 @@ class CardContainer extends React.Component {
                             </span>
                         ) : null}
                         {
-                            this.state.exportData && this.state.isShowExportFlag ? (
+                            this.props.exportData && this.state.isShowExportFlag ? (
                                 <span className="export-file" onClick={this.exportFile.bind(this)}>
                                     <i className="iconfont icon-export">{Intl.get("common.export", "导出")}</i>
                                 </span>
