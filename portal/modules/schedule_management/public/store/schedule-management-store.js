@@ -22,29 +22,66 @@ ScheduleManagementStore.prototype.getState = function () {
     this.scheduleExpiredSize = 0;//过期日程列表的数量
     this.handleStatusLoading = false;//正在修改日程的状态
     this.handleStatusErrMsg = "";//修改日程状态失败
-
+    this.scheduleTableList = [];//日程管理列表中的数据
+    this.isLoadingscheduleList = false;//正在获取右侧日程列表
+    this.scheduleErrMsg = "";//获取日程列表失败
 
 };
+//把数据转换成组件需要的类型
+ScheduleManagementStore.prototype.processForList =function (originList,dateType) {
+    if (!_.isArray(originList)) return [];
+    let list = _.clone(originList);
+    for (let i = 0, len = list.length; i < len; i++) {
+        let curSchedule = list[i];
+        curSchedule.dateType = dateType;//日期的类型 比如周，天，月
+        curSchedule.title = curSchedule.topic;
+        if (curSchedule.end_time - curSchedule.start_time == 86399000){
+            curSchedule.end_time = curSchedule.end_time + 1000;
+            curSchedule.allDay = true;
+        }
+        curSchedule.start = moment(curSchedule.start_time).format(oplateConsts.DATE_TIME_FORMAT);
+        curSchedule.end = moment(curSchedule.end_time).format(oplateConsts.DATE_TIME_FORMAT);
+        curSchedule.description = curSchedule.content;
+    }
+    return list;
+};
+
 //查询日程列表
 ScheduleManagementStore.prototype.getScheduleList = function (data) {
-    if (data.loading) {
-        this.isLoadingScheduleExpired = true;
-        this.scheduleExpiredErrMsg = "";
-    } else if (data.error) {
-        this.isLoadingScheduleExpired = false;
-        this.scheduleExpiredErrMsg = data.errorMsg;
-    } else {
-        let list = data.scheduleListObj ? data.scheduleListObj.list: [];
-        this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total :0 ;
-        if (this.lastScheduleExpiredId) {
-            this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
+    //获取两个列表，一个是超时日程列表，一个是右侧日程管理中用的列表
+    if (data.isScheduleTableData){
+        //右侧日程列表
+        if (data.loading) {
+            this.isLoadingscheduleList = true;
+            this.scheduleErrMsg = "";
+        } else if (data.error) {
+            this.isLoadingscheduleList = false;
+            this.scheduleErrMsg = data.errorMsg;
         } else {
-            this.scheduleExpiredList = list;
+            let list = data.scheduleListObj ? data.scheduleListObj.list: [];
+            this.scheduleTableList = this.processForList(list,"day");
+            this.isLoadingscheduleList = false;
         }
-        this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : "";
+    }else{
+        if (data.loading) {
+            this.isLoadingScheduleExpired = true;
+            this.scheduleExpiredErrMsg = "";
+        } else if (data.error) {
+            this.isLoadingScheduleExpired = false;
+            this.scheduleExpiredErrMsg = data.errorMsg;
+        } else {
+            let list = data.scheduleListObj ? data.scheduleListObj.list: [];
+            this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total :0 ;
+            if (this.lastScheduleExpiredId) {
+                this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
+            } else {
+                this.scheduleExpiredList = list;
+            }
+            this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : "";
 
-        this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
-        this.isLoadingScheduleExpired = false;
+            this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
+            this.isLoadingScheduleExpired = false;
+        }
     }
 };
 
@@ -81,42 +118,6 @@ ScheduleManagementStore.prototype.afterHandleStatus = function (newStatusObj) {
 
 
 
-
-
-
-
-
-
-
-
-
-function getContactWay(contactPhone) {
-    var contact_way = "";
-    if (_.isArray(contactPhone)) {
-        contactPhone.forEach(function (phone) {
-            if (phone) {
-                contact_way += addHyphenToPhoneNumber(phone) + "\n";
-            }
-        });
-    }
-    return contact_way;
-}
-ScheduleManagementStore.prototype.processForList = function (curCustomers) {
-    if (!_.isArray(curCustomers)) return [];
-    var list = _.clone(curCustomers);
-    _.map(list, (curCustomer) => {
-        if (_.isArray(curCustomer.contacts)) {
-            for (var j = 0; j < curCustomer.contacts.length; j++) {
-                var contact = curCustomer.contacts[j];
-                if (contact.def_contancts == "true") {
-                    curCustomer.contact = contact.name;
-                    curCustomer.contact_way = getContactWay(contact.phone);
-                }
-            }
-        }
-    });
-    return list;
-};
 
 //设置开始和结束时间
 ScheduleManagementStore.prototype.setTimeRange = function (timeRange) {
