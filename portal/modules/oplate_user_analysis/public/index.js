@@ -321,7 +321,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         let appsDownloadParams = this.getAppsDownloadParams(obj);
         let appsVersionParams = this.getAppsVersionParams(obj);
         //获取前四个统计数据
-        OplateUserAnalysisAction.getSummaryNumbers(queryParams);
+        if ( !(obj && obj.currentTab)) { // 切换tab时，不用获取统计数据
+            OplateUserAnalysisAction.getSummaryNumbers(queryParams);
+        }
         //是否能看到“活跃时间段统计”和“登录时长统计”
         var shouldViewActiveNessChart = !isComposite && !this.state.isSalesRole;
         //是否是获取成员的数据
