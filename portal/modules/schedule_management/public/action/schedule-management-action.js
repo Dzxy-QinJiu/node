@@ -15,8 +15,10 @@ function ScheduleManagementActions() {
     this.getScheduleList = function (queryObj, listType) {
         //右侧日程列表会传第二个参数
         if (listType){
+            //右侧组件中用的数据
             this.dispatch({error: false, loading: true,isScheduleTableData:true});
         }else{
+            //左侧过期未完成的日程数据
             this.dispatch({error: false, loading: true});
         }
         this.dispatch({error: false, loading: true});
@@ -59,76 +61,6 @@ function ScheduleManagementActions() {
             });
             cb(errMsg)
         });
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function (phone, callback) {
-        scheduleManagementAjax.checkOnlyCustomer({phone: phone}).then(function (data) {
-            if (callback) {
-                callback(data);
-            }
-        }, function (errorMsg) {
-            if (callback) {
-                callback(errorMsg || Intl.get("crm.194", "联系人电话唯一性验证失败"));
-            }
-        });
-    };
-    //获取销售列表
-    this.getSalesManList = function (cb) {
-        var _this = this;
-        let ajaxFunc = null;
-        if (userData.isSalesManager()) {
-            //销售领导、域管理员角色时，客户所属销售下拉列表的数据获取
-            ajaxFunc = scheduleManagementAjax.getSalesManList();
-        }
-        if (ajaxFunc) {
-            ajaxFunc.then(function (list) {
-                _this.dispatch(list);
-                if (cb) cb();
-            }, function (errorMsg) {
-                console.log(errorMsg);
-            });
-        }
-    };
-    //添加或更新跟进内容
-    this.addCluecustomerTrace = function (submitObj,callback) {
-        this.dispatch({error: false, loading: true});
-        scheduleManagementAjax.addCluecustomerTrace(submitObj).then((result)=>{
-            this.dispatch({error: false, loading: false, submitTip: result});
-            _.isFunction(callback) && callback();
-        },(errorMsg)=>{
-            this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("failed.submit.trace.content","添加跟进内容失败")})
-        })
-    };
-    //把线索客户分配给对应的销售
-    this.distributeCluecustomerToSale = function (submitObj,callback) {
-        this.dispatch({error: false, loading: true});
-        scheduleManagementAjax.distributeCluecustomerToSale(submitObj).then((result)=>{
-            this.dispatch({error: false, loading: false});
-            _.isFunction(callback) && callback();
-        },(errorMsg)=>{
-            this.dispatch({error: true, loading: false});
-            _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
-        })
     };
 }
 module.exports = alt.createActions(ScheduleManagementActions);
