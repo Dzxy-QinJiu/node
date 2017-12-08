@@ -32,7 +32,10 @@ const AppRecordsListAjax = require("../../app_manage/public/ajax/version-upgrade
 import Trace from "LIB_DIR/trace";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 import CardContainer from "CMP_DIR/card-container";
-import {handleUserStatis, handleExportData, handlePieChartData, handleActivelyData, handleActiveTimesData, handleRetentionData, handleAppDownLoadData, handleZoneExportData} from './utils/export-data-util'
+import {handleUserStatis, handleExportData, handlePieChartData, handleActivelyData, 
+    handleActiveTimesData, handleRetentionData, handleAppDownLoadData,
+     handleZoneExportData, handleDeviceExport, handleBrowserExport, handleAveTimesExport,
+     handleLoginCountsExport, handleLoginDaysExport, handleLoginTimesExport} from './utils/export-data-util'
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import { AntcTable } from "antc";
 var SelectFullWidth = require("../../../components/select-fullwidth");
@@ -840,14 +843,14 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     let key = "";
                     if (x.from != x.to) {
                         if (x.to == 10000) {
-                            key = x.from + Intl.get("common.label.times", "次") + "+"
+                            key = x.from + Intl.get("common.label.days", "天") + "+"
                         }
                         else {
-                            key = x.from + Intl.get("common.label.times", "次") + "-" + x.to + Intl.get("common.label.times", "次") + "";
+                            key = x.from + Intl.get("common.label.days", "天") + "-" + x.to + Intl.get("common.label.days", "天") + "";
                         }
                     }
                     else {
-                        key = x.from + Intl.get("common.label.times", "次") + "";
+                        key = x.from + Intl.get("common.label.days", "天") + "";
                     }
                     return [
                         key, x.count + 1
@@ -1708,7 +1711,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 <div className="analysis_chart col-md-6 col-sm-12"
                     data-title={Intl.get("oplate.user.analysis.device", "设备统计")}>
                     <div className="chart-holder">
-                        <CardContainer title={Intl.get("oplate.user.analysis.device", "设备统计")}>
+                        <CardContainer 
+                            title={Intl.get("oplate.user.analysis.device", "设备统计")}
+                            exportData={handleDeviceExport(this.state.deviceType.data)}
+                            csvFileName="device_statis.csv"
+                        >
                             {this.getDeviceTypeChart()}
                         </CardContainer>
                     </div>
@@ -1717,7 +1724,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}>
                         <div className="chart-holder">
-                            <CardContainer title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}>
+                            <CardContainer 
+                                title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}
+                                exportData={handleBrowserExport(this.state.browser.data)}
+                                csvFileName="brower_statis.csv"
+                            >
                                 {this.getBrowserChart()}
                             </CardContainer>
                         </div>
@@ -1726,7 +1737,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}>
                         <div className="chart-holder">
-                            <CardContainer title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}>
+                            <CardContainer 
+                                title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}
+                                exportData={handleLoginCountsExport(this.state.userLoginCounts.data)}
+                                csvFileName="login_counts_statis.csv"    
+                            >
                                 {this.getUserLoginCounts()}
                             </CardContainer>
                         </div>
@@ -1748,7 +1763,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}>
                         <div className="chart-holder">
-                            <CardContainer title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}>
+                            <CardContainer 
+                                title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}
+                                exportData={handleLoginDaysExport(this.state.userLoginDays.data)}
+                                csvFileName="login_days_statis.csv"
+                            >
                                 {this.getUserLoginDays()}
                             </CardContainer>
                         </div>
@@ -1757,7 +1776,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}>
                         <div className="chart-holder">
-                            <CardContainer title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}>
+                            <CardContainer 
+                                title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}
+                                exportData={handleLoginTimesExport(this.state.userLoginTimes.data)}
+                                csvFileName="login_times_statis.csv"
+                            >
                                 {this.getUserLoginTimes()}
                             </CardContainer>
                         </div>
@@ -1776,7 +1799,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             ))}
                         </SelectFullWidth>
                         <div className="chart-holder">
-                            <CardContainer title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}>
+                            <CardContainer 
+                                title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}
+                                exportData={handleAveTimesExport(this.state.onlineTime.data)}
+                                csvFileName="average_times_statis.csv"
+                            >
                                 {this.getOnlineTimeChart()}
                             </CardContainer>
                         </div>
