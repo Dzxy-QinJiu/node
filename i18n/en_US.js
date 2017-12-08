@@ -1830,7 +1830,15 @@ var en_US = {
     "crm.today.10.clock":"10 clock that day",//当天上午10点
     "crm.n.day.10.clock":"Ahead {n} day at 10 clock",//{n}天前上午10点
     "phone.delay.save":"Call records are synchronizing, please wait to save!",//通话记录正在同步，请稍等再保存！
-    "crm.schedule.fill.content":"Please fill in schedule content!"//请填写联系内容
+    "crm.schedule.fill.content":"Please fill in schedule content!",//请填写联系内容
+    "schedule.list.management":"Schedule Management",//日程管理
+    "schedule.expired.list.failed":"Failed to get expired schedule management list",//获取超时日程管理列表失败
+    "schedule.expired.list":"Expired and incomplete schedule list",//超时未完成
+    "schedule.list.remind":"Reminder time",//提醒
+    "schedule.list.mark.finish":"Mark as done",//标记为完成
+    "schedule.create.person":"founder",//创建人
+    "schedule.get.schedule.list.failed":"Failed to get schedule management list",//获取日程管理列表失败
+    "schedule.management.schedule.content":"Schedule content"//日程内容
 
 };
 export default en_US;
