@@ -58,3 +58,90 @@ var lessLoader = {
     loaders: ['style', 'css', 'postcss', 'less']
 };
 
+var loadersLists = [
+    {
+        test: /(\.js|\.jsx)$/,
+        use: [
+            {loader: "happypack/loader?id=js"}
+        ],
+        include: [
+            path.join(__dirname, "portal")
+        ]
+    },
+    {
+        test: /\.(png|jpg)$/,
+        use: [
+            {loader: "url?limit=8192"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal")
+        ]
+    },
+    /* bootstrap-webpack config start */
+    {
+        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+            {loader: "url?limit=10000&mimetype=application/font-woff"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/bootstrap")
+        ]
+    },
+    {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+            {loader: "url?limit=10000&mimetype=application/octet-stream"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/bootstrap")
+        ]
+    },
+    {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+            {loader: "file"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/bootstrap")
+        ]
+    },
+    {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+            {loader: "url?limit=10000&mimetype=image/svg+xml"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/bootstrap")
+        ]
+    },
+    /* bootstrap-webpack config end */
+    /*css,less*/
+    {
+        test: /\.css?$/,
+        use: [
+            {loader: "happypack/loader?id=css"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/bootstrap"),
+            path.resolve(__dirname, "node_modules/antd"),
+            path.resolve(__dirname, "node_modules/rc-calendar"),
+            path.resolve(__dirname, "node_modules/react-date-picker"),
+            path.resolve(__dirname, "node_modules/antc"),
+            path.resolve(__dirname, "node_modules/fullcalendar")
+        ]
+    }, {
+        test: /\.less$/,
+        use: [
+            {loader: "happypack/loader?id=less"}
+        ],
+        include: [
+            path.resolve(__dirname, "portal"),
+            path.resolve(__dirname, "node_modules/antc")
+        ]
+    },
+    {
