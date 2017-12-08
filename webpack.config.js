@@ -145,3 +145,111 @@ var loadersLists = [
         ]
     },
     {
+        test: /\.json$/,
+        use: [
+            {loader: "json"}
+        ],
+    }
+];
+//webpack的plugins列表
+var pluginLists = [
+    autoprefixer,
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.ProvidePlugin({
+        React: 'react',
+        ReactDOM: 'react-dom',
+        $: 'jquery',
+        jQuery: 'jquery',
+        'window.jQuery': 'jquery',
+        '_': 'underscore',
+        moment: 'moment',
+        ReactIntl: 'react-intl',
+        Intl: [path.resolve(__dirname, "portal/public/intl/intl.js"), "default"],
+        Trace: path.resolve(__dirname, "portal/lib/trace"),
+        oplateConsts: path.resolve(__dirname, "portal/lib/consts.js"),
+    }),
+    new webpack.DllReferencePlugin({
+        context: path.join(__dirname),
+        manifest: require("./dll/vendor-manifest.json")
+    }),
+    new HappyPack(jsLoader),
+    new HappyPack(cssLoader),
+    new HappyPack(lessLoader),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
+    new CopyWebpackPlugin([
+        {from: 'portal/public/sources/piwik.js'},
+    ]),
+];
+//热替换插件
+if (webpackMode !== 'production') {
+    pluginLists.push(new webpack.HotModuleReplacementPlugin());
+}
+//压缩混淆插件
+if (webpackMode === 'production') {
+    pluginLists.push(new webpack.DefinePlugin({
+        'process.env': {
+            'NODE_ENV': JSON.stringify("production")
+        }
+    }));
+    pluginLists.push(new WebpackParallelUglifyPlugin({
+        cacheDir: path.resolve(__dirname, "cache"),
+        uglifyJS: {
+            sourceMap: false,
+            test: /(\.jsx|\.js)$/,
+            compress: {
+                warnings: false
+            },
+            output: {
+                comments: false
+            }
+        }
+    }));
+}
+
+var webpackConfig = {
+    cache: true,
+    entry: entry(),
+    output: {
+        path: path.join(__dirname, 'dist'),
+        filename: '[name].bundle.js',
+        //为了对JS路径进行加密
+        chunkFilename: 'chunk.[chunkhash].js',
+        publicPath: '/resources/'
+    },
+    plugins: pluginLists,
+    module: {
+        rules: loadersLists,
+        noParse: [/moment-with-locales/, /alt.min.js/, /jquery.min.js/, /underscore-min.js/, /History.min.js/]
+    },
+    resolveLoader: {
+        moduleExtensions: ["-loader"]
+    },
+    resolve: {
+        modules: [
+            path.join(__dirname, "portal"),
+            "node_modules"
+        ],
+        extensions: ['.js', '.jsx', '.json'],
+        alias: {
+            //加$是为了避免require("moment/locale/xx")的时候报找不到模块的错误的问题
+            //详见https://github.com/ant-design/ant-design/issues/4491
+            moment$: 'moment/min/moment-with-locales.min.js',
+            alt: 'alt/dist/alt.min.js',
+            jquery: 'jquery/dist/jquery.min.js',
+            underscore: 'underscore/underscore-min.js',
+            history$: 'history/umd/History.min.js',
+            OPLATE_EMITTER: path.resolve(__dirname, "portal/public/sources/utils/emitters"),
+            PUB_DIR: path.resolve(__dirname, "portal/public"),
+            LIB_DIR: path.resolve(__dirname, "portal/lib"),
+            CMP_DIR: path.resolve(__dirname, "portal/components"),
+            MOD_DIR: path.resolve(__dirname, "portal/modules"),
+        }
+    }
+};
+
+if (webpackMode !== 'production') {
+    webpackConfig.devtool = 'source-map';
+}
+
+//webpack config
+module.exports = webpackConfig;
