@@ -5,9 +5,9 @@
  */
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-change-record-es_VE.scss");
+    require("../css/user-detail-change-record-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../css/user-detail-change-record-zh_CN.scss");
+    require("../css/user-detail-change-record-zh_CN.less");
 }
 var UserDetailChangeRecordStore = require("../store/user-detail-change-record-store");
 var UserDetailChangeRecordAction = require("../action/user-detail-change-record-actions");

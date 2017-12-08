@@ -3,7 +3,7 @@ const Validator = Validation.Validator;
 /**
  * 新版审批详情界面
  */
-require("../css/apply-detail.scss");
+require("../css/apply-detail.less");
 import ApplyViewDetailStore from '../store/apply-view-detail-store';
 import ApplyViewDetailActions from '../action/apply-view-detail-actions';
 import AppUserUtil from '../util/app-user-util';
@@ -22,7 +22,7 @@ import {Table} from 'react-bootstrap';
 import classNames from 'classnames';
 import {hasPrivilege} from '../../../../components/privilege/checker';
 /*在审批界面显示用户的右侧面板开始*/
-require("../css/main.scss");
+require("../css/main.less");
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
 import CrmRightPanel  from '../../../crm/public/views/crm-right-panel';
 import {RightPanel} from "../../../../components/rightPanel";

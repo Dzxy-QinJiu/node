@@ -1,4 +1,4 @@
-require('../css/single-user-log.scss');
+require('../css/single-user-log.less');
 //时间范围选择
 import DatePicker from "../../../../components/datepicker";
 var Alert = require("antd").Alert;

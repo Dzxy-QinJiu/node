@@ -1,12 +1,12 @@
 /**
  * Oplate.hideSomeItem 用来判断西语的运行环境
  * */
-require("./index.scss");
+require("./index.less");
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../scss/form-basic-es_VE.scss");
+    require("../css/form-basic-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../scss/form-basic-zh_CN.scss");
+    require("../css/form-basic-zh_CN.less");
 }
 
 require("../../../public/css/antd-vertical-tabs.css");

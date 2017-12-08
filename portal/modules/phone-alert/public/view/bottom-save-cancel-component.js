@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/10/12.
  */
-require("../scss/bottom-save-cancel-cmp.scss");
+require("../css/bottom-save-cancel-cmp.less");
 var AlertTimer = require("CMP_DIR/alert-timer");
 import {Button,Icon,Alert} from "antd";
 class BottomSaveCancel extends React.Component{

@@ -22,7 +22,7 @@
 import { Table, Checkbox, Button, Alert } from "antd";
 const CheckboxGroup = Checkbox.Group;
 import ScrollLoad from 'CMP_DIR/scroll-load';
-require("./index.scss");
+require("./index.less");
 
 const LIST_CONST = {
     //菜单距窗口底部距离

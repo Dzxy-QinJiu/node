@@ -1,4 +1,4 @@
-require("../../../app_user_manage/public/css/main-zh_CN.scss");
+require("../../../app_user_manage/public/css/main-zh_CN.less");
 import {Alert, Select, message, Icon} from "antd";
 import LAYOUT from "../utils/layout";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";

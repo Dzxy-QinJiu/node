@@ -1,7 +1,7 @@
 /**
  * 数据分析中，按照总客户(用户)、新增客户(用户)、各销售阶段客户(过期用户)、（新增过期用户)，显示一个统计数字
  */
-require("./index.scss");
+require("./index.less");
 import Trace from "LIB_DIR/trace";
 var Icon = require("antd").Icon;
 var SummaryNumber = React.createClass({

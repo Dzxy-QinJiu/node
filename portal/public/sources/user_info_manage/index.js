@@ -2,7 +2,7 @@
  * Created by xiaojinfeng on  2016/1/14 9:19 .
  */
 
-require("./index.scss");
+require("./index.less");
 var RightContent = require("../../../components/privilege/right-content");
 var Checker = require("../../../components/privilege/checker");
 var userInfo = require("../../../modules/user_info");

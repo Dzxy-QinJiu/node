@@ -10,7 +10,7 @@
  *  width [num] 出现滚动条的容器宽度
  * }
  */
-require("CMP_DIR/scroll-load/index.scss");
+require("CMP_DIR/scroll-load/index.less");
 import Spinner from 'CMP_DIR/spinner';
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
 //用于布局的高度

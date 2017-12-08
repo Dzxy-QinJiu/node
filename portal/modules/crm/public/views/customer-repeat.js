@@ -2,7 +2,7 @@
  * 客户查重界面
  * Created by wangliping on 2016/12/29.
  */
-import "../scss/customer-repeat.scss";
+import "../css/customer-repeat.less";
 import {Button, message, Tag, Icon, Input, Row, Col, Popconfirm, Alert} from "antd";
 import TopNav from"../../../../components/top-nav";
 import Spinner from '../../../../components/spinner';

@@ -2,7 +2,7 @@
  * 堆叠折线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 var Spinner = require("../../../../../components/spinner");
 var immutable = require("immutable");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";

@@ -3,9 +3,9 @@
  */
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require('./card-es_VE.scss');
+    require('./card-es_VE.less');
 }else if (language.lan() == "zh"){
-    require("./card-zh_CN.scss");
+    require("./card-zh_CN.less");
 }
 var CardItem = require("./cardItem");
 var Icon = require("antd").Icon;

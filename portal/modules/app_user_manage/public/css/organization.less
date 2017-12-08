@@ -1,0 +1,80 @@
+@import "../../../../public/css/common-variables";
+.user-organization {
+  white-space:normal;
+  @border-color:#d2d3d5;
+  @color:#5c5c5c;
+  .border-radius;
+  display:table;
+  color:@color;
+  font-size:12px;
+  @padding:8px 9px;
+  line-height:16px;
+  .range_wrap {
+    background:transparent;
+    cursor: pointer;
+    position:relative;
+    padding: @padding;
+    border:1px solid @border-color;
+    min-width:85px;
+    vertical-align:top;
+    background:#fff;
+    float:left;
+    border-radius:4px;
+  }
+
+  .inline-block {
+    display:inline-block;
+    width:0;
+    height:0;
+    overflow:hidden;
+    line-height:0;
+    font-size:0;
+  }
+  .ant-dropdown {
+    margin-top:1px;
+    .ant-dropdown-menu {
+      box-shadow: none;
+      border-radius:4px;
+    }
+  }
+  &>.anticon-loading {
+    margin:0 0 0 10px;
+    font-size:18px;
+  }
+  .triangle {
+    .inline-block;
+    float:right;
+    border-top:7px solid #7f7f7f;
+    border-bottom:0;
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    margin-top:5px;
+  }
+  .ant-select-selection--single {
+    height: @input_height;
+    border-radius:@border-radius;
+  }
+  .alert-timer,.ant-alert {
+    display:inline-block;
+    margin:0 0 0 10px;
+  }
+  .iconfont {
+    padding: 5px 5px 2px 5px;
+    display:inline-block;
+    cursor:pointer;
+  }
+  .icon-choose {
+    color:#4dbe50;
+  }
+  .icon-close {
+    color:#b50e0a;
+  }
+
+}
+
+.user-organization-menu {
+  .active {
+    background:#4af8fe;
+  }
+  transform:translateY(-3px);
+}

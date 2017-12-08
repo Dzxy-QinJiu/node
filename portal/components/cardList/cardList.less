@@ -1,0 +1,48 @@
+/*卡片列表*/
+
+@listBgColor: #ffffff;
+.position-left {
+  float: left;
+}
+
+.card-list-container {
+  padding-top: 75px;
+  background-color: @listBgColor;
+  .nodata-msg-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+
+  .card-list {
+    width: 100%;
+    padding: 0 35px;
+    .gm-scrollbar {
+      z-index: 99;
+    }
+  }
+  .card-list-content {
+    padding-left: 15px;
+    padding-top: 10px;
+  }
+
+  .page-nav {
+    .position-left;
+    width: 100%;
+    .ant-pagination {
+      float: right;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      margin-right: 50px;
+    }
+  }
+}
+
+.extend {
+  .card-list {
+    padding-left: 10px;
+  }
+}

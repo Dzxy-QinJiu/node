@@ -4,9 +4,9 @@
 
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./scss/authority-es_VE.scss");
+    require("./css/authority-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./scss/authority-zh_CN.scss");
+    require("./css/authority-zh_CN.less");
 }
 var GeminiScrollbar = require('../../../components/react-gemini-scrollbar');
 var Button = require("antd").Button;

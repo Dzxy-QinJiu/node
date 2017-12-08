@@ -1,6 +1,6 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
-require("../scss/index.scss");
+require("../css/index.less");
 var Form = require("antd").Form;
 var Input = require("antd").Input;
 var Col = require("antd").Col;

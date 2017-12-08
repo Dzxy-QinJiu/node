@@ -1,7 +1,7 @@
 /**
  * 线图
  */
-require("./index.scss");
+require("./index.less");
 var echarts = require("echarts-eefung");
 //各种颜色
 var colors = require("../../utils/colors");

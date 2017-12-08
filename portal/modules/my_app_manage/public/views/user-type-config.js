@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/2/15.
  */
-require("../scss/user-type-config.scss");
+require("../css/user-type-config.less");
 import {Icon} from "antd";
 var _ = require("underscore");
 var UserTypeConfigForm = require("./user-type-config-form");

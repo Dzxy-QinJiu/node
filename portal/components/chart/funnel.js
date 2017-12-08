@@ -2,7 +2,7 @@
  * 漏斗图
  */
 var echarts = require("echarts-eefung");
-require("./style.scss");
+require("./style.less");
 var Spinner = require("../spinner");
 var macronsTheme = require("./theme-macrons");
 var immutable = require("immutable");

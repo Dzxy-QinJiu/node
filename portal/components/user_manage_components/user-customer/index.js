@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 import classNames from 'classnames';
 import {Icon,Alert} from 'antd';
 import CustomerSuggest from '../../../modules/app_user_manage/public/views/customer_suggest/customer_suggest';

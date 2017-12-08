@@ -5,9 +5,9 @@
  */
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../scss/customer-trace-es_VE.scss");
+    require("../../css/customer-trace-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("../../scss/customer-trace-zh_CN.scss");
+    require("../../css/customer-trace-zh_CN.less");
 }
 import {Icon, Select, Alert, Button, message} from 'antd';
 var Option = Select.Option;

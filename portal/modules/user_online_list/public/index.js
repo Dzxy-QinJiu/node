@@ -1,4 +1,4 @@
-import "./scss/index.scss";
+import "./css/index.less";
 import TopNav from "../../../components/top-nav";
 import OnlineUserList from "./views/list";
 import OnlineUserFilter from "./views/filter";

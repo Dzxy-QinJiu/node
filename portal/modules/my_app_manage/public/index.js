@@ -1,9 +1,9 @@
-require("../../../components/app-notice/app-notice-list.scss");
+require("../../../components/app-notice/app-notice-list.less");
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./scss/index-es_VE.scss");
+    require("./css/index-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./scss/index-zh_CN.scss");
+    require("./css/index-zh_CN.less");
 }
 var RightContent = require("../../../components/privilege/right-content");
 var RightCardsContainer = require("../../../components/rightCardsContainer");

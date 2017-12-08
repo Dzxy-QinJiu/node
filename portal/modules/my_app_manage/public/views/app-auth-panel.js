@@ -5,9 +5,9 @@
 const Validation = require("rc-form-validation");
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../scss/app-auth-panel-es_VE.scss");
+    require("../css/app-auth-panel-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../scss/app-auth-panel-zh_CN.scss");
+    require("../css/app-auth-panel-zh_CN.less");
 }
 var Form = require("antd").Form;
 var Input = require("antd").Input;

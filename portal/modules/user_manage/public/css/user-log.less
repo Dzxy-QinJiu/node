@@ -1,0 +1,32 @@
+.log-label {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+//超过规定宽度后显示...
+.font-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-item {
+  width: 330px;
+  text-align: left;
+  .log-username {
+    width: 50px;
+    .log-label;
+    .font-overflow;
+  }
+  .log-info {
+    width: 135px;
+    padding-left: 10px;
+    .log-label;
+    .font-overflow;
+  }
+  .log-time {
+    padding-left: 10px;
+    .log-label;
+    .font-overflow;
+  }
+}

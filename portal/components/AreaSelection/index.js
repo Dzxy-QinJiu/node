@@ -4,7 +4,7 @@ var Input = require("antd").Input;
 var Icon = require("antd").Icon;
 var TabPane = Tabs.TabPane;
 var FormItem = Form.Item;
-require("./css/index.scss");
+require("./css/index.less");
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 

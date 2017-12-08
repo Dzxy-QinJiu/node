@@ -1,7 +1,7 @@
 /**
  * Created by wangliping on 2016/10/18.
  */
-require("../../../../components/antd-table-pagination/index.scss");
+require("../../../../components/antd-table-pagination/index.less");
 var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
 var DefaultUserLogoTitle = require("../../../../components/default-user-logo-title");
 var Spinner = require("../../../../components/spinner");

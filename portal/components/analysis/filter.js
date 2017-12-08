@@ -2,7 +2,7 @@
  * 统计分析筛选组件
  */
 
-import "./style.scss";
+import "./style.less";
 import AnalysisAppSelector from "../analysis_app_selector";
 import DatePicker from "../datepicker";
 const Emitters = require("../../public/sources/utils/emitters");

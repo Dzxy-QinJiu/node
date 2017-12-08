@@ -3,9 +3,9 @@
  */
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./modalDialog-es_VE.scss");
+    require("./modalDialog-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./modalDialog-zh_CN.scss");
+    require("./modalDialog-zh_CN.less");
 }
 //require("./modalDialog.less");
 var Modal = require("react-bootstrap").Modal;

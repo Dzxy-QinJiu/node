@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 const img_src = require("../../modules/common/public/image/user-info-logo.jpg");
 import {Input,Icon,Checkbox,Alert} from 'antd';
 

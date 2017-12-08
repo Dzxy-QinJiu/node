@@ -1,0 +1,877 @@
+@charset "UTF-8";
+@import "../../../../public/css/common-variables";
+//权限输入框宽度
+@authority_input_width:310px;
+//权限api输入框宽度
+@apis_content_width:226px;
+//转权限组下拉列表的样式设置
+.authority-group-drop-list{
+  right:-50px;
+  .ant-dropdown-menu-item{
+    transition:none;
+    &:hover{
+      background-color:#4c96d5;
+      color:#fff;
+    }
+  }
+}
+
+//获取权限列表时，无数据和等待效果的样式
+.authority-list-mixin {
+  //正在加载权限列表的样式
+  .isloading{
+    position:absolute;
+    width:70px;
+    height:70px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    margin:auto;
+  }
+  //暂无权限列表的样式
+  .nodata-msg-block{
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    margin:auto;
+  }
+}
+
+.backgroundManagement_authority_content{
+  .authority-container-scroll{
+    margin-top:22px;
+  }
+  .authority-manage-container{
+    padding-right:45px;
+    padding-left:45px;
+    padding-top:76px;
+    ul.topnav-links{
+      min-width:288px;
+    }
+    .authority-list-mixin;
+    //添加权限组按钮样式
+    .add-authority-div{
+      float:right;
+      height:75px;
+      line-height:69px;
+      z-index:101;
+      border-left:1px solid #edf0f0;
+      background-color:#fff;
+
+      .authority-add-btn{
+        color:#4d96d1;
+        border-color:transparent;
+        width:95px;
+        height:32px;
+        font-size:14px;
+      }
+      @media (max-width:525px) {
+        height:@input_height;
+        line-height:@line_height30;
+        .role-add-btn{
+          width:auto;
+          height:@input_height;
+        }
+      }
+    }
+  }
+}
+
+.backgroundManagement_authority_content, .user-authority-container-div{
+  //删除权限组失败的提示样式设置
+  .alert-timer{
+    .ant-alert.ant-alert-error{
+      position:absolute;
+      height:35px;
+      width:255px;
+      right:0;
+      top:0;
+      left:0;
+      bottom:0;
+      margin:auto;
+    }
+  }
+  .default-authority-formItem-group{
+    .ant-radio-group{
+      line-height:@line_height30;
+    }
+  }
+  .right-pannel-default form .ant-form-item{
+    .ant-radio-group{
+      label{
+        margin-bottom:0;
+        color:#666;
+        margin-left:5px;
+        font-weight:normal;
+      }
+    }
+    //数据权限
+    .permissionData-item{
+      margin-bottom:5px;
+    }
+    //权限服务地址样式
+    .permission-api-item{
+      margin-bottom:5px;
+      //输入框的样式
+      input{
+        margin-left:5px;
+      }
+      //验证提示信息样式
+      .permissionApi-validate{
+        margin-left:95px;
+      }
+    }
+    .auth-validate-error-tip{
+      color:#f50;
+      line-height:25px;
+    }
+    //输入框为空时，验证提示的边框样式
+    .auth-validate-error{
+      border:1px solid #f50;
+      box-shadow:0 0 0 2px #ffddcc;
+    }
+  }
+
+  .permission-inputgroup-btns-div{
+    display:inline-block;
+    vertical-align:top;
+  }
+  .permission-inputgroup-btn{
+    float:left;
+    height:16px;
+    width:16px;
+    margin-left:5px;
+    border-radius:50%;
+    font-size:14px;
+    cursor:pointer;
+    background:#4d96d1;
+    color:#fff;
+    user-select:none;
+    &:hover{
+      background:#478ebf;
+    }
+  }
+  .del-permission-inputgroup-btn{
+    line-height:18px;
+  }
+  .add-permission-inputgroup-btn{
+    line-height:16px;
+  }
+
+  .authority-container-scroll{
+    .authority-list-mixin;
+    .authority-container{
+      white-space:nowrap;
+
+      .authority-container-div{
+        width:360px;
+        height:100%;
+        background-color:#FFF;
+        margin-left:15px;
+        display:inline-block;
+        float:none;
+        border-radius:2px;
+        border:1px solid #edf0f0;
+
+        &:first-child{
+          margin-left:0px;
+        }
+
+        //权限组名称区域
+        .authority-title-div{
+          float:left;
+          width:100%;
+          height:48px;
+          line-height:48px;
+          font-size:16px;
+          padding-left:30px;
+          border-bottom:1px #edf0f0 solid;
+
+          &:hover{
+            .authority-operation{
+              display:block;
+            }
+          }
+
+          .edit-authority-group-name{
+            width:410px;
+            border:1px solid;
+            height:@input_height;
+            margin-top:9px;
+            line-height:26px;
+            input{
+              width:210px;
+              border-width:0px;
+              border-color:transparent;
+              &:focus{
+                box-shadow:0 0 0 0px #d5f1fd;
+              }
+            }
+
+            .edit-classifyName-btn{
+              width:66px;
+              float:right;
+              .classifyName-btn-class{
+                width:30px;
+                background:transparent;
+                border-width:0px;
+                font-size:14px;
+                font-weight:bold;
+                &.icon-choose{
+                  color:green;
+                }
+                &.icon-close{
+                  color:red;
+                }
+              }
+            }
+
+          }
+
+          //权限组名称
+          .authority-title-name{
+            max-width:200px;
+            float:left;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            color:#506470;
+            font-size:16px;
+          }
+
+          //操作按钮
+          .authority-operation{
+            width:111px;
+            float:right;
+            height:48px;
+            line-height:48px;
+            padding-top:11px;
+            display:none;
+
+            span{
+              float:right;
+              margin-right:5px;
+              cursor:pointer;
+            }
+
+            //修改删除按钮样式
+            .authority-btn-class{
+              border:0px;
+              width:25px;
+              float:right;
+              background-color:#b6c2c9;
+              margin-right:12px;
+              text-align:center;
+              padding:0px;
+              color:#fff;
+              font-size:16px;
+              border-radius:100px;
+
+              &:hover{
+                background-color:#4d96d1;
+              }
+            }
+          }
+        }
+
+        //权限列表展示区域
+        .authority-content{
+          float:left;
+          width:360px;
+          font-size:14px;
+          padding-top:30px;
+          padding-bottom:50px;
+
+          .delete-authority-bgColor{
+            background-color:fade(#4d96d1, (0.3*100));
+          }
+          //权限名称展示区域
+          .authority-content-list{
+            float:right;
+            width:100%;
+            padding-left:30px;
+            height:@input_height;
+            line-height:@line_height30;
+            color:#81939e;
+            font-size:14px;
+
+            &:hover{
+              .authority-authorityName-btn{
+                display:block;
+              }
+            }
+
+            //权限名称
+            .authority-authorityName{
+              max-width:245px;
+              float:left;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              white-space:nowrap;
+              height:@input_height;
+            }
+
+            .authority-authorityName-btn{
+              float:right;
+              width:85px;
+              display:none;
+
+              .authorityName-btn-class{
+                background-color:transparent;
+                border-color:transparent;
+                font-size:16px;
+                padding:0px;
+                border:0px;
+                line-height:@line_height30;
+                margin-right:20px;
+
+                &.icon-delete{
+                  font-size:20px;
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+
+  .authority-form-content{
+    transform:translateX(560px);
+    transition:transform 0.6s;
+    height:100%;
+    width:560px;
+    position:absolute;
+    top:0px;
+
+    .ant-form-item{
+      .has-feedback{
+        width:@authority_input_width;
+        position:relative;
+        float:left;
+      }
+      input{
+        width:@authority_input_width;
+      }
+    }
+    &.formTranslate{
+      transform:translate(0px) !important;
+    }
+
+    .addauthority-btn-class{
+      position:relative;
+      float:left;
+      width:100%;
+      text-align:right;
+      margin-bottom:30px;
+      padding-right:64px;
+
+      .indicator{
+        position:absolute;
+        top:-15px;
+        left:90px;
+        .ant-alert{
+          padding:5px;
+        }
+        .ant-alert-error{
+          position:relative;
+          height:auto;
+          width:auto;
+        }
+      }
+
+      .form-submit-btn{
+        float:right;
+        margin-top:20px;
+        padding:4px 15px;
+        border-radius:4px;
+        border-color:#B6C2C9;
+        margin-right:10px;
+        background-color:#B6C2C9;
+        color:#ffffff;
+      }
+
+      .form-cancel-btn{
+        float:right;
+        margin-top:20px;
+        margin-right:0px;
+        padding:4px 15px;
+        border-radius:4px;
+        border-color:#becad1;
+        background-color:transparent;
+        color:#becad1;
+      }
+      .form-addauthority-btn{
+        &:extend(.form-submit-btn);
+      }
+
+    }
+
+    .authority-formItem-group{
+      position:relative;
+      border-top:1px solid #bcc4c7;
+      padding-top:20px;
+      .ant-form-item{
+        width:auto;
+      }
+      .delete-action-icon-div{
+        right:75px;
+        bottom:8px;
+        position:absolute;
+
+        .delete-action{
+          font-size:20px;
+          color:red;
+          cursor:pointer;
+        }
+      }
+    }
+    // 添加权限组面板服务地址样式
+    .permissionApis-content{
+      .ant-select{
+        width:80px;
+        vertical-align:top;
+      }
+    }
+
+    .default-authority-formItem-group{
+      padding-top:20px;
+      .ant-form-item{
+        width:auto;
+      }
+    }
+    //添加权限组面板，服务地址样式
+    .permissionApis-content{
+      input{
+        width:@apis_content_width;
+      }
+      .permission-inputgroup-btn{
+        margin-top:10px;
+      }
+    }
+    //添加权限组面板，数据权限样式
+    .permissionDatas-content{
+      input{
+        width:@authority_input_width;
+      }
+      .permission-inputgroup-btn{
+        margin-top:10px;
+      }
+    }
+    //权限组名称样式
+    .classifyName-div{
+      .ant-form-item{
+        width:auto;
+      }
+    }
+
+  }
+
+  .authority-info-content{
+    transform:translateX(0px);
+    transition:transform 0.6s;
+    height:100%;
+    width:420px;
+    &.leftTranslate{
+      transform:translate(-420px) !important;
+    }
+
+    .edit-buttons{
+      position:absolute;
+      top:15px;
+      left:10px;
+      width:80px
+    }
+
+    .authority-info-div{
+      width:400px;
+      height:100%;
+      padding:60px 10px 20px 20px;
+      margin-left:20px;
+      margin-right:20px;
+      font-size:14px;
+
+      .authority-info-lable{
+        height:@input_height;
+        line-height:@line_height30;
+        margin-top:30px;
+
+        .authority-info-lable-div{
+          float:left;
+          max-width:80px;
+        }
+
+        .authority-info-item{
+          float:left;
+          width:285px;
+          white-space:normal;
+          word-break:break-all;
+        }
+      }
+    }
+  }
+  //添加权限面板的设置
+  .right-form-scroll-div{
+    padding-top:26px;
+  }
+  //权限组的修改面板
+  .authority-group-edit-panel{
+    .close-pannel{
+      position:absolute;
+      right:15px;
+      top:15px;
+      margin-right:0;
+      margin-top:0;
+    }
+    .right-form-scroll-div{
+      padding-top:25px;
+      .authority-group-form{
+        .ant-form-item{
+          > label{
+            padding-right:10px;
+            margin-bottom:0;
+            padding-top:5px;
+            padding-bottom:5px;
+          }
+          input{
+            height:@input_height;
+            width:@authority_input_width;
+          }
+          //正在保存祖名
+          .group-name-saving{
+            color:#979EA2;
+          }
+          .group-name-save-success{
+            color:#87d068;
+          }
+          .group-name-save-error{
+            color:#f50;
+          }
+        }
+      }
+      .authority-group-line{
+        position:absolute;
+        top:-20px !important;
+        left:20px;
+        right:20px;
+        border-bottom:1px solid #d7dfe2;
+      }
+      //权限列表展示编辑区
+      .form-authority-group-div{
+        position:relative;
+        width:100%;
+        float:left;
+        margin-top:20px;
+        padding-left:40px;
+        .form-authority-group-name-div{
+          max-width:410px;
+          height:20px;
+          margin-bottom:20px;
+          font-size:14px;
+
+          .form-authority-group-name{
+            max-width:200px;
+            float:left;
+            height:20px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            color:#4d96d1;
+            cursor:default;
+          }
+          .form-authority-group-name-btn{
+            position:relative;
+            width:170px;
+            float:left;
+            border-left:1px solid #999ea1;
+            margin-left:10px;
+            margin-top:3px;
+            height: 45px;
+
+            .form-authority-group-name-btn-label{
+              float:left;
+              position:relative;
+              height:15px;
+              line-height:15px;
+              background-color:transparent;
+              border:0;
+              padding:0;
+              margin-left:5px;
+              font-size:12px;
+            }
+          }
+          //删除、转换按钮
+          .cursor-pointer{
+            .icon-turn-arrow{
+              cursor:pointer;
+              color:#4d96d1;
+              &:hover{
+                color:#2DB7F5;
+              }
+            }
+            .icon-delete{
+              cursor:pointer;
+              color:#4d96d1;
+              &:hover{
+                color:#2DB7F5;
+              }
+            }
+          }
+          .autority-turn-del-btn{
+            float:right;
+            margin-right:-55px;
+            color:#b7bfc2;
+            .icon-turn-arrow{
+              font-size:18px;
+            }
+            .icon-delete{
+              margin-left:5px;
+            }
+          }
+          .search-input-container{
+            .search-input{
+              width: 350px;
+              margin-top: 3px;
+              margin-right: -50px;
+            }
+            .search-icon{
+              right: -40px;
+            }
+          }
+        }
+        //添加一个新权限
+        .authority-add-new{
+          float:left;
+          margin-bottom:10px;
+          .authority-add-icon{
+            float:left;
+            width:20px;
+            height:20px;
+            border-radius:50%;
+            text-align:center;
+            cursor:pointer;
+            line-height:20px;
+            color:#fff;
+            background-color:#b5c2ca;
+            &:hover{
+              background-color:#4d96d1;
+            }
+            > i{
+              font-size:10px;
+              vertical-align:middle;
+              font-weight:700;
+              position:relative;
+              top:-2px;
+            }
+          }
+          .authority-add-descr{
+            margin-left:10px;
+            font-size:14px;
+            color:#666;
+            cursor:pointer;
+          }
+        }
+        //添加、编辑权限的区域
+        .default-authority-formItem-group{
+          width:500px;
+          margin-left:-10px;
+          padding:20px 0 10px 15px;
+          border-radius:4px;
+          background-color:#d2dbe6;
+          margin-top: 40px;
+          .permission-inputgroup-btn{
+            margin-top:7px;
+          }
+          //下拉框的样式
+          .ant-select-lg.ant-select{
+            width:80px;
+            vertical-align:top;
+          }
+          .ant-select-selection--single{
+            height:@input_height;
+            .ant-select-selection__rendered{
+              line-height:@line_height30;
+            }
+          }
+          //保存等待效果的样式
+          .anticon-loading{
+            float:left;
+            font-size:20px;
+            color:#666;
+            margin-left:130px;
+          }
+          .indicator{
+            position:absolute;
+            top:-3px;
+            right:135px;
+            .ant-alert-error{
+              position:relative;
+              height:auto;
+              width:auto;
+            }
+          }
+          .ant-form-item{
+            width:auto;
+            > label{
+              min-width:70px;
+              padding-right:10px;
+              padding-top:0;
+              padding-bottom:0;
+              line-height:@line_height30;
+              margin-bottom:0;
+            }
+            input{
+              height:@input_height;
+              width:257px;
+            }
+            .permissionApis-content{
+              input{
+                width:@apis_content_width;
+              }
+            }
+            .permissionData-item{
+              input{
+                width:@authority_input_width;
+              }
+            }
+            .col-24 {
+              margin-left: 110px;
+            }
+          }
+          button{
+            margin-top:0;
+          }
+          .form-cancel-btn{
+            margin-right:6px;
+          }
+        }
+        .auth-item-icon{
+          display:inline-block;
+          float:right;
+          height:20px;
+          width:50px;
+          margin-right:-180px;
+          font-weight:normal;
+          color:#b7bfc2;
+          cursor:pointer;
+          .icon-turn-user-list{
+            font-size:12px;
+            margin-left:15px;
+            &:hover{
+              color:#4d96d1;
+            }
+          }
+          .icon-update:hover{
+            color:#4d96d1;
+          }
+        }
+        .edit-role-content-label{
+          display:block;
+          position:relative;
+          float:left;
+          line-height:@line_height30;
+          height:auto;
+          .authority-name-li{
+            position:relative;
+            float:left;
+            label{
+              margin-bottom:0;
+            }
+          }
+          .authority-detail-info-block{
+            position:relative;
+            float:left;
+            width:500px;
+            margin-left:-10px;
+            border-radius:4px;
+            color:#565657;
+            background-color:#dfe7ec;
+            .authority-name-title{
+              height:40px;
+              .authority-name{
+                display:inline-block;
+                float:left;
+                width:385px;
+                line-height:40px;
+                padding-left:20px;
+                font-size:14px;
+                cursor:default;
+              }
+              .authority-btn-privilege{
+                float:left;
+                margin-top:7px;
+              }
+              .icon-close{
+                top:7px;
+                right:10px;
+              }
+            }
+            //分割线的样式设置
+            .authority-info-line{
+              margin-left:10px;
+              margin-right:10px;
+              border-bottom:1px solid #cdd6e4;
+            }
+            .authority-detail-content{
+              float:left;
+              margin-top:10px;
+              margin-bottom:10px;
+              padding-left:20px;
+              font-size:14px;
+              div{
+                cursor:default;
+              }
+              .authority-info-item{
+                float:left;
+                .authority-info-item-left{
+                  float:left;
+                }
+                .authority-info-item-right{
+                  float:left;
+                  width:270px;
+                  white-space:nowrap;
+                  text-overflow:ellipsis;
+                  overflow:hidden;
+                  word-wrap:normal;
+                }
+                .authority-api{
+                  line-height:20px;
+                  &:extend(.authority-info-item-right);
+                  &:nth-child(1){
+                    padding-top:5px;
+                  }
+                }
+              }
+            }
+          }
+
+          span.edit-role-checkbox{
+            display:inline-block;
+            margin-top:-20px;
+          }
+
+          .permission-item{
+            color:#5d5d5d;
+            font-weight:normal;
+            text-overflow:ellipsis;
+            width:275px;
+            overflow:hidden;
+            margin-left:0 !important;
+            padding-left:8px;
+            display:inline-block;
+            cursor:pointer;
+          }
+        }
+      }
+    }
+    .gm-scrollbar.-horizontal{
+      .thumb{
+        height: 0;
+      }
+    }
+  }
+}

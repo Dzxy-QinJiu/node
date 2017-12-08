@@ -2,9 +2,9 @@
  * Created by wangliping on 2017/2/25.
  */
 var language = require("../../../../public/language/getLanguage");
-require('PUB_DIR/css/card-info-common.scss');
+require('PUB_DIR/css/card-info-common.less');
 if (language.lan() == "es" || language.lan() == "en") {
-    require('PUB_DIR/css/card-info-es.scss');
+    require('PUB_DIR/css/card-info-es.less');
 }
 import {Spin,Icon,Pagination,Form,Input,Tag,Alert,DatePicker,message,Popconfirm} from "antd";
 var rightPanelUtil = require("../../../../components/rightPanel");

@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var RightContent = require("../../../components/privilege/right-content");
 var Checker = require("../../../components/privilege/checker");
 

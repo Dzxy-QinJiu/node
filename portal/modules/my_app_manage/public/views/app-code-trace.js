@@ -10,7 +10,7 @@ var AppAction = require("./../action/app-actions");
 var AppStore = require("./../store/app-store");
 var Alert = require("antd").Alert;
 var Spinner = require("../../../../components/spinner");
-require('../scss/app-code-trace.scss');
+require('../css/app-code-trace.less');
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {Icon} from 'antd';
 var AppCodeTrace = React.createClass({

@@ -1,4 +1,4 @@
-require("./scss/index.scss");
+require("./css/index.less");
 import TopNav from 'CMP_DIR/top-nav'; //顶部导航
 import { Button, Table} from 'antd';
 import { RightPanel } from 'CMP_DIR/rightPanel'

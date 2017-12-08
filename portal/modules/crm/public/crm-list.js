@@ -1,4 +1,4 @@
-require('./scss/index.scss');
+require('./css/index.less');
 import {Tag, Alert, Modal, message, Pagination} from "antd";
 import {Button, Icon} from "antd";
 import {AntcTable} from "antc";

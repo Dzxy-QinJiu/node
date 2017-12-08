@@ -13,7 +13,7 @@ if (language.lan() == "es") {
 }
 
 
-require("./index.scss");
+require("./index.less");
 var classNames = require("classnames");
 var YEAR_MODE = "years";
 var MONTH_MODE = "months";

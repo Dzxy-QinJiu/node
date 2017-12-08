@@ -2,7 +2,7 @@
  * 运营报告
  * Created by wangliping on 2017/3/22.
  */
-import "./scss/index.scss";
+import "./css/index.less";
 import {Select,Table,Button,Modal,Progress,message} from "antd";
 const ProgressLine = Progress.Line;
 import TopNav from "../../../components/top-nav";

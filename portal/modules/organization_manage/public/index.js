@@ -3,9 +3,9 @@
  */
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./scss/organization-es_VE.scss");
+    require("./css/organization-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./scss/organization-zh_CN.scss");
+    require("./css/organization-zh_CN.less");
 }
 var OrganizationStore = require("./store/organization-store");
 var OrganizationAction = require("./action/organization-actions");

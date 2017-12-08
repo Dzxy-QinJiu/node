@@ -2,7 +2,7 @@
  * 线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 var Color = require("color");
 var Spinner = require("../../../../../components/spinner/index");
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");

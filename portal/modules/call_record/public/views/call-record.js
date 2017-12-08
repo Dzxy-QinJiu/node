@@ -1,5 +1,5 @@
-require("../scss/index.scss");
-require("CMP_DIR/antd-table-pagination/index.scss");
+require("../css/index.less");
+require("CMP_DIR/antd-table-pagination/index.less");
 import RightContent from "CMP_DIR/privilege/right-content";
 import TopNav from "CMP_DIR/top-nav";
 import CallRecordActions from '../action/call-record-actions';

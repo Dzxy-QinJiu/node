@@ -5,7 +5,7 @@
  */
 
 var echarts = require("echarts-eefung");
-require("./style.scss");
+require("./style.less");
 import Spinner from "../spinner";
 import macronsTheme from "./theme-macrons";
 var immutable = require("immutable");

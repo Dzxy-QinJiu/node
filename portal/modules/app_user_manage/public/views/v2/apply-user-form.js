@@ -1,6 +1,6 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
-require("../../css/apply-user-form.scss");
+require("../../css/apply-user-form.less");
 import {Form, Input, Radio, InputNumber, Icon, message, Checkbox, Tabs, Tooltip} from "antd";
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;

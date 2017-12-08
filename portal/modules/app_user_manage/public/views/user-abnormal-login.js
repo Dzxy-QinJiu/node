@@ -5,9 +5,9 @@
  */
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-abnornal-login-es_VE.scss");
+    require("../css/user-abnornal-login-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../css/user-abnornal-login-zh_CN.scss");
+    require("../css/user-abnornal-login-zh_CN.less");
 }
 var UserAbnormalLoginStore = require("../store/user-abnormal-login-store");
 var UserAbnormalLoginAction = require("../action/user-abnormal-login-actions");

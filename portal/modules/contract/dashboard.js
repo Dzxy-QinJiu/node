@@ -2,7 +2,7 @@
  * 合同仪表盘
  */
 
-import "./public/style.scss";
+import "./public/style.less";
 import Analysis from "../../components/analysis";
 import TopNav from "../../components/top-nav";
 import { CHART_HEIGHT } from "./consts";

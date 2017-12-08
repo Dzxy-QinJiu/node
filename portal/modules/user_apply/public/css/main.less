@@ -1,0 +1,790 @@
+/*引入公共变量*/
+@import '../../../../public/css/bootstrap-variables';
+@import '../../../../public/css/common-variables';
+@import '../../../../components/antd-table-pagination/index.less';
+@import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
+
+
+.right-pannel-default{
+  .user_manage_userform{
+    .customer_searchbox_wrap .has-error{
+      padding-top:7px;
+    }
+    //添加loading状态
+    .anticon-loading{
+      color:#394144;
+      font-size:16px;
+      margin:0 0 0 5px;
+      vertical-align:-2px;
+    }
+    .customer_choosen{
+      display:inline-block;
+      margin-top:4px;
+      cursor:pointer;
+      background-color:#f3f3f3;
+      &:hover{
+        background-color:darken(#f3f3f3, 5%);
+      }
+      border-radius:4px;
+      overflow:hidden;
+      padding:3px 10px 3px 10px !important;
+      & > span{
+        vertical-align:middle;
+      }
+      .iconfont{
+        display:inline-block;
+        vertical-align:middle;
+        font-family:anticon !important;
+        &:before{
+          content:"\E62D";
+        }
+        transform:scale(.66666667) rotate(0deg);
+        text-transform:none;
+        text-rendering:auto;
+        zoom:1;
+        filter:none;
+      }
+    }
+    .txt{
+      color:#666;
+      padding-top:7px;
+    }
+    .userform_error_tip{
+      color:#f50;
+      padding-top:7px;
+    }
+    .ant-form-item{
+      width:auto;
+      margin-right:12px;
+      padding:0 0 0 12px;
+    }
+    .ant-form-item > label{
+      text-align:left;
+      padding-top:7px;
+      padding-bottom:7px;
+    }
+    .ant-input-number-input{
+      border:none !important;
+      height:28px !important;
+    }
+    form .ant-input-number{
+      margin-top:3px;
+    }
+    form .ant-form-item .ant-select-selection--single .ant-select-selection__rendered{
+      line-height:32px;
+    }
+    .app-selector-nodata{
+      color:#666;
+      padding:8px 0 0 0;
+    }
+    .ant-form-item .ant-radio-group{
+      padding-top:7px;
+    }
+  }
+  .user_manage_userform, .user-detail-add-app, .user-detail-edit-app{
+    .form_btns{
+      position:fixed;
+      height:67px;
+      bottom:0;
+      left:28px;
+      right:28px;
+      background:#e6edef;
+      border-top:1px solid #cfd8d7;
+      .pull-left{
+        padding-top:20px;
+        color:#b2bdbf;
+      }
+    }
+  }
+
+  .user_manage_userform, .form_btns{
+    .indicator{
+      position:absolute;
+      width:200px;
+      top:15px;
+      left:50%;
+      text-align:center;
+      margin-left:-125px;
+      .anticon-loading{
+        font-size:18px;
+      }
+    }
+    .ant-alert{
+      display:inline-block;
+    }
+  }
+
+  .user_manage_userform, .addapp_minor_items, .editapp_minor_items{
+    .ant-radio + span{
+      color:#5d5d5d;
+      font-weight:normal;
+    }
+    .icon-arrow-up, .icon-arrow-down{
+      display:none;
+      position:absolute;
+      right:10px;
+      top:2px;
+      color:#000;
+      cursor:pointer;
+    }
+    .ant-calendar-picker-icon{
+      display:none;
+    }
+    .ant-calendar-picker-open{
+      opacity:1;
+    }
+    .customdate{
+      .icon-arrow-up, .icon-arrow-down{
+        display:block;
+        pointer-events:none;
+      }
+      .ant-input{
+        cursor:pointer;
+      }
+    }
+    .ant-radio-group label{
+      cursor:pointer;
+      min-width:50px;
+    }
+  }
+
+}
+
+.user_manage_user_detail_wrap{
+  font-size:0;
+  transition:transform 0.5s ease;
+  transform:translateX(0);
+
+  &.move_left{
+    transform:translateX(-700px);
+  }
+
+  .full_size{
+    display:inline-block;
+    font-size:12px;
+    vertical-align:top;
+  }
+  .user-customer{
+    margin-top:-5px;
+  }
+}
+
+.user_apply_page{
+  .none{
+    display:none;
+  }
+  .global_filter_adv{
+    position:relative;
+    z-index:10;
+    .filter_roles_loading{
+      .anticon{
+        font-size:16px;
+      }
+    }
+    .filter_roles_error{
+      .ant-alert-error{
+        border:0;
+        background:rgba(0, 0, 0, 0);
+        padding:0;
+        display:inline-block !important;
+      }
+      li{
+        cursor:auto;
+      }
+      dt{
+        padding-top:2px;
+      }
+      a{
+        margin-left:5px;
+      }
+    }
+    .filter_teams_loading{
+      .anticon{
+        font-size:16px;
+      }
+    }
+    .filter_teams_error{
+      .ant-alert-error{
+        border:0;
+        background:rgba(0, 0, 0, 0);
+        padding:0;
+        display:inline-block !important;
+      }
+      li{
+        cursor:auto;
+      }
+      dt{
+        padding-top:2px;
+      }
+      a{
+        margin-left:5px;
+      }
+    }
+  }
+  .ant-table tbody tr{
+    cursor:pointer;
+  }
+  .user_apply_contentwrap{
+    padding:25px 50px 25px 30px;
+
+    .status{
+      display:inline;
+      margin:0 0 0 30px;
+    }
+
+    .summary_info{
+      font-size:13px;
+      color:#7c8185;
+      position:fixed;
+      bottom:43px;
+    }
+    .user-list-thead tbody{
+      display:none;
+    }
+    .user-list-thead .ant-table-body{
+      border-bottom:0;
+    }
+    .user-list-tbody thead{
+      display:none;
+    }
+    .user-list-tbody .ant-table-body{
+      height:auto;
+      border-bottom:none;
+    }
+    .user-list-tbody .ant-table-placeholder{
+      top:auto;
+    }
+    .user-list-tbody{
+      //下拉加载失败后，提示的样式
+      .scroll-loading-data-error{
+        text-align:center;
+        padding:5px 0;
+        line-height:20px;
+        a{
+          font-size:14px;
+        }
+      }
+      .operate-style, .operate-detail-style{
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        overflow:hidden;
+        word-wrap:initial;
+        width:90%;
+        display:inline-block;
+      }
+      .operate-detail-style{
+        cursor:text;
+      }
+      .show-copy-icon{
+        display:none;
+      }
+      .operate-detail:hover{
+        .show-copy-icon{
+          display:inline-block;
+          width:10%;
+          color:#2db7f5;
+          position:relative;
+          bottom:3px;
+        }
+      }
+    }
+    .user-list-thead .ant-table-placeholder{
+      display:none;
+    }
+    .user-list-thead .ant-table-body{
+      height:auto;
+    }
+    .user-list-thead .ant-table-empty{
+      margin-bottom:0;
+    }
+    .ant-table td, .ant-table th{
+      padding:8px 4px;
+    }
+    .ant-table td{
+      color:#6e7377;
+    }
+    .ant-table .app_ellipsis{
+      max-width:100%;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+    .ant-table td .light_color{
+      color:#adb1b2;
+    }
+    .ant-table td li{
+      margin-bottom:10px;
+    }
+    .ant-table td li:last-child{
+      margin-bottom:0;
+    }
+
+  }
+
+}
+
+//用户审批
+.app_user_manage_apply_wrap.user-manage-v2{
+  @bordercolor:#f3f5f7;
+  padding: 0;
+  margin:0 0 21px 17px;
+  min-width:370px;
+  border: 1px solid @bordercolor;
+  .nodata-msg-block{
+    margin:50px auto 0 auto;
+  }
+  .app_user_manage_detail{
+    dt{
+      float:left;
+      overflow:hidden;
+      clear:left;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+  }
+  .app_user_apply_list_style{
+    .summary_info{
+      position:absolute;
+      bottom:0px;
+      margin-left:20px;
+      margin-bottom:-45px;
+      font-size:@form_font_size14;
+    }
+  }
+  //申请列表
+  .app_user_manage_apply_list_wrap{
+    @color:#506470;
+    color:@color;
+    @bordercolor:#f3f5f7;
+    border-bottom:1px solid @bordercolor;
+    margin-bottom: 60px;
+    .searchbar{
+      border-bottom:1px solid @bordercolor;
+      & > span{
+        font-size:14px;
+        padding:15px 0 16px 20px;
+        .ant-dropdown-link, .ant-dropdown-link:hover{
+          font-size:14px;
+          color:@color;
+          text-decoration:none;
+        }
+      }
+      & > .pull-right{
+        margin-right:15px;
+        padding-top:11px;
+        color:#81939e;
+        padding-bottom:10px;
+      }
+      .glyphicon-triangle-bottom{
+        top:2px;
+        font-size:12px;
+        color:#d0d0d0;
+      }
+      .form-control{
+        opacity:0;
+        transition:all 0.3s ease;
+      }
+      .input-group-addon{
+        background:rgba(0, 0, 0, 0);
+        border-color:rgba(0, 0, 0, 0);
+        transition:all 0.3s ease;
+      }
+      .anticon-search{
+        font-size:14px;
+        color:#848e90;
+        font-weight:bold;
+        cursor:pointer;
+        margin-top:-6px;
+      }
+      .active{
+        .form-control{
+          opacity:1;
+        }
+        .input-group-addon{
+          border-color:#ccc;
+        }
+      }
+    }
+    .ant-pagination{
+      padding:20px 0 11px 0;
+      border:1px solid @bordercolor;
+      border-top:none;
+    }
+    ul.app_user_manage_apply_list{
+
+      .ant-alert-info{
+        display:inline-block;
+      }
+      li{
+        cursor:pointer;
+        &.current{
+          background:#eff4f9;
+        }
+        &:before{
+          content:" ";
+          position:absolute;
+          bottom:-1px;
+          left:11px;
+          right:17px;
+          overflow:hidden;
+          border-bottom:1px dashed #eff4f9;
+        }
+        position:relative;
+        border-top:none;
+        padding-left:20px;
+        padding-right:16px;
+        em, dt{
+          font-weight:normal;
+          font-style:normal;
+        }
+        dt{
+          padding-top:12px;
+          padding-bottom:12px;
+          span{
+            padding-top:5px;
+            line-height:19px;
+            font-size:13px;
+          }
+          em{
+            float:right;
+            padding-right:3px;
+            line-height:26px;
+            font-size:14px;
+            color:#fff;
+            width:90px;
+            text-align:center;
+            background:#f4ba4a;
+            border-radius:4px;
+            &.processed{
+              background:#b6c2c9;
+            }
+          }
+        }
+        dd{
+          line-height:18px;
+          font-size:12px;
+          padding-bottom:11px;
+          color:#b6c2c9;
+          & > span{
+            float:left;
+            max-width:65%;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+          }
+          em{
+            float:right;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+          }
+        }
+      }
+    }
+
+
+  }
+
+  //申请详情
+  .app_user_manage_apply_detail_wrap{
+    border-left:1px solid #f3f5f7;
+    margin-left:-1px;
+    color:#5d5d5d;
+    position:relative;
+    .modal-backdrop, .modal{
+      position:absolute;
+    }
+    .modal-dialog .modal-content{
+      box-shadow:none !important;
+    }
+    .apply-change-password-style{
+      width:230px;
+      .ant-form-item{
+        margin-bottom:5px;
+      }
+    }
+    .ant-form-horizontal{
+      dt{
+        padding-top:10px !important;
+      }
+    }
+
+    .approval{
+      text-align:center;
+      color:#4d96d1;
+      font-size:14px;
+      border-radius:4px;
+      border:1px solid #748fa0;
+      padding:10px 0;
+      margin:16px 33px 19px 38px;
+      line-height:22px;
+      cursor:pointer;
+    }
+    .approval_block{
+      overflow:hidden;
+      border-top:1px dashed #c9c9c9;
+      margin:0 31px 0 37px;
+      .approval_text{
+        padding-top:15px;
+        padding-bottom:0;
+        line-height:24px;
+        font-size:16px;
+        color:#506470;
+      }
+      .dl-horizontal{
+        padding-top:5px;
+        padding-bottom:5px;
+        font-size:14px;
+        dt{
+          width:70px;
+          line-height:22px;
+          font-weight:normal;
+          text-align:left;
+          color:#7a7e81;
+          letter-spacing:20px;
+          float:left;
+          overflow:hidden;
+          clear:left;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+        }
+        dd{
+          color:#7a7e81;
+          line-height:22px;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          span {
+            margin-left:-22px;
+          }
+        }
+      }
+      .approval_person{
+        line-height:22px;
+        color:#bdbdbd;
+        em{
+          font-weight:normal;
+          font-style:normal;
+          margin-left:10px;
+        }
+        .col-3{
+          white-space:nowrap;
+          text-overflow:ellipsis;
+          overflow:hidden;
+        }
+      }
+    }
+    .approval_block_form{
+      padding-top:21px;
+      padding-bottom:6px;
+      margin-top:0;
+      label{
+        padding-top:0 !important;
+        padding-bottom:0 !important;
+        font-weight:normal;
+        text-align:left;
+        font-size:14px;
+        letter-spacing:20px;
+      }
+    }
+    .btn-primary-sure{
+      margin-right:10px;
+    }
+    .modal-content{
+      box-shadow:none;
+      background:rgba(0, 0, 0, 0);
+    }
+    .approval_loading{
+      p{
+        margin-top:24px;
+        font-size:18px;
+        color:#fff;
+      }
+    }
+    .approval_result{
+      position:absolute;
+      top:0;
+      bottom:0;
+      right:0;
+      left:0;
+      z-index:2;
+      background:#fff;
+      .approval_result_wrap{
+        width:300px;
+        height:227px;
+        position:absolute;
+        top:0;
+        right:0;
+        left:0;
+        bottom:0;
+        margin:auto;
+        text-align:center;
+        padding:8px 0 0 0;
+        z-index:10;
+        .bgimg{
+          width:80px;
+          height:83px;
+          margin:0 auto;
+          background:transparent url("../images/approval_success.png") 0 0;
+        }
+        .bgimg.error{
+          background:transparent url("../images/approval_error.png") 0 0;
+        }
+        p{
+          line-height:28px;
+          color:#b8bdc0;
+          font-size:20px;
+          margin-top:23px;
+          margin-bottom:27px;
+        }
+        .ant-btn-ghost{
+          color:#b8bdc0;
+          &:hover{
+            color:#57c5f7;
+          }
+        }
+        .re_send{
+          margin-right:23px;
+          color:#57c5f7;
+          &:hover{
+            color:darken(#57c5f7, 20%);
+          }
+        }
+      }
+    }
+    .single_user_log_select_time, .single_user_log_select_app{
+      display:inline-block;
+      padding:10px 0;
+      vertical-align:middle;
+    }
+    // 单个用户审计日志的搜素框样式
+    .single_user_log_search_content{
+      display:inline-block;
+      position:absolute;
+      top:10px;
+      right:0;
+      .search-input-container{
+        .search-input{
+          height:@input_height;
+        }
+      }
+    }
+
+    .single_user_log_information{
+      margin-bottom:15px;
+      margin-right:20px;
+      padding:8px 0 2px 10px;
+      background:#dce4e7;
+    }
+
+    .single_user_log_time_operation{
+      font-size:14px;
+      font-weight:bold;
+    }
+
+    .single_user_log_other_information{
+      font-size:14px;
+    }
+
+    .single_user_log_detail{
+      padding-right:20px;
+      word-wrap:break-word;
+      white-space:pre-wrap;
+    }
+
+    .user_audit_log_select_app .ant-select-selection--single,
+    .single_user_log_select_app .ant-select-selection--single{
+      height:@input_height;
+      font-size:@form_font_size;
+      line-height:@line_height30;
+    }
+
+    .user_audit_log_select_app .ant-select-selection__rendered,
+    .single_user_log_select_app .ant-select-selection__rendered{
+      line-height:@line_height30;
+    }
+
+    .right-panel-audit-log-style{
+      .load8{
+        transform:scale(0.5, 0.5);
+        .loader8{
+          border-left-color:#394144;
+        }
+      }
+      .call_chart{
+        position:relative;
+        height:214px;
+        margin:0 20px 20px 20px;
+      }
+
+      .ant-alert-error, .ant-alert-message, .ant-alert-info{
+        display:inline-block;
+      }
+
+      .alert-wrap{
+        text-align:center;
+      }
+      .alert-wrap:first-child{
+        margin-top:20px;
+        position:absolute;
+        width:100%;
+      }
+
+      .total_summary{
+        margin-top:15px;
+        font-size:14px;
+      }
+
+      .no-more-data-tip{
+        .ant-alert-info{
+          margin-right:20px;
+          display:block;
+        }
+      }
+    }
+  }
+
+}
+.app_user_manage_apply_list_error{
+  height: 80px;
+}
+.app_user_manage_apply_list_loading, .app_user_manage_apply_list_error, .app_user_manage_detail_loading, .app_user_manage_detail_error{
+  text-align:center;
+  padding:20px 0;
+  margin:0 auto;
+  .ant-alert-error, .ant-alert-message, .ant-alert-info{
+    display:inline-block;
+  }
+}
+
+.app_user_manage_apply_list_filter{
+  margin-left:-15px;
+  .ant-dropdown-menu-item{
+    font-size:14px;
+  }
+  .ant-dropdown-menu-item a:hover{
+    color:#57c5f7;
+  }
+}
+.app_user_manage_apply_list_wrap, .app_user_manage_apply_detail_wrap{
+  padding-left:0;
+  padding-right:0;
+}
+
+@media (min-width:@screen-md) {
+  //.app_user_manage_detail_loading {
+  //  &>.load8 {
+  //    visibility: hidden;
+  //  }
+  //}
+  .app_user_manage_apply_list_wrap .ant-pagination{
+    border-bottom:none;
+  }
+
+}
+@media screen and (max-width: @screen-md){
+  .app_user_manage_apply_detail_wrap{
+      border-top: 1px solid #f3f5f7;
+  }
+}
+

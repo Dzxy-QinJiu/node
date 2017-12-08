@@ -1,0 +1,128 @@
+/**
+ * author:周连毅
+ * 说明：统计分析-当前安全域-开通个数统计 css文件
+ */
+/*引入css变量*/
+@import '../../../../public/css/bootstrap-variables';
+
+/*开通个数外层节点*/
+.analysis_realm_establish_content {
+  padding:96px 43px 32px 43px;
+  /*小屏幕的时候，没有左右的padding*/
+  @media (max-width:@screen-sm) {
+    padding-left:0;
+    padding-right:0;
+  }
+}
+/*开通个数内容区*/
+.analysis_realm_establish {
+  /*没有数据的div*/
+  .nodata-msg-block {
+    display:none;
+    margin:50px auto 0 auto;
+  }
+  /*当没有数据的时候显示loading*/
+  &.analysis_realm_establish_nodata {
+    /*没有数据的层*/
+    .nodata-msg-block {
+      display:block;
+    }
+    /*图表区域*/
+    .chartwrap{
+      display:none;
+    }
+  }
+  /*图表区域*/
+  .chartwrap{
+    background:#fff;
+    border-radius:4px;
+    padding:25px 25px 0 40px;
+    position:relative;
+  }
+  /*时间选择器外层*/
+  .timepicker {
+    position:relative;
+    z-index:10;
+    /*时间选择器*/
+    .daterangepicker {
+      display:inline-block;
+    }
+
+  }
+  /*图表外层容器*/
+  .chartcontainer {
+    padding-top:25px;
+  }
+  /*loading水平、垂直居中*/
+  .isloading {
+    position:absolute;
+    width:70px;
+    height:70px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    margin:auto;
+  }
+  /*统计个数*/
+  .analysis-realm-count {
+    float:right;
+    min-width:400px;
+    padding-top:3px;
+  }
+  /*小于992px的样式*/
+  @media (max-width: @screen-md) {
+    /*loading的样式*/
+    .isloading {
+      position:static;
+      padding:50px 0;
+      box-sizing: content-box;
+    }
+  }
+  /*小于510px的样式*/
+  @media (max-width:510px) {
+    /*个数统计的样式*/
+    .analysis-realm-count {
+      float:none;
+      padding-top:10px;
+    }
+  }
+  /*大于992px的样式*/
+  @media (min-width:@screen-md) {
+    /*没有数据的层的样式*/
+    .nodata-msg-block {
+      position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+      margin:auto;
+    }
+  }
+  /*小于625像素的样式*/
+  @media (max-width:625px) {
+    /*时间选择器的样式*/
+    .rc-calendar-range {
+      width:auto;
+    }
+    /*时间选择器的样式*/
+    .rc-calendar-range-middle {
+      display:none;
+    }
+    /*时间选择器的样式*/
+    .rc-calendar-date-input-wrap:before {
+      display:none;
+    }
+    /*时间选择器的样式*/
+    .rc-calendar-range-right .rc-calendar-date-input-wrap {
+      position:static;
+      left:auto;
+    }
+    /*时间选择器的样式*/
+    .rc-calendar-range-part {
+      width:auto;
+      float:none;
+    }
+  }
+
+}

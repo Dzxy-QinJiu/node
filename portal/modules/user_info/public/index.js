@@ -3,12 +3,12 @@
  */
 //顶部导航
 var TopNav = require("../../../components/top-nav");
-require('./scss/user-info-zh_CN.scss');
+require('./css/user-info-zh_CN.less');
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require('./scss/user-info-es_VE.scss');
+    require('./css/user-info-es_VE.less');
 } else if (language.lan() == "zh") {
-    require('./scss/user-info-zh_CN.scss');
+    require('./css/user-info-zh_CN.less');
 }
 var UserInfoStore = require("./store/user-info-store");
 var UserInfoAction = require("./action/user-info-actions");

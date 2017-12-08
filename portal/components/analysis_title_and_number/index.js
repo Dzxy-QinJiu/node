@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var TitleAndNum = React.createClass({
     getDefaultProps : function() {
         return {

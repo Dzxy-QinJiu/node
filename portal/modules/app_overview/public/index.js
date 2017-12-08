@@ -2,7 +2,7 @@
  * 应用概览页组成一个大的组件
  * 通过调用应用ID（app_id),查看每个应用的情况
  */
-require('./scss/app-overview.scss');
+require('./css/app-overview.less');
 import AppUserInfo from 'CMP_DIR/app-overview/app-user-info'; // 当前在线、今日上线、用户总数和新增用户的总数据
 import CardContainer from 'CMP_DIR/card-container'; // 容器
 import AppUserRate from 'CMP_DIR/app-overview/app-user-rate';

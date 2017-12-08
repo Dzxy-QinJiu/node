@@ -2,7 +2,7 @@
  * 线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 //各种颜色
 const Spinner = require('../../spinner');
 var immutable = require("immutable");

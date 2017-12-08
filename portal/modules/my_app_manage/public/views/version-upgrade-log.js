@@ -1,5 +1,5 @@
 import {Form, Input, Button, Select, Icon, message} from "antd";
-require("../../../../components/version-upgrade/version-upgrade-list.scss");
+require("../../../../components/version-upgrade/version-upgrade-list.less");
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;

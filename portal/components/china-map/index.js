@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var echarts = require("echarts-eefung");
 require("echarts-eefung/map/js/china");
 var MapChart = require("./mapchart");

@@ -1,7 +1,7 @@
 /**
  * Created by zhoulianyi on  2016/5/29 15:42 .
  */
-require("./css/user_online_analysis.scss");
+require("./css/user_online_analysis.less");
 var TopNav = require("../../../components/top-nav");
 var url = require("url");
 var querystring = require("querystring");

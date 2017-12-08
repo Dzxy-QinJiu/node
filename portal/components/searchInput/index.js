@@ -56,7 +56,7 @@
  *          是否展示关闭按钮，点击搜索按钮出现搜索框后，点击关闭按钮隐藏搜索框时使用
  */
 
-require("./searchInput.scss");
+require("./searchInput.less");
 import { Select, Icon } from "antd";
 import Trace from "LIB_DIR/trace";
 

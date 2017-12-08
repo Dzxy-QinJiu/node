@@ -25,7 +25,7 @@ var TopNav = require("../../../components/top-nav");
 //统计分析的菜单
 var AnalysisMenu = require("../../../components/analysis_menu");
 //css
-require("./css/index.scss");
+require("./css/index.less");
 
 
 

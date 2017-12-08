@@ -1,9 +1,9 @@
 
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./customer_suggest-es_VE.scss");
+    require("./customer_suggest-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./customer_suggest-zh_CN.scss");
+    require("./customer_suggest-zh_CN.less");
 }
 var Select = require("antd").Select;
 var Icon = require("antd").Icon;

@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * select(下拉选择框)显示、编辑 的组件
  * 可切换状态
  */
-require("./css/basic-edit-field.scss");
+require("./css/basic-edit-field.less");
 import {Form, Icon, Select} from "antd";
 var classNames = require("classnames");
 import FieldMixin from "../antd-form-fieldmixin";

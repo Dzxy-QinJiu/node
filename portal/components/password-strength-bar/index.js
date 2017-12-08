@@ -1,7 +1,7 @@
 /**
  * Created by wangliping on 2016/3/30.
  */
-require("./index.scss");
+require("./index.less");
 
 var classNames = require("classnames");
 var PassStrengthBar = React.createClass({

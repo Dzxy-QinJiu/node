@@ -1,4 +1,4 @@
-require("../../scss/contact.scss");
+require("../../css/contact.less");
 var Icon = require("antd").Icon;
 //一个用于显示的联系人
 var ContactItem = require("./contact-item");

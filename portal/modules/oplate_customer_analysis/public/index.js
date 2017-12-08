@@ -2,7 +2,7 @@
  * 说明：统计分析-客户分析
  */
 //顶部导航
-require("./css/oplate-customer-analysis.scss");
+require("./css/oplate-customer-analysis.less");
 var TopNav = require("../../../components/top-nav");
 var AnalysisMenu = require("../../../components/analysis_menu");
 var GeminiScrollbar = require("../../../components/react-gemini-scrollbar");

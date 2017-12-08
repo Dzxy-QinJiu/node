@@ -1,7 +1,7 @@
 /**
  * 容器组件
  */
-require('./index.scss');
+require('./index.less');
 import { Radio} from 'antd';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;

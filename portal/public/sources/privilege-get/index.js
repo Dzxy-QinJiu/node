@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 
 var Spinner = require("../../../components/spinner");
 var PrivilegeGet = React.createClass({

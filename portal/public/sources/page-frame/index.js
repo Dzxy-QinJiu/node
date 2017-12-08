@@ -2,9 +2,9 @@ var language = require("../../../public/language/getLanguage");
 import Trace from "LIB_DIR/trace";
 
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./index-es_VE.scss");
+    require("./index-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("./index-zh_CN.scss");
+    require("./index-zh_CN.less");
 }
 require("./oplate");
 var LeftMenu = require("../../../components/privilege/nav-sidebar");

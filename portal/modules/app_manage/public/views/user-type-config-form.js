@@ -10,12 +10,12 @@ import UserMultiLoginField from '../../../../components/user_manage_components/u
 import AppRolePermission from '../../../../components/user_manage_components/app-role-permission';
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 var AlertTimer = require("../../../../components/alert-timer");
-require("../scss/user-type-config.scss");
+require("../css/user-type-config.less");
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-	require("../../../../components/user_manage_components/scss/form-basic-es_VE.scss");
+	require("../../../../components/user_manage_components/css/form-basic-es_VE.less");
 }else if (language.lan() == "zh"){
-	require("../../../../components/user_manage_components/scss/form-basic-zh_CN.scss");
+	require("../../../../components/user_manage_components/css/form-basic-zh_CN.less");
 }
 
 var timer = null;

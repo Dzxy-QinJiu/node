@@ -2,7 +2,7 @@
  * 运营报告布局组件
  */
 
-import "./style.scss";
+import "./style.less";
 import TopNav from "../../components/top-nav";
 import AnalysisFilter from "../../components/analysis/filter";
 

@@ -1,5 +1,5 @@
 import { Icon} from "antd";
-require("../../../../components/app-notice/app-notice-list.scss");
+require("../../../../components/app-notice/app-notice-list.less");
 var Alert = require("antd").Alert;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;

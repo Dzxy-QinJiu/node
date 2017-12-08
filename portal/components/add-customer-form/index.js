@@ -15,7 +15,7 @@ import {isClueTag} from "MOD_DIR/crm/public/utils/crm-util";
 var FormItem = Form.Item;
 var Option = Select.Option;
 var batchChangeAction = require("MOD_DIR/crm/public/action/batch-change-actions");
-require("./index.scss");
+require("./index.less");
 import PhoneInput from "CMP_DIR/phone-input";
 var AreaSelection = require("CMP_DIR/AreaSelection");
 const userData = require("PUB_DIR/sources/user-data");

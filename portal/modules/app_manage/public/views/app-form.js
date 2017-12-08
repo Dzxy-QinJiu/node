@@ -22,9 +22,9 @@ var language = require("../../../../public/language/getLanguage");
 import Trace from "LIB_DIR/trace";
 
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../scss/index-es_VE.scss");
+    require("../css/index-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../scss/index-zh_CN.scss");
+    require("../css/index-zh_CN.less");
 }
 function noop() {
 }

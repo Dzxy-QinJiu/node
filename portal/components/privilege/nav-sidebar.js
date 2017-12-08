@@ -1,4 +1,4 @@
-require("./css/nav-sidebar.scss");
+require("./css/nav-sidebar.less");
 var userData = require("../../public/sources/user-data");
 var Link = require("react-router").Link;
 var Logo = require("../Logo/index.js");

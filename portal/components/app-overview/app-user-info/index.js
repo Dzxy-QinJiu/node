@@ -1,7 +1,7 @@
 /**
  *  应用概览页总体统计的组件(顶部组件)
  * */
-require('./index.scss');
+require('./index.less');
 class AppUserInfo extends React.Component {
     constructor(props) {
         super(props);

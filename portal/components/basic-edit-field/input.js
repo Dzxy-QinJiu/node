@@ -13,7 +13,7 @@ import FieldMixin from "../antd-form-fieldmixin/index";
 import {PassStrengthBar} from "CMP_DIR/password-strength-bar";
 var autosize = require("autosize");
 import Trace from "LIB_DIR/trace";
-require("./css/basic-edit-field.scss");
+require("./css/basic-edit-field.less");
 
 var UserBasicEditField = React.createClass({
     mixins: [FieldMixin],

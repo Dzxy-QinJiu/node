@@ -2,7 +2,7 @@
  * 饼图
  */
 var echarts = require("echarts-eefung");
-require("../bar/index.scss");
+require("../bar/index.less");
 var Spinner = require("../../../../../components/spinner");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");

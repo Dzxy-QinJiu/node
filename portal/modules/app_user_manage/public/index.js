@@ -1,8 +1,8 @@
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./css/main-es_VE.scss");
+    require("./css/main-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("./css/main-zh_CN.scss");
+    require("./css/main-zh_CN.less");
 }
 import RecentLoginUsersPanel from "./views/recent-login-user-list";
 import {RightPanelReturn} from "CMP_DIR/rightPanel";

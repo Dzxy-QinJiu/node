@@ -1,0 +1,33 @@
+@import "../../public/css/bootstrap-variables";
+.ellipsis {
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.analysis-realm-count {
+  color:@link-color;
+  font-size:0;
+  span,em {
+    display:inline-block;
+    &:extend(.ellipsis);
+  }
+  span {
+    font-size:16px;
+    width:80%;
+  }
+  em {
+    width:20%;
+    text-align:right;
+    font-style:normal;
+  }
+  em:before {
+    content:attr(data-total);
+    font-size:12px;
+    margin:0 10px 0 0;
+    padding:3px 20px;
+    display:inline-block;
+    border-radius: 10px;
+    background:#097fe1;
+    color:#fff;
+  }
+}

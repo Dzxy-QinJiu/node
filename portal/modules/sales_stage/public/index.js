@@ -1,7 +1,7 @@
 /**
  * Created by xiaojinfeng on  2015/12/22 16:59 .
  */
-require("./scss/sales-stage.scss");
+require("./css/sales-stage.less");
 var Button = require("antd").Button;
 var PrivilegeChecker = require("../../../components/privilege/checker").PrivilegeChecker;
 var TopNav = require("../../../components/top-nav");

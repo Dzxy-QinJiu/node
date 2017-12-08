@@ -8,7 +8,7 @@ import RealmConfig from "./views/realm-config";
 import TeleConfig from "./views/tele-config";
 import Trace from "LIB_DIR/trace";
 var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
-require("./scss/index.scss");
+require("./css/index.less");
 const auths = {
 	STRATEGY: "GET_CONFIG_PWD_STRATEGY",// 获取安全域密码策略
 	TELECONFIG: "CUSTOMER_INVALID_PHONE_GET"// 获取客服电话权限

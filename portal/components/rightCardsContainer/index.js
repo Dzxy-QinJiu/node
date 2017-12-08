@@ -4,9 +4,9 @@
 
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./rightCardsContainer-es_VE.scss");
+    require("./rightCardsContainer-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./rightCardsContainer-zh_CN.scss");
+    require("./rightCardsContainer-zh_CN.less");
 }
 
 var PrivilegeChecker = require("../privilege/checker").PrivilegeChecker;

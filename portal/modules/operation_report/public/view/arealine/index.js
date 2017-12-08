@@ -2,7 +2,7 @@
  * 线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 import {Icon,Radio} from "antd";
 //各种颜色
 var colors = require("../../../../oplate_user_analysis/public/utils/colors");

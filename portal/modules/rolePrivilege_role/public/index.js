@@ -4,9 +4,9 @@
 
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./scss/role-es_VE.scss");
+    require("./css/role-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./scss/role-zh_CN.scss");
+    require("./css/role-zh_CN.less");
 }
 var Button = require("antd").Button;
 var RoleStore = require("./store/role-store");

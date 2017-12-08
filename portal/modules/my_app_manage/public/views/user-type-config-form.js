@@ -10,8 +10,8 @@ import UserMultiLoginField from '../../../../components/user_manage_components/u
 import AppRolePermission from '../../../../components/user_manage_components/app-role-permission';
 import FieldMixin from "../../../../components/antd-form-fieldmixin";
 var AlertTimer = require("../../../../components/alert-timer");
-require("../scss/user-type-config.scss");
-require("../../../../components/user_manage_components/scss/form-basic-es_VE.scss");
+require("../css/user-type-config.less");
+require("../../../../components/user_manage_components/css/form-basic-es_VE.less");
 var timer = null;
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 import Trace from "LIB_DIR/trace";

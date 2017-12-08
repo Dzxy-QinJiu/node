@@ -4,11 +4,11 @@
 
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../rolePrivilege_authority/public/scss/authority-es_VE.scss");
-    require("../../../rolePrivilege_role/public/scss/role-es_VE.scss");
+    require("../../../rolePrivilege_authority/public/css/authority-es_VE.less");
+    require("../../../rolePrivilege_role/public/css/role-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../../../rolePrivilege_authority/public/scss/authority-zh_CN.scss");
-    require("../../../rolePrivilege_role/public/scss/role-zh_CN.scss");
+    require("../../../rolePrivilege_authority/public/css/authority-zh_CN.less");
+    require("../../../rolePrivilege_role/public/css/role-zh_CN.less");
 }
 var Tabs = require("antd").Tabs;
 var TabPane = Tabs.TabPane;

@@ -1,4 +1,4 @@
-import "./style.scss";
+import "./style.less";
 import classNames from "classnames";
 import { message, Button, Icon, Modal, Radio, Select } from "antd";
 const RadioGroup = Radio.Group;
