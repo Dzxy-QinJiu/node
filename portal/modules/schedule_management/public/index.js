@@ -123,6 +123,7 @@ const ScheduleManagement = React.createClass({
         $('#calendar').fullCalendar({
             defaultView: 'agendaDay',//基础天视图, 默认展示天视图
             header: {
+                left:"",
                 center: 'prev,title,next,today',
                 right: 'month,agendaWeek,agendaDay'
             },
