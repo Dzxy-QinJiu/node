@@ -21,7 +21,7 @@ let BasicEditSelectField = React.createClass({
             //是否是输入框自动提示模式
             combobox: false,
             //是否匹配选项
-            filterOption: false,
+            filterOption: true,
             //字段
             field: "role",
             //是否能修改
