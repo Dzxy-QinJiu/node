@@ -137,7 +137,7 @@ var AppUserManage = React.createClass({
         this.prevRoutePath = currentView;
     },
     componentWillReceiveProps: function (nextProps) {
-        if (this.state.customer_id !== nextProps.customer_id) {
+        if (nextProps.customer_id && this.state.customer_id !== nextProps.customer_id) {
             this.setState({
                 customer_id: nextProps.customer_id,
                 customer_name: nextProps.customer_name
