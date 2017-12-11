@@ -31,6 +31,7 @@ var Contacts = React.createClass({
         return {
             callNumber: '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
+            curCustomer: this.props.curCustomer,//当前查看详情的客户
             ...this.getStateFromStore()};
     },
     getStateFromStore: function () {
@@ -55,6 +56,9 @@ var Contacts = React.createClass({
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
+            this.setState({
+                curCustomer:nextProps.curCustomer
+            });
             setTimeout(() => {
                 ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge);
             });
@@ -106,7 +110,8 @@ var Contacts = React.createClass({
                             {
                                 this.state.isShowAddContactForm ? (
                                     <li>
-                                        <ContactForm type="add" customer_id={this.props.curCustomer.id}
+                                        <ContactForm type="add" customer_id={this.state.curCustomer.id}
+                                                     customer_name = {this.state.curCustomer ? this.state.curCustomer.name : ""}
                                                      contactListLength={contactListLength}
                                                      refreshCustomerList={this.props.refreshCustomerList}/>
                                     </li>
