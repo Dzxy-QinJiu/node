@@ -1,7 +1,7 @@
 /**
  * 应用中用户在今日、本周和本月的组件抽取
  * */
-require('./index.scss');
+require('./index.less');
 import { Progress} from 'antd';
 class AppUserRate extends React.Component {
     constructor(props) {

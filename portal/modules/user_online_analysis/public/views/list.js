@@ -1,4 +1,4 @@
-require("../css/list.scss");
+require("../css/list.less");
 var AnalysisAction = require("../action/user-online-analysis-action");
 var AnalysisStore = require("../store/user-online-analysis-store");
 var Spinner = require("../../../../components/spinner");

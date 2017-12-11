@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var ajax = require("./ajax");
 var SelectFullWidth = require("../select-fullwidth");
 var Select = require("antd").Select;

@@ -1,5 +1,5 @@
 
-require('../../scss/dynamic.scss');
+require('../../css/dynamic.less');
 //动态store
 var DynamicStore = require("../../store/dynamic-store");
 //动态action

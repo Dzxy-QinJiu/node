@@ -1,4 +1,4 @@
-require('../scss/crm-right-panel.scss');
+require('../css/crm-right-panel.less');
 import {Tabs, Select, Button, Icon, message} from "antd";
 var TabPane = Tabs.TabPane;
 var Option = Select.Option;

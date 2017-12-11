@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var AnalysisRealmCount = React.createClass({
     getDefaultProps : function() {
         return {

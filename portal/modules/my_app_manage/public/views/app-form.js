@@ -2,9 +2,9 @@ const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../scss/index-es_VE.scss");
+    require("../css/index-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("../scss/index-zh_CN.scss");
+    require("../css/index-zh_CN.less");
 }
 import {Icon,Form,Input,Select,InputNumber,Radio} from "antd";
 var RadioGroup = Radio.Group;

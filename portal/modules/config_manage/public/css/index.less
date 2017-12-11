@@ -1,0 +1,195 @@
+//check button的样式
+.check_button {
+  .ant-checkbox-checked{
+    .ant-checkbox-inner{
+      border-color:#5FAFF2;
+      background-color:#5FAFF2;
+      &:after{
+        left:4px;
+        top:-1px;
+        width:9px;
+        height:15px;
+        border:3px solid #fff;
+        -webkit-transform:rotate(45deg) scale(1);
+        transform:rotate(45deg) scale(1);
+        position:absolute;
+        display:table;
+        border-top:0;
+        border-left:0;
+        content:' ';
+        -webkit-transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+        transition:all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+      }
+    }
+  }
+}
+
+.config-manage-container {
+  padding-right: 45px;
+  padding-left: 45px;
+  padding-top: 76px;
+
+  .box{
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border:1px solid #f4f4f4;
+    border-top: 3px solid #5198D2;
+    margin: 20px 0;
+    width: 96%;
+    padding-bottom: 5px;
+  }
+  .box-title{
+    color: #506470;
+    display: block;
+    padding: 10px;
+    position: relative;
+    border-bottom: 1px solid #f4f4f4;
+    font-size: 16px;
+    height: 50px;
+  }
+  .box-body{
+    padding: 12px 0 10px 20px;
+    position: relative;
+    min-height: 130px;
+    overflow-y: auto;
+    .ant-alert{
+      font-size: 14px;
+      margin: 20px auto;
+      width: 240px;
+      text-align: center;
+    }
+  }
+
+  .load8 {
+    transform:scale(0.5,0.5);
+    .loader8 {
+      border-left-color:#394144;
+    }
+  }
+  .box-footer{
+    border-top:1px solid #f4f4f4;
+    padding: 0 0 10px 20px;
+    position: relative;
+  }
+
+  li.mb-tag {
+    overflow: hidden;
+    float: left;
+    list-style-type: none;
+    padding: 4px 8px;
+    margin: 4px;
+    background: #5FAFF2;
+    border: 1px solid #c0c0c0;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color:#fff;
+  }
+  li.mb-tag-loading{
+    overflow: hidden;
+    float: left;
+    list-style-type: none;
+    padding: 6px 4px 5px 4px;
+    margin: 4px;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+  }
+  .mb-tag-content {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .mb-tag-remove {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 5px;
+    width: 15px;
+    height: 12px;
+
+  }
+  .mb-tag-text{
+    font-size: 1.2em;
+  }
+  .mb-taglist{
+    overflow: hidden;
+
+  }
+  .mb-input{
+    float: left;
+    border: 1px solid #c0c0c0;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 1em;
+    margin: 25px 0 0 0;
+    width: 200px;
+  }
+  .mb-add-button{
+    padding: 4px 8px;
+    margin-left: 5px;
+    margin-top: 25px;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 4px;
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #5FAFF2;
+    &:hover,&:focus{
+      color:#fff;
+    }
+  }
+
+  .refresh{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+
+  }
+  .anticon-reload:hover{
+    cursor: pointer;
+  }
+
+  .add-config-fail {
+    .alert-timer, .ant-alert-error {
+      width: 240px;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+  .no-ip-alert-wrap {
+    width: 400px;
+    margin: 10px auto;
+  }
+
+  .delete_ip_config_err_tips{
+    .alert-timer {
+      width: 260px;
+      margin: 0 auto;
+    }
+    margin: -22px auto;
+    padding-bottom: 10px;
+  }
+
+  .ant-checkbox{
+    margin-left: 15px;
+    height: 30px;
+    margin-top: 5px;
+    vertical-align: middle;
+  }
+  .ant-checkbox-inner{
+    width: 20px;
+    height: 20px;
+    top: 2px;
+  }
+  .check_button;
+}
+
+.realm-config .ant-radio-group label {
+    margin-right: 40px;
+}
+.ant-radio + span {
+   padding-left: 3px;
+}

@@ -1,4 +1,4 @@
-require("../css/main-es_VE.scss");
+require("../css/main-es_VE.less");
 var AppUserUtil = require("../util/app-user-util");
 var SearchInput = require("../../../../components/searchInput");
 var AppUserCustomerSwitchActions = require("../action/app-user-customer-switch-actions");

@@ -1,7 +1,7 @@
 /**
  * 个人操作日志
  */
-require('../scss/user-log.scss');
+require('../css/user-log.less');
 
 class UserLog extends React.Component {
     render() {

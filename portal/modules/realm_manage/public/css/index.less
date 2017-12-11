@@ -1,0 +1,140 @@
+/*安全域管理样式设置*/
+@import "../../../../public/css/common-variables";
+//添加面板样式设置
+.realm_content {
+  form {
+    .head-image-container {
+      margin-bottom: 40px;
+    }
+  }
+  .card-item-add-owner {
+    display: inline-block;
+    overflow: hidden;
+    margin-left: 20px;
+    cursor: pointer;
+    color: #4d96d1;
+  }
+}
+
+.realm-form-scroll {
+  .ant-form-item {
+    padding-right: 0;
+    text-align: left;
+    margin-left: 40px !important;
+    label {
+      text-align: left;
+    }
+    #realmName {
+      width: 175px;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+      z-index: 2;
+    }
+    label.realm-name-suffix {
+      width: 85px;
+      margin-bottom: 0;
+      padding-left: 5px;
+      padding-right: 5px;
+      border-bottom-right-radius: @border-radius;
+      border-top-right-radius:  @border-radius;
+      font-weight: normal;
+      font-size: @form_font_size;
+      color: #666;
+      background-color: #C5C5C5;
+    }
+    .indicator {
+      position: absolute;
+      float: right;
+      right: 185px;
+      top: 40px;
+      text-align: center;
+      .ant-alert {
+        padding: 5px;
+      }
+    }
+    .form-cancel-btn, .form-submit-btn {
+      margin-top: 40px !important;
+    }
+  }
+  .phone-email-check {
+    margin-top: -18px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-left: 90px;
+    color: #f50;
+  }
+  .input-red-border {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 6px 7px;
+    border: 1px solid #f50;
+    line-height: 1.5;
+    color: #666;
+    background-color: #fff;
+    background-image: none;
+    box-shadow: 0 0 0 2px #ffddcc;
+    cursor: text;
+
+  }
+  //分割线
+  .realm-owner-split-line {
+    height: 1px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    background-color: #d1dade;
+  }
+
+  .realm-owner-title {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .ant-pwd-strength {
+    margin:-@margin-bottom 0 10px 100px;
+  }
+}
+
+.realm_manage_style {
+  .firstLoading {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    z-index:999;
+  }
+  .right-panel-content {
+    .ant-form-item-control {
+      button {
+        border-radius: 3px;
+      }
+      .ant-btn-primary {
+        margin-right: 6px;
+      }
+    }
+    .card-infor-list {
+      .iconfont {
+        float: right;
+      }
+      .icon-update {
+        margin-right: -16px;
+      }
+     .email-server, .sms-server, .wechat-server {
+       padding-top: 20px;
+       .ant-form-item {
+         width: 347px;
+         margin-bottom: 8px;
+       }
+       .ant-col-6 {
+         text-align: left;
+       }
+       .submit-button {
+         text-align: right;
+       }
+     }
+    }
+  }
+}
+

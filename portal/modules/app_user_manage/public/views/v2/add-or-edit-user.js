@@ -6,17 +6,17 @@ const Validator = Validation.Validator;
 //右侧面板样式，上一步、下一步，滑动布局等
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/scss/right-panel-es_VE.scss");
+    require("../../../../../components/user_manage_components/css/right-panel-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../../../../../components/user_manage_components/scss/right-panel-zh_CN.scss");
+    require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
 }
 
 //表单样式，表单项高度，输入框宽度等
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/scss/form-basic-es_VE.scss");
+    require("../../../../../components/user_manage_components/css/form-basic-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../../../../../components/user_manage_components/scss/form-basic-zh_CN.scss");
+    require("../../../../../components/user_manage_components/css/form-basic-zh_CN.less");
 }
 
 

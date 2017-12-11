@@ -1,9 +1,9 @@
 //用户详情添加switch切换逻辑
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-field-switch-es_VE.scss");
+    require("../css/user-detail-field-switch-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../css/user-detail-field-switch-zh_CN.scss");
+    require("../css/user-detail-field-switch-zh_CN.less");
 }
 
 var AppUserAjax = require("../ajax/app-user-ajax");

@@ -1,4 +1,4 @@
-require("../../../../components/antd-table-pagination/index.scss");
+require("../../../../components/antd-table-pagination/index.less");
 var Spinner = require("../../../../components/spinner");
 import { AntcTable } from "antc";
 var AppUserStore = require("../store/app-user-store");

@@ -2,10 +2,10 @@
 
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-detail-es_VE.scss");
+    require("../css/user-detail-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../css/user-detail-zh_CN.scss");
-    require("../css/third-party-app-config.scss");
+    require("../css/user-detail-zh_CN.less");
+    require("../css/third-party-app-config.less");
 }
 var Tabs = require("antd").Tabs;
 var TabPane = Tabs.TabPane;

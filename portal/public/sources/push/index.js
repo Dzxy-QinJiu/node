@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/6/22.
  */
 
-require('./index.scss');
+require('./index.less');
 var Modal = require("antd").Modal;
 var batch = require("./batch");
 var io = require('socket.io-client');

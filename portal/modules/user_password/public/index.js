@@ -5,9 +5,9 @@ const Validator = Validation.Validator;
  */
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./scss/user-password-es_VE.scss");
+    require("./css/user-password-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("./scss/user-password-zh_CN.scss");
+    require("./css/user-password-zh_CN.less");
 }
 var Button = require("antd").Button;
 var Form = require("antd").Form;

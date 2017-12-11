@@ -1,6 +1,6 @@
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';
-require("./index.scss");
+require("./index.less");
 var classNames = require("classnames");
 var immutable = require("immutable");
 //键盘按键

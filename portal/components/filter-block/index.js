@@ -1,5 +1,5 @@
 
-require("./style.scss");
+require("./style.less");
 
 var FilterBlock = React.createClass({
     render: function () {

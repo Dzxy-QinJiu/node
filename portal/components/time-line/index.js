@@ -5,7 +5,7 @@
  *
  */
 
-require("./style.scss");
+require("./style.less");
 
 import { Timeline } from "antd";
 

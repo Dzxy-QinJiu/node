@@ -1,4 +1,4 @@
-require("./cardList.scss");
+require("./cardList.less");
 var scrollBarEmitter = require("../../public/sources/utils/emitters").scrollBarEmitter;
 var cardEmitter = require("../../public/sources/utils/emitters").cardEmitter;
 

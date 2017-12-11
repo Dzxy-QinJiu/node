@@ -25,7 +25,7 @@
  * 可通过将disableEmitter属性设置为true来关闭事件发射，只用onTeamSelect等回调函数得到选中的团队id或成员id
  */
 
-require("./style.scss");
+require("./style.less");
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 const Emitters = require("../../public/sources/utils/emitters");

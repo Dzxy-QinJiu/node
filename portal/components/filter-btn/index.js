@@ -1,7 +1,7 @@
 var classNames = require("classnames");
 var Icon = require("antd").Icon;
 var Button = require("antd").Button;
-require("./index.scss");
+require("./index.less");
 var FilterBtn = React.createClass({
     getDefaultProps : function() {
         return {

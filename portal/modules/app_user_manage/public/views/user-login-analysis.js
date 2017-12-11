@@ -1,4 +1,4 @@
-require('../css/user-login-analysis.scss');
+require('../css/user-login-analysis.less');
 var Spinner = require("../../../../components/spinner");
 var SelectFullWidth = require("../../../../components/select-fullwidth");
 var TimeSeriesBarChart = require("../../../../components/timeseries-barchart");

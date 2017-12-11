@@ -1,9 +1,9 @@
 
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./app-selector-es_VE.scss");
+    require("./app-selector-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./app-selector-zh_CN.scss");
+    require("./app-selector-zh_CN.less");
 }
 var classNames = require("classnames");
 var AppSelectorStore = require("./app-selector.store");

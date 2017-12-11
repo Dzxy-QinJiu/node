@@ -1,7 +1,7 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-require("./scss/sales-team.scss");
+require("./css/sales-team.less");
 import {Icon,Input,Button} from "antd";
 var SalesTeamStore = require("./store/sales-team-store");
 var SalesTeamAction = require("./action/sales-team-actions");

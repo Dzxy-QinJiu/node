@@ -7,7 +7,7 @@ require("./sources/jquery.ajax.trans.js");
 require("./sources/jquery.ajax.global.js");
 require("./sources/browser.sniff.js");
 require("es6-shim");
-require("./sources/push/index.scss");
+require("./sources/push/index.less");
 var userData = require("./sources/user-data");
 var AppStarter = require("./sources/app-starter");
 var PrivilegeGet = require("./sources/privilege-get");

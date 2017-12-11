@@ -1,7 +1,7 @@
 /**
  * 刷新按钮
  * */
-require("./index.scss");
+require("./index.less");
 
 class RefreshButton extends React.Component {
     constructor(props) {

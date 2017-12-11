@@ -26,9 +26,9 @@ require('./jquery.mousewheel.js');
 
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./gemini-scrollbar-es_VE.scss");
+    require("./gemini-scrollbar-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("./gemini-scrollbar-zh_CN.scss");
+    require("./gemini-scrollbar-zh_CN.less");
 }
 var GeminiScrollbar = require('./gemini-scrollbar');
 var Icon = require("antd").Icon;

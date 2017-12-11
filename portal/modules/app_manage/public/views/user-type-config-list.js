@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/2/15.
  */
 // 查看
-require("../scss/user-type-config.scss");
+require("../css/user-type-config.less");
 import {Button, Icon} from 'antd';
 var _ = require("underscore");
 var Alert = require("antd").Alert;

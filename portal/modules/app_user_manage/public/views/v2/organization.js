@@ -1,4 +1,4 @@
-require("../../css/organization.scss");
+require("../../css/organization.less");
 import {Icon,Alert,Select} from 'antd';
 import SelectFullWidth from '../../../../../components/select-fullwidth';
 import classNames from 'classnames';

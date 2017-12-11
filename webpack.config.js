@@ -58,11 +58,6 @@ var lessLoader = {
     loaders: ['style', 'css', 'postcss', 'less']
 };
 
-var scssLoader = {
-    id: 'scss',
-    loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass']
-};
-
 var loadersLists = [
     {
         test: /(\.js|\.jsx)$/,
@@ -124,7 +119,7 @@ var loadersLists = [
         ]
     },
     /* bootstrap-webpack config end */
-    /*css,less,scss*/
+    /*css,less*/
     {
         test: /\.css?$/,
         use: [
@@ -147,15 +142,6 @@ var loadersLists = [
         include: [
             path.resolve(__dirname, "portal"),
             path.resolve(__dirname, "node_modules/antc")
-        ]
-    },
-    {
-        test: /\.scss$/,
-        use: [
-            {loader: "happypack/loader?id=scss"}
-        ],
-        include: [
-            path.resolve(__dirname, "portal")
         ]
     },
     {
@@ -189,7 +175,6 @@ var pluginLists = [
     new HappyPack(jsLoader),
     new HappyPack(cssLoader),
     new HappyPack(lessLoader),
-    new HappyPack(scssLoader),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh\-cn/),
     new CopyWebpackPlugin([
         {from: 'portal/public/sources/piwik.js'},

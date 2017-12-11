@@ -1,4 +1,4 @@
-require("../../../../components/version-upgrade/version-upgrade-list.scss");
+require("../../../../components/version-upgrade/version-upgrade-list.less");
 var Alert = require("antd").Alert;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;

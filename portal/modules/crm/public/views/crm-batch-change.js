@@ -2,7 +2,7 @@
  * 批量变更标签和销售人员
  */
 
-require('../scss/crm-batch-change.scss');
+require('../css/crm-batch-change.less');
 var BatchChangeStore = require("../store/batch-change-store");
 var crmStore = require("../store/crm-store");
 var BatchChangeActions = require("../action/batch-change-actions");

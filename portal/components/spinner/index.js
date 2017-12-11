@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var classNames = require("classnames");
 var Spinner = React.createClass({
     //获取默认属性

@@ -2,7 +2,7 @@
  * 线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 var emitter = require("../../utils/emitter");
 var Spinner = require("../../../../../components/spinner");
 var immutable = require("immutable");

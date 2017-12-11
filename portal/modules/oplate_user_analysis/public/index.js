@@ -3,7 +3,7 @@
  * 说明：统计分析-用户分析
  */
 //顶部导航
-require("./css/oplate-user-analysis.scss");
+require("./css/oplate-user-analysis.less");
 var FilterBtn = require("../../../components/filter-btn");
 var TopNav = require("../../../components/top-nav");
 var AnalysisMenu = require("../../../components/analysis_menu");

@@ -15,7 +15,7 @@
  *           clearSelectData={}this.clearSelectTags()
  *      />
  */
-require("./index.scss");
+require("./index.less");
 import {Icon, Menu, Dropdown} from "antd";
 class AntcDropdown extends React.Component {
     constructor(props) {

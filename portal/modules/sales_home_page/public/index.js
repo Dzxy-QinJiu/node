@@ -1,4 +1,4 @@
-require("./scss/index.scss");
+require("./css/index.less");
 import {Table,Icon,Select,message} from "antd";
 import Trace from "LIB_DIR/trace";
 const Option = Select.Option;

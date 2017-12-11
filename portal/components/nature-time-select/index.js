@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 import { Select, InputNumber,Radio } from "antd";
 var RadioButton = Radio.Button;
 var RadioGroup = Radio.Group;

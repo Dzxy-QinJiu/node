@@ -74,7 +74,7 @@
      className      可以为日历添加一个特殊的className
  *
  */
-require("./index.scss");
+require("./index.less");
 import BootstrapDatepicker from "../bootstrap-datepicker";
 import Dropdown from 'rc-dropdown';
 import Menu, { Item as MenuItem} from 'rc-menu';

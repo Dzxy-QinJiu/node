@@ -1,5 +1,5 @@
-require('../../scss/crm-basic.scss');
-require("../../scss/basic-edit-field.scss");
+require('../../css/crm-basic.less');
+require("../../css/basic-edit-field.less");
 var CRMStore = require("../../store/basic-store");
 var CRMAction = require("../../action/basic-actions");
 var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");

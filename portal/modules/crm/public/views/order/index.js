@@ -1,4 +1,4 @@
-require("../../scss/order.scss");
+require("../../css/order.less");
 import {Icon, Button, Checkbox, Menu, Dropdown, Alert} from "antd";
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 const GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');

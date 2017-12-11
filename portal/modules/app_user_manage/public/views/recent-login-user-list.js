@@ -2,7 +2,7 @@
  * 近期登录用户列表
  * Created by wangliping on 2017/8/31.
  */
-require("../css/recent-login-user-list.scss");
+require("../css/recent-login-user-list.less");
 import classNames from "classnames";
 import {Select, Table} from "antd";
 import ShareObj from "../util/app-id-share-util";

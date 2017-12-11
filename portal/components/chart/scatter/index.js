@@ -1,7 +1,7 @@
 /**
  * 散点统计图（周、小时、数据）
  */
-require("./index.scss");
+require("./index.less");
 var echarts = require("echarts-eefung");
 var immutable = require("immutable");
 var Spinner = require("CMP_DIR/spinner");

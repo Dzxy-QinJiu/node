@@ -24,7 +24,7 @@ var TopNav = require("../../../components/top-nav");
 var AnalysisMenu = require("../../../components/analysis_menu");
 
 //css
-require("./css/index.scss");
+require("./css/index.less");
 
 //线图的formatter
 function lineFormatter(obj) {

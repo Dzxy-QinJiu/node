@@ -1,4 +1,4 @@
-require("../../css/third-app-detail.scss");
+require("../../css/third-app-detail.less");
 import { Button, Select, Form, Input, message, Spin, Checkbox, Tabs, Icon, Alert, DatePicker } from 'antd';
 var ThirdAppDetailActions =require('../../action/third-app-detail-actions');
 var AlertTimer = require("CMP_DIR/alert-timer");

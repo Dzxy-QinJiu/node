@@ -11,7 +11,7 @@
  *          dataList={dataList}
  *       >
  */
-require("./index.scss");
+require("./index.less");
 import {Input, Icon} from "antd";
 import classNames from "classnames";
 class AlwaysShowSelect extends React.Component {

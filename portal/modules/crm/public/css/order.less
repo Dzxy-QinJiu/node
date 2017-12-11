@@ -1,0 +1,415 @@
+@block-bgColor: #dde6ed;
+@block-bgColor-edit: #d3dbe8;
+@block-line-color: #D1DADE;
+@block-line-color-edit: #C6CEDA;
+@font-color: #464b4e;
+@padding: 15px;
+//每一模块的背景及公共样式类
+.item-block-style {
+  float: left;
+  width: 660px;
+  border-radius: 3px;
+  color: @font-color;
+  background-color: @block-bgColor;
+}
+
+.crm-right-panel-content {
+  .ant-tabs {
+    overflow: visible
+  }
+}
+
+.order-container {
+  float: left;
+  position: relative;
+  word-break: break-all;
+  white-space: normal;
+
+  label {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  label.color-gray {
+    color: #7a8589;
+  }
+
+  //滚动区域样式 及列表样式
+  .order-container-scroll {
+    width: 660px;
+  }
+  .crm-right-panel-addbtn.go-top {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+  }
+  //申请用户模态框大小的调整
+  .apply-user-modal {
+    .modal-dialog {
+      width: 320px;
+      height: 150px;
+      .modal-body {
+        color: #123;
+        text-align: left;
+        padding-left: 30px;
+        line-height: 30px;
+        .ant-radio-group {
+          white-space: normal;
+        }
+      }
+    }
+  }
+
+  .load8 {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .order-view .load8 {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .order-form .anticon-loading {
+    float: right;
+    margin-top: 25px;
+    margin-right: 20px;
+    font-size: 20px;
+  }
+
+  .order-form .ant-form-item-label {
+    text-align: left;
+  }
+
+  //单个订单样式
+  .order-item {
+    &:extend(.item-block-style);
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 40px;
+
+    //顶部区域样式 时间及单号
+    .order-title {
+      overflow: hidden;
+      padding-left: @padding;
+
+      .order-title-left {
+        width: 450px;
+        float: left;
+        margin: 10px 0;
+      }
+
+      .order-title-right-btn {
+        width: 100px;
+        float: right;
+        height: 40px;
+        padding-top: 8px;
+      }
+    }
+
+    .order-btn-class {
+      border: 0px;
+      width: 25px;
+      float: right;
+      background-color: #b6c2c9;
+      margin-right: 12px;
+      text-align: center;
+      padding: 0px;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 50%;
+      &:hover {
+        color: #fff;
+        background-color: #4d96d1;
+      }
+    }
+
+    .btn-save {
+      margin-right: 5px;
+    }
+    .ant-alert {
+      top: 120px;
+      left: 230px;
+      text-align: left;
+    }
+
+    //应用列表样式
+    .order-application-list {
+      overflow: hidden;
+      label {
+        float: left;
+      }
+      .order-application-div {
+        float: left;
+        width: 500px;
+        .app-item {
+          display: inline-block;
+          background-color: #4c8ec4;
+          border-radius: 4px;
+          color: #fff;
+          padding: 2px 9px;
+          margin: 0 8px 8px 0;
+        }
+      }
+
+      .btn-save {
+        margin-right: 5px;
+      }
+    }
+
+    //销售阶段区域样式
+    .order-introduce {
+      padding-left: @padding;
+      border-top: 1px solid @block-line-color-edit;
+      .order-introduce-div {
+        line-height: 35px;
+      }
+
+      .order-introduce-btn {
+        color: #fff;
+        background-color: #2ea3e6;
+        border-color: #2ea3e6;
+        height: 25px;
+        line-height: 23px;
+        padding: 0px;
+        width: 80px;
+        margin-left: 20px;
+        margin-bottom: 5px;
+      }
+
+    }
+
+    //订单内容部分样式
+    .order-content {
+      padding-left: @padding;
+      line-height: 35px;
+
+      .order-content-div {
+        width: 100%;
+        float: left;
+        div {
+          float: left;
+          width: 44%;
+          padding-right: 20px
+        }
+
+        .order-label-salesRemarks {
+          float: left;
+        }
+
+        .order-div-salesRemarks {
+          width: 88%;
+          padding-left: 10px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  form {
+    position: relative;
+    .order-application-div {
+      padding-bottom: 0;
+    }
+    .order-introduce {
+      padding-top: 20px;
+      border-top: 1px solid @block-line-color-edit;
+      .ant-form-item {
+        width: 100%;
+        label {
+          text-align: left;
+        }
+        .remarks-wrapper {
+          width: 400px;
+        }
+      }
+    }
+  }
+
+  .search-icon-list {
+    width: 615px;
+    border-radius: 4px;
+    background: #e6edef;
+    margin-top: 8px;
+    .search-icon-list-header {
+      display: none;
+    }
+    .search-icon-list-content {
+      background: #e6edef;
+      margin: 0;
+    }
+  }
+
+  //客户开通用户的列表
+  .crm-user-list-container {
+    float: left;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 14px;
+    //用户数
+    .user-number {
+      position: relative;
+      float: left;
+      width: 100%;
+      line-height: 28px;
+      .crm-user-apply-label {
+        float: left;
+        margin-right: 10px;
+      }
+      .crm-user-apply-btns {
+        float: right;
+        margin-right: 20px;
+        .ant-btn {
+          float: left;
+          padding: 2px 10px;
+          margin-right: 7px;
+          cursor: pointer;
+          color: #595959;
+          border-radius: 3px;
+          display: inline-block;
+        }
+        button.ant-btn-primary {
+          color: #fff;
+          background-color: #4d96d1;
+        }
+      }
+    }
+    //申请处理的form表单
+    .crm-user-apply-form-container {
+      &:extend(.item-block-style);
+      margin-top: 10px;
+      form {
+        padding: 20px 0 10px 5px;
+        .ant-form-item {
+          width: 100%;
+          .ant-select {
+            vertical-align: top;
+          }
+          .ant-radio-group {
+            height: 32px;
+            line-height: 32px;
+          }
+          .ant-input-number-input,.ant-calendar-picker-input{
+            width: 100%;
+          }
+        }
+      }
+      .indicator {
+        float: right;
+        margin-right: 20px;
+        .alert-timer {
+          .ant-alert {
+            position: relative;
+            left: 0;
+            top: 0;
+            width: auto;
+            padding-right: 15px;
+          }
+        }
+      }
+      .pull-right {
+        position: relative;
+        float: right;
+        width: 100%;
+        padding-bottom: 20px;
+        button {
+          margin-top: 0;
+        }
+      }
+    }
+
+    //用户列表
+    .crm-user-list {
+      position: relative;
+      float: left;
+      width: 100%;
+      .get-crm-users-error-tip {
+        .ant-alert {
+          left: 20%;
+          width: auto;
+        }
+      }
+      //加载数据的等待效果
+      .load8 {
+        margin-top: 50px;
+      }
+      .crm-user-item {
+        &:extend(.item-block-style);
+        padding: 10px 0 10px 5px;
+        margin-top: 15px;
+        //用户名
+        .crm-user-name {
+          label {
+            font-weight: bold;
+          }
+        }
+        //应用列表
+        .crm-user-apps {
+          padding-left: 20px;
+          label {
+            width: 100%;
+            margin: 0;
+            padding-top: 5px;
+            .ant-checkbox-input {
+              height: auto;
+            }
+            //应用名首字母生成的Logo
+            .crm-user-app-logo-font {
+              color: #fff;
+              background-color: #b8d3ea;
+              text-align: center;
+              height: 20px;
+              line-height: 20px;
+              width: 20px;
+              margin-right: 10px;
+              display: inline-block;
+            }
+            .crm-user-app-logo {
+              text-align: center;
+              height: 20px;
+              width: 20px;
+              margin-right: 10px;
+              margin-top: -3px;
+            }
+            .user-app-name {
+              display: inline-block;
+              width: 220px;
+              margin-right: 20px;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              word-wrap: normal;
+              vertical-align: middle;
+            }
+            .user-app-type {
+              display: inline-block;
+              width: 60px;
+              text-align: center;
+            }
+            .user-app-over-draft {
+              display: inline-block;
+              min-width: 200px;
+              padding-left: 20px;
+            }
+          }
+        }
+      }
+    }
+
+  }
+  //客户开通用户的申请面板
+  .crm_user_apply_panel {
+    width: 700px;
+    transform: translate(700px, 0);
+  }
+}

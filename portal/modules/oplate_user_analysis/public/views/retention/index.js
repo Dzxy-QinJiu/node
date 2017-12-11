@@ -1,7 +1,7 @@
 /**
  * 用户留存
  */
-require("./index.scss");
+require("./index.less");
 var Spinner = require("../../../../../components/spinner");
 var immutable = require("immutable");
 var Table = require("antd").Table;

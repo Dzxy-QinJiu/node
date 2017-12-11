@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var Spinner = require("../../spinner");
 var Ajax = require("./ajax");
 var appAjaxTrans = require('../../../modules/common/public/ajax/app');

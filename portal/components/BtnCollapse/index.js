@@ -1,4 +1,4 @@
-require("./css/btn.scss");
+require("./css/btn.less");
 // 折叠左侧栏按钮组件
 var BtnCollapse = React.createClass({
     getInitialState: function() {

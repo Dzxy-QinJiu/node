@@ -3,9 +3,9 @@ import {RightPanel} from "../../../../components/rightPanel";
 import LogVIew from "./user_audit_log";
 var language = require("../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../css/user-audit-log-es_VE.scss");
+    require("../css/user-audit-log-es_VE.less");
 }else if (language.lan() == "zh"){
-    require("../css/user-audit-log-zh_CN.scss");
+    require("../css/user-audit-log-zh_CN.less");
 }
 var UserAuditLogStore = require("../store/user_audit_log_store");
 

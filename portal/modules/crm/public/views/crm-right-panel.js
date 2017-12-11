@@ -1,4 +1,4 @@
-require('../scss/crm-right-panel.scss');
+require('../css/crm-right-panel.less');
 
 var Tabs = require("antd").Tabs;
 var TabPane = Tabs.TabPane;

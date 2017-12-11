@@ -1,4 +1,4 @@
-require("../css/chart.scss");
+require("../css/chart.less");
 var RightPanelClose = require("../../../../components/rightPanel").RightPanelClose;
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 var AnalysisStore = require("../store/user-online-analysis-store");

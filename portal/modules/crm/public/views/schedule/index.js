@@ -1,4 +1,4 @@
-require("../../scss/schedule.scss");
+require("../../css/schedule.less");
 var ScheduleStore = require("../../store/schedule-store");
 var ScheduleAction = require("../../action/schedule-action");
 var CrmScheduleForm = require("./form");

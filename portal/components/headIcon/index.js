@@ -3,9 +3,9 @@
  */
 var language = require("../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("./headIcon-es_VE.scss");
+    require("./headIcon-es_VE.less");
 } else if (language.lan() == "zh") {
-    require("./headIcon-zh_CN.scss");
+    require("./headIcon-zh_CN.less");
 }
 var limitSize = 300;//图片大小限制300kb
 var message = require("antd").message;

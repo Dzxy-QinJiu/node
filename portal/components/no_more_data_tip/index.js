@@ -1,5 +1,5 @@
 var Alert = require("antd").Alert;
-require("./index.scss");
+require("./index.less");
 const CSS_ID_PREFIX = 'no_more_data_tip_';
 var insertStyle = require("../insert-style");
 var NoMoreDataTip = React.createClass({

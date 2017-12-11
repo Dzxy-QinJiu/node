@@ -20,7 +20,7 @@ import {Button,Tag} from "antd";
 import Trace from "LIB_DIR/trace";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
-require("./scss/index.scss");
+require("./css/index.less");
 const DIVLAYOUT = {
     //出现跟进内容输入框后的高度
     TRACELAYOUT: 160,

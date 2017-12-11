@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 var Dropdown = require("antd").Dropdown;
 var Menu = require("antd").Menu;
 var Link = require("react-router").Link;

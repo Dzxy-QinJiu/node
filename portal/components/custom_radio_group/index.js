@@ -1,4 +1,4 @@
-require("./index.scss");
+require("./index.less");
 
 var CustomRadioGroup = React.createClass({
     getDefaultProps : function() {

@@ -2,7 +2,7 @@
  * 线图
  */
 var echarts = require("echarts-eefung");
-require("./index.scss");
+require("./index.less");
 //各种颜色
 var Color = require("color");
 var emitter = require("../../utils/emitter");

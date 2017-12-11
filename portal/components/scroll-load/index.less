@@ -1,0 +1,47 @@
+#scroll-container {
+    .spin-bottom {
+        text-align: center;        
+        width: calc(~"100% - 18px");       
+        background-color: white;
+        display: inline-block;
+        height: 40px;
+        z-index: 9;
+        border: none;
+    }
+    .spin {
+        position: absolute;
+        width: calc(~"100% - 18px");
+        top: 0;
+        bottom: 0;    
+        background-color: rgba(0,0,0,0.05);
+        transform: initial;
+        height: initial;
+        margin: 0;
+        .ant-spin-dot {
+            position: absolute;
+            top: 50%;
+        }
+        .loader8 {
+            top: 39%;
+        }
+    }
+    .anticon.anticon-info-circle.ant-alert-icon {
+        margin-right: 5px;
+        position: static;
+    }
+    #no_more_data_tip_bottom {
+        margin-bottom: -36px;
+        .ant-alert.ant-alert-info {
+            border-right: none; 
+            position: relative;
+            z-index: 9;
+        }        
+    }
+    #bottom-fix {        
+        display: inline-block;
+        height: 36px;
+        position: relative;
+        border: 1px solid #d2eafb;
+        background-color: #ecf6fd;
+    }
+}
