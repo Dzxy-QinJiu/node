@@ -172,7 +172,7 @@ const CallRecord = React.createClass({
             Trace.traceEvent(e, '点击取消搜索按钮');
         } else {
             Trace.traceEvent(e, '点击搜索按钮');
-        }        
+        }
         //表头关闭过滤框,并且过滤框中还有过滤内容时
         if (this.state.isFilter && !_.isEmpty(this.state.filterObj)) {
             //清空过滤框
@@ -421,7 +421,7 @@ const CallRecord = React.createClass({
         this.setState({
             isAddFlag: false
         });
-    },       
+    },
     addOne: function (customer) {
         this.setState({
             isAddFlag: false
@@ -649,7 +649,7 @@ const CallRecord = React.createClass({
                                         id={"content" + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> : 
+                                    /> :
                                     <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
                                         {record.remark}
                                     </span>
@@ -683,7 +683,7 @@ const CallRecord = React.createClass({
             if (value && value.trim()) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }
-        }        
+        }
     },
 
     // 确认框点击不保存时
@@ -706,10 +706,15 @@ const CallRecord = React.createClass({
         Trace.traceEvent(this.getDOMNode(), '是否保存编辑的跟进内容，点击是');
         CallRecordActions.toggleConfirm({ id, flag: false });
         let value = $(".new-custom-tbody #content" + record.id).val();
-        var queryObj = {
-            remark: value,
-            id: record.id
+        let queryObj = {
+            id: record.id,
+            dst: record.dst,
+            remark: value
         };
+        //有客户id时，直接把客户id传给后端的，后端就省一步通过电话号码查询客户的处理
+        if (record.customer_id) {
+            queryObj.customer_id = record.customer_id;
+        }
         CallRecordAjax.editCallTraceContent(queryObj).then((result) => {
             this.handleClickTextArea(record);
             if (result.result) {
@@ -997,7 +1002,7 @@ const CallRecord = React.createClass({
     renderCallRecordList() {
         return (
             <div className="call-record-fix">
-                {this.renderCallRecordContent()}               
+                {this.renderCallRecordContent()}
             </div>
         );
     },

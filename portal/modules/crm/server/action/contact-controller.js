@@ -37,6 +37,7 @@ exports.addContact = function (req, res) {
     var email = req.body.email ? JSON.parse(req.body.email) : [];
     var contact = {
         customer_id: customer_id,
+        customer_name: req.body.customer_name,
         name: name,
         position: position,
         department: department,
