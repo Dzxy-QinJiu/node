@@ -219,7 +219,7 @@ function getPrivileges(req) {
 
 exports.getUserInfo = function (req, res, userId) {
     //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
-    var queryObj = {with_extentions:false};
+    var queryObj = {with_extentions: false};
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.getUserInfo + "/" + userId,
@@ -277,7 +277,7 @@ exports.getUserLanguage = function (req, res) {
  * @param message
  */
 exports.recordLog = function (req, res, message) {
-    pageLogger.info(decodeURIComponent(message));
+    pageLogger.info(message);
 };
 var userInfoRestApis = {
     getUserInfo: "/rest/base/v1/user/id",
