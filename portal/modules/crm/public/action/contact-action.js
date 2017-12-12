@@ -33,7 +33,9 @@ function ContactAction() {
         //删除一个联系人
         , 'deleteContact'
         //设置为默认联系人
-        , 'toggleDefaultContact'
+        , 'toggleDefaultContact',
+        //设置初始化数据
+        'setInitData'
     );
     //获取联系人列表
     this.getContactList = function (curCustomer, isMerge) {
