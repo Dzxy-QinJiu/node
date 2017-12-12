@@ -11,9 +11,9 @@
   display:inline-block;
   font-family: "SimHei";
   @size:16;
-  font-size:(@size - 2)px;
-  line-height:(@size - 2)px;
-  width:(@size)px;
+  font-size:@size - 2px;
+  line-height:@size - 2px;
+  width:unit(@size, px);
   border-radius:50%;
   border:1px solid #a0a5a8;
   color:#5a5e5f;
@@ -80,13 +80,13 @@
   }
 }
 
-.for(@i: 0) when (@i < 9) {
-  .operation-steps-current-(@i) {
+.for(@i) when (@i < 9) {
+  .operation-steps-current-@{i} {
     .active-dot {
       margin-left:(@i * 100%);
     }
   }
   .for((@i + 1));
 }
-.for();
+.for(0);
 
