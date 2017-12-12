@@ -32,6 +32,9 @@ var user_id = userData.getUserData().user_id;
 import CrmRightPanel  from 'MOD_DIR/crm/public/views/crm-right-panel';
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
+const DELAY_RANGE = {
+    ANIMATION:1000,//动画结束的时间
+}
 const ScheduleManagement = React.createClass({
     getInitialState: function () {
         return {
@@ -44,6 +47,9 @@ const ScheduleManagement = React.createClass({
             rightPanelIsShow: false,//是否展示右侧客户详情
             visibleModal: false,//是否展示标记已完成状态的模态框
             isEdittingItem: {},//当前正在编辑的日程
+            isShowExpiredPanel:true,//是否展示左侧超时面板
+            isFirstLogin:true,//是否是第一次登录的时候
+            updateScrollBar:false,//是否在左测面板展开或者关闭过程中
             ...scheduleManagementStore.getState()
         };
     },
@@ -283,7 +289,67 @@ const ScheduleManagement = React.createClass({
             isShowCustomerUserListPanel: false
         })
     },
-    //渲染过期日程列表
+    //渲染超期日程列表
+    renderExpiredScheduleList:function () {
+        return (
+            <div>
+                {_.map(this.state.scheduleExpiredList, (item) => {
+                    var cls = classNames("iconfont", {
+                        "icon-visit": item.type == "visit",
+                        "icon-phone-busy": item.type == "calls",
+                        "": item.type == "other"
+                    });
+                    return (
+                        <div className="list-item">
+                            <h4 className="item-title">
+                                    <span>
+                                        {moment(item.start_time).format(oplateConsts.DATE_FORMAT)}
+                                    </span>
+                                <span className="pull-right">
+                                        {moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                                    - {moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                                    </span>
+                            </h4>
+                            <p className="item-customer-content">
+                                <i className={cls}></i>
+                                <span onClick={this.showCustomerDetail.bind(this, item.customer_id)}>
+                                        {item.customer_name}
+                                        </span>
+                            </p>
+                            <p className="item-schedule-content">
+                                        <span>
+                                            <span className="label">{Intl.get("crm.177", "内容")}</span>
+                                            <span className="content">{item.content}</span>
+                                        </span>
+                                {item.socketio_notice ?
+                                    <span>
+                                                <span className="label">{Intl.get("schedule.list.remind", "提醒")}</span>
+                                                <span
+                                                    className="content">{moment(item.alert_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</span>
+                                            </span>
+                                    : null}
+
+                            </p>
+                            <p className="item-handle-content">
+                                {user_id == item.member_id ?
+                                    <Button type="primary"
+                                            onClick={this.handleMarkFinishStatus.bind(this, item)}>{Intl.get("schedule.list.mark.finish", "标记为完成")}
+                                        {this.state.handleStatusLoading ?
+                                            <Icon type="loading"/> : null}</Button> :
+                                    <span>{Intl.get("schedule.create.person", "创建人")}: {item.member_nick}</span>}
+                            </p>
+                        </div>
+                    )
+
+                })
+                }
+                <NoMoreDataTip
+                    show={this.showNoMoreDataTip}
+                />
+            </div>
+        )
+    },
+    //渲染超期日程区域
     renderExpireListContent: function () {
         //加载出错或者没有数据时
         if (this.state.scheduleExpiredErrMsg && !this.state.isLoadingScheduleExpired) {
@@ -316,70 +382,28 @@ const ScheduleManagement = React.createClass({
             );
         } else {
             var divHeight = 720;
-            return (
-                <div className="list-container" style={{height: divHeight}}>
-                    <GeminiScrollbar
-                        className="scrollbar-container"
-                        handleScrollBottom={this.handleScrollBarBottom}
-                        listenScrollBottom={this.state.listenScrollBottom}
-                    >
-                        {_.map(this.state.scheduleExpiredList, (item) => {
-                            var cls = classNames("iconfont", {
-                                "icon-visit": item.type == "visit",
-                                "icon-phone-busy": item.type == "calls",
-                                "": item.type == "other"
-                            });
-                            return (
-                                <div className="list-item">
-                                    <h4 className="item-title">
-                                    <span>
-                                        {moment(item.start_time).format(oplateConsts.DATE_FORMAT)}
-                                    </span>
-                                        <span className="pull-right">
-                                        {moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                                            - {moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                                    </span>
-                                    </h4>
-                                    <p className="item-customer-content">
-                                        <i className={cls}></i>
-                                        <span onClick={this.showCustomerDetail.bind(this, item.customer_id)}>
-                                        {item.customer_name}
-                                        </span>
-                                    </p>
-                                    <p className="item-schedule-content">
-                                        <span>
-                                            <span className="label">{Intl.get("crm.177", "内容")}</span>
-                                            <span className="content">{item.content}</span>
-                                        </span>
-                                        {item.socketio_notice ?
-                                            <span>
-                                                <span className="label">{Intl.get("schedule.list.remind", "提醒")}</span>
-                                                <span
-                                                    className="content">{moment(item.alert_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</span>
-                                            </span>
-                                            : null}
-
-                                    </p>
-                                    <p className="item-handle-content">
-                                        {user_id == item.member_id ?
-                                            <Button type="primary"
-                                                    onClick={this.handleMarkFinishStatus.bind(this, item)}>{Intl.get("schedule.list.mark.finish", "标记为完成")}
-                                                {this.state.handleStatusLoading ?
-                                                    <Icon type="loading"/> : null}</Button> :
-                                            <span>{Intl.get("schedule.create.person", "创建人")}: {item.member_nick}</span>}
-                                    </p>
-                                </div>
-                            )
-
-                        })
-                        }
-                        <NoMoreDataTip
-                            show={this.showNoMoreDataTip}
-                        />
-                    </GeminiScrollbar>
-                </div>
-
-            )
+            var cls = classNames("list-container",{
+              "update-scrollbar":this.state.updateScrollBar
+            })
+            if (this.state.updateScrollBar) {
+                return (
+                    <div className={cls} style={{height: divHeight}}>
+                        {this.renderExpiredScheduleList()}
+                    </div>
+                )
+            } else {
+                return (
+                    <div className={cls} style={{height: divHeight}}>
+                        <GeminiScrollbar
+                            className="scrollbar-container"
+                            handleScrollBottom={this.handleScrollBarBottom}
+                            listenScrollBottom={this.state.listenScrollBottom}
+                        >
+                            {this.renderExpiredScheduleList()}
+                        </GeminiScrollbar>
+                    </div>
+                )
+            }
         }
     },
 
@@ -398,26 +422,56 @@ const ScheduleManagement = React.createClass({
             this.getExpiredScheduleList();
         }
     },
+    //将左侧面板收起或者展开
+    handleScrollExpiredPanel:function () {
+        this.setState({
+            isShowExpiredPanel:!this.state.isShowExpiredPanel,
+            isFirstLogin:false,
+            updateScrollBar:true
+        }, () => {
+            setTimeout(() => {
+                this.setState({
+                    updateScrollBar: false,
+                })
+            }, DELAY_RANGE.ANIMATION)
+        });
+    },
     render: function () {
         var cls = classNames("is-loading-schedule-list", {
             "show-spinner": this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId
         });
+        //左侧超期日程动画
+        var expiredCls = classNames({
+            "show-expire-panel": this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            "hide-expire-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin
+        });
+        //右侧日程列表动画
+        var calendarCls = classNames({
+            "initial-calendar-panel":this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            "expand-calendar-panel":!this.state.isShowExpiredPanel && !this.state.isFirstLogin
+        });
+        var expiredTipContent = this.state.isShowExpiredPanel? "《":"》";
         return (
-            <div className="schedule-list-content" data-tracename="日程管理界面">
-                <div id="expire-list-content" data-tracename="超时未完成日程界面">
-                    <div className="expire-list-title">
-                        {Intl.get("schedule.expired.list", "超时未完成")}
-                    </div>
-                    <div className="expire-list-content">
-                        <div className={cls}>
-                            {(this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId) ?
-                                <Spinner /> : null}
+            <div data-tracename="日程管理界面" className="schedule-list-content">
+                <div id="expire-list-content" data-tracename="超时未完成日程界面" className={expiredCls}>
+                    <div className="expire-list-innerwrap">
+                        <div className="expire-list-title">
+                            {Intl.get("schedule.expired.list", "超时未完成")}
                         </div>
-                        {/*渲染超时未完成日程列表*/}
-                        {this.renderExpireListContent()}
+                        <div className="expire-list-content">
+                            <div className={cls}>
+                                {(this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId) ?
+                                    <Spinner /> : null}
+                            </div>
+                            {/*渲染超时未完成日程列表*/}
+                            {this.renderExpireListContent()}
+                        </div>
+                    </div>
+                    <div className="scroll-tip">
+                        <span className="scroll-flag" onClick={this.handleScrollExpiredPanel}>{expiredTipContent}</span>
                     </div>
                 </div>
-                <div id="calendar">
+                <div id="calendar" className={calendarCls}>
                 </div>
                 <Modal
                     title=""
