@@ -452,6 +452,7 @@ var zh_CN = {
     "user.status.degrade": "降级",
     "user.status.immutability": "不变",
     "user.status.stopped": "已停用",
+    "user.status.expired": "已到期",
     "user.no.login.system": "该用户还没有登录过系统",
 
     // 第三方应用配置
