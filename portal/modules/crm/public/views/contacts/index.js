@@ -32,18 +32,11 @@ var Contacts = React.createClass({
             callNumber: '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
-            ...this.getStateFromStore()};
-    },
-    getStateFromStore: function () {
-        return {
-            contactList: ContactStore.getContactListFromView(),
             windowHeight: $(window).height(),
-            isShowAddContactForm: ContactStore.getIsShowAddContactForm(),
-            contactListLoading: ContactStore.getState().contactListLoading,
-        };
+            ...ContactStore.getState()};
     },
     onStoreChange: function () {
-        this.setState(this.getStateFromStore());
+        this.setState(ContactStore.getState());
     },
     componentDidMount: function () {
         ContactStore.listen(this.onStoreChange);
@@ -60,12 +53,14 @@ var Contacts = React.createClass({
                 curCustomer:nextProps.curCustomer
             });
             setTimeout(() => {
+                ContactAction.setInitData();
                 ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge);
             });
         }
     },
     componentWillUnmount: function () {
         ContactStore.unlisten(this.onStoreChange);
+        ContactAction.setInitData();
         $(window).off("resize", this.onStoreChange);
     },
     showAddContactForm: function () {

@@ -2,9 +2,6 @@ var ContactActions = require("../action/contact-action");
 var ContactUtils = require("../utils/contact-util");
 
 function ContactStore() {
-
-    //是否显示添加联系人表单
-    this.isShowAddContactForm = false;
     //联系人列表
     /**
      * [
@@ -32,54 +29,21 @@ function ContactStore() {
      }
      ]
      */
+    //设置初始值
+    this.setInitData();
+    //绑定action方法
+    this.bindActions(ContactActions);
+}
+//设置初始化数据
+ContactStore.prototype.setInitData = function () {
+    //是否显示添加联系人表单
+    this.isShowAddContactForm = false;
     this.contactListLoading = false;
     this.contactList = [];
     //获取联系人列表出错的提示，默认不出错
     this.getContactListErrorMsg = "";
     //添加联系人出错的提示，默认不出错
     this.submitAddContactErrorMsg = "";
-    //绑定action方法
-    this.bindListeners({
-        //通过ajax获取联系人列表
-        'getContactList': ContactActions.getContactList
-        //展示添加联系人表单
-        , 'showAddContactForm': ContactActions.showAddContactForm
-        //隐藏添加联系人表单
-        , 'hideAddContactForm': ContactActions.hideAddContactForm
-        //提交添加联系人表单
-        , 'submitAddContact': ContactActions.submitAddContact
-        //展示修改联系人表单
-        , 'showEditContactForm': ContactActions.showEditContactForm
-        //隐藏修改联系人表单
-        , 'hideEditContactForm': ContactActions.hideEditContactForm
-        //提交修改联系人表单
-        , 'submitEditContact': ContactActions.submitEditContact
-        //添加一个联系方式
-        , 'addContactWay': ContactActions.addContactWay
-        //显示删除一个联系人的对话框
-        , 'showDeleteContactConfirm': ContactActions.showDeleteContactConfirm
-        //隐藏删除一个联系人的对话框
-        , 'hideDeleteContactConfirm': ContactActions.hideDeleteContactConfirm
-        //删除一个联系人
-        , 'deleteContact': ContactActions.deleteContact
-        //设置为默认联系人
-        , 'toggleDefaultContact': ContactActions.toggleDefaultContact
-    });
-    //绑定view方法
-    this.exportPublicMethods({
-        getContactListFromView: this.getContactListFromView,
-        getIsShowAddContactForm: this.getIsShowAddContactForm
-    });
-
-}
-
-//ToView-获取联系人列表
-ContactStore.prototype.getContactListFromView = function () {
-    return this.getState().contactList;
-};
-//ToView-是否显示添加联系人的表单
-ContactStore.prototype.getIsShowAddContactForm = function () {
-    return this.getState().isShowAddContactForm;
 };
 
 //FromAction-通过ajax获取联系人列表
