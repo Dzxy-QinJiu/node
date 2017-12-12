@@ -14,6 +14,7 @@ import Spinner from "CMP_DIR/spinner";
 import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
 import CrmUserApplyForm from "./crm-user-apply-form";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import classNames from "classnames";
 
 //高度常量
 const LAYOUT_CONSTANTS = {
@@ -143,7 +144,7 @@ const OrderIndex = React.createClass({
                             return `${Intl.get("oplate.user.analysis.40", "{time}后", {time: timeObj.timeDescr})}${over_draft_status}`;
                         }
                     } else {
-                        return Intl.get("user.status.stopped", "已停用");
+                        return Intl.get("user.status.expired", "已到期");
                     }
                 } else {
                     return "";
@@ -162,6 +163,7 @@ const OrderIndex = React.createClass({
             if (_.isArray(appList) && appList.length) {
                 return appList.map((app) => {
                     let appName = app ? app.app_name || "" : "";
+                    let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
                     return (
                         <Checkbox checked={app.checked} onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                             {app.app_logo ?
@@ -170,7 +172,7 @@ const OrderIndex = React.createClass({
                             }
                             <span className="user-app-name">{appName || ""}</span>
                             <span className="user-app-type">{app.user_type ? userTypeMap[app.user_type] : ""}</span>
-                            <span className="user-app-over-draft">{this.renderOverDraft(app)}</span>
+                            <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
                         </Checkbox>);
                 });
             }

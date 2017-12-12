@@ -452,6 +452,7 @@ var en_US = {
     "user.status.degrade": "Degrade", // 降级
     "user.status.immutability": "Immutability", // 不变
     "user.status.stopped": "Deactivated",//"已停用",
+    "user.status.expired": "Expired",//已到期
     "user.no.login.system": "This user has not logged in to the system", // 该用户还没有登录过系统
     //第三方应用
     "third.party.app": "Open Application Platform",//开放应用平台",
@@ -1841,4 +1842,4 @@ var en_US = {
     "schedule.management.schedule.content":"Schedule content"//日程内容
 
 };
-export default en_US;
+export default en_US;
