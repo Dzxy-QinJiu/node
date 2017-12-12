@@ -1,3 +1,20 @@
+@keyframes expired-show {
+  0% { width: 0; }
+  100% { width: 25%; }
+}
+@keyframes expired-hide {
+  0% { width: 25%; }
+  100% { width: 0; }
+}
+@keyframes data-zone-expand {
+  0% { width: 70%; }
+  100% { width: 90%; }
+}
+@keyframes data-zone-initial {
+  0% { width: 90%; }
+  100% { width: 70%; }
+}
+
 .schedule-list-content{
   overflow: hidden;
   #expire-list-content{
@@ -7,97 +24,152 @@
     //padding: 15px 10px 0 0;
     padding: 10px 0;
     background: rgba(222,223,227,0.5);
-    //过期日程标题
-    .expire-list-title{
-      font-size: 24px;
-      border-bottom: 1px solid #aaa;
-      height: 30px;
-      line-height: 30px;
-      color: #636768;
-      margin: 0px 16px 0 16px;
-    }
-    //过期日程内容
-    .expire-list-content{
-      font-size: 14px;
-      .is-loading-schedule-list{
-        .load8 {
-          transform: scale(0.5, 0.5);
-          height: 36px;
-          .loader8 {
-            border-left-color: #394144;
-          }
-        }
+    position: relative;
+    .expire-list-innerwrap{
+      overflow-x: hidden;
+      //过期日程标题
+      .expire-list-title{
+        font-size: 24px;
+        border-bottom: 1px solid #aaa;
+        height: 30px;
+        line-height: 30px;
+        color: #636768;
+        margin: 0px 16px 0 16px;
+        min-width: 350px;
       }
-      .is-loading-schedule-list.show-spinner{
-        margin-top: 200px;
-      }
-      .list-container{
-        .list-item{
-          margin: 0px 16px 16px 16px;
-          background: #fff;
-          .iconfont{
-            padding-right: 10px;
-            font-size: 26px;
-            position: relative;
-            top: 4px;
-          }
-          .icon-phone-busy{
-            color:#5DD778;
-          }
-          .icon-visit{
-            color:#9C5DF5;
-          }
-          //标题的样式
-          .item-title{
-            height: 26px;
-            line-height: 26px;
-            padding: 0px 15px;
-            overflow: hidden;
-            color:#fff;
-            background: #F9AC58;
-            font-size: 14px;
-          }
-          .item-customer-content{
-            padding: 0px 0 0 10px;
-            height: 50px;
-            line-height: 50px;
-            span{
-              font-weight: 500;
-              font-size: 16px;
-              cursor: pointer;
+      //过期日程内容
+      .expire-list-content{
+        font-size: 14px;
+        min-width: 350px;
+        .is-loading-schedule-list{
+          .load8 {
+            transform: scale(0.5, 0.5);
+            height: 36px;
+            .loader8 {
+              border-left-color: #394144;
             }
           }
-          .item-schedule-content{
-            background: #F7F7F9;
-            padding: 10px;
-            font-size: 14px;
-            >span{
-             display: block;
-              .label{
-                font-size: 14px;
-                font-weight: normal;
-                color:#94AEC8;
+        }
+        .is-loading-schedule-list.show-spinner{
+          margin-top: 200px;
+        }
+        .list-container{
+          .list-item{
+            margin: 0px 16px 16px 16px;
+            background: #fff;
+            .iconfont{
+              padding-right: 10px;
+              font-size: 26px;
+              position: relative;
+              top: 4px;
+            }
+            .icon-phone-busy{
+              color:#5DD778;
+            }
+            .icon-visit{
+              color:#9C5DF5;
+            }
+            //标题的样式
+            .item-title{
+              height: 26px;
+              line-height: 26px;
+              padding: 0px 15px;
+              overflow: hidden;
+              color:#fff;
+              background: #F9AC58;
+              font-size: 14px;
+            }
+            .item-customer-content{
+              padding: 0px 0 0 10px;
+              height: 50px;
+              line-height: 50px;
+              span{
+                font-weight: 500;
+                font-size: 16px;
+                cursor: pointer;
               }
             }
+            .item-schedule-content{
+              background: #F7F7F9;
+              padding: 10px;
+              font-size: 14px;
+              >span{
+                display: block;
+                .label{
+                  font-size: 14px;
+                  font-weight: normal;
+                  color:#94AEC8;
+                }
+              }
+            }
+            .item-handle-content{
+              height:43px;
+              line-height: 43px;
+              padding: 0px 0 0 20px;
+            }
           }
-          .item-handle-content{
-            height:43px;
-            line-height: 43px;
-            padding: 0px 0 0 20px;
+          .no-more-data-tip{
+            margin: 0px 16px;
+            font-size: 12px;
+            .anticon-info-circle{
+              position: static;
+              margin-right: 5px;
+            }
           }
         }
-        .no-more-data-tip{
-          margin: 0px 16px;
-          font-size: 12px;
-          .anticon-info-circle{
-            position: static;
-            margin-right: 5px;
-          }
+        //避免在左侧面板展开或者收起过程中出现原生滚动条
+        .list-container.update-scrollbar{
+          overflow: hidden;
         }
       }
-
+    }
+    //左侧页面滑动提示的样式
+    .scroll-tip{
+      position: absolute;
+      top: 23px;
+      right: -40px;
+      height: 26px;
+      width: 40px;
+      background: rgba(222,223,227,0.5);
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      .scroll-flag{
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 30px;
+        background: #F9AC58;
+        font-size: 18px;
+        text-align: right;
+        color:#fff;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        cursor: pointer;
+        z-index: 10;
+        padding-right: 10px;
+      }
     }
   }
+  #expire-list-content.show-expire-panel{
+    animation: expired-show 1s 1;
+    width: 25%;
+    .scroll-tip {
+      .scroll-flag {
+        padding-right: 10px;
+      }
+    }
+  }
+  #expire-list-content.hide-expire-panel{
+    animation: expired-hide 1s 1;
+    width: 0;
+    .scroll-tip {
+      .scroll-flag {
+        padding-right: 0;
+      }
+    }
+  }
+
   #calendar{
     float: left;
     width:70%;
@@ -120,10 +192,6 @@
       background: #fff;
       color:#333
     }
-    //设置字体大小
-    //.fc-content,.fc-time,.fc-inner-content{
-    //  font-size: 13px;
-    //}
     .fc-toolbar.fc-header-toolbar{
       .fc-center{
         >div{
@@ -164,10 +232,19 @@
       margin: 0;
     }
   }
+  //原始大小的日程图
+  #calendar.initial-calendar-panel{
+    animation: data-zone-initial 1s 1;
+    width:70%;
+  }
+  //扩大后的日程图
+  #calendar.expand-calendar-panel{
+    animation: data-zone-expand 1s 1;
+    width: 90%;
+  }
   .fc-event.handle-schedule{
     background-color: #FBFBFB;
     color:#999;
     border-color:#FBFBFB;
   }
-
 }
