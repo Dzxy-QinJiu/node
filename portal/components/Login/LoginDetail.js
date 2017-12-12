@@ -10,6 +10,7 @@ import { isPhone, isEmail } from "../../lib/func";
 var Logo = require("../Logo");
 var crypto = require("crypto");
 var QRCode = require('qrcode.react');
+const classnames = require("classnames");
 import { Steps } from "antd";
 const Step = Steps.Step;
 
@@ -27,7 +28,13 @@ const ERROR_MSGS = {
     NO_SERVICE: Intl.get("login.error.retry", "登录服务暂时不可用，请稍后重试"),
     ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
 };
+const LANGUAGES = [
+    {code: "zh_CN", name: "简体中文"},
+    {code: "en_US", name: "English"},
+    {code: "es_VE", name: "Español"},
+];
 var base64_prefix = "data:image/png;base64,";
+
 var LoginForm = React.createClass({
     getInitialState: function () {
         return {
@@ -160,7 +167,7 @@ var LoginForm = React.createClass({
             };
 
             return (
-                <div style={loginErrorStyle}>{this.state.loginErrorMsg}</div>
+                <div className="login-error">{this.state.loginErrorMsg}</div>
             );
         }
         return null;
@@ -420,72 +427,27 @@ var LoginForm = React.createClass({
     },
 
     render: function () {
-        var loginButtonStyle = this.state.loginButtonDisabled ? {
-            cursor: "not-allowed"
-        } : {
-            cursor: "pointer"
-        };
-        var loginWrapStyle = {
-            position: "absolute",
-            top: "0",
-            right: "0",
-            left: "0",
-            bottom: "0",
-        };
-        var codeWrapStyle = {
-            position: "absolute",
-            width: "110px",
-            height: "128px",
-            top: "60px",
-            right: "30px",
-            textAlign: "center",
-            background: "#fff",
-        };
-        var formWrapStyle = {
-            position: "absolute",
-            width: "280px",
-            height: "200px",
-            top: "50%",
-            left: "50%",
-            margin: "-150px 0 0 -140px",
-        };
-        const langWrapStyle = {
-            position: "absolute",
-            top: "30px",
-            right: "30px",
-            fontSize: "13px",
-            color: "#a9b7c0"
-        };
-        let zhLangStyle = {
-            padding: "5px",
-            textDecoration: "none",
-            color: "#a9b7c0"
-        }, enLangStyle = _.extend({}, zhLangStyle), esLangStyle = _.extend({}, zhLangStyle);
+        const loginButtonClassName = classnames("login-button", {"not-allowed": this.state.loginButtonDisabled});
+
         let hasWindow = !(typeof window === "undefined");
-        if (hasWindow) {
-            if (Oplate.lang == "en_US") {
-                enLangStyle.backgroundColor = "#4D5B67";
-            } else if (Oplate.lang == "es_VE") {
-                esLangStyle.backgroundColor = "#4D5B67";
-            } else {
-                zhLangStyle.backgroundColor = "#4D5B67";
-            }
-        } else {
-            zhLangStyle.backgroundColor = "#4D5B67";
+
+        function getLangClassName(lang) {
+            const isSelected = hasWindow && Oplate.lang === lang || false;
+            return classnames("lang-btn", {"lang-selected": isSelected});
         }
 
         return (
-            <div style={loginWrapStyle}>
+            <div className="login-wrap">
                 { hasWindow ? (Oplate.hideLangQRcode ? null :
                     (<div>
-                        <div style={langWrapStyle}>
+                        <div className="lang-wrap">
                             <span>{Intl.get("common.user.lang", "语言")}：</span>
-                            <span><a href="/login?lang=zh_CN" style={zhLangStyle}>简体中文</a></span>
-                            <span><a href="/login?lang=en_US" style={enLangStyle}>English</a></span>
-                            <span><a href="/login?lang=es_VE" style={esLangStyle}>Español</a></span>
+                            {LANGUAGES.map(lang => {
+                            return <span><a href={`/login?lang=${lang.code}`} className={getLangClassName(lang.code)}>{lang.name}</a></span>
+                            })}
                         </div>
-                        <div style={codeWrapStyle}>
-                            <p style={{margin:"4px 0",color:"#fc9603",fontSize:"12px"}}>
+                        <div className="code-wrap">
+                            <p>
                                 {Intl.get("menu.download.app", "客套APP")}
                             </p>
                             {typeof window === "undefined" ? null : (
@@ -499,7 +461,7 @@ var LoginForm = React.createClass({
                     </div>)) : null
                 }
                 <form action="/login" method="post" id="loginForm" onSubmit={this.beforeSubmit} autoComplete="off"
-                      style={formWrapStyle}>
+                      className="form-wrap">
                     <div className="logo-wrap">
                         <Logo />
                     </div>
@@ -562,7 +524,7 @@ var LoginForm = React.createClass({
                     ) : null}
 
                     {this.state.currentView === VIEWS.LOGIN? (
-                    <button style={loginButtonStyle } type={this.state.loginButtonDisabled ? "button" : "submit"}
+                    <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
                             tabIndex="3"
                             disabled={this.state.loginButtonDisabled }
                             data-tracename="点击登录"
@@ -572,7 +534,7 @@ var LoginForm = React.createClass({
                     ) : null}
 
                     {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
-                    <button style={loginButtonStyle } type="button"
+                    <button className="login-button" type="button"
                             tabIndex="3"
                             onClick={this.sendMsg}
                             data-tracename="点击发送手机/邮箱验证码按钮"
@@ -582,7 +544,7 @@ var LoginForm = React.createClass({
                     ) : null}
 
                     {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
-                    <button style={loginButtonStyle } type="button"
+                    <button className="login-button" type="button"
                             tabIndex="3"
                             onClick={this.getTicket}
                             data-tracename={"点击验证" + this.state.contactTypeName + "验证码按钮"}
@@ -592,7 +554,7 @@ var LoginForm = React.createClass({
                     ) : null}
 
                     {this.state.currentView === VIEWS.RESET_PASSWORD? (
-                    <button style={loginButtonStyle } type="button"
+                    <button className="login-button" type="button"
                             tabIndex="3"
                             onClick={this.resetPassword}
                             data-tracename="点击重置密码按钮"
