@@ -55,7 +55,18 @@ var ForgotPassword = React.createClass({
         };
     },
     componentDidMount: function () {
-        this.changeView(VIEWS.SEND_AUTH_CODE);
+        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
+
+        this.setState({
+            username: userName,
+            loginButtonDisabled: false
+        }, () => {
+            //如果当前没有显示验证码，则去检查显示验证码
+            if (!this.state.captchaCode) {
+                this.getLoginCaptcha(VIEWS.RESET_PASSWORD);
+            }
+        });
+
         Trace.addEventListener(window, "click", Trace.eventHandler);
     },
     componentWillUnmount: function () {
@@ -100,7 +111,7 @@ var ForgotPassword = React.createClass({
                 type,
             },
             success: (data) => {
-                _this.setState({
+                this.setState({
                     captchaCode: data
                 });
             },
