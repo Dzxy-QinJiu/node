@@ -11,7 +11,6 @@ const Step = Steps.Step;
 //常量定义
 const CAPTCHA = '/captcha';
 const VIEWS = {
-    LOGIN: "login",
     SEND_AUTH_CODE: "send_auth_code",
     VERIFY_AUTH_CODE: "verify_auth_code",
     RESET_PASSWORD: "reset_password",
@@ -43,10 +42,8 @@ var ForgotPassword = React.createClass({
             captchaCode: this.props.captchaCode,
             //验证码值
             captchaCodeValue: "",
-            //登录按钮是否可用
-            loginButtonDisabled: true,
             //当前视图
-            currentView: VIEWS.LOGIN,
+            currentView: VIEWS.SEND_AUTH_CODE,
             //当前步骤
             step: 0,
             //联系方式信息
@@ -59,75 +56,11 @@ var ForgotPassword = React.createClass({
             ticket: "",
         };
     },
-    beforeSubmit: function (event) {
-        //只有在登录界面时需要支持表单提交
-        if (this.state.currentView !== VIEWS.LOGIN) {
-            event.preventDefault();
-            return false;
-        }
-
-        //记住登录名
-        var userName = $.trim(this.refs.username.value);
-        if (!userName) {
-            //用户名不能为空
-            this.setState({loginErrorMsg: Intl.get("login.write.username", "请输入用户名")});
-            event.preventDefault();
-            return false;
-        }
-        localStorage.setItem("last_login_name", userName);
-        //获取输入的密码
-        var value = this.refs.password_input.value;
-        if (!value) {
-            //密码不能为空
-            this.setState({loginErrorMsg: Intl.get("common.input.password", "请输入密码")});
-            event.preventDefault();
-            return false;
-        }
-        //做md5
-        var md5Hash = crypto.createHash("md5");
-        md5Hash.update(value);
-        var newValue = md5Hash.digest('hex');
-        //添加到网络请求里
-        this.refs.password.value = newValue;
-        //需要输入验证码，但未输入验证码时
-        if (this.state.captchaCode && !this.refs.captcha_input.value) {
-            //验证码不能为空
-            this.setState({loginErrorMsg: Intl.get("login.write.code", "请输入验证码")});
-            event.preventDefault();
-            return false;
-        }
-    },
     componentDidMount: function () {
-        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
-        var _this = this;
-        this.setState({
-            username: userName,
-            loginButtonDisabled: false
-        }, function () {
-            //如果当前没有显示验证码，则去检查显示验证码
-            if (!_this.state.captchaCode) {
-                _this.getLoginCaptcha();
-            }
-        });
-        if (userName) {
-            this.refs.password_input.focus();
-        } else {
-            this.refs.username.focus();
-        }
         Trace.addEventListener(window, "click", Trace.eventHandler);
     },
     componentWillUnmount: function () {
         Trace.detachEventListener(window, "click", Trace.eventHandler);
-    },
-    userNameChange: function (evt) {
-        this.setState({
-            username: evt.target.value
-        });
-    },
-    passwordChange: function (evt) {
-        this.setState({
-            password: evt.target.value
-        });
     },
     renderCaptchaBlock: function (hasWindow) {
         const type = this.state.currentView === VIEWS.SEND_AUTH_CODE? VIEWS.RESET_PASSWORD : "";
@@ -422,37 +355,16 @@ var ForgotPassword = React.createClass({
 
         return (
             <form>
-                {this.state.currentView !== VIEWS.LOGIN? (
                 <Steps current={this.state.step}>
                     <Step title={Intl.get("login.fill_in_contact_info", "填写联系信息")} />
                     <Step title={Intl.get("login.verify_identity", "验证身份")} />
                     <Step title={Intl.get("login.set_new_password", "设置新密码")} />
                     <Step title={Intl.get("user.user.add.finish", "完成")} />
                 </Steps>
-                ) : null}
 
                 {this.getSuccessMsgBlock()}
 
                 <div className="input-area">
-                    {this.state.currentView === VIEWS.LOGIN? (
-                    <div className="input-item">
-                        <input
-                            placeholder={hasWindow?Intl.get("login.username.phone.email", "用户名/手机/邮箱"):null}
-                            type="text"
-                            name="username" autoComplete="off" tabIndex="1"
-                            ref="username" value={this.state.username} onChange={this.userNameChange}
-                            onBlur={this.getLoginCaptcha}/>
-                    </div>
-                    ) : null}
-
-                    {this.state.currentView === VIEWS.LOGIN? (
-                    <div className="input-item">
-                        <input placeholder={hasWindow?Intl.get("common.password", "密码"):null}
-                               type="password" tabIndex="2"
-                               ref="password_input"
-                               onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
-                    </div>
-                    ) : null}
 
                     {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
                     <div className="input-item">
@@ -474,20 +386,6 @@ var ForgotPassword = React.createClass({
 
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
-
-                {this.state.currentView === VIEWS.LOGIN? (
-                <input type="hidden" name="password" id="hidedInput" ref="password"/>
-                ) : null}
-
-                {this.state.currentView === VIEWS.LOGIN? (
-                <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
-                        tabIndex="3"
-                        disabled={this.state.loginButtonDisabled }
-                        data-tracename="点击登录"
-                >
-                    {hasWindow ? Intl.get("login.login", "登录") : null}
-                </button>
-                ) : null}
 
                 {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
                 <button className="login-button" type="button"
@@ -523,13 +421,7 @@ var ForgotPassword = React.createClass({
                 <div tabIndex="1"></div>
                 ) : null}
 
-                {this.state.currentView === VIEWS.LOGIN? (
-                <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} onKeyPress={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
-                ) : null}
-
-                {this.state.currentView !== VIEWS.LOGIN? (
                 <div tabIndex="5" onClick={this.props.changeView(this.props.views.LOGIN)} onKeyPress={this.props.changeView(this.props.views.LOGIN)} className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
-                ) : null}
 
                 {this.getErrorMsgBlock()}
             </form>
