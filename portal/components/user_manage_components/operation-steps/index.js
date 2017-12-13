@@ -6,10 +6,9 @@
    </OperationSteps>
  */
 var language = require("../../../public/language/getLanguage");
+require('./index.less');
 if (language.lan() == "es" || language.lan() == "en") {
-    require('./index-es_VE.less');
-}else if (language.lan() == "zh"){
-    require('./index-zh_CN.less');
+    require('./index-es.less');
 }
 const PropTypes = React.PropTypes;
 import classNames  from "classnames";
