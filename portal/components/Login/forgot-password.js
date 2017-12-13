@@ -421,8 +421,6 @@ var ForgotPassword = React.createClass({
                 <div tabIndex="1"></div>
                 ) : null}
 
-                <div tabIndex="5" onClick={this.props.changeView(this.props.views.LOGIN)} onKeyPress={this.props.changeView(this.props.views.LOGIN)} className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
-
                 {this.getErrorMsgBlock()}
             </form>
         );

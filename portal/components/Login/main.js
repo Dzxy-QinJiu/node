@@ -70,8 +70,6 @@ class LoginMain extends React.Component {
                     {this.state.currentView === VIEWS.LOGIN? (
                     <LoginForm
                         hasWindow={hasWindow}
-                        views={VIEWS}
-                        changeView={this.changeView.bind(this)}
                         {...this.props}
                     />
                     ) : null}
@@ -79,12 +77,15 @@ class LoginMain extends React.Component {
                     {this.state.currentView === VIEWS.FORGOT_PASSWORD? (
                     <ForgotPassword
                         hasWindow={hasWindow}
-                        views={VIEWS}
-                        changeView={this.changeView.bind(this)}
                         {...this.props}
                     />
                     ) : null}
     
+                    {this.state.currentView === VIEWS.LOGIN? (
+                    <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)} onKeyPress={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)} className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
+                    ) : (
+                    <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.LOGIN)} onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)} className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
+                    )}
                 </div>
             </div>
         );

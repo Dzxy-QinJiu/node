@@ -217,8 +217,6 @@ var LoginForm = React.createClass({
                     {hasWindow ? Intl.get("login.login", "登录") : null}
                 </button>
 
-                <div tabIndex="5" onClick={this.props.changeView(this.props.views.FORGOT_PASSWORD)} onKeyPress={this.props.changeView(this.props.views.FORGOT_PASSWORD)} className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
-
                 {this.getErrorMsgBlock()}
             </form>
         );
