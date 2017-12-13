@@ -5,7 +5,6 @@
  */
 "use strict";
 
-import "./style.less";
 import { isPhone, isEmail } from "../../lib/func";
 var Logo = require("../Logo");
 var crypto = require("crypto");
