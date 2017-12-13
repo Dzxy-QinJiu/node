@@ -6,9 +6,7 @@
 "use strict";
 
 import { isPhone, isEmail } from "../../lib/func";
-var Logo = require("../Logo");
 var crypto = require("crypto");
-var QRCode = require('qrcode.react');
 const classnames = require("classnames");
 import { Steps } from "antd";
 const Step = Steps.Step;
@@ -27,11 +25,6 @@ const ERROR_MSGS = {
     NO_SERVICE: Intl.get("login.error.retry", "登录服务暂时不可用，请稍后重试"),
     ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
 };
-const LANGUAGES = [
-    {code: "zh_CN", name: "简体中文"},
-    {code: "en_US", name: "English"},
-    {code: "es_VE", name: "Español"},
-];
 var base64_prefix = "data:image/png;base64,";
 
 var LoginForm = React.createClass({
@@ -428,155 +421,121 @@ var LoginForm = React.createClass({
     render: function () {
         const loginButtonClassName = classnames("login-button", {"not-allowed": this.state.loginButtonDisabled});
 
-        let hasWindow = !(typeof window === "undefined");
-
-        function getLangClassName(lang) {
-            const isSelected = hasWindow && Oplate.lang === lang || false;
-            return classnames("lang-btn", {"lang-selected": isSelected});
-        }
+        const hasWindow = this.props.hasWindow;
 
         return (
-            <div className="login-wrap">
-                { hasWindow ? (Oplate.hideLangQRcode ? null :
-                    (<div>
-                        <div className="lang-wrap">
-                            <span>{Intl.get("common.user.lang", "语言")}：</span>
-                            {LANGUAGES.map(lang => {
-                            return <span><a href={`/login?lang=${lang.code}`} className={getLangClassName(lang.code)}>{lang.name}</a></span>
-                            })}
-                        </div>
-                        <div className="code-wrap">
-                            <p>
-                                {Intl.get("menu.download.app", "客套APP")}
-                            </p>
-                            {typeof window === "undefined" ? null : (
-                                <QRCode
-                                    value={location.protocol + "//" + location.host + "/ketao"}
-                                    level="H"
-                                    size={100}
-                                />
-                            )}
-                        </div>
-                    </div>)) : null
-                }
-                <form action="/login" method="post" id="loginForm" onSubmit={this.beforeSubmit} autoComplete="off"
-                      className="form-wrap">
-                    <div className="logo-wrap">
-                        <Logo />
-                    </div>
+            <form action="/login" method="post" id="loginForm" onSubmit={this.beforeSubmit} autoComplete="off">
+                {this.state.currentView !== VIEWS.LOGIN? (
+                <Steps current={this.state.step}>
+                    <Step title={Intl.get("login.fill_in_contact_info", "填写联系信息")} />
+                    <Step title={Intl.get("login.verify_identity", "验证身份")} />
+                    <Step title={Intl.get("login.set_new_password", "设置新密码")} />
+                    <Step title={Intl.get("user.user.add.finish", "完成")} />
+                </Steps>
+                ) : null}
 
-                    {this.state.currentView !== VIEWS.LOGIN? (
-                    <Steps current={this.state.step}>
-                        <Step title={Intl.get("login.fill_in_contact_info", "填写联系信息")} />
-                        <Step title={Intl.get("login.verify_identity", "验证身份")} />
-                        <Step title={Intl.get("login.set_new_password", "设置新密码")} />
-                        <Step title={Intl.get("user.user.add.finish", "完成")} />
-                    </Steps>
-                    ) : null}
+                {this.getSuccessMsgBlock()}
 
-                    {this.getSuccessMsgBlock()}
-
-                    <div className="input-area">
-                        {this.state.currentView === VIEWS.LOGIN? (
-                        <div className="input-item">
-                            <input
-                                placeholder={hasWindow?Intl.get("login.username.phone.email", "用户名/手机/邮箱"):null}
-                                type="text"
-                                name="username" autoComplete="off" tabIndex="1"
-                                ref="username" value={this.state.username} onChange={this.userNameChange}
-                                onBlur={this.getLoginCaptcha}/>
-                        </div>
-                        ) : null}
-
-                        {this.state.currentView === VIEWS.LOGIN? (
-                        <div className="input-item">
-                            <input placeholder={hasWindow?Intl.get("common.password", "密码"):null}
-                                   type="password" tabIndex="2"
-                                   ref="password_input"
-                                   onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
-                        </div>
-                        ) : null}
-
-                        {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
-                        <div className="input-item">
-                            <input tabIndex="1"  placeholder={Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱")} onChange={this.handleContactInfoChange.bind(this)} />
-                        </div>
-                        ) : null}
-
-                        {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
-                        <div className="input-item">
-                            <input tabIndex="1"  placeholder={Intl.get("login.please_enter_contact_type_verification_code", "请输入{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName})} onChange={this.handleAuthCodeChange} />
-                        </div>
-                        ) : null}
-
-                        {this.state.currentView === VIEWS.RESET_PASSWORD? (
-                        <div className="input-item">
-                            <input tabIndex="1"  type="password" placeholder={Intl.get("login.please_enter_new_password", "请输入新密码")} onChange={this.handleNewPasswordChange} />
-                        </div>
-                        ) : null}
-
-                        {this.renderCaptchaBlock(hasWindow)}
-                    </div>
-
+                <div className="input-area">
                     {this.state.currentView === VIEWS.LOGIN? (
-                    <input type="hidden" name="password" id="hidedInput" ref="password"/>
+                    <div className="input-item">
+                        <input
+                            placeholder={hasWindow?Intl.get("login.username.phone.email", "用户名/手机/邮箱"):null}
+                            type="text"
+                            name="username" autoComplete="off" tabIndex="1"
+                            ref="username" value={this.state.username} onChange={this.userNameChange}
+                            onBlur={this.getLoginCaptcha}/>
+                    </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.LOGIN? (
-                    <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
-                            tabIndex="3"
-                            disabled={this.state.loginButtonDisabled }
-                            data-tracename="点击登录"
-                    >
-                        {hasWindow ? Intl.get("login.login", "登录") : null}
-                    </button>
+                    <div className="input-item">
+                        <input placeholder={hasWindow?Intl.get("common.password", "密码"):null}
+                               type="password" tabIndex="2"
+                               ref="password_input"
+                               onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
+                    </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
-                    <button className="login-button" type="button"
-                            tabIndex="3"
-                            onClick={this.sendMsg}
-                            data-tracename="点击发送手机/邮箱验证码按钮"
-                    >
-                        {hasWindow ? Intl.get("login.send_phone_or_email_verification_code", "发送手机/邮箱验证码") : null}
-                    </button>
+                    <div className="input-item">
+                        <input tabIndex="1"  placeholder={Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱")} onChange={this.handleContactInfoChange.bind(this)} />
+                    </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
-                    <button className="login-button" type="button"
-                            tabIndex="3"
-                            onClick={this.getTicket}
-                            data-tracename={"点击验证" + this.state.contactTypeName + "验证码按钮"}
-                    >
-                        {hasWindow ? Intl.get("login.verify_phone_or_email_verification_code", "验证{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName}) : null}
-                    </button>
+                    <div className="input-item">
+                        <input tabIndex="1"  placeholder={Intl.get("login.please_enter_contact_type_verification_code", "请输入{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName})} onChange={this.handleAuthCodeChange} />
+                    </div>
                     ) : null}
 
                     {this.state.currentView === VIEWS.RESET_PASSWORD? (
-                    <button className="login-button" type="button"
-                            tabIndex="3"
-                            onClick={this.resetPassword}
-                            data-tracename="点击重置密码按钮"
-                    >
-                        {hasWindow ? Intl.get("user.batch.password.reset", "重置密码") : null}
-                    </button>
+                    <div className="input-item">
+                        <input tabIndex="1"  type="password" placeholder={Intl.get("login.please_enter_new_password", "请输入新密码")} onChange={this.handleNewPasswordChange} />
+                    </div>
                     ) : null}
 
-                    {this.state.currentView === VIEWS.DONE? (
-                    <div tabIndex="1"></div>
-                    ) : null}
+                    {this.renderCaptchaBlock(hasWindow)}
+                </div>
 
-                    {this.state.currentView === VIEWS.LOGIN? (
-                    <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} onKeyPress={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
-                    ) : null}
+                {this.state.currentView === VIEWS.LOGIN? (
+                <input type="hidden" name="password" id="hidedInput" ref="password"/>
+                ) : null}
 
-                    {this.state.currentView !== VIEWS.LOGIN? (
-                    <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.LOGIN)} onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)} className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
-                    ) : null}
+                {this.state.currentView === VIEWS.LOGIN? (
+                <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
+                        tabIndex="3"
+                        disabled={this.state.loginButtonDisabled }
+                        data-tracename="点击登录"
+                >
+                    {hasWindow ? Intl.get("login.login", "登录") : null}
+                </button>
+                ) : null}
 
-                    {this.getErrorMsgBlock()}
-                </form>
-            </div>
+                {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
+                <button className="login-button" type="button"
+                        tabIndex="3"
+                        onClick={this.sendMsg}
+                        data-tracename="点击发送手机/邮箱验证码按钮"
+                >
+                    {hasWindow ? Intl.get("login.send_phone_or_email_verification_code", "发送手机/邮箱验证码") : null}
+                </button>
+                ) : null}
+
+                {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
+                <button className="login-button" type="button"
+                        tabIndex="3"
+                        onClick={this.getTicket}
+                        data-tracename={"点击验证" + this.state.contactTypeName + "验证码按钮"}
+                >
+                    {hasWindow ? Intl.get("login.verify_phone_or_email_verification_code", "验证{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName}) : null}
+                </button>
+                ) : null}
+
+                {this.state.currentView === VIEWS.RESET_PASSWORD? (
+                <button className="login-button" type="button"
+                        tabIndex="3"
+                        onClick={this.resetPassword}
+                        data-tracename="点击重置密码按钮"
+                >
+                    {hasWindow ? Intl.get("user.batch.password.reset", "重置密码") : null}
+                </button>
+                ) : null}
+
+                {this.state.currentView === VIEWS.DONE? (
+                <div tabIndex="1"></div>
+                ) : null}
+
+                {this.state.currentView === VIEWS.LOGIN? (
+                <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} onKeyPress={this.changeView.bind(this, VIEWS.SEND_AUTH_CODE)} className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
+                ) : null}
+
+                {this.state.currentView !== VIEWS.LOGIN? (
+                <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.LOGIN)} onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)} className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
+                ) : null}
+
+                {this.getErrorMsgBlock()}
+            </form>
         );
     }
 });
