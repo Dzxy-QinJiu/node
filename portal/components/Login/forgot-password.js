@@ -34,8 +34,6 @@ var ForgotPassword = React.createClass({
             password: '',
             //新密码
             newPassword: '',
-            //错误信息
-            loginErrorMsg: this.props.loginErrorMsg,
             //成功信息
             successMsg: "",
             //验证码
@@ -76,24 +74,6 @@ var ForgotPassword = React.createClass({
                  onClick={this.refreshCaptchaCode.bind(this, type)}/>
         </div>) : null);
     },
-    getErrorMsgBlock: function () {
-        if (this.state.loginErrorMsg) {
-            var errorImageUrl = require("./image/error.png");
-            //登录错误提示样式
-            var loginErrorStyle = {
-                background: "no-repeat url(" + errorImageUrl + ") 0 2px",
-                lineHeight: '22px',
-                color: '#ee5b44',
-                paddingLeft: '21px',
-                marginTop: "8px",
-            };
-
-            return (
-                <div className="login-error">{this.state.loginErrorMsg}</div>
-            );
-        }
-        return null;
-    },
     //渲染成功提示信息
     getSuccessMsgBlock() {
         const msg = this.state.successMsg;
@@ -110,7 +90,7 @@ var ForgotPassword = React.createClass({
         if (!username) {
             return;
         }
-        var _this = this;
+
         $.ajax({
             url: '/loginCaptcha',
             dataType: 'json',
@@ -118,15 +98,13 @@ var ForgotPassword = React.createClass({
                 username,
                 type,
             },
-            success: function (data) {
+            success: (data) => {
                 _this.setState({
                     captchaCode: data
                 });
             },
-            error: function () {
-                _this.setState({
-                    loginErrorMsg: ERROR_MSGS.NO_SERVICE
-                });
+            error: () => {
+                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
             }
         });
     },
@@ -169,7 +147,9 @@ var ForgotPassword = React.createClass({
 
         const step = viewIndex > -1? viewIndex : 0;
 
-        this.setState({ currentView: view, step, captchaCode: "", loginErrorMsg: "", successMsg: "" }, () => {
+        this.props.setErrorMsg("");
+
+        this.setState({ currentView: view, step, captchaCode: "",  successMsg: "" }, () => {
             const firstInput = $("input")[0];
             if (firstInput && view !== VIEWS.LOGIN) firstInput.focus();
         });
@@ -181,12 +161,16 @@ var ForgotPassword = React.createClass({
 
     handleContactInfoChange(e) {
         let contactInfo = e.target.value.trim();
-        this.setState({ contactInfo, loginErrorMsg: "" });
+        this.setState({ contactInfo });
+        this.props.setErrorMsg("");
+
     },
 
     handleCaptchaCodeValueChange(e) {
         let captchaCodeValue = e.target.value.trim();
-        this.setState({ captchaCodeValue, loginErrorMsg: "" });
+        this.setState({ captchaCodeValue });
+        this.props.setErrorMsg("");
+
     },
 
     handleAuthCodeChange(e) {
@@ -205,7 +189,7 @@ var ForgotPassword = React.createClass({
         let contactTypeName = "";
 
         if (!contactInfo) {
-            this.setState({loginErrorMsg: Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱")});
+            this.props.setErrorMsg(Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱"));
             return;
         } else if (isPhone(contactInfo)) {
             contactType = "phone";
@@ -214,7 +198,7 @@ var ForgotPassword = React.createClass({
             contactType = "email";
             contactTypeName = Intl.get("common.email", "邮箱");
         } else {
-            this.setState({loginErrorMsg: Intl.get("login.incorrect_phone_or_email", "手机号或邮箱格式不正确")});
+            this.props.setErrorMsg(Intl.get("login.incorrect_phone_or_email", "手机号或邮箱格式不正确"));
             return;
         }
 
@@ -229,7 +213,7 @@ var ForgotPassword = React.createClass({
             },
             success: (data) => {
                 if (!data) {
-                    this.setState({loginErrorMsg: Intl.get("login.no_account_of_phone_or_email", "系统中没有该{contactTypeName}对应的帐号", {contactTypeName})});
+                    this.props.setErrorMsg(Intl.get("login.no_account_of_phone_or_email", "系统中没有该{contactTypeName}对应的帐号", {contactTypeName}));
                 } else {
                     const username = data.user_name;
                     const userId = data.user_id;
@@ -241,7 +225,7 @@ var ForgotPassword = React.createClass({
                 }
             },
             error: () => {
-                this.setState({loginErrorMsg: Intl.get("login.check_contact_info_failure", "联系方式检查失败")});
+                this.props.setErrorMsg(Intl.get("login.check_contact_info_failure", "联系方式检查失败"));
             }
         });
     },
@@ -253,7 +237,7 @@ var ForgotPassword = React.createClass({
             const send_type = this.state.contactType;
     
             if (!captcha) {
-                this.setState({loginErrorMsg: Intl.get("retry.input.captcha", "请输入验证码")});
+                this.props.setErrorMsg(Intl.get("retry.input.captcha", "请输入验证码"));
                 return;
             }
     
@@ -267,7 +251,7 @@ var ForgotPassword = React.createClass({
                 },
                 success: (data) => {
                     if (!data) {
-                        this.setState({loginErrorMsg: Intl.get("login.message_sent_failure", "信息发送失败")});
+                        this.props.setErrorMsg(Intl.get("login.message_sent_failure", "信息发送失败"));
                     } else {
                         this.changeView(VIEWS.VERIFY_AUTH_CODE);
                         this.setState({successMsg: Intl.get("login.message_has_been_send", "信息已发送")});
@@ -277,7 +261,7 @@ var ForgotPassword = React.createClass({
                     const errorMsg = errorObj && errorObj.responseJSON && errorObj.responseJSON.message;
 
                     if (errorMsg) {
-                        this.setState({loginErrorMsg: errorMsg});
+                        this.props.setErrorMsg({loginErrorMsg: errorMsg});
                     }
                 }
             });
@@ -301,14 +285,14 @@ var ForgotPassword = React.createClass({
             },
             success: (data) => {
                 if (!data) {
-                    this.setState({loginErrorMsg: Intl.get("login.authentication_failure", "身份验证失败")});
+                    this.props.setErrorMsg(Intl.get("login.authentication_failure", "身份验证失败"));
                 } else {
                     this.setState({ticket: data.ticket});
                     this.changeView(VIEWS.RESET_PASSWORD);
                 }
             },
             error: () => {
-                this.setState({loginErrorMsg: Intl.get("login.authentication_failure", "身份验证失败")});
+                this.props.setErrorMsg(Intl.get("login.authentication_failure", "身份验证失败"));
             }
         });
     },
@@ -339,11 +323,11 @@ var ForgotPassword = React.createClass({
                     this.changeView(VIEWS.DONE);
                     this.setState({successMsg: Intl.get("login.reset_password_success", "重置密码成功，请返回登录页用新密码登录")});
                 } else {
-                    this.setState({loginErrorMsg: Intl.get("login.reset_password_failure", "重置密码失败")});
+                    this.props.setErrorMsg(Intl.get("login.reset_password_failure", "重置密码失败"));
                 }
             },
             error: () => {
-                this.setState({loginErrorMsg: Intl.get("login.reset_password_failure", "重置密码失败")});
+                this.props.setErrorMsg(Intl.get("login.reset_password_failure", "重置密码失败"));
             }
         });
     },
@@ -420,8 +404,6 @@ var ForgotPassword = React.createClass({
                 {this.state.currentView === VIEWS.DONE? (
                 <div tabIndex="1"></div>
                 ) : null}
-
-                {this.getErrorMsgBlock()}
             </form>
         );
     }
