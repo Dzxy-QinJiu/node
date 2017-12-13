@@ -30,7 +30,7 @@ class LoginMain extends React.Component {
     }
 
     changeView(view) {
-        this.setState({currentView: view});
+        this.setState({currentView: view, errorMsg: ""});
     }
 
     setErrorMsg(errorMsg) {
