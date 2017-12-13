@@ -1,8 +1,9 @@
 import "./style.less";
-const LoginForm = require("./login-form");
-const Logo = require("../Logo");
 const QRCode = require('qrcode.react');
 const classnames = require("classnames");
+const Logo = require("../Logo");
+const LoginForm = require("./login-form");
+const ForgotPassword = require("./forgot-password");
 
 const LANGUAGES = [
     {code: "zh_CN", name: "简体中文"},
@@ -10,10 +11,24 @@ const LANGUAGES = [
     {code: "es_VE", name: "Español"},
 ];
 
+const VIEWS = {
+    LOGIN: "login",
+    FORGOT_PASSWORD: "forgot_password",
+};
+
 class LoginMain extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            currentView: VIEWS.LOGIN,
+        }
     }
+
+    changeView(view) {
+        this.setState({currentView: view});
+    }
+
     render() {
         const hasWindow = !(typeof window === "undefined");
 
@@ -52,13 +67,28 @@ class LoginMain extends React.Component {
                         <Logo />
                     </div>
     
+                    {this.state.currentView === VIEWS.LOGIN? (
                     <LoginForm
                         hasWindow={hasWindow}
+                        views={VIEWS}
+                        changeView={this.changeView.bind(this)}
+                        {...this.props}
                     />
+                    ) : null}
+    
+                    {this.state.currentView === VIEWS.FORGOT_PASSWORD? (
+                    <ForgotPassword
+                        hasWindow={hasWindow}
+                        views={VIEWS}
+                        changeView={this.changeView.bind(this)}
+                        {...this.props}
+                    />
+                    ) : null}
     
                 </div>
             </div>
         );
     }
 }
-module.exports = LoginMain;
+
+export default LoginMain;

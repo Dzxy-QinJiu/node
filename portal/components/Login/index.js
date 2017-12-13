@@ -1,6 +1,7 @@
 "use strict";
-var LoginMain = require("./main");
+
 import Translate from '../../public/intl/i18nTemplate';
+import LoginMain from "./main";
 
 class Login extends React.Component {
     constructor(props) {
@@ -14,4 +15,5 @@ class Login extends React.Component {
         );
     }
 }
-module.exports = Login;
+
+export default Login;

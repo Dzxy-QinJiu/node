@@ -1,5 +1,5 @@
 require("./sources/browser.sniff");
-var LoginMain = require("../components/Login/main");
+import LoginMain from "../components/Login/main";
 import Translate from './intl/i18nTemplate';
 var props = {
     loginErrorMsg: window.Oplate.initialProps.loginErrorMsg,
