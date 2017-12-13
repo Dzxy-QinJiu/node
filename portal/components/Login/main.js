@@ -4,6 +4,7 @@ const classnames = require("classnames");
 const Logo = require("../Logo");
 const LoginForm = require("./login-form");
 const ForgotPassword = require("./forgot-password");
+import { Alert } from "antd";
 
 const LANGUAGES = [
     {code: "zh_CN", name: "简体中文"},
@@ -22,11 +23,18 @@ class LoginMain extends React.Component {
 
         this.state = {
             currentView: VIEWS.LOGIN,
-        }
+            errorMsg: this.props.loginErrorMsg,
+        };
+
+        this.setErrorMsg = this.setErrorMsg.bind(this);
     }
 
     changeView(view) {
         this.setState({currentView: view});
+    }
+
+    setErrorMsg(errorMsg) {
+        this.setState({errorMsg});
     }
 
     render() {
@@ -70,6 +78,7 @@ class LoginMain extends React.Component {
                     {this.state.currentView === VIEWS.LOGIN? (
                     <LoginForm
                         hasWindow={hasWindow}
+                        setErrorMsg={this.setErrorMsg}
                         {...this.props}
                     />
                     ) : null}
@@ -77,8 +86,13 @@ class LoginMain extends React.Component {
                     {this.state.currentView === VIEWS.FORGOT_PASSWORD? (
                     <ForgotPassword
                         hasWindow={hasWindow}
+                        setErrorMsg={this.setErrorMsg}
                         {...this.props}
                     />
+                    ) : null}
+    
+                    {this.state.errorMsg? (
+                    <Alert message={this.state.errorMsg} type="error" showIcon />
                     ) : null}
     
                     {this.state.currentView === VIEWS.LOGIN? (

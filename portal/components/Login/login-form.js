@@ -24,10 +24,6 @@ var LoginForm = React.createClass({
             username: this.props.username,
             //密码
             password: '',
-            //新密码
-            newPassword: '',
-            //错误信息
-            loginErrorMsg: this.props.loginErrorMsg,
             //验证码
             captchaCode: this.props.captchaCode,
             //登录按钮是否可用
@@ -39,7 +35,7 @@ var LoginForm = React.createClass({
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
-            this.setState({loginErrorMsg: Intl.get("login.write.username", "请输入用户名")});
+            this.props.setErrorMsg(Intl.get("login.write.username", "请输入用户名"));
             event.preventDefault();
             return false;
         }
@@ -48,7 +44,7 @@ var LoginForm = React.createClass({
         var value = this.refs.password_input.value;
         if (!value) {
             //密码不能为空
-            this.setState({loginErrorMsg: Intl.get("common.input.password", "请输入密码")});
+            this.props.setErrorMsg(Intl.get("common.input.password", "请输入密码"));
             event.preventDefault();
             return false;
         }
@@ -61,7 +57,7 @@ var LoginForm = React.createClass({
         //需要输入验证码，但未输入验证码时
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
-            this.setState({loginErrorMsg: Intl.get("login.write.code", "请输入验证码")});
+            this.props.setErrorMsg(Intl.get("login.write.code", "请输入验证码"));
             event.preventDefault();
             return false;
         }
@@ -110,47 +106,27 @@ var LoginForm = React.createClass({
                  onClick={this.refreshCaptchaCode}/>
         </div>) : null);
     },
-    getErrorMsgBlock: function () {
-        if (this.state.loginErrorMsg) {
-            var errorImageUrl = require("./image/error.png");
-            //登录错误提示样式
-            var loginErrorStyle = {
-                background: "no-repeat url(" + errorImageUrl + ") 0 2px",
-                lineHeight: '22px',
-                color: '#ee5b44',
-                paddingLeft: '21px',
-                marginTop: "8px",
-            };
-
-            return (
-                <div className="login-error">{this.state.loginErrorMsg}</div>
-            );
-        }
-        return null;
-    },
     //获取验证码
     getLoginCaptcha: function () {
         var username = this.state.username;
         if (!username) {
             return;
         }
-        var _this = this;
+
         $.ajax({
             url: '/loginCaptcha',
             dataType: 'json',
             data: {
                 username,
             },
-            success: function (data) {
-                _this.setState({
+            success: (data) => {
+                this.setState({
                     captchaCode: data
                 });
             },
-            error: function () {
-                _this.setState({
-                    loginErrorMsg: ERROR_MSGS.NO_SERVICE
-                });
-            }
+            error: () => {
+                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
+            },
         });
     },
     //刷新验证码
@@ -159,6 +135,7 @@ var LoginForm = React.createClass({
         if (!username) {
             return;
         }
+
         var _this = this;
         $.ajax({
             url: '/refreshCaptcha',
@@ -216,8 +193,6 @@ var LoginForm = React.createClass({
                 >
                     {hasWindow ? Intl.get("login.login", "登录") : null}
                 </button>
-
-                {this.getErrorMsgBlock()}
             </form>
         );
     }
