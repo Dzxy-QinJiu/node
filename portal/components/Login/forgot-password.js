@@ -55,6 +55,7 @@ var ForgotPassword = React.createClass({
         };
     },
     componentDidMount: function () {
+        this.changeView(VIEWS.SEND_AUTH_CODE);
         Trace.addEventListener(window, "click", Trace.eventHandler);
     },
     componentWillUnmount: function () {
@@ -151,7 +152,7 @@ var ForgotPassword = React.createClass({
 
         this.setState({ currentView: view, step, captchaCode: "",  successMsg: "" }, () => {
             const firstInput = $("input")[0];
-            if (firstInput && view !== VIEWS.LOGIN) firstInput.focus();
+            firstInput.focus();
         });
 
         if (view === VIEWS.SEND_AUTH_CODE) {
