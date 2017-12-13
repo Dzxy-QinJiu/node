@@ -9,11 +9,9 @@ class Login extends React.Component {
     }
     render() {
         return (
-            <Translate>
-                <LoginMain/>
-            </Translate>
+            <Translate Template={<LoginMain/>}></Translate>
         );
     }
 }
 
-export default Login;
+module.exports = Login;
