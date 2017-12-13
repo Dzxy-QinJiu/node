@@ -99,7 +99,6 @@ var LoginForm = React.createClass({
             <input placeholder={hasWindow?Intl.get("common.captcha", "验证码"):null} type="text"
                    name="retcode" autoComplete="off"
                    tabIndex="3"
-                   onChange={this.handleCaptchaCodeValueChange}
                    ref="captcha_input" maxLength="4"/>
             <img src={base64_prefix + this.state.captchaCode} width="120" height="40"
                  title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
