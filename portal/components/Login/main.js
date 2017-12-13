@@ -1,5 +1,5 @@
 import "./style.less";
-var LoginDetail = require("./LoginDetail");
+var LoginForm = require("./login-form");
 
 class LoginMain extends React.Component {
     constructor(props) {
@@ -7,7 +7,7 @@ class LoginMain extends React.Component {
     }
     render() {
         return (
-            <LoginDetail/>
+            <LoginForm/>
         );
     }
 }
