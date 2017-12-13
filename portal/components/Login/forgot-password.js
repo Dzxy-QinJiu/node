@@ -273,7 +273,7 @@ var ForgotPassword = React.createClass({
                     const errorMsg = errorObj && errorObj.responseJSON && errorObj.responseJSON.message;
 
                     if (errorMsg) {
-                        this.props.setErrorMsg({loginErrorMsg: errorMsg});
+                        this.props.setErrorMsg(errorMsg);
                     }
                 }
             });
