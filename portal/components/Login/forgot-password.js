@@ -163,7 +163,7 @@ var ForgotPassword = React.createClass({
 
         this.setState({ currentView: view, step, captchaCode: "",  successMsg: "" }, () => {
             const firstInput = $("input")[0];
-            firstInput.focus();
+            if (firstInput) firstInput.focus();
         });
 
         if (view === VIEWS.SEND_AUTH_CODE) {
