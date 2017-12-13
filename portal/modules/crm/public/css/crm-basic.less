@@ -16,20 +16,11 @@
     .client-info-content {
       //float:left;
       padding: 10px 20px;
-      dt{
-        padding-top: 2px;
-      }
     }
-    .crm-basic-sales-content.client-info-content{
-      .crm-basic-sales{
-       dd{
-        margin-top: -1px;
-       }
-      }
-      .crm-basic-sales-team{
-        dd{
-          padding-top: 1px;
-        }
+    //销售
+    .crm-basic-sales{
+      dt{
+        margin-top: 3px;
       }
     }
   }
@@ -65,9 +56,10 @@
       font-size: 14px;
     }
   }
-  .crm-basic-name {
-    dd {
-      margin-top: -1px;
+  //行政级别、地址
+  .crm-basic-administrative-level, .crm-basic-address {
+    .user-basic-edit-field{
+      margin-top: 0;
     }
   }
   //地域的设置
@@ -75,8 +67,9 @@
     position: absolute;
     width: 550px;
   }
+
   .basic-location-field {
-    margin-top: -2px;
+    margin-top: -4px;
   }
   .crm-basic-remarks {
     textarea {
@@ -92,7 +85,7 @@
       }
     }
     dd .basic-industry-field {
-      margin-top: -2px;
+      margin-top: -4px;
     }
 
     .location-edit-field .area-selector {
