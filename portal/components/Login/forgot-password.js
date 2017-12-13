@@ -4,7 +4,6 @@
 
 import { isPhone, isEmail } from "../../lib/func";
 var crypto = require("crypto");
-const classnames = require("classnames");
 import { Steps } from "antd";
 const Step = Steps.Step;
 
@@ -345,8 +344,6 @@ var ForgotPassword = React.createClass({
     },
 
     render: function () {
-        const loginButtonClassName = classnames("login-button", {"not-allowed": this.state.loginButtonDisabled});
-
         const hasWindow = this.props.hasWindow;
 
         return (
