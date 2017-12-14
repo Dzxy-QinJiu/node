@@ -58,7 +58,7 @@ const OrderIndex = React.createClass({
             OrderAction.getSysStageList();
             if (!this.props.isMerge) {//合并客户时，不需要获取客户的用户列表
                 OrderAction.setPageNum(1);
-                // setTimeout(() => this.getCrmUserList());
+                setTimeout(() => this.getCrmUserList());
             }
         },
         getOrderList: function (curCustomer, isMerge) {
@@ -82,7 +82,7 @@ const OrderIndex = React.createClass({
                     this.getOrderList(nextProps.curCustomer, nextProps.isMerge);
                     if (!nextProps.isMerge) {//合并客户时，不需要获取客户的用户列表
                         OrderAction.setPageNum(1);
-                        // this.getCrmUserList();
+                        this.getCrmUserList();
                     }
                 });
             }

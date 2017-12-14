@@ -79,7 +79,7 @@ const ApplyUserForm = React.createClass({
                 //找到该应用对应用户类型的默认配置信息
                 if (defaultConfig) {
                     appData.end_date = begin_date + defaultConfig.valid_period;
-                    appData.range = this.getRange(defaultConfig.valid_period);
+                    appData.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
                     appData.over_draft = defaultConfig.over_draft;
                 }
             }
@@ -119,7 +119,7 @@ const ApplyUserForm = React.createClass({
                             //应用默认设置中的开通周期、到期可选项
                             app.begin_date = DatePickerUtils.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
                             app.end_date = app.begin_date + defaultConfig.valid_period;
-                            app.range = this.getRange(defaultConfig.valid_period);
+                            app.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
                             app.over_draft = defaultConfig.over_draft;
                         }
                         return app;
@@ -134,35 +134,6 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    //获取到的毫秒数转化成前端展示的开通周期范围，default是为了解决上一个版本的测试数据
-    getRange: function (mills) {
-        let range = '0.5m';
-        let dayTime = 24 * 60 * 60 * 1000;
-        switch (mills) {
-            case 7 * dayTime:
-                range = '1w';
-                break;
-            case 15 * dayTime:
-                range = '0.5m';
-                break;
-            case 30 * dayTime:
-                range = '1m';
-                break;
-            case 30 * 6 * dayTime:
-                range = '6m';
-                break;
-            case 30 * 12 * dayTime:
-                range = '12m';
-                break;
-            case 0:
-                range = 'forever';
-                break;
-            default:
-                range = mills / (1000 * 60 * 60 * 24) + '天'
-        }
-        return range;
-
-    },
     onAppChange: function (id) {
         //如果用户名是邮箱格式，并且应用对应用户开通数量超过1时，不能切换应用
         if (id === this.state.appFormData.client_id || this.state.onlyOneUser) {
