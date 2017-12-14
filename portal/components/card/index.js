@@ -78,7 +78,7 @@ var Card = React.createClass({
         var userName = card.userName ? card.userName.value : "";
         return (
             <div className="card-layout-container " style={{width:this.props.cardWidth}}>
-                <div className="card-container" onClick={this.showCardInfo}>
+                <div className="card-box" onClick={this.showCardInfo}>
                     <div className="card-stop-layer" style={{display:card.status==0 ? 'block' : 'none'}}>
                         <div className="card-stop-bg"></div>
                         <div className="stop-icon">
