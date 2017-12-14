@@ -16,6 +16,7 @@ const OrderAction = require("../action/order-actions");
 const DatePickerUtils = require("../../../../components/date-selector/utils");
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
+import commonAppAjax from "MOD_DIR/common/public/ajax/app";
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
 
@@ -30,12 +31,13 @@ const ApplyUserForm = React.createClass({
             appFormData: formData.products[0],
             isLoading: false,
             onlyOneUser: false,//是否只能开通一个用户（用户名是邮箱格式时）
-            setAllChecked: true//是否设置到所有应用上
+            setAllChecked: false//是否设置到所有应用上
         };
     },
 
     componentWillReceiveProps: function (nextProps) {
         this.buildFormData(nextProps);
+        this.getAppsDefaultConfig(nextProps.apps);
     },
 
     buildFormData: function (props) {
@@ -72,7 +74,65 @@ const ApplyUserForm = React.createClass({
             return formData;
         }
     },
+    componentDidMount: function () {
+         //获取各应用的默认设置
+        this.getAppsDefaultConfig(this.props.apps);
+    },
+    //获取各应用的默认设置
+    getAppsDefaultConfig:function(appList){
+        if(_.isArray(appList) && appList.length){
+            let appIds = _.pluck(appList,'client_id');
+            //获取各应用的默认设置(不需要角色和权限信息)
+            commonAppAjax.getAppsDefaultConfigAjax().sendRequest({client_id:appIds.join(','),with_addition: false}).success((dataList) => {
+                if(_.isArray(dataList) && dataList.length){
+                    let formData = this.state.formData;
+                    formData.products = formData.products.map(app => {
+                        //找到该应用对应用户类型的配置信息
+                        let defaultConfig = _.find(dataList,data => data.client_id === app.client_id && formData.tag === data.user_type);
+                        if(defaultConfig){
+                            //应用默认设置中的开通周期、到期可选项
+                            app.begin_date = DatePickerUtils.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+                            app.end_date = app.begin_date + defaultConfig.valid_period;
+                            app.range = this.getRange(defaultConfig.valid_period);
+                            app.over_draft = defaultConfig.over_draft;
+                        }
+                        return app;
+                    });
+                    this.setState({formData: formData, appFormData:formData.products[0]});
+                }
+            });
+        }
+    },
 
+    //获取到的毫秒数转化成前端展示的开通周期范围，default是为了解决上一个版本的测试数据
+    getRange: function (mills) {
+        let range = '0.5m';
+        let dayTime = 24 * 60 * 60 * 1000;
+        switch (mills) {
+            case 7 * dayTime:
+                range = '1w';
+                break;
+            case 15 * dayTime:
+                range = '0.5m';
+                break;
+            case 30 * dayTime:
+                range = '1m';
+                break;
+            case 30 * 6 * dayTime:
+                range = '6m';
+                break;
+            case 30 * 12 * dayTime:
+                range = '12m';
+                break;
+            case 0:
+                range = 'forever';
+                break;
+            default:
+                range = mills / (1000 * 60 * 60 * 24) + '天'
+        }
+        return range;
+
+    },
     onAppChange: function (id) {
         //如果用户名是邮箱格式，并且应用对应用户开通数量超过1时，不能切换应用
         if (id === this.state.appFormData.client_id || this.state.onlyOneUser) {
@@ -230,7 +290,7 @@ const ApplyUserForm = React.createClass({
             isCustomSetting: true,
             appId: "applyUser"
         };
-       
+
         return (
             <div className="full_size wrap_padding crm_apply_user_form_wrap">
                 <Tabs defaultActiveKey="form">
@@ -291,12 +351,12 @@ const ApplyUserForm = React.createClass({
                                             return (<TabPane key={app.client_id}
                                                              tab={this.renderTabToolTip(app.client_name)}
                                                              disabled={disabled}>
-                                                <div className="set-all-check-box col-22">
-                                                    <Checkbox checked={this.state.setAllChecked}
-                                                              onChange={this.toggleCheckbox}/>
-                                                    <span className="checkbox-title" onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>
-                                                    <span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>
-                                                </div>
+                                                {/*<div className="set-all-check-box col-22">*/}
+                                                    {/*<Checkbox checked={this.state.setAllChecked}*/}
+                                                              {/*onChange={this.toggleCheckbox}/>*/}
+                                                    {/*<span className="checkbox-title" onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>*/}
+                                                    {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
+                                                {/*</div>*/}
                                                 <div className="app-tab-pane col-22">
                                                     <FormItem
                                                         label={Intl.get("user.batch.open.count", "开通个数")}

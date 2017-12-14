@@ -34,5 +34,12 @@ module.exports = {
         "passport": {
             "needLogin": true
         }
+    },{//获取各应用的默认配置
+        "method": "get",
+        "path": "/rest/global/apps/default_config",
+        "handler": "getAppsDefaultConfig",
+        "passport": {
+            "needLogin": true
+        }
     }]
 };

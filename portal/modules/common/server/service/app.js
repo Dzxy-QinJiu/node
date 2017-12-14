@@ -6,7 +6,9 @@ var urls = {
     getMyApplications : "/rest/base/v1/user/manage_apps",
     getAddedTeam: 'rest/analysis/user/v1/:auth_type/added/team', //获取新增用户的团队统计
     // 获取当前应用的在线用户的地域数据
-    getOnLineUserZone: '/rest/analysis/user/v1/online/onlineStatistics/:client_id/:select_mode'
+    getOnLineUserZone: '/rest/analysis/user/v1/online/onlineStatistics/:client_id/:select_mode',
+    //获取应用的默认配置
+    getAppConfigPromise: "/rest/base/v1/application/extra/grantinfos"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
@@ -128,4 +130,14 @@ exports.getOnLineUserZone = (req, res, queryParams) => {
             req: req,
             res: res
         });
+};
+
+//获取各应用的默认配置
+exports.getAppsDefaultConfig = (req, res, queryParams) => {
+    return restUtil.authRest.get(
+        {
+            url: urls.getAppConfigPromise,
+            req: req,
+            res: res
+        },queryParams);
 };
