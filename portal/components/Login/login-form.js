@@ -79,10 +79,6 @@ var LoginForm = React.createClass({
         } else {
             this.refs.username.focus();
         }
-        Trace.addEventListener(window, "click", Trace.eventHandler);
-    },
-    componentWillUnmount: function () {
-        Trace.detachEventListener(window, "click", Trace.eventHandler);
     },
     userNameChange: function (evt) {
         this.setState({

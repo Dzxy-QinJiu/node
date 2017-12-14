@@ -65,11 +65,6 @@ var ForgotPassword = React.createClass({
                 this.getLoginCaptcha(VIEWS.RESET_PASSWORD);
             }
         });
-
-        Trace.addEventListener(window, "click", Trace.eventHandler);
-    },
-    componentWillUnmount: function () {
-        Trace.detachEventListener(window, "click", Trace.eventHandler);
     },
     renderCaptchaBlock: function (hasWindow) {
         const type = this.state.currentView === VIEWS.SEND_AUTH_CODE? VIEWS.RESET_PASSWORD : "";

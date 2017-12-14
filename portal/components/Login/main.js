@@ -29,6 +29,14 @@ class LoginMain extends React.Component {
         this.setErrorMsg = this.setErrorMsg.bind(this);
     }
 
+    componentDidMount () {
+        Trace.addEventListener(window, "click", Trace.eventHandler);
+    }
+
+    componentWillUnmount () {
+        Trace.detachEventListener(window, "click", Trace.eventHandler);
+    }
+
     changeView(view) {
         this.setState({currentView: view, errorMsg: ""});
     }
