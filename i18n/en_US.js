@@ -1812,34 +1812,35 @@ var en_US = {
     "clue.customer.distribute": "distribution",//分配
     "clue.customer.add.trace.content": "Please fill in follow-up content",//请填写跟进内容
     "failed.to.distribute.cluecustomer": "Failed to distribute clue customers",//分配线索客户失败
-    "crm.alert.topic":"Title",//标题
-    "crm.contact.time":"Contact time",//联系时间
-    "crm.alert.time":"Alert time",//提醒时间
-    "crm.alert.after.1.hours":"1 hour later",//1小时后
-    "crm.alert.after.2.hours":"2 hours later",//2小时后
-    "crm.alert.after.5.hours":"5 hours later",//5小时后
-    "crm.alert.after.1.day":"1 day later",//1天后
-    "crm.alert.after.1.week":"1 week later",//1周后
-    "crm.not.alert":"Not remind",//不提醒
-    "crm.alert.not.finish":"Not finish",//未完成
-    "crm.alert.select.future.time":"Please choose the future time",//请选择未来的时间
-    "crm.alert.full.day":"Full day",//全天
-    "crm.alert.finish.longer":"The end time must be later than the start time",//结束时间必须要大于开始时间
-    "crm.failed.alert.todo.list":"Failed to modify to-do status",//修改待办事项状态失败
-    "crm.ahead.n.min":"Ahead {n} minutes",//提前{n}分钟
-    "crm.ahead.n.hour":"Ahead {n} hour",//提前{n}小时
-    "crm.today.10.clock":"10 clock that day",//当天上午10点
-    "crm.n.day.10.clock":"Ahead {n} day at 10 clock",//{n}天前上午10点
-    "phone.delay.save":"Call records are synchronizing, please wait to save!",//通话记录正在同步，请稍等再保存！
-    "crm.schedule.fill.content":"Please fill in schedule content!",//请填写联系内容
-    "schedule.list.management":"Schedule Management",//日程管理
-    "schedule.expired.list.failed":"Failed to get expired schedule management list",//获取超时日程管理列表失败
-    "schedule.expired.list":"Expired and incomplete schedule list",//超时未完成
-    "schedule.list.remind":"Reminder time",//提醒
-    "schedule.list.mark.finish":"Mark as done",//标记为完成
-    "schedule.create.person":"founder",//创建人
-    "schedule.get.schedule.list.failed":"Failed to get schedule management list",//获取日程管理列表失败
-    "schedule.management.schedule.content":"Schedule content"//日程内容
+    "crm.alert.topic": "Title",//标题
+    "crm.contact.time": "Contact time",//联系时间
+    "crm.alert.time": "Alert time",//提醒时间
+    "crm.alert.after.1.hours": "1 hour later",//1小时后
+    "crm.alert.after.2.hours": "2 hours later",//2小时后
+    "crm.alert.after.5.hours": "5 hours later",//5小时后
+    "crm.alert.after.1.day": "1 day later",//1天后
+    "crm.alert.after.1.week": "1 week later",//1周后
+    "crm.not.alert": "Not remind",//不提醒
+    "crm.alert.not.finish": "Not finish",//未完成
+    "crm.alert.select.future.time": "Please choose the future time",//请选择未来的时间
+    "crm.alert.full.day": "Full day",//全天
+    "crm.alert.finish.longer": "The end time must be later than the start time",//结束时间必须要大于开始时间
+    "crm.failed.alert.todo.list": "Failed to modify to-do status",//修改待办事项状态失败
+    "crm.ahead.n.min": "Ahead {n} minutes",//提前{n}分钟
+    "crm.ahead.n.hour": "Ahead {n} hour",//提前{n}小时
+    "crm.today.10.clock": "10 clock that day",//当天上午10点
+    "crm.n.day.10.clock": "Ahead {n} day at 10 clock",//{n}天前上午10点
+    "phone.delay.save": "Call records are synchronizing, please wait to save!",//通话记录正在同步，请稍等再保存！
+    "crm.schedule.fill.content": "Please fill in schedule content!",//请填写联系内容
+    "schedule.list.management": "Schedule Management",//日程管理
+    "schedule.expired.list.failed": "Failed to get expired schedule management list",//获取超时日程管理列表失败
+    "schedule.expired.list": "Expired and incomplete schedule list",//超时未完成
+    "schedule.list.remind": "Reminder time",//提醒
+    "schedule.list.mark.finish": "Mark as done",//标记为完成
+    "schedule.create.person": "founder",//创建人
+    "schedule.get.schedule.list.failed": "Failed to get schedule management list",//获取日程管理列表失败
+    "schedule.management.schedule.content": "Schedule content",//日程内容
+    "schedule.todo.list": "Todo lists"//待办
 
 };
 export default en_US;

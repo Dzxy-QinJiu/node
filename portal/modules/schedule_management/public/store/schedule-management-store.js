@@ -20,13 +20,8 @@ ScheduleManagementStore.prototype.getState = function () {
     this.pageSize = 20;//一次获取日程列表的页数
     this.lastScheduleExpiredId = "";//过期日程列表用于下拉加载的id
     this.listenScrollBottom = true;//是否监听下拉加载
-
     this.handleStatusLoading = false;//正在修改日程的状态
     this.handleStatusErrMsg = "";//修改日程状态失败
-    this.scheduleTableList = [];//日程管理列表中的数据
-    this.isLoadingscheduleList = false;//正在获取右侧日程列表
-    this.scheduleErrMsg = "";//获取日程列表失败
-
 };
 //把数据转换成组件需要的类型
 ScheduleManagementStore.prototype.processForList =function (originList,dateType) {
@@ -50,20 +45,6 @@ ScheduleManagementStore.prototype.processForList =function (originList,dateType)
 //查询日程列表
 ScheduleManagementStore.prototype.getScheduleList = function (data) {
     //获取两个列表，一个是超时日程列表，一个是右侧日程管理中用的列表
-    if (data.isScheduleTableData){
-        //右侧日程列表
-        if (data.loading) {
-            this.isLoadingscheduleList = true;
-            this.scheduleErrMsg = "";
-        } else if (data.error) {
-            this.isLoadingscheduleList = false;
-            this.scheduleErrMsg = data.errorMsg;
-        } else {
-            let list = data.scheduleListObj ? data.scheduleListObj.list: [];
-            this.scheduleTableList = this.processForList(list,"day");
-            this.isLoadingscheduleList = false;
-        }
-    }else{
         //超时未完成的列表
         if (data.loading) {
             this.isLoadingScheduleExpired = true;
@@ -83,9 +64,7 @@ ScheduleManagementStore.prototype.getScheduleList = function (data) {
 
             this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
             this.isLoadingScheduleExpired = false;
-
         }
-    }
 };
 
 //添加或更新跟进内容
