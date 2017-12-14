@@ -223,7 +223,7 @@ var BasicData = React.createClass({
                                             />
                                         </dd>
                                     </dl>
-                                    <dl className="dl-horizontal crm-basic-item detail_item crm-basic-remarks"
+                                    <dl className="dl-horizontal crm-basic-item detail_item crm-basic-address"
                                         style={{whiteSpace:"normal",wordBreak:"break-all"}}>
                                         <dt>{Intl.get("realm.address", "地址")}</dt>
                                         <dd>
