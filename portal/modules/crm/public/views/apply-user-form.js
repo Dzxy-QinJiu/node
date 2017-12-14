@@ -409,7 +409,7 @@ const ApplyUserForm = React.createClass({
                                             (<Spinner className="isloading"/>) :
                                             (null)
                                     }
-                                    <b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>
+                                    {/*<b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>*/}
                                 </div>
                                 <FormItem
                                     wrapperCol={{span: 23}}
