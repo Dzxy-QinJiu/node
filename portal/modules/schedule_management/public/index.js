@@ -20,6 +20,7 @@ import Trace from "LIB_DIR/trace";
 import {message, Icon, Row, Col, Button, Alert, Modal} from "antd";
 var scheduleManagementStore = require("./store/schedule-management-store");
 var scheduleManagementAction = require("./action/schedule-management-action");
+var scheduleManagementAjax = require("./ajax/schedule-management-ajax");
 // 没有消息的提醒
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
 var Spinner = require("CMP_DIR/spinner");
@@ -32,6 +33,7 @@ var user_id = userData.getUserData().user_id;
 import CrmRightPanel  from 'MOD_DIR/crm/public/views/crm-right-panel';
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
+import Translate from 'PUB_DIR/intl/i18nTemplate';
 const ScheduleManagement = React.createClass({
     getInitialState: function () {
         return {
@@ -42,15 +44,15 @@ const ScheduleManagement = React.createClass({
             end_time: "",//日程组件中的结束时间
             status: "",//选择日程的状态
             rightPanelIsShow: false,//是否展示右侧客户详情
-            visibleModal: false,//是否展示标记已完成状态的模态框
-            isEdittingItem: {},//当前正在编辑的日程
+            scheduleTableList:[],//右侧日程列表中的日程数据
+            scheduleTableListTotal:0,//日程列表是数量
+            isEdittingItemId:"",//正在标记为完成的那一条日程
+            listenScrollBottomSchedList:false,
             ...scheduleManagementStore.getState()
         };
     },
     onStoreChange: function () {
-        this.setState(scheduleManagementStore.getState(), () => {
-            this.updateEvents(this.state.scheduleTableList);
-        });
+        this.setState(scheduleManagementStore.getState());
     },
     componentDidMount: function () {
         scheduleManagementStore.listen(this.onStoreChange);
@@ -62,13 +64,8 @@ const ScheduleManagement = React.createClass({
         }, () => {
             this.getExpiredScheduleList();
         });
-        //获取组件中需要展示的日程
-        this.setState({
-            start_time: new Date().getTime() - 365 * 2 * 24 * 3600 * 1000,//两年前的某个时间
-            end_time: TimeStampUtil.getTodayTimeStamp().end_time,//今日结束时间
-        }, () => {
-            this.getScheduleList("isScheduleList");
-        });
+        this.updateEvents();
+
         //给日程列表右上角的视图类型加一下处理,在不同的视图下展示的日程的内容不一样，通过类进行控制内容的展示和隐藏
         $("#calendar").on("click", ".fc-month-button", function () {
             $("#calendar").removeClass("weekView-calendar");
@@ -100,30 +97,107 @@ const ScheduleManagement = React.createClass({
         }
         scheduleManagementAction.getScheduleList(constObj);
     },
-    //获取日程列表
-    getScheduleList: function (listType) {
-        var constObj = {
-            page_size: 1000,//现在是把所有的日程都取出来，先写一个比较大的数字，后期可能会改成根据切换的视图类型选择不同的pagesize
-            //把今天0点作为判断是否过期的时间点
-            start_time: this.state.start_time,
-            end_time: this.state.end_time,
-            status: this.state.status
-        };
-        scheduleManagementAction.getScheduleList(constObj, listType);
-    },
     //展示没有数据的提示
     showNoMoreDataTip: function () {
         return !this.state.isLoadingScheduleExpired &&
             this.state.scheduleExpiredList.length >= this.state.scheduleExpiredSize &&
             !this.state.listenScrollBottom;
     },
-    updateEvents: function (eventsList) {
+    renderAgendaDayHtml: function () {
+        var currentTime = $('#calendar').fullCalendar('getDate').format(oplateConsts.DATE_FORMAT);
+        //一天的开始和结束时间
+        var startTime = moment(currentTime).valueOf();
+        var endTime = (startTime/1000 + 24 * 60 * 60)*1000;
+
+        var scheduleList =_.filter(this.state.scheduleTableList,(list)=>{
+            return list.start_time >= startTime && list.end_time <= endTime;
+        });
+        var divHeight = 600;
+        return (
+            <div id="content-block" className="content-block">
+                <div className="dayagenda-schedule-list"
+                >
+                    <div className="schedule-title">
+                        <Row>
+                            <Col sm={4}>
+                                <span className="timerange">{Intl.get("common.login.time", "时间")}</span>
+                            </Col>
+                            <Col sm={9}>
+                                    <span className="todo">
+                                        {Intl.get("schedule.todo.list","待办")}
+                                    </span>
+                            </Col>
+                            <Col sm={10}>
+                                    <span className="content">
+                                        {Intl.get("crm.177","内容")}
+                                    </span>
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className="schedule-items-content"  style={{height: divHeight}}>
+                        <GeminiScrollbar>
+                            { _.map(scheduleList, (item, index) => {
+                                var listCls = classNames("list-item", {
+                                    "has-handled": item.status == "handle",
+                                    "selected-customer":item.customer_id == this.state.curCustomerId
+                                });
+                                var itemCls = classNames("list-item-content", {
+
+                                });
+                                var iconFontCls = classNames("iconfont",{
+                                    "icon-phone-busy":item.type == "calls",
+                                    "icon-schedule-visit":item.type == "visit",
+                                    "icon-schedule-other":item.type == "other",
+                                });
+                                var content = item.status == "handle"? "已完成" : (
+                                    item.allDay ? "全天" : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
+                                );
+                                return (
+                                    <div className={listCls} onClick={this.showCustomerDetail.bind(this, item.customer_id)}>
+                                        <div className={itemCls}>
+                                            <Row>
+                                                <Col sm={4}>
+                                                    <p className="schedule-time-range">{content}</p>
+                                                    <span className="hidden record-id">{item.id}</span>
+                                                </Col>
+                                                <Col sm={9}>
+                                                    <p className="schedule-customer-name">
+                                                        <i className={iconFontCls}></i>
+                                                        {item.customer_name || item.topic}</p>
+                                                    <span className="hidden record-id">{item.id}</span>
+                                                </Col>
+                                                <Col sm={10}>
+                                                    <div className="schedule-content-wrap">
+                                                        {user_id == item.member_id && item.status !=="handle" ?
+                                                            <Button
+                                                                type="primary"
+                                                                onClick={this.handleScheduleItemStatus.bind(this, item)}>{Intl.get("schedule.list.mark.finish", "标记为完成")}
+                                                                {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
+                                                                    <Icon type="loading"/> : null}</Button> : null}
+                                                        <p className="schedule-content">{item.content}</p>
+                                                        <span className="hidden record-id">{item.id}</span>
+
+                                                    </div>
+
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </GeminiScrollbar>
+                    </div>
+                </div>
+            </div>
+        )
+    },
+    updateEvents: function () {
         var _this = this;
         $('#calendar').fullCalendar('destroy');
         $('#calendar').fullCalendar({
             defaultView: 'agendaDay',//基础天视图, 默认展示天视图
             header: {
-                left:"",
+                left:"",//即使为空也要加
                 center: 'prev,title,next,today',
                 right: 'month,agendaWeek,agendaDay'
             },
@@ -142,42 +216,55 @@ const ScheduleManagement = React.createClass({
                 prev: '<',
                 next: '>'
             },
-            defaultdate: moment().format(oplateConsts.DATE_FORMAT),
-            events: eventsList,
+            defaultdate: moment().format(oplateConsts.DATE_FORMAT),//默认时间
+            events: function(start,end,timezone, callback) {
+                var view = $('#calendar').fullCalendar('getView');
+                var viewName = view.name;
+                var startTime = Date.parse(new Date($.fullCalendar.formatDate(start, "YYYY-MM-DD HH:mm:ss")));
+                var endTime = Date.parse(new Date($.fullCalendar.formatDate(end, "YYYY-MM-DD HH:mm:ss")));
+                var constObj = {
+                    page_size: 1000,//现在是把所有的日程都取出来，先写一个比较大的数字，后期可能会改成根据切换的视图类型选择不同的pagesize
+                    //把今天0点作为判断是否过期的时间点
+                    start_time: startTime,
+                    end_time: endTime,
+                    sort_field:"start_time",//排序字段 按开始时间排序
+                    order:"ascend"//排序方式，按升序排列
+                };
+                $.ajax({
+                    url: '/rest/get/schedule/list',
+                    dataType: 'json',
+                    type: 'get',
+                    data: constObj,
+                    success: function (data) {
+                        var events = _this.processForList(data.list,viewName);
+                        callback(events);
+                    },
+                    error: function (errorMsg) {
+                        message.error(Intl.get("schedule.get.schedule.list.failed","获取日程管理列表失败"));
+                    }
+                });
+            },
             //用于渲染内容
             eventRender: function (event, element) {
                 //展示开始和结束时间
                 element.find(".fc-time").html(moment(event.start).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(event.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT));
-                //如果是天视图,就要加上日程提醒的内容
-                if (event.dateType == "day") {
-                    //加上内容
-                    element.find(".fc-title").after(`<span class="fc-inner-content">${event.description || ""}</span>`);
-                    //每条日程加上操作按钮
-                    // element.find(".fc-content").append(`<span class="handle-finish-btn">${Intl.get("schedule.list.mark.finish", "标记为完成")}</span>`)
-                    //给内容加上title属性
-                    var textVal = element.find(".fc-time").text() + " " + element.find(".fc-title").text() + " " + element.find(".fc-inner-content").text() ;
+                //周和月视图，用title展示日程的信息
+                //todo 下个版本的周和月视图会改掉，这里暂时先这样展示
+                if (event.dateType == "agendaWeek" || "month"){
+                    var textVal = element.find(".fc-time").text() + " " + element.find(".fc-title").text() + " " + element.find(".fc-inner-content").text();
                     element.closest(".fc-event").attr("title",textVal);
-                };
-                if (event.status == "handle") {
-                    //已经处理过的日程，加上特殊的样式标识
-                    element.closest(".fc-event").addClass("handle-schedule");
                 }
             },
-            //在天视图和周视图下，点击某个时间，会有个弹框，可以展示详情，修改状态
-            eventClick: function (calEvent, jsEvent, view) {
-                // if ($(jsEvent.target).hasClass("handle-finish-btn")) {
-                //     return;
-                // }
-                //如果不是自己建的日程或者日程的状态已经是handle的，不弹出修改状态的对话框
-                if (user_id != calEvent.member_id || calEvent.status == "handle") {
-                    return;
-                };
-                //展示模态框，
-                _this.setState({
-                    visibleModal: true,
-                    isEdittingItem: calEvent,
-                });
-            },
+            eventAfterAllRender: function (view) {
+                //天视图的时候，用自己写的展示样式
+                if (view.name =="agendaDay"){
+                    $("#calendar .fc-view.fc-agendaDay-view table tbody").html("").css({"display":"block"});
+                    ReactDOM.render(
+                        <Translate Template={_this.renderAgendaDayHtml()}></Translate>,
+                        $("#calendar .fc-view.fc-agendaDay-view table tbody")[0]
+                    );
+                }
+            }
         })
     },
 
@@ -187,7 +274,7 @@ const ScheduleManagement = React.createClass({
         let list = _.clone(originList);
         for (let i = 0, len = list.length; i < len; i++) {
             let curSchedule = list[i];
-            // curSchedule.dateType = dateType;//日期的类型 比如周，天，月
+            curSchedule.dateType = dateType;//日期的类型 比如周，天，月
             curSchedule.title = curSchedule.topic;
             //之前新建日程的时候，把全天的结束时间设置为23:59:59,所以比0点少1s
             if (curSchedule.end_time - curSchedule.start_time == 86399000) {
@@ -197,48 +284,44 @@ const ScheduleManagement = React.createClass({
             curSchedule.start = moment(curSchedule.start_time).format(oplateConsts.DATE_TIME_FORMAT);
             curSchedule.end = moment(curSchedule.end_time).format(oplateConsts.DATE_TIME_FORMAT);
             curSchedule.description = curSchedule.content;
-            curSchedule.block = true;//为了解决日程的遮挡问题，但好像没效果？？？
         }
-        return list;
-    },
-    componentDidUpdate: function () {
-        this.updateEvents(this.state.scheduleTableList);
+        //状态是已完成的日程
+        var hasFinishedList = _.filter(list, (item) =>{return item.status == "handle";});
+        //未完成的日程
+        var notFinishedList = _.filter(list, (item) =>{return item.status == "false";});
+        //不是全天日程
+        var notFulldaylist = _.filter(notFinishedList, (item) =>{ return !item.allDay;});
+        // _.sortBy(notFulldaylist, 'start_time');
+        //全天的日程
+        var Fulldaylist = _.filter(notFinishedList, (item) =>{ return item.allDay;});
+        //对日程数据进行排序，把全天的放在最上面，已完成的放在最下面
+        var sortedList = _.flatten([Fulldaylist,notFulldaylist,hasFinishedList]);
+        this.setState({
+            scheduleTableList:sortedList,
+        });
+        return sortedList;
     },
     componentWillUnmount: function () {
         scheduleManagementStore.unlisten(this.onStoreChange);
     },
-    //点击模态框的确认按钮
-    handleOk: function () {
-        var item = this.state.isEdittingItem;
+    //点击日程列表中的标记为完成
+    handleScheduleItemStatus: function (item, event) {
         const reqData = {
             id: item.id,
             status: "handle",
         };
+        this.setState({
+            isEdittingItemId:item.id
+        });
         scheduleManagementAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
                     "id": item.id,
                 };
-                //修改列表中那条日程的status
-                this.state.scheduleTableList.forEach((value, index, array) => {
-                    if (value.id == this.state.isEdittingItem.id) {
-                        this.state.scheduleTableList[index].status = "handle";
-                    }
-                });
-                this.setState({
-                    visibleModal: false,
-                    scheduleTableList: this.state.scheduleTableList
-                });
+                $(event.target).closest(".list-item").removeClass("selected-customer").addClass("has-handled").find("button").hide();
             } else {
                 message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
             }
-        });
-
-    },
-    //关闭模态框
-    handleCancel: function () {
-        this.setState({
-            visibleModal: false,
         });
     },
     //标记为完成
@@ -247,11 +330,17 @@ const ScheduleManagement = React.createClass({
             id: item.id,
             status: "handle",
         };
+        this.setState({
+            isEdittingItemId:item.id
+        });
         scheduleManagementAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
                     "id": item.id,
                 };
+                this.setState({
+                    isEdittingItemId:""
+                });
                 scheduleManagementAction.afterHandleStatus(newStatusObj);
             } else {
                 message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
@@ -259,14 +348,21 @@ const ScheduleManagement = React.createClass({
         });
     },
     //查看客户的详情
-    showCustomerDetail: function (customer_id) {
+    showCustomerDetail: function (customer_id,event) {
+        //加上背景颜色
+        $(event.target).closest(".list-item").addClass("selected-customer");
+        //如果点击到更改状态的按钮上，就不用展示客户详情了
+        if(event.target.className == "ant-btn ant-btn-primary"){
+            return;
+        }
         this.setState({
             curCustomerId: customer_id,
             rightPanelIsShow: true
-        })
+        });
     },
     //关闭右侧客户详情
     hideRightPanel: function () {
+        $(".list-item.selected-customer").removeClass("selected-customer");
         this.setState({
             curCustomerId: "",
             rightPanelIsShow: false
@@ -325,9 +421,9 @@ const ScheduleManagement = React.createClass({
                     >
                         {_.map(this.state.scheduleExpiredList, (item) => {
                             var cls = classNames("iconfont", {
-                                "icon-visit": item.type == "visit",
+                                "icon-schedule-visit": item.type == "visit",
                                 "icon-phone-busy": item.type == "calls",
-                                "": item.type == "other"
+                                "icon-schedule-other": item.type == "other"
                             });
                             return (
                                 <div className="list-item">
@@ -343,7 +439,7 @@ const ScheduleManagement = React.createClass({
                                     <p className="item-customer-content">
                                         <i className={cls}></i>
                                         <span onClick={this.showCustomerDetail.bind(this, item.customer_id)}>
-                                        {item.customer_name}
+                                        {item.customer_name || item.topic}
                                         </span>
                                     </p>
                                     <p className="item-schedule-content">
@@ -364,7 +460,7 @@ const ScheduleManagement = React.createClass({
                                         {user_id == item.member_id ?
                                             <Button type="primary"
                                                     onClick={this.handleMarkFinishStatus.bind(this, item)}>{Intl.get("schedule.list.mark.finish", "标记为完成")}
-                                                {this.state.handleStatusLoading ?
+                                                {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
                                                     <Icon type="loading"/> : null}</Button> :
                                             <span>{Intl.get("schedule.create.person", "创建人")}: {item.member_nick}</span>}
                                     </p>
@@ -381,15 +477,6 @@ const ScheduleManagement = React.createClass({
 
             )
         }
-    },
-
-    renderModalContent: function () {
-        return (
-            <div>
-                <p>{Intl.get("crm.4", "客户名称")}：{this.state.isEdittingItem.customer_name}</p>
-                <p>{Intl.get("schedule.management.schedule.content", "日程内容")}：{this.state.isEdittingItem.content}</p>
-            </div>
-        )
     },
     handleScrollBarBottom: function () {
         var currListLength = _.isArray(this.state.scheduleExpiredList) ? this.state.scheduleExpiredList.length : 0;
@@ -419,18 +506,6 @@ const ScheduleManagement = React.createClass({
                 </div>
                 <div id="calendar">
                 </div>
-                <Modal
-                    title=""
-                    visible={this.state.visibleModal}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    okText={Intl.get("schedule.list.mark.finish", "标记为完成")}
-                    cancelText={Intl.get("config.manage.realm.canceltext", "取消")}
-                >
-                    <p>
-                        {this.state.isEdittingItem ? this.renderModalContent() : null}
-                    </p>
-                </Modal>
                 {/*右侧客户详情*/}
                 {this.state.rightPanelIsShow ? (
                     <CrmRightPanel

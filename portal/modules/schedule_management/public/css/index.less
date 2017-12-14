@@ -35,18 +35,6 @@
         .list-item{
           margin: 0px 16px 16px 16px;
           background: #fff;
-          .iconfont{
-            padding-right: 10px;
-            font-size: 26px;
-            position: relative;
-            top: 4px;
-          }
-          .icon-phone-busy{
-            color:#5DD778;
-          }
-          .icon-visit{
-            color:#9C5DF5;
-          }
           //标题的样式
           .item-title{
             height: 26px;
@@ -97,11 +85,17 @@
       }
 
     }
+    .iconfont{
+      padding-right: 10px;
+      position: relative;
+      top: 4px;
+      font-size: 20px;
+    }
   }
   #calendar{
     float: left;
-    width:70%;
-    margin:20px 0 0 5px;
+    width:75%;
+    padding:20px;
     .fc-time-grid-event.fc-short .fc-time:after{
       content:""
     }
@@ -145,6 +139,12 @@
         }
       }
     }
+    .iconfont{
+      padding-right: 10px;
+      position: relative;
+      top: 4px;
+      font-size: 20px;
+    }
   };
   //在周视图时，只展示客户名称
   #calendar.weekView-calendar {
@@ -169,5 +169,123 @@
     color:#999;
     border-color:#FBFBFB;
   }
+  //天视图
+  #calendar .fc-view.fc-agendaDay-view .fc-body{
+    display: none;
+  }
+  //天视图中日程列表样式
+  .content-block{
+    color:#666;
+    border: 1px solid #dddddd;
+    border-top: none;
+    overflow: hidden;
+    .dayagenda-schedule-list{
+      font-size: 14px;
+      cursor:pointer;
+      .schedule-title{
+        background: #F7F7F9;
+        .timerange{
+          padding-left: 10px;
+        }
+        .todo{
+
+        }
+        .content{
+
+        }
+      }
+      //右侧日程列表
+      .list-item{
+        .list-item-content{
+          border-bottom: 1px solid #e8e8e8;
+          line-height: 1.5;
+
+          //日程时间
+          .schedule-time-range{
+            padding-left: 10px;
+            color:#8da8c5;
+
+          }
+          //日程联系的客户
+          .schedule-customer-name{
+            font-size:16px;
+            color:#333333;
+
+          }
+          //日程联系内容
+          .schedule-content{
+
+          }
+          //标记完成的按钮
+          .schedule-content-wrap{
+            overflow: hidden;
+            button{
+              float: right;
+              margin-right: 10px;
+              display: none;
+            }
+          }
+        }
+        //鼠标悬浮的时候，加一个背景颜色
+        &:hover{
+          background: #F6FBFF;
+          .schedule-content-wrap{
+            button{
+              display: block;
+            }
+          }
+
+        }
+      }
+      //已完成的日程样式
+      .list-item.has-handled{
+        background: #FBFBFB;
+        div.list-item-content{
+          div{
+            p, .iconfont.icon-phone-busy,.iconfont.icon-schedule-visit,.iconfont.icon-schedule-other{
+              color:#C9C9C9;
+            }
+          }
+        }
+      }
+      //点击查看详情的日程
+      .list-item.selected-customer{
+        background: #F6FBFF;
+      }
+
+    }
+    .ant-row{
+      >div{
+        padding: 15px 0  6px 10px;
+      }
+      >div:nth-child(2){
+        border-left: 1px dotted #ddd;
+        border-right: 1px dotted #ddd;
+        position: relative;
+        top: -8px;
+      }
+    }
+    //.schedule-content-wrap{
+    //  &:hover{
+    //    background: #F6FBFF;
+    //  }
+    //}
+
+  }
+
+
+  #calendar .fc-view.fc-agendaDay-view .fc-axis{
+    display: none;
+  }
+  .iconfont.icon-phone-busy{
+    color:#5DD778
+  }
+  .iconfont.icon-schedule-visit{
+    color:#9C5DF5
+  }
+  .iconfont.icon-schedule-other{
+    color:#9C5DF5
+  }
+
 
 }

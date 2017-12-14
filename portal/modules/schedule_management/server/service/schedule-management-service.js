@@ -20,6 +20,12 @@ exports.getScheduleList = function (req, res) {
         if (req.query && req.query.end_time){
             url = url + "&end_time=" + req.query.end_time;
         }
+        if (req.query && req.query.sort_field){
+            url = url + "&sort_field=" + req.query.sort_field;
+        }
+        if (req.query && req.query.order){
+            url = url + "&order=" + req.query.order;
+        }
         if (req.query && (_.isBoolean(req.query.status) || req.query.status)){
             url = url + "&status=" + req.query.status;
         }

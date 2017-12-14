@@ -1838,7 +1838,8 @@ var en_US = {
     "schedule.list.mark.finish":"Mark as done",//标记为完成
     "schedule.create.person":"founder",//创建人
     "schedule.get.schedule.list.failed":"Failed to get schedule management list",//获取日程管理列表失败
-    "schedule.management.schedule.content":"Schedule content"//日程内容
+    "schedule.management.schedule.content":"Schedule content",//日程内容
+    "schedule.todo.list":"Todo lists"//待办
 
 };
-export default en_US;
+export default en_US;
