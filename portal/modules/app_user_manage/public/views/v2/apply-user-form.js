@@ -264,12 +264,12 @@ const ApplyUserForm = React.createClass({
                             >
                                 <RadioGroup onChange={this.onUserTypeChange}
                                             value={formData.tag}>
-                                    <Radio key="1"
-                                           value={Intl.get("common.trial.user", "试用用户")}><ReactIntl.FormattedMessage
-                                        id="common.trial.user" defaultMessage="试用用户"/></Radio>
-                                    <Radio key="0"
-                                           value={Intl.get("common.trial.official", "正式用户")}><ReactIntl.FormattedMessage
-                                        id="user.signed.user" defaultMessage="签约用户"/></Radio>
+                                    <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
+                                        {Intl.get("common.trial.user", "试用用户")}
+                                    </Radio>
+                                    <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
+                                        {Intl.get("user.signed.user", "签约用户")}
+                                    </Radio>
                                 </RadioGroup>
                             </FormItem>
                             <FormItem
