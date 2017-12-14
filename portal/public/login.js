@@ -1,5 +1,5 @@
 require("./sources/browser.sniff");
-var LoginDetail = require("../components/Login/LoginDetail");
+import LoginMain from "../components/Login/main";
 import Translate from './intl/i18nTemplate';
 var props = {
     loginErrorMsg: window.Oplate.initialProps.loginErrorMsg,
@@ -7,7 +7,7 @@ var props = {
     captchaCode: window.Oplate.initialProps.captchaCode
 };
 
-ReactDOM.render(<Translate Template={<LoginDetail {...props}/>}/>, $('#react-placeholder')[0]);
+ReactDOM.render(<Translate Template={<LoginMain {...props}/>}/>, $('#react-placeholder')[0]);
 
 var styleEl = document.getElementById("css-style-collector-data");
 
