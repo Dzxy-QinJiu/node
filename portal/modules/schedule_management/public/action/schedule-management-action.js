@@ -13,38 +13,18 @@ function ScheduleManagementActions() {
     );
     //获取日程列表
     this.getScheduleList = function (queryObj, listType) {
-        //右侧日程列表会传第二个参数
-        if (listType){
-            //右侧组件中用的数据
-            this.dispatch({error: false, loading: true,isScheduleTableData:true});
-        }else{
             //左侧过期未完成的日程数据
             this.dispatch({error: false, loading: true});
-        }
         this.dispatch({error: false, loading: true});
         scheduleManagementAjax.getScheduleList(queryObj).then((result) => {
-            if (listType){
-                this.dispatch({error: false, loading: false, scheduleListObj: result,isScheduleTableData:true});
-            }else{
-                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-                this.dispatch({error: false, loading: false, scheduleListObj: result});
-            }
-
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({error: false, loading: false, scheduleListObj: result});
         }, (errorMsg) => {
-            if (listType){
-                this.dispatch({
-                    error: true,
-                    loading: false,
-                    errorMsg: errorMsg || Intl.get("schedule.get.schedule.list.failed","获取日程管理列表失败"),
-                    isScheduleTableData:true
-                });
-            }else{
-                this.dispatch({
-                    error: true,
-                    loading: false,
-                    errorMsg: errorMsg || Intl.get("schedule.expired.list.failed","获取超时日程管理列表失败")
-                });
-            }
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get("schedule.expired.list.failed", "获取超时日程管理列表失败")
+            });
         });
     };
     //修改某条日程管理的状态
