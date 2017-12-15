@@ -27,7 +27,7 @@ import Spinner from 'CMP_DIR/spinner';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from "LIB_DIR/trace";
 import ScatterChart from 'CMP_DIR/chart/scatter';
-import { AntcTable } from "antc";
+import {AntcTable} from "antc";
 
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
@@ -178,7 +178,12 @@ var CallRecordAnalyis = React.createClass({
             let teamMemberParam = this.getTeamMemberParam();
             if (teamMemberParam) {
                 if (teamMemberParam.sales_team_id) {
-                    queryParams.team_ids = teamMemberParam.sales_team_id;
+                    if (teamMemberParam.sales_team_id.indexOf(',') === -1) {
+                        //只有一个团队时，获取团队下的团队/成员的通话记录列表
+                        queryParams.team_id = teamMemberParam.sales_team_id;
+                    } else {
+                        queryParams.team_ids = teamMemberParam.sales_team_id;
+                    }
                 } else if (teamMemberParam.user_id) {
                     queryParams.member_ids = teamMemberParam.user_id;
                 }
@@ -596,9 +601,9 @@ var CallRecordAnalyis = React.createClass({
         }
         return (
             <AntcTable dataSource={this.state.salesPhoneList}
-                   columns={this.getPhoneListColumn()}
-                   pagination={false}
-                   bordered
+                       columns={this.getPhoneListColumn()}
+                       pagination={false}
+                       bordered
             />
         );
     },
