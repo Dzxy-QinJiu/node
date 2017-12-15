@@ -16,7 +16,8 @@ const history = require("../../../../../public/sources/history");
 const UserApplyAction = require("../../action/user-apply-actions");
 import DateSelectorPicker from '../../../../../components/date-selector/utils';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
-
+import commonAppAjax from "MOD_DIR/common/public/ajax/app";
+const dayTime = 24 * 60 * 60 * 1000;
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
@@ -26,19 +27,23 @@ const ApplyUserForm = React.createClass({
         return {
             formData: formData,
             appFormData: formData.products[0],
+            appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
-            setAllChecked: true//是否设置到所有应用上
+            setAllChecked: false//是否设置到所有应用上
         };
     },
 
     componentWillReceiveProps: function (nextProps) {
         this.buildFormData(nextProps);
+        let oldAppIds = _.pluck(this.props.apps, "client_id");
+        let newAppIds = _.pluck(nextProps.apps, "client_id");
+        //获取newAppIds中，不存在于oldAppIds中的应用id
+        let diffAppIds = _.difference(newAppIds, oldAppIds);
+        //获取新增的应用的默认配置
+        this.getAppsDefaultConfig(diffAppIds);
     },
 
     buildFormData: function (props) {
-        const timeObj = DateSelectorPicker.getHalfAMonthTime();
-        const begin_date = DateSelectorPicker.getMilliseconds(timeObj.start_time);
-        const end_date = DateSelectorPicker.getMilliseconds(timeObj.end_time);
         const users = _.pluck(props.users, "user");
         let formData = {
             user_ids: _.pluck(users, "user_id"),
@@ -48,16 +53,16 @@ const ApplyUserForm = React.createClass({
             tag: Intl.get("common.trial.official", "正式用户"),
         };
         let num = _.isArray(users) ? users.length : 1;
+        //获取的应用默认配置列表
+        let appDefaultConfigList = this.state ? this.state.appDefaultConfigList : [];
         //构造应用数据
         formData.products = props.apps.map(app => {
-            return {
+            //没有取到应用默认配置时的默认值
+            let appData = {
                 client_id: app.client_id,
-                number: num,
-                begin_date: begin_date,
-                end_date: end_date,
-                range: "0.5m",
-                over_draft: 1//默认到期停用
+                number: num
             };
+            return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
 
         if (this.state) {
@@ -68,27 +73,72 @@ const ApplyUserForm = React.createClass({
         }
     },
 
+    componentDidMount: function () {
+        //获取各应用的默认设置
+        this.getAppsDefaultConfig(_.pluck(this.props.apps, 'client_id'));
+    },
+
+    //获取各应用的默认设置
+    getAppsDefaultConfig: function (appIds) {
+        if (_.isArray(appIds) && appIds.length) {
+            //获取各应用的默认设置(不需要角色和权限信息)
+            commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
+                client_id: appIds.join(','),
+                with_addition: false
+            }).success((dataList) => {
+                if (_.isArray(dataList) && dataList.length) {
+                    //去重取并集
+                    let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
+                    let formData = this.state.formData;
+                    formData.products = formData.products.map(app => {
+                        return this.getAppConfig(app, appDefaultConfigList, formData.tag);
+                    });
+                    this.setState({
+                        formData: formData,
+                        appFormData: formData.products[0],
+                        appDefaultConfigList: appDefaultConfigList
+                    });
+                }
+            });
+        }
+    },
+
     onAppChange: function (id) {
         if (id === this.state.appFormData.client_id) return;
         const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
         this.setState({appFormData: appFormData});
     },
+    /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
+     * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
+     */
+    getAppConfig: function (app, appDefaultConfigList, userType, needSetDefault) {
+        //找到该应用对应用户类型的配置信息
+        let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
+        let begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+        if (defaultConfig) {
+            //应用默认设置中的开通周期、到期可选项
+            app.begin_date = begin_date;
+            app.end_date = begin_date + defaultConfig.valid_period;
+            app.range = DateSelectorPicker.getDateRange(defaultConfig.valid_period);
+            app.over_draft = defaultConfig.over_draft;
+        } else if (needSetDefault) {
+            // 切换试用用户和正式用户的单选按钮时，如果各应用默认配置中没有该应用该类型的默认配置时，
+            // 需要默认设置，试用->到期不变，正式：到期停用, 开通周期：半个月
+            app.begin_date = begin_date;
+            app.end_date = begin_date + 15 * dayTime;
+            app.range = "0.5m";
+            app.over_draft = userType === Intl.get("common.trial.official", "正式用户") ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
+        }
+        return app;
+    },
 
     onUserTypeChange: function (e) {
         let formData = this.state.formData;
         formData.tag = e.target.value;
-        if (formData.tag === Intl.get("common.trial.official", "正式用户")) {
-           formData.products = formData.products.map(app => {
-               app.over_draft = OVER_DRAFT_TYPES.STOP_USE;//默认到期停用
-               return app;
-           });
-        } else if (formData.tag === Intl.get("common.trial.user", "试用用户")) {
-            formData.products = formData.products.map(app => {
-                app.over_draft = OVER_DRAFT_TYPES.UN_CHANGED;//默认到期不变
-                return app;
-            });
-        }
-        this.setState(this.state);
+        formData.products = formData.products.map(app => {
+            return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
+        });
+        this.setState({formData: formData});
     },
 
     onRemarkChange: function (e) {
@@ -150,11 +200,11 @@ const ApplyUserForm = React.createClass({
                 UserApplyAction.applyUser(submitData, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
-                        message.success( Intl.get("user.apply.success", "申请成功"));
+                        message.success(Intl.get("user.apply.success", "申请成功"));
                         this.handleCancel();
                     }
                     else {
-                        message.error( Intl.get("common.apply.failed", "申请失败"));
+                        message.error(Intl.get("common.apply.failed", "申请失败"));
                     }
                     if (_.isFunction(cb)) cb();
                 });
@@ -207,8 +257,12 @@ const ApplyUserForm = React.createClass({
                             >
                                 <RadioGroup onChange={this.onUserTypeChange}
                                             value={formData.tag}>
-                                    <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}><ReactIntl.FormattedMessage id="common.trial.user" defaultMessage="试用用户" /></Radio>
-                                    <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}><ReactIntl.FormattedMessage id="user.signed.user" defaultMessage="签约用户" /></Radio>
+                                    <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
+                                        {Intl.get("common.trial.user", "试用用户")}
+                                    </Radio>
+                                    <Radio key="0" value={Intl.get("common.trial.official", "正式用户")}>
+                                        {Intl.get("user.signed.user", "签约用户")}
+                                    </Radio>
                                 </RadioGroup>
                             </FormItem>
                             <FormItem
@@ -230,15 +284,15 @@ const ApplyUserForm = React.createClass({
                                     return (<TabPane key={app.client_id}
                                                      tab={this.renderTabToolTip(app.client_name)}
                                                      disabled={disabled}>
-                                        <div className="set-all-check-box col-24">
-                                            <Checkbox checked={this.state.setAllChecked}
-                                                      onChange={this.toggleCheckbox}/>
-                                                <span className="checkbox-title"
-                                                      onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>
-                                            <span className="checkbox-notice">
-                                               (<ReactIntl.FormattedMessage id="user.set.single.app" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)
-                                            </span>
-                                        </div>
+                                        {/*<div className="set-all-check-box col-24">*/}
+                                        {/*<Checkbox checked={this.state.setAllChecked}*/}
+                                        {/*onChange={this.toggleCheckbox}/>*/}
+                                        {/*<span className="checkbox-title"*/}
+                                        {/*onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>*/}
+                                        {/*<span className="checkbox-notice">*/}
+                                        {/*(<ReactIntl.FormattedMessage id="user.set.single.app" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)*/}
+                                        {/*</span>*/}
+                                        {/*</div>*/}
                                         <div className="app-tab-pane col-24">
                                             <FormItem
                                                 label={Intl.get("user.open.cycle", "开通周期")}
@@ -254,9 +308,12 @@ const ApplyUserForm = React.createClass({
                                             >
                                                 <RadioGroup onChange={this.onOverDraftChange}
                                                             value={appFormData.over_draft.toString()}>
-                                                    <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用" /></Radio>
-                                                    <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade" defaultMessage="降级" /></Radio>
-                                                    <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability" defaultMessage="不变" /></Radio>
+                                                    <Radio key="1" value="1"><ReactIntl.FormattedMessage
+                                                        id="user.status.stop" defaultMessage="停用"/></Radio>
+                                                    <Radio key="2" value="2"><ReactIntl.FormattedMessage
+                                                        id="user.status.degrade" defaultMessage="降级"/></Radio>
+                                                    <Radio key="0" value="0"><ReactIntl.FormattedMessage
+                                                        id="user.status.immutability" defaultMessage="不变"/></Radio>
                                                 </RadioGroup>
                                             </FormItem>
                                         </div>

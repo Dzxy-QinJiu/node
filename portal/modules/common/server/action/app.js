@@ -38,3 +38,12 @@ exports.getOnLineUserZone = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//获取各应用的默认配置
+exports.getAppsDefaultConfig = (req, res) => {
+    appService.getAppsDefaultConfig(req, res, req.query).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

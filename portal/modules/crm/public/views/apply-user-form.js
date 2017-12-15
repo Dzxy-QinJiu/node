@@ -2,7 +2,7 @@ const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 require("../css/apply-user-form.less");
 require("../../../../public/css/antd-vertical-tabs.css");
-import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Icon, message,Checkbox} from "antd";
+import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Icon, message, Checkbox} from "antd";
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -16,6 +16,7 @@ const OrderAction = require("../action/order-actions");
 const DatePickerUtils = require("../../../../components/date-selector/utils");
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
+import commonAppAjax from "MOD_DIR/common/public/ajax/app";
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
 
@@ -28,20 +29,27 @@ const ApplyUserForm = React.createClass({
         return {
             formData: formData,
             appFormData: formData.products[0],
+            appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
             onlyOneUser: false,//是否只能开通一个用户（用户名是邮箱格式时）
-            setAllChecked: true//是否设置到所有应用上
+            setAllChecked: false//是否设置到所有应用上
         };
     },
 
     componentWillReceiveProps: function (nextProps) {
         this.buildFormData(nextProps);
+        let oldAppIds = _.pluck(this.props.apps, "client_id");
+        let newAppIds = _.pluck(nextProps.apps, "client_id");
+        //获取newAppIds中，不存在于oldAppIds中的应用id
+        let diffAppIds = _.difference(newAppIds, oldAppIds);
+        //获取新增的应用的默认配置
+        this.getAppsDefaultConfig(diffAppIds);
     },
 
     buildFormData: function (props) {
         const timeObj = DatePickerUtils.getHalfAMonthTime();
         const begin_date = DatePickerUtils.getMilliseconds(timeObj.start_time);
-        const end_date = DatePickerUtils.getMilliseconds(timeObj.end_time);
+        let end_date = DatePickerUtils.getMilliseconds(timeObj.end_time);
         const order = props.order;
         const isTrailUserType = TRIAL_USER_TYPES.indexOf(props.applyType) !== -1;
         let formData = {
@@ -49,13 +57,16 @@ const ApplyUserForm = React.createClass({
             order_id: order.id,
             sales_opportunity: order.sale_stages,
             remark: "",
-            tag: isTrailUserType? Intl.get("common.trial.user", "试用用户") : Intl.get("common.trial.official", "正式用户"),
+            tag: isTrailUserType ? Intl.get("common.trial.user", "试用用户") : Intl.get("common.trial.official", "正式用户"),
             user_name: "",
             nick_name: props.customerName
         };
+        //获取的应用默认配置列表
+        let appDefaultConfigList = this.state ? this.state.appDefaultConfigList : [];
         //构造应用数据
         formData.products = props.apps.map(app => {
-            return {
+            //没有取到应用默认配置时的默认值
+            let appData = {
                 client_id: app.client_id,
                 number: 1,
                 begin_date: begin_date,
@@ -63,6 +74,16 @@ const ApplyUserForm = React.createClass({
                 range: "0.5m",
                 over_draft: isTrailUserType ? OVER_DRAFT_TYPES.UN_CHANGED : OVER_DRAFT_TYPES.STOP_USE, //0：到期不变，1：到期停用
             };
+            if (_.isArray(appDefaultConfigList) && appDefaultConfigList.length) {
+                let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
+                //找到该应用对应用户类型的默认配置信息
+                if (defaultConfig) {
+                    appData.end_date = begin_date + defaultConfig.valid_period;
+                    appData.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
+                    appData.over_draft = defaultConfig.over_draft;
+                }
+            }
+            return appData;
         });
 
         if (this.state) {
@@ -70,6 +91,46 @@ const ApplyUserForm = React.createClass({
             this.state.appFormData = formData.products[0];
         } else {
             return formData;
+        }
+    },
+    componentDidMount: function () {
+        let appList = this.props.apps;
+        if (_.isArray(appList) && appList.length) {
+            //获取各应用的默认设置
+            this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
+        }
+    },
+    //获取各应用的默认设置
+    getAppsDefaultConfig: function (appIds) {
+        if (_.isArray(appIds) && appIds.length) {
+            //获取各应用的默认设置(不需要角色和权限信息)
+            commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
+                client_id: appIds.join(','),
+                with_addition: false
+            }).success((dataList) => {
+                if (_.isArray(dataList) && dataList.length) {
+                    //去重取并集
+                    let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
+                    let formData = this.state.formData;
+                    formData.products = formData.products.map(app => {
+                        //找到该应用对应用户类型的配置信息
+                        let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
+                        if (defaultConfig) {
+                            //应用默认设置中的开通周期、到期可选项
+                            app.begin_date = DatePickerUtils.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+                            app.end_date = app.begin_date + defaultConfig.valid_period;
+                            app.range = DatePickerUtils.getDateRange(defaultConfig.valid_period);
+                            app.over_draft = defaultConfig.over_draft;
+                        }
+                        return app;
+                    });
+                    this.setState({
+                        formData: formData,
+                        appFormData: formData.products[0],
+                        appDefaultConfigList: appDefaultConfigList
+                    });
+                }
+            });
         }
     },
 
@@ -170,7 +231,7 @@ const ApplyUserForm = React.createClass({
                 OrderAction.applyUser(submitData, {}, result => {
                     this.setState({isLoading: false});
                     if (result === true) {
-                        message.success( Intl.get("user.apply.success", "申请成功"));
+                        message.success(Intl.get("user.apply.success", "申请成功"));
                         this.handleCancel();
                     }
                     else {
@@ -196,17 +257,17 @@ const ApplyUserForm = React.createClass({
         );
     },
 
-    checkUserExist(rule,value,callback) {
+    checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
-        let  number = this.state.appFormData.number;
+        let number = this.state.appFormData.number;
         let trimValue = value.trim();
         // 校验的信息提示
-        UserNameTextfieldUtil.validatorMessageTips(trimValue,callback);
+        UserNameTextfieldUtil.validatorMessageTips(trimValue, callback);
         let obj = {
             customer_id: customer_id,
             user_name: trimValue
         };
-        UserNameTextfieldUtil.checkUserExist(rule,obj,callback, number, this.refs.username_block);
+        UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
     },
 
     render: function () {
@@ -219,23 +280,23 @@ const ApplyUserForm = React.createClass({
         const length = this.props.apps.length > 4 ? this.props.apps.length : 4;
         //appHeight为左侧每个app名称的高度 appWidth为左侧每个app名称的宽度
         const appHeight = $('.antd-vertical-tabs-tab').height(),
-               appWidth = $('.antd-vertical-tabs-tab').width();
+            appWidth = $('.antd-vertical-tabs-tab').width();
         //appContentHeight为左侧所有app所在容器的高度
         const appContentHeight = $('.antd-vertical-tabs-content').height();
         const shadowTop = appMarginTop + length * appHeight;
         //父元素的高度-<b>相对定位的top值=<b>元素的高度 <b>为遮盖元素
-        const shadowHeight = (appContentHeight-shadowTop < 0) ? 0 : (appContentHeight - shadowTop);
+        const shadowHeight = (appContentHeight - shadowTop < 0) ? 0 : (appContentHeight - shadowTop);
         const shadowLeft = appMarginLeft + appWidth;
         const timePickerConfig = {
             isCustomSetting: true,
             appId: "applyUser"
         };
-       
+
         return (
             <div className="full_size wrap_padding crm_apply_user_form_wrap">
                 <Tabs defaultActiveKey="form">
                     <TabPane tab={applyTitles[this.props.applyType]} key="form">
-                        <div className="crm_apply_user_form" style={{height:fixedHeight}} ref="scrollWrap">
+                        <div className="crm_apply_user_form" style={{height: fixedHeight}} ref="scrollWrap">
                             <Form horizontal>
                                 <Validation ref="validation" onValidate={this.handleValidate}>
                                     <div className="user-name-textfield-block" ref="username_block">
@@ -246,7 +307,7 @@ const ApplyUserForm = React.createClass({
                                             validateStatus={this.getValidateStatus("user_name")}
                                             help={this.getHelpMessage("user_name")}
                                         >
-                                            <Validator  rules={[{validator:this.checkUserExist}]}>
+                                            <Validator rules={[{validator: this.checkUserExist}]}>
                                                 <Input
                                                     name="user_name"
                                                     placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
@@ -262,7 +323,10 @@ const ApplyUserForm = React.createClass({
                                         validateStatus={this.getValidateStatus("nick_name")}
                                         help={this.getHelpMessage("nick_name")}
                                     >
-                                        <Validator rules={[{required: true,message: Intl.get("user.nickname.write.tip", "请填写昵称")}]}>
+                                        <Validator rules={[{
+                                            required: true,
+                                            message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                                        }]}>
                                             <Input
                                                 name="nick_name"
                                                 placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
@@ -282,7 +346,7 @@ const ApplyUserForm = React.createClass({
                                             onChange={this.onRemarkChange}/>
                                     </FormItem>
                                 </Validation>
-                                <div className="app-user-info ant-form-item" style={{maxHeight:fixedHeight}}>
+                                <div className="app-user-info ant-form-item" style={{maxHeight: fixedHeight}}>
                                     <Tabs tabPosition="left" onChange={this.onAppChange}
                                           prefixCls="antd-vertical-tabs">
                                         {this.props.apps.map(app => {
@@ -291,12 +355,12 @@ const ApplyUserForm = React.createClass({
                                             return (<TabPane key={app.client_id}
                                                              tab={this.renderTabToolTip(app.client_name)}
                                                              disabled={disabled}>
-                                                <div className="set-all-check-box col-22">
-                                                    <Checkbox checked={this.state.setAllChecked}
-                                                              onChange={this.toggleCheckbox}/>
-                                                    <span className="checkbox-title" onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>
-                                                    <span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>
-                                                </div>
+                                                {/*<div className="set-all-check-box col-22">*/}
+                                                {/*<Checkbox checked={this.state.setAllChecked}*/}
+                                                {/*onChange={this.toggleCheckbox}/>*/}
+                                                {/*<span className="checkbox-title" onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>*/}
+                                                {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
+                                                {/*</div>*/}
                                                 <div className="app-tab-pane col-22">
                                                     <FormItem
                                                         label={Intl.get("user.batch.open.count", "开通个数")}
@@ -304,7 +368,7 @@ const ApplyUserForm = React.createClass({
                                                         wrapperCol={{span: 20}}
                                                     >
                                                         <InputNumber
-                                                            prefixCls={this.state.onlyOneUser?"number-error-border ant-input-number":"ant-input-number"}
+                                                            prefixCls={this.state.onlyOneUser ? "number-error-border ant-input-number" : "ant-input-number"}
                                                             value={appFormData.number}
                                                             min={1}
                                                             max={999}
@@ -327,9 +391,13 @@ const ApplyUserForm = React.createClass({
                                                     >
                                                         <RadioGroup onChange={this.onOverDraftChange}
                                                                     value={appFormData.over_draft.toString()}>
-                                                            <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用" /></Radio>
-                                                            <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade" defaultMessage="降级" /></Radio>
-                                                            <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability" defaultMessage="不变" /></Radio>
+                                                            <Radio key="1" value="1"><ReactIntl.FormattedMessage
+                                                                id="user.status.stop" defaultMessage="停用"/></Radio>
+                                                            <Radio key="2" value="2"><ReactIntl.FormattedMessage
+                                                                id="user.status.degrade" defaultMessage="降级"/></Radio>
+                                                            <Radio key="0" value="0"><ReactIntl.FormattedMessage
+                                                                id="user.status.immutability"
+                                                                defaultMessage="不变"/></Radio>
                                                         </RadioGroup>
                                                     </FormItem>
                                                 </div>
@@ -341,19 +409,19 @@ const ApplyUserForm = React.createClass({
                                             (<Spinner className="isloading"/>) :
                                             (null)
                                     }
-                                <b style={{height:shadowHeight,top:shadowTop,left:shadowLeft,}}></b>
+                                    {/*<b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>*/}
                                 </div>
                                 <FormItem
                                     wrapperCol={{span: 23}}
                                 >
                                     <RightPanelCancel onClick={this.handleCancel}
-                                                      style={{visibility:this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
+                                                      style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
+                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                     </RightPanelCancel>
                                     <RightPanelSubmit onClick={this.handleSubmit}
-                                                      style={{visibility:this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
+                                                      style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
                                                       disabled={this.state.isLoading}>
-                                        <ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请" />
+                                        <ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请"/>
                                     </RightPanelSubmit>
                                 </FormItem>
                             </Form>
