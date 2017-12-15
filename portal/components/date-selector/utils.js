@@ -230,7 +230,7 @@ exports.getEchartTooltipDate = function(list , idx , unit) {
     }
 };
 //获取到的毫秒数转化成前端展示的开通周期范围，default是为了解决上一个版本的测试数据
-exports.getDateRange= function (mills) {
+exports.getDateRange = function (mills) {
     let range = '0.5m';
     let dayTime = 24 * 60 * 60 * 1000;
     switch (mills) {
@@ -253,7 +253,7 @@ exports.getDateRange= function (mills) {
             range = 'forever';
             break;
         default:
-            range = mills / (1000 * 60 * 60 * 24) + '天'
+            range = mills / dayTime + '天';
     }
     return range;
 

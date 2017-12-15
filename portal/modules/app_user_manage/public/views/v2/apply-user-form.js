@@ -17,7 +17,7 @@ const UserApplyAction = require("../../action/user-apply-actions");
 import DateSelectorPicker from '../../../../../components/date-selector/utils';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from "MOD_DIR/common/public/ajax/app";
-
+const dayTime = 24 * 60 * 60 * 1000;
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
@@ -44,9 +44,6 @@ const ApplyUserForm = React.createClass({
     },
 
     buildFormData: function (props) {
-        const timeObj = DateSelectorPicker.getHalfAMonthTime();
-        const begin_date = DateSelectorPicker.getMilliseconds(timeObj.start_time);
-        const end_date = DateSelectorPicker.getMilliseconds(timeObj.end_time);
         const users = _.pluck(props.users, "user");
         let formData = {
             user_ids: _.pluck(users, "user_id"),
@@ -63,22 +60,9 @@ const ApplyUserForm = React.createClass({
             //没有取到应用默认配置时的默认值
             let appData = {
                 client_id: app.client_id,
-                number: num,
-                begin_date: begin_date,
-                end_date: end_date,
-                range: "0.5m",
-                over_draft: 1//默认到期停用
+                number: num
             };
-            if (_.isArray(appDefaultConfigList) && appDefaultConfigList.length) {
-                let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
-                //找到该应用对应用户类型的默认配置信息
-                if (defaultConfig) {
-                    appData.end_date = begin_date + defaultConfig.valid_period;
-                    appData.range = DateSelectorPicker.getDateRange(defaultConfig.valid_period);
-                    appData.over_draft = defaultConfig.over_draft;
-                }
-            }
-            return appData;
+            return this.getAppConfig(appData, appDefaultConfigList, formData.tag, true);
         });
 
         if (this.state) {
@@ -90,11 +74,8 @@ const ApplyUserForm = React.createClass({
     },
 
     componentDidMount: function () {
-        let appList = this.props.apps;
-        if (_.isArray(appList) && appList.length) {
-            //获取各应用的默认设置
-            this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
-        }
+        //获取各应用的默认设置
+        this.getAppsDefaultConfig(_.pluck(this.props.apps, 'client_id'));
     },
 
     //获取各应用的默认设置
@@ -109,7 +90,9 @@ const ApplyUserForm = React.createClass({
                     //去重取并集
                     let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
                     let formData = this.state.formData;
-                    formData.products = this.getAppConfig(formData, appDefaultConfigList);
+                    formData.products = formData.products.map(app => {
+                        return this.getAppConfig(app, appDefaultConfigList, formData.tag);
+                    });
                     this.setState({
                         formData: formData,
                         appFormData: formData.products[0],
@@ -125,26 +108,36 @@ const ApplyUserForm = React.createClass({
         const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
         this.setState({appFormData: appFormData});
     },
-    //获取应用的配置
-    getAppConfig: function (formData, appDefaultConfigList) {
-        return formData.products.map(app => {
-            //找到该应用对应用户类型的配置信息
-            let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && formData.tag === data.user_type);
-            if (defaultConfig) {
-                //应用默认设置中的开通周期、到期可选项
-                app.begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
-                app.end_date = app.begin_date + defaultConfig.valid_period;
-                app.range = DateSelectorPicker.getDateRange(defaultConfig.valid_period);
-                app.over_draft = defaultConfig.over_draft;
-            }
-            return app;
-        });
+    /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
+     * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
+     */
+    getAppConfig: function (app, appDefaultConfigList, userType, needSetDefault) {
+        //找到该应用对应用户类型的配置信息
+        let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
+        let begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
+        if (defaultConfig) {
+            //应用默认设置中的开通周期、到期可选项
+            app.begin_date = begin_date;
+            app.end_date = begin_date + defaultConfig.valid_period;
+            app.range = DateSelectorPicker.getDateRange(defaultConfig.valid_period);
+            app.over_draft = defaultConfig.over_draft;
+        } else if (needSetDefault) {
+            // 切换试用用户和正式用户的单选按钮时，如果各应用默认配置中没有该应用该类型的默认配置时，
+            // 需要默认设置，试用->到期不变，正式：到期停用, 开通周期：半个月
+            app.begin_date = begin_date;
+            app.end_date = begin_date + 15 * dayTime;
+            app.range = "0.5m";
+            app.over_draft = userType === Intl.get("common.trial.official", "正式用户") ? OVER_DRAFT_TYPES.STOP_USE : OVER_DRAFT_TYPES.UN_CHANGED;
+        }
+        return app;
     },
 
     onUserTypeChange: function (e) {
         let formData = this.state.formData;
         formData.tag = e.target.value;
-        formData.products = this.getAppConfig(formData, this.state.appDefaultConfigList);
+        formData.products = formData.products.map(app => {
+            return this.getAppConfig(app, this.state.appDefaultConfigList, formData.tag, true);
+        });
         this.setState({formData: formData});
     },
 
