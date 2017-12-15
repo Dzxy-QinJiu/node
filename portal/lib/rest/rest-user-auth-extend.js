@@ -42,7 +42,8 @@ var RestlerExtend = {
         setAuthHeader(requestInstance, accessToken, userBaseInfo ? userBaseInfo.auth.realm_id : "", userBaseInfo ? userBaseInfo.user_id : "");
         // 代理 complete, fail 方法，以方便对授权出错的拦截
         process.nextTick((function () {
-            var requestInstance = this, i, h_completes = requestInstance.listeners("complete"), h_fails = requestInstance.listeners("fail");
+            var requestInstance = this, i, h_completes = requestInstance.listeners("complete"),
+                h_fails = requestInstance.listeners("fail");
             var proxyHandler = function (handers) {
                 var requestInstance = this, args = Array.prototype.slice.apply(arguments, [1]);
                 if (!requestInstance["_process_token_validate"]) {
@@ -59,9 +60,10 @@ var RestlerExtend = {
 
         // 授权出错的拦截
         requestInstance.on("oauth-proxy-fail", function (errorObj, response) {
-            var retEmitter, errorCode = (errorObj && typeof errorObj == "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
-            if (errorCode == 19300 || errorCode == 19301 || errorCode == 19302) {
-                logger.debug(" req.session.refreshingToken:"+ req.session.refreshingToken );
+            var retEmitter,
+                errorCode = (errorObj && typeof errorObj == "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
+            if (errorCode == 19300 || errorCode == 19301 || errorCode == 19302 || errorCode == 11473) {
+                logger.debug(" req.session.refreshingToken:" + req.session.refreshingToken);
                 if (req.session.refreshingToken) {
                     requestInstance["_process_token_validate"] = true;
                     authRequest.globalEmitter.once("after-token-refresh-successful", function (newToken, refreshedUser) {
@@ -70,8 +72,8 @@ var RestlerExtend = {
                         if (refreshedUser && refreshedUser.auth && userBaseInfo && userBaseInfo.auth && refreshedUser.auth.access_token == userBaseInfo.auth.access_token) {
                             delete requestInstance["_process_token_validate"];
                             // 根据新token重新发送请求
-                            logger.debug("user (%s) Other waited request get new_access_token :" + newToken.access_token,userBaseInfo.user_name);
-                            logger.debug("user (%s) Other waited request url :" + requestInstance.restOptions.method + "  " + requestInstance.restOptions.url,userBaseInfo.user_name);
+                            logger.debug("user (%s) Other waited request get new_access_token :" + newToken.access_token, userBaseInfo.user_name);
+                            logger.debug("user (%s) Other waited request url :" + requestInstance.restOptions.method + "  " + requestInstance.restOptions.url, userBaseInfo.user_name);
                             reTryRequest(requestInstance, newToken.access_token, userBaseInfo, req, res);
                         }
                     });
@@ -95,17 +97,21 @@ var RestlerExtend = {
                         // 根据新token重新发送请求
                         reTryRequest(requestInstance, newToken.access_token, userBaseInfo, req, res);
                     }).on("refresh-token-error", function (err, response) {
-                        logger.debug("user (%s) refresh token error " , userBaseInfo.user_name);
+                        logger.debug("user (%s) refresh token error ", userBaseInfo.user_name);
                         handleFlag(requestInstance, req);
                         authRequest.globalEmitter.emit("refresh-token-error", req, res);
                     }).on("token-not-exist", function (type, data) {
-                        logger.debug("user (%s) refresh token token not exist " , userBaseInfo.user_name);
+                        logger.debug("user (%s) refresh token token not exist ", userBaseInfo.user_name);
                         handleFlag(requestInstance, req);
                         authRequest.globalEmitter.emit("token-not-exist", req, res);
                     }).on("login-only-one", function (errorCode) {
-                        logger.debug("user (%s) refresh token login only one " , userBaseInfo.user_name);
+                        logger.debug("user (%s) refresh token login only one ", userBaseInfo.user_name);
                         handleFlag(requestInstance, req);
                         authRequest.globalEmitter.emit("login-only-one", req, res, errorCode);
+                    }).on("token-kicked-by-sso", function () {
+                        logger.debug("user (%s) refresh token ,token was kicked by sso ", userBaseInfo.user_name);
+                        handleFlag(requestInstance, req);
+                        authRequest.globalEmitter.emit("token-not-exist", req, res, errorCode);
                     });
                 }
 
@@ -120,6 +126,8 @@ var RestlerExtend = {
 function setAuthHeader(requestInstance, accessToken, realm_id, user_id) {
     // 1. 将 accessToken 放入请求头中
     requestInstance.setHeader("token", accessToken);
+    //兼容auth2
+    requestInstance.setHeader("Authorization", "oauth2 " + accessToken);
     //将realm_id，user_id放入请求头
     requestInstance.setHeader("realm", realm_id);
     requestInstance.setHeader("user_id", user_id);

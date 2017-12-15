@@ -5,6 +5,7 @@
  */
 var path = require('path');
 var webpack = require('webpack');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 //webpack config
 module.exports = {
     entry: {
@@ -43,15 +44,17 @@ module.exports = {
             path: path.join(__dirname, "dll", "[name]-manifest.json"),
             name: "[name]"
         }),
-        new webpack.optimize.UglifyJsPlugin({
+        new UglifyJSPlugin({
             test: /(\.jsx|\.js)$/,
-            compress: {
+            parallel: true,
+            sourceMap: false,
+            uglifyOptions: {
+                ecma: 6,
+                output: {
+                    comments: false,
+                },
                 warnings: false
-            },
-            output: {
-                comments: false
-            },
-             sourceMap : false
+            }
         })
     ]
 };

@@ -58,6 +58,9 @@ module.exports = {
             "method": "get",
             "path": "/js/logger",
             "handler": "recordLog",
+            "passport": {
+                "needLogin": false
+            }
         }
         ];
 

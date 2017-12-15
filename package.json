@@ -9,11 +9,11 @@
   },
   "license": "UNLICENSED",
   "scripts": {
-    "dll": "webpack  --progress --config webpack.config.dll.js  -p",
+    "dll": "webpack  --progress --config webpack.config.dll.js",
     "server": "webpack --progress --config webpack.config.server.js",
-    "webpack": "webpack --progress -p",
+    "webpack": "webpack --progress",
     "debug": "npm run dll && npm run server && node --debug app.js",
-    "dev": "node devserver.js",
+    "dev": "node devserver.js -d",
     "start": "node app.js -p",
     "production": "npm run dll && npm run webpack  && npm run server && npm run start"
   },
@@ -39,6 +39,7 @@
     "caster-client-sdk": "^0.6.0",
     "classnames": "2.2.1",
     "color": "0.11.1 ",
+    "component-util": "^1.0.2",
     "compression": "1.6.0",
     "cookie": "0.2.3",
     "cookie-parser": "1.4.0",
@@ -127,6 +128,6 @@
     "webpack-dev-middleware": "^1.4.0",
     "webpack-dev-server": "1.16.3",
     "webpack-hot-middleware": "2.6.0",
-    "webpack-parallel-uglify-plugin": "0.2.0"
+    "uglifyjs-webpack-plugin": "1.1.4"
   }
 }

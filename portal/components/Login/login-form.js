@@ -7,7 +7,7 @@
 
 var crypto = require("crypto");
 const classnames = require("classnames");
-
+import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 //常量定义
 const CAPTCHA = '/captcha';
 //错误信息提示
@@ -25,7 +25,7 @@ var LoginForm = React.createClass({
             //密码
             password: '',
             //验证码
-            captchaCode: this.props.captchaCode,
+            captchaCode: this.props.captcha,
             //登录按钮是否可用
             loginButtonDisabled: true,
         };
@@ -58,27 +58,41 @@ var LoginForm = React.createClass({
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
             this.props.setErrorMsg(Intl.get("login.write.code", "请输入验证码"));
-            event.preventDefault();
-            return false;
+        } else {
+            this.login(userName, newValue);
         }
+        event.preventDefault();
+        return false;
+    },
+    login: function (userName, password) {
+        var lang = window.Oplate && window.Oplate.lang || "zh_CN";
+        var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : "";
+        // 将登录界面中的用户名与密码提交到SSO应用中
+        ssoLogin.login(userName, password, captcha).then((ticket) => {
+            // 登录成功后的回调
+            window.location.href = callBackUrl + "?t=" + ticket + "&lang=" + lang;
+        }).catch((data) => {
+            this.setState({
+                captchaCode: data && data.captcha,
+                loginErrorMsg: data && data.error
+            });
+        });
     },
     componentDidMount: function () {
+        this.showUserName();
+    },
+    showUserName: function () {
         var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
-        var _this = this;
         this.setState({
             username: userName,
-            loginButtonDisabled: false
-        }, function () {
-            //如果当前没有显示验证码，则去检查显示验证码
-            if (!_this.state.captchaCode) {
-                _this.getLoginCaptcha();
+            loginButtonDisabled: false,
+        }, () => {
+            if (userName) {
+                this.refs.password_input.focus();
+            } else {
+                this.refs.username.focus();
             }
         });
-        if (userName) {
-            this.refs.password_input.focus();
-        } else {
-            this.refs.username.focus();
-        }
     },
     userNameChange: function (evt) {
         this.setState({
@@ -92,63 +106,24 @@ var LoginForm = React.createClass({
     },
     renderCaptchaBlock: function (hasWindow) {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
-            <input placeholder={hasWindow?Intl.get("common.captcha", "验证码"):null} type="text"
+            <input placeholder={hasWindow ? Intl.get("common.captcha", "验证码") : null} type="text"
                    name="retcode" autoComplete="off"
                    tabIndex="3"
                    ref="captcha_input" maxLength="4"/>
-            <img src={base64_prefix + this.state.captchaCode} width="120" height="40"
+            <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
                  title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
                  onClick={this.refreshCaptchaCode}/>
         </div>) : null);
     },
     //获取验证码
     getLoginCaptcha: function () {
-        var username = this.state.username;
-        if (!username) {
-            return;
+        if (this.refs.captcha_img) {
+            this.refs.captcha_img.src = buildRefreshCaptchaUrl();
         }
-
-        $.ajax({
-            url: '/loginCaptcha',
-            dataType: 'json',
-            data: {
-                username,
-            },
-            success: (data) => {
-                this.setState({
-                    captchaCode: data
-                });
-            },
-            error: () => {
-                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
-            },
-        });
     },
     //刷新验证码
     refreshCaptchaCode: function () {
-        var username = this.state.username;
-        if (!username) {
-            return;
-        }
-
-        var _this = this;
-        $.ajax({
-            url: '/refreshCaptcha',
-            dataType: 'json',
-            data: {
-                username,
-            },
-            success: function (data) {
-                _this.setState({
-                    captchaCode: data
-                });
-            },
-            error: function () {
-                _this.setState({
-                    captchaCode: ERROR_MSGS.ERROR_CAPTCHA
-                });
-            }
-        });
+        this.getLoginCaptcha();
     },
 
     render: function () {
@@ -161,7 +136,7 @@ var LoginForm = React.createClass({
                 <div className="input-area">
                     <div className="input-item">
                         <input
-                            placeholder={hasWindow?Intl.get("login.username.phone.email", "用户名/手机/邮箱"):null}
+                            placeholder={hasWindow ? Intl.get("login.username.phone.email", "用户名/手机/邮箱") : null}
                             type="text"
                             name="username" autoComplete="off" tabIndex="1"
                             ref="username" value={this.state.username} onChange={this.userNameChange}
@@ -169,7 +144,7 @@ var LoginForm = React.createClass({
                     </div>
 
                     <div className="input-item">
-                        <input placeholder={hasWindow?Intl.get("common.password", "密码"):null}
+                        <input placeholder={hasWindow ? Intl.get("common.password", "密码") : null}
                                type="password" tabIndex="2"
                                ref="password_input"
                                onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>

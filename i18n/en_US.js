@@ -1559,6 +1559,7 @@ var en_US = {
     "errorcode.32": "Failed to modify warranted application",//修改授权应用失败
     "errorcode.33": "You have already sent the application to open the account, do not repeat",//已经发送了开通该账号的申请，请勿重复申请
     "errorcode.35": "Sorry, the server is in an abnormal condition",//很抱歉，服务器出现了异常状况
+    "errorcode.36": "You have already logout from other app (sso)",//已在其他应用(sso)退出
     "errorcode.37": "Token does not exist",//Token不存在
     "errorcode.38": "Token expired",//Token过期
     "errorcode.39": "Wrong user name or password",//用户名或密码错误

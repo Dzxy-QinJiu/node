@@ -29,7 +29,7 @@ var checkLogin = function (passport) {
             //如果是ajax请求  “X-Requested-With” header field is “XMLHttpRequest”,
             // indicating that the request was issued by a client library such as jQuery.
             if (req.xhr) {
-                accessLogger.error("sessionId:" + req.sessionID + ",用户未登录或没有权限访问" + req.url + ",sendStatus 401");
+                accessLogger.error("sessionId:" + req.sessionID + ",用户未登录,url=" + req.url + ",sendStatus 401");
                 res.sendStatus(401);
             } else {
                 ///处理转页的情况

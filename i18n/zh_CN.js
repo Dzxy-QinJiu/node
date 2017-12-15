@@ -1593,6 +1593,7 @@ var zh_CN = {
     "errorcode.32": "修改授权应用失败",
     "errorcode.33": "已经发送了开通该账号的申请，请勿重复申请",
     "errorcode.35": "很抱歉，服务器出现了异常状况",
+    "errorcode.36": "已在其他应用(sso)退出",
     "errorcode.37": "Token不存在",
     "errorcode.38": "Token过期",
     "errorcode.39": "用户名或密码错误",

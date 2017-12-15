@@ -9,8 +9,19 @@ var DesktopLogoutServic = require("../service/desktop-logout-service");
  * logout page handler.
  */
 exports.logout = function (req, res) {
-    DesktopLogoutServic.logout(req, res);
-    req.session.destroy(function () {
-        res.redirect("/login");
+    var _req = req;
+    var _res = res;
+    DesktopLogoutServic.logout(req, res).on("success", function () {
+        _req.session.destroy(function () {
+            _res.redirect("/login");
+        });
+    }).on("error", function () {
+        //阻止sso的check
+        _req.session.stopcheck = "true";
+        //删除session的user，但不清除session,为了传递stopcheck，并需要重新登录
+        _req.session.user = "";
+        _req.session.save(function () {
+            _res.redirect("/login");
+        });
     });
 };

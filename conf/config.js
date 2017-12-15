@@ -6,20 +6,25 @@ var webpackMode = "dev", isProduction = false;
 //是否正式环境
 var isFormal = process.env.FORMALENV || "false";
 
+//node环境设置
 if (process.argv.indexOf("p") >= 0
     ||
     process.argv.indexOf("-p") >= 0
     ||
     process.argv.indexOf("--p") >= 0
-    ||
-    process.argv.indexOf("production") >= 0
-    ||
-    process.argv.indexOf("-production") >= 0
-    ||
-    process.argv.indexOf("--production") >= 0) {
-    webpackMode = "production";
+) {
     isProduction = true;
 }
+//webpack环境设置
+if (process.argv.indexOf("d") >= 0
+    || process.argv.indexOf("-d") >= 0
+    || process.argv.indexOf("--d") >= 0
+) {
+    webpackMode = "dev";
+} else {
+    webpackMode = "production";
+}
+
 
 //分布式跟踪
 var trace = require("distributed-trace-for-nodejs");
@@ -169,7 +174,7 @@ var config = {
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || "oplate-web",//日志标签,用来区分是oplate的还是ketao的
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS||"http://notify-ketao.antfact.com:80",//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
+    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || "http://notify-ketao.antfact.com:80",//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG //语言环境(优先)
 };
 

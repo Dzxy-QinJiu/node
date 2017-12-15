@@ -304,7 +304,7 @@ module.exports.startSocketio = function (nodeServer) {
                         if (session) {
                             pushLogger.error("session: %s", JSON.stringify(session));
                         }
-                        pushLogger.error("sessionId %s 未登录", sid);
+                        pushLogger.error("sessionId %s 已退出", sid);
                     }
                 }
             });

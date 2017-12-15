@@ -1,6 +1,5 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var appConf = require('./conf/config');
 var commonUtil = require("./portal/lib/utils/common-utils");
 
 //代理服务器端口
