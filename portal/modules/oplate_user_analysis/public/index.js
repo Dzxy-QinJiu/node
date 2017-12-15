@@ -8,7 +8,7 @@ var FilterBtn = require("../../../components/filter-btn");
 var TopNav = require("../../../components/top-nav");
 var AnalysisMenu = require("../../../components/analysis_menu");
 var AnalysisAppSelector = require("../../../components/analysis_app_selector");
-import { AntcDatePicker } from "antc";
+import { AntcDatePicker, AntcCardContainer } from "antc";
 var GeminiScrollbar = require("../../../components/react-gemini-scrollbar");
 var AnalysisLayout = require("./utils/analysis-layout");
 var OplateUserAnalysisAction = require("./action/oplate-user-analysis.action");
@@ -1565,6 +1565,17 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         let appDownLoadData = this.getAppDownloadData(this.state.appDownload.data);
         let appTitleName =  _.uniq(_.pluck(this.state.appDownload.data, 'time')); // 时间点
         let chartList = [];
+        //平均在线时长的时间参数选择
+        const activeConditionSelector = (<SelectFullWidth
+            optionFilterProp="children"
+            showSearch
+            minWidth={120}
+            value={this.state.selectedOnlineTimeRange}
+            onChange={this.onSelectOnlineTimeRange}>
+            {onlineTimeRange.map((item, idx) => (
+                <Option key={idx} value={item.value} title={item.name}>{item.name}</Option>
+            ))}
+        </SelectFullWidth>);
         switch (this.state.currentTab) {
             case 'total':
                 if (!isComposite) {
@@ -1789,25 +1800,16 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     </div>
                 ), (
                     <div className="analysis_chart col-md-6 col-sm-12 charts-select-fix"
-                        data-title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}>
-                        <SelectFullWidth
-                            optionFilterProp="children"
-                            showSearch
-                            minWidth={120}
-                            value={this.state.selectedOnlineTimeRange}
-                            onChange={this.onSelectOnlineTimeRange}>
-                            {onlineTimeRange.map((item, idx) => (
-                                <Option key={idx} value={item.value} title={item.name}>{item.name}</Option>
-                            ))}
-                        </SelectFullWidth>
+                        data-title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}>                        
                         <div className="chart-holder">
-                            <CardContainer 
+                            <AntcCardContainer 
                                 title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}
                                 exportData={handleAveTimesExport(this.state.onlineTime.data)}
                                 csvFileName="average_times_statis.csv"
+                                subTitle={activeConditionSelector}
                             >
                                 {this.getOnlineTimeChart()}
-                            </CardContainer>
+                            </AntcCardContainer>
                         </div>
                     </div>
                 ))
