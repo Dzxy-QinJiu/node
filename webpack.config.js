@@ -19,11 +19,10 @@ var config = require('./conf/config');
 var fs = require('fs');
 var autoprefixer = require("autoprefixer");
 var HappyPack = require("happypack");
-var WebpackParallelUglifyPlugin = require("webpack-parallel-uglify-plugin");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 //打包模式
 var webpackMode = config.webpackMode || 'dev';
-
 
 //线上环境清除之前生成的文件
 if (webpackMode === 'production') {
@@ -131,8 +130,7 @@ var loadersLists = [
             path.resolve(__dirname, "node_modules/antd"),
             path.resolve(__dirname, "node_modules/rc-calendar"),
             path.resolve(__dirname, "node_modules/react-date-picker"),
-            path.resolve(__dirname, "node_modules/antc"),
-            path.resolve(__dirname, "node_modules/fullcalendar")
+            path.resolve(__dirname, "node_modules/antc")
         ]
     }, {
         test: /\.less$/,
@@ -191,17 +189,16 @@ if (webpackMode === 'production') {
             'NODE_ENV': JSON.stringify("production")
         }
     }));
-    pluginLists.push(new WebpackParallelUglifyPlugin({
-        cacheDir: path.resolve(__dirname, "cache"),
-        uglifyJS: {
-            sourceMap: false,
-            test: /(\.jsx|\.js)$/,
-            compress: {
-                warnings: false
-            },
+    pluginLists.push(new UglifyJSPlugin({
+        test: /(\.jsx|\.js)$/,
+        parallel: true,
+        sourceMap: false,
+        uglifyOptions: {
+            ecma: 6,
             output: {
-                comments: false
-            }
+                comments: false,
+            },
+            warnings: false
         }
     }));
 }

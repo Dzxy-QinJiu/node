@@ -47,6 +47,11 @@ module.exports = {
                 if (value.data && value.data.user) {
                     sessionLogger.debug("%s 的session在hazelcast中已过期被自动删除", value.data.user && value.data.user.nickname);
                     //logout(value);
+                    try{
+                        logoutService.sessionTimeout(key,value.data._USER_TOKEN_.access_token);
+                    }catch (e){
+                        console.log("sessionTimeout error");
+                    }
                     //触发session过期的监听事件
                     sessionExpireEmitter.emit(sessionExpireEmitter.SESSION_EXPIRED, {
                         sessionId: key,

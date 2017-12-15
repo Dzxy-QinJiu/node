@@ -39,6 +39,13 @@ function getAppToken(req, res) {
         });
     });
 }
+
+/**
+ * 首页
+ * @param req
+ * @param res
+ */
+
 exports.showLoginPage = function (req, res) {
     var loginErrorMsg = req.session.loginErrorMsg;
     if (loginErrorMsg) {
@@ -52,6 +59,7 @@ exports.showLoginPage = function (req, res) {
     };
     //优先使用环境变量中设置的语言
     const loginLang = global.config.lang || req.query.lang || "";
+    const stopcheck = req.session.stopcheck;
     //将当前的语言环境存入session中
     if (req.session) {
         req.session.lang = loginLang;
@@ -80,55 +88,43 @@ exports.showLoginPage = function (req, res) {
             siteID: global.config.siteID,
             lang: loginLang,
             hideLangQRcode: hideLangQRcode,
-            projectName: global.config.processTitle || "oplate"
+            projectName: global.config.processTitle || "oplate",
+            clientId: global.config.loginParams.clientId,
+            stopcheck: stopcheck
         });
     }
 
-    if (last_login_user) {
-        if (appToken) {
-            getLoginCaptcha(appToken);
-        } else {
-            //获取验证码之前先获取所需AppToken
-            getAppToken(req, res, getLoginCaptcha, function (errorObj) {
-                obj.loginErrorMsg = getErrorMsg(req);
-                renderHtml();
-            });
-        }
-    } else {
-        renderHtml();
-    }
-    //展示登录页面前先获取验证码
-    function getLoginCaptcha(appToken) {
-        DesktopLoginService.getLoginCaptcha(req, res, last_login_user, appToken, loginLang).on("success", function (data) {
-            obj.captchaCode = data ? data.data : "";
-            renderHtml();
-        }).on("error", function (errorObj) {
-            if (errorObj && (errorObj.message == CommonErrorCodeMap.getConfigJson(loginLang)[EXPIRE_TOKEN_CODE].message
-                || errorObj.message == CommonErrorCodeMap.getConfigJson(loginLang)[INVALID_TOKEN_CODE].message)) {
-                //应用token过期后，需重新获取应用token
-                getAppToken(req, res, getLoginCaptcha, function (errorObj) {
-                    obj.loginErrorMsg = getErrorMsg(req);
-                    renderHtml();
-                });
-            } else {
-                obj.loginErrorMsg = getErrorMsg(req);
-                renderHtml();
-            }
-        });
-    }
-
+    renderHtml();
 };
 /*
  * 登录逻辑
  */
-exports.login = function (req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-    var captcha = req.body.retcode;
-    //记录上一次登录用户名，到session中
-    username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-    req.session.last_login_user = username;
-    DesktopLoginService.login(req, res, username, password, captcha).on("success", function (data) {
+exports.ssologin = function (req, res) {
+    var ticket = req.query.t;
+    if (!ticket) {
+        req.session.stopcheck = "true";
+        let lang = req.session && req.session.lang || "zh_CN";
+        //登录界面，登录失败的处理
+        res.redirect("/login?lang=" + lang);
+    }else{
+        DesktopLoginService.loginWithTicket(req, res, ticket)
+            .on("success", loginSuccess(req, res))
+            .on("error", loginError(req, res));
+    }
+};
+
+//修改session数据
+function modifySessionData(req, data) {
+    var userData = UserDto.toSessionData(req, data);
+    req.session["_USER_TOKEN_"] = userData["_USER_TOKEN_"];
+    req.session.clientInfo = userData.clientInfo;
+    req.session.user = userData.user;
+};
+
+//登录成功处理
+function loginSuccess(req, res) {
+    req.session.stopcheck = "";
+    return function (data) {
         //修改session数据
         modifySessionData(req, data);
         //设置sessionStore，如果是内存session时，需要从req中获取
@@ -142,8 +138,13 @@ exports.login = function (req, res) {
                 res.redirect("/");
             }
         });
-    }).on("error", function (data) {
+    }
+}
+//登录失败处理
+function loginError(req, res) {
+    return function (data) {
         let lang = req.session && req.session.lang || "zh_CN";
+        req.session.stopcheck = "true";
         let backendIntl = new BackendIntl(req);
         if (data && data.message) {
             req.session.loginErrorMsg = data.message;
@@ -159,16 +160,8 @@ exports.login = function (req, res) {
                 res.redirect("/login?lang=" + lang);
             }
         });
-    });
-
-    //修改session数据
-    function modifySessionData(req, data) {
-        var userData = UserDto.toSessionData(req, data);
-        req.session["_USER_TOKEN_"] = userData["_USER_TOKEN_"];
-        req.session.clientInfo = userData.clientInfo;
-        req.session.user = userData.user;
     }
-};
+}
 
 //获取验证码
 exports.getLoginCaptcha = function (req, res) {
@@ -262,7 +255,7 @@ function getOperateCode(req, res) {
     return new Promise(function(resolve, reject) {
         const user_name = req.query.user_name;
         const captcha = req.query.captcha;
-    
+
         getAppToken(req, res).then(function (appToken) {
             DesktopLoginService.getOperateCode(req, res, appToken, user_name, captcha).on("success", function (data) {
                 const operateCode = data && data.operate_code;

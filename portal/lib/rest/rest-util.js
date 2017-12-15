@@ -9,10 +9,7 @@ var restManage = require("./rest-manage");
 var ErrorCode = require("./../utils/errorCode");
 var config = require("../../../conf/config");
 var CommonUtil = require("../utils/common-utils");
-//token过期错误码
-var TOKEN_EXPIRED_NUMBER = 19300;
-//不允许多人登录，被下线的错误码
-var RELOGIN_ERROR_CODE = 19301;
+
 //是否是线上环境(长沙工程中心)
 var isProductionEnvironment = CommonUtil.ip.isProductionEnvironment();
 
@@ -158,6 +155,7 @@ function RestUtil(logger) {
     }
     this.baseRest = new Request(logger, "baseRest");
     this.authRest = new Request(logger, "userAuthRest");
+    this.appAuthRest = new Request(logger, "appAuthRest");
 };
 
 

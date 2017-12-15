@@ -59,7 +59,8 @@ function getConfigJson(req) {
         "11413": {"httpCode": 500, "message": backendIntl.get("errorcode.39", "用户名或密码错误")},
         //用户密码错误
         "11440": {"httpCode": 500, "message": backendIntl.get("errorcode.39", "用户名或密码错误")},
-
+        //在其他应用已退出
+        "11473": {"httpCode": 500, "message": backendIntl.get("errorcode.36", "在其他应用已退出")},
         /****************** 安全域  ***************** */
 
         "12001": {"httpCode": 500, "message": backendIntl.get("errorcode.44", "获取安全域列表失败")},

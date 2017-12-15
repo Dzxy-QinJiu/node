@@ -11,6 +11,8 @@ var userAuthRest = require("./rest-user-auth-extend");
 var baseRest = require("./rest-basic");
 //处理token的rest实例
 var tokenProvider = require("./token-provider");
+//应用授权rest实例
+var appAuthRest = require("./rest-app-auth-extend");
 
 
 module.exports = {
@@ -23,8 +25,13 @@ module.exports = {
      */
     userAuthRest: userAuthRest,
     /**
+     * app应用授权接口
+     */
+    appAuthRest: appAuthRest,
+    /**
      * Token服务管理
      */
     tokenProvider: tokenProvider
+
 };
 

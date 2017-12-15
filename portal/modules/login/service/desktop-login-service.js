@@ -28,6 +28,8 @@ var urls = {
     getTicket: "/auth2/authc/reset_password/ticket",
     //重置密码
     resetPassword: "/auth2/authc/reset_password/update",
+    //根据ticket登录
+    loginWithTicket: "/auth2/authc/third_login/login"
 };
 //验证码的高和宽
 var captcha = {
@@ -40,76 +42,81 @@ var appTokenPrefix = "oauth2 ";
 //导出url
 exports.urls = urls;
 
-/**
- * 调用后端接口进行登录
+/*
+ 根据ticket登录
  */
-exports.login = function (req, res, username, password, captchaCode) {
-    var formData = getLoginFormData(username, password, captchaCode);
-    return restUtil.baseRest.post(
-        {
-            url: urls.login,
-            req: req,
-            res: res,
-            headers: {
-                session_id: req.sessionID
-            },
-            //后端要求用form的post提交
-            form: formData
-        }, null, {
-            success: function (emitter, data) {
-                //如果未返回数据
-                if (!data) {
-                    let backendIntl = new BackendIntl(req);
-                    emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
-                } else {
-                    //前端登录后所需数据结构
-                    var loginResult = {
-                        auth: {
-                            client_id: "other",
-                            realm_id: "",
-                            access_token: "",
-                            refresh_token: ""
-                        },
-                        nick_name: "",
-                        privileges: [],
-                        user_id: "",
-                        user_name: ""
-                    };
-                    if (data.token) {
-                        loginResult.auth.access_token = data.token.access_token || "";
-                        loginResult.auth.refresh_token = data.token.refresh_token || "";
-                    }
-                    var userData = data.user;
-                    if (userData) {
-                        //realm_id
-                        if (userData.managed_realms && userData.managed_realms.length > 0) {
-                            loginResult.auth.realm_id = userData.managed_realms[0];
-                        }
-                        var userClients = userData.user_client;
-                        if (userClients && userClients.length > 0) {
-                            var userClient = userClients[0];
-                            if (userClient) {
-                                //privileges
-                                var permissions = userClient.permission_infos || [];
-                                if (permissions && permissions.length > 0) {
-                                    loginResult.privileges = permissions.map(function (permission) {
-                                        return permission.permission_define;
-                                    });
-                                }
-                            }
-                        }
-                        loginResult.nick_name = userData.nick_name;
-                        loginResult.user_id = userData.user_id;
-                        loginResult.user_name = userData.user_name;
-                    }
-                    emitter.emit("success", loginResult);
-                }
-            },
-            timeout: function (emitter, data) {
-                emitter.emit("error", data);
-            }
-        });
+exports.loginWithTicket = function (req, res, ticket) {
+    return restUtil.appAuthRest.post({
+        url: urls.loginWithTicket,
+        req: req,
+        res: res,
+        form: {
+            ticket: ticket
+        }
+    }, null, {
+        success: loginSuccess,
+        timeout: function (emitter, data) {
+            emitter.emit("error", data);
+        }
+    });
 };
+/*
+ 登录成功处理
+ */
+function loginSuccess(emitter, data) {
+    //如果未返回数据
+    if (!data) {
+        let backendIntl = new BackendIntl(req);
+        emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
+    } else {
+        emitter.emit("success", getLoginResult(data));
+    }
+}
+//处理返回用户信息
+function getLoginResult(data) {
+    //前端登录后所需数据结构
+    var loginResult = {
+        auth: {
+            client_id: "other",
+            realm_id: "",
+            access_token: "",
+            refresh_token: ""
+        },
+        nick_name: "",
+        privileges: [],
+        user_id: "",
+        user_name: ""
+    };
+    if (data.token) {
+        loginResult.auth.access_token = data.token.access_token || "";
+        loginResult.auth.refresh_token = data.token.refresh_token || "";
+    }
+    var userData = data.user;
+    if (userData) {
+        //realm_id
+        if (userData.managed_realms && userData.managed_realms.length > 0) {
+            loginResult.auth.realm_id = userData.managed_realms[0];
+        }
+        var userClients = userData.user_client;
+        if (userClients && userClients.length > 0) {
+            var userClient = userClients[0];
+            if (userClient) {
+                //privileges
+                var permissions = userClient.permission_infos || [];
+                if (permissions && permissions.length > 0) {
+                    loginResult.privileges = permissions.map(function (permission) {
+                        return permission.permission_define;
+                    });
+                }
+            }
+        }
+        loginResult.nick_name = userData.nick_name;
+        loginResult.user_id = userData.user_id;
+        loginResult.user_name = userData.user_name;
+    }
+    return loginResult;
+}
+
 
 /**
  * 获取应用Token,用来检测应用是否合法
