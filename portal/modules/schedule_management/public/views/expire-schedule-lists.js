@@ -39,7 +39,7 @@ class ExpireScheduleLists extends React.Component {
         scheduleManagementStore.listen(this.onStoreChange);
         //获取超时未完成的日程
         this.setState({
-            expired_start_time: new Date().getTime() - 365 * 2 * 24 * 3600 * 1000,//开始时间传一个两年前的今天
+            expired_start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天
             expired_end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
             expired_status: false,//选择日程的状态
         }, () => {
@@ -125,7 +125,7 @@ class ExpireScheduleLists extends React.Component {
                         "icon-schedule-other": item.type == "other"
                     });
                     return (
-                        <div className="list-item">
+                        <div className="list-item" data-tracename="超期日程列表">
                             <h4 className="item-title">
                                     <span>
                                         {moment(item.start_time).format(oplateConsts.DATE_FORMAT)}
