@@ -11,6 +11,11 @@ exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = "scrollBar.hideBottomLoading";
 //拨打电话emitter
 exports.phoneMsgEmitter = new EventEmitter();
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = "sendPhoneNumber";
+//日程管理界面emitter
+exports.scheduleManagementEmitter = new EventEmitter();
+exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE = "setUpdateScrollBarTrue";
+exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE = "setUpdateScrollBarFalse";
+exports.scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT = "unmount";
 //添加客户成功后emitter
 exports.addCustomerEmitter = new EventEmitter();
 exports.addCustomerEmitter.SEND_ADD_CUSTOMER = "sendAddCustomer";

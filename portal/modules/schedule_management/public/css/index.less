@@ -7,22 +7,21 @@
   100% { width: 0; }
 }
 @keyframes data-zone-expand {
-  0% { width: 70%; }
-  100% { width: 90%; }
+  0% { width: 75%; }
+  100% { width: 99%; }
 }
 @keyframes data-zone-initial {
-  0% { width: 90%; }
-  100% { width: 70%; }
+  0% { width: 99%; }
+  100% { width: 75%; }
 }
-
+@Icon-Purple-Color: #9C5DF5;
+@Icon-Green-Color: #5DD778;
 .schedule-list-content{
   overflow: hidden;
   #expire-list-content{
     float: left;
     width: 25%;
-    //margin: 15px 10px 0 0;
-    //padding: 15px 10px 0 0;
-    padding: 10px 0;
+    padding: 10px 0 0 0;
     background: rgba(222,223,227,0.5);
     position: relative;
     .expire-list-innerwrap{
@@ -82,10 +81,10 @@
               position: relative;
               top: 4px;            }
             .icon-phone-busy{
-              color:#5DD778;
+              color:@Icon-Green-Color;
             }
             .icon-visit{
-              color:#9C5DF5;
+              color:@Icon-Purple-Color;
             }
             //标题的样式
             .item-title{
@@ -149,7 +148,7 @@
     }
     //左侧页面滑动提示的样式
     .scroll-tip{
-      //todo 抽取出组件后再设置成展示
+      //todo 滑动时点击返回今天会报错，问题未解决
       display: none;
       position: absolute;
       top: 23px;
@@ -200,7 +199,6 @@
     width:75%;
     padding:20px;
     #calendar{
-
       .fc-time-grid-event.fc-short .fc-time:after{
         content:""
       }
@@ -271,12 +269,12 @@
   //原始大小的日程图
   #calendar-wrap.initial-calendar-panel{
     animation: data-zone-initial 1s 1;
-    width:70%;
+    width:75%;
   }
   //扩大后的日程图
   #calendar-wrap.expand-calendar-panel{
     animation: data-zone-expand 1s 1;
-    width: 90%;
+    width: 99%;
   }
   .fc-event.handle-schedule{
     background-color: #FBFBFB;
@@ -300,12 +298,6 @@
         background: #F7F7F9;
         .timerange{
           padding-left: 10px;
-        }
-        .todo{
-
-        }
-        .content{
-
         }
       }
       //右侧日程列表
@@ -379,12 +371,6 @@
         top: -8px;
       }
     }
-    //.schedule-content-wrap{
-    //  &:hover{
-    //    background: #F6FBFF;
-    //  }
-    //}
-
   }
 
 
@@ -392,12 +378,12 @@
     display: none;
   }
   .iconfont.icon-phone-busy{
-    color:#5DD778
+    color:@Icon-Green-Color
   }
   .iconfont.icon-schedule-visit{
-    color:#9C5DF5
+    color:@Icon-Purple-Color
   }
   .iconfont.icon-schedule-other{
-    color:#9C5DF5
+    color:@Icon-Purple-Color
   }
 }
