@@ -1172,6 +1172,7 @@ var zh_CN = {
     "crm.contact.list.failed": "获取联系人列表失败",
     "crm.contact.name.length": "请输入最多50个字符的姓名",
     "crm.last.trace.content": "最后跟进内容",
+    "crm.competing.products": "竞品",
     // 客户管理end
 
     // 客户分析start
