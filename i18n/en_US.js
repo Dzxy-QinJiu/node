@@ -1840,7 +1840,7 @@ var en_US = {
     "schedule.create.person": "founder",//创建人
     "schedule.get.schedule.list.failed": "Failed to get schedule management list",//获取日程管理列表失败
     "schedule.management.schedule.content": "Schedule content",//日程内容
-    "schedule.todo.list": "Todo lists"//待办
-
+    "schedule.todo.list": "Todo lists",//待办
+    "schedule.has.finished": "Has Finished"//已完成
 };
 export default en_US;

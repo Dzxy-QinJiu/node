@@ -55,23 +55,28 @@ const ScheduleManagement = React.createClass({
             $("#calendar").removeClass("weekView-calendar");
             $("#calendar").removeClass("dayView-calendar");
             $("#calendar").addClass("monthView-calendar");
+            Trace.traceEvent($(_this.getDOMNode()).find(".fc-month-button"), "点击切换月视图按钮");
         });
         $("#calendar").on("click", ".fc-agendaWeek-button", function () {
             scheduleManagementEmitter.emit(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT);
             $("#calendar").removeClass("monthView-calendar");
             $("#calendar").removeClass("dayView-calendar");
             $("#calendar").addClass("weekView-calendar");
+            Trace.traceEvent($(_this.getDOMNode()).find(".fc-agendaWeek-button"), "点击切换周视图按钮");
         });
         $("#calendar").on("click", ".fc-agendaDay-button", function () {
             scheduleManagementEmitter.emit(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT);
             $("#calendar").removeClass("monthView-calendar");
             $("#calendar").removeClass("weekView-calendar");
             $("#calendar").addClass("dayView-calendar");
+            Trace.traceEvent($(_this.getDOMNode()).find(".fc-agendaWeek-button"), "点击切换天视图按钮");
         });
         $("#calendar").on("click", ".fc-header-toolbar .fc-prev-button", function () {
+            Trace.traceEvent($(_this.getDOMNode()).find(".fc-prev-button"), "点击切换前翻按钮");
             scheduleManagementEmitter.emit(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT);
         });
         $("#calendar").on("click", ".fc-header-toolbar .fc-next-button", function () {
+            Trace.traceEvent($(_this.getDOMNode()).find(".fc-next-button"), "点击切换后翻按钮");
             scheduleManagementEmitter.emit(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT);
         });
 
@@ -148,9 +153,9 @@ const ScheduleManagement = React.createClass({
             eventAfterAllRender: function (view) {
                 //过滤数据
                 var currentTime = $('#calendar').fullCalendar('getDate').format(oplateConsts.DATE_FORMAT);
-                //一天的开始和结束时间
-                var startTime = moment(currentTime).valueOf();
-                var endTime = (startTime / 1000 + 24 * 60 * 60) * 1000;
+                //某一天的开始和结束时间
+                var startTime =  moment(currentTime).startOf("day").toDate().getTime();
+                var endTime = moment(currentTime).endOf("day").toDate().getTime();
                 var scheduleList = _.filter(_this.state.scheduleTableList, (list) => {
                     return list.start_time >= startTime && list.end_time <= endTime;
                 });

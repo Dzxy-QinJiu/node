@@ -1882,7 +1882,8 @@ var zh_CN = {
     "schedule.create.person": "创建人",
     "schedule.get.schedule.list.failed": "获取日程管理列表失败",
     "schedule.management.schedule.content": "日程内容",
-    "schedule.todo.list": "待办"
+    "schedule.todo.list": "待办",
+    "schedule.has.finished": "已完成"
 
 
 };

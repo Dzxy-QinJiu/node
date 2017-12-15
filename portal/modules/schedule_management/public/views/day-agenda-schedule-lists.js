@@ -8,6 +8,7 @@ import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 var classNames = require("classnames");
 import userData from "PUB_DIR/sources/user-data";
 var user_id = userData.getUserData().user_id;
+//执行动画完毕后的时间
 const LAY_OUT = {
     SCHEDULE_CONTENT_HEIGHT: 600
 };
@@ -34,7 +35,6 @@ class DayAgendaScheduleLists extends React.Component {
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT,  this.unmout);
     };
     setUpdateScrollBarTrue = () => {
-        console.log(this.state.random);
         this.setState({
             updateScrollBar: true
         })
@@ -46,11 +46,10 @@ class DayAgendaScheduleLists extends React.Component {
     };
 
     componentWillUnmount() {
-        console.log("componentWillUnmount",this.state.random);
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
     };
-
+    //动画执行过程中渲染日程列表
     renderUpdateDaySchedule() {
         var divHeight = LAY_OUT.SCHEDULE_CONTENT_HEIGHT;
         return (
@@ -59,7 +58,7 @@ class DayAgendaScheduleLists extends React.Component {
             </div>
         )
     };
-
+    //动画执行完毕后渲染日程列表
     renderDaySchedule() {
         var divHeight = LAY_OUT.SCHEDULE_CONTENT_HEIGHT;
         return (
@@ -70,7 +69,7 @@ class DayAgendaScheduleLists extends React.Component {
             </div>
         )
     };
-
+    //渲染日程列表样式
     renderDayScheduleList() {
         return (
             _.map(this.state.scheduleList, (item, index) => {
@@ -84,11 +83,11 @@ class DayAgendaScheduleLists extends React.Component {
                     "icon-schedule-visit": item.type == "visit",
                     "icon-schedule-other": item.type == "other",
                 });
-                var content = item.status == "handle" ? "已完成" : (
-                    item.allDay ? "全天" : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
+                var content = item.status == "handle" ? Intl.get("schedule.has.finished","已完成") : (
+                    item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 return (
-                    <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}>
+                    <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)} data-tracename="日程列表">
                         <div className={itemCls}>
                             <Row>
                                 <Col sm={4}>
@@ -106,14 +105,14 @@ class DayAgendaScheduleLists extends React.Component {
                                         {user_id == item.member_id && item.status !== "handle" ?
                                             <Button
                                                 type="primary"
-                                                onClick={this.props.handleScheduleItemStatus.bind(this, item)}>{Intl.get("schedule.list.mark.finish", "标记为完成")}
+                                                onClick={this.props.handleScheduleItemStatus.bind(this, item)}
+                                                data-tracename="点击标记完成按钮"
+                                            >{Intl.get("schedule.list.mark.finish", "标记为完成")}
                                                 {this.state.handleStatusLoading && item.id == this.state.isEdittingItemId ?
                                                     <Icon type="loading"/> : null}</Button> : null}
                                         <p className="schedule-content">{item.content}</p>
                                         <span className="hidden record-id">{item.id}</span>
-
                                     </div>
-
                                 </Col>
                             </Row>
                         </div>
