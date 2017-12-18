@@ -67,6 +67,7 @@ const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 var CallRecordAnalyis = React.createClass({
     //获取初始状态
     getInitialState: function () {
+        CallAnalysisAction.resetState();
         let callStateData = CallAnalysisStore.getState();
         let trendWidth = $(window).width() - LAYOUT_WIDTH.ORIGIN_WIDTH;
         return {
