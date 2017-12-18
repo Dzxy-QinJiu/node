@@ -124,7 +124,7 @@ var config = {
     // es地址
     esUrl: process.env.ES,//http://192.168.2.21:9200,
     //进程名
-    processTitle: process.env.PROCESS_TITLE || "oplate",
+    processTitle: process.env.PROCESS_TITLE || "ketao",
     //web服务端口
     port: process.env.OPLATE_PORT || 9191,
     //是否是线上环境
