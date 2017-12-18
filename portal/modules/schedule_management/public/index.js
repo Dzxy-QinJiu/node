@@ -153,9 +153,10 @@ const ScheduleManagement = React.createClass({
             eventAfterAllRender: function (view) {
                 //过滤数据
                 var currentTime = $('#calendar').fullCalendar('getDate').format(oplateConsts.DATE_FORMAT);
-                //某一天的开始和结束时间
+                //某一天的开始和结束时间 结束时间用moment算出来的是23：59：59，但是组件中全天的时间默认值是第二天的00:00:00
+                //所以之前对endtime的处理都加了1000秒
                 var startTime =  moment(currentTime).startOf("day").toDate().getTime();
-                var endTime = moment(currentTime).endOf("day").toDate().getTime();
+                var endTime = moment(currentTime).endOf("day").toDate().getTime() + 1000;
                 var scheduleList = _.filter(_this.state.scheduleTableList, (list) => {
                     return list.start_time >= startTime && list.end_time <= endTime;
                 });
