@@ -51,6 +51,14 @@ class ExpireScheduleLists extends React.Component {
         this.setState(scheduleManagementStore.getState());
     };
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isShowExpiredPanel !== this.state.isShowExpiredPanel) {
+            this.setState({
+                isShowExpiredPanel: nextProps.isShowExpiredPanel
+            });
+        }
+    };
+
     componentWillUnmount() {
         scheduleManagementStore.unlisten(this.onStoreChange);
     };
@@ -263,10 +271,11 @@ class ExpireScheduleLists extends React.Component {
     };
 
     render() {
-        //左侧超期日程动画
+        //左侧超期日程动画 如果没有数据，就不显示左侧面板
         var expiredCls = classNames({
             "show-expire-panel": this.state.isShowExpiredPanel && !this.state.isFirstLogin,
-            "hide-expire-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin
+            "hide-expire-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            "nodata-left-expired-panel": !this.state.isShowExpiredPanel && this.state.isFirstLogin
         });
         var cls = classNames("is-loading-schedule-list", {
             "show-spinner": this.state.isLoadingScheduleExpired && !this.state.lastScheduleExpiredId

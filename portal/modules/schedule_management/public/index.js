@@ -43,9 +43,6 @@ const ScheduleManagement = React.createClass({
     onStoreChange: function () {
         this.setState(scheduleManagementStore.getState());
     },
-    componentWillMount: function () {
-
-    },
     addEventListener: function () {
         var _this = this;
         //给日程列表右上角的视图类型加一下处理,在不同的视图下展示的日程的内容不一样，通过类进行控制内容的展示和隐藏
@@ -132,6 +129,12 @@ const ScheduleManagement = React.createClass({
                     data: constObj,
                     success: function (data) {
                         var events = _this.processForList(data.list, viewName);
+                        if (!events.length){
+                            //如果左侧没有数据，则左侧面板不展示
+                            _this.setState({
+                                isShowExpiredPanel:false
+                            });
+                        }
                         callback(events);
                     },
                     error: function (errorMsg) {
@@ -291,10 +294,11 @@ const ScheduleManagement = React.createClass({
         })
     },
     render: function () {
-        //右侧日程列表动画
+        //右侧日程列表动画 如果没有超时日程，那么左侧日程列表不显示
         var calendarCls = classNames({
             "initial-calendar-panel": this.state.isShowExpiredPanel && !this.state.isFirstLogin,
-            "expand-calendar-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin
+            "expand-calendar-panel": !this.state.isShowExpiredPanel && !this.state.isFirstLogin,
+            "nodata-left-expired-panel": !this.state.isShowExpiredPanel && this.state.isFirstLogin
         });
         return (
             <div data-tracename="日程管理界面" className="schedule-list-content">

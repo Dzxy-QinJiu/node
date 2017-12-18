@@ -1,26 +1,31 @@
-@keyframes expired-show {
-  0% { width: 0; }
-  100% { width: 25%; }
-}
-@keyframes expired-hide {
-  0% { width: 25%; }
-  100% { width: 0; }
-}
-@keyframes data-zone-expand {
-  0% { width: 75%; }
-  100% { width: 99%; }
-}
-@keyframes data-zone-initial {
-  0% { width: 99%; }
-  100% { width: 75%; }
-}
 @Icon-Purple-Color: #9C5DF5;
 @Icon-Green-Color: #5DD778;
+@left-panel-show-width:25%;
+@panel-width-zero:0;
+@right-panel-expand:99%;
+@right-panle-initial:75%;
+
+@keyframes expired-show {
+  0% { width: @panel-width-zero; }
+  100% { width: @left-panel-show-width; }
+}
+@keyframes expired-hide {
+  0% { width: @left-panel-show-width; }
+  100% { width: @panel-width-zero; }
+}
+@keyframes data-zone-expand {
+  0% { width: @right-panle-initial; }
+  100% { width: @right-panel-expand; }
+}
+@keyframes data-zone-initial {
+  0% { width: @right-panel-expand; }
+  100% { width: @right-panle-initial; }
+}
 .schedule-list-content{
   overflow: hidden;
   #expire-list-content{
     float: left;
-    width: 25%;
+    width: @left-panel-show-width;
     padding: 10px 0 0 0;
     background: rgba(222,223,227,0.5);
     position: relative;
@@ -178,7 +183,7 @@
   }
   #expire-list-content.show-expire-panel{
     animation: expired-show 1s 1;
-    width: 25%;
+    width: @left-panel-show-width;
     .scroll-tip {
       .scroll-flag {
         padding-right: 10px;
@@ -187,16 +192,19 @@
   }
   #expire-list-content.hide-expire-panel{
     animation: expired-hide 1s 1;
-    width: 0;
+    width: @panel-width-zero;
     .scroll-tip {
       .scroll-flag {
         padding-right: 0;
       }
     }
   }
+  #expire-list-content.nodata-left-expired-panel{
+    width: @panel-width-zero ;
+  }
   #calendar-wrap{
     float: left;
-    width:75%;
+    width:@right-panle-initial;
     padding:20px;
     #calendar{
       .fc-time-grid-event.fc-short .fc-time:after{
@@ -269,12 +277,16 @@
   //原始大小的日程图
   #calendar-wrap.initial-calendar-panel{
     animation: data-zone-initial 1s 1;
-    width:75%;
+    width:@right-panle-initial;
   }
   //扩大后的日程图
   #calendar-wrap.expand-calendar-panel{
     animation: data-zone-expand 1s 1;
-    width: 99%;
+    width: @right-panel-expand;
+  }
+  //左侧超时日程列表不展示
+  #calendar-wrap.nodata-left-expired-panel{
+    width: @right-panel-expand;
   }
   .fc-event.handle-schedule{
     background-color: #FBFBFB;
@@ -316,10 +328,6 @@
           .schedule-customer-name{
             font-size:16px;
             color:#333333;
-
-          }
-          //日程联系内容
-          .schedule-content{
 
           }
           //标记完成的按钮
