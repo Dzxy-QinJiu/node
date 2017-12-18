@@ -204,7 +204,7 @@
                 .sales-team-name-text{
                   max-width:100px;
                   display:inline-block;
-                  &:extend(.public-overflow-hidden);
+                  &:extend(.sales-team-manage-container .public-overflow-hidden);
                 }
                 .sales-team-member-statistic{
                   display:inline-block;
@@ -214,7 +214,7 @@
                 height:30px;
                 line-height:30px;
                 color:#B8BDBF;
-                &:extend(.public-overflow-hidden);
+                &:extend(.sales-team-manage-container .public-overflow-hidden);
 
               }
             }
@@ -514,12 +514,12 @@
     padding-left:5px;
     padding-right:5px;
     padding-top:5px;
-    &:extend(.public-overflow-hidden);
+    &:extend(.sales-team-manage-container .public-overflow-hidden);
   }
 
   //盛放带选择框的成员头像及name的div样式
   .operation-sales-team-member-info{
-    &:extend(.sales-team-member-info);
+    &:extend(.sales-team-manage-container .sales-team-member-info);
     //盛放选择框和名称的div样式
     .sales-team-member-info-name-div{
       height:20px;
@@ -545,7 +545,7 @@
       }
       //带选择框的名称样式
       .sales-team-member-info-name{
-        &:extend(.sales-team-member-info-name);
+        &:extend(.sales-team-manage-container .sales-team-member-info-name);
         width:60px;
         text-align:left;
       }
@@ -618,7 +618,7 @@
     text-align:center;
     font-size:14px;
     cursor:pointer;
-    &:extend(.public-overflow-hidden);
+    &:extend(.sales-team-manage-container .public-overflow-hidden);
 
     &.select-active{
       background-color:#4d96d1;
@@ -632,7 +632,7 @@
     float:right;
     .add-member-btn{
       width:100px;
-      &:extend(.sales-team-item);
+      &:extend(.sales-team-manage-container .sales-team-item);
       margin-left:10px;
       margin-right:0;
     }
@@ -731,13 +731,13 @@
       //团队添加成员选择列表区域
       .select-members-list-container{
         width:370px;
-        &:extend(.add-memeber-container-basic);
+        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form  .add-memeber-container-basic);
       }
       //销售团队添加成员后的展示区域
       .sales-team-show-member-list{
         width:280px;
         margin-left:10px;
-        &:extend(.add-memeber-container-basic);
+        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form  .add-memeber-container-basic);
         .sales-team-member-list-div{
           margin-bottom:2px;
         }
@@ -745,7 +745,7 @@
           width:100px;
           float:right;
           margin-right:80px;
-          &:extend(.sales-team-item);
+          &:extend(.sales-team-manage-container .sales-team-item);
         }
       }
 
@@ -757,7 +757,7 @@
 
       .select-sub-group-label{
         height:auto;
-        &:extend(.select-member-label);
+        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form .select-member-label);
       }
 
     }
