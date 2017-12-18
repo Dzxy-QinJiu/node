@@ -39,6 +39,7 @@ const CALL_TYPE_OPTION = {
 const DELAY_TIME = 2000;
 var SalesHomePage = React.createClass({
     getInitialState: function () {
+        SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
         var flag = storageUtil.get(key, pageId);
@@ -144,6 +145,7 @@ var SalesHomePage = React.createClass({
         dynamicStyle = insertStyle('.sales-phone-table .ant-table-body {height:' + phoneListHeight + 'px;overflow:auto}');
     },
     componentWillUnmount: function () {
+        SalesHomeAction.setInitState();
         SalesHomeStore.unlisten(this.onChange);
     },
     //获取查询参数

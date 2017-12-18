@@ -88,6 +88,7 @@ const filterOptions = FILTER_OPTION.map(x => (
 
 const CallRecord = React.createClass({
     getInitialState() {
+        CallRecordActions.resetState();
         let stateData = CallRecordStore.getState();
         return {
             ...stateData,

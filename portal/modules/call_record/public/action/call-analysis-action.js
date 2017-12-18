@@ -4,6 +4,7 @@ var _= require("underscore");
 
 function CallAnalysisActions() {
     this.generateActions(
+        'resetState',//初始化数据的设置
         'changeSearchTime' //搜索时间的切换
     );
     // 获取通话时长为TOP10的列表
