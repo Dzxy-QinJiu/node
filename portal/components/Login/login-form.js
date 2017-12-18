@@ -72,9 +72,9 @@ var LoginForm = React.createClass({
             // 登录成功后的回调
             window.location.href = callBackUrl + "?t=" + ticket + "&lang=" + lang;
         }).catch((data) => {
+            this.props.setErrorMsg(data && data.error);
             this.setState({
-                captchaCode: data && data.captcha,
-                loginErrorMsg: data && data.error
+                captchaCode: data && data.captcha
             });
         });
     },

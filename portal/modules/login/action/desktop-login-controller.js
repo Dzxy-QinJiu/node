@@ -54,7 +54,6 @@ exports.showLoginPage = function (req, res) {
     //从session中获取上一次登录用户名
     var last_login_user = req.session.last_login_user || '';
     var obj = {
-        loginErrorMsg: loginErrorMsg,
         username: last_login_user
     };
     //优先使用环境变量中设置的语言
@@ -78,7 +77,7 @@ exports.showLoginPage = function (req, res) {
         res.render('login/tpl/desktop-login', {
             styleContent: styleContent,
             loginForm: formHtml,
-            loginErrorMsg: obj.loginErrorMsg,
+            loginErrorMsg: loginErrorMsg,
             username: obj.username,
             captchaCode: obj.captchaCode || "",
             addShowingIoCode: global.config.formal,
