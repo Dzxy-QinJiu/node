@@ -64,7 +64,8 @@ var loadersLists = [
             {loader: "happypack/loader?id=js"}
         ],
         include: [
-            path.join(__dirname, "portal")
+            path.join(__dirname, "portal"),
+            path.join(__dirname, "node_modules/component-util")
         ]
     },
     {
