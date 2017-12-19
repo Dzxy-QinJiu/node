@@ -68,7 +68,7 @@ class RecentLoginUsers extends React.Component {
         }
         $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.user_exception})? true: false;
+        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date})? true: false;
         this.setState({
             isShowUserDetail: true,
             userId: user_id,

@@ -143,7 +143,7 @@ AppUserStore.prototype.getAppUserList = function(result) {
         if(result.data.total > 0) {
             for(var i=0, len=currentList.length;i<len;i++){
                 currentList[i].isShownExceptionTab = (
-                    _.find(currentList[i].apps, app =>{return app.user_exception})? true: false
+                    _.find(currentList[i].apps, app =>{return app.exception_mark_date})? true: false
                 );
             }
             if(this.appUserPage === 1) {
