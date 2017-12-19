@@ -22,6 +22,7 @@ import BasicEditInputField from "CMP_DIR/basic-edit-field/input";
 import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
 import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
+import classNames from "classnames";
 
 function getStateFromStore(isMerge) {
     return {
@@ -40,6 +41,12 @@ function getBasicPanelH(isMerge) {
         return $(window).height() - 73;//73:顶部导航 + 顶部间距高度 53 + 20
     }
 }
+
+const LABEL_TYPES = {
+    INFO_TAG: "信息",
+    INTENT_TAG: "意向",
+    TRIAL_TAG: "试用"
+};
 
 var BasicData = React.createClass({
     getInitialState: function () {
@@ -141,7 +148,14 @@ var BasicData = React.createClass({
         //是否显示用户统计内容
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
         var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
-
+        let customerLabelCls = "customer-label";
+        if(basicData.customer_label){
+            customerLabelCls = classNames("customer-label",{
+                "info-tag-style": basicData.customer_label === LABEL_TYPES.INFO_TAG,
+                "intent-tag-style": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
+                "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG
+            });
+        }
         return (
             <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
                 {this.state.basicIsLoading ? <Spin /> : (
@@ -161,7 +175,7 @@ var BasicData = React.createClass({
                                                 disabled={hasPrivilege("CUSTOMER_UPDATE_NAME") ? false : true}
                                             />
                                             {basicData.customer_label ? (
-                                                <Tag className="customer-label">{basicData.customer_label}</Tag>) : null
+                                                <Tag className={customerLabelCls}>{basicData.customer_label}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>
