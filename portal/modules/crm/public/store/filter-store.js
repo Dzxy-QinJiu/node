@@ -12,7 +12,6 @@ function FilterStore() {
         sales_team_id: "",
         industry: "",
         province: "",
-        contact: "",//联系方式
         app_ids: [""],
         labels: [""],
         sales_opportunities: [{

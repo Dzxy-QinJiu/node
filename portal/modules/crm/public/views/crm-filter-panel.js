@@ -21,6 +21,12 @@ const otherFilterArray = [{
 }, {
     name: Intl.get("crm.over.day.without.contact", "超{day}天未联系", {day: 7}),
     value: "seven_uncontact"
+}, {
+    name: Intl.get("crm.no.contact.way", "无联系方式客户"),
+    value: "no_contact_way"
+},{
+    name: Intl.get("crm.concerned.customer", "关注的客户"),
+    value: "interest"
 }];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
@@ -29,6 +35,7 @@ if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
         value: "undistributed"
     });
 }
+
 const CrmFilterPanel = React.createClass({
     getInitialState: function () {
         return FilterStore.getState();
@@ -169,20 +176,6 @@ const CrmFilterPanel = React.createClass({
         province = province ? province : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按地域筛选");
     },
-    //未知联系方式过滤
-    contactSelected: function (contact) {
-        const curSelectedContact = this.state.condition.contact;
-
-        const newSelectedContact = getSelected(curSelectedContact, contact);
-
-        if (newSelectedContact === curSelectedContact) return;
-
-        FilterAction.setContact(newSelectedContact);
-
-        setTimeout(() => this.props.search());
-        contact = contact ? contact : "全部";
-        Trace.traceEvent($(this.getDOMNode()).find("li"), "按联系方式筛选");
-    },
     otherSelected: function (item) {
         //当前选择的是之前选择的时
         if (item === this.state.condition.otherSelectedItem) {
@@ -196,8 +189,10 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => this.props.search());
         if (item === otherFilterArray[1].value) {//超30天未联系
             Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
-        } else if (item === otherFilterArray[2].value) {
+        } else if (item === otherFilterArray[5].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
+        }else if(item ===otherFilterArray[4].value){
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");
         }
     },
     render: function () {
@@ -248,12 +243,6 @@ const CrmFilterPanel = React.createClass({
             return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
                        className={className}>{item || Intl.get("common.all", "全部")}</li>
         });
-        //过滤联系方式
-        const contactListJsx = ["", Intl.get("user.unknown", "未知")].map((item, idx) => {
-            let className = this.state.condition.contact.split(",").indexOf(item) > -1 ? "selected" : "";
-            return <li key={idx} onClick={this.contactSelected.bind(this, item)}
-                       className={className}>{item || Intl.get("common.all", "全部")}</li>
-        });
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
@@ -301,12 +290,6 @@ const CrmFilterPanel = React.createClass({
                         <dt>{Intl.get("crm.96", "地域")} :</dt>
                         <dd>
                             <ul>{provinceListJsx}</ul>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>{Intl.get("crm.5", "联系方式")} :</dt>
-                        <dd>
-                            <ul>{contactListJsx}</ul>
                         </dd>
                     </dl>
                     <dl>
