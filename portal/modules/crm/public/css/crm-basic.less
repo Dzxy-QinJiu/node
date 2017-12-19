@@ -10,6 +10,8 @@
 @intent-tag-color: #b8c4ca;
 //试用标签的颜色
 @trial-tag-color: #95b73c;
+//标签字体的颜色
+@tag-font-color: #ffffff;
 
 .crm-basic-container {
   color: @font-color;
@@ -38,16 +40,16 @@
     border-radius: 4px;
     background: #c0d7e8;
   }
-  .customer-label.info-tag-bgcolor{
-    color: #ffffff;
+  .customer-label.info-tag-style{
+    color: @tag-font-color;
     background-color: @info-tag-color;
   }
-  .customer-label.intent-tag-bgcolor{
-    color: #ffffff;
+  .customer-label.intent-tag-style{
+    color: @tag-font-color;
     background-color: @intent-tag-color;
   }
-  .customer-label.trial-tag-bgcolor{
-    color: #ffffff;
+  .customer-label.trial-tag-style{
+    color: @tag-font-color;
      background-color: @trial-tag-color;
    }
   .crm-basic-competing-products{

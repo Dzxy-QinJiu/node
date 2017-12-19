@@ -151,9 +151,9 @@ var BasicData = React.createClass({
         let customerLabelCls = "customer-label";
         if(basicData.customer_label){
             customerLabelCls = classNames("customer-label",{
-                "info-tag-bgcolor": basicData.customer_label === LABEL_TYPES.INFO_TAG,
-                "intent-tag-bgcolor": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
-                "trial-tag-bgcolor": basicData.customer_label === LABEL_TYPES.TRIAL_TAG
+                "info-tag-style": basicData.customer_label === LABEL_TYPES.INFO_TAG,
+                "intent-tag-style": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
+                "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG
             });
         }
         return (
