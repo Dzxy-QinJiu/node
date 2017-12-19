@@ -147,6 +147,9 @@ SalesCallRecordStore.prototype.getRecommendPhoneList = function (result) {
                     }
                 } );
             }
+            if(result.searchInputVal){//将输入项作为下拉选项中的第一项
+                list.unshift({key: result.searchInputVal, value: 0});
+            }
             this.recommendList.list = list;
         }
     }
