@@ -306,6 +306,7 @@ const ScheduleManagement = React.createClass({
                     isShowExpiredPanel={this.state.isShowExpiredPanel}
                     isFirstLogin={this.state.isFirstLogin}
                     updateExpiredPanelState={this.updateExpiredPanelState}
+                    showCustomerDetail={this.showCustomerDetail}
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
                     <div id="calendar">
