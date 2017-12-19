@@ -18,7 +18,7 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
     module.exports.handleSessionExpired = handel401Ajax;
     /*处理ajax时，session过期的问题*/
     function handel401Ajax() {
-        sendMessage && sendMessage("globalError status: 401");
+        sendMessage && sendMessage("session过期, globalError status: 401");
         //让socket断开连接
         socketEmitter.emit(socketEmitter.DISCONNECT);
         //session过期提示的添加
