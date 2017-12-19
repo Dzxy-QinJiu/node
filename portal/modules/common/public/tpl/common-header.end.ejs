@@ -7,12 +7,13 @@
             new Image().src = loggerUrl + "?message=" + encodeURIComponent(message);
         }
     }
-    window.onerror = function (errorMessage, url, line) {
-        var error = errorMessage+ ", url=" + url+", line=" + line
-                + ", parent_url=" + document.location.href
-                + ", user_agent=" + navigator.userAgent;
+    window.onerror = function (errorMessage, url, line, colno, error) {
+        console.log("errorMessage=" + errorMessage + ",url=" + url + ",line=" + line + ",colno=" + colno + ",error=" + JSON.stringify(error));
+        var message = errorMessage + ", url=" + url + ", line=" + line
+            + ", parent_url=" + document.location.href
+            + ", user_agent=" + navigator.userAgent;
         /** Send error to server */
-        sendMessage&&sendMessage(error);
+        sendMessage && sendMessage(message);
     };
 
 </script>
