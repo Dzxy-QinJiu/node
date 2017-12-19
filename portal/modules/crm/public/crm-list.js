@@ -51,7 +51,8 @@ const OTHER_FILTER_ITEMS = {
     THIRTY_UNCONTACT: "thirty_uncontact",
     FIFTEEN_UNCONTACT: "fifteen_uncontact",
     SEVEN_UNCONTACT: "seven_uncontact",
-    UNDISTRIBUTED: "undistributed"
+    UNDISTRIBUTED: "undistributed",//未分配的客户
+    NO_CONTACT_WAY: "no_contact_way"//无联系方式的客户
 };
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
@@ -491,11 +492,7 @@ var Crm = React.createClass({
             unexist.push("labels");
             delete condition.labels;
         }
-        //未知联系方式
-        if (condition.contact && condition.contact == UNKNOWN) {
-            condition.contain_contact = "false";
-            delete condition.contact;
-        }
+
         var queryObj = {
             total_size: this.state.pageSize * this.state.pageValue,
             cursor: this.state.cursor,
@@ -514,6 +511,12 @@ var Crm = React.createClass({
             case OTHER_FILTER_ITEMS.SEVEN_UNCONTACT://超7天未联系的客户
                 dayTime = DAY_TIME.SEVEN_DAY;
                 break;
+            case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
+                condition.contain_contact = "false";
+                break;
+            case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
+                unexist.push("member_id");
+                break;
         }
         if (dayTime) {
             this.state.rangParams[0].to = moment().valueOf() - dayTime;
@@ -521,10 +524,6 @@ var Crm = React.createClass({
         } else {
             this.state.rangParams[0].to = "";
             this.state.rangParams[0].name = "start_time";
-        }
-        //未分配销售的客户
-        if (condition.otherSelectedItem === OTHER_FILTER_ITEMS.UNDISTRIBUTED) {
-            unexist.push("member_id");
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;

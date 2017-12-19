@@ -1173,6 +1173,7 @@ var zh_CN = {
     "crm.contact.name.length": "请输入最多50个字符的姓名",
     "crm.last.trace.content": "最后跟进内容",
     "crm.competing.products": "竞品",
+    "crm.no.contact.way": "无联系方式客户",
     // 客户管理end
 
     // 客户分析start
