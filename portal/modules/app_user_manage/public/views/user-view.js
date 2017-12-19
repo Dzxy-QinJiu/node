@@ -21,6 +21,20 @@ var Icon = require("antd").Icon;
 var Alert = require("antd").Alert;
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import language from "PUB_DIR/language/getLanguage";
+//异常登录的类型
+const EXCEPTION_TYPES = [{
+    name: Intl.get("common.all", "全部"),
+    value: ""
+}, {
+    name: Intl.get("user.stop.login", "停用登录"),
+    value: "app_illegal"
+}, {
+    name: Intl.get("ketao.frontpage.illegal.location.login", "异地登录"),
+    value: "location_illegal"
+}, {
+    name: Intl.get("user.frequent.logon", "频繁登录"),
+    value: "login_frequency"
+}];
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 130,
@@ -284,7 +298,10 @@ var UserTabContent = React.createClass({
                 render: function ($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
                     var user_id = rowData.user && rowData.user.user_id || '';
-                    const isShown = _.find(rowData.apps, app => { return app.user_exception });
+                    const isShown = _.find(rowData.apps, app => {
+                        //只要exception_mark_date存在，就属于异常登录
+                        return app.exception_mark_date;
+                    });
 
                     return (
                         <div title={user_name}>
@@ -575,8 +592,13 @@ var UserTabContent = React.createClass({
                     <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录" />：</dt>
                     <dd>
                         <ul>
-                            <li onClick={this.toggleSearchField.bind(this, "user_exception", "")} className={this.getFilterFieldClass("user_exception", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                            <li onClick={this.toggleSearchField.bind(this, "user_exception", "true")} className={this.getFilterFieldClass("user_exception", "true")}><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></li>
+                            {EXCEPTION_TYPES.map(exceptionObj => {
+                                return (
+                                    <li onClick={this.toggleSearchField.bind(this, "exception_type", exceptionObj.value)}
+                                        className={this.getFilterFieldClass("exception_type", exceptionObj.value)}>
+                                        {exceptionObj.name}
+                                    </li>)
+                            })}
                         </ul>
                     </dd>
                 </dl>)

@@ -454,6 +454,8 @@ var en_US = {
     "user.status.stopped": "Deactivated",//"已停用",
     "user.status.expired": "Expired",//已到期
     "user.no.login.system": "This user has not logged in to the system", // 该用户还没有登录过系统
+    "user.stop.login": "Disable logon",//停用登录
+    "user.frequent.logon": "Frequent logon",//频繁登录
     //第三方应用
     "third.party.app": "Open Application Platform",//开放应用平台",
     "third.party.app.add": "Add application of the open plateform",//添加应用

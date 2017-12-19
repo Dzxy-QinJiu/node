@@ -454,6 +454,8 @@ var zh_CN = {
     "user.status.stopped": "已停用",
     "user.status.expired": "已到期",
     "user.no.login.system": "该用户还没有登录过系统",
+    "user.disable.logon": "停用登录",
+    "user.frequent.logon": "频繁登录",
 
     // 第三方应用配置
     "third.party.app": "开放应用平台",
