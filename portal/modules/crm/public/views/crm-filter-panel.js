@@ -187,12 +187,25 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.setOtherSelectedItem(item);
         setTimeout(() => this.props.search());
-        if (item === otherFilterArray[1].value) {//超30天未联系
-            Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
-        } else if (item === otherFilterArray[5].value) {
+        switch (item){
+            case otherFilterArray[1].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
+                break;
+            case otherFilterArray[2].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "超15天未联系的筛选");
+                break;
+            case otherFilterArray[3].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "超7天未联系的筛选");
+                break;
+            case otherFilterArray[4].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");
+                break;
+            case otherFilterArray[5].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
+                break;
+        }
+        if(otherFilterArray[6] && item === otherFilterArray[6].value){
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
-        }else if(item ===otherFilterArray[4].value){
-            Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");
         }
     },
     render: function () {
