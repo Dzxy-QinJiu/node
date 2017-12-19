@@ -54,6 +54,8 @@ function getConfigJson(req) {
         "11046": {"httpCode": 500, "message": backendIntl.get("errorcode.41", "用户被禁用，请联系管理员")},
         //用户名密码错误，且需要输入验证码
         "11048": {"httpCode": 500, "message": backendIntl.get("errorcode.39", "用户名或密码错误")},
+        //SSO未登录
+        "11051": {"httpCode": 500, "message": backendIntl.get("errorcode.11", "登录失败,请刷新后重试")},
         "11107": {"httpCode": 500, "message": backendIntl.get("errorcode.43", "验证码错误")},
         //用户不存在
         "11413": {"httpCode": 500, "message": backendIntl.get("errorcode.39", "用户名或密码错误")},
