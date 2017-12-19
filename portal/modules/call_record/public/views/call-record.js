@@ -315,6 +315,7 @@ const CallRecord = React.createClass({
 
     // 文本框值变化时调用
     handleChange(value) {
+        value = $.trim(value);
         this.setState({
             selectValue: value
         }, () => {
@@ -329,6 +330,7 @@ const CallRecord = React.createClass({
     // 被选中时调用
     onSelectContentChange(filterKey, value) {
         Trace.traceEvent(this.getDOMNode(), '根据电话号码过滤');
+        value = $.trim(value);
         if (this.state.recommendList.list.length) {
             this.state.filterObj[filterKey] = value;
             this.setState({
@@ -370,9 +372,14 @@ const CallRecord = React.createClass({
         const placeholder = Intl.get("call.record.search.placeholder", "根据{search}过滤", { search: columnLabel });
         const recommendList = this.state.recommendList.list;
         let searchContentOptions = [];
-        if (recommendList.length) {
+        if (_.isArray(recommendList) && recommendList.length) {
             for (let i = 0; i < recommendList.length; i++) {
-                searchContentOptions.push(<Option value={recommendList[i].key}>{recommendList[i].key + ' (' + recommendList[i].value + ')'}</Option>);
+                let showLabel = recommendList[i].key;
+                //第一项是输入的内容，不显示个数
+                if(recommendList[i].value){
+                    showLabel += ' (' + recommendList[i].value + ')';
+                }
+                searchContentOptions.push(<Option value={recommendList[i].key}>{showLabel}</Option>);
             }
         }
         return this.state.isFilter ? (<div>

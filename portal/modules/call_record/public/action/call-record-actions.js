@@ -24,7 +24,7 @@ function CallRecordActions() {
     // 搜索电话号码号码时，提供推荐列表
     this.getRecommendPhoneList = function (params, filterObj) {
         callRecordAjax.getRecommendPhoneList(params, filterObj).then( (resData) => {
-            this.dispatch({ error: false, resData: resData});
+            this.dispatch({ error: false, resData: resData, searchInputVal: filterObj.query.dst});
         },  (errMsg) => {
             this.dispatch({ error: true, errMsg: errMsg});
         });
