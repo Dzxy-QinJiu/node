@@ -35,7 +35,8 @@ exports.home = function (req, res) {
         siteID: global.config.siteID,
         lang: global.config.lang || '',
         hideSomeItem: hideSomeItem,
-        projectName: global.config.processTitle || "oplate"
+        projectName: global.config.processTitle || "oplate",
+        clientId: global.config.loginParams.clientId
     });
 };
 
