@@ -2002,6 +2002,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         var rightSpace = AnalysisLayout.LAYOUTS.RIGHT_PADDING + AnalysisLayout.LAYOUTS.TIME_RANGE_WIDTH;
 
         var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
+        //tab列宽 应用选择“综合”时，selectedApp是所有appId用","拼合的 selectedApp不含","时,则只选择了一个app
+        const tabCols = (this.state.summaryNumbers.resultType != "loading" || this.state.selectedApp && this.state.selectedApp.includes(",")) ? 6 : 5;
         return (
             <div className="oplate_user_analysis"
                 data-tracename="用户分析"
@@ -2039,7 +2041,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 {this.renderFilterArea()}
                 <div className="summary-numbers">
                     <Row>
-                        <Col xs={24} sm={12} md={this.state.selectedApp && this.state.selectedApp.includes(",")? 6: 5}>
+                        <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
                                 resultType={this.state.summaryNumbers.resultType}
                                 desp={Intl.get("oplate.user.analysis.11", "总用户")}
@@ -2047,7 +2049,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 active={this.state.currentTab === 'total'}
                                 onClick={this.changeCurrentTab.bind(this, 'total')} />
                         </Col>
-                        <Col xs={24} sm={12} md={this.state.selectedApp && this.state.selectedApp.includes(",")? 6: 5}>
+                        <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
                                 resultType={this.state.summaryNumbers.resultType}
                                 desp={Intl.get("oplate.user.analysis.12", "新增用户")}
@@ -2062,8 +2064,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                     desp="延期用户"
                                     active={this.state.currentTab === 'delay'}
                                     onClick={this.changeCurrentTab.bind(this, 'delay')} />
-                            </Col>: null}
-                        <Col xs={24} sm={12} md={this.state.selectedApp && this.state.selectedApp.includes(",")? 6: 5}>
+                            </Col> : null}
+                        <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
                                 resultType={this.state.summaryNumbers.resultType}
                                 desp={Intl.get("oplate.user.analysis.13", "过期用户")}
@@ -2071,7 +2073,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 active={this.state.currentTab === 'expired'}
                                 onClick={this.changeCurrentTab.bind(this, 'expired')} />
                         </Col>
-                        <Col xs={24} sm={12} md={this.state.selectedApp && this.state.selectedApp.includes(",")? 6: 5}>
+                        <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
                                 resultType={this.state.summaryNumbers.resultType}
                                 desp={Intl.get("oplate.user.analysis.14", "新增过期用户")}
