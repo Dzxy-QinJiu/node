@@ -1174,6 +1174,7 @@ var zh_CN = {
     "crm.last.trace.content": "最后跟进内容",
     "crm.competing.products": "竞品",
     "crm.no.contact.way": "无联系方式客户",
+    "crm.concerned.customer": "关注的客户",
     // 客户管理end
 
     // 客户分析start

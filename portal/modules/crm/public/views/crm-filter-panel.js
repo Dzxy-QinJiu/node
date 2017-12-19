@@ -24,6 +24,9 @@ const otherFilterArray = [{
 }, {
     name: Intl.get("crm.no.contact.way", "无联系方式客户"),
     value: "no_contact_way"
+},{
+    name: Intl.get("crm.concerned.customer", "关注的客户"),
+    value: "interest"
 }];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
@@ -186,7 +189,7 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => this.props.search());
         if (item === otherFilterArray[1].value) {//超30天未联系
             Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
-        } else if (item === otherFilterArray[2].value) {
+        } else if (item === otherFilterArray[5].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
         }else if(item ===otherFilterArray[4].value){
             Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");

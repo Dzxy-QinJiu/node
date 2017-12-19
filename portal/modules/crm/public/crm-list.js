@@ -52,7 +52,8 @@ const OTHER_FILTER_ITEMS = {
     FIFTEEN_UNCONTACT: "fifteen_uncontact",
     SEVEN_UNCONTACT: "seven_uncontact",
     UNDISTRIBUTED: "undistributed",//未分配的客户
-    NO_CONTACT_WAY: "no_contact_way"//无联系方式的客户
+    NO_CONTACT_WAY: "no_contact_way",//无联系方式的客户
+    INTEREST: "interest"//关注的客户
 };
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
@@ -516,6 +517,9 @@ var Crm = React.createClass({
                 break;
             case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
                 unexist.push("member_id");
+                break;
+            case OTHER_FILTER_ITEMS.INTEREST://关注的客户
+                condition.interest="true";
                 break;
         }
         if (dayTime) {
