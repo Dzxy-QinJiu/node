@@ -6,6 +6,7 @@ import Trace from "LIB_DIR/trace";
 import {administrativeLevels} from "../utils/crm-util";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from "PUB_DIR/sources/user-data";
+import {CUSTOMER_LABELS} from "../utils/crm-util";
 //行政级别筛选项
 let filterLevelArray = [{id: "", level: Intl.get("common.all", "全部")}].concat(administrativeLevels);
 const UNKNOWN = Intl.get("user.unknown", "未知");
@@ -35,7 +36,6 @@ if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
         value: "undistributed"
     });
 }
-const CUSTOMER_LABELS = ["信息", "意向", "试用", "签约"];
 const CrmFilterPanel = React.createClass({
     getInitialState: function () {
         return FilterStore.getState();

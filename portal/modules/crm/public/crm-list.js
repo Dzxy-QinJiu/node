@@ -34,6 +34,7 @@ import ajax from "MOD_DIR/common/ajax";
 import Trace from "LIB_DIR/trace";
 import crmAjax from './ajax/index';
 import rightPanelUtil from "CMP_DIR/rightPanel";
+import {CUSTOMER_LABELS} from "./utils/crm-util";
 const RightPanel = rightPanelUtil.RightPanel;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -55,7 +56,7 @@ const OTHER_FILTER_ITEMS = {
     NO_CONTACT_WAY: "no_contact_way",//无联系方式的客户
     INTEREST: "interest"//关注的客户
 };
-const CUSTOMER_LABELS = ["信息","意向","试用","签约"];
+
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
     THIRTY_DAY: 30 * day,//30天
