@@ -55,6 +55,7 @@ const OTHER_FILTER_ITEMS = {
     NO_CONTACT_WAY: "no_contact_way",//无联系方式的客户
     INTEREST: "interest"//关注的客户
 };
+const CUSTOMER_LABELS = ["信息","意向","试用","签约"];
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
     THIRTY_DAY: 30 * day,//30天
@@ -493,7 +494,20 @@ var Crm = React.createClass({
             unexist.push("labels");
             delete condition.labels;
         }
-
+        //试用、意向、信息标签和其他标签的筛选处理
+        if (_.isArray(condition.labels) && condition.labels.length) {
+            _.some(condition.labels,(label) => {
+                //试用、意向、信息、签约标签(单选)
+                if(CUSTOMER_LABELS.indexOf(label)!==-1) {
+                    condition.customer_label = label;
+                    return true;
+                }
+            });
+            //其他标签和 试用、意向、信息、签约标签不可同时选中
+            if(condition.customer_label){
+                delete condition.labels;
+            }
+        }
         var queryObj = {
             total_size: this.state.pageSize * this.state.pageValue,
             cursor: this.state.cursor,

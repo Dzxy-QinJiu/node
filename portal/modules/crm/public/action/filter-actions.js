@@ -6,6 +6,7 @@ function FilterAction() {
         'setTeam',
         'setStage',
         'setTag',
+        'setCompetitor',
         'setIndustry',
         'setProvince',
         'setContact',
@@ -66,6 +67,19 @@ function FilterAction() {
             list.unshift({name: "", show_name: Intl.get("common.all", "全部")});
             _this.dispatch(list);
         }, function (errorMsg) {
+            console.log(errorMsg);
+        });
+    };
+    //获取竞品列表
+    this.getCompetitorList = function () {
+        FilterAjax.getCompetitorList().then((list) => {
+            list = _.isArray(list) ? list : [];
+            list = list.map(tag => {
+                return {name: tag, show_name: tag}
+            });
+            list.unshift({name: "", show_name: Intl.get("common.all", "全部")});
+            this.dispatch(list);
+        },  (errorMsg) => {
             console.log(errorMsg);
         });
     };

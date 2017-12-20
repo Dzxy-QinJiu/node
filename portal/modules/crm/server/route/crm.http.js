@@ -32,6 +32,14 @@ module.exports = {
         },
         {
             method: 'get',
+            path: '/rest/crm/competitor_list/:type',
+            handler: 'getCompetitorList',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
+            method: 'get',
             path: '/rest/crm/repeat_customer',
             handler: 'getRepeatCustomerList',
             passport: {

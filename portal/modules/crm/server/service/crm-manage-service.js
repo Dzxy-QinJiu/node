@@ -24,6 +24,8 @@ var crmRestApis = {
     mergeRepeatCustomer: "/rest/customer/v2/customer/merge/customer",
     checkCustomerRepeat: "/rest/customer/v2/customer/repeat/search",
     getFilterIndustries: "/rest/customer/v2/customer/industries",
+    //获取竞品列表
+    getCompetitorList: "/rest/customer/v2/customer/competing_products/:type/100/1",
     //type:manager(管理员调用)，type:user(非管理员调用)
     getFilterProvinces: "/rest/customer/v2/customer/provinces/:type/40/1",
     // 查询客户精确匹配（通话记录中查询客户详情）
@@ -82,6 +84,16 @@ exports.getFilterProvinces = function (req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterProvinces.replace(":type", req.params.type),
+            req: req,
+            res: res
+        }, null);
+};
+
+//获取竞品列表
+exports.getCompetitorList = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getCompetitorList.replace(":type", req.params.type),
             req: req,
             res: res
         }, null);

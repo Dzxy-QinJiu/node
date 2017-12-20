@@ -99,6 +99,27 @@ exports.getTagList = function () {
     });
     return Deferred.promise();
 };
+//获取竞品列表
+exports.getCompetitorList = function () {
+    let type = 'user';//CUSTOMER_USER_COMPETING_PRODUCTS_GET
+    if(hasPrivilege("CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET")){
+        type = 'manager';
+    }
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/competitor_list/' + type,
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+            Deferred.resolve(data.result);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取行业列表
 exports.getIndustries = function() {
     var Deferred = $.Deferred();

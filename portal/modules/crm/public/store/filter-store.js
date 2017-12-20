@@ -5,6 +5,7 @@ function FilterStore() {
     this.teamList = [];
     this.stageList = [];
     this.tagList = [];
+    this.competitorList = [];//竞品列表
     this.industryList = [];//行业列表
     this.provinceList = [];//地域列表
     this.inputCondition = {};
@@ -13,7 +14,8 @@ function FilterStore() {
         industry: "",
         province: "",
         app_ids: [""],
-        labels: [""],
+        labels: [""],//标签的筛选
+        competing_products: [""],//竞品的筛选
         sales_opportunities: [{
             sale_stages: "",
             apps: [""]
@@ -52,6 +54,10 @@ FilterStore.prototype.getTagList = function (list) {
     this.tagList = list;
 };
 
+FilterStore.prototype.getCompetitorList= function (list) {
+    this.competitorList = list;
+};
+
 FilterStore.prototype.setApp = function (value) {
     this.condition.sales_opportunities[0].apps = [value];
 };
@@ -66,6 +72,10 @@ FilterStore.prototype.setStage = function (value) {
 
 FilterStore.prototype.setTag = function (value) {
     this.condition.labels = value;
+};
+
+FilterStore.prototype.setCompetitor = function (value) {
+    this.condition.competing_products = value;
 };
 
 FilterStore.prototype.setIndustry = function (value) {
