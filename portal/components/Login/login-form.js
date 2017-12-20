@@ -70,8 +70,10 @@ var LoginForm = React.createClass({
         // 将登录界面中的用户名与密码提交到SSO应用中
         ssoLogin.login(userName, password, captcha).then((ticket) => {
             // 登录成功后的回调
+            sendMessage && sendMessage(userName + " sso登录成功,ticket=" + ticket);
             window.location.href = callBackUrl + "?t=" + ticket + "&lang=" + lang;
         }).catch((data) => {
+            sendMessage && sendMessage(userName + " sso登录失败,error:" + data && data.error);
             this.props.setErrorMsg(data && data.error);
             this.setState({
                 captchaCode: data && data.captcha

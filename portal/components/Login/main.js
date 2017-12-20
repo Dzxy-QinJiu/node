@@ -58,8 +58,10 @@ class LoginMain extends React.Component {
         //2. 在登录界面显示前，检测当前 SSO 是否已经登录
         ssoLogin.check().then((ticket) => {
             // SSO已成功登录成功的回调（因为这里拿到了 ticket, 所以这时候应该重定向到 callBackUrl 地址中）
+            sendMessage && sendMessage("sso已登录,ticket=" + ticket);
             window.location.href = callBackUrl + "?t=" + ticket + "&lang=" + lang;
         }).catch((data) => {
+            sendMessage && sendMessage("sso登录检查失败");
             // SSO尚未登录的回调（ data.captcha 为图片验证码的 base64）
             callback(data.captcha);
         });

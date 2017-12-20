@@ -8,7 +8,6 @@
         }
     }
     window.onerror = function (errorMessage, url, line, colno, error) {
-        console.log("errorMessage=" + errorMessage + ",url=" + url + ",line=" + line + ",colno=" + colno + ",error=" + JSON.stringify(error));
         var message = errorMessage + ", url=" + url + ", line=" + line
             + ", parent_url=" + document.location.href
             + ", user_agent=" + navigator.userAgent;
