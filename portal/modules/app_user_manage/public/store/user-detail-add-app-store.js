@@ -126,7 +126,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
         //延期时间范围，默认是天
         delayTimeRange : "days",
         // 到期时间(选择到期时间)
-        delayDeadlineTime: moment().add('days',1).valueOf(),
+        delayDeadlineTime: moment().add(1, 'days').valueOf(),
         //销售申请的备注
         remark : {
             //延期备注

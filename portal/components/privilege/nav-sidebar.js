@@ -14,7 +14,15 @@ var userInfoEmitter = require("../../public/sources/utils/emitters").userInfoEmi
 var notificationEmitter = require("../../public/sources/utils/emitters").notificationEmitter;
 var _ = require("underscore");
 var UnreadMixin = require("./mixins/unread");
-
+var websiteConfig = require("../../lib/utils/websiteConfig");
+var setWebsiteConfigModuleRecord = websiteConfig.setWebsiteConfigModuleRecord;
+var getLocalWebsiteConfigModuleRecord = websiteConfig.getLocalWebsiteConfigModuleRecord;
+var getWebsiteConfig = websiteConfig.getWebsiteConfig;
+let history = require("../../public/sources/history");
+import ModalIntro from "../modal-intro";
+import CONSTS from  "LIB_DIR/consts";
+//需要加引导的模块
+const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 /**
  *[
  * {"routePath":"user","name":"用户管理"},
@@ -113,6 +121,21 @@ var responsiveLayout = {
     //通知、二维码、个人信息的总高度
     userInfoHeight: 0
 };
+//引导模态框的样式
+var introModalLayout = {
+    //展示孔比原图标要增加的宽度
+    holeAddWidth : 6,
+    //展示孔比原图标要增加的高度
+    holeAddHeight : 6,
+    //展示孔展示位置比原图标演示减少的左边距
+    holeReduceLeft : 3,
+    //展示孔展示位置比原图标演示减少的上边距
+    holeReduceTop : 3,
+    //提示区域展示位置比原图标展示减少的左边距
+    tipAreaLeft: 15,
+    //提示区域展示位置比原图标展示减少的上边距
+    tipAreaTop: 50,
+};
 
 var NavSidebar = React.createClass({
     mixins: [UnreadMixin],
@@ -125,7 +148,8 @@ var NavSidebar = React.createClass({
                 customer: 0,
                 apply: 0,
                 system: 0
-            }
+            },
+            isShowIntroModal:false//是否展示引导的模态框
         };
     },
     //轮询获取未读数的清除器
@@ -197,7 +221,31 @@ var NavSidebar = React.createClass({
         responsiveLayout.userInfoHeight = $(this.refs.userInfo).outerHeight();
         this.calculateHeight();
         $(window).on('resize', this.calculateHeight);
-
+        //获取已经点击过的模块
+        getWebsiteConfig((WebsiteConfigModuleRecord)=>{
+            //本次要加引导的模块是否点击过
+            if (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0){
+                this.setState({
+                    isShowIntroModal:true
+                }, () => {
+                    //需要加引导的元素
+                    var $navIcontfont = $("li." + menu.routePath + "_ico a i");
+                    //圈出某个要引导元素的框
+                    $("#modal-intro .modal-hole").height($navIcontfont.outerHeight() + introModalLayout.holeAddHeight)
+                        .width($navIcontfont.outerWidth() + introModalLayout.holeAddWidth)
+                        .css({
+                            top: $navIcontfont.offset().top - introModalLayout.holeReduceTop,
+                            left: $navIcontfont.offset().left - introModalLayout.holeReduceLeft,
+                        });
+                    //小蚂蚁和提示信息所占区域的样式
+                    $("#modal-intro .modal-tip")
+                        .css({
+                            top: $navIcontfont.offset().top - introModalLayout.tipAreaTop,
+                            left: $navIcontfont.offset().left + introModalLayout.tipAreaLeft,
+                        });
+                })
+            }
+        });
         //重新渲染一次，需要使用高度
         this.setState({});
     },
@@ -422,6 +470,22 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
+    handleOnclickHole:function () {
+        this.setState({
+            isShowIntroModal:false
+        });
+        //跳转到日程管理界面
+        history.pushState({
+        }, "/"+ menu.routePath, {});
+        setWebsiteConfigModuleRecord({"module_record":[menu.name]},result => {
+        }, err => {
+        });
+    },
+    hideModalIntro:function () {
+      this.setState({
+          isShowIntroModal:false
+      })
+    },
     render: function () {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, "");
@@ -486,6 +550,12 @@ var NavSidebar = React.createClass({
                         {_this.getUserInfoBlock()}
                     </div>
                 </div>
+                <ModalIntro
+                    isShowIntroModal={this.state.isShowIntroModal}
+                    handleOnclickHole={this.handleOnclickHole}
+                    hideModalIntro={this.hideModalIntro}
+                    message={Intl.get("schedule.tip.intro.message", "日程功能上线咯，赶快点开看看吧！")}
+                />
             </nav>
         );
     }
