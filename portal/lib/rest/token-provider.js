@@ -95,9 +95,11 @@ TokenProvider.prototype.requestApplicationAccessToken = function () {
     }).on('error', function (result, response) {
         logger.error("app token request has error:", "httpCode: " + (response && response.statusCode ? response.statusCode : "null"), result);
         appTokenProvider.emit("error", result, response);
+        appTokenProvider = null;
     }).on('fail', function (result, response) {
         logger.error("app token request is failed:", "httpCode: " + (response && response.statusCode ? response.statusCode : "null"), result);
         appTokenProvider.emit("error", result, response);
+        appTokenProvider = null;
     }).on('success', function (result) {
         if (result) {
             appAccessToken = new AccessToken(result.access_token, result.expires_in, result.refresh_token);
@@ -106,10 +108,8 @@ TokenProvider.prototype.requestApplicationAccessToken = function () {
         } else {
             logger.info("success fetched appToken but result is null");
         }
-    }).on("complete", function () {
         appTokenProvider = null;
-    });
-
+    })
     return appTokenProvider;
 };
 
