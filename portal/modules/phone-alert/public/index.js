@@ -176,7 +176,7 @@ class PhoneAlert extends React.Component{
                 isAddFlag: false,
             });
             //在最后阶段，将数据清除掉
-            if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
+            if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone || this.state.phonemsgObj.type == PHONERINGSTATUS.BYE || this.state.phonemsgObj.type == PHONERINGSTATUS.record)) {
                 //恢复初始数据
                 phoneAlertAction.setInitialState();
                 this.props.setInitialPhoneObj();
