@@ -73,12 +73,12 @@ function FilterAction() {
     //获取竞品列表
     this.getCompetitorList = function () {
         FilterAjax.getCompetitorList().then((list) => {
-            list = _.isArray(list) ? list : [];
-            list = list.map(tag => {
+            let competitorList = _.isArray(list) ? list : [];
+            competitorList = competitorList.map(tag => {
                 return {name: tag, show_name: tag}
             });
-            list.unshift({name: "", show_name: Intl.get("common.all", "全部")});
-            this.dispatch(list);
+            competitorList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
+            this.dispatch(competitorList);
         },  (errorMsg) => {
             console.log(errorMsg);
         });
