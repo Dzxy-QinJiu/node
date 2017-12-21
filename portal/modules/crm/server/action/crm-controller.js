@@ -106,7 +106,15 @@ exports.getFilterProvinces = function (req, res) {
         res.status(500).json(err.message);
     });
 };
-
+//获取竞品列表
+exports.getCompetitorList = function (req, res) {
+    crmService.getCompetitorList(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err && err.message);
+    });
+};
 //客户名、联系人电话唯一性的验证
 exports.checkOnlyCustomer = function (req, res) {
     crmService.checkOnlyCustomer(req, res)

@@ -6,6 +6,7 @@ import Trace from "LIB_DIR/trace";
 import {administrativeLevels} from "../utils/crm-util";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import userData from "PUB_DIR/sources/user-data";
+import {CUSTOMER_LABELS} from "../utils/crm-util";
 //行政级别筛选项
 let filterLevelArray = [{id: "", level: Intl.get("common.all", "全部")}].concat(administrativeLevels);
 const UNKNOWN = Intl.get("user.unknown", "未知");
@@ -24,7 +25,7 @@ const otherFilterArray = [{
 }, {
     name: Intl.get("crm.no.contact.way", "无联系方式客户"),
     value: "no_contact_way"
-},{
+}, {
     name: Intl.get("crm.concerned.customer", "关注的客户"),
     value: "interest"
 }];
@@ -35,7 +36,6 @@ if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
         value: "undistributed"
     });
 }
-
 const CrmFilterPanel = React.createClass({
     getInitialState: function () {
         return FilterStore.getState();
@@ -48,6 +48,8 @@ const CrmFilterPanel = React.createClass({
         FilterAction.getTeamList();
         FilterAction.getStageList();
         FilterAction.getTagList();
+        //获取竞品的列表
+        FilterAction.getCompetitorList();
         FilterAction.getIndustries();
         //地域列表的获取
         let type = "user";
@@ -115,6 +117,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按行政级别筛选客户");
     },
     tagSelected: function (tag) {
+        //标签
         let labels = this.state.condition.labels;
         let selectedTags = [""];
         //当前选中的标签多于一个且当前点击的不是全部时进行处理
@@ -125,12 +128,12 @@ const CrmFilterPanel = React.createClass({
             }
             //否则设为选中状态
             else {
-                //”未打标签的客户“和其他标签不可同时选中
-                if (tag == Intl.get("crm.tag.unknown", "未打标签的客户")) {
-                    selectedTags = [Intl.get("crm.tag.unknown", "未打标签的客户")];
+                //未打标签的客户、试用、意向、签约、信息和其他标签不可同时选中
+                if (tag === Intl.get("crm.tag.unknown", "未打标签的客户") || CUSTOMER_LABELS.indexOf(tag) !== -1) {
+                    selectedTags = [tag];
                 } else {
                     //过滤掉”未打标签的客户“
-                    labels = _.filter(labels, label => label != Intl.get("crm.tag.unknown", "未打标签的客户"));
+                    labels = _.filter(labels, label => label !== Intl.get("crm.tag.unknown", "未打标签的客户") && CUSTOMER_LABELS.indexOf(label) === -1);
                     selectedTags = [].concat(labels);
                     selectedTags = _.filter(selectedTags, item => item != "");
                     selectedTags.push(tag);
@@ -144,6 +147,26 @@ const CrmFilterPanel = React.createClass({
         tag = tag ? tag : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按标签筛选");
     },
+    //竞品的选择
+    competitorSelected: function (tag) {
+        let labels = this.state.condition.competing_products;
+        let selectedTags = [""];
+        //当前选中的标签多于一个且当前点击的不是全部时进行处理
+        if (tag && labels) {
+            //如果之前处于选中状态则取消选择
+            if (labels.indexOf(tag) > -1) {
+                selectedTags = _.filter(labels, label => label !== tag);
+            } else {//否则设为选中状态
+                selectedTags = [].concat(labels);
+                selectedTags = _.filter(selectedTags, item => item !== "");
+                selectedTags.push(tag);
+            }
+        }
+        FilterAction.setCompetitor(selectedTags);
+        setTimeout(() => this.props.search());
+        Trace.traceEvent($(this.getDOMNode()).find("li"), "按标签筛选");
+    },
+
     industrySelected: function (industry) {
         const curSelectedIndustrys = this.state.condition.industry;
         let newSelectedIndustrys = "";
@@ -187,7 +210,7 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.setOtherSelectedItem(item);
         setTimeout(() => this.props.search());
-        switch (item){
+        switch (item) {
             case otherFilterArray[1].value:
                 Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
                 break;
@@ -204,7 +227,7 @@ const CrmFilterPanel = React.createClass({
                 Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
                 break;
         }
-        if(otherFilterArray[6] && item === otherFilterArray[6].value){
+        if (otherFilterArray[6] && item === otherFilterArray[6].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
         }
     },
@@ -238,7 +261,11 @@ const CrmFilterPanel = React.createClass({
             return <li key={idx} onClick={this.tagSelected.bind(this, tag.name)}
                        className={className}>{tag.show_name}</li>
         });
-
+        const competitorListJsx = this.state.competitorList.map((tag, idx) => {
+            let className = this.state.condition.competing_products.indexOf(tag.name) > -1 ? "selected" : "";
+            return <li key={idx} onClick={this.competitorSelected.bind(this, tag.name)}
+                       className={className}>{tag.show_name}</li>
+        });
         const industryArray = ["", Intl.get("user.unknown", "未知")].concat(this.state.industryList);
         const industryListJsx = industryArray.map((item, idx) => {
             let className = this.state.condition.industry.split(",").indexOf(item) > -1 ? "selected" : "";
@@ -285,6 +312,12 @@ const CrmFilterPanel = React.createClass({
                         <dt>{Intl.get("common.tag", "标签")} :</dt>
                         <dd>
                             <ul>{tagListJsx}</ul>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{Intl.get("crm.competing.products", "竞品")} :</dt>
+                        <dd>
+                            <ul>{competitorListJsx}</ul>
                         </dd>
                     </dl>
                     <dl>

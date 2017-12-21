@@ -45,7 +45,8 @@ function getBasicPanelH(isMerge) {
 const LABEL_TYPES = {
     INFO_TAG: "信息",
     INTENT_TAG: "意向",
-    TRIAL_TAG: "试用"
+    TRIAL_TAG: "试用",
+    SIGN_TAG: "签约"
 };
 
 var BasicData = React.createClass({
@@ -153,7 +154,8 @@ var BasicData = React.createClass({
             customerLabelCls = classNames("customer-label",{
                 "info-tag-style": basicData.customer_label === LABEL_TYPES.INFO_TAG,
                 "intent-tag-style": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
-                "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG
+                "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG,
+                "sign-tag-style": basicData.customer_label === LABEL_TYPES.SIGN_TAG,
             });
         }
         return (
