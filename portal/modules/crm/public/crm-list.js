@@ -490,23 +490,24 @@ var Crm = React.createClass({
             unexist.push("province");
             delete condition.province;
         }
-        //未打标签的处理
-        if (_.isArray(condition.labels) && condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
-            unexist.push("labels");
-            delete condition.labels;
-        }
-        //试用、意向、信息标签和其他标签的筛选处理
+        //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
-            _.some(condition.labels,(label) => {
-                //试用、意向、信息、签约标签(单选)
-                if(CUSTOMER_LABELS.indexOf(label)!==-1) {
-                    condition.customer_label = label;
-                    return true;
-                }
-            });
-            //其他标签和 试用、意向、信息、签约标签不可同时选中
-            if(condition.customer_label){
+            //未打标签的处理
+            if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
+                unexist.push("labels");
                 delete condition.labels;
+            } else {//试用、意向、信息标签和其他标签的筛选处理
+                _.some(condition.labels, (label) => {
+                    //试用、意向、信息、签约标签(单选)
+                    if (CUSTOMER_LABELS.indexOf(label) !== -1) {
+                        condition.customer_label = label;
+                        return true;
+                    }
+                });
+                //其他标签和 试用、意向、信息、签约标签不可同时选中
+                if (condition.customer_label) {
+                    delete condition.labels;
+                }
             }
         }
         var queryObj = {
@@ -534,7 +535,7 @@ var Crm = React.createClass({
                 unexist.push("member_id");
                 break;
             case OTHER_FILTER_ITEMS.INTEREST://关注的客户
-                condition.interest="true";
+                condition.interest = "true";
                 break;
         }
         if (dayTime) {
@@ -849,7 +850,7 @@ var Crm = React.createClass({
                 customerId = _.last(curCustomerList).id
             } else {
                 //向前翻页
-                if (page != "1"){
+                if (page != "1") {
                     pageValue = currPageNum - page;
                     cursor = false;
                     customerId = _.first(curCustomerList).id;
@@ -1179,12 +1180,12 @@ var Crm = React.createClass({
                     showFlag={this.state.isShowCustomerUserListPanel}
 
                 >
-                    {this.state.isShowCustomerUserListPanel?
+                    {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
                             customer_id={this.state.CustomerInfoOfCurrUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        />:null
+                        /> : null
                     }
                 </RightPanel>
                 <BootstrapModal
