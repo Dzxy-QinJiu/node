@@ -1,6 +1,11 @@
 //模态框样式
 .modal-wrap-container {
-  display: none;
+  display: block;
+  position: fixed;
+  z-index: 15;
+  top: 0;
+  width: 100%;
+  height: 100%;
   .modal-hole {
     cursor: pointer;
     position: absolute;
@@ -48,13 +53,4 @@
       cursor: pointer;
     }
   }
-}
-
-.modal-wrap-container.modal-wrap-show {
-  display: block;
-  position: fixed;
-  z-index: 15;
-  top: 0;
-  width: 100%;
-  height: 100%;
 }
