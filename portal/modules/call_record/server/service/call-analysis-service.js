@@ -15,7 +15,7 @@ const restApis = {
     //  获取通话数量和通话时长趋势图统计(销售个人)
     getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
-    getCallInfo: "/rest/base/v1/view/call_record/:type",
+    getCallInfo: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
     // 114占比(团队)
     getTeamCallRate: "/rest/callrecord/v2/callrecord/term/:start_time/:end_time",
     // 114占比（个人）
@@ -88,7 +88,7 @@ exports.getCallInfo = function (req, res, params, reqData) {
     if (reqData.member_ids && memberArrayLength > 80) {
         let promiseList = [];
         let paramsObj = {
-            type: reqData.type,
+            deviceType: reqData.deviceType,
             start_time: reqData.start_time,
             end_time: reqData.end_time
         };

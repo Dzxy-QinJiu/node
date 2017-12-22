@@ -5,8 +5,8 @@ exports.toFrontCallAnalysis = function (data) {
     var callInfo = {};
     if (data && _.isObject(data)) {
         callInfo.salesPhoneList = [];
-        if (_.isArray(data.result) && data.result.length > 0) {
-            callInfo.salesPhoneList = data.result.map( (salesObj) => {
+        if (_.isArray(data.list) && data.list.length > 0) {
+            callInfo.salesPhoneList = data.list.map( (salesObj) => {
                 return {
                     salesName: salesObj.name,//销售名称
                     totalTime: salesObj.total_time,//总时长

@@ -150,8 +150,8 @@ var CallRecordAnalyis = React.createClass({
         if (this.state.teamList.list.length) {
             reqBody = this.getTeamMemberParam();
         }
-        if (params && params.type && params.type != 'all' || this.state.callType != 'all') {
-            reqBody.type = params && params.type || this.state.callType
+        if (params && params.deviceType && params.deviceType != 'all' || this.state.callType != 'all') {
+            reqBody.deviceType = params && params.deviceType || this.state.callType
         }
         return reqBody;
     },
@@ -172,25 +172,21 @@ var CallRecordAnalyis = React.createClass({
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
-            type: params && params.type || this.state.callType
+            deviceType: params && params.deviceType || this.state.callType
         };
         let pathParam = this.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
             let teamMemberParam = this.getTeamMemberParam();
             if (teamMemberParam) {
                 if (teamMemberParam.sales_team_id) {
-                    if (teamMemberParam.sales_team_id.indexOf(',') === -1) {
-                        //只有一个团队时，获取团队下的团队/成员的通话记录列表
-                        queryParams.team_id = teamMemberParam.sales_team_id;
-                    } else {
-                        queryParams.team_ids = teamMemberParam.sales_team_id;
-                    }
+                    queryParams.team_ids = teamMemberParam.sales_team_id;
                 } else if (teamMemberParam.user_id) {
                     queryParams.member_ids = teamMemberParam.user_id;
                 }
             }
         }
-        CallAnalysisAction.getCallInfo(pathParam, queryParams);
+        let type = this.getCallInfoAuth();
+        CallAnalysisAction.getCallInfo(pathParam, queryParams, type);
     },
 
     // TOP10
@@ -241,13 +237,17 @@ var CallRecordAnalyis = React.createClass({
         }
         return queryParams;
     },
-    //获取通话时段的统计数据
-    getCallIntervalData(params){
-        let queryParams = this.getCallIntervalParams(params);
+    getCallInfoAuth() {
         let authType = "user";//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege("CUSTOMER_CALLRECORD_STATISTIC_MANAGER")) {
             authType = "manager";
         }
+        return authType;
+    },
+    //获取通话时段的统计数据
+    getCallIntervalData(params){
+        let queryParams = this.getCallIntervalParams(params);
+        let authType = this.getCallInfoAuth();
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
     },
     componentWillUnmount: function () {
@@ -411,7 +411,7 @@ var CallRecordAnalyis = React.createClass({
             if (this.state.callType == 'all') {
                 this.refreshCallAnalysisData();
             } else {
-                this.refreshCallAnalysisData({type: this.state.callType});
+                this.refreshCallAnalysisData({deviceType: this.state.callType});
             }
         });
     },
