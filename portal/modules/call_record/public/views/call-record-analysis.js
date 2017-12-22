@@ -150,8 +150,10 @@ var CallRecordAnalyis = React.createClass({
         if (this.state.teamList.list.length) {
             reqBody = this.getTeamMemberParam();
         }
-        if (params && params.deviceType && params.deviceType != 'all' || this.state.callType != 'all') {
-            reqBody.deviceType = params && params.deviceType || this.state.callType
+        if (params) {
+            if (params.deviceType  && params.deviceType != 'all') {
+                reqBody.deviceType = params && params.deviceType || this.state.callType;
+            }
         }
         return reqBody;
     },
