@@ -25,6 +25,7 @@ const TIMEOUTDELAY = {
     closeTimeDelay: 5000,
     renderTimeDelay: 2000,
     phoneRenderDelay: 2000,
+    scheduleCloseTimeDelay: 15000,//日程桌面通知的时间
 };
 import PhoneAlert from "MOD_DIR/phone-alert/public";
 //当前正在拨打的电话及联系人信息，从点击事件emitter出来
@@ -260,7 +261,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
             title: title,
             content: tipContent,
             closeWith: ["button"],
-            timeout: TIMEOUTDELAY.closeTimeDelay
+            timeout: TIMEOUTDELAY.scheduleCloseTimeDelay
         });
     }
 }
