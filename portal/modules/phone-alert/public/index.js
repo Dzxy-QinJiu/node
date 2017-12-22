@@ -119,13 +119,12 @@ class PhoneAlert extends React.Component{
             //恢复初始数据
             phoneAlertAction.setInitialState();
             this.props.setInitialPhoneObj();
-
         }
         //系统内拨号，在alert状态之前，还没获取到客户详情的时候，将模态框关掉时，需要再去获取一下客户详情
         if (nextProps.phoneObj.phoneNum && this.state.customerInfoArr.length == 0) {
             phoneAlertAction.getCustomerByPhone(nextProps.phoneObj.phoneNum);
         }
-        //通过座机拨打电话，区分已有客户和要添加的客户,必须要接通以后
+        //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
         if (nextProps.phonemsgObj.to && _.isEmpty(nextProps.phoneObj) && this.state.customerInfoArr.length == 0) {
             phoneAlertAction.getCustomerByPhone(nextProps.phonemsgObj.to);
@@ -176,7 +175,7 @@ class PhoneAlert extends React.Component{
                 isAddFlag: false,
             });
             //在最后阶段，将数据清除掉
-            if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
+            if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone || this.state.phonemsgObj.type == PHONERINGSTATUS.BYE || this.state.phonemsgObj.type == PHONERINGSTATUS.record)) {
                 //恢复初始数据
                 phoneAlertAction.setInitialState();
                 this.props.setInitialPhoneObj();
