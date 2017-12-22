@@ -5,9 +5,6 @@ var Promise = require("bluebird");
 
 //通知相关的api
 var NotificationRestApis = {
-
-    //获取客户提醒列表
-    getCustomerMessageList: "/rest/base/v1/message/notice/customer",
     //清除未读数
     clearUnreadNum: "/rest/base/v1/message/notice/:type/clean",
     //获取客户提醒、申请消息未读数
@@ -22,15 +19,6 @@ var NotificationRestApis = {
     handleSystemNotice: "/rest/base/v1/notice/customernotice/handle/:noticeId"
 };
 exports.urls = NotificationRestApis;
-
-//获取客户提醒列表
-exports.getCustomerMessageList = function (req, res, queryObj) {
-    return restUtil.authRest.get({
-        url: NotificationRestApis.getCustomerMessageList,
-        req: req,
-        res: res
-    }, queryObj);
-};
 
 //获取系统消息列表
 exports.getSystemNotices = function (req, res, queryObj) {

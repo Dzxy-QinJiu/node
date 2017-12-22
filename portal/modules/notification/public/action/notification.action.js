@@ -52,36 +52,6 @@ function NotificationAction() {
             }
         });
     };
-    //获取客户提醒列表
-    this.getCustomerMessageList = function (queryObj) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false, currentPage: queryObj.current_page});
-        NotificationAjax.getCustomerMessageList(queryObj).then(function (data) {
-            /**
-             *
-             *
-             *  {
-                    "message": "xx的账号xx在xx将到期，请及时联系客户",
-                    "date": 1466135390196,
-                 }
-             {
-                 "message": "客户xxx在xxx添加提醒，xxxxxxx",
-                 "date": 1466135390196,
-             }
-             */
-            if (data) {
-                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-                _this.dispatch({loading: false, error: false, data: data});
-                updateUnread("customer", data.unread || 0);
-
-            } else {
-                _this.dispatch({loading: false, error: false, data: {total: 0, list: []}});
-            }
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-
 }
 
 module.exports = alt.createActions(NotificationAction);

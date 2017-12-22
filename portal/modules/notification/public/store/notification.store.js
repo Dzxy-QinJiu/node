@@ -31,40 +31,6 @@ NotificationStore.prototype.resetLastNotificationId = function () {
     this.lastNotificationId = "";
 };
 
-//获取客户提醒列表
-NotificationStore.prototype.getCustomerMessageList = function (result) {
-    if (result.loading) {
-        this.notificationListResult = "loading";
-        this.notificationErrorMsg = '';
-    } else if (result.error) {
-        this.notificationListResult = "error";
-        this.notificationErrorMsg = result.errorMsg;
-        this.notificationList = [];
-        this.notificationCount = 0;
-        this.showLoadingBesidePagination = false;
-    } else {
-        this.notificationListResult = "";
-        this.notificationErrorMsg = "";
-        if (result.data) {
-            //未读数
-            this.unreadNum = result.data.unread;
-            if (_.isArray(result.data.list) && result.data.list.length) {
-                if (this.lastNotificationId) {
-                    //下拉加载时
-                    this.notificationList = this.notificationList.concat(result.data.list);
-                } else {
-                    //首次获取数据时
-                    this.notificationList = result.data.list;
-                }
-            } else {
-                this.notificationList = [];
-            }
-        }
-        this.lastNotificationId = this.notificationList.length ? _.last(this.notificationList).id : "";
-        this.notificationCount = result.data.total || this.notificationList.length || 0;
-        this.listenScrollBottom = this.notificationCount > this.notificationList.length;
-    }
-};
 //清除未读数
 NotificationStore.prototype.clearUnreadNum = function (result) {
     if (result) {

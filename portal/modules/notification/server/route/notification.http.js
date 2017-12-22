@@ -34,19 +34,6 @@ module.exports = {
     }, {
         //http方法
         "method": "get",
-        //获取客户提醒列表
-        "path": "/rest/notification/customer",
-        //action中的方法
-        "handler": "getCustomerMessageList",
-        //是否需要登录
-        "passport": {
-            "needLogin": true
-        },
-        //需要权限
-        "privileges": []
-    }, {
-        //http方法
-        "method": "get",
         //获取系统消息列表
         "path": "/rest/notification/system/:status",
         //action中的方法
