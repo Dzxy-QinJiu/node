@@ -187,7 +187,7 @@ function init(options) {
                 break;
             //通知
             case 'notification':
-                childRoutes.push(require("./notification"));
+                childRoutes.push(require("../../modules/notification"));
                 break;
             case 'online':
                 childRoutes.push(require("./user_online"));
