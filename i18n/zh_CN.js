@@ -1890,8 +1890,7 @@ var zh_CN = {
     "schedule.get.schedule.list.failed": "获取日程管理列表失败",
     "schedule.management.schedule.content": "日程内容",
     "schedule.todo.list": "待办",
-    "schedule.has.finished": "已完成"
-
-
+    "schedule.has.finished": "已完成",
+    "schedule.tip.intro.message":"日程功能上线咯，赶快点开看看吧！"
 };
 export default zh_CN;

@@ -19,9 +19,22 @@ var websiteConfig = {
             onError(err);
         });
     },
-
+    //设置某个模块是否被点击过
+    setWebsiteConfigModuleRecord: function (data, onSuccess, onError) {
+        const route = _.find(routeList, route => route.handler === "setWebsiteConfigModuleRecord");
+        const arg = {
+            url: route.path,
+            type: route.method,
+            data
+        };
+        ajax(arg).then(result => {
+            onSuccess(result);
+        }, err => {
+            onError(err);
+        });
+    },
     //获取网站个性化配置
-    getWebsiteConfig: function () {
+    getWebsiteConfig: function (callback) {
         const route = _.find(routeList, route => route.handler === "getWebsiteConfig");
         const arg = {
             url: route.path,
@@ -30,6 +43,18 @@ var websiteConfig = {
         ajax(arg).then(result => {
             if (result && result.personnel_setting) {
                 localStorage.websiteConfig = JSON.stringify(result.personnel_setting);
+            }else if (result && !result.personnel_setting){
+                localStorage.websiteConfig = JSON.stringify({});
+            }
+            //存储是否点击了某个模块
+            if (result && result.module_record){
+                if (_.isFunction(callback)){
+                    callback(result.module_record);
+                }
+            }else if (result && !result.module_record){
+                if (_.isFunction(callback)){
+                    callback([]);
+                }
             }
         });
     },

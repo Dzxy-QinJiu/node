@@ -5,7 +5,8 @@ const contractAnalysisUrl = "/rest/analysis/contract/contract/";
 const teamUrl = "/rest/base/v1/group/";
 const customerCommonAnalysisUrl = "/rest/analysis/customer/v1/common/";
 const customerManagerAnalysisUrl = "/rest/analysis/customer/v1/manager/";
-const websiteConfigUrl = "/rest/base/v1/user/website/config/";
+const websiteConfigUrl = "/rest/base/v1/user/website/config";
+const websiteModuleRecordConfigUrl = "/rest/base/v1/user/website/config/module/record";
 const userAnalysisV3Url = "/rest/analysis/user/v3"; //  common（普通权限用户）manager（管理员权限）
 
 module.exports = [{
@@ -72,22 +73,32 @@ module.exports = [{
     ]
 }, {
     "method": "post",
-    "path": websiteConfigUrl + "personnel",//创建（覆盖）个性化配置
+    "path": websiteConfigUrl + "/personnel",//创建（覆盖）个性化配置
     "handler": "setWebsiteConfig",
-    "passport":{
+    "passport": {
         "needLogin": true
     },
-    "privileges":[
+    "privileges": [
         "MEMBER_WEBSITE_CONFIG"
     ]
-},{
+}, {
+    "method": "post",
+    "path": websiteModuleRecordConfigUrl,//是否点击过某个模块
+    "handler": "setWebsiteConfigModuleRecord",
+    "passport": {
+        "needLogin": true
+    },
+    "privileges": [
+        "MEMBER_WEBSITE_CONFIG"
+    ]
+}, {
     "method": "get",
     "path": websiteConfigUrl,//获取网站个性化配置
     "handler": "getWebsiteConfig",
-    "passport":{
+    "passport": {
         "needLogin": true
     },
-    "privileges":[
+    "privileges": [
         "MEMBER_WEBSITE_CONFIG"
     ]
 }, {

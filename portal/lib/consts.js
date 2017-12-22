@@ -28,5 +28,10 @@ module.exports = {
         SALES_HOME:"sales-home",
         //线索客户
         CLUE_CUSTOMER: "clue-customer"
+    },
+    //存储已经点击过的功能
+    STORE_NEW_FUNCTION:{
+        //日程管理模块
+        SCHEDULE_MANAGEMENT: {"name":"schedule-management","routePath":"schedule_management"}
     }
 };
