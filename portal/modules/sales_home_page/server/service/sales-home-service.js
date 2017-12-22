@@ -14,7 +14,7 @@ var restApis = {
     //获取销售-客户列表
     getSalesCustomer: "/rest/base/v1/view/customer",
     //获取销售-电话列表
-    getSalesPhone: "/rest/base/v1/view/call_record/:type",
+    getSalesPhone: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
     //获取销售-用户列表
     getSalesUser: "/rest/base/v1/view/user",
     //获取销售-合同列表

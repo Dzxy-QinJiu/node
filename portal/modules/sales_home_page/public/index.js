@@ -174,8 +174,8 @@ var SalesHomePage = React.createClass({
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
-        let phoneParams = this.getPhoneParams(queryParams);
-        SalesHomeAction.getSalesPhoneList(phoneParams, dataType);
+        let phoneParams = this.getPhoneParams();
+        SalesHomeAction.getSalesPhoneList(phoneParams);
         var queryObj = {};
         if (queryParams.member_id){
             queryObj.member_id = queryParams.member_id;
@@ -186,17 +186,18 @@ var SalesHomePage = React.createClass({
         //获取过期用户列表
         SalesHomeAction.getExpireUser(queryObj);
     },
-    getPhoneParams: function (queryParams) {
+    getPhoneParams: function () {
         let phoneParams = {
-            start_time: queryParams.starttime || 0,
-            end_time: queryParams.endtime || moment().toDate().getTime(),
-            type: this.state.callType
+            start_time: this.state.start_time || 0,
+            end_time: this.state.end_time || moment().toDate().getTime(),
+            deviceType: this.state.callType || CALL_TYPE_OPTION.ALL
         };
-        if (queryParams.member_id) {
-            phoneParams.member_id = queryParams.member_id;
-        }
-        if (queryParams.team_id) {
-            phoneParams.team_id = queryParams.team_id
+        if (this.state.currShowSalesman) {
+            //查看当前选择销售的统计数据
+            phoneParams.member_ids = this.state.currShowSalesman.userId;
+        } else if (this.state.currShowSalesTeam) {
+            //查看当前选择销售团队内所有成员的统计数据
+            phoneParams.team_ids = this.state.currShowSalesTeam.group_id;
         }
         return phoneParams;
     },
@@ -329,20 +330,8 @@ var SalesHomePage = React.createClass({
     },
 
     getChangeCallTypeData: function () {
-        let queryParams = {
-            start_time: this.state.start_time || 0,
-            end_time: this.state.end_time || moment().toDate().getTime(),
-            type: this.state.callType || CALL_TYPE_OPTION.ALL
-        };
-        if (this.state.currShowSalesman) {
-            //查看当前选择销售的统计数据
-            queryParams.member_id = this.state.currShowSalesman.userId;
-        } else if (this.state.currShowSalesTeam) {
-            //查看当前选择销售团队内所有成员的统计数据
-            queryParams.team_id = this.state.currShowSalesTeam.group_id;
-        }
-        let type = this.getDataType();
-        SalesHomeAction.getSalesPhoneList(queryParams, type);
+        let queryParams = this.getPhoneParams();
+        SalesHomeAction.getSalesPhoneList(queryParams);
     },
 
     // 选择通话类型的值

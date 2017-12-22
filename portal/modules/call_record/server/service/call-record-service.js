@@ -9,14 +9,14 @@ var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 import CallRecord from "../dto/callRecord";
 var _ = require("underscore");
 //获取全部和客户电话的列表
-const callRecordListUrl = "/rest/customer/v2/customer/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
+const callRecordListUrl = "/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
 //查询无效电话列表（客服和114）
-const invalidCallRecordListUrl = "/rest/customer/v2/customer/query/invalid_trace/:type/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
+const invalidCallRecordListUrl = "/rest/callrecord/v2/callrecord/query/invalid_trace/:type/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
 const restApis = {
     // 编辑通话记录中跟进内容
-    editCallTraceContent: "/rest/customer/v2/customer/trace",
+    editCallTraceContent: "/rest/callrecord/v2/callrecord/trace",
     // 搜索电话号码号码时，提供推荐列表
-    getRecommendPhoneList: "/rest/customer/v2/callrecord/terms/:page_size"
+    getRecommendPhoneList: "/rest/callrecord/v2/callrecord/terms/:page_size"
 };
 
 //获取全部和客户电话的列表

@@ -7,11 +7,11 @@ var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 var restApis = {
     //获取客户跟踪记录
-    getCustomerTraceList: "/rest/customer/v2/customer/query/trace/customer",
+    getCustomerTraceList: "/rest/callrecord/v2/callrecord/query/trace/customer",
     // 添加客户跟踪记录
-    addCustomerTraceList: "/rest/customer/v2/customer/trace",
+    addCustomerTraceList: "/rest/callrecord/v2/callrecord/trace",
     // 更新客户跟踪记录
-    updateCustomerTraceList: "/rest/customer/v2/customer/trace",
+    updateCustomerTraceList: "/rest/callrecord/v2/callrecord/trace",
 };
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表

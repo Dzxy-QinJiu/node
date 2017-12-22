@@ -42,10 +42,10 @@ exports.getCallCountAndDur = function (reqData, reqBody) {
 };
 
 // 获取电话的接通情况
-exports.getCallInfo = function (pathParam, reqData) {
+exports.getCallInfo = function (pathParam, reqData, type) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/call/info/' + pathParam.type,
+        url: '/rest/call/info/' + type,
         dataType: 'json',
         type: 'post',
         data: reqData,

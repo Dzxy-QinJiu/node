@@ -1,7 +1,7 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
 var userData = require("../../../../public/sources/user-data");
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 var _ = require("underscore");
-import {message } from "antd";
 
 function SalesHomeActions() {
     this.generateActions(
@@ -96,8 +96,12 @@ function SalesHomeActions() {
         );
     };
     //获取销售-电话列表
-    this.getSalesPhoneList = function (reqData, type) {
+    this.getSalesPhoneList = function (reqData) {
         var _this = this;
+        let type = 'manager';
+        if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
+            type = 'user';
+        }
         _this.dispatch({loading: true, error: false});
         salesHomeAjax.getSalesPhoneList(reqData, type).then(function (resData) {
                 _this.dispatch({loading: false, error: false, resData: resData});
