@@ -16,24 +16,6 @@ exports.clearUnreadNum = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-//获取客户提醒列表
-exports.getCustomerMessageList = function (req, res) {
-    let queryObj = {
-        is_consumed: req.query.is_consumed || "all",
-        page_size: req.query.page_size || '10'
-    };
-    if (req.query.id) {
-        queryObj.id = req.query.id;
-    }
-    if (req.query.keyword) {
-        queryObj.keyword = req.query.keyword;
-    }
-    NotificationService.getCustomerMessageList(req, res, queryObj).on("success", function (data) {
-        res.json(data);
-    }).on("error", function (ret) {
-        res.status(500).json(ret);
-    });
-};
 
 //获取系统消息列表
 exports.getSystemNotices = function (req, res) {

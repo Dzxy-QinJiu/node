@@ -12,6 +12,7 @@ import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel}  from "CMP_DIR/rightPanel";
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
+import TopNav from "CMP_DIR/top-nav";
 import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
 import userData from "PUB_DIR/sources/user-data";
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
@@ -326,25 +327,27 @@ let SystemNotification = React.createClass({
         let containerHeight = $(window).height() - LAYOUT.BOTTOM - LAYOUT.TOP;
         return (
             <div className="notification_system" data-tracename="系统消息列表">
-                <div className="notification-type-select">
-                    <SelectFullWidth
-                        minWidth={60}
-                        value={this.state.selectedNoticeType}
-                        onChange={this.handleTypeChange}
-                    >
-                        <Option value="">{Intl.get("common.all", "全部")}</Option>
-                        {_.map(SYSTEM_NOTICE_TYPE_MAP, (key, val) => {
-                            return (<Option value={val}>{key}</Option>);
-                        })}
-                    </SelectFullWidth>
-                </div>
-                <div className="notification-status-select">
-                    <Select size="large" value={this.state.status} onChange={this.handleStatusChange}>
-                        {STATUS_ARRAY.map((status) => {
-                            return (<Option value={status.value}>{status.name}</Option>);
-                        })}
-                    </Select>
-                </div>
+                <TopNav>
+                    <div className="notification-type-select">
+                        <SelectFullWidth
+                            minWidth={60}
+                            value={this.state.selectedNoticeType}
+                            onChange={this.handleTypeChange}
+                        >
+                            <Option value="">{Intl.get("common.all", "全部")}</Option>
+                            {_.map(SYSTEM_NOTICE_TYPE_MAP, (key, val) => {
+                                return (<Option value={val}>{key}</Option>);
+                            })}
+                        </SelectFullWidth>
+                    </div>
+                    <div className="notification-status-select">
+                        <Select size="large" value={this.state.status} onChange={this.handleStatusChange}>
+                            {STATUS_ARRAY.map((status) => {
+                                return (<Option value={status.value}>{status.name}</Option>);
+                            })}
+                        </Select>
+                    </div>
+                </TopNav>
                 {this.renderUpdateTip()}
                 <div style={{height: containerHeight}}>
                     <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}

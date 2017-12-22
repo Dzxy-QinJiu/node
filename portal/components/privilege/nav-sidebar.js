@@ -57,7 +57,7 @@ var ExcludeLinkList = [
     {"name": Intl.get("common.my.app", "我的应用"), path: "my_app"},
     {"name": Intl.get("menu.backend", "后台管理"), path: "background_management"},
     {"name": Intl.get("menu.userinfo.manage", "个人信息管理"), path: "user_info_manage"},
-    {"name": Intl.get("menu.notification", "通知"), path: "notification"},
+    {"name": Intl.get("menu.system.notification", "系统消息"), path: "notification_system"},
     {"name": Intl.get("menu.appuser.apply", "用户审批"), path: "apply"}
 ];
 
@@ -89,15 +89,9 @@ const BackendConfigLinkList = [
 //通知类型
 var NotificationLinkList = [
     {
-        name: Intl.get("menu.customer.notification", "客户提醒"),
-        href: "/notification/customer",
-        key: "customer",
-        privilege: 'NOTIFICATION_CUSTOMER_LIST'
-    },
-    {
         name: Intl.get("menu.system.notification", "系统消息"),
-        href: "/notification/system",
-        key: "system",
+        href: "/notification_system",
+        key: "notification_system",
         privilege: 'NOTIFICATION_SYSTEM_LIST'
     }
 ];
@@ -411,22 +405,12 @@ var NavSidebar = React.createClass({
         if (!notificationLinks.length) {
             return null;
         }
-        //是否含有未读数
-        var hasUnread = this.hasUnread();
-        var notificationList = this.getNotificationLinks(notificationLinks);
-        var notificationCls = this.getNotificationClass();
-
         return (
             <div className="notification">
-                <Popover content={notificationList} trigger="hover"
-                         placement="rightBottom"
-                         overlayClassName="nav-sidebar-notification">
-                    <Link to={notificationLinks[0].href} activeClassName="active" extraClass={notificationCls}>
-                        <i className="iconfont icon-tongzhi">
-                            {hasUnread ? (<b></b>) : null}
-                        </i>
-                    </Link>
-                </Popover>
+                <Link to={notificationLinks[0].href} activeClassName="active">
+                    <i className="iconfont icon-tongzhi" title={Intl.get("menu.system.notification", "系统消息")}>
+                    </i>
+                </Link>
             </div>
         );
     },

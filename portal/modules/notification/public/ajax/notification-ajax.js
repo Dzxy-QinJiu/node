@@ -1,28 +1,4 @@
 
-//获取客户提醒列表
-var customerListAjax;
-exports.getCustomerMessageList = function (queryObj) {
-    if (customerListAjax) {
-        customerListAjax.abort();
-    }
-    var Deferred = $.Deferred();
-    customerListAjax = $.ajax({
-        url: '/rest/notification/customer',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function (result) {
-            Deferred.resolve(result);
-        },
-        error: function (error, errorText) {
-            if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON || Intl.get("notification.customer.notification.failed", "获取客户提醒列表失败"));
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
 //获取系统通知
 let systemNoticesAjax;
 exports.getSystemNotices = function (queryObj, status) {

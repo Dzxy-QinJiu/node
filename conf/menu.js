@@ -438,27 +438,13 @@ class LeftMenuClass {
             },
             {
                 id: "NOTIFICATION",//唯一标识 - 通知
-                name: backendIntl.get("menu.notification", "通知"),
-                routePath: "notification",
-                subMenu: [{
-                    id: "NOTIFICATION_CUSTOMER",
-                    name: backendIntl.get("menu.customer.notification", "客户提醒"),
-                    routePath: "notification/customer",
-                    privileges: [
-                        "NOTIFICATION_CUSTOMER_LIST"//查看通知-客户提醒
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ["NOTIFICATION_CUSTOMER_LIST"]
-                }, {
-                    id: "NOTIFICATION_SYSTEM",
-                    name: backendIntl.get("menu.system.notification", "系统消息"),
-                    routePath: "notification/system",
-                    privileges: [
-                        "NOTIFICATION_SYSTEM_LIST"//查看通知-系统消息
-                    ],
-                    //有这个权限，才显示入口图标
-                    showPrivileges: ["NOTIFICATION_SYSTEM_LIST"]
-                }]
+                name: backendIntl.get("menu.system.notification", "系统消息"),
+                routePath: "notification_system",
+                privileges: [
+                    "NOTIFICATION_SYSTEM_LIST"//查看通知-系统消息
+                ],
+                //有这个权限，才显示入口图标
+                showPrivileges: ["NOTIFICATION_SYSTEM_LIST"]
             },
             {
                 id: "APP_USER_MANAGE_APPLY",
