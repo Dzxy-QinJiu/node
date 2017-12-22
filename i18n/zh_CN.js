@@ -1886,6 +1886,6 @@ var zh_CN = {
     "schedule.management.schedule.content": "日程内容",
     "schedule.todo.list": "待办",
     "schedule.has.finished": "已完成",
-    "schedule.tip.intro.message":"日程功能上线咯，赶快点开看看吧！"
+    "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！"
 };
 export default zh_CN;

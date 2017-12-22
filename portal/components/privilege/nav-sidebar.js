@@ -169,8 +169,8 @@ var NavSidebar = React.createClass({
             isShowIntroModal:false,//是否展示引导的模态框
             introModalLayout:{},//模态框上蚂蚁及提示的展示样式
             tipMessage:"",//提示内容
-            //是否已经点击过某个模块的左侧导航按钮
-            isEverClickModuleIcon:true
+            //已经点击过的模块
+            hasClickedModule: [],
         };
     },
     //轮询获取未读数的清除器
@@ -243,7 +243,7 @@ var NavSidebar = React.createClass({
         if ($introElement !== this.state.$introElement){
             this.setState({
                 isShowIntroModal: true,
-                tipMessage: Intl.get("schedule.tip.intro.message", "日程功能上线咯，赶快点开看看吧！"),
+                tipMessage: Intl.get("schedule.tip.intro.message", "日程功能上线了，赶快点开看看吧！"),
                 $introElement: $introElement,
                 introModalLayout: introModalLayout
             })
@@ -269,22 +269,29 @@ var NavSidebar = React.createClass({
         $(window).on('resize', this.calculateHeight);
         //获取已经点击过的模块
         getWebsiteConfig((WebsiteConfigModuleRecord)=>{
+            this.setState({
+               hasClickedModule: WebsiteConfigModuleRecord
+            });
             //本次要加引导的模块是否点击过
-            if (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0){
-                this.setState({
-                    isEverClickModuleIcon:false
-                });
+            if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)){
                 this.selectedIntroElement();
             }
         });
         //重新渲染一次，需要使用高度
         this.setState({});
     },
+    //本次要加的引导是否没有被点击过
+    isIntroModlueNeverClicked: function (WebsiteConfigModuleRecord) {
+       return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
+    },
     //点击某个模块
     handleClickNavsiderIcon:function (ClickedMenu) {
         //所点击的模块按钮是要新加引导的模块 并且此模块之前没有被点击过
-        if (!this.state.isEverClickModuleIcon && ClickedMenu.routePath == menu.routePath){
+        if (this.isIntroModlueNeverClicked(this.state.hasClickedModule) && ClickedMenu.routePath == menu.routePath){
             setWebsiteConfigModuleRecord({"module_record":[menu.name]},result => {}, err => {});
+            this.setState({
+                hasClickedModule: this.state.hasClickedModule.push(menu.name)
+            })
         }
     },
     calculateHeight: function () {

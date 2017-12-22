@@ -1844,6 +1844,6 @@ var en_US = {
     "schedule.management.schedule.content": "Schedule content",//日程内容
     "schedule.todo.list": "Todo lists",//待办
     "schedule.has.finished": "Has Finished",//已完成
-    "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!"//日程功能上线咯，赶快点开看看吧！
+    "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!"//日程功能上线了，赶快点开看看吧！
 };
 export default en_US;
