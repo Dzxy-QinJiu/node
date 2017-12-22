@@ -7,25 +7,25 @@ var Promise = require('bluebird');
 var EventEmitter = require("events").EventEmitter;
 const restApis = {
     // 获取单次通话时长为top10的数据(团队)
-    getCallDurTopTen: '/rest/customer/v2/customer/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    getCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取销售个人的top10
-    getSingleUserCallDurTopTen: '/rest/customer/v2/customer/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    getSingleUserCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取通话数量和通话时长趋势图统计(团队)
-    getCallCountAndDur: '/rest/customer/v2/callrecord/histogram/:start_time/:end_time/:interval',
+    getCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/:start_time/:end_time/:interval',
     //  获取通话数量和通话时长趋势图统计(销售个人)
-    getSingleUserCallCountAndDur: '/rest/customer/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
+    getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
     getCallInfo: "/rest/base/v1/view/call_record/:type",
     // 114占比(团队)
-    getTeamCallRate: "/rest/customer/v2/callrecord/term/:start_time/:end_time",
+    getTeamCallRate: "/rest/callrecord/v2/callrecord/term/:start_time/:end_time",
     // 114占比（个人）
-    getUserCallRate: "/rest/customer/v2/callrecord/term/user/:start_time/:end_time",
+    getUserCallRate: "/rest/callrecord/v2/callrecord/term/user/:start_time/:end_time",
     // 获取团队信息
     getSaleGroupTeams: '/rest/base/v1/group/teams/:type',
     // 获取成员信息
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     //获取通话时间段(数量\时长)的统计数据, authType = manager管理员（可以查看所有团队的数据），user:销售（只能看我的及我的下级团队的数据）
-    getCallIntervalData: '/rest/customer/v2/customer/query/:authType/call_record/statistic',
+    getCallIntervalData: '/rest/callrecord/v2/callrecord/query/:authType/call_record/statistic',
 };
 
 // 获取单次通话时长为top10的数据
