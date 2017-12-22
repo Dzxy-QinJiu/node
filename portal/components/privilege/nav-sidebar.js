@@ -124,13 +124,13 @@ var responsiveLayout = {
 //侧边普通按钮时引导模态框的样式
 var commonIntroModalLayout = {
     //展示孔比原图标要变化的宽度
-    holeGapWidth : 6,
+    holeGapWidth : 16,
     //展示孔比原图标要变化的高度
-    holeGapHeight : 6,
+    holeGapHeight : 16,
     //展示孔展示位置比原图标演示变化的左边距
-    holeGapLeft : -3,
+    holeGapLeft : -7,
     //展示孔展示位置比原图标演示变化的上边距
-    holeGapTop : -3,
+    holeGapTop : -8,
     //提示区域展示位置比原图标展示变化的左边距
     tipAreaLeft: 15,
     //提示区域展示位置比原图标展示变化的上边距
@@ -139,13 +139,13 @@ var commonIntroModalLayout = {
 //变成汉堡包按钮后引导模态框的样式
 var hamburgerIntroModalLayout = {
     //展示孔比原图标要变化的宽度
-    holeGapWidth : -25,
+    holeGapWidth : -17,
     //展示孔比原图标要变化的高度
-    holeGapHeight : 16,
+    holeGapHeight : 24,
     //展示孔展示位置比原图标演示变化的左边距
-    holeGapLeft : 13,
+    holeGapLeft : 10,
     //展示孔展示位置比原图标演示变化的上边距
-    holeGapTop : -9,
+    holeGapTop : -12,
     //提示区域展示位置比原图标展示变化的左边距
     tipAreaLeft: 35,
     //提示区域展示位置比原图标展示变化的上边距
