@@ -6,7 +6,6 @@
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
-// var Promise = require('bluebird');
 var EventEmitter = require("events").EventEmitter;
 const v2Url = "/rest/customer/v2/contacts";
 
