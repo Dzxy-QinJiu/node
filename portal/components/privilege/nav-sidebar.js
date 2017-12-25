@@ -504,20 +504,22 @@ var NavSidebar = React.createClass({
         );
     },
     handleOnclickHole:function () {
-        this.setState({
-            isShowIntroModal:false
-        });
         //跳转到新加模块界面
         history.pushState({
         }, "/"+ menu.routePath, {});
+        this.saveModalClicked();
+    },
+    //将该模块存入后端并隐藏模态框
+    saveModalClicked: function () {
+        this.setState({
+            isShowIntroModal:false
+        });
         setWebsiteConfigModuleRecord({"module_record":[menu.name]},result => {
         }, err => {
         });
     },
     hideModalIntro:function () {
-      this.setState({
-          isShowIntroModal:false
-      })
+      this.saveModalClicked();
     },
     render: function () {
         var windowHeight = this.navContainerHeightFnc();
