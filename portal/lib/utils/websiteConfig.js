@@ -28,9 +28,13 @@ var websiteConfig = {
             data
         };
         ajax(arg).then(result => {
-            onSuccess(result);
+            if (_.isFunction(onSuccess)){
+                onSuccess(result);
+            }
         }, err => {
-            onError(err);
+            if (_.isFunction(onError)){
+                onError(err);
+            }
         });
     },
     //获取网站个性化配置
