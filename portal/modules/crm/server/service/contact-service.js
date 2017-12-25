@@ -6,7 +6,7 @@
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
-
+var EventEmitter = require("events").EventEmitter;
 const v2Url = "/rest/customer/v2/contacts";
 
 //获取联系人列表
@@ -31,13 +31,60 @@ exports.setDefault = function (req, res, id) {
 
 //修改联系人
 exports.updateContact = function (req, res, newContact) {
-    return restUtil.authRest.put(
-        {
-            url: v2Url,
-            req: req,
-            res: res
-        }, newContact);
+    let emitter = new EventEmitter();
+    let promiseList = [updateContact(req, res, newContact), updateContactPhone(req, res, newContact)];
+    Promise.all(promiseList).then(function (resultList) {
+        emitter.emit("success", resultList);
+    }, function (errorMsg) {
+        emitter.emit("error", errorMsg);
+    });
+    return emitter;
 };
+
+//更新联系人
+function updateContact(req, res, newContact) {
+    let contactObj= JSON.parse(JSON.stringify(newContact));
+    delete contactObj.phone;
+    return new Promise((resolve, reject) => {
+        restUtil.authRest.put(
+            {
+                url: v2Url,
+                req: req,
+                res: res
+            }, contactObj, {
+                success: function (eventEmitter, result) {
+                    resolve(result);
+                },
+                error: function (eventEmitter, errorDesc) {
+                    reject(errorDesc.message);
+                }
+            });
+    });
+}
+
+//更新联系人电话
+function updateContactPhone(req, res, newContact) {
+    let phoneContact = {
+        customer_id: newContact.customer_id,
+        id: newContact.id,
+        phone: newContact.phone
+    };
+    return new Promise((resolve, reject) => {
+        restUtil.authRest.put(
+            {
+                url: v2Url + "/phone",
+                req: req,
+                res: res
+            }, phoneContact, {
+                success: function (eventEmitter, result) {
+                    resolve(result);
+                },
+                error: function (eventEmitter, errorDesc) {
+                    reject(errorDesc.message);
+                }
+            });
+    });
+}
 
 //添加联系人
 exports.addContact = function (req, res, newContact) {
