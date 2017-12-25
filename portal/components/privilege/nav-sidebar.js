@@ -514,9 +514,7 @@ var NavSidebar = React.createClass({
         this.setState({
             isShowIntroModal:false
         });
-        setWebsiteConfigModuleRecord({"module_record":[menu.name]},result => {
-        }, err => {
-        });
+        setWebsiteConfigModuleRecord({"module_record":[menu.name]});
     },
     hideModalIntro:function () {
       this.saveModalClicked();
