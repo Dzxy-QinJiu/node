@@ -89,9 +89,9 @@ function ContactAction() {
         this.dispatch(contact);
     };
     //提交修改联系人
-    this.submitEditContact = function (contact, cb) {
+    this.submitEditContact = function (contact, editType, cb) {
         var _this = this;
-        contactAjax.editContact(contact).then(function (contact) {
+        contactAjax.editContact(contact, editType).then(function (contact) {
             _this.dispatch(contact);
             if (_.isFunction(cb)) cb({contact: contact});
         }, function (errorMsg) {

@@ -1,7 +1,7 @@
 /**
  * 联系人相关的ajax操作
  */
-import { hasPrivilege } from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //获取联系人列表
 let contactListAjax;
 exports.getContactList = function (customerId) {
@@ -9,7 +9,7 @@ exports.getContactList = function (customerId) {
         contactListAjax.abort();
     }
     let type = 'user';//CRM_USER_LIST_CONTACTS
-    if(hasPrivilege("CRM_MANAGER_LIST_CONTACTS")){
+    if (hasPrivilege("CRM_MANAGER_LIST_CONTACTS")) {
         type = 'manager';
     }
     var Deferred = $.Deferred();
@@ -50,10 +50,10 @@ exports.addContact = function (contact) {
 };
 
 //修改一个联系人
-exports.editContact = function (contact) {
+exports.editContact = function (contact, editType) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/contact',
+        url: '/rest/contact/' + editType,
         dataType: 'json',
         type: 'put',
         data: contact,

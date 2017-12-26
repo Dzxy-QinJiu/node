@@ -243,13 +243,53 @@ var ContactForm = React.createClass({
                 this.props.updateMergeCustomerContact(formData);
                 ContactAction.hideEditContactForm(this.props.contact);
             } else {
+                let editType = this.getEditType(formData);
                 //显示loading状态
                 this.setState({isLoading: true});
-                ContactAction.submitEditContact(formData, (result) => {
+                ContactAction.submitEditContact(formData, editType, (result) => {
                     this.afterSubmit(result);
                 });
             }
         }
+    },
+    //获取修改的类型，是phone、no_phone还是all
+    getEditType: function (formData) {
+        let isEditPhone = this.isEditContactWay(formData, "phone");
+        let isEditOtherInfo = false;
+        let oldData = this.props.contact.contact;
+        if (formData.name !== oldData.name ||//联系人
+            formData.department !== oldData.department ||//部门
+            formData.position !== oldData.position ||//职位
+            formData.role !== oldData.role ||//角色
+            this.isEditContactWay(formData, "qq") ||
+            this.isEditContactWay(formData, "email") ||
+            this.isEditContactWay(formData, "weChat")) {
+            isEditOtherInfo = true;
+        }
+        //电话和其他信息都有修改
+        if (isEditOtherInfo && isEditPhone) {
+            return "all";
+        } else if (isEditPhone) {
+            return "phone";//只修改了电话
+        } else if (isEditOtherInfo) {
+            return "no_phone"//只修改了除电话以外的信息
+        }
+
+    },
+    //某联系方式是否修改
+    isEditContactWay: function (formData, key) {
+        let oldData = this.props.contact.contact[key] || [];
+        let newData = JSON.parse(formData[key]) || [];
+        //存在新的数据列表中，不存在于老的数据列表中（新增）
+        let addData = _.difference(newData, oldData);
+        //存在于老的数据列表中，不存在于新的数据列表中(删除)
+        let delData = _.difference(oldData, newData);
+        //数据是否修改
+        let isEditData = false;
+        if (addData.length || delData.length) {
+            isEditData = true;
+        }
+        return isEditData;
     },
     //提交完数据后
     afterSubmit: function (result) {
@@ -501,7 +541,12 @@ var ContactForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('name')}
                                     help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                 >
-                                    <Validator rules={[{required: true, min: 1, max: 50, message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}]}>
+                                    <Validator rules={[{
+                                        required: true,
+                                        min: 1,
+                                        max: 50,
+                                        message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
+                                    }]}>
                                         <Input name="name" value={formData.name}
                                                onChange={this.setField.bind(this, 'name')}
                                                data-tracename={"新建/修改联系人姓名"}
