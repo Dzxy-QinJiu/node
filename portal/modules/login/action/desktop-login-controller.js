@@ -58,7 +58,9 @@ exports.showLoginPage = function (req, res) {
     };
     //优先使用环境变量中设置的语言
     const loginLang = global.config.lang || req.query.lang || "";
-    const stopcheck = req.session.stopcheck;
+    //session中存在stopcheck(使用ticket登录失败时，会加stopcheck参数)
+    // 或者请求路径中包含stopcheck(超时后刷新界面时，转页到登录界面会加stopcheck参数)
+    const stopcheck = req.session.stopcheck || req.query.stopcheck;
     //将当前的语言环境存入session中
     if (req.session) {
         req.session.lang = loginLang;

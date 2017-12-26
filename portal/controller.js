@@ -74,7 +74,12 @@ var initController = function (app) {
     app.use(function (req, res, next) {
         if (!/(^\/favicon\.ico$)|(\.(js|css|png|jpg|gif|woff2?|ttf|eot|svg)$)/i.test(req.originalUrl)) {
             if (!req.session || !req.session.user) {
-                return res.redirect("/login");
+                if (global.config.useSso) {
+                    //sso登录的情况下，超时需要加stopcheck参数，防止再次sso校验登录
+                    return res.redirect("/login?stopcheck=true");
+                } else {
+                    return res.redirect("/login");
+                }
             } else {
                 return res.redirect("/");
             }
