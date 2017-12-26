@@ -89,7 +89,8 @@ exports.showLoginPage = function (req, res) {
             hideLangQRcode: hideLangQRcode,
             projectName: global.config.processTitle || "oplate",
             clientId: global.config.loginParams.clientId,
-            stopcheck: stopcheck
+            stopcheck: stopcheck,
+            useSso: global.config.useSso
         });
     }
 
@@ -97,6 +98,20 @@ exports.showLoginPage = function (req, res) {
 };
 /*
  * 登录逻辑
+ */
+exports.login = function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var captcha = req.body.retcode;
+    //记录上一次登录用户名，到session中
+    username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+    req.session.last_login_user = username;
+    DesktopLoginService.login(req, res, username, password, captcha)
+        .on("success", loginSuccess(req, res))
+        .on("error", loginError(req, res));
+};
+/*
+ * sso登录逻辑
  */
 exports.ssologin = function (req, res) {
     var ticket = req.query.t;
