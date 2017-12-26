@@ -117,53 +117,130 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
 
     //重新登录
     function reLogin(submitObj) {
-        let $error = $("#session-invalid-modal .modal-submit-error");
         let $submitBtn = $("#session-invalid-modal .modal-submit-btn");
         //渲染等待效果
         $submitBtn.html(Intl.get("retry.is.submitting", "提交中..."));
-        ssoLogin.login(submitObj.username, submitObj.password, submitObj.retcode ? submitObj.retcode : "")
-            .then((ticket) => {
-                $.ajax({
-                    url: callBackUrl + '?t=' + ticket + '&lang=' + window.Oplate.lang,
-                    type: 'get',
-                    success: function () {
-                        userData.getUserDataByAjax().done(function () {
-                            //重新建立socket连接
-                            require("./push").startSocketIo();
-                            $error.html("");
-                            $submitBtn.html(Intl.get("retry.submit.again", "提交"));
-                            var $modal = $("body >#session-invalid-modal");
-                            if ($modal && $modal.length > 0) {
-                                $modal.remove();
-                            }
-                        });
-                    },
-                    error: function (error) {
-                        let errorMsg = error && error.responseJSON;
-                        if (errorMsg == Intl.get("errorcode.39", "用户名或密码错误") || !errorMsg) {
-                            errorMsg = Intl.get("login.password.error", "密码错误");
-                        }
-                        $error.html(errorMsg);
-                        $submitBtn.html(Intl.get("retry.submit.again", "提交"));
-                    }
-                });
-            }).catch((data) => {
-            //渲染验证码
-            if (data.captcha) {
-                let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
-                $captchaWrap.show();
-                $captchaWrap.find("img").attr("src", data.captcha);
-                $error.html(Intl.get("login.password.error", "密码错误"));
-            } else {
-                $error.html(data.error);
+        if (window.Oplate && window.Oplate.useSso) {
+            //如果使用sso登录
+            ssoLogin.login(submitObj.username, submitObj.password, submitObj.retcode ? submitObj.retcode : "")
+                .then((ticket) => {
+                    $.ajax({
+                        url: callBackUrl + '?t=' + ticket + '&lang=' + window.Oplate.lang,
+                        type: 'get',
+                        success: loginSuccess,
+                        error: loginError
+                    });
+                }).catch((data) => {
+                //渲染验证码
+                if (data.captcha) {
+                    let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
+                    $captchaWrap.show();
+                    $captchaWrap.find("img").attr("src", data.captcha);
+                }
+                if (data.error) {
+                    $("#session-invalid-modal .modal-submit-error").html(data.error);
+                }
+                $submitBtn.html(Intl.get("retry.submit.again", "提交"));
+            });
+        } else {
+            $.ajax({
+                url: '/login',
+                dataType: 'json',
+                type: 'post',
+                data: submitObj,
+                success: loginSuccess,
+                error: loginError
+            });
+        }
+    }
+
+    //登录成功处理
+    function loginSuccess() {
+        userData.getUserDataByAjax().done(function () {
+            //重新建立socket连接
+            !Oplate.hideSomeItem && require("./push").startSocketIo();
+            $("#session-invalid-modal .modal-submit-error").html("");
+            $("#session-invalid-modal .modal-submit-btn").html(Intl.get("retry.submit.again", "提交"));
+            var $modal = $("body >#session-invalid-modal");
+            if ($modal && $modal.length > 0) {
+                $modal.remove();
             }
-            $submitBtn.html(Intl.get("retry.submit.again", "提交"));
         });
+    }
+
+    //登录失败处理
+    function loginError(error) {
+        let errorMsg = error && error.responseJSON;
+        if (errorMsg == Intl.get("errorcode.39", "用户名或密码错误") || !errorMsg) {
+            errorMsg = Intl.get("login.password.error", "密码错误");
+        }
+        if (window.Oplate && window.Oplate.useSso) {
+            $("#session-invalid-modal .modal-submit-error").html(errorMsg);
+            $("#session-invalid-modal .modal-submit-btn").html(Intl.get("retry.submit.again", "提交"));
+        } else {
+            //获取验证码
+            getLoginCaptcha(submitObj.username, errorMsg);
+        }
     }
 
     //刷新验证码
     function refreshCaptchaCode() {
-        $("#session-invalid-modal .captcha_image").attr("src", buildRefreshCaptchaUrl());
+        if (window.Oplate && window.Oplate.useSso) {
+            $("#session-invalid-modal .captcha_image").attr("src", buildRefreshCaptchaUrl());
+        } else {
+            refreshCaptchaCodeWithoutSso();
+        }
+    }
+
+    //获取验证码
+    function getLoginCaptcha(username, errorMsg) {
+        let $error = $("#session-invalid-modal .modal-submit-error");
+        let $submitBtn = $("#session-invalid-modal .modal-submit-btn");
+        $.ajax({
+            url: '/loginCaptcha',
+            dataType: 'json',
+            data: {
+                username: username
+            },
+            success: function (data) {
+                //渲染验证码
+                if (data) {
+                    let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
+                    $captchaWrap.show();
+                    $captchaWrap.find("img").attr("src", BASE64_PREFIX + data);
+                    $error.html(Intl.get("login.password.error", "密码错误"));
+                } else {
+                    $error.html(errorMsg);
+                }
+                $submitBtn.html(Intl.get("retry.submit.again", "提交"));
+            },
+            error: function () {
+                sendMessage && sendMessage(Intl.get("retry.failed.get.code", "获取验证码错误"));
+                $error.html(NO_SERVICE_ERROR);
+                $submitBtn.html(Intl.get("retry.submit.again", "提交"));
+            }
+        });
+    }
+
+    //刷新验证码
+    function refreshCaptchaCodeWithoutSso() {
+        var username = userData.getUserData().user_name;
+        $.ajax({
+            url: '/refreshCaptcha',
+            dataType: 'json',
+            data: {
+                username: username
+            },
+            success: function (data) {
+                //渲染验证码
+                if (data) {
+                    $("#session-invalid-modal .captcha_image").attr("src", BASE64_PREFIX + data);
+                }
+            },
+            error: function () {
+                $("#session-invalid-modal .modal-submit-error").html(NO_SERVICE_ERROR);
+            }
+        });
     }
 
     //处理403错误请求（token过期）
