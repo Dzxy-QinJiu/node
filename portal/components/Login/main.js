@@ -42,12 +42,17 @@ class LoginMain extends React.Component {
         this.setState({errorMsg});
     }
 
-
     componentDidMount() {
-        //如果尚未进行ssocheck
-        if (!window.Oplate.stopcheck) {
-            this.ssoCheck(this.show.bind(this));
+        //如果使用sso
+        if (window.Oplate.useSso) {
+            //如果尚未进行ssocheck
+            if (!window.Oplate.stopcheck) {
+                this.ssoCheck(this.show.bind(this));
+            } else {
+                this.show();
+            }
         } else {
+            //不是用sso登录，则直接显示登录界面
             this.show();
         }
     }
