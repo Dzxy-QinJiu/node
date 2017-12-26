@@ -58,7 +58,9 @@ exports.showLoginPage = function (req, res) {
     };
     //优先使用环境变量中设置的语言
     const loginLang = global.config.lang || req.query.lang || "";
-    const stopcheck = req.session.stopcheck;
+    //session中存在stopcheck(使用ticket登录失败时，会加stopcheck参数)
+    // 或者请求路径中包含stopcheck(超时后刷新界面时，转页到登录界面会加stopcheck参数)
+    const stopcheck = req.session.stopcheck || req.query.stopcheck;
     //将当前的语言环境存入session中
     if (req.session) {
         req.session.lang = loginLang;
@@ -89,7 +91,8 @@ exports.showLoginPage = function (req, res) {
             hideLangQRcode: hideLangQRcode,
             projectName: global.config.processTitle || "oplate",
             clientId: global.config.loginParams.clientId,
-            stopcheck: stopcheck
+            stopcheck: stopcheck,
+            useSso: global.config.useSso
         });
     }
 
@@ -97,6 +100,20 @@ exports.showLoginPage = function (req, res) {
 };
 /*
  * 登录逻辑
+ */
+exports.login = function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var captcha = req.body.retcode;
+    //记录上一次登录用户名，到session中
+    username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+    req.session.last_login_user = username;
+    DesktopLoginService.login(req, res, username, password, captcha)
+        .on("success", loginSuccess(req, res))
+        .on("error", loginError(req, res));
+};
+/*
+ * sso登录逻辑
  */
 exports.ssologin = function (req, res) {
     var ticket = req.query.t;

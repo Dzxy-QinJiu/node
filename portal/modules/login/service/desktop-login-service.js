@@ -42,6 +42,26 @@ var appTokenPrefix = "oauth2 ";
 //导出url
 exports.urls = urls;
 
+/**
+ * 调用后端接口进行登录
+ */
+exports.login = function (req, res, username, password, captchaCode) {
+    var formData = getLoginFormData(username, password, captchaCode);
+    return restUtil.baseRest.post(
+        {
+            url: urls.login,
+            req: req,
+            res: res,
+            headers: {
+                session_id: req.sessionID
+            },
+            //后端要求用form的post提交
+            form: formData
+        }, null, {
+            success: loginSuccess,
+            timeout: loginTimeout
+        });
+};
 /*
  根据ticket登录
  */
@@ -55,21 +75,29 @@ exports.loginWithTicket = function (req, res, ticket) {
         }
     }, null, {
         success: loginSuccess,
-        timeout: function (emitter, data) {
-            emitter.emit("error", data);
-        }
+        timeout: loginTimeout
     });
+};
+/**
+ * 登录超时处理
+ */
+function loginTimeout(emitter, data) {
+    if (emitter) {
+        emitter.emit("error", data);
+    }
 };
 /*
  登录成功处理
  */
 function loginSuccess(emitter, data) {
-    //如果未返回数据
-    if (!data) {
-        let backendIntl = new BackendIntl(req);
-        emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
-    } else {
-        emitter.emit("success", getLoginResult(data));
+    if (emitter) {
+        //如果未返回数据
+        if (!data) {
+            let backendIntl = new BackendIntl(req);
+            emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
+        } else {
+            emitter.emit("success", getLoginResult(data));
+        }
     }
 }
 //处理返回用户信息

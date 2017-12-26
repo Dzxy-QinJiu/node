@@ -1,22 +1,19 @@
 var restLogger = require("../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../lib/rest/rest-util")(restLogger);
-var request = require("request");
-var config = require('../../../../conf/config');
-var ipUtil = require('../../../lib/utils/common-utils').ip;
-var auth = require("../../../lib/utils/auth");
 
 //定义url
 var urls = {
     //登出
-    logout: "/auth2/authc/sso/logout"
+    logout: "/auth2/authc/logout",
+    //SSO登出
+    ssoLogout: "/auth2/authc/sso/logout"
 };
 //用户Token的前缀
 var userTokenPrefix = "oauth2 ";
 //导出url
 exports.urls = urls;
-
 /**
- * 调用后端接口进行登出
+ * 调用后端接口进行登录
  * @param req
  * @param res
  */
@@ -25,38 +22,37 @@ exports.logout = function (req, res) {
         {
             url: urls.logout,
             req: req,
+            res: res,
+        }, null);
+};
+/**
+ * 调用后端接口进行SSO登出
+ * @param req
+ * @param res
+ */
+exports.ssoLogout = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.ssoLogout,
+            req: req,
             res: res
         }, null);
 };
-//session超时后退出sso登录
+/**
+ *session超时后退出登录,此时如果从req中取accessToken可能取不到了，所以直接使用从caster推送出来的accessToken
+ * @param sessionID
+ * @param accessToken
+ */
+
 exports.sessionTimeout = function (sessionID, accessToken) {
-    var url = urls.logout + "?only_exit_current=yes";
-    var ipsObj = getIps(req);
-    ipsObj.userIp = ipsObj.userIp || "127.0.0.1";
+    var url = urls.ssoLogout + "?only_exit_current=yes";
     return restUtil.baseRest.get(
         {
             url: url,
             req: {sessionID},
             res: {},
             headers: {
-                remote_addr: ipsObj.serverIp,
-                user_ip: ipsObj.userIp,
                 Authorization: userTokenPrefix + accessToken
             }
         }, null);
 }
-
-//获取用户Ip和服务端Ip
-function getIps(req) {
-    var ipsObj = {
-        userIp: ipUtil.getClientIp(req) || "",//用户IP
-        serverIp: ""
-    };
-    //获取服务端Ip
-    var serverIps = ipUtil.getServerAddresses();
-    if (serverIps && serverIps.length > 0) {
-        ipsObj.serverIp = serverIps[0] || "";
-    }
-    return ipsObj;
-}
-

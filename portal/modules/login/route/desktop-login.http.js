@@ -19,6 +19,13 @@ module.exports = {
             "needLogin": false
         }
     }, {
+        "method": "post",
+        "path": "/login",
+        "handler": "login",
+        "passport": {
+            "needLogin": false
+        }
+    }, {
         "method": "get",
         "path": "/ssologin",
         "handler": "ssologin",

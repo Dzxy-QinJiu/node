@@ -58,13 +58,18 @@ var LoginForm = React.createClass({
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
             this.props.setErrorMsg(Intl.get("login.write.code", "请输入验证码"));
-        } else {
-            this.login(userName, newValue);
+            //阻止缺省行为
+            event.preventDefault();
+            return false;
+        } else if (window.Oplate && window.Oplate.useSso) {
+            this.ssologin(userName, newValue);
+            //阻止缺省行为
+            event.preventDefault();
+            return false;
         }
-        event.preventDefault();
-        return false;
     },
-    login: function (userName, password) {
+    //sso登录
+    ssologin: function (userName, password) {
         var lang = window.Oplate && window.Oplate.lang || "zh_CN";
         var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : "";
         // 将登录界面中的用户名与密码提交到SSO应用中
@@ -83,12 +88,17 @@ var LoginForm = React.createClass({
     componentDidMount: function () {
         this.showUserName();
     },
+    //展示记录过的用户名，登录按钮变为可用
     showUserName: function () {
         var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
         this.setState({
             username: userName,
-            loginButtonDisabled: false,
+            loginButtonDisabled: false
         }, () => {
+            //如果不是用sso登录（sso登录校验时会返回验证码），并且当前没有显示验证码，则去检查显示验证码
+            if (!(window.Oplate && window.Oplate.useSso) && !this.state.captchaCode) {
+                this.getLoginCaptcha();
+            }
             if (userName) {
                 this.refs.password_input.focus();
             } else {
@@ -112,20 +122,90 @@ var LoginForm = React.createClass({
                    name="retcode" autoComplete="off"
                    tabIndex="3"
                    ref="captcha_input" maxLength="4"/>
-            <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
-                 title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
-                 onClick={this.refreshCaptchaCode}/>
+            {this.renderCaptchaImg(hasWindow)}
         </div>) : null);
+    },
+    //展示验证码图片
+    renderCaptchaImg: function (hasWindow) {
+        if (hasWindow && window.Oplate && window.Oplate.useSso) {
+            return (
+                <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
+                     title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                     onClick={this.refreshCaptchaCode}/> );
+        } else {
+            return ( <img src={base64_prefix + this.state.captchaCode} width="120"
+                          height="40"
+                          title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                          onClick={this.refreshCaptchaCode}/>);
+        }
     },
     //获取验证码
     getLoginCaptcha: function () {
-        if (this.refs.captcha_img) {
-            this.refs.captcha_img.src = buildRefreshCaptchaUrl();
+        if (window.Oplate && window.Oplate.useSso) {
+            this.getLoginCaptchaWithSso();
+        } else {
+            this.getLoginCaptchaWithoutSso();
         }
     },
     //刷新验证码
     refreshCaptchaCode: function () {
-        this.getLoginCaptcha();
+        if (window.Oplate && window.Oplate.useSso) {
+            this.getLoginCaptchaWithSso();
+        } else {
+            this.refreshCaptchaCodeWithoutSso();
+        }
+    },
+    //从sso服务器获取验证码
+    getLoginCaptchaWithSso: function () {
+        if (this.refs.captcha_img) {
+            this.refs.captcha_img.src = buildRefreshCaptchaUrl();
+        }
+    },
+    ///不是用sso，获取验证码
+    getLoginCaptchaWithoutSso: function () {
+        var username = this.state.username;
+        if (!username) {
+            return;
+        }
+        $.ajax({
+            url: '/loginCaptcha',
+            dataType: 'json',
+            data: {
+                username,
+            },
+            success: (data) => {
+                this.setState({
+                    captchaCode: data
+                });
+            },
+            error: () => {
+                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
+            },
+        });
+    },
+    //不是用sso，刷新验证码
+    refreshCaptchaCodeWithoutSso: function () {
+        var username = this.state.username;
+        if (!username) {
+            return;
+        }
+        $.ajax({
+            url: '/refreshCaptcha',
+            dataType: 'json',
+            data: {
+                username,
+            },
+            success: (data) => {
+                this.setState({
+                    captchaCode: data
+                });
+            },
+            error: () => {
+                this.setState({
+                    captchaCode: ERROR_MSGS.ERROR_CAPTCHA
+                });
+            }
+        });
     },
 
     render: function () {
