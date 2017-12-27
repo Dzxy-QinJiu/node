@@ -122,7 +122,7 @@ export const isEmail = function (value) {
 
 //两数组是否相等
 export const isEqualArray = function (array1, array2) {
-    let arrayA = _.isArray(array1) ? _.sortBy(array1) : [];
-    let arrayB = _.isArray(array2)? _.sortBy(array2) : [];
+    let arrayA = _.sortBy(array1);
+    let arrayB = _.sortBy(array2);
     return _.isEqual(arrayA, arrayB);
 };
