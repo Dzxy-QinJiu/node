@@ -226,6 +226,14 @@ var en_US = {
     "login.send_phone_or_email_verification_code": "Send phone or email verification code",//发送手机/邮箱验证码
     "login.verify_phone_or_email_verification_code": "Verify {contactTypeName} verification code",//验证{contactTypeName}验证码
     "login.return_to_login_page": "Return to login page",//返回登录页
+    "login.scan.qrcode.login":"Scan login",//扫码登录
+    "login.account.login":"Account login",//普通登录
+    "login.qrcode.scan.tip": "Please use {appName} to scan QR code security login",//请使用{appName}扫描二维码安全登录
+    "login.ketao.app.name":"Ketao App",//客套APP
+    "login.load.ketao.tip":"Download ketao APP Android",//下载客套APP安卓端
+    "login.scan.ketao.qrcode.tip": "Scan QR code to download ketao APP Android",//扫码下载客套APP安卓端
+
+
 
     //"superHello": "{appName}有{number}名{user_type}过期！",//
     /*用户管理模块-start*/
@@ -1670,6 +1678,7 @@ var en_US = {
     "errorcode.144": "The phone system did not respond",//通话系统没有响应
     "errorcode.145": "Landline busy",//座机繁忙
     "errorcode.146": "The phone is offline",//分机离线
+    "errorcode.147": "The qr code has expired",//二维码已失效
     "user.input.phone": "Please input your phone",//请输入手机号
     "customer.search.by.customer.name": "Please search by customer name",//请输入客户名称搜索
     "user.user.info": "information",//开通信息
