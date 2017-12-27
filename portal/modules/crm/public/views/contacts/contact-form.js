@@ -13,6 +13,7 @@ var Spinner = require('../../../../../components/spinner');
 var Message = require("antd").message;
 import PhoneInput from "CMP_DIR/phone-input";
 import Trace from "LIB_DIR/trace";
+import {isEqualArray} from "LIB_DIR/func";
 import CrmAction from "../../action/crm-actions";
 var uuid = require("uuid/v4");
 
@@ -244,26 +245,31 @@ var ContactForm = React.createClass({
                 ContactAction.hideEditContactForm(this.props.contact);
             } else {
                 let editType = this.getEditType(formData);
-                //显示loading状态
-                this.setState({isLoading: true});
-                ContactAction.submitEditContact(formData, editType, (result) => {
-                    this.afterSubmit(result);
-                });
+                if (editType) {
+                    //显示loading状态
+                    this.setState({isLoading: true});
+                    ContactAction.submitEditContact(formData, editType, (result) => {
+                        this.afterSubmit(result);
+                    });
+                } else {//没有修改时，直接关闭修改按钮即可
+                    this.cancel();
+                }
+
             }
         }
     },
     //获取修改的类型，是phone、no_phone还是all
     getEditType: function (formData) {
-        let isEditPhone = this.isEditContactWay(formData, "phone");
-        let isEditOtherInfo = false;
         let oldData = this.props.contact.contact;
+        let isEditPhone = !isEqualArray(JSON.parse(formData.phone), oldData.phone);
+        let isEditOtherInfo = false;
         if (formData.name !== oldData.name ||//联系人
             formData.department !== oldData.department ||//部门
             formData.position !== oldData.position ||//职位
             formData.role !== oldData.role ||//角色
-            this.isEditContactWay(formData, "qq") ||
-            this.isEditContactWay(formData, "email") ||
-            this.isEditContactWay(formData, "weChat")) {
+            !isEqualArray(JSON.parse(formData.qq), oldData.qq) ||
+            !isEqualArray(JSON.parse(formData.email), oldData.email) ||
+            !isEqualArray(JSON.parse(formData.weChat), oldData.weChat)) {
             isEditOtherInfo = true;
         }
         //电话和其他信息都有修改
@@ -273,23 +279,9 @@ var ContactForm = React.createClass({
             return "phone";//只修改了电话
         } else if (isEditOtherInfo) {
             return "no_phone"//只修改了除电话以外的信息
+        } else {//没有修改
+            return "";
         }
-
-    },
-    //某联系方式是否修改
-    isEditContactWay: function (formData, key) {
-        let oldData = this.props.contact.contact[key] || [];
-        let newData = JSON.parse(formData[key]) || [];
-        //存在新的数据列表中，不存在于老的数据列表中（新增）
-        let addData = _.difference(newData, oldData);
-        //存在于老的数据列表中，不存在于新的数据列表中(删除)
-        let delData = _.difference(oldData, newData);
-        //数据是否修改
-        let isEditData = false;
-        if (addData.length || delData.length) {
-            isEditData = true;
-        }
-        return isEditData;
     },
     //提交完数据后
     afterSubmit: function (result) {

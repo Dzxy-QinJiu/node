@@ -40,7 +40,7 @@ export const formatAmount = function (amount) {
 
     return amount;
 }
-  
+
 //处理金额，未定义时赋空值及转成千分位格式等
 export const parseAmount = function (amount) {
     if (!amount) amount = "";
@@ -58,7 +58,7 @@ export const addHyphenToPhoneNumber = function (value = "") {
     if (matched) {
         const areaCode = matched[1];
         const phoneCode = matched[2];
-    
+
         value = areaCode + "-" + phoneCode;
     }
 
@@ -120,3 +120,9 @@ export const isEmail = function (value) {
     return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
 }
 
+//两数组是否相等
+export const isEqualArray = function (array1, array2) {
+    let arrayA = _.isArray(array1) ? _.sortBy(array1) : [];
+    let arrayB = _.isArray(array2)? _.sortBy(array2) : [];
+    return _.isEqual(arrayA, arrayB);
+};
