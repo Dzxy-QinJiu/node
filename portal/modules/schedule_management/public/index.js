@@ -22,6 +22,7 @@ BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
   TOPANDBOTTOM:80
 };
+const LESSONESECOND = 24 * 60 * 60 * 1000 - 1000;//之前添加日程时，一天的开始时间是00:00:00 到24:59:59秒，但是这个组件中认为的一天是从第一天的00;00：00 到第二天的00:00：00 。所以存储的全天的日程就被认为少了1000毫秒 但是可以通过加allday这个属性，被分到全天的日程中
 const ScheduleManagement = React.createClass({
     getInitialState: function () {
         return {
@@ -41,8 +42,8 @@ const ScheduleManagement = React.createClass({
     componentDidMount: function () {
         scheduleManagementStore.listen(this.onStoreChange);
         //获取今天要展示的数据
-        var startTime = moment(new Date()).startOf('day').valueOf();
-        var endTime = moment(new Date()).endOf('day').valueOf();
+        var startTime = moment().startOf('day').valueOf();
+        var endTime = moment().endOf('day').valueOf();
         //获取日程数据 第一个参数是开始和结束时间 第二个参数是视图类型
         this.getAgendaData({start_time: startTime, end_time: endTime}, "day");
     },
@@ -90,10 +91,11 @@ const ScheduleManagement = React.createClass({
             let curSchedule = list[i];
             curSchedule.title = curSchedule.topic;
             //之前新建日程的时候，把全天的结束时间设置为23:59:59,所以比0点少1s
-            if (curSchedule.end_time - curSchedule.start_time == 86399000) {
+            if (curSchedule.end_time - curSchedule.start_time == LESSONESECOND) {
                 curSchedule.end_time = curSchedule.end_time + 1000;
                 curSchedule.allDay = true;
             };
+            //The start date/time of the event. Must resolve to a JavaScript Date object.
             curSchedule.start = new Date(curSchedule.start_time);
             curSchedule.end = new Date(curSchedule.end_time);
             curSchedule.description = curSchedule.content;
@@ -196,8 +198,7 @@ const ScheduleManagement = React.createClass({
             start_time: "",
             end_time: ""
         };
-        switch (view)
-        {
+        switch (view) {
             case 'day':
                 dateObj.start_time = moment(date).startOf("day").valueOf();
                 dateObj.end_time = moment(date).endOf("day").valueOf();
