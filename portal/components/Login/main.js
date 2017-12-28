@@ -7,7 +7,6 @@ const ForgotPassword = require("./forgot-password");
 import {Alert} from "antd";
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 var Spinner = require("../spinner");
-
 const LANGUAGES = [
     {code: "zh_CN", name: "简体中文"},
     {code: "en_US", name: "English"},
@@ -35,14 +34,6 @@ class LoginMain extends React.Component {
         this.setErrorMsg = this.setErrorMsg.bind(this);
     }
 
-    changeView(view) {
-        this.setState({currentView: view, errorMsg: ""});
-    }
-
-    setErrorMsg(errorMsg) {
-        this.setState({errorMsg});
-    }
-
     componentDidMount() {
         //如果使用sso
         if (window.Oplate.useSso) {
@@ -56,6 +47,19 @@ class LoginMain extends React.Component {
             //不是用sso登录，则直接显示登录界面
             this.show();
         }
+        Trace.addEventListener(window, "click", Trace.eventHandler);
+    }
+
+    componentWillUnmount() {
+        Trace.detachEventListener(window, "click", Trace.eventHandler);
+    }
+
+    changeView(view) {
+        this.setState({currentView: view, errorMsg: ""});
+    }
+
+    setErrorMsg(errorMsg) {
+        this.setState({errorMsg});
     }
 
     //检测是否已经sso登录
