@@ -82,6 +82,7 @@
     "qrcode.react": "0.6.1",
     "rc-form-validation": "^2.5.0",
     "react": "0.14.3",
+    "react-big-calendar": "^0.17.0",
     "react-bootstrap": "0.28.1",
     "react-copy-to-clipboard": "4.2.3",
     "react-date-picker": "5.3.28",

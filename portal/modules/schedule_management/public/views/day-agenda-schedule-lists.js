@@ -5,13 +5,18 @@
  */
 import {Row, Col, Button} from "antd";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+import dates from 'date-arithmetic';
+import BigCalendar from 'react-big-calendar';
 var classNames = require("classnames");
 import userData from "PUB_DIR/sources/user-data";
 var user_id = userData.getUserData().user_id;
+import timeUtil from "PUB_DIR/sources/utils/time-format-util";
+var scheduleManagementStore = require("../store/schedule-management-store");
 //执行动画完毕后的时间
 const LAY_OUT = {
     SCHEDULE_CONTENT_HEIGHT: 600
 };
+var curWeek = "";
 var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
@@ -25,14 +30,15 @@ class DayAgendaScheduleLists extends React.Component {
 
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
-        scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE,  this.setUpdateScrollBarFalse);
-        scheduleManagementEmitter.on(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT,  this.unmout);
+        scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
     };
 
-    unmout = () => {
-        scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
-        scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE,  this.setUpdateScrollBarFalse);
-        scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT,  this.unmout);
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.scheduleList !== this.state.scheduleList) {
+            this.setState({
+                scheduleList: nextProps.scheduleList
+            });
+        }
     };
     setUpdateScrollBarTrue = () => {
         this.setState({
@@ -83,11 +89,12 @@ class DayAgendaScheduleLists extends React.Component {
                     "icon-schedule-visit": item.type == "visit",
                     "icon-schedule-other": item.type == "other",
                 });
-                var content = item.status == "handle" ? Intl.get("schedule.has.finished","已完成") : (
+                var content = item.status == "handle" ? Intl.get("schedule.has.finished", "已完成") : (
                     item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
                 return (
-                    <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)} data-tracename="日程列表">
+                    <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
+                         data-tracename="日程列表">
                         <div className={itemCls}>
                             <Row>
                                 <Col sm={4}>
@@ -128,6 +135,11 @@ class DayAgendaScheduleLists extends React.Component {
                 <div className="dayagenda-schedule-list"
                 >
                     <div className="schedule-title">
+                        <Row className="week-wrap">
+                            <Col className="title-week">
+                                {curWeek}
+                            </Col>
+                        </Row>
                         <Row>
                             <Col sm={4}>
                                 <span className="timerange">{Intl.get("common.login.time", "时间")}</span>
@@ -150,6 +162,25 @@ class DayAgendaScheduleLists extends React.Component {
         )
     }
 }
+DayAgendaScheduleLists.navigate = (date, action) => {
+    //
+    switch (action){
+        case BigCalendar.Navigate.PREVIOUS:
+            return dates.add(date, -1, 'day');
+
+        case BigCalendar.Navigate.NEXT:
+            return dates.add(date, 1, 'day');
+        default:
+            return date;
+
+    }
+};
+DayAgendaScheduleLists.title = (date, { formats, culture }) => {
+    curWeek =  timeUtil.getCurrentWeek(date);
+    //初次渲染完组件后记录的时间
+    scheduleManagementStore.setViewDate(moment(date).valueOf());
+    return `${moment(date).format(oplateConsts.DATE_FORMAT)}`;
+};
 DayAgendaScheduleLists.defaultProps = {
     updateScrollBar: false,
     handleScheduleItemStatus: function () {
