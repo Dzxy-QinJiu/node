@@ -16,7 +16,8 @@ const LANGUAGES = [
     {code: "en_US", name: "English"},
     {code: "es_VE", name: "Español"},
 ];
-
+//扫码登录的前缀，用于手机端扫码时判断扫的是不是登录的二维码
+const LOGIN_QRCODE_PREFIX = "ketao_login_";
 const VIEWS = {
     LOGIN: "login",
     FORGOT_PASSWORD: "forgot_password",
@@ -235,7 +236,7 @@ class LoginMain extends React.Component {
                                     {this.state.QRCode ? (
                                         <div className="login-qrcode-container">
                                             <QRCode
-                                                value={this.state.QRCode}
+                                                value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
                                                 level="H"
                                                 size={165}
                                             />
@@ -254,7 +255,7 @@ class LoginMain extends React.Component {
                                 <TabPane tab={Intl.get("login.account.login", "账户登录")} key="2">
                                     <div className="form-wrap">
                                         {/*<div className="logo-wrap">*/}
-                                            {/*<Logo />*/}
+                                        {/*<Logo />*/}
                                         {/*</div>*/}
 
                                         {this.state.currentView === VIEWS.LOGIN ? (
