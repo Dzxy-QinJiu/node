@@ -233,6 +233,7 @@ var zh_CN = {
     "login.ketao.app.name":"客套APP",
     "login.load.ketao.tip":"下载客套APP安卓端",
     "login.scan.ketao.qrcode.tip": "扫码下载客套APP安卓端",
+    "login.qrcode.loading": "正在获取二维码...",
 
 
     //"superHello": "{appName}有{number}名{user_type}过期！",

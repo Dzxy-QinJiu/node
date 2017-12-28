@@ -232,6 +232,7 @@ var en_US = {
     "login.ketao.app.name":"Ketao App",//客套APP
     "login.load.ketao.tip":"Download ketao APP Android",//下载客套APP安卓端
     "login.scan.ketao.qrcode.tip": "Scan QR code to download ketao APP Android",//扫码下载客套APP安卓端
+    "login.qrcode.loading": "Getting a qr code...",//正在获取二维码...
 
 
 

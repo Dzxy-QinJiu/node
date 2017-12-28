@@ -5,7 +5,7 @@ const classnames = require("classnames");
 const Logo = require("../Logo");
 const LoginForm = require("./login-form");
 const ForgotPassword = require("./forgot-password");
-import {Alert, Tabs, Icon} from "antd";
+import {Alert, Tabs, Icon, Button} from "antd";
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
@@ -39,8 +39,8 @@ class LoginMain extends React.Component {
             //扫码和普通登录分别对应的key
             loginActiveKey: "2",//1:扫码登录，2：普通登录
             ketaoQRCodeShow: false,//是否展示下载展示客套App的二维码
-            QRCodeErrorMsg: ""//扫码登录相关的错误
-
+            QRCodeErrorMsg: "",//扫码登录相关的错误
+            isLoadingQRCode: false,//是否正在获取二维码
         };
 
         this.setErrorMsg = this.setErrorMsg.bind(this);
@@ -114,6 +114,7 @@ class LoginMain extends React.Component {
 
     //获取二维码
     getLoginQRCode() {
+        this.setState({isLoadingQRCode: true});
         $.ajax({
             url: '/login_QR_code',
             type: 'post',
@@ -121,7 +122,8 @@ class LoginMain extends React.Component {
             success: (data) => {
                 this.setState({
                     QRCode: data ? data.code : "",
-                    QRCodeErrorMsg: ""
+                    QRCodeErrorMsg: "",
+                    isLoadingQRCode: false
                 });
                 //隔5秒调用一次扫码登录的接口
                 this.setQRCodeLoginInterval();
@@ -130,7 +132,8 @@ class LoginMain extends React.Component {
                 let errorObj = xhr.responseJSON;
                 if (_.isObject(errorObj) && errorObj.message) {
                     this.setState({
-                        QRCodeErrorMsg: errorObj.message
+                        QRCodeErrorMsg: errorObj.message,
+                        isLoadingQRCode: false
                     });
                 }
             }
@@ -151,13 +154,9 @@ class LoginMain extends React.Component {
             error: xhr => {
                 let errorObj = xhr.responseJSON;
                 if (_.isObject(errorObj) && errorObj.message) {
-                    if (errorObj.message === Intl.get("errorcode.140", "无效的二维码")) {
-                        this.getLoginQRCode();
-                    } else {
-                        this.setState({
-                            QRCodeErrorMsg: errorObj.message
-                        });
-                    }
+                    this.setState({
+                        QRCodeErrorMsg: errorObj.message
+                    });
                 }
             }
         });
@@ -197,7 +196,6 @@ class LoginMain extends React.Component {
                 const isSelected = hasWindow && Oplate.lang === lang || false;
                 return classnames("lang-btn", {"lang-selected": isSelected});
             }
-
             return (
                 <div className="login-wrap">
                     <Logo />
@@ -228,19 +226,26 @@ class LoginMain extends React.Component {
                         </div>) : (hasWindow ? (
                             <Tabs activeKey={this.state.loginActiveKey} onChange={this.handleTabChange.bind(this)}>
                                 <TabPane tab={Intl.get("login.scan.qrcode.login", "扫码登录")} key="1">
-                                    {this.state.QRCodeErrorMsg ? (
-                                        <div className="qrcode-error-tip">
-                                            <Icon type="close"/>
-                                            <span className="error-text">{this.state.QRCodeErrorMsg}</span>
+                                    {this.state.isLoadingQRCode ? (<div className="qrcode-tip-layer">
+                                        <div className="qrcode-tip-content">
+                                            {Intl.get("login.qrcode.loading", "正在获取二维码...")}
+                                        </div>
+                                    </div>) : this.state.QRCodeErrorMsg ? (
+                                        <div className="qrcode-tip-layer">
+                                            <div className="qrcode-tip-content">
+                                                <Icon type="exclamation-circle" /><br/>
+                                                <span className="error-text">{this.state.QRCodeErrorMsg}</span><br/>
+                                                <Button onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get("errorcode.147", "二维码已失效") ?
+                                                    Intl.get("common.refresh", "刷新") : Intl.get("common.get.again", "重新获取")}</Button>
+                                            </div>
                                         </div>) : null}
-                                    {this.state.QRCode ? (
-                                        <div className="login-qrcode-container">
-                                            <QRCode
-                                                value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
-                                                level="H"
-                                                size={165}
-                                            />
-                                        </div>) : null}
+                                    <div className="login-qrcode-container">
+                                        <QRCode
+                                            value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
+                                            level="H"
+                                            size={165}
+                                        />
+                                    </div>
                                     <div className="login-scan-qrcode-tip">
                                         <ReactIntl.FormattedMessage
                                             id="login.qrcode.scan.tip"
@@ -254,10 +259,6 @@ class LoginMain extends React.Component {
                                 </TabPane>
                                 <TabPane tab={Intl.get("login.account.login", "账户登录")} key="2">
                                     <div className="form-wrap">
-                                        {/*<div className="logo-wrap">*/}
-                                        {/*<Logo />*/}
-                                        {/*</div>*/}
-
                                         {this.state.currentView === VIEWS.LOGIN ? (
                                             <LoginForm
                                                 captcha={this.state.captcha}
