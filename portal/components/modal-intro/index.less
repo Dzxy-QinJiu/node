@@ -11,13 +11,19 @@
     position: absolute;
     border-radius: 50%;
     z-index: 15;
-    box-shadow: 0 0 1px 10000px rgba(0, 0, 0, 0.6)
+    //box-shadow: h-shadow v-shadow blur spread color inset;
+    //box-shadow:X轴偏移量 Y轴偏移量 [阴影模糊半径] [阴影扩展半径] 阴影颜色 [投影方式]}
+    //blur：可选项，模糊距离，用来设置阴影边缘的模糊化程度。
+    //spread：可选项，阴影的尺寸，可放大或缩小阴影的尺寸
+    //在google浏览器上 blur 对于阴影尺寸设置很大的阴影没有影响
+    //在safari浏览器上 spread值设置的太大并且blur值很小的时候，阴影画不出来，必须两者匹配起来，网上有人建议10:1
+    box-shadow: 0 0 500px 5000px rgba(0, 0, 0, 0.6);
   }
   .modal-tip {
     height: 160px;
     width: 300px;
     position: absolute;
-    z-index: 15;
+    z-index: 20;
     .ant-intro {
       margin-top: 30px;
       height: 100%;
