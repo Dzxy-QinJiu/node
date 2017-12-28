@@ -6,6 +6,7 @@ const LoginForm = require("./login-form");
 const ForgotPassword = require("./forgot-password");
 import {Alert} from "antd";
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
+var Spinner = require("../spinner");
 
 const LANGUAGES = [
     {code: "zh_CN", name: "简体中文"},
