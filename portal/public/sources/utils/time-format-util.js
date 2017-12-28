@@ -61,3 +61,26 @@ exports.getEndTime = function (time) {
             return moment().add(6, 'months').valueOf();
     }
 };
+//某个日期时星期几
+exports.getCurrentWeek= function(time){
+    var Week = moment(time).format('dddd');
+    switch (Week){
+        case 'Monday': Week= Intl.get("schedule.user.time.monday","星期一");
+            break;
+        case 'Tuesday': Week= Intl.get("schedule.user.time.tuesday","星期二");
+            break;
+        case 'Wednesday': Week= Intl.get("schedule.user.time.wednesday","星期三");
+            break;
+        case 'Thursday': Week= Intl.get("schedule.user.time.thursday","星期四");
+            break;
+        case 'Friday': Week= Intl.get("schedule.user.time.friday","星期五");
+            break;
+        case 'Saturday': Week= Intl.get("schedule.user.time.saturday","星期六");
+            break;
+        case 'Sunday': Week= Intl.get("schedule.user.time.sunday","星期日");
+            break;
+        default:
+            break;
+    }
+    return Week;
+}

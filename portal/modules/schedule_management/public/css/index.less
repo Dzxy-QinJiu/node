@@ -153,8 +153,6 @@
     }
     //左侧页面滑动提示的样式
     .scroll-tip{
-      //todo 滑动时点击返回今天会报错，问题未解决
-      display: none;
       position: absolute;
       top: 23px;
       right: -40px;
@@ -225,26 +223,23 @@
         background: #fff;
         color:#333
       }
-      .fc-toolbar.fc-header-toolbar{
-        .fc-center{
-          >div{
+      .rbc-calendar .rbc-toolbar{
             position:relative;
-            .fc-button{
-              position:absolute;
-              top:3px;
+            .rbc-btn-group:nth-child(1){
+              button{
+                position: absolute;
+                top:0;
+              }
+              button:nth-child(1){
+                left: 60%;
+              }
+              button:nth-child(2){
+                left: 35%;
+              }
+              button:nth-child(3){
+                  left: 55%;
+              }
             }
-            .fc-prev-button.fc-button{
-              left: -40px;
-            }
-            .fc-next-button.fc-button{
-              right: -40px;
-            }
-            .fc-today-button.fc-button{
-              right: -120px;
-            }
-
-          }
-        }
       }
       .iconfont{
         padding-right: 10px;
@@ -252,27 +247,11 @@
         top: 4px;
         font-size: 20px;
       }
+      //.rbc-today{
+      //  background: 0;
+      //}
     };
 
-  }
-
-  //在周视图时，只展示客户名称
-  #calendar.weekView-calendar {
-    .fc-time,.fc-inner-content,.handle-finish-btn{
-      display: none;
-    }
-    .fc-title{
-      margin: 0;
-    }
-  }
-  //月视图
-  #calendar.monthView-calendar{
-    .fc-time,.fc-inner-content,.handle-finish-btn{
-      display: none;
-    }
-    .fc-title{
-      margin: 0;
-    }
   }
   //原始大小的日程图
   #calendar-wrap.initial-calendar-panel{
@@ -301,7 +280,6 @@
   .content-block{
     color:#666;
     border: 1px solid #dddddd;
-    border-top: none;
     overflow: hidden;
     .dayagenda-schedule-list{
       font-size: 14px;
@@ -310,6 +288,13 @@
         background: #F7F7F9;
         .timerange{
           padding-left: 10px;
+        }
+        .week-wrap{
+          background: #fff;
+          text-align: center;
+          .title-week{
+            padding-right: 120px;
+          }
         }
       }
       //右侧日程列表
@@ -376,7 +361,6 @@
         border-left: 1px dotted #ddd;
         border-right: 1px dotted #ddd;
         position: relative;
-        top: -8px;
       }
     }
   }

@@ -11,6 +11,10 @@ function ScheduleManagementStore() {
     //初始化state数据
     this.getState();
     this.bindActions(ScheduleManagementAction);
+    this.exportPublicMethods({
+        setViewDate: this.setViewDate,
+        getViewDate: this.getViewDate
+    })
 }
 ScheduleManagementStore.prototype.getState = function () {
     this.scheduleExpiredList = [];//过期日程列表
@@ -22,6 +26,7 @@ ScheduleManagementStore.prototype.getState = function () {
     this.listenScrollBottom = true;//是否监听下拉加载
     this.handleStatusLoading = false;//正在修改日程的状态
     this.handleStatusErrMsg = "";//修改日程状态失败
+    this.curViewDate = "";//当前页面展示的日期
 };
 //把数据转换成组件需要的类型
 ScheduleManagementStore.prototype.processForList =function (originList,dateType) {
@@ -83,5 +88,13 @@ ScheduleManagementStore.prototype.handleScheduleStatus = function (result) {
 //修改某个提醒的状态
 ScheduleManagementStore.prototype.afterHandleStatus = function (newStatusObj) {
     this.scheduleExpiredList = _.filter(this.scheduleExpiredList, (schedule)=>{return schedule.id !== newStatusObj.id;});
+};
+//获取当前页面展示的日期
+ScheduleManagementStore.prototype.getViewDate = function (date) {
+    return this.curViewDate;
+};
+//设置当前页面展示的日期
+ScheduleManagementStore.prototype.setViewDate = function (date) {
+   this.curViewDate = date;
 };
 module.exports = alt.createStore(ScheduleManagementStore, 'ScheduleManagementStore');
