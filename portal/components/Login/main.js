@@ -36,7 +36,7 @@ class LoginMain extends React.Component {
             //二维码
             QRCode: '',
             //扫码和普通登录分别对应的key
-            loginActiveKey: this.props.loginErrorMsg ? "2" : "1",//1:扫码登录，2：普通登录
+            loginActiveKey: "2",//1:扫码登录，2：普通登录
             ketaoQRCodeShow: false,//是否展示下载展示客套App的二维码
             QRCodeErrorMsg: ""//扫码登录相关的错误
 
