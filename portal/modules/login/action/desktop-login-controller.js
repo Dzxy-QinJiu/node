@@ -353,3 +353,51 @@ exports.resetPassword = function (req, res) {
     });
 };
 
+//获取扫描登录的二维码
+exports.getLoginQRCode = function (req, res) {
+    if (appToken) {
+        getQRCodeByAppToken(appToken);
+    } else {
+        //获取验证码之前先获取所需AppToken
+        getAppToken(req, res, getQRCodeByAppToken, function (errorObj) {
+            res.status(500).json(errorObj);
+        });
+    }
+    //根据appToken获取二维码
+    function getQRCodeByAppToken(appToken) {
+        DesktopLoginService.getLoginQRCode(req, res, appToken).on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (errorObj) {
+            let loginLang = req.session ? req.session.lang : "";
+            if (errorObj && (errorObj.message == CommonErrorCodeMap.getConfigJson(loginLang)[EXPIRE_TOKEN_CODE].message
+                || errorObj.message == CommonErrorCodeMap.getConfigJson(loginLang)[INVALID_TOKEN_CODE].message)) {
+                //应用token过期后，需重新获取应用token
+                getAppToken(req, res, getQRCodeByAppToken, function (errorObj) {
+                    res.status(500).json(errorObj);
+                });
+            } else {
+                res.status(500).json(errorObj);
+            }
+        });
+    }
+};
+//二维码登录
+exports.loginByQRCode = function (req, res) {
+    var qrcode = req.params.qrcode;
+    DesktopLoginService.loginByQRCode(req, res, qrcode, appToken).on("success", function (data) {
+        //修改session数据
+        modifySessionData(req, data);
+        //设置sessionStore，如果是内存session时，需要从req中获取
+        global.config.sessionStore = global.config.sessionStore || req.sessionStore;
+        req.session.save(function () {
+            //登录界面，登录成功后的处理
+            // res.redirect("/");
+            res.status(200).json("success");
+        });
+    }).on("error", function (data) {
+        res.status(500).json(data);
+    });
+
+};
+
+

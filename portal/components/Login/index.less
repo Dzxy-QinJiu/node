@@ -1,0 +1,200 @@
+/*登录界面的样式文件*/
+.login-wrap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    //LOGO
+    a.logo{
+        margin-top: 20px;
+        margin-left: 20px;
+        >span{
+            font-size: 24px;
+        }
+    }
+
+    //语言设置
+    .login-lang-set-wrap {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        font-size: 13px;
+        .lang-font-style {
+            padding: 5px;
+            text-decoration: none;
+            color: #8ba7c2;
+        }
+        .lang-active-style {
+            background-color: #4D5B67;
+            color: #fff;
+        }
+    }
+
+    /*切换扫码登录和普通登录的tab*/
+    .ant-tabs {
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        overflow: visible;
+    }
+    .ant-tabs-bar {
+        border-bottom: 1px solid #8ba7c2;
+        .ant-tabs-nav{
+            .ant-tabs-tab {
+                width: 163px;
+                text-align: center;
+                font-size: 20px;
+                font-weight: bold;
+                letter-spacing: 1px;
+                color: #8ba7c2;
+                &:hover{
+                    color: #d8eaf4;
+                }
+                &:active {
+                    color: #dee9f5;
+                }
+            }
+            .ant-tabs-tab-active {
+                color: #dee9f5;
+            }
+            .ant-tabs-ink-bar {
+                height: 1px;
+                background-color: #dee9f5;
+            }
+        }
+    }
+    /*二维码登录区*/
+    .login-qrcode-container {
+        position: absolute;
+        width: 185px;
+        height: 185px;
+        padding: 10px;
+        top: 80px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        background: #fff;
+    }
+    //二维码相关提示展示
+    .qrcode-tip-layer{
+        display: table;
+        &:extend(.login-wrap .login-qrcode-container);
+        background: rgba(255,255,255,0.95);
+        z-index: 2;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        .qrcode-tip-content{
+            display: table-cell;
+            vertical-align: middle;
+            width: 185px;
+            word-break: break-all;
+            .anticon-exclamation-circle{
+                font-size: 19px;
+                color: #f32120;
+            }
+            .ant-btn{
+                width: 72px;
+                height: 24px;
+                line-height: 24px;
+                margin-top: 5px;
+                text-align: center;
+                padding: 0 5px;
+                color: #ffffff;
+                background-color: #f7a340;
+            }
+        }
+    }
+    .login-scan-qrcode-tip {
+        position: absolute;
+        color: #2097f3;
+        font-size: 20px;
+        font-weight: bold;
+        bottom: 35px;
+        width: 350px;
+        line-height: 18px;
+        letter-spacing: 1px;
+        text-align: center;
+        .ketao-font-style {
+            padding-left: 2px;
+            color: #dee9f5;
+        }
+    }
+    .login-load-ketao-tip {
+        position: absolute;
+        bottom: 5px;
+        width: 350px;
+        font-size: 14px;
+        text-align: center;
+        color: #8ba7c2;
+        &:hover {
+            color: #2097f3;
+        }
+    }
+    /*下载ketao 的二维码 展示界面*/
+    .ketao-download-qrcode-container {
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        background-color: #dfdfe3;
+        .scan-ketao-qrcode-download-tip {
+            position: absolute;
+            bottom: 50px;
+            text-align: center;
+            width: 350px;
+            color: #223440;
+        }
+        .anticon-cross {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #acb2b9;
+            font-size: 25px;
+            cursor: pointer;
+            &:hover {
+                color: #55585a;
+            }
+        }
+    }
+    .ketao-download-qrcode {
+        position: absolute;
+        width: 185px;
+        height: 185px;
+        padding: 10px;
+        top: 80px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        background: #fff;
+    }
+    /*普通登录区*/
+    .form-wrap {
+        position: absolute;
+        width: 280px;
+        height: 200px;
+        top: 80px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+    }
+    .login-error-tip {
+        background: no-repeat url("./image/error.png") 0 2px;
+        line-height: 22px;
+        font-size: 14px;
+        color: #ee5b44;
+        padding-left: 21px;
+        margin-top: 5px;
+        position: absolute;
+    }
+}

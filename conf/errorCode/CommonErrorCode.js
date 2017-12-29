@@ -331,6 +331,10 @@ function getConfigJson(req) {
         "19400": {"httpCode": 500, "message": backendIntl.get("errorcode.130", "没有操作权限")},
         "20001": {"httpCode": 500, "message": backendIntl.get("errorcode.122", "网络请求异常")},
         "20002": {"httpCode": 500, "message": backendIntl.get("errorcode.131", "非法请求")},
+        /*扫码登录*/
+        "11058": {"httpCode": 500, "message": ""},//请用APP扫描二维码的错误码，界面上不需要提示此错误
+        "11059": {"httpCode": 500, "message": backendIntl.get("errorcode.147", "二维码已失效")},
+
         /*其他*/
         "error-code-not-found": {"httpCode": 500, "message": backendIntl.get("errorcode.132", "未知错误")},
         "request-timeout": {"httpCode": 500, "message": backendIntl.get("errorcode.133", "服务器繁忙或网络不正常，请稍后再试")},

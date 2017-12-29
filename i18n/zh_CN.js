@@ -227,6 +227,14 @@ var zh_CN = {
     "login.send_phone_or_email_verification_code": "发送手机/邮箱验证码",
     "login.verify_phone_or_email_verification_code": "验证{contactTypeName}验证码",
     "login.return_to_login_page": "返回登录页",
+    "login.scan.qrcode.login":"扫码登录",
+    "login.account.login":"账户登录",
+    "login.qrcode.scan.tip": "请使用{appName}扫描二维码安全登录",
+    "login.ketao.app.name":"客套APP",
+    "login.load.ketao.tip":"下载客套APP安卓端",
+    "login.scan.ketao.qrcode.tip": "扫码下载客套APP安卓端",
+    "login.qrcode.loading": "正在获取二维码...",
+
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -1711,6 +1719,8 @@ var zh_CN = {
     "errorcode.144": "通话系统没有响应",
     "errorcode.145": "座机繁忙",
     "errorcode.146": "分机离线",
+    "errorcode.147": "二维码已失效",
+
     //遗漏部分
     "user.input.phone": "请输入手机号",
     "customer.search.by.customer.name": "请输入客户名称搜索",

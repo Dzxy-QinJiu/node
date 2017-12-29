@@ -74,5 +74,19 @@ module.exports = {
         "passport": {
             "needLogin": false
         }
+    }, {
+        "method": "post",
+        "path": "/login_QR_code",
+        "handler": "getLoginQRCode",
+        "passport": {
+            "needLogin": false
+        }
+    },{
+        "method": "post",
+        "path": "/QR_code/login/:qrcode",
+        "handler": "loginByQRCode",
+        "passport": {
+            "needLogin": false
+        }
     }]
 };

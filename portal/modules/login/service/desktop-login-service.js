@@ -29,7 +29,12 @@ var urls = {
     //重置密码
     resetPassword: "/auth2/authc/reset_password/update",
     //根据ticket登录
-    loginWithTicket: "/auth2/authc/third_login/login"
+    loginWithTicket: "/auth2/authc/third_login/login",
+    //获取扫码登录的二维码
+    getLoginQRCode: "/auth2/authc/scan_code/screen_code",
+    //通过扫码登录
+    loginByQRCode: "/auth2/authc/scan_code/login"
+
 };
 //验证码的高和宽
 var captcha = {
@@ -367,4 +372,54 @@ exports.resetPassword = function (req, res, appToken, user_id, ticket, new_passw
             }
         }, null);
 };
+
+/**
+ * 获取扫码登录的二维码
+ *
+ */
+exports.getLoginQRCode = function (req, res, appToken) {
+    return restUtil.baseRest.post(
+        {
+            url: urls.getLoginQRCode,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken
+            }
+        }, null);
+};
+
+/**
+ * 扫码登录
+ *
+ */
+exports.loginByQRCode = function (req, res, qrcode, appToken) {
+    return restUtil.baseRest.post(
+        {
+            url: urls.loginByQRCode,
+            req: req,
+            res: res,
+            headers: {
+                Authorization: appTokenPrefix + appToken,
+            },
+            //后端要求用form的post提交
+            form: {
+                screen_code: qrcode
+            }
+        }, null, {
+            success: function (emitter, data) {
+                //如果未返回数据
+                if (!data) {
+                    let backendIntl = new BackendIntl(req);
+                    emitter.emit("error", backendIntl.get("login.service.error", "很抱歉,服务器出现了异常状况"));
+                } else {
+                    emitter.emit("success", getLoginResult(data));
+                }
+            },
+            timeout: function (emitter, data) {
+                emitter.emit("error", data);
+            }
+        });
+};
+
 
