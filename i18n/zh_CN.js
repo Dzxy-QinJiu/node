@@ -312,6 +312,13 @@ var zh_CN = {
     "user.time.thursday": "周四",
     "user.time.friday": "周五",
     "user.time.saturday": "周六",
+    "schedule.user.time.sunday": "星期日",
+    "schedule.user.time.monday": "星期一",
+    "schedule.user.time.tuesday": "星期二",
+    "schedule.user.time.wednesday": "星期三",
+    "schedule.user.time.thursday": "星期四",
+    "schedule.user.time.friday": "星期五",
+    "schedule.user.time.saturday": "星期六",
     "user.expire.stop": "到期停用",
     "user.expire.degrade": "到期降级",
     "user.expire.immutability": "到期不变",
@@ -1901,6 +1908,7 @@ var zh_CN = {
     "schedule.management.schedule.content": "日程内容",
     "schedule.todo.list": "待办",
     "schedule.has.finished": "已完成",
-    "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！"
+    "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！",
+    "schedule.back.to.today":"返回今天"
 };
 export default zh_CN;

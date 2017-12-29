@@ -10,7 +10,7 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 const TabPane = Tabs.TabPane;
 let QRCodeLoginInterval = null;
 const LOGIN_INTERVAL_TIME = 5 * 1000;//5s:获取二维码展示后，调用登录接口的时间间隔
-
+var Spinner = require("../spinner");
 const LANGUAGES = [
     {code: "zh_CN", name: "简体中文"},
     {code: "en_US", name: "English"},
@@ -46,14 +46,6 @@ class LoginMain extends React.Component {
         this.setErrorMsg = this.setErrorMsg.bind(this);
     }
 
-    changeView(view) {
-        this.setState({currentView: view, errorMsg: ""});
-    }
-
-    setErrorMsg(errorMsg) {
-        this.setState({errorMsg});
-    }
-
     componentDidMount() {
         if (this.state.loginActiveKey === "1") {
             this.getLoginQRCode();
@@ -70,6 +62,19 @@ class LoginMain extends React.Component {
             //不是用sso登录，则直接显示登录界面
             this.show();
         }
+        Trace.addEventListener(window, "click", Trace.eventHandler);
+    }
+
+    componentWillUnmount() {
+        Trace.detachEventListener(window, "click", Trace.eventHandler);
+    }
+
+    changeView(view) {
+        this.setState({currentView: view, errorMsg: ""});
+    }
+
+    setErrorMsg(errorMsg) {
+        this.setState({errorMsg});
     }
 
     //检测是否已经sso登录
@@ -188,7 +193,7 @@ class LoginMain extends React.Component {
     render() {
         //如果是初次渲染不展示表单，直接sso校验
         if (!this.state.showUi) {
-            return (<div className="login-wrap"></div>);
+            return (<div className="login-wrap"><Spinner className="isloading"/></div>);
         } else {
             const hasWindow = !(typeof window === "undefined");
 

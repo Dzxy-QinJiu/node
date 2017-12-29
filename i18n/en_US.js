@@ -312,6 +312,13 @@ var en_US = {
     "user.time.thursday": "Thursday",//周四
     "user.time.friday": "Friday",//周五
     "user.time.saturday": "Saturday",//周六
+    "schedule.user.time.sunday": "Sunday",//星期日
+    "schedule.user.time.monday": "Monday",//星期一
+    "schedule.user.time.tuesday": "Tuesday",//星期二
+    "schedule.user.time.wednesday": "Wednesday",//星期三
+    "schedule.user.time.thursday": "Thursday",//星期四
+    "schedule.user.time.friday": "Friday",//星期五
+    "schedule.user.time.saturday": "Saturday",//星期六
     "user.expire.stop": "Stop when expire",//到期停用
     "user.expire.degrade": "Downgrade when expire",//到期降级
     "user.expire.immutability": "Unchanged when expire",//到期不变
@@ -1859,6 +1866,7 @@ var en_US = {
     "schedule.management.schedule.content": "Schedule content",//日程内容
     "schedule.todo.list": "Todo lists",//待办
     "schedule.has.finished": "Has Finished",//已完成
-    "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!"//日程功能上线了，赶快点开看看吧！
+    "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!",//日程功能上线了，赶快点开看看吧！
+    "schedule.back.to.today":"Today"//返回今天
 };
 export default en_US;

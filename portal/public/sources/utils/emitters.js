@@ -15,7 +15,6 @@ exports.phoneMsgEmitter.SEND_PHONE_NUMBER = "sendPhoneNumber";
 exports.scheduleManagementEmitter = new EventEmitter();
 exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE = "setUpdateScrollBarTrue";
 exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE = "setUpdateScrollBarFalse";
-exports.scheduleManagementEmitter.SCHEDULE_TABLE_UNMOUNT = "unmount";
 //添加客户成功后emitter
 exports.addCustomerEmitter = new EventEmitter();
 exports.addCustomerEmitter.SEND_ADD_CUSTOMER = "sendAddCustomer";

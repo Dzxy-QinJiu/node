@@ -132,7 +132,7 @@ var loadersLists = [
             path.resolve(__dirname, "node_modules/rc-calendar"),
             path.resolve(__dirname, "node_modules/react-date-picker"),
             path.resolve(__dirname, "node_modules/antc"),
-            path.resolve(__dirname, "node_modules/fullcalendar")
+            path.resolve(__dirname, "node_modules/react-big-calendar")
         ]
     }, {
         test: /\.less$/,
