@@ -295,16 +295,30 @@
             float: left;
             width: 1/7*100%;
             .even-items-wrapper{
-              padding: 0 10px;
+              padding: 0px 1px;
               font-size: 15px;
               .list-item{
+                padding:10px;
                 cursor: pointer;
                 overflow: hidden;
-                margin-bottom: 15px;
                 .ant-row{
                   display: flex;
                   align-items: center;
                 }
+                &:hover{
+                  background: #F6FBFF;
+                }
+              }
+              //已完成的日程样式
+              .list-item.has-handled{
+                background: #FBFBFB;
+                p, .iconfont.icon-phone-busy,.iconfont.icon-schedule-visit,.iconfont.icon-schedule-other{
+                  color:#C9C9C9;
+                }
+              }
+              //点击查看详情的日程
+              .list-item.selected-customer{
+                background: #F6FBFF;
               }
               .no-data-container{
                 margin: 50px auto;

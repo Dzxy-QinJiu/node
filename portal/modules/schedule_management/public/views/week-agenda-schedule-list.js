@@ -143,17 +143,21 @@ class WeekAgendaScheduleLists extends React.Component {
                                         "icon-phone-busy": item.type == "calls",
                                         "icon-schedule-other": item.type == "other"
                                     });
+                                var listCls = classNames("list-item", {
+                                    "has-handled": item.status == "handle",
+                                    "selected-customer": item.customer_id == this.state.curCustomerId
+                                });
                                 return (
-                                    <div className="list-item"
+                                    <div className={listCls}
                                          onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}>
                                         <Row>
                                             <Col sm={4}>
                                                 <i className={cls}></i>
                                             </Col>
                                             <Col sm={20}>
-                                                 <span className="topic-container">
+                                                 <p className="topic-container">
                                                     {item.topic}
-                                                </span>
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
