@@ -15,12 +15,14 @@ import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
 //天视图组件
 import DayAgendaScheduleLists from './views/day-agenda-schedule-lists';
+//周视图组件
+import WeekAgendaScheduleLists from './views/week-agenda-schedule-list';
 import ExpireScheduleLists from './views/expire-schedule-lists';
 import BigCalendar from "react-big-calendar";
 import moment from "moment";
 BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
-  TOPANDBOTTOM:80
+  TOPANDBOTTOM:50
 };
 const LESSONESECOND = 24 * 60 * 60 * 1000 - 1000;//之前添加日程时，一天的开始时间是00:00:00 到24:59:59秒，但是这个组件中认为的一天是从第一天的00;00：00 到第二天的00:00：00 。所以存储的全天的日程就被认为少了1000毫秒 但是可以通过加allday这个属性，被分到全天的日程中
 const ScheduleManagement = React.createClass({
@@ -31,6 +33,7 @@ const ScheduleManagement = React.createClass({
             isShowExpiredPanel: true,//是否展示左侧超时面板
             isFirstLogin: true,//是否是第一次登录的时候
             dayLists: [],//天视图所用的日程数据
+            weekLists: [],//周视图所用的日程数据
             calendarLists: [],//右侧日程列表中的日程数据
             curViewName:"day",//当前被按下的视图的名称
             ...scheduleManagementStore.getState()
@@ -69,6 +72,35 @@ const ScheduleManagement = React.createClass({
                 if (viewType == "day"){
                     _this.setState({
                         dayLists: events//日试图的数据
+                    })
+                }else if (viewType == "week") {
+                    var weekScheduleLists = {
+                        "Mon":[],"Tus":[],"Wed":[],"Thur":[],"Fri":[],"Sat":[],"Sun":[]
+                    };
+                    _.map(events, (even)=>{
+                        //对数据进行处理
+                        var Week = moment(even.start_time).format('dddd');
+                        switch (Week){
+                            case Intl.get("schedule.user.time.monday", "星期一"): weekScheduleLists.Mon.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.tuesday", "星期二"): weekScheduleLists.Tus.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.wednesday", "星期三"): weekScheduleLists.Wed.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.thursday", "星期四"): weekScheduleLists.Thur.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.friday", "星期五"): weekScheduleLists.Fri.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.saturday", "星期六"): weekScheduleLists.Sat.push(even);
+                                break;
+                            case Intl.get("schedule.user.time.sunday", "星期日"): weekScheduleLists.Sun.push(even);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                    _this.setState({
+                        weekLists: weekScheduleLists//日试图的数据
                     })
                 }else{
                     _this.setState({
@@ -245,7 +277,7 @@ const ScheduleManagement = React.createClass({
                             defaultView = "day"
                             views={{
                                 month: true,
-                                week: true,
+                                week: WeekAgendaScheduleLists,
                                 day: DayAgendaScheduleLists,
                             }}
                             messages = {{
@@ -256,8 +288,12 @@ const ScheduleManagement = React.createClass({
                                 next:">",
                                 allDay:Intl.get("crm.alert.full.day", "全天"),
                                 day: Intl.get("common.time.unit.day", "天"),
+                                showMore: (data)=>{
+                                    return (<div className="show-more-data">+{data}</div>);
+                                }
                             }}
-                            scheduleList={this.state.dayLists}
+                            scheduleList={this.state.dayLists}//日试图数据
+                            weekLists = {this.state.weekLists}
                             handleScheduleItemStatus={this.handleScheduleItemStatus}
                             showCustomerDetail={this.showCustomerDetail}
                             onNavigate = {this.handleNavigateChange}

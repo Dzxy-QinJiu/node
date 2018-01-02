@@ -24,7 +24,6 @@ class DayAgendaScheduleLists extends React.Component {
         this.state = {
             scheduleList: this.props.scheduleList,
             updateScrollBar: false,
-            random:Math.random(),
         };
     };
 
@@ -185,6 +184,9 @@ DayAgendaScheduleLists.defaultProps = {
     updateScrollBar: false,
     handleScheduleItemStatus: function () {
 
+    },
+    showCustomerDetail: function () {
+        
     }
 
 };
