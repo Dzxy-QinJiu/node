@@ -319,6 +319,13 @@ var CRMAddForm = React.createClass({
     handleRoleSelect: function () {
         Trace.traceEvent($(this.getDOMNode()).find("form div .ant-form-item label[for='role']").next("div"), "选择角色");
     },
+    getAdministrativeLevelOptions: function () {
+        let options = crmUtil.administrativeLevels.map(obj => {
+            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
+        });
+        options.unshift(<Option key="" value="">&nbsp;</Option>);
+        return options;
+    },
     render: function () {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -397,9 +404,7 @@ var CRMAddForm = React.createClass({
                                         onChange={this.setField.bind(this, 'administrative_level')}
                                         value={formData.administrative_level}
                                 >
-                                    {crmUtil.administrativeLevels.map(obj => {
-                                        return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
-                                    })}
+                                    {this.getAdministrativeLevelOptions()}
                                 </Select>
                             </FormItem >
                             <AreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}

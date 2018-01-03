@@ -55,7 +55,7 @@ const isClueTag = function(tag){
     return tag == Intl.get("crm.sales.clue","线索");
 };
 //行政级别
-exports.administrativeLevels = [{id:"4",level:"企业"},{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
+exports.administrativeLevels = [{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
 exports.CUSTOMER_LABELS = ["信息","意向","试用","签约"];//标签
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;

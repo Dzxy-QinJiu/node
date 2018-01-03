@@ -125,9 +125,11 @@ var BasicData = React.createClass({
         }
     },
     getAdministrativeLevelOptions: function () {
-        return crmUtil.administrativeLevels.map(obj => {
+        let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
         });
+        options.unshift(<Option key="" value="">&nbsp;</Option>);
+        return options;
     },
     onSelectAdministrativeLevel: function (administrative_level) {
         administrative_level = parseInt(administrative_level);
@@ -150,8 +152,8 @@ var BasicData = React.createClass({
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
         var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
         let customerLabelCls = "customer-label";
-        if(basicData.customer_label){
-            customerLabelCls = classNames("customer-label",{
+        if (basicData.customer_label) {
+            customerLabelCls = classNames("customer-label", {
                 "info-tag-style": basicData.customer_label === LABEL_TYPES.INFO_TAG,
                 "intent-tag-style": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
                 "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG,
@@ -177,7 +179,8 @@ var BasicData = React.createClass({
                                                 disabled={hasPrivilege("CUSTOMER_UPDATE_NAME") ? false : true}
                                             />
                                             {basicData.customer_label ? (
-                                                <Tag className={customerLabelCls}>{basicData.customer_label}</Tag>) : null
+                                                <Tag
+                                                    className={customerLabelCls}>{basicData.customer_label}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>
