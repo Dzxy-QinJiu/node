@@ -371,6 +371,7 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
             } else {
                 curShowTeam.user_ids = userIds;
             }
+            //添加成员后，将团队的人数统计加上新加的成员个数
             curShowTeam.available_num += userIds.length;
         }
         //更新左侧团队树中对应团队的成员信息
