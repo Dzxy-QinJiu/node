@@ -312,7 +312,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                 } else {
                     curShowTeam.user_ids = [data.owner_id];
                 }
-            } else {//删除所有者
+            } else {//删除所有者后，将团队的人数减一
                 curShowTeam.available_num -= 1;
             }
         } else if (data.type == "manager") {//管理员的处理
@@ -326,7 +326,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                 } else {
                     curShowTeam.user_ids = data.user_ids;
                 }
-            } else {//删除管理员
+            } else {//删除管理员后，将团队的人数统计减去删除的管理员的个数
                 curShowTeam.available_num -= data.user_ids.length;
             }
         } else if (data.type == "user") {//普通成员的处理
@@ -340,7 +340,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                 } else {
                     curShowTeam.manager_ids = data.user_ids;
                 }
-            } else {//删除成员
+            } else {//删除成员后，将团队的人数统计减去删除的成员的个数
                 curShowTeam.available_num -= data.user_ids.length;
             }
         }
