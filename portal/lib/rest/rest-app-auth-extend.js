@@ -73,7 +73,7 @@ var RestlerExtend = {
 
             var retEmitter,
                 errorCode = (errorObj && typeof errorObj === "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
-            if (response.statusCode.toString() == "400") {
+            if (errorCode === 11012 || errorCode == 11011) {
                 logger.debug(" req.session.processAppTokenError appToken:" + appToken);
                 if (req.session.refreshingToken) {
                     instance["_process_token_validate"] = true;

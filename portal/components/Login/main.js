@@ -33,7 +33,7 @@ class LoginMain extends React.Component {
             //展示界面
             showUi: false,
             //验证码
-            captcha: "",
+            captcha: this.props.captchaCode || "",
             //二维码
             QRCode: '',
             //扫码和普通登录分别对应的key
@@ -96,7 +96,7 @@ class LoginMain extends React.Component {
     show(captcha) {
         this.setState({
             showUi: true,
-            captcha: captcha ? captcha : ""
+            captcha: captcha ? captcha : this.state.captcha
         });
     }
 
