@@ -48,6 +48,7 @@ function CrmStore() {
         batchChangeSalesman: this.batchChangeSalesman,
         batchChangeTags: this.batchChangeTags,
         batchChangeIndustry: this.batchChangeIndustry,
+        batchChangeLevel: this.batchChangeLevel,
         batchChangeTerritory: this.batchChangeTerritory
     });
 }
@@ -411,7 +412,42 @@ CrmStore.prototype.batchChangeIndustry = function ({taskInfo, taskParams, curCus
         customerInfo.industry = industry;
     });
 };
-
+//批量变更行政级别以后，同步列表数据
+CrmStore.prototype.batchChangeLevel= function ({taskInfo, taskParams, curCustomers}) {
+    //如果参数不合法，不进行更新
+    if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+        return;
+    }
+    //解析taskParams
+    var {
+        administrative_level
+    } = taskParams;
+    //解析tasks
+    var {
+        tasks
+    } = taskInfo;
+    //如果tasks为空，不进行更新
+    if (!_.isArray(tasks) || !tasks.length) {
+        return;
+    }
+    //检查taskDefine
+    tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+    //如果没有要更新的数据
+    if (!tasks.length) {
+        return;
+    }
+    var curCustomerListMap = _.indexBy(curCustomers, 'id');
+    var targetCustomers = _.pluck(tasks, "taskDefine");
+    //遍历每一个客户
+    _.each(targetCustomers, (customerId) => {
+        var customerInfo = curCustomerListMap[customerId];
+        //如果当前客户是需要更新的客户，才更新
+        if (!customerInfo) {
+            return;
+        }
+        customerInfo.administrative_level = administrative_level;
+    });
+};
 //批量变更地域以后，同步列表数据
 CrmStore.prototype.batchChangeTerritory = function ({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新

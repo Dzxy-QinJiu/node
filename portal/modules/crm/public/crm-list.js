@@ -174,6 +174,8 @@ var Crm = React.createClass({
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_REMOVE_LABELS, this.batchRemoveTags);
         //批量更新行业
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY, this.batchChangeIndustry);
+        //批量更新行政级别
+        batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         //批量更新地域
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
         crmEmitter.on(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
@@ -314,6 +316,7 @@ var Crm = React.createClass({
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_ADD_LABELS, this.batchAddTags);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_REMOVE_LABELS, this.batchRemoveTags);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY, this.batchChangeIndustry);
+        batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
         crmEmitter.removeListener(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         $(window).off("resize", this.changeTableHeight);
@@ -370,6 +373,12 @@ var Crm = React.createClass({
     batchChangeIndustry: function (taskInfo, taskParams) {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeIndustry({taskInfo, taskParams, curCustomers});
+        this.delayRenderBatchUpdate();
+    },
+    //批量变更行政级别的处理,调用store进行数据更新
+    batchChangeLevel: function (taskInfo, taskParams) {
+        var curCustomers = this.state.originCustomerList;
+        CrmStore.batchChangeLevel({taskInfo, taskParams, curCustomers});
         this.delayRenderBatchUpdate();
     },
     //批量变更地域的处理,调用store进行数据更新

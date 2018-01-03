@@ -1192,6 +1192,9 @@ var zh_CN = {
     "crm.competing.products": "竞品",
     "crm.no.contact.way": "无联系方式客户",
     "crm.concerned.customer": "关注的客户",
+    "crm.administrative.level.change": "变更行政级别",
+    "crm.select.level": "请选择行政级别",
+    "crm.no.level": "无相关行政级别",
     // 客户管理end
 
     // 客户分析start

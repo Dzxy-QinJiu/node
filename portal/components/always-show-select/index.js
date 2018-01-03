@@ -9,6 +9,7 @@
  *          onChange={this.industryChange}
  *          notFoundContent={dataList.length ? Intl.get("crm.23", "无相关行业") : Intl.get("crm.24", "暂无行业")}
  *          dataList={dataList}
+ *          hasClearOption= {false}
  *       >
  */
 require("./index.less");
@@ -49,6 +50,24 @@ class AlwaysShowSelect extends React.Component {
     inputFocus = () => {
         this.setState({isSearch: true, value: ""});
     };
+    //获取选择下拉选项
+    getSelectOptions = (dataList) => {
+        if (dataList.length) {
+            let options = dataList.map(data => {
+                let className = classNames("select-item", {"item-active": data.value === this.state.value});
+                return (<li className={className}
+                            onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>)
+            });
+            if (this.props.hasClearOption) {//有清空选择的选项
+                let className = classNames("select-item", {"item-active": !this.state.value});
+                options.unshift(<li className={className}
+                                    onClick={this.onSelectChange.bind(this, {name: "", value: ""})}>&nbsp;</li>);
+            }
+            return options;
+        } else {
+            return (<li className="select-item-no-content">{this.props.notFoundContent}</li>);
+        }
+    };
 
     render() {
         //获取搜索后的列表数据
@@ -74,12 +93,7 @@ class AlwaysShowSelect extends React.Component {
                     />
                 </div>
                 <ul className="select-options">
-                    {dataList.length ? dataList.map(data => {
-                        let className = classNames("select-item", {"item-active": data.value === this.state.value});
-                        return (<li className={className}
-                                    onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>)
-                    }) : (<li className="select-item-no-content">{this.props.notFoundContent}</li>)}
-
+                    {this.getSelectOptions(dataList)}
                 </ul>
             </div>
         );
@@ -88,11 +102,12 @@ class AlwaysShowSelect extends React.Component {
 AlwaysShowSelect.defaultProps = {
     placeholder: "",
     value: "",
+    hasClearOption: false,//是否有清空选择的选项
     dataList: [],//由{name：展示的内容,value：选择后需要保存的值}组成的下拉列表
     notFoundContent: Intl.get("common.no.data", "暂无数据"),//未搜索到或列表为空时的提示信息
     onChange: function () {
     },
-    getSelectContent:function () {
+    getSelectContent: function () {
 
     }//取到所展示的内容
 };

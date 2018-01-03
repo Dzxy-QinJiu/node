@@ -25,6 +25,8 @@ BatchChangeStore.prototype.resetState = function () {
     this.isLoading = false;
     //选中的行业列表
     this.selected_industries = [];
+    //行政级别
+    this.administrative_level = "";
     //行业
     this.formData = {
         tag: '',
@@ -75,6 +77,11 @@ BatchChangeStore.prototype.setLoadingState = function (state) {
 //切换行业选中状态
 BatchChangeStore.prototype.industryChange = function (industries) {
     this.selected_industries = industries;
+    this.unSelectDataTip = "";
+};
+//切换行政级别选中状态
+BatchChangeStore.prototype.administrativeLevelChange = function (level) {
+    this.administrative_level = level;
     this.unSelectDataTip = "";
 };
 //地址修改

@@ -59,6 +59,8 @@ exports.batchPushEmitter.CRM_BATCH_REMOVE_LABELS = "batchtask.crm_batch_remove_l
 exports.batchPushEmitter.CRM_BATCH_CHANGE_INDUSTRY = "batchtask.crm_batch_change_industry";
 //客户管理批量-变更地域
 exports.batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY = "batchtask.crm_batch_change_address";
+//客户管理批量-变更行政级别
+exports.batchPushEmitter.CRM_BATCH_CHANGE_LEVEL = "batchtask.crm_batch_change_level";
 //安全域异步创建
 exports.batchPushEmitter.TASK_REALM_CERATE = "batchtask.task_realm_create";
 //socket的emitter

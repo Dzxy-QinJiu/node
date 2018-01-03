@@ -1173,6 +1173,10 @@ var en_US = {
     "crm.competing.products": "Competing products",//竞品
     "crm.no.contact.way": "No contact customers",//无联系方式客户
     "crm.concerned.customer": "Concerned customers",//关注的客户
+    "crm.administrative.level.change": "Change administrative level",//变更行政级别
+    "crm.select.level": "Please select administrative level",//请选择行政级别
+    "crm.no.level": "No match administrative level",//无相关行政级别
+
     // 客户管理end
 
     //客户分析 start
