@@ -146,10 +146,19 @@ var LeftTree = React.createClass({
             </div>
         )
     },
-
+    getTeamMemberCount:function (salesTeam) {
+        let teamMemberCount = salesTeam.availableNum;
+        //递归遍历子团队，加上子团队的人数
+        if (_.isArray(salesTeam.children) && salesTeam.children.length > 0) {
+            salesTeam.children.forEach(team=> {
+                teamMemberCount += this.getTeamMemberCount(team);
+            });
+        }
+        return teamMemberCount;
+    },
     element: function (item, type) {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
-        var teamMemberCount = commonMethodUtil.getTeamMemberCount(item);
+        let teamMemberCount = this.getTeamMemberCount(item);
         return (
             <div className="left-tree-item-container">
                 <div className="left-tree-arrow" onClick={this.toggleGroupTree.bind(this, item)}>
@@ -171,7 +180,7 @@ var LeftTree = React.createClass({
                                 id="sales.team.member.count"
                                 defaultMessage={`{teamMemberCount}人`}
                                 values={{
-                                     'teamMemberCount':teamMemberCount
+                                     'teamMemberCount': teamMemberCount
                                      }}
                             />
                             )</span>

@@ -155,9 +155,16 @@ var AppUserManage = React.createClass({
             //获取全部应用
             AppUserAction.getAppList();
             //查询所有用户
-            AppUserAction.getAppUserList({
+            let quryObj = {
                 app_id: ShareObj.app_id || ""
-            });
+            };
+            //如果有选择的应用，则默认按创建时间排序
+            if(ShareObj.app_id){//用户列表，选择某个应用后，切换到审计日志再回来时，列表需要排序
+                quryObj.sort_field = 'grant_create_date';
+                quryObj.sort_order = 'desc';
+            }
+            AppUserAction.changeTableSort(quryObj);
+            AppUserAction.getAppUserList(quryObj);
             //顶部导航输入框的值清空
             this.refs.searchInput.refs.searchInput.value = ''
         }
