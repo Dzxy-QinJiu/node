@@ -10,6 +10,7 @@ function BatchChangeAction() {
         'industryChange',
         'resetState',
         'clearSelectedTag',
+        "administrativeLevelChange",
         'setUnSelectDataTip',
         'locationChange'
     );
