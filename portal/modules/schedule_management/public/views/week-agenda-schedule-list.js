@@ -23,7 +23,7 @@ class WeekAgendaScheduleLists extends React.Component {
             weekLists: this.props.weekLists,
             updateScrollBar: false,
             containToday: containToday.flag,// 今天所在的周  和today这两个状态共同判断给哪一天是今天，给今天加背景颜色
-            today: moment().format("dddd")//今天是周几
+            today: this.switchToday(moment().format("dddd"))//今天是星期几
         };
     };
 
@@ -59,11 +59,6 @@ class WeekAgendaScheduleLists extends React.Component {
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
-        //计算出今天是周几
-        var weekFormToday = this.switchToday(this.state.today);
-        this.setState({
-            today: weekFormToday
-        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -95,15 +90,7 @@ class WeekAgendaScheduleLists extends React.Component {
         var height = $(window).height() - CALENDAR_LAYOUT.TOPANDBOTTOM;
         return (
             <div className="schedule-items-content" style={{height: height}}>
-                <div className="schedule-bg-content">
-                    {_.map(startDate, (item, key) => {
-                        var cls = classNames("schedule-line-grid",
-                            {"rbc-today": containToday.flag && key == this.state.today})//给今天的日程加类
-                        return (
-                            <div className={cls}></div>
-                        )
-                    })}
-                </div>
+                {this.renderScheduleTitle()}
                 {this.renderWeekScheduleList()}
             </div>
         )
@@ -114,15 +101,7 @@ class WeekAgendaScheduleLists extends React.Component {
         var height = $(window).height() - CALENDAR_LAYOUT.TOPANDBOTTOM;
         return (
             <div className="schedule-items-content" style={{height: height}}>
-                <div className="schedule-bg-content">
-                    {_.map(startDate, (item, key) => {
-                        var cls = classNames("schedule-line-grid",
-                            {"rbc-today": containToday.flag && key == this.state.today})
-                        return (
-                            <div className={cls}></div>
-                        )
-                    })}
-                </div>
+                {this.renderScheduleTitle()}
                 <GeminiScrollBar>
                     {this.renderWeekScheduleList()}
                 </GeminiScrollBar>
@@ -130,6 +109,19 @@ class WeekAgendaScheduleLists extends React.Component {
         )
     };
 
+    renderScheduleTitle(){
+        return (
+            <div className="schedule-bg-content">
+                {_.map(startDate, (item, key) => {
+                    var cls = classNames("schedule-line-grid",
+                        {"rbc-today": containToday.flag && key == this.state.today});
+                    return (
+                        <div className={cls}></div>
+                    )
+                })}
+            </div>
+        )
+    };
     renderWeekScheduleList() {
         return (
             _.map(this.state.weekLists, (list, key) => {
@@ -139,9 +131,9 @@ class WeekAgendaScheduleLists extends React.Component {
                             {list.length ? _.map(list, (item) => {
                                 var cls = classNames("iconfont",
                                     {
-                                        "icon-schedule-visit": item.type == "visit",
-                                        "icon-phone-busy": item.type == "calls",
-                                        "icon-schedule-other": item.type == "other"
+                                        "icon-schedule-visit": item.type === "visit",
+                                        "icon-phone-busy": item.type === "calls",
+                                        "icon-schedule-other": item.type === "other"
                                     });
                                 var listCls = classNames("list-item", {
                                     "has-handled": item.status == "handle",
@@ -216,24 +208,24 @@ WeekAgendaScheduleLists.navigate = (date, action) => {
     }
 };
 WeekAgendaScheduleLists.title = (date, {formats, culture}) => {
-    var startTime = moment(date).startOf("week").format(oplateConsts.DATE_MONTH_DAY_FORMAT);
-    var endTime = moment(date).endOf("week").format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+    var startTime = moment(date).startOf("week");
+    var endTime = moment(date).endOf("week");
     startDate = {
-        "Mon": Intl.get("user.time.monday", "周一") + " " + startTime,
-        "Tus": Intl.get("user.time.tuesday", "周二") + " " + moment(date).startOf("week").add(1, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Wed": Intl.get("user.time.wednesday", "周三") + " " + moment(date).startOf("week").add(2, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Thur": Intl.get("user.time.thursday", "周四") + " " + moment(date).startOf("week").add(3, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Fri": Intl.get("user.time.friday", "周五") + " " + moment(date).startOf("week").add(4, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Sat": Intl.get("user.time.saturday", "周六") + " " + moment(date).startOf("week").add(5, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Sun": Intl.get("user.time.sunday", "周日") + " " + endTime,
+        "Mon": Intl.get("user.time.monday", "周一") + " " + startTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Tus": Intl.get("user.time.tuesday", "周二") + " " + startTime.add(1, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Wed": Intl.get("user.time.wednesday", "周三") + " " + startTime.add(2, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Thur": Intl.get("user.time.thursday", "周四") + " " + startTime.add(3, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Fri": Intl.get("user.time.friday", "周五") + " " + startTime.add(4, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Sat": Intl.get("user.time.saturday", "周六") + " " + startTime.add(5, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Sun": Intl.get("user.time.sunday", "周日") + " " + endTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT),
     };
     //如果当前时间是在标题展示那一周的范围之内，就是今天所在的周
-    if (moment().valueOf() >= moment(date).startOf("week").valueOf() && moment().valueOf() <= moment(date).endOf("week").valueOf()) {
+    if (moment().valueOf() >= startTime.valueOf() && moment().valueOf() <= endTime.valueOf()) {
         containToday.flag = true;
     } else {
         containToday.flag = false;
     }
-    return `${startTime} ${Intl.get("contract.83", "至")} ${endTime}`;
+    return `${startTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT)} ${Intl.get("contract.83", "至")} ${endTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT)}`;
 };
 WeekAgendaScheduleLists.defaultProps = {
     showCustomerDetail: function () {

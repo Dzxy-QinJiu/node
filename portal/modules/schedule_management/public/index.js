@@ -71,7 +71,7 @@ const ScheduleManagement = React.createClass({
                 var events = _this.processForList(data.list);
                 if (viewType == "day"){
                     _this.setState({
-                        dayLists: events//日试图的数据
+                        dayLists: events//日视图的数据
                     })
                 }else if (viewType == "week") {
                     var weekScheduleLists = {
@@ -100,7 +100,7 @@ const ScheduleManagement = React.createClass({
                         }
                     });
                     _this.setState({
-                        weekLists: weekScheduleLists//日试图的数据
+                        weekLists: weekScheduleLists//日视图的数据
                     })
                 }else{
                     _this.setState({
@@ -292,7 +292,7 @@ const ScheduleManagement = React.createClass({
                                     return (<div className="show-more-data">+{data}</div>);
                                 }
                             }}
-                            scheduleList={this.state.dayLists}//日试图数据
+                            scheduleList={this.state.dayLists}//日视图数据
                             weekLists = {this.state.weekLists}
                             handleScheduleItemStatus={this.handleScheduleItemStatus}
                             showCustomerDetail={this.showCustomerDetail}
