@@ -1,6 +1,5 @@
 var restLogger = require("../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../lib/rest/rest-util")(restLogger);
-var request = require("request");
 var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require("../../../lib/utils/backend_intl");
@@ -10,8 +9,6 @@ const ipUtil = require("../../../lib/utils/common-utils").ip;
 var urls = {
     //登录
     login: "/auth2/authc/login",
-    //获取应用Token
-    getAppToken: "/auth2/authz/token",
     //获取验证码
     getLoginCaptcha: "/auth2/authc/captcha/get",
     //刷新验证码
@@ -41,8 +38,6 @@ var captcha = {
     width: 400,
     height: 152
 };
-//应用Token的前缀
-var appTokenPrefix = "oauth2 ";
 
 //导出url
 exports.urls = urls;
@@ -150,48 +145,24 @@ function getLoginResult(data) {
     return loginResult;
 }
 
-
-/**
- * 获取应用Token,用来检测应用是否合法
- */
-exports.getAppToken = function (req, res) {
-    return restUtil.baseRest.post(
-        {
-            url: urls.getAppToken,
-            req: req,
-            res: res,
-            headers: {
-                realm: config.loginParams.realm,
-            },
-            form: {
-                grant_type: config.loginParams.grantType,//授权类型
-                client_id: config.loginParams.clientId,//oplate应用的Id
-                client_secret: config.loginParams.clientSecret//oplate应用秘钥
-            }
-        }, null);
-};
-
-
 /**
  * 获取验证码
- *
+ * @param req
+ * @param res
+ * @param user_name
+ * @param type  区分是登录验证码还是找回密码验证码
  */
-exports.getLoginCaptcha = function (req, res, user_name, appToken, type) {
+exports.getLoginCaptcha = function (req, res, user_name, type) {
     var url = urls.getLoginCaptcha;
     var headers = {
-        Authorization: appTokenPrefix + appToken,
-        realm: config.loginParams.realm,
         session_id: req.sessionID
     };
-
     if (type) {
         url = urls.getResetPasswordCaptcha;
-
         headers.remote_addr = ipUtil.getServerAddresses();
         headers.user_id = ipUtil.getClientIp(req);
     }
-
-    return restUtil.baseRest.get(
+    return restUtil.appAuthRest.get(
         {
             url: url,
             req: req,
@@ -208,11 +179,9 @@ exports.getLoginCaptcha = function (req, res, user_name, appToken, type) {
  * 刷新验证码
  *
  */
-exports.refreshLoginCaptcha = function (req, res, user_name, appToken, type) {
+exports.refreshLoginCaptcha = function (req, res, user_name, type) {
     var url = urls.refreshLoginCaptcha;
     var headers = {
-        Authorization: appTokenPrefix + appToken,
-        realm: config.loginParams.realm,
         session_id: req.sessionID
     };
 
@@ -223,7 +192,7 @@ exports.refreshLoginCaptcha = function (req, res, user_name, appToken, type) {
         headers.user_id = ipUtil.getClientIp(req);
     }
 
-    return restUtil.baseRest.get(
+    return restUtil.appAuthRest.get(
         {
             url: url,
             req: req,
@@ -256,19 +225,17 @@ function getLoginFormData(username, password, captchaCode) {
  * 检测联系方式是否存在
  *
  */
-exports.checkContactInfoExists = function (req, res, appToken) {
+exports.checkContactInfoExists = function (req, res) {
     const contactType = req.query.contactType;
     const contactInfo = req.query.contactInfo;
     const url = urls.checkContactInfoExists + contactType + "/" + contactInfo;
 
-    return restUtil.baseRest.get(
+    return restUtil.appAuthRest.get(
         {
             url: url,
             req: req,
             res: res,
             headers: {
-                Authorization: appTokenPrefix + appToken,
-                realm: config.loginParams.realm,
                 session_id: req.sessionID
             }
         }, null);
@@ -278,16 +245,15 @@ exports.checkContactInfoExists = function (req, res, appToken) {
  * 获取操作码
  *
  */
-exports.getOperateCode = function (req, res, appToken, user_name, captcha) {
+exports.getOperateCode = function (req, res, user_name, captcha) {
     const url = urls.getOperateCode;
 
-    return restUtil.baseRest.post(
+    return restUtil.appAuthRest.post(
         {
             url: url,
             req: req,
             res: res,
             headers: {
-                Authorization: appTokenPrefix + appToken,
                 session_id: req.sessionID,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
@@ -303,16 +269,15 @@ exports.getOperateCode = function (req, res, appToken, user_name, captcha) {
  * 发送验证信息
  *
  */
-exports.sendResetPasswordMsg = function (req, res, appToken, user_name, send_type, operate_code) {
+exports.sendResetPasswordMsg = function (req, res, user_name, send_type, operate_code) {
     const url = urls.sendResetPasswordMsg;
 
-    return restUtil.baseRest.post(
+    return restUtil.appAuthRest.post(
         {
             url: url,
             req: req,
             res: res,
             headers: {
-                Authorization: appTokenPrefix + appToken,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
             },
@@ -328,16 +293,15 @@ exports.sendResetPasswordMsg = function (req, res, appToken, user_name, send_typ
  * 获取凭证
  *
  */
-exports.getTicket = function (req, res, appToken, user_id, code) {
+exports.getTicket = function (req, res, user_id, code) {
     const url = urls.getTicket;
 
-    return restUtil.baseRest.post(
+    return restUtil.appAuthRest.post(
         {
             url: url,
             req: req,
             res: res,
             headers: {
-                Authorization: appTokenPrefix + appToken,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
             },
@@ -352,16 +316,15 @@ exports.getTicket = function (req, res, appToken, user_id, code) {
  * 重置密码
  *
  */
-exports.resetPassword = function (req, res, appToken, user_id, ticket, new_password) {
+exports.resetPassword = function (req, res, user_id, ticket, new_password) {
     const url = urls.resetPassword;
 
-    return restUtil.baseRest.post(
+    return restUtil.appAuthRest.post(
         {
             url: url,
             req: req,
             res: res,
             headers: {
-                Authorization: appTokenPrefix + appToken,
                 remote_addr: ipUtil.getServerAddresses(),
                 user_ip: ipUtil.getClientIp(req),
             },
@@ -377,15 +340,12 @@ exports.resetPassword = function (req, res, appToken, user_id, ticket, new_passw
  * 获取扫码登录的二维码
  *
  */
-exports.getLoginQRCode = function (req, res, appToken) {
-    return restUtil.baseRest.post(
+exports.getLoginQRCode = function (req, res) {
+    return restUtil.appAuthRest.post(
         {
             url: urls.getLoginQRCode,
             req: req,
-            res: res,
-            headers: {
-                Authorization: appTokenPrefix + appToken
-            }
+            res: res
         }, null);
 };
 
@@ -393,15 +353,12 @@ exports.getLoginQRCode = function (req, res, appToken) {
  * 扫码登录
  *
  */
-exports.loginByQRCode = function (req, res, qrcode, appToken) {
-    return restUtil.baseRest.post(
+exports.loginByQRCode = function (req, res, qrcode) {
+    return restUtil.appAuthRest.post(
         {
             url: urls.loginByQRCode,
             req: req,
             res: res,
-            headers: {
-                Authorization: appTokenPrefix + appToken,
-            },
             //后端要求用form的post提交
             form: {
                 screen_code: qrcode

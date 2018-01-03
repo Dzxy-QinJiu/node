@@ -8,6 +8,7 @@
 var crypto = require("crypto");
 const classnames = require("classnames");
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
+import {Icon} from "antd";
 //常量定义
 const CAPTCHA = '/captcha';
 //错误信息提示
@@ -28,10 +29,11 @@ var LoginForm = React.createClass({
             captchaCode: this.props.captcha,
             //登录按钮是否可用
             loginButtonDisabled: true,
+            //登录状态
+            logining: false
         };
     },
     beforeSubmit: function (event) {
-        //记住登录名
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
@@ -39,6 +41,7 @@ var LoginForm = React.createClass({
             event.preventDefault();
             return false;
         }
+        //记住登录名
         localStorage.setItem("last_login_name", userName);
         //获取输入的密码
         var value = this.refs.password_input.value;
@@ -48,12 +51,6 @@ var LoginForm = React.createClass({
             event.preventDefault();
             return false;
         }
-        //做md5
-        var md5Hash = crypto.createHash("md5");
-        md5Hash.update(value);
-        var newValue = md5Hash.digest('hex');
-        //添加到网络请求里
-        this.refs.password.value = newValue;
         //需要输入验证码，但未输入验证码时
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
@@ -61,12 +58,23 @@ var LoginForm = React.createClass({
             //阻止缺省行为
             event.preventDefault();
             return false;
-        } else if (window.Oplate && window.Oplate.useSso) {
+        }
+        //做md5
+        var md5Hash = crypto.createHash("md5");
+        md5Hash.update(value);
+        var newValue = md5Hash.digest('hex');
+        //设置登录状态为登录中
+        this.setState({
+            logining: true
+        });
+        if (window.Oplate && window.Oplate.useSso) {
             this.ssologin(userName, newValue);
             //阻止缺省行为
             event.preventDefault();
             return false;
         }
+        //修改要提交的密码
+        this.refs.password.value = newValue;
     },
     //sso登录
     ssologin: function (userName, password) {
@@ -81,6 +89,7 @@ var LoginForm = React.createClass({
             sendMessage && sendMessage(userName + " sso登录失败,error:" + data && data.error);
             this.props.setErrorMsg(data && data.error);
             this.setState({
+                logining: false,
                 captchaCode: data && data.captcha
             });
         });
@@ -244,6 +253,7 @@ var LoginForm = React.createClass({
                         data-tracename="点击登录"
                 >
                     {hasWindow ? Intl.get("login.login", "登录") : null}
+                    {this.state.logining ? <Icon type="loading"/> : null}
                 </button>
             </form>
         );

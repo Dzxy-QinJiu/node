@@ -7,9 +7,10 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return (
-            <Translate Template={<LoginMain/>}></Translate>
+            <Translate Template={<LoginMain {...this.props}/>}></Translate>
         );
     }
 }

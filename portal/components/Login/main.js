@@ -33,7 +33,7 @@ class LoginMain extends React.Component {
             //展示界面
             showUi: false,
             //验证码
-            captcha: "",
+            captcha: this.props.captchaCode || "",
             //二维码
             QRCode: '',
             //扫码和普通登录分别对应的key
@@ -96,7 +96,7 @@ class LoginMain extends React.Component {
     show(captcha) {
         this.setState({
             showUi: true,
-            captcha: captcha ? captcha : ""
+            captcha: captcha ? captcha : this.state.captcha
         });
     }
 
@@ -191,9 +191,12 @@ class LoginMain extends React.Component {
     }
 
     render() {
-        //如果是初次渲染不展示表单，直接sso校验
+        //如果是初次渲染不展示表单;
+        //如果有错误信息，则不显示loading状态
         if (!this.state.showUi) {
-            return (<div className="login-wrap"><Spinner className="isloading"/></div>);
+            return (<div className="login-wrap">
+                {this.state.errorMsg ? null : <Spinner className="isloading"/>}
+            </div>);
         } else {
             const hasWindow = !(typeof window === "undefined");
 
