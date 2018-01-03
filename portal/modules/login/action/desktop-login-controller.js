@@ -54,7 +54,8 @@ exports.showLoginPage = function (req, res) {
     //从session中获取上一次登录用户名
     var last_login_user = req.session.last_login_user || '';
     var obj = {
-        username: last_login_user
+        username: last_login_user,
+        loginErrorMsg: loginErrorMsg
     };
     //优先使用环境变量中设置的语言
     const loginLang = global.config.lang || req.query.lang || "";

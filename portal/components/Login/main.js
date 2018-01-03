@@ -191,9 +191,12 @@ class LoginMain extends React.Component {
     }
 
     render() {
-        //如果是初次渲染不展示表单，直接sso校验
+        //如果是初次渲染不展示表单;
+        //如果有错误信息，则不显示loading状态
         if (!this.state.showUi) {
-            return (<div className="login-wrap"><Spinner className="isloading"/></div>);
+            return (<div className="login-wrap">
+                {this.state.errorMsg ? null : <Spinner className="isloading"/>}
+            </div>);
         } else {
             const hasWindow = !(typeof window === "undefined");
 
