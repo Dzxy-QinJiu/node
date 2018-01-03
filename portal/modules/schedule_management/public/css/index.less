@@ -295,7 +295,7 @@
             float: left;
             width: @Colum-width;
             .even-items-wrapper{
-              padding: 0px 1px;
+              padding: 0px 2px 0 0;
               font-size: 15px;
               .list-item{
                 padding:10px;
@@ -315,6 +315,9 @@
                 p, .iconfont.icon-phone-busy,.iconfont.icon-schedule-visit,.iconfont.icon-schedule-other{
                   color:#C9C9C9;
                 }
+                &:hover{
+                  background: #F6FBFF;
+                }
               }
               //点击查看详情的日程
               .list-item.selected-customer{
@@ -323,9 +326,9 @@
               .no-data-container{
                 margin: 50px auto;
                 text-align: center;
-                .cls-1 {
-                  fill-rule: evenodd;
-                  opacity: 0.08;
+                .icon-no-schedule-list{
+                  font-size: 40px;
+                  color:@Icon-Gray-Color
                 }
               }
             }

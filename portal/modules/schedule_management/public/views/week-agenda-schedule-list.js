@@ -155,12 +155,7 @@ class WeekAgendaScheduleLists extends React.Component {
                                     </div>
                                 )
                             }) : <div className="no-data-container">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="31.91" height="32"
-                                     viewBox="0 0 31.91 32">
-                                    <path id="无数据" className="cls-1"
-                                          d="M1139,378h18a4,4,0,0,1,4,4v24a4,4,0,0,1-4,4h-18a4,4,0,0,1-4-4V382A4,4,0,0,1,1139,378Zm0,2h18a2,2,0,0,1,2,2v24a2,2,0,0,1-2,2h-18a2,2,0,0,1-2-2V382A2,2,0,0,1,1139,380Zm2,5h14a1,1,0,0,1,0,2h-14A1,1,0,0,1,1141,385Zm0,5h14a1,1,0,0,1,0,2h-14A1,1,0,0,1,1141,390Zm0,5h14a1,1,0,0,1,0,2h-14A1,1,0,0,1,1141,395Zm15-5h2a8,8,0,0,1,8,8v2a8,8,0,0,1-8,8h-2a8,8,0,0,1-8-8v-2A8,8,0,0,1,1156,390Zm0.71,8.293,9.9,9.9a1,1,0,1,1-1.42,1.415l-9.9-9.9A1,1,0,0,1,1156.71,398.293ZM1157,392a7,7,0,1,1-7,7A7,7,0,0,1,1157,392Zm0,2a5,5,0,1,1-5,5A5,5,0,0,1,1157,394Z"
-                                          transform="translate(-1135 -378)"/>
-                                </svg>
+                                <i className="iconfont icon-no-schedule-list"></i>
                                 <div>
                                     {Intl.get("schedule.no.item", "无待办")}
                                 </div>
@@ -208,24 +203,24 @@ WeekAgendaScheduleLists.navigate = (date, action) => {
     }
 };
 WeekAgendaScheduleLists.title = (date, {formats, culture}) => {
-    var startTime = moment(date).startOf("week");
-    var endTime = moment(date).endOf("week");
+    var startTime = moment(date).startOf("week").format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+    var endTime = moment(date).endOf("week").format(oplateConsts.DATE_MONTH_DAY_FORMAT);
     startDate = {
-        "Mon": Intl.get("user.time.monday", "周一") + " " + startTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Tus": Intl.get("user.time.tuesday", "周二") + " " + startTime.add(1, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Wed": Intl.get("user.time.wednesday", "周三") + " " + startTime.add(2, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Thur": Intl.get("user.time.thursday", "周四") + " " + startTime.add(3, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Fri": Intl.get("user.time.friday", "周五") + " " + startTime.add(4, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Sat": Intl.get("user.time.saturday", "周六") + " " + startTime.add(5, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
-        "Sun": Intl.get("user.time.sunday", "周日") + " " + endTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Mon": Intl.get("user.time.monday", "周一") + " " + startTime,
+        "Tus": Intl.get("user.time.tuesday", "周二") + " " + moment(date).startOf("week").add(1, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Wed": Intl.get("user.time.wednesday", "周三") + " " + moment(date).startOf("week").add(2, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Thur": Intl.get("user.time.thursday", "周四") + " " + moment(date).startOf("week").add(3, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Fri": Intl.get("user.time.friday", "周五") + " " + moment(date).startOf("week").add(4, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Sat": Intl.get("user.time.saturday", "周六") + " " + moment(date).startOf("week").add(5, "days").format(oplateConsts.DATE_MONTH_DAY_FORMAT),
+        "Sun": Intl.get("user.time.sunday", "周日") + " " + endTime,
     };
     //如果当前时间是在标题展示那一周的范围之内，就是今天所在的周
-    if (moment().valueOf() >= startTime.valueOf() && moment().valueOf() <= endTime.valueOf()) {
+    if (moment().valueOf() >=  moment(date).startOf("week").valueOf() && moment().valueOf() <= moment(date).endOf("week").valueOf()) {
         containToday.flag = true;
     } else {
         containToday.flag = false;
     }
-    return `${startTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT)} ${Intl.get("contract.83", "至")} ${endTime.format(oplateConsts.DATE_MONTH_DAY_FORMAT)}`;
+    return `${startTime} ${Intl.get("contract.83", "至")} ${endTime}`;
 };
 WeekAgendaScheduleLists.defaultProps = {
     showCustomerDetail: function () {
