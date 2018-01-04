@@ -24,6 +24,8 @@ var crmRestApis = {
     mergeRepeatCustomer: "/rest/customer/v2/customer/merge/customer",
     checkCustomerRepeat: "/rest/customer/v2/customer/repeat/search",
     getFilterIndustries: "/rest/customer/v2/customer/industries",
+    //获取阶段标签列表
+    getStageTagList: "/rest/customer/v2/customer/customer_label/:type/50/1",
     //获取竞品列表
     getCompetitorList: "/rest/customer/v2/customer/competing_products/:type/100/1",
     //type:manager(管理员调用)，type:user(非管理员调用)
@@ -88,7 +90,15 @@ exports.getFilterProvinces = function (req, res) {
             res: res
         }, null);
 };
-
+//获取阶段标签列表
+exports.getStageTagList = function (req, res) {
+    return restUtil.authRest.get(
+    {
+        url: crmRestApis.getStageTagList.replace(":type", req.params.type),
+        req: req,
+        res: res
+    }, null);
+};
 //获取竞品列表
 exports.getCompetitorList = function (req, res) {
     return restUtil.authRest.get(

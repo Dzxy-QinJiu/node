@@ -48,6 +48,7 @@ const CrmFilterPanel = React.createClass({
         FilterAction.getTeamList();
         FilterAction.getStageList();
         FilterAction.getTagList();
+        FilterAction.getStageTagList();
         //获取竞品的列表
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
@@ -125,15 +126,18 @@ const CrmFilterPanel = React.createClass({
             //如果之前处于选中状态则取消选择
             if (labels.indexOf(tag) > -1) {
                 selectedTags = _.filter(labels, label => label != tag);
+                if(selectedTags.length===0){//都取消选择后，选中全部
+                    selectedTags = [""];
+                }
             }
             //否则设为选中状态
             else {
-                //未打标签的客户、试用、意向、签约、信息和其他标签不可同时选中
-                if (tag === Intl.get("crm.tag.unknown", "未打标签的客户") || CUSTOMER_LABELS.indexOf(tag) !== -1) {
+                //未打标签的客户和其他标签不可同时选中
+                if (tag === Intl.get("crm.tag.unknown", "未打标签的客户")) {
                     selectedTags = [tag];
                 } else {
                     //过滤掉”未打标签的客户“
-                    labels = _.filter(labels, label => label !== Intl.get("crm.tag.unknown", "未打标签的客户") && CUSTOMER_LABELS.indexOf(label) === -1);
+                    labels = _.filter(labels, label => label !== Intl.get("crm.tag.unknown", "未打标签的客户"));
                     selectedTags = [].concat(labels);
                     selectedTags = _.filter(selectedTags, item => item != "");
                     selectedTags.push(tag);
@@ -146,6 +150,19 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => _this.props.search());
         tag = tag ? tag : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按标签筛选");
+    },
+    //阶段标签的选择
+    stageTagSelected: function (stageTag) {
+        if (this.state.condition.customer_label === stageTag) {
+            if (stageTag) {//不是全部时，则取消当前选项的选择
+                stageTag = "";
+            } else {//全部时，不做处理
+                return;
+            }
+        }
+        FilterAction.setStageTag(stageTag);
+        setTimeout(() => this.props.search());
+        Trace.traceEvent($(this.getDOMNode()).find("li"), "按阶段标签筛选");
     },
     //竞品的选择
     competitorSelected: function (tag) {
@@ -261,6 +278,11 @@ const CrmFilterPanel = React.createClass({
             return <li key={idx} onClick={this.tagSelected.bind(this, tag.name)}
                        className={className}>{tag.show_name}</li>
         });
+        const stageTagListJsx = this.state.stageTagList.map((tag, idx) => {
+            let className = this.state.condition.customer_label === tag.name ? "selected" : "";
+            return <li key={idx} onClick={this.stageTagSelected.bind(this, tag.name)}
+                       className={className}>{tag.show_name}</li>
+        });
         const competitorListJsx = this.state.competitorList.map((tag, idx) => {
             let className = this.state.condition.competing_products.indexOf(tag.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.competitorSelected.bind(this, tag.name)}
@@ -306,6 +328,12 @@ const CrmFilterPanel = React.createClass({
                         <dt><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段"/> :</dt>
                         <dd>
                             <ul>{stageListJsx}</ul>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{Intl.get("crm.stage.tag", "阶段标签")} :</dt>
+                        <dd>
+                            <ul>{stageTagListJsx}</ul>
                         </dd>
                     </dl>
                     <dl>

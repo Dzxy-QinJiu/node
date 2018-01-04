@@ -1176,6 +1176,7 @@ var en_US = {
     "crm.administrative.level.change": "Change administrative level",//变更行政级别
     "crm.select.level": "Please select administrative level",//请选择行政级别
     "crm.no.level": "No match administrative level",//无相关行政级别
+    "crm.stage.tag": "Phase label",//阶段标签
 
     // 客户管理end
 

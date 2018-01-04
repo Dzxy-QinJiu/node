@@ -6,6 +6,7 @@ function FilterAction() {
         'setTeam',
         'setStage',
         'setTag',
+        'setStageTag',
         'setCompetitor',
         'setIndustry',
         'setProvince',
@@ -67,7 +68,20 @@ function FilterAction() {
             list.unshift({name: "", show_name: Intl.get("common.all", "全部")});
             _this.dispatch(list);
         }, function (errorMsg) {
-            console.log(errorMsg);
+            this.dispatch([{name: "", show_name: Intl.get("common.all", "全部")}]);
+        });
+    };
+    //获取阶段标签列表
+    this.getStageTagList = function () {
+        FilterAjax.getStageTagList().then((list) => {
+            let stageTagList = _.isArray(list) ? list : [];
+            stageTagList = competitorList.map(tag => {
+                return {name: tag, show_name: tag}
+            });
+            stageTagList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
+            this.dispatch(stageTagList);
+        },  (errorMsg) => {
+            this.dispatch([{name: "", show_name: Intl.get("common.all", "全部")}]);
         });
     };
     //获取竞品列表
@@ -80,7 +94,7 @@ function FilterAction() {
             competitorList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
             this.dispatch(competitorList);
         },  (errorMsg) => {
-            console.log(errorMsg);
+            this.dispatch([{name: "", show_name: Intl.get("common.all", "全部")}]);
         });
     };
     //获取行业列表

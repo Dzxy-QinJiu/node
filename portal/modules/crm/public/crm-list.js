@@ -505,18 +505,6 @@ var Crm = React.createClass({
             if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
                 unexist.push("labels");
                 delete condition.labels;
-            } else {//试用、意向、信息标签和其他标签的筛选处理
-                _.some(condition.labels, (label) => {
-                    //试用、意向、信息、签约标签(单选)
-                    if (CUSTOMER_LABELS.indexOf(label) !== -1) {
-                        condition.customer_label = label;
-                        return true;
-                    }
-                });
-                //其他标签和 试用、意向、信息、签约标签不可同时选中
-                if (condition.customer_label) {
-                    delete condition.labels;
-                }
             }
         }
         var queryObj = {
