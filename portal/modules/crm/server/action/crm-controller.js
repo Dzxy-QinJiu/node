@@ -106,6 +106,15 @@ exports.getFilterProvinces = function (req, res) {
         res.status(500).json(err.message);
     });
 };
+//获取阶段标签列表
+exports.getStageTagList = function (req, res) {
+    crmService.getStageTagList(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err && err.message);
+    });
+};
 //获取竞品列表
 exports.getCompetitorList = function (req, res) {
     crmService.getCompetitorList(req, res)

@@ -1195,6 +1195,7 @@ var zh_CN = {
     "crm.administrative.level.change": "变更行政级别",
     "crm.select.level": "请选择行政级别",
     "crm.no.level": "无相关行政级别",
+    "crm.stage.tag": "阶段标签",
     // 客户管理end
 
     // 客户分析start
