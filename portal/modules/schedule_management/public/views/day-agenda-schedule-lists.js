@@ -16,12 +16,13 @@ var scheduleManagementStore = require("../store/schedule-management-store");
 const LAY_OUT = {
     SCHEDULE_CONTENT_HEIGHT: 600
 };
-var curWeek = "";
+var curWeek = "";//今天所在的周
 var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            curCustomerId:this.props.curCustomerId,
             scheduleList: this.props.scheduleList,
             updateScrollBar: false,
         };
@@ -37,6 +38,11 @@ class DayAgendaScheduleLists extends React.Component {
             this.setState({
                 scheduleList: nextProps.scheduleList
             });
+        }
+        if (nextProps.curCustomerId !== this.state.curCustomerId){
+            this.setState({
+                curCustomerId:nextProps.curCustomerId
+            })
         }
     };
     setUpdateScrollBarTrue = () => {
@@ -181,13 +187,10 @@ DayAgendaScheduleLists.title = (date, { formats, culture }) => {
     return `${moment(date).format(oplateConsts.DATE_FORMAT)}`;
 };
 DayAgendaScheduleLists.defaultProps = {
+    curCustomerId:"",
     updateScrollBar: false,
-    handleScheduleItemStatus: function () {
-
-    },
-    showCustomerDetail: function () {
-        
-    }
+    handleScheduleItemStatus: function () {},
+    showCustomerDetail: function () {}
 
 };
 export default DayAgendaScheduleLists;

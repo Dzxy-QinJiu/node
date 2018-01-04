@@ -6,6 +6,7 @@
 @right-panel-expand:99%;
 @right-panle-initial:75%;
 @Colum-width:1/7*100%;
+@Background-color:#F6FBFF;
 @keyframes expired-show {
   0% { width: @panel-width-zero; }
   100% { width: @left-panel-show-width; }
@@ -150,7 +151,7 @@
       padding-right: 10px;
       position: relative;
       top: 4px;
-      font-size: 20px;
+      font-size: 19px;
     }
     //左侧页面滑动提示的样式
     .scroll-tip{
@@ -306,7 +307,7 @@
                   align-items: center;
                 }
                 &:hover{
-                  background: #F6FBFF;
+                  background: @Background-color;
                 }
               }
               //已完成的日程样式
@@ -316,12 +317,12 @@
                   color:#C9C9C9;
                 }
                 &:hover{
-                  background: #F6FBFF;
+                  background: @Background-color;
                 }
               }
               //点击查看详情的日程
               .list-item.selected-customer{
-                background: #F6FBFF;
+                background: @Background-color;
               }
               .no-data-container{
                 margin: 50px auto;
@@ -329,6 +330,69 @@
                 .icon-no-schedule-list{
                   font-size: 40px;
                   color:@Icon-Gray-Color
+                }
+              }
+            }
+          }
+        }
+      }
+      //月视图样式
+      .rbc-month-view{
+        .rbc-month-row{
+          .rbc-row-content{
+            //日期数字的样式
+            .rbc-row:first-child{
+              margin-top:35px;
+                .rbc-date-cell{
+                  text-align: center;
+                  a{
+                    font-size: 30px;
+                    font-weight: normal;
+                    padding: 10px;
+                    //border: 1px solid #ddd;
+                    //border-radius: 50%;
+                  }
+                }
+            }
+            //事件的样式
+            .rbc-row:nth-child(2){
+              margin-top:-50px;
+              .rbc-row-segment{
+               position: relative;
+                text-align: right;
+                .rbc-event{
+                  background: transparent;
+                  width: 100%;
+                  padding: 0;
+                  .rbc-event-content{
+                    .customer-event-wrap{
+                      .circle-wrap-container{
+                        width: 50px;
+                        height: 50px;
+                        margin: 0px auto;
+                        .circle-wrap{
+                          width: 50px;
+                          height: 50px;
+                          border-radius: 50%;
+                          border: 1px solid #2097F3;
+                          position: absolute;
+                          top: 5%;
+                          z-index: -20;
+                          .schedule-count{
+                            width: 20px;
+                            height: 20px;
+                            line-height: 20px;
+                            background: #2097F3;
+                            border-radius: 50%;
+                            text-align: center;
+                            position: absolute;
+                            right: -15%;
+                            top: 0;
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -347,6 +411,21 @@
   #calendar-wrap.expand-calendar-panel{
     animation: data-zone-expand 1s 1;
     width: @right-panel-expand;
+    //圈日期的圆圈的样式
+    .rbc-month-view {
+      .rbc-month-row {
+        .rbc-row-content {
+          //事件的样式
+          .rbc-row:nth-child(2) {
+            .rbc-row-segment {
+              .rbc-event {
+                right: 35%!important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
   //左侧超时日程列表不展示
   #calendar-wrap.nodata-left-expired-panel{
@@ -412,7 +491,7 @@
         }
         //鼠标悬浮的时候，加一个背景颜色
         &:hover{
-          background: #F6FBFF;
+          background: @Background-color;
           .schedule-content-wrap{
             button{
               display: block;
@@ -434,7 +513,7 @@
       }
       //点击查看详情的日程
       .list-item.selected-customer{
-        background: #F6FBFF;
+        background: @Background-color;
       }
 
     }
@@ -463,4 +542,31 @@
   .iconfont.icon-schedule-other{
     color:@Icon-Gray-Color
   }
+}
+//展示客户名称样式
+.customer-names-wrap{
+  .list-item{
+    font-size: 13px;
+    padding: 3px 0;
+    cursor: pointer;
+    &:hover{
+      background: @Background-color;
+    }
+  }
+  .list-item.has-handled{
+    color: #c9c9c9;
+    background:#FBFBFB;
+    &:hover{
+      background: @Background-color;
+    }
+  }
+  .list-item.selected-customer{
+    background: @Background-color;
+  }
+}
+.ant-popover{
+  z-index: 30;
+}
+.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow{
+  display: none;
 }

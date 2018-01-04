@@ -24,6 +24,8 @@ BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
   TOPANDBOTTOM:50
 };
+//自定义的点击日程数字后，日程列表的样式
+import CustomEvent from "./views/customer-event";
 const LESSONESECOND = 24 * 60 * 60 * 1000 - 1000;//之前添加日程时，一天的开始时间是00:00:00 到24:59:59秒，但是这个组件中认为的一天是从第一天的00;00：00 到第二天的00:00：00 。所以存储的全天的日程就被认为少了1000毫秒 但是可以通过加allday这个属性，被分到全天的日程中
 const ScheduleManagement = React.createClass({
     getInitialState: function () {
@@ -36,6 +38,7 @@ const ScheduleManagement = React.createClass({
             weekLists: [],//周视图所用的日程数据
             calendarLists: [],//右侧日程列表中的日程数据
             curViewName:"day",//当前被按下的视图的名称
+            curCustomerId:"",//查看详情的客户的id
             ...scheduleManagementStore.getState()
         };
     },
@@ -100,11 +103,26 @@ const ScheduleManagement = React.createClass({
                         }
                     });
                     _this.setState({
-                        weekLists: weekScheduleLists//日视图的数据
+                        weekLists: weekScheduleLists//周视图的数据
                     })
                 }else{
+                    var monthEvent = [];
+                    //以日程所在天的零点为key，对数据按天进行分组
+                    var lists = _.groupBy(events, 'DayStart');
+                    for (var key in lists) {
+                        var item = lists[key];
+                        monthEvent.push(
+                            {
+                                "start": item[0].start,//某个日程的开始时间
+                                "end": item[0].end,//某个日程的结束时间
+                                "count": item.length >= 100 ? "+99" :item.length ,
+                                "totalCustomerObj": item,
+                                "showCustomerDetail":_this.showCustomerDetail,
+                            }
+                        )
+                    }
                     _this.setState({
-                        calendarLists: events//周和月视图的数据
+                        calendarLists: monthEvent//月视图的数据
                     })
 
                 }
@@ -130,6 +148,9 @@ const ScheduleManagement = React.createClass({
             //The start date/time of the event. Must resolve to a JavaScript Date object.
             curSchedule.start = new Date(curSchedule.start_time);
             curSchedule.end = new Date(curSchedule.end_time);
+            //给每条日程加一个DayStart字段，标识日程所在天的零点
+            // 后期要以日程所在天的零点为key，以天为单位进行分组
+            curSchedule.DayStart = moment(curSchedule.start_time).startOf("day").valueOf();
             curSchedule.description = curSchedule.content;
         }
         //状态是已完成的日程
@@ -172,10 +193,8 @@ const ScheduleManagement = React.createClass({
     },
     //查看客户的详情
     showCustomerDetail: function (customer_id, event) {
-        //加上背景颜色
-        $(event.target).closest(".list-item").addClass("selected-customer");
         //如果点击到更改状态的按钮上，就不用展示客户详情了
-        if (event.target.className == "ant-btn ant-btn-primary") {
+        if (event && event.target.className == "ant-btn ant-btn-primary") {
             return;
         }
         this.setState({
@@ -219,7 +238,10 @@ const ScheduleManagement = React.createClass({
     },
     //切换不同的视图
     changeView: function (viewName) {
-        //获取当前视图的开始和结束时间
+        this.state.curViewName = viewName;
+        this.setState({
+            curViewName:this.state.curViewName
+        });
         var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
         //获取日程数据
         this.getAgendaData(dateObj, viewName);
@@ -247,7 +269,8 @@ const ScheduleManagement = React.createClass({
         return dateObj;
     },
     //点击 前，后翻页，或者返回今天的按钮
-    handleNavigateChange: function (date, view) {
+    handleNavigateChange: function (date) {
+        var view = this.state.curViewName;
         //把当前展示视图的时间记录一下
         scheduleManagementStore.setViewDate(moment(date).valueOf());
         var dateObj = this.getDifTypeStartAndEnd(date, view);
@@ -261,6 +284,12 @@ const ScheduleManagement = React.createClass({
             "nodata-left-expired-panel": !this.state.isShowExpiredPanel && this.state.isFirstLogin
         });
         var height = $(window).height() - CALENDAR_LAYOUT.TOPANDBOTTOM;
+        //月视图顶部标题的日期样式
+        var formats = {
+            "monthHeaderFormat": (date, culture, localizer) => {
+                return localizer.format(date, "YYYY" + Intl.get("common.time.unit.year", "年")+ "MM" + Intl.get("common.time.unit.month", "月"), culture)
+            }
+        };
         return (
             <div data-tracename="日程管理界面" className="schedule-list-content">
                 <ExpireScheduleLists
@@ -280,6 +309,7 @@ const ScheduleManagement = React.createClass({
                                 week: WeekAgendaScheduleLists,
                                 day: DayAgendaScheduleLists,
                             }}
+                            components={{event:CustomEvent}}
                             messages = {{
                                 month:Intl.get("common.time.unit.month", "月"),
                                 week:Intl.get("common.time.unit.week", "周"),
@@ -288,22 +318,14 @@ const ScheduleManagement = React.createClass({
                                 next:">",
                                 allDay:Intl.get("crm.alert.full.day", "全天"),
                                 day: Intl.get("common.time.unit.day", "天"),
-                                showMore: (data)=>{
-                                    return (<div className="show-more-data">+{data}</div>);
-                                }
                             }}
                             scheduleList={this.state.dayLists}//日视图数据
                             weekLists = {this.state.weekLists}
                             handleScheduleItemStatus={this.handleScheduleItemStatus}
                             showCustomerDetail={this.showCustomerDetail}
                             onNavigate = {this.handleNavigateChange}
-                            onSelectEvent={(data)=>{
-                                this.setState({
-                                    curCustomerId: data.customer_id,
-                                    rightPanelIsShow: true
-                                });
-                            }}
-                            popup={true}//月视图有多个的时候，可以点击后出弹框
+                            curCustomerId = {this.state.curCustomerId}
+                            formats={formats}
                         />
                     </div>
                 </div>
