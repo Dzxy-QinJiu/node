@@ -75,7 +75,7 @@ function FilterAction() {
     this.getStageTagList = function () {
         FilterAjax.getStageTagList().then((list) => {
             let stageTagList = _.isArray(list) ? list : [];
-            stageTagList = competitorList.map(tag => {
+            stageTagList = stageTagList.map(tag => {
                 return {name: tag, show_name: tag}
             });
             stageTagList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
