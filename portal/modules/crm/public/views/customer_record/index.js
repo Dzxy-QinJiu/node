@@ -158,6 +158,10 @@ const CustomerRecord = React.createClass({
                 type: item.type,
                 remark: detail
             };
+            //把跟进记录中的最后一条电话数据进行标识
+            if (item.id === this.state.lastPhoneTraceItemId){
+                queryObj.last_callrecord = "true";
+            }
             CustomerRecordActions.setUpdateId(item.id);
             CustomerRecordActions.updateCustomerTrace(queryObj, () => {
                 this.props.refreshCustomerList(customerId);

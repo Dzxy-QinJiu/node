@@ -38,6 +38,7 @@ CustomerRecordStore.prototype.resetState = function () {
     this.modalDialogFlag = false;//是否显示模态框
     this.saveButtonType = "";//点击增加跟进记录的保存还是补充跟进记录的保存
     this.edittingItem = [];//当前正在编辑添加详情的那条跟进记录
+    this.lastPhoneTraceItemId = "";//最后一条电话类型的跟进记录
 };
 //恢复默认状态
 CustomerRecordStore.prototype.dismiss = function() {
@@ -54,11 +55,19 @@ CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
         } else {
             this.customerRecordErrMsg = "";
             this.curPage++;
-            var customerRecord = _.isArray(result.data.result)?result.data.result:[];
+            var customerRecord = _.isArray(result.data.result)? result.data.result:[];
             customerRecord.forEach(function(item){
                 item.showAdd = false;
             });
             this.customerRecord = this.customerRecord.concat(customerRecord);
+            //过滤出所有电话类型的通话记录
+            var phoneTypeRecords = _.filter(this.customerRecord,(item)=>{
+                return item.type = "phone";
+            });
+            //找出最后一条电话跟进记录的id
+            if (phoneTypeRecords.length){
+                this.lastPhoneTraceItemId = _.first(phoneTypeRecords).id;
+            }
             this.total = result.data.total;
         }
     }
