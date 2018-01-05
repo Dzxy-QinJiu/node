@@ -28,6 +28,9 @@ const otherFilterArray = [{
 }, {
     name: Intl.get("crm.concerned.customer", "关注的客户"),
     value: "interest"
+}, {
+    name: Intl.get("crm.multi.order.customer", "多个订单的客户"),
+    value: "multi_order"
 }];
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
@@ -243,8 +246,11 @@ const CrmFilterPanel = React.createClass({
             case otherFilterArray[5].value:
                 Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
                 break;
+            case otherFilterArray[6].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "多个订单客户的筛选");
+                break;
         }
-        if (otherFilterArray[6] && item === otherFilterArray[6].value) {
+        if (otherFilterArray[6] && item === otherFilterArray[7].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
         }
     },

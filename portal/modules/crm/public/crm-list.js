@@ -54,7 +54,8 @@ const OTHER_FILTER_ITEMS = {
     SEVEN_UNCONTACT: "seven_uncontact",
     UNDISTRIBUTED: "undistributed",//未分配的客户
     NO_CONTACT_WAY: "no_contact_way",//无联系方式的客户
-    INTEREST: "interest"//关注的客户
+    INTEREST: "interest",//关注的客户
+    MULTI_ORDER: "multi_order"//多个订单的客户
 };
 
 const day = 24 * 60 * 60 * 1000;
@@ -62,6 +63,13 @@ const DAY_TIME = {
     THIRTY_DAY: 30 * day,//30天
     FIFTEEN_DAY: 15 * day,//15天
     SEVEN_DAY: 7 * day//7天
+};
+//默认范围参数
+const DEFAULT_RANGE_PARAM = {
+    from: "",
+    to: "",
+    type: "time",
+    name: "start_time"
 };
 var Crm = React.createClass({
     getInitialState: function () {
@@ -120,12 +128,7 @@ var Crm = React.createClass({
             mergePanelIsShow: false,//是否展示合并面板
             mergedCustomer: {}, //合并时要保存的客户
             deleteCusName: '', // 要删除客户的用户名
-            rangParams: [{//时间范围参数
-                from: "",
-                to: "",
-                type: "time",
-                name: "start_time"
-            }],
+            rangParams: [DEFAULT_RANGE_PARAM],//时间范围参数
             crmFilterValue: "",
             cursor: true,//向前还是向后翻页
             pageValue: 0,//两次点击时的页数差
@@ -534,13 +537,22 @@ var Crm = React.createClass({
             case OTHER_FILTER_ITEMS.INTEREST://关注的客户
                 condition.interest = "true";
                 break;
+            case OTHER_FILTER_ITEMS.MULTI_ORDER://多个订单的客户
+                this.state.rangParams[0] = {
+                    from: 2,
+                    name: "sales_opportunity_count",
+                    type: "long",
+                };
+                break;
         }
         if (dayTime) {
-            this.state.rangParams[0].to = moment().valueOf() - dayTime;
-            this.state.rangParams[0].name = "last_contact_time";
-        } else {
-            this.state.rangParams[0].to = "";
-            this.state.rangParams[0].name = "start_time";
+            this.state.rangParams[0] = {
+                to: moment().valueOf() - dayTime,
+                name: "last_contact_time",
+                type: "time"
+            };
+        } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
+            this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;

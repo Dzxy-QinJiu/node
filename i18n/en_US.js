@@ -1177,6 +1177,7 @@ var en_US = {
     "crm.select.level": "Please select administrative level",//请选择行政级别
     "crm.no.level": "No match administrative level",//无相关行政级别
     "crm.stage.tag": "Phase label",//阶段标签
+    "crm.order.more.customer": "Multi-order customers",//多个订单的客户
 
     // 客户管理end
 

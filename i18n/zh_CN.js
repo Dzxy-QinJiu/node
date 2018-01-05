@@ -1196,6 +1196,7 @@ var zh_CN = {
     "crm.select.level": "请选择行政级别",
     "crm.no.level": "无相关行政级别",
     "crm.stage.tag": "阶段标签",
+    "crm.order.more.customer": "多个订单的客户",
     // 客户管理end
 
     // 客户分析start
