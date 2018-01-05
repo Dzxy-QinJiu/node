@@ -101,7 +101,7 @@ const ScheduleManagement = React.createClass({
                     {
                         "start": item[0].start,//某个日程的开始时间
                         "end": item[0].end,//某个日程的结束时间
-                        "count": item.length >= 100 ? "+99" :item.length ,
+                        "count": item.length >99 ? "99+" :item.length ,
                         "totalCustomerObj": item,
                         "showCustomerDetail":_this.showCustomerDetail,
                     }
@@ -110,7 +110,6 @@ const ScheduleManagement = React.createClass({
             this.setState({
                 calendarLists: monthEvent//月视图的数据
             })
-
         }
     },
 

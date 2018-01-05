@@ -357,9 +357,7 @@
         }
       }
       //月视图样式
-      .rbc-month-view{
-        .rbc-month-row{
-          .rbc-row-content{
+      .rbc-month-view .rbc-month-row .rbc-row-content{
             //日期数字的样式
             .rbc-row:first-child{
               margin-top:35px;
@@ -380,9 +378,7 @@
                   background: transparent;
                   width: 100%;
                   padding: 0;
-                  .rbc-event-content{
-                    .customer-event-wrap{
-                      .circle-wrap-container{
+                  .rbc-event-content .customer-event-wrap .circle-wrap-container{
                         width: 50px;
                         height: 50px;
                         margin: 0px auto;
@@ -402,14 +398,10 @@
                           float: right;
                         }
                       }
-                    }
-                  }
                 }
               }
             }
           }
-        }
-      }
     };
 
   }
@@ -422,21 +414,6 @@
   #calendar-wrap.expand-calendar-panel{
     animation: data-zone-expand 1s 1;
     width: @right-panel-expand;
-    //圈日期的圆圈的样式
-    .rbc-month-view {
-      .rbc-month-row {
-        .rbc-row-content {
-          //事件的样式
-          .rbc-row:nth-child(2) {
-            .rbc-row-segment {
-              .rbc-event {
-                right: 35%!important;
-              }
-            }
-          }
-        }
-      }
-    }
   }
   //左侧超时日程列表不展示
   #calendar-wrap.nodata-left-expired-panel{
