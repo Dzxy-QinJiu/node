@@ -545,6 +545,7 @@ var Crm = React.createClass({
                 };
                 break;
         }
+        //超xx天未联系的客户过滤需传的参数
         if (dayTime) {
             this.state.rangParams[0] = {
                 to: moment().valueOf() - dayTime,
@@ -552,6 +553,7 @@ var Crm = React.createClass({
                 type: "time"
             };
         } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER) {
+            //不是超xx天未联系的客户、也不是多个订单客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (unexist.length > 0) {
