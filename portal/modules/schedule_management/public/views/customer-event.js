@@ -46,19 +46,19 @@ class CustomEvent extends React.Component {
         return (
             <div className="customer-event-wrap">
                 <div className="circle-wrap-container">
+                    {/*点击日程数字后展示的客户的名称*/}
+                    <Popover
+                        content={<div>{this.renderCustomerName()}</div>}
+                        trigger="click"
+                        visible={this.state.visible}
+                        onVisibleChange={this.handleVisibleChange}
+                        placement="right"
+                    >
+                        {/*日程的数字*/}
+                        <div className="schedule-count">{this.props.event.count}</div>
+                    </Popover>
                     {/*日期外面的圈*/}
                     <div className="circle-wrap">
-                        {/*点击日程数字后展示的客户的名称*/}
-                        <Popover
-                            content={<div>{this.renderCustomerName()}</div>}
-                            trigger="click"
-                            visible={this.state.visible}
-                            onVisibleChange={this.handleVisibleChange}
-                            placement="right"
-                        >
-                            {/*日程的数字*/}
-                            <div className="schedule-count">{this.props.event.count}</div>
-                        </Popover>
                     </div>
                 </div>
             </div>
