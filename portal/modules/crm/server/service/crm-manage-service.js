@@ -9,7 +9,7 @@ var uploadTimeOut = 5 * 60 * 1000;
 var crmRestApis = {
     customer: "/rest/customer/v2/customer",
     //获取客户开通的用户列表
-    getCrmUserList: "/rest/base/v1/user/customer_users/:customer_id",
+    getCrmUserList: "/rest/base/v1/user/customer/users",
     list: "/rest/customer/v2/customer/all",
     //我可以查看的客户列表（已分配销售的客户）
     query: "/rest/customer/v2/customer/range",
@@ -62,11 +62,9 @@ var crmRestApis = {
 exports.urls = crmRestApis;
 
 exports.getCrmUserList = function (req, res, queryObj) {
-    let url = crmRestApis.getCrmUserList.replace(":customer_id", queryObj.customer_id);
-    delete queryObj.customer_id;
     return restUtil.authRest.get(
         {
-            url: url,
+            url: crmRestApis.getCrmUserList,
             req: req,
             res: res
         }, queryObj);

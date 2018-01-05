@@ -445,7 +445,7 @@ var AppUserManage = React.createClass({
         var showView = null;
         switch (currentView) {
             case 'user':
-                showView = (<UserView />);
+                showView = (<UserView customer_id={this.state.customer_id} />);
                 break;
             case 'log':
                 showView = (<UserAuditLog />);
@@ -475,23 +475,18 @@ var AppUserManage = React.createClass({
                                     className="inline-block app_user_filter_btn"
                                 /> : null
                             }
-                            {/*如果是从客户页面查看用户过来的，则不让切换应用*/}
-                            {
-                                !this.state.customer_id ? (
-                                    <div className="inline-block user_manage_droplist">
-                                        <SelectFullWidth
-                                            optionFilterProp="children"
-                                            showSearch
-                                            minWidth={120}
-                                            value={this.state.selectedAppId}
-                                            onChange={this.onSelectedAppChange}
-                                            notFoundContent={!appOptions.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
-                                        >
-                                            {appOptions}
-                                        </SelectFullWidth>
-                                    </div>
-                                ) : null
-                            }
+                            <div className="inline-block user_manage_droplist">
+                                <SelectFullWidth
+                                    optionFilterProp="children"
+                                    showSearch
+                                    minWidth={120}
+                                    value={this.state.selectedAppId}
+                                    onChange={this.onSelectedAppChange}
+                                    notFoundContent={!appOptions.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
+                                >
+                                    {appOptions}
+                                </SelectFullWidth>
+                            </div>
                             {/*如果是从客户界面点击过来的，不要显示搜索框*/}
                             {/*如果是按照角色筛选，则不能再按照关键字搜索了*/}
                             {

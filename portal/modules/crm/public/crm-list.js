@@ -1173,6 +1173,7 @@ var Crm = React.createClass({
                 ) : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
+                    id="customer-user-list-wrap"
                     className="customer-user-list-panel"
                     showFlag={this.state.isShowCustomerUserListPanel}
 

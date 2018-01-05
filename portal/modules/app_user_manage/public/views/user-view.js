@@ -505,7 +505,7 @@ var UserTabContent = React.createClass({
         return (
             <div className="global_filter_adv" ref="filter_adv" style={{ display: this.state.filterAreaExpanded ? 'block' : 'none' }}>
                 {this.renderFilterFields()}
-                {language.lan() == "zh" || language.lan() == "en" ? this.renderFilterRoles() : null}
+                {!this.props.customer_id && (language.lan() == "zh" || language.lan() == "en") ? this.renderFilterRoles() : null}
             </div>
         );
     },
@@ -554,55 +554,59 @@ var UserTabContent = React.createClass({
                     </ul>
                 </dd>
             </dl>
-            {Oplate.hideSomeItem ? null : (
-                <dl>
-                    <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" />：</dt>
-                    <dd>
-                        <ul>
-                            <li
-                                onClick={this.toggleSearchField.bind(this, "customer_unknown", "")}
-                                className={this.getFilterFieldClass("customer_unknown", "")}
-                            >
-                                <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" />
-                            </li>
-                            <li
-                                onClick={this.toggleSearchField.bind(this, "customer_unknown", "true")}
-                                className={this.getFilterFieldClass("customer_unknown", "true")}
-                            >
-                                <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知" />
-                            </li>
-                        </ul>
+            {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
+            {this.props.customer_id ? null : (
+                <div>
+                    {Oplate.hideSomeItem ? null : (
+                        <dl>
+                            <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" />：</dt>
+                            <dd>
+                                <ul>
+                                    <li
+                                        onClick={this.toggleSearchField.bind(this, "customer_unknown", "")}
+                                        className={this.getFilterFieldClass("customer_unknown", "")}
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" />
+                                    </li>
+                                    <li
+                                        onClick={this.toggleSearchField.bind(this, "customer_unknown", "true")}
+                                        className={this.getFilterFieldClass("customer_unknown", "true")}
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知" />
+                                    </li>
+                                </ul>
 
-                    </dd>
-                </dl>
-            )}
-            <dl >
-                <dt><ReactIntl.FormattedMessage id="user.expire.stop" defaultMessage="到期停用" />：</dt>
-                <dd>
-                    <ul>
-                        <li onClick={this.toggleSearchField.bind(this, "over_draft", "")} className={this.getFilterFieldClass("over_draft", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "over_draft", "true")} className={this.getFilterFieldClass("over_draft", "true")}><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "over_draft", "false")} className={this.getFilterFieldClass("over_draft", "false")}><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></li>
-                    </ul>
-                </dd>
-            </dl>
-            {Oplate.hideSomeItem ? null : this.renderFilterTeamName()}
-            {((language.lan() == "zh" || language.lan() == "en") && hasPrivilege("GET_LOGIN_EXCEPTION_USERS")) ?
-                (<dl>
-                    <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录" />：</dt>
-                    <dd>
-                        <ul>
-                            {EXCEPTION_TYPES.map(exceptionObj => {
-                                return (
-                                    <li onClick={this.toggleSearchField.bind(this, "exception_type", exceptionObj.value)}
-                                        className={this.getFilterFieldClass("exception_type", exceptionObj.value)}>
-                                        {exceptionObj.name}
-                                    </li>)
-                            })}
-                        </ul>
-                    </dd>
-                </dl>)
-                : null}
+                            </dd>
+                        </dl>
+                    )}
+                    <dl >
+                        <dt><ReactIntl.FormattedMessage id="user.expire.stop" defaultMessage="到期停用" />：</dt>
+                        <dd>
+                            <ul>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "")} className={this.getFilterFieldClass("over_draft", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "true")} className={this.getFilterFieldClass("over_draft", "true")}><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></li>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "false")} className={this.getFilterFieldClass("over_draft", "false")}><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></li>
+                            </ul>
+                        </dd>
+                    </dl>
+                    {Oplate.hideSomeItem ? null : this.renderFilterTeamName()}
+                    {((language.lan() == "zh" || language.lan() == "en") && hasPrivilege("GET_LOGIN_EXCEPTION_USERS")) ?
+                        (<dl>
+                            <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录" />：</dt>
+                            <dd>
+                                <ul>
+                                    {EXCEPTION_TYPES.map(exceptionObj => {
+                                        return (
+                                            <li onClick={this.toggleSearchField.bind(this, "exception_type", exceptionObj.value)}
+                                                className={this.getFilterFieldClass("exception_type", exceptionObj.value)}>
+                                                {exceptionObj.name}
+                                            </li>)
+                                    })}
+                                </ul>
+                            </dd>
+                        </dl>)
+                        : null}
+            </div>)}
         </div>
     },
     //针对一个角色id进行过滤
