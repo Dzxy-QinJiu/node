@@ -9,7 +9,6 @@ import AppPropertySetting from '../../../../../components/user_manage_components
 import {Tabs,Icon,Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import {RightPanelClose,RightPanelReturn} from "../../../../../components/rightPanel";
-import GeminiScrollBar from '../../../../../components/react-gemini-scrollbar';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 
@@ -106,13 +105,8 @@ const UserDetailEditApp = React.createClass({
         submitData.mutilogin = savedAppSetting.multilogin.value;
         //修改用户
         UserDetailEditAppActions.editUserApps(submitData,(apps)=>{
-            //发出更新用户列表事件
-            if(_.isArray(apps) && _.isObject(apps[0])) {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
-                    user_id : submitData.user_id,
-                    app_info  : apps[0]
-                });
-            }
+            //更新修改的用户列表
+            $.extend(this.props.appInfo, submitData);
             //面板向右滑
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //等待3秒界面切换回去
