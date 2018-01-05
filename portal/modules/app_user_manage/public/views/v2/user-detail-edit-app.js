@@ -119,9 +119,9 @@ const UserDetailEditApp = React.createClass({
         delete changeAppInfo.status;
         delete changeAppInfo.mutilogin;
         //修改用户
-        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (boolean)=>{
+        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag)=>{
             //发出更新用户列表事件
-            if (boolean) {
+            if (flag) {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
                     user_id : submitData.user_id,
                     app_info  : changeAppInfo
