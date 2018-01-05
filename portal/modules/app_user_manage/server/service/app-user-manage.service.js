@@ -68,7 +68,7 @@ var AppUserRestApis = {
     // 申请用户
     applyUser: "/rest/base/v1/user/apply_grants",
     //获取客户对应的用户列表
-    getCustomerUsers: "/rest/base/v1/user/customer_users",
+    getCustomerUsers: "/rest/base/v1/user/customer/users",
     //用户申请延期
     applyDelayUser: "/rest/base/v1/user/grant/delay",
     //批量用户延期
@@ -206,7 +206,7 @@ exports.getUsers = function (req, res, obj) {
     obj = obj || {};
     var requestUrl = '';
     if (obj.customer_id) {
-        requestUrl = AppUserRestApis.getCustomerUsers + '/' + obj.customer_id;
+        requestUrl = AppUserRestApis.getCustomerUsers;
     } else if (obj.role_id) {
         requestUrl = AppUserRestApis.getUsersByRoleId;
     } else {

@@ -1175,7 +1175,6 @@ var Crm = React.createClass({
                 <RightPanel
                     className="customer-user-list-panel"
                     showFlag={this.state.isShowCustomerUserListPanel}
-
                 >
                     {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
