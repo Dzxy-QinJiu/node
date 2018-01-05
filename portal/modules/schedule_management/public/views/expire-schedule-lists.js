@@ -147,7 +147,7 @@ class ExpireScheduleLists extends React.Component {
                                 <i className={cls}></i>
                                 <span onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
                                       data-tracename="点击查看客户详情">
-                                        {item.customer_name}
+                                        {item.customer_name || item.topic}
                                         </span>
                             </p>
                             <p className="item-schedule-content">

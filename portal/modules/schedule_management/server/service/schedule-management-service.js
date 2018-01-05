@@ -32,6 +32,9 @@ exports.getScheduleList = function (req, res) {
         if (req.query && req.query.id){
             url = url + "&id=" + req.query.id;
         }
+        if (req.query && req.query.type){
+            url = url + "&type=" + req.query.type;
+        }
     }
 
     return restUtil.authRest.get(

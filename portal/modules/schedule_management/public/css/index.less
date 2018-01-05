@@ -207,6 +207,7 @@
     width:@right-panle-initial;
     padding:20px;
     #calendar{
+      position: relative;
       .fc-time-grid-event.fc-short .fc-time:after{
         content:""
       }
@@ -224,6 +225,25 @@
         margin-right: 20px;
         background: #fff;
         color:#333
+      }
+      //checkbox的样式
+      .check-group-container{
+        width: 280px;
+        position: absolute;
+        right: 100px;
+        top:-3px;
+        .ant-checkbox-group{
+          label.ant-checkbox-group-item.ant-checkbox-wrapper{
+            margin-right: 0;
+            font-size: 15px;
+            font-weight: normal;
+          }
+        }
+        .iconfont{
+          padding-right: 3px;
+          position: relative;
+          top:2px;
+        }
       }
       .rbc-calendar .rbc-toolbar{
             position:relative;
