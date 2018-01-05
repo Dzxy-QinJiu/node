@@ -1913,7 +1913,8 @@ var zh_CN = {
     "schedule.todo.list": "待办",
     "schedule.has.finished": "已完成",
     "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！",
-    "schedule.back.to.today":"返回今天",
-    "schedule.no.item":"无待办"
+    "schedule.back.to.today":"今",
+    "schedule.no.item":"无待办",
+    "schedule.phone.connect":"电联"
 };
 export default zh_CN;

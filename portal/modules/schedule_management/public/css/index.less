@@ -6,6 +6,7 @@
 @right-panel-expand:99%;
 @right-panle-initial:75%;
 @Colum-width:1/7*100%;
+@Background-color:#F6FBFF;
 @keyframes expired-show {
   0% { width: @panel-width-zero; }
   100% { width: @left-panel-show-width; }
@@ -150,7 +151,7 @@
       padding-right: 10px;
       position: relative;
       top: 4px;
-      font-size: 20px;
+      font-size: 19px;
     }
     //左侧页面滑动提示的样式
     .scroll-tip{
@@ -206,6 +207,7 @@
     width:@right-panle-initial;
     padding:20px;
     #calendar{
+      position: relative;
       .fc-time-grid-event.fc-short .fc-time:after{
         content:""
       }
@@ -223,6 +225,25 @@
         margin-right: 20px;
         background: #fff;
         color:#333
+      }
+      //checkbox的样式
+      .check-group-container{
+        width: 280px;
+        position: absolute;
+        right: 100px;
+        top:-3px;
+        .ant-checkbox-group{
+          label.ant-checkbox-group-item.ant-checkbox-wrapper{
+            margin-right: 0;
+            font-size: 15px;
+            font-weight: normal;
+          }
+        }
+        .iconfont{
+          padding-right: 3px;
+          position: relative;
+          top:2px;
+        }
       }
       .rbc-calendar .rbc-toolbar{
             position:relative;
@@ -306,7 +327,7 @@
                   align-items: center;
                 }
                 &:hover{
-                  background: #F6FBFF;
+                  background: @Background-color;
                 }
               }
               //已完成的日程样式
@@ -316,12 +337,12 @@
                   color:#C9C9C9;
                 }
                 &:hover{
-                  background: #F6FBFF;
+                  background: @Background-color;
                 }
               }
               //点击查看详情的日程
               .list-item.selected-customer{
-                background: #F6FBFF;
+                background: @Background-color;
               }
               .no-data-container{
                 margin: 50px auto;
@@ -335,6 +356,52 @@
           }
         }
       }
+      //月视图样式
+      .rbc-month-view .rbc-month-row .rbc-row-content{
+            //日期数字的样式
+            .rbc-row:first-child{
+              margin-top:35px;
+                .rbc-date-cell{
+                  text-align: center;
+                  a{
+                    font-size: 25px;
+                    font-weight: normal;
+                  }
+                }
+            }
+            //事件的样式
+            .rbc-row:nth-child(2){
+              margin-top:-47px;
+              .rbc-row-segment{
+                text-align: right;
+                .rbc-event{
+                  background: transparent;
+                  width: 100%;
+                  padding: 0;
+                  .rbc-event-content .customer-event-wrap .circle-wrap-container{
+                        width: 50px;
+                        height: 50px;
+                        margin: 0px auto;
+                        .circle-wrap{
+                          width: 50px;
+                          height: 50px;
+                          border-radius: 50%;
+                          border: 1px solid #BBCCDE;
+                        }
+                        .schedule-count{
+                          width: 20px;
+                          height: 20px;
+                          line-height: 20px;
+                          background: #2097F3;
+                          border-radius: 50%;
+                          text-align: center;
+                          float: right;
+                        }
+                      }
+                }
+              }
+            }
+          }
     };
 
   }
@@ -412,7 +479,7 @@
         }
         //鼠标悬浮的时候，加一个背景颜色
         &:hover{
-          background: #F6FBFF;
+          background: @Background-color;
           .schedule-content-wrap{
             button{
               display: block;
@@ -434,7 +501,7 @@
       }
       //点击查看详情的日程
       .list-item.selected-customer{
-        background: #F6FBFF;
+        background: @Background-color;
       }
 
     }
@@ -463,4 +530,31 @@
   .iconfont.icon-schedule-other{
     color:@Icon-Gray-Color
   }
+}
+//展示客户名称样式
+.customer-names-wrap{
+  .list-item{
+    font-size: 13px;
+    padding: 3px 0;
+    cursor: pointer;
+    &:hover{
+      background: @Background-color;
+    }
+  }
+  .list-item.has-handled{
+    color: #c9c9c9;
+    background:#FBFBFB;
+    &:hover{
+      background: @Background-color;
+    }
+  }
+  .list-item.selected-customer{
+    background: @Background-color;
+  }
+}
+.ant-popover{
+  z-index: 30;
+}
+.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow{
+  display: none;
 }

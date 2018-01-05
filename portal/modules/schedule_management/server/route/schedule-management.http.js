@@ -15,16 +15,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-        },
-
-
-
-
-
-
-
-
-        {
+        }, {
             method: 'post',
             path: '/rest/customer/add/schedule',
             handler: 'addSchedule',
