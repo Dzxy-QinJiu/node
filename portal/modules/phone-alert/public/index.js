@@ -397,7 +397,7 @@ class PhoneAlert extends React.Component{
             id: this.state.addTraceItemId,
             customer_id: customer_id,
             type: "phone",
-            last_callrecord:"true",
+            last_callrecord: "true",
             remark: this.state.inputContent
         };
         phoneAlertAction.updateCustomerTrace(submitObj,()=>{

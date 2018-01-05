@@ -55,14 +55,14 @@ CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
         } else {
             this.customerRecordErrMsg = "";
             this.curPage++;
-            var customerRecord = _.isArray(result.data.result)? result.data.result:[];
+            var customerRecord = _.isArray(result.data.result)?result.data.result:[];
             customerRecord.forEach(function(item){
                 item.showAdd = false;
             });
             this.customerRecord = this.customerRecord.concat(customerRecord);
             //过滤出所有电话类型的通话记录
             var phoneTypeRecords = _.filter(this.customerRecord,(item)=>{
-                return item.type = "phone";
+                return item.type === "phone";
             });
             //找出最后一条电话跟进记录的id
             if (phoneTypeRecords.length){
