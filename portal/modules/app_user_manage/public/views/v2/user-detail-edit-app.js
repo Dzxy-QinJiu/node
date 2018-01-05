@@ -9,7 +9,6 @@ import AppPropertySetting from '../../../../../components/user_manage_components
 import {Tabs,Icon,Alert} from 'antd';
 import AlertTimer from '../../../../../components/alert-timer';
 import {RightPanelClose,RightPanelReturn} from "../../../../../components/rightPanel";
-import GeminiScrollBar from '../../../../../components/react-gemini-scrollbar';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 
@@ -60,6 +59,25 @@ const UserDetailEditApp = React.createClass({
     onAppPropertyChange(appsSetting) {
         this.appsSetting = appsSetting;
     },
+    getChangeAppInfo(submitData) {
+        let changeAppInfo = _.clone(submitData);
+        changeAppInfo.app_id = changeAppInfo.client_id;
+        changeAppInfo.app_name = this.props.appInfo.app_name;
+        changeAppInfo.start_time =  changeAppInfo.begin_date;
+        changeAppInfo.end_time = changeAppInfo.end_date;
+        changeAppInfo.is_disabled = changeAppInfo.status == '1' ? 'false' : 'true';
+        changeAppInfo.create_time = this.props.appInfo.create_time;
+        changeAppInfo.multilogin = +changeAppInfo.mutilogin;
+        changeAppInfo.is_two_factor = +changeAppInfo.is_two_factor;
+        delete changeAppInfo.client_id;
+        delete changeAppInfo.user_id;
+        delete changeAppInfo.begin_date;
+        delete changeAppInfo.end_date;
+        delete changeAppInfo.status;
+        delete changeAppInfo.mutilogin;
+        
+        return changeAppInfo;
+    },
     //提交时会触发
     onFinish() {
         if(this.state.submitResult === 'loading' || this.state.submitResult === 'success') {
@@ -104,13 +122,14 @@ const UserDetailEditApp = React.createClass({
         submitData.user_id = this.props.initialUser.user.user_id;
         //多次登录(平台部的单词拼错了)
         submitData.mutilogin = savedAppSetting.multilogin.value;
+        let changeAppInfo = this.getChangeAppInfo(submitData);
         //修改用户
-        UserDetailEditAppActions.editUserApps(submitData,(apps)=>{
+        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag)=>{
             //发出更新用户列表事件
-            if(_.isArray(apps) && _.isObject(apps[0])) {
+            if (flag) {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
                     user_id : submitData.user_id,
-                    app_info  : apps[0]
+                    app_info  : changeAppInfo
                 });
             }
             //面板向右滑

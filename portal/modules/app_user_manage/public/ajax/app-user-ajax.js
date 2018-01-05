@@ -374,9 +374,9 @@ exports.editApp = function (appInfo) {
         contentType: 'application/json',
         data: JSON.stringify(appInfo),
         timeout: 180*1000,
-        success: function (apps) {
-            if(_.isArray(apps)) {
-                Deferred.resolve(apps);
+        success: function (flag) {
+            if (flag) {
+                Deferred.resolve(flag);
             } else {
                 Deferred.reject(DEFAULT_ERROR_MSG);
             }
