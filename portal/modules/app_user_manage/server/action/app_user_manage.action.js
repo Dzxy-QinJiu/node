@@ -205,7 +205,7 @@ exports.addApp = function (req, res) {
 exports.editApp = function (req, res) {
     //发请求，修改应用
     AppUserService.editApp(req, res, req.body).on("success", function (data) {
-        res.json(data);
+        res.json(true);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -103,10 +103,30 @@ const UserDetailEditApp = React.createClass({
         submitData.user_id = this.props.initialUser.user.user_id;
         //多次登录(平台部的单词拼错了)
         submitData.mutilogin = savedAppSetting.multilogin.value;
+        let changeAppInfo = _.clone(submitData);
+        changeAppInfo.app_id = changeAppInfo.client_id;
+        changeAppInfo.app_name = this.props.appInfo.app_name;
+        changeAppInfo.start_time =  changeAppInfo.begin_date;
+        changeAppInfo.end_time = changeAppInfo.end_date;
+        changeAppInfo.is_disabled = changeAppInfo.status == '1' ? 'false' : 'true';
+        changeAppInfo.create_time = this.props.appInfo.create_time;
+        changeAppInfo.multilogin = +changeAppInfo.mutilogin;
+        changeAppInfo.is_two_factor = +changeAppInfo.is_two_factor;
+        delete changeAppInfo.client_id;
+        delete changeAppInfo.user_id;
+        delete changeAppInfo.begin_date;
+        delete changeAppInfo.end_date;
+        delete changeAppInfo.status;
+        delete changeAppInfo.mutilogin;
         //修改用户
-        UserDetailEditAppActions.editUserApps(submitData,(apps)=>{
-            //更新修改的用户列表
-            $.extend(this.props.appInfo, submitData);
+        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (boolean)=>{
+            //发出更新用户列表事件
+            if (boolean) {
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
+                    user_id : submitData.user_id,
+                    app_info  : changeAppInfo
+                });
+            }
             //面板向右滑
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //等待3秒界面切换回去
