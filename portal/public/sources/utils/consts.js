@@ -10,6 +10,12 @@ export const userTypeList = [
     {name: Intl.get("user.online.train", "培训用户"), value: "training"},
     {name: Intl.get("user.online.employee", "员工用户"), value: "internal"},
 ];
+// 用户是否过期的下拉选项
+export const filterTypeList = [
+    {name: Intl.get("common.all", "全部"), value: ""},
+    {name: Intl.get("user.overdue", "过期"), value: "1"},
+    {name: Intl.get("user.overdue.not", "未过期"), value: "0"}
+];
 //到期后的处理类型
 export const OVER_DRAFT_TYPES = {
     UN_CHANGED: 0,//到期不变

@@ -25,7 +25,7 @@
           }
         }
         //类型选择下拉框
-        .recent-login-type-select{
+        .recent-login-type-select, .recent-login-filter-type-select{
           margin-top: 20px;
           margin-left: 20px;
           .ant-select{
@@ -36,6 +36,13 @@
       //近期登录用户列表
       .recent-login-users-table-wrap{
         padding:77px 50px 0 50px;
+        .user-list-thead {
+          .ant-table-content {
+            .ant-table-placeholder {
+              display: none;
+            }
+          }
+        }
       }
 
       .ant-table-empty{
