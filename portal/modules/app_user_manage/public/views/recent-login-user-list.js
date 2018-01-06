@@ -3,7 +3,6 @@
  * Created by wangliping on 2017/8/31.
  */
 require("../css/recent-login-user-list.less");
-import classNames from "classnames";
 import {Select, Table} from "antd";
 import ShareObj from "../util/app-id-share-util";
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
@@ -15,8 +14,8 @@ import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
 import {RightPanel} from "CMP_DIR/rightPanel";
 import {topNavEmitter} from "PUB_DIR/sources/utils/emitters";
 import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
-import {userTypeList} from "PUB_DIR/sources/utils/consts";
-import {getUserTypeText, getUserByFromUserList, getAppNameList, getAppStatusList, getAccountTypeList, getTimeList } from "../util/app-user-util";
+import {userTypeList, filterTypeList} from "PUB_DIR/sources/utils/consts";
+import {getUserByFromUserList, getAppNameList, getAppStatusList, getAccountTypeList, getTimeList } from "../util/app-user-util";
 import userAjax from "../ajax/app-user-ajax";
 import UserDetail from "./user-detail";
 const Option = Select.Option;
@@ -48,7 +47,8 @@ class RecentLoginUsers extends React.Component {
             isShowUserDetail: false,//是否展示用户详情
             userId: '',//要查看详情的用户id
             curUserDetail: {},//当前要查看的用户详情
-            isShownExceptionTab: false//是否展示异常登录信息
+            isShownExceptionTab: false,//是否展示异常登录信息
+            filter_type: ""  // 是否过期，默认（全部）
         };
     }
 
@@ -111,6 +111,14 @@ class RecentLoginUsers extends React.Component {
         };
         if (this.state.user_type) {
             paramObj.user_type = this.state.user_type;
+        }
+        if (this.state.filter_type) {
+            paramObj.outdate = this.state.filter_type;
+            if (this.state.filter_type === '1') {
+                paramObj.end_date = this.state.end_time;
+            } else if (this.state.filter_type === '0') {
+                paramObj.start_date = this.state.end_time;
+            }
         }
         return paramObj;
     }
@@ -367,6 +375,11 @@ class RecentLoginUsers extends React.Component {
         this.setState({user_type: type, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
+    // 是否过期类型的选择
+    onFilterTypeChange(type) {
+        this.setState({filter_type: type, pageNum: 1});
+        setTimeout(() => this.getRecentLoginUsers());
+    }
 
     render() {
         let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -414,6 +427,18 @@ class RecentLoginUsers extends React.Component {
                                 })
                             }
                         </Select>
+                    </div>
+                    <div className="inline-block recent-login-filter-type-select">
+                            <SelectFullWidth
+                                value={this.state.filter_type}
+                                onChange={this.onFilterTypeChange.bind(this)}
+                            >
+                                {
+                                    _.map(filterTypeList, (filterType, index) => {
+                                        return <Option key={index} value={filterType.value}>{filterType.name}</Option>
+                                    })
+                                }
+                            </SelectFullWidth>
                     </div>
                     <RightPanelClose title={Intl.get("common.app.status.close", "关闭")}
                                      onClick={this.props.hideRecentLoginPanel}/>
