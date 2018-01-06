@@ -36,6 +36,17 @@
       //近期登录用户列表
       .recent-login-users-table-wrap{
         padding:77px 50px 0 50px;
+        .user-list-thead {
+          .ant-table-wrapper {
+            .ant-spin-nested-loading {
+              .ant-table-content {
+                .ant-table-placeholder {
+                  display: none;
+                }
+              }
+            }
+          }
+        }
       }
 
       .ant-table-empty{
