@@ -510,9 +510,6 @@ var UserDetailBasic = React.createClass({
                         {Intl.get("common.username", "用户名")}
                     </dt>
                     <dd>
-                        <div className="pull-right all_apps_btns ">
-                            {this.getDisableAllAppsBlock()}
-                        </div>
                         <UserDetailEditField
                             user_id={userInfo.user_id}
                             value={userInfo.user_name}
