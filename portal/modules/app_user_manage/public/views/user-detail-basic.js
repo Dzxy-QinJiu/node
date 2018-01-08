@@ -510,9 +510,6 @@ var UserDetailBasic = React.createClass({
                         {Intl.get("common.username", "用户名")}
                     </dt>
                     <dd>
-                        <div className="pull-right all_apps_btns ">
-                            {this.getDisableAllAppsBlock()}
-                        </div>
                         <UserDetailEditField
                             user_id={userInfo.user_id}
                             value={userInfo.user_name}
@@ -680,8 +677,13 @@ var UserDetailBasic = React.createClass({
                 <div className="app_wrap" ref="app_wrap">
                     <dl className="dl-horizontal user_detail_item detail_item clearfix">
                         <dt><ReactIntl.FormattedMessage id="user.batch.app.open" defaultMessage="开通产品"/></dt>
-                        <dd className="text-right add_app_btns">
-                            {this.renderAddAppBtn()}
+                        <dd className="operate_app_btns">
+                            <div className="add_app_btns">
+                                {this.renderAddAppBtn()}
+                            </div>
+                            <div className="all_apps_stop_btns">
+                                {this.getDisableAllAppsBlock()}
+                            </div>
                         </dd>
                     </dl>
                     {this.getAppsBlock()}
