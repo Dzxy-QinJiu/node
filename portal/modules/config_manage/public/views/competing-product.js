@@ -1,9 +1,9 @@
-const TopNav = require("CMP_DIR/top-nav");
+require("../css/index.less");
 const Spinner = require("CMP_DIR/spinner");
 const AlertTimer = require("CMP_DIR/alert-timer");
 import Trace from "LIB_DIR/trace";
 import {Icon, Alert} from "antd";
-require("../css/index.less");
+const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const competingProductManage = React.createClass({
     getInitialState: function () {
         return ({
@@ -133,15 +133,13 @@ const competingProductManage = React.createClass({
         };
         return (
             <div className="add-config-fail">
-                <AlertTimer
-                    time={4000}
-                    message={this.state.addErrMsg}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
+                {this.renderErrorAlert(this.state.addErrMsg, hide)}
             </div>
         );
+    },
+
+    renderErrorAlert: function (errorMsg, hide) {
+        return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
     },
 
     handleDeleteIndustryFail: function () {
@@ -152,13 +150,7 @@ const competingProductManage = React.createClass({
         };
         return (
             <div className="delete_ip_config_err_tips">
-                <AlertTimer
-                    time={4000}
-                    message={this.state.deleteErrMsg}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
+                {this.renderErrorAlert(this.state.deleteErrMsg, hide)}
             </div>
         );
     },
