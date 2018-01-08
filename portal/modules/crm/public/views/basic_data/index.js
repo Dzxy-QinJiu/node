@@ -316,7 +316,7 @@ var BasicData = React.createClass({
                                             />
                                         </label>
                                     </div>
-                                    {this.props.isMerge ? null : (<PrivilegeChecker
+                                    {this.props.isMerge || this.props.userViewShowCustomerUserListPanel ? null : (<PrivilegeChecker
                                         check="GET_CUSTOMER_USERS"
                                     >
                                         <div className=" iconfont icon-turn-user-list"

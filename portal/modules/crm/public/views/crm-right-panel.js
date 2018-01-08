@@ -134,6 +134,7 @@ var CrmRightPanel = React.createClass({
                                     refreshCustomerList={this.props.refreshCustomerList}
                                     editCustomerBasic={this.props.editCustomerBasic}
                                     ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                    userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                 />
                             ) : null}
                             </TabPane>
