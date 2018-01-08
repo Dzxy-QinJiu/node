@@ -7,7 +7,7 @@ var scheduleManagementStore = require("../store/schedule-management-store");
 var scheduleManagementAction = require("../action/schedule-management-action");
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 var classNames = require("classnames");
-import {Alert, message, Button} from "antd";
+import {Alert, message, Button, Icon} from "antd";
 // 没有消息的提醒
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
 var Spinner = require("CMP_DIR/spinner");
