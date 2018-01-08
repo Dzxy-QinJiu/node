@@ -20,6 +20,7 @@ var batchPushEmitter = require("../../../../public/sources/utils/emitters").batc
 var Icon = require("antd").Icon;
 var Alert = require("antd").Alert;
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
+import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
 import language from "PUB_DIR/language/getLanguage";
 //异常登录的类型
 const EXCEPTION_TYPES = [{
@@ -43,7 +44,10 @@ var LAYOUT_CONSTANTS = {
 
 var UserTabContent = React.createClass({
     getInitialState: function () {
-        return AppUserStore.getState();
+        return {
+            curShowCustomerId:"", //查看右侧详情的客户id
+            ...AppUserStore.getState()
+        };
     },
     fetchUserList: function (obj) {
         var sortable = this.state.selectedAppId && !this.state.filterRoles.selectedRole;
@@ -104,7 +108,30 @@ var UserTabContent = React.createClass({
         if ($(".user_manage_user_detail_wrap").hasClass("move_left")) {
             $(".user_manage_user_detail_wrap").removeClass("move_left");
         }
-        AppUserAction.showUserDetail(userObj);
+        //点击所属客户那一列，只有点击所属客户的客户名 才能展开客户的详情
+        if ($(target).closest(".owner-customer-wrap").length){
+            var customer_id = $(event.currentTarget).find(".hidden_customer_id").val();
+            //没有所属客户，就把之前展开的所属客户的右侧面板关掉
+            if (!customer_id) {
+                this.hideRightPanel();
+            }
+            //关闭已经打开的用户详情
+            AppUserAction.closeRightPanel();
+        }else{
+            //如果点击除了所属客户列之外的列，要关闭已经打开的客户详情 打开对应的用户详情
+            this.hideRightPanel();
+            AppUserAction.showUserDetail(userObj);
+        }
+    },
+    hideRightPanel: function () {
+        this.setState({
+            curShowCustomerId: ""
+        });
+    },
+    showCustomerDetail:function (customer_id) {
+        this.setState({
+            curShowCustomerId:customer_id,
+        });
     },
     //更新用户基本信息
     updateUserInfo: function (userInfo) {
@@ -334,12 +361,15 @@ var UserTabContent = React.createClass({
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 width: "100px",
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable? "has-sorter has-filter owner-customer-wrap": 'has-filter owner-customer-wrap',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
+                    var customer_id = rowData.customer && rowData.customer.customer_id || '';
                     return (
-                        <div title={customer_name}>{customer_name}</div>
+                        <div title={customer_name} className="owner-customer" onClick={_this.showCustomerDetail.bind(this,customer_id)} data-tracename="点击所属客户列">{customer_name}
+                            <input type="hidden" className="hidden_customer_id" value={customer_id} />
+                        </div>
                     );
                 }
             },
@@ -875,6 +905,15 @@ var UserTabContent = React.createClass({
                         />
                     </div> : null
                 }
+                {this.state.curShowCustomerId ? (
+                    <CrmRightPanel
+                        currentId={this.state.curShowCustomerId}
+                        showFlag={true}
+                        hideRightPanel={this.hideRightPanel}
+                        refreshCustomerList={function () { }}
+                        userViewShowCustomerUserListPanel={true}
+                    />
+                ) : null}
             </div>
         );
     },
