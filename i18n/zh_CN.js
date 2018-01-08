@@ -883,6 +883,9 @@ var zh_CN = {
     "config.manage.realm.get.failed": "获取密码策略失败",
     "config.manage.realm.oktext": "确定",
     "config.manage.realm.canceltext": "取消",
+    "config.manage.reload.product": "重新获取竞品",
+    "config.manage.competing.product": "竞品管理",
+    "config.manage.no.product": "暂无竞品配置，请添加！",
     //配置end
     // 通话记录start
     "call.record.caller": "呼叫者",
