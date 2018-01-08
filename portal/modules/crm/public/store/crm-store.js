@@ -5,6 +5,23 @@ var crmUtil = require("./../utils/crm-util");
 import {addHyphenToPhoneNumber} from "LIB_DIR/func";
 
 function CrmStore() {
+    this.setInitialState();
+    this.bindActions(CrmActions);
+
+    this.exportPublicMethods({
+        getCustomersLength: this.getCustomersLength,
+        getCurPageCustomers: this.getCurPageCustomers,
+        getlastCurPageCustomers: this.getlastCurPageCustomers,
+        processForList: this.processForList,
+        batchChangeSalesman: this.batchChangeSalesman,
+        batchChangeTags: this.batchChangeTags,
+        batchChangeIndustry: this.batchChangeIndustry,
+        batchChangeLevel: this.batchChangeLevel,
+        batchChangeTerritory: this.batchChangeTerritory
+    });
+}
+//设置初始值
+CrmStore.prototype.setInitialState = function () {
     //是否展示确认删除的模态框
     this.modalDialogShow = false;
     //客户列表的长度
@@ -37,21 +54,7 @@ function CrmStore() {
     this.customerId = "";
     //下次点击的页数
     this.nextPageNum = 0;
-
-    this.bindActions(CrmActions);
-
-    this.exportPublicMethods({
-        getCustomersLength: this.getCustomersLength,
-        getCurPageCustomers: this.getCurPageCustomers,
-        getlastCurPageCustomers: this.getlastCurPageCustomers,
-        processForList: this.processForList,
-        batchChangeSalesman: this.batchChangeSalesman,
-        batchChangeTags: this.batchChangeTags,
-        batchChangeIndustry: this.batchChangeIndustry,
-        batchChangeLevel: this.batchChangeLevel,
-        batchChangeTerritory: this.batchChangeTerritory
-    });
-}
+};
 CrmStore.prototype.updateCurrentCustomerRemark = function (submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
         return customer.id == submitObj.customer_id
