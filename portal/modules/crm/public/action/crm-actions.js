@@ -4,6 +4,8 @@ import { message } from "antd";
 
 function CrmActions() {
     this.generateActions(
+        //设置初始值
+        "setInitialState",
         "setLoadingState",
         "setCurrentCustomer",
         "setCustomerId",

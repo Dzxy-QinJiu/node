@@ -323,6 +323,8 @@ var Crm = React.createClass({
         batchPushEmitter.removeListener(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
         crmEmitter.removeListener(crmEmitter.IMPORT_CUSTOMER, this.onCustomerImport);
         $(window).off("resize", this.changeTableHeight);
+        //将store中的值设置初始值
+        CrmAction.setInitialState();
         CrmStore.unlisten(this.onChange);
         this.hideRightPanel();
     },
