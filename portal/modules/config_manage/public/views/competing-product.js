@@ -35,8 +35,7 @@ const competingProductManage = React.createClass({
             success: (data) => {
                 this.setState({
                     productList: data ? data.result : [],
-                    isRefreshLoading: false,
-
+                    isRefreshLoading: false
                 });
             },
             error: (errorMsg) => {
@@ -188,10 +187,7 @@ const competingProductManage = React.createClass({
                                                         <Icon type="loading"/>
                                                     ) : null}
                                                 </div>
-                                            </li>
-                                        )
-
-                                    }
+                                            </li>)}
                                 )}
                             </ul>) : <Alert type="info" showIcon
                                             message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>
