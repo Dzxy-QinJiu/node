@@ -87,18 +87,21 @@
 
       }
     }
-    .all_apps_btns{
-      padding:0 20px 0 0;
-      a{
-        margin-left:10px;
-      }
-      .ant-alert{
-        position:absolute;
-        right:0;
-      }
-    }
-    dd.add_app_btns{
+    dd.operate_app_btns{
       padding-right:20px;
+      height: 20px;
+      .all_apps_stop_btns, .add_app_btns {
+        float: right;
+      }
+      .all_apps_stop_btns{
+        .alert-timer{
+          height: 20px;
+        }
+        .ant-alert{
+          position:relative;
+          bottom: 20px;
+        }
+      }
     }
     .app_list{
       padding:6px 0 0 5px;
