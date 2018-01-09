@@ -154,8 +154,40 @@ const competingProductManage = React.createClass({
         );
     },
 
+    renderCompetingProductList: function () {
+        let productList = this.state.productList;
+        //正在获取数据的状态渲染
+        if (this.state.isRefreshLoading) {
+            return <Spinner/>;
+        } else if (this.state.getErrMsg) {
+            //错误提示
+            return <Alert type="error" showIcon message={this.state.getErrMsg}/>;
+        } else if (_.isArray(productList) && productList.length) {
+            //竞品列表
+            return (<ul className="mb-taglist">
+                {productList.map((item, index) => {
+                        return (
+                            <li className="mb-tag">
+                                <div className="mb-tag-content">
+                                    <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
+                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                          onClick={this.handleDeleteItem.bind(this, item)}
+                                          data-tracename="点击删除某个竞品按钮"
+                                    />
+                                    { this.state.DeletingItem === item ? (
+                                        <Icon type="loading"/>
+                                    ) : null}
+                                </div>
+                            </li>)
+                    }
+                )}
+            </ul>);
+        } else {//没有竞品时的提示
+            return <Alert type="info" showIcon
+                          message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>;
+        }
+    },
     render: function () {
-        var productList = this.state.productList;
         return (
             <div className="box" data-tracename="竞品配置">
                 <div className="box-title">
@@ -170,28 +202,7 @@ const competingProductManage = React.createClass({
                     {this.state.deleteErrMsg ? this.handleDeleteIndustryFail() : null}
                 </div>
                 <div className="box-body">
-                    {
-                        this.state.isRefreshLoading ? <Spinner/> : this.state.getErrMsg ?
-                            <Alert type="error" showIcon message={this.state.getErrMsg}/> :
-                            productList.length ? (<ul className="mb-taglist">
-                                {productList.map((item, index) => {
-                                        return (
-                                            <li className="mb-tag">
-                                                <div className="mb-tag-content">
-                                                    <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
-                                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                                          onClick={this.handleDeleteItem.bind(this, item)}
-                                                          data-tracename="点击删除某个竞品按钮"
-                                                    />
-                                                    { this.state.DeletingItem === item ? (
-                                                        <Icon type="loading"/>
-                                                    ) : null}
-                                                </div>
-                                            </li>)}
-                                )}
-                            </ul>) : <Alert type="info" showIcon
-                                            message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>
-                    }
+                    {this.renderCompetingProductList()}
                 </div>
                 <div className="box-footer">
                     <form onSubmit={this.handleSubmit}>
