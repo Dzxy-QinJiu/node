@@ -258,11 +258,14 @@
           float: left;
           position: fixed;
           height: 0;
-          bottom: 14px;
+          bottom: 25px;
           left: 152px;
           border-radius: 4px;
           background: #FAFAFA;
           width: 322px;
+          >div{
+            background: #FAFAFA;
+          }
           audio {
             display: block;
             margin: 2px 3px;
@@ -273,6 +276,28 @@
             right: 0px;
             font-size: 10px;
             color:#aaa;
+          }
+          //上报客服电话的样式
+          .report-wrap{
+            font-size: 14px;
+            margin-left:42px;
+            .report-button{
+              color:#4285F4;
+              cursor: pointer;
+              margin-left: 20px;
+              span{
+                margin-right: 10px;
+              }
+            }
+            .alert-timer{
+              div.ant-alert{
+                width: 200px;
+                position: absolute;
+                right: -200px;
+                padding-right: 10px;
+                top:30px;
+              }
+            }
           }
         }
         .audio-play-container.is-playing-audio{

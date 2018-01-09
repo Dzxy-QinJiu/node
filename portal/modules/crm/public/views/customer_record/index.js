@@ -22,6 +22,11 @@ import ModalDialog from "CMP_DIR/ModalDialog";
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import ajax from "../../ajax/contact-ajax";
+import invalidPhone from "../../../../../lib/utils/invalidPhone";
+//获取无效电话的列表
+var getInvalidPhoneLists = invalidPhone.getInvalidPhone;
+//设置某个电话为无效电话
+var addInvalidPhone = invalidPhone.addInvalidPhone;
 var classNames = require("classnames");
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -37,6 +42,11 @@ const CustomerRecord = React.createClass({
             playingItemAddr: "",//正在播放的那条记录的地址
             phoneNumArray: [],//所有联系人的联系电话，通过电话和客户id获取跟进记录
             customerId: this.props.curCustomer.id,
+            invalidPhoneLists:[],//无效电话列表
+            getInvalidPhoneErrMsg:"",//获取无效电话失败后的信息
+            playingItemPhone:"",//正在听的录音所属的电话号码
+            isAddingInvalidPhone:false,//正在添加无效电话
+            addingInvalidPhoneErrMsg:"",//添加无效电话出错的情况
             ...CustomerRecordStore.getState()
         };
     },
@@ -50,6 +60,18 @@ const CustomerRecord = React.createClass({
         this.getContactPhoneNum(this.props.curCustomer.id, () => {
             //获取客户跟踪记录列表
             this.getCustomerTraceList();
+        });
+        //获取无效电话号码列表
+        getInvalidPhoneLists((data)=>{
+            this.setState({
+                invalidPhoneLists:data.result,
+                getInvalidPhoneErrMsg:""
+            })
+        },(err)=>{
+            this.setState({
+                invalidPhoneLists:[],
+                getInvalidPhoneErrMsg:err.msg || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
+            })
         });
     },
     //获取所有联系人的联系电话
@@ -104,6 +126,7 @@ const CustomerRecord = React.createClass({
             setTimeout(() => {
                 this.setState({
                     playingItemAddr: "",
+                    playingItemPhone:"",
                     customerId: nextCustomerId
                 });
                 CustomerRecordActions.dismiss();
@@ -430,7 +453,8 @@ const CustomerRecord = React.createClass({
         var playItemAddr = "/record/" + urlObj.local + item.recording + urlObj.audioType;
         this.setState({
             customerRecord: this.state.customerRecord,
-            playingItemAddr: playItemAddr
+            playingItemAddr: playItemAddr,
+            playingItemPhone: item.dst //正在播放的录音所属的电话号码
         }, () => {
             var audio = $("#audio")[0];
             if (audio) {
@@ -457,6 +481,7 @@ const CustomerRecord = React.createClass({
         this.setState({
             customerRecord: this.state.customerRecord,
             playingItemAddr: "",
+            playingItemPhone:""
         });
     },
     renderTimeLineItem: function (item) {
@@ -506,6 +531,29 @@ const CustomerRecord = React.createClass({
                 listenScrollBottom: false
             });
         }
+    },
+    //上报客服电话
+    handleAddInvalidPhone:function(){
+        var curPhone = this.state.playingItemPhone;
+        if (!curPhone){
+            return;
+        }
+        this.setState({
+            isAddingInvalidPhone:true
+        });
+        addInvalidPhone({"phone": curPhone},()=>{
+            this.state.invalidPhoneLists.push(curPhone);
+            this.setState({
+                isAddingInvalidPhone:false,
+                invalidPhoneLists:this.state.invalidPhoneLists,
+                addingInvalidPhoneErrMsg:""
+            });
+        },(err)=>{
+            this.setState({
+                isAddingInvalidPhone:false,
+                addingInvalidPhoneErrMsg:err.msg || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
+            });
+        })
     },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
@@ -587,6 +635,23 @@ const CustomerRecord = React.createClass({
                                     </audio>
                                     <i className="iconfont icon-close close-panel"
                                        onClick={this.closeAudioPlayContainer}></i>
+                                    {/*如果获取无效电话出错时，不要显示上报电话区域*/}
+                                    {this.state.getInvalidPhoneErrMsg ? null :
+                                        <div className="report-wrap">
+                                            <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
+                                            {_.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ?
+                                                null:
+                                                <span className="report-button"
+                                                      onClick={this.handleAddInvalidPhone}
+                                                >{Intl.get("call.record.report", "上报")}
+                                                    {this.state.isAddingInvalidPhone ? <Icon type="loading"/> : null}
+                            </span>}
+                                            {this.state.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
+                                                                                                message={this.state.addingInvalidPhoneErrMsg}
+                                                                                                type='error' showIcon
+                                                                                                onHide={this.hideErrTooltip}/>) : null
+                                            }
+                                        </div>}
                                 </div>
                             ) : null
                             }

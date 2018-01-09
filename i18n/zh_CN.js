@@ -1916,6 +1916,10 @@ var zh_CN = {
     "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！",
     "schedule.back.to.today":"今",
     "schedule.no.item":"无待办",
-    "schedule.phone.connect":"电联"
+    "schedule.phone.connect":"电联",
+    "call.record.get.invalid.phone.lists":"获取无效电话列表失败",
+    "call.record.customer.phone":"这是一个客服电话。",
+    "call.record.report":"上报",
+    "fail.report.phone.err.tip":"上报无效电话失败！"
 };
 export default zh_CN;
