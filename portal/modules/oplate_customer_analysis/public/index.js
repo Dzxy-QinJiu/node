@@ -215,7 +215,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
                     if (stageDataItem.value) {
                         //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
-                        if (prevItem.value < stageDataItem.value) {
+                        if (prevItem.value <= stageDataItem.value) {
                             stageDataItem.value = prevItem.value * 0.8;
                         } else if (prevItem.value / stageDataItem.value > 10 && sortedStageData.length === 1) {
                             //第一阶段的值比第二阶段的值大很多的时候，把第一阶段的值变小一些，以防漏斗图边角过尖
