@@ -872,6 +872,9 @@ var en_US = {
     "config.manage.realm.get.failed": "Failed to get the password strategy",//获取密码策略失败
     "config.manage.realm.oktext": "ok",//确定
     "config.manage.realm.canceltext": "cancel",//取消
+    "config.manage.reload.product": "Retry",//重新获取竞品
+    "config.manage.competing.product": "Competing product",//竞品管理
+    "config.manage.no.product": "There is no competing product, please add!",//暂无竞品配置，请添加！
     //配置end
     // 通话记录start
     "call.record.caller": "Caller", // 呼叫者

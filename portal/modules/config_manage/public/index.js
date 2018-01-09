@@ -1,17 +1,19 @@
-var TopNav = require("../../../components/top-nav");
-var Spinner = require("../../../components/spinner");
+var TopNav = require("CMP_DIR/top-nav");
+var Spinner = require("CMP_DIR/spinner");
 var Icon = require("antd").Icon;
 var Alert = require("antd").Alert;
-var AlertTimer = require("../../../components/alert-timer");
+var AlertTimer = require("CMP_DIR/alert-timer");
 import IpConfig from "./views/ip-config";
 import RealmConfig from "./views/realm-config";
 import TeleConfig from "./views/tele-config";
 import Trace from "LIB_DIR/trace";
+import CompetingProductManage from "./views/competing-product";
 var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
 require("./css/index.less");
 const auths = {
 	STRATEGY: "GET_CONFIG_PWD_STRATEGY",// 获取安全域密码策略
-	TELECONFIG: "CUSTOMER_INVALID_PHONE_GET"// 获取客服电话权限
+	TELECONFIG: "CUSTOMER_INVALID_PHONE_GET",// 获取客服电话权限
+	COMPETING_PRODUCT:"CRM_COMPETING_PRODUCT"//竞品管理权限
 }
 var ConfigManage = React.createClass({
 	getInitialState: function () {
@@ -259,6 +261,9 @@ var ConfigManage = React.createClass({
 				</PrivilegeChecker>
 				<PrivilegeChecker check={auths.TELECONFIG}>
 					< TeleConfig />
+				</PrivilegeChecker>
+				<PrivilegeChecker check={auths.COMPETING_PRODUCT}>
+					<CompetingProductManage/>
 				</PrivilegeChecker>
 			</div>
 		)
