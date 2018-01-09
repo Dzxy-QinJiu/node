@@ -555,6 +555,12 @@ const CustomerRecord = React.createClass({
             });
         })
     },
+    //提示框隐藏后的处理
+    hideErrTooltip: function () {
+        this.setState({
+            addingInvalidPhoneErrMsg:""
+        })
+    },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
