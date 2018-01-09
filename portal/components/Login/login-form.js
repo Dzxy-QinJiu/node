@@ -118,12 +118,12 @@ var LoginForm = React.createClass({
     userNameChange: function (evt) {
         this.setState({
             username: evt.target.value
-        });
+        }, () => this.props.setErrorMsg(""));
     },
     passwordChange: function (evt) {
         this.setState({
             password: evt.target.value
-        });
+        }, () => this.props.setErrorMsg(""));
     },
     renderCaptchaBlock: function (hasWindow) {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
