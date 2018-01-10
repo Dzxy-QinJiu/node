@@ -14,7 +14,8 @@ exports.logout = function (req, res) {
         //如果使用sso登录的，调用ssoLogout
         DesktopLogoutService.ssoLogout(req, res).on("success", function () {
             req.session.destroy(function () {
-                res.redirect("/login");
+                //加stopcheck参数，防止再次sso校验登录
+                res.redirect("/login?stopcheck=true");
             });
         }).on("error", function () {
             //阻止sso的check
