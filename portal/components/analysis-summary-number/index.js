@@ -29,9 +29,7 @@ var SummaryNumber = React.createClass({
         if(this.props.num === 0 || this.props.num) {
             number = this.props.num + '';
         } else if(this.props.resultType === 'error') {
-            number = (
-                <div style={{fontSize:'12px'}}><ReactIntl.FormattedMessage id="common.no.data" defaultMessage="暂无数据"/></div>
-            );
+            number = "";
         }
         var fontSizeClass = 'number';
         if(number.length >= 8) {

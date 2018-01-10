@@ -3,7 +3,6 @@
  */
 var echarts = require("echarts-eefung");
 require("./style.less");
-var Spinner = require("../spinner");
 var macronsTheme = require("./theme-macrons");
 var echartsTooltipCssText = require("../../lib/utils/echarts-tooltip-csstext");
 var textWidth = require("../../public/sources/utils/measure-text");
@@ -380,69 +379,41 @@ var BarChart = React.createClass({
         };
     },
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose()} catch(e){};
-        }
-        if(this.props.resultType === 'loading') {
-            return;
+            try {this.echartInstance.dispose()} catch(e){};
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
-        let chartData = this.props.chartData;
-
-        if (this.props.dataField) {
-            chartData = chartData[this.props.dataField];
-        }
-
-        if (_.isEmpty(chartData)) {
-            if(this.echartInstance) {
-                try {_this.echartInstance.dispose()} catch(e){};
-            }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
+        var options = "";
+        if (this.props.reverseChart) {
+            options = this.getReverseEchartOptions();
         } else {
-            $(this.refs.chart).find(".nodata").remove();
-            var options = "";
-            if (this.props.reverseChart){
-                options = this.getReverseEchartOptions();
-            }else{
-                options = this.getEchartOptions();
-            }
-            this.echartInstance.setOption(options,true);
-            const jumpProps = this.props.jumpProps;
-            if (jumpProps) {
-                this.echartInstance.on("click", params => {
-                    Trace.traceEvent(params.event.event,"跳转到'" + params.name + "'用户列表");
-                    let query = {
-                        app_id: this.props.app_id,
-                        login_begin_date: this.props.startTime,
-                        login_end_date: this.props.endTime,
-                        analysis_filter_value: params.name,
-                    };
-
-                    if (jumpProps.query) _.extend(query, jumpProps.query);
-
-                    //跳转到用户列表
-                    window.open(jumpProps.url + "?" + querystring.stringify(query));
-                });
-            }
+            options = this.getEchartOptions();
         }
+        this.echartInstance.setOption(options, true);
+        const jumpProps = this.props.jumpProps;
+        if (jumpProps) {
+            this.echartInstance.on("click", params => {
+                Trace.traceEvent(params.event.event, "跳转到'" + params.name + "'用户列表");
+                let query = {
+                    app_id: this.props.app_id,
+                    login_begin_date: this.props.startTime,
+                    login_end_date: this.props.endTime,
+                    analysis_filter_value: params.name,
+                };
+
+                if (jumpProps.query) _.extend(query, jumpProps.query);
+
+                //跳转到用户列表
+                window.open(jumpProps.url + "?" + querystring.stringify(query));
+            });
+        }
+
     },
-    render : function() {
-        var _this = this;
+    render: function () {
         return (
             <div className="analysis-chart">
-                {this.props.resultType === 'loading'?
-                    (
-                        <div className="loadwrap" style={{height:this.props.height}}>
-                            <Spinner/>
-                        </div>
-                    ):
-                    (
-                        <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
-                        </div>
-                    )
-                }
+                <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
+                     data-title={this.props.title}></div>
             </div>
         );
     }

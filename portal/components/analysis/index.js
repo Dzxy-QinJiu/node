@@ -1,7 +1,7 @@
 /**
  * 分析组件
  */
-
+require("./style.less");
 import LineChart from "../chart/line";
 import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
@@ -19,6 +19,7 @@ const teamTreeEmitter = Emitters.teamTreeEmitter;
 const DateSelectorUtils = require("../datepicker/utils");
 import { getEndDateText } from "./utils";
 import { TIME_RANGE, USER_TYPE_LEGEND } from "./consts";
+var Spinner = require("../spinner");
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
@@ -38,7 +39,9 @@ const Analysis = React.createClass({
             type: "total",
             valueField: "value",
             sendRequest: true,
-            reverseChart: false
+            reverseChart: false,
+            errAndRightBothShow:false,//出错后的提示和正确时的展示同时显示出来
+            notShowLoading:false//不展示loading效果
         };
     },
     getInitialState() {
@@ -109,9 +112,19 @@ const Analysis = React.createClass({
             this.getData();
         });
     },
+    retrygetData(){
+       this.getData();
+    },
     getData(props = this.props) {
 
-        this.setState({ resultType: "loading" });
+        this.setState({
+            chartData: [],
+            resultType: "loading",
+            resultErrorMsg:""
+        });
+        if (_.isFunction(props.processData)){
+            props.processData([],"loading");
+        }
 
         const handler = "get" + props.target + "AnalysisData";
 
@@ -177,13 +190,71 @@ const Analysis = React.createClass({
 
         ajax(arg).then(result => {
             if (_.isFunction(props.processData)){
-                result = props.processData(result);
+                result = props.processData(result,"");
             }
-
-            this.setState({ chartData: result, resultType: "" });
+            this.setState({ chartData: result, resultType: "",resultErrorMsg:""});
         }, errorMsg => {
-            this.setState({ resultType: "error" });
+            if (_.isFunction(props.processData)){
+                props.processData([], "error");
+            }
+            this.setState({chartData: [], resultType: "error",resultErrorMsg: errorMsg || Intl.get("contract.111", "获取数据失败")});
         });
+    },
+    //加载完毕后，并且没有出错时
+    renderAfterLoadingAndNoerr(chartType, props){
+        const dataField = this.props.dataField;
+        const dataField2 = this.props.dataField2;
+        var initialChartData = this.props.chartData || this.state.chartData;
+        let chartData = dataField !== undefined ? initialChartData[dataField] : initialChartData;
+        if (chartData && dataField2 !== undefined) chartData = chartData[dataField2];
+        if (_.isEmpty(chartData)) {
+            return <div className='nodata'>
+                {Intl.get("common.no.data", "暂无数据")}
+                </div>
+        } else {
+            return React.createElement(chartType, props, null);
+        }
+    },
+    renderChartContent(chartType, props){
+        if (this.state.resultType === "loading"){
+            //如果不需要加loading效果
+            if (this.props.notShowLoading){
+                return React.createElement(chartType, props, null);
+            }else{
+                return (
+                    <div className="loading-wrap">
+                        <Spinner/>
+                    </div>
+                )
+            }
+        }else if(this.state.resultType === "error") {
+            //加载完成，出错的情况
+            var errMsg = <div className="err-tip">{this.state.resultErrorMsg}
+                <a onClick={this.retrygetData}>
+                  {Intl.get("user.info.retry", "请重试")}
+               </a>
+               </div>;
+            if (this.props.errAndRightBothShow) {
+                return (
+                    <div className="err-tip-content-wrap">
+                        {errMsg}
+                        {React.createElement(chartType, props, null)}
+                    </div>
+                )
+            } else {
+                return (
+                    <div className="err-tip-wrap">
+                        {errMsg}
+                    </div>
+                )
+            }
+        }else{
+            return (
+                <div>
+                    {this.renderAfterLoadingAndNoerr(chartType, props)}
+                </div>
+            );
+        }
     },
     render() {
         const props = {
@@ -205,8 +276,11 @@ const Analysis = React.createClass({
         if (props.extendLegend) props.legend = props.legend.concat(props.extendLegend);
 
         const chartType = CHART_TYPE_MAP[props.chartType];
-
-        return React.createElement(chartType, props, null);
+        return (
+                <div style={{height:this.props.height}} className="analysis-container">
+                    {this.renderChartContent(chartType, props)}
+                </div>
+        )
     }
 });
 

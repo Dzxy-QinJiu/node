@@ -2,7 +2,6 @@
  * 用户留存
  */
 require("./style.less");
-var Spinner = require("../spinner");
 var immutable = require("immutable");
 var Table = require("antd").Table;
 
@@ -144,19 +143,9 @@ var Retention = React.createClass({
     render : function() {
         return (
             <div className="analysis-chart">
-                {this.props.resultType === 'loading'?
-                    (
-                        <div className="loadwrap" style={{height:this.props.height}}>
-                            <Spinner/>
-                        </div>
-                    ) : (
-                        <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}>
-                                {this.renderTable()}
-                            </div>
-                        </div>
-                    )
-                }
+               <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}>
+                    {this.renderTable()}
+                </div>
             </div>
         );
     }

@@ -19,6 +19,7 @@ import CardContainer from "CMP_DIR/card-container";
 const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT=240;
+const BOX_CHARTTYPE = 86;//头部数字区域的高度
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange : function() {
@@ -138,7 +139,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getTeamChart : function() {
         var userType = "team";
         //基层销售主管或舆情秘书看到的是其团队成员的统计数据
-        if (this.state.userType.indexOf("salesmanager") > -1 || this.state.userType.indexOf("salesleader") > -1) {
+        if (this.state.userType && (this.state.userType.indexOf("salesmanager") > -1 || this.state.userType.indexOf("salesleader") > -1)) {
             userType = "team_member";
         }
         return (
@@ -278,9 +279,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
 
     },
-    processSummaryNumberData:function (data) {
+    processSummaryNumberData:function (data, resultType) {
         this.state.summaryNumbers.data = data;
-        this.state.summaryNumbers.resultType = '';
+        this.state.summaryNumbers.resultType = resultType;
         return data;
     },
     renderSummaryCountBoxContent:function () {
@@ -389,6 +390,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 type: "summary",
                                 valueField: "total",
                                 legend: false,
+                                height:BOX_CHARTTYPE,
+                                errAndRightBothShow:true,//出错后的提示和正确时的展示都显示出来
+                                notShowLoading: true,//不需要展示loading效果
                                 processData : this.processSummaryNumberData,
                                 renderContent: this.renderSummaryCountBoxContent.bind(this,{
                                     type: "contract",
@@ -433,7 +437,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                         </CardContainer>
                                     </div>
                                 </div>:null}
-                                {this.state.userType.indexOf("sales") === -1? (
+                                {this.state.userType && this.state.userType.indexOf("sales") === -1? (
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
                                     <div className="chart-holder" data-tracename="销售团队统计信息">
                                         <CardContainer title={Intl.get("oplate_customer_analysis.4", "团队统计")}>

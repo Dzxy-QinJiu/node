@@ -39,7 +39,7 @@ export default function (arg) {
             Deferred.resolve(result);
         },
         error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseText || errorMsg.responseJSON);
         }
     });
 
