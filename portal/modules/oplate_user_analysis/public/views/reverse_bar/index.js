@@ -34,6 +34,7 @@ var BarChart = React.createClass({
     getLegend : function() {
         return {
             show : true,
+            right : 20,
             data :_.pluck(this.props.legend , 'name')
         };
     },
