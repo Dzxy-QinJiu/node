@@ -20,6 +20,7 @@ var BarChart = React.createClass({
             list : [],
             title : Intl.get("oplate.user.analysis.33", "新增用户行业分布"),
             width:'100%',
+            legendRight: 'auto',
             resultType : 'loading',
             startDate: '',
             endDate : '',
@@ -34,6 +35,7 @@ var BarChart = React.createClass({
     getLegend : function() {
         return {
             show : true,
+            right : this.props.legendRight,
             data :_.pluck(this.props.legend , 'name')
         };
     },
