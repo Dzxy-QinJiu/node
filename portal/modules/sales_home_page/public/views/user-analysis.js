@@ -20,6 +20,7 @@ let chartLegend = [{name: Intl.get("common.official", "签约"), key: "formal"},
     {name: Intl.get("user.type.employee", "员工"), key: "internal"},
     {name: Intl.get("user.unknown", "未知"), key: "unknown"}];
 const CHART_HEIGHT = 214;
+const LEGEND_RIGHT = 20;
 //用户分析
 var UserAnlyis = React.createClass({
     getStateData: function () {
@@ -159,6 +160,7 @@ var UserAnlyis = React.createClass({
                 list={this.state.zoneAnalysis.data}
                 title={Intl.get("user.analysis.address", "地域统计")}
                 height={CHART_HEIGHT}
+                legendRight={LEGEND_RIGHT}
                 legend={chartLegend}
                 startDate={startDate}
                 endDate={endDate}
@@ -203,6 +205,7 @@ var UserAnlyis = React.createClass({
             <BarChart
                 width={this.chartWidth}
                 height={CHART_HEIGHT}
+                legendRight={LEGEND_RIGHT}
                 list={this.state.teamOrMemberAnalysis.data}
                 title={Intl.get("user.analysis.team", "团队统计")}
                 legend={chartLegend}
@@ -222,6 +225,7 @@ var UserAnlyis = React.createClass({
                 title={Intl.get("user.analysis.industry", "行业统计")}
                 width={this.chartWidth}
                 height={CHART_HEIGHT}
+                legendRight={LEGEND_RIGHT}
                 startDate={startDate}
                 endDate={endDate}
                 legend={chartLegend}

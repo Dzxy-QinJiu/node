@@ -19,6 +19,7 @@ var BarChart = React.createClass({
             title : Intl.get("user.analysis.team", "团队统计"),
             width:'100%',
             height:234,
+            legendRight: 'auto',
             resultType : 'loading',
             isShowSplitLine: false,
             isShowSplitArea: false,
@@ -38,7 +39,7 @@ var BarChart = React.createClass({
     getLegend : function() {
         return {
             show : true,
-            right : 20,
+            right : this.props.legendRight,
             data :_.pluck(this.props.legend , 'name')
         };
     },
