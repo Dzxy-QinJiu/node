@@ -178,9 +178,11 @@ var ApplyTabContent = React.createClass({
                                         <span>{obj.topic || Intl.get("user.apply.id", "账号申请")}</span>
                                         <em className={btnClass}>{_this.getApplyStateText(obj)}</em>
                                     </dt>
+                                    <dd className="clearfix" title={obj.customer_name}>
+                                        <span>{obj.customer_name}</span>
+                                    </dd>
                                     <dd className="clearfix">
-                                        <span><ReactIntl.FormattedMessage id="user.apply.presenter"
-                                                                          defaultMessage="申请人"/>:{obj.presenter}</span>
+                                        <span>{Intl.get("user.apply.presenter","申请人")}:{obj.presenter}</span>
                                         <em>{_this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
                                     </dd>
                                 </dl>
@@ -313,7 +315,17 @@ var ApplyTabContent = React.createClass({
             return (
                 <div className="searchbar clearfix">
                     {this.getUpdateTip()}
-                    <span className="pull-left">
+                    <div className="pull-left">
+                        <div className={searchBarClass}>
+                            <SearchInput
+                                type="input"
+                                className="form-control"
+                                searchPlaceHolder={Intl.get("user.apply.search.placeholder", "申请人/客户名/用户名")}
+                                searchEvent={this.changeSearchInputValue}
+                            />
+                        </div>
+                    </div>
+                    <span className="pull-right">
                             {
                                 UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
                                     <Dropdown overlay={menuList}>
@@ -325,16 +337,6 @@ var ApplyTabContent = React.createClass({
                                 )
                             }
                     </span>
-                    <div className="pull-right">
-                        <div className={searchBarClass}>
-                            <SearchInput
-                                type="input"
-                                className="form-control"
-                                searchPlaceHolder={Intl.get("user.apply.search.placeholder", "申请人/客户名/用户名")}
-                                searchEvent={this.changeSearchInputValue}
-                            />
-                        </div>
-                    </div>
                 </div>
             )
         }
