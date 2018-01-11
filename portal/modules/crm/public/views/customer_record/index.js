@@ -603,7 +603,7 @@ const CustomerRecord = React.createClass({
                 divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_CLOSE - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
             }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
-            var isSHowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
+            var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
@@ -639,7 +639,7 @@ const CustomerRecord = React.createClass({
                                     getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
                                     addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
                                     isAddingInvalidPhone={this.state.isAddingInvalidPhone}
-                                    isSHowReportButton={isSHowReportButton}
+                                    isShowReportButton={isShowReportButton}
                                     closeAudioPlayContainer={this.closeAudioPlayContainer}
                                     handleAddInvalidPhone={this.handleAddInvalidPhone}
                                     hideErrTooltip={this.hideErrTooltip}

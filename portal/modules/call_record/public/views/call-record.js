@@ -857,7 +857,7 @@ const CallRecord = React.createClass({
             LAYOUT_CONSTANTS.FIXED_THEAD -
             LAYOUT_CONSTANTS.TABLE_MARGIN_BOTTOM -
             LAYOUT_CONSTANTS.SUMMARY;
-        var isSHowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
+        var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
@@ -943,7 +943,7 @@ const CallRecord = React.createClass({
                         getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
                         addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
                         isAddingInvalidPhone={this.state.isAddingInvalidPhone}
-                        isSHowReportButton={isSHowReportButton}
+                        isShowReportButton={isShowReportButton}
                         closeAudioPlayContainer={this.closeAudioPlayContainer}
                         handleAddInvalidPhone={this.handleAddInvalidPhone}
                         hideErrTooltip={this.hideErrTooltip}

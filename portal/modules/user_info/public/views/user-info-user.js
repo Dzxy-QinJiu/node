@@ -334,7 +334,16 @@ var UserInfo = React.createClass({
                         <span>
                             <ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱"/>
                             ：</span>
-                        <span>{formData.email}</span>
+                        <span>
+                            {formData.email ? formData.email:
+                                <span>
+                                    <ReactIntl.FormattedMessage
+                                        id="user.info.no.email"
+                                        defaultMessage={`该用户没有任何邮箱信息，{add-email}`}
+                                        values={{
+                                            "add-email": <a data-tracename="点击添加邮箱" onClick={_this.showUserInfoForm}>{Intl.get("user.info.add.email","添加邮箱")}</a>,}}/>
+                            </span>}
+                        </span>
                         {formData.email ? (formData.emailEnable ? <span>（
                             <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>
                             ）</span> :
