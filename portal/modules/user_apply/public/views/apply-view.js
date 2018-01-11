@@ -178,9 +178,11 @@ var ApplyTabContent = React.createClass({
                                         <span>{obj.topic || Intl.get("user.apply.id", "账号申请")}</span>
                                         <em className={btnClass}>{_this.getApplyStateText(obj)}</em>
                                     </dt>
+                                    <dd className="clearfix" title={obj.customer_name}>
+                                        <span>{Intl.get("call.record.customer", "客户")}:{obj.customer_name}</span>
+                                    </dd>
                                     <dd className="clearfix">
-                                        <span><ReactIntl.FormattedMessage id="user.apply.presenter"
-                                                                          defaultMessage="申请人"/>:{obj.presenter}</span>
+                                        <span>{Intl.get("user.apply.presenter","申请人")}:{obj.presenter}</span>
                                         <em>{_this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
                                     </dd>
                                 </dl>
