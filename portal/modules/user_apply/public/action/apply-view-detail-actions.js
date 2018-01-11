@@ -134,19 +134,22 @@ class ApplyViewDetailActions {
     //添加回复
     addReply(obj) {
         this.dispatch({loading: true, error: false});
-        AppUserAjax.addReply(obj).then((data) => {
-            //创建回复数据，直接添加到store的回复数组后面
-            var userData = UserData.getUserData();
-            var replyItem = {
-                user_id: userData.user_id || '',
-                user_name: userData.nick_name || '',
-                user_logo: userData.user_logo || '',
-                message: obj.comment || '',
-                date: moment().format(oplateConsts.DATE_TIME_FORMAT)
-            };
-            //滚动条定位到最后
-            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
-            this.dispatch({loading: false, error: false, reply: replyItem});
+        AppUserAjax.addReply(obj).then((replyData) => {
+            if (_.isObject(replyData)) {
+                //创建回复数据，直接添加到store的回复数组后面
+                let userData = UserData.getUserData();
+                let replyTime = replyData.comment_time ? moment(replyData.comment_time) : moment();
+                let replyItem = {
+                    user_id: replyData.user_id || '',
+                    user_name: replyData.nick_name || '',
+                    user_logo: userData.user_logo || '',
+                    message: replyData.comment || '',
+                    date: replyTime.format(oplateConsts.DATE_TIME_FORMAT)
+                };
+                //滚动条定位到最后
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM);
+                this.dispatch({loading: false, error: false, reply: replyItem});
+            }
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

@@ -118,12 +118,7 @@ exports.addReply = function(data) {
         dataType: 'json',
         data: data,
         success: function (result) {
-            //操作成功返回true
-            if(result === true) {
-                Deferred.resolve(result);
-            } else {
-                Deferred.reject(ERROR_MSG);
-            }
+            Deferred.resolve(result);
         },
         error: function (xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
