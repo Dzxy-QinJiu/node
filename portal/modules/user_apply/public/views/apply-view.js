@@ -179,7 +179,7 @@ var ApplyTabContent = React.createClass({
                                         <em className={btnClass}>{_this.getApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={obj.customer_name}>
-                                        <span>{Intl.get("call.record.customer", "客户")}:{obj.customer_name}</span>
+                                        <span>{obj.customer_name}</span>
                                     </dd>
                                     <dd className="clearfix">
                                         <span>{Intl.get("user.apply.presenter","申请人")}:{obj.presenter}</span>
