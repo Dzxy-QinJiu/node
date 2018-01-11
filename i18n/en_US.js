@@ -1882,6 +1882,8 @@ var en_US = {
     "call.record.get.invalid.phone.lists":"Failed to get invalid phone lists!",//获取无效电话列表失败
     "call.record.customer.phone":"This is an invalid phone",//这是一个客服电话。
     "call.record.report":"Report",//上报
-    "fail.report.phone.err.tip":"Failed to add invalid phone!"//上报无效电话失败！
+    "fail.report.phone.err.tip":"Failed to add invalid phone!",//上报无效电话失败！
+    "user.info.no.email":"The user has no email,{add-email}",//该用户没有邮箱，{add-email}
+    "user.info.add.email":"add email"//添加邮箱
 };
 export default en_US;

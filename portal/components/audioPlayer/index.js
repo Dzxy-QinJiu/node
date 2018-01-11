@@ -10,15 +10,15 @@ class AudioPlayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSHowReportButton: this.props.isSHowReportButton,//是否展示上报按钮
+            isShowReportButton: this.props.isShowReportButton,//是否展示上报按钮
             playingItemAddr: this.props.playingItemAddr//当前正在播放的录音的地址
         };
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isSHowReportButton !== this.props.isSHowReportButton) {
+        if (nextProps.isShowReportButton !== this.props.isShowReportButton) {
             this.setState({
-                isSHowReportButton: nextProps.isSHowReportButton
+                isShowReportButton: nextProps.isShowReportButton
             });
         }
         if (nextProps.playingItemAddr !== this.props.playingItemAddr) {
@@ -38,7 +38,7 @@ class AudioPlayer extends React.Component {
                 {this.props.getInvalidPhoneErrMsg ? null :
                     <div className="report-wrap">
                         <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
-                        {this.state.isSHowReportButton ?
+                        {this.state.isShowReportButton ?
                             null :
                             <span className="report-button"
                                   onClick={this.props.handleAddInvalidPhone}
@@ -57,7 +57,7 @@ class AudioPlayer extends React.Component {
     }
 }
 AudioPlayer.defaultProps = {
-    isSHowReportButton:false,
+    isShowReportButton:false,
     playingItemAddr: "",//正在播放的录音的地址
     getInvalidPhoneErrMsg: "",//获取无效电话失败的提示
     addingInvalidPhoneErrMsg: "",//上报无效电话时出错
