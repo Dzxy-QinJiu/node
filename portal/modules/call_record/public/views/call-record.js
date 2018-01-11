@@ -26,12 +26,9 @@ var hasPrivilege = require("../../../../components/privilege/checker").hasPrivil
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-import invalidPhone from "../../../../lib/utils/invalidPhone";
-//获取无效电话的列表
-var getInvalidPhoneLists = invalidPhone.getInvalidPhone;
-//设置某个电话为无效电话
-var addInvalidPhone = invalidPhone.addInvalidPhone;
-var AlertTimer = require("CMP_DIR/alert-timer");
+//获取无效电话的列表  设置某个电话为无效电话
+import {getInvalidPhone,addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
+import AudioPlayer from "CMP_DIR/audioPlayer";
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get("call.record.state.answer", "已接听"),
@@ -123,7 +120,7 @@ const CallRecord = React.createClass({
         $("body").css("overflow", "hidden");
         CallRecordStore.listen(this.onStoreChange);
         //获取无效电话号码列表
-        getInvalidPhoneLists((data)=>{
+        getInvalidPhone((data)=>{
             this.setState({
                 invalidPhoneLists:data.result,
                 getInvalidPhoneErrMsg:""
@@ -860,6 +857,7 @@ const CallRecord = React.createClass({
             LAYOUT_CONSTANTS.FIXED_THEAD -
             LAYOUT_CONSTANTS.TABLE_MARGIN_BOTTOM -
             LAYOUT_CONSTANTS.SUMMARY;
+        var isSHowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
@@ -940,30 +938,16 @@ const CallRecord = React.createClass({
                     */}
             <div className="audio-play-container">
                 {this.state.playingItemAddr ? (
-                    <div>
-                        <audio id="audio" width="320" controls="controls" autoplay="autoplay"
-                            src={this.state.playingItemAddr}>
-                        </audio>
-                        <i className="iconfont icon-close close-panel" onClick={this.closeAudioPlayContainer}></i>
-                        {/*如果获取无效电话出错时，不要显示上报电话区域*/}
-                        {this.state.getInvalidPhoneErrMsg ? null :
-                            <div className="report-wrap">
-                            <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
-                                {_.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ?
-                                    null:
-                                    <span className="report-button"
-                                          onClick={this.handleAddInvalidPhone}
-                                    >{Intl.get("call.record.report", "上报")}
-                                        {this.state.isAddingInvalidPhone ? <Icon type="loading"/> : null}
-                            </span>}
-                                {this.state.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
-                                                                                    message={this.state.addingInvalidPhoneErrMsg}
-                                                                                    type='error' showIcon
-                                                                                    onHide={this.hideErrTooltip}/>) : null
-                                }
-                        </div>}
-
-                    </div>
+                    <AudioPlayer
+                        playingItemAddr={this.state.playingItemAddr}
+                        getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
+                        addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
+                        isAddingInvalidPhone={this.state.isAddingInvalidPhone}
+                        isSHowReportButton={isSHowReportButton}
+                        closeAudioPlayContainer={this.closeAudioPlayContainer}
+                        handleAddInvalidPhone={this.handleAddInvalidPhone}
+                        hideErrTooltip={this.hideErrTooltip}
+                    />
                 ) : null
                 }
             </div>

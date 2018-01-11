@@ -22,11 +22,9 @@ import ModalDialog from "CMP_DIR/ModalDialog";
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import ajax from "../../ajax/contact-ajax";
-import invalidPhone from "../../../../../lib/utils/invalidPhone";
-//获取无效电话的列表
-var getInvalidPhoneLists = invalidPhone.getInvalidPhone;
-//设置某个电话为无效电话
-var addInvalidPhone = invalidPhone.addInvalidPhone;
+//获取无效电话的列表  设置某个电话为无效电话
+import {getInvalidPhone,addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
+import AudioPlayer from "CMP_DIR/audioPlayer";
 var classNames = require("classnames");
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -62,7 +60,7 @@ const CustomerRecord = React.createClass({
             this.getCustomerTraceList();
         });
         //获取无效电话号码列表
-        getInvalidPhoneLists((data)=>{
+        getInvalidPhone((data)=>{
             this.setState({
                 invalidPhoneLists:data.result,
                 getInvalidPhoneErrMsg:""
@@ -604,7 +602,8 @@ const CustomerRecord = React.createClass({
             } else {
                 divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_CLOSE - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
             }
-            var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr})
+            var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
+            var isSHowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
@@ -635,30 +634,16 @@ const CustomerRecord = React.createClass({
                          */}
                         <div className={cls}>
                             {this.state.playingItemAddr ? (
-                                <div>
-                                    <audio id="audio" controls="controls" autoplay="autoplay"
-                                           src={this.state.playingItemAddr}>
-                                    </audio>
-                                    <i className="iconfont icon-close close-panel"
-                                       onClick={this.closeAudioPlayContainer}></i>
-                                    {/*如果获取无效电话出错时，不要显示上报电话区域*/}
-                                    {this.state.getInvalidPhoneErrMsg ? null :
-                                        <div className="report-wrap">
-                                            <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
-                                            {_.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ?
-                                                null:
-                                                <span className="report-button"
-                                                      onClick={this.handleAddInvalidPhone}
-                                                >{Intl.get("call.record.report", "上报")}
-                                                    {this.state.isAddingInvalidPhone ? <Icon type="loading"/> : null}
-                            </span>}
-                                            {this.state.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
-                                                                                                message={this.state.addingInvalidPhoneErrMsg}
-                                                                                                type='error' showIcon
-                                                                                                onHide={this.hideErrTooltip}/>) : null
-                                            }
-                                        </div>}
-                                </div>
+                                <AudioPlayer
+                                    playingItemAddr={this.state.playingItemAddr}
+                                    getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
+                                    addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
+                                    isAddingInvalidPhone={this.state.isAddingInvalidPhone}
+                                    isSHowReportButton={isSHowReportButton}
+                                    closeAudioPlayContainer={this.closeAudioPlayContainer}
+                                    handleAddInvalidPhone={this.handleAddInvalidPhone}
+                                    hideErrTooltip={this.hideErrTooltip}
+                                />
                             ) : null
                             }
                         </div>

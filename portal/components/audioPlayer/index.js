@@ -1,0 +1,72 @@
+/**
+ * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by zhangshujuan on 2018/1/11.
+ */
+import {Icon} from "antd";
+var AlertTimer = require("CMP_DIR/alert-timer");
+require("./index.less");
+class AudioPlayer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isSHowReportButton: this.props.isSHowReportButton,//是否展示上报按钮
+            playingItemAddr: this.props.playingItemAddr//当前正在播放的录音的地址
+        };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isSHowReportButton !== this.props.isSHowReportButton) {
+            this.setState({
+                isSHowReportButton: nextProps.isSHowReportButton
+            });
+        }
+        if (nextProps.playingItemAddr !== this.props.playingItemAddr) {
+            this.setState({
+                playingItemAddr: nextProps.playingItemAddr
+            });
+        }
+    };
+    render() {
+        return (
+            <div className="audio-player-wrap">
+                <audio id="audio" width="320" controls="controls" autoplay="autoplay"
+                       src={this.state.playingItemAddr}>
+                </audio>
+                <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer}></i>
+                {/*如果获取无效电话出错时，不要显示上报电话区域*/}
+                {this.props.getInvalidPhoneErrMsg ? null :
+                    <div className="report-wrap">
+                        <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
+                        {this.state.isSHowReportButton ?
+                            null :
+                            <span className="report-button"
+                                  onClick={this.props.handleAddInvalidPhone}
+                            >{Intl.get("call.record.report", "上报")}
+                                {this.props.isAddingInvalidPhone ? <Icon type="loading"/> : null}
+                            </span>}
+                        {this.props.addingInvalidPhoneErrMsg ? (<AlertTimer time={2000}
+                                                                            message={this.props.addingInvalidPhoneErrMsg}
+                                                                            type='error' showIcon
+                                                                            onHide={this.props.hideErrTooltip}/>) : null
+                        }
+                    </div>}
+
+            </div>
+        )
+    }
+}
+AudioPlayer.defaultProps = {
+    isSHowReportButton:false,
+    playingItemAddr: "",//正在播放的录音的地址
+    getInvalidPhoneErrMsg: "",//获取无效电话失败的提示
+    addingInvalidPhoneErrMsg: "",//上报无效电话时出错
+    isAddingInvalidPhone: "",//正在添加无效电话
+    closeAudioPlayContainer: function () {
+    },
+    handleAddInvalidPhone: function () {
+    },
+    hideErrTooltip: function () {
+    }
+};
+export default AudioPlayer;

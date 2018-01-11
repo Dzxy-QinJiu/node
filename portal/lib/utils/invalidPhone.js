@@ -5,41 +5,40 @@
  */
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
-var invalidPhone = {
-    //获取无效电话
-    getInvalidPhone: function (onSuccess, onError) {
-        const route = _.find(routeList, route => route.handler === "getInvalidPhone");
-        const arg = {
-            url: route.path,
-            type: route.method,
-        };
-        ajax(arg).then(result => {
-            if (_.isFunction(onSuccess)){
-                onSuccess(result);
-            }
-        }, err => {
-            if (_.isFunction(onError)){
-                onError(err);
-            }
-        });
-    },
-    //添加为无效电话
-    addInvalidPhone: function (data, onSuccess, onError) {
-        const route = _.find(routeList, route => route.handler === "addInvalidPhone");
-        const arg = {
-            url: route.path,
-            type: route.method,
-            data
-        };
-        ajax(arg).then(result => {
-            if (_.isFunction(onSuccess)){
-                onSuccess(result);
-            }
-        }, err => {
-            if (_.isFunction(onError)){
-                onError(err);
-            }
-        });
-    }
+
+//获取无效电话
+exports.getInvalidPhone = function (onSuccess, onError) {
+    const route = _.find(routeList, route => route.handler === "getInvalidPhone");
+    const arg = {
+        url: route.path,
+        type: route.method,
+    };
+    ajax(arg).then(result => {
+        if (_.isFunction(onSuccess)) {
+            onSuccess(result);
+        }
+    }, err => {
+        if (_.isFunction(onError)) {
+            onError(err);
+        }
+    });
 };
-module.exports = invalidPhone;
+//添加为无效电话
+exports.addInvalidPhone = function (data, onSuccess, onError) {
+    const route = _.find(routeList, route => route.handler === "addInvalidPhone");
+    const arg = {
+        url: route.path,
+        type: route.method,
+        data
+    };
+    ajax(arg).then(result => {
+        if (_.isFunction(onSuccess)) {
+            onSuccess(result);
+        }
+    }, err => {
+        if (_.isFunction(onError)) {
+            onError(err);
+        }
+    });
+}
+
