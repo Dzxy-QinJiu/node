@@ -315,7 +315,17 @@ var ApplyTabContent = React.createClass({
             return (
                 <div className="searchbar clearfix">
                     {this.getUpdateTip()}
-                    <span className="pull-left">
+                    <div className="pull-left">
+                        <div className={searchBarClass}>
+                            <SearchInput
+                                type="input"
+                                className="form-control"
+                                searchPlaceHolder={Intl.get("user.apply.search.placeholder", "申请人/客户名/用户名")}
+                                searchEvent={this.changeSearchInputValue}
+                            />
+                        </div>
+                    </div>
+                    <span className="pull-right">
                             {
                                 UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? null : (
                                     <Dropdown overlay={menuList}>
@@ -327,16 +337,6 @@ var ApplyTabContent = React.createClass({
                                 )
                             }
                     </span>
-                    <div className="pull-right">
-                        <div className={searchBarClass}>
-                            <SearchInput
-                                type="input"
-                                className="form-control"
-                                searchPlaceHolder={Intl.get("user.apply.search.placeholder", "申请人/客户名/用户名")}
-                                searchEvent={this.changeSearchInputValue}
-                            />
-                        </div>
-                    </div>
                 </div>
             )
         }
