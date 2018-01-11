@@ -1878,6 +1878,10 @@ var en_US = {
     "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!",//日程功能上线了，赶快点开看看吧！
     "schedule.back.to.today":"Today",//今
     "schedule.no.item":"No data",//无待办
-    "schedule.phone.connect":"By phone"//电联
+    "schedule.phone.connect":"By phone",//电联
+    "call.record.get.invalid.phone.lists":"Failed to get invalid phone lists!",//获取无效电话列表失败
+    "call.record.customer.phone":"This is an invalid phone",//这是一个客服电话。
+    "call.record.report":"Report",//上报
+    "fail.report.phone.err.tip":"Failed to add invalid phone!"//上报无效电话失败！
 };
 export default en_US;

@@ -26,7 +26,9 @@ var hasPrivilege = require("../../../../components/privilege/checker").hasPrivil
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-
+//获取无效电话的列表  设置某个电话为无效电话
+import {getInvalidPhone,addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
+import AudioPlayer from "CMP_DIR/audioPlayer";
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get("call.record.state.answer", "已接听"),
@@ -106,12 +108,29 @@ const CallRecord = React.createClass({
             showTextEdit: {}, //展示跟进记录的编辑框
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            invalidPhoneLists:[],//无效电话列表
+            getInvalidPhoneErrMsg:"",//获取无效电话失败后的信息
+            playingItemPhone:"",//正在听的录音所属的电话号码
+            isAddingInvalidPhone:false,//正在添加无效电话
+            addingInvalidPhoneErrMsg:"",//添加无效电话出错的情况
         };
     },
 
     componentDidMount() {
         $("body").css("overflow", "hidden");
         CallRecordStore.listen(this.onStoreChange);
+        //获取无效电话号码列表
+        getInvalidPhone((data)=>{
+            this.setState({
+                invalidPhoneLists:data.result,
+                getInvalidPhoneErrMsg:""
+            })
+        },(err)=>{
+            this.setState({
+                invalidPhoneLists:[],
+                getInvalidPhoneErrMsg:err.msg || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
+            })
+        });
         this.getCallListByAjax();
         this.getCallRecommendList();
         this.changeTableHeight();
@@ -480,7 +499,8 @@ const CallRecord = React.createClass({
         var playItemAddr = "/record/" + urlObj.local + item.recording + urlObj.audioType;
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: playItemAddr
+            playingItemAddr: playItemAddr,
+            playingItemPhone: item.dst//正在播放的录音所属的电话号码
         }, () => {
             if ($(".audio-play-container").height() < 45) {
                 $(".audio-play-container").animate({ height: '45px' }).css("border", "2px solid #eee");
@@ -785,6 +805,7 @@ const CallRecord = React.createClass({
         this.setState({
             callRecord: this.state.callRecord,
             playingItemAddr: "",
+            playingItemPhone: ""
         });
         //隐藏播放窗口
         $(".audio-play-container").animate({ height: '0' }).css("border", "0");
@@ -801,12 +822,42 @@ const CallRecord = React.createClass({
             isShowCustomerUserListPanel: false
         })
     },
+    //上报客服电话
+    handleAddInvalidPhone:function(){
+        var curPhone = this.state.playingItemPhone;
+        if (!curPhone){
+            return;
+        }
+        this.setState({
+            isAddingInvalidPhone:true
+        });
+        addInvalidPhone({"phone": curPhone},()=>{
+            this.state.invalidPhoneLists.push(curPhone);
+            this.setState({
+                isAddingInvalidPhone:false,
+                invalidPhoneLists:this.state.invalidPhoneLists,
+                addingInvalidPhoneErrMsg:""
+            });
+        },(err)=>{
+            this.setState({
+                isAddingInvalidPhone:false,
+                addingInvalidPhoneErrMsg:err.msg || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
+            });
+        })
+    },
+    //提示框隐藏后的处理
+    hideErrTooltip:function () {
+      this.setState({
+          addingInvalidPhoneErrMsg:""
+      })
+    },
     render() {
         var scrollBarHeight = $(window).height() -
             LAYOUT_CONSTANTS.PADDING_TOP -
             LAYOUT_CONSTANTS.FIXED_THEAD -
             LAYOUT_CONSTANTS.TABLE_MARGIN_BOTTOM -
             LAYOUT_CONSTANTS.SUMMARY;
+        var isSHowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1 ;
         return (<RightContent>
             <div className="call_record_content">
                 <TopNav>
@@ -887,12 +938,16 @@ const CallRecord = React.createClass({
                     */}
             <div className="audio-play-container">
                 {this.state.playingItemAddr ? (
-                    <div>
-                        <audio id="audio" width="320" controls="controls" autoplay="autoplay"
-                            src={this.state.playingItemAddr}>
-                        </audio>
-                        <i className="iconfont icon-close close-panel" onClick={this.closeAudioPlayContainer}></i>
-                    </div>
+                    <AudioPlayer
+                        playingItemAddr={this.state.playingItemAddr}
+                        getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
+                        addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
+                        isAddingInvalidPhone={this.state.isAddingInvalidPhone}
+                        isSHowReportButton={isSHowReportButton}
+                        closeAudioPlayContainer={this.closeAudioPlayContainer}
+                        handleAddInvalidPhone={this.handleAddInvalidPhone}
+                        hideErrTooltip={this.hideErrTooltip}
+                    />
                 ) : null
                 }
             </div>
