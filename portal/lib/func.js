@@ -59,7 +59,13 @@ export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
         const areaCode = matched[1];
         const phoneCode = matched[2];
 
-        if (phoneCode.length === initialValue.length) {
+        if (
+            //在显示或添加状态下使用时
+            (!initialValue && phoneCode.length > 6)
+            ||
+            //在编辑状态下使用时
+            (phoneCode.length === initialValue.length)
+        ) {
             value = areaCode + "-" + phoneCode;
         }
     }
