@@ -132,7 +132,7 @@ OplateCustomerAnalysisStore.prototype.getAnalysisData = function(result) {
         analysis.data = [];
     } else if(result.error) {
         analysis.resultType = 'error';
-        analysis.errorMsg = result.errorMsg;
+        analysis.errorMsg = result.errorMsg || Intl.get("contract.111", "获取数据失败");
         analysis.data = [];
     } else {
         analysis.resultType = '';

@@ -3,7 +3,6 @@
  */
 var echarts = require("echarts-eefung");
 require("./style.less");
-var Spinner = require("../spinner");
 var macronsTheme = require("./theme-macrons");
 var immutable = require("immutable");
 const querystring = require("querystring");
@@ -85,36 +84,25 @@ var FunnelChart = React.createClass({
         if(this.echartInstance) {
             try {this.echartInstance.dispose()} catch(e){};
         }
-        if(this.props.resultType === 'loading') {
-            return;
-        }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
-        if(_.isEmpty(this.props.chartData)) {
-            if(this.echartInstance) {
-                try {this.echartInstance.dispose()} catch(e){};
-            }
-            $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
-        } else {
-            $(this.refs.chart).find(".nodata").remove();
-            var options = this.getEchartOptions();
-            this.echartInstance.setOption(options,true);
-            const jumpProps = this.props.jumpProps;
-            if (jumpProps) {
-                this.echartInstance.on("click", params => {
-                    Trace.traceEvent(params.event.event,"跳转到'" + params.name + "'用户列表");
-                    let query = {
-                        app_id: this.props.app_id,
-                        login_begin_date: this.props.startTime,
-                        login_end_date: this.props.endTime,
-                        analysis_filter_value: params.name,
+        var options = this.getEchartOptions();
+        this.echartInstance.setOption(options, true);
+        const jumpProps = this.props.jumpProps;
+        if (jumpProps) {
+            this.echartInstance.on("click", params => {
+                Trace.traceEvent(params.event.event, "跳转到'" + params.name + "'用户列表");
+                let query = {
+                    app_id: this.props.app_id,
+                    login_begin_date: this.props.startTime,
+                    login_end_date: this.props.endTime,
+                    analysis_filter_value: params.name,
 
-                    };
-                    if (jumpProps.query) _.extend(query, jumpProps.query);
+                };
+                if (jumpProps.query) _.extend(query, jumpProps.query);
 
-                    //跳转到用户列表
-                    window.open(jumpProps.url + "?" + querystring.stringify(query));
-                });
-            }
+                //跳转到用户列表
+                window.open(jumpProps.url + "?" + querystring.stringify(query));
+            });
         }
     },
     componentDidMount : function() {
@@ -140,16 +128,7 @@ var FunnelChart = React.createClass({
     render : function() {
         return (
             <div className="analysis-chart" ref="wrap" style={{width:this.props.width, float:"left"}}>
-                {this.props.resultType === 'loading'?
-                    (
-                        <div className="loadwrap" style={{height:this.props.height}}>
-                            <Spinner/>
-                        </div>
-                    ):
-                    (
-                        <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
-                    )
-                }
+                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );
     }

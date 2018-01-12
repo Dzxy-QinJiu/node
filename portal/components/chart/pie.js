@@ -3,7 +3,6 @@
  */
 var echarts = require("echarts-eefung");
 require("./style.less");
-var Spinner = require("../spinner");
 var macronsTheme = require("./theme-macrons");
 var echartsTooltipCssText = require("../../lib/utils/echarts-tooltip-csstext");
 var immutable = require("immutable");
@@ -166,18 +165,8 @@ var PieChart = React.createClass({
         }
         var _this = this;
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
-        var chartData = this.props.chartData? JSON.parse(JSON.stringify(this.props.chartData)) : [];
-        if (this.props.dataField) chartData = chartData[this.props.dataField];
-        if (_.isEmpty(chartData)) {
-            if(this.echartInstance) {
-                try {_this.echartInstance.dispose()} catch(e){};
-            }
-            $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
-        } else {
-            $(this.refs.chart).find(".nodata").remove();
-            var options = this.getEchartOptions();
-            this.echartInstance.setOption(options,true);
-        }
+        var options = this.getEchartOptions();
+        this.echartInstance.setOption(options,true);
     },
     componentDidMount : function() {
         this.renderChart();
@@ -205,18 +194,7 @@ var PieChart = React.createClass({
         var _this = this;
         return (
             <div className="analysis-chart">
-                {this.props.resultType === 'loading'?
-                    (
-                        <div className="loadwrap" style={{height:this.props.height}}>
-                            <Spinner/>
-                        </div>
-                    ):
-                    (
-                        <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
-                        </div>
-                    )
-                }
+                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );
     }
