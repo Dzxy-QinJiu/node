@@ -57,14 +57,14 @@ var CrmFilter = React.createClass({
         ];
 
         return (
-            <div className="block search-input-select-block" data-tracename="筛选客户">
+            <div className="block search-input-select-block" data-tracename="搜索和筛选客户">
                 <SearchInput
                     ref="searchInput"
                     type="select"
                     searchFields={searchFields}
                     searchEvent={this.searchEvent}
                 />
-                <Button type="ghost" onClick={this.togglePanel}>
+                <Button type="ghost" onClick={this.togglePanel} data-tracename="点击筛选按钮">
                     {Intl.get("common.filter", "筛选")} { this.state.isPanelShow ? <Icon type="up"/> : <Icon type="down"/> }
                 </Button>
             </div>

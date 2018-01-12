@@ -18,6 +18,7 @@ import Translate from '../../intl/i18nTemplate';
 import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
 import logoSrc from "./notification.png";
 import userData from "../user-data";
+import Trace from "LIB_DIR/trace";
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -233,7 +234,8 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    console.log("后端推送", phonemsgObj);
+    // console.log("后端推送", phonemsgObj);
+    Trace.traceEvent("电话弹屏", '弹出电话弹屏');
     if (hasPrivilege("CRM_LIST_CUSTOMERS")) {
         ReactDOM.render(
             <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}

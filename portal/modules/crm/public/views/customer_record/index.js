@@ -153,7 +153,7 @@ const CustomerRecord = React.createClass({
         this.getCustomerTraceList();
     },
     saveAddTraceContent: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击确认添加跟进记录内容按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击模态框的确认按钮");
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
         if (this.state.saveButtonType == 'add') {
@@ -267,7 +267,7 @@ const CustomerRecord = React.createClass({
     //点击保存按钮，展示模态框
     showModalDialog: function (item) {
         if (item.id) {
-            Trace.traceEvent(this.getDOMNode(), "保存补充客户跟进内容下的保存按钮，编辑状态的跟进记录的ID为" + item.id + "跟进记录的时间为" + moment(item.time).format(oplateConsts.DATE_TIME_FORMAT));
+            Trace.traceEvent(this.getDOMNode(), "点击补充客户跟进内容下的保存按钮");
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = $.trim(this.state.detailContent);
             if (detail) {
@@ -284,7 +284,7 @@ const CustomerRecord = React.createClass({
                 });
             }
         } else {
-            Trace.traceEvent(this.getDOMNode(), "保存新添加的跟进内容");
+            Trace.traceEvent(this.getDOMNode(), "点击新添加跟进内容下的保存按钮");
             //点击顶部输入框下的保存按钮
             var addcontent = $.trim(this.state.inputContent);
             if (addcontent) {
@@ -315,8 +315,7 @@ const CustomerRecord = React.createClass({
                     <textarea className="add-content-input" id="add-content-input" type="text"
                               placeholder={Intl.get("customer.input.customer.trace.content", "请填写客户跟进记录内容")}
                               onFocus={this.inputOnFocus}
-                              onChange={this.handleInputChange} value={this.state.inputContent}
-                              data-tracename="填写跟进记录内容"/>
+                              onChange={this.handleInputChange} value={this.state.inputContent}/>
                     {this.state.addErrTip ?
                         <AlertTimer
                             time={2000}
@@ -653,7 +652,7 @@ const CustomerRecord = React.createClass({
         }
     },
     hideModalDialog: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"), "点击取消添加跟进记录内容按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"), "关闭模态框");
         CustomerRecordActions.setModalDialogFlag(false);
     },
     render: function () {
