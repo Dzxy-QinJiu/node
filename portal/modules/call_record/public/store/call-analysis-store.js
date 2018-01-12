@@ -23,6 +23,18 @@ CallAnalysisStore.prototype.setInitState = function () {
         data: [], //数据列表
         errMsg: ''  // 获取失败的提示
     };
+    // 获取通话总次数TOP10的数据
+    this.callTotalCountObj = {
+        loading: false,
+        data: [],
+        errMsg: ''
+    };
+    // 获取通话总时长TOP10的数据
+    this.callTotalTimeObj = {
+        loading: false,
+        data: [],
+        errMsg: ''
+    };
     // 获取通话数量和通话时长趋势图统计
     this.callList = {
         loading: false, // loading
@@ -81,6 +93,37 @@ CallAnalysisStore.prototype.getCallDurTopTen = function (result) {
                 data = [];
             }
             callDurList.data = data;
+        }
+    }
+};
+// 获取通话总次数TOP10的数据
+CallAnalysisStore.prototype.getCallTotalList = function (dataObj) {
+    let callTotalCountObj = this.callTotalCountObj;
+    let callTotalTimeObj = this.callTotalTimeObj;
+    callTotalCountObj.loading = dataObj.loading;
+    callTotalTimeObj.loading = dataObj.loading;
+    if (dataObj.error) {
+        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.count.failed", "获取通话总次数TOP10失败");
+        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get("call.analysis.total.time.failed", "获取通话总时长TOP10失败");
+    } else {
+        callTotalCountObj.errMsg = '';
+        callTotalTimeObj.errMsg = '';
+        if (dataObj.resData) {
+            let data = dataObj.resData.list;
+            if (_.isObject(data)) {
+                if (_.isArray(data.sum) && data.sum.length) {//总时长
+                    callTotalTimeObj.data = data.sum;
+                } else {
+                    callTotalTimeObj.data = [];
+                }
+            }
+            if (_.isObject(data)) {
+                if (_.isArray(data.count) && data.count.length) {//总次数
+                    callTotalTimeObj.data = data.count;
+                } else {
+                    callTotalTimeObj.data = [];
+                }
+            }
         }
     }
 };

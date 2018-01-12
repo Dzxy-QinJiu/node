@@ -81,6 +81,7 @@ exports.getCallRate = function (reqData, reqBody, type) {
     });
     return Deferred.promise();
 };
+
 //获取通话时段（数量和时长）的统计数据
 let callIntervalAjax = null;
 exports.getCallIntervalData = function (authType, reqData) {
@@ -102,6 +103,28 @@ exports.getCallIntervalData = function (authType, reqData) {
     });
     return Deferred.promise();
 };
+//获取通话总次数、总时长Top10列表
+let callTotalAjax = null;
+exports.getCallTotalList = function (authType, reqData) {
+    callTotalAjax && callTotalAjax.abort();
+    var Deferred = $.Deferred();
+    callTotalAjax = $.ajax({
+        url: `/rest/call/total/count_time/${authType}`,
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
 
 // 获取团队信息
 exports.getSaleGroupTeams = function (reqData) {

@@ -26,6 +26,8 @@ const restApis = {
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     //获取通话时间段(数量\时长)的统计数据, authType = manager管理员（可以查看所有团队的数据），user:销售（只能看我的及我的下级团队的数据）
     getCallIntervalData: '/rest/callrecord/v2/callrecord/query/:authType/call_record/statistic',
+    //获取通话总次数、总时长Top10
+    getCallTotalList: '/rest/callrecord/v2/callrecord/query/:authType/call_record/top'
 };
 
 // 获取单次通话时长为top10的数据
@@ -154,6 +156,16 @@ exports.getCallIntervalData = function (req, res, reqQuery) {
         }, reqQuery);
 };
 
+// 获取通话总次数、总时长为top10的数据
+exports.getCallTotalList = function (req, res, reqQuery) {
+    console.log(reqQuery);
+    return restUtil.authRest.get(
+        {
+            url: restApis.getCallTotalList.replace(":authType", req.params.authType),
+            req: req,
+            res: res
+        }, reqQuery);
+};
 
 // 获取团队信息
 exports.getSaleGroupTeams = function (req, res, params) {

@@ -63,6 +63,13 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
+        }, { // 获取通话总次数、总时长为top10的数据
+            "method": "get",
+            "path": "/rest/call/total/count_time/:authType",
+            "handler": "getCallTotalList",
+            "passport": {
+                "needLogin": true
+            }
         }
     ]
 };
