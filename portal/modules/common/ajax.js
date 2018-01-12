@@ -39,6 +39,7 @@ export default function (arg) {
             Deferred.resolve(result);
         },
         error: function (errorMsg) {
+            //返回错误对象中有时候没有responseJSON属性
             Deferred.reject(errorMsg.responseText || errorMsg.responseJSON);
         }
     });

@@ -112,16 +112,12 @@ const Analysis = React.createClass({
             this.getData();
         });
     },
-    retrygetData(){
+    retryGetData(){
        this.getData();
     },
     getData(props = this.props) {
 
-        this.setState({
-            chartData: [],
-            resultType: "loading",
-            resultErrorMsg:""
-        });
+        this.setState({resultType: "loading"});
         if (_.isFunction(props.processData)){
             props.processData([],"loading");
         }
@@ -201,7 +197,7 @@ const Analysis = React.createClass({
         });
     },
     //加载完毕后，并且没有出错时
-    renderAfterLoadingAndNoerr(chartType, props){
+    renderAfterLoadingAndNoErr(chartType, props){
         const dataField = this.props.dataField;
         const dataField2 = this.props.dataField2;
         var initialChartData = this.props.chartData || this.state.chartData;
@@ -230,7 +226,7 @@ const Analysis = React.createClass({
         }else if(this.state.resultType === "error") {
             //加载完成，出错的情况
             var errMsg = <div className="err-tip">{this.state.resultErrorMsg}
-                <a onClick={this.retrygetData}>
+                <a onClick={this.retryGetData}>
                   {Intl.get("user.info.retry", "请重试")}
                </a>
                </div>;
@@ -251,7 +247,7 @@ const Analysis = React.createClass({
         }else{
             return (
                 <div>
-                    {this.renderAfterLoadingAndNoerr(chartType, props)}
+                    {this.renderAfterLoadingAndNoErr(chartType, props)}
                 </div>
             );
         }
