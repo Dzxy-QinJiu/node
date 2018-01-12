@@ -52,14 +52,22 @@ export const parseAmount = function (amount) {
 }
 
 //在电话号码区号与号码之间加横线分隔
-export const addHyphenToPhoneNumber = function (value = "") {
-    const matched = value.toString().match(/^(010|02\d|0[^12]\d{2})(\d*)$/);
+export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
+    const matched = value.toString().match(/^(010|02\d|0[^012]\d{2})(\d*)$/);
 
     if (matched) {
         const areaCode = matched[1];
         const phoneCode = matched[2];
 
-        value = areaCode + "-" + phoneCode;
+        if (
+            //在显示或添加状态下使用时
+            (!initialValue && /^[078]$/.test(phoneCode.length))
+            ||
+            //在编辑状态下使用时
+            (initialValue && phoneCode.length === initialValue.length)
+        ) {
+            value = areaCode + "-" + phoneCode;
+        }
     }
 
     return value;
