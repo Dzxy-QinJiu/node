@@ -53,7 +53,7 @@ export const parseAmount = function (amount) {
 
 //在电话号码区号与号码之间加横线分隔
 export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
-    const matched = value.toString().match(/^(010|02\d|0[^12]\d{2})(\d*)$/);
+    const matched = value.toString().match(/^(010|02\d|0[^012]\d{2})(\d*)$/);
 
     if (matched) {
         const areaCode = matched[1];
@@ -61,7 +61,7 @@ export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
 
         if (
             //在显示或添加状态下使用时
-            (!initialValue && phoneCode.length > 6)
+            (!initialValue && phoneCode.length > 6 && phoneCode.length < 9)
             ||
             //在编辑状态下使用时
             (phoneCode.length === initialValue.length)
