@@ -111,17 +111,17 @@ CallAnalysisStore.prototype.getCallTotalList = function (dataObj) {
         if (dataObj.resData) {
             let data = dataObj.resData.list;
             if (_.isObject(data)) {
-                if (_.isArray(data.sum) && data.sum.length) {//总时长
+                //总时长
+                if (_.isArray(data.sum) && data.sum.length) {
                     callTotalTimeObj.data = data.sum;
                 } else {
                     callTotalTimeObj.data = [];
                 }
-            }
-            if (_.isObject(data)) {
-                if (_.isArray(data.count) && data.count.length) {//总次数
-                    callTotalTimeObj.data = data.count;
+                //总次数
+                if (_.isArray(data.count) && data.count.length) {
+                    callTotalCountObj.data = data.count;
                 } else {
-                    callTotalTimeObj.data = [];
+                    callTotalCountObj.data = [];
                 }
             }
         }

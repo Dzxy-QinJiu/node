@@ -264,7 +264,6 @@ var CallRecordAnalyis = React.createClass({
         let authType = this.getCallInfoAuth();
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
         let callTotalAuth = this.getCallTotalAuth();
-        queryParams.filter_phone = true;//过滤114
         CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
     },
     componentWillUnmount: function () {
