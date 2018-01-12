@@ -11,7 +11,7 @@ let instanceMap = {};
 class PhoneInput extends React.Component {
     componentDidMount() {
         //创建实例对象，用以存储该实例相关的临时数据
-        instanceMap[this.props.id] = {};
+        instanceMap[this.props.id] = { initialValue: this.props.initialValue };
     }
 
     componentWillUnmount() {
@@ -118,7 +118,7 @@ const options = {
             }
             
             if (_.indexOf(instance.lastValue, "-") === -1) {
-                currentValue = addHyphenToPhoneNumber(currentValue);
+                currentValue = addHyphenToPhoneNumber(currentValue, instance.initialValue);
             }
 
             instance.lastValue = instance.changedFields[props.id].value = currentValue;
