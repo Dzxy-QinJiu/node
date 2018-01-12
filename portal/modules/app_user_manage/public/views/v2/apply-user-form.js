@@ -296,15 +296,15 @@ const ApplyUserForm = React.createClass({
                                         <div className="app-tab-pane col-24">
                                             <FormItem
                                                 label={Intl.get("user.open.cycle", "开通周期")}
-                                                labelCol={{span: 4}}
-                                                wrapperCol={{span: 20}}
+                                                labelCol={{span: 5}}
+                                                wrapperCol={{span: 19}}
                                             >
                                                 {this.renderUserTimeRangeBlock(timePickerConfig)}
                                             </FormItem>
                                             <FormItem
                                                 label={Intl.get("user.expire.select", "到期可选")}
-                                                labelCol={{span: 4}}
-                                                wrapperCol={{span: 20}}
+                                                labelCol={{span: 5}}
+                                                wrapperCol={{span: 19}}
                                             >
                                                 <RadioGroup onChange={this.onOverDraftChange}
                                                             value={appFormData.over_draft.toString()}>

@@ -364,8 +364,8 @@ const ApplyUserForm = React.createClass({
                                                 <div className="app-tab-pane col-22">
                                                     <FormItem
                                                         label={Intl.get("user.batch.open.count", "开通个数")}
-                                                        labelCol={{span: 4}}
-                                                        wrapperCol={{span: 20}}
+                                                        labelCol={{span: 5}}
+                                                        wrapperCol={{span: 19}}
                                                     >
                                                         <InputNumber
                                                             prefixCls={this.state.onlyOneUser ? "number-error-border ant-input-number" : "ant-input-number"}
@@ -379,15 +379,15 @@ const ApplyUserForm = React.createClass({
                                                             {Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}
                                                     <FormItem
                                                         label={Intl.get("user.open.cycle", "开通周期")}
-                                                        labelCol={{span: 4}}
-                                                        wrapperCol={{span: 20}}
+                                                        labelCol={{span: 5}}
+                                                        wrapperCol={{span: 19}}
                                                     >
                                                         {this.renderUserTimeRangeBlock(timePickerConfig)}
                                                     </FormItem>
                                                     <FormItem
                                                         label={Intl.get("user.expire.select", "到期可选")}
-                                                        labelCol={{span: 4}}
-                                                        wrapperCol={{span: 20}}
+                                                        labelCol={{span: 5}}
+                                                        wrapperCol={{span: 19}}
                                                     >
                                                         <RadioGroup onChange={this.onOverDraftChange}
                                                                     value={appFormData.over_draft.toString()}>
