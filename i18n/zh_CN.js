@@ -227,11 +227,11 @@ var zh_CN = {
     "login.send_phone_or_email_verification_code": "发送手机/邮箱验证码",
     "login.verify_phone_or_email_verification_code": "验证{contactTypeName}验证码",
     "login.return_to_login_page": "返回登录页",
-    "login.scan.qrcode.login":"扫码登录",
-    "login.account.login":"账户登录",
+    "login.scan.qrcode.login": "扫码登录",
+    "login.account.login": "账户登录",
     "login.qrcode.scan.tip": "请使用{appName}扫描二维码安全登录",
-    "login.ketao.app.name":"客套APP",
-    "login.load.ketao.tip":"下载客套APP安卓端",
+    "login.ketao.app.name": "客套APP",
+    "login.load.ketao.tip": "下载客套APP安卓端",
     "login.scan.ketao.qrcode.tip": "扫码下载客套APP安卓端",
     "login.qrcode.loading": "正在获取二维码...",
 
@@ -922,6 +922,14 @@ var zh_CN = {
     "call.time.export.statistic": "点击导出通话时长统计",
     "call.record.filter.customer": "客户电话",
     // 通话记录end
+
+    //通话分析-start
+    "call.analysis.total.count": "通话总次数",
+    "call.analysis.total.time": "通话总时长",
+    "call.analysis.total.count.failed": "获取通话总次数TOP10失败",
+    "call.analysis.total.time.failed": "获取通话总时长TOP10失败",
+    //通话分析-end
+
     // 用户审批start
     "user.apply.list": "申请列表",
     "user.apply.search.placeholder": "申请人/客户名/用户名",
@@ -1448,7 +1456,7 @@ var zh_CN = {
     "sales.home.phone.callout.success": "成功呼出",
     "sales.home.phone.callout.rate": "呼出接通率",
     "sales.home.call.cout": "通话数量",
-    "sales.home.call.top.ten": "单次通话时长TOP10：",
+    "sales.home.call.top.ten": "单次通话时长",
     //销售首页-新增用户分析
     "sales.user.analysis": "用户分析",
     "user.analysis.total": "用户统计",
@@ -1602,7 +1610,7 @@ var zh_CN = {
     "errorcode.8": "获取登录日志失败",
     "errorcode.9": "该邮箱已激活，无需重复激活",
     "errorcode.10": "已发送过激活邮件了，无需重复发送",
-    "errorcode.11":"登录失败,请刷新后重试",
+    "errorcode.11": "登录失败,请刷新后重试",
     "errorcode.13": "成员授权失败",
     "errorcode.14": "密码验证错误",
     "errorcode.15": "添加用户失败",
@@ -1916,15 +1924,15 @@ var zh_CN = {
     "schedule.management.schedule.content": "日程内容",
     "schedule.todo.list": "待办",
     "schedule.has.finished": "已完成",
-    "schedule.tip.intro.message":"日程功能上线了，赶快点开看看吧！",
-    "schedule.back.to.today":"今",
-    "schedule.no.item":"无待办",
-    "schedule.phone.connect":"电联",
-    "call.record.get.invalid.phone.lists":"获取无效电话列表失败",
-    "call.record.customer.phone":"这是一个客服电话。",
-    "call.record.report":"上报",
-    "fail.report.phone.err.tip":"上报无效电话失败！",
-    "user.info.no.email":"该用户没有邮箱，{add-email}",
-    "user.info.add.email":"添加邮箱"
+    "schedule.tip.intro.message": "日程功能上线了，赶快点开看看吧！",
+    "schedule.back.to.today": "今",
+    "schedule.no.item": "无待办",
+    "schedule.phone.connect": "电联",
+    "call.record.get.invalid.phone.lists": "获取无效电话列表失败",
+    "call.record.customer.phone": "这是一个客服电话。",
+    "call.record.report": "上报",
+    "fail.report.phone.err.tip": "上报无效电话失败！",
+    "user.info.no.email": "该用户没有邮箱，{add-email}",
+    "user.info.add.email": "添加邮箱"
 };
 export default zh_CN;

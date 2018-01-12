@@ -910,6 +910,14 @@ var en_US = {
     "call.time.export.statistic": "Click export time statistics",//点击导出通话时长统计
     "call.record.filter.customer": "Customer phone",//客户电话
     // 通话记录end
+    //通话分析-start
+    "call.analysis.total.count": "Total number of calls ",//通话总次数
+    "call.analysis.total.time": "Duration of call ",//通话总时长
+    "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
+    "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
+    //通话分析-end
+
+
     // 用户审批start
     "user.apply.list": "Apply List ", //申请列表
     "user.apply.search.placeholder": "presenter/customer/username", // 申请人/客户名/用户名
@@ -1417,7 +1425,7 @@ var en_US = {
     "sales.home.phone.callout.rate": "Call out completing rate",//呼出接通率@
     "sales.home.phone.billing.time": "The billing time (minutes)",//计费时长(分钟)
     "sales.home.call.cout": "Count", // 通话数量
-    "sales.home.call.top.ten": "TOP10(single call)", // 单次通话时长TOP10
+    "sales.home.call.top.ten": "Single call duration", // 单次通话时长
 
     //销售首页-新增用户分析
     "sales.user.analysis": "User Analysis",//用户分析@

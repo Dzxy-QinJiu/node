@@ -151,7 +151,7 @@ var CallRecordAnalyis = React.createClass({
             reqBody = this.getTeamMemberParam();
         }
         if (params) {
-            if (params.deviceType  && params.deviceType != 'all') {
+            if (params.deviceType && params.deviceType != 'all') {
                 reqBody.deviceType = params && params.deviceType || this.state.callType;
             }
         }
@@ -201,7 +201,7 @@ var CallRecordAnalyis = React.createClass({
             sort_field: 'billsec',
             sort_order: 'descend'
         };
-        CallAnalysisAction.getCallDurTopTen(topParam, reqBody);
+        CallAnalysisAction.getCallDurTopTen(topParam, reqBody);// 单次通话时长TOP10
     },
 
     // 114占比，与时间、所选团队和成员有关系
@@ -218,10 +218,14 @@ var CallRecordAnalyis = React.createClass({
         let reqBody = this.getCallAnalysisBodyParam(params);
         this.getCallAnalysisTrendData(reqBody); // 趋势图
         this.getCallInfoData(params); // 接通率
-        this.getCallDurTopTen(reqBody); // TOP10
+        //获取单次通话时长TOP10的统计数据
+        this.getCallDurTopTen(reqBody);
         this.getCallRate(reqBody); // 114占比
         this.getCallRate({...reqBody, filter_invalid_phone: "false"}); //客服电话统计
-        this.getCallIntervalData(reqBody);//获取通话时段（数量和时长）的统计数据
+        //获取通话时段（数量和时长）、总次数、总时长的统计数据
+        this.getCallIntervalTotalData(reqBody);
+
+
     },
     //获取通话时段（数量和时长）的参数
     getCallIntervalParams: function (params) {
@@ -246,11 +250,21 @@ var CallRecordAnalyis = React.createClass({
         }
         return authType;
     },
-    //获取通话时段的统计数据
-    getCallIntervalData(params){
+    //通话总次数和总时长统计权限
+    getCallTotalAuth(){
+        let authType = "user";//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
+        if (hasPrivilege("CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER")) {
+            authType = "manager";
+        }
+        return authType;
+    },
+    //获取通话时段、总次数、总时长的统计数据
+    getCallIntervalTotalData(params){
         let queryParams = this.getCallIntervalParams(params);
         let authType = this.getCallInfoAuth();
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
+        let callTotalAuth = this.getCallTotalAuth();
+        CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
     },
     componentWillUnmount: function () {
         CallAnalysisStore.unlisten(this.onStoreChange);
@@ -559,8 +573,8 @@ var CallRecordAnalyis = React.createClass({
         ].join('<br />');
     },
 
-    // TOP10数据列表
-    getCallDurTopColumn(){
+    // TOP10数据列表titleObj={title:"通话时长",dataKey:"billsec"}
+    getCallDurTopColumn(titleObj){
         return [
             {
                 title: Intl.get("common.phone", "电话"),
@@ -569,13 +583,13 @@ var CallRecordAnalyis = React.createClass({
                 className: 'table-data-align-right',
                 key: 'call_number'
             }, {
-                title: Intl.get("call.record.call.duration", "通话时长"),
-                dataIndex: 'billsec',
+                title: titleObj.title,
+                dataIndex: titleObj.dataKey,
                 width: '100',
                 className: 'table-data-align-right',
                 key: 'holding_time',
-                render: function (billsec) {
-                    return <div>{TimeUtil.getFormatTime(billsec)}</div>;
+                render: function (data) {
+                    return <div>{titleObj.dataKey === "count" ? data : TimeUtil.getFormatTime(data)}</div>;
                 }
             }, {
                 title: Intl.get("call.record.customer", "客户"),
@@ -611,32 +625,32 @@ var CallRecordAnalyis = React.createClass({
         );
     },
 
-    // 渲染单次通话时长为top10的列表
-    renderCallDurTopTen(){
-        if (this.state.callDurList.loading) {
-            return (
-                <Spinner />
-            );
-        }
-        if (this.state.callDurList.errMsg) {
-            return (
-                <div className="alert-wrap">
-                    <Alert
-                        message={this.state.callDurList.errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        }
+    /* 渲染单次通话时长、总时长、总次数为top10的列表
+     * titleObj={title:"通话时长",dataKey:"billsec"}
+     */
+    renderCallTopTen(dataObj, titleObj){
         return (
-            <AntcTable
-                dataSource={this.state.callDurList.data}
-                columns={this.getCallDurTopColumn()}
-                pagination={false}
-                bordered
-            />
-        );
+            <div className="call-top  col-xs-6">
+                <div className="call-duration-top-ten">
+                    <div className="call-duration-title">
+                        {titleObj.title}TOP10:
+                    </div>
+                    {dataObj.loading ? <Spinner /> : dataObj.errMsg ? (
+                        <div className="alert-wrap">
+                            <Alert
+                                message={titleObj.errMsg}
+                                type="error"
+                                showIcon={true}
+                            />
+                        </div>
+                    ) : <AntcTable
+                        dataSource={dataObj.data}
+                        columns={this.getCallDurTopColumn(titleObj)}
+                        pagination={false}
+                        bordered
+                    />}
+                </div>
+            </div>);
     },
 
     // 114占比
@@ -719,16 +733,23 @@ var CallRecordAnalyis = React.createClass({
                 <GeminiScrollBar>
                     <div className="call-info col-xs-12">{this.renderCallInfo()}</div>
                     <div className="col-xs-12">
-                        {/**通话率*/}
-                        <div className="call-top  col-xs-6">
-                            <div className="call-duration-top-ten">
-                                <div className="call-duration-title">
-                                    {Intl.get("sales.home.call.top.ten", "单次通话时长TOP10：")}
-                                </div>
-                                {this.renderCallDurTopTen()}
-                            </div>
-                        </div>
-                        {/**TOP10*/}
+                        {/*根据电话的排序的通话次数TOP10*/}
+                        {this.renderCallTopTen(this.state.callTotalCountObj, {
+                            title: Intl.get("call.analysis.total.count", "通话总次数"),
+                            dataKey: "count"
+                        })}
+                        {/*根据电话的排序的通话总时长TOP10*/}
+                        {this.renderCallTopTen(this.state.callTotalTimeObj, {
+                            title: Intl.get("call.analysis.total.time", "通话总时长"),
+                            dataKey: "sum"
+                        })}
+                    </div>
+                    <div className="col-xs-12">
+                        {/*根据电话的排序的单次通话时长TOP10*/}
+                        {this.renderCallTopTen(this.state.callDurList, {
+                            title: Intl.get("sales.home.call.top.ten", "单次通话时长"),
+                            dataKey: "billsec"
+                        })}
                         <div className="call-service-rate col-xs-6">
                             <div className="call-rate">
                                 <div className="call-rate-title">
