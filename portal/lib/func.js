@@ -61,10 +61,10 @@ export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
 
         if (
             //在显示或添加状态下使用时
-            (!initialValue && phoneCode.length > 6 && phoneCode.length < 9)
+            (!initialValue && /^[078]$/.test(phoneCode.length))
             ||
             //在编辑状态下使用时
-            (phoneCode.length === initialValue.length)
+            (initialValue && phoneCode.length === initialValue.length)
         ) {
             value = areaCode + "-" + phoneCode;
         }
