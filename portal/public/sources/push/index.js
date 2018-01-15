@@ -19,7 +19,6 @@ import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
 import logoSrc from "./notification.png";
 import userData from "../user-data";
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
-import {SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts"
 var NotificationType = {};
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
