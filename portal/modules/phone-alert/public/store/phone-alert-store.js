@@ -45,7 +45,7 @@ PhoneAlertStore.prototype.getCustomerByPhone = function (result) {
         this.isGettingCustomer = false;
         this.getCustomerErrMsg = "";
         this.customerInfoArr = crmStore.processForList(result.data.result);
-        if (!(result.data.total)){
+        if (result.data.result.length === 0){
             //此客户不存在，需要添加客户
             this.addCustomer = true;
         }
