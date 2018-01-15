@@ -195,7 +195,7 @@ exports.refreshCaptcha = function (req, res) {
         res.status(400).send("need username parameter");
         return;
     }
-    DesktopLoginService.refreshLoginCaptcha(req, res, username, appToken, type).on("success", function (data) {
+    DesktopLoginService.refreshLoginCaptcha(req, res, username, type).on("success", function (data) {
         res.status(200).json(data ? data.data : "");
     }).on("error", function (errorObj) {
         res.status(500).json(errorObj && errorObj.message);
@@ -271,7 +271,7 @@ exports.resetPassword = function (req, res) {
 
 //获取扫描登录的二维码
 exports.getLoginQRCode = function (req, res) {
-    DesktopLoginService.getLoginQRCode(req, res, appToken).on("success", function (data) {
+    DesktopLoginService.getLoginQRCode(req, res).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (errorObj) {
         res.status(500).json(errorObj);
