@@ -43,6 +43,8 @@ var LoginForm = React.createClass({
         }
         //记住登录名
         localStorage.setItem("last_login_name", userName);
+        //客户分析,第一次登录的时候，默认展示全部应用
+        localStorage.setItem("customer_analysis_stored_app_id", "all");
         //获取输入的密码
         var value = this.refs.password_input.value;
         if (!value) {
