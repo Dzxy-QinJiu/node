@@ -21,6 +21,7 @@ var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require("../../public/sources/history");
 import ModalIntro from "../modal-intro";
 import CONSTS from  "LIB_DIR/consts";
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 /**
@@ -568,7 +569,7 @@ var NavSidebar = React.createClass({
                         {_this.getUserInfoBlock()}
                     </div>
                 </div>
-                {this.state.isShowIntroModal ? <ModalIntro
+                {this.state.isShowIntroModal && hasPrivilege("MEMBER_SCHEDULE_MANAGE") ? <ModalIntro
                     introModalLayout={this.state.introModalLayout}
                     $introElement={this.state.$introElement}
                     handleOnclickHole={this.handleOnclickHole}
