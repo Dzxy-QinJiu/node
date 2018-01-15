@@ -19,6 +19,7 @@ import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
 import logoSrc from "./notification.png";
 import userData from "../user-data";
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
+import {SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts"
 var NotificationType = {};
 var approveTipCount = 0;
 const TIMEOUTDELAY = {
@@ -126,7 +127,7 @@ function listenSystemNotice(notice) {
         if (canPopDesktop()) {
            //停用客户登录的通知不自动关闭
             var isClosedByClick = false;
-            if (notice.type === "appIllegal"){
+            if (notice.type === SYSTEM_NOTICE_TYPES.DISABLE_CUSTOMER_LOGIN){
                 isClosedByClick = true;
             }
             //桌面通知的展示
