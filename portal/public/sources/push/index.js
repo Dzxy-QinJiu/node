@@ -124,8 +124,13 @@ function listenSystemNotice(notice) {
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
+           //停用客户登录的通知不自动关闭
+            var isClosedByClick = false;
+            if (notice.type === "appIllegal"){
+                isClosedByClick = true;
+            }
             //桌面通知的展示
-            showDesktopNotification(title, tipContent);
+            showDesktopNotification(title, tipContent, isClosedByClick);
         } else {//系统弹出通知
             notificationUtil.showNotification({
                 title: title,
@@ -137,11 +142,12 @@ function listenSystemNotice(notice) {
     }
 }
 //桌面通知的展示
-function showDesktopNotification(title, tipContent) {
+function showDesktopNotification(title, tipContent, isClosedByClick) {
     let notification = new Notification(title, {
         body: tipContent,
         tag: title,
         icon: logoSrc,
+        requireInteraction: isClosedByClick
     });
     notification.onerror = function () {
         notification.close();
@@ -152,9 +158,11 @@ function showDesktopNotification(title, tipContent) {
         notification.close();
     },
         notification.onshow = function () {
-            setTimeout(function () {
-                notification.close();
-            }, TIMEOUTDELAY.closeTimeDelay);
+            if (!isClosedByClick) {
+                setTimeout(function () {
+                    notification.close();
+                },  TIMEOUTDELAY.closeTimeDelay);
+            }
         }
 }
 // 标签页是否可见（各种浏览器兼容）
@@ -233,7 +241,6 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    console.log("后端推送", phonemsgObj);
     if (hasPrivilege("CRM_LIST_CUSTOMERS")) {
         ReactDOM.render(
             <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
@@ -255,7 +262,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
     var tipContent = scheduleAlertMsg.content || "";
     if (canPopDesktop()) {
         //桌面通知的展示
-        showDesktopNotification(title, tipContent);
+        showDesktopNotification(title, tipContent, true);
     } else {//系统弹出通知
         notificationUtil.showNotification({
             title: title,
