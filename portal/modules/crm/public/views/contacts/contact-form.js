@@ -238,11 +238,11 @@ var ContactForm = React.createClass({
                 this.afterSubmit(result);
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
             if (this.props.isMerge) {
                 //合并重复客户时的处理
                 this.props.updateMergeCustomerContact(formData);
                 ContactAction.hideEditContactForm(this.props.contact);
+                Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
             } else {
                 let editType = this.getEditType(formData);
                 if (editType) {
@@ -251,6 +251,7 @@ var ContactForm = React.createClass({
                     ContactAction.submitEditContact(formData, editType, (result) => {
                         this.afterSubmit(result);
                     });
+                    Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
                 } else {//没有修改时，直接关闭修改按钮即可
                     this.cancel();
                 }
@@ -298,10 +299,10 @@ var ContactForm = React.createClass({
 
     cancel: function () {
         if (this.props.type === 'add') {
-            Trace.traceEvent(this.getDOMNode(), "取消保存新建联系人的信息");
+            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消添加联系人");
             ContactAction.hideAddContactForm();
         } else {
-            Trace.traceEvent(this.getDOMNode(), "取消更改当前联系人的信息");
+            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消更改当前联系人的信息");
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },
@@ -411,7 +412,6 @@ var ContactForm = React.createClass({
                 >
                     <Input name={qqKey} value={formData[qqKey]}
                            onChange={_this.setField.bind(_this, qqKey)}
-                           data-tracename="填写新建联系人的QQ"
                     />
                     <div className="circle-button crm-contact-contactway-minus"
                          onClick={_this.removeContactWay("qq", index)}>
@@ -431,7 +431,6 @@ var ContactForm = React.createClass({
                 >
                     <Input name={weChatKey} value={formData[weChatKey]}
                            onChange={_this.setField.bind(_this, weChatKey)}
-                           data-tracename="填写新建联系人的微信"
                     />
                     <div className="circle-button crm-contact-contactway-minus"
                          onClick={_this.removeContactWay("weChat", index)}>
@@ -452,7 +451,6 @@ var ContactForm = React.createClass({
                 >
                     <Input name={emailKey} value={formData[emailKey]}
                            onChange={_this.setField.bind(_this, emailKey)}
-                           data-tracename="填写新建联系人的邮箱"
                     />
                     <div className="circle-button crm-contact-contactway-minus"
                          onClick={_this.removeContactWay("email", index)}>
@@ -541,7 +539,6 @@ var ContactForm = React.createClass({
                                     }]}>
                                         <Input name="name" value={formData.name}
                                                onChange={this.setField.bind(this, 'name')}
-                                               data-tracename={"新建/修改联系人姓名"}
                                         />
                                     </Validator>
                                 </FormItem>
@@ -556,7 +553,6 @@ var ContactForm = React.createClass({
                                         rules={[{required: false, min: 1, message: Intl.get("crm.114", "请输入职位")}]}>
                                         <Input name="department" value={formData.department}
                                                onChange={this.setField.bind(this, 'department')}
-                                               data-tracename="新建/修改联系人部门"
                                         />
                                     </Validator>
                                 </FormItem>
@@ -571,7 +567,6 @@ var ContactForm = React.createClass({
                                         rules={[{required: false, min: 1, message: Intl.get("crm.114", "请输入职位")}]}>
                                         <Input name="position" value={formData.position}
                                                onChange={this.setField.bind(this, 'position')}
-                                               data-tracename="填写/修改联系人职位"
                                         />
                                     </Validator>
                                 </FormItem>
@@ -607,7 +602,8 @@ var ContactForm = React.createClass({
                         </div>
                         <div className="clearfix crm-contact-form-btns">
                             <Button type="ghost" className="form-cancel-btn btn-primary-cancel"
-                                    onClick={this.cancel}><ReactIntl.FormattedMessage id="common.cancel"
+                                    onClick={this.cancel}
+                            ><ReactIntl.FormattedMessage id="common.cancel"
                                                                                       defaultMessage="取消"/></Button>
                             <Button type="primary" className="form-submit-btn btn-primary-sure"
                                     onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.save"

@@ -67,7 +67,6 @@ var CrmSchedule = React.createClass({
         ScheduleAction.getScheduleList(queryObj);
     },
     addSchedule: function () {
-        Trace.traceEvent(this.getDOMNode(), "点击添加一个提醒按钮");
         const newSchedule = {
             customer_id: this.props.curCustomer.id,
             customer_name: this.props.curCustomer.name,
@@ -82,7 +81,7 @@ var CrmSchedule = React.createClass({
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
     },
     editSchedule: function (alert) {
-        Trace.traceEvent(this.getDOMNode(), "点击编辑提醒按钮");
+        Trace.traceEvent(this.getDOMNode(), "编辑联系计划");
         ScheduleAction.showEditForm(alert);
     },
     //修改状态
@@ -95,6 +94,8 @@ var CrmSchedule = React.createClass({
             id: item.id,
             status: item.status == "false" ? "handle" : "false",
         };
+        var status = item.status == "false" ? "完成" :"未完成";
+        Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .ant-btn"), "修改联系计划的状态为" + status);
         ScheduleAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
@@ -109,7 +110,7 @@ var CrmSchedule = React.createClass({
     },
     deleteSchedule: function (id) {
         const reqData = {id: id};
-        Trace.traceEvent(this.getDOMNode(), "点击删除提醒按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .anticon-delete"), "删除联系计划");
         ScheduleAction.deleteSchedule(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);
@@ -264,7 +265,7 @@ var CrmSchedule = React.createClass({
                         {this.renderScheduleLists()}
                     </div>
                 </GeminiScrollbar>
-                {this.props.isMerge ? null : (<div className="crm-right-panel-addbtn" onClick={this.addSchedule}>
+                {this.props.isMerge ? null : (<div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加一个联系计划">
                     <Icon type="plus"/><span>
                     <ReactIntl.FormattedMessage id="crm.178" defaultMessage="添加一个联系计划"/></span>
                 </div>)}

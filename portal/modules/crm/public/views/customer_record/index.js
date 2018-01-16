@@ -145,7 +145,7 @@ const CustomerRecord = React.createClass({
         });
     },
     handleChange: function (item) {
-        Trace.traceEvent(this.getDOMNode(), "选择跟进记录的类型");
+        Trace.traceEvent($(this.getDOMNode()).find("#add-container .ant-select-selection"), "选择跟进记录的类型");
         CustomerRecordActions.setType(item);
     },
     //获取列表失败后重试
@@ -153,10 +153,10 @@ const CustomerRecord = React.createClass({
         this.getCustomerTraceList();
     },
     saveAddTraceContent: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击模态框的确认按钮");
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
         if (this.state.saveButtonType == 'add') {
+            Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确认添加跟进内容");
             //输入框中的内容
             var addcontent = $.trim(this.state.inputContent);
             var queryObj = {
@@ -172,7 +172,7 @@ const CustomerRecord = React.createClass({
             //补充跟进记录的内容
             var detail = $.trim(this.state.detailContent);
             var item = this.state.edittingItem;
-            Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击模态框提交按钮的跟进记录的ID为" + item.id + "跟进记录的时间为" + moment(item.time).format(oplateConsts.DATE_TIME_FORMAT));
+            Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确认添加补充的跟进内容");
             var queryObj = {
                 id: item.id,
                 customer_id: item.customer_id || customerId,
@@ -191,7 +191,7 @@ const CustomerRecord = React.createClass({
     },
     //点击顶部取消按钮后
     handleCancel: function () {
-        Trace.traceEvent(this.getDOMNode(), "取消对跟进记录内容的保存");
+        Trace.traceEvent($(this.getDOMNode()).find(".add-customer-trace .add-foot .cancel-btn"), "关闭添加跟进内容输入区");
         //下拉框的默认选项为拜访
         CustomerRecordActions.setType(this.state.initialType);
         CustomerRecordActions.setContent(this.state.initialContent);
@@ -267,7 +267,7 @@ const CustomerRecord = React.createClass({
     //点击保存按钮，展示模态框
     showModalDialog: function (item) {
         if (item.id) {
-            Trace.traceEvent(this.getDOMNode(), "点击补充客户跟进内容下的保存按钮");
+            Trace.traceEvent($(this.getDOMNode()).find(".show-customer-trace .add-detail-container .submit-btn"), "添加补充的跟进内容");
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = $.trim(this.state.detailContent);
             if (detail) {
@@ -284,7 +284,7 @@ const CustomerRecord = React.createClass({
                 });
             }
         } else {
-            Trace.traceEvent(this.getDOMNode(), "点击新添加跟进内容下的保存按钮");
+            Trace.traceEvent($(this.getDOMNode()).find(".add-customer-trace .add-foot .submit-btn"), "添加跟进内容");
             //点击顶部输入框下的保存按钮
             var addcontent = $.trim(this.state.inputContent);
             if (addcontent) {
@@ -367,7 +367,7 @@ const CustomerRecord = React.createClass({
             message.error(Intl.get("crm.save.customertrace.first", "请先保存或取消保存已编辑的跟进记录内容"));
             return;
         }
-        Trace.traceEvent(this.getDOMNode(), "点击添加补充客户跟进内容的按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".show-container .item-detail-content .add-detail-tip"), "点击补充跟进内容区域");
         item.showAdd = true;
         this.setState({
             customerRecord: this.state.customerRecord,
@@ -376,7 +376,7 @@ const CustomerRecord = React.createClass({
         });
     },
     handleCancelDetail: function (item) {
-        Trace.traceEvent(this.getDOMNode(), "取消补充客户跟进内容的保存");
+        Trace.traceEvent($(this.getDOMNode()).find(".show-customer-trace .add-detail-container .cancel-btn"), "关闭补充跟进内容输入区");
         //点击补充客户跟进记录编辑状态下的取消按钮
         item.showAdd = false;
         this.setState({
@@ -407,7 +407,6 @@ const CustomerRecord = React.createClass({
                         onChange={this.handleAddDetailChange}
                         value={this.state.detailContent}
                         className="add-detail-content-input"
-                        data-tracename="补充客户跟进记录详情"
                     />
                 </div>
                 {this.state.addDetailErrTip ? <AlertTimer
@@ -652,13 +651,14 @@ const CustomerRecord = React.createClass({
         }
     },
     hideModalDialog: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"), "关闭模态框");
         CustomerRecordActions.setModalDialogFlag(false);
     },
     render: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get("customer.confirm.trace", "是否添加此跟进内容？");
+        var detail = $.trim(this.state.detailContent);
+        var closedModalTip = $.trim(this.state.detailContent) ? "取消添加补充的跟进内容" : "取消添加跟进内容";
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 <div className="add-container" id="add-container">
@@ -672,6 +672,7 @@ const CustomerRecord = React.createClass({
                              container={this}
                              hideModalDialog={this.hideModalDialog}
                              delete={this.saveAddTraceContent}
+                             closedModalTip={closedModalTip}
 
                 />
             </div>

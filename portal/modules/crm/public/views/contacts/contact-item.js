@@ -21,11 +21,11 @@ var ContactItem = React.createClass({
         };
     },
     showEditContactForm: function () {
-        Trace.traceEvent(this.getDOMNode(),"点击编辑某个联系人信息的按钮");
+        Trace.traceEvent(this.getDOMNode(),"编辑某个联系人信息");
         ContactAction.showEditContactForm(this.props.contact);
     },
     showDeleteContactConfirm: function () {
-        Trace.traceEvent(this.getDOMNode(),"点击删除某个联系人信息的按钮");
+        Trace.traceEvent(this.getDOMNode(),"删除某个联系人");
         ContactAction.showDeleteContactConfirm(this.props.contact);
     },
     toggleDefaultContact: function () {
@@ -47,7 +47,7 @@ var ContactItem = React.createClass({
         }
     },
     hideDeleteContactModal: function () {
-        Trace.traceEvent(this.getDOMNode(),"取消删除某个联系人");
+        Trace.traceEvent(this.getDOMNode(),"取消确认删除某个联系人");
         ContactAction.hideDeleteContactConfirm(this.props.contact);
     },
     deleteContact: function () {

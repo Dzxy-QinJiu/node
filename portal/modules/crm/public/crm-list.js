@@ -843,6 +843,7 @@ var Crm = React.createClass({
         })
     },
     onPageChange: function (page) {
+        Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"),"翻页至第" + page + "页");
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
         if (page == currPageNum) {

@@ -277,14 +277,15 @@ var CrmAlertForm = React.createClass({
             }
         };
         this.switchDiffSelectOptions(this.state.formData);
-        Trace.traceEvent(this.getDOMNode(),"保存对提醒的添加/修改");
+        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-sure"),"添加联系计划");
     },
     handleCancel: function () {
-        Trace.traceEvent(this.getDOMNode(),"取消对提醒的添加/编辑");
+        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-cancel"),"取消添加联系计划");
         ScheduleAction.cancelEdit();
     },
     //修改日程类型
     handleTypeChange:function (value) {
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-select-selection__rendered"),"修改日程的类型为" + value);
         this.state.formData.scheduleType = value;
         this.setState({
             formData: this.state.formData
@@ -292,6 +293,7 @@ var CrmAlertForm = React.createClass({
     },
     //修改选择的时间
     handleTimeRangeChange:function (e) {
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-radio-button"),"修改联系时间为" + e.target.value);
         var formData = this.state.formData;
         if (e.target.value == "custom"){
             //选择自定义时，要把开始和结束时间改为当前时间
@@ -386,6 +388,7 @@ var CrmAlertForm = React.createClass({
     },
     //改变提醒时间的类型
     handleAlertTimeChange:function (value) {
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-select-lg .ant-select-selection__rendered"),"修改提醒时间的类型为" + value);
         this.setState({
             selectedAlertTimeRange:value,
         });
@@ -428,7 +431,7 @@ var CrmAlertForm = React.createClass({
         var formData = this.state.formData;
 
         return (
-            <Form horizontal>
+            <Form horizontal data-tracename="添加联系计划表单">
             <Validation ref="validation" onValidate={this.handleValidate}>
                 <FormItem
                     {...formItemLayout}
@@ -466,7 +469,6 @@ var CrmAlertForm = React.createClass({
                                 rows={2}
                                 value={formData.content}
                                 onChange={this.setField.bind(this, "content")}
-                                data-tracename="填写提醒内容"
                             />
                         </Validator>
                     </div>

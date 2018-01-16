@@ -25,6 +25,7 @@ var ModalDialog = React.createClass({
             'transparentBgFlag modal': this.props.transparentBgFlag,
             'modal': !this.props.transparentBgFlag
         });
+        var closedModalTip = this.props.closedModalTip ? this.props.closedModalTip : "关闭模态框";
         return (
             <Modal
                 show={this.props.modalShow}
@@ -39,10 +40,10 @@ var ModalDialog = React.createClass({
                     <p>{this.props.modalContent}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="btn-ok" onClick={this.delete}>
+                    <Button className="btn-ok" onClick={this.delete} >
                         {Intl.get("common.sure")}
                     </Button>
-                    <Button className="btn-cancel" onClick={this.close}>
+                    <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
                         {Intl.get("common.cancel")}
                         </Button>
                 </Modal.Footer>
