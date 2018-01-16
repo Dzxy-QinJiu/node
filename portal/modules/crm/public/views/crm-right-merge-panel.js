@@ -121,6 +121,17 @@ var CrmRightMergePanel = React.createClass({
                             mergedCustomer.labels = customer.labels;
                         }
                     }
+                    //合并客户竞品的处理
+                    if (_.isArray(customer.competing_products) && customer.competing_products.length > 0) {
+                        if (_.isArray(mergedCustomer.competing_products) && mergedCustomer.competing_products.length > 0) {
+                            //合并客户竞品
+                            mergedCustomer.competing_products = mergedCustomer.competing_products.concat(customer.competing_products);
+                            //去重
+                            mergedCustomer.competing_products = _.uniq(mergedCustomer.competing_products);
+                        } else {
+                            mergedCustomer.competing_products = customer.competing_products;
+                        }
+                    }
                     //合并备注
                     if (customer.remarks) {
                         mergedRemarks.push(customer.remarks);
