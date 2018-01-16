@@ -91,11 +91,11 @@ exports.getFilterProvinces = function (req, res) {
 //获取阶段标签列表
 exports.getStageTagList = function (req, res) {
     return restUtil.authRest.get(
-    {
-        url: crmRestApis.getStageTagList.replace(":type", req.params.type),
-        req: req,
-        res: res
-    }, null);
+        {
+            url: crmRestApis.getStageTagList.replace(":type", req.params.type),
+            req: req,
+            res: res
+        }, null);
 };
 //获取竞品列表
 exports.getCompetitorList = function (req, res) {
@@ -233,6 +233,11 @@ exports.queryCustomer = function (req, res, condition) {
         if (condition.unexist_fields) {
             queryObj.unexist_fields = condition.unexist_fields;
             delete condition.unexist_fields;
+        }
+        //最后联系但未写跟进记录的客户筛选
+        if (condition.call_and_remark) {
+            queryObj.call_and_remark = "1";
+            delete condition.call_and_remark;
         }
         queryObj.query = condition;
         queryObj.rang_params = JSON.parse(req.body.rangParams);

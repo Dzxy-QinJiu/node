@@ -26,6 +26,9 @@ const otherFilterArray = [{
     name: Intl.get("crm.no.contact.way", "无联系方式客户"),
     value: "no_contact_way"
 }, {
+    name: Intl.get("crm.call.no.remark", "最后联系但未写跟进记录"),
+    value: "last_call_no_record"
+}, {
     name: Intl.get("crm.concerned.customer", "关注的客户"),
     value: "interest"
 }, {
@@ -247,10 +250,13 @@ const CrmFilterPanel = React.createClass({
                 Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
                 break;
             case otherFilterArray[6].value:
+                Trace.traceEvent($(this.getDOMNode()).find("li"), "最后联系但未写更近记录客户的筛选");
+                break;
+            case otherFilterArray[7].value:
                 Trace.traceEvent($(this.getDOMNode()).find("li"), "多个订单客户的筛选");
                 break;
         }
-        if (otherFilterArray[6] && item === otherFilterArray[7].value) {
+        if (otherFilterArray[8] && item === otherFilterArray[8].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
         }
     },
