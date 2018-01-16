@@ -54,6 +54,7 @@ const OTHER_FILTER_ITEMS = {
     SEVEN_UNCONTACT: "seven_uncontact",
     UNDISTRIBUTED: "undistributed",//未分配的客户
     NO_CONTACT_WAY: "no_contact_way",//无联系方式的客户
+    LAST_CALL_NO_RECORD: "last_call_no_record",//最后联系但未写跟进记录的客户
     INTEREST: "interest",//关注的客户
     MULTI_ORDER: "multi_order"//多个订单的客户
 };
@@ -532,6 +533,9 @@ var Crm = React.createClass({
                 break;
             case OTHER_FILTER_ITEMS.NO_CONTACT_WAY://无联系方式的客户
                 condition.contain_contact = "false";
+                break;
+            case OTHER_FILTER_ITEMS.LAST_CALL_NO_RECORD://最后联系但未写跟进记录的客户
+                condition.call_and_remark = "1";
                 break;
             case OTHER_FILTER_ITEMS.UNDISTRIBUTED://未分配销售的客户
                 unexist.push("member_id");
