@@ -33,8 +33,7 @@ exports.getTeamList = function () {
         data: {type: type},
         success: function (treeList) {
             let list =[];
-            if(_.isArray(treeList) && treeList.length >= 1
-                && _.isArray(treeList[0].child_groups) && treeList[0].child_groups.length){
+            if(_.isArray(treeList) && treeList.length >= 1){
                 //遍历团队树
                 traversingTeamTree(treeList,list);
             }
