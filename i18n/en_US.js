@@ -1190,7 +1190,7 @@ var en_US = {
     "crm.stage.tag": "Phase label",//阶段标签
     "crm.order.more.customer": "Multi-order customers",//多个订单的客户
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
-
+    "crm.last.contact": "Final contact",//最后联系
     // 客户管理end
 
     //客户分析 start
