@@ -1044,23 +1044,21 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("crm.7", "最后联系时间"),
-                width: hasSecretaryAuth ? null : '110px',
+                width: hasSecretaryAuth ? '200px' : '180px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
-                className: 'has-filter table-data-align-right'
-            },
-            {
-                title: Intl.get("crm.211", "跟进内容"),
-                width: hasSecretaryAuth ? '200px' : '180px',
-                dataIndex: 'trace',
-                sorter: false,
                 className: 'has-filter',
                 render: function (text, record, index) {
-                    if (!text) text = "";
-                    var truncatedRemarks = text.substr(0, 40);
+                    let last_contact = "";//最后联系时间和跟进记录的合并
+                    if (record.last_contact_time) {
+                        last_contact += record.last_contact_time;
+                    }
+                    if (record.trace) {
+                        last_contact += " " + record.trace;
+                    }
                     return (
-                        <span title={text} className="comments-fix">
-                            {text}
+                        <span title={last_contact} className="comments-fix">
+                            {last_contact}
                         </span>
                     );
                 }
