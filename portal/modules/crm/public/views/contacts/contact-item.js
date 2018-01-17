@@ -21,7 +21,7 @@ var ContactItem = React.createClass({
         };
     },
     showEditContactForm: function () {
-        Trace.traceEvent(this.getDOMNode(),"编辑联系人信息");
+        Trace.traceEvent(this.getDOMNode(),"编辑联系人");
         ContactAction.showEditContactForm(this.props.contact);
     },
     showDeleteContactConfirm: function () {
