@@ -265,7 +265,7 @@ var CrmSchedule = React.createClass({
                         {this.renderScheduleLists()}
                     </div>
                 </GeminiScrollbar>
-                {this.props.isMerge ? null : (<div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加一个联系计划">
+                {this.props.isMerge ? null : (<div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加联系计划">
                     <Icon type="plus"/><span>
                     <ReactIntl.FormattedMessage id="crm.178" defaultMessage="添加一个联系计划"/></span>
                 </div>)}

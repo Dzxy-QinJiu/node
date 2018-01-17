@@ -56,7 +56,7 @@ const OrderItem = React.createClass({
 
     //模态提示框确定后的处理
     handleModalOK: function (order, apps) {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除某个订单");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除订单");
         switch (this.state.modalDialogType) {
             case 1:
                 //删除订单
@@ -117,18 +117,23 @@ const OrderItem = React.createClass({
     },
 
     showAppPanel: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "点击修改应用");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "修改应用");
         this.setState({isAppPanelShow: true});
     },
 
     closeAppPanel: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "取消应用修改的保存");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "取消应用的修改");
         this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
     },
 
     onAppsChange: function (selectedApps) {
-        Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "点击选中/取消选中某个应用");
+        if (selectedApps.length > this.state.apps.length){
+            Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "选中某个应用");
+        }else{
+            Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "取消选中某个应用");
+        }
         this.state.apps = _.pluck(selectedApps, "client_id");
+
         this.setState(this.state);
     },
 
@@ -304,7 +309,7 @@ const OrderItem = React.createClass({
                     <div className="order-title-right-btn">
                         <div className="order-btn-class icon-delete iconfont"
                              onClick={this.showDelModalDialog}
-                             data-tracename="删除某个订单"
+                             data-tracename="删除订单"
                         />
                         <div className="order-btn-class icon-update iconfont"
                              onClick={this.props.showForm.bind(null, order.id)}
@@ -456,7 +461,7 @@ const OrderItem = React.createClass({
                              container={_this}
                              hideModalDialog={_this.hideModalDialog.bind(_this, order)}
                              delete={_this.handleModalOK.bind(_this, order, apps)}
-                             closedModalTip="取消删除某个订单"
+                             closedModalTip="取消删除订单"
                 />
 
                 {this.state.isAlertShow ? (

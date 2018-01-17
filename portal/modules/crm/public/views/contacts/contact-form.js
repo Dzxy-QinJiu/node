@@ -302,7 +302,7 @@ var ContactForm = React.createClass({
             Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消添加联系人");
             ContactAction.hideAddContactForm();
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消更改当前联系人的信息");
+            Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消更改联系人");
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },

@@ -398,7 +398,7 @@ var Crm = React.createClass({
         this.setState({tableHeight, filterPanelHeight});
     },
     confirmDelete: function (cusId, cusName) {
-        Trace.traceEvent($(this.getDOMNode()).find(".cus-op"), "点击删除某个客户按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".cus-op"), "点击删除客户按钮");
         this.state.currentId = cusId;
         this.state.deleteCusName = cusName;
         this.state.showDeleteConfirm = true;
@@ -410,7 +410,7 @@ var Crm = React.createClass({
         this.setState(this.state);
     }
     , deleteCustomer: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击确定删除某个客户");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "点击确定删除客户");
         this.hideDeleteModal();
         const ids = [this.state.currentId];
         CrmAction.deleteCustomer(ids);

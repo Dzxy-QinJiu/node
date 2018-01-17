@@ -21,11 +21,11 @@ var ContactItem = React.createClass({
         };
     },
     showEditContactForm: function () {
-        Trace.traceEvent(this.getDOMNode(),"编辑某个联系人信息");
+        Trace.traceEvent(this.getDOMNode(),"编辑联系人信息");
         ContactAction.showEditContactForm(this.props.contact);
     },
     showDeleteContactConfirm: function () {
-        Trace.traceEvent(this.getDOMNode(),"删除某个联系人");
+        Trace.traceEvent(this.getDOMNode(),"删除联系人");
         ContactAction.showDeleteContactConfirm(this.props.contact);
     },
     toggleDefaultContact: function () {
@@ -47,7 +47,7 @@ var ContactItem = React.createClass({
         }
     },
     hideDeleteContactModal: function () {
-        Trace.traceEvent(this.getDOMNode(),"取消确认删除某个联系人");
+        Trace.traceEvent(this.getDOMNode(),"取消删除联系人");
         ContactAction.hideDeleteContactConfirm(this.props.contact);
     },
     deleteContact: function () {
@@ -55,7 +55,7 @@ var ContactItem = React.createClass({
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
             ContactAction.hideDeleteContactConfirm(this.props.contact.contact);
         } else {
-            Trace.traceEvent(this.getDOMNode(),"确认删除某个联系人");
+            Trace.traceEvent(this.getDOMNode(),"确认删除联系人");
             let customerId = this.props.contact.contact.customer_id;
             ContactAction.deleteContact(this.props.contact, () => {
                 this.props.refreshCustomerList(customerId);

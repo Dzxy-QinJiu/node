@@ -277,7 +277,7 @@ var CrmAlertForm = React.createClass({
             }
         };
         this.switchDiffSelectOptions(this.state.formData);
-        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-sure"),"添加联系计划");
+        Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-sure"),"保存联系计划");
     },
     handleCancel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-cancel"),"取消添加联系计划");

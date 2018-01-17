@@ -658,7 +658,7 @@ const CustomerRecord = React.createClass({
         //下部时间线列表
         var modalContent = Intl.get("customer.confirm.trace", "是否添加此跟进内容？");
         var detail = $.trim(this.state.detailContent);
-        var closedModalTip = $.trim(this.state.detailContent) ? "取消添加补充的跟进内容" : "取消添加跟进内容";
+        var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 <div className="add-container" id="add-container">
