@@ -202,6 +202,7 @@ const SearchInput = React.createClass({
             this.state.keyword = '';
             this.state.formData = {};
             this.props.searchEvent();
+            Trace.traceEvent(this.getDOMNode(),"清除搜索条件");
         }
     },
     render: function () {

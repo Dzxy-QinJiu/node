@@ -205,7 +205,7 @@ class PhoneAlert extends React.Component{
                                         type="error" showIcon/>
                         ) : null}
                     </div>
-                    <Button type="primary" className="modal-submit-btn" onClick={this.handleTraceSubmit} data-tracename="点击保存跟进记录按钮">
+                    <Button type="primary" className="modal-submit-btn" onClick={this.handleTraceSubmit} data-tracename="保存跟进记录">
                         {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
                     </Button>
                 </div>
@@ -568,12 +568,12 @@ class PhoneAlert extends React.Component{
             'add-more-info': this.state.isAddingMoreProdctInfo
         });
         return (
-            <div data-tracename="拨打电话弹屏" >
+            <div data-tracename="电话弹屏" >
                 {this.state.isModalShown ? (<div id="phone-alert-container">
                     <div className="phone-alert-modal-block"></div>
                     <div className="phone-alert-modal-content">
                         <button className="modal-close iconfont icon-close" type="button"
-                                onClick={this.closeModal} data-tracename="关闭拨打电话的弹屏"></button>
+                                onClick={this.closeModal} data-tracename="关闭电话弹屏"></button>
                         <div className={AddMoreInfoCls}>
                             <div className="phone-alert-modal-title">
                                 <span id="iconfont-tip">

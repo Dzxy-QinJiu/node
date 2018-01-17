@@ -49,7 +49,6 @@ const OrderItem = React.createClass({
     },
 
     hideModalDialog: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-cancel"), "取消删除某个订单");
         this.setState({
             modalDialogFlag: false
         });
@@ -57,7 +56,7 @@ const OrderItem = React.createClass({
 
     //模态提示框确定后的处理
     handleModalOK: function (order, apps) {
-        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除某个订单");
+        Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除订单");
         switch (this.state.modalDialogType) {
             case 1:
                 //删除订单
@@ -99,12 +98,12 @@ const OrderItem = React.createClass({
     },
 
     showStageSelect: function () {
-        Trace.traceEvent(this.getDOMNode(), "点击编辑销售阶段按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "编辑销售阶段");
         this.setState({isStageSelectShow: true});
     },
 
     closeStageSelect: function () {
-        Trace.traceEvent(this.getDOMNode(), "取消客户详情中订单页面销售阶段修改的保存");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "取消修改销售阶段");
         this.setState({
             isStageSelectShow: false,
             stage: this.state.formData.sale_stages
@@ -112,24 +111,29 @@ const OrderItem = React.createClass({
     },
 
     onStageChange: function (stage) {
-        Trace.traceEvent(this.getDOMNode(), "修改销售阶段");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "修改销售阶段为" + stage);
         this.state.stage = stage;
         this.setState(this.state);
     },
 
     showAppPanel: function () {
-        Trace.traceEvent(this.getDOMNode(), "点击修改应用");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "修改应用");
         this.setState({isAppPanelShow: true});
     },
 
     closeAppPanel: function () {
-        Trace.traceEvent(this.getDOMNode(), "取消客户详情中订单页面应用修改的保存");
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "取消应用的修改");
         this.setState({isAppPanelShow: false, apps: this.state.formData.apps});
     },
 
     onAppsChange: function (selectedApps) {
-        Trace.traceEvent(this.getDOMNode(), "点击选中/取消选中某个应用");
+        if (selectedApps.length > this.state.apps.length){
+            Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "选中某个应用");
+        }else{
+            Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "取消选中某个应用");
+        }
         this.state.apps = _.pluck(selectedApps, "client_id");
+
         this.setState(this.state);
     },
 
@@ -142,11 +146,11 @@ const OrderItem = React.createClass({
             this.props.updateMergeCustomerOrder(reqData);
             if (updateTarget === "stage") {
                 this.state.isStageSelectShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面销售阶段的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
             }
             if (updateTarget === "app") {
                 this.state.isAppPanelShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面应用的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
             }
         } else {
             //客户详情中修改订单的销售阶段或应用
@@ -154,11 +158,11 @@ const OrderItem = React.createClass({
             if (updateTarget === "stage") {
                 //修改订单的销售阶段
                 this.editOrderStage(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面销售阶段的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
             } else if (updateTarget === "app") {
                 //修改订单的应用
                 this.editOrderApp(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存客户详情中订单页面应用的修改");
+                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
             }
         }
     },
@@ -305,7 +309,7 @@ const OrderItem = React.createClass({
                     <div className="order-title-right-btn">
                         <div className="order-btn-class icon-delete iconfont"
                              onClick={this.showDelModalDialog}
-                             data-tracename="点击删除某个订单按钮"
+                             data-tracename="删除订单"
                         />
                         <div className="order-btn-class icon-update iconfont"
                              onClick={this.props.showForm.bind(null, order.id)}
@@ -457,6 +461,7 @@ const OrderItem = React.createClass({
                              container={_this}
                              hideModalDialog={_this.hideModalDialog.bind(_this, order)}
                              delete={_this.handleModalOK.bind(_this, order, apps)}
+                             closedModalTip="取消删除订单"
                 />
 
                 {this.state.isAlertShow ? (

@@ -24,7 +24,8 @@ const OrderForm = React.createClass({
     },
 
     handleCancel: function (e) {
-        Trace.traceEvent(this.getDOMNode(),"点击添加订单或编辑订单表单页面的返回/底部取消按钮");
+        var message = this.props.order.id ? "取消编辑订单" :"取消添加订单";
+        Trace.traceEvent(this.getDOMNode(),message);
         e.preventDefault();
         OrderAction.hideForm(this.props.order.id);
     },
@@ -32,7 +33,7 @@ const OrderForm = React.createClass({
     handleSubmit: function (e) {
         e.preventDefault();
         const validation = this.refs.validation;
-        Trace.traceEvent(this.getDOMNode(),"点击添加订单表单页面的保存按钮");
+        Trace.traceEvent(this.getDOMNode(),"保存订单");
         validation.validate(valid => {
             if (!valid) {
                 return;
@@ -165,7 +166,6 @@ const OrderForm = React.createClass({
                                     <Input value={formData.budget}
                                            name="budget"
                                            onChange={this.setField.bind(this, 'budget')}
-                                           data-tracename="填写预算金额"
                                     />
                                 </Validator>
                             </FormItem>

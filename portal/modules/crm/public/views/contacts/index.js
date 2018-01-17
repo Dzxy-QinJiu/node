@@ -64,7 +64,7 @@ var Contacts = React.createClass({
         $(window).off("resize", this.onStoreChange);
     },
     showAddContactForm: function () {
-        Trace.traceEvent(this.getDOMNode(), "点击添加一个联系人按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn .anticon-plus"),"添加联系人");
         ContactAction.showAddContactForm();
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },

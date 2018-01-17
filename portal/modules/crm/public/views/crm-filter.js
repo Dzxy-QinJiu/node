@@ -29,9 +29,11 @@ var CrmFilter = React.createClass({
     },
     togglePanel: function () {
         if (this.state.isPanelShow) {
+            Trace.traceEvent($(this.getDOMNode()).find(".ant-btn-ghost"),"关闭筛选面板");
             FilterAction.hidePanel();
             this.props.changeTableHeight();
         } else {
+            Trace.traceEvent($(this.getDOMNode()).find(".ant-btn-ghost"),"打开筛选面板");
             FilterAction.showPanel();
             this.props.changeTableHeight(true);
         }
@@ -57,7 +59,7 @@ var CrmFilter = React.createClass({
         ];
 
         return (
-            <div className="block search-input-select-block" data-tracename="筛选客户">
+            <div className="block search-input-select-block">
                 <SearchInput
                     ref="searchInput"
                     type="select"

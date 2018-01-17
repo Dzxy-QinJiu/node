@@ -104,7 +104,8 @@ const OrderIndex = React.createClass({
         },
 
         showForm: function (id) {
-            Trace.traceEvent(this.getDOMNode(), "点击添加订单按钮/点击编辑某个订单按钮");
+            var message = id ? "编辑订单":"添加订单";
+            Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn"), message);
             OrderAction.showForm(id);
         },
         //获取到期后的状态
