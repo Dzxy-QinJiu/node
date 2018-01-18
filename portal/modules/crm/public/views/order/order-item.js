@@ -127,7 +127,8 @@ const OrderItem = React.createClass({
     },
 
     onAppsChange: function (selectedApps) {
-        if (selectedApps.length > this.state.apps.length){
+        let oldAppList = _.isArray(this.state.apps) ? this.state.apps : [];
+        if (selectedApps.length > oldAppList.length){
             Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "选中某个应用");
         }else{
             Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "取消选中某个应用");
