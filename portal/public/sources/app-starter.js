@@ -123,14 +123,6 @@ function init(options) {
             case 'sales_home_page':
                 childRoutes.push(require("../../modules/sales_home_page"));
                 break;
-            //运营主页
-            case 'operator_home_page':
-                childRoutes.push(require("../../modules/sales_home_page"));
-                break;
-            //运营主页
-            case 'manager_home_page':
-                childRoutes.push(require("../../modules/sales_home_page"));
-                break;
             //域管理
             case 'realm_manage':
                 childRoutes.push(require("../../modules/realm_manage"));
