@@ -37,7 +37,10 @@ class AudioPlayer extends React.Component {
                 {/*如果获取无效电话出错时，不要显示上报电话区域*/}
                 {this.props.getInvalidPhoneErrMsg ? null :
                     <div className="report-wrap">
-                        <span className="report-tip">{Intl.get("call.record.customer.phone", "这是一个客服电话")}</span>
+                        <span className="report-tip">
+                            {Intl.get("call.record.customer.phone", "这是一个客服电话")}
+                            {this.state.isShowReportButton? "。":"？"}
+                        </span>
                         {this.state.isShowReportButton ?
                             null :
                             <span className="report-button"
