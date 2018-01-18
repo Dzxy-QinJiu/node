@@ -89,7 +89,7 @@ class LeftMenuClass {
             },
             {
                 id: "ClUE_CUSTOMER",
-                name: backendIntl.get("sales.lead.customer","线索客户"),
+                name: backendIntl.get("sales.lead.customer", "线索客户"),
                 routePath: "clue_customer",
                 privileges: [
                     "CLUECUSTOMER_VIEW",
@@ -141,26 +141,26 @@ class LeftMenuClass {
                     //有这个权限，才显示入口图标
                     showPrivileges: ["USER_ORGANIZATION_LIST"]
                 }, {
-                        id: "USER_AUDIT_LOG",  // 用户审计日志的唯一标识
-                        name: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
-                        displayName: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
-                        routePath: "user/log",
-                        privileges: [
-                            "USER_AUDIT_LOG_LIST"     // 查看用户审计日志
-                        ],
-                        //有这个权限，才显示入口图标
-                        showPrivileges: ["USER_AUDIT_LOG_LIST"]
-                    }, {
-                            id: "POSITION_MANAGE",  // 座席号管理的唯一标识
-                            name: backendIntl.get("menu.appuser.position", "座席号管理"),
-                            displayName: backendIntl.get("menu.appuser.position", "座席号管理"),
-                            routePath: "user/position",
-                            privileges: [
-                                "MEMBER_PHONE_ORDER_MANAGE"  // （实际权限）座席号添加、修改、删除、绑定，显示列表
-                            ],
-                            //有这个权限，才显示入口图标
-                            showPrivileges: ["MEMBER_PHONE_ORDER_MANAGE"]
-                        }
+                    id: "USER_AUDIT_LOG",  // 用户审计日志的唯一标识
+                    name: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
+                    displayName: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
+                    routePath: "user/log",
+                    privileges: [
+                        "USER_AUDIT_LOG_LIST"     // 查看用户审计日志
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ["USER_AUDIT_LOG_LIST"]
+                }, {
+                    id: "POSITION_MANAGE",  // 座席号管理的唯一标识
+                    name: backendIntl.get("menu.appuser.position", "座席号管理"),
+                    displayName: backendIntl.get("menu.appuser.position", "座席号管理"),
+                    routePath: "user/position",
+                    privileges: [
+                        "MEMBER_PHONE_ORDER_MANAGE"  // （实际权限）座席号添加、修改、删除、绑定，显示列表
+                    ],
+                    //有这个权限，才显示入口图标
+                    showPrivileges: ["MEMBER_PHONE_ORDER_MANAGE"]
+                }
                 ]
             },
             {
@@ -306,38 +306,15 @@ class LeftMenuClass {
                 showPrivileges: ["OPLATE_USER_ANALYSIS_SUMMARY"]
             },
             {
-                id: "SALES_HOME_PAGE", //唯一标识，销售视图首页
+                id: "SALES_HOME_PAGE", //唯一标识，销售首页
                 name: backendIntl.get("menu.sales.homepage", "销售主页"),
                 routePath: "sales/home",
                 privileges: [
-                    "GET_MY_CALL_RECORD"// 获取我的电话统计记录
+                    "GET_MY_CALL_RECORD",// 获取我的电话统计记录
+                    "GET_ALL_CALL_RECORD"
                 ],
                 //有这个权限，才显示入口图标
-                showPrivileges: ["GET_MY_CALL_RECORD"]// 获取我的电话统计记录
-            },
-            {
-                id: "OPERATOR_HOME_PAGE", //唯一标识,运营人员视图首页
-                name: backendIntl.get("menu.sales.homepage", "销售主页"),
-                routePath: "sales/home",
-                privileges: [
-                    "GET_ALL_CALL_RECORD"//获取所有电话统计记录
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: [
-                    "GET_ALL_CALL_RECORD"//获取所有电话统计记录
-                ]
-            },
-            {
-                id: "MANAGER_HOME_PAGE", //唯一标识,管理员视图首页
-                name: backendIntl.get("menu.sales.homepage", "销售主页"),
-                routePath: "sales/home",
-                privileges: [
-                    "GET_ALL_CALL_RECORD"//获取所有电话统计记录
-                ],
-                //有这个权限，才显示入口图标
-                showPrivileges: [
-                    "GET_ALL_CALL_RECORD"//获取所有电话统计记录
-                ]
+                showPrivileges: ["GET_MY_CALL_RECORD", "GET_ALL_CALL_RECORD"]// 获取我的电话统计记录
             },
             {
                 id: "OPLATE_ONLINE_USER",//唯一标识
@@ -460,7 +437,7 @@ class LeftMenuClass {
             },
             {
                 id: "SCHEDULE_MANAGEMENT",
-                name: backendIntl.get("schedule.list.management","日程管理"),
+                name: backendIntl.get("schedule.list.management", "日程管理"),
                 routePath: "schedule_management",
                 privileges: [
                     "MEMBER_SCHEDULE_MANAGE"//日程管理的查询
