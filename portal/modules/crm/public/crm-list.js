@@ -1043,8 +1043,8 @@ var Crm = React.createClass({
                 className: 'has-filter table-data-align-right'
             },
             {
-                title: Intl.get("crm.7", "最后联系时间"),
-                width: hasSecretaryAuth ? '200px' : '180px',
+                title: Intl.get("crm.last.contact", "最后联系"),
+                width: hasSecretaryAuth ? '200px' : '290px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
