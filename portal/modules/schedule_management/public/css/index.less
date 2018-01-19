@@ -247,21 +247,33 @@
       }
       .rbc-calendar .rbc-toolbar{
             position:relative;
+            display:block;
             .rbc-btn-group:nth-child(1){
               button{
                 position: absolute;
                 top:0;
               }
               button:nth-child(1){
-                left: 60%;
+                right: 410px;
               }
               button:nth-child(2){
-                left: 35%;
+                right: 640px;
               }
               button:nth-child(3){
-                  left: 55%;
+                right: 460px;
               }
             }
+        .rbc-btn-group:last-child{
+          position: absolute;
+          right: 0;
+        }
+        .rbc-toolbar-label{
+          -webkit-flex-grow:0;
+          flex-grow:0;
+          position: absolute;
+          right: 500px;
+        }
+
       }
       .iconfont{
         padding-right: 10px;
