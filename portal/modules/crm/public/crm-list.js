@@ -847,7 +847,7 @@ var Crm = React.createClass({
         })
     },
     onPageChange: function (page) {
-        Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"),"翻页至第" + page + "页");
+        Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"), "翻页至第" + page + "页");
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
         if (page == currPageNum) {
@@ -975,7 +975,7 @@ var Crm = React.createClass({
         var columns = [
             {
                 title: Intl.get("crm.4", "客户名称"),
-                width: hasSecretaryAuth ? "250px" : '210px',
+                width: '210px',
                 dataIndex: 'name',
                 className: 'has-filter',
                 sorter: true,
@@ -1008,13 +1008,13 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'contact',
                 className: 'has-filter',
             },
             {
                 title: Intl.get("crm.5", "联系方式"),
-                width: hasSecretaryAuth ? '160px' : '130px',
+                width: '130px',
                 dataIndex: 'contact_way',
                 className: 'column-contact-way  table-data-align-right',
                 render: (text, record, index) => {
@@ -1024,27 +1024,27 @@ var Crm = React.createClass({
 
             {
                 title: Intl.get("user.apply.detail.order", "订单"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'order',
                 className: 'has-filter'
             },
             {
                 title: Intl.get("crm.6", "负责人"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'user_name',
                 sorter: true,
                 className: 'has-filter'
             },
             {
                 title: Intl.get("member.create.time", "创建时间"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'start_time',
                 sorter: true,
                 className: 'has-filter table-data-align-right'
             },
             {
                 title: Intl.get("crm.last.contact", "最后联系"),
-                width: hasSecretaryAuth ? '200px' : '290px',
+                width: hasSecretaryAuth ? '110px' : '290px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
@@ -1053,7 +1053,8 @@ var Crm = React.createClass({
                     if (record.last_contact_time) {
                         last_contact += record.last_contact_time;
                     }
-                    if (record.trace) {
+                    //舆情秘书不展示跟进记录
+                    if (!hasSecretaryAuth && record.trace) {
                         last_contact += " " + record.trace;
                     }
                     return (
@@ -1084,11 +1085,7 @@ var Crm = React.createClass({
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title != Intl.get("common.operate", "操作"));
         }
-
-        //舆情秘书角色不显示备注列
-        if (hasSecretaryAuth) {
-            columns = _.filter(columns, column => column.title != Intl.get("crm.211", "跟进内容"));
-        }
+        const tableScrollX = hasSecretaryAuth ? 1000 : 1180;
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;
@@ -1150,7 +1147,7 @@ var Crm = React.createClass({
                                 current: this.state.pageNum
                             }}
                             onChange={this.onTableChange}
-                            scroll={{x: hasSecretaryAuth ? 1200 : 1300, y: this.state.tableHeight}}
+                            scroll={{x: tableScrollX, y: this.state.tableHeight}}
                             locale={{
                                 emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get("common.no.data", "暂无数据")) : ""
                             }}
@@ -1239,7 +1236,7 @@ var Crm = React.createClass({
                             columns={columns}
                             rowKey={this.getRowKey}
                             pagination={false}
-                            scroll={{x: hasSecretaryAuth ? 1200 : 1300, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
+                            scroll={{x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
                         />
                     ) : null}
                 </Modal>
