@@ -160,7 +160,7 @@ exports.getLoginCaptcha = function (req, res, user_name, type) {
     if (type) {
         url = urls.getResetPasswordCaptcha;
         headers.remote_addr = ipUtil.getServerAddresses();
-        headers.user_id = ipUtil.getClientIp(req);
+        headers.user_ip = ipUtil.getClientIp(req);
     }
     return restUtil.appAuthRest.get(
         {
@@ -189,7 +189,7 @@ exports.refreshLoginCaptcha = function (req, res, user_name, type) {
         url = urls.getResetPasswordCaptcha;
 
         headers.remote_addr = ipUtil.getServerAddresses();
-        headers.user_id = ipUtil.getClientIp(req);
+        headers.user_ip = ipUtil.getClientIp(req);
     }
 
     return restUtil.appAuthRest.get(
