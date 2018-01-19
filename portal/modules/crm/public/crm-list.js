@@ -1044,17 +1044,17 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("crm.last.contact", "最后联系"),
-                width: hasSecretaryAuth ? '200px' : '290px',
+                width: hasSecretaryAuth ? '110px' : '290px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
                 render: function (text, record, index) {
                     let last_contact = "";//最后联系时间和跟进记录的合并
-                    //舆情秘书不展示最后联系时间
-                    if (record.last_contact_time && !hasSecretaryAuth) {
+                    if (record.last_contact_time) {
                         last_contact += record.last_contact_time;
                     }
-                    if (record.trace) {
+                    //舆情秘书不展示跟进记录
+                    if (!hasSecretaryAuth && record.trace) {
                         last_contact += " " + record.trace;
                     }
                     return (
@@ -1085,11 +1085,7 @@ var Crm = React.createClass({
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title != Intl.get("common.operate", "操作"));
         }
-
-        //舆情秘书角色不显示备注列
-        if (hasSecretaryAuth) {
-            columns = _.filter(columns, column => column.title != Intl.get("crm.211", "跟进内容"));
-        }
+        const tableScrollX = hasSecretaryAuth ? 1000 : 1180;
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;
@@ -1151,7 +1147,7 @@ var Crm = React.createClass({
                                 current: this.state.pageNum
                             }}
                             onChange={this.onTableChange}
-                            scroll={{x: hasSecretaryAuth ? 1200 : 1300, y: this.state.tableHeight}}
+                            scroll={{x: tableScrollX, y: this.state.tableHeight}}
                             locale={{
                                 emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get("common.no.data", "暂无数据")) : ""
                             }}
@@ -1240,7 +1236,7 @@ var Crm = React.createClass({
                             columns={columns}
                             rowKey={this.getRowKey}
                             pagination={false}
-                            scroll={{x: 1180, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
+                            scroll={{x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
                         />
                     ) : null}
                 </Modal>
