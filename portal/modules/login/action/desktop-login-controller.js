@@ -205,7 +205,15 @@ exports.refreshCaptcha = function (req, res) {
 //检查联系方式是否存在
 exports.checkContactInfoExists = function (req, res) {
     DesktopLoginService.checkContactInfoExists(req, res).on("success", function (data) {
-        if (!data) data = "";
+        if (typeof data === "object") {
+            //过滤掉无关字段
+            data = {
+                user_id: data.user_id,
+                user_name: data.user_name,
+            };
+        } else {
+            data = "";
+        }
         res.status(200).json(data);
     }).on("error", function (errorObj) {
         res.status(500).json(errorObj && errorObj.message);
