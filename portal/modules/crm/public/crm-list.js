@@ -847,7 +847,7 @@ var Crm = React.createClass({
         })
     },
     onPageChange: function (page) {
-        Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"),"翻页至第" + page + "页");
+        Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"), "翻页至第" + page + "页");
         var currPageNum = this.state.pageNumBack;
         var curCustomerList = this.state.customersBack;
         if (page == currPageNum) {
@@ -975,7 +975,7 @@ var Crm = React.createClass({
         var columns = [
             {
                 title: Intl.get("crm.4", "客户名称"),
-                width: hasSecretaryAuth ? "250px" : '210px',
+                width: '210px',
                 dataIndex: 'name',
                 className: 'has-filter',
                 sorter: true,
@@ -1008,13 +1008,13 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'contact',
                 className: 'has-filter',
             },
             {
                 title: Intl.get("crm.5", "联系方式"),
-                width: hasSecretaryAuth ? '160px' : '130px',
+                width: '130px',
                 dataIndex: 'contact_way',
                 className: 'column-contact-way  table-data-align-right',
                 render: (text, record, index) => {
@@ -1024,20 +1024,20 @@ var Crm = React.createClass({
 
             {
                 title: Intl.get("user.apply.detail.order", "订单"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'order',
                 className: 'has-filter'
             },
             {
                 title: Intl.get("crm.6", "负责人"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'user_name',
                 sorter: true,
                 className: 'has-filter'
             },
             {
                 title: Intl.get("member.create.time", "创建时间"),
-                width: hasSecretaryAuth ? "150px" : '110px',
+                width: '110px',
                 dataIndex: 'start_time',
                 sorter: true,
                 className: 'has-filter table-data-align-right'
@@ -1050,7 +1050,8 @@ var Crm = React.createClass({
                 className: 'has-filter',
                 render: function (text, record, index) {
                     let last_contact = "";//最后联系时间和跟进记录的合并
-                    if (record.last_contact_time) {
+                    //舆情秘书不展示最后联系时间
+                    if (record.last_contact_time && !hasSecretaryAuth) {
                         last_contact += record.last_contact_time;
                     }
                     if (record.trace) {
@@ -1239,7 +1240,7 @@ var Crm = React.createClass({
                             columns={columns}
                             rowKey={this.getRowKey}
                             pagination={false}
-                            scroll={{x: hasSecretaryAuth ? 1200 : 1300, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
+                            scroll={{x: 1180, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
                         />
                     ) : null}
                 </Modal>
