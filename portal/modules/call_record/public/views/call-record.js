@@ -691,7 +691,7 @@ const CallRecord = React.createClass({
     },
 
     // 检测回车，触发确认对话框
-    checkEnter(id) {
+    checkEnter(id, event) {
         if (event.keyCode == 13) {
             $(".new-custom-tbody #content" + id).blur();
         }
