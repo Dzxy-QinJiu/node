@@ -228,7 +228,7 @@ var zh_CN = {
     "login.verify_phone_or_email_verification_code": "验证{contactTypeName}验证码",
     "login.return_to_login_page": "返回登录页",
     "login.scan.qrcode.login": "扫码登录",
-    "login.account.login": "账户登录",
+    "login.account.login": "账号登录",
     "login.qrcode.scan.tip": "请使用{appName}扫描二维码安全登录",
     "login.ketao.app.name": "客套APP",
     "login.load.ketao.tip": "下载客套APP安卓端",

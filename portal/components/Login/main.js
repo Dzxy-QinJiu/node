@@ -233,39 +233,7 @@ class LoginMain extends React.Component {
                             </div>
                         </div>) : (hasWindow ? (
                             <Tabs activeKey={this.state.loginActiveKey} onChange={this.handleTabChange.bind(this)}>
-                                <TabPane tab={Intl.get("login.scan.qrcode.login", "扫码登录")} key="1">
-                                    {this.state.isLoadingQRCode ? (<div className="qrcode-tip-layer">
-                                        <div className="qrcode-tip-content">
-                                            {Intl.get("login.qrcode.loading", "正在获取二维码...")}
-                                        </div>
-                                    </div>) : this.state.QRCodeErrorMsg ? (
-                                        <div className="qrcode-tip-layer">
-                                            <div className="qrcode-tip-content">
-                                                <Icon type="exclamation-circle" /><br/>
-                                                <span className="error-text">{this.state.QRCodeErrorMsg}</span><br/>
-                                                <Button onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get("errorcode.147", "二维码已失效") ?
-                                                    Intl.get("common.refresh", "刷新") : Intl.get("common.get.again", "重新获取")}</Button>
-                                            </div>
-                                        </div>) : null}
-                                    <div className="login-qrcode-container">
-                                        <QRCode
-                                            value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
-                                            level="H"
-                                            size={165}
-                                        />
-                                    </div>
-                                    <div className="login-scan-qrcode-tip">
-                                        <ReactIntl.FormattedMessage
-                                            id="login.qrcode.scan.tip"
-                                            defaultMessage={`请使用{appName}扫描二维码安全登录`}
-                                            values={{
-                                                'appName': <a className="ketao-font-style"
-                                                              onClick={this.showDownLoadKetaoQRCode.bind(this)}>{Intl.get("ketao.app.name", "客套APP")}</a>,
-                                            }}
-                                        />
-                                    </div>
-                                </TabPane>
-                                <TabPane tab={Intl.get("login.account.login", "账户登录")} key="2">
+                                <TabPane tab={Intl.get("login.account.login", "账号登录")} key="2">
                                     <div className="form-wrap">
                                         {this.state.currentView === VIEWS.LOGIN ? (
                                             <LoginForm
@@ -298,6 +266,38 @@ class LoginMain extends React.Component {
                                                  onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)}
                                                  className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
                                         )}
+                                    </div>
+                                </TabPane>
+                                <TabPane tab={Intl.get("login.scan.qrcode.login", "扫码登录")} key="1">
+                                    {this.state.isLoadingQRCode ? (<div className="qrcode-tip-layer">
+                                        <div className="qrcode-tip-content">
+                                            {Intl.get("login.qrcode.loading", "正在获取二维码...")}
+                                        </div>
+                                    </div>) : this.state.QRCodeErrorMsg ? (
+                                        <div className="qrcode-tip-layer">
+                                            <div className="qrcode-tip-content">
+                                                <Icon type="exclamation-circle" /><br/>
+                                                <span className="error-text">{this.state.QRCodeErrorMsg}</span><br/>
+                                                <Button onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get("errorcode.147", "二维码已失效") ?
+                                                    Intl.get("common.refresh", "刷新") : Intl.get("common.get.again", "重新获取")}</Button>
+                                            </div>
+                                        </div>) : null}
+                                    <div className="login-qrcode-container">
+                                        <QRCode
+                                            value={LOGIN_QRCODE_PREFIX + this.state.QRCode}
+                                            level="H"
+                                            size={165}
+                                        />
+                                    </div>
+                                    <div className="login-scan-qrcode-tip">
+                                        <ReactIntl.FormattedMessage
+                                            id="login.qrcode.scan.tip"
+                                            defaultMessage={`请使用{appName}扫描二维码安全登录`}
+                                            values={{
+                                                'appName': <a className="ketao-font-style"
+                                                              onClick={this.showDownLoadKetaoQRCode.bind(this)}>{Intl.get("ketao.app.name", "客套APP")}</a>,
+                                            }}
+                                        />
                                     </div>
                                 </TabPane>
                             </Tabs>) : null
