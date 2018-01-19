@@ -109,16 +109,32 @@ var AreaSelection = React.createClass({
         $(obj).addClass("active").siblings().removeClass("active");
     },
     switchLayer: function (status) {
+        const container = $(".area-selector-container");
+
         if ((typeof status) === "string") {
-            $(".area-selector-container").css("display", status);
+            container.css("display", status);
         } else {
             if (this.state.isAlwayShow) {
                 return;
             }
-            $(".area-selector-container").toggle();// 地区选择容器展示/隐藏
+            container.toggle();// 地区选择容器展示/隐藏
         }
         $(".area-selector .anticon").toggleClass("active");// 箭头方向调整
         $(".area-selector .area-selector-shadow").toggle();// 遮罩层展示/隐藏
+
+        this.setTabsContentHeight();
+    },
+    //设置tab内容区域高度
+    setTabsContentHeight: function () {
+        const container = $(".area-selector-container");
+        const tabsContent = container.find(".ant-tabs-content");
+        tabsContent.height("auto");
+        const tabsContentHeight = tabsContent.height();
+        const tabsContentPadding = 20;
+        const displayAreaHeight = $(window).height() - tabsContent.offset().top - tabsContentPadding;
+        if (displayAreaHeight < tabsContentHeight) {
+            tabsContent.height(displayAreaHeight);
+        }
     },
     getAddressVal: function () {
         let addressVal = this.state.provName ? this.state.provName : "";
