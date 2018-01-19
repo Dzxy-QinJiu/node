@@ -122,11 +122,12 @@ var AreaSelection = React.createClass({
         $(".area-selector .anticon").toggleClass("active");// 箭头方向调整
         $(".area-selector .area-selector-shadow").toggle();// 遮罩层展示/隐藏
 
-        this.setTabsContentHeight();
+        if (container.css("display") === "block") {
+            this.setTabsContentHeight(container);
+        }
     },
     //设置tab内容区域高度
-    setTabsContentHeight: function () {
-        const container = $(".area-selector-container");
+    setTabsContentHeight: function (container) {
         const tabsContent = container.find(".ant-tabs-content");
         tabsContent.height("auto");
         const tabsContentHeight = tabsContent.height();
