@@ -32,7 +32,7 @@ class PhoneInput extends React.Component {
             if (
                 /^1[34578]\d{9}$/.test(value)
                 ||
-                /^(\d{3,4}-?)?\d{7,8}$/.test(value)
+                /^(0\d{2,3}-?)?[02-9]{7,8}$/.test(value)
                 ||
                 /^400-?\d{3}-?\d{4}$/.test(value)
             ) {
