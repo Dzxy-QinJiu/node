@@ -4,7 +4,6 @@ const QRCode = require('qrcode.react');
 const classnames = require("classnames");
 const Logo = require("../Logo");
 const LoginForm = require("./login-form");
-const ForgotPassword = require("./forgot-password");
 import {Alert, Tabs, Icon, Button} from "antd";
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 const TabPane = Tabs.TabPane;
@@ -244,29 +243,11 @@ class LoginMain extends React.Component {
                                             />
                                         ) : null}
 
-                                        {this.state.currentView === VIEWS.FORGOT_PASSWORD ? (
-                                            <ForgotPassword
-                                                hasWindow={hasWindow}
-                                                setErrorMsg={this.setErrorMsg}
-                                                {...this.props}
-                                            />
-                                        ) : null}
 
                                         {this.state.errorMsg ? (
                                             <Alert message={this.state.errorMsg} type="error" showIcon/>
                                         ) : null}
 
-                                        {/*暂时隐藏找回密码入口*/}
-                                        {/*this.state.currentView === VIEWS.LOGIN ? (
-                                            <div tabIndex="5"
-                                                 onClick={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
-                                                 onKeyPress={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
-                                                 className="btn-change-view">{Intl.get("login.forgot_password", "忘记密码")}</div>
-                                        ) : (
-                                            <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.LOGIN)}
-                                                 onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)}
-                                                 className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
-                                        )*/}
                                     </div>
                                 </TabPane>
                                 <TabPane tab={Intl.get("login.scan.qrcode.login", "扫码登录")} key="1">
