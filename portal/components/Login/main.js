@@ -256,7 +256,8 @@ class LoginMain extends React.Component {
                                             <Alert message={this.state.errorMsg} type="error" showIcon/>
                                         ) : null}
 
-                                        {this.state.currentView === VIEWS.LOGIN ? (
+                                        {/*暂时隐藏找回密码入口*/}
+                                        {/*this.state.currentView === VIEWS.LOGIN ? (
                                             <div tabIndex="5"
                                                  onClick={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
                                                  onKeyPress={this.changeView.bind(this, VIEWS.FORGOT_PASSWORD)}
@@ -265,7 +266,7 @@ class LoginMain extends React.Component {
                                             <div tabIndex="5" onClick={this.changeView.bind(this, VIEWS.LOGIN)}
                                                  onKeyPress={this.changeView.bind(this, VIEWS.LOGIN)}
                                                  className="btn-change-view">{Intl.get("login.return_to_login_page", "返回登录页")}</div>
-                                        )}
+                                        )*/}
                                     </div>
                                 </TabPane>
                                 <TabPane tab={Intl.get("login.scan.qrcode.login", "扫码登录")} key="1">

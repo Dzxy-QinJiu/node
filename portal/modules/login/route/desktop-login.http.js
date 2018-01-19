@@ -46,6 +46,7 @@ module.exports = {
         "passport": {
             "needLogin": false
         }
+/*暂时停掉找回密码相关路由
     }, {
         "method": "get",
         "path": "/check_contact_info_exists",
@@ -88,5 +89,6 @@ module.exports = {
         "passport": {
             "needLogin": false
         }
+*/
     }]
 };
