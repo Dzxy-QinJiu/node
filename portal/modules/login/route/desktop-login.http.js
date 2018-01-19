@@ -47,34 +47,6 @@ module.exports = {
             "needLogin": false
         }
     }, {
-        "method": "get",
-        "path": "/check_contact_info_exists",
-        "handler": "checkContactInfoExists",
-        "passport": {
-            "needLogin": false
-        }
-    }, {
-        "method": "get",
-        "path": "/send_reset_password_msg",
-        "handler": "sendResetPasswordMsg",
-        "passport": {
-            "needLogin": false
-        }
-    }, {
-        "method": "get",
-        "path": "/get_reset_password_ticket",
-        "handler": "getTicket",
-        "passport": {
-            "needLogin": false
-        }
-    }, {
-        "method": "get",
-        "path": "/reset_password_with_ticket",
-        "handler": "resetPassword",
-        "passport": {
-            "needLogin": false
-        }
-    }, {
         "method": "post",
         "path": "/login_QR_code",
         "handler": "getLoginQRCode",
