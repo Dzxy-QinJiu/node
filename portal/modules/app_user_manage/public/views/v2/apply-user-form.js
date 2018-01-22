@@ -29,7 +29,7 @@ const ApplyUserForm = React.createClass({
             appFormData: formData.products[0],
             appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
-            setAllChecked: false//是否设置到所有应用上
+            setAllChecked: false//是否设置到所有应用上（默认：否）
         };
     },
 
@@ -284,15 +284,16 @@ const ApplyUserForm = React.createClass({
                                     return (<TabPane key={app.client_id}
                                                      tab={this.renderTabToolTip(app.client_name)}
                                                      disabled={disabled}>
-                                        {/*<div className="set-all-check-box col-24">*/}
-                                        {/*<Checkbox checked={this.state.setAllChecked}*/}
-                                        {/*onChange={this.toggleCheckbox}/>*/}
-                                        {/*<span className="checkbox-title"*/}
-                                        {/*onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>*/}
-                                        {/*<span className="checkbox-notice">*/}
-                                        {/*(<ReactIntl.FormattedMessage id="user.set.single.app" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)*/}
-                                        {/*</span>*/}
-                                        {/*</div>*/}
+                                        <div className="set-all-check-box col-24">
+                                            <Checkbox checked={this.state.setAllChecked}
+                                                      onChange={this.toggleCheckbox}/>
+                                            <span className="checkbox-title" onClick={this.toggleCheckbox}>
+                                                {Intl.get("user.all.app.set", "设置到所有应用上")}
+                                            </span>
+                                            {/*<span className="checkbox-notice">*/}
+                                                {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
+                                            {/*</span>*/}
+                                        </div>
                                         <div className="app-tab-pane col-24">
                                             <FormItem
                                                 label={Intl.get("user.open.cycle", "开通周期")}
