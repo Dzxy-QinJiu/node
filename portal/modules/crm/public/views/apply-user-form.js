@@ -355,12 +355,13 @@ const ApplyUserForm = React.createClass({
                                             return (<TabPane key={app.client_id}
                                                              tab={this.renderTabToolTip(app.client_name)}
                                                              disabled={disabled}>
-                                                {/*<div className="set-all-check-box col-22">*/}
-                                                {/*<Checkbox checked={this.state.setAllChecked}*/}
-                                                {/*onChange={this.toggleCheckbox}/>*/}
-                                                {/*<span className="checkbox-title" onClick={this.toggleCheckbox}><ReactIntl.FormattedMessage id="user.all.app.set" defaultMessage="设置到所有应用上" /></span>*/}
-                                                {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
-                                                {/*</div>*/}
+                                                <div className="set-all-check-box col-22">
+                                                    <Checkbox checked={this.state.setAllChecked} onChange={this.toggleCheckbox}/>
+                                                    <span className="checkbox-title" onClick={this.toggleCheckbox}>
+                                                        {Intl.get("user.all.app.set","设置到所有应用上")}
+                                                    </span>
+                                                    {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
+                                                </div>
                                                 <div className="app-tab-pane col-22">
                                                     <FormItem
                                                         label={Intl.get("user.batch.open.count", "开通个数")}
