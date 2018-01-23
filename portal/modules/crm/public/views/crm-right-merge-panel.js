@@ -443,7 +443,8 @@ var CrmRightMergePanel = React.createClass({
                     <div className="select-customer-container">
                         <span className="select-customer-label"><ReactIntl.FormattedMessage id="crm.63"
                                                                                             defaultMessage="合并后保存的客户"/>：</span>
-                        <Select prefixCls="merge-customer-select ant-select" value={this.state.selectedCustomer.id}
+                        <Select value={this.state.selectedCustomer.id}
+                                dropdownClassName="merge-customer-select"
                                 style={{width: 200}}
                                 onChange={this.handleChange}>
                             {this.renderSelectOptions()}
