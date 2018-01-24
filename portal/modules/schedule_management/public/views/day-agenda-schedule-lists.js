@@ -152,37 +152,11 @@ class DayAgendaScheduleLists extends React.Component {
                 var content = item.status == "handle" ? Intl.get("schedule.has.finished", "已完成") : (
                     item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
-                //todo 后期删除
-                //加上假的联系人数据
-                if ((index%2) == 0){
-                    item.contacts = [
-                        {
-                            def_contacts:true,
-                            name:"uuu",
-                            phone:[
-                                "013688607582",
-                                "15628861319"
-                            ],
-                        },{
-                        def_contacts:false,
-                        name:"zhshj",
-                        phone:["15628861319"],
-                        }
-                    ];
-                }else{
-                    item.contacts = [
-                        {
-                            def_contacts:true,
-                            name:"zhshj000",
-                            phone:["18855572153"],
-                        }
-                    ];
-                }
                 var customerContent = (
                         <div className="contacts-containers">
                             {_.map(item.contacts,(contact)=>{
                                 var cls = classNames("contacts-item",
-                                    {"def-contact-item": contact.def_contacts});
+                                    {"def-contact-item": contact.def_contancts === "true"});
                                 return (
                                     <div className={cls}>
                                         <div className="contacts-name-content">
@@ -216,12 +190,16 @@ class DayAgendaScheduleLists extends React.Component {
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={9}>
-                                    <Popover content={customerContent} placement="bottom">
+                                    {item.contacts?  <Popover content={customerContent} placement="bottom">
                                         <div className="schedule-customer-name">
                                             <i className={iconFontCls}></i>
                                             {item.customer_name || item.topic}
                                         </div>
-                                    </Popover>
+                                    </Popover>:
+                                        <div className="schedule-customer-name">
+                                            <i className={iconFontCls}></i>
+                                            {item.customer_name || item.topic}
+                                        </div>}
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={10}>
