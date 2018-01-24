@@ -60,7 +60,9 @@ var Contacts = React.createClass({
     },
     componentWillUnmount: function () {
         ContactStore.unlisten(this.onStoreChange);
-        ContactAction.setInitData();
+        setTimeout(()=>{
+            ContactAction.setInitData();
+        });
         $(window).off("resize", this.onStoreChange);
     },
     showAddContactForm: function () {
