@@ -5,11 +5,30 @@
     &:before{
       border-bottom: 0 !important;
     }
+    //应用、时间选择框所在区域的样式设置
+    .user-analysis-filter-block{
+      position: absolute;
+      top: 20px;
+      right: 33px;
+      //应用选择框
+      .analysis-selector-wrap {
+        float: left;
+        .analysis-filter-select .ant-select-selection--single {
+          height: 30px;
+        }
+      }
+      //时间选择框
+      .date-range-wrap {
+        float: left;
+        margin-left: 20px;
+      }
+    }
   }
   .analysis_chart {
     padding-right: 0;
     overflow:hidden;
   }
+
   .global_filter_btn {
     margin:0 0 0 20px;
     display:none;
@@ -26,17 +45,6 @@
     li {
       margin-right:10px;
     }
-  }
-  .analysis-selector-wrap {
-    display:inline-block;
-    position: absolute;
-    top: 20px;
-    right: 284px;
-  }
-  .date-range-wrap {
-    position:absolute;
-    top:21px;
-    right:33px;
   }
   .summary-numbers {
     margin: 20px 24px 10px;

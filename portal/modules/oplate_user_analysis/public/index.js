@@ -2010,32 +2010,34 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             >
                 <TopNav>
                     <AnalysisMenu />
-                    <div className="analysis-selector-wrap">
-                        <AnalysisAppSelector
-                            onSelectApp={this.onSelectApp}
-                            maxWidth={appSelectorMaxWidth}
+                    <div className="user-analysis-filter-block">
+                        <div className="analysis-selector-wrap">
+                            <AnalysisAppSelector
+                                onSelectApp={this.onSelectApp}
+                                maxWidth={appSelectorMaxWidth}
+                            />
+                        </div>
+                        <FilterBtn
+                            expanded={this.state.filterExpanded}
+                            onClick={this.toggleFilterBlock}
                         />
-                    </div>
-                    <FilterBtn
-                        expanded={this.state.filterExpanded}
-                        onClick={this.toggleFilterBlock}
-                    />
-                    <div className="date-range-wrap">
-                        <AntcDatePicker
-                            disableDateAfterToday={true}
-                            range="week"
-                            data-tracename="选择日期"
-                            onSelect={this.onSelectDate}>
-                            <AntcDatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option
-                                value="month">{Intl.get("common.time.unit.month", "月")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option
-                                value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="year">{Intl.get("common.time.unit.year", "年")}</AntcDatePicker.Option>
-                            <AntcDatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</AntcDatePicker.Option>
-                        </AntcDatePicker>
+                        <div className="date-range-wrap">
+                            <AntcDatePicker
+                                disableDateAfterToday={true}
+                                range="week"
+                                data-tracename="选择日期"
+                                onSelect={this.onSelectDate}>
+                                <AntcDatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="month">{Intl.get("common.time.unit.month", "月")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option value="year">{Intl.get("common.time.unit.year", "年")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</AntcDatePicker.Option>
+                            </AntcDatePicker>
+                        </div>
                     </div>
                 </TopNav>
                 {this.renderFilterArea()}
