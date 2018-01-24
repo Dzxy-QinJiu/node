@@ -57,6 +57,10 @@ const isClueTag = function(tag){
 //行政级别
 exports.administrativeLevels = [{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
 exports.CUSTOMER_LABELS = ["信息","意向","试用","签约"];//标签
+exports.filterAdministrativeLevel = (level) => {
+    //4：乡镇、街道，目前只要求展示到区县，所以此级别不展示
+    return  level > 0 && level !== 4 ? level + '' : '';
+};
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;
 
