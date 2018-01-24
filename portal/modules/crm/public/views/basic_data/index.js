@@ -160,6 +160,7 @@ var BasicData = React.createClass({
                 "sign-tag-style": basicData.customer_label === LABEL_TYPES.SIGN_TAG,
             });
         }
+        let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         return (
             <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
                 {this.state.basicIsLoading ? <Spin /> : (
@@ -228,8 +229,8 @@ var BasicData = React.createClass({
                                                 isMerge={this.props.isMerge}
                                                 updateMergeCustomer={this.props.updateMergeCustomer}
                                                 id={basicData.id}
-                                                displayText={this.getAdministrativeLevel(basicData.administrative_level)}
-                                                value={basicData.administrative_level ? basicData.administrative_level + '' : ''}
+                                                displayText={this.getAdministrativeLevel(level)}
+                                                value={level}
                                                 field="administrative_level"
                                                 selectOptions={this.getAdministrativeLevelOptions()}
                                                 disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
@@ -316,12 +317,13 @@ var BasicData = React.createClass({
                                             />
                                         </label>
                                     </div>
-                                    {this.props.isMerge || this.props.userViewShowCustomerUserListPanel ? null : (<PrivilegeChecker
-                                        check="GET_CUSTOMER_USERS"
-                                    >
-                                        <div className=" iconfont icon-turn-user-list"
-                                             onClick={this.triggerUserList}></div>
-                                    </PrivilegeChecker>)}
+                                    {this.props.isMerge || this.props.userViewShowCustomerUserListPanel ? null : (
+                                        <PrivilegeChecker
+                                            check="GET_CUSTOMER_USERS"
+                                        >
+                                            <div className=" iconfont icon-turn-user-list"
+                                                 onClick={this.triggerUserList}></div>
+                                        </PrivilegeChecker>)}
                                 </div>
                                 : null}
                         </div>
