@@ -18,19 +18,16 @@ var SalesSelectField = React.createClass({
     },
     getSalesTeamList: function (userId, salesManList) {
         let salesTeamList = [];
-        if (userData.isSalesManager()) {
-            //销售领导、域管理员角色时，客户所属销售团队的修改
-            _.each(salesManList, (salesMan) => {
-                if (salesMan.user_info && salesMan.user_info.user_id === userId) {
-                    salesMan.user_groups.forEach(function (group) {
-                        salesTeamList.push({
-                            group_id: group.group_id,
-                            group_name: group.group_name
-                        });
+        _.each(salesManList, (salesMan) => {
+            if (salesMan.user_info && salesMan.user_info.user_id === userId) {
+                salesMan.user_groups.forEach(function (group) {
+                    salesTeamList.push({
+                        group_id: group.group_id,
+                        group_name: group.group_name
                     });
-                }
-            });
-        }
+                });
+            }
+        });
         return salesTeamList;
     },
     getInitialState: function () {
@@ -52,12 +49,8 @@ var SalesSelectField = React.createClass({
         };
     },
     componentDidMount: function () {
-        // 普通销售(多角色时：非销售领导、域管理员)获取其团队里的成员列表
-        if (this.isSales()) {
-            this.getSalesTeamMembers();
-        } else {//销售领导、域管理员角色时，客户所属销售下拉列表的数据获取
-            this.getSalesManList();
-        }
+        //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
+        this.getSalesManList();
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.customerId != this.state.customerId) {
@@ -80,10 +73,6 @@ var SalesSelectField = React.createClass({
         }
     },
 
-    //是否是普通销售(多角色时：非销售领导、域管理员)的判断
-    isSales: function () {
-        return userData.hasRole("sales") && !userData.isSalesManager()
-    },
     //获取客户所属销售及其团队下拉列表
     getSalesManList: function () {
         batchChangeAjax.getSalesManList().then(list => {
@@ -123,32 +112,26 @@ var SalesSelectField = React.createClass({
     //更新销售人员
     handleSalesManChange: function (userId) {
         this.state.userId = userId;
-        if (this.isSales()) {
-            Trace.traceEvent(this.getDOMNode(), "修改销售人员");
-            //普通销售，只修改销售人员
-            const salesman = _.find(this.state.salesManList, item => item.userId === userId);
-            this.state.userName = salesman ? salesman.nickName : "";
-        } else {
-            Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
-            //销售领导、域管理员，修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
-            const salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === userId);
-            if (salesman) {
-                this.state.userName = salesman.user_info ? salesman.user_info.nick_name : "";
-                if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
-                    let teamList = salesman.user_groups.map(team => {
-                        return {
-                            group_id: team.group_id,
-                            group_name: team.group_name
-                        }
-                    });
-                    this.state.salesTeamList = teamList;
-                    if (teamList[0]) {
-                        this.state.salesTeam = teamList[0].group_name;
-                        this.state.salesTeamId = teamList[0].group_id;
+        Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
+        //修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
+        const salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === userId);
+        if (salesman) {
+            this.state.userName = salesman.user_info ? salesman.user_info.nick_name : "";
+            if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
+                let teamList = salesman.user_groups.map(team => {
+                    return {
+                        group_id: team.group_id,
+                        group_name: team.group_name
                     }
+                });
+                this.state.salesTeamList = teamList;
+                if (teamList[0]) {
+                    this.state.salesTeam = teamList[0].group_name;
+                    this.state.salesTeamId = teamList[0].group_id;
                 }
             }
         }
+        // }
         this.setState(this.state);
     },
 
@@ -221,20 +204,10 @@ var SalesSelectField = React.createClass({
 
     render: function () {
         //销售人员与销售团队下拉列表的填充内容
-        let salesmanOptions = [];
-        if (this.isSales()) {
-            //普通销售(多角色时：非销售领导、域管理员),展示所属销售所在团队的成员列表
-            salesmanOptions = this.state.salesManList.map(function (salesman) {
-                return (<Option value={salesman.userId}
-                                key={salesman.userId}>{salesman.nickName}</Option>);
-            });
-        } else {
-            //销售领导、域管理员,展示其所有（子）团队的成员列表
-            salesmanOptions = this.state.salesManList.map(function (salesman) {
-                return (<Option value={salesman.user_info.user_id}
-                                key={salesman.user_info.user_id}>{salesman.user_info.nick_name}</Option>);
-            });
-        }
+        let salesmanOptions = this.state.salesManList.map(function (salesman) {
+            return (<Option value={salesman.user_info.user_id}
+                            key={salesman.user_info.user_id}>{salesman.user_info.nick_name}</Option>);
+        });
         let salesTeamOptions = this.state.salesTeamList.map(function (sales_team) {
             return (<Option value={sales_team.group_id} key={sales_team.group_id}>{sales_team.group_name}</Option>);
         });

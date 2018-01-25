@@ -47,14 +47,8 @@ BatchChangeStore.prototype.setUnSelectDataTip = function (tip) {
 
 BatchChangeStore.prototype.getSalesManList = function (list) {
     list = _.isArray(list) ? list : [];
-    //过滤掉停用的成员
-    if (userData.isSalesManager()) {
-        //销售领导、域管理员角色时，客户所属销售下拉列表的过滤
-        this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
-    } else if (userData.hasRole("sales")) {
-        //销售角色，所属销售下拉列表的过滤
-        this.salesManList = _.filter(list, sales => sales.status == 1);
-    }
+    //客户所属销售下拉列表,过滤掉停用的成员
+    this.salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status == 1);
 };
 
 BatchChangeStore.prototype.setSalesMan = function (sales_man) {

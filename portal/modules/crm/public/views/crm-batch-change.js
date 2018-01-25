@@ -58,31 +58,21 @@ var CrmBatchChange = React.createClass({
     },
     getSalesBatchParams: function () {
         let salesId = "", teamId = "", salesName = "", teamName = "";
-        //普通销售(多角色时：非销售领导、域管理员)
-        if (this.isSales()) {
-            teamId = userData.getUserData().team_id;
-            teamName = userData.getUserData().team_name;
-            salesId = this.state.sales_man;
-            let salesman = _.find(this.state.salesManList, item => item.userId === salesId);
-            if (salesman) {
-                salesName = salesman.nickName;
-            }
-        } else {//销售领导、域管理员角色时，客户所属销售团队的修改
-            //销售id和所属团队的id
-            let idArray = this.state.sales_man.split("&&");
-            if (_.isArray(idArray) && idArray.length) {
-                salesId = idArray[0];
-                teamId = idArray[1];
-            }
-            //销售昵称和所属团队的团队名称
-            let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === salesId);
-            if (salesman) {
-                salesName = salesman.user_info ? salesman.user_info.nick_name : "";
-                if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
-                    let salesTeam = _.find(salesman.user_groups, team => team.group_id === teamId);
-                    if (salesTeam) {
-                        teamName = salesTeam.group_name;
-                    }
+        //客户所属销售团队的修改
+        //销售id和所属团队的id
+        let idArray = this.state.sales_man.split("&&");
+        if (_.isArray(idArray) && idArray.length) {
+            salesId = idArray[0];
+            teamId = idArray[1];
+        }
+        //销售昵称和所属团队的团队名称
+        let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === salesId);
+        if (salesman) {
+            salesName = salesman.user_info ? salesman.user_info.nick_name : "";
+            if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
+                let salesTeam = _.find(salesman.user_groups, team => team.group_id === teamId);
+                if (salesTeam) {
+                    teamName = salesTeam.group_name;
                 }
             }
         }
