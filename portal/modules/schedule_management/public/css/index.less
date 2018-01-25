@@ -7,6 +7,7 @@
 @right-panle-initial:75%;
 @Colum-width:1/7*100%;
 @Background-color:#F6FBFF;
+@Orange-color:#F7A340;
 @keyframes expired-show {
   0% { width: @panel-width-zero; }
   100% { width: @left-panel-show-width; }
@@ -480,12 +481,6 @@
           .schedule-customer-name{
             font-size:16px;
             color:#333333;
-            .contacts-containers{
-              display: none;
-            }
-            .contacts-containers.show{
-              display: block;
-            }
           }
           //标记完成的按钮
           .schedule-content-wrap{
@@ -606,10 +601,10 @@
           min-width: 200px;
           &:hover {
             background: @Background-color;
-            color: #F7A340;
+            color: @Orange-color;
             button {
               color: #fff;
-              background: #F7A340;
+              background: @Orange-color;
             }
           }
         }

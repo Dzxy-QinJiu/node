@@ -35,12 +35,26 @@ class DayAgendaScheduleLists extends React.Component {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
         this.getUserPhoneNumber();
+        //鼠标移入的时候，加上背景颜色
         $("#content-block").on("mouseenter", ".list-item", (e) => {
             if ($(".list-item.hover-item").length){
                 $(".list-item.hover-item").removeClass("hover-item");
             }
             $(e.target).closest(".list-item").addClass("hover-item");
         });
+        //鼠标移出的时候，如果有popover还在显示，就不能去掉标识背景颜色的类，如果没有popover显示，才去掉这个类
+        $("#content-block").on("mouseleave",".schedule-items-content",(e)=>{
+            //调用popover隐藏方法比调用此方法慢，所以要加个延时
+              setTimeout(()=>{
+                  if ($(".ant-popover:not(.ant-popover-hidden)").length){
+                      return;
+                  }else{
+                      if ($(".list-item.hover-item").length){
+                          $(".list-item.hover-item").removeClass("hover-item");
+                      }
+                  }
+              },1000)
+        })
     };
 
     componentWillReceiveProps(nextProps) {
@@ -113,6 +127,7 @@ class DayAgendaScheduleLists extends React.Component {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
         } else {
             if (this.state.callNumber) {
+                //把所拨打的电话号码和联系人的姓名emitter出去
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
@@ -135,6 +150,37 @@ class DayAgendaScheduleLists extends React.Component {
             }
         }
     };
+    //联系人和联系电话
+    renderPopoverContent(item){
+      return (
+          <div className="contacts-containers">
+              {_.map(item.contacts,(contact)=>{
+                  var cls = classNames("contacts-item",
+                      {"def-contact-item": contact.def_contancts === "true"});
+                  return (
+                      <div className={cls}>
+                          <div className="contacts-name-content">
+                              <i className="iconfont icon-contact"></i>
+                              {contact.name}
+                          </div>
+                          <div className="contacts-phone-content">
+                              {_.map(contact.phone, (phone)=>{
+                                  return (
+                                      <div className="phone-item">
+                                          {phone}
+                                          <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name )}>
+                                              {Intl.get("schedule.call.out","拨打")}
+                                          </Button>
+                                      </div>
+                                  )
+                              })}
+                          </div>
+                      </div>
+                  )
+              })}
+          </div>
+      );
+    };
     //渲染日程列表样式
     renderDayScheduleList() {
         return (
@@ -152,34 +198,7 @@ class DayAgendaScheduleLists extends React.Component {
                 var content = item.status == "handle" ? Intl.get("schedule.has.finished", "已完成") : (
                     item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
-                var customerContent = (
-                        <div className="contacts-containers">
-                            {_.map(item.contacts,(contact)=>{
-                                var cls = classNames("contacts-item",
-                                    {"def-contact-item": contact.def_contancts === "true"});
-                                return (
-                                    <div className={cls}>
-                                        <div className="contacts-name-content">
-                                            <i className="iconfont icon-contact"></i>
-                                            {contact.name}
-                                        </div>
-                                        <div className="contacts-phone-content">
-                                            {_.map(contact.phone, (phone)=>{
-                                                return (
-                                                    <div className="phone-item">
-                                                        {phone}
-                                                        <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name )}>
-                                                            {Intl.get("schedule.call.out","拨打")}
-                                                        </Button>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    );
+                var customerContent = this.renderPopoverContent(item);
                 return (
                     <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
                          data-tracename="日程列表">
