@@ -242,7 +242,8 @@ var ContactForm = React.createClass({
                 //合并重复客户时的处理
                 this.props.updateMergeCustomerContact(formData);
                 ContactAction.hideEditContactForm(this.props.contact);
-                Trace.traceEvent(this.getDOMNode(), "保存对当前联系人信息的修改");
+                 Trace.traceEvent("合并客户面板", "保存对当前联系人信息的修改");
+
             } else {
                 let editType = this.getEditType(formData);
                 if (editType) {
