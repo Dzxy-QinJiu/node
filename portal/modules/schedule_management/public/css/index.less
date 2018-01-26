@@ -7,6 +7,7 @@
 @right-panle-initial:75%;
 @Colum-width:1/7*100%;
 @Background-color:#F6FBFF;
+@Orange-color:#F7A340;
 @keyframes expired-show {
   0% { width: @panel-width-zero; }
   100% { width: @left-panel-show-width; }
@@ -76,6 +77,9 @@
             padding: 0px 0 0 10px;
             height: 50px;
             line-height: 50px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
             span{
               font-weight: 500;
               font-size: 16px;
@@ -477,7 +481,6 @@
           .schedule-customer-name{
             font-size:16px;
             color:#333333;
-
           }
           //标记完成的按钮
           .schedule-content-wrap{
@@ -489,16 +492,16 @@
             }
           }
         }
-        //鼠标悬浮的时候，加一个背景颜色
-        &:hover{
-          background: @Background-color;
-          .schedule-content-wrap{
-            button{
-              display: block;
-            }
+      }
+      //鼠标悬浮的时候，加一个背景颜色
+      .list-item.hover-item{
+        background: @Background-color;
+        .schedule-content-wrap{
+          button{
+            display: block;
           }
-
         }
+
       }
       //已完成的日程样式
       .list-item.has-handled{
@@ -569,4 +572,43 @@
 }
 .ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow{
   display: none;
+}
+.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow{
+  display: none;
+}
+
+.ant-popover-placement-bottom, .ant-popover-placement-top {
+  .ant-popover-inner-content {
+    .contacts-containers {
+      font-size: 16px;
+      .ant-btn {
+        float: right;
+      }
+      .icon-contact {
+        margin-right: 5px;
+      }
+      .contacts-item.def-contact-item {
+        .contacts-name-content {
+          color: #6BB6F7;
+        }
+        .ant-btn:hover, .ant-btn:focus {
+          border-color: transparent;
+        }
+      }
+      .contacts-phone-content {
+        .phone-item {
+          margin-bottom: 5px;
+          min-width: 200px;
+          &:hover {
+            background: @Background-color;
+            color: @Orange-color;
+            button {
+              color: #fff;
+              background: @Orange-color;
+            }
+          }
+        }
+      }
+    }
+  }
 }

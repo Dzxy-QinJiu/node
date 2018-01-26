@@ -1893,6 +1893,7 @@ var en_US = {
     "call.record.report":"Report",//上报
     "fail.report.phone.err.tip":"Failed to add invalid phone!",//上报无效电话失败！
     "user.info.no.email":"The user has no email,{add-email}",//该用户没有邮箱，{add-email}
-    "user.info.add.email":"add email"//添加邮箱
+    "user.info.add.email":"add email",//添加邮箱
+    "schedule.call.out":"Call out"//拨打
 };
 export default en_US;

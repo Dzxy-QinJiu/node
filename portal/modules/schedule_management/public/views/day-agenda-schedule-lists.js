@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/12/14.
  */
-import {Row, Col, Button, Icon} from "antd";
+import {Row, Col, Button, Icon, Popover,message} from "antd";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import dates from 'date-arithmetic';
 import BigCalendar from 'react-big-calendar';
@@ -18,6 +18,9 @@ const LAY_OUT = {
 };
 var curWeek = "";//今天所在的周
 var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
+import crmAjax from 'MOD_DIR/crm/public/ajax/index';
+import Trace from "LIB_DIR/trace";
+var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -31,6 +34,27 @@ class DayAgendaScheduleLists extends React.Component {
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
+        this.getUserPhoneNumber();
+        //鼠标移入的时候，加上背景颜色
+        $("#content-block").on("mouseenter", ".list-item", (e) => {
+            if ($(".list-item.hover-item").length){
+                $(".list-item.hover-item").removeClass("hover-item");
+            }
+            $(e.target).closest(".list-item").addClass("hover-item");
+        });
+        //鼠标移出的时候，如果有popover还在显示，就不能去掉标识背景颜色的类，如果没有popover显示，才去掉这个类
+        $("#content-block").on("mouseleave",".schedule-items-content",(e)=>{
+            //调用popover隐藏方法比调用此方法慢，所以要加个延时
+              setTimeout(()=>{
+                  if ($(".ant-popover:not(.ant-popover-hidden)").length){
+                      return;
+                  }else{
+                      if ($(".list-item.hover-item").length){
+                          $(".list-item.hover-item").removeClass("hover-item");
+                      }
+                  }
+              },1000)
+        })
     };
 
     componentWillReceiveProps(nextProps) {
@@ -80,6 +104,83 @@ class DayAgendaScheduleLists extends React.Component {
             </div>
         )
     };
+
+    //获取用户的坐席号
+    getUserPhoneNumber() {
+        let member_id = userData.getUserData().user_id;
+        crmAjax.getUserPhoneNumber(member_id).then((result) => {
+            if (result.phone_order) {
+                this.setState({
+                    callNumber: result.phone_order
+                });
+            }
+        }, (errMsg) => {
+            this.setState({
+                errMsg: errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!")
+            });
+        })
+    };
+
+    handleClickCallOut = (phoneNumber, contactName)=>{
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
+        if (this.state.errMsg) {
+            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
+        } else {
+            if (this.state.callNumber) {
+                //把所拨打的电话号码和联系人的姓名emitter出去
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        phoneNum: phoneNumber.replace('-', ''),
+                        contact: contactName
+                    }
+                );
+                let reqData = {
+                    from: this.state.callNumber,
+                    to: phoneNumber.replace('-', '')
+                };
+                crmAjax.callOut(reqData).then((result) => {
+                    if (result.code == 0) {
+                        message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                    }
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
+                });
+            } else {
+                message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
+            }
+        }
+    };
+    //联系人和联系电话
+    renderPopoverContent(item){
+      return (
+          <div className="contacts-containers">
+              {_.map(item.contacts,(contact)=>{
+                  var cls = classNames("contacts-item",
+                      {"def-contact-item": contact.def_contancts === "true"});
+                  return (
+                      <div className={cls}>
+                          <div className="contacts-name-content">
+                              <i className="iconfont icon-contact"></i>
+                              {contact.name}
+                          </div>
+                          <div className="contacts-phone-content">
+                              {_.map(contact.phone, (phone)=>{
+                                  return (
+                                      <div className="phone-item">
+                                          {phone}
+                                          <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name )}>
+                                              {Intl.get("schedule.call.out","拨打")}
+                                          </Button>
+                                      </div>
+                                  )
+                              })}
+                          </div>
+                      </div>
+                  )
+              })}
+          </div>
+      );
+    };
     //渲染日程列表样式
     renderDayScheduleList() {
         return (
@@ -97,6 +198,7 @@ class DayAgendaScheduleLists extends React.Component {
                 var content = item.status == "handle" ? Intl.get("schedule.has.finished", "已完成") : (
                     item.allDay ? Intl.get("crm.alert.full.day", "全天") : moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + "-" + moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                 );
+                var customerContent = this.renderPopoverContent(item);
                 return (
                     <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
                          data-tracename="日程列表">
@@ -107,9 +209,16 @@ class DayAgendaScheduleLists extends React.Component {
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={9}>
-                                    <p className="schedule-customer-name">
-                                        <i className={iconFontCls}></i>
-                                        {item.customer_name || item.topic}</p>
+                                    {item.contacts?  <Popover content={customerContent} placement="bottom">
+                                        <div className="schedule-customer-name">
+                                            <i className={iconFontCls}></i>
+                                            {item.customer_name || item.topic}
+                                        </div>
+                                    </Popover>:
+                                        <div className="schedule-customer-name">
+                                            <i className={iconFontCls}></i>
+                                            {item.customer_name || item.topic}
+                                        </div>}
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={10}>

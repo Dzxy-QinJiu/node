@@ -1935,6 +1935,7 @@ var zh_CN = {
     "call.record.report": "上报",
     "fail.report.phone.err.tip": "上报无效电话失败！",
     "user.info.no.email": "该用户没有邮箱，{add-email}",
-    "user.info.add.email": "添加邮箱"
+    "user.info.add.email": "添加邮箱",
+    "schedule.call.out":"拨打"
 };
 export default zh_CN;

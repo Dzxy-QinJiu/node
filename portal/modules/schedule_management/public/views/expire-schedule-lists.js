@@ -143,7 +143,7 @@ class ExpireScheduleLists extends React.Component {
                                     - {moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                                     </span>
                             </h4>
-                            <p className="item-customer-content">
+                            <p className="item-customer-content" title={item.customer_name || item.topic}>
                                 <i className={cls}></i>
                                 <span onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
                                       data-tracename="点击查看客户详情">
