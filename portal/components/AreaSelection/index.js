@@ -1,18 +1,15 @@
-var Tabs = require("antd").Tabs;
-var Form = require("antd").Form;
-var Input = require("antd").Input;
-var Icon = require("antd").Icon;
+import {Tabs, Form, Input, Icon} from "antd";
 var TabPane = Tabs.TabPane;
 var FormItem = Form.Item;
 require("./css/index.less");
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
-
+let areaData = null;//用来存储获取的地域数据,不用每次都取一遍
 /* 地域选择组件 */
 var AreaSelection = React.createClass({
     getInitialState: function () {
         return {
-            areaData: "",
+            areaData: areaData,
             activeKey: "1",
             prov: null,
             city: null,
@@ -20,19 +17,22 @@ var AreaSelection = React.createClass({
             provName: this.props.prov || null,
             cityName: this.props.city || null,
             countyName: this.props.county || null,
-            isAlwayShow: this.props.isAlwayShow || false//地域下拉框是否一直展示
+            isAlwayShow: this.props.isAlwayShow || false,//地域下拉框是否一直展示
+            isLoadingArea: false//是否正在加载地域数据
         };
     },
     componentWillMount: function () {
-        const route = _.find(routeList, route => route.handler === "getAreaData");
-
-        const arg = {
-            url: route.path,
-        };
-
-        ajax(arg).then(result => {
-            this.setState({areaData: result});
-        });
+        if(!this.state.areaData){
+            const route = _.find(routeList, route => route.handler === "getAreaData");
+            const arg = {
+                url: route.path,
+            };
+            this.setState({isLoadingArea:true});
+            ajax(arg).then(result => {
+                this.setState({areaData:result, isLoadingArea:false});
+                areaData = result;
+            });
+        }
     },
     componentWillReceiveProps: function (nextProps) {
         if(!nextProps.isAlwayShow){
@@ -147,54 +147,54 @@ var AreaSelection = React.createClass({
         this.setState({activeKey});
     },
     render: function () {
-        var data = this.state.areaData;
-        if (!data) return null;
-
         var AGProvs = [], HKProvs = [], LSProvs = [], TZProvs = [], citys = [], countys = [];
-        for (var i in data.provinces) {
-            switch (data.provinces[i].category) {
-                case "AG":
-                    AGProvs.push([i, data.provinces[i].name]);
-                    break;
-                case "HK":
-                    HKProvs.push([i, data.provinces[i].name]);
-                    break;
-                case "LS":
-                    LSProvs.push([i, data.provinces[i].name]);
-                    break;
-                case "TZ":
-                    TZProvs.push([i, data.provinces[i].name]);
-                    break;
+        var data = this.state.areaData;
+        if (data) {
+            for (var i in data.provinces) {
+                switch (data.provinces[i].category) {
+                    case "AG":
+                        AGProvs.push([i, data.provinces[i].name]);
+                        break;
+                    case "HK":
+                        HKProvs.push([i, data.provinces[i].name]);
+                        break;
+                    case "LS":
+                        LSProvs.push([i, data.provinces[i].name]);
+                        break;
+                    case "TZ":
+                        TZProvs.push([i, data.provinces[i].name]);
+                        break;
+                }
             }
-        }
 
-        AGProvs = AGProvs.map(function (item) {
-            return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
-        });
-        HKProvs = HKProvs.map(function (item) {
-            return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
-        });
-        LSProvs = LSProvs.map(function (item) {
-            return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
-        });
-        TZProvs = TZProvs.map(function (item) {
-            return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
-        });
-        if (this.state.prov) {
-            for (var i in data.provinces[this.state.prov].citys) {
-                citys.push([i, data.provinces[this.state.prov].citys[i].name])
-            }
-            citys = citys.map(function (item) {
+            AGProvs = AGProvs.map(function (item) {
                 return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
             });
-        }
-        if (this.state.prov && this.state.city) {
-            for (var i in data.provinces[this.state.prov].citys[this.state.city].countys) {
-                countys.push([i, data.provinces[this.state.prov].citys[this.state.city].countys[i].name])
-            }
-            countys = countys.map(function (item) {
+            HKProvs = HKProvs.map(function (item) {
                 return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
             });
+            LSProvs = LSProvs.map(function (item) {
+                return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
+            });
+            TZProvs = TZProvs.map(function (item) {
+                return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
+            });
+            if (this.state.prov) {
+                for (var i in data.provinces[this.state.prov].citys) {
+                    citys.push([i, data.provinces[this.state.prov].citys[i].name])
+                }
+                citys = citys.map(function (item) {
+                    return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
+                });
+            }
+            if (this.state.prov && this.state.city) {
+                for (var i in data.provinces[this.state.prov].citys[this.state.city].countys) {
+                    countys.push([i, data.provinces[this.state.prov].citys[this.state.city].countys[i].name])
+                }
+                countys = countys.map(function (item) {
+                    return <label key={item[0]} htmlFor={item[0]}>{item[1]}</label>
+                });
+            }
         }
         var style = {
             width: this.props.width ? this.props.width + "px" : "40px"
@@ -223,20 +223,22 @@ var AreaSelection = React.createClass({
                     <div className="area-selector-container">
                         <Tabs activeKey={this.state.activeKey} type="card" onChange={this.onChange}>
                             <TabPane tab={Intl.get("realm.select.address.province", "省份")} key="1">
-                                <div onClick={this.selectProv}>
-                                    <div className="address-prov"><span className="prov-nav-span">A-G</span>
-                                        {AGProvs}
-                                    </div>
-                                    <div className="address-prov"><span className="prov-nav-span">H-K</span>
-                                        {HKProvs}
-                                    </div>
-                                    <div className="address-prov"><span className="prov-nav-span">L-S</span>
-                                        {LSProvs}
-                                    </div>
-                                    <div className="address-prov"><span className="prov-nav-span">T-Z</span>
-                                        {TZProvs}
-                                    </div>
-                                </div>
+                                {this.state.isLoadingArea ? <Icon type="loading" />:
+                                    (<div onClick={this.selectProv}>
+                                        <div className="address-prov"><span className="prov-nav-span">A-G</span>
+                                            {AGProvs}
+                                        </div>
+                                        <div className="address-prov"><span className="prov-nav-span">H-K</span>
+                                            {HKProvs}
+                                        </div>
+                                        <div className="address-prov"><span className="prov-nav-span">L-S</span>
+                                            {LSProvs}
+                                        </div>
+                                        <div className="address-prov"><span className="prov-nav-span">T-Z</span>
+                                            {TZProvs}
+                                        </div>
+                                    </div>)
+                                }
                             </TabPane>
                             <TabPane tab={Intl.get("realm.select.address.city", "城市")} key="2">
                                 <div onClick={this.selectCity}>{citys}</div>
