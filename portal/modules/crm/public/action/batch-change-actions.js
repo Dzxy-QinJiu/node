@@ -16,24 +16,13 @@ function BatchChangeAction() {
     );
 
     this.getSalesManList = function (cb) {
-        var _this = this;
-        let ajaxFunc = null;
-        if (userData.isSalesManager()) {
-            //销售领导、域管理员角色时，客户所属销售下拉列表的数据获取
-            ajaxFunc = batchChangeAjax.getSalesManList();
-        } else if (userData.hasRole("sales")) {
-            //销售角色获取其团队里的成员列表
-            let teamId = userData.getUserData().team_id;
-            ajaxFunc = batchChangeAjax.getSalesTeamMembers(teamId);
-        }
-        if (ajaxFunc) {
-            ajaxFunc.then(function (list) {
-                _this.dispatch(list);
-                if (cb) cb();
-            }, function (errorMsg) {
-                console.log(errorMsg);
-            });
-        }
+        //客户所属销售(团队)下拉列表的数据获取
+        batchChangeAjax.getSalesManList().then((list) => {
+            this.dispatch(list);
+            if (cb) cb();
+        }, (errorMsg) => {
+            console.log(errorMsg);
+        });
     };
     //批量操作调用
     this.doBatch = function (type, condition, cb) {
