@@ -461,37 +461,26 @@ var CrmBatchChange = React.createClass({
         BatchChangeActions.locationChange(address);
         Trace.traceEvent($(this.getDOMNode()).find(".change-territory"), "选择地址");
     },
-    //是否是普通销售(多角色时：非销售领导、域管理员)的判断
-    isSales: function () {
-        return userData.hasRole("sales") && !userData.isSalesManager()
-    },
     //标签变更类型的切换
     onChangeTag: function (e, v) {
         this.setCurrentTab(e.target.value);
     },
     renderSalesBlock: function () {
         let dataList = [];
-        if (this.isSales()) {
-            //普通销售(多角色时：非销售领导、域管理员),展示所属销售所在团队的成员列表
-            dataList = this.state.salesManList.map(function (salesman) {
-                return ({name: salesman.nickName, value: salesman.userId});
-            });
-        } else {
-            //销售领导、域管理员,展示其所有（子）团队的成员列表
-            this.state.salesManList.forEach(function (salesman) {
-                let teamArray = salesman.user_groups;
-                //一个销售属于多个团队的处理（旧数据中存在这种情况）
-                if (_.isArray(teamArray) && teamArray.length) {
-                    //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                    teamArray.forEach(team => {
-                        dataList.push({
-                            name: salesman.user_info.nick_name + "(" + team.group_name + ")",
-                            value: salesman.user_info.user_id + "&&" + team.group_id
-                        })
-                    });
-                }
-            });
-        }
+        //展示其所在团队的成员列表
+        this.state.salesManList.forEach(function (salesman) {
+            let teamArray = salesman.user_groups;
+            //一个销售属于多个团队的处理（旧数据中存在这种情况）
+            if (_.isArray(teamArray) && teamArray.length) {
+                //销售与所属团队的组合数据，用来区分哪个团队中的销售
+                teamArray.forEach(team => {
+                    dataList.push({
+                        name: salesman.user_info.nick_name + "(" + team.group_name + ")",
+                        value: salesman.user_info.user_id + "&&" + team.group_id
+                    })
+                });
+            }
+        });
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect

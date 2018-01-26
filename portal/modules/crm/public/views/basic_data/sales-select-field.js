@@ -49,8 +49,11 @@ var SalesSelectField = React.createClass({
         };
     },
     componentDidMount: function () {
-        //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
-        this.getSalesManList();
+        //有修改所属销售的权限时
+        if(!this.state.disabled){
+            //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
+            this.getSalesManList();
+        }
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.customerId != this.state.customerId) {

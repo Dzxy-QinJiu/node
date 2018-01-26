@@ -56,14 +56,14 @@ const ClueCustomer = React.createClass({
     componentDidMount: function () {
         this.changeTableHeight();
         clueCustomerStore.listen(this.onStoreChange);
-        clueCustomerAction.getSalesManList();
         //获取线索来源
         this.getClueSource();
         //获取线索渠道
         this.getClueChannel();
-        //管理员默认展示待分配的线索客户 0
+        //管理员、销售领导默认展示待分配的线索客户 0
         if (this.isSalesManager()){
-            //域管理员  默认展示待分配的线索客户 status对应0
+            clueCustomerAction.getSalesManList();
+            //管理员、销售领导 默认展示待分配的线索客户 status对应0
             clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
         }else if (this.isOperation()){
             //运营人员  运营人员默认展示全部线索客户 status对应""
