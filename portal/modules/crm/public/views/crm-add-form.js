@@ -1,7 +1,7 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 import {Icon, Form, Input, Select, message}from "antd";
-var AreaSelection = require("../../../../components/AreaSelection");
+import { AntcAreaSelection } from "antc";
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -407,7 +407,7 @@ var CRMAddForm = React.createClass({
                                     {this.getAdministrativeLevelOptions()}
                                 </Select>
                             </FormItem >
-                            <AreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}
+                            <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}
                                            placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
                                            prov={formData.province} city={formData.city}
                                            county={formData.county} updateLocation={this.updateLocation}/>

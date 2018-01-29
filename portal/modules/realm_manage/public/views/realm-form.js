@@ -14,7 +14,7 @@ var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
 var HeadIcon = require("../../../../components/headIcon");
 var Spinner = require("../../../../components/spinner");
-var AreaSelection = require("../../../../components/AreaSelection");
+import { AntcAreaSelection } from "antc";
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var RealmFormStore = require("../store/realm-form-store");
 var RealmFormAction = require("../action/realm-form-actions");
@@ -397,7 +397,7 @@ var RealmForm = React.createClass({
                                     </FormItem>
                                     {this.state.realmPhoneEmailCheck ? "" : (
                                         <div className="phone-email-check"><ReactIntl.FormattedMessage id="realm.change.owner.phone.tip" defaultMessage="电话、邮箱必填一项！" /></div>)}
-                                    <AreaSelection labelCol="3" wrapperCol="18" width="500px" prov={prov} city={city}
+                                    <AntcAreaSelection labelCol="3" wrapperCol="18" width="500px" prov={prov} city={city}
                                                    county={county} updateLocation={this.updateLocation}/>
 
                                     <FormItem

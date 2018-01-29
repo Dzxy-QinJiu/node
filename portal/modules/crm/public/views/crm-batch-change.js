@@ -6,7 +6,7 @@ require('../css/crm-batch-change.less');
 var BatchChangeStore = require("../store/batch-change-store");
 var crmStore = require("../store/crm-store");
 var BatchChangeActions = require("../action/batch-change-actions");
-var AreaSelection = require("../../../../components/AreaSelection");
+import { AntcAreaSelection } from "antc";
 import {Input, Select, message, Radio, Button} from "antd";
 import ValidateMixin from "../../../../mixins/ValidateMixin";
 const RadioGroup = Radio.Group;
@@ -497,7 +497,7 @@ var CrmBatchChange = React.createClass({
         let territoryObj = this.state.territoryObj;//地域
         return (
             <div className="op-pane change-territory">
-                {<AreaSelection labelCol="0" wrapperCol="24" width="210"
+                {<AntcAreaSelection labelCol="0" wrapperCol="24" width="210"
                                 isAlwayShow={true}
                                 prov={territoryObj.province} city={territoryObj.city}
                                 county={territoryObj.county}
