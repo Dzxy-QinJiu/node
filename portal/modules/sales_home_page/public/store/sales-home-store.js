@@ -45,6 +45,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.getWebConfigObj = {};//个人配置信息
     this.setWebConfigStatus = "";//设置个人配置的状态
     this.hasNoEmail = false;//此账号是否有邮箱
+    this.salesCallStatus = {};//各销售对应的状态
 };
 //销售团队列表对象数据
 SalesHomeStore.prototype.resetSalesTeamListObj = function () {
@@ -71,7 +72,7 @@ SalesHomeStore.prototype.returnSalesMemberList = function () {
 //去掉原团队是正在展示列表的父团队的标识
 function delTeamFlag(teamList) {
     if (_.isArray(teamList) && teamList.length) {
-        _.some(teamList, team=> {
+        _.some(teamList, team => {
             if (team.isCurrShowListParent) {
                 delete team.isCurrShowListParent;
                 //去掉子团队中正在展示列表的父团队的标识（跨级/隔级返回时）
@@ -84,7 +85,7 @@ function delTeamFlag(teamList) {
 //设置要返回团队的子团队列表
 SalesHomeStore.prototype.setReturnTeamChilds = function (teamId, teamList) {
     if (_.isArray(teamList) && teamList.length > 0) {
-        _.some(teamList, team=> {
+        _.some(teamList, team => {
             if (team.group_id == teamId) {
                 //设置当前展示的销售团队
                 this.currShowSalesTeam = team;
@@ -129,6 +130,27 @@ SalesHomeStore.prototype.selectSalesTeam = function (team) {
         this.currShowType = showTypeConstant.SALES_MEMBER_LIST;
         //获取该团队的所有成员
         SalesHomeActions.getSalesTeamMembers(team.group_id);
+        //获取该团队销售人员对应的通话状态
+        getSalesCallStatusFunc(team);
+    }
+};
+//获取该团队销售人员对应的通话状态
+SalesHomeStore.prototype.getSalesCallStatus = function (dataObj) {
+    if (_.isObject(dataObj.resData) && !_.isEmpty(dataObj.resData)) {
+        this.salesCallStatus = dataObj.resData;
+    }
+};
+
+//获取该团队销售人员对应的通话状态的方法
+function getSalesCallStatusFunc(team) {
+    let userIds = [];
+    if (_.isArray(team.user_ids) && team.user_ids.length) {
+        userIds = team.user_ids;
+    }
+    if (userIds.length > 0) {
+        setTimeout(() => {
+            SalesHomeActions.getSalesCallStatus(userIds.join(","));
+        });
     }
 };
 
@@ -190,6 +212,8 @@ SalesHomeStore.prototype.getSalesTeamList = function (result) {
                         this.originSalesTeamTree.isCurrShowListParent = true;//当前展示（成员）列表的父团队
                         //获取该销售所在团队的成员列表
                         SalesHomeActions.getSalesTeamMembers(teamObj.group_id);
+                        //获取销售所在团队的成员列表对应的通话状态
+                        getSalesCallStatusFunc(teamObj);
                     } else {
                         //普通销售或者是舆情秘书，要展示过期用户提醒
                         this.currShowType = showTypeConstant.SALESMAN;
@@ -453,7 +477,7 @@ SalesHomeStore.prototype.getSalesPhoneList = function (result) {
         //总时长、总接通数
         if (_.isArray(data.salesPhoneList)) {
             let totalTime = 0, totalCount = 0;
-            data.salesPhoneList.forEach((phone)=> {
+            data.salesPhoneList.forEach((phone) => {
                 totalCount += phone.totalAnswer || 0;
                 totalTime += phone.totalTime || 0;
             });
@@ -527,15 +551,15 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
 };
 //获取用户的个人信息
 SalesHomeStore.prototype.getUserInfo = function (userInfo) {
-    if (userInfo){
+    if (userInfo) {
         this.email = userInfo.email || "";
-        if (!this.email){
+        if (!this.email) {
             this.hasNoEmail = true;
         }
-        if (userInfo.emailEnable){
+        if (userInfo.emailEnable) {
             //邮箱已激活
             this.emailEnable = true;
-        }else{
+        } else {
             //邮箱未激活
             this.emailEnable = false;
         }
@@ -543,14 +567,14 @@ SalesHomeStore.prototype.getUserInfo = function (userInfo) {
 };
 //获取个人信息配置
 SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
-    if (userInfo.loading){
+    if (userInfo.loading) {
         this.getWebConfigStatus = "loading";
         this.getWebConfigObj = {};
-    }else if (userInfo.error){
+    } else if (userInfo.error) {
         //获取错误的情况
         this.getWebConfigStatus = "error";
         this.getWebConfigObj = {};
-    }else{
+    } else {
         //获取正确的情况
         this.getWebConfigObj = userInfo.resData;
         this.getWebConfigStatus = "";
@@ -558,7 +582,7 @@ SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
 };
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
-    if (userInfo.loading){
+    if (userInfo.loading) {
         this.setWebConfigStatus = "loading";
     }
 };

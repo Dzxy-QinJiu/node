@@ -606,6 +606,7 @@ var SalesHomePage = React.createClass({
                                           refreshDataByChangeSales={this.refreshDataByChangeSales}
                                           salesTeamMembersObj={this.state.salesTeamMembersObj}
                                           updateScrollBar={this.state.updateScrollBar}
+                                          salesCallStatus={this.state.salesCallStatus}
                             />
                         </div>
                     ):null}

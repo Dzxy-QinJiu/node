@@ -1936,6 +1936,7 @@ var zh_CN = {
     "fail.report.phone.err.tip": "上报无效电话失败！",
     "user.info.no.email": "该用户没有邮箱，{add-email}",
     "user.info.add.email": "添加邮箱",
-    "schedule.call.out":"拨打"
+    "schedule.call.out":"拨打",
+    "sales.status.calling": "正在打电话",
 };
 export default zh_CN;
