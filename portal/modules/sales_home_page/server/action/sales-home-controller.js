@@ -66,6 +66,7 @@ exports.getExpireUser = function (req, res) {
 //获取网站的个性化设置
 exports.getWebsiteConfig = function (req, res) {
     salesHomeService.getWebsiteConfig(req, res).on("success", function (data) {
+        //如果之前账号未进行过个性化设置，会返回204
         res.json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
