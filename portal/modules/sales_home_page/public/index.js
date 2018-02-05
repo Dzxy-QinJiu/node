@@ -528,7 +528,7 @@ var SalesHomePage = React.createClass({
          3.正在加载个人邮箱信息或加载出错或邮箱已经激活的用户，不展示
          */}
         var ActiveEmailHideFlag =
-            ((this.state.getWebConfigStatus == ("loading" || "error"))
+            ((this.state.getWebConfigStatus === "loading" || this.state.getWebConfigStatus === "error")
             || (this.state.getWebConfigObj && this.state.getWebConfigObj.setting_notice_ignore == "yes") || (this.state.emailEnable));
         return (<RightContent>
             <div className="sales_home_content" data-tracename="销售首页">
