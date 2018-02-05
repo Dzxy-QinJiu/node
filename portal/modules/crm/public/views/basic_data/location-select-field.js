@@ -1,7 +1,7 @@
 import {Icon, Alert} from 'antd';
-let AreaSelection = require("../../../../../components/AreaSelection");
 let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
+import { AntcAreaSelection } from "antc";
 
 var LocationSelectField = React.createClass({
     getDefaultProps: function () {
@@ -136,7 +136,7 @@ var LocationSelectField = React.createClass({
             </div>
         );
         return (<div className="location-edit-field">
-            <AreaSelection labelCol="0" wrapperCol="24" width="260"
+            <AntcAreaSelection labelCol="0" wrapperCol="24" width="260"
                            placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
                            prov={this.state.province}
                            city={this.state.city}

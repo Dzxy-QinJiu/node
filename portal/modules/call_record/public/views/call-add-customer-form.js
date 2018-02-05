@@ -1,7 +1,6 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 import {Icon,Form,Input,Select,message}from "antd";
-var AreaSelection = require("../../../../components/AreaSelection");
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
@@ -20,6 +19,7 @@ const userData = require("../../../../public/sources/user-data");
 var CallRecordAction = require('../action/call-record-actions');
 var classNames = require("classnames");
 import Trace from "LIB_DIR/trace";
+import { AntcAreaSelection } from "antc";
 
 var CallAddCustomerForm = React.createClass({
     mixins: [Validation.FieldMixin],
@@ -331,7 +331,7 @@ var CallAddCustomerForm = React.createClass({
                                         </Select>
                                     </Validator>)}
                             </FormItem >
-                            <AreaSelection labelCol="6" wrapperCol="18" width="420" prov={formData.province}
+                            <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" prov={formData.province}
                                            city={formData.city}
                                            county={formData.county} updateLocation={this.updateLocation}/>
                             < FormItem

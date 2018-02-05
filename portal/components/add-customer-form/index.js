@@ -17,7 +17,7 @@ var Option = Select.Option;
 var batchChangeAction = require("MOD_DIR/crm/public/action/batch-change-actions");
 require("./index.less");
 import PhoneInput from "CMP_DIR/phone-input";
-var AreaSelection = require("CMP_DIR/AreaSelection");
+import { AntcAreaSelection } from "antc";
 const userData = require("PUB_DIR/sources/user-data");
 const noop = function () {};
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -468,7 +468,7 @@ class AddCustomerForm extends React.Component {
                                             ))}
                                     </FormItem>
                                     <div id="area-container">
-                                        <AreaSelection
+                                        <AntcAreaSelection
                                             labelCol="6"
                                             wrapperCol="18"
                                             label={Intl.get("realm.address", "地址")}
