@@ -158,7 +158,7 @@ exports.getWebsiteConfig = function (req, res) {
                     data = {};
                 }
                 eventEmitter.emit("success", data);
-            },
+            }
         });
 };
 //对网站进行个性化设置
