@@ -1936,6 +1936,8 @@ var zh_CN = {
     "fail.report.phone.err.tip": "上报无效电话失败！",
     "user.info.no.email": "该用户没有邮箱，{add-email}",
     "user.info.add.email": "添加邮箱",
-    "schedule.call.out":"拨打"
+    "schedule.call.out":"拨打",
+    "weekly.report.total.duration":"本周总时长",
+    "weekly.report.total.connected":"本周总接通数"
 };
 export default zh_CN;

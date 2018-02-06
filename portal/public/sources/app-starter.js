@@ -195,7 +195,7 @@ function init(options) {
                 break;
             //日程管理
             case 'schedule_management':
-                childRoutes.push(require("../../modules/schedule_management"));
+                childRoutes.push(require("../../modules/weekly_report"));
                 break;
         }
     });
