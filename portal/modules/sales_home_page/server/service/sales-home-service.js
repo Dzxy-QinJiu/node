@@ -25,6 +25,8 @@ var restApis = {
     getExpireUser: "/rest/base/v1/view/expireuser",
     //获取网站个性化配置 或对网站进行个性化设置
     websiteConfig:"/rest/base/v1/user/website/config",
+    //获取各销售对应的通话状态
+    getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids"
 };
 exports.restUrls = restApis;
 
@@ -60,7 +62,15 @@ exports.getSalesTeamTree = function (req, res, type) {
             res: res
         }, null);
 };
-
+//获取各销售对应的通话状态
+exports.getSalesCallStatus=function (req, res, queryObj) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getSalesCallStatus.replace(":user_ids", queryObj.user_ids),
+            req: req,
+            res: res
+        }, null);
+};
 //获取销售-客户列表
 exports.getSalesCustomer = function (req, res, timeRange) {
     return restUtil.authRest.get(

@@ -18,6 +18,15 @@ exports.getSalesTeamTree = function (req, res) {
     });
 };
 
+//获取销售对应的通话状态
+exports.getSalesCallStatus=function (req, res) {
+    salesHomeService.getSalesCallStatus(req, res, req.query).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 //获取销售-客户列表
 exports.getSalesCustomer = function (req, res) {
     salesHomeService.getSalesCustomer(req, res, req.query).on("success", function (data) {
