@@ -1044,7 +1044,7 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("crm.last.contact", "最后联系"),
-                width: hasSecretaryAuth ? '110px' : '290px',
+                width: hasSecretaryAuth ? '110px' : '200px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
@@ -1085,7 +1085,7 @@ var Crm = React.createClass({
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title != Intl.get("common.operate", "操作"));
         }
-        const tableScrollX = hasSecretaryAuth ? 1000 : 1170;
+        const tableScrollX = hasSecretaryAuth ? 1000 : 1080;
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;
