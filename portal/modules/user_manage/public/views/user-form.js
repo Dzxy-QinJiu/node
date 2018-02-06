@@ -28,7 +28,10 @@ var classNames = require("classnames");
 import Trace from "LIB_DIR/trace";
 function noop() {
 }
-
+const FORM_CONST = {
+    LABEL_COL: 5,
+    WRAPPER_COL: 18
+}
 var UserForm = React.createClass({
         mixins: [Validation.FieldMixin],
         getDefaultProps: function () {
@@ -417,8 +420,8 @@ var UserForm = React.createClass({
                                     <FormItem
                                         label={Intl.get("realm.change.owner.name", "姓名")}
                                         id="name"
-                                        labelCol={{span: 4}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                         validateStatus={this.renderValidateStyle('name')}
                                         help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                     >
@@ -434,8 +437,8 @@ var UserForm = React.createClass({
                                     <FormItem
                                         label={Intl.get("common.phone", "电话")}
                                         id="phone"
-                                        labelCol={{span: 4}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                         validateStatus={this.renderValidateStyle('phone')}
                                         help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
                                     >
@@ -452,8 +455,8 @@ var UserForm = React.createClass({
                                     <FormItem
                                         label={Intl.get("common.email", "邮箱")}
                                         id="email"
-                                        labelCol={{span: 4}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                         validateStatus={this.renderValidateStyle('email')}
                                         help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
                                     >
@@ -470,8 +473,8 @@ var UserForm = React.createClass({
                                     <FormItem
                                         label={Intl.get("common.role", "角色")}
                                         id="role"
-                                        labelCol={{span: 4}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                         validateStatus={this.renderValidateStyle('role')}
                                         help={status.role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.role.errors && status.role.errors.join(','))}
                                     >
@@ -500,8 +503,8 @@ var UserForm = React.createClass({
                                     {this.props.formType == "add" ? ( !Oplate.hideSomeItem && <FormItem
                                         label={Intl.get("common.belong.team", "所属团队")}
                                         id="team"
-                                        labelCol={{span: 4}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: FORM_CONST.LABEL_COL}}
+                                        wrapperCol={{span: FORM_CONST.WRAPPER_COL}}
                                     >
                                         {this.state.isLoadingTeamList ? (
                                             <div className="role-list-loading"><ReactIntl.FormattedMessage
@@ -522,7 +525,7 @@ var UserForm = React.createClass({
                                         )}
                                     </FormItem>) : null}
                                     <FormItem
-                                        wrapperCol={{span: 22}}>
+                                        wrapperCol={{span: 23}}>
                                         <div className="indicator">
                                             {saveResult ?
                                                 (
