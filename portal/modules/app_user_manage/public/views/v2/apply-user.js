@@ -4,9 +4,9 @@
 //右侧面板样式，上一步、下一步，滑动布局等
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
-    require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
-}else if (language.lan() == "zh"){
     require("../../../../../components/user_manage_components/css/right-panel-es_VE.less");
+}else if (language.lan() == "zh"){
+    require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
 }
 import {Carousel,CarouselItem} from 'react-bootstrap';
 import {RightPanelClose} from '../../../../../components/rightPanel';
