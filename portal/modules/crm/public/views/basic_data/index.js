@@ -42,14 +42,6 @@ function getBasicPanelH(isMerge) {
     }
 }
 
-const LABEL_TYPES = {
-    INFO_TAG: "信息",
-    INTENT_TAG: "意向",
-    TRIAL_TAG: "试用",
-    SIGN_TAG: "签约",
-    QUALIFIED_TAG: "合格"
-};
-
 var BasicData = React.createClass({
     getInitialState: function () {
         return getStateFromStore(this.props.isMerge);
@@ -152,16 +144,6 @@ var BasicData = React.createClass({
         //是否显示用户统计内容
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
         var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
-        let customerLabelCls = "customer-label";
-        if (basicData.customer_label) {
-            customerLabelCls = classNames("customer-label", {
-                "info-tag-style": basicData.customer_label === LABEL_TYPES.INFO_TAG,
-                "intent-tag-style": basicData.customer_label === LABEL_TYPES.INTENT_TAG,
-                "trial-tag-style": basicData.customer_label === LABEL_TYPES.TRIAL_TAG,
-                "sign-tag-style": basicData.customer_label === LABEL_TYPES.SIGN_TAG,
-                "qualified-tag-style": basicData.customer_label === LABEL_TYPES.QUALIFIED_TAG
-            });
-        }
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         return (
             <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
@@ -182,8 +164,8 @@ var BasicData = React.createClass({
                                                 disabled={hasPrivilege("CUSTOMER_UPDATE_NAME") ? false : true}
                                             />
                                             {basicData.customer_label ? (
-                                                <Tag
-                                                    className={customerLabelCls}>{basicData.customer_label}</Tag>) : null
+                                                <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
+                                                    {basicData.customer_label}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>

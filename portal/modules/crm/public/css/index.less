@@ -1,7 +1,47 @@
 @import "../../../../components/antd-table-pagination/index.less";
 @import "../../../../public/css/common-variables";
 @import "../../../../public/css/iconfont";
+
+//信息标签的背景色
+@info-tag-color: #b8c4ca;
+//意向标签的背景色
+@intent-tag-color: #b8c4ca;
+//试用标签的背景色
+@trial-tag-color: #95b73c;
+//签约标签的背景色
+@sign-tag-color: #5197cf;
+//合格标签的背景色
+@qualified-tag-color: #ddd13c;
+//标签字体的颜色
+@tag-font-color: #ffffff;
+
+
 .crm_content{
+  //客户标签的样式设置
+  .customer-label-common-style {
+    margin-left: 5px;
+    color: @tag-font-color;
+  }
+  .customer-label.info-tag-style{
+    .customer-label-common-style;
+    background-color: @info-tag-color;
+  }
+  .customer-label.intent-tag-style{
+    .customer-label-common-style;
+    background-color: @intent-tag-color;
+  }
+  .customer-label.trial-tag-style{
+    .customer-label-common-style;
+    background-color: @trial-tag-color;
+  }
+  .customer-label.sign-tag-style{
+    .customer-label-common-style;
+    background-color: @sign-tag-color;
+  }
+  .customer-label.qualified-tag-style{
+    .customer-label-common-style;
+    background-color: @qualified-tag-color;
+  }
   td .comments-fix {
     overflow: hidden;
     text-overflow: ellipsis;

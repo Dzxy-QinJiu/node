@@ -1,6 +1,5 @@
 require('./css/index.less');
-import {Tag, Alert, Modal, message, Pagination} from "antd";
-import {Button, Icon} from "antd";
+import {Tag, Modal, message, Button, Icon} from "antd";
 import {AntcTable} from "antc";
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -33,8 +32,8 @@ import routeList from "MOD_DIR/common/route";
 import ajax from "MOD_DIR/common/ajax";
 import Trace from "LIB_DIR/trace";
 import crmAjax from './ajax/index';
+import crmUtil from "./utils/crm-util";
 import rightPanelUtil from "CMP_DIR/rightPanel";
-import {CUSTOMER_LABELS} from "./utils/crm-util";
 const RightPanel = rightPanelUtil.RightPanel;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -989,12 +988,17 @@ var Crm = React.createClass({
                     var interestClassName = "iconfont focus-customer";
                     interestClassName += (record.interest == "true" ? " icon-interested" : " icon-uninterested");
                     var title = (record.interest == "true" ? Intl.get("crm.customer.uninterested", "取消关注") : Intl.get("crm.customer.interested", "添加关注"));
+
                     return (
                         <span>
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                    onClick={_this.handleFocusCustomer.bind(this, record)}></i>
                                 {text}
+                                {record.customer_label ? (
+                                    <Tag className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                        {record.customer_label}</Tag>) : null
+                                }
                             </div>
                             {tags.length ?
                                 <div className="customer-list-tags">
