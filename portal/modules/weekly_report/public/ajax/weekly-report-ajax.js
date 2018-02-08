@@ -40,7 +40,7 @@ exports.getSaleMemberList = function (reqData) {
 exports.getCallInfo = function (pathParam, reqData, type) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/call/info/' + type,
+        url: '/rest/weekly_report/call/info/' + type,
         dataType: 'json',
         type: 'post',
         data: reqData,

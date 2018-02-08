@@ -1,29 +1,15 @@
 var weeklyReportActions = require("../action/weekly-report-actions");
+import weeklyReportUtils from "../utils/weekly-report-utils";
 function weeklyReportStore() {
     this.setInitState();
     this.bindActions(weeklyReportActions);
 }
-// 通话类型的常量
-const CALL_TYPE_OPTION = {
-    ALL: 'all',
-    PHONE: 'phone',
-    APP: 'app'
-};
+
 //设置初始化数据
 weeklyReportStore.prototype.setInitState = function () {
-    //开始时间
-    this.start_time = 0;
-    //结束时间
-    this.end_time = 0;
-    this.call_type = CALL_TYPE_OPTION.ALL; // 通话类型
-    //电话统计
-    this.salesPhone = {
-        list: [],
-        loading: false,
-        errMsg: ""//获取数据失败
-    };
     // 团队数据
     this.teamList = {
+        loading:true,
         list: [],
         errMsg: ''  // 获取失败的提示
     };
@@ -32,21 +18,47 @@ weeklyReportStore.prototype.setInitState = function () {
         list: [],
         errMsg: '' // 获取失败的提示
     };
+    this.teamDescArr = [];//团队周报标题描述的列表
+    this.initialTeamDescArr = [];//全部的团队周报描述列表
+    this.selectedReportItem = {};//选中的团队周报
+    this.selectedReportItemIdx = -1;//选中的团队周报下标
+    this.searchKeyword = "";//搜索的关键词
 };
+
 // 获取团队信息
+// 获取团队信息成功后，再组合数据
 weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
+    this.teamList.loading = result.loading;
     if (result.error) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
         this.teamList.errMsg = '';
         let resData = result.resData;
         if (_.isArray(resData) && resData.length) {
-            this.teamList.list = _.map(resData, (item) => {
-                return {
-                    name: item.group_name,
-                    id: item.group_id
-                }
-            });
+            //获取团队信息成功后，再计算今天是第几周
+            var nWeek = weeklyReportUtils.getNWeekOfYear(new Date());
+            for (var i = nWeek - 1; i > 0; i--) {
+                this.teamList.list = _.map(resData, (item) => {
+                    //得到团队描述的列表
+                    this.teamDescArr.push({
+                        teamDsc: item.group_name + Intl.get("weekly.report.statics.report", "第{n}周统计周报", {n: i}),
+                        teamId: item.group_id,
+                        nWeek: i
+                    });
+                    this.initialTeamDescArr = $.extend(true, [], this.teamDescArr);
+                    //得到团队的列表，只需要一次就可以
+                    if (i === nWeek - 1) {
+                        return {
+                            name: item.group_name,
+                            id: item.group_id
+                        }
+                    }
+
+                });
+            }
+            //选定的团队周报是数组的第一个，下标为0
+            this.selectedReportItem = this.teamDescArr[0];
+            this.selectedReportItemIdx = 0;
         }
     }
 };
@@ -69,46 +81,48 @@ weeklyReportStore.prototype.getSaleMemberList = function (result) {
         this.memberList.list = memberList;
     }
 };
-//呼入呼出数据格式化
-function formatData(data) {
-    if (isNaN(data)) {
-        return "-";
-    } else {
-        //小数格式转化为百分比
-        data = data * 100;
-        //均保留两位小数
-        return data.toFixed(2);
-    }
-}
 
-//数据判断
-function getData(data) {
-    if (isNaN(data)) {
-        return "-";
-    } else {
-        return data;
-    }
-}
-//获取电话统计
-weeklyReportStore.prototype.getCallInfo = function (result) {
-    this.salesPhone.loading = result.loading;
-    var data = result.resData;
-    if (data && _.isObject(data)) {
-        let salesPhoneList = _.isArray(data.salesPhoneList) ? data.salesPhoneList : [];
-        salesPhoneList = salesPhoneList.map((salesPhone) => {
-            return {
-                averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
-                averageTime: getData(salesPhone.averageTime),//日均时长
-                // averageTimeDescr: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
-                totalAnswer: getData(salesPhone.totalAnswer),//本周总接通数
-                totalTime: getData(salesPhone.totalTime),//本周总时长
-                // totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
-            };
-        });
-        this.salesPhone.list = _.isArray(salesPhoneList) ? salesPhoneList : [];
-    } else {
-        this.salesPhone.list = [];
+
+//清空数据
+weeklyReportStore.prototype.clearData = function () {
+    this.applyListObj.list = [];
+    this.selectedReportItem = {};
+    this.selectedReportItemIdx = -1;
+};
+//设置当前要查看详情的申请
+weeklyReportStore.prototype.setSelectedWeeklyReportItem = function ({obj, idx}) {
+    this.selectedReportItem = obj;
+    this.selectedReportItemIdx = idx;
+};
+function removeEmptyArrayEle(arr){
+    for(var i = 0; i < arr.length; i++) {
+        if(arr[i] == undefined) {
+            arr.splice(i,1);
+            i = i - 1; // i - 1 ，删除空元素之后，后面的元素要向前补位，这样才能去掉连续为空的元素
+        }
     }
 };
+//设置当前要查看详情的申请
+weeklyReportStore.prototype.changeSearchInputValue = function (value) {
+    this.searchKeyword = value;
+    var keyWordArr = value.trim().split(" ");
+    removeEmptyArrayEle(keyWordArr);
+    //去除查询条件中值为空的项
+    this.teamDescArr = _.filter(this.initialTeamDescArr, (teamItem) => {
+        var isFilterDes = 0;
+        //如果搜索的关键词是用空格隔开，把每个关键词都检查一遍
+        for (var i = 0; i < keyWordArr.length; i++) {
+            var keyword = keyWordArr[i];
+            if (teamItem.teamDsc.indexOf(keyword) > -1){
+                isFilterDes++;
+            }
+        }
+        return isFilterDes === keyWordArr.length;
+    });
+    //选定的团队周报是数组的第一个，下标为0
+    this.selectedReportItem = this.teamDescArr[0];
+    this.selectedReportItemIdx = 0;
+
+};
+
 module.exports = alt.createStore(weeklyReportStore, 'weeklyReportStore');

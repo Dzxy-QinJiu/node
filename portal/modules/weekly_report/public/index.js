@@ -7,19 +7,29 @@ import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import WeeklyReportAction from './action/weekly-report-actions';
 import WeeklyReportStore from './store/weekly-report-store';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import SearchInput from "CMP_DIR/searchInput";
+require("./css/index.less");
 import Spinner from 'CMP_DIR/spinner';
-import {AntcTable} from "antc";
+var classNames = require("classnames");
+var WeekReportUtil = require("./utils/weekly-report-utils");
+import WeeklyReportDetail from "./view/weekly-report-detail";
+import {Alert} from "antd";
 const WeeklyReport = React.createClass({
     getInitialState: function () {
         return {
             ...WeeklyReportStore.getState(),
+            nweek: "",//当前日期是今年的第几周
+            keywordValue: "",//跟据关键词进行搜索
+            teamDescArr: [],//描述
         };
     },
-    componentDidMount : function() {
+    componentDidMount: function () {
         WeeklyReportStore.listen(this.onStoreChange);
         this.getTeamMemberData(); //获取销售团队和成员数据
-        this.getWeeklyReportData(); // 获取电话统计、、、 数据
+    },
+    onStoreChange: function () {
+        this.setState(WeeklyReportStore.getState());
     },
     // 获取团队或成员的参数
     getTeamMemberParam() {
@@ -43,169 +53,150 @@ const WeeklyReport = React.createClass({
         }
         return params;
     },
-    getWeeklyReportData: function () {
-        this.getCallInfoData(); // 接通率
-    },
-    // 通话的接通率
-    getCallInfoData(params){
-        let queryParams = {
-            start_time: this.state.start_time,
-            end_time: this.state.end_time,
-            deviceType: this.state.callType
-        };
-        let pathParam = commonMethodUtil.getParamByPrivilege();
-        if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
-            let teamMemberParam = this.getTeamMemberParam();
-            if (teamMemberParam) {
-                if (teamMemberParam.sales_team_id) {
-                    queryParams.team_ids = teamMemberParam.sales_team_id;
-                } else if (teamMemberParam.user_id) {
-                    queryParams.member_ids = teamMemberParam.user_id;
-                }
-            }
-        }
-        let type = this.getCallInfoAuth();
-        WeeklyReportAction.getCallInfo(pathParam, queryParams, type);
-    },
-    getCallInfoAuth() {
-        let authType = "user";//CUSTOMER_CALLRECORD_STATISTIC_USER
-        if (hasPrivilege("CUSTOMER_CALLRECORD_STATISTIC_MANAGER")) {
-            authType = "manager";
-        }
-        return authType;
-    },
+
     componentWillUnmount: function () {
         WeeklyReportStore.unlisten(this.onStoreChange);
     },
-    onStoreChange: function () {
-        this.setState(WeeklyReportStore.getState());
-    },
+
     // 获取销售团队和成员数据
     getTeamMemberData() {
         let reqData = commonMethodUtil.getParamByPrivilege();
         WeeklyReportAction.getSaleGroupTeams(reqData);
-        WeeklyReportAction.getSaleMemberList(reqData);
+        // WeeklyReportAction.getSaleMemberList(reqData);
     },
-    // 电话接通率的数据
-    getPhoneListColumn: function () {
-        let columns = [{
-            title: Intl.get("user.salesman", "销售人员"),
-            width: 114,
-            dataIndex: 'salesName',
-            className: 'table-data-align-left',
-            key: 'sales_Name'
-        }, {
-            title: Intl.get("weekly.report.total.duration","本周总时长"),
-            width: 114,
-            dataIndex: 'totalTimeDescr',
-            key: 'total_time',
-            sorter: function (a, b) {
-                return a.totalTime - b.totalTime;
-            },
-            className: 'has-filter table-data-align-right'
-        }, {
-            title: Intl.get("weekly.report.total.connected","本周总接通数"),
-            width: 114,
-            dataIndex: 'calloutSuccess',
-            key: 'callout_success',
-            sorter: function (a, b) {
-                return a.calloutSuccess - b.calloutSuccess;
-            },
-            className: 'has-filter table-data-align-right'
-        }, {
-            title: Intl.get("sales.home.average.duration", "日均时长"),
-            width: 114,
-            dataIndex: 'averageTimeDescr',
-            key: 'average_time',
-            sorter: function (a, b) {
-                return a.averageTime - b.averageTime;
-            },
-            className: 'has-filter table-data-align-right'
-        }, {
-            title: Intl.get("sales.home.average.connected", "日均接通数"),
-            width: 114,
-            dataIndex: 'averageAnswer',
-            key: 'average_answer',
-            sorter: function (a, b) {
-                return a.averageAnswer - b.averageAnswer;
-            },
-            className: 'has-filter table-data-align-right'
-        }, ];
-        return columns;
-    },
-    // 通话率列表
-    renderCallInfo() {
-        if (this.state.salesPhone.loading) {
-            return (
-                <div>
-                    <Spinner />
-                </div>
-            );
+    onSearchInputChange: function (keyword) {
+        keyword = keyword ? keyword : '';
+        if (keyword.trim() !== this.state.searchKeyword.trim()) {
+            Trace.traceEvent($(this.getDOMNode()).find(".search-content"), "根据关键词搜索");
+            WeeklyReportAction.changeSearchInputValue(keyword);
         }
-        return (
-            <AntcTable dataSource={this.state.salesPhone.list}
-                       columns={this.getPhoneListColumn()}
-                       pagination={false}
-                       bordered
-            />
-        );
     },
-    // 团队和成员筛选框
-    renderTeamMembersSelect() {
-        let teamList = this.state.teamList.list; // 团队数据
-        let memberList = this.state.memberList.list;  // 成员数据
-
-        // 第一个选择框渲染的数据
-        let firstOptions = FIRSR_SELECT_DATA.map((item) => {
-            return <Option value={item}>{item}</Option>;
-        });
-
-        // 第二个选择框的数据
-        let secondOptions = [];
-        if (teamList.length == 1) { // 只展示成员选择框时
-            secondOptions = memberList.map((item) => {
-                return <Option value={item.name}>{item.name}</Option>;
-            });
-        } else if (teamList.length > 1) { // 展示团队和成员
-            if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM) {
-                secondOptions = teamList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
-                });
-            } else if (this.state.firstSelectValue == LITERAL_CONSTANT.MEMBER) {
-                secondOptions = memberList.map((item) => {
-                    return <Option value={item.name}>{item.name}</Option>;
-                });
-            }
-        }
-        secondOptions.unshift(<Option value={LITERAL_CONSTANT.ALL}>{LITERAL_CONSTANT.ALL}</Option>);
-
+    handleClickReportTitle: function (obj,idx) {
+        Trace.traceEvent($(this.getDOMNode()).find(".report-title-item"), "查看周报详情");
+        WeeklyReportAction.setSelectedWeeklyReportItem({obj, idx});
+    },
+    handleErrResult: function () {
+        var errMsg = <span>{this.state.teamList.errMsg}
+        <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
         return (
             <div>
-                { teamList.length > 1 ? (
-                    <SelectFullWidth
-                        defaultValue={FIRSR_SELECT_DATA[0]}
-                        onChange={this.handleFirstSelectChange}
-                        onSelect={this.handleFirstSelect}
-                    >
-                        {firstOptions}
-                    </SelectFullWidth>
-                ) : null }
-                <SelectFullWidth
-                    multiple
-                    value={this.state.secondSelectValue}
-                    onChange={this.onSecondSelectChange}
-                    className="team-member-select-options"
-                    onSelect={this.handleSelectTeamOrMember}
-                >
-                    {secondOptions}
-                </SelectFullWidth>
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
+                />
             </div>
+
         );
     },
-    render:function () {
-      return (
-         <div>{this.renderCallInfo()}</div>
-      )
+    //统计周报的标题
+    renderWeeklyReportTitle: function () {
+        if (this.state.teamList.loading){
+            return (
+                <Spinner/>
+            )
+        }else if (this.state.teamList.errMsg){
+            return this.handleErrResult();
+        }else{
+            if (this.state.teamDescArr.length) {
+                return (
+                    <ul className="report-title-list">
+                        {_.map(this.state.teamDescArr, (teamItem, i) => {
+                            var Cls = classNames("report-title-item", {
+                                "current-item": teamItem.teamId === this.state.selectedReportItem.teamId && i === this.state.selectedReportItemIdx
+                            });
+                            return (
+                                <li className={Cls}
+                                    onClick={this.handleClickReportTitle.bind(this, teamItem, i)}>
+                                    {teamItem.teamDsc}
+                                </li>
+                            )
+                        })}
+                    </ul>
+                )
+            } else {
+                var noDataMsg = <span>{Intl.get("weekly.report.no.report","暂无符合条件的周报")}</span>;
+                return <Alert
+                    message={noDataMsg}
+                    type="info"
+                    showIcon={true}
+                />;
+
+            }
+        }
+
+
+    },
+    getReportTitleListDivHeight: function () {
+        if ($(window).width() < Oplate.layout['screen-md']) {
+            return 'auto';
+        }
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA + 30;
+        return height;
+    },
+    //左侧标题列表顶部的筛选区域
+    renderSearchBarHeader: function () {
+        return (
+            <div className="search-content pull-left">
+                <SearchInput
+                    ref="searchInput"
+                    type="input"
+                    searchPlaceHolder={Intl.get("user.search.placeholder", "请输入关键词搜索")}
+                    searchEvent={this.onSearchInputChange}
+                />
+            </div>
+        )
+    },
+    render: function () {
+        //列表高度
+        //详情高度
+        var reportTitleListHeight = 'auto';
+        //判断是否屏蔽窗口的滚动条
+        if ($(window).width() < Oplate.layout['screen-md']) {
+            $('body').css({
+                'overflow-x': 'visible',
+                'overflow-y': 'visible'
+            });
+        } else {
+            $('body').css({
+                'overflow-x': 'hidden',
+                'overflow-y': 'hidden'
+            });
+            //计算列表高度
+            reportTitleListHeight = this.getReportTitleListDivHeight();
+        }
+        var noShowReportDetail = this.state.teamDescArr.length === 0;
+        return (
+            <div className="weekly-report-container">
+                <div className="weekly-report-wrap">
+                    <div className="weekly-report-content clearfix">
+                        <div className="col-md-3 weekly-report-title-wrap">
+                            <div className="search-bar clearfix">
+                                {this.renderSearchBarHeader()}
+                            </div>
+                            {/*加载中的状态？？？*/}
+                            <div>
+                                <div style={{height: reportTitleListHeight}}>
+                                    <GeminiScrollbar>
+                                        <div className="report-des-content">
+                                            {this.renderWeeklyReportTitle()}
+                                        </div>
+                                    </GeminiScrollbar>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="col-md-9 weekly-report-detail-wrap">
+                            {noShowReportDetail ? null : (
+                                <WeeklyReportDetail
+                                    selectedItem={this.state.selectedReportItem}
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
-    });
+});
 module.exports = WeeklyReport;

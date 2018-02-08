@@ -1738,6 +1738,7 @@ var zh_CN = {
     "errorcode.145": "座机繁忙",
     "errorcode.146": "分机离线",
     "errorcode.147": "二维码已失效",
+    "errorcode.148":"电话时长统计视图获取失败",
 
     //遗漏部分
     "user.input.phone": "请输入手机号",
@@ -1938,6 +1939,12 @@ var zh_CN = {
     "user.info.add.email": "添加邮箱",
     "schedule.call.out":"拨打",
     "weekly.report.total.duration":"本周总时长",
-    "weekly.report.total.connected":"本周总接通数"
+    "weekly.report.total.connected":"本周总接通数",
+    "weekly.report.statics.report":"第{n}周统计周报",
+    "weekly.report.statics.duration":"统计周报内容，统计时间{startTime}至{endTime}",
+    "weekly.report.call.statics":"电话统计",
+    "weekly.report.assessment.days":"考核天数",
+    "weekly.report.attendance.remarks":"出勤备注",
+    "weekly.report.no.report":"暂无符合条件的周报"
 };
 export default zh_CN;

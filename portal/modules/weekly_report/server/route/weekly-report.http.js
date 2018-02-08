@@ -20,6 +20,14 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
+        }, { // 获取电话的接通情况
+            "method": "post",
+            "path": "/rest/weekly_report/call/info/:type",
+            "handler": "getCallInfo",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": []
         }
     ]
 };
