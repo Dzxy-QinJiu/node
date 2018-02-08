@@ -1040,13 +1040,6 @@ var Crm = React.createClass({
                 className: 'has-filter'
             },
             {
-                title: Intl.get("member.create.time", "创建时间"),
-                width: '110px',
-                dataIndex: 'start_time',
-                sorter: true,
-                className: 'has-filter table-data-align-right'
-            },
-            {
                 title: Intl.get("crm.last.contact", "最后联系"),
                 width: hasSecretaryAuth ? '110px' : '200px',
                 dataIndex: 'last_contact_time',
@@ -1067,6 +1060,13 @@ var Crm = React.createClass({
                         </span>
                     );
                 }
+            },
+            {
+                title: Intl.get("member.create.time", "创建时间"),
+                width: '110px',
+                dataIndex: 'start_time',
+                sorter: true,
+                className: 'has-filter table-data-align-right'
             },
             {
                 title: Intl.get("common.operate", "操作"),
