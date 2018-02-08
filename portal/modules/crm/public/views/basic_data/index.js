@@ -175,7 +175,7 @@ var BasicData = React.createClass({
                                             <dd>
                                                 {basicData.competing_products.map((products, index) => {
                                                     return (<Tag key={index}
-                                                                 className="customer-label">{products}</Tag>);
+                                                                 className="customer-label competing-label">{products}</Tag>);
                                                 })}
                                             </dd>
                                         </dl>

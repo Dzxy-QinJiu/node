@@ -971,10 +971,11 @@ var Crm = React.createClass({
             return record.id;
         };
 
+        const column_width = "90px";
         var columns = [
             {
                 title: Intl.get("crm.4", "客户名称"),
-                width: '210px',
+                width: '240px',
                 dataIndex: 'name',
                 className: 'has-filter',
                 sorter: true,
@@ -994,11 +995,11 @@ var Crm = React.createClass({
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                    onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                {text}
                                 {record.customer_label ? (
                                     <Tag className={crmUtil.getCrmLabelCls(record.customer_label)}>
                                         {record.customer_label}</Tag>) : null
                                 }
+                                {text}
                             </div>
                             {tags.length ?
                                 <div className="customer-list-tags">
@@ -1012,7 +1013,7 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'contact',
                 className: 'has-filter',
             },
@@ -1028,42 +1029,42 @@ var Crm = React.createClass({
 
             {
                 title: Intl.get("user.apply.detail.order", "订单"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'order',
                 className: 'has-filter'
             },
             {
                 title: Intl.get("crm.6", "负责人"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'user_name',
                 sorter: true,
                 className: 'has-filter'
             },
             {
                 title: Intl.get("crm.last.contact", "最后联系"),
-                width: hasSecretaryAuth ? '110px' : '200px',
+                width: hasSecretaryAuth ? '150px' : '240px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
                 render: function (text, record, index) {
-                    let last_contact = "";//最后联系时间和跟进记录的合并
-                    if (record.last_contact_time) {
-                        last_contact += record.last_contact_time;
-                    }
+                    //最后联系时间和跟进记录的合并
+                    let time = record.last_contact_time ? record.last_contact_time : "";
+                    let last_contact = "";
                     //舆情秘书不展示跟进记录
                     if (!hasSecretaryAuth && record.trace) {
-                        last_contact += " " + record.trace;
+                        last_contact = record.trace;
                     }
                     return (
-                        <span title={last_contact} className="comments-fix">
-                            {last_contact}
+                        <span>
+                            <div className="last-contact-time">{time}</div>
+                            <span title={last_contact} className="comments-fix">{last_contact} </span>
                         </span>
                     );
                 }
             },
             {
                 title: Intl.get("member.create.time", "创建时间"),
-                width: '110px',
+                width: "100px",
                 dataIndex: 'start_time',
                 sorter: true,
                 className: 'has-filter table-data-align-right'
