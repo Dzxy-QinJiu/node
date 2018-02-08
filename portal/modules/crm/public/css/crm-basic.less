@@ -4,16 +4,6 @@
 @block-bgColor: #dde6ed;
 @block-line-color: #D1DADE;
 @font-color: #464b4e;
-//信息标签的背景色
-@info-tag-color: #b8c4ca;
-//意向标签的背景色
-@intent-tag-color: #b8c4ca;
-//试用标签的背景色
-@trial-tag-color: #95b73c;
-//签约标签的背景色
-@sign-tag-color: #5197cf;
-//标签字体的颜色
-@tag-font-color: #ffffff;
 
 .crm-basic-container {
   color: @font-color;
@@ -38,25 +28,16 @@
   }
 
   .ant-tag.customer-label {
+    float: left;
+    padding: 0 8px;
+    line-height: 20px;
+    height: 22px;
     font-size: 14px;
     border-radius: 4px;
     background: #c0d7e8;
   }
-  .customer-label.info-tag-style{
-    color: @tag-font-color;
-    background-color: @info-tag-color;
-  }
-  .customer-label.intent-tag-style{
-    color: @tag-font-color;
-    background-color: @intent-tag-color;
-  }
-  .customer-label.trial-tag-style{
-    color: @tag-font-color;
-     background-color: @trial-tag-color;
-   }
-  .customer-label.sign-tag-style{
-    color: @tag-font-color;
-    background-color: @sign-tag-color;
+  .customer-label.competing-label{
+    color: #666;
   }
   .crm-basic-competing-products{
     .customer-label {

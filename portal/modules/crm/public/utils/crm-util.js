@@ -1,3 +1,4 @@
+import classNames from "classnames";
 //将后端传来的字段拼接成句子
 const processForTrace = function (item) {
     var traceObj = {
@@ -54,9 +55,29 @@ const processForTrace = function (item) {
 const isClueTag = function(tag){
     return tag == Intl.get("crm.sales.clue","线索");
 };
+//获取客户标签背景色对应的类型
+exports.getCrmLabelCls=function (customer_label) {
+    const LABEL_TYPES = {
+        INFO_TAG: "信息",
+        INTENT_TAG: "意向",
+        TRIAL_TAG: "试用",
+        SIGN_TAG: "签约",
+        QUALIFIED_TAG: "合格"
+    };
+    let customerLabelCls = "customer-label";
+    if (customer_label) {
+        customerLabelCls = classNames(customerLabelCls, {
+            "info-tag-style": customer_label === LABEL_TYPES.INFO_TAG,
+            "intent-tag-style": customer_label === LABEL_TYPES.INTENT_TAG,
+            "trial-tag-style": customer_label === LABEL_TYPES.TRIAL_TAG,
+            "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
+            "qualified-tag-style": customer_label === LABEL_TYPES.QUALIFIED_TAG
+        });
+    }
+    return customerLabelCls;
+};
 //行政级别
 exports.administrativeLevels = [{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
-exports.CUSTOMER_LABELS = ["信息","意向","试用","签约"];//标签
 exports.filterAdministrativeLevel = (level) => {
     //4：乡镇、街道，目前只要求展示到区县，所以此级别不展示
     return  level > 0 && level !== 4 ? level + '' : '';
