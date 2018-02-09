@@ -15,10 +15,8 @@ var outPublicPath = 'http://' + commonUtil.ip.getServerIp() + ':' + devServerPor
 config.output.publicPath=outPublicPath;
 new WebpackDevServer(webpack(config), {
     publicPath: outPublicPath,
-    colors: true,
     hot: true,
     inline: true,
-    progress: true,
     watchOptions: {
         aggregateTimeout: 300,
         poll: 1000
