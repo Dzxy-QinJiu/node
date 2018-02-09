@@ -478,7 +478,6 @@ var SalesHomePage = React.createClass({
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
     hideActiveEmailTip: function () {
         SalesHomeAction.setWebsiteConfig({"setting_notice_ignore": "yes"}, (errMsg) => {
-            M
             if (errMsg) {
                 //设置错误后的提示
                 message.error(errMsg);
