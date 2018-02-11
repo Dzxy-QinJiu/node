@@ -31,28 +31,6 @@ const WeeklyReport = React.createClass({
     onStoreChange: function () {
         this.setState(WeeklyReportStore.getState());
     },
-    // // 获取团队或成员的参数
-    // getTeamMemberParam() {
-    //     let teamList = this.state.teamList.list; // 团队数据
-    //     let memberList = this.state.memberList.list;  // 成员数据
-    //     let secondSelectValue = this.state.secondSelectValue;
-    //     let params = {};
-    //     if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
-    //         if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-    //             let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-    //             params.sales_team_id = secondSelectTeamId.join(',');
-    //         }
-    //     } else { // 成员时
-    //         if (this.state.secondSelectValue == LITERAL_CONSTANT.ALL) { // 全部时
-    //             let userIdArray = _.pluck(this.state.memberList.list, 'id');
-    //             params.user_id = userIdArray.join(',');
-    //         } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
-    //             let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
-    //             params.user_id = secondSelectMemberId.join(','); // 成员
-    //         }
-    //     }
-    //     return params;
-    // },
 
     componentWillUnmount: function () {
         WeeklyReportStore.unlisten(this.onStoreChange);
@@ -171,7 +149,6 @@ const WeeklyReport = React.createClass({
                             <div className="search-bar clearfix">
                                 {this.renderSearchBarHeader()}
                             </div>
-                            {/*加载中的状态？？？*/}
                             <div>
                                 <div style={{height: reportTitleListHeight}}>
                                     <GeminiScrollbar>

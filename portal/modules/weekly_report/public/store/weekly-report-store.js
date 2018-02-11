@@ -36,7 +36,6 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
         let resData = _.filter(result.resData,(item)=>{
             return item.manager_ids;
         });
-        // let resData = result.resData;
         if (_.isArray(resData) && resData.length) {
             //获取团队信息成功后，再计算今天是第几周
             var nWeek = weeklyReportUtils.getNWeekOfYear(new Date());

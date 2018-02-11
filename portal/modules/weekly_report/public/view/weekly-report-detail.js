@@ -90,9 +90,7 @@ const WeeklyReportDetail = React.createClass({
     getWeeklyReportData: function () {
         this.getCallInfoData(); // 接通率
     },
-    renderSelectLeaveOptions: function () {
 
-    },
     //添加请假信息之后
     afterAddLeave: function (resData) {
         if (resData.code === 1) {

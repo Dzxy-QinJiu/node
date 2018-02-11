@@ -85,17 +85,6 @@ var CallRecordAnalyis = React.createClass({
     onStoreChange: function () {
         this.setState(CallAnalysisStore.getState());
     },
-    //
-    // // 根据权限，判断所传字段的值
-    // getParamByPrivilege() {
-    //     let reqData = {};
-    //     if (hasPrivilege("GET_TEAM_LIST_ALL") || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
-    //         reqData.type = 'all';
-    //     } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS") || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
-    //         reqData.type = 'self';
-    //     }
-    //     return reqData;
-    // },
 
     // 获取销售团队和成员数据
     getTeamMemberData() {
