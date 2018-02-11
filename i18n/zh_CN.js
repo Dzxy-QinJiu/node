@@ -1195,7 +1195,7 @@ var zh_CN = {
     "crm.access.channel.placeholder": "请选择或输入接入渠道",
     "crm.clue.source.placeholder": "请选择或输入线索来源",
     "crm.sales.clue": "线索",
-    "crm.sales.clue.add.disable": "不能手动添加'线索'标签",
+    "crm.sales.clue.add.disable": "不能手动添加'{label}'标签",
     "crm.clue.require.one": "电话、邮箱、QQ必填一项",
     "crm.contact.list.failed": "获取联系人列表失败",
     "crm.contact.name.length": "请输入最多50个字符的姓名",
@@ -1210,6 +1210,7 @@ var zh_CN = {
     "crm.order.more.customer": "多个订单的客户",
     "crm.call.no.remark": "最后联系但未写跟进记录",
     "crm.last.contact": "最后联系",
+    "crm.qualified.roll.out": "转出",
     // 客户管理end
 
     // 客户分析start
