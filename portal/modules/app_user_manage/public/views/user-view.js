@@ -584,6 +584,15 @@ var UserTabContent = React.createClass({
                     </ul>
                 </dd>
             </dl>
+            <dl>
+                <dt>{Intl.get("oplate.user.label","用户标签")}：</dt>
+                <dd>
+                    <ul>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "")} className={this.getFilterFieldClass("qualify_label", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "1")} className={this.getFilterFieldClass("qualify_label", "1")}>{Intl.get("common.qualified","合格")}</li>
+                    </ul>
+                </dd>
+            </dl>
             {/*从客户列表中打开某个客户的用户列表时，不需要下面的筛选项*/}
             {this.props.customer_id ? null : (
                 <div>
