@@ -37,8 +37,8 @@ import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 150,
-    BOTTOM_DISTANCE: 40,
+    TOP_DISTANCE: 80 + 56,//marginTop+TH
+    BOTTOM_DISTANCE: 30 + 10 * 2,//pagination+margin
     SCREEN_WIDTH: 1130,//屏幕宽度小于1130时，右侧操作按钮变成图标
     UPLOAD_MODAL_HEIGHT: 260
 };
