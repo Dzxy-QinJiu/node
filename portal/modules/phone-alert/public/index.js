@@ -81,7 +81,6 @@ class PhoneAlert extends React.Component{
         this.setState(phoneAlertStore.getState());
     };
     componentDidMount(){
-        Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         phoneAlertStore.listen(this.onStoreChange);
         //通过系统拨打电话
         if (this.props.phoneObj && this.props.phoneObj.phoneNum) {

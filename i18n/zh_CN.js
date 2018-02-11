@@ -1945,6 +1945,11 @@ var zh_CN = {
     "weekly.report.call.statics":"电话统计",
     "weekly.report.assessment.days":"考核天数",
     "weekly.report.attendance.remarks":"出勤备注",
-    "weekly.report.no.report":"暂无符合条件的周报"
+    "weekly.report.no.report":"暂无符合条件的周报",
+    "weekly.report.ask.for.leave":"请假",
+    "weekly.report.business.trip":"出差",
+    "weekly.report.n.days":"{n}天",
+    "weekly.report.full.work.day":"全勤",
+    "weekly.report.are.you.sure.del.remark":"确定要删除该条请假信息吗？"
 };
 export default zh_CN;

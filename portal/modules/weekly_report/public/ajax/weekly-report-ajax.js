@@ -53,3 +53,53 @@ exports.getCallInfo = function (pathParam, reqData, type) {
     });
     return Deferred.promise();
 };
+//添加员工请假信息
+exports.addAskForLeave = function (reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/weekly_report/add/askForLeave',
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//更新员工请假信息
+exports.updateAskForLeave = function (reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/weekly_report/update/askForLeave',
+        dataType: 'json',
+        type: 'put',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//删除员工请假信息
+exports.deleteAskForLeave = function (id) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/weekly_report/delete/askForLeave/' + id,
+        dataType: 'json',
+        type: 'delete',
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

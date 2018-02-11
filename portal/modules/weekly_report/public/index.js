@@ -31,28 +31,28 @@ const WeeklyReport = React.createClass({
     onStoreChange: function () {
         this.setState(WeeklyReportStore.getState());
     },
-    // 获取团队或成员的参数
-    getTeamMemberParam() {
-        let teamList = this.state.teamList.list; // 团队数据
-        let memberList = this.state.memberList.list;  // 成员数据
-        let secondSelectValue = this.state.secondSelectValue;
-        let params = {};
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
-            if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
-                let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
-                params.sales_team_id = secondSelectTeamId.join(',');
-            }
-        } else { // 成员时
-            if (this.state.secondSelectValue == LITERAL_CONSTANT.ALL) { // 全部时
-                let userIdArray = _.pluck(this.state.memberList.list, 'id');
-                params.user_id = userIdArray.join(',');
-            } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
-                let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
-                params.user_id = secondSelectMemberId.join(','); // 成员
-            }
-        }
-        return params;
-    },
+    // // 获取团队或成员的参数
+    // getTeamMemberParam() {
+    //     let teamList = this.state.teamList.list; // 团队数据
+    //     let memberList = this.state.memberList.list;  // 成员数据
+    //     let secondSelectValue = this.state.secondSelectValue;
+    //     let params = {};
+    //     if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) { // 团队时
+    //         if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体团队时
+    //             let secondSelectTeamId = this.getTeamOrMemberId(teamList, secondSelectValue);
+    //             params.sales_team_id = secondSelectTeamId.join(',');
+    //         }
+    //     } else { // 成员时
+    //         if (this.state.secondSelectValue == LITERAL_CONSTANT.ALL) { // 全部时
+    //             let userIdArray = _.pluck(this.state.memberList.list, 'id');
+    //             params.user_id = userIdArray.join(',');
+    //         } else if (this.state.secondSelectValue !== LITERAL_CONSTANT.ALL) { // 具体成员时
+    //             let secondSelectMemberId = this.getTeamOrMemberId(memberList, secondSelectValue);
+    //             params.user_id = secondSelectMemberId.join(','); // 成员
+    //         }
+    //     }
+    //     return params;
+    // },
 
     componentWillUnmount: function () {
         WeeklyReportStore.unlisten(this.onStoreChange);
@@ -62,7 +62,7 @@ const WeeklyReport = React.createClass({
     getTeamMemberData() {
         let reqData = commonMethodUtil.getParamByPrivilege();
         WeeklyReportAction.getSaleGroupTeams(reqData);
-        // WeeklyReportAction.getSaleMemberList(reqData);
+        WeeklyReportAction.getSaleMemberList(reqData);
     },
     onSearchInputChange: function (keyword) {
         keyword = keyword ? keyword : '';
@@ -71,13 +71,13 @@ const WeeklyReport = React.createClass({
             WeeklyReportAction.changeSearchInputValue(keyword);
         }
     },
-    handleClickReportTitle: function (obj,idx) {
+    handleClickReportTitle: function (obj, idx) {
         Trace.traceEvent($(this.getDOMNode()).find(".report-title-item"), "查看周报详情");
         WeeklyReportAction.setSelectedWeeklyReportItem({obj, idx});
     },
     handleErrResult: function () {
         var errMsg = <span>{this.state.teamList.errMsg}
-        <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
+            <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
         return (
             <div>
                 <Alert
@@ -91,13 +91,13 @@ const WeeklyReport = React.createClass({
     },
     //统计周报的标题
     renderWeeklyReportTitle: function () {
-        if (this.state.teamList.loading){
+        if (this.state.teamList.loading) {
             return (
                 <Spinner/>
             )
-        }else if (this.state.teamList.errMsg){
+        } else if (this.state.teamList.errMsg) {
             return this.handleErrResult();
-        }else{
+        } else {
             if (this.state.teamDescArr.length) {
                 return (
                     <ul className="report-title-list">
@@ -115,17 +115,14 @@ const WeeklyReport = React.createClass({
                     </ul>
                 )
             } else {
-                var noDataMsg = <span>{Intl.get("weekly.report.no.report","暂无符合条件的周报")}</span>;
+                var noDataMsg = <span>{Intl.get("weekly.report.no.report", "暂无符合条件的周报")}</span>;
                 return <Alert
                     message={noDataMsg}
                     type="info"
                     showIcon={true}
                 />;
-
             }
         }
-
-
     },
     getReportTitleListDivHeight: function () {
         if ($(window).width() < Oplate.layout['screen-md']) {
@@ -190,6 +187,7 @@ const WeeklyReport = React.createClass({
                             {noShowReportDetail ? null : (
                                 <WeeklyReportDetail
                                     selectedItem={this.state.selectedReportItem}
+                                    memberList={this.state.memberList}
                                 />
                             )}
                         </div>

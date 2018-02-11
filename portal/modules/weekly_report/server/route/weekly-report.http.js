@@ -28,6 +28,30 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": []
+        },{ // 添加员工请假信息
+            "method": "post",
+            "path": "/rest/weekly_report/add/askForLeave",
+            "handler": "addAskForLeave",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": ["CALLRECORD_ASKFORLEAVE_ADD"]
+        },{ // 更新员工请假信息
+            "method": "put",
+            "path": "/rest/weekly_report/update/askForLeave",
+            "handler": "updateAskForLeave",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": ["CALLRECORD_ASKFORLEAVE_UPDATE"]
+        },{ // 删除员工请假信息
+            "method": "delete",
+            "path": "/rest/weekly_report/delete/askForLeave/:id",
+            "handler": "deleteAskForLeave",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": ["CALLRECORD_ASKFORLEAVE_DELETE"]
         }
     ]
 };

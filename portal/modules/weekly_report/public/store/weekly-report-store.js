@@ -33,12 +33,16 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
         this.teamList.errMsg = '';
-        let resData = result.resData;
+        let resData = _.filter(result.resData,(item)=>{
+            return item.manager_ids;
+        });
+        // let resData = result.resData;
         if (_.isArray(resData) && resData.length) {
             //获取团队信息成功后，再计算今天是第几周
             var nWeek = weeklyReportUtils.getNWeekOfYear(new Date());
             for (var i = nWeek - 1; i > 0; i--) {
-                this.teamList.list = _.map(resData, (item) => {
+                this.teamList.list = resData;
+                _.map(resData, (item) => {
                     //得到团队描述的列表
                     this.teamDescArr.push({
                         teamDsc: item.group_name + Intl.get("weekly.report.statics.report", "第{n}周统计周报", {n: i}),
@@ -46,14 +50,6 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
                         nWeek: i
                     });
                     this.initialTeamDescArr = $.extend(true, [], this.teamDescArr);
-                    //得到团队的列表，只需要一次就可以
-                    if (i === nWeek - 1) {
-                        return {
-                            name: item.group_name,
-                            id: item.group_id
-                        }
-                    }
-
                 });
             }
             //选定的团队周报是数组的第一个，下标为0

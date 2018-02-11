@@ -8,6 +8,8 @@ const restApis = {
     getSaleMemberList: '/rest/base/v1/group/team/members/:type',
     // 获取电话的接通情况
     getCallInfo: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
+    //添加员工请假信息  更新员工请假信息
+    addAskForLeave: "/rest/callrecord/v2/askforleave",
 };
 
 // 获取团队信息
@@ -37,4 +39,31 @@ exports.getCallInfo = function (req, res, params, reqData) {
             req: req,
             res: res
         }, reqData);
+};
+//添加员工请假信息
+exports.addAskForLeave = function (req, res ,reqObj) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.addAskForLeave,
+            req: req,
+            res: res
+        }, reqObj);
+};
+//更新员工请假信息
+exports.updateAskForLeave = function (req, res ,reqObj) {
+    return restUtil.authRest.put(
+        {
+            url: restApis.addAskForLeave,
+            req: req,
+            res: res
+        }, reqObj);
+};
+//删除某条员工请假信息
+exports.deleteAskForLeave = function (req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.addAskForLeave + "?ids=" + req.params.id,
+            req: req,
+            res: res
+        });
 };

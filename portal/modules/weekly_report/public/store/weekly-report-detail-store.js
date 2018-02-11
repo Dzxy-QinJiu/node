@@ -19,6 +19,11 @@ weeklyReportDetailStore.prototype.setInitState = function () {
         loading: false,
         errMsg: ""//获取数据失败
     };
+    //保存员工请假信息
+    this.addAskForLeave = {
+        submitting:false,//正在保存
+        errMsg: "" //保存出错
+    }
 
 };
 
@@ -29,6 +34,13 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
         this.salesPhone.errMsg = result.errMsg;
     }else{
         this.salesPhone.list = _.isArray(result.resData) ? result.resData : [];
+    }
+};
+//保存员工请假信息
+weeklyReportDetailStore.prototype.addForLeave = function (result){
+    this.addAskForLeave.submitting = result.submitting;
+    if (result.error){
+        this.addAskForLeave.errMsg = result.errMsg;
     }
 };
 module.exports = alt.createStore(weeklyReportDetailStore, 'weeklyReportDetailStore');

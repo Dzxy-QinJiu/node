@@ -27,3 +27,27 @@ exports.getCallInfo = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//添加员工请假信息
+exports.addAskForLeave = function (req, res) {
+    weeklyReportService.addAskForLeave(req, res, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//更新员工请假信息
+exports.updateAskForLeave = function (req, res) {
+    weeklyReportService.updateAskForLeave(req, res, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//删除员工请假信息
+exports.deleteAskForLeave = function (req, res) {
+    weeklyReportService.deleteAskForLeave(req, res).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
