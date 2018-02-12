@@ -4,9 +4,11 @@
  * Created by zhangshujuan on 2018/2/6.
  */
 // 获取团队信息
+var getSaleGroupTeamsAjax = null;
 exports.getSaleGroupTeams = function (reqData) {
     var Deferred = $.Deferred();
-    $.ajax({
+    getSaleGroupTeamsAjax && getSaleGroupTeamsAjax.abort();
+    getSaleGroupTeamsAjax = $.ajax({
         url: '/rest/get/sale/teams/' + reqData.type,
         dataType: 'json',
         type: 'get',
@@ -21,9 +23,11 @@ exports.getSaleGroupTeams = function (reqData) {
 };
 
 // 获取成员信息
+var getSaleMemberListAjax = null;
 exports.getSaleMemberList = function (reqData) {
     var Deferred = $.Deferred();
-    $.ajax({
+    getSaleMemberListAjax && getSaleMemberListAjax.abort();
+    getSaleMemberListAjax = $.ajax({
         url: '/rest/get/sale/member/' + reqData.type,
         dataType: 'json',
         type: 'get',
@@ -37,9 +41,11 @@ exports.getSaleMemberList = function (reqData) {
     return Deferred.promise();
 };
 // 获取电话的接通情况
+var getCallInfoAjax = null;
 exports.getCallInfo = function (pathParam, reqData, type) {
     var Deferred = $.Deferred();
-    $.ajax({
+    getCallInfoAjax && getCallInfoAjax.abort();
+    getCallInfoAjax = $.ajax({
         url: '/rest/weekly_report/call/info/' + type,
         dataType: 'json',
         type: 'post',
@@ -54,9 +60,11 @@ exports.getCallInfo = function (pathParam, reqData, type) {
     return Deferred.promise();
 };
 //添加员工请假信息
+var addAskForLeaveAjax = null;
 exports.addAskForLeave = function (reqData) {
     var Deferred = $.Deferred();
-    $.ajax({
+    addAskForLeaveAjax && addAskForLeaveAjax.abort();
+    addAskForLeaveAjax = $.ajax({
         url: '/rest/weekly_report/add/askForLeave',
         dataType: 'json',
         type: 'post',
@@ -71,9 +79,11 @@ exports.addAskForLeave = function (reqData) {
     return Deferred.promise();
 };
 //更新员工请假信息
+var updateAskForLeaveAjax = null;
 exports.updateAskForLeave = function (reqData) {
     var Deferred = $.Deferred();
-    $.ajax({
+    updateAskForLeaveAjax && updateAskForLeaveAjax.abort();
+    updateAskForLeaveAjax = $.ajax({
         url: '/rest/weekly_report/update/askForLeave',
         dataType: 'json',
         type: 'put',
@@ -88,9 +98,11 @@ exports.updateAskForLeave = function (reqData) {
     return Deferred.promise();
 };
 //删除员工请假信息
+var deleteAskForLeaveAjax = null;
 exports.deleteAskForLeave = function (id) {
     var Deferred = $.Deferred();
-    $.ajax({
+    deleteAskForLeaveAjax && deleteAskForLeaveAjax.abort();
+    deleteAskForLeaveAjax = $.ajax({
         url: '/rest/weekly_report/delete/askForLeave/' + id,
         dataType: 'json',
         type: 'delete',

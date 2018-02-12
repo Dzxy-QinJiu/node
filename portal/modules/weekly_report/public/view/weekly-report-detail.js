@@ -11,8 +11,10 @@ import {AntcTable} from "antc";
 import {Alert, Button, Popconfirm, message} from "antd";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import AskForLeaveForm from "../view/ask-for-leave-form";
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var classNames = require("classnames");
 import {LEALVE_OPTION} from "../utils/weekly-report-utils";
+var WeekReportUtil = require("../utils/weekly-report-utils");
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
         return {
@@ -88,7 +90,10 @@ const WeeklyReportDetail = React.createClass({
     },
 
     getWeeklyReportData: function () {
-        this.getCallInfoData(); // 接通率
+        //不加延时会报错
+        setTimeout(() => {
+            this.getCallInfoData();// 接通率
+        })
     },
 
     //添加请假信息之后
@@ -98,11 +103,12 @@ const WeeklyReportDetail = React.createClass({
         } else {
             var addLeaveItem = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
-            var filterArr = _.filter(salesPhoneList, (list) => {
+            var item = _.find(salesPhoneList, (list) => {
                 return list.name === addLeaveItem.nick_name;
             });
-            var item = filterArr[0];
-            if (!item.leave_info_list) {
+            if (_.isArray(item.leave_info_list)) {
+                item.leave_info_list.push(addLeaveItem);
+            } else {
                 item.leave_info_list = [
                     {
                         "leave_time": addLeaveItem.leave_time,
@@ -110,11 +116,9 @@ const WeeklyReportDetail = React.createClass({
                         "leave_days": addLeaveItem.leave_days,
                         "id": addLeaveItem.id
                     }];
-            } else {
-                item.leave_info_list.push(addLeaveItem);
             }
             //更新考核天数
-            item.real_work_day = item.real_work_day -  addLeaveItem.leave_days;
+            item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
             this.setState({
                 salesPhone: this.state.salesPhone,
                 isAddingLeaveUserId: "",
@@ -134,7 +138,7 @@ const WeeklyReportDetail = React.createClass({
         } else {
             var updateObj = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
-            _.map(salesPhoneList, (list) => {
+            _.each(salesPhoneList, (list) => {
                 if (_.isArray(list.leave_info_list)) {
                     _.map(list.leave_info_list, (item) => {
                         //正在更新的那一条请假信息
@@ -172,19 +176,18 @@ const WeeklyReportDetail = React.createClass({
         var removedId = deleteItem.id;
         WeeklyReportDetailAction.deleteForLeave(removedId, () => {
             var salesPhoneList = this.state.salesPhone.list;
-            _.map(salesPhoneList, (list) => {
-                _.map(list.leave_info_list, (item, index) => {
-                    if (item){
+            _.each(salesPhoneList, (list) => {
+                _.each(list.leave_info_list, (item, index) => {
+                    if (item) {
                         //因为符合某个条件会item
                         if (item.id === removedId) {
-                            list.real_work_day =  list.real_work_day + deleteItem.leave_days;
+                            list.real_work_day = list.real_work_day + deleteItem.leave_days;
                             list.leave_info_list.splice(index, 1);
                         }
                         if (!list.leave_info_list.length) {
                             delete list.leave_info_list;
                         }
                     }
-
                 });
             });
             this.setState({
@@ -192,6 +195,88 @@ const WeeklyReportDetail = React.createClass({
 
             });
         });
+    },
+    //没有请假信息的时候,是全勤的
+    renderFullWork:function (isHide, userId) {
+        return (
+            <div className="attendance-remark">
+                {isHide ? (<div className="edit-for-leave-wrap">
+                    {/*添加请假信息*/}
+                    <AskForLeaveForm
+                        userId={userId}
+                        formType={this.state.formType}
+                        isEdittingItem={this.state.isEdittingItem}
+                        startAndEndTimeRange={this.getStartAndEndTime()}
+                        afterAddLeave={this.afterAddLeave}
+                        cancelAddLeave={this.cancelAddLeave}
+                    />
+                </div>) : <div>
+                                 <span className="text-wrap">
+                               {Intl.get("weekly.report.full.work.day", "全勤")}
+                            </span>
+                    <i className="iconfont icon-update"
+                       onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
+                </div>}
+            </div>
+        )
+    },
+    //有请假信息的时候 展示请假信息列表
+    renderAskForLeave:function (record,userId) {
+        return (
+            <div className="leave-info-container">
+                {
+                    _.map(record.leave_info_list, (item, index) => {
+                        var leaveArr = _.filter(LEALVE_OPTION, (option) => {
+                            return option.value === item.leave_detail;
+                        });
+                        //是否正在编辑某条请假信息
+                        var isFormShow = this.state.isEdittingItem.id === item.id && this.state.formType === "edit" ? true : false;
+                        if (isFormShow) {
+                            return (
+                                <AskForLeaveForm
+                                    formType={this.state.formType}
+                                    isEdittingItem={this.state.isEdittingItem}
+                                    startAndEndTimeRange={this.getStartAndEndTime()}
+                                    afterUpdateLeave={this.afterUpdateLeave}
+                                    cancelUpdateLeave={this.cancelUpdateLeave}
+                                />)
+                        } else {
+                            //展示请假信息
+                            return (
+                                <div>
+                                    <span>{moment(item.leave_time).format(oplateConsts.DATE_FORMAT) + leaveArr[0].label + Intl.get("weekly.report.n.days", "{n}天", {n: item.leave_days})}
+                                     </span>
+                                    <i className="iconfont icon-update"
+                                       onClick={this.handleUpdateAskForLeave.bind(this, item)}></i>
+                                    <Popconfirm
+                                        title={Intl.get("weekly.report.are.you.sure.del.remark", "确定要删除该条请假信息吗？")}
+                                        onConfirm={this.handleRemoveAskForLeave.bind(this, item)}
+                                        okText={Intl.get("common.sure", "确认")}
+                                        cancelText={Intl.get("common.cancel", "取消")}
+                                    >
+                                        <Button className="remove-ask-leave" icon="delete"
+                                                title={Intl.get("common.delete", "删除")}/>
+                                    </Popconfirm>
+                                    {index === record.leave_info_list.length - 1 ? (this.state.isAddingLeaveUserId === userId ? null :
+                                        <div className="iconfont icon-add"
+                                             onClick={this.handleAddAskForLeave.bind(this, userId)}></div> ) : null }
+                                    {/*添加请假信息*/}
+                                    {this.state.isAddingLeaveUserId === userId && index === record.leave_info_list.length - 1 ?
+                                        <AskForLeaveForm
+                                            userId={userId}
+                                            formType="add"
+                                            startAndEndTimeRange={this.getStartAndEndTime()}
+                                            afterAddLeave={this.afterAddLeave}
+                                            cancelAddLeave={this.cancelAddLeave}
+                                        />
+                                        : null}
+                                </div>
+                            )
+                        }
+                    })
+                }
+            </div>
+        )
     },
     // 电话接通率的数据
     getPhoneListColumn: function () {
@@ -225,92 +310,19 @@ const WeeklyReportDetail = React.createClass({
             className: 'has-filter table-data-align-left',
             width: '300',
             render: function (text, record, index) {
-                var userArr = _.filter(_this.props.memberList.list, (item) => {
+                var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
-                var userId = userArr.length ? userArr[0].id : "";
+                var userId = userObj.id ? userObj.id : "";
                 //正在添加请假信息
                 var isHide = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
                 if (!record.leave_info_list) {
-                    return (
-                        <div className="attendance-remark">
-                            {isHide ? (<div className="edit-for-leave-wrap">
-                                {/*添加请假信息*/}
-                                <AskForLeaveForm
-                                    userId={userId}
-                                    formType={_this.state.formType}
-                                    isEdittingItem={_this.state.isEdittingItem}
-                                    startAndEndTimeRange={_this.getStartAndEndTime()}
-                                    afterAddLeave={_this.afterAddLeave}
-                                    cancelAddLeave={_this.cancelAddLeave}
-                                />
-                            </div>) : <div>
-                                 <span className="text-wrap">
-                               {Intl.get("weekly.report.full.work.day", "全勤")}
-                            </span>
-                                <i className="iconfont icon-update"
-                                   onClick={_this.handleAddAskForLeave.bind(this, userId)}></i>
-                            </div>}
-                        </div>
-                    )
+                    return _this.renderFullWork(isHide, userId);
+
                 } else if (record.leave_info_list) {
                     //有请假信息的时候 展示请假信息列表
-                    return (
-                        <div className="leave-info-container">
-                            {
-                                _.map(record.leave_info_list, (item, index) => {
-                                    var leaveArr = _.filter(LEALVE_OPTION, (option) => {
-                                        return option.value === item.leave_detail;
-                                    });
-                                    //是否正在编辑某条请假信息
-                                    var isFormShow = _this.state.isEdittingItem.id === item.id && _this.state.formType === "edit" ? true : false;
-                                    if (isFormShow) {
-                                        return (
-                                            <AskForLeaveForm
-                                                formType={_this.state.formType}
-                                                isEdittingItem={_this.state.isEdittingItem}
-                                                startAndEndTimeRange={_this.getStartAndEndTime()}
-                                                afterUpdateLeave={_this.afterUpdateLeave}
-                                                cancelUpdateLeave={_this.cancelUpdateLeave}
-                                            />)
-                                    } else {
-                                        //展示请假信息
-                                        return (
-                                            <div>
-                                           <span>
-                                            {moment(item.leave_time).format(oplateConsts.DATE_FORMAT) + leaveArr[0].label + Intl.get("weekly.report.n.days", "{n}天", {n: item.leave_days})}
-                                            </span>
-                                                <i className="iconfont icon-update"
-                                                   onClick={_this.handleUpdateAskForLeave.bind(this, item)}></i>
-                                                <Popconfirm
-                                                    title={Intl.get("weekly.report.are.you.sure.del.remark", "确定要删除该条请假信息吗？")}
-                                                    onConfirm={_this.handleRemoveAskForLeave.bind(this,item)}
-                                                    okText={Intl.get("common.sure", "确认")}
-                                                    cancelText={Intl.get("common.cancel", "取消")}
-                                                >
-                                                    <Button className="remove-ask-leave" icon="delete"
-                                                            title={Intl.get("common.delete", "删除")}/>
-                                                </Popconfirm>
-                                                {index === record.leave_info_list.length - 1  ? (_this.state.isAddingLeaveUserId === userId ? null : <div className="iconfont icon-add"
-                                                                                                                                               onClick={_this.handleAddAskForLeave.bind(this, userId)}></div> )                                       :null }
-                                                {/*添加请假信息*/}
-                                                {_this.state.isAddingLeaveUserId === userId && index === record.leave_info_list.length - 1 ?
-                                                    <AskForLeaveForm
-                                                        userId={userId}
-                                                        formType="add"
-                                                        startAndEndTimeRange={_this.getStartAndEndTime()}
-                                                        afterAddLeave={_this.afterAddLeave}
-                                                        cancelAddLeave={_this.cancelAddLeave}
-                                                    />
-                                                    : null}
-                                            </div>
-                                        )
-                                    }
-                                })
-                            }
-                        </div>
-                    )
+                    return _this.renderAskForLeave(record,userId);
                 }
             }
         },];
@@ -334,11 +346,7 @@ const WeeklyReportDetail = React.createClass({
         };
         let pathParam = commonMethodUtil.getParamByPrivilege();
         let type = this.getCallInfoAuth();
-        //不加延时会报错
-        setTimeout(() => {
-            WeeklyReportDetailAction.getCallInfo(pathParam, queryParams, type);
-        });
-
+        WeeklyReportDetailAction.getCallInfo(pathParam, queryParams, type);
     },
     // 通话率列表
     renderCallInfo() {
@@ -354,14 +362,11 @@ const WeeklyReportDetail = React.createClass({
                     {Intl.get("user.info.retry", "请重试")}
                 </a></span>;
             return (
-                <div>
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon
-                    />
-                </div>
-
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
+                />
             );
 
         } else {
@@ -383,20 +388,34 @@ const WeeklyReportDetail = React.createClass({
         }
 
     },
-    render(){
+    //获取报告区域的高度
+    getReportDetailDivHeight: function () {
+        if ($(window).width() < Oplate.layout['screen-md']) {
+            return 'auto';
+        }
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        return height;
+    },
+    render: function () {
+        var divHeight = this.getReportDetailDivHeight();
         return (
             <div className="weekly-report-detail-container">
+
                 <h4 className="total-title">
                     {Intl.get("weekly.report.statics.duration", "统计周报内容，统计时间{startTime}至{endTime}", {
                         startTime: this.getStartAndEndTime().startTime,
                         endTime: this.getStartAndEndTime().endTime
                     })}
                 </h4>
-                <div className="call-info-wrap">
-                    <h4 className="item-title">{Intl.get("weekly.report.call.statics", "电话统计")}</h4>
-                    <div className="call-info-table-container">
-                        {this.renderCallInfo()}
-                    </div>
+                <div className="tables-wrap" style={{height: divHeight}}>
+                    <GeminiScrollbar>
+                        <div className="call-info-wrap">
+                            <h4 className="item-title">{Intl.get("weekly.report.call.statics", "电话统计")}</h4>
+                            <div className="call-info-table-container">
+                                {this.renderCallInfo()}
+                            </div>
+                        </div>
+                    </GeminiScrollbar>
                 </div>
             </div>
         )

@@ -41,16 +41,17 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
             var nWeek = weeklyReportUtils.getNWeekOfYear(new Date());
             for (var i = nWeek - 1; i > 0; i--) {
                 this.teamList.list = resData;
-                _.map(resData, (item) => {
+                _.map(resData, (item, index) => {
                     //得到团队描述的列表
                     this.teamDescArr.push({
                         teamDsc: item.group_name + Intl.get("weekly.report.statics.report", "第{n}周统计周报", {n: i}),
                         teamId: item.group_id,
                         nWeek: i
                     });
-                    this.initialTeamDescArr = $.extend(true, [], this.teamDescArr);
                 });
             }
+            //把描述进行备份
+            this.initialTeamDescArr = $.extend(true, [], this.teamDescArr);
             //选定的团队周报是数组的第一个，下标为0
             this.selectedReportItem = this.teamDescArr[0];
             this.selectedReportItemIdx = 0;
@@ -90,12 +91,9 @@ weeklyReportStore.prototype.setSelectedWeeklyReportItem = function ({obj, idx}) 
     this.selectedReportItemIdx = idx;
 };
 function removeEmptyArrayEle(arr){
-    for(var i = 0; i < arr.length; i++) {
-        if(arr[i] == undefined) {
-            arr.splice(i,1);
-            i = i - 1; // i - 1 ，删除空元素之后，后面的元素要向前补位，这样才能去掉连续为空的元素
-        }
-    }
+     _.filter(arr,(item)=>{
+        return item !== undefined;
+    });
 };
 //设置当前要查看详情的申请
 weeklyReportStore.prototype.changeSearchInputValue = function (value) {
@@ -112,6 +110,7 @@ weeklyReportStore.prototype.changeSearchInputValue = function (value) {
                 isFilterDes++;
             }
         }
+        //这里是考虑了关键字中有空格的情况，比如 南部 8 ，这样实际要index南部 和index 8 都存在才可以展示
         return isFilterDes === keyWordArr.length;
     });
     //选定的团队周报是数组的第一个，下标为0

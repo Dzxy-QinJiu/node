@@ -59,7 +59,7 @@
         margin-left: -1px;
         color: #5d5d5d;
         position: relative;
-        padding-left: 0;
+        padding-left: 15px;
         padding-right: 0;
 
         .weekly-report-detail-container{
@@ -98,11 +98,37 @@
                   text-align: left;
                   padding-left: 10px;
                 }
-                .attendance-remark{
-                  .icon-update{
-                    margin-left: 10px;
+                tr{
+                  .attendance-remark{
+                    .icon-update{
+                      margin-left: 10px;
+                      display: none;
+                    }
+                  }
+                  .edit-for-leave-wrap,.leave-info-container{
+                    .ant-select{
+                      margin-right: 5px;
+                      min-width: 50px;
+                    }
+                    .iconfont{
+                      font-size:12px;
+                      padding: 5px 5px 2px 5px;
+                      cursor: pointer;
+                    }
+                    .icon-choose{
+                      color:#4dbe50;
+                    }
+                    .icon-close{
+                      color:#b50e0a;
+                    }
+                  }
+                  &:hover{
+                    .attendance-remark .icon-update{
+                      display: inline-block;
+                    }
                   }
                 }
+
                 .leave-info-container{
                   .remove-ask-leave{
                     color: #9BA4A8;

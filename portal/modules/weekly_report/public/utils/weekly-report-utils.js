@@ -5,7 +5,7 @@
  */
 //左侧周报题目列表滚动条参数
 exports.REPORT_TITLE_LIST_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 90,
+    TOP_DELTA: 60,
     BOTTOM_DELTA: 39
 };
 //计算今天是今年的第几周

@@ -21,12 +21,14 @@ class AskForLeaveForm extends React.Component {
         super(props);
         var submitObj = {};
         if (this.props.formType === "add") {
+            //添加某条请假信息
             submitObj = {
                 "leave_time": moment(this.props.startAndEndTimeRange.startTime).valueOf(),
                 "leave_detail": "leave",
                 "leave_days": 1
             };
         } else if (this.props.formType === "edit") {
+            //编辑某条请假信息
             submitObj = {
                 "leave_time": this.props.isEdittingItem.leave_time,
                 "leave_detail": this.props.isEdittingItem.leave_detail,
@@ -72,29 +74,37 @@ class AskForLeaveForm extends React.Component {
     };
     //保存数据
     handleSaveLeaveData = () => {
-        //添加请假信息时
-        if (this.props.formType === "add") {
-            var reqData = _.extend({}, {user_id: this.state.userId}, this.state.submitObj);
-            WeeklyReportDetailAction.addForLeave(reqData, (result) => {
-                this.props.afterAddLeave(result);
-            });
-        } else if (this.props.formType === "edit") {
-            var reqData = _.extend({},{id:this.props.isEdittingItem.id},this.state.submitObj);
-            WeeklyReportDetailAction.updateForLeave(reqData, (result) => {
-                this.props.afterUpdateLeave(result);
-            });
-        }
-        //更新请假信息时
-
+        this.addOrEditFunction("save");
     };
     //取消保存数据
     handleCancelLeaveData = () => {
-        if (this.props.formType === "add"){
-            this.props.cancelAddLeave();
-        }else if (this.props.formType === "edit"){
-            this.props.cancelUpdateLeave();
-        }
+       this.addOrEditFunction("cancel");
+    };
 
+    //添加或者修改时提取出相似的方法
+    addOrEditFunction = (type) =>{
+        //添加请假信息时
+        if (this.props.formType === "add") {
+            if (type === "save"){
+                var reqData = _.extend({}, {user_id: this.state.userId}, this.state.submitObj);
+                WeeklyReportDetailAction.addForLeave(reqData, (result) => {
+                    this.props.afterAddLeave(result);
+                });
+            }else if(type === "cancel"){
+                this.props.cancelAddLeave();
+            }
+
+        } else if (this.props.formType === "edit") {
+            if (type === "save"){
+                //更新请假信息时
+                var reqData = _.extend({},{id:this.props.isEdittingItem.id},this.state.submitObj);
+                WeeklyReportDetailAction.updateForLeave(reqData, (result) => {
+                    this.props.afterUpdateLeave(result);
+                });
+            }else if(type === "cancel"){
+                this.props.cancelUpdateLeave();
+            }
+        }
     };
 
     render() {
@@ -142,7 +152,6 @@ class AskForLeaveForm extends React.Component {
 }
 AskForLeaveForm.defaultProps = {
     formType: "add",
-
 };
 export default AskForLeaveForm;
 

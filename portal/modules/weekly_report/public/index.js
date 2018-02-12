@@ -21,7 +21,6 @@ const WeeklyReport = React.createClass({
             ...WeeklyReportStore.getState(),
             nweek: "",//当前日期是今年的第几周
             keywordValue: "",//跟据关键词进行搜索
-            teamDescArr: [],//描述
         };
     },
     componentDidMount: function () {
@@ -57,14 +56,11 @@ const WeeklyReport = React.createClass({
         var errMsg = <span>{this.state.teamList.errMsg}
             <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
         return (
-            <div>
                 <Alert
                     message={errMsg}
                     type="error"
                     showIcon
                 />
-            </div>
-
         );
     },
     //统计周报的标题
@@ -106,7 +102,7 @@ const WeeklyReport = React.createClass({
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA + 30;
+        var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
         return height;
     },
     //左侧标题列表顶部的筛选区域
@@ -145,6 +141,7 @@ const WeeklyReport = React.createClass({
             <div className="weekly-report-container">
                 <div className="weekly-report-wrap">
                     <div className="weekly-report-content clearfix">
+                        <GeminiScrollbar>
                         <div className="col-md-3 weekly-report-title-wrap">
                             <div className="search-bar clearfix">
                                 {this.renderSearchBarHeader()}
@@ -168,6 +165,7 @@ const WeeklyReport = React.createClass({
                                 />
                             )}
                         </div>
+                        </GeminiScrollbar>
                     </div>
                 </div>
             </div>
