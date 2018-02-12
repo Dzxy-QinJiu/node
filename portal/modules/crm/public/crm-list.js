@@ -483,12 +483,17 @@ var Crm = React.createClass({
             condition.contacts = [{email: [condition.email]}];
             delete condition.email;
         }
+        let term_fields = [];//需精确匹配的字段
         //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
         let unexist = [];//存放未知行业、未知地域的数组
-        if (condition.industry && condition.industry.indexOf(UNKNOWN) != -1) {
+        if (condition.industry && condition.industry.length) {
             //未知行业的处理
-            unexist.push("industry");
-            delete condition.industry;
+            if (condition.industry.indexOf(UNKNOWN) != -1) {
+                unexist.push("industry");
+                delete condition.industry;
+            } else {//需精确匹配
+                term_fields.push("industry")
+            }
         }
         var saleStage = '';
         if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length != 0) {
@@ -500,9 +505,17 @@ var Crm = React.createClass({
             delete condition.sales_opportunities;
         }
         //未知地域的处理
-        if (condition.province && condition.province == UNKNOWN) {
-            unexist.push("province");
-            delete condition.province;
+        if (condition.province) {
+            if (condition.province == UNKNOWN) {
+                unexist.push("province");
+                delete condition.province;
+            } else {//需精确匹配
+                term_fields.push("province");
+            }
+        }
+        //阶段标签,精确匹配
+        if (condition.customer_label) {
+            term_fields.push("customer_label");
         }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
@@ -510,7 +523,13 @@ var Crm = React.createClass({
             if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
                 unexist.push("labels");
                 delete condition.labels;
+            } else {//标签的筛选，需要精确匹配
+                term_fields.push("labels")
             }
+        }
+        //竞品,精确匹配
+        if (condition.competing_products && condition.competing_products.length) {
+            term_fields.push("competing_products");
         }
         var queryObj = {
             total_size: this.state.pageSize * this.state.pageValue,
@@ -563,6 +582,9 @@ var Crm = React.createClass({
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
+        }
+        if (term_fields.length > 0) {//需精确匹配的字段
+            condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
         CrmAction.queryCustomer(condition, this.state.rangParams, this.state.pageSize, this.state.sorter, queryObj);

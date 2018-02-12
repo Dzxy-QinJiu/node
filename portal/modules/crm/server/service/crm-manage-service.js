@@ -234,6 +234,10 @@ exports.queryCustomer = function (req, res, condition) {
             queryObj.unexist_fields = condition.unexist_fields;
             delete condition.unexist_fields;
         }
+        if (condition.term_fields) {//精确匹配项：标签的筛选
+            queryObj.term_fields = condition.term_fields;
+            delete condition.term_fields;
+        }
         queryObj.query = condition;
         queryObj.rang_params = JSON.parse(req.body.rangParams);
     }
