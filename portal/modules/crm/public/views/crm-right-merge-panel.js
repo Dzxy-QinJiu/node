@@ -158,6 +158,14 @@ var CrmRightMergePanel = React.createClass({
                         //TODO 过滤掉’信息阶段’的订单
                         //mergedCustomer.sales_opportunities = _.filter(mergedCustomer.sales_opportunities, oppor=>oppor.sale_stages != "信息阶段");
                     }
+                    //合并创建时间（用最早的）
+                    if (customer.start_time && customer.start_time < mergedCustomer.start_time) {
+                        mergedCustomer.start_time = customer.start_time;
+                    }
+                    //合并最后联系时间（用最后的）
+                    if (customer.last_contact_time && customer.last_contact_time > mergedCustomer.last_contact_time) {
+                        mergedCustomer.last_contact_time = customer.last_contact_time;
+                    }
                 }
             });
             //所有备注的去重
@@ -338,7 +346,7 @@ var CrmRightMergePanel = React.createClass({
             updateCustomer.county = newBasic.county;
         }
         //地址
-        if (newBasic.address|| newBasic.address == "") {
+        if (newBasic.address || newBasic.address == "") {
             updateCustomer.address = newBasic.address;
         }
         //客户备注的修改
@@ -528,7 +536,7 @@ var CrmRightMergePanel = React.createClass({
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={Intl.get("crm.right.schedule","联系计划")}
+                                    tab={Intl.get("crm.right.schedule", "联系计划")}
                                     key="5"
                                 >
                                     {this.state.activeKey == "5" ? (
