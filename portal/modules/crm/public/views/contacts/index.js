@@ -134,6 +134,7 @@ var Contacts = React.createClass({
                                                                   refreshCustomerList={this.props.refreshCustomerList}
                                                                   callNumber={this.state.callNumber}
                                                                   getCallNumberError={this.state.getCallNumberError}
+                                                                  curCustomer={this.state.curCustomer}
                                                     />)
                                             }
                                         </li>

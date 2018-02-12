@@ -9,7 +9,7 @@ function PhoneAlertStore() {
 }
 PhoneAlertStore.prototype.resetState = function () {
     //正在跟据电话号码获取客户详情
-    this.isGettingCustomer = true;
+    this.isGettingCustomer = false;
     //获取客户详情失败后的提示
     this.getCustomerErrMsg = "";
     //通过电话号码查询到的客户基本信息，用于展示客户的基本资料
@@ -85,5 +85,9 @@ PhoneAlertStore.prototype.updateCustomerTrace = function (result) {
 PhoneAlertStore.prototype.setSubmitErrMsg = function (errMsg) {
     this.submittingTraceMsg = errMsg;
 };
-
+//设置客户的基本信息
+PhoneAlertStore.prototype.setCustomerInfoArr = function (obj) {
+    this.customerInfoArr.push(obj);
+    this.customerUnknown = false;
+};
 module.exports = alt.createStore(PhoneAlertStore , 'PhoneAlertStore');

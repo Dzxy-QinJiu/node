@@ -83,9 +83,9 @@ class PhoneAlert extends React.Component{
     componentDidMount(){
         Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         phoneAlertStore.listen(this.onStoreChange);
-        //通过系统拨打电话
-        if (this.props.phoneObj && this.props.phoneObj.phoneNum) {
-            phoneAlertAction.getCustomerByPhone(this.props.phoneObj.phoneNum);
+        //通过系统拨打电话，就直接把客户信息通过emitter发送出来的
+        if (this.props.phoneObj && this.props.phoneObj.customerDetail){
+            phoneAlertAction.setCustomerInfoArr(this.props.phoneObj.customerDetail);
         }
         //通过座机拨打时，在alert状态之前的busy状态，不会推送电话号码，此电话在客户列表中存在的状态未知
         if (_.isEmpty(this.props.phoneObj) && this.props.phonemsgObj.type == PHONERINGSTATUS.BUSY) {

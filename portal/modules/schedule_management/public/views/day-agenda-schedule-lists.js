@@ -121,7 +121,7 @@ class DayAgendaScheduleLists extends React.Component {
         })
     };
 
-    handleClickCallOut = (phoneNumber, contactName)=>{
+    handleClickCallOut = (phoneNumber, contactName, item)=>{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
         if (this.state.errMsg) {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
@@ -131,7 +131,8 @@ class DayAgendaScheduleLists extends React.Component {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
-                        contact: contactName
+                        contact: contactName,
+                        customerDetail: item,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -168,7 +169,7 @@ class DayAgendaScheduleLists extends React.Component {
                                   return (
                                       <div className="phone-item">
                                           {phone}
-                                          <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name )}>
+                                          <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
                                               {Intl.get("schedule.call.out","拨打")}
                                           </Button>
                                       </div>

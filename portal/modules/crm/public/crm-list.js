@@ -791,7 +791,8 @@ var Crm = React.createClass({
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
-                        contact: record.contact
+                        contact: record.contact,
+                        customerDetail: record,//客户基本信息
                     }
                 );
                 let reqData = {
