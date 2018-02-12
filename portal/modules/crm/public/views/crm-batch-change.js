@@ -31,6 +31,7 @@ const BATCH_OPERATE_TYPE = {
     CHANGE_ADMINISTRATIVE_LEVEL: "changeAdministrativeLevel",//变更行政级别
     ADD_SCHEDULE_LISTS: "addScheduleLists",
 };
+var CrmScheduleForm = require("./schedule/form");
 
 var CrmBatchChange = React.createClass({
     mixins: [ValidateMixin],
@@ -390,7 +391,7 @@ var CrmBatchChange = React.createClass({
     },
     //批量添加联系计划
     doAddScheduleLists: function () {
-        console.log(11);
+
     },
     handleSubmit: function (e) {
         Trace.traceEvent(e, "点击变更按钮");
@@ -504,9 +505,23 @@ var CrmBatchChange = React.createClass({
     },
     //批量添加联系计划
     renderScheduleLists: function () {
+        //批量操作选中的客户
+        var selectedCustomer = this.props.selectedCustomer;
+        const newSchedule = {
+            customer_id: selectedCustomer[0].id,
+            customer_name: selectedCustomer[0].name,
+            start_time: "",
+            end_time: "",
+            alert_time: "",
+            topic: "",
+            edit: true
+        };
         return (
-            <div>
-                sdfjsdfkjh
+            <div className="batch-add-schedule">
+                <CrmScheduleForm
+                    currentSchedule={newSchedule}
+                    selectedCustomer={selectedCustomer}
+                    />
             </div>
         )
     },

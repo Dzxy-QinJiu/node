@@ -171,22 +171,29 @@ var CrmAlertForm = React.createClass({
                     ScheduleAction.editAlert(this.state.formData,(resData) => {
                         if (resData.code == 0) {
                             this.showMessage( Intl.get("user.edit.success", "修改成功"));
-                            this.props.getScheduleList();
+                            _.isFunction(this.props.getScheduleList) && this.props.getScheduleList();
                         } else {
                             this.showMessage(Intl.get("common.edit.failed", "修改失败"), "error");
                         }
                         this.setState({isLoading: false});
                     });
                 } else {
-                    ScheduleAction.addSchedule(submitObj,(resData) => {
-                        if (resData.id) {
-                            this.showMessage( Intl.get("user.user.add.success", "添加成功"));
-                            ScheduleAction.afterAddSchedule(resData);
-                        } else {
-                            this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
-                        }
-                        this.setState({isLoading: false});
-                    });
+                    //是批量添加联系计划
+                    if (this.props.selectedCustomer){
+                        console.log(submitObj);
+                    }else{
+                        ScheduleAction.addSchedule(submitObj,(resData) => {
+                            if (resData.id) {
+                                this.showMessage( Intl.get("user.user.add.success", "添加成功"));
+                                ScheduleAction.afterAddSchedule(resData);
+                            } else {
+                                this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
+                            }
+                            this.setState({isLoading: false});
+                        });
+                    }
+
+
                 }
             }
         });
@@ -438,13 +445,14 @@ var CrmAlertForm = React.createClass({
                     label={Intl.get("crm.alert.topic","标题")}
                 >
                     <div className="topic-wrap">
-                        <Validator rules={[{required: true}]}>
+                        {/*如果是批量操作的时候，不需要展示标题*/}
+                        {!this.props.selectedCustomer ? <Validator rules={[{required: true}]}>
                             <Input
                                 name="topic"
                                 value={formData.topic}
                                 disabled
                             />
-                        </Validator>
+                        </Validator>:null}
                         <Select value={formData.scheduleType} onChange={this.handleTypeChange} className="schedule-topic">
                             <Option value="calls">{Intl.get("common.phone","电话")}</Option>
                             <Option value="visit">{Intl.get("common.visit","拜访")}</Option>
