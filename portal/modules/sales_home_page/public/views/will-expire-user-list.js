@@ -10,6 +10,7 @@ var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 let constantUtil = require("../util/constant");
 var delayConstant = constantUtil.DELAY.TIMERANG;
 let history = require("../../../../public/sources/history");
+import Trace from "LIB_DIR/trace";
 class WillExpireUserList extends React.Component {
     constructor(props) {
         super(props);
@@ -39,11 +40,13 @@ class WillExpireUserList extends React.Component {
     };
 
     //重新获取过期用户
-    retry() {
+    retry(e) {
+        Trace.traceEvent(e, "重新获取过期用户");
         SalesHomeAction.getExpireUser();
     };
 
-    gotoUserList (item){
+    gotoUserList (item, e){
+        Trace.traceEvent(e, "跳转到用户列表");
         //跳转到用户列表
         history.pushState({
             app_id: item.app_id,
@@ -63,7 +66,7 @@ class WillExpireUserList extends React.Component {
                     defaultMessage={`{appName}有{num}名{userType}过期!`}
                     values={{
                         "appName": item.app_name,
-                        "num": <i data-tracename="跳转到用户列表" onClick={this.gotoUserList.bind(this, item)}>{num}</i>,
+                        "num": <i onClick={this.gotoUserList.bind(this, item)}>{num}</i>,
                         "userType": item.user_type == '正式用户' ? '签约用户' : item.user_type
                     }}
                 />
@@ -74,8 +77,7 @@ class WillExpireUserList extends React.Component {
     showExpireUsers() {
         var _this = this;
         var expireUserLists = this.props.expireUserLists;
-        var errMsg = <span>{_this.props.errMsg}<a onClick={_this.retry}
-                                                  data-tracename="重新获取过期用户"
+        var errMsg = <span>{_this.props.errMsg}<a onClick={_this.retry}                                                  
                                                   style={{
                                                       marginLeft: "20px",
                                                       marginTop: "20px"
