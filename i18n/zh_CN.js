@@ -1172,6 +1172,7 @@ var zh_CN = {
     "crm.211": "跟进内容",
     "crm.212": "请选择标签",
     "crm.213": "未分配客户",
+    "crm.214": "添加联系计划",
     "crm.over.day.without.contact": "超{day}天未联系",
     "crm.customer.interested": "添加关注",
     "crm.customer.uninterested": "取消关注",

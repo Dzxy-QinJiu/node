@@ -28,7 +28,8 @@ const BATCH_OPERATE_TYPE = {
     REMOVE_LABEL: "remove_label", //移除标签url中传的type
     CHANGE_INDUSTRY: "changeIndustry",//变更行业
     CHANGE_TERRITORY: "changeTerritory",//变更地域
-    CHANGE_ADMINISTRATIVE_LEVEL: "changeAdministrativeLevel"//变更行政级别
+    CHANGE_ADMINISTRATIVE_LEVEL: "changeAdministrativeLevel",//变更行政级别
+    ADD_SCHEDULE_LISTS: "addScheduleLists",
 };
 
 var CrmBatchChange = React.createClass({
@@ -387,6 +388,10 @@ var CrmBatchChange = React.createClass({
             }
         });
     },
+    //批量添加联系计划
+    doAddScheduleLists: function () {
+        console.log(11);
+    },
     handleSubmit: function (e) {
         Trace.traceEvent(e, "点击变更按钮");
         var currentTab = this.state.currentTab;
@@ -413,6 +418,10 @@ var CrmBatchChange = React.createClass({
             case BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL:
                 //批量修改行政级别
                 this.doChangeAdministrativeLevel();
+                break;
+            case BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS:
+                //批量添加联系计划
+                this.doAddScheduleLists();
                 break;
         }
     },
@@ -493,6 +502,14 @@ var CrmBatchChange = React.createClass({
             </div>
         );
     },
+    //批量添加联系计划
+    renderScheduleLists: function () {
+        return (
+            <div>
+                sdfjsdfkjh
+            </div>
+        )
+    },
     renderAddressBlock: function () {
         let territoryObj = this.state.territoryObj;//地域
         return (
@@ -565,7 +582,9 @@ var CrmBatchChange = React.createClass({
             address: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TERRITORY)}>{Intl.get("crm.21", "变更地域")}</Button>),
             sales: (<Button
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get("crm.18", "变更销售人员")}</Button>)
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get("crm.18", "变更销售人员")}</Button>),
+            schedule: (<Button
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get("crm.214", "添加联系计划")}</Button>)
         };
         return (
             <div className="crm-batch-change-container">
@@ -625,6 +644,18 @@ var CrmBatchChange = React.createClass({
                     overlayContent={this.renderSalesBlock()}
                     handleSubmit={this.handleSubmit}
                     okTitle={Intl.get("crm.32", "变更")}
+                    cancelTitle={Intl.get("common.cancel", "取消")}
+                    unSelectDataTip={this.state.unSelectDataTip}
+                    clearSelectData={this.clearSelectSales}
+                />
+                <AntcDropdown
+                    ref="changeSales"
+                    content={changeBtns.schedule}
+                    overlayTitle={Intl.get("crm.214", "添加联系计划")}
+                    isSaving={this.state.isAddingSchedule}
+                    overlayContent={this.renderScheduleLists()}
+                    handleSubmit={this.handleSubmit}
+                    okTitle={Intl.get("common.add", "添加")}
                     cancelTitle={Intl.get("common.cancel", "取消")}
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
