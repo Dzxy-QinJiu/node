@@ -1205,7 +1205,7 @@ var en_US = {
     "oplate_customer_analysis.8": "Add new customer", // 新增客户
     "oplate_customer_analysis.9": "Dealing Phase", // 成交阶段客户
     "oplate_customer_analysis.10": "Implement Phase", // 执行阶段客户
-    "oplate_customer_analysis.11": "Sale Phase", // 销售阶段统计
+    "oplate_customer_analysis.11": "Sale Phase", // 订单阶段统计
     "oplate_customer_analysis.12": "dealine {time}", // 至{time}为止
     "oplate_customer_analysis.14": "Customer Statistics ", // 客户统计
     "oplate_customer_analysis.15": "Total customer", // 客户总数
@@ -1213,6 +1213,7 @@ var en_US = {
     "oplate_customer_analysis.tried": "Trial stage customer",//试用阶段客户
     "oplate_customer_analysis.projected": "Quotation stage Customer",//立项报价阶段客户
     "oplate_customer_analysis.negotiated": "Negotiation stage customer",//谈判阶段客户
+    "oplate_customer_analysis.customer_stage": "Customer stage analysis",//客户阶段统计
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@
@@ -1446,7 +1447,6 @@ var en_US = {
     "customer.analysis.add.customer": "New customers",//新增客户@
     "customer.analysis.maintain": "Maintenance phase",//维护阶段@
     "customer.analysis.add.trend": "Trend of adding",//新增趋势@
-    "customer-analysis.sale.stage": "Sales stage statistics",//销售阶段统
     //运营报告
     "operation.report.login.count": "Login number",//登录人数@
     "operation.report.app.login": "Login detail of every application",//各应用登录情况@

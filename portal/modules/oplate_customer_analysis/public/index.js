@@ -240,7 +240,38 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
         return stageData;
     },
-    getStageChart : function() {
+    //获取客户阶段统计图
+    getCustomerStageChart : function() {
+        return (
+            this.getComponent(Analysis, {
+                handler: "getCustomerStageAnalysis",
+                chartType: "funnel",
+                type: this.getDataAuthType(),
+                sendRequest:this.state.sendRequest,
+                property: "stage",
+                showLabel:false,
+                valueField: "total",
+                width:this.chartWidth,
+                height: CHART_HEIGHT,
+                minSize:"5%",
+                title:"",
+                max:this.state.renderStageMax,
+                jumpProps: {
+                    url: "/crm",
+                    query: {
+                        analysis_filter_field: "stage",
+                        customerType:this.state.currentTab
+                    },
+                },
+                query:{
+                    customerType:this.state.currentTab,
+                    customerProperty:"stage"
+                }
+            })
+        );
+    },
+    //获取订单阶段统计图
+    getOrderStageChart : function() {
         return (
             this.getComponent(Analysis, {
                 target: "Customer"+this.getDataAuthType(),
@@ -430,13 +461,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                         </CardContainer>
                                     </div>
                                 </div>
-                                {true?<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
-                                    <div className="chart-holder" data-tracename="销售阶段统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
-                                            {this.getStageChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>:null}
                                 {this.state.userType && this.state.userType.indexOf("sales") === -1? (
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
                                     <div className="chart-holder" data-tracename="销售团队统计信息">
@@ -446,6 +470,23 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                     </div>
                                 </div>
                                 ) : null}
+
+                                <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
+                                    <div className="chart-holder" data-tracename="客户阶段统计信息">
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
+                                            {this.getCustomerStageChart()}
+                                        </CardContainer>
+                                    </div>
+                                </div>
+
+                                <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                                    <div className="chart-holder" data-tracename="订单阶段统计信息">
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                                            {this.getOrderStageChart()}
+                                        </CardContainer>
+                                    </div>
+                                </div>
+
                             </div>
                         </GeminiScrollbar>
                 </div>

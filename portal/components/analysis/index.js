@@ -122,7 +122,7 @@ const Analysis = React.createClass({
             props.processData([],"loading");
         }
 
-        const handler = "get" + props.target + "AnalysisData";
+        const handler = props.handler || ("get" + props.target + "AnalysisData");
 
         const route = _.find(routeList, item => item.handler === handler);
 
