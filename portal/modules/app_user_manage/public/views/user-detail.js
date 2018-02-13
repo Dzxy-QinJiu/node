@@ -126,11 +126,15 @@ var UserDetail = React.createClass({
                     )
             }
         }
-
+        //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）
+        let selectApp = {};
+        if(this.props.selectedAppId){
+            selectApp = _.find(this.props.appLists,app => app.app_id === this.props.selectedAppId);
+        }
         var tabPaneList = [
             <TabPane tab={Intl.get("user.basic.info", "基本资料")} key="1">
                 {this.state.activeKey=="1" ? <div className="user_manage_user_detail">
-                    <UserDetailBasic userId={this.props.userId}/>
+                    <UserDetailBasic userId={this.props.userId}  selectApp={selectApp}/>
                 </div>: null}
             </TabPane>
         ];

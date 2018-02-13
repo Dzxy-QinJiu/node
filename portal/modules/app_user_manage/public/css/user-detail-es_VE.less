@@ -88,7 +88,25 @@
         @bgcolor:#dce4e7;
         @dark:#4d96d1;
         background:@bgcolor;
-
+        //合格的标签展示
+        .qualified-tag-style{
+          position: absolute;
+          border: 26px solid #00a854;
+          border-right-color: transparent;
+          border-bottom-color: transparent;
+          left: 0;
+          top: 0;
+          .qualified_span{
+            position: absolute;
+            top: -28px;
+            left: -44px;
+            width: 56px;
+            height: 56px;
+            text-align: right;
+            padding: 7px 7px 0 0;
+            color: #fff;
+          }
+        }
         .is_disabled{
           position:absolute;
           border:40px solid #b6c3cb;
