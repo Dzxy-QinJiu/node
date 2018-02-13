@@ -249,6 +249,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 handler: "getCustomerStageAnalysis",
                 type: getDataAuthType(),
                 chartType: "funnel",
+                isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
                 sendRequest:this.state.sendRequest,
                 showLabel:false,
@@ -452,13 +453,13 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 </div>
                                 ) : null}
 
-                                <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
+                                {this.state.currentTab === "total"? (<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
                                     <div className="chart-holder" data-tracename="客户阶段统计信息">
                                         <CardContainer title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
                                             {this.getCustomerStageChart()}
                                         </CardContainer>
                                     </div>
-                                </div>
+                                </div>) : null}
 
                                 <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
                                     <div className="chart-holder" data-tracename="订单阶段统计信息">
