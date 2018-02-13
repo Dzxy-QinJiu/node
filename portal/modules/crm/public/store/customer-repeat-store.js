@@ -149,8 +149,8 @@ CustomerRepeatStore.prototype.processForList = function (curCustomers) {
     return _.map(repeatCustomerObj, (repeatList, repeatId) => {
         if (_.isArray(repeatList) && repeatList.length) {
             repeatList = _.map(repeatList, customer => {
-                customer.start_time = customer.start_time ? moment(customer.start_time).format(oplateConsts.DATE_FORMAT) : "";
-                customer.last_contact_time = customer.last_contact_time ? moment(customer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
+                customer.start_time_str = customer.start_time ? moment(customer.start_time).format(oplateConsts.DATE_FORMAT) : "";
+                customer.last_contact_time_str = customer.last_contact_time ? moment(customer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
                 return customer;
             });
         }
