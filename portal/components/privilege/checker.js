@@ -95,9 +95,20 @@ function hasPrivilege(list) {
     return pass;
 }
 
+function getDataAuthType() {
+    let type = "Common";//CUSTOMER_ANALYSIS_COMMON
+    if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
+        type = "Manager";
+    }
+    return type;
+}
+
 //检查权限的标签
 exports.PrivilegeChecker = PrivilegeChecker;
 //根据权限获取子路由
 exports.getChildRoutes = getChildRoutes;
 //是否有权限
 exports.hasPrivilege = hasPrivilege;
+//数据访问类型（管理者还是普通人员）
+exports.getDataAuthType = getDataAuthType;
+

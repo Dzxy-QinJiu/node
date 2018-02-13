@@ -13,7 +13,7 @@ var emitter = require("./utils/emitter");
 import Analysis from "CMP_DIR/analysis";
 import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
 import AnalysisFilter from "../../../components/analysis/filter";
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege, getDataAuthType} from "CMP_DIR/privilege/checker";
 import SummaryNumber from "CMP_DIR/analysis-summary-number";
 import {Row, Col} from "antd";
 import CardContainer from "CMP_DIR/card-container";
@@ -82,7 +82,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "line",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 height: CHART_HEIGHT,
                 property: "trend",
@@ -113,7 +113,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: "zone",
                 valueField: "total",
@@ -146,7 +146,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: userType,
                 valueField: "total",
@@ -174,7 +174,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: "industry",
                 valueField: "total",
@@ -247,7 +247,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 handler: "getCustomerStageAnalysis",
-                type: this.getDataAuthType(),
+                type: getDataAuthType(),
                 chartType: "funnel",
                 processData: processCustomerStageChartData,
                 sendRequest:this.state.sendRequest,
@@ -262,7 +262,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getOrderStageChart : function() {
         return (
             this.getComponent(Analysis, {
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 chartType: "funnel",
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
@@ -365,13 +365,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             </Row>
         )
     },
-    getDataAuthType: function () {
-        let type = "Common";//CUSTOMER_ANALYSIS_COMMON
-        if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
-            type = "Manager";
-        }
-        return type;
-    },
     render : function() {
         var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
         var windowWidth = $(window).width();
@@ -405,7 +398,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     {
                         this.getComponent(Analysis, {
                                 chartType: "box",
-                                target: "Customer"+this.getDataAuthType(),
+                                target: "Customer"+getDataAuthType(),
                                 type: "summary",
                                 valueField: "total",
                                 legend: false,
