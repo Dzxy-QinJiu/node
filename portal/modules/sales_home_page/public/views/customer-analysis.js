@@ -369,16 +369,18 @@ var CustomerAnalysis = React.createClass({
               <div className="analysis_chart col-md-6 col-sm-12"
                    data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
                   <div className="chart-holder" data-tracename="客户阶段统计">
-                      <div className="title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage"
-                                                                         defaultMessage="客户阶段统计"/></div>
+                      <div className="title">
+                          <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage" defaultMessage="客户阶段统计"/>
+                      </div>
                       {this.getCustomerStageChart()}
                   </div>
               </div>
               <div className="analysis_chart col-md-6 col-sm-12"
                    data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
                   <div className="chart-holder" data-tracename="订单阶段统计">
-                      <div className="title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.11"
-                                                                         defaultMessage="订单阶段统计"/></div>
+                      <div className="title">
+                          <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计"/>
+                      </div>
                       {this.getStageChart()}
                   </div>
               </div>
