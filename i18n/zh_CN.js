@@ -825,6 +825,9 @@ var zh_CN = {
     "sales.stage.add.sales.stage": "添加销售阶段",
     "sales.stage.sales.stage": "销售阶段",
     "sales.stage.delete.sales.stage": "确定删除这个销售阶段麽",
+    "sales.stage.signed": "签约",
+    "sales.stage.intention": "意向",
+    "sales.stage.message": "信息",
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "暂无团队，请先添加：",

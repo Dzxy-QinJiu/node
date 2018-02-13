@@ -197,7 +197,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
-    processStageChartData:function (stageData) {
+    //处理订单阶段统计数据
+    processOrderStageChartData:function (stageData) {
         _.map(stageData, stage => stage.value = stage.total);
         //获取销售阶段列表
         const stageList = this.state.salesStageList;
@@ -240,33 +241,55 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
         return stageData;
     },
+    //处理客户阶段统计数据
+    processCustomerStageChartData:function (data) {
+        const customerStages = [
+            {
+                tagName: Intl.get("sales.stage.message", "信息"),
+                tagValue: "message",
+            },
+            {
+                tagName: Intl.get("sales.stage.intention", "意向"),
+                tagValue: "intention",
+            },
+            {
+                tagName: Intl.get("common.trial", "试用"),
+                tagValue: "trial",
+            },
+            {
+                tagName: Intl.get("sales.stage.signed", "签约"),
+                tagValue: "signed",
+            },
+        ];
+
+        let processedData = [];
+
+        customerStages.forEach(stage => {
+            const stageValue = data[stage.tagValue];
+
+            if (stageValue) {
+                processedData.push({
+                    name: stage.tagName,
+                    value: stageValue,
+                });
+            }
+        });
+
+        return processedData;
+    },
     //获取客户阶段统计图
     getCustomerStageChart : function() {
         return (
             this.getComponent(Analysis, {
                 handler: "getCustomerStageAnalysis",
-                chartType: "funnel",
                 type: this.getDataAuthType(),
+                chartType: "funnel",
+                processData: this.processCustomerStageChartData,
                 sendRequest:this.state.sendRequest,
-                property: "stage",
                 showLabel:false,
-                valueField: "total",
                 width:this.chartWidth,
                 height: CHART_HEIGHT,
                 minSize:"5%",
-                title:"",
-                max:this.state.renderStageMax,
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: "stage",
-                        customerType:this.state.currentTab
-                    },
-                },
-                query:{
-                    customerType:this.state.currentTab,
-                    customerProperty:"stage"
-                }
             })
         );
     },
@@ -285,7 +308,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 height: CHART_HEIGHT,
                 minSize:"5%",
                 title:"",
-                processData: this.processStageChartData,
+                processData: this.processOrderStageChartData,
                 max:this.state.renderStageMax,
                 jumpProps: {
                     url: "/crm",

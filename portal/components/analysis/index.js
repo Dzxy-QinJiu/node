@@ -254,7 +254,7 @@ const Analysis = React.createClass({
     },
     render() {
         const props = {
-            title: this.props.title || Intl.get("app_operation.31", "统计"),
+            title: this.props.title || "",
             chartData: this.props.chartData || this.state.chartData,
             app_id: this.state.app_id,
             endDate: this.state.endDate,

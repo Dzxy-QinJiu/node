@@ -819,6 +819,9 @@ var en_US = {
     "sales.stage.add.sales.stage": "Add sales stage",//添加销售阶段
     "sales.stage.sales.stage": "Sales Stage",//销售阶段
     "sales.stage.delete.sales.stage": "Are you sure to delete this sales stage?",//确定删除这个销售阶段麽
+    "sales.stage.signed": "signed",//签约
+    "sales.stage.intention": "intention",//意向
+    "sales.stage.message": "message",//信息
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "There is no team, please add!",//暂无团队，请先添加：
