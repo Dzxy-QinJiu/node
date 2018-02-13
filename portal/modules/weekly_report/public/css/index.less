@@ -1,0 +1,147 @@
+@borderColor:#f3f5f7;
+@background:#eff4f9;
+.weekly-report-container{
+  .weekly-report-wrap{
+    padding: 25px 50px 25px 30px;
+    .weekly-report-content{
+      padding: 0;
+      margin: 0 0 21px 17px;
+      min-width: 370px;
+      border: 1px solid @borderColor;
+      //左侧标题列表区域
+      .weekly-report-title-wrap{
+        padding-right: 0;
+        padding-left: 0;
+        border-right: 1px solid @borderColor;
+        //顶部搜索框区域
+        .search-bar{
+          border-bottom: 1px solid @borderColor;
+          .pull-left{
+            margin-left: 15px;
+            padding-top: 11px;
+            color: #81939e;
+            padding-bottom: 10px;
+            .search-input-container{
+              width: 180px;
+            }
+          }
+        }
+        //下部标题列表区域
+        .report-des-content{
+          .load8 {
+            transform:scale(0.5,0.5);
+            .loader8 {
+              border-left-color:#394144;
+            }
+          }
+          .ant-alert{
+            margin: 20px auto;
+            width: 300px;
+          }
+          .ant-alert-error a{
+            margin-left: 20px;
+          }
+          ul.report-title-list{
+            li.report-title-item{
+              font-size: 16px;
+              padding: 10px 0 10px 15px;
+              cursor: pointer;
+            }
+            li.current-item{
+              background: @background;
+            }
+          }
+        }
+
+      }
+      //右侧内容区域
+      .weekly-report-detail-wrap{
+        margin-left: -1px;
+        color: #5d5d5d;
+        position: relative;
+        padding-left: 15px;
+        padding-right: 0;
+
+        .weekly-report-detail-container{
+          .total-title{
+            margin: 15px 0 10px 10px;
+            font-weight: bold;
+          }
+          .call-info-wrap{
+            .item-title{
+              margin: 10px 0 10px 10px;
+              font-weight: bold;
+              font-size: 16px;
+            }
+            .call-info-table-container{
+              .ant-alert-error{
+                margin: 40px auto;
+                width: 500px;
+                a{
+                  margin-left: 20px;
+                }
+              }
+              .load8 {
+                transform:scale(0.5,0.5);
+                .loader8 {
+                  border-left-color:#394144;
+                }
+              }
+              table{
+                //列表中的数据列靠右展示的处理
+                td.table-data-align-right {
+                  text-align: right;
+                  padding-right: 10px;
+                }
+                //列表中的文字列靠左展示的处理
+                td.table-data-align-left {
+                  text-align: left;
+                  padding-left: 10px;
+                }
+                tr{
+                  .attendance-remark{
+                    .icon-update{
+                      margin-left: 10px;
+                      display: none;
+                    }
+                  }
+                  .edit-for-leave-wrap,.leave-info-container{
+                    .ant-select{
+                      margin-right: 5px;
+                      min-width: 50px;
+                    }
+                    .iconfont{
+                      font-size:12px;
+                      padding: 5px 5px 2px 5px;
+                      cursor: pointer;
+                    }
+                    .icon-choose{
+                      color:#4dbe50;
+                    }
+                    .icon-close{
+                      color:#b50e0a;
+                    }
+                  }
+                  &:hover{
+                    .attendance-remark .icon-update{
+                      display: inline-block;
+                    }
+                  }
+                }
+
+                .leave-info-container{
+                  .remove-ask-leave{
+                    color: #9BA4A8;
+                    background-color: transparent;
+                    border:none;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+}

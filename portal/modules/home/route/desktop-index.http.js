@@ -14,6 +14,13 @@ module.exports = {
     routes: (function () {
         var list = [{
             "method": "get",
+            "path": "/weekly_report",
+            "handler": "home",
+            "passport": {
+                "needLogin": true
+            }
+        }, {
+            "method": "get",
             "path": "/",
             "handler": "home",
             "passport": {

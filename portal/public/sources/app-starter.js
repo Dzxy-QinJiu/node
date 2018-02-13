@@ -116,6 +116,7 @@ function getUserType(callback) {
 //获取权限之后,系统入口
 function init(options) {
     var childRoutes = [];
+    childRoutes.push(require("../../modules/weekly_report"));
     var user = userData.getUserData();
     _.each(user.modules, function (module) {
         switch (module) {

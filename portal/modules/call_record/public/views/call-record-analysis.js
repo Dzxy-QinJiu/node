@@ -28,6 +28,7 @@ import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Trace from "LIB_DIR/trace";
 import ScatterChart from 'CMP_DIR/chart/scatter';
 import {AntcTable} from "antc";
+import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
@@ -85,20 +86,9 @@ var CallRecordAnalyis = React.createClass({
         this.setState(CallAnalysisStore.getState());
     },
 
-    // 根据权限，判断所传字段的值
-    getParamByPrivilege() {
-        let reqData = {};
-        if (hasPrivilege("GET_TEAM_LIST_ALL") || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
-            reqData.type = 'all';
-        } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS") || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
-            reqData.type = 'self';
-        }
-        return reqData;
-    },
-
     // 获取销售团队和成员数据
     getTeamMemberData() {
-        let reqData = this.getParamByPrivilege();
+        let reqData = commonMethodUtil.getParamByPrivilege();
         CallAnalysisAction.getSaleGroupTeams(reqData);
         CallAnalysisAction.getSaleMemberList(reqData);
     },
@@ -176,7 +166,7 @@ var CallRecordAnalyis = React.createClass({
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: params && params.deviceType || this.state.callType
         };
-        let pathParam = this.getParamByPrivilege();
+        let pathParam = commonMethodUtil.getParamByPrivilege();
         if (this.state.teamList.list.length) { // 有团队时（普通销售时没有团队的）
             let teamMemberParam = this.getTeamMemberParam();
             if (teamMemberParam) {

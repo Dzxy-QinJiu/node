@@ -334,6 +334,8 @@ function getConfigJson(req) {
         /*扫码登录*/
         "11058": {"httpCode": 500, "message": ""},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         "11059": {"httpCode": 500, "message": backendIntl.get("errorcode.147", "二维码已失效")},
+        /*周报统计*/
+        "90008": {"httpCode": 500, "message": backendIntl.get("errorcode.148","电话时长统计视图获取失败")},
 
         /*其他*/
         "error-code-not-found": {"httpCode": 500, "message": backendIntl.get("errorcode.132", "未知错误")},

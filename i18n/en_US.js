@@ -1705,6 +1705,7 @@ var en_US = {
     "errorcode.145": "Landline busy",//座机繁忙
     "errorcode.146": "The phone is offline",//分机离线
     "errorcode.147": "The qr code has expired",//二维码已失效
+    "errorcode.148": "The call duration statistics view fails to be obtained",//电话时长统计视图获取失败
     "user.input.phone": "Please input your phone",//请输入手机号
     "customer.search.by.customer.name": "Please search by customer name",//请输入客户名称搜索
     "user.user.info": "information",//开通信息
@@ -1895,6 +1896,19 @@ var en_US = {
     "user.info.no.email":"The user has no email,{add-email}",//该用户没有邮箱，{add-email}
     "user.info.add.email":"add email",//添加邮箱
     "schedule.call.out":"Call out",//拨打
+    "weekly.report.total.duration":"The total duration of this week",//本周总时长
+    "weekly.report.total.connected":"The total number of connected of this week",//本周总接通数
+    "weekly.report.statics.report":"{n} Week Statistics Weekly",//第{n}周统计周报
+    "weekly.report.statics.duration":"The statistical weekly content,and the statistics time ranges from {startTime} to {endTime}",//统计周报内容，统计时间{startTime}至{endTime}
+    "weekly.report.call.statics":"Phone statistics",//电话统计
+    "weekly.report.assessment.days":"Assessment days",//考核天数
+    "weekly.report.attendance.remarks":"Attendance note",//出勤备注
+    "weekly.report.no.report":"No eligible weekly report",//暂无符合条件的周报
+    "weekly.report.ask.for.leave":"Leave",//请假
+    "weekly.report.business.trip":"Business",//出差
+    "weekly.report.n.days":"{n} days",//{n}天
+    "weekly.report.full.work.day":"Full attendance",//全勤
+    "weekly.report.are.you.sure.del.remark":"Are you sure to delete this leave message?",//确定要删除该条请假信息吗？
     "sales.status.calling": "Calling",//正在打电话
 };
 export default en_US;
