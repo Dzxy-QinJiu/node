@@ -10,7 +10,8 @@ var AnalysisLayout = require("./utils/analysis-layout");
 var OplateCustomerAnalysisAction = require("./action/oplate-customer-analysis.action");
 var OplateCustomerAnalysisStore = require("./store/oplate-customer-analysis.store");
 var emitter = require("./utils/emitter");
-import Analysis from "../../../components/analysis";
+import Analysis from "CMP_DIR/analysis";
+import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
 import AnalysisFilter from "../../../components/analysis/filter";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import SummaryNumber from "CMP_DIR/analysis-summary-number";
@@ -241,42 +242,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
         return stageData;
     },
-    //处理客户阶段统计数据
-    processCustomerStageChartData:function (data) {
-        const customerStages = [
-            {
-                tagName: Intl.get("sales.stage.message", "信息"),
-                tagValue: "message",
-            },
-            {
-                tagName: Intl.get("sales.stage.intention", "意向"),
-                tagValue: "intention",
-            },
-            {
-                tagName: Intl.get("common.trial", "试用"),
-                tagValue: "trial",
-            },
-            {
-                tagName: Intl.get("sales.stage.signed", "签约"),
-                tagValue: "signed",
-            },
-        ];
-
-        let processedData = [];
-
-        customerStages.forEach(stage => {
-            const stageValue = data[stage.tagValue];
-
-            if (stageValue) {
-                processedData.push({
-                    name: stage.tagName,
-                    value: stageValue,
-                });
-            }
-        });
-
-        return processedData;
-    },
     //获取客户阶段统计图
     getCustomerStageChart : function() {
         return (
@@ -284,7 +249,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 handler: "getCustomerStageAnalysis",
                 type: this.getDataAuthType(),
                 chartType: "funnel",
-                processData: this.processCustomerStageChartData,
+                processData: processCustomerStageChartData,
                 sendRequest:this.state.sendRequest,
                 showLabel:false,
                 width:this.chartWidth,
