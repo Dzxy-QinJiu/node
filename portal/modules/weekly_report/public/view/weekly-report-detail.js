@@ -57,8 +57,7 @@ const WeeklyReportDetail = React.createClass({
     },
     //获取今年某周的开始日期
     getBeginDateOfWeek: function (weekIndex) {
-        //7 * 24 * 60 * 60 *1000是一星期的时间毫秒数,(JS中的日期精确到毫秒)
-        var time = (weekIndex - 1) * 7 * 24 * 60 * 60 * 1000;
+        var time = (weekIndex - 1) * 7 * oplateConsts.ONE_DAY_TIME_RANGE;
         return moment().startOf('year').valueOf() + time;
     },
 
@@ -70,7 +69,7 @@ const WeeklyReportDetail = React.createClass({
         if (firstDayWeek !== 0) {
             spendDay = 7 - firstDayWeek + 1;
         }
-        var time = ((weekIndex - 1) * 7 + spendDay ) * 24 * 60 * 60 * 1000;
+        var time = ((weekIndex - 1) * 7 + spendDay ) * oplateConsts.ONE_DAY_TIME_RANGE;
         return moment().startOf('year').valueOf() + time - 1;
     },
     //添加请假信息
@@ -98,13 +97,14 @@ const WeeklyReportDetail = React.createClass({
 
     //添加请假信息之后
     afterAddLeave: function (resData) {
+        //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg)
         } else {
             var addLeaveItem = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
-            var item = _.find(salesPhoneList, (list) => {
-                return list.name === addLeaveItem.nick_name;
+            var item = _.find(salesPhoneList, (obj) => {
+                return obj.name === addLeaveItem.nick_name;
             });
             if (_.isArray(item.leave_info_list)) {
                 item.leave_info_list.push(addLeaveItem);
@@ -133,28 +133,30 @@ const WeeklyReportDetail = React.createClass({
     },
     //更新请假信息之后
     afterUpdateLeave: function (resData) {
+        //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg)
         } else {
             var updateObj = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
-            _.each(salesPhoneList, (list) => {
-                if (_.isArray(list.leave_info_list)) {
-                    _.map(list.leave_info_list, (item) => {
-                        //正在更新的那一条请假信息
-                        if (item.id === updateObj.id) {
-                            if (updateObj.leave_days) {
-                                list.real_work_day = list.real_work_day + (item.leave_days - updateObj.leave_days);
-                                item.leave_days = updateObj.leave_days;
-                            }
-                            if (updateObj.leave_detail) {
-                                item.leave_detail = updateObj.leave_detail;
-                            }
-                            if (updateObj.leave_time) {
-                                item.leave_time = updateObj.leave_time;
-                            }
+            _.each(salesPhoneList, (obj) => {
+                if (_.isArray(obj.leave_info_list)) {
+                    //所修改的那条请假信息
+                    var initailObj =  _.find(obj.leave_info_list, (item)=>{
+                        return item.id === updateObj.id;
+                    });
+                    if (initailObj){
+                        if (updateObj.leave_days) {
+                            obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
+                            initailObj.leave_days = updateObj.leave_days;
                         }
-                    })
+                        if (updateObj.leave_detail) {
+                            initailObj.leave_detail = updateObj.leave_detail;
+                        }
+                        if (updateObj.leave_time) {
+                            initailObj.leave_time = updateObj.leave_time;
+                        }
+                    }
                 }
             });
             this.setState({
@@ -176,19 +178,19 @@ const WeeklyReportDetail = React.createClass({
         var removedId = deleteItem.id;
         WeeklyReportDetailAction.deleteForLeave(removedId, () => {
             var salesPhoneList = this.state.salesPhone.list;
-            _.each(salesPhoneList, (list) => {
-                _.each(list.leave_info_list, (item, index) => {
+            _.each(salesPhoneList, (Obj) => {
+                _.each(Obj.leave_info_list, (item, index) => {
                     if (item) {
                         //因为符合某个条件会item
                         if (item.id === removedId) {
-                            list.real_work_day = list.real_work_day + deleteItem.leave_days;
-                            list.leave_info_list.splice(index, 1);
-                        }
-                        if (!list.leave_info_list.length) {
-                            delete list.leave_info_list;
+                            Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
+                            Obj.leave_info_list.splice(index, 1);
                         }
                     }
                 });
+                if (_.isArray(Obj.leave_info_list) && !Obj.leave_info_list.length) {
+                    delete Obj.leave_info_list;
+                }
             });
             this.setState({
                 salesPhone: this.state.salesPhone,
@@ -197,10 +199,10 @@ const WeeklyReportDetail = React.createClass({
         });
     },
     //没有请假信息的时候,是全勤的
-    renderFullWork:function (isHide, userId) {
+    renderFullWork:function (isAdding, userId) {
         return (
             <div className="attendance-remark">
-                {isHide ? (<div className="edit-for-leave-wrap">
+                {isAdding ? (<div className="edit-for-leave-wrap">
                     {/*添加请假信息*/}
                     <AskForLeaveForm
                         userId={userId}
@@ -315,10 +317,10 @@ const WeeklyReportDetail = React.createClass({
                 });
                 var userId = userObj.id ? userObj.id : "";
                 //正在添加请假信息
-                var isHide = _this.state.isAddingLeaveUserId === userId ? true : false;
+                var isAdding = _this.state.isAddingLeaveUserId === userId ? true : false;
                 //没有请假信息的时候,是全勤的
                 if (!record.leave_info_list) {
-                    return _this.renderFullWork(isHide, userId);
+                    return _this.renderFullWork(isAdding, userId);
 
                 } else if (record.leave_info_list) {
                     //有请假信息的时候 展示请假信息列表

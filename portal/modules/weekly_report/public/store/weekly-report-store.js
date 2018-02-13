@@ -38,7 +38,7 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
         });
         if (_.isArray(resData) && resData.length) {
             //获取团队信息成功后，再计算今天是第几周
-            var nWeek = weeklyReportUtils.getNWeekOfYear(new Date());
+            var nWeek = moment(new Date()).week();
             for (var i = nWeek - 1; i > 0; i--) {
                 this.teamList.list = resData;
                 _.map(resData, (item, index) => {
@@ -90,17 +90,19 @@ weeklyReportStore.prototype.setSelectedWeeklyReportItem = function ({obj, idx}) 
     this.selectedReportItem = obj;
     this.selectedReportItemIdx = idx;
 };
+//去除数组中为空的
 function removeEmptyArrayEle(arr){
      _.filter(arr,(item)=>{
-        return item !== undefined;
+        return !item;
     });
 };
 //设置当前要查看详情的申请
 weeklyReportStore.prototype.changeSearchInputValue = function (value) {
     this.searchKeyword = value;
+    //把搜索的关键词按空格进行分割
     var keyWordArr = value.trim().split(" ");
-    removeEmptyArrayEle(keyWordArr);
     //去除查询条件中值为空的项
+    removeEmptyArrayEle(keyWordArr);
     this.teamDescArr = _.filter(this.initialTeamDescArr, (teamItem) => {
         var isFilterDes = 0;
         //如果搜索的关键词是用空格隔开，把每个关键词都检查一遍
@@ -116,7 +118,6 @@ weeklyReportStore.prototype.changeSearchInputValue = function (value) {
     //选定的团队周报是数组的第一个，下标为0
     this.selectedReportItem = this.teamDescArr[0];
     this.selectedReportItemIdx = 0;
-
 };
 
 module.exports = alt.createStore(weeklyReportStore, 'weeklyReportStore');

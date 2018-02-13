@@ -15,8 +15,10 @@ exports.getSaleGroupTeams = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -34,8 +36,10 @@ exports.getSaleMemberList = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+             if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -53,8 +57,10 @@ exports.getCallInfo = function (pathParam, reqData, type) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+             if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -72,8 +78,10 @@ exports.addAskForLeave = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+             if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -91,8 +99,10 @@ exports.updateAskForLeave = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+             if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
@@ -109,8 +119,10 @@ exports.deleteAskForLeave = function (id) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr,statusText) {
+             if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
