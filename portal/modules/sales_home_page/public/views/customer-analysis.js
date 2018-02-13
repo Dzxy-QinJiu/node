@@ -4,6 +4,7 @@
  */
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
+var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
 var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
 var OplateCustomerAnalysisStore = require("../../../oplate_customer_analysis/public/store/oplate-customer-analysis.store");
 var CompositeLine = require("../../../oplate_customer_analysis/public/views/composite-line");
@@ -18,6 +19,8 @@ var legend = [{name: Intl.get("sales.home.new.add", "新增"), key: "total"}];
 var constantUtil = require("../util/constant");
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
+import Analysis from "CMP_DIR/analysis";
+import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function () {
@@ -277,6 +280,24 @@ var CustomerAnalysis = React.createClass({
             />
         );
     },
+    //获取客户阶段统计图
+    getCustomerStageChart : function() {
+        return (
+            React.createElement(Analysis, {
+                handler: "getCustomerStageAnalysis",
+                type: getDataAuthType(),
+                chartType: "funnel",
+                appId: "all",
+                isGetDataOnMount: true,
+                processData: processCustomerStageChartData,
+                sendRequest:this.state.sendRequest,
+                showLabel:false,
+                width:this.chartWidth,
+                height: 260,
+                minSize:"5%",
+            })
+        );
+    },
     getStageChart: function () {
         let stageData = this.state.stageAnalysis.data;
         _.map(stageData, stage => stage.value = stage.total);
@@ -349,10 +370,18 @@ var CustomerAnalysis = React.createClass({
                       </div>
                   </div>) : null}
               <div className="analysis_chart col-md-6 col-sm-12"
-                   data-title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
-                  <div className="chart-holder" data-tracename="销售阶段统计">
+                   data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
+                  <div className="chart-holder" data-tracename="客户阶段统计">
+                      <div className="title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage"
+                                                                         defaultMessage="客户阶段统计"/></div>
+                      {this.getCustomerStageChart()}
+                  </div>
+              </div>
+              <div className="analysis_chart col-md-6 col-sm-12"
+                   data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                  <div className="chart-holder" data-tracename="订单阶段统计">
                       <div className="title"><ReactIntl.FormattedMessage id="oplate_customer_analysis.11"
-                                                                         defaultMessage="销售阶段统计"/></div>
+                                                                         defaultMessage="订单阶段统计"/></div>
                       {this.getStageChart()}
                   </div>
               </div>

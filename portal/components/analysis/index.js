@@ -147,7 +147,7 @@ const Analysis = React.createClass({
         };
 
         const storedAppId = localStorage[props.localStorageAppIdKey];
-        const appId = this.state.app_id || storedAppId;
+        const appId = this.props.appId || this.state.app_id || storedAppId;
         
         if (appId) {
             arg.query.app_id = appId;
