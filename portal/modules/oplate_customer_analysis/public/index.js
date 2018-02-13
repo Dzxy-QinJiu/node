@@ -10,9 +10,10 @@ var AnalysisLayout = require("./utils/analysis-layout");
 var OplateCustomerAnalysisAction = require("./action/oplate-customer-analysis.action");
 var OplateCustomerAnalysisStore = require("./store/oplate-customer-analysis.store");
 var emitter = require("./utils/emitter");
-import Analysis from "../../../components/analysis";
+import Analysis from "CMP_DIR/analysis";
+import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
 import AnalysisFilter from "../../../components/analysis/filter";
-import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import {hasPrivilege, getDataAuthType} from "CMP_DIR/privilege/checker";
 import SummaryNumber from "CMP_DIR/analysis-summary-number";
 import {Row, Col} from "antd";
 import CardContainer from "CMP_DIR/card-container";
@@ -81,7 +82,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "line",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 height: CHART_HEIGHT,
                 property: "trend",
@@ -112,7 +113,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: "zone",
                 valueField: "total",
@@ -145,7 +146,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: userType,
                 valueField: "total",
@@ -173,7 +174,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 chartType: "bar",
-                target: "Customer"+this.getDataAuthType(),
+                target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
                 property: "industry",
                 valueField: "total",
@@ -197,7 +198,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
-    processStageChartData:function (stageData) {
+    //处理订单阶段统计数据
+    processOrderStageChartData:function (stageData) {
         _.map(stageData, stage => stage.value = stage.total);
         //获取销售阶段列表
         const stageList = this.state.salesStageList;
@@ -240,10 +242,28 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
         return stageData;
     },
-    getStageChart : function() {
+    //获取客户阶段统计图
+    getCustomerStageChart : function() {
         return (
             this.getComponent(Analysis, {
-                target: "Customer"+this.getDataAuthType(),
+                handler: "getCustomerStageAnalysis",
+                type: getDataAuthType(),
+                chartType: "funnel",
+                isGetDataOnMount: true,
+                processData: processCustomerStageChartData,
+                sendRequest:this.state.sendRequest,
+                showLabel:false,
+                width:this.chartWidth,
+                height: CHART_HEIGHT,
+                minSize:"5%",
+            })
+        );
+    },
+    //获取订单阶段统计图
+    getOrderStageChart : function() {
+        return (
+            this.getComponent(Analysis, {
+                target: "Customer"+getDataAuthType(),
                 chartType: "funnel",
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
@@ -254,7 +274,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 height: CHART_HEIGHT,
                 minSize:"5%",
                 title:"",
-                processData: this.processStageChartData,
+                processData: this.processOrderStageChartData,
                 max:this.state.renderStageMax,
                 jumpProps: {
                     url: "/crm",
@@ -346,13 +366,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             </Row>
         )
     },
-    getDataAuthType: function () {
-        let type = "Common";//CUSTOMER_ANALYSIS_COMMON
-        if(hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")){
-            type = "Manager";
-        }
-        return type;
-    },
     render : function() {
         var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
         var windowWidth = $(window).width();
@@ -386,7 +399,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     {
                         this.getComponent(Analysis, {
                                 chartType: "box",
-                                target: "Customer"+this.getDataAuthType(),
+                                target: "Customer"+getDataAuthType(),
                                 type: "summary",
                                 valueField: "total",
                                 legend: false,
@@ -430,13 +443,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                         </CardContainer>
                                     </div>
                                 </div>
-                                {true?<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
-                                    <div className="chart-holder" data-tracename="销售阶段统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "销售阶段统计")}>
-                                            {this.getStageChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>:null}
                                 {this.state.userType && this.state.userType.indexOf("sales") === -1? (
                                 <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
                                     <div className="chart-holder" data-tracename="销售团队统计信息">
@@ -446,6 +452,23 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                     </div>
                                 </div>
                                 ) : null}
+
+                                {this.state.currentTab === "total"? (<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
+                                    <div className="chart-holder" data-tracename="客户阶段统计信息">
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
+                                            {this.getCustomerStageChart()}
+                                        </CardContainer>
+                                    </div>
+                                </div>) : null}
+
+                                <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                                    <div className="chart-holder" data-tracename="订单阶段统计信息">
+                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                                            {this.getOrderStageChart()}
+                                        </CardContainer>
+                                    </div>
+                                </div>
+
                             </div>
                         </GeminiScrollbar>
                 </div>

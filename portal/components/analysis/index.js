@@ -122,7 +122,7 @@ const Analysis = React.createClass({
             props.processData([],"loading");
         }
 
-        const handler = "get" + props.target + "AnalysisData";
+        const handler = props.handler || ("get" + props.target + "AnalysisData");
 
         const route = _.find(routeList, item => item.handler === handler);
 
@@ -147,7 +147,7 @@ const Analysis = React.createClass({
         };
 
         const storedAppId = localStorage[props.localStorageAppIdKey];
-        const appId = this.state.app_id || storedAppId;
+        const appId = this.props.appId || this.state.app_id || storedAppId;
         
         if (appId) {
             arg.query.app_id = appId;
@@ -254,7 +254,7 @@ const Analysis = React.createClass({
     },
     render() {
         const props = {
-            title: this.props.title || Intl.get("app_operation.31", "统计"),
+            title: this.props.title || "",
             chartData: this.props.chartData || this.state.chartData,
             app_id: this.state.app_id,
             endDate: this.state.endDate,

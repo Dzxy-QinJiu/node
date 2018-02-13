@@ -26,7 +26,6 @@ var FunnelChart = React.createClass({
             y: 10,
             data : this.props.chartData,
             sort : this.props.sort || "descending",
-            max : this.props.max || 100,
             minSize : this.props.minSize || "0%",
             itemStyle : {
                 normal : {
@@ -44,10 +43,17 @@ var FunnelChart = React.createClass({
             },
         };
 
+        if (this.props.max) {
+            series1.max = this.props.max;
+        }
+
         let series2 = JSON.parse(JSON.stringify(series1));
 
         series2.itemStyle.normal.label = {
-            formatter: function (params) { return params.data.total },
+            formatter: (params) => {
+                const valueField = this.props.valueField || "value";
+                return params.data[valueField];
+            },
             position: "inside",
             textStyle: {
                 color: "#506470"

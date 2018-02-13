@@ -825,6 +825,9 @@ var zh_CN = {
     "sales.stage.add.sales.stage": "添加销售阶段",
     "sales.stage.sales.stage": "销售阶段",
     "sales.stage.delete.sales.stage": "确定删除这个销售阶段麽",
+    "sales.stage.signed": "签约",
+    "sales.stage.intention": "意向",
+    "sales.stage.message": "信息",
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "暂无团队，请先添加：",
@@ -1224,7 +1227,7 @@ var zh_CN = {
     "oplate_customer_analysis.8": "新增客户",
     "oplate_customer_analysis.9": "成交阶段客户",
     "oplate_customer_analysis.10": "执行阶段客户",
-    "oplate_customer_analysis.11": "销售阶段统计",
+    "oplate_customer_analysis.11": "订单阶段统计",
     "oplate_customer_analysis.12": "至{time}为止",
     "oplate_customer_analysis.14": "客户统计",
     "oplate_customer_analysis.15": "客户总数",
@@ -1232,6 +1235,7 @@ var zh_CN = {
     "oplate_customer_analysis.tried": "试用阶段客户",
     "oplate_customer_analysis.projected": "立项报价阶段客户",
     "oplate_customer_analysis.negotiated": "谈判阶段客户",
+    "oplate_customer_analysis.customer_stage": "客户阶段统计",
     // 客户分析end
     "contract.4": "甲方",
     "contract.5": "更新",
@@ -1477,7 +1481,6 @@ var zh_CN = {
     "customer.analysis.add.customer": "新增客户",
     "customer.analysis.maintain": "维护阶段",
     "customer.analysis.add.trend": "新增趋势",
-    "customer-analysis.sale.stage": "销售阶段统计",
 
     //运营报告
     "operation.report.login.count": "登录人数",
