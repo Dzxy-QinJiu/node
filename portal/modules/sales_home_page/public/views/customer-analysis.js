@@ -84,13 +84,9 @@ var CustomerAnalysis = React.createClass({
             queryParams.team_id = this.props.currShowSalesTeam.group_id;
             //团队统计
             customerPropertys.push("team");
-            //活跃客户的统计
-            customerPropertys.push("active_customer");
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {//普通销售不展示团队信息
             //首次进来时，如果不是销售就获取下级团队/团队成员的统计数据
             customerPropertys.push("team");
-            //活跃客户的统计
-            //customerPropertys.push("active_customer");
         }
         //选择天时，不展示趋势图
         if (this.state.timeType != "day") {

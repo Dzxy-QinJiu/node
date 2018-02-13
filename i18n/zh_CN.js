@@ -1437,7 +1437,7 @@ var zh_CN = {
     "sales.home.total.connected": "总接通数",
     "sales.home.average.duration": "日均时长",
     "sales.home.average.connected": "日均接通数",
-    "sales.home.phone.billing.time": "计费时长(分钟)",
+    "sales.home.phone.billing.time": "计费时长",
     "sales.home.get.data.failed": "获取数据失败",
     "sales.home.new.add": "新增",
     "sales.home.total.count": "共{count}个",
@@ -1950,6 +1950,7 @@ var zh_CN = {
     "weekly.report.business.trip":"出差",
     "weekly.report.n.days":"{n}天",
     "weekly.report.full.work.day":"全勤",
-    "weekly.report.are.you.sure.del.remark":"确定要删除该条请假信息吗？"
+    "weekly.report.are.you.sure.del.remark":"确定要删除该条请假信息吗？",
+    "sales.status.calling": "正在打电话",
 };
 export default zh_CN;

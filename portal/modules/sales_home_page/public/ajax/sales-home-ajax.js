@@ -23,7 +23,7 @@ exports.getSalesType = function () {
     return Deferred.promise();
 };
 
-//获取客户统计总数
+//获取销售团队列表
 var salesTeamListAjax;
 exports.getSalesTeamList = function (type) {
     salesTeamListAjax && salesTeamListAjax.abort();
@@ -44,7 +44,27 @@ exports.getSalesTeamList = function (type) {
     });
     return Deferred.promise();
 };
-
+//获取销售对应的通话状态
+let salesCallStatusAjax;
+exports.getSalesCallStatus = function (userIds) {
+    salesCallStatusAjax && salesCallStatusAjax.abort();
+    var Deferred = $.Deferred();
+    salesCallStatusAjax = $.ajax({
+        url: '/rest/sales/call_status',
+        dataType: 'json',
+        type: 'get',
+        data: {user_ids: userIds},
+        success: function (resData) {
+            Deferred.resolve(resData);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
 //获取某销售团队成员列表
 var salesTeamMembersAjax;
 exports.getSalesTeamMembers = function (teamId) {

@@ -1424,7 +1424,7 @@ var en_US = {
     "sales.home.phone.callout": "The times of outgoing calls",//呼出次数@
     "sales.home.phone.callout.success": "Call out successfully",//成功呼出@
     "sales.home.phone.callout.rate": "Call out completing rate",//呼出接通率@
-    "sales.home.phone.billing.time": "The billing time (minutes)",//计费时长(分钟)
+    "sales.home.phone.billing.time": "The billing time",//计费时长
     "sales.home.call.cout": "Count", // 通话数量
     "sales.home.call.top.ten": "Single call duration", // 单次通话时长
 
@@ -1908,6 +1908,7 @@ var en_US = {
     "weekly.report.business.trip":"Business",//出差
     "weekly.report.n.days":"{n} days",//{n}天
     "weekly.report.full.work.day":"Full attendance",//全勤
-    "weekly.report.are.you.sure.del.remark":"Are you sure to delete this leave message?"//确定要删除该条请假信息吗？
+    "weekly.report.are.you.sure.del.remark":"Are you sure to delete this leave message?",//确定要删除该条请假信息吗？
+    "sales.status.calling": "Calling",//正在打电话
 };
 export default en_US;

@@ -243,7 +243,6 @@ function setInitialPhoneObj() {
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
     if (hasPrivilege("CRM_LIST_CUSTOMERS")) {
-        Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         ReactDOM.render(
             <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
                                              setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,

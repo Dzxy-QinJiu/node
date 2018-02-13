@@ -1,6 +1,5 @@
 require('./css/index.less');
-import {Tag, Alert, Modal, message, Pagination} from "antd";
-import {Button, Icon} from "antd";
+import {Tag, Modal, message, Button, Icon} from "antd";
 import {AntcTable} from "antc";
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -33,13 +32,13 @@ import routeList from "MOD_DIR/common/route";
 import ajax from "MOD_DIR/common/ajax";
 import Trace from "LIB_DIR/trace";
 import crmAjax from './ajax/index';
+import crmUtil from "./utils/crm-util";
 import rightPanelUtil from "CMP_DIR/rightPanel";
-import {CUSTOMER_LABELS} from "./utils/crm-util";
 const RightPanel = rightPanelUtil.RightPanel;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 150,
-    BOTTOM_DISTANCE: 40,
+    TOP_DISTANCE: 80 + 56,//表格容器上外边距 + 表头的高度
+    BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
     SCREEN_WIDTH: 1130,//屏幕宽度小于1130时，右侧操作按钮变成图标
     UPLOAD_MODAL_HEIGHT: 260
 };
@@ -484,12 +483,17 @@ var Crm = React.createClass({
             condition.contacts = [{email: [condition.email]}];
             delete condition.email;
         }
+        let term_fields = [];//需精确匹配的字段
         //未知行业,未知地域,未知销售阶段（未展示），未知联系方式(未展示)等处理
         let unexist = [];//存放未知行业、未知地域的数组
-        if (condition.industry && condition.industry.indexOf(UNKNOWN) != -1) {
+        if (condition.industry && condition.industry.length) {
             //未知行业的处理
-            unexist.push("industry");
-            delete condition.industry;
+            if (condition.industry.indexOf(UNKNOWN) != -1) {
+                unexist.push("industry");
+                delete condition.industry;
+            } else {//需精确匹配
+                term_fields.push("industry")
+            }
         }
         var saleStage = '';
         if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length != 0) {
@@ -501,9 +505,17 @@ var Crm = React.createClass({
             delete condition.sales_opportunities;
         }
         //未知地域的处理
-        if (condition.province && condition.province == UNKNOWN) {
-            unexist.push("province");
-            delete condition.province;
+        if (condition.province) {
+            if (condition.province == UNKNOWN) {
+                unexist.push("province");
+                delete condition.province;
+            } else {//需精确匹配
+                term_fields.push("province");
+            }
+        }
+        //阶段标签,精确匹配
+        if (condition.customer_label) {
+            term_fields.push("customer_label");
         }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
@@ -511,7 +523,13 @@ var Crm = React.createClass({
             if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
                 unexist.push("labels");
                 delete condition.labels;
+            } else {//标签的筛选，需要精确匹配
+                term_fields.push("labels")
             }
+        }
+        //竞品,精确匹配
+        if (condition.competing_products && condition.competing_products.length) {
+            term_fields.push("competing_products");
         }
         var queryObj = {
             total_size: this.state.pageSize * this.state.pageValue,
@@ -564,6 +582,9 @@ var Crm = React.createClass({
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
+        }
+        if (term_fields.length > 0) {//需精确匹配的字段
+            condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
         CrmAction.queryCustomer(condition, this.state.rangParams, this.state.pageSize, this.state.sorter, queryObj);
@@ -792,7 +813,8 @@ var Crm = React.createClass({
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
-                        contact: record.contact
+                        contact: record.contact,
+                        customerDetail: record,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -972,10 +994,11 @@ var Crm = React.createClass({
             return record.id;
         };
 
+        const column_width = "90px";
         var columns = [
             {
                 title: Intl.get("crm.4", "客户名称"),
-                width: '210px',
+                width: '240px',
                 dataIndex: 'name',
                 className: 'has-filter',
                 sorter: true,
@@ -989,11 +1012,16 @@ var Crm = React.createClass({
                     var interestClassName = "iconfont focus-customer";
                     interestClassName += (record.interest == "true" ? " icon-interested" : " icon-uninterested");
                     var title = (record.interest == "true" ? Intl.get("crm.customer.uninterested", "取消关注") : Intl.get("crm.customer.interested", "添加关注"));
+
                     return (
                         <span>
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                    onClick={_this.handleFocusCustomer.bind(this, record)}></i>
+                                {record.customer_label ? (
+                                    <Tag className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                        {record.customer_label}</Tag>) : null
+                                }
                                 {text}
                             </div>
                             {tags.length ?
@@ -1008,7 +1036,7 @@ var Crm = React.createClass({
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'contact',
                 className: 'has-filter',
             },
@@ -1024,45 +1052,45 @@ var Crm = React.createClass({
 
             {
                 title: Intl.get("user.apply.detail.order", "订单"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'order',
                 className: 'has-filter'
             },
             {
                 title: Intl.get("crm.6", "负责人"),
-                width: '110px',
+                width: column_width,
                 dataIndex: 'user_name',
                 sorter: true,
                 className: 'has-filter'
             },
             {
-                title: Intl.get("member.create.time", "创建时间"),
-                width: '110px',
-                dataIndex: 'start_time',
-                sorter: true,
-                className: 'has-filter table-data-align-right'
-            },
-            {
                 title: Intl.get("crm.last.contact", "最后联系"),
-                width: hasSecretaryAuth ? '110px' : '290px',
+                width: hasSecretaryAuth ? '150px' : '240px',
                 dataIndex: 'last_contact_time',
                 sorter: true,
                 className: 'has-filter',
                 render: function (text, record, index) {
-                    let last_contact = "";//最后联系时间和跟进记录的合并
-                    if (record.last_contact_time) {
-                        last_contact += record.last_contact_time;
-                    }
+                    //最后联系时间和跟进记录的合并
+                    let time = record.last_contact_time ? record.last_contact_time : "";
+                    let last_contact = "";
                     //舆情秘书不展示跟进记录
                     if (!hasSecretaryAuth && record.trace) {
-                        last_contact += " " + record.trace;
+                        last_contact = record.trace;
                     }
                     return (
-                        <span title={last_contact} className="comments-fix">
-                            {last_contact}
+                        <span>
+                            <div className="last-contact-time">{time}</div>
+                            <span title={last_contact} className="comments-fix">{last_contact} </span>
                         </span>
                     );
                 }
+            },
+            {
+                title: Intl.get("member.create.time", "创建时间"),
+                width: "100px",
+                dataIndex: 'start_time',
+                sorter: true,
+                className: 'has-filter table-data-align-right'
             },
             {
                 title: Intl.get("common.operate", "操作"),
@@ -1085,7 +1113,7 @@ var Crm = React.createClass({
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title != Intl.get("common.operate", "操作"));
         }
-        const tableScrollX = hasSecretaryAuth ? 1000 : 1170;
+        const tableScrollX = hasSecretaryAuth ? 1000 : 1080;
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;

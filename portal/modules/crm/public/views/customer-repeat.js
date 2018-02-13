@@ -289,8 +289,8 @@ let CustomerRepeat = React.createClass({
                 </Col>
                 <Col span={2} className="repeat-customer-col">{customer.sales_stage}</Col>
                 <Col span={2} className="repeat-customer-col">{customer.user_name}</Col>
-                <Col span={2} className="repeat-customer-col">{customer.start_time}</Col>
-                <Col span={2} className="repeat-customer-col">{customer.last_contact_time}</Col>
+                <Col span={2} className="repeat-customer-col">{customer.start_time_str}</Col>
+                <Col span={2} className="repeat-customer-col">{customer.last_contact_time_str}</Col>
                 <Col span={5} className="repeat-customer-col comments-fix">
                     {customer.customer_trace}
                 </Col>

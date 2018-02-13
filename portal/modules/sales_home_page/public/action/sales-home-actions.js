@@ -50,6 +50,16 @@ function SalesHomeActions() {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
+    //获取各销售对应的通话状态
+    this.getSalesCallStatus = function (userIds) {
+        var _this = this;
+        _this.dispatch({loading: true, error: false});
+        salesHomeAjax.getSalesCallStatus(userIds).then(function (resData) {
+            _this.dispatch({loading: false, error: false, resData: resData});
+        }, function (errorMsg) {
+            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
+    };
     //获取某销售团队的成员列表
     this.getSalesTeamMembers = function (teamId) {
         var _this = this;

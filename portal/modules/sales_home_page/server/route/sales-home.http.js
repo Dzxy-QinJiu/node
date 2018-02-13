@@ -14,7 +14,15 @@ module.exports = {
             "needLogin": true
         },
         "privileges": ["SALES_CUSTOMER_LIST"]
-    }, {
+    }, {//获取销售对应的通话状态
+        "method": "get",
+        "path": "/rest/sales/call_status",
+        "handler": "getSalesCallStatus",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": ["CRM_USER_PHONE_STATUS"]
+    },{
         "method": "get",
         "path": "/rest/crm/sales_team_tree",
         "handler": "getSalesTeamTree",

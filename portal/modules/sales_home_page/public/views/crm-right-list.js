@@ -2,7 +2,7 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
-import { Breadcrumb, Icon } from 'antd';
+import {Breadcrumb, Icon} from 'antd';
 import Trace from "LIB_DIR/trace";
 var SearchInput = require("../../../../components/searchInput");
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -14,64 +14,64 @@ let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型�
 let _ = require('underscore');
 
 var delayConstant = constantUtil.DELAY.TIMERANG;
-
+const CALLING_STATUS = "busy";//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
 let CrmRightList = React.createClass({
     getInitialState: function () {
         return {
             searchInputShow: false,
             searchValue: "",
-            updateScrollBar:false
+            updateScrollBar: false
         }
     },
-    componentWillReceiveProps:function (nextProps) {
-        if (nextProps.updateScrollBar){
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.updateScrollBar) {
             this.setState({
-                updateScrollBar:true
-            },()=>{
-                setTimeout(()=>{
+                updateScrollBar: true
+            }, () => {
+                setTimeout(() => {
                     this.setState({
-                        updateScrollBar:false
+                        updateScrollBar: false
                     })
-                },delayConstant)
+                }, delayConstant)
             })
         }
     },
     //渲染等待效果、暂无数据的提示
     renderTooltip: function (resultType, errorMsg) {
         if (resultType == "loading") {
-            return (<Icon type="loading" />);
+            return (<Icon type="loading"/>);
         } else if (resultType == "error" || resultType == "noData") {
             return (<div className="no-data-tip">{errorMsg || Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>)
         }
     },
     //点击查看当前团队的数据
-    selectSalesTeam: function (e,team) {
+    selectSalesTeam: function (e, team) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.selectSalesTeam(team);
         //刷新左侧的统计、分析数据
         setTimeout(() => {
             this.props.refreshDataByChangeSales();
         });
-        this.hideSearchInput();        
-        Trace.traceEvent(e,"点击查看'" + team.group_name + "'团队的数据");
+        this.hideSearchInput();
+        Trace.traceEvent(e, "点击查看'" + team.group_name + "'团队的数据");
     },
     //点击查看当前成员的数据
-    selectSalesman: function (e,user) {
+    selectSalesman: function (e, user) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.selectSalesman(user);
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e,"点击查看'" + user.nickName + "销售人员的数据");
+        Trace.traceEvent(e, "点击查看'" + user.nickName + "销售人员的数据");
     },
     //通过面包屑返回到销售团队列表
-    returnSalesTeamList: function (e,team) {
+    returnSalesTeamList: function (e, team) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.returnSalesTeamList(team.group_id);
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
-        Trace.traceEvent(e,"返回'" + team.group_name + "'团队的数据");
+        Trace.traceEvent(e, "返回'" + team.group_name + "'团队的数据");
     },
     //通过面包屑返回到销售成员列表
     returnSalesMemberList: function (e) {
@@ -79,7 +79,7 @@ let CrmRightList = React.createClass({
         SalesHomeAction.returnSalesMemberList();
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
-        Trace.traceEvent(e,"返回销售成员列表")
+        Trace.traceEvent(e, "返回销售成员列表")
     },
     //获取销售的标题
     getSalesmanTitle: function () {
@@ -158,7 +158,9 @@ let CrmRightList = React.createClass({
             let salesTeamMemberList = salesTeamMembersObj.data;
             if (_.isArray(salesTeamMemberList) && salesTeamMemberList.length > 0) {
                 //对团队列表进行排序，启用的放在前面，停用的放在后面
-                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item)=>{ return -item.status});
+                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => {
+                    return -item.status
+                });
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
                         let name = salesman.nickName, color = this.getBgColor(i);
@@ -166,9 +168,13 @@ let CrmRightList = React.createClass({
                             //停用状态
                             name += " ( " + Intl.get("common.stop", "停用") + " ) ";
                         }
-                        salesListLi.push(<li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}
-                            onClick={ e => this.selectSalesman(e, salesman)} >
-                            <span className="sales-item-icon" style={{ backgroundColor: color }} />{name}
+                        salesListLi.push(<li key={salesman.userId}
+                                             className={salesman.status == 0 ? "user-stop-li" : ""}
+                                             onClick={ e => this.selectSalesman(e, salesman)}>
+                            <span className="sales-item-icon" style={{backgroundColor: color}}/>{name}
+                            { salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
+                                <span className="iconfont icon-phone-waiting" title={Intl.get("sales.status.calling", "正在打电话")}/>
+                                : null }
                         </li>);
                     }
                 });
@@ -189,7 +195,7 @@ let CrmRightList = React.createClass({
                     let color = this.getBgColor(i);
                     salesListLi.push(<li key={salesTeam.group_id} onClick={e => this.selectSalesTeam(e, salesTeam)}>
                         <span className="sales-item-icon"
-                            style={{ backgroundColor: color }} />{salesTeam.group_name}({teamMemberCount}人)
+                              style={{backgroundColor: color}}/>{salesTeam.group_name}({teamMemberCount}人)
                     </li>);
                 }
             });
@@ -224,11 +230,11 @@ let CrmRightList = React.createClass({
         });
     },
     hideSearchInput: function () {
-        this.setState({ searchInputShow: false, searchValue: "" });
+        this.setState({searchInputShow: false, searchValue: ""});
         //$(".sales-team-top .search-input").val("");
     },
     showSearchInput: function () {
-        this.setState({ searchInputShow: true });
+        this.setState({searchInputShow: true});
     },
     renderListContent: function () {
         let salesTitle = "", salesListLi = [], isShowSearch = true;
@@ -260,25 +266,25 @@ let CrmRightList = React.createClass({
                     <span className="sales-team-title"> {salesTitle}</span>
                     {isShowSearch ? this.state.searchInputShow ? (
                         <SearchInput searchPlaceHolder={Intl.get("sales.home.filter.tip", "请输入关键字进行过滤")}
-                            closeSearchInput={this.hideSearchInput}                            
-                            searchEvent={this.searchEvent} />) : (
-                            <Icon type="search" className="search-sales-icon" onClick={this.showSearchInput} />)
+                                     closeSearchInput={this.hideSearchInput}
+                                     searchEvent={this.searchEvent}/>) : (
+                        <Icon type="search" className="search-sales-icon" onClick={this.showSearchInput}/>)
                         : null}
                 </div>
-                <ul className="sales-list-container" style={{ height: salesListHeight }}>
+                <ul className="sales-list-container" style={{height: salesListHeight}}>
                     {this.renderContent(salesListLi)}
                 </ul>
             </div>
         );
     },
-    renderContent:function (salesListLi) {
-        if (this.state.updateScrollBar){
+    renderContent: function (salesListLi) {
+        if (this.state.updateScrollBar) {
             return (
                 <div>
                     {salesListLi}
                 </div>
             )
-        }else{
+        } else {
             return (
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
                     {salesListLi}
