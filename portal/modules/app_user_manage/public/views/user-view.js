@@ -307,14 +307,14 @@ var UserTabContent = React.createClass({
         //内容是数字时的样式
         let numClass = classNames("has-filter num-float-right", {"has-sorter" : sortable});
         //表头中字的个数设置不同宽度
-        const four_font_width = 100, two_font_width = 50, multi_font_width = 160, column_width = 200;
+        const fourWordWidth = 100, twoWordWidth = 50, multiWordWidth = 160, columnWidth = 200;
 
         var columns = [
             {
                 title: Intl.get("common.username", "用户名"),
                 dataIndex: 'account_name',
                 key: 'account_name',
-                width: multi_font_width,
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -343,7 +343,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.nickname", "昵称"),
                 dataIndex: 'account_nickname',
                 key: 'account_nickname',
-                width: multi_font_width,
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -359,7 +359,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.belong.customer", "所属客户"),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
-                width: multi_font_width,
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter owner-customer-wrap": 'has-filter owner-customer-wrap',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -376,7 +376,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.app.name", "应用名称"),
                 dataIndex: 'apps',
                 key: 'appName',
-                width: multi_font_width,
+                width: multiWordWidth,
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAppNameList(apps, rowData);
                 }
@@ -384,7 +384,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.status", "状态"),
                 dataIndex: 'apps',
-                width: two_font_width,
+                width: twoWordWidth,
                 key: 'status',
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAppStatusList(apps, rowData);
@@ -393,7 +393,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.type", "类型"),
                 dataIndex: 'apps',
-                width: two_font_width,
+                width: twoWordWidth,
                 key: 'accountType',
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAccountTypeList(apps, rowData);
@@ -402,7 +402,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("user.time.start", "开通时间"),
                 dataIndex: 'grant_create_date',
-                width: four_font_width,
+                width: fourWordWidth,
                 key: 'grant_create_date',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -413,7 +413,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("user.time.end", "到期时间"),
                 dataIndex: 'end_date',
-                width: four_font_width,
+                width: fourWordWidth,
                 key: 'end_date',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -424,7 +424,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.belong.sales", "所属销售"),
                 dataIndex: 'member_name',
-                width: four_font_width,
+                width: fourWordWidth,
                 key: 'member_name',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -438,7 +438,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("user.login.times", "登录次数"),
                 dataIndex: 'logins',
                 key: 'logins',
-                width: four_font_width,
+                width: fourWordWidth,
                 className: numClass,
                 sorter: sortable,
                 render: function (text, rowData, idx) {
@@ -454,7 +454,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("user.login.days", "登录天数"),
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
-                width: four_font_width,
+                width: fourWordWidth,
                 className:numClass,
                 sorter: sortable,
                 render: function (text, rowData, idx) {
@@ -471,7 +471,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.remark", "备注"),
                 dataIndex: 'user',
                 key: 'description',
-                width: column_width,
+                width: columnWidth,
                 render: function (user, rowData, idx) {
                     return user ? (
                         <div title={user.description}>{user.description}</div>
