@@ -36,7 +36,10 @@ var CrmScheduleForm = require("./schedule/form");
 var CrmBatchChange = React.createClass({
     mixins: [ValidateMixin],
     getInitialState: function () {
-        return BatchChangeStore.getState();
+        return{
+            ...BatchChangeStore.getState(),
+             stopContentHide: false,//content内容中有select下拉框时，
+         };
     },
     onStoreChange: function () {
         this.setState(BatchChangeStore.getState());
@@ -53,6 +56,9 @@ var CrmBatchChange = React.createClass({
     setCurrentTab: function (tab) {
         Trace.traceEvent($(this.getDOMNode()).find(".op-type"), "点击切换变更类型");
         BatchChangeActions.setCurrentTab(tab);
+        if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS){
+            this.state.stopContentHide = true;
+        }
     },
     onSalesmanChange: function (sales_man) {
         Trace.traceEvent($(this.getDOMNode()).find(".change-salesman"), "点击切换销售人员");
@@ -391,7 +397,20 @@ var CrmBatchChange = React.createClass({
     },
     //批量添加联系计划
     doAddScheduleLists: function () {
-
+        //调用子组件中保存数据的方法
+        this.refs.crmScheduleForm.handleSave();
+    },
+    //添加完联系计划后，关闭下拉面板
+    closeContent: function () {
+        this.refs.addSchedule.handleCancel();
+    },
+    //取消添加日程
+    cancelAddSchedule: function () {
+        this.state.stopContentHide = false;
+        this.setState({
+            stopContentHide: this.state.stopContentHide
+        });
+        this.refs.crmScheduleForm.handleCancel();
     },
     handleSubmit: function (e) {
         Trace.traceEvent(e, "点击变更按钮");
@@ -521,6 +540,9 @@ var CrmBatchChange = React.createClass({
                 <CrmScheduleForm
                     currentSchedule={newSchedule}
                     selectedCustomer={selectedCustomer}
+                    ref="crmScheduleForm"
+                    cancelAddSchedule={this.cancelAddSchedule}
+                    closeContent={this.closeContent}
                     />
             </div>
         )
@@ -664,16 +686,16 @@ var CrmBatchChange = React.createClass({
                     clearSelectData={this.clearSelectSales}
                 />
                 <AntcDropdown
-                    ref="changeSales"
+                    ref="addSchedule"
+                    stopContentHide = {this.state.stopContentHide}
                     content={changeBtns.schedule}
                     overlayTitle={Intl.get("crm.214", "添加联系计划")}
-                    isSaving={this.state.isAddingSchedule}
+                    isSaving={this.state.isLoading}
                     overlayContent={this.renderScheduleLists()}
                     handleSubmit={this.handleSubmit}
                     okTitle={Intl.get("common.add", "添加")}
                     cancelTitle={Intl.get("common.cancel", "取消")}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectSales}
+                    clearSelectData={this.cancelAddSchedule}
                 />
             </div>
         );
