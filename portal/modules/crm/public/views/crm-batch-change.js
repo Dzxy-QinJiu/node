@@ -6,7 +6,7 @@ require('../css/crm-batch-change.less');
 var BatchChangeStore = require("../store/batch-change-store");
 var crmStore = require("../store/crm-store");
 var BatchChangeActions = require("../action/batch-change-actions");
-import { AntcAreaSelection } from "antc";
+import {AntcAreaSelection} from "antc";
 import {Input, Select, message, Radio, Button} from "antd";
 import ValidateMixin from "../../../../mixins/ValidateMixin";
 const RadioGroup = Radio.Group;
@@ -14,7 +14,7 @@ var Option = Select.Option;
 var userData = require("../../../../public/sources/user-data");
 var batchOperate = require("../../../../public/sources/push/batch");
 import Trace from "LIB_DIR/trace";
-import {isClueTag} from "../utils/crm-util";
+import {isClueTag, isTurnOutTag} from "../utils/crm-util";
 import AntcDropdown from "CMP_DIR/antc-dropdown";
 import AlwaysShowSelect from "CMP_DIR/always-show-select";
 import crmUtil from "../utils/crm-util";
@@ -144,9 +144,9 @@ var CrmBatchChange = React.createClass({
 
         const tag = e.target.value.trim();
         if (!tag) return;
-        //”线索标签“不可以添加
-        if (isClueTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'线索'标签"));
+        //”线索“、”转出“标签“不可以添加
+        if (isClueTag(tag) || isTurnOutTag(tag)) {
+            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
             return;
         }
         this.toggleTag(tag, true);
@@ -498,10 +498,10 @@ var CrmBatchChange = React.createClass({
         return (
             <div className="op-pane change-territory">
                 {<AntcAreaSelection labelCol="0" wrapperCol="24" width="210"
-                                isAlwayShow={true}
-                                prov={territoryObj.province} city={territoryObj.city}
-                                county={territoryObj.county}
-                                updateLocation={this.updateLocation}/>}
+                                    isAlwayShow={true}
+                                    prov={territoryObj.province} city={territoryObj.city}
+                                    county={territoryObj.county}
+                                    updateLocation={this.updateLocation}/>}
             </div>
         );
     },
@@ -509,8 +509,8 @@ var CrmBatchChange = React.createClass({
         let selectedTagsArray = this.state.tags ? this.state.tags : [];
         let recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         let unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
-        //过滤掉“线索”标签，“线索“标签不可添加、修改、删除
-        unionTagsArray = _.filter(unionTagsArray, tag => tag != Intl.get("crm.sales.clue", "线索"));
+        //过滤掉“线索”、“转出”标签，“线索“、“转出”标签不可添加、修改、删除
+        unionTagsArray = _.filter(unionTagsArray, tag => tag != Intl.get("crm.sales.clue", "线索") && tag != Intl.get("crm.qualified.roll.out", "转出"));
         let tagsJsx = unionTagsArray.map((tag, index) => {
             let className = "customer-tag";
             className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";

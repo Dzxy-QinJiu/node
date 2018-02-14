@@ -55,6 +55,10 @@ const processForTrace = function (item) {
 const isClueTag = function(tag){
     return tag == Intl.get("crm.sales.clue","线索");
 };
+//是否是试用合格后"转出"标签
+exports.isTurnOutTag = function(tag){
+    return tag === Intl.get("crm.qualified.roll.out","转出");
+};
 //获取客户标签背景色对应的类型
 exports.getCrmLabelCls=function (customer_label) {
     const LABEL_TYPES = {
