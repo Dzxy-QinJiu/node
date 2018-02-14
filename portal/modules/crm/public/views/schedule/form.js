@@ -166,6 +166,46 @@ var CrmAlertForm = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"修改结束时间");
     },
 
+    //添加联系计划
+    addSchedule:function (submitObj) {
+        //如果是批量添加联系计划的情况,要跟据联系人逐个添加
+        var selectedCustomer = this.props.selectedCustomer;
+        if (_.isArray(selectedCustomer)){
+            var count = 0;
+            for (var i =0;i< selectedCustomer.length;i++){
+                submitObj.customer_id = selectedCustomer[i].id;
+                submitObj.customer_name = selectedCustomer[i].name;
+                submitObj.topic = selectedCustomer[i].name;
+                //设置loading效果为true
+                BatchChangeActions.setLoadingState(true);
+                ScheduleAction.addSchedule(submitObj,(resData)=>{
+                    //设置loading效果为false
+                    BatchChangeActions.setLoadingState(false);
+                    if (resData.id){
+                        count++;
+                        //如果批量添加日程都成功了，就会把下拉面板关闭
+                        if (count == selectedCustomer.length){
+                            this.props.closeContent();
+                        }
+                    }else{
+                        message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}));
+                    }
+                })
+            }
+        }else{
+            //单独添加一个联系计划
+            ScheduleAction.addSchedule(submitObj,(resData) => {
+                if (resData.id) {
+                    this.showMessage( Intl.get("user.user.add.success", "添加成功"));
+                    ScheduleAction.afterAddSchedule(resData);
+                } else {
+                    this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
+                }
+                this.setState({isLoading: false});
+            });
+        }
+    },
+
     //提交添加请求
     handleSubmit: function(submitObj) {
         this.refs.validation.validate(valid => {
@@ -184,43 +224,8 @@ var CrmAlertForm = React.createClass({
                         this.setState({isLoading: false});
                     });
                 } else {
-                    //如果是批量添加联系计划的情况,要跟据联系人逐个添加
-                    var selectedCustomer = this.props.selectedCustomer;
-                    if (_.isArray(selectedCustomer)){
-                        var count = 0;
-                        for (var i =0;i< selectedCustomer.length;i++){
-                                submitObj.customer_id = selectedCustomer[i].id;
-                                submitObj.customer_name = selectedCustomer[i].name;
-                                submitObj.topic = selectedCustomer[i].name;
-                                //设置loading效果为true
-                                BatchChangeActions.setLoadingState(true);
-                                ScheduleAction.addSchedule(submitObj,(resData)=>{
-                                    //设置loading效果为false
-                                    BatchChangeActions.setLoadingState(false);
-                                    if (resData.id){
-                                        count++;
-                                        //如果批量添加日程都成功了，就会把下拉面板关闭
-                                        if (count == selectedCustomer.length){
-                                            this.props.closeContent();
-                                        }
-                                    }else{
-                                        message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}));
-                                    }
-                                })
-                        }
-                    }else{
-                        ScheduleAction.addSchedule(submitObj,(resData) => {
-                            if (resData.id) {
-                                this.showMessage( Intl.get("user.user.add.success", "添加成功"));
-                                ScheduleAction.afterAddSchedule(resData);
-                            } else {
-                                this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
-                            }
-                            this.setState({isLoading: false});
-                        });
-                    }
-
-
+                    //添加联系计划
+                    this.addSchedule(submitObj);
                 }
             }
         });
