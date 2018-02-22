@@ -74,7 +74,7 @@ module.exports = [{
     ]
 },{
     "method": "get",
-    "path": "/rest/analysis/customer/stage_v2/:type/summary",
+    "path": "/rest/analysis/customer/stage/label/:type/summary",
     "handler": "getCustomerStageAnalysis",
     "passport":{
         "needLogin": true

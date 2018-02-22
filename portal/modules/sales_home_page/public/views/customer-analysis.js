@@ -285,13 +285,15 @@ var CustomerAnalysis = React.createClass({
         return (
             React.createElement(Analysis, {
                 handler: "getCustomerStageAnalysis",
-                type: getDataAuthType(),
+                type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
                 appId: "all",
                 isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
                 height: 260,
                 minSize:"5%",
+                startTime: this.state.startTime,
+                endTime: this.state.endTime,
             })
         );
     },

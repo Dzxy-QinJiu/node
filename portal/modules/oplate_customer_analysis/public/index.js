@@ -247,7 +247,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 handler: "getCustomerStageAnalysis",
-                type: getDataAuthType(),
+                type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
                 isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
