@@ -290,6 +290,7 @@ var CustomerAnalysis = React.createClass({
                 appId: "all",
                 isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
+                valueField: "showValue",
                 height: 260,
                 minSize:"5%",
                 startTime: this.state.startTime,
