@@ -15,6 +15,7 @@ import userData from "PUB_DIR/sources/user-data";
 var user_id = userData.getUserData().user_id;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
+let history = require("../../../../public/sources/history");
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
@@ -269,6 +270,11 @@ class ExpireScheduleLists extends React.Component {
             }, DELAY_RANGE.ANIMATION)
         });
     };
+    //点击添加待办按钮
+    handleAddTodo = ()=>{
+        //跳转到客户列表页面
+        history.pushState({}, "/crm", {});
+    };
 
     render() {
         //左侧超期日程动画 如果没有数据，就不显示左侧面板
@@ -299,6 +305,10 @@ class ExpireScheduleLists extends React.Component {
                 <div className="scroll-tip">
                     <span className="scroll-flag" onClick={this.handleScrollExpiredPanel}
                           data-tracename="点击展开或收起超期日程列表">{expiredTipContent}</span>
+                </div>
+                {/*添加日程*/}
+                <div className="add-schedule-btn">
+                    <Button type="primary" onClick={this.handleAddTodo}>+ {Intl.get("shedule.list.add.todo", "待办")}</Button>
                 </div>
             </div>
         )

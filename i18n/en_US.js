@@ -1917,5 +1917,6 @@ var en_US = {
     "weekly.report.full.work.day":"Full attendance",//全勤
     "weekly.report.are.you.sure.del.remark":"Are you sure to delete this leave message?",//确定要删除该条请假信息吗？
     "sales.status.calling": "Calling",//正在打电话
+    "shedule.list.add.todo": "To do",//待办
 };
 export default en_US;

@@ -1956,5 +1956,6 @@ var zh_CN = {
     "weekly.report.full.work.day":"全勤",
     "weekly.report.are.you.sure.del.remark":"确定要删除该条请假信息吗？",
     "sales.status.calling": "正在打电话",
+    "shedule.list.add.todo": "待办",
 };
 export default zh_CN;
