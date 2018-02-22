@@ -322,7 +322,7 @@ var UserDetailBasic = React.createClass({
             className += ' pull-left';
             despWidth = LAYOUTS.ITEM_WIDTH - LAYOUTS.MARGIN_LEFT - maxWidth - 5;
         }
-
+        let selectApp = this.props.selectApp;
         return (
             <ul className="app_list">
                 {this.state.initialUser.apps.map(function (app) {
@@ -347,6 +347,11 @@ var UserDetailBasic = React.createClass({
                                     </div>
                                 ) : null
                             }
+                            {selectApp && selectApp.app_id == app.app_id && selectApp.qualify_label == 1 ? (
+                                <div className="qualified-tag-style">
+                                    <span className="qualified_span">{Intl.get("common.qualified", "合格")}</span>
+                                </div>) : null}
+
                             <PrivilegeChecker
                                 check="APP_USER_EDIT"
                                 tagName="div"

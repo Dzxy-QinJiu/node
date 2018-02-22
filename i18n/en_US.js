@@ -163,6 +163,7 @@ var en_US = {
     "common.type": "Type",//类型
     "common.official": "Signed",//签约
     "common.trial": "Trial",//试用
+    "common.qualified": "Qualified",//合格
     "common.delay.time": "Delay range",//延期时间
     "common.time.unit.day": "Day",//天
     "common.time.unit.week": "Week",//周
@@ -1543,6 +1544,7 @@ var en_US = {
     "oplate.user.analysis.40": "After {time} ",//{time}后,
     "oplate.user.analysis.user.type": "User Type", // 用户类型统计
     "oplate.user.analysis.app.status": "User Status", // 应用的启停用统计
+    "oplate.user.label": "User Label",//用户标签
     "oplate.user.type": "User Type:", // 用户类型：
     "oplate.app.status": "User Status:",  // 用户状态：
     "oplate.user.zone": "Zone:", // 地域：

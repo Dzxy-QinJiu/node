@@ -1,6 +1,7 @@
 require("../../../../components/antd-table-pagination/index.less");
 var Spinner = require("../../../../components/spinner");
 import { AntcTable } from "antc";
+import {Tag, Icon, Alert} from "antd";
 var AppUserStore = require("../store/app-user-store");
 
 var AppUserPanelSwitchStore = require("../store/app-user-panelswitch-store");
@@ -17,8 +18,6 @@ var GeminiScrollBar = require("../../../../components/react-gemini-scrollbar");
 var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 var history = require("../../../../public/sources/history");
 var batchPushEmitter = require("../../../../public/sources/utils/emitters").batchPushEmitter;
-var Icon = require("antd").Icon;
-var Alert = require("antd").Alert;
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
 import language from "PUB_DIR/language/getLanguage";
@@ -305,21 +304,17 @@ var UserTabContent = React.createClass({
         var _this = this;
         var isSelectAllApp = !this.state.selectedAppId;
         var sortable = !isSelectAllApp && !this.state.filterRoles.selectedRole;
-        const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
-            hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        let userWidth = "";
-        if (Oplate.hideSomeItem) {
-            userWidth = sortable ? "120px" : "140px";
-        }
-        else {
-            userWidth = sortable ? "100px" : "120px";
-        }
+        //内容是数字时的样式
+        let numClass = classNames("has-filter num-float-right", {"has-sorter" : sortable});
+        //表头中字的个数设置不同宽度
+        const fourWordWidth = 100, twoWordWidth = 50, multiWordWidth = 160, columnWidth = 200;
+
         var columns = [
             {
                 title: Intl.get("common.username", "用户名"),
                 dataIndex: 'account_name',
                 key: 'account_name',
-                width: userWidth,
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -334,6 +329,10 @@ var UserTabContent = React.createClass({
                         <div title={user_name}>
                             {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ? <i className="iconfont icon-warn-icon unnormal-login"
                                 title={Intl.get("user.login.abnormal", "异常登录")}></i> : null}
+                            {rowData.apps[0].qualify_label == 1 ? (
+                                <Tag className="qualified-tag-style">
+                                    {Intl.get("common.qualified", "合格")}</Tag>) : null
+                            }
                             {user_name}
                             <input type="hidden" className="hidden_user_id" value={user_id} />
                         </div>
@@ -344,7 +343,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.nickname", "昵称"),
                 dataIndex: 'account_nickname',
                 key: 'account_nickname',
-                width: sortable ? "100px" : "120px",
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -360,7 +359,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.belong.customer", "所属客户"),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
-                width: "100px",
+                width: multiWordWidth,
                 className: sortable? "has-sorter has-filter owner-customer-wrap": 'has-filter owner-customer-wrap',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
@@ -377,7 +376,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.app.name", "应用名称"),
                 dataIndex: 'apps',
                 key: 'appName',
-                width: sortable ? "140px" : (hasSelectAuth ? "250px" : "200px"),
+                width: multiWordWidth,
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAppNameList(apps, rowData);
                 }
@@ -385,7 +384,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.status", "状态"),
                 dataIndex: 'apps',
-                width: Oplate.hideSomeItem ? '100px' : '75px',
+                width: twoWordWidth,
                 key: 'status',
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAppStatusList(apps, rowData);
@@ -394,7 +393,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.type", "类型"),
                 dataIndex: 'apps',
-                width: '75px',
+                width: twoWordWidth,
                 key: 'accountType',
                 render: function (apps, rowData, idx) {
                     return AppUserUtil.getAccountTypeList(apps, rowData);
@@ -403,7 +402,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("user.time.start", "开通时间"),
                 dataIndex: 'grant_create_date',
-                width: Oplate.hideSomeItem ? '120px' : sortable ? '100px' : '105px',
+                width: fourWordWidth,
                 key: 'grant_create_date',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -414,7 +413,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("user.time.end", "到期时间"),
                 dataIndex: 'end_date',
-                width: Oplate.hideSomeItem ? '120px' : sortable ? '100px' : '105px',
+                width: fourWordWidth,
                 key: 'end_date',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -425,7 +424,7 @@ var UserTabContent = React.createClass({
             {
                 title: Intl.get("common.belong.sales", "所属销售"),
                 dataIndex: 'member_name',
-                width: sortable ? '100px' : '85px',
+                width: fourWordWidth,
                 key: 'member_name',
                 className: sortable? "has-sorter has-filter": 'has-filter',
                 sorter: sortable,
@@ -439,8 +438,8 @@ var UserTabContent = React.createClass({
                 title: Intl.get("user.login.times", "登录次数"),
                 dataIndex: 'logins',
                 key: 'logins',
-                width: '100px',
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                width: fourWordWidth,
+                className: numClass,
                 sorter: sortable,
                 render: function (text, rowData, idx) {
                     let loginCount = 0;
@@ -448,15 +447,15 @@ var UserTabContent = React.createClass({
                         loginCount = rowData.apps[0].logins || 0;
                     }
                     return (
-                        <div title={loginCount}>{loginCount} </div>
+                        <div className="num-float-right" title={loginCount}>{loginCount} </div>
                     );
                 }
             }, {
                 title: Intl.get("user.login.days", "登录天数"),
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
-                width: '100px',
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                width: fourWordWidth,
+                className:numClass,
                 sorter: sortable,
                 render: function (text, rowData, idx) {
                     let loginDays = 0;
@@ -464,7 +463,7 @@ var UserTabContent = React.createClass({
                         loginDays = rowData.apps[0].login_day_count || 0;
                     }
                     return (
-                        <div title={loginDays}>{loginDays}</div>
+                        <div className="num-float-right" title={loginDays}>{loginDays}</div>
                     );
                 }
             },
@@ -472,7 +471,7 @@ var UserTabContent = React.createClass({
                 title: Intl.get("common.remark", "备注"),
                 dataIndex: 'user',
                 key: 'description',
-                width: hasSelectAuth ? "250px" : "210px",
+                width: columnWidth,
                 render: function (user, rowData, idx) {
                     return user ? (
                         <div title={user.description}>{user.description}</div>
@@ -581,6 +580,15 @@ var UserTabContent = React.createClass({
                         <li onClick={this.toggleSearchField.bind(this, "user_status", "")} className={this.getFilterFieldClass("user_status", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
                         <li onClick={this.toggleSearchField.bind(this, "user_status", "1")} className={this.getFilterFieldClass("user_status", "1")}><ReactIntl.FormattedMessage id="common.enabled" defaultMessage="启用" /></li>
                         <li onClick={this.toggleSearchField.bind(this, "user_status", "0")} className={this.getFilterFieldClass("user_status", "0")}><ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用" /></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl>
+                <dt>{Intl.get("oplate.user.label","用户标签")}：</dt>
+                <dd>
+                    <ul>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "")} className={this.getFilterFieldClass("qualify_label", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "1")} className={this.getFilterFieldClass("qualify_label", "1")}>{Intl.get("common.qualified","合格")}</li>
                     </ul>
                 </dd>
             </dl>
@@ -870,7 +878,7 @@ var UserTabContent = React.createClass({
                             filterReset: Intl.get("user.reset", "重置"),
                             emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get("user.list.get.failed", "获取用户列表失败") : Intl.get("common.no.data", "暂无数据")
                         }}
-                        scroll={{ x: Oplate.hideSomeItem ? 1400 : (hasSelectAuth ? 1400 : 1200), y: divHeight }}
+                        scroll={{ x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight }}
                         util={{
                             zoomInSortArea: true
                         }}
