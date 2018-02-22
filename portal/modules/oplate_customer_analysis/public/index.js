@@ -251,6 +251,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 chartType: "funnel",
                 isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
+                valueField: "showValue",
                 sendRequest:this.state.sendRequest,
                 showLabel:false,
                 width:this.chartWidth,
