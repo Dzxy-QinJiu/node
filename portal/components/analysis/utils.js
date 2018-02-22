@@ -22,7 +22,7 @@ export function processCustomerStageChartData(data) {
         },
         {
             tagName: Intl.get("common.qualified", "合格"),
-            tagValue: "trial",
+            tagValue: "qualified",
         },
         {
             tagName: Intl.get("sales.stage.signed", "签约"),
