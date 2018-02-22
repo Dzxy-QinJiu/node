@@ -161,7 +161,6 @@ var zh_CN = {
     "common.belong.team": "所属团队",
     "common.app.name": "应用名称",
     "common.type": "类型",
-    "common.qualified": "合格",
     "common.official": "签约",
     "common.trial": "试用",
     "common.delay.time": "延期时间",

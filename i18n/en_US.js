@@ -161,7 +161,6 @@ var en_US = {
     "common.belong.team": "Team",//所属团队
     "common.app.name": "Application",//应用名称
     "common.type": "Type",//类型
-    "common.qualified": "qualified",//合格
     "common.official": "Signed",//签约
     "common.trial": "Trial",//试用
     "common.delay.time": "Delay range",//延期时间
