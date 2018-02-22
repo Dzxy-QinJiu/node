@@ -292,6 +292,8 @@ var CustomerAnalysis = React.createClass({
                 processData: processCustomerStageChartData,
                 height: 260,
                 minSize:"5%",
+                startTime: this.state.startTime,
+                endTime: this.state.endTime,
             })
         );
     },

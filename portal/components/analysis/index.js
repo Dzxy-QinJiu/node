@@ -78,7 +78,13 @@ const Analysis = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         const sendRequest = _.isBoolean(nextProps.sendRequest) ? nextProps.sendRequest: this.props.sendRequest;
-        if (nextProps.type != this.props.type && sendRequest) {
+        if (
+            (nextProps.type != this.props.type && sendRequest)
+            ||
+            nextProps.startTime !== this.props.startTime
+            ||
+            nextProps.endTime !== this.props.endTime
+        ) {
             this.getData(nextProps);
         }
     },
