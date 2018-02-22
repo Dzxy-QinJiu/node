@@ -285,7 +285,7 @@ var CustomerAnalysis = React.createClass({
         return (
             React.createElement(Analysis, {
                 handler: "getCustomerStageAnalysis",
-                type: getDataAuthType(),
+                type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
                 appId: "all",
                 isGetDataOnMount: true,
