@@ -31,7 +31,7 @@ export function processCustomerStageChartData(data) {
     ];
 
     let processedData = [];
-    let prevStageValue = 0;
+    let prevStageValue;
 
     customerStages.forEach(stage => {
         let stageValue = data[stage.tagValue];
