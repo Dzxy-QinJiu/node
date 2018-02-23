@@ -227,14 +227,13 @@ var en_US = {
     "login.send_phone_or_email_verification_code": "Send phone or email verification code",//发送手机/邮箱验证码
     "login.verify_phone_or_email_verification_code": "Verify {contactTypeName} verification code",//验证{contactTypeName}验证码
     "login.return_to_login_page": "Return to login page",//返回登录页
-    "login.scan.qrcode.login":"Scan login",//扫码登录
-    "login.account.login":"Account login",//普通登录
+    "login.scan.qrcode.login": "Scan login",//扫码登录
+    "login.account.login": "Account login",//普通登录
     "login.qrcode.scan.tip": "Please use {appName} to scan QR code security login",//请使用{appName}扫描二维码安全登录
-    "login.ketao.app.name":"Ketao App",//客套APP
-    "login.load.ketao.tip":"Download ketao APP Android",//下载客套APP安卓端
+    "login.ketao.app.name": "Ketao App",//客套APP
+    "login.load.ketao.tip": "Download ketao APP Android",//下载客套APP安卓端
     "login.scan.ketao.qrcode.tip": "Scan QR code to download ketao APP Android",//扫码下载客套APP安卓端
     "login.qrcode.loading": "Getting a qr code...",//正在获取二维码...
-
 
 
     //"superHello": "{appName}有{number}名{user_type}过期！",//
@@ -1894,30 +1893,43 @@ var en_US = {
     "schedule.management.schedule.content": "Schedule content",//日程内容
     "schedule.todo.list": "Todo lists",//待办
     "schedule.has.finished": "Has Finished",//已完成
-    "schedule.tip.intro.message":"Schedule management is on-line, quickly try it!",//日程功能上线了，赶快点开看看吧！
-    "schedule.back.to.today":"Today",//今
-    "schedule.no.item":"No data",//无待办
-    "schedule.phone.connect":"By phone",//电联
-    "call.record.get.invalid.phone.lists":"Failed to get invalid phone lists!",//获取无效电话列表失败
-    "call.record.customer.phone":"This is an invalid phone",//这是一个客服电话。
-    "call.record.report":"Report",//上报
-    "fail.report.phone.err.tip":"Failed to add invalid phone!",//上报无效电话失败！
-    "user.info.no.email":"The user has no email,{add-email}",//该用户没有邮箱，{add-email}
-    "user.info.add.email":"add email",//添加邮箱
-    "schedule.call.out":"Call out",//拨打
-    "weekly.report.total.duration":"The total duration of this week",//本周总时长
-    "weekly.report.total.connected":"The total number of connected of this week",//本周总接通数
-    "weekly.report.statics.report":"{n} Week Statistics Weekly",//第{n}周统计周报
-    "weekly.report.statics.duration":"The statistical weekly content,and the statistics time ranges from {startTime} to {endTime}",//统计周报内容，统计时间{startTime}至{endTime}
-    "weekly.report.call.statics":"Phone statistics",//电话统计
-    "weekly.report.assessment.days":"Assessment days",//考核天数
-    "weekly.report.attendance.remarks":"Attendance note",//出勤备注
-    "weekly.report.no.report":"No eligible weekly report",//暂无符合条件的周报
-    "weekly.report.ask.for.leave":"Leave",//请假
-    "weekly.report.business.trip":"Business",//出差
-    "weekly.report.n.days":"{n} days",//{n}天
-    "weekly.report.full.work.day":"Full attendance",//全勤
-    "weekly.report.are.you.sure.del.remark":"Are you sure to delete this leave message?",//确定要删除该条请假信息吗？
+    "schedule.tip.intro.message": "Schedule management is on-line, quickly try it!",//日程功能上线了，赶快点开看看吧！
+    "schedule.back.to.today": "Today",//今
+    "schedule.no.item": "No data",//无待办
+    "schedule.phone.connect": "By phone",//电联
+    "call.record.get.invalid.phone.lists": "Failed to get invalid phone lists!",//获取无效电话列表失败
+    "call.record.customer.phone": "This is an invalid phone",//这是一个客服电话。
+    "call.record.report": "Report",//上报
+    "fail.report.phone.err.tip": "Failed to add invalid phone!",//上报无效电话失败！
+    "user.info.no.email": "The user has no email,{add-email}",//该用户没有邮箱，{add-email}
+    "user.info.add.email": "add email",//添加邮箱
+    "schedule.call.out": "Call out",//拨打
+    "weekly.report.total.duration": "The total duration of this week",//本周总时长
+    "weekly.report.total.connected": "The total number of connected of this week",//本周总接通数
+    "weekly.report.statics.report": "{n} Week Statistics Weekly",//第{n}周统计周报
+    "weekly.report.statics.duration": "The statistical weekly content,and the statistics time ranges from {startTime} to {endTime}",//统计周报内容，统计时间{startTime}至{endTime}
+    "weekly.report.call.statics": "Phone statistics",//电话统计
+    "weekly.report.assessment.days": "Assessment days",//考核天数
+    "weekly.report.attendance.remarks": "Attendance note",//出勤备注
+    "weekly.report.no.report": "No eligible weekly report",//暂无符合条件的周报
+    "weekly.report.ask.for.leave": "Leave",//请假
+    "weekly.report.business.trip": "Business",//出差
+    "weekly.report.n.days": "{n} days",//{n}天
+    "weekly.report.full.work.day": "Full attendance",//全勤
+    "weekly.report.are.you.sure.del.remark": "Are you sure to delete this leave message?",//确定要删除该条请假信息吗？
     "sales.status.calling": "Calling",//正在打电话
+    "weekly.report.contract": "Contract",//合同情况
+    "weekly.report.repayment": "Repayment",//回款情况
+    "weekly.report.project": "Project",//项目
+    "weekly.report.assign.time": "Signing time",//签约时间
+    "weekly.report.contract.account": "Contract amount",//合同金额
+    "weekly.report.repayment.account": "Repayment amount",//回款金额
+    "weekly.report.region.overlay": "Regional coverage",//区域覆盖情况
+    "weekly.report.city.province": "City / Province",//地市/省
+    "weekly.report.open.account": "Open number",//开通数
+    "weekly.report.overlay.radio": "Coverage ratio",//覆盖比例
+    "weekly.report.login.count": "Login number",//登录数
+    "weekly.report.active.radio": "Active rate",//活跃率
+    "weekly.report.district.country": "District",//区县
 };
 export default en_US;

@@ -67,12 +67,18 @@
             margin: 15px 0 10px 10px;
             font-weight: bold;
           }
-          .call-info-wrap{
-            .item-title{
-              margin: 10px 0 10px 10px;
-              font-weight: bold;
-              font-size: 16px;
+          .item-title{
+            margin: 10px 0 10px 10px;
+            font-weight: bold;
+            font-size: 16px;
+          }
+          .load8 {
+            transform:scale(0.5,0.5);
+            .loader8 {
+              border-left-color:#394144;
             }
+          }
+          .call-info-wrap{
             .call-info-table-container{
               .ant-alert-error{
                 margin: 40px auto;
@@ -81,12 +87,7 @@
                   margin-left: 20px;
                 }
               }
-              .load8 {
-                transform:scale(0.5,0.5);
-                .loader8 {
-                  border-left-color:#394144;
-                }
-              }
+
               table{
                 //列表中的数据列靠右展示的处理
                 td.table-data-align-right {
@@ -100,6 +101,7 @@
                 }
                 tr{
                   .attendance-remark{
+                    margin: 10px;
                     .icon-update{
                       margin-left: 10px;
                       display: none;
@@ -127,6 +129,9 @@
                       display: inline-block;
                     }
                   }
+                }
+                td.ask-leave-remark{
+                  padding: 0;
                 }
 
                 .leave-info-container{

@@ -4,9 +4,9 @@ function weeklyReportDetailActions() {
        'setInitState',//设置初始数据
     );
     // 获取电话的接通情况
-    this.getCallInfo = function (pathParam, reqData, type) {
+    this.getCallInfo = function (reqData, type) {
         this.dispatch({loading: true, error: false});
-        weeklyReportAjax.getCallInfo(pathParam, reqData, type).then((resData) => {
+        weeklyReportAjax.getCallInfo(reqData, type).then((resData) => {
                 this.dispatch({loading: false, error: false, resData: resData.list});
             }, (errorMsg) => {
                 this.dispatch({loading: false, error: true, errMsg: errorMsg});
@@ -43,6 +43,36 @@ function weeklyReportDetailActions() {
                 _.isFunction(callback) && callback();
             }, (errorMsg) => {
                 this.dispatch({deletting: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
+    // 获取合同情况
+    this.getContractInfo = function (reqData, type) {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getContractInfo(reqData, type).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
+    // 获取回款情况
+    this.getRepaymentInfo = function (reqData, type) {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getRepaymentInfo(reqData, type).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
+    // 获取区域覆盖情况
+    this.getRegionOverlayInfo = function (reqData, type) {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getRegionOverlayInfo(reqData, type).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData.result});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
             }
         );
     };
