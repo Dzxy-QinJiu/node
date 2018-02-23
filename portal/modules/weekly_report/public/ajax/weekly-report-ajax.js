@@ -169,3 +169,25 @@ exports.getRepaymentInfo = function (reqData, type) {
     });
     return Deferred.promise();
 };
+
+// 获取地域覆盖信息
+var getRegionOverlayInfoAjax = null;
+exports.getRegionOverlayInfo = function (reqData, type) {
+    var Deferred = $.Deferred();
+    getRegionOverlayInfoAjax && getRegionOverlayInfoAjax.abort();
+    getRegionOverlayInfoAjax = $.ajax({
+        url: '/rest/weekly_report/region/overlay/info/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

@@ -1961,6 +1961,14 @@ var zh_CN = {
     "weekly.report.project": "项目",
     "weekly.report.assign.time": "签约时间",
     "weekly.report.contract.account": "合同金额",
-    "weekly.report.repayment.account": "回款金额"
+    "weekly.report.repayment.account": "回款金额",
+    "weekly.report.region.overlay": "区域覆盖情况",
+    "weekly.report.city.province": "地市/省",
+    "weekly.report.open.account": "开通数",
+    "weekly.report.overlay.radio": "覆盖比例",
+    "weekly.report.login.count": "登录数",
+    "weekly.report.active.radio": "活跃率",
+    "weekly.report.district.country":"区县",
+    "":"",
 };
 export default zh_CN;

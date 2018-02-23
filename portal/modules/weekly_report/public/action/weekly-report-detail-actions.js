@@ -66,6 +66,16 @@ function weeklyReportDetailActions() {
             }
         );
     };
+    // 获取区域覆盖情况
+    this.getRegionOverlayInfo = function (reqData, type) {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getRegionOverlayInfo(reqData, type).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData.result});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
 
 }
 module.exports = alt.createActions(weeklyReportDetailActions);

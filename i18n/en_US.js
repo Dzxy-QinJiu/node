@@ -1921,6 +1921,13 @@ var en_US = {
     "weekly.report.project": "Project",//项目
     "weekly.report.assign.time": "Signing time",//签约时间
     "weekly.report.contract.account": "Contract amount",//合同金额
-    "weekly.report.repayment.account": "Repayment amount"//回款金额
+    "weekly.report.repayment.account": "Repayment amount",//回款金额
+    "weekly.report.region.overlay": "Regional coverage",//区域覆盖情况
+    "weekly.report.city.province": "City / Province",//地市/省
+    "weekly.report.open.account": "Open number",//开通数
+    "weekly.report.overlay.radio": "Coverage ratio",//覆盖比例
+    "weekly.report.login.count": "Login number",//登录数
+    "weekly.report.active.radio": "Active rate",//活跃率
+    "weekly.report.district.country": "District",//区县
 };
 export default en_US;

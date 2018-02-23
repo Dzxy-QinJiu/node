@@ -31,9 +31,15 @@ weeklyReportDetailStore.prototype.setInitState = function () {
         loading: false,
         errMsg: ""//获取数据失败
     };
+    //地域分布统计
+    this.regionOverlayData = {
+        list: [],
+        loading: false,
+        errMsg: ""//获取数据失败
+    };
     //保存员工请假信息
     this.addAskForLeave = {
-        submitting:false,//正在保存
+        submitting: false,//正在保存
         errMsg: "" //保存出错
     }
 
@@ -50,15 +56,15 @@ function formatData(data, n) {
 //获取电话统计
 weeklyReportDetailStore.prototype.getCallInfo = function (result) {
     this.salesPhone.loading = result.loading;
-    if (result.error){
+    if (result.error) {
         this.salesPhone.errMsg = result.errMsg;
-    }else{
-        if (_.isArray(result.resData)){
-            _.each(result.resData,(item)=>{
+    } else {
+        if (_.isArray(result.resData)) {
+            _.each(result.resData, (item) => {
                 //日均时长保留一位小数
-                item.average_time = formatData(item.average_time,1);
+                item.average_time = formatData(item.average_time, 1);
                 //日接通数保留整数
-                item.average_num = formatData(item.average_num,0);
+                item.average_num = formatData(item.average_num, 0);
             })
         }
         this.salesPhone.list = _.isArray(result.resData) ? result.resData : [];
@@ -67,26 +73,37 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
 //获取合同信息
 weeklyReportDetailStore.prototype.getContractInfo = function (result) {
     this.contractData.loading = result.loading;
-    if (result.error){
+    if (result.error) {
         this.contractData.errMsg = result.errMsg;
-    }else{
+    } else {
         this.contractData.list = _.isArray(result.resData) ? result.resData : [];
     }
 };
 //获取回款信息
 weeklyReportDetailStore.prototype.getRepaymentInfo = function (result) {
     this.repaymentData.loading = result.loading;
-    if (result.error){
+    if (result.error) {
         this.repaymentData.errMsg = result.errMsg;
-    }else{
+    } else {
         this.repaymentData.list = _.isArray(result.resData) ? result.resData : [];
+    }
+
+};
+
+//获取地域分布信息
+weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
+    this.regionOverlayData.loading = result.loading;
+    if (result.error) {
+        this.regionOverlayData.errMsg = result.errMsg;
+    } else {
+        this.regionOverlayData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].res_list : [];
     }
 };
 
 //保存员工请假信息
-weeklyReportDetailStore.prototype.addForLeave = function (result){
+weeklyReportDetailStore.prototype.addForLeave = function (result) {
     this.addAskForLeave.submitting = result.submitting;
-    if (result.error){
+    if (result.error) {
         this.addAskForLeave.errMsg = result.errMsg;
     }
 };

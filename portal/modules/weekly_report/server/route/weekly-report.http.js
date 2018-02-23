@@ -68,6 +68,14 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": []
+        }, { // 获取区域覆盖信息
+            "method": "post",
+            "path": "/rest/weekly_report/region/overlay/info/:type",
+            "handler": "getRegionOverlayInfo",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": []
         }
     ]
 };

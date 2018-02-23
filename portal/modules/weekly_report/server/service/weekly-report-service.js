@@ -14,6 +14,8 @@ const restApis = {
     getContractInfo: "/rest/analysis/contract/report_form/contract/:type",
     //合同回款统计
     getRepaymentInfo:"/rest/analysis/contract/report_form/repayment/:type",
+    //区域覆盖情况统计
+    getRegionOverlay:"/rest/analysis/customer/v2/statistic/:type/region/overlay",
 };
 
 // 获取团队信息
@@ -85,6 +87,15 @@ exports.getRepaymentInfo = function (req, res, params, reqData) {
     return restUtil.authRest.get(
         {
             url: restApis.getRepaymentInfo.replace(":type", params.type),
+            req: req,
+            res: res
+        }, reqData);
+};
+//获取区域覆盖情况
+exports.getRegionOverlayInfo = function (req, res, params, reqData) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getRegionOverlay.replace(":type", params.type),
             req: req,
             res: res
         }, reqData);
