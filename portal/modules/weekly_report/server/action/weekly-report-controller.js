@@ -51,3 +51,19 @@ exports.deleteAskForLeave = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+// 获取合同情况
+exports.getContractInfo = function (req, res) {
+    weeklyReportService.getContractInfo(req, res, req.params, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+// 获取回款情况
+exports.getRepaymentInfo = function (req, res) {
+    weeklyReportService.getRepaymentInfo(req, res, req.params, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

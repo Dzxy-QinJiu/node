@@ -19,6 +19,18 @@ weeklyReportDetailStore.prototype.setInitState = function () {
         loading: false,
         errMsg: ""//获取数据失败
     };
+    //合同统计
+    this.contractData = {
+        list: [],
+        loading: false,
+        errMsg: ""//获取数据失败
+    };
+    //回款统计
+    this.repaymentData = {
+        list: [],
+        loading: false,
+        errMsg: ""//获取数据失败
+    };
     //保存员工请假信息
     this.addAskForLeave = {
         submitting:false,//正在保存
@@ -52,6 +64,25 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
         this.salesPhone.list = _.isArray(result.resData) ? result.resData : [];
     }
 };
+//获取合同信息
+weeklyReportDetailStore.prototype.getContractInfo = function (result) {
+    this.contractData.loading = result.loading;
+    if (result.error){
+        this.contractData.errMsg = result.errMsg;
+    }else{
+        this.contractData.list = _.isArray(result.resData) ? result.resData : [];
+    }
+};
+//获取回款信息
+weeklyReportDetailStore.prototype.getRepaymentInfo = function (result) {
+    this.repaymentData.loading = result.loading;
+    if (result.error){
+        this.repaymentData.errMsg = result.errMsg;
+    }else{
+        this.repaymentData.list = _.isArray(result.resData) ? result.resData : [];
+    }
+};
+
 //保存员工请假信息
 weeklyReportDetailStore.prototype.addForLeave = function (result){
     this.addAskForLeave.submitting = result.submitting;

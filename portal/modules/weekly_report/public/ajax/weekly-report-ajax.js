@@ -46,7 +46,7 @@ exports.getSaleMemberList = function (reqData) {
 };
 // 获取电话的接通情况
 var getCallInfoAjax = null;
-exports.getCallInfo = function (pathParam, reqData, type) {
+exports.getCallInfo = function (reqData, type) {
     var Deferred = $.Deferred();
     getCallInfoAjax && getCallInfoAjax.abort();
     getCallInfoAjax = $.ajax({
@@ -121,6 +121,48 @@ exports.deleteAskForLeave = function (id) {
         },
         error: function (xhr,statusText) {
              if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+// 获取合同信息
+var getContractInfoAjax = null;
+exports.getContractInfo = function (reqData, type) {
+    var Deferred = $.Deferred();
+    getContractInfoAjax && getContractInfoAjax.abort();
+    getContractInfoAjax = $.ajax({
+        url: '/rest/weekly_report/contract/info/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+// 获取回款信息
+var getRepaymentInfoAjax = null;
+exports.getRepaymentInfo = function (reqData, type) {
+    var Deferred = $.Deferred();
+    getRepaymentInfoAjax && getRepaymentInfoAjax.abort();
+    getRepaymentInfoAjax = $.ajax({
+        url: '/rest/weekly_report/repayment/info/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr,statusText) {
+            if(statusText !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
         }

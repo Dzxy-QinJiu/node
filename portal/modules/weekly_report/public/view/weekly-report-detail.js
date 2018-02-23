@@ -15,6 +15,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var classNames = require("classnames");
 import {LEALVE_OPTION} from "../utils/weekly-report-utils";
 var WeekReportUtil = require("../utils/weekly-report-utils");
+var userData = require("PUB_DIR/sources/user-data");
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
         return {
@@ -87,11 +88,12 @@ const WeeklyReportDetail = React.createClass({
         })
 
     },
-
     getWeeklyReportData: function () {
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
+            this.getContractData();//获取合同信息
+            this.getRepaymentData();//获取回款信息
         })
     },
 
@@ -142,10 +144,10 @@ const WeeklyReportDetail = React.createClass({
             _.each(salesPhoneList, (obj) => {
                 if (_.isArray(obj.leave_info_list)) {
                     //所修改的那条请假信息
-                    var initailObj =  _.find(obj.leave_info_list, (item)=>{
+                    var initailObj = _.find(obj.leave_info_list, (item) => {
                         return item.id === updateObj.id;
                     });
-                    if (initailObj){
+                    if (initailObj) {
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
                             initailObj.leave_days = updateObj.leave_days;
@@ -199,7 +201,7 @@ const WeeklyReportDetail = React.createClass({
         });
     },
     //没有请假信息的时候,是全勤的
-    renderFullWork:function (isAdding, userId) {
+    renderFullWork: function (isAdding, userId) {
         return (
             <div className="attendance-remark">
                 {isAdding ? (<div className="edit-for-leave-wrap">
@@ -223,7 +225,7 @@ const WeeklyReportDetail = React.createClass({
         )
     },
     //有请假信息的时候 展示请假信息列表
-    renderAskForLeave:function (record,userId) {
+    renderAskForLeave: function (record, userId) {
         return (
             <div className="leave-info-container">
                 {
@@ -280,6 +282,56 @@ const WeeklyReportDetail = React.createClass({
             </div>
         )
     },
+    //合同数据
+    getContractListColumn: function () {
+        let columns = [{
+            title: Intl.get("crm.6", "负责人"),
+            dataIndex: 'nickName',
+            className: 'table-data-align-left',
+        }, {
+            title: Intl.get("weekly.report.project", "项目"),
+            dataIndex: 'customerName',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("weekly.report.assign.time", "签约时间"),
+            dataIndex: 'date',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("weekly.report.contract.account", "合同金额"),
+            dataIndex: 'amount',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("contract.109", "毛利"),
+            dataIndex: 'grossProfit',
+            className: 'has-filter table-data-align-right'
+        }];
+        return columns;
+    },
+    //回款数据
+    getRepaymentListColumn: function () {
+        let columns = [{
+            title: Intl.get("crm.6", "负责人"),
+            dataIndex: 'nickName',
+            className: 'table-data-align-left',
+        }, {
+            title: Intl.get("weekly.report.project", "项目"),
+            dataIndex: 'customerName',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("contract.122", "回款时间"),
+            dataIndex: 'date',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("weekly.report.repayment.account", "回款金额"),
+            dataIndex: 'amount',
+            className: 'has-filter table-data-align-right'
+        }, {
+            title: Intl.get("contract.109", "毛利"),
+            dataIndex: 'grossProfit',
+            className: 'has-filter table-data-align-right'
+        }];
+        return columns;
+    },
     // 电话接通率的数据
     getPhoneListColumn: function () {
         var _this = this;
@@ -309,7 +361,7 @@ const WeeklyReportDetail = React.createClass({
             className: 'has-filter table-data-align-right'
         }, {
             title: Intl.get("weekly.report.attendance.remarks", "出勤备注"),
-            className: 'has-filter table-data-align-left',
+            className: 'has-filter table-data-align-left ask-leave-remark',
             width: '300',
             render: function (text, record, index) {
                 var userObj = _.find(_this.props.memberList.list, (item) => {
@@ -324,7 +376,7 @@ const WeeklyReportDetail = React.createClass({
 
                 } else if (record.leave_info_list) {
                     //有请假信息的时候 展示请假信息列表
-                    return _this.renderAskForLeave(record,userId);
+                    return _this.renderAskForLeave(record, userId);
                 }
             }
         },];
@@ -338,17 +390,42 @@ const WeeklyReportDetail = React.createClass({
         }
         return authType;
     },
-    // 通话的接通率
-    getCallInfoData(params){
+    getContractType(){
+        let authType = "common";
+        if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+            authType = "manager";
+        }
+        return authType;
+    },
+    //获取query参数
+    getQueryParams(){
         let queryParams = {
             start_time: this.getBeginDateOfWeek(this.state.selectedItem.nWeek),
             end_time: this.getEndDateOfWeek(this.state.selectedItem.nWeek),
-            deviceType: this.state.call_type,
-            team_ids: this.state.selectedItem.teamId
+            team_ids: this.state.selectedItem.teamId,
         };
-        let pathParam = commonMethodUtil.getParamByPrivilege();
+        return queryParams;
+    },
+    // 通话的接通率
+    getCallInfoData(){
+        var queryObj = _.clone(this.getQueryParams());
+        queryObj.deviceType = this.state.call_type;
         let type = this.getCallInfoAuth();
-        WeeklyReportDetailAction.getCallInfo(pathParam, queryParams, type);
+        WeeklyReportDetailAction.getCallInfo(queryObj, type);
+    },
+    //获取合同情况
+    getContractData(){
+        var queryObj = _.clone(this.getQueryParams());
+        queryObj.sale_team_ids = queryObj.team_ids;
+        delete queryObj.team_ids;
+        let type = this.getContractType();
+        WeeklyReportDetailAction.getContractInfo(queryObj, type);
+
+    },
+    //获取回款情况
+    getRepaymentData(queryParams){
+        let type = this.getContractType();
+        WeeklyReportDetailAction.getRepaymentInfo(this.getQueryParams(), type);
     },
     // 通话率列表
     renderCallInfo() {
@@ -360,7 +437,7 @@ const WeeklyReportDetail = React.createClass({
             );
         } else if (this.state.salesPhone.errMsg) {
             var errMsg = <span>{this.state.salesPhone.errMsg}
-                <a onClick={this.getWeeklyReportData}>
+                <a onClick={this.getCallInfoData}>
                     {Intl.get("user.info.retry", "请重试")}
                 </a></span>;
             return (
@@ -382,6 +459,70 @@ const WeeklyReportDetail = React.createClass({
             );
         }
 
+    },
+    //合同情况
+    renderContactInfo(){
+        if (this.state.contractData.loading) {
+            return (
+                <div>
+                    <Spinner />
+                </div>
+            );
+        } else if (this.state.contractData.errMsg) {
+            var errMsg = <span>{this.state.contractData.errMsg}
+                <a onClick={this.getContractData}>
+                    {Intl.get("user.info.retry", "请重试")}
+                </a></span>;
+            return (
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
+                />
+            );
+
+        } else {
+            return (
+                <AntcTable
+                    dataSource={this.state.contractData.list}
+                    columns={this.getContractListColumn()}
+                    pagination={false}
+                    bordered
+                />
+            );
+        }
+    },
+    //回款情况
+    renderRepaymentInfo(){
+        if (this.state.repaymentData.loading) {
+            return (
+                <div>
+                    <Spinner />
+                </div>
+            );
+        } else if (this.state.repaymentData.errMsg) {
+            var errMsg = <span>{this.state.repaymentData.errMsg}
+                <a onClick={this.getRepaymentData}>
+                    {Intl.get("user.info.retry", "请重试")}
+                </a></span>;
+            return (
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
+                />
+            );
+
+        } else {
+            return (
+                <AntcTable
+                    dataSource={this.state.repaymentData.list}
+                    columns={this.getRepaymentListColumn()}
+                    pagination={false}
+                    bordered
+                />
+            );
+        }
     },
     getStartAndEndTime() {
         return {
@@ -415,6 +556,22 @@ const WeeklyReportDetail = React.createClass({
                             <h4 className="item-title">{Intl.get("weekly.report.call.statics", "电话统计")}</h4>
                             <div className="call-info-table-container">
                                 {this.renderCallInfo()}
+                            </div>
+                        </div>
+                        <div className="contract-info-wrap">
+                            <h4 className="item-title">
+                                {Intl.get("weekly.report.contract", "合同情况")}
+                            </h4>
+                            <div className="contract-info-table-container">
+                                {this.renderContactInfo()}
+                            </div>
+                        </div>
+                        <div className="repayment-info-wrap">
+                            <h4 className="item-title">
+                                {Intl.get("weekly.report.repayment", "回款情况")}
+                            </h4>
+                            <div className="repayment-info-table-container">
+                                {this.renderRepaymentInfo()}
                             </div>
                         </div>
                     </GeminiScrollbar>

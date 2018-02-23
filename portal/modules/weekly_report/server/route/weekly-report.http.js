@@ -52,6 +52,22 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": ["CALLRECORD_ASKFORLEAVE_DELETE"]
+        }, { // 获取合同信息
+            "method": "post",
+            "path": "/rest/weekly_report/contract/info/:type",
+            "handler": "getContractInfo",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": []
+        }, { // 获取回款信息
+            "method": "post",
+            "path": "/rest/weekly_report/repayment/info/:type",
+            "handler": "getRepaymentInfo",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": []
         }
     ]
 };
