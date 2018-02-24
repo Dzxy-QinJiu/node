@@ -76,6 +76,16 @@ function weeklyReportDetailActions() {
             }
         );
     };
+    // 获取客户阶段情况
+    this.getCustomerStageInfo = function (reqData, type) {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getCustomerStageInfo(reqData, type).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData.result});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
 
 }
 module.exports = alt.createActions(weeklyReportDetailActions);

@@ -67,9 +67,17 @@ exports.getRepaymentInfo = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-// 获取回款情况
+// 获取区域覆盖情况
 exports.getRegionOverlayInfo = function (req, res) {
     weeklyReportService.getRegionOverlayInfo(req, res, req.params, req.body).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+// 获取客户销售阶段情况
+exports.getCustomerStageInfo = function (req, res) {
+    weeklyReportService.getCustomerStageInfo(req, res, req.params, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
