@@ -171,24 +171,26 @@ var CrmAlertForm = React.createClass({
         //如果是批量添加联系计划的情况,要跟据联系人逐个添加
         var selectedCustomer = this.props.selectedCustomer;
         if (_.isArray(selectedCustomer)){
-            var count = 0,finishedAjaxCount = 0;//count发送成功的请求数量 finishedAjaxCount已经完成的请求的数量
+            var count = 0,//count发送成功的请求数量
+                finishedAjaxCount = 0, //finishedAjaxCount已经完成的请求的数量
+                totalLength = selectedCustomer.length;//一共要发请求的个数
             //设置loading效果为true
             BatchChangeActions.setLoadingState(true);
-            for (var i =0;i< selectedCustomer.length;i++){
-                submitObj.customer_id = selectedCustomer[i].id;
-                submitObj.customer_name = selectedCustomer[i].name;
-                submitObj.topic = selectedCustomer[i].name;
+            selectedCustomer.forEach((item, index)=>{
+                submitObj.customer_id = item.id;
+                submitObj.customer_name = item.name;
+                submitObj.topic = item.name;
                 ScheduleAction.addSchedule(submitObj,(resData)=>{
                     finishedAjaxCount++;
                     //发完请求后，设置为false
-                    if (finishedAjaxCount  === selectedCustomer.length){
+                    if (finishedAjaxCount  === totalLength){
                         //设置loading效果为false
                         BatchChangeActions.setLoadingState(false);
                     }
                     if (resData.id){
                         count++;
                         //如果批量添加日程都成功了，就会把下拉面板关闭
-                        if (count == selectedCustomer.length){
+                        if (count == totalLength){
                             //提示全部添加成功
                             message.success(Intl.get("batch.success.add.schedule", "所有联系计划均添加成功"));
                             this.props.closeContent();
@@ -196,9 +198,8 @@ var CrmAlertForm = React.createClass({
                     }else{
                         message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}),60);
                     }
-
                 })
-            }
+            });
         }else{
             //单独添加一个联系计划
             ScheduleAction.addSchedule(submitObj,(resData) => {
