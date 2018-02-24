@@ -15,7 +15,7 @@ import userData from "PUB_DIR/sources/user-data";
 var user_id = userData.getUserData().user_id;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").scheduleManagementEmitter;
-let history = require("../../../../public/sources/history");
+let history = require("PUB_DIR/sources/history");
 const DELAY_RANGE = {
     ANIMATION: 1000,//动画结束的时间
 };
