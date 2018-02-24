@@ -1975,7 +1975,7 @@ var zh_CN = {
     "weekly.report.customer.stage":"客户阶段",
     "weekly.report.customer.stage.projected":"立项阶段",
     "weekly.report.customer.stage.intentioned":"意向阶段",
-    "weekly.report.customer.stage.info":"信息阶段"
+    "weekly.report.customer.stage.info":"信息阶段",
     "batch.failed.add.schedule":"{customerName}添加联系计划失败",
     "batch.success.add.schedule":"所有联系计划均添加成功",
     "shedule.list.add.todo": "待办",
