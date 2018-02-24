@@ -191,7 +191,7 @@ exports.getRegionOverlayInfo = function (reqData, type) {
     });
     return Deferred.promise();
 };
-// 获取地域覆盖信息
+// 获取客户阶段信息
 var getCustomerStageInfoAjax = null;
 exports.getCustomerStageInfo = function (reqData, type) {
     var Deferred = $.Deferred();
