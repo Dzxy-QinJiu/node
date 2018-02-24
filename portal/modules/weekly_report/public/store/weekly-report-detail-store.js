@@ -37,6 +37,12 @@ weeklyReportDetailStore.prototype.setInitState = function () {
         loading: false,
         errMsg: ""//获取数据失败
     };
+    //客户阶段分布统计
+    this.customerStageData = {
+        list: [],
+        loading: false,
+        errMsg: ""//获取数据失败
+    };
     //保存员工请假信息
     this.addAskForLeave = {
         submitting: false,//正在保存
@@ -97,6 +103,16 @@ weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
         this.regionOverlayData.errMsg = result.errMsg;
     } else {
         this.regionOverlayData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].res_list : [];
+    }
+};
+
+//获取客户阶段
+weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
+    this.customerStageData.loading = result.loading;
+    if (result.error) {
+        this.customerStageData.errMsg = result.errMsg;
+    } else {
+        this.customerStageData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].this_week_sta : [];
     }
 };
 

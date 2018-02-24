@@ -1929,5 +1929,9 @@ var en_US = {
     "weekly.report.login.count": "Login number",//登录数
     "weekly.report.active.radio": "Active rate",//活跃率
     "weekly.report.district.country": "District",//区县
+    "weekly.report.customer.stage":"Customer stage",//客户阶段
+    "weekly.report.customer.stage.projected":"Project stage",//立项阶段
+    "weekly.report.customer.stage.intentioned":"Intention stage",//意向阶段
+    "weekly.report.customer.stage.info":"Information stage"//信息阶段
 };
 export default en_US;

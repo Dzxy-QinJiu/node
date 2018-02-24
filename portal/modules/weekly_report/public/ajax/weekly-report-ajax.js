@@ -191,3 +191,24 @@ exports.getRegionOverlayInfo = function (reqData, type) {
     });
     return Deferred.promise();
 };
+// 获取地域覆盖信息
+var getCustomerStageInfoAjax = null;
+exports.getCustomerStageInfo = function (reqData, type) {
+    var Deferred = $.Deferred();
+    getCustomerStageInfoAjax && getCustomerStageInfoAjax.abort();
+    getCustomerStageInfoAjax = $.ajax({
+        url: '/rest/weekly_report/customer/stage/info/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr,statusText) {
+            if(statusText !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

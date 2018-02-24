@@ -17,8 +17,8 @@ import {LEALVE_OPTION} from "../utils/weekly-report-utils";
 var WeekReportUtil = require("../utils/weekly-report-utils");
 var userData = require("PUB_DIR/sources/user-data");
 var CLASSNAMES = {
-    ALIGNLEFT:"table-data-align-left",
-    ALIGNRIGHT:"table-data-align-right"
+    ALIGNLEFT: "table-data-align-left",
+    ALIGNRIGHT: "table-data-align-right"
 };
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
@@ -99,6 +99,7 @@ const WeeklyReportDetail = React.createClass({
             this.getContractData();//获取合同信息
             this.getRepaymentData();//获取回款信息
             this.getRegionOverlayData();//获取区域分布信息
+            this.getCustomerStageData();//获取客户阶段信息
         })
     },
 
@@ -387,6 +388,46 @@ const WeeklyReportDetail = React.createClass({
         },];
         return columns;
     },
+    getCustomerStageListColumn(){
+        let columns = [{
+            title: Intl.get("user.salesman", "销售人员"),
+            dataIndex: 'nick_name',
+            className: CLASSNAMES.ALIGNLEFT,
+        }, {
+            title: Intl.get("crm.142", "执行阶段"),
+            dataIndex: 'executed',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("crm.141", "成交阶段"),
+            dataIndex: 'dealed',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("crm.145", "谈判阶段"),
+            dataIndex: 'negotiated',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("weekly.report.customer.stage.projected", "立项阶段"),
+            dataIndex: 'projected',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("crm.143", "试用阶段"),
+            dataIndex: 'tried',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("weekly.report.customer.stage.intentioned", "意向阶段"),
+            dataIndex: 'intentioned',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("weekly.report.customer.stage.info", "信息阶段"),
+            dataIndex: 'informationed',
+            className: CLASSNAMES.ALIGNRIGHT
+        }, {
+            title: Intl.get("common.summation", "合计"),
+            dataIndex: 'total',
+            className: CLASSNAMES.ALIGNRIGHT
+        }];
+        return columns;
+    },
     getRegionOverlayListColumn(){
         let columns = [{
             title: Intl.get("realm.select.address.province", "省份"),
@@ -524,6 +565,14 @@ const WeeklyReportDetail = React.createClass({
         let type = this.getContractType();
         WeeklyReportDetailAction.getRegionOverlayInfo(queryObj, type);
     },
+    //获取客户阶段情况
+    getCustomerStageData(){
+        var queryObj = _.clone(this.getQueryParams());
+        queryObj.team_id = queryObj.team_ids;
+        delete queryObj.team_ids;
+        let type = this.getContractType();
+        WeeklyReportDetailAction.getCustomerStageInfo(queryObj, type);
+    },
     //渲染不同的表格
     renderDiffTypeTable(type){
         var data = {}, retryFunction = "", columns = {};
@@ -545,8 +594,13 @@ const WeeklyReportDetail = React.createClass({
                 break;
             case 'regionOverlay'://区域覆盖情况
                 data = this.state.regionOverlayData;
-                retryFunction = this.getRepaymentData;
+                retryFunction = this.getRegionOverlayData;
                 columns = this.getRegionOverlayListColumn();
+                break;
+            case 'customerStageInfo'://客户阶段统计
+                data = this.state.customerStageData;
+                retryFunction = this.getCustomerStageData;
+                columns = this.getCustomerStageListColumn();
                 break;
         }
 
@@ -614,11 +668,19 @@ const WeeklyReportDetail = React.createClass({
                                 {this.renderDiffTypeTable("callInfo")}
                             </div>
                         </div>
+                        <div className="customer-stage-info-wrap">
+                            <h4 className="item-title">
+                                {Intl.get("weekly.report.customer.stage", "客户阶段")}
+                            </h4>
+                            <div className="customer-stage-info-table-container">
+                                {this.renderDiffTypeTable("customerStageInfo")}
+                            </div>
+                        </div>
                         <div className="region-overlay-info-wrap">
                             <h4 className="item-title">
                                 {Intl.get("weekly.report.region.overlay", "区域覆盖情况")}
                             </h4>
-                            <div className="repayment-info-table-container">
+                            <div className="region-overlay-info-table-container">
                                 {this.renderDiffTypeTable("regionOverlay")}
                             </div>
                         </div>

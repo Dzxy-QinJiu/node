@@ -76,6 +76,14 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": []
+        }, { // 获取销售阶段统计
+            "method": "post",
+            "path": "/rest/weekly_report/customer/stage/info/:type",
+            "handler": "getCustomerStageInfo",
+            "passport": {
+                "needLogin": true
+            },
+            "privileges": []
         }
     ]
 };
