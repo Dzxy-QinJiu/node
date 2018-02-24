@@ -3,6 +3,7 @@ const Validator = Validation.Validator;
 require("../../css/schedule.less");
 var ScheduleStore = require("../../store/schedule-store");
 var ScheduleAction = require("../../action/schedule-action");
+var BatchChangeActions = require("../../action/batch-change-actions");
 var Spinner = require('../../../../../components/spinner');
 var AlertTimer = require('../../../../../components/alert-timer');
 import { Form, Input, Button, message,Select,Radio,Switch} from "antd";
@@ -57,16 +58,7 @@ const TIME_TYPE_CONSTS = {
 var CrmAlertForm = React.createClass({
     mixins: [ValidateMixin],
     getInitialState: function() {
-        let formData = this.props.currentSchedule;
-        formData.topic = formData.topic || formData.customer_name || "";
-        //时间的默认值，用于编辑时使用
-        formData.scheduleType = formData.scheduleType || "calls";
-        //联系的开始时间
-        formData.start_time = formData.start_time || moment().add(TIME_CONSTS.ONE,"h").valueOf();
-        //联系的结束时间
-        formData.end_time = formData.end_time || moment().add(TIME_CONSTS.ONE_POINT_FIVE,"h").valueOf();
-        //提醒时间
-        formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE,"h").subtract(TIME_CONSTS.TEN, 'm').valueOf();
+        var formData = this.getInitialFormData();
         var selectedAlertTimeRange = "not_remind";
         return {
             formData: formData,
@@ -78,6 +70,20 @@ var CrmAlertForm = React.createClass({
             selectedAlertTimeRange:selectedAlertTimeRange,//选中的提醒时间的类型
             isSelectFullday:true//是否已经选择了全天
         };
+    },
+
+    getInitialFormData: function () {
+        let formData = this.props.currentSchedule;
+        formData.topic = formData.topic || formData.customer_name || "";
+        //时间的默认值，用于编辑时使用
+        formData.scheduleType = formData.scheduleType || "calls";
+        //联系的开始时间
+        formData.start_time = formData.start_time || moment().add(TIME_CONSTS.ONE,"h").valueOf();
+        //联系的结束时间
+        formData.end_time = formData.end_time || moment().add(TIME_CONSTS.ONE_POINT_FIVE,"h").valueOf();
+        //提醒时间
+        formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE,"h").subtract(TIME_CONSTS.TEN, 'm').valueOf();
+        return formData;
     },
     //是否是今天
     isToday:function(date){
@@ -160,6 +166,54 @@ var CrmAlertForm = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"修改结束时间");
     },
 
+    //添加联系计划
+    addSchedule:function (submitObj) {
+        //如果是批量添加联系计划的情况,要跟据联系人逐个添加
+        var selectedCustomer = this.props.selectedCustomer;
+        if (_.isArray(selectedCustomer)){
+            var count = 0,//count发送成功的请求数量
+                finishedAjaxCount = 0, //finishedAjaxCount已经完成的请求的数量
+                totalLength = selectedCustomer.length;//一共要发请求的个数
+            //设置loading效果为true
+            BatchChangeActions.setLoadingState(true);
+            selectedCustomer.forEach((item, index)=>{
+                submitObj.customer_id = item.id;
+                submitObj.customer_name = item.name;
+                submitObj.topic = item.name;
+                ScheduleAction.addSchedule(submitObj,(resData)=>{
+                    finishedAjaxCount++;
+                    //发完请求后，设置为false
+                    if (finishedAjaxCount  === totalLength){
+                        //设置loading效果为false
+                        BatchChangeActions.setLoadingState(false);
+                    }
+                    if (resData.id){
+                        count++;
+                        //如果批量添加日程都成功了，就会把下拉面板关闭
+                        if (count == totalLength){
+                            //提示全部添加成功
+                            message.success(Intl.get("batch.success.add.schedule", "所有联系计划均添加成功"));
+                            this.props.closeContent();
+                        }
+                    }else{
+                        message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}),60);
+                    }
+                })
+            });
+        }else{
+            //单独添加一个联系计划
+            ScheduleAction.addSchedule(submitObj,(resData) => {
+                if (resData.id) {
+                    this.showMessage( Intl.get("user.user.add.success", "添加成功"));
+                    ScheduleAction.afterAddSchedule(resData);
+                } else {
+                    this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
+                }
+                this.setState({isLoading: false});
+            });
+        }
+    },
+
     //提交添加请求
     handleSubmit: function(submitObj) {
         this.refs.validation.validate(valid => {
@@ -171,22 +225,15 @@ var CrmAlertForm = React.createClass({
                     ScheduleAction.editAlert(this.state.formData,(resData) => {
                         if (resData.code == 0) {
                             this.showMessage( Intl.get("user.edit.success", "修改成功"));
-                            this.props.getScheduleList();
+                            _.isFunction(this.props.getScheduleList) && this.props.getScheduleList();
                         } else {
                             this.showMessage(Intl.get("common.edit.failed", "修改失败"), "error");
                         }
                         this.setState({isLoading: false});
                     });
                 } else {
-                    ScheduleAction.addSchedule(submitObj,(resData) => {
-                        if (resData.id) {
-                            this.showMessage( Intl.get("user.user.add.success", "添加成功"));
-                            ScheduleAction.afterAddSchedule(resData);
-                        } else {
-                            this.showMessage(resData || Intl.get("crm.154", "添加失败"), "error");
-                        }
-                        this.setState({isLoading: false});
-                    });
+                    //添加联系计划
+                    this.addSchedule(submitObj);
                 }
             }
         });
@@ -281,7 +328,15 @@ var CrmAlertForm = React.createClass({
     },
     handleCancel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-cancel"),"取消添加联系计划");
-        ScheduleAction.cancelEdit();
+        //如果是批量添加联系计划,关闭后应该清空数据
+        if (_.isArray(this.props.selectedCustomer)){
+           this.setState({
+               formData:this.getInitialFormData()
+           })
+        }else {
+            ScheduleAction.cancelEdit();
+        }
+
     },
     //修改日程类型
     handleTypeChange:function (value) {
@@ -438,13 +493,14 @@ var CrmAlertForm = React.createClass({
                     label={Intl.get("crm.alert.topic","标题")}
                 >
                     <div className="topic-wrap">
-                        <Validator rules={[{required: true}]}>
+                        {/*如果是批量操作的时候，不需要展示标题*/}
+                        {!this.props.selectedCustomer ? <Validator rules={[{required: true}]}>
                             <Input
                                 name="topic"
                                 value={formData.topic}
                                 disabled
                             />
-                        </Validator>
+                        </Validator>:null}
                         <Select value={formData.scheduleType} onChange={this.handleTypeChange} className="schedule-topic">
                             <Option value="calls">{Intl.get("common.phone","电话")}</Option>
                             <Option value="visit">{Intl.get("common.visit","拜访")}</Option>
@@ -535,42 +591,45 @@ var CrmAlertForm = React.createClass({
                     </Select>
 
                 </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                >
-                <div className="alert-btn-block">
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="btn-primary-sure"
-                        disabled={this.state.isLoading}
-                        onClick={this.handleSave}
+                {/*如果是批量操作的时候，不需要展示保存和取消按钮，用原组件中有的保存和取消*/}
+                {this.props.selectedCustomer? null:
+                <div>
+                    <FormItem
+                        {...formItemLayout}
                     >
-                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" />
-                    </Button>
-                    <Button
-                        type="ghost"
-                        onClick={this.handleCancel}
-                        className="btn-primary-cancel"
-                    >
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
-                    </Button>
-                </div>
-                </FormItem>
-                {
-                    this.state.isLoading ?
-                        (<Spinner className="isloading"/>) :
-                        null
-                }
-                {this.state.isMessageShow? (
-                    <AlertTimer
-                        message={this.state.messageContent}
-                        type={this.state.messageType}
-                        showIcon
-                        time={1000}
-                    />
-                ) : null}
+                        <div className="alert-btn-block">
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                className="btn-primary-sure"
+                                disabled={this.state.isLoading}
+                                onClick={this.handleSave}
+                            >
+                                <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" />
+                            </Button>
+                            <Button
+                                type="ghost"
+                                onClick={this.handleCancel}
+                                className="btn-primary-cancel"
+                            >
+                                <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
+                            </Button>
+                        </div>
+                    </FormItem>
+                    {
+                        this.state.isLoading ?
+                            (<Spinner className="isloading"/>) :
+                            null
+                    }
+                    {this.state.isMessageShow? (
+                        <AlertTimer
+                            message={this.state.messageContent}
+                            type={this.state.messageType}
+                            showIcon
+                            time={1000}
+                        />
+                    ) : null}
+                </div>}
             </Validation>
             </Form>
         );

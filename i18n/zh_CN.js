@@ -1176,6 +1176,7 @@ var zh_CN = {
     "crm.211": "跟进内容",
     "crm.212": "请选择标签",
     "crm.213": "未分配客户",
+    "crm.214": "添加联系计划",
     "crm.over.day.without.contact": "超{day}天未联系",
     "crm.customer.interested": "添加关注",
     "crm.customer.uninterested": "取消关注",
@@ -1975,5 +1976,7 @@ var zh_CN = {
     "weekly.report.customer.stage.projected":"立项阶段",
     "weekly.report.customer.stage.intentioned":"意向阶段",
     "weekly.report.customer.stage.info":"信息阶段"
+    "batch.failed.add.schedule":"{customerName}添加联系计划失败",
+    "batch.success.add.schedule":"所有联系计划均添加成功",
 };
 export default zh_CN;
