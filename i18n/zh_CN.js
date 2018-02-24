@@ -1978,5 +1978,6 @@ var zh_CN = {
     "weekly.report.customer.stage.info":"信息阶段"
     "batch.failed.add.schedule":"{customerName}添加联系计划失败",
     "batch.success.add.schedule":"所有联系计划均添加成功",
+    "shedule.list.add.todo": "待办",
 };
 export default zh_CN;

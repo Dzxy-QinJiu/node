@@ -1937,5 +1937,6 @@ var en_US = {
     "weekly.report.customer.stage.info":"Information stage"//信息阶段
     "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
     "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
+    "shedule.list.add.todo": "To do",//待办
 };
 export default en_US;

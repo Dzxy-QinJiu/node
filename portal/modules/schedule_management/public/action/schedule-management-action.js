@@ -8,7 +8,7 @@ var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitte
 let userData = require("PUB_DIR/sources/user-data");
 function ScheduleManagementActions() {
     this.generateActions(
-        'getState',
+        'setInitState',
         'afterHandleStatus',
     );
     //获取日程列表
