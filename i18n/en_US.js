@@ -1896,6 +1896,7 @@ var en_US = {
     "user.info.add.email":"add email",//添加邮箱
     "schedule.call.out":"Call out",//拨打
     "sales.status.calling": "Calling",//正在打电话
-    "batch.failed.add.schedule":"{customerName} failed to add schedule"//{customerName}添加联系计划失败
+    "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
+    "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
 };
 export default en_US;

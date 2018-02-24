@@ -172,23 +172,28 @@ var CrmAlertForm = React.createClass({
         var selectedCustomer = this.props.selectedCustomer;
         if (_.isArray(selectedCustomer)){
             var count = 0;
+            //设置loading效果为true
+            BatchChangeActions.setLoadingState(true);
             for (var i =0;i< selectedCustomer.length;i++){
                 submitObj.customer_id = selectedCustomer[i].id;
                 submitObj.customer_name = selectedCustomer[i].name;
                 submitObj.topic = selectedCustomer[i].name;
-                //设置loading效果为true
-                BatchChangeActions.setLoadingState(true);
                 ScheduleAction.addSchedule(submitObj,(resData)=>{
-                    //设置loading效果为false
-                    BatchChangeActions.setLoadingState(false);
                     if (resData.id){
                         count++;
                         //如果批量添加日程都成功了，就会把下拉面板关闭
                         if (count == selectedCustomer.length){
+                            //提示全部添加成功
+                            message.success(Intl.get("batch.success.add.schedule", "所有联系计划均添加成功"));
                             this.props.closeContent();
                         }
                     }else{
-                        message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}));
+                        message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}),60);
+                    }
+                    //发完请求后，设置为false
+                    if (i + 1  === selectedCustomer.length){
+                        //设置loading效果为false
+                        BatchChangeActions.setLoadingState(false);
                     }
                 })
             }

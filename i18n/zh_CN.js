@@ -1939,6 +1939,7 @@ var zh_CN = {
     "user.info.add.email": "添加邮箱",
     "schedule.call.out":"拨打",
     "sales.status.calling": "正在打电话",
-    "batch.failed.add.schedule":"{customerName}添加联系计划失败"
+    "batch.failed.add.schedule":"{customerName}添加联系计划失败",
+    "batch.success.add.schedule":"所有联系计划均添加成功",
 };
 export default zh_CN;
