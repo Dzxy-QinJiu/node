@@ -1832,10 +1832,10 @@ const ApplyViewDetail = React.createClass({
                     }
                 } else {  // 没有更改用户名时（不触发校验）
                     let checkUserData = this.checkUserName();
-                    if (typeof(checkUserData) == 'Number') {
+                    if (_.isNumber(checkUserData) && checkUserData > 0) {
                         this.renderDuplicationName();
                         return;
-                    } else {
+                    } else if(_.isString(checkUserData)){
                         this.renderDuplicationName(checkUserData);
                         return;
                     }
