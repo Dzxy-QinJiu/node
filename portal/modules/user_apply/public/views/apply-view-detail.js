@@ -1721,7 +1721,7 @@ const ApplyViewDetail = React.createClass({
     renderDuplicationName(errorMsg){
         this.toggleApplyExpanded(false);
         this.renderEditUserName();
-        message.warn(Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！") || errorMsg, 3);
+        message.warn( errorMsg || Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！"), 3);
     },
 
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
