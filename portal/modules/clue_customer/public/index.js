@@ -176,11 +176,6 @@ const ClueCustomer = React.createClass({
             clueAddFormShow: false
         });
     },
-    //增加一个
-    addOne: function () {
-        this.state.isAddFlag = false;
-        this.setState(this.state);
-    },
     //展示右侧面板
     showRightPanel: function (id) {
         this.state.rightPanelIsShow = true;
@@ -646,7 +641,6 @@ const ClueCustomer = React.createClass({
                     {this.state.clueAddFormShow ? (
                         <SalesClueAddForm
                             hideAddForm={this.hideClueAddForm}
-                            addOne={this.addOne}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
                             updateClueSource={this.updateClueSource}

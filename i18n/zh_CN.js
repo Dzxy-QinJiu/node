@@ -1974,6 +1974,13 @@ var zh_CN = {
     "weekly.report.customer.stage":"客户阶段",
     "weekly.report.customer.stage.projected":"立项阶段",
     "weekly.report.customer.stage.intentioned":"意向阶段",
-    "weekly.report.customer.stage.info":"信息阶段"
+    "weekly.report.customer.stage.info":"信息阶段",
+    "app.user.register.self":"自行注册用户",
+    "app.user.trans.clue.customer":"生成线索",
+    "clue.customer.register.self":"自主注册",
+    "clue.customer.product.website":"产品网站",
+    "clue.customer.clue.name":"线索名称",
+    "clue.customer.fillin.clue.name":"请填写线索名称",
+    "clue.customer.register.user":"注册用户"
 };
 export default zh_CN;
