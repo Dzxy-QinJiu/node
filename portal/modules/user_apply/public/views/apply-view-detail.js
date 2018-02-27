@@ -1830,12 +1830,14 @@ const ApplyViewDetail = React.createClass({
                         this.renderDuplicationName();
                         return;
                     }
-                } else {  // 没有更改用户名时（不触发校验）
+                } else {  // 没有更改用户名时（之前没有触发校验，此处需要先通过接口校验用户名是否存在）
                     let checkUserData = this.checkUserName();
                     if (_.isNumber(checkUserData) && checkUserData > 0) {
+                        //用户名已存在的提示
                         this.renderDuplicationName();
                         return;
                     } else if(_.isString(checkUserData)){
+                        //用户名校验接口报错的提示
                         this.renderDuplicationName(checkUserData);
                         return;
                     }
