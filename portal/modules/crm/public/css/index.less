@@ -62,7 +62,7 @@
     height:30px;
     line-height:30px;
     margin-top:@filter_area_margin_top;
-    margin-left:50px;
+    margin-left:@container-padding;
     width:450px;
     .search-input-container{
       display:inline-block;
@@ -125,7 +125,7 @@
     cursor:default;
   }
   .content-block{
-    margin:80px 50px auto 50px;
+    margin: @top_nav_height+2 @container-padding auto @container-padding;
     .ant-table-placeholder{
       min-height: 550px;
     }

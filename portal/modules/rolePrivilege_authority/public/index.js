@@ -27,7 +27,7 @@ function getStateFromStore(_this) {
     return storeState;
 }
 
-var topHeight = 98; // 76 +22 : 距导航高度+顶部导航高度
+var topHeight = 87; // 65 +22 : 距导航高度+顶部导航高度
 var bootomHeight = 52; //距离底部高度
 
 var AuthorityPage = React.createClass({

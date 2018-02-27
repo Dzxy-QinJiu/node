@@ -1,6 +1,7 @@
+@import "../../../../public/css/common-variables.less";
 .oplate_user_analysis {
   background-color: rgb(243, 245, 245);
-  padding-top:76px;
+  padding-top:@top_nav_height;
   .topNav{
     &:before{
       border-bottom: 0 !important;
@@ -8,8 +9,8 @@
     //应用、时间选择框所在区域的样式设置
     .user-analysis-filter-block{
       position: absolute;
-      top: 20px;
-      right: 33px;
+      top: @filter_area_margin_top;
+      right: @container-padding;
       //应用选择框
       .analysis-selector-wrap {
         float: left;

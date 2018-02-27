@@ -13,8 +13,8 @@ var PrivilegeChecker = require("../../../components/privilege/checker").Privileg
 var LeftTree = require("./views/left-tree");
 var MemberList = require("./views/member-list");
 var SalesTeamAjax = require("./ajax/sales-team-ajax");
-var topHeight = 98; // 22 + 76 : 添加按钮高度+顶部导航高度
-var bootomHeight = 30; //距离底部高度
+var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
+var bootomHeight = 20; //距离底部高度
 var CONSTANT = {
     SALES_TEAM_IS_NULL: "sales-team-is-null",//没有团队时的提示信息
     SUCCESS: "success",
@@ -76,7 +76,7 @@ var SalesTeamPage = React.createClass({
     },
 
     containerWidthFnc: function () {
-        return $(window).width() - 76 - 90;
+        return $(window).width() - 75 - 40;
     },
 
     cancelAddGroup: function () {

@@ -8,7 +8,7 @@ var EMITTER_CONSTANTS = {
 //布局的常量定义
 var LAYOUT_CONSTANTS = {
     //顶部导航
-    TOP_NAV_HEIGHT : 76,
+    TOP_NAV_HEIGHT : 65,
     //表格距离顶部导航的距离
     TABLE_MARGIN_TOP : 24,
     //表头的高度

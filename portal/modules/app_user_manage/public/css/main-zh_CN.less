@@ -554,13 +554,13 @@
     margin-right: 15px;
     cursor:pointer;
     vertical-align: top !important;
-    margin-top: 23px;
+    margin-top: @filter_area_margin_top;
   }
 
   .add-btn{
     width:110px;
-    height:75px;
-    line-height:75px;
+    height:@top_nav_height;
+    line-height:@top_nav_height;
     border-left:1px solid #edf1f2;
     font-size:14px;
     text-align:center;
@@ -651,7 +651,7 @@
     }
   }
   .app_user_manage_contentwrap{
-    padding:77px 50px 25px 50px;
+    padding: @top_nav_height @container-padding 25px @container-padding;
 
     .status{
       display:inline;
@@ -796,7 +796,7 @@
     .add-btn-mini{
       display:inline-block !important;
       cursor:pointer;
-      margin-top:26px;
+      margin-top:@filter_area_margin_top;
     }
     .add-btn-common{
       display:none !important;

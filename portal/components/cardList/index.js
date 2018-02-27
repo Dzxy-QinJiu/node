@@ -10,7 +10,7 @@ var NoData = require("../analysis-nodata");
 var GeminiScrollbar = require("../react-gemini-scrollbar");
 
 var CONSTANTS = {
-    TOP_NAV_HEIGHT: 75,//头部导航的高度
+    TOP_NAV_HEIGHT: 64,//头部导航的高度
     SEARCH_INPUT_HEIGHT: 55,//成员管理中搜索框的高度设置
     PAGE_NAV_HEIGHT: 30//分页导航的高度
 };

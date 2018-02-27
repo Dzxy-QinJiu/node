@@ -20,7 +20,7 @@ let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from "LIB_DIR/trace";
 
 let CONSTANTS = {
-    PADDING_TOP: 96,
+    PADDING_TOP: 84,
     PADDING_BOTTOM: 20,
     TABLE_HEAD_HEIGHT: 53,
     TOTAL_HEIGHT: 20,

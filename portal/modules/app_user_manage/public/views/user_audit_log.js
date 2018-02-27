@@ -24,7 +24,7 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 150,
+    TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 40
 };
 

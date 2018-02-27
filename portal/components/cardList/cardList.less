@@ -1,12 +1,12 @@
 /*卡片列表*/
-
+@import "../../public/css/common-variables.less";
 @listBgColor: #ffffff;
 .position-left {
   float: left;
 }
 
 .card-list-container {
-  padding-top: 75px;
+  padding-top: @top_nav_height;
   background-color: @listBgColor;
   .nodata-msg-block {
     position: absolute;
@@ -19,7 +19,7 @@
 
   .card-list {
     width: 100%;
-    padding: 0 35px;
+    padding: 0 5px;
     .gm-scrollbar {
       z-index: 99;
     }

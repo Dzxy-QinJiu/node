@@ -24,7 +24,7 @@ function getStateFromStore(_this) {
     return storeData;
 }
 
-var topHeight = 98; // 22 + 76 : 添加按钮高度+顶部导航高度
+var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 52; //距离底部高度
 
 var RolePage = React.createClass({

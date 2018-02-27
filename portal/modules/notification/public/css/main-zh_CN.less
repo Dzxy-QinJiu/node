@@ -25,8 +25,8 @@
 
 //外层容器
 .notification_content {
-  margin-top: 76px;
-  padding: 21px 46px 10px 42px;
+  margin-top: @top_nav_height;
+  padding: 21px @container-padding 10px @container-padding;
   .loader8 {
     position: absolute;
     top: 0;
@@ -111,7 +111,7 @@
   margin-top: -15px;
   .notification-status-select, .notification-type-select {
     position: absolute;
-    top: 20px;
+    top: @filter_area_margin_top;
     z-index: 11;
   }
   .notification-status-select {
