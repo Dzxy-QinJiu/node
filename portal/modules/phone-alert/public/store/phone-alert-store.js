@@ -87,7 +87,8 @@ PhoneAlertStore.prototype.setSubmitErrMsg = function (errMsg) {
 };
 //设置客户的基本信息
 PhoneAlertStore.prototype.setCustomerInfoArr = function (obj) {
-    this.customerInfoArr.push(obj);
+    this.customerInfoArr = [];
+    this.customerInfoArr[0] = obj;
     this.customerUnknown = false;
 };
 module.exports = alt.createStore(PhoneAlertStore , 'PhoneAlertStore');
