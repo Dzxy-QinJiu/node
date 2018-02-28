@@ -65,7 +65,6 @@ var ContactForm = React.createClass({
         var status = {
             name: {},
             position: {},
-            department: {},
             role: {}
         };
 
@@ -82,6 +81,7 @@ var ContactForm = React.createClass({
             errorMsg: '',
             contact: $.extend(true, {}, this.props.contact),
             phoneInputIds: phoneInputIds,
+            isValidNameDepartment: true//是否通过姓名和部门必填一项的验证
         };
     },
 
@@ -213,9 +213,17 @@ var ContactForm = React.createClass({
                 delete formData[key];
             }
         }
-
+        //联系人姓名和部门必填一项的验证
+        this.validateContactNameDepartment();
+        //未通过姓名和部门必填一项的验证
+        if (!this.state.isValidNameDepartment) {
+            return;
+        }
         //提示至少需要添加一种联系方式
-        if (phoneArray.concat(qqArray, weChatArray, emailArray).length == 0) {
+        let contactArray = phoneArray.concat(qqArray, weChatArray, emailArray);
+        //过滤出不为空的联系方式
+        contactArray = contactArray.filter(item => item ? true : false);
+        if (contactArray.length == 0) {
             this.setState({showNeedContact: true});
             return;
         }
@@ -292,7 +300,7 @@ var ContactForm = React.createClass({
             Message.error(result.errorMsg);
         } else if (result.contact && result.contact.def_contancts === "true") {
             //只有在客户列表中才有更新列表中联系人的方法
-            if(this.props.updateCustomerDefContact){
+            if (this.props.updateCustomerDefContact) {
                 //修改默认联系人的信息时，更新列表中的联系人数据
                 this.props.updateCustomerDefContact(result.contact);
             }
@@ -367,7 +375,17 @@ var ContactForm = React.createClass({
             }
         }];
     },
-
+    //联系人名和部门必填一项的验证
+    validateContactNameDepartment: function () {
+        let name = $.trim(this.state.formData.name);
+        let department = $.trim(this.state.formData.department);
+        if (name || department) {
+            //通过必填一项的验证
+            this.setState({isValidNameDepartment: true});
+        } else {//联系人姓名和部门都为空
+            this.setState({isValidNameDepartment: false});
+        }
+    },
     render: function () {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -535,29 +553,26 @@ var ContactForm = React.createClass({
                                     help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                 >
                                     <Validator rules={[{
-                                        required: true,
-                                        min: 1,
                                         max: 50,
                                         message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
                                     }]}>
                                         <Input name="name" value={formData.name}
+                                               onBlur={this.validateContactNameDepartment.bind(this)}
                                                onChange={this.setField.bind(this, 'name')}
                                         />
                                     </Validator>
                                 </FormItem>
+                                {this.state.isValidNameDepartment ? null :
+                                    <div className="name-department-required">{Intl.get("123", "联系人姓名和部门必填一项")}</div>}
                                 <FormItem
                                     label={Intl.get("crm.113", "部门")}
                                     labelCol={{span: 5}}
                                     wrapperCol={{span: 19}}
-                                    validateStatus={this.renderValidateStyle('department')}
-                                    help={status.department.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.department.errors && status.department.errors.join(','))}
                                 >
-                                    <Validator
-                                        rules={[{required: false, min: 1, message: Intl.get("crm.114", "请输入职位")}]}>
-                                        <Input name="department" value={formData.department}
-                                               onChange={this.setField.bind(this, 'department')}
-                                        />
-                                    </Validator>
+                                    <Input name="department" value={formData.department}
+                                           onBlur={this.validateContactNameDepartment.bind(this)}
+                                           onChange={this.setField.bind(this, 'department')}
+                                    />
                                 </FormItem>
                                 <FormItem
                                     label={Intl.get("crm.91", "职位")}
@@ -607,7 +622,7 @@ var ContactForm = React.createClass({
                             <Button type="ghost" className="form-cancel-btn btn-primary-cancel"
                                     onClick={this.cancel}
                             ><ReactIntl.FormattedMessage id="common.cancel"
-                                                                                      defaultMessage="取消"/></Button>
+                                                         defaultMessage="取消"/></Button>
                             <Button type="primary" className="form-submit-btn btn-primary-sure"
                                     onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.save"
                                                                                             defaultMessage="保存"/></Button>
