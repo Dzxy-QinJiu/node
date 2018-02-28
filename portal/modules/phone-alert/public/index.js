@@ -96,32 +96,35 @@ class PhoneAlert extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        var phoneObj = nextProps.phoneObj;
+        var phonemsgObj = nextProps.phonemsgObj;
         //如果在打电话的过程中关闭了弹屏，后来的推送状态改变后，又弹出屏幕时，记录下弹屏
         if (!this.state.isModalShown) {
             Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         }
         sendMessage && sendMessage("state上联系的客户"+ this.state.customerInfoArr);
-        if (nextProps.phoneObj && nextProps.phoneObj.customerDetail) {
-            sendMessage && sendMessage("实际联系的客户"+ nextProps.phoneObj.customerDetail);
-            phoneAlertAction.setCustomerInfoArr(nextProps.phoneObj.customerDetail);
+        if (phoneObj && phoneObj.customerDetail) {
+            sendMessage && sendMessage("实际联系的客户"+ phoneObj.customerDetail);
+            phoneAlertAction.setCustomerInfoArr(phoneObj.customerDetail);
         }
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
-        // 这样只能保证在系统内拨号的时候，避免前一个电话的状态影响后一个电话的状态，但如果第二个状态是用座机进行拨号的时候，避免不了这个问题！！！
-        if (nextProps.phoneObj && nextProps.phoneObj.phoneNum && ((nextProps.phonemsgObj.to && (nextProps.phonemsgObj.to !== nextProps.phoneObj.phoneNum.replace("-", "") && nextProps.phonemsgObj.to !== "0" + nextProps.phoneObj.phoneNum)) || (nextProps.phonemsgObj.dst && (nextProps.phonemsgObj.dst !== nextProps.phoneObj.phoneNum.replace("-", "") && nextProps.phonemsgObj.dst !== "0" + nextProps.phoneObj.phoneNum)) )) {
+        // 这样能保证在系统内拨号的时候，避免前一个电话的状态影响后一个电话的状态
+
+        if (phoneObj && phoneObj.phoneNum && ((phonemsgObj.to && (phonemsgObj.to !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.to !== "0" + phoneObj.phoneNum)) || (phonemsgObj.dst && (phonemsgObj.dst !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.dst !== "0" + phoneObj.phoneNum)) )) {
             this.setState({
-                phoneObj: nextProps.phoneObj,
+                phoneObj: phoneObj,
                 isModalShown: true,
             });
         } else {
             this.setState({
-                phoneObj: nextProps.phoneObj,
-                phonemsgObj: nextProps.phonemsgObj,
+                phoneObj: phoneObj,
+                phonemsgObj: phonemsgObj,
                 isModalShown: true,
             });
         }
 
         //跟进记录的id
-        var addTraceItemId = nextProps.phonemsgObj.id || "";
+        var addTraceItemId = phonemsgObj.id || "";
         if (addTraceItemId) {
             this.setState({
                 addTraceItemId: addTraceItemId,
@@ -130,7 +133,7 @@ class PhoneAlert extends React.Component {
         //页面上如果存在模态框，并且用座机打电话时
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
         //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态
-        if ($modal && $modal.length > 0 && nextProps.phonemsgObj.type == PHONERINGSTATUS.BUSY && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
+        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.BUSY && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
             this.setState({
                 isModalShown: false,
                 phoneNum: "",
@@ -145,14 +148,14 @@ class PhoneAlert extends React.Component {
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
-        if (nextProps.phonemsgObj.to && _.isEmpty(nextProps.phoneObj) && this.state.customerInfoArr.length == 0) {
-            phoneAlertAction.getCustomerByPhone(nextProps.phonemsgObj.to);
+        if (nextProps.phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
+            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
-                phoneNum: nextProps.phonemsgObj.to
+                phoneNum: phonemsgObj.to
             })
         }
         //如果接听后，把状态isConnected 改为true
-        if (nextProps.phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+        if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             this.setState({
                 isConnected: true
             })
