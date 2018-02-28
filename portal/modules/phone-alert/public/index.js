@@ -110,10 +110,12 @@ class PhoneAlert extends React.Component {
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
         // 这样能保证在系统内拨号的时候，避免前一个电话的状态影响后一个电话的状态
         //后端推送过来的电话，要么是在电话号码前面加0，要么是把电话的 - 去掉
-        //如果推送过来的状态，电话是在.to 这个属性上，判断这个电话与界面上的电话是否不一样
-        var phoneToDiff = phoneObj && phoneObj.phoneNum && phonemsgObj.to && (phonemsgObj.to !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.to !== "0" + phoneObj.phoneNum);
-        //如果推送过来的状态，电话是在.dst 这个属性上，判断这个电话与界面上的电话是否不一样
-        var phoneDstDiff = phoneObj && phoneObj.phoneNum && phonemsgObj.dst && (phonemsgObj.dst !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.dst !== "0" + phoneObj.phoneNum);
+       //phoneNum 是界面上emitter过来的电话号码
+        var phoneNum = phoneObj && phoneObj.phoneNum ? phoneObj.phoneNum.replace("-", "") : "";
+        //如果后端推送过来的状态是Bye或者record，电话是在.to 这个属性上，判断这个电话与界面上的电话是否不一样
+        var phoneToDiff = phoneNum && phonemsgObj.to && (phonemsgObj.to !== phoneNum && phonemsgObj.to !== "0" + phoneNum);
+        //如果推送过来的状态是phone，电话是在.dst 这个属性上，判断这个电话与界面上的电话是否不一样
+        var phoneDstDiff = phoneNum && phonemsgObj.dst && (phonemsgObj.dst !== phoneNum && phonemsgObj.dst !== "0" + phoneNum);
         if (phoneToDiff || phoneDstDiff) {
             this.setState({
                 phoneObj: phoneObj,
