@@ -15,7 +15,7 @@ var defaultIcon = require("../../../../components/default-image-base64").Default
 //进行布局的对象
 var LAYOUT = {
     //顶部导航高度
-    TOPNAV_HEIGHT : 76,
+    TOPNAV_HEIGHT : 65,
     //列表上面的margin
     LIST_MARGIN_TOP : 44,
     //分页高度

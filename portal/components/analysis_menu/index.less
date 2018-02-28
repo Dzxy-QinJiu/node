@@ -1,3 +1,4 @@
+@import "../../public/css/common-variables.less";
 .analysis-menu {
   margin-left:-13px;
   .glyphicon {
@@ -7,8 +8,8 @@
   }
   display:inline-block;
   vertical-align:middle;
-  padding:26px 30px 26px 23px;
-  height:73px;
+  padding:@filter_area_margin_top + 6 30px @filter_area_margin_top @container_padding;
+  height:@top_nav_height;
   overflow:hidden;
   border-right:1px solid #e8ecee;
   font-size:14px;

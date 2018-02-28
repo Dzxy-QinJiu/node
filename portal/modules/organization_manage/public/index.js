@@ -20,7 +20,7 @@ var AlertTimer = require("../../../components/alert-timer");
 var Icon = require("antd").Icon;
 var Button = require("antd").Button;
 var Input = require("antd").Input;
-var topHeight = 98; // 22 + 76 : 添加按钮高度+顶部导航高度
+var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 30; //距离底部高度
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../components/react-intl-mixin';
@@ -91,7 +91,7 @@ var OrganizationPage = React.createClass({
     },
 
     containerWidthFnc: function () {
-        return $(window).width() - 76 - 90;
+        return $(window).width() - 65 - 90;
     },
 
     addGroup: function () {

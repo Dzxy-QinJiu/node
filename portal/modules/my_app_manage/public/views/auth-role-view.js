@@ -28,7 +28,7 @@ var ImportFile = require("./upload-file");
 import Trace from "LIB_DIR/trace";
 import { Upload, Icon, message } from "antd";
 
-var topHeight = 75;//顶部导航的高度
+var topHeight = 64;//顶部导航的高度
 var paddingBottom = 30;//距离底部高度
 var TYPE_CONSTANT = "myApp";
 var AuthRoleView = React.createClass({

@@ -39,14 +39,14 @@ let searchInputTimeOut = null;
 const delayTime = 800;
 //计算布局的常量
 const LAYOUT_CONSTANTS = {
-    PADDING_TOP: 100,
+    PADDING_TOP: 66,
     PANEL_PADDING: 40,
     TAB_HEIGHT: 53,
     RANGE_HEIGHT: 30,
     CHART_HEIGHT: 232,
     FIXED_THEAD: 50,
     TABLE_MARGIN_BOTTOM: 20,
-    SUMMARY: 55
+    SUMMARY: 45
 };
 
 // 通话状态的常量

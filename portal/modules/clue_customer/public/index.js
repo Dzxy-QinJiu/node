@@ -36,8 +36,8 @@ const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 70,
-    BOTTOM_DISTANCE: 70,
+    TOP_DISTANCE: 68,
+    BOTTOM_DISTANCE: 40,
 };
 const ClueCustomer = React.createClass({
     getInitialState: function () {

@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables.less";
 #app{
   .oplate_customer_analysis {
     .topNav:before{
@@ -6,7 +7,7 @@
   }
 }
 .oplate_customer_analysis {
-  padding-top:76px;
+  padding-top:@top_nav_height;
   background-color: #f3f5f5;
   .analysis_chart {
     padding-right: 0;
@@ -25,7 +26,7 @@
     right:50px;
   }
   .summary-numbers {
-    margin: 20px 24px 10px;
+    margin: 20px @container_padding 10px;
     background-color: #fff;
     .anticon {
       position:absolute;

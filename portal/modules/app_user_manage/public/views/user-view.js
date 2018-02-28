@@ -37,7 +37,7 @@ const EXCEPTION_TYPES = [{
 }];
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 130,
+    TOP_DISTANCE: 120,
     BOTTOM_DISTANCE: 50
 };
 

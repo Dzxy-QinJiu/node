@@ -1,5 +1,5 @@
 @charset "UTF-8";
-
+@import "../../../../public/css/common-variables";
 .overhidden-public {
   white-space: nowrap;
   overflow: hidden;
@@ -8,9 +8,9 @@
 
 //销售阶段管理展示区域样式
 .sales-stage-manage-container {
-  padding-right: 45px;
-  padding-left: 45px;
-  padding-top: 76px;
+  padding-right: @container_padding;
+  padding-left: @container_padding;
+  padding-top: @top_nav_height;
   form .ant-form-item {
     input {
       width: 275px;
@@ -181,8 +181,8 @@
     float: right;
     .sales-stage-top-div {
       float: right;
-      height: 75px;
-      line-height: 69px;
+      height: @top_nav_height;
+      line-height: @top_nav_height;
       z-index: 101;
       border-left: 1px solid #edf0f0;
       //添加按钮样式

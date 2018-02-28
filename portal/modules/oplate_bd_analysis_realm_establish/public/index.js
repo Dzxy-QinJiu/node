@@ -38,7 +38,7 @@ function lineFormatter(obj) {
 
 //布局计算使用的常量
 var LAYOUT = {
-    TOP : 76 + 20,
+    TOP : 65 + 20,
     BOTTOM : 32
 };
 

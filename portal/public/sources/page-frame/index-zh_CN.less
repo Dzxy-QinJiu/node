@@ -144,7 +144,6 @@ body.macintosh, body.macintosh pre{
     }
 
   }
-  @topNavHeight:76px;
   .topNav{
     position:fixed;
     z-index:11;
@@ -152,9 +151,9 @@ body.macintosh, body.macintosh pre{
     right:0;
     //overflow: hidden;
     left:@sidebar-min-width;
-    height:@topNavHeight;
+    height:@top_nav_height;
     background:#fff;
-    padding-left:30px;
+    padding-left:@container_padding;
 
     &:before{
       content:" ";
@@ -220,9 +219,9 @@ body.macintosh, body.macintosh pre{
     }
 
     ul.topnav-links{
-      line-height:73px;
+      line-height:@top_nav_height - 4;
       li{
-        padding:0 20px;
+        padding:0 20px 0 0;
         position:relative;
         float:left;
         a{
@@ -252,7 +251,7 @@ body.macintosh, body.macintosh pre{
       border-bottom:none;
     }
     .ant-menu{
-      line-height:@topNavHeight - 3;
+      line-height:@top_nav_height - 3;
       padding-left:63px;
     }
     @media (max-width:@modal-md) {
