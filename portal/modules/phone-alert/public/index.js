@@ -109,8 +109,12 @@ class PhoneAlert extends React.Component {
         }
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
         // 这样能保证在系统内拨号的时候，避免前一个电话的状态影响后一个电话的状态
-
-        if (phoneObj && phoneObj.phoneNum && ((phonemsgObj.to && (phonemsgObj.to !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.to !== "0" + phoneObj.phoneNum)) || (phonemsgObj.dst && (phonemsgObj.dst !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.dst !== "0" + phoneObj.phoneNum)) )) {
+        //后端推送过来的电话，要么是在电话号码前面加0，要么是把电话的 - 去掉
+        //如果推送过来的状态，电话是在.to 这个属性上，判断这个电话与界面上的电话是否不一样
+        var phoneToDiff = phoneObj && phoneObj.phoneNum && phonemsgObj.to && (phonemsgObj.to !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.to !== "0" + phoneObj.phoneNum);
+        //如果推送过来的状态，电话是在.dst 这个属性上，判断这个电话与界面上的电话是否不一样
+        var phoneDstDiff = phoneObj && phoneObj.phoneNum && phonemsgObj.dst && (phonemsgObj.dst !== phoneObj.phoneNum.replace("-", "") && phonemsgObj.dst !== "0" + phoneObj.phoneNum);
+        if (phoneToDiff || phoneDstDiff) {
             this.setState({
                 phoneObj: phoneObj,
                 isModalShown: true,
@@ -148,7 +152,7 @@ class PhoneAlert extends React.Component {
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
-        if (nextProps.phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
+        if (phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
@@ -161,11 +165,9 @@ class PhoneAlert extends React.Component {
             })
         }
     };
-
     componentWillUnmount() {
         phoneAlertStore.unlisten(this.onStoreChange);
     };
-
     //获取页面上的描述
     getPhoneTipMsg(phonemsgObj) {
         var customerInfoArr = this.state.customerInfoArr;
@@ -335,14 +337,13 @@ class PhoneAlert extends React.Component {
                                 var location = [];
                                 if (item.province) {
                                     location.push(item.province);
-                                }
+                                };
                                 if (item.city) {
                                     location.push(item.city)
-                                }
+                                };
                                 if (item.county) {
                                     location.push(item.county)
-                                }
-                                ;
+                                };
                                 return (
                                     <div className="customer-name">
                                         <h3>
@@ -663,12 +664,10 @@ class PhoneAlert extends React.Component {
             </div>
         );
     }
-}
-;
+};
 PhoneAlert.defaultProps = {
     phonemsgObj: {},
     phoneObj: {},
-    setInitialPhoneObj: function () {
-    }
+    setInitialPhoneObj: function () {}
 };
 export default PhoneAlert;
