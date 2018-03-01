@@ -15,6 +15,7 @@ import PhoneInput from "CMP_DIR/phone-input";
 import Trace from "LIB_DIR/trace";
 import {isEqualArray} from "LIB_DIR/func";
 import CrmAction from "../../action/crm-actions";
+import {validateRequiredOne} from "PUB_DIR/sources/utils/common-method-util";
 var uuid = require("uuid/v4");
 
 function cx(classNames) {
@@ -377,13 +378,16 @@ var ContactForm = React.createClass({
     },
     //联系人名和部门必填一项的验证
     validateContactNameDepartment: function () {
-        let name = $.trim(this.state.formData.name);
-        let department = $.trim(this.state.formData.department);
-        if (name || department) {
-            //通过必填一项的验证
-            this.setState({isValidNameDepartment: true});
-        } else {//联系人姓名和部门都为空
-            this.setState({isValidNameDepartment: false});
+        //是否通过联系人名和部门必填一项的验证
+        let isValid = validateRequiredOne(this.state.formData.name,this.state.formData.department);
+        this.setState({isValidNameDepartment: isValid});
+    },
+    //渲染联系人名和部门必填一项的提示
+    renderValidNameDepartmentTip:function () {
+        if(this.state.isValidNameDepartment){
+            return null;
+        }else{
+            return <div className="name-department-required">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
         }
     },
     render: function () {
@@ -562,8 +566,7 @@ var ContactForm = React.createClass({
                                         />
                                     </Validator>
                                 </FormItem>
-                                {this.state.isValidNameDepartment ? null :
-                                    <div className="name-department-required">{Intl.get("123", "联系人姓名和部门必填一项")}</div>}
+                                {this.renderValidNameDepartmentTip()}
                                 <FormItem
                                     label={Intl.get("crm.113", "部门")}
                                     labelCol={{span: 5}}
@@ -574,6 +577,7 @@ var ContactForm = React.createClass({
                                            onChange={this.setField.bind(this, 'department')}
                                     />
                                 </FormItem>
+                                {this.renderValidNameDepartmentTip()}
                                 <FormItem
                                     label={Intl.get("crm.91", "职位")}
                                     labelCol={{span: 5}}

@@ -81,3 +81,14 @@ exports.getParamByPrivilege = function(){
     }
     return reqData;
 }
+//是否通过两项必填一项的验证
+exports.validateRequiredOne = function (item1, item2) {
+    item1 = $.trim(item1);
+    item2 = $.trim(item2);
+    if (item1 || item2) {
+        //通过必填一项的验证
+        return true;
+    } else {//联系人姓名和部门都为空
+       return false;
+    }
+}
