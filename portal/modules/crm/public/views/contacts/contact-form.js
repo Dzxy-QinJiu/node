@@ -577,7 +577,6 @@ var ContactForm = React.createClass({
                                            onChange={this.setField.bind(this, 'department')}
                                     />
                                 </FormItem>
-                                {this.renderValidNameDepartmentTip()}
                                 <FormItem
                                     label={Intl.get("crm.91", "职位")}
                                     labelCol={{span: 5}}
