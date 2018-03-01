@@ -1216,6 +1216,7 @@ var zh_CN = {
     "crm.call.no.remark": "最后联系但未写跟进记录",
     "crm.last.contact": "最后联系",
     "crm.qualified.roll.out": "转出",
+    "crm.contact.name.department": "联系人姓名和部门必填一项",
     // 客户管理end
 
     // 客户分析start

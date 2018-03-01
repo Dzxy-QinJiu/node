@@ -1198,6 +1198,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
     "crm.qualified.roll.out": "Roll out",//转出
+    "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     // 客户管理end
 
     //客户分析 start
