@@ -24,6 +24,8 @@ require("./css/index.less");
 const DIVLAYOUT = {
     //出现跟进内容输入框后的高度
     TRACELAYOUT: 160,
+    //顶部初始的高度
+    INITIALTRACELAYOUT: 86,
     //弹屏上部标题和输入框,添加按钮高度之和
     TRACE_CONTAINER_LAYOUT: 250,
     //弹屏上下的padding之和
@@ -89,9 +91,15 @@ class PhoneAlert extends React.Component {
         if (this.props.phoneObj && this.props.phoneObj.customerDetail) {
             phoneAlertAction.setCustomerInfoArr(this.props.phoneObj.customerDetail);
         }
+        var phonemsgObj = this.props.phonemsgObj;
         //通过座机拨打时，在alert状态之前的busy状态，不会推送电话号码，此电话在客户列表中存在的状态未知
-        if (_.isEmpty(this.props.phoneObj) && this.props.phonemsgObj.type == PHONERINGSTATUS.BUSY) {
+        if (_.isEmpty(this.props.phoneObj) && phonemsgObj.to) {
             phoneAlertAction.setCustomerUnknown(true);
+            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
+            this.setState({
+                phoneNum: phonemsgObj.to
+            })
+
         }
     };
 
@@ -138,18 +146,22 @@ class PhoneAlert extends React.Component {
         }
         //页面上如果存在模态框，并且用座机打电话时
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
-        //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态
-        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.BUSY && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
-            this.setState({
-                isModalShown: false,
-                phoneNum: "",
-                isAddFlag: false,
-                rightPanelIsShow: false,
-                isConnected: false,
-                addTraceItemId: ""
-            });
+        //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态,第一个状态是alert
+        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
+            //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
+            this.state.phoneNum = phonemsgObj.to;
+            this.state.phoneObj  = {};
+            this.state.phonemsgObj = phonemsgObj;
+            this.state.isAddFlag = false;
+            this.state.rightPanelIsShow = false;
+            this.state.isConnected = false;
+            this.state.addTraceItemId = "";
+            this.setState(this.state);
+            //将顶部高度减小
+            $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: DIVLAYOUT.INITIALTRACELAYOUT});
             //恢复初始数据
             phoneAlertAction.setInitialState();
+            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.props.setInitialPhoneObj();
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
@@ -182,12 +194,10 @@ class PhoneAlert extends React.Component {
             phonedesObj: phonedesObj,
             tip: ""
         };
-        if (phonemsgObj.type == PHONERINGSTATUS.BUSY) {
-            desTipObj.tip = `${Intl.get("call.record.phone.waiting", "等待对方接听")}`;
-        } else if (phonemsgObj.type == PHONERINGSTATUS.RING) {
+        if (phonemsgObj.type == PHONERINGSTATUS.RING) {
             desTipObj.tip = `${Intl.get("call.record.pick.phone", "请拿起话机")}`;
         } else if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃")}`;
+            desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             desTipObj.tip = `${Intl.get("call.record.phone.answered", "正在通话中")}`;
         } else if (phonemsgObj.type == PHONERINGSTATUS.BYE || phonemsgObj.type == PHONERINGSTATUS.record || phonemsgObj.type == PHONERINGSTATUS.phone) {
