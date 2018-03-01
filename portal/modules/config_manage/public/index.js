@@ -8,12 +8,14 @@ import RealmConfig from "./views/realm-config";
 import TeleConfig from "./views/tele-config";
 import Trace from "LIB_DIR/trace";
 import CompetingProductManage from "./views/competing-product";
+import SalesRoleManage from "./views/sales-role-manage";
 var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
 require("./css/index.less");
 const auths = {
 	STRATEGY: "GET_CONFIG_PWD_STRATEGY",// 获取安全域密码策略
 	TELECONFIG: "CUSTOMER_INVALID_PHONE_GET",// 获取客服电话权限
-	COMPETING_PRODUCT:"CRM_COMPETING_PRODUCT"//竞品管理权限
+	COMPETING_PRODUCT:"CRM_COMPETING_PRODUCT",//竞品管理权限
+    TEAM_ROLE_MANAGE:"TEAM_ROLE_MANAGE"//销售角色管理权限
 }
 var ConfigManage = React.createClass({
 	getInitialState: function () {
@@ -264,6 +266,9 @@ var ConfigManage = React.createClass({
 				</PrivilegeChecker>
 				<PrivilegeChecker check={auths.COMPETING_PRODUCT}>
 					<CompetingProductManage/>
+				</PrivilegeChecker>
+				<PrivilegeChecker check={auths.TEAM_ROLE_MANAGE}>
+					<SalesRoleManage/>
 				</PrivilegeChecker>
 			</div>
 		)

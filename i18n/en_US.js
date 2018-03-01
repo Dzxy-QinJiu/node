@@ -536,6 +536,7 @@ var en_US = {
     "role.default.get.failed": "Failed to get default role",//获取默认角色失败
     "role.default.del.failed": "Failed to cancel default role",//取消默认角色失败
     "role.default.set.failed": "Failed to set default role",//设置默认角色失败
+    "role.set.default": "Set default role",//设为默认角色
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     "authority.add.group": "Add Privilege Group",//添加权限组
@@ -878,6 +879,9 @@ var en_US = {
     "config.manage.reload.product": "Retry",//重新获取竞品
     "config.manage.competing.product": "Competing product",//竞品管理
     "config.manage.no.product": "There is no competing product, please add!",//暂无竞品配置，请添加！
+    "config.manage.sales.role": "Sales role management",//销售角色管理
+    "config.manage.reload.role": "Retry",//重新获取销售角色
+    "config.manage.no.role": "There is no sales role, please add!",//暂无销售角色，请添加！
     //配置end
     // 通话记录start
     "call.record.caller": "Caller", // 呼叫者
@@ -1714,6 +1718,7 @@ var en_US = {
     "errorcode.146": "The phone is offline",//分机离线
     "errorcode.147": "The qr code has expired",//二维码已失效
     "errorcode.148": "The call duration statistics view fails to be obtained",//电话时长统计视图获取失败
+    "errorcode.149": "Team roles have been allocated to sales",//团队角色已经分配给销售
     "user.input.phone": "Please input your phone",//请输入手机号
     "customer.search.by.customer.name": "Please search by customer name",//请输入客户名称搜索
     "user.user.info": "information",//开通信息

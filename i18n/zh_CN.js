@@ -541,6 +541,7 @@ var zh_CN = {
     "role.default.get.failed": "获取默认角色失败",
     "role.default.del.failed": "取消默认角色失败",
     "role.default.set.failed": "设置默认角色失败",
+    "role.set.default": "设为默认角色",
     /*角色管理模块-end*/
     /*权限管理模块-start*/
     "authority.add.group": "添加权限组",
@@ -890,6 +891,9 @@ var zh_CN = {
     "config.manage.reload.product": "重新获取竞品",
     "config.manage.competing.product": "竞品管理",
     "config.manage.no.product": "暂无竞品配置，请添加！",
+    "config.manage.sales.role": "销售角色管理",
+    "config.manage.reload.role": "重新获取销售角色",
+    "config.manage.no.role": "暂无销售角色，请添加！",
     //配置end
     // 通话记录start
     "call.record.caller": "呼叫者",
@@ -1746,6 +1750,7 @@ var zh_CN = {
     "errorcode.146": "分机离线",
     "errorcode.147": "二维码已失效",
     "errorcode.148": "电话时长统计视图获取失败",
+    "errorcode.149": "团队角色已经分配给销售",
 
     //遗漏部分
     "user.input.phone": "请输入手机号",
