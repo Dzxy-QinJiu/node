@@ -22,9 +22,9 @@ var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavE
 import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
 import language from "PUB_DIR/language/getLanguage";
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
-const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
-const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道
+import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "MOD_DIR/clue_customer/public/ajax/clue-customer-ajax";
+import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from "PUB_DIR/sources/utils/consts";
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get("common.all", "全部"),
@@ -521,7 +521,7 @@ var UserTabContent = React.createClass({
                     //是否展示 生成线索的 按钮，必须要选中某个应用，
                     // create_tag === "register" 表示是自注册的用户
                     // clue_created属性存在，并且为true 表示已经生成过线索客户
-                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created? true : false;
+                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created && hasPrivilege("CLUECUSTOMER_ADD")? true : false;
                     return user ? (
                         <div title={user.description}>
                             {user.description}
@@ -546,12 +546,12 @@ var UserTabContent = React.createClass({
             clue_source: Intl.get("clue.customer.register.self", "自主注册"),
             access_channel: Intl.get("clue.customer.product.website", "产品网站")
         };
-        //对用户的用户名进行校验，因为有的昵称是无
-        if (/^1[34578]\d{9}$/.test(defaultName)
+        //对用户的用户名进行校验，因为有的昵称是无, ,
+        if (commonPhoneRegex.test(defaultName)
             ||
-            /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(defaultName)
+            areaPhoneRegex.test(defaultName)
             ||
-            /^400-?\d{3}-?\d{4}$/.test(defaultName)) {
+            hotlinePhoneRegex.test(defaultName)) {
             //是用电话号码进行注册的
             defaultData.phone = defaultName
         } else if (_.indexOf(defaultName, "@") > -1) {

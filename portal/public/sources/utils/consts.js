@@ -36,6 +36,13 @@ export const logTypeList = [
 
 //客户名验证的正则表达式
 export const nameRegex = /^[\sa-zA-Z0-9_\-()（）.\u4e00-\u9fa5]{1,50}$/;
+//电话号码的校验
+//普通的电话号码
+export const commonPhoneRegex = /^1[34578]\d{9}$/;
+// 区号
+export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
+// 400 客服电话
+export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 
 export const SYSTEM_NOTICE_TYPES = {
     OFFSITE_LOGIN: "illegalLocation",//异地登录
@@ -64,3 +71,5 @@ export const SELECT_FULL_OPTIONS = [
     {value:"ahead_2day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":2})},
     {value:"ahead_3day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":3})},
 ];
+export const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
+export const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道

@@ -295,9 +295,9 @@ AppUserStore.prototype.updateUserInfo = function(userInfo) {
 };
 // 用户生成线索客户之后，把刚才的用户的apps中的clue_created属性设置为true
 AppUserStore.prototype.updateUserAppsInfo = function(userInfo) {
+    var editUserId = userInfo.user && userInfo.user.user_id;
     var targetUser = _.find(this.appUserList , (singleUser)=> {
         var userId = singleUser.user && singleUser.user.user_id;
-        var editUserId = userInfo.user && userInfo.user.user_id;
         return userId === editUserId;
     });
     if (targetUser && _.isArray(targetUser.apps) && targetUser.apps.length === 1){
