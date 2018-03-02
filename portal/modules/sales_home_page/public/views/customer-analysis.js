@@ -346,8 +346,7 @@ var CustomerAnalysis = React.createClass({
             <AntcHorizontalStageChart
                 chartData={stageData.reverse()}
                 width={this.chartWidth}
-                height={260}
-                loading={this.state.stageAnalysis.resultType === "loading"}
+                resultType={this.state.stageAnalysis.resultType}
             />
         );
     },
