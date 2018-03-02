@@ -1721,7 +1721,7 @@ const ApplyViewDetail = React.createClass({
     renderDuplicationName(errorMsg){
         this.toggleApplyExpanded(false);
         this.renderEditUserName();
-        message.warn(Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！") || errorMsg, 3);
+        message.warn( errorMsg || Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！"), 3);
     },
 
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
@@ -1830,12 +1830,14 @@ const ApplyViewDetail = React.createClass({
                         this.renderDuplicationName();
                         return;
                     }
-                } else {  // 没有更改用户名时（不触发校验）
+                } else {  // 没有更改用户名时（之前没有触发校验，此处需要先通过接口校验用户名是否存在）
                     let checkUserData = this.checkUserName();
-                    if (typeof(checkUserData) == 'Number') {
+                    if (_.isNumber(checkUserData) && checkUserData > 0) {
+                        //用户名已存在的提示
                         this.renderDuplicationName();
                         return;
-                    } else {
+                    } else if(_.isString(checkUserData)){
+                        //用户名校验接口报错的提示
                         this.renderDuplicationName(checkUserData);
                         return;
                     }

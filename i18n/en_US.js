@@ -1198,6 +1198,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
     "crm.qualified.roll.out": "Roll out",//转出
+    "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     // 客户管理end
 
     //客户分析 start
@@ -1940,6 +1941,9 @@ var en_US = {
     "clue.customer.product.website": "Production website",//产品网站
     "clue.customer.clue.name": "clue names",//线索名称
     "clue.customer.fillin.clue.name": "Please fill in the clue names",//请填写线索名称
-    "clue.customer.register.user": "registered user"//注册用户
+    "clue.customer.register.user": "registered user",//注册用户
+    "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
+    "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
+    "shedule.list.add.todo": "To do",//待办
 };
 export default en_US;

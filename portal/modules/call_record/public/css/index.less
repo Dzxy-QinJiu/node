@@ -56,18 +56,18 @@
   }
   .range-datepicker, .search-btn {
     float: left;
-    margin-top: 20px;
-    margin-left: 20px;
+    margin-top: @filter_area_margin_top;
   }
   .search-btn {
     width: 72px;
+    margin-left: 20px;
     span {
       font-size: 12px;
     }
     border-radius: 3px;
   }
   .call_record_wrap {
-    padding: 77px 50px 10px 50px;
+    padding: @top_nav_height+2 @container_padding 10px @container_padding;
     .filter-input-container {
       position: relative;
       //清空过滤内容的按钮
@@ -242,8 +242,8 @@
   .filter-phone-button {
     display: inline-block;
     position: relative;
-    margin-top: 20px;
-    margin-right: 50px;
+    margin-top: @filter_area_margin_top;
+    margin-right: @container_padding;
     float: right;
     height: 30px;
     .ant-checkbox {
@@ -373,8 +373,6 @@
       }
       //头部分隔线的样式
       .topNav {
-        height: 75px !important;
-        padding-left: 20px !important;
         &:before {
           left: 0 !important;
           right: 0 !important;

@@ -19,7 +19,7 @@
   //客户标签的样式设置
   .customer-label {
     float: right;
-    margin-right: 2px;
+    margin: 0px 8px;
     padding: 0 5px;
     height: 20px;
     line-height: 19px;
@@ -62,7 +62,7 @@
     height:30px;
     line-height:30px;
     margin-top:@filter_area_margin_top;
-    margin-left:50px;
+    margin-left:@container_padding;
     width:450px;
     .search-input-container{
       display:inline-block;
@@ -125,7 +125,7 @@
     cursor:default;
   }
   .content-block{
-    margin:80px 50px auto 50px;
+    margin: @top_nav_height+2 @container_padding auto @container_padding;
     .ant-table-placeholder{
       min-height: 550px;
     }

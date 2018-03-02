@@ -1,3 +1,4 @@
+@import '../../../../public/css/common-variables';
 // /近期登录用户列表的样式
 #app{
   .recent_login_users_panel.right-pannel-default{
@@ -13,12 +14,12 @@
         margin-left:-75px;
         //时间选择组件
         .recent-login-time-select{
-          margin-top:20px;
+          margin-top:@filter_area_margin_top;
           margin-left:25px;
         }
         //应用选择下拉框
         .recent-login-app-select{
-          margin-top:20px;
+          margin-top: @filter_area_margin_top;
           margin-left:20px;
           .ant-select{
             width:auto;
@@ -26,7 +27,7 @@
         }
         //类型选择下拉框
         .recent-login-type-select, .recent-login-filter-type-select{
-          margin-top: 20px;
+          margin-top: @filter_area_margin_top;
           margin-left: 20px;
           .ant-select{
             width: auto;
@@ -35,7 +36,7 @@
       }
       //近期登录用户列表
       .recent-login-users-table-wrap{
-        padding:77px 50px 0 50px;
+        padding:@top_nav_height+2 @container_padding 0 @container_padding;
         .user-list-thead {
           .ant-table-content {
             .ant-table-placeholder {

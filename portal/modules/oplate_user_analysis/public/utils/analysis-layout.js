@@ -1,6 +1,6 @@
 //布局常量
 exports.LAYOUTS = {
-    TOP : 83 + 76,
+    TOP : 83 + 65,
     BOTTOM : 19,
     //左侧的导航
     LEFT_NAVBAR : 75,

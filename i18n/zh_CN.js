@@ -1176,6 +1176,7 @@ var zh_CN = {
     "crm.211": "跟进内容",
     "crm.212": "请选择标签",
     "crm.213": "未分配客户",
+    "crm.214": "添加联系计划",
     "crm.over.day.without.contact": "超{day}天未联系",
     "crm.customer.interested": "添加关注",
     "crm.customer.uninterested": "取消关注",
@@ -1215,6 +1216,7 @@ var zh_CN = {
     "crm.call.no.remark": "最后联系但未写跟进记录",
     "crm.last.contact": "最后联系",
     "crm.qualified.roll.out": "转出",
+    "crm.contact.name.department": "联系人姓名和部门必填一项",
     // 客户管理end
 
     // 客户分析start
@@ -1980,6 +1982,9 @@ var zh_CN = {
     "clue.customer.product.website":"产品网站",
     "clue.customer.clue.name":"线索名称",
     "clue.customer.fillin.clue.name":"请填写线索名称",
-    "clue.customer.register.user":"注册用户"
+    "clue.customer.register.user":"注册用户",
+    "batch.failed.add.schedule":"{customerName}添加联系计划失败",
+    "batch.success.add.schedule":"所有联系计划均添加成功",
+    "shedule.list.add.todo": "待办",
 };
 export default zh_CN;

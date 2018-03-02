@@ -324,7 +324,7 @@ let SystemNotification = React.createClass({
         })
     },
     render: function () {
-        let containerHeight = $(window).height() - LAYOUT.BOTTOM - LAYOUT.TOP;
+        let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>

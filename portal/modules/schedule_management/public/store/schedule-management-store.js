@@ -9,14 +9,14 @@ import {addHyphenToPhoneNumber} from "LIB_DIR/func";
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 function ScheduleManagementStore() {
     //初始化state数据
-    this.getState();
+    this.setInitState();
     this.bindActions(ScheduleManagementAction);
     this.exportPublicMethods({
         setViewDate: this.setViewDate,
         getViewDate: this.getViewDate
     })
 }
-ScheduleManagementStore.prototype.getState = function () {
+ScheduleManagementStore.prototype.setInitState = function () {
     this.scheduleExpiredList = [];//过期日程列表
     this.scheduleExpiredSize = 0;//过期日程列表的数量
     this.isLoadingScheduleExpired = false;//正在获取过期日程列表

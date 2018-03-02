@@ -28,7 +28,7 @@ var AnalysisMenu = require("../../../components/analysis_menu");
 require("./css/index.less");
 //布局使用的计算的常量
 var LAYOUT = {
-    TOP : 76 + 20,
+    TOP : 65 + 20,
     BOTTOM : 32
 };
 
