@@ -236,13 +236,15 @@ function listPhoneNum(data) {
         phoneObj = data;
     }
 }
+// phoneObj 是包含所拨打的电话号码和客户信息的对象
 function setInitialPhoneObj() {
     phoneObj = {};
 }
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    if (hasPrivilege("CRM_LIST_CUSTOMERS")) {
+    //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
+    if (hasPrivilege("CRM_LIST_CUSTOMERS") && phonemsgObj.type !== "BUSY") {
         ReactDOM.render(
             <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
                                              setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,

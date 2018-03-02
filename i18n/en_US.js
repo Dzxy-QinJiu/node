@@ -1807,9 +1807,8 @@ var en_US = {
     "crm.customer.uninterested": "Unsubscribe",//取消关注
     "crm.customer.failed.interested": "Failed to update the information!",//修改失败
     "call.record.play": "PLAY",//播放录音
-    "call.record.phone.waiting": "Waiting for answering",//等待对方接听
     "call.record.pick.phone": "Please pick up the phone",//请拿起话机
-    "call.record.phone.alerting": "The phone is ringing",//已振铃
+    "call.record.phone.alerting": "The phone is ringing, Waiting for answering",//已振铃，等待对方接听
     "call.record.phone.answered": "Calling ",//正在通话中
     "call.record.phone.unknown": "Hang up the call",//结束通话
     "crm.phone.failed.add.trace": "Failed to add trace record",//添加跟进记录失败
