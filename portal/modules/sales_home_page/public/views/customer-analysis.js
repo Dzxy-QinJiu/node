@@ -347,7 +347,7 @@ var CustomerAnalysis = React.createClass({
                 chartData={stageData.reverse()}
                 width={this.chartWidth}
                 height={260}
-                loading={this.state.stageAnalysis.resultType === "loading"
+                loading={this.state.stageAnalysis.resultType === "loading"}
             />
         );
     },
