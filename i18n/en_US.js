@@ -1935,7 +1935,6 @@ var en_US = {
     "weekly.report.customer.stage.projected": "Project stage",//立项阶段
     "weekly.report.customer.stage.intentioned": "Intention stage",//意向阶段
     "weekly.report.customer.stage.info": "Information stage",//信息阶段
-    "app.user.register.self": "self-registered user",//自行注册用户
     "app.user.trans.clue.customer": "Generate clues",//生成线索
     "clue.customer.register.self": "Independent register",//自主注册
     "clue.customer.product.website": "Production website",//产品网站
