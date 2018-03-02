@@ -240,7 +240,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         this.setState({
             renderStageMax:_.max(_.pluck(stageData, "value"))
         });
-        return stageData;
+        return stageData.reverse();
     },
     //获取客户阶段统计图
     getCustomerStageChart : function() {
