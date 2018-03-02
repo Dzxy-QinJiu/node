@@ -21,6 +21,8 @@ var constantUtil = require("../util/constant");
 var delayConstant = constantUtil.DELAY.TIMERANG;
 import Analysis from "CMP_DIR/analysis";
 import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
+import { AntcHorizontalStageChart } from "antc";
+
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function () {
@@ -341,13 +343,11 @@ var CustomerAnalysis = React.createClass({
         const max = _.max(_.pluck(stageData, "value"));
 
         return (
-            <FunnelChart
-                list={stageData}
+            <AntcHorizontalStageChart
+                chartData={stageData.reverse()}
                 width={this.chartWidth}
                 height={260}
-                max={max}
-                minSize="5%"
-                resultType={this.state.stageAnalysis.resultType}
+                loading={this.state.stageAnalysis.resultType === "loading"
             />
         );
     },
