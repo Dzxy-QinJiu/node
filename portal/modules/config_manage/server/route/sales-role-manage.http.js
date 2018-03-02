@@ -44,6 +44,16 @@ module.exports = {
         "privileges": [
             "TEAM_ROLE_MANAGE"
         ]
+    },{//修改销售的角色
+        "method": "post",
+        "path": "/rest/sales/role/change",
+        "handler": "changeSalesRole",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "MEMBER_TEAM_ROLE_MANAGE"
+        ]
     }
     ]
 };

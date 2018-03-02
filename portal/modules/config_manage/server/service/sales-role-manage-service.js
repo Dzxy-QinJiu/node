@@ -6,10 +6,11 @@ var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 
 const salesRoleRestApis = {
-    getSalesRoleList: "http://172.19.105.57:8391/rest/base/v1/group/teamroles",
-    addSalesRole: "http://172.19.105.57:8391/rest/base/v1/group/teamrole",
-    deleteSalesRole: "http://172.19.105.57:8391/rest/base/v1/group/teamrole/:role_id",
-    setDefaultRole: "/rest/base/v1/group/teamrole/default/:role_id"
+    getSalesRoleList: "/rest/base/v1/group/teamroles",
+    addSalesRole: "/rest/base/v1/group/teamrole",
+    deleteSalesRole: "/rest/base/v1/group/teamrole/:role_id",
+    setDefaultRole: "/rest/base/v1/group/teamrole/default/:role_id",
+    changeSalesRole: "/rest/base/v1/user/member/teamrole"
 };
 
 //获取销售角色列表
@@ -43,4 +44,12 @@ exports.deleteSalesRole = function (req, res, role_id) {
         req: req,
         res: res
     }, null);
+};
+//修改销售的角色
+exports.changeSalesRole = function (req, res, obj) {
+    return restUtil.authRest.post({
+        url: salesRoleRestApis.changeSalesRole,
+        req: req,
+        res: res
+    }, obj);
 };

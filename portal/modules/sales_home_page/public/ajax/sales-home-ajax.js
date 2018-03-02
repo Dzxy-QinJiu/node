@@ -73,7 +73,8 @@ exports.getSalesTeamMembers = function (teamId) {
     salesTeamMembersAjax = teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: teamId
     }).sendRequest({
-        filter_manager: true//过滤掉舆情秘书
+        filter_manager: true,//过滤掉舆情秘书
+        with_teamrole: true
     }).success(function (list) {
         Deferred.resolve(list);
     }).error(function (xhr, statusText) {
@@ -269,7 +270,7 @@ exports.getWebsiteConfig = function () {
     return Deferred.promise();
 };
 //对网站进行个性化设置
-var setWebSiteConfigAjax ;
+var setWebSiteConfigAjax;
 exports.setWebsiteConfig = function (queryObj) {
     var Deferred = $.Deferred();
     setWebSiteConfigAjax && setWebSiteConfigAjax.abort();

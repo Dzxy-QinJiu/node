@@ -64,7 +64,9 @@ function turnToFrontMember(data) {
                 realmId: member.realm_id,
                 status: member.status,
                 userName: member.user_name,
-                userLogo: member.user_logo
+                userLogo: member.user_logo,
+                teamRoleId: member.teamrole_id,
+                teamRoleName: member.teamrole_name
             };
         });
     }

@@ -11,7 +11,7 @@ exports.getSalesRoleList = function (req, res) {
     });
 };
 // 添加销售角色
-exports.addSalesRole = function (req,res) {
+exports.addSalesRole = function (req, res) {
     salesRoleManageService.addSalesRole(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
@@ -19,7 +19,7 @@ exports.addSalesRole = function (req,res) {
     });
 };
 //设置默认角色
-exports.setDefaultRole = function (req,res){
+exports.setDefaultRole = function (req, res) {
     salesRoleManageService.setDefaultRole(req, res, req.params.role_id).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
@@ -27,9 +27,16 @@ exports.setDefaultRole = function (req,res){
     });
 };
 // 删除销售角色
-exports.deleteSalesRole = function (req,res) {
-    var ro = req.params.product;
+exports.deleteSalesRole = function (req, res) {
     salesRoleManageService.deleteSalesRole(req, res, req.params.role_id).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//修改销售的角色
+exports.changeSalesRole = function (req, res) {
+    salesRoleManageService.changeSalesRole(req, res, req.body).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
