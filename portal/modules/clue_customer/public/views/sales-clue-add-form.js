@@ -160,6 +160,8 @@ const SalesClueAddForm = React.createClass({
                             if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
                                 _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
                             }
+                            //线索客户添加成功后的回调
+                            _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                         } else {
                             this.setResultData(Intl.get("crm.154", "添加失败"), "error");
                         }

@@ -53,6 +53,7 @@ var UserTabContent = React.createClass({
             defaultClueData: {},//添加线索客户的默认信息
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            producingClueCustomerItem:{},//正在生成线索客户的用户
             ...AppUserStore.getState()
         };
     },
@@ -517,10 +518,14 @@ var UserTabContent = React.createClass({
                 key: 'description',
                 width: columnWidth,
                 render: function (user, rowData, idx) {
+                    //是否展示 生成线索的 按钮，必须要选中某个应用，
+                    // create_tag === "register" 表示是自注册的用户
+                    // clue_created属性存在，并且为true 表示已经生成过线索客户
+                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created? true : false;
                     return user ? (
                         <div title={user.description}>
                             {user.description}
-                            {user.description === Intl.get("app.user.register.self", "自行注册用户") ?
+                            {isShowTransClueButton ?
                                 <div className="trans-clue-customer">
                                     <Button type="primary"
                                             onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get("app.user.trans.clue.customer", "生成线索")}</Button>
@@ -541,14 +546,22 @@ var UserTabContent = React.createClass({
             clue_source: Intl.get("clue.customer.register.self", "自主注册"),
             access_channel: Intl.get("clue.customer.product.website", "产品网站")
         };
-        if (_.indexOf(defaultName, "@") > -1) {
-            defaultData.email = defaultName;
-        } else {
+        //对用户的用户名进行校验，因为有的昵称是无
+        if (/^1[34578]\d{9}$/.test(defaultName)
+            ||
+            /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(defaultName)
+            ||
+            /^400-?\d{3}-?\d{4}$/.test(defaultName)) {
+            //是用电话号码进行注册的
             defaultData.phone = defaultName
+        } else if (_.indexOf(defaultName, "@") > -1) {
+            //是用邮箱进行注册的
+            defaultData.email = defaultName;
         }
         this.setState({
             clueAddFormShow: true,
-            defaultClueData: defaultData
+            defaultClueData: defaultData,
+            producingClueCustomerItem: item// 正在生成线索客户的用户
         });
     },
     // 委内维拉项目，显示的列表项（不包括类型、所属客户、所属销售）
@@ -1060,6 +1073,13 @@ var UserTabContent = React.createClass({
             accessChannelArray: this.state.accessChannelArray
         })
     },
+    //线索客户添加完毕后
+    afterAddSalesClue: function () {
+        AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
+        this.setState({
+            producingClueCustomerItem:{}//正在生成线索客户的用户
+        })
+    },
     render: function () {
         return (
             <div ref="userListTable">
@@ -1074,6 +1094,7 @@ var UserTabContent = React.createClass({
                         clueSourceArray={this.state.clueSourceArray}
                         updateClueSource={this.updateClueSource}
                         updateClueChannel={this.updateClueChannel}
+                        afterAddSalesClue = {this.afterAddSalesClue}
                     />
                 ) : null}
             </div>
