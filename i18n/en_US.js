@@ -1932,10 +1932,16 @@ var en_US = {
     "weekly.report.login.count": "Login number",//登录数
     "weekly.report.active.radio": "Active rate",//活跃率
     "weekly.report.district.country": "District",//区县
-    "weekly.report.customer.stage":"Customer stage",//客户阶段
-    "weekly.report.customer.stage.projected":"Project stage",//立项阶段
-    "weekly.report.customer.stage.intentioned":"Intention stage",//意向阶段
-    "weekly.report.customer.stage.info":"Information stage",//信息阶段
+    "weekly.report.customer.stage": "Customer stage",//客户阶段
+    "weekly.report.customer.stage.projected": "Project stage",//立项阶段
+    "weekly.report.customer.stage.intentioned": "Intention stage",//意向阶段
+    "weekly.report.customer.stage.info": "Information stage",//信息阶段
+    "app.user.trans.clue.customer": "Generate clues",//生成线索
+    "clue.customer.register.self": "Independent register",//自主注册
+    "clue.customer.product.website": "Production website",//产品网站
+    "clue.customer.clue.name": "clue names",//线索名称
+    "clue.customer.fillin.clue.name": "Please fill in the clue names",//请填写线索名称
+    "clue.customer.register.user": "registered user",//注册用户
     "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
     "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
     "shedule.list.add.todo": "To do",//待办

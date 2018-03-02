@@ -87,7 +87,9 @@ function AppUserAction() {
         //设置是否展示近期登录用户列表的标识
         'setRecentLoginPanelFlag',
         //恢复初始数据
-        'setInitialData'
+        'setInitialData',
+        //用户生成线索客户后，更新apps中的clue_created属性
+        'updateUserAppsInfo'
     );
 
     //关闭右侧面板

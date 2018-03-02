@@ -25,6 +25,7 @@ const SalesClueAddForm = React.createClass({
     mixins: [FieldMixin],
     getInitialState: function () {
         const today = moment().format("YYYY-MM-DD");
+        var defalutData = this.props.defaultClueData ? this.props.defaultClueData : {};
         return {
             status: {
                 name: {},//客户名称
@@ -38,13 +39,13 @@ const SalesClueAddForm = React.createClass({
                 source_time: {}//线索时间
             },
             formData: {
-                name: "",//客户名称
-                contact_name: "",//联系人
-                phone: "",//联系电话
-                email: "",//邮箱
-                qq: "",//QQ
-                clue_source: "",//线索来源
-                access_channel: "",//接入渠道
+                name: defalutData.name ||  "",//客户名称
+                contact_name: defalutData.name ||  "",//联系人
+                phone: defalutData.phone || "",//联系电话
+                email: defalutData.email || "",//邮箱
+                qq: defalutData.qq || "",//QQ
+                clue_source: defalutData.clue_source || "",//线索来源
+                access_channel: defalutData.access_channel || "",//接入渠道
                 source: "",//线索描述
                 source_time: today,//线索时间，默认：今天
                 province: "",
@@ -154,11 +155,13 @@ const SalesClueAddForm = React.createClass({
                             clueCustomerAction.afterAddSalesClue(data.result);
                             //如果线索来源或者接入渠道加入新的类型
                             if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
-                                this.props.updateClueSource(submitObj.clue_source);
+                                _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
                             }
                             if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
-                                this.props.updateClueChannel(submitObj.access_channel);
+                                _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
                             }
+                            //线索客户添加成功后的回调
+                            _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                         } else {
                             this.setResultData(Intl.get("crm.154", "添加失败"), "error");
                         }
@@ -234,7 +237,7 @@ const SalesClueAddForm = React.createClass({
                     <Form horizontal className="crm-add-form sales-clue-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                label={Intl.get("crm.4", "客户名称")}
+                                label={Intl.get("clue.customer.clue.name","线索名称")}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={this.renderValidateStyle('name')}
@@ -242,7 +245,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
-                                           placeholder={Intl.get("crm.81", "请填写客户名称")}
+                                           placeholder={Intl.get("clue.customer.fillin.clue.name","请填写线索名称")}
                                            value={formData.name}
                                            onBlur={this.autoFillContentByName}
                                            onChange={this.setField.bind(this, 'name')}
@@ -311,9 +314,10 @@ const SalesClueAddForm = React.createClass({
                                         value={formData.clue_source}
                                 >
                                     {
+                                        _.isArray(this.props.clueSourceArray) ?
                                         this.props.clueSourceArray.map((source, idx) => {
                                             return (<Option key={idx} value={source}>{source}</Option>)
-                                        })
+                                        }) : null
                                     }
                                 </Select>
                             </FormItem>
@@ -331,10 +335,10 @@ const SalesClueAddForm = React.createClass({
                                         onChange={this.setField.bind(this, 'access_channel')}
                                         value={formData.access_channel}
                                 >
-                                    {
+                                    {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
                                             return (<Option key={idx} value={source}>{source}</Option>)
-                                        })
+                                        }) : null
                                     }
                                 </Select>
                             </FormItem>

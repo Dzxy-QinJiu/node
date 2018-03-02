@@ -1,7 +1,7 @@
 require("../../../../components/antd-table-pagination/index.less");
 var Spinner = require("../../../../components/spinner");
-import { AntcTable } from "antc";
-import {Tag, Icon, Alert} from "antd";
+import {AntcTable} from "antc";
+import {Tag, Icon, Alert, Button} from "antd";
 var AppUserStore = require("../store/app-user-store");
 
 var AppUserPanelSwitchStore = require("../store/app-user-panelswitch-store");
@@ -21,6 +21,10 @@ var batchPushEmitter = require("../../../../public/sources/utils/emitters").batc
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
 import language from "PUB_DIR/language/getLanguage";
+import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
+import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
+import clueCustomerAjax from "MOD_DIR/clue_customer/public/ajax/clue-customer-ajax";
+import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from "PUB_DIR/sources/utils/consts";
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get("common.all", "全部"),
@@ -44,9 +48,42 @@ var LAYOUT_CONSTANTS = {
 var UserTabContent = React.createClass({
     getInitialState: function () {
         return {
-            curShowCustomerId:"", //查看右侧详情的客户id
+            curShowCustomerId: "", //查看右侧详情的客户id
+            clueAddFormShow: false,//是否展示右侧添加线索客户的表单
+            defaultClueData: {},//添加线索客户的默认信息
+            accessChannelArray: accessChannelArray,//线索渠道
+            clueSourceArray: clueSourceArray,//线索来源
+            producingClueCustomerItem:{},//正在生成线索客户的用户
             ...AppUserStore.getState()
         };
+    },
+    componentDidMount: function () {
+        //获取线索来源
+        this.getClueSource();
+        //获取线索渠道
+        this.getClueChannel();
+    },
+    getClueSource: function () {
+        clueCustomerAjax.getClueSource().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueSourceArray: _.union(this.state.clueSourceArray, data.result)
+                });
+            }
+        }, errorMsg => {
+            console.log("获取线索来源出错了 " + errorMsg);
+        });
+    },
+    getClueChannel: function () {
+        clueCustomerAjax.getClueChannel().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    accessChannelArray: _.union(this.state.accessChannelArray, data.result)
+                });
+            }
+        }, errorMsg => {
+            console.log("获取线索渠道出错了 " + errorMsg);
+        });
     },
     fetchUserList: function (obj) {
         var sortable = this.state.selectedAppId && !this.state.filterRoles.selectedRole;
@@ -85,6 +122,11 @@ var UserTabContent = React.createClass({
     },
     onRowClick: function (event) {
         var target = event.target;
+        //如果点击到生成线索按钮，不展示客户详情
+        if ($(target).closest(".trans-clue-customer").length) {
+            return;
+        }
+
         if ($(target).closest(".ant-table-selection-column").length) {
             return;
         }
@@ -108,7 +150,7 @@ var UserTabContent = React.createClass({
             $(".user_manage_user_detail_wrap").removeClass("move_left");
         }
         //点击所属客户那一列，只有点击所属客户的客户名 才能展开客户的详情
-        if ($(target).closest(".owner-customer-wrap").length){
+        if ($(target).closest(".owner-customer-wrap").length) {
             var customer_id = $(event.currentTarget).find(".hidden_customer_id").val();
             //没有所属客户，就把之前展开的所属客户的右侧面板关掉
             if (!customer_id) {
@@ -116,7 +158,7 @@ var UserTabContent = React.createClass({
             }
             //关闭已经打开的用户详情
             AppUserAction.closeRightPanel();
-        }else{
+        } else {
             //如果点击除了所属客户列之外的列，要关闭已经打开的客户详情 打开对应的用户详情
             this.hideRightPanel();
             AppUserAction.showUserDetail(userObj);
@@ -127,9 +169,9 @@ var UserTabContent = React.createClass({
             curShowCustomerId: ""
         });
     },
-    showCustomerDetail:function (customer_id) {
+    showCustomerDetail: function (customer_id) {
         this.setState({
-            curShowCustomerId:customer_id,
+            curShowCustomerId: customer_id,
         });
     },
     //更新用户基本信息
@@ -138,8 +180,8 @@ var UserTabContent = React.createClass({
         AppUserAction.updateUserInfo(userInfo);
     },
     //更新客户信息
-    updateCustomerInfo: function ({ tag, customer_id, customer_name, user_id, sales_id, sales_name }) {
-        AppUserAction.updateCustomerInfo({ tag, customer_id, customer_name, user_id, sales_id, sales_name });
+    updateCustomerInfo: function ({tag, customer_id, customer_name, user_id, sales_id, sales_name}) {
+        AppUserAction.updateCustomerInfo({tag, customer_id, customer_name, user_id, sales_id, sales_name});
     },
     //更新单个应用的字段
     updateAppField: function (result) {
@@ -305,7 +347,7 @@ var UserTabContent = React.createClass({
         var isSelectAllApp = !this.state.selectedAppId;
         var sortable = !isSelectAllApp && !this.state.filterRoles.selectedRole;
         //内容是数字时的样式
-        let numClass = classNames("has-filter num-float-right", {"has-sorter" : sortable});
+        let numClass = classNames("has-filter num-float-right", {"has-sorter": sortable});
         //表头中字的个数设置不同宽度
         const fourWordWidth = 100, twoWordWidth = 50, multiWordWidth = 160, columnWidth = 200;
 
@@ -315,7 +357,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'account_name',
                 key: 'account_name',
                 width: multiWordWidth,
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable ? "has-sorter has-filter" : 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
@@ -327,14 +369,15 @@ var UserTabContent = React.createClass({
 
                     return (
                         <div title={user_name}>
-                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ? <i className="iconfont icon-warn-icon unnormal-login"
-                                title={Intl.get("user.login.abnormal", "异常登录")}></i> : null}
+                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
+                                <i className="iconfont icon-warn-icon unnormal-login"
+                                   title={Intl.get("user.login.abnormal", "异常登录")}></i> : null}
                             {rowData.apps[0].qualify_label == 1 ? (
                                 <Tag className="qualified-tag-style">
                                     {Intl.get("common.qualified", "合格")}</Tag>) : null
                             }
                             {user_name}
-                            <input type="hidden" className="hidden_user_id" value={user_id} />
+                            <input type="hidden" className="hidden_user_id" value={user_id}/>
                         </div>
                     );
                 }
@@ -344,7 +387,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'account_nickname',
                 key: 'account_nickname',
                 width: multiWordWidth,
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable ? "has-sorter has-filter" : 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     var nick_name = rowData.user && rowData.user.nick_name || '';
@@ -360,14 +403,16 @@ var UserTabContent = React.createClass({
                 dataIndex: 'customer_name',
                 key: 'customer_name',
                 width: multiWordWidth,
-                className: sortable? "has-sorter has-filter owner-customer-wrap": 'has-filter owner-customer-wrap',
+                className: sortable ? "has-sorter has-filter owner-customer-wrap" : 'has-filter owner-customer-wrap',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
                     var customer_id = rowData.customer && rowData.customer.customer_id || '';
                     return (
-                        <div title={customer_name} className="owner-customer" onClick={_this.showCustomerDetail.bind(this,customer_id)} data-tracename="点击所属客户列">{customer_name}
-                            <input type="hidden" className="hidden_customer_id" value={customer_id} />
+                        <div title={customer_name} className="owner-customer"
+                             onClick={_this.showCustomerDetail.bind(this, customer_id)}
+                             data-tracename="点击所属客户列">{customer_name}
+                            <input type="hidden" className="hidden_customer_id" value={customer_id}/>
                         </div>
                     );
                 }
@@ -404,7 +449,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'grant_create_date',
                 width: fourWordWidth,
                 key: 'grant_create_date',
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable ? "has-sorter has-filter" : 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     return AppUserUtil.getTimeList('create_time', rowData);
@@ -415,7 +460,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'end_date',
                 width: fourWordWidth,
                 key: 'end_date',
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable ? "has-sorter has-filter" : 'has-filter',
                 sorter: sortable,
                 render: function ($1, rowData, idx) {
                     return AppUserUtil.getTimeList('end_time', rowData);
@@ -426,7 +471,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'member_name',
                 width: fourWordWidth,
                 key: 'member_name',
-                className: sortable? "has-sorter has-filter": 'has-filter',
+                className: sortable ? "has-sorter has-filter" : 'has-filter',
                 sorter: sortable,
                 render: function (sales, rowData, idx) {
                     var sales_name = rowData.sales && rowData.sales.sales_name || '';
@@ -455,7 +500,7 @@ var UserTabContent = React.createClass({
                 dataIndex: 'login_day_count',
                 key: 'login_day_count',
                 width: fourWordWidth,
-                className:numClass,
+                className: numClass,
                 sorter: sortable,
                 render: function (text, rowData, idx) {
                     let loginDays = 0;
@@ -473,13 +518,51 @@ var UserTabContent = React.createClass({
                 key: 'description',
                 width: columnWidth,
                 render: function (user, rowData, idx) {
+                    //是否展示 生成线索的 按钮，必须要选中某个应用，
+                    // create_tag === "register" 表示是自注册的用户
+                    // clue_created属性存在，并且为true 表示已经生成过线索客户
+                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created && hasPrivilege("CLUECUSTOMER_ADD")? true : false;
                     return user ? (
-                        <div title={user.description}>{user.description}</div>
+                        <div title={user.description}>
+                            {user.description}
+                            {isShowTransClueButton ?
+                                <div className="trans-clue-customer">
+                                    <Button type="primary"
+                                            onClick={_this.transformClueCustomer.bind(this, rowData)}>{Intl.get("app.user.trans.clue.customer", "生成线索")}</Button>
+                                </div>
+                                : null}
+                        </div>
                     ) : null;
                 }
             }
         ];
         return columns;
+    },
+    //转化成线索客户
+    transformClueCustomer: function (item) {
+        var defaultName = item.user.user_name;
+        var defaultData = {
+            name: Intl.get("clue.customer.register.user", "注册用户") + defaultName,
+            clue_source: Intl.get("clue.customer.register.self", "自主注册"),
+            access_channel: Intl.get("clue.customer.product.website", "产品网站")
+        };
+        //对用户的用户名进行校验，因为有的昵称是无, ,
+        if (commonPhoneRegex.test(defaultName)
+            ||
+            areaPhoneRegex.test(defaultName)
+            ||
+            hotlinePhoneRegex.test(defaultName)) {
+            //是用电话号码进行注册的
+            defaultData.phone = defaultName
+        } else if (_.indexOf(defaultName, "@") > -1) {
+            //是用邮箱进行注册的
+            defaultData.email = defaultName;
+        }
+        this.setState({
+            clueAddFormShow: true,
+            defaultClueData: defaultData,
+            producingClueCustomerItem: item// 正在生成线索客户的用户
+        });
     },
     // 委内维拉项目，显示的列表项（不包括类型、所属客户、所属销售）
     getTableColumnsVe: function () {
@@ -523,7 +606,7 @@ var UserTabContent = React.createClass({
      * @param value 过滤字段的值  xxx
      */
     toggleSearchField: function (field, value) {
-        AppUserAction.toggleSearchField({ field, value });
+        AppUserAction.toggleSearchField({field, value});
         //页面滚动条置顶，避免重新获取数据之后，接着翻页
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         setTimeout(() => {
@@ -532,7 +615,8 @@ var UserTabContent = React.createClass({
     },
     renderFilterBlock: function () {
         return (
-            <div className="global_filter_adv" ref="filter_adv" style={{ display: this.state.filterAreaExpanded ? 'block' : 'none' }}>
+            <div className="global_filter_adv" ref="filter_adv"
+                 style={{display: this.state.filterAreaExpanded ? 'block' : 'none'}}>
                 {this.renderFilterFields()}
                 {!this.props.customer_id && (language.lan() == "zh" || language.lan() == "en") ? this.renderFilterRoles() : null}
             </div>
@@ -541,54 +625,78 @@ var UserTabContent = React.createClass({
     //渲染过滤字段筛选条件列表
     renderFilterFields: function () {
         //当按照角色筛选的时候，不能再按照其他条件筛选
-        return <div style={{ display: this.state.filterRoles.selectedRole ? 'none' : 'block' }}>
+        return <div style={{display: this.state.filterRoles.selectedRole ? 'none' : 'block'}}>
             <dl>
-                <dt><ReactIntl.FormattedMessage id="user.overdue.whether" defaultMessage="是否过期" />：</dt>
+                <dt><ReactIntl.FormattedMessage id="user.overdue.whether" defaultMessage="是否过期"/>：</dt>
                 <dd>
                     <ul>
-                        <li onClick={this.toggleSearchField.bind(this, "outdate", "")} className={this.getFilterFieldClass("outdate", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "outdate", "1")} className={this.getFilterFieldClass("outdate", "1")}><ReactIntl.FormattedMessage id="user.overdue" defaultMessage="过期" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "outdate", "0")} className={this.getFilterFieldClass("outdate", "0")}><ReactIntl.FormattedMessage id="user.overdue.not" defaultMessage="未过期" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "outdate", "1w")} className={this.getFilterFieldClass("outdate", "1w")}><ReactIntl.FormattedMessage id="user.overdue.one.week" defaultMessage="一周内过期" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "outdate", "is_filter_forever")} className={this.getFilterFieldClass("outdate", "is_filter_forever")}><ReactIntl.FormattedMessage id="user.overdue.not.forever" defaultMessage="永不过期" /></li>
+                        <li onClick={this.toggleSearchField.bind(this, "outdate", "")}
+                            className={this.getFilterFieldClass("outdate", "")}><ReactIntl.FormattedMessage
+                            id="common.all" defaultMessage="全部"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "outdate", "1")}
+                            className={this.getFilterFieldClass("outdate", "1")}><ReactIntl.FormattedMessage
+                            id="user.overdue" defaultMessage="过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "outdate", "0")}
+                            className={this.getFilterFieldClass("outdate", "0")}><ReactIntl.FormattedMessage
+                            id="user.overdue.not" defaultMessage="未过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "outdate", "1w")}
+                            className={this.getFilterFieldClass("outdate", "1w")}><ReactIntl.FormattedMessage
+                            id="user.overdue.one.week" defaultMessage="一周内过期"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "outdate", "is_filter_forever")}
+                            className={this.getFilterFieldClass("outdate", "is_filter_forever")}>
+                            <ReactIntl.FormattedMessage id="user.overdue.not.forever" defaultMessage="永不过期"/></li>
                     </ul>
                 </dd>
             </dl>
             {Oplate.hideSomeItem ? null : (
                 <dl>
-                    <dt><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" />：</dt>
+                    <dt><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型"/>：</dt>
                     <dd>
                         <ul>
-                            <li onClick={this.toggleSearchField.bind(this, "user_type", "")} className={this.getFilterFieldClass("user_type", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                            <li onClick={this.toggleSearchField.bind(this, "user_type", "")}
+                                className={this.getFilterFieldClass("user_type", "")}><ReactIntl.FormattedMessage
+                                id="common.all" defaultMessage="全部"/></li>
                             {
                                 _.map(AppUserUtil.USER_TYPE_VALUE_MAP, (value, KEY) => {
                                     var value = AppUserUtil.USER_TYPE_VALUE_MAP[KEY];
                                     var text = AppUserUtil.USER_TYPE_TEXT_MAP[KEY];
-                                    return <li onClick={this.toggleSearchField.bind(this, "user_type", value)} className={this.getFilterFieldClass("user_type", value)}>{text}</li>
+                                    return <li onClick={this.toggleSearchField.bind(this, "user_type", value)}
+                                               className={this.getFilterFieldClass("user_type", value)}>{text}</li>
                                 })
                             }
-                            <li onClick={this.toggleSearchField.bind(this, "user_type", "unknown")} className={this.getFilterFieldClass("user_type", "unknown")}><ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知" /></li>
+                            <li onClick={this.toggleSearchField.bind(this, "user_type", "unknown")}
+                                className={this.getFilterFieldClass("user_type", "unknown")}><ReactIntl.FormattedMessage
+                                id="common.unknown" defaultMessage="未知"/></li>
                         </ul>
                     </dd>
                 </dl>
             )}
 
             <dl>
-                <dt><ReactIntl.FormattedMessage id="user.user.status" defaultMessage="用户状态" />：</dt>
+                <dt><ReactIntl.FormattedMessage id="user.user.status" defaultMessage="用户状态"/>：</dt>
                 <dd>
                     <ul>
-                        <li onClick={this.toggleSearchField.bind(this, "user_status", "")} className={this.getFilterFieldClass("user_status", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "user_status", "1")} className={this.getFilterFieldClass("user_status", "1")}><ReactIntl.FormattedMessage id="common.enabled" defaultMessage="启用" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "user_status", "0")} className={this.getFilterFieldClass("user_status", "0")}><ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用" /></li>
+                        <li onClick={this.toggleSearchField.bind(this, "user_status", "")}
+                            className={this.getFilterFieldClass("user_status", "")}><ReactIntl.FormattedMessage
+                            id="common.all" defaultMessage="全部"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "user_status", "1")}
+                            className={this.getFilterFieldClass("user_status", "1")}><ReactIntl.FormattedMessage
+                            id="common.enabled" defaultMessage="启用"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "user_status", "0")}
+                            className={this.getFilterFieldClass("user_status", "0")}><ReactIntl.FormattedMessage
+                            id="common.stop" defaultMessage="停用"/></li>
                     </ul>
                 </dd>
             </dl>
             <dl>
-                <dt>{Intl.get("oplate.user.label","用户标签")}：</dt>
+                <dt>{Intl.get("oplate.user.label", "用户标签")}：</dt>
                 <dd>
                     <ul>
-                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "")} className={this.getFilterFieldClass("qualify_label", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "1")} className={this.getFilterFieldClass("qualify_label", "1")}>{Intl.get("common.qualified","合格")}</li>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "")}
+                            className={this.getFilterFieldClass("qualify_label", "")}><ReactIntl.FormattedMessage
+                            id="common.all" defaultMessage="全部"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "1")}
+                            className={this.getFilterFieldClass("qualify_label", "1")}>{Intl.get("common.qualified", "合格")}</li>
                     </ul>
                 </dd>
             </dl>
@@ -597,20 +705,20 @@ var UserTabContent = React.createClass({
                 <div>
                     {Oplate.hideSomeItem ? null : (
                         <dl>
-                            <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" />：</dt>
+                            <dt><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户"/>：</dt>
                             <dd>
                                 <ul>
                                     <li
                                         onClick={this.toggleSearchField.bind(this, "customer_unknown", "")}
                                         className={this.getFilterFieldClass("customer_unknown", "")}
                                     >
-                                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" />
+                                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/>
                                     </li>
                                     <li
                                         onClick={this.toggleSearchField.bind(this, "customer_unknown", "true")}
                                         className={this.getFilterFieldClass("customer_unknown", "true")}
                                     >
-                                        <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知" />
+                                        <ReactIntl.FormattedMessage id="common.unknown" defaultMessage="未知"/>
                                     </li>
                                 </ul>
 
@@ -618,19 +726,25 @@ var UserTabContent = React.createClass({
                         </dl>
                     )}
                     <dl >
-                        <dt><ReactIntl.FormattedMessage id="user.expire.stop" defaultMessage="到期停用" />：</dt>
+                        <dt><ReactIntl.FormattedMessage id="user.expire.stop" defaultMessage="到期停用"/>：</dt>
                         <dd>
                             <ul>
-                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "")} className={this.getFilterFieldClass("over_draft", "")}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
-                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "true")} className={this.getFilterFieldClass("over_draft", "true")}><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></li>
-                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "false")} className={this.getFilterFieldClass("over_draft", "false")}><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></li>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "")}
+                                    className={this.getFilterFieldClass("over_draft", "")}><ReactIntl.FormattedMessage
+                                    id="common.all" defaultMessage="全部"/></li>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "true")}
+                                    className={this.getFilterFieldClass("over_draft", "true")}>
+                                    <ReactIntl.FormattedMessage id="user.yes" defaultMessage="是"/></li>
+                                <li onClick={this.toggleSearchField.bind(this, "over_draft", "false")}
+                                    className={this.getFilterFieldClass("over_draft", "false")}>
+                                    <ReactIntl.FormattedMessage id="user.no" defaultMessage="否"/></li>
                             </ul>
                         </dd>
                     </dl>
                     {Oplate.hideSomeItem ? null : this.renderFilterTeamName()}
                     {((language.lan() == "zh" || language.lan() == "en") && hasPrivilege("GET_LOGIN_EXCEPTION_USERS")) ?
                         (<dl>
-                            <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录" />：</dt>
+                            <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录"/>：</dt>
                             <dd>
                                 <ul>
                                     {EXCEPTION_TYPES.map(exceptionObj => {
@@ -644,7 +758,7 @@ var UserTabContent = React.createClass({
                             </dd>
                         </dl>)
                         : null}
-            </div>)}
+                </div>)}
         </div>
     },
     //针对一个角色id进行过滤
@@ -676,12 +790,13 @@ var UserTabContent = React.createClass({
         if (filterRolesResult === 'loading') {
             return <dl className="filter_roles filter_roles_loading" style={styleObj}>
                 <dt>
-                    <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色" />
-                    ：</dt>
+                    <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
+                    ：
+                </dt>
                 <dd>
                     <ul>
                         <li>
-                            <Icon type="loading" />
+                            <Icon type="loading"/>
                         </li>
                     </ul>
                 </dd>
@@ -690,12 +805,14 @@ var UserTabContent = React.createClass({
         if (filterRolesResult === 'error') {
             return <dl className="filter_roles filter_roles_error" style={styleObj}>
                 <dt>
-                    <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色" />：</dt>
+                    <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>：
+                </dt>
                 <dd>
                     <ul>
                         <li>
-                            <Alert message={filterRoles.errorMsg} type="error" showIcon />，
-                                    <a href="javascript:void(0)" onClick={this.retryLoadRoles}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
+                            <Alert message={filterRoles.errorMsg} type="error" showIcon/>，
+                            <a href="javascript:void(0)" onClick={this.retryLoadRoles}><ReactIntl.FormattedMessage
+                                id="common.retry" defaultMessage="重试"/></a>
                         </li>
                     </ul>
                 </dd>
@@ -706,16 +823,19 @@ var UserTabContent = React.createClass({
         });
         return <dl className="filter_roles" style={styleObj}>
             <dt>
-                <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色" />：</dt>
+                <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>：
+            </dt>
             <dd>
                 <ul>
-                    <li className={totolClass} onClick={this.filterUserByRole.bind(this, '')}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                    <li className={totolClass} onClick={this.filterUserByRole.bind(this, '')}>
+                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
                         filterRoles.roles.map((role) => {
                             var cls = classNames({
                                 selected: role.role_id === selectedRole
                             });
-                            return <li className={cls} onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>
+                            return <li className={cls}
+                                       onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>
                         })
                     }
                 </ul>
@@ -738,27 +858,30 @@ var UserTabContent = React.createClass({
         //已选中的团队
         var selectedTeams = filterTeams.selectedTeams;
         if (filterTeamsResult === 'loading') {
-            return <dl className="filter_teams filter_teams_loading" >
+            return <dl className="filter_teams filter_teams_loading">
                 <dt>
-                    <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队" />：</dt>
+                    <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队"/>：
+                </dt>
                 <dd>
                     <ul>
                         <li>
-                            <Icon type="loading" />
+                            <Icon type="loading"/>
                         </li>
                     </ul>
                 </dd>
             </dl>;
         }
         if (filterTeamsResult === 'error') {
-            return <dl className="filter_teams filter_teams_error"  >
+            return <dl className="filter_teams filter_teams_error">
                 <dt>
-                    <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队" />：</dt>
+                    <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队"/>：
+                </dt>
                 <dd>
                     <ul>
                         <li>
-                            <Alert message={filterTeams.errorMsg} type="error" showIcon />，
-                            <a href="javascript:void(0)" onClick={this.retryLoadTeams}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
+                            <Alert message={filterTeams.errorMsg} type="error" showIcon/>，
+                            <a href="javascript:void(0)" onClick={this.retryLoadTeams}><ReactIntl.FormattedMessage
+                                id="common.retry" defaultMessage="重试"/></a>
                         </li>
                     </ul>
                 </dd>
@@ -769,17 +892,20 @@ var UserTabContent = React.createClass({
         });
         return <dl className="filter_teams">
             <dt>
-                <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队" />
-                ：</dt>
+                <ReactIntl.FormattedMessage id="user.user.team" defaultMessage="团队"/>
+                ：
+            </dt>
             <dd>
                 <ul>
-                    <li className={totolClass} onClick={this.toggleSearchField.bind(this, 'team_ids', '')}><ReactIntl.FormattedMessage id="common.all" defaultMessage="全部" /></li>
+                    <li className={totolClass} onClick={this.toggleSearchField.bind(this, 'team_ids', '')}>
+                        <ReactIntl.FormattedMessage id="common.all" defaultMessage="全部"/></li>
                     {
                         filterTeams.teamlists.map((team) => {
                             var cls = classNames({
                                 selected: team_ids.indexOf(team.group_id) >= 0
                             });
-                            return <li className={cls} onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>
+                            return <li className={cls}
+                                       onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>
                         })
                     }
                 </ul>
@@ -861,9 +987,10 @@ var UserTabContent = React.createClass({
             showNoMoreDataTip: this.showNoMoreDataTip(),
         }
         return (
-            <div className="user-list-table-wrap scroll-load userlist-fix" id="new-table" style={{ display: doNotShow ? 'none' : 'block' }}>
+            <div className="user-list-table-wrap scroll-load userlist-fix" id="new-table"
+                 style={{display: doNotShow ? 'none' : 'block'}}>
 
-                <div className="user-list-tbody custom-tbody" style={{ height: divHeight }} ref="tableWrap">
+                <div className="user-list-tbody custom-tbody" style={{height: divHeight}} ref="tableWrap">
                     <AntcTable
                         dropLoad={dropLoadConfig}
                         dataSource={this.state.appUserList}
@@ -878,7 +1005,7 @@ var UserTabContent = React.createClass({
                             filterReset: Intl.get("user.reset", "重置"),
                             emptyText: this.state.appUserListResult === 'error' ? this.state.getAppUserListErrorMsg || Intl.get("user.list.get.failed", "获取用户列表失败") : Intl.get("common.no.data", "暂无数据")
                         }}
-                        scroll={{ x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight }}
+                        scroll={{x: Oplate.hideSomeItem ? 1130 : (hasSelectAuth ? 1460 : 1440), y: divHeight}}
                         util={{
                             zoomInSortArea: true
                         }}
@@ -893,7 +1020,8 @@ var UserTabContent = React.createClass({
                                     defaultMessage={`请{retry}`}
                                     values={{
                                         "retry": <a
-                                            onClick={this.handleScrollBottom}><ReactIntl.FormattedMessage id="common.retry" defaultMessage="重试" /></a>
+                                            onClick={this.handleScrollBottom}><ReactIntl.FormattedMessage
+                                            id="common.retry" defaultMessage="重试"/></a>
                                     }}
                                 />
                             </div>
@@ -918,12 +1046,39 @@ var UserTabContent = React.createClass({
                         currentId={this.state.curShowCustomerId}
                         showFlag={true}
                         hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={function () { }}
+                        refreshCustomerList={function () {
+                        }}
                         userViewShowCustomerUserListPanel={true}
                     />
                 ) : null}
             </div>
         );
+    },
+    hideClueAddForm: function () {
+        this.setState({
+            clueAddFormShow: false
+        })
+    },
+    //更新线索来源列表
+    updateClueSource: function (newSource) {
+        this.state.clueSourceArray.push(newSource);
+        this.setState({
+            clueSourceArray: this.state.clueSourceArray
+        })
+    },
+    //更新线索渠道列表
+    updateClueChannel: function (newChannel) {
+        this.state.accessChannelArray.push(newChannel);
+        this.setState({
+            accessChannelArray: this.state.accessChannelArray
+        })
+    },
+    //线索客户添加完毕后
+    afterAddSalesClue: function () {
+        AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
+        this.setState({
+            producingClueCustomerItem:{}//正在生成线索客户的用户
+        })
     },
     render: function () {
         return (
@@ -931,6 +1086,17 @@ var UserTabContent = React.createClass({
                 {this.renderFilterBlock()}
                 {this.renderLoadingBlock()}
                 {this.renderTableBlock()}
+                {this.state.clueAddFormShow ? (
+                    <SalesClueAddForm
+                        defaultClueData={this.state.defaultClueData}
+                        hideAddForm={this.hideClueAddForm}
+                        accessChannelArray={this.state.accessChannelArray}
+                        clueSourceArray={this.state.clueSourceArray}
+                        updateClueSource={this.updateClueSource}
+                        updateClueChannel={this.updateClueChannel}
+                        afterAddSalesClue = {this.afterAddSalesClue}
+                    />
+                ) : null}
             </div>
         );
     }

@@ -31,8 +31,7 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import {SELECT_TYPE} from "./utils/clue-customer-utils";
 import CONSTS from  "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
-const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
-const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道
+import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -175,11 +174,6 @@ const ClueCustomer = React.createClass({
         this.setState({
             clueAddFormShow: false
         });
-    },
-    //增加一个
-    addOne: function () {
-        this.state.isAddFlag = false;
-        this.setState(this.state);
     },
     //展示右侧面板
     showRightPanel: function (id) {
@@ -646,7 +640,6 @@ const ClueCustomer = React.createClass({
                     {this.state.clueAddFormShow ? (
                         <SalesClueAddForm
                             hideAddForm={this.hideClueAddForm}
-                            addOne={this.addOne}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
                             updateClueSource={this.updateClueSource}

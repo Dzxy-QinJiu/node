@@ -293,6 +293,18 @@ AppUserStore.prototype.updateUserInfo = function(userInfo) {
         $.extend(targetUser.user , userInfo);
     }
 };
+// 用户生成线索客户之后，把刚才的用户的apps中的clue_created属性设置为true
+AppUserStore.prototype.updateUserAppsInfo = function(userInfo) {
+    var editUserId = userInfo.user && userInfo.user.user_id;
+    var targetUser = _.find(this.appUserList , (singleUser)=> {
+        var userId = singleUser.user && singleUser.user.user_id;
+        return userId === editUserId;
+    });
+    if (targetUser && _.isArray(targetUser.apps) && targetUser.apps.length === 1){
+        //生成线索客户后，要在对应应用的字段上加上clue_created 属性为true
+        targetUser.apps[0].clue_created = true;
+    }
+};
 
 //从右侧面板更改“客户”。同步到用户列表中
 AppUserStore.prototype.updateCustomerInfo = function({tag,customer_id,customer_name,user_id,sales_id,sales_name}) {
