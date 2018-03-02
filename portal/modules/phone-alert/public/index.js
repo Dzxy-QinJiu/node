@@ -76,7 +76,8 @@ class PhoneAlert extends React.Component {
             customerLayoutHeight: 0,//跟进记录内容确定后，下面客户详情所占的大小
             isConnected: false,//打电话的过程中是否接通了
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
+            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
+            isInitialHeight: true, //恢复到初始的高度
         };
     };
 
@@ -144,6 +145,13 @@ class PhoneAlert extends React.Component {
                 addTraceItemId: addTraceItemId,
             });
         }
+        //通话结束后，包含输入跟进记录的容器的高度需要变大
+        if (phonemsgObj.type === PHONERINGSTATUS.record || phonemsgObj.type === PHONERINGSTATUS.BYE || phonemsgObj.type === PHONERINGSTATUS.phone){
+            this.setState({
+                isInitialHeight: false
+            })
+        }
+
         //页面上如果存在模态框，并且用座机打电话时
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
         //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态,第一个状态是alert
@@ -156,9 +164,8 @@ class PhoneAlert extends React.Component {
             this.state.rightPanelIsShow = false;
             this.state.isConnected = false;
             this.state.addTraceItemId = "";
+            this.state.isInitialHeight = true;
             this.setState(this.state);
-            //将顶部高度减小
-            $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: DIVLAYOUT.INITIALTRACELAYOUT});
             //恢复初始数据
             phoneAlertAction.setInitialState();
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
@@ -614,6 +621,10 @@ class PhoneAlert extends React.Component {
             'phone-alert-modal-inner': true,
             'add-more-info': this.state.isAddingMoreProdctInfo
         });
+        var PhoneAlertModalTitleCls = classNames({
+            'phone-alert-modal-title': true,
+            'initial-height': this.state.isInitialHeight
+        });
         return (
             <div data-tracename="电话弹屏">
                 {this.state.isModalShown ? (<div id="phone-alert-container">
@@ -622,7 +633,7 @@ class PhoneAlert extends React.Component {
                         <button className="modal-close iconfont icon-close" type="button"
                                 onClick={this.closeModal} data-tracename="关闭电话弹屏"></button>
                         <div className={AddMoreInfoCls}>
-                            <div className="phone-alert-modal-title">
+                            <div className={PhoneAlertModalTitleCls}>
                                 <span id="iconfont-tip">
                                     <i className={iconFontCls}></i>
                                 </span>
