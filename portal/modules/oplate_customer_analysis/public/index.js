@@ -265,7 +265,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 target: "Customer"+getDataAuthType(),
-                chartType: "funnel",
+                chartType: "horizontalStage",
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
                 property: "stage",
@@ -273,7 +273,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 valueField: "total",
                 width:this.chartWidth,
                 height: CHART_HEIGHT,
-                minSize:"5%",
+                chartHeight: 100,
                 title:"",
                 processData: this.processOrderStageChartData,
                 max:this.state.renderStageMax,
