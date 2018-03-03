@@ -240,7 +240,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         this.setState({
             renderStageMax:_.max(_.pluck(stageData, "value"))
         });
-        return stageData.reverse();
+        return stageData;
     },
     //获取客户阶段统计图
     getCustomerStageChart : function() {
@@ -265,7 +265,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return (
             this.getComponent(Analysis, {
                 target: "Customer"+getDataAuthType(),
-                chartType: "horizontalStage",
+                chartType: "funnel",
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
                 property: "stage",
@@ -273,7 +273,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 valueField: "total",
                 width:this.chartWidth,
                 height: CHART_HEIGHT,
-                chartHeight: 100,
+                minSize:"5%",
                 title:"",
                 processData: this.processOrderStageChartData,
                 max:this.state.renderStageMax,
