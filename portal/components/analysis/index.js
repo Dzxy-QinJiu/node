@@ -5,7 +5,7 @@ require("./style.less");
 import LineChart from "../chart/line";
 import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
-import { AntcBarPieChart, AntcHorizontalStageChart } from "antc";
+import { AntcBarPieChart } from "antc";
 import Retention from "../chart/retention";
 import Funnel from  "../chart/funnel";
 import Box from "../chart/box";
@@ -30,8 +30,7 @@ const CHART_TYPE_MAP = {
     bar_pie: AntcBarPieChart,
     retention: Retention,
     funnel: Funnel,
-    signingStatistics: SigningStatistics,
-    horizontalStage: AntcHorizontalStageChart,
+    signingStatistics: SigningStatistics
 };
 
 const Analysis = React.createClass({
@@ -253,7 +252,7 @@ const Analysis = React.createClass({
             }
         }else{
             return (
-                <div style={{height: "100%"}}>
+                <div>
                     {this.renderAfterLoadingAndNoErr(chartType, props)}
                 </div>
             );
@@ -277,10 +276,6 @@ const Analysis = React.createClass({
 
         _.extend(props, this.props);
         if (props.extendLegend) props.legend = props.legend.concat(props.extendLegend);
-
-        if (props.chartHeight) {
-            props.height = props.chartHeight;
-        }
 
         const chartType = CHART_TYPE_MAP[props.chartType];
         return (
