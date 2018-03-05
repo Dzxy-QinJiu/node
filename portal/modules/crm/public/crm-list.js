@@ -515,19 +515,19 @@ var Crm = React.createClass({
         }
         //阶段标签的处理
         if (condition.customer_label) {
-            if (condition.customer_label === Intl.get("common.qualified", "合格") ||
-                condition.customer_label === Intl.get("common.trial.qualified", "试用合格") ||
-                condition.customer_label === Intl.get("common.official.qualified", "签约合格")) {
+            if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED ||
+                condition.customer_label === crmUtil.CUSTOMER_TAGS.TRIAL_QUALIFIED ||
+                condition.customer_label === crmUtil.CUSTOMER_TAGS.SIGN_QUALIFIED) {
                 //合格标签的筛选
                 condition.qualify_label = "1";
-                if (condition.customer_label === Intl.get("common.qualified", "合格")) {//只筛选”合格“时
+                if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED) {//只筛选”合格“时
                     delete condition.customer_label;
                 } else {//试用合格、签约合格的筛选时，是试用、签约标签与合格标签的组合筛选
                     //试用、签约的处理(精确匹配)
-                    condition.customer_label = condition.customer_label.split(Intl.get("common.qualified", "合格"))[0];
+                    condition.customer_label = condition.customer_label.split(crmUtil.CUSTOMER_TAGS.QUALIFIED)[0];
                     term_fields.push("customer_label");
                 }
-            } else if (condition.customer_label === Intl.get("common.history.qualified", "曾经合格")) {
+            } else if (condition.customer_label === crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED) {
                 //曾经合格的处理
                 condition.qualify_label = "2";
                 delete condition.customer_label;
@@ -1044,8 +1044,8 @@ var Crm = React.createClass({
                                 }
                                 {record.qualify_label ? (
                                     <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                        {record.qualify_label == 1 ? Intl.get("common.qualified", "合格") :
-                                            record.qualify_label == 2 ? Intl.get("common.history.qualified", "曾经合格") : ""}</Tag>) : null
+                                        {record.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                            record.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
                                 }
                                 {text}
                             </div>

@@ -169,8 +169,8 @@ var BasicData = React.createClass({
                                             }
                                             {basicData.qualify_label ? (
                                                 <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-                                                    {basicData.qualify_label == 1 ? Intl.get("common.qualified", "合格") :
-                                                        basicData.qualify_label == 2 ? Intl.get("common.history.qualified", "曾经合格") : ""}</Tag>) : null
+                                                    {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
                                             }
                                         </dd>
                                     </dl>

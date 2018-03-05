@@ -1,5 +1,5 @@
 var FilterActions = require("../action/filter-actions");
-
+import {CUSTOMER_TAGS} from "../utils/crm-util";
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
@@ -62,17 +62,17 @@ FilterStore.prototype.getStageTagList = function (data) {
     }
     //试用合格、签约合格、曾经合格 标签的添加
     stageTagList = stageTagList.concat([{
-        name: Intl.get("common.qualified", "合格"),
-        show_name: Intl.get("common.qualified", "合格")
+        name: CUSTOMER_TAGS.QUALIFIED,
+        show_name: CUSTOMER_TAGS.QUALIFIED
     },{
-        name: Intl.get("common.trial.qualified", "试用合格"),
-        show_name: Intl.get("common.trial.qualified", "试用合格")
+        name: CUSTOMER_TAGS.TRIAL_QUALIFIED,
+        show_name: CUSTOMER_TAGS.TRIAL_QUALIFIED
     }, {
-        name: Intl.get("common.official.qualified", "签约合格"),
-        show_name: Intl.get("common.official.qualified", "签约合格")
+        name: CUSTOMER_TAGS.SIGN_QUALIFIED,
+        show_name: CUSTOMER_TAGS.SIGN_QUALIFIED
     }, {
-        name: Intl.get("common.history.qualified", "曾经合格"),
-        show_name: Intl.get("common.history.qualified", "曾经合格")
+        name: CUSTOMER_TAGS.HISTORY_QUALIFIED,
+        show_name: CUSTOMER_TAGS.HISTORY_QUALIFIED
     }]);
     this.stageTagList = stageTagList;
 };

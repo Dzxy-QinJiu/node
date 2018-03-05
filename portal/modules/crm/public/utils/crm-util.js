@@ -91,4 +91,10 @@ exports.filterAdministrativeLevel = (level) => {
 };
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;
+exports.CUSTOMER_TAGS={
+    QUALIFIED: Intl.get("common.qualified", "合格"),
+    TRIAL_QUALIFIED: Intl.get("common.trial.qualified", "试用合格"),
+    SIGN_QUALIFIED: Intl.get("common.official.qualified", "签约合格"),
+    HISTORY_QUALIFIED: Intl.get("common.history.qualified", "曾经合格"),
+};
 
