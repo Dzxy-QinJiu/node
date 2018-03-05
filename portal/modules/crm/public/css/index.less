@@ -12,6 +12,10 @@
 @sign-tag-color: #5197cf;
 //合格标签的背景色
 @qualified-tag-color: #00a854;
+//曾经合格标签的背景色
+@history-qualified-tag-color: #85c6a6;
+//流失标签的背景色
+@loss-tag-color: #6a8498;
 //标签字体的颜色
 @tag-font-color: #ffffff;
 
@@ -19,7 +23,8 @@
   //客户标签的样式设置
   .customer-label {
     float: right;
-    margin: 0px 8px;
+    margin-left: 4px;
+    margin-right: 0;
     padding: 0 5px;
     height: 20px;
     line-height: 19px;
@@ -41,6 +46,12 @@
   }
   .customer-label.qualified-tag-style{
     background-color: @qualified-tag-color;
+  }
+  .customer-label.history-qualified-tag-style{
+    background-color: @history-qualified-tag-color;
+  }
+  .customer-label.loss-tag-style{
+    background-color:@loss-tag-color;
   }
   td .comments-fix {
     overflow: hidden;
@@ -257,6 +268,7 @@
     overflow: hidden;
     .focus-customer{
       float: right;
+      margin-left:4px;
     }
     .iconfont{
       color:#e2e2e2;

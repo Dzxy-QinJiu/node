@@ -66,7 +66,7 @@ exports.getCrmLabelCls=function (customer_label) {
         INTENT_TAG: "意向",
         TRIAL_TAG: "试用",
         SIGN_TAG: "签约",
-        QUALIFIED_TAG: "合格"
+        LOSS_TAG: "流失"
     };
     let customerLabelCls = "customer-label";
     if (customer_label) {
@@ -75,7 +75,10 @@ exports.getCrmLabelCls=function (customer_label) {
             "intent-tag-style": customer_label === LABEL_TYPES.INTENT_TAG,
             "trial-tag-style": customer_label === LABEL_TYPES.TRIAL_TAG,
             "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
-            "qualified-tag-style": customer_label === LABEL_TYPES.QUALIFIED_TAG
+            "qualified-tag-style": customer_label == 1,//合格
+            "history-qualified-tag-style": customer_label == 2,//曾经合格
+            "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
+            "loss-tag-style": customer_label === LABEL_TYPES.LOSS_TAG,
         });
     }
     return customerLabelCls;

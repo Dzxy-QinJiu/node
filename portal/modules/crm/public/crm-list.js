@@ -1032,15 +1032,20 @@ var Crm = React.createClass({
                     var interestClassName = "iconfont focus-customer";
                     interestClassName += (record.interest == "true" ? " icon-interested" : " icon-uninterested");
                     var title = (record.interest == "true" ? Intl.get("crm.customer.uninterested", "取消关注") : Intl.get("crm.customer.interested", "添加关注"));
-
                     return (
                         <span>
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                    onClick={_this.handleFocusCustomer.bind(this, record)}></i>
                                 {record.customer_label ? (
-                                    <Tag className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                    <Tag
+                                        className={crmUtil.getCrmLabelCls(record.customer_label)}>
                                         {record.customer_label}</Tag>) : null
+                                }
+                                {record.qualify_label ? (
+                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
+                                        {record.qualify_label == 1 ? Intl.get("common.qualified", "合格") :
+                                            record.qualify_label == 2 ? Intl.get("common.history.qualified", "曾经合格") : ""}</Tag>) : null
                                 }
                                 {text}
                             </div>

@@ -62,6 +62,9 @@ FilterStore.prototype.getStageTagList = function (data) {
     }
     //试用合格、签约合格、曾经合格 标签的添加
     stageTagList = stageTagList.concat([{
+        name: Intl.get("common.qualified", "合格"),
+        show_name: Intl.get("common.qualified", "合格")
+    },{
         name: Intl.get("common.trial.qualified", "试用合格"),
         show_name: Intl.get("common.trial.qualified", "试用合格")
     }, {
