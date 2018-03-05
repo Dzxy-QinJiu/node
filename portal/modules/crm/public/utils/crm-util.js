@@ -66,7 +66,7 @@ exports.getCrmLabelCls=function (customer_label) {
         INTENT_TAG: "意向",
         TRIAL_TAG: "试用",
         SIGN_TAG: "签约",
-        QUALIFIED_TAG: "合格"
+        LOSS_TAG: "流失"
     };
     let customerLabelCls = "customer-label";
     if (customer_label) {
@@ -75,7 +75,10 @@ exports.getCrmLabelCls=function (customer_label) {
             "intent-tag-style": customer_label === LABEL_TYPES.INTENT_TAG,
             "trial-tag-style": customer_label === LABEL_TYPES.TRIAL_TAG,
             "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
-            "qualified-tag-style": customer_label === LABEL_TYPES.QUALIFIED_TAG
+            "qualified-tag-style": customer_label == 1,//合格
+            "history-qualified-tag-style": customer_label == 2,//曾经合格
+            "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
+            "loss-tag-style": customer_label === LABEL_TYPES.LOSS_TAG,
         });
     }
     return customerLabelCls;
@@ -88,4 +91,10 @@ exports.filterAdministrativeLevel = (level) => {
 };
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;
+exports.CUSTOMER_TAGS={
+    QUALIFIED: Intl.get("common.qualified", "合格"),
+    TRIAL_QUALIFIED: Intl.get("common.trial.qualified", "试用合格"),
+    SIGN_QUALIFIED: Intl.get("common.official.qualified", "签约合格"),
+    HISTORY_QUALIFIED: Intl.get("common.history.qualified", "曾经合格"),
+};
 

@@ -167,6 +167,11 @@ var BasicData = React.createClass({
                                                 <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
                                                     {basicData.customer_label}</Tag>) : null
                                             }
+                                            {basicData.qualify_label ? (
+                                                <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
+                                                    {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
+                                            }
                                         </dd>
                                     </dl>
                                     { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (

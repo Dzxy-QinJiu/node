@@ -699,12 +699,23 @@
     .ant-table{
       td{
         //合格标签的样式
-        .ant-tag.qualified-tag-style{
+        .ant-tag.qualified-tag-style {
           float: right;
           margin-right: 0;
+          margin-left: 4px;
           padding: 0 5px;
           background-color: #00a854;
           color: #fff;
+        }
+        //自注册、新签、续约 标签样式
+        .user-list-tags {
+          float: left;
+          width: 100%;
+          .user-tag-style {
+            margin-right: 4px;
+            padding: 0 5px;
+            background: #d1d9db;
+          }
         }
       }
       .num-float-right {

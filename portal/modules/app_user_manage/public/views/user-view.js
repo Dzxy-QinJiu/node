@@ -53,7 +53,7 @@ var UserTabContent = React.createClass({
             defaultClueData: {},//添加线索客户的默认信息
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
-            producingClueCustomerItem:{},//正在生成线索客户的用户
+            producingClueCustomerItem: {},//正在生成线索客户的用户
             ...AppUserStore.getState()
         };
     },
@@ -366,18 +366,26 @@ var UserTabContent = React.createClass({
                         //只要exception_mark_date存在，就属于异常登录
                         return app.exception_mark_date;
                     });
-
+                    let app = _.isArray(rowData.apps) && rowData.apps[0] ? rowData.apps[0] : {};
+                    let contract_tag = app.contract_tag === "new" ? Intl.get("contract.162", "新签约") :
+                        app.contract_tag === "renew" ? Intl.get("contract.163", "续约") : "";
                     return (
-                        <div title={user_name}>
-                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
-                                <i className="iconfont icon-warn-icon unnormal-login"
-                                   title={Intl.get("user.login.abnormal", "异常登录")}></i> : null}
-                            {rowData.apps[0].qualify_label == 1 ? (
-                                <Tag className="qualified-tag-style">
-                                    {Intl.get("common.qualified", "合格")}</Tag>) : null
-                            }
-                            {user_name}
-                            <input type="hidden" className="hidden_user_id" value={user_id}/>
+                        <div>
+                            <div title={user_name}>
+                                {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
+                                    <i className="iconfont icon-warn-icon unnormal-login"
+                                       title={Intl.get("user.login.abnormal", "异常登录")}></i> : null}
+                                {rowData.apps[0].qualify_label == 1 ? (
+                                    <Tag className="qualified-tag-style">
+                                        {Intl.get("common.qualified", "合格")}</Tag>) : null
+                                }
+                                {user_name}
+                                <input type="hidden" className="hidden_user_id" value={user_id}/>
+                            </div>
+                            <div className="user-list-tags">
+                                {app.create_tag && app.create_tag === "register" ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
+                                {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
+                            </div>
                         </div>
                     );
                 }
@@ -521,7 +529,7 @@ var UserTabContent = React.createClass({
                     //是否展示 生成线索的 按钮，必须要选中某个应用，
                     // create_tag === "register" 表示是自注册的用户
                     // clue_created属性存在，并且为true 表示已经生成过线索客户
-                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created && hasPrivilege("CLUECUSTOMER_ADD")? true : false;
+                    var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === "register" && !rowData.apps[0].clue_created && hasPrivilege("CLUECUSTOMER_ADD") ? true : false;
                     return user ? (
                         <div title={user.description}>
                             {user.description}
@@ -692,11 +700,17 @@ var UserTabContent = React.createClass({
                 <dt>{Intl.get("oplate.user.label", "用户标签")}：</dt>
                 <dd>
                     <ul>
-                        <li onClick={this.toggleSearchField.bind(this, "qualify_label", "")}
-                            className={this.getFilterFieldClass("qualify_label", "")}><ReactIntl.FormattedMessage
+                        <li onClick={this.toggleSearchField.bind(this, "tag_all", "")}
+                            className={this.getFilterFieldClass("tag_all", "")}><ReactIntl.FormattedMessage
                             id="common.all" defaultMessage="全部"/></li>
+                        <li onClick={this.toggleSearchField.bind(this, "create_tag", "register")}
+                            className={this.getFilterFieldClass("create_tag", "register")}>{Intl.get("oplate.user.register.self", "自注册")}</li>
                         <li onClick={this.toggleSearchField.bind(this, "qualify_label", "1")}
                             className={this.getFilterFieldClass("qualify_label", "1")}>{Intl.get("common.qualified", "合格")}</li>
+                        <li onClick={this.toggleSearchField.bind(this, "contract_tag", "new")}
+                            className={this.getFilterFieldClass("contract_tag", "new")}>{Intl.get("contract.162", "新签约")}</li>
+                        <li onClick={this.toggleSearchField.bind(this, "contract_tag", "renew")}
+                            className={this.getFilterFieldClass("contract_tag", "renew")}>{Intl.get("contract.163", "续约")}</li>
                     </ul>
                 </dd>
             </dl>
@@ -1077,7 +1091,7 @@ var UserTabContent = React.createClass({
     afterAddSalesClue: function () {
         AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
         this.setState({
-            producingClueCustomerItem:{}//正在生成线索客户的用户
+            producingClueCustomerItem: {}//正在生成线索客户的用户
         })
     },
     render: function () {
@@ -1094,7 +1108,7 @@ var UserTabContent = React.createClass({
                         clueSourceArray={this.state.clueSourceArray}
                         updateClueSource={this.updateClueSource}
                         updateClueChannel={this.updateClueChannel}
-                        afterAddSalesClue = {this.afterAddSalesClue}
+                        afterAddSalesClue={this.afterAddSalesClue}
                     />
                 ) : null}
             </div>

@@ -513,9 +513,29 @@ var Crm = React.createClass({
                 term_fields.push("province");
             }
         }
-        //阶段标签,精确匹配
+        //阶段标签的处理
         if (condition.customer_label) {
-            term_fields.push("customer_label");
+            if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED ||
+                condition.customer_label === crmUtil.CUSTOMER_TAGS.TRIAL_QUALIFIED ||
+                condition.customer_label === crmUtil.CUSTOMER_TAGS.SIGN_QUALIFIED) {
+                //合格标签的筛选
+                condition.qualify_label = "1";
+                if (condition.customer_label === crmUtil.CUSTOMER_TAGS.QUALIFIED) {//只筛选”合格“时
+                    delete condition.customer_label;
+                } else {//试用合格、签约合格的筛选时，是试用、签约标签与合格标签的组合筛选
+                    //试用、签约的处理(精确匹配)
+                    condition.customer_label = condition.customer_label.split(crmUtil.CUSTOMER_TAGS.QUALIFIED)[0];
+                    term_fields.push("customer_label");
+                }
+            } else if (condition.customer_label === crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED) {
+                //曾经合格的处理
+                condition.qualify_label = "2";
+                delete condition.customer_label;
+            } else {//信息、意向、试用、签约、流失
+                term_fields.push("customer_label");
+            }
+        } else {//删除上次筛选时的数据
+            delete condition.qualify_label;
         }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
@@ -1012,15 +1032,20 @@ var Crm = React.createClass({
                     var interestClassName = "iconfont focus-customer";
                     interestClassName += (record.interest == "true" ? " icon-interested" : " icon-uninterested");
                     var title = (record.interest == "true" ? Intl.get("crm.customer.uninterested", "取消关注") : Intl.get("crm.customer.interested", "添加关注"));
-
                     return (
                         <span>
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                    onClick={_this.handleFocusCustomer.bind(this, record)}></i>
                                 {record.customer_label ? (
-                                    <Tag className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                    <Tag
+                                        className={crmUtil.getCrmLabelCls(record.customer_label)}>
                                         {record.customer_label}</Tag>) : null
+                                }
+                                {record.qualify_label ? (
+                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
+                                        {record.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                            record.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
                                 }
                                 {text}
                             </div>
