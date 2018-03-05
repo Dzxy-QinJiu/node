@@ -96,7 +96,7 @@ exports.getAppUserList = function (obj) {
     }
     var requestObj = {};
     for(var key in queryObj) {
-        if(queryObj[key] !== '') {
+        if(queryObj[key] !== ''&& key !== "tag_all") {
             requestObj[key] = queryObj[key];
         }
     }

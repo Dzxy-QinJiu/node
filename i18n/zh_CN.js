@@ -1585,6 +1585,7 @@ var zh_CN = {
     "oplate.user.industry": "行业：",
     "oplate.user.team": "团队：",
     "oplate.user.app.download": "各版本下载统计",
+    "oplate.user.register.self": "自注册",
     //活跃用户分析
     "oplate.user.analysis.device": "设备统计",
     "oplate.user.analysis.browser": "浏览器统计",

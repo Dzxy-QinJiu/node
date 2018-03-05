@@ -1554,6 +1554,7 @@ var en_US = {
     "oplate.user.industry": "Industry:", // 行业：
     "oplate.user.team": "Team:",  // 团队：
     "oplate.user.app.download": "Download version of the statistics", // 各版本下载统计
+    "oplate.user.register.self": "Self registration",//自注册
     //活跃用户分析
     "oplate.user.analysis.device": "device statistics",//"设备统计",
     "oplate.user.analysis.browser": "browser statistics",//"浏览器统计",

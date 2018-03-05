@@ -332,6 +332,12 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
     var filterFieldMap = this.filterFieldMap;
     if(!value) {
         delete filterFieldMap[field];
+        if(field === "tag_all") {//标签筛选”全部“时，清空筛选对象中所有标签属性的值
+            delete filterFieldMap.create_tag;
+            delete filterFieldMap.contract_tag;
+            delete filterFieldMap.qualify_label;
+            delete filterFieldMap.tag_all;
+        }
     } else {
         //如果是按团队搜索，按团队搜索支持多选
         if (field =='team_ids'){
@@ -347,7 +353,22 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
                 //如果原列表中没有该团队，将其加上
                 filterFieldMap[field].push(value)
             }
-        }else{
+        } else if(field === "create_tag"){
+            filterFieldMap.tag_all = value;
+            filterFieldMap.create_tag = value;
+            filterFieldMap.contract_tag = "";
+            filterFieldMap.qualify_label = "";
+        } else if(field === "contract_tag"){
+            filterFieldMap.tag_all = value;
+            filterFieldMap.contract_tag = value;
+            filterFieldMap.create_tag = "";
+            filterFieldMap.qualify_label = "";
+        } else if(field === "qualify_label"){
+            filterFieldMap.tag_all = value;
+            filterFieldMap.qualify_label = value;
+            filterFieldMap.create_tag = "";
+            filterFieldMap.contract_tag = "";
+        } else {
             filterFieldMap[field] = value;
         }
 
