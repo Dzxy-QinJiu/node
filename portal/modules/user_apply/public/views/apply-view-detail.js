@@ -1727,7 +1727,7 @@ const ApplyViewDetail = React.createClass({
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
     checkUserName(){
         let obj = {
-            user_name: this.state.detailInfoObj.info.user_names[0].trim(),
+            user_name: $.trim(this.state.detailInfoObj.info.user_names[0]),
             customer_id: this.state.detailInfoObj.info.customer_id
         };
         let userInfoData = [], errMsg = '';
@@ -1870,7 +1870,7 @@ const ApplyViewDetail = React.createClass({
             }
             //如果是已有用户选择开通，则不提交user_name和number
             if (!isExistUserApply) {
-                obj.user_name = (this.state.formData.user_name).trim();
+                obj.user_name = $.trim(this.state.formData.user_name);
                 obj.nick_name = this.state.formData.nick_name;
             }
             ApplyViewDetailActions.submitApply(obj);
