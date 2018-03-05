@@ -23,7 +23,7 @@ function FilterStore() {
             apps: [""]
         }],
         administrative_level: "",//行政级别
-        otherSelectedItem:"",//其他类型的筛选
+        otherSelectedItem: "",//其他类型的筛选
     };
     this.isPanelShow = false;
 
@@ -52,15 +52,33 @@ FilterStore.prototype.getStageList = function (list) {
     this.stageList = list;
 };
 
-FilterStore.prototype.getStageTagList = function (list) {
-    this.stageTagList = list;
+FilterStore.prototype.getStageTagList = function (data) {
+    let stageTagList = [{name: "", show_name: Intl.get("common.all", "全部")}];
+    if (!data.errorMsg && _.isArray(data.list)) {
+        let list = _.map(data.list, tag => {
+            return {name: tag, show_name: tag};
+        });
+        stageTagList = stageTagList.concat(list);
+    }
+    //试用合格、签约合格、曾经合格 标签的添加
+    stageTagList = stageTagList.concat([{
+        name: Intl.get("common.trial.qualified", "试用合格"),
+        show_name: Intl.get("common.trial.qualified", "试用合格")
+    }, {
+        name: Intl.get("common.official.qualified", "签约合格"),
+        show_name: Intl.get("common.official.qualified", "签约合格")
+    }, {
+        name: Intl.get("common.history.qualified", "曾经合格"),
+        show_name: Intl.get("common.history.qualified", "曾经合格")
+    }]);
+    this.stageTagList = stageTagList;
 };
 
 FilterStore.prototype.getTagList = function (list) {
     this.tagList = list;
 };
 
-FilterStore.prototype.getCompetitorList= function (list) {
+FilterStore.prototype.getCompetitorList = function (list) {
     this.competitorList = list;
 };
 

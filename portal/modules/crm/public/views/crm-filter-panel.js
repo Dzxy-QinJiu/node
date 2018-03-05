@@ -1,4 +1,3 @@
-import {Button, Icon} from "antd";
 import {getSelected} from "../../../../lib/utils/filter-utils";
 var FilterStore = require("../store/filter-store");
 var FilterAction = require("../action/filter-actions");

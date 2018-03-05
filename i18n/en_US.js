@@ -164,6 +164,9 @@ var en_US = {
     "common.official": "Signed",//签约
     "common.trial": "Trial",//试用
     "common.qualified": "Qualified",//合格
+    "common.official.qualified": "Signed and qualified ",//签约合格
+    "common.trial.qualified": "Trial and qualified",//试用合格
+    "common.history.qualified": "Once qualified",//曾经合格
     "common.delay.time": "Delay range",//延期时间
     "common.time.unit.day": "Day",//天
     "common.time.unit.week": "Week",//周
