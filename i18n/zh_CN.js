@@ -1220,6 +1220,7 @@ var zh_CN = {
     "crm.call.no.remark": "最后联系但未写跟进记录",
     "crm.last.contact": "最后联系",
     "crm.qualified.roll.out": "转出",
+    "crm.detail.sales.role": "销售角色",
     // 客户管理end
 
     // 客户分析start

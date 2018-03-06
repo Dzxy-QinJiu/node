@@ -13,6 +13,14 @@ module.exports = {
         },
         "privileges": []
     },{
+        "method": "get",
+        "path": "/rest/sales/role",
+        "handler": "getSalesRoleByMemberId",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": []
+    },{
         "method": "post",
         "path": "/rest/sales/role",
         "handler": "addSalesRole",

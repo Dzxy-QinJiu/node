@@ -1202,6 +1202,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
     "crm.qualified.roll.out": "Roll out",//转出
+    "crm.detail.sales.role": "Sales role",//销售角色
     // 客户管理end
 
     //客户分析 start

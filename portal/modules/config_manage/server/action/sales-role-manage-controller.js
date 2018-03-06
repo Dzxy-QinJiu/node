@@ -42,3 +42,11 @@ exports.changeSalesRole = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//根据销售id获取其角色
+exports.getSalesRoleByMemberId = function (req, res) {
+    salesRoleManageService.getSalesRoleByMemberId(req, res, req.query).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -201,6 +201,7 @@ let CrmRightList = React.createClass({
             data: {member_id: sales.userId, teamrole_id: selectRole.id},
             success: (result) => {
                 if (result) {
+                    message.success(Intl.get("user.info.setting.succeess", "设置成功！"));
                     //更新store中对应成员的销售角色
                     SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
                 }

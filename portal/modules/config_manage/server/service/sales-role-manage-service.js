@@ -10,7 +10,8 @@ const salesRoleRestApis = {
     addSalesRole: "/rest/base/v1/group/teamrole",
     deleteSalesRole: "/rest/base/v1/group/teamrole/:role_id",
     setDefaultRole: "/rest/base/v1/group/teamrole/default/:role_id",
-    changeSalesRole: "/rest/base/v1/user/member/teamrole"
+    changeSalesRole: "/rest/base/v1/user/member/teamrole",
+    getSalesRoleByMemberId: "/rest/base/v1/user/member/teamrole"
 };
 
 //获取销售角色列表
@@ -52,4 +53,11 @@ exports.changeSalesRole = function (req, res, obj) {
         req: req,
         res: res
     }, obj);
+};
+exports.getSalesRoleByMemberId = function (req, res, quryObj) {
+    return restUtil.authRest.get({
+        url: salesRoleRestApis.getSalesRoleByMemberId,
+        req: req,
+        res: res
+    }, quryObj);
 };
