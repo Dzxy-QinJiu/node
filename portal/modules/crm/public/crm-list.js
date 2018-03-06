@@ -986,6 +986,11 @@ var Crm = React.createClass({
         }
     },
 
+    //删除导入预览中的重复客户
+    deleteRepeatImportCustomer(index) {
+        console.log(index)
+    },
+
     render: function () {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1129,7 +1134,7 @@ var Crm = React.createClass({
                         <span className="cus-op">
                             {hasPrivilege("CRM_DELETE_CUSTOMER") || isRepeat ? (
                                 <Button className="order-btn-class" icon="delete"
-                                        onClick={_this.confirmDelete.bind(null, record.id, record.name)}
+                                        onClick={isRepeat? _this.deleteRepeatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
                             ) : null}
                         </span>
