@@ -92,3 +92,12 @@ exports.validateRequiredOne = function (item1, item2) {
        return false;
     }
 }
+var userData = require("PUB_DIR/sources/user-data");
+exports.getPrivilegeType = function () {
+    //如果是销售，用common 其他的角色，是manager
+    if (userData.hasRole(userData.ROLE_CONSTANS.SALES)){
+        return "common";
+    }else{
+        return "manager";
+    }
+};

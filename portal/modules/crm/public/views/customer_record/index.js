@@ -57,7 +57,10 @@ const CustomerRecord = React.createClass({
         //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
         this.getContactPhoneNum(this.props.curCustomer.id, () => {
             //获取客户跟踪记录列表
-            this.getCustomerTraceList();
+            setTimeout(()=>{
+                this.getCustomerTraceList();
+            },10)
+
         });
         //获取无效电话号码列表
         getInvalidPhone((data)=>{
@@ -74,34 +77,37 @@ const CustomerRecord = React.createClass({
     },
     //获取所有联系人的联系电话
     getContactPhoneNum: function (customerId, callback) {
-        //设置customerRecordLoading为true
-        CustomerRecordActions.setLoading();
-        ajax.getContactList(customerId).then((data) => {
-            let contactArray = data.result || [], phoneNumArray = [];
-            if (_.isArray(contactArray)) {
-                //把所有联系人的所有电话都查出来
-                contactArray.forEach((item) => {
-                    if (_.isArray(item.phone) && item.phone.length) {
-                        item.phone.forEach((phoneItem) => {
-                            phoneNumArray.push(phoneItem);
-                        })
-                    }
-                });
-            }
-            this.setState({phoneNumArray: phoneNumArray});
-            if (callback) {
-                setTimeout(() => {
-                    callback();
-                });
-            }
-        }, (errorMsg) => {
-            this.setState({phoneNumArray: []});
-            if (callback) {
-                setTimeout(() => {
-                    callback();
-                });
-            }
-        });
+        setTimeout(()=>{
+            //设置customerRecordLoading为true
+            CustomerRecordActions.setLoading();
+            ajax.getContactList(customerId).then((data) => {
+                let contactArray = data.result || [], phoneNumArray = [];
+                if (_.isArray(contactArray)) {
+                    //把所有联系人的所有电话都查出来
+                    contactArray.forEach((item) => {
+                        if (_.isArray(item.phone) && item.phone.length) {
+                            item.phone.forEach((phoneItem) => {
+                                phoneNumArray.push(phoneItem);
+                            })
+                        }
+                    });
+                }
+                this.setState({phoneNumArray: phoneNumArray});
+                if (callback) {
+                    setTimeout(() => {
+                        callback();
+                    });
+                }
+            }, (errorMsg) => {
+                this.setState({phoneNumArray: []});
+                if (callback) {
+                    setTimeout(() => {
+                        callback();
+                    });
+                }
+            });
+        })
+
     },
     //获取客户跟踪列表
     getCustomerTraceList: function (lastId) {
@@ -118,9 +124,9 @@ const CustomerRecord = React.createClass({
         CustomerRecordActions.getCustomerTraceList(queryObj);
     },
     componentWillReceiveProps: function (nextProps) {
-        var nextCustomerId = nextProps.curCustomer.id || '';
-        var oldCustomerId = this.props.curCustomer.id || '';
-        if (nextCustomerId !== oldCustomerId) {
+        var nextCustomerId = nextProps.curCustomer.id || nextProps.curCustomer.customer_id || '';
+        var oldCustomerId = this.props.curCustomer.id || this.props.curCustomer.customer_id || '';
+        if (nextCustomerId !== oldCustomerId && nextCustomerId) {
             setTimeout(() => {
                 this.setState({
                     playingItemAddr: "",
@@ -133,7 +139,7 @@ const CustomerRecord = React.createClass({
                     setTimeout(() => {
                         //获取客户跟踪记录列表
                         this.getCustomerTraceList();
-                    });
+                    },10);
                 });
             })
         }
