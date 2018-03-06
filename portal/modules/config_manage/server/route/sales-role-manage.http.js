@@ -12,7 +12,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-            "TEAM_ROLE_MANAGE"
+            "GET_TEAM_ROLE_LIST"
         ]
     },{
         "method": "post",

@@ -1439,7 +1439,7 @@ var en_US = {
     "sales.home.phone.billing.time": "The billing time",//计费时长
     "sales.home.call.cout": "Count", // 通话数量
     "sales.home.call.top.ten": "Single call duration", // 单次通话时长
-    "sales.home.update.role": "Click here to modify the sales role",//点此修改销售角色
+    "sales.home.set.role": "Click here to set up the sales role",//点此设置销售角色
 
     //销售首页-新增用户分析
     "sales.user.analysis": "User Analysis",//用户分析@

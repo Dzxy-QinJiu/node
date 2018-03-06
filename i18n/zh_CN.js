@@ -1470,7 +1470,7 @@ var zh_CN = {
     "sales.home.phone.callout.rate": "呼出接通率",
     "sales.home.call.cout": "通话数量",
     "sales.home.call.top.ten": "单次通话时长",
-    "sales.home.update.role": "点此修改销售角色",
+    "sales.home.set.role": "点此设置销售角色",
     //销售首页-新增用户分析
     "sales.user.analysis": "用户分析",
     "user.analysis.total": "用户统计",
