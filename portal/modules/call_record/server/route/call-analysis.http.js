@@ -8,7 +8,7 @@ module.exports = {
     routes: [
         { // 获取单次通话时长为top10的数据
             "method": "post",
-            "path": "/rest/call/duration/top/ten/:start_time/:end_time/:page_size/:sort_field/:sort_order",
+            "path": "/rest/call/duration/top/ten/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order",
             "handler": "getCallDurTopTen",
             "passport": {
                 "needLogin": true

@@ -8,7 +8,7 @@ module.exports = {
     module: "call_record/server/action/call-record-controller",
     routes: [{
         "method": "post",
-        "path": "/rest/call_record/:start_time/:end_time/:page_size/:sort_field/:sort_order",
+        "path": "/rest/call_record/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order",
         "handler": "getCallRecordList",
         "passport": {
             "needLogin": true

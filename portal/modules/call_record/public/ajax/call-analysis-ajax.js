@@ -1,8 +1,10 @@
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 // 获取通话时长为TOP10的列表
 let callDurTopTenAjax = null;
 exports.getCallDurTopTen = function (reqData, reqBody) {
+    let auth_type = hasPrivilege("CUSTOMER_CALLRECORD_MANAGER_ONLY") ? "manager" : "user";
     callDurTopTenAjax && callDurTopTenAjax.abort();
-    let url = '/rest/call/duration/top/ten/' + reqData.start_time + '/' +
+    let url = '/rest/call/duration/top/ten/' + auth_type + '/' + reqData.start_time + '/' +
         reqData.end_time + '/' + reqData.page_size + "/" + reqData.sort_field + "/" + reqData.sort_order;
     var Deferred = $.Deferred();
     callDurTopTenAjax = $.ajax({
