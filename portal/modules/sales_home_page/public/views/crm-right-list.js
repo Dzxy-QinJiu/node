@@ -248,11 +248,13 @@ let CrmRightList = React.createClass({
                                 <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
                                 {salesman.status != 0 ? hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") ?
                                     <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
-                                        <span className="sales-role-btn" title={Intl.get("sales.home.set.role", "点此设置销售角色")}>
-                                            {salesman.teamRoleName ? salesman.teamRoleName : Intl.get("user.batch.set.role","设置角色")}
-                                            <Icon type="down" />
+                                        <span className="sales-role-btn"
+                                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}>
+                                            {salesman.teamRoleName ? salesman.teamRoleName : Intl.get("user.batch.set.role", "设置角色")}
+                                            <Icon type="down"/>
                                         </span>
-                                    </Dropdown> : <span className="sales-role-btn"> {salesman.teamRoleName}</span> : null}
+                                    </Dropdown> : salesman.teamRoleName ?
+                                        <span className="sales-role-btn"> {salesman.teamRoleName}</span> : null : null}
                                 { salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                     <span className="iconfont icon-phone-waiting"
                                           title={Intl.get("sales.status.calling", "正在打电话")}/>

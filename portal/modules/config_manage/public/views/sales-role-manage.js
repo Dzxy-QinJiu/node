@@ -98,18 +98,15 @@ const SalesRoleManage = React.createClass({
             type: 'put',
             dateType: 'json',
             success: (result) => {
-                let salesRoleList = this.state.salesRoleList;
-                //去掉原来默认角色的默认属性
-                if (salesRoleList[0]) {
-                    delete salesRoleList[0].is_default;
-                }
-                //过滤掉设为默认的角色
-                salesRoleList = _.filter(salesRoleList, (item) => item.id !== role.id);
-                //修改设为默认角色的属性
-                role.is_default = true;
-                //将默认角色加到角色列表的最前面
-                salesRoleList.unshift(role);
-                this.setState({salesRoleList: salesRoleList, settingDefaultRole: ""});
+                //设置默认的角色
+                _.each(this.state.salesRoleList, (item) => {
+                    if (item.id === role.id) {
+                        item.is_default = true;
+                    } else {//去掉原来默认角色的默认属性
+                        delete item.is_default;
+                    }
+                });
+                this.setState({salesRoleList: this.state.salesRoleList, settingDefaultRole: ""});
             },
             error: (errorInfo) => {
                 this.setState({
@@ -215,9 +212,9 @@ const SalesRoleManage = React.createClass({
                                     <span className={defaultCls} title={Intl.get("role.set.default", "设为默认角色")}
                                           onClick={this.setDefautRole.bind(this, item)}>
                                         {Intl.get("role.default.set", "默认")}
-                                        {this.state.settingDefaultRole ? <Icon type="loading"/> : null}
+                                        {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
                                     </span>
-                                    {item.is_default ? null :
+                                    {item.is_default || this.state.settingDefaultRole==item.id ? null :
                                         <span className="glyphicon glyphicon-remove mb-tag-remove"
                                               onClick={this.handleDeleteItem.bind(this, item.id)}
                                               data-tracename="点击删除某个销售角色按钮"

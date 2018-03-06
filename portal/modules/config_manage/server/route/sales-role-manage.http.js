@@ -11,9 +11,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges": [
-            "GET_TEAM_ROLE_LIST"
-        ]
+        "privileges": []
     },{
         "method": "post",
         "path": "/rest/sales/role",
