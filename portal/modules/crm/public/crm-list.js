@@ -1123,9 +1123,11 @@ var Crm = React.createClass({
                 title: Intl.get("common.operate", "操作"),
                 width: '60px',
                 render: function (text, record, index) {
+                    const isRepeat = record.name_repeat || record.phone_repeat;
+
                     return (
                         <span className="cus-op">
-                            {hasPrivilege("CRM_DELETE_CUSTOMER") ? (
+                            {hasPrivilege("CRM_DELETE_CUSTOMER") || isRepeat ? (
                                 <Button className="order-btn-class" icon="delete"
                                         onClick={_this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
