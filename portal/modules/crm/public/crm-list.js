@@ -35,6 +35,8 @@ import crmAjax from './ajax/index';
 import crmUtil from "./utils/crm-util";
 import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
+const extend = require("extend");
+
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 66 + 56,//表格容器上外边距 + 表头的高度
@@ -1134,6 +1136,24 @@ var Crm = React.createClass({
             }
         ];
 
+        let previewColumns = [];
+
+        if (this.state.isPreviewShow) {
+            previewColumns = extend([], columns);
+            //导入预览表格中去掉最后联系列
+            previewColumns = _.filter(previewColumns, column => column.dataIndex !== "last_contact_time");
+            let remarksColumn = _.find(previewColumns, column => column.dataIndex === "remarks");
+
+            if (!remarksColumn) {
+                remarksColumn = {
+                    dataIndex: "remarks",
+                    title: Intl.get("common.remark", "备注"),
+                };
+                //添加备注列
+                previewColumns.splice(-1, 0, remarksColumn);
+            }
+        }
+
         //只对域管理员开放删除功能
         if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
             columns = _.filter(columns, column => column.title != Intl.get("common.operate", "操作"));
@@ -1286,7 +1306,7 @@ var Crm = React.createClass({
                     {this.state.isPreviewShow ? (
                         <AntcTable
                             dataSource={this.state.previewList}
-                            columns={columns}
+                            columns={previewColumns}
                             rowKey={this.getRowKey}
                             pagination={false}
                             scroll={{x: tableScrollX, y: LAYOUT_CONSTANTS.UPLOAD_MODAL_HEIGHT}}
