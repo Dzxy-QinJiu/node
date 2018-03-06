@@ -22,7 +22,6 @@ import CallRecordAnalyis from './call-record-analysis';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util'
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import AppUserManage from "MOD_DIR/app_user_manage/public";
@@ -1048,9 +1047,8 @@ const CallRecord = React.createClass({
             sort_order: this.getCallListReqParam(queryParam, 'sort_order'),
             //电话记录类型
             phone_type: this.getReqParam(queryParam, 'phone_type'),
-            //角色类型
-            type: hasPrivilege("CUSTOMER_TRACE_MANAGER_QUERY") ? "manager" : "user"
         };
+
         CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
     },
 

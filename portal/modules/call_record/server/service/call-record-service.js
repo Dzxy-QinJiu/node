@@ -8,8 +8,10 @@ var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
 import CallRecord from "../dto/callRecord";
 var _ = require("underscore");
-//获取全部和客户电话的列表
+//获取全部和客户电话的列表（团队）
 const callRecordListUrl = "/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
+//获取全部和客户电话的列表（所有的，包括不在团队里的数据）
+const managerCallRcordListUrl = "/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
 //查询无效电话列表（客服和114）
 const invalidCallRecordListUrl = "/rest/callrecord/v2/callrecord/query/invalid_trace/:type/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order";
 const restApis = {
@@ -21,12 +23,12 @@ const restApis = {
 
 //获取全部和客户电话的列表
 exports.getCallRecordList = function (req, res, params, filterObj, queryObj) {
-    let url = callRecordListUrl.replace(":start_time", params.start_time)
-        .replace(":end_time", params.end_time)
-        .replace(":page_size", params.page_size)
-        .replace(":sort_field", params.sort_field)
-        .replace(":sort_order", params.sort_order);
-
+    let url = params.type === "manager" ? managerCallRcordListUrl : callRecordListUrl;
+    url = url.replace(":start_time", params.start_time)
+    .replace(":end_time", params.end_time)
+    .replace(":page_size", params.page_size)
+    .replace(":sort_field", params.sort_field)
+    .replace(":sort_order", params.sort_order);
     if (queryObj) {
         if (queryObj.id) {
             url += "?id=" + queryObj.id;

@@ -1,13 +1,12 @@
-var userData = require("../../../../public/sources/user-data");
-
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //获取当前页的应用列表
 var getCallRecordAjax = null;
 
 exports.getCallRecordList = function (params, filterObj) {
+    CUSTOMER_CALLRECORD_MANAGER_ONLY
     let queryObj = {};
     $.extend(queryObj, filterObj, { phone_type: params.phone_type });
-    if (queryObj.type && queryObj.type == 'all' || queryObj.disposition && queryObj.disposition == 'ALL') {
-        delete queryObj.type;
+    if (queryObj.disposition && queryObj.disposition == 'ALL') {
         delete queryObj.disposition;
     }
     var Deferred = $.Deferred();
@@ -18,7 +17,8 @@ exports.getCallRecordList = function (params, filterObj) {
     //查询全部和客户电话记录
     if (querAll || queryCustomer) {
         let filter_phone = queryCustomer;//是否过滤114和无效的电话号码
-        url = '/rest/call_record/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
+        let auth_type = hasPrivilege("CUSTOMER_CALLRECORD_MANAGER_ONLY") ? "manager" : "user";
+        url = '/rest/call_record/'+ auth_type +'/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
         if (params.lastId) {
             url += "?id=" + params.lastId;            
             url += "&filter_phone=" + queryCustomer; //是否过滤114和无效的电话号码(客户电话需要过滤)
@@ -29,7 +29,9 @@ exports.getCallRecordList = function (params, filterObj) {
     }
     //查询无效电话记录
     else {
-        url = '/rest/invalid_call_record/' + params.type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
+        //角色类型
+        let type = hasPrivilege("CUSTOMER_TRACE_MANAGER_QUERY") ? "manager" : "user";
+        url = '/rest/invalid_call_record/' + type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
         if (params.lastId) {
             url += "?id=" + params.lastId;
             url += "&phone_type=" + params.phone_type;

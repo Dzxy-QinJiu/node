@@ -8,6 +8,8 @@ var EventEmitter = require("events").EventEmitter;
 const restApis = {
     // 获取单次通话时长为top10的数据(团队)
     getCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    // 获取单次通话时长为top10的数据（所有的，包括不在团队里的数据）
+    getManagerCallDurTopTen: "/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order",
     // 获取销售个人的top10
     getSingleUserCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取通话数量和通话时长趋势图统计(团队)
@@ -32,7 +34,7 @@ const restApis = {
 
 // 获取单次通话时长为top10的数据
 exports.getCallDurTopTen = function (req, res, params, reqBody) {
-    let url = restApis.getCallDurTopTen;
+    let url = params.type === "manager" ? restApis.getManagerCallDurTopTen : restApis.getCallDurTopTen;
     if (reqBody && reqBody.user_id) {
         url = restApis.getSingleUserCallDurTopTen;
     }
