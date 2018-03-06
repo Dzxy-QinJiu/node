@@ -3,7 +3,6 @@ import {hasPrivilege} from "CMP_DIR/privilege/checker";
 var getCallRecordAjax = null;
 
 exports.getCallRecordList = function (params, filterObj) {
-    CUSTOMER_CALLRECORD_MANAGER_ONLY
     let queryObj = {};
     $.extend(queryObj, filterObj, { phone_type: params.phone_type });
     if (queryObj.disposition && queryObj.disposition == 'ALL') {
