@@ -810,7 +810,7 @@ var Crm = React.createClass({
             <div>
                 {repeatCustomer ? (
                     <span className="import-warning">
-                        {Intl.get("crm.210", "存在和系统中重复的客户名或联系方式，已用红色标出，请处理后重新导入")}
+                        {Intl.get("crm.210", "存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入")}
                     </span>
                 ) : null}
                 <Button type="ghost" onClick={this.cancelImport}>
@@ -986,6 +986,32 @@ var Crm = React.createClass({
         }
     },
 
+    //删除导入预览中的重复客户
+    deleteDuplicatImportCustomer(index) {
+        const route = _.find(routeList, route => route.handler === "deleteDuplicatImportCustomer");
+
+        const params = {
+            index
+        };
+
+        const arg = {
+            url: route.path,
+            type: route.method,
+            params: params
+        };
+
+        ajax(arg).then(result => {
+            if (result.result === "success") {
+                this.state.previewList.splice(index, 1);
+                this.setState(this.state);
+            } else {
+                message.error(Intl.get("crm.delete.duplicate.customer.failed", "删除重复客户失败"));
+            }
+        }, () => {
+            message.error(Intl.get("crm.delete.duplicate.customer.failed", "删除重复客户失败"));
+        });
+    },
+
     render: function () {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1122,12 +1148,23 @@ var Crm = React.createClass({
             {
                 title: Intl.get("common.operate", "操作"),
                 width: '60px',
-                render: function (text, record, index) {
+                render:  (text, record, index) => {
+                    //是否是重复的客户
+                    const isRepeat = record.name_repeat || record.phone_repeat;
+                    //是否处于导入预览状态
+                    const isPreview = this.state.isPreviewShow;
+                    //是否在客户列表上可以删除
+                    const canDeleteOnCrmList = !isPreview && hasPrivilege("CRM_DELETE_CUSTOMER");
+                    //是否在导入预览列表上可以删除
+                    const canDeleteOnPreviewList = isPreview && isRepeat;
+                    //是否显示删除按钮
+                    const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
+
                     return (
                         <span className="cus-op">
-                            {hasPrivilege("CRM_DELETE_CUSTOMER") ? (
+                            {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
-                                        onClick={_this.confirmDelete.bind(null, record.id, record.name)}
+                                        onClick={isRepeat? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
                             ) : null}
                         </span>
