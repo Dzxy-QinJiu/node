@@ -11,7 +11,7 @@ var OplateCustomerAnalysisAction = require("./action/oplate-customer-analysis.ac
 var OplateCustomerAnalysisStore = require("./store/oplate-customer-analysis.store");
 var emitter = require("./utils/emitter");
 import Analysis from "CMP_DIR/analysis";
-import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
+import { processCustomerStageChartData, processOrderStageChartData } from "CMP_DIR/analysis/utils";
 import AnalysisFilter from "../../../components/analysis/filter";
 import {hasPrivilege, getDataAuthType} from "CMP_DIR/privilege/checker";
 import SummaryNumber from "CMP_DIR/analysis-summary-number";
@@ -198,50 +198,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
-    //处理订单阶段统计数据
-    processOrderStageChartData:function (stageData) {
-        _.map(stageData, stage => stage.value = stage.total);
-        //获取销售阶段列表
-        const stageList = this.state.salesStageList;
-        if (stageList.length) {
-            let sortedStageData = [];
-
-            //将统计数据按销售阶段列表顺序排序
-            _.each(stageList, stage => {
-                const stageDataItem = _.find(stageData, item => item.name === stage.name);
-                if (stageDataItem) {
-                    const prevItem = sortedStageData[0];
-                    if (!prevItem) {
-                        sortedStageData.unshift(stageDataItem);
-                        return;
-                    }
-
-                    if (stageDataItem.value) {
-                        //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
-                        if (prevItem.value <= stageDataItem.value) {
-                            stageDataItem.value = prevItem.value * 0.8;
-                        } else if (prevItem.value / stageDataItem.value > 10 && sortedStageData.length === 1) {
-                            //第一阶段的值比第二阶段的值大很多的时候，把第一阶段的值变小一些，以防漏斗图边角过尖
-                            sortedStageData[0].value = stageDataItem.value * 1.5;
-                        }
-                    }
-
-                    sortedStageData.unshift(stageDataItem);
-                }
-            });
-
-            //将维护阶段的统计数据加到排序后的数组的开头
-            let maintainStage = _.find(stageData, stage => stage.name ===Intl.get("oplate_customer_analysis.6", "维护阶段"));
-            if (maintainStage) sortedStageData.unshift(maintainStage);
-
-            //将原统计数据替换为排序后数据
-            stageData = sortedStageData;
-        };
-        this.setState({
-            renderStageMax:_.max(_.pluck(stageData, "value"))
-        });
-        return stageData.reverse();
-    },
     //获取客户阶段统计图
     getCustomerStageChart : function() {
         return (
@@ -260,6 +216,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
+    //处理订单阶段数据
+    processOrderStageData(data) {
+        return processOrderStageChartData(this.state.salesStageList, data);
+    },
     //获取订单阶段统计图
     getOrderStageChart : function() {
         return (
@@ -269,25 +229,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
                 property: "stage",
-                showLabel:false,
-                valueField: "total",
                 width:this.chartWidth,
                 height: CHART_HEIGHT,
                 chartHeight: 100,
-                title:"",
-                processData: this.processOrderStageChartData,
-                max:this.state.renderStageMax,
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: "stage",
-                        customerType:this.state.currentTab
-                    },
-                },
-                query:{
-                    customerType:this.state.currentTab,
-                    customerProperty:"stage"
-                }
+                processData: this.processOrderStageData,
             })
         );
     },

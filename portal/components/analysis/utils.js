@@ -59,3 +59,27 @@ export function processCustomerStageChartData(data) {
     return processedData;
 }
 
+//处理订单阶段统计数据
+export function processOrderStageChartData(stageList, data) {
+    //接口返回数据里没有value字段，但是图表渲染需要该字段，所以需要补上该字段
+    _.map(data, stage => {
+        stage.value = stage.total;
+    });
+
+    let processedData = [];
+
+    //将统计数据按销售阶段列表顺序排序
+    _.each(stageList, stage => {
+        const dataItem = _.find(data, item => item.name === stage.name);
+        if (dataItem) {
+            processedData.push(dataItem);
+        }
+    });
+
+    //将维护阶段的统计数据加到处理后的数据的最后
+    let maintainStage = _.find(data, stage => stage.name ===Intl.get("oplate_customer_analysis.6", "维护阶段"));
+    if (maintainStage) processedData.push(maintainStage);
+
+    return processedData;
+}
+
