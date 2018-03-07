@@ -336,7 +336,7 @@ var AppRolePermission = React.createClass({
                 );
             })}
             {
-                // state.ajaxPermissionList.length > 0 ? (<span className={advanceRoleClass} title={Intl.get("user.config.auth", "配置权限")} onClick={this.togglePermissionBlock}></span>) : null
+                state.ajaxPermissionList.length > 0 ? (<span className={advanceRoleClass} title={Intl.get("user.config.auth", "配置权限")} onClick={this.togglePermissionBlock}></span>) : null
             }
         </div>;
     },
