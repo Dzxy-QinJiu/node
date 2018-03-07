@@ -41,7 +41,8 @@ var SingleUserLog = React.createClass({
         let queryObj = {
             user_id: userId,
             starttime: this.state.startTime,
-            endtime: this.state.endTime
+            endtime: this.state.endTime,
+            page: this.state.curPage
         };
         if (this.state.searchName) {
             queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase()
@@ -76,6 +77,7 @@ var SingleUserLog = React.createClass({
         return {
             user_id: this.props.userId,
             appid: queryParams && queryParams.appid || this.state.selectedLogAppId,
+            page: queryParams && queryParams.page || this.state.curPage,
             page_size: this.state.pageSize,
             starttime: queryParams && queryParams.starttime || this.state.startTime,
             endtime: queryParams && queryParams.endtime || this.state.endTime
@@ -236,9 +238,6 @@ var SingleUserLog = React.createClass({
                                 <p><span className="log-detail">{userLogInformation.operate}</span></p>
                                 <p>
                                     <span className="log-detail">{userLogInformation.user_ip }</span>
-                                    <span className="log-detail">
-                                        {userLogInformation.country || ''}{ userLogInformation.province || ''}{ userLogInformation.city || '' } {userLogInformation.county || ''}
-                                    </span>
                                     <span className="log-detail">
                                         {userLogInformation.location} {userLogInformation.area}
                                     </span>
