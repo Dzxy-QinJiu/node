@@ -5,6 +5,7 @@
 import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
 import Trace from "LIB_DIR/trace";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 var SearchInput = require("../../../../components/searchInput");
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
@@ -45,20 +46,14 @@ let CrmRightList = React.createClass({
     },
     //获取销售角色列表
     getSalesRoleList: function () {
-        $.ajax({
-            url: '/rest/sales/role_list',
-            type: 'get',
-            dateType: 'json',
-            success: (data) => {
-                this.setState({
-                    salesRoleList: _.isArray(data) ? data : [],
-                });
-            },
-            error: (errorMsg) => {
-                this.setState({
-                    salesRoleList: [],
-                });
-            }
+        getSalesTeamRoleList().sendRequest().success((data) => {
+            this.setState({
+                salesRoleList: _.isArray(data) ? data : [],
+            });
+        }).error((xhr) => {
+            this.setState({
+                salesRoleList: [],
+            });
         });
     },
     //渲染等待效果、暂无数据的提示

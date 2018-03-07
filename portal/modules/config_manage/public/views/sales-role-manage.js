@@ -4,6 +4,7 @@ const AlertTimer = require("CMP_DIR/alert-timer");
 import Trace from "LIB_DIR/trace";
 import {Icon, Alert} from "antd";
 import classNames from "classnames";
+import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const SalesRoleManage = React.createClass({
     getInitialState: function () {
@@ -31,24 +32,17 @@ const SalesRoleManage = React.createClass({
         this.setState({
             isRefreshLoading: true
         });
-        $.ajax({
-            url: '/rest/sales/role_list',
-            type: 'get',
-            dateType: 'json',
-            success: (data) => {
-                this.setState({
-                    salesRoleList: _.isArray(data) ? data : [],
-                    isRefreshLoading: false
-                });
-            },
-            error: (errorMsg) => {
-                this.setState({
-                    isRefreshLoading: false,
-                    getErrMsg: errorMsg.responseJSON
-                });
-            }
-        })
-
+        getSalesTeamRoleList().sendRequest().success((data) => {
+            this.setState({
+                salesRoleList: _.isArray(data) ? data : [],
+                isRefreshLoading: false
+            });
+        }).error((xhr) => {
+            this.setState({
+                isRefreshLoading: false,
+                getErrMsg: xhr.responseJSON
+            });
+        });
     },
     componentWillMount: function () {
         this.getSalesRoleList();
