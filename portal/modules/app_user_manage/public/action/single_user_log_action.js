@@ -50,7 +50,8 @@ function SingleUserLogAction() {
 
             let getLogListQueryParam = {
                 appid: selectedLogAppId,
-                user_id: searchObj.user_id
+                user_id: searchObj.user_id,
+                page: searchObj.page
             };
             if (_.isObject(searchObj)) {
                 if (searchObj.starttime) {
