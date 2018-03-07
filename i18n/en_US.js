@@ -1162,7 +1162,7 @@ var en_US = {
     "crm.207": "A total of {count} customers",//共{count}个客户
     "crm.208": "Failed to get the customer details", // 查看客户详情失败!
     "crm.209": "Note: no more than 300 customers can be imported each time",//注意：每次导入的客户数量不能超过300条
-    "crm.210": "Some repeated customers already in the system,  have been marked in red color, please handle and re-import",//存在和系统中重复的客户名或联系方式，已用红色标出，请处理后重新导入
+    "crm.210": "Some repeated customers already in the system,  have been marked in red color, please delete these record fist, then import",//存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     "crm.211": "Trace content",//跟进内容
     "crm.212": "Please select labels",//请选择标签
     "crm.213": "Undistributed Customer",//未分配客户
@@ -1202,6 +1202,7 @@ var en_US = {
     "crm.last.contact": "Final contact",//最后联系
     "crm.qualified.roll.out": "Roll out",//转出
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
+    "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     // 客户管理end
 
     //客户分析 start

@@ -235,4 +235,11 @@ module.exports = [{
     "passport": {
         "needLogin": true
     }
+}, {
+    "method": "delete",
+    "path": customerUrl + "upload/preview/:index",
+    "handler": "deleteDuplicatImportCustomer",
+    "passport": {
+        "needLogin": true
+    }
 }];

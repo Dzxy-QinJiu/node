@@ -810,7 +810,7 @@ var Crm = React.createClass({
             <div>
                 {repeatCustomer ? (
                     <span className="import-warning">
-                        {Intl.get("crm.210", "存在和系统中重复的客户名或联系方式，已用红色标出，请处理后重新导入")}
+                        {Intl.get("crm.210", "存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入")}
                     </span>
                 ) : null}
                 <Button type="ghost" onClick={this.cancelImport}>
@@ -987,8 +987,29 @@ var Crm = React.createClass({
     },
 
     //删除导入预览中的重复客户
-    deleteRepeatImportCustomer(index) {
-        console.log(index)
+    deleteDuplicatImportCustomer(index) {
+        const route = _.find(routeList, route => route.handler === "deleteDuplicatImportCustomer");
+
+        const params = {
+            index
+        };
+
+        const arg = {
+            url: route.path,
+            type: route.method,
+            params: params
+        };
+
+        ajax(arg).then(result => {
+            if (result.result === "success") {
+                this.state.previewList.splice(index, 1);
+                this.setState(this.state);
+            } else {
+                message.error(Intl.get("crm.delete.duplicate.customer.failed", "删除重复客户失败"));
+            }
+        }, () => {
+            message.error(Intl.get("crm.delete.duplicate.customer.failed", "删除重复客户失败"));
+        });
     },
 
     render: function () {
@@ -1134,7 +1155,7 @@ var Crm = React.createClass({
                         <span className="cus-op">
                             {hasPrivilege("CRM_DELETE_CUSTOMER") || isRepeat ? (
                                 <Button className="order-btn-class" icon="delete"
-                                        onClick={isRepeat? _this.deleteRepeatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
+                                        onClick={isRepeat? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
                             ) : null}
                         </span>
