@@ -231,6 +231,8 @@ let CrmRightList = React.createClass({
                 salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => {
                     return -item.status
                 });
+                let salesRoleList = _.isArray(this.state.salesRoleList) ? this.state.salesRoleList : [];
+                let roleListLength = salesRoleList.length;
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
                         let name = salesman.nickName, color = this.getBgColor(i);
@@ -245,9 +247,10 @@ let CrmRightList = React.createClass({
                                 {salesman.status != 0 ? hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") ?
                                     <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
                                         <span className="sales-role-btn"
-                                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}>
-                                            {salesman.teamRoleName ? salesman.teamRoleName : Intl.get("user.batch.set.role", "设置角色")}
-                                            <Icon type="down"/>
+                                              title={roleListLength ? Intl.get("sales.home.set.role", "点此设置销售角色") : ""}>
+                                            {salesman.teamRoleName ? salesman.teamRoleName :
+                                                roleListLength ? Intl.get("user.batch.set.role", "设置角色") : null}
+                                            {roleListLength ? <Icon type="down"/> : null}
                                         </span>
                                     </Dropdown> : salesman.teamRoleName ?
                                         <span className="sales-role-btn"> {salesman.teamRoleName}</span> : null : null}
