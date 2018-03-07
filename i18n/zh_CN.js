@@ -1752,7 +1752,7 @@ var zh_CN = {
     "errorcode.146": "分机离线",
     "errorcode.147": "二维码已失效",
     "errorcode.148": "电话时长统计视图获取失败",
-    "errorcode.149": "团队角色已经分配给销售",
+    "errorcode.149": "该角色已经分配给销售",
 
     //遗漏部分
     "user.input.phone": "请输入手机号",

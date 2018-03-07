@@ -196,15 +196,17 @@ const SalesRoleManage = React.createClass({
             return <Alert type="error" showIcon message={this.state.getErrMsg}/>;
         } else if (_.isArray(salesRoleList) && salesRoleList.length) {
             //销售角色列表
-            return (<ul className="mb-taglist">
+            return (<ul className="mb-taglist" data-tracename="销售角色管理">
                 {salesRoleList.map((item, index) => {
                         let defaultCls = classNames("default-role-descr", {"default-role-checked": item.is_default});
+                        let title_tip = item.is_default ? "" :Intl.get("role.set.default", "设为默认角色");
                         return (
                             <li className="mb-tag">
                                 <div className="mb-tag-content">
                                     <span className="mb-tag-text">{item.name}</span>
-                                    <span className={defaultCls} title={Intl.get("role.set.default", "设为默认角色")}
-                                          onClick={this.setDefautRole.bind(this, item)}>
+                                    <span className={defaultCls} title={title_tip}
+                                          onClick={this.setDefautRole.bind(this, item)}
+                                          data-tracename="点击设为默认角色按钮">
                                         {Intl.get("role.default.set", "默认")}
                                         {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
                                     </span>

@@ -1720,7 +1720,7 @@ var en_US = {
     "errorcode.146": "The phone is offline",//分机离线
     "errorcode.147": "The qr code has expired",//二维码已失效
     "errorcode.148": "The call duration statistics view fails to be obtained",//电话时长统计视图获取失败
-    "errorcode.149": "Team roles have been allocated to sales",//团队角色已经分配给销售
+    "errorcode.149": "The role has been allocated to sales",//该角色已经分配给销售
     "user.input.phone": "Please input your phone",//请输入手机号
     "customer.search.by.customer.name": "Please search by customer name",//请输入客户名称搜索
     "user.user.info": "information",//开通信息
