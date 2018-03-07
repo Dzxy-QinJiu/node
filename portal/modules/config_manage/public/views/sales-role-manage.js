@@ -5,6 +5,7 @@ import Trace from "LIB_DIR/trace";
 import {Icon, Alert} from "antd";
 import classNames from "classnames";
 import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
+import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const SalesRoleManage = React.createClass({
     getInitialState: function () {
@@ -119,7 +120,7 @@ const SalesRoleManage = React.createClass({
         if (!role) {
             return;
         }
-        let addRole = {name: role};
+        let addRole = {name: role, color: this.getRoleColor()};
         //显示添加的loading效果
         this.setState({
             isAddloading: true
@@ -131,6 +132,8 @@ const SalesRoleManage = React.createClass({
             data: addRole,
             success: (result) => {
                 if (result) {
+                    //TODO 后端接口加上颜色属性后去掉下面一行的处理
+                    result.color = addRole.color;
                     let salesRoleList = this.state.salesRoleList;
                     //数组默认角色后添加输入的销售角色(第一个角色是默认角色)
                     if (salesRoleList.length) {
@@ -185,7 +188,13 @@ const SalesRoleManage = React.createClass({
             </div>
         );
     },
-
+    getRoleColor: function () {
+        //角色列表中已存在的颜色列表
+        let existColors = _.pluck(this.state.salesRoleList, "color");
+        //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
+        let roleColor = _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
+        return roleColor;
+    },
     renderSalesRoleList: function () {
         let salesRoleList = this.state.salesRoleList;
         //正在获取数据的状态渲染
@@ -199,10 +208,11 @@ const SalesRoleManage = React.createClass({
             return (<ul className="mb-taglist" data-tracename="销售角色管理">
                 {salesRoleList.map((item, index) => {
                         let defaultCls = classNames("default-role-descr", {"default-role-checked": item.is_default});
-                        let title_tip = item.is_default ? "" :Intl.get("role.set.default", "设为默认角色");
+                        let title_tip = item.is_default ? "" : Intl.get("role.set.default", "设为默认角色");
                         return (
                             <li className="mb-tag">
                                 <div className="mb-tag-content">
+                                    <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
                                     <span className="mb-tag-text">{item.name}</span>
                                     <span className={defaultCls} title={title_tip}
                                           onClick={this.setDefautRole.bind(this, item)}
@@ -210,7 +220,7 @@ const SalesRoleManage = React.createClass({
                                         {Intl.get("role.default.set", "默认")}
                                         {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
                                     </span>
-                                    {item.is_default || this.state.settingDefaultRole==item.id ? null :
+                                    {item.is_default || this.state.settingDefaultRole == item.id ? null :
                                         <span className="glyphicon glyphicon-remove mb-tag-remove"
                                               onClick={this.handleDeleteItem.bind(this, item.id)}
                                               data-tracename="点击删除某个销售角色按钮"

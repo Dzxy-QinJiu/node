@@ -6,6 +6,7 @@ import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
 import Trace from "LIB_DIR/trace";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
+import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
 var SearchInput = require("../../../../components/searchInput");
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
@@ -217,6 +218,31 @@ let CrmRightList = React.createClass({
             }) : null}
         </Menu>);
     },
+    //销售角色的渲染
+    renderSalesRole: function (salesman) {
+        let salesRoleList = this.state.salesRoleList;
+        let salesRole = _.find(salesRoleList, role => role.id === salesman.roleId);
+        //TODO 根据后端接口返回的数据还需修改
+        let color = salesRole && salesRole.color ? salesRole.color : "#123";
+        if (salesman.status == 0) {//停用的就展示灰色的方块
+            return (<span className="sales-item-icon"/>);
+        } else if (hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") && _.isArray(salesRoleList) && salesRoleList.length) {//有设置销售角色的权限,并且有角色列表中有角色时
+            return (
+                <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
+                    {salesman.teamRoleName ?
+                        <span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
+                              title={salesman.teamRoleName}/> :
+                        <span className="iconfont icon-role-set sales-role-icon"
+                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}/>
+                    }
+                </Dropdown>);
+        } else if (salesman.teamRoleName) {//有销售角色,无设置权限或角色列表为空时
+            return (<span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
+                          title={salesman.teamRoleName}/>)
+        } else {//无销售角色，也无设置权限时，加个占位符
+            return <span className="sales-item-icon"/>;
+        }
+    },
     //获取销售团队的成员列表
     getSalesMemberList: function () {
         let salesListLi = [];
@@ -233,25 +259,16 @@ let CrmRightList = React.createClass({
                 });
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
-                        let name = salesman.nickName, color = this.getBgColor(i);
+                        let name = salesman.nickName, color = "yellow";
                         if (salesman.status == 0) {
                             //停用状态
                             name += " ( " + Intl.get("common.stop", "停用") + " ) ";
                         }
                         salesListLi.push(
                             <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}>
-                                <span className="sales-item-icon" style={{backgroundColor: color}}/>
+                                {this.renderSalesRole(salesman)}
                                 <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
-                                {salesman.status != 0 ? hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") ?
-                                    <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
-                                        <span className="sales-role-btn"
-                                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}>
-                                            {salesman.teamRoleName ? salesman.teamRoleName : Intl.get("user.batch.set.role", "设置角色")}
-                                            <Icon type="down"/>
-                                        </span>
-                                    </Dropdown> : salesman.teamRoleName ?
-                                        <span className="sales-role-btn"> {salesman.teamRoleName}</span> : null : null}
-                                { salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
+                                {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                     <span className="iconfont icon-phone-waiting"
                                           title={Intl.get("sales.status.calling", "正在打电话")}/>
                                     : null }
@@ -374,11 +391,11 @@ let CrmRightList = React.createClass({
     },
     //获取颜色（从echart的颜色列表中循环获取）
     getBgColor: function (i) {
-        let colorList = constantUtil.COLOR_LIST, colorIndex = i;
-        if (i > colorList.length) {
-            colorIndex = i % colorList.length;
+        let colorIndex = i;
+        if (i > COLOR_LIST.length) {
+            colorIndex = i % COLOR_LIST.length;
         }
-        return colorList[colorIndex];
+        return COLOR_LIST[colorIndex];
     },
 
     //设置当前要展示的视图

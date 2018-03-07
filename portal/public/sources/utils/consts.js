@@ -73,3 +73,36 @@ export const SELECT_FULL_OPTIONS = [
 ];
 export const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
 export const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道
+//销售团队中角色对应的颜色值（参照echart的颜色列表）
+export const COLOR_LIST = [
+    "#33a3dc",
+    "#93b730",
+    "#ddd326",
+    "#ffbe2e",
+    "#b6d9f7",
+    "#0ebfe9",
+    "#f8d289",
+    "#db0908",
+    "#f88916",
+    "#4dafde",
+    "#f05050",
+    "#f44336",
+    "#e91e63",
+    "#9c27b0",
+    "#673ab7",
+    "#3f51b5",
+    "#2196f3",
+    "#03a9f4",
+    "#00bcd4",
+    "#009688",
+    "#4caf50",
+    "#8bc34a",
+    "#cddc39",
+    "#ffeb3b",
+    "#ffc107",
+    "#ff9800",
+    "#ff5722",
+    "#795548",
+    "#9e9e9e",
+    "#607d8b"
+];
