@@ -1095,6 +1095,7 @@ var UserTabContent = React.createClass({
         })
     },
     render: function () {
+        var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : "";
         return (
             <div ref="userListTable">
                 {this.renderFilterBlock()}
@@ -1102,6 +1103,7 @@ var UserTabContent = React.createClass({
                 {this.renderTableBlock()}
                 {this.state.clueAddFormShow ? (
                     <SalesClueAddForm
+                        appUserId = {appUserId}
                         defaultClueData={this.state.defaultClueData}
                         hideAddForm={this.hideClueAddForm}
                         accessChannelArray={this.state.accessChannelArray}

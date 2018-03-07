@@ -113,6 +113,10 @@ const SalesClueAddForm = React.createClass({
             address: formData.address,
             administrative_level: formData.administrative_level
         };
+        //生成线索客户的用户的id
+        if (this.props.appUserId){
+            submitObj.app_user_id = this.props.appUserId;
+        }
         //联系人及联系方式的处理
         let contact = {def_contancts: "true"};
         if (formData.contact_name) {
