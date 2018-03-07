@@ -1148,12 +1148,21 @@ var Crm = React.createClass({
             {
                 title: Intl.get("common.operate", "操作"),
                 width: '60px',
-                render: function (text, record, index) {
+                render:  (text, record, index) => {
+                    //是否是重复的客户
                     const isRepeat = record.name_repeat || record.phone_repeat;
+                    //是否处于导入预览状态
+                    const isPreview = this.state.isPreviewShow;
+                    //是否在客户列表上可以删除
+                    const canDeleteOnCrmList = !isPreview && hasPrivilege("CRM_DELETE_CUSTOMER");
+                    //是否在导入预览列表上可以删除
+                    const canDeleteOnPreviewList = isPreview && isRepeat;
+                    //是否显示删除按钮
+                    const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
 
                     return (
                         <span className="cus-op">
-                            {hasPrivilege("CRM_DELETE_CUSTOMER") || isRepeat ? (
+                            {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
                                         onClick={isRepeat? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
