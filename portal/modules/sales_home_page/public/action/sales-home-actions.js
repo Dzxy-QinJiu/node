@@ -1,17 +1,12 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
-var appAjaxTrans = require("../../../common/public/ajax/app");
+
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
         'setSelectedCustomer',//设置选中的客户
-        'onChangeUserCheckBox',
-        'onChangeAppCheckBox',
-        'onChangeApplyType'
     );
-
-
     this.getphoneTotal = function (reqData) {
         let type = 'manager';
         if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
@@ -111,32 +106,7 @@ function SalesHomeActions() {
             this.dispatch({loading: false, error: true, errMsg: errorMsg || Intl.get("crm.188", "获取重复客户列表失败!")});
         });
     };
-    //获取客户下的用户列表
-    this.getCrmUserList = function (reqData) {
-        this.dispatch({loading: true, error: false});
-        salesHomeAjax.getCrmUserList(reqData).then((result) => {
-            this.dispatch({loading: false, error: false, resData: result});
-        }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errMsg: errorMsg });
-        });
-    };
-    this.getAppList = function () {
-        appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
-            list = list.map(function (app) {
-                return {
-                    client_id: app.app_id,
-                    client_name: app.app_name,
-                    client_logo: app.app_logo
-                };
-            });
 
-            this.dispatch(list);
-        }).error(errorMsg => {
-            this.dispatch(errorMsg.responseJSON);
-        }).timeout(errorMsg => {
-            this.dispatch(errorMsg.responseJSON);
-        });
-    };
 
 }
 

@@ -58,18 +58,29 @@ export const SYSTEM_NOTICE_TYPE_MAP = {
 };
 
 export const NO_SELECT_FULL_OPTIONS = [
-    {value:"not_remind",name:Intl.get("crm.not.alert","不提醒")},
-    {value:"ahead_5min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":5})},
-    {value:"ahead_10min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":10})},
-    {value:"ahead_15min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":15})},
-    {value:"ahead_30min",name:Intl.get("crm.ahead.n.min","提前{n}分钟",{"n":30})},
-    {value:"ahead_1h",name:Intl.get("crm.ahead.n.hour","提前{n}小时",{"n":1})}];
+    {value: "not_remind", name: Intl.get("crm.not.alert", "不提醒")},
+    {value: "ahead_5min", name: Intl.get("crm.ahead.n.min", "提前{n}分钟", {"n": 5})},
+    {value: "ahead_10min", name: Intl.get("crm.ahead.n.min", "提前{n}分钟", {"n": 10})},
+    {value: "ahead_15min", name: Intl.get("crm.ahead.n.min", "提前{n}分钟", {"n": 15})},
+    {value: "ahead_30min", name: Intl.get("crm.ahead.n.min", "提前{n}分钟", {"n": 30})},
+    {value: "ahead_1h", name: Intl.get("crm.ahead.n.hour", "提前{n}小时", {"n": 1})}];
 export const SELECT_FULL_OPTIONS = [
-    {value:"not_remind",name:Intl.get("crm.not.alert","不提醒")},
-    {value:"thatday_10",name:Intl.get("crm.today.10.clock","当天上午10点")},
-    {value:"ahead_1day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":1})},
-    {value:"ahead_2day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":2})},
-    {value:"ahead_3day_10",name:Intl.get("crm.n.day.10.clock","{n}天前上午10点",{"n":3})},
+    {value: "not_remind", name: Intl.get("crm.not.alert", "不提醒")},
+    {value: "thatday_10", name: Intl.get("crm.today.10.clock", "当天上午10点")},
+    {value: "ahead_1day_10", name: Intl.get("crm.n.day.10.clock", "{n}天前上午10点", {"n": 1})},
+    {value: "ahead_2day_10", name: Intl.get("crm.n.day.10.clock", "{n}天前上午10点", {"n": 2})},
+    {value: "ahead_3day_10", name: Intl.get("crm.n.day.10.clock", "{n}天前上午10点", {"n": 3})},
 ];
 export const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
 export const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道
+//不同列表的类型
+export const ALL_LISTS_TYPE = {
+    SCHEDULE_TODAY: "schedule_today",//今日计划联系日程列表
+    WILL_EXPIRED_SCHEDULE_TODAY: "will_expired_schedule_today",//今日到期的日程
+    APP_ILLEAGE_LOGIN: "app_illeage_login",// 停用后登录
+    CONCERNED_CUSTOMER_LOGIN: "concerned_customer_login",//关注客户登录
+    REPEAT_CUSTOMER: "repeat_customer",//重复客户
+    WILL_EXPIRED_ASSIGN_CUSTOMER: "will_expired_assign_customer",//即将到期的签约用户
+    WILL_EXPIRED_TRY_CUSTOMER: "will_expired_try_customer",//即将到期的试用用户
+    RECENT_LOGIN_CUSTOMER: "recent_login_customer",//最近登录的客户
+};

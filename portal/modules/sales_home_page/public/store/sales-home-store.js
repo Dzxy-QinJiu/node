@@ -2,6 +2,7 @@ var SalesHomeActions = require("../action/sales-home-actions");
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
 const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
+import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -57,6 +58,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.scheduleTodayObj = {
         loading: true,
         errMsg: '',
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -107,12 +109,6 @@ SalesHomeStore.prototype.setInitState = function () {
             total: ""
         }
     };
-    //某个客户下的用户列表
-    this.userListsOfCustomer = {
-        loading: true,
-        errMsg: "",
-        data: {}
-    };
     //即将到期的签约用户
     this.willExpiredAssignCustomer = {
         loading: true,
@@ -150,10 +146,8 @@ SalesHomeStore.prototype.setInitState = function () {
     this.status = STATUS.UNHANDLED;//未处理，handled:已处理
     this.selectedCustomerId = "";//选中的客户的id
     this.selectedCustomer = {};//选中客户对象
-    this.curApplyType = "";//申请类型
-    this.appList = [];
+    this.selectedCustomerPanel = ALL_LISTS_TYPE.SCHEDULE_TODAY;//选中客户所在的模块
     this.listenScrollBottom = true;//是否监听滚动
-    this.hasFinishedAjaxCount = 0;//已完成的请求数量
 };
 //获取今日通话数量和时长
 SalesHomeStore.prototype.getphoneTotal = function (result) {
@@ -248,10 +242,6 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         } else if (result.resData) {
             scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list));
             scheduleExpiredTodayObj.data.total = result.resData.total;
-            if (_.isArray(scheduleExpiredTodayObj.data.list) && scheduleExpiredTodayObj.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomer = scheduleExpiredTodayObj.data.list[0];
-                this.selectedCustomerId = scheduleExpiredTodayObj.data.list[0].customer_id;
-            }
         }
     } else {
         //获取今天的日程列表
@@ -261,9 +251,10 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
             scheduleTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
             scheduleTodayObj.data.list = scheduleTodayObj.data.list.concat(processScheduleLists(result.resData.list));
-            if (_.isArray(scheduleTodayObj.data.list) && scheduleTodayObj.data.list.length) {
-                this.selectedCustomer = scheduleTodayObj.data.list[0];
-                this.selectedCustomerId = scheduleTodayObj.data.list[0].customer_id;
+            scheduleTodayObj.curPage++;
+            if (_.isArray(scheduleTodayObj.data.list) && scheduleTodayObj.data.list.length && !this.selectedCustomerId){
+                this.selectedCustomerId = scheduleTodayObj.data.list[0].customer_id;//选中的客户的id
+                this.selectedCustomer = scheduleTodayObj.data.list[0];//选中客户对象
             }
             scheduleTodayObj.data.total = result.resData.total;
         }
@@ -271,29 +262,14 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
 };
 // 对日程进行整理
 function processScheduleLists(list) {
+    if (!_.isArray(list)){
+        list = [];
+    }
     _.each(list, (item) => {
         if (item.end_time - item.start_time === 24 * 60 * 60 * 1000 - 1000) {
             item.allDay = true;
         }
     });
-    // //状态是已完成的日程
-    // var hasFinishedList = _.filter(list, (item) => {
-    //     return item.status == "handle";
-    // });
-    // //未完成的日程
-    // var notFinishedList = _.filter(list, (item) => {
-    //     return item.status == "false";
-    // });
-    //不是全天日程
-    // var notFulldaylist = _.filter(list, (item) => {
-    //     return !item.allDay;
-    // });
-    // //全天的日程
-    // var Fulldaylist = _.filter(list, (item) => {
-    //     return item.allDay;
-    // });
-    // //对日程数据进行排序，把全天的放在最上面，已完成的放在最下面
-    // var sortedList = _.flatten([Fulldaylist, notFulldaylist]);
     return list;
 }
 //获取关注客户登录或者是停用客户登录
@@ -310,10 +286,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
             });
             concernCustomerObj.data.list = concernCustomerObj.data.list.concat(result.resData.list);
             concernCustomerObj.data.total = result.resData.total;
-            if (_.isArray(concernCustomerObj.data.list) && concernCustomerObj.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomer = concernCustomerObj.data.list[0];
-                this.selectedCustomerId = concernCustomerObj.data.list[0].customer_id;
-            }
         }
     } else if (result.type === "appIllegal") {
         //获取今天的日程列表
@@ -327,10 +299,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
             });
             appIllegalObj.data.list = appIllegalObj.data.list.concat(result.resData.list);
             appIllegalObj.data.total = result.resData.total;
-            if (_.isArray(appIllegalObj.data.list) && appIllegalObj.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomer = appIllegalObj.data.list[0];
-                this.selectedCustomerId = appIllegalObj.data.list[0].customer_id;
-            }
         }
     }
 };
@@ -346,10 +314,6 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         } else if (result.resData) {
             willExpiredAssignCustomer.data.list = willExpiredAssignCustomer.data.list.concat(result.resData.result.day);
             willExpiredAssignCustomer.data.total = result.resData.result.day_tatol;
-            if (_.isArray(willExpiredAssignCustomer.data.list) && willExpiredAssignCustomer.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomer = willExpiredAssignCustomer.data.list[0];
-                this.selectedCustomerId = willExpiredAssignCustomer.data.list[0].customer_id;
-            }
         }
     } else if (result.type === "试用用户") {
         //获取即将到期的试用用户
@@ -360,10 +324,6 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         } else if (result.resData) {
             willExpiredTryCustomer.data.list = willExpiredTryCustomer.data.list.concat(result.resData.result.day);
             willExpiredTryCustomer.data.total = result.resData.result.day_tatol;
-            if (_.isArray(willExpiredTryCustomer.data.list) && willExpiredTryCustomer.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomer = willExpiredTryCustomer.data.list[0];
-                this.selectedCustomerId = willExpiredTryCustomer.data.list[0].customer_id;
-            }
         }
     }
 };
@@ -377,81 +337,13 @@ SalesHomeStore.prototype.getRepeatCustomerList = function (result) {
     } else if (result.resData) {
         repeatCustomerObj.data.list = repeatCustomerObj.data.list.concat(result.resData.result);
         repeatCustomerObj.data.total = result.resData.total;
-        if (_.isArray(repeatCustomerObj.data.result) && repeatCustomerObj.data.result.length && !this.selectedCustomerId) {
-            this.selectedCustomer = repeatCustomerObj.data.result[0];
-            this.selectedCustomerId = repeatCustomerObj.data.result[0].id;
-        }
-    }
-};
-//获取某个客户下的用户列表
-SalesHomeStore.prototype.getCrmUserList = function (result) {
-    var userListsOfCustomer = this.userListsOfCustomer;
-    userListsOfCustomer.loading = result.loading;
-    if (result.error) {
-        userListsOfCustomer.errMsg = result.errMsg;
-    } else if (result.resData) {
-        userListsOfCustomer.data = result.resData;
     }
 };
 
 // 设置要选中的客户的id
-SalesHomeStore.prototype.setSelectedCustomer = function (selectedObj) {
-    this.selectedCustomer = selectedObj;
-    this.selectedCustomerId = selectedObj.customer_id || selectedObj.id;
+SalesHomeStore.prototype.setSelectedCustomer = function (Item) {
+    this.selectedCustomer = Item.selectedObj;
+    this.selectedCustomerId = Item.selectedObj.customer_id || Item.selectedObj.id;
+    this.selectedCustomerPanel = Item.selectedPanel;
 };
-
-
-//（取消）选择用户时，（取消）选择用户下的所有应用
-SalesHomeStore.prototype.onChangeUserCheckBox = function (checkObj) {
-    var crmUserList = this.userListsOfCustomer.data.data;
-    if (_.isArray(crmUserList)) {
-        let userObj = _.find(crmUserList, (obj) => obj.user.user_id === checkObj.userId);
-        if (userObj) {
-            //用户的（取消）选择处理
-            userObj.user.checked = checkObj.checked;
-            //用户下应用的（取消）选择处理
-            if (_.isArray(userObj.apps) && userObj.apps.length) {
-                _.each(userObj.apps, app => {
-                    app.checked = checkObj.checked;
-                });
-            }
-        }
-    }
-};
-
-//（取消）选择应用时的处理
-SalesHomeStore.prototype.onChangeAppCheckBox = function (checkObj) {
-    var crmUserList = this.userListsOfCustomer.data.data;
-    if (_.isArray(crmUserList)) {
-        let userObj = _.find(crmUserList, (obj) => obj.user.user_id === checkObj.userId);
-        if (userObj) {
-            //应用的（取消）选择处理
-            if (_.isArray(userObj.apps) && userObj.apps.length) {
-                let app = _.find(userObj.apps, app => app.app_id === checkObj.appId);
-                if (app) {
-                    app.checked = checkObj.checked;
-                }
-            }
-            //用户的（取消）选择处理
-            if (checkObj.checked) {//选中时
-                let notCheckedApp = _.find(userObj.apps, app => !app.checked);
-                //该用户下没有未选中的应用时，将用户的checked设为选中
-                if (!notCheckedApp) {
-                    userObj.user.checked = checkObj.checked;
-                }
-            } else {//取消选中时
-                delete userObj.user.checked;
-            }
-        }
-    }
-};
-//申请类型的修改
-SalesHomeStore.prototype.onChangeApplyType = function (curApplyType) {
-    this.curApplyType = curApplyType;
-};
-SalesHomeStore.prototype.getAppList = function (result) {
-    this.appList = _.isArray(result) ? result : [];
-};
-
-
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

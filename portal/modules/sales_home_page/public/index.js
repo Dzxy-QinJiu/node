@@ -1,7 +1,7 @@
 var RightContent = require("CMP_DIR/privilege/right-content");
 require("./css/index.less");
 var TopNav = require("CMP_DIR/top-nav");
-import {Collapse} from "antd";
+import {Collapse, Alert} from "antd";
 const Panel = Collapse.Panel;
 var SalesHomeStore = require("./store/sales-home-store");
 var SalesHomeAction = require("./action/sales-home-actions");
@@ -12,32 +12,29 @@ import AppUserLists from "./view/app-user-lists";
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
 import CustomerRecord from "MOD_DIR/crm/public/views/customer_record";
+var Spinner = require("CMP_DIR/spinner");
+import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
+import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
     PHONE: 'phone',
     APP: 'app'
 };
-//不同列表的类型
-const ALL_LISTS_TYPE = {
-    SCHEDULE_TODAY: "schedule_today",//今日计划联系日程列表
-    WILL_EXPIRED_SCHEDULE_TODAY: "will_expired_schedule_today",//今日到期的日程
-    APP_ILLEAGE_LOGIN: "app_illeage_login",// 停用后登录
-    CONCERNED_CUSTOMER_LOGIN: "concerned_customer_login",//关注客户登录
-    REPEAT_CUSTOMER: "repeat_customer",//重复客户
-    WILL_EXPIRED_ASSIGN_CUSTOMER:"will_expired_assign_customer",//即将到期的签约用户
-    WILL_EXPIRED_TRY_CUSTOMER:"will_expired_try_customer"//即将到期的试用用户
-};
 
 var SalesHomePage = React.createClass({
     getInitialState: function () {
         return {
+            isShowRepeatCustomer: false,//是否展示重复客户
             ...SalesHomeStore.getState()
         }
     },
     componentDidMount: function () {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
+        $(".customer-list-left").on("click", ".repeat-customer-panel.panel-header-count", function (e) {
+            $(".repeat-customer-panel.panel-header-count").closest(".ant-collapse-header").next(".ant-collapse-content").hide();
+        })
     },
     componentWillUnmount: function () {
         SalesHomeStore.unlisten(this.onChange);
@@ -84,7 +81,7 @@ var SalesHomePage = React.createClass({
         this.getWillExpireCustomer("正式用户");
     },
     getWillExpireCustomer: function (tags) {
-        SalesHomeAction.getWillExpireCustomer({tags:tags});
+        SalesHomeAction.getWillExpireCustomer({tags: tags});
     },
     //重复客户列表
     getRepeatCustomerList: function (lastId) {
@@ -156,14 +153,6 @@ var SalesHomePage = React.createClass({
             starttime: this.state.start_time,
             endtime: this.state.end_time
         };
-        // todo 待删除
-        if (this.state.currShowSalesman) {
-            //查看当前选择销售的统计数据
-            queryParams.member_id = this.state.currShowSalesman.userId;
-        } else if (this.state.currShowSalesTeam) {
-            //查看当前选择销售团队内所有成员的统计数据
-            queryParams.team_id = this.state.currShowSalesTeam.group_id;
-        }
         return queryParams;
     },
     getPhoneParams: function () {
@@ -172,14 +161,6 @@ var SalesHomePage = React.createClass({
             end_time: this.state.end_time || moment().toDate().getTime(),
             deviceType: this.state.callType || CALL_TYPE_OPTION.ALL
         };
-        //todo 待删除
-        if (this.state.currShowSalesman) {
-            //查看当前选择销售的统计数据
-            phoneParams.member_ids = this.state.currShowSalesman.userId;
-        } else if (this.state.currShowSalesTeam) {
-            //查看当前选择销售团队内所有成员的统计数据
-            phoneParams.team_ids = this.state.currShowSalesTeam.group_id;
-        }
         return phoneParams;
     },
     getDataType: function () {
@@ -192,41 +173,83 @@ var SalesHomePage = React.createClass({
         }
     },
     // 点击左侧列表中的某个客户
-    handleClickCustomerItem: function (selectedCustomer) {
-        SalesHomeAction.setSelectedCustomer(selectedCustomer);
+    handleClickCustomerItem: function (selectedCustomer, panelType) {
+        //不在展示重复客户列表
+        this.setState({isShowRepeatCustomer: false});
+        var itemObj = {
+            selectedObj: selectedCustomer,
+            selectedPanel: panelType//点击客户所在的面板
+        };
+        SalesHomeAction.setSelectedCustomer(itemObj);
     },
 
     //渲染今日待联系的日程列表
-    renderScheduleListToday: function () {
-        return (_.map(this.state.scheduleTodayObj.data.list, (scheduleItem) => {
-            var cls = classNames("list-item-wrap", {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId}
-            );
+    renderScheduleListToday: function (panelType) {
+        if (this.state.scheduleTodayObj.loading && this.state.scheduleTodayObj.curPage == 1) {
             return (
-                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem)}>
-                    <div className="item-header">
-                        <span className="customer-name-container">{scheduleItem.customer_name}</span>
-                        <span className="schedule-tip pull-right">
+                <div>
+                    <Spinner/>
+                </div>
+            )
+        } else if (this.state.scheduleTodayObj.errMsg) {
+            //加载完成，出错的情况
+            var errMsg = <span>{this.state.scheduleTodayObj.errMsg}
+                <a onClick={this.retryChangeRecord}>
+                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                        </a>
+                         </span>;
+            return (
+                <div className="alert-wrap">
+                    <Alert
+                        message={errMsg}
+                        type="error"
+                        showIcon={true}
+                    />
+                </div>
+            );
+        } else if (!this.state.scheduleTodayObj.data.list.length && !this.state.scheduleTodayObj.loading) {
+            //加载完成，没有数据的情况
+            return (
+                <div className="show-no-schedule">
+                    <Alert
+                        message={Intl.get("common.no.data", "暂无数据")}
+                        type="info"
+                        showIcon={true}
+                    />
+                </div>
+            );
+        } else if (this.state.scheduleTodayObj.data.list.length) {
+            return (_.map(this.state.scheduleTodayObj.data.list, (scheduleItem) => {
+                var cls = classNames("list-item-wrap",
+                    {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId && panelType == this.state.selectedCustomerPanel}
+                );
+                return (
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}>
+                        <div className="item-header">
+                            <span className="customer-name-container">{scheduleItem.customer_name}</span>
+                            <span className="schedule-tip pull-right">
                             {scheduleItem.allDay ? Intl.get("crm.alert.full.day", "全天") : <span>
                                 {moment(scheduleItem.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                     </span>}
                     </span>
+                        </div>
+                        <div className="item-content">
+                            <p>
+                                {scheduleItem.content}
+                            </p>
+                        </div>
                     </div>
-                    <div className="item-content">
-                        <p>
-                            {scheduleItem.content}
-                        </p>
-                    </div>
-                </div>
-            )
-        }))
+                )
+            }))
+        }
     },
     //渲染今日过期的日程
-    renderExpiredScheduleList: function () {
+    renderExpiredScheduleList: function (panelType) {
         return (_.map(this.state.scheduleExpiredTodayObj.data.list, (scheduleItem) => {
             var cls = classNames("list-item-wrap", {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId}
             );
             return (
-                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem)}>
+                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}>
                     <div className="item-header">
                         <span className="customer-name-container">{scheduleItem.customer_name}</span>
                         <span className="time-tip pull-right">
@@ -245,12 +268,12 @@ var SalesHomePage = React.createClass({
         }))
     },
     //客户停用后登录
-    renderAppIllegalCustomer: function () {
+    renderAppIllegalCustomer: function (panelType) {
         return (_.map(this.state.appIllegalObj.data.list, (item) => {
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
@@ -263,12 +286,12 @@ var SalesHomePage = React.createClass({
         )
     },
     //关注客户登录
-    renderConcernedCustomer: function () {
+    renderConcernedCustomer: function (panelType) {
         return (_.map(this.state.concernCustomerObj.data.list, (item) => {
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
@@ -281,12 +304,12 @@ var SalesHomePage = React.createClass({
         )
     },
     //最近登录的客户
-    renderRecentLoginCustomer: function () {
+    renderRecentLoginCustomer: function (panelType) {
         return (_.map(this.state.recentLoginCustomerObj.data.result, (item) => {
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                         </div>
@@ -313,12 +336,12 @@ var SalesHomePage = React.createClass({
         )
     },
     //即将到期的签约客户
-    renderWillExpiredAssignCustomer: function () {
+    renderWillExpiredAssignCustomer: function (panelType) {
         return (_.map(this.state.willExpiredAssignCustomer.data.list, (item) => {
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                         </div>
@@ -329,12 +352,12 @@ var SalesHomePage = React.createClass({
         )
     },
     //即将到期的试用客户
-    renderWillExpiredTryCustomer: function () {
+    renderWillExpiredTryCustomer: function (panelType) {
         return (_.map(this.state.willExpiredTryCustomer.data.list, (item) => {
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                         </div>
@@ -343,9 +366,6 @@ var SalesHomePage = React.createClass({
                 )
             })
         )
-    },
-    refreshCustomerList: function () {
-
     },
     handleScrollBarBottom: function (listType) {
         switch (listType) {
@@ -377,19 +397,28 @@ var SalesHomePage = React.createClass({
         }
     },
 
-
+    //点击收起面板
     handleClickCollapse: function () {
         this.setState({
-            listenScrollBottom: true
+            listenScrollBottom: true,
+            isShowRepeatCustomer: false
         })
     },
-
+    //点击展示重复客户列表
+    handleShowRepeatCustomer: function () {
+        this.setState({
+            isShowRepeatCustomer: true,
+        });
+    },
 
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         var text = "sdfsd";
         const fixedHeight = $(window).height() - 38 * 8 - 140;
+        var repeatCls = classNames("reapeat-customer-header",
+            {"repeat-customer-active": this.state.isShowRepeatCustomer}
+        );
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
@@ -456,120 +485,136 @@ var SalesHomePage = React.createClass({
                                 <Panel header={<span>{Intl.get("sales.frontpage.will.contact.today", "今日待联系")}<span
                                     className="panel-header-count">{this.state.scheduleTodayObj.data.total}</span></span>}
                                        key="1">
-                                    <div className="today-schedule-container" style={{height: fixedHeight}}>
+                                    <div className="today-schedule-container items-customer-container"
+                                         style={{height: fixedHeight}}
+                                    >
                                         <GeminiScrollbar
                                             handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.SCHEDULE_TODAY)}
                                             listenScrollBottom={this.state.listenScrollBottom}>
-                                            {this.renderScheduleListToday()}
+                                            {this.renderScheduleListToday(ALL_LISTS_TYPE.SCHEDULE_TODAY)}
                                         </GeminiScrollbar>
                                     </div>
                                 </Panel>
-                                <Panel header={<span>{Intl.get("sales.frontpage.expired.not.contact", "超期未联系")}<span
-                                    className="panel-header-count">{this.state.scheduleExpiredTodayObj.data.total}</span></span>}
-                                       key="2">
-                                    <div
-                                        className="today-expired-schedule-container" style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY)}
-                                            listenScrollBottom={this.state.listenScrollBottom}>
-                                            {this.renderExpiredScheduleList()}
-                                        </GeminiScrollbar></div>
-                                </Panel>
-                                <Panel
+                                {this.state.scheduleExpiredTodayObj.data.total ?
+                                    <Panel header={<span>{Intl.get("sales.frontpage.expired.not.contact", "超期未联系")}<span
+                                        className="panel-header-count">{this.state.scheduleExpiredTodayObj.data.total}</span></span>}
+                                           key="2">
+                                        <div
+                                            className="today-expired-schedule-container items-customer-container"
+                                            style={{height: fixedHeight}}
+                                        >
+                                            <GeminiScrollbar
+                                                handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY)}
+                                                listenScrollBottom={this.state.listenScrollBottom}>
+                                                {this.renderExpiredScheduleList(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY)}
+                                            </GeminiScrollbar></div>
+                                    </Panel> : null}
+
+                                {this.state.willExpiredTryCustomer.data.total ? <Panel
                                     header={
                                         <span>{Intl.get("sales.frontpage.will.expired.try.user", "即将到期的试用客户")}<span
                                             className="panel-header-count">{this.state.willExpiredTryCustomer.data.total}</span></span>}
                                     key="3">
-                                    <div style={{height: fixedHeight}}>
+                                    <div className="items-customer-container"
+                                         style={{height: fixedHeight}}
+                                    >
 
                                         <GeminiScrollbar
                                             // handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER)}
                                             // listenScrollBottom={this.state.listenScrollBottom}
-                                            >
-                                        {this.renderWillExpiredTryCustomer()}
+                                        >
+                                            {this.renderWillExpiredTryCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER)}
                                         </GeminiScrollbar>
+                                    </div>
+                                </Panel> : null}
+                                {this.state.willExpiredAssignCustomer.data.total ?
+                                    <Panel header={
+                                        <span>{Intl.get("sales.frontpage.will.expired.assgined.user", "即将到期的签约客户")}<span
+                                            className="panel-header-count">{this.state.willExpiredAssignCustomer.data.total}</span></span>}
+                                           key="4">
+                                        <div className="items-customer-container"
+                                             style={{height: fixedHeight}}
+                                        >
+                                            <GeminiScrollbar
+                                                // handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER)}
+                                                // listenScrollBottom={this.state.listenScrollBottom}
+                                            >
+                                                {this.renderWillExpiredAssignCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER)}
+                                            </GeminiScrollbar></div>
+                                    </Panel> : null}
+
+                                {this.state.appIllegalObj.data.total ?
+                                    <Panel header={<span>{Intl.get("sales.frontpage.login.after.stop", "停用后登录")}<span
+                                        className="panel-header-count">{this.state.appIllegalObj.data.total}</span></span>}
+                                           key="5">
+                                        <div className="items-customer-container"
+                                             style={{height: fixedHeight}}
+                                        >
+                                            <GeminiScrollbar
+                                                handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}
+                                                listenScrollBottom={this.state.listenScrollBottom}>{this.renderAppIllegalCustomer(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}</GeminiScrollbar>
                                         </div>
-                                </Panel>
-                                <Panel header={
-                                    <span>{Intl.get("sales.frontpage.will.expired.assgined.user", "即将到期的签约客户")}<span
-                                        className="panel-header-count">{this.state.willExpiredAssignCustomer.data.total}</span></span>}
-                                       key="4">
-                                    <div style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            // handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER)}
-                                            // listenScrollBottom={this.state.listenScrollBottom}
-                                            >
-                                        {this.renderWillExpiredAssignCustomer()}
-                                        </GeminiScrollbar></div>
-                                </Panel>
-                                <Panel header={<span>{Intl.get("sales.frontpage.login.after.stop", "停用后登录")}<span
-                                    className="panel-header-count">{this.state.appIllegalObj.data.total}</span></span>}
-                                       key="5">
-                                    <div style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}
-                                            listenScrollBottom={this.state.listenScrollBottom}>{this.renderAppIllegalCustomer()}</GeminiScrollbar>
-                                    </div>
-                                </Panel>
-                                <Panel
-                                    header={<span>{Intl.get("ketao.frontpage.focus.customer.login", "关注客户登录")}<span
-                                        className="panel-header-count">{this.state.concernCustomerObj.data.total}</span></span>}
-                                    key="6">
-                                    <div style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
-                                            listenScrollBottom={this.state.listenScrollBottom}>
-                                            {this.renderConcernedCustomer()}
-                                        </GeminiScrollbar></div>
-                                </Panel>
-                                <Panel header={<span>{Intl.get("sales.frontpage.login.recently", "最近登录的客户")}<span
-                                    className="panel-header-count">{this.state.recentLoginCustomerObj.data.total}</span></span>}
-                                       key="7">
-                                    <div style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom}
-                                            listenScrollBottom={this.state.listenScrollBottom}>
-                                            {this.renderRecentLoginCustomer()}
-                                        </GeminiScrollbar>
-                                    </div>
-                                </Panel>
-                                <Panel
-                                    header={<span>{Intl.get("sales.frontpage.has.repeat.customer", "您有重复的客户")}<span
-                                        className="panel-header-count">{this.state.repeatCustomerObj.data.total}</span></span>}
-                                    key="8">
-                                    <div style={{height: fixedHeight}}>
-                                        <GeminiScrollbar
-                                            handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.REPEAT_CUSTOMER)}
-                                            listenScrollBottom={this.state.listenScrollBottom}>
-                                            {this.renderReapeatCustomer()}
-                                        </GeminiScrollbar>
-                                    </div>
-                                </Panel>
-                                {/*<Panel*/}
-                                {/*header={<span>{Intl.get("sales.frontpage.contact.customers", "建议您联系以下客户")}<span*/}
-                                {/*className="panel-header-count">{this.state.recentLoginCustomerObj.data.total}</span></span>}*/}
-                                {/*key="9">*/}
-                                {/*<div>{text}</div>*/}
-                                {/*</Panel>*/}
+                                    </Panel> : null}
+
+                                {this.state.concernCustomerObj.data.total ?
+                                    <Panel
+                                        header={<span>{Intl.get("ketao.frontpage.focus.customer.login", "关注客户登录")}<span
+                                            className="panel-header-count">{this.state.concernCustomerObj.data.total}</span></span>}
+                                        key="6">
+                                        <div className="items-customer-container"
+                                             style={{height: fixedHeight}}
+                                        >
+                                            <GeminiScrollbar
+                                                handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
+                                                listenScrollBottom={this.state.listenScrollBottom}>
+                                                {this.renderConcernedCustomer(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
+                                            </GeminiScrollbar></div>
+                                    </Panel> : null}
+
+                                {this.state.recentLoginCustomerObj.data.total > 0 ?
+                                    <Panel header={<span>{Intl.get("sales.frontpage.login.recently", "最近登录的客户")}<span
+                                        className="panel-header-count">{this.state.recentLoginCustomerObj.data.total}</span></span>}
+                                           key="7">
+                                        <div className="items-customer-container"
+                                             style={{height: fixedHeight}}
+                                        >
+                                            {/*<GeminiScrollbar*/}
+                                            {/*handleScrollBottom={this.handleScrollBarBottom}*/}
+                                            {/*listenScrollBottom={this.state.listenScrollBottom}>*/}
+
+                                            {this.renderRecentLoginCustomer(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER)}
+                                            {/*</GeminiScrollbar>*/}
+                                        </div>
+                                    </Panel> : null}
                             </Collapse>
+                            <div className={repeatCls} onClick={this.handleShowRepeatCustomer}>
+                                    <span>
+                                        <span>{Intl.get("sales.frontpage.has.repeat.customer", "您有重复的客户")}</span>
+                                        <span
+                                            className="repeat-customer-panel-header-count">{this.state.repeatCustomerObj.data.total}</span>
+                                    </span>
+                            </div>
                         </div>
                         <div className="col-md-8 customer-content-right">
-                            <div className="customer-header-panel">
-                                {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
-                            </div>
-                            <div className="crm-user-content">
-                                <GeminiScrollbar>
-                                    {this.state.selectedCustomerId ? <AppUserLists
-                                        selectedCustomerId={this.state.selectedCustomerId}
-                                    /> : null}
-                                    {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
-                                        curCustomer={this.state.selectedCustomer}
-                                        refreshCustomerList={this.state.refreshCustomerList}
-                                    /> : null}
-
-                                </GeminiScrollbar>
-                            </div>
-
+                            {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
+                                <div>
+                                    <div className="customer-header-panel">
+                                        {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
+                                    </div>
+                                    <div className="crm-user-content">
+                                        <GeminiScrollbar>
+                                            {this.state.selectedCustomerId ? <AppUserLists
+                                                selectedCustomerId={this.state.selectedCustomerId}
+                                            /> : null}
+                                            {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
+                                                curCustomer={this.state.selectedCustomer}
+                                                refreshCustomerList={function () {
+                                                }}
+                                            /> : null}
+                                        </GeminiScrollbar>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

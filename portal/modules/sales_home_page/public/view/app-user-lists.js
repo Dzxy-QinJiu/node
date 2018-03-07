@@ -3,8 +3,8 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/5.
  */
-var SalesHomeStore = require("../store/sales-home-store");
-var SalesHomeAction = require("../action/sales-home-actions");
+var AppUserListStore = require("../store/app-user-list-store");
+var AppUserListAction = require("../action/app-user-list-actions");
 import Spinner from 'CMP_DIR/spinner';
 import {Checkbox, Button} from "antd";
 const userData = require("PUB_DIR/sources/user-data");
@@ -32,23 +32,21 @@ class AppUserLists extends React.Component {
         super(props);
         this.state = {
             customerId: this.props.selectedCustomerId,
-            ...SalesHomeStore.getState()
+            ...AppUserListStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
     };
 
-    componentDiDMount() {
-        SalesHomeStore.listen(this.onStoreChange);
+    componentDidMount() {
+        AppUserListStore.listen(this.onStoreChange);
         //获取某个客户下的用户列表
-        setTimeout(() => {
-            this.getCrmUserList();
-        }, 10)
+        this.getCrmUserList();
     };
 
     //获取某个客户下的用户列表
     getCrmUserList() {
         if (this.state.customerId) {
-            SalesHomeAction.getCrmUserList({
+            AppUserListAction.getCrmUserList({
                 customer_id: this.state.customerId,
                 page_num: 1,
                 page_size: this.state.page_size
@@ -57,11 +55,11 @@ class AppUserLists extends React.Component {
     };
 
     onStoreChange = () => {
-        this.setState(SalesHomeStore.getState());
+        this.setState(AppUserListStore.getState());
     };
 
     componentWillUnmount() {
-        SalesHomeStore.unlisten(this.onStoreChange);
+        AppUserListStore.unlisten(this.onStoreChange);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -69,20 +67,19 @@ class AppUserLists extends React.Component {
             this.setState({
                 customerId: nextProps.selectedCustomerId
             }, () => {
-                setTimeout(() => {
-                    this.getCrmUserList();
-                })
+                this.getCrmUserList();
+
             });
         }
     };
 
     //用户名前的选择框
     onChangeUserCheckBox = (userId, e) => {
-        SalesHomeAction.onChangeUserCheckBox({userId: userId, checked: e.target.checked});
+        AppUserListAction.onChangeUserCheckBox({userId: userId, checked: e.target.checked});
     };
     //应用选择的处理
     onChangeAppCheckBox = (userId, appId, e) => {
-        SalesHomeAction.onChangeAppCheckBox({userId: userId, appId: appId, checked: e.target.checked});
+        AppUserListAction.onChangeAppCheckBox({userId: userId, appId: appId, checked: e.target.checked});
     };
     //用户的应用
     getUserAppOptions(userObj) {
@@ -264,9 +261,11 @@ class AppUserLists extends React.Component {
                 </Button>
             </div>);
     };
-    closeRightPanel = ()=>{
-        SalesHomeAction.onChangeApplyType("");
+
+    closeRightPanel = () => {
+        AppUserListAction.onChangeApplyType("");
     };
+
     renderUserContent() {
         var userNum = _.isArray(this.state.userListsOfCustomer.data.data) ? this.state.userListsOfCustomer.data.data.length : "";
         let isApplyButtonShow = false;
@@ -284,7 +283,7 @@ class AppUserLists extends React.Component {
                         <CrmUserApplyForm curApplyType={this.state.curApplyType} APPLY_TYPES={APPLY_TYPES}
                                           closeApplyPanel={this.closeRightPanel}
                                           crmUserList={this.state.userListsOfCustomer.data.data}/>
-                        ) : null}
+                    ) : null}
                     <ul className="crm-user-list">
                         {this.renderCrmUserList()}
                     </ul>
@@ -294,7 +293,8 @@ class AppUserLists extends React.Component {
             return null;
         }
     };
-    getEmailData(checkedUsers){
+
+    getEmailData(checkedUsers) {
         let email_customer_names = [];
         let email_user_names = [];
 
@@ -310,7 +310,8 @@ class AppUserLists extends React.Component {
             email_user_names: email_user_names.join('、')
         };
     };
-    renderRightPanel(){
+
+    renderRightPanel() {
         let rightPanelView = null;
         if (this.state.curApplyType === APPLY_TYPES.OPEN_APP) {
             let checkedUsers = _.filter(this.state.userListsOfCustomer.data.data, userObj => userObj.user && userObj.user.checked);
