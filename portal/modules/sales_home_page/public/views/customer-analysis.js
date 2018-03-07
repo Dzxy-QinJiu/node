@@ -20,7 +20,7 @@ var constantUtil = require("../util/constant");
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
 import Analysis from "CMP_DIR/analysis";
-import { processCustomerStageChartData } from "CMP_DIR/analysis/utils";
+import { processCustomerStageChartData, processOrderStageChartData } from "CMP_DIR/analysis/utils";
 import { AntcHorizontalStageChart } from "antc";
 
 //客户分析
@@ -301,50 +301,13 @@ var CustomerAnalysis = React.createClass({
         );
     },
     getStageChart: function () {
-        let stageData = this.state.stageAnalysis.data;
-        _.map(stageData, stage => stage.value = stage.total);
+        const stageData = this.state.stageAnalysis.data;
 
-        //获取销售阶段列表
-        const stageList = this.state.salesStageList;
-        if (stageList.length) {
-            let sortedStageData = [];
-
-            //将统计数据按销售阶段列表顺序排序
-            _.each(stageList, stage => {
-                const stageDataItem = _.find(stageData, item => item.name === stage.name);
-                if (stageDataItem) {
-                    const prevItem = sortedStageData[0];
-                    if (!prevItem) {
-                        sortedStageData.unshift(stageDataItem);
-                        return;
-                    }
-
-                    if (stageDataItem.value) {
-                        //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
-                        if (prevItem.value <= stageDataItem.value) {
-                            stageDataItem.value = prevItem.value * 0.8;
-                        } else if (prevItem.value / stageDataItem.value > 10 && sortedStageData.length === 1) {
-                            //第一阶段的值比第二阶段的值大很多的时候，把第一阶段的值变小一些，以防漏斗图边角过尖
-                            sortedStageData[0].value = stageDataItem.value * 1.5;
-                        }
-                    }
-
-                    sortedStageData.unshift(stageDataItem);
-                }
-            });
-
-            //将维护阶段的统计数据加到排序后的数组的开头
-            let maintainStage = _.find(stageData, stage => stage.name === Intl.get("customer.analysis.maintain", "维护阶段"));
-            if (maintainStage) sortedStageData.unshift(maintainStage);
-
-            //将原统计数据替换为排序后数据
-            stageData = sortedStageData;
-        }
-        const max = _.max(_.pluck(stageData, "value"));
+        const chartData = processOrderStageChartData(this.state.salesStageList, stageData);
 
         return (
             <AntcHorizontalStageChart
-                chartData={stageData.reverse()}
+                chartData={chartData}
                 width={this.chartWidth}
                 resultType={this.state.stageAnalysis.resultType}
             />
