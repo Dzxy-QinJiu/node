@@ -154,7 +154,7 @@ let SystemNotification = React.createClass({
                     {notice.app_name ?
                         <span>{Intl.get("notification.system.login", "登录了") + notice.app_name}</span> : ""}
                 </div>
-                <div className="system-notice-time">{moment(notice.create_time).format("YYYY-MM-DD hh:mm:ss")}</div>
+                <div className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
             </li>
         );
     },
@@ -215,7 +215,7 @@ let SystemNotification = React.createClass({
                 {item.app_name ?
                     <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
                 <span
-                    className="system-notice-time">{moment(item.create_time).format("YYYY-MM-DD hh:mm:ss")}</span>
+                    className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
             </div>
         })
     },
