@@ -248,7 +248,9 @@ class PhoneAlert extends React.Component {
                         {this.state.submittingTraceMsg ? (
                             <AlertTimer time={3000}
                                         message={this.state.submittingTraceMsg}
-                                        type="error" showIcon/>
+                                        type="error" showIcon
+                            
+                            />
                         ) : null}
                     </div>
                     <Button type="primary" className="modal-submit-btn" onClick={this.handleTraceSubmit}

@@ -254,7 +254,7 @@ var SalesHomePage = React.createClass({
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
-                                moment(item.notice_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                                moment(item.notice_time).fromNow()}</span>
                         </div>
                         <div className="item-content"></div>
                     </div>
@@ -272,7 +272,7 @@ var SalesHomePage = React.createClass({
                         <div className="item-header">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
-                                moment(item.notice_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
+                                moment(item.notice_time).fromNow()}</span>
                         </div>
                         <div className="item-content"></div>
                     </div>
@@ -350,27 +350,9 @@ var SalesHomePage = React.createClass({
     handleScrollBarBottom: function (listType) {
         switch (listType) {
             case ALL_LISTS_TYPE.SCHEDULE_TODAY://今日的日程列表
-                // var length = this.state.scheduleTodayObj.data.list.length;
-                // if (length < this.state.scheduleTodayObj.data.total) {
-                //     var lastId = this.state.scheduleTodayObj.data.list[length - 1].id;
-                //     this.getScheduleListToday(lastId);
-                // } else if (length == this.state.scheduleTodayObj.data.total) {
-                //     this.setState({
-                //         listenScrollBottom: false
-                //     });
-                // }
                 this.getScrollData(this.state.scheduleTodayObj, this.getScheduleListToday);
                 break;
             case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日过期的日程
-                // var length = this.state.scheduleExpiredTodayObj.data.list.length;
-                // if (length < this.state.scheduleExpiredTodayObj.data.total) {
-                //     var lastId = this.state.scheduleExpiredTodayObj.data.list[length - 1].id;
-                //     this.getExpiredScheduleList(lastId);
-                // } else if (length == this.state.scheduleExpiredTodayObj.data.total) {
-                //     this.setState({
-                //         listenScrollBottom: false
-                //     });
-                // }
                 this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
                 break;
             case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
@@ -543,7 +525,7 @@ var SalesHomePage = React.createClass({
                                 <Panel header={<span>{Intl.get("sales.frontpage.login.recently", "最近登录的客户")}<span
                                     className="panel-header-count">{this.state.recentLoginCustomerObj.data.total}</span></span>}
                                        key="7">
-                                    <div style={{maxHeight: fixedHeight}}>
+                                    <div style={{height: fixedHeight}}>
                                         <GeminiScrollbar
                                             handleScrollBottom={this.handleScrollBarBottom}
                                             listenScrollBottom={this.state.listenScrollBottom}>

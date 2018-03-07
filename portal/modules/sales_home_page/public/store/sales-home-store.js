@@ -58,8 +58,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: '',
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //到今日过期的日程
@@ -67,8 +67,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: '',
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //关注客户登录
@@ -76,8 +76,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: '',
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //停用客户登录
@@ -85,8 +85,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: '',
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //最近登录的客户
@@ -94,8 +94,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: '',
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //重复客户列表
@@ -103,8 +103,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: "",
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //某个客户下的用户列表
@@ -118,8 +118,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: "",
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     //即将到期的试用用户
@@ -127,8 +127,8 @@ SalesHomeStore.prototype.setInitState = function () {
         loading: true,
         errMsg: "",
         data: {
-            list:[],
-            total:""
+            list: [],
+            total: ""
         }
     };
     this.rangParams = [{//默认展示今天的数据
@@ -142,9 +142,9 @@ SalesHomeStore.prototype.setInitState = function () {
     this.sorter = {
         field: "last_contact_time",//排序字段
         order: "descend"
-    },
-        //开始时间
-        this.start_time = TimeStampUtil.getTodayTimeStamp().start_time;
+    };
+    //开始时间
+    this.start_time = TimeStampUtil.getTodayTimeStamp().start_time;
     //结束时间
     this.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
     this.status = STATUS.UNHANDLED;//未处理，handled:已处理
@@ -153,6 +153,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.curApplyType = "";//申请类型
     this.appList = [];
     this.listenScrollBottom = true;//是否监听滚动
+    this.hasFinishedAjaxCount = 0;//已完成的请求数量
 };
 //获取今日通话数量和时长
 SalesHomeStore.prototype.getphoneTotal = function (result) {
@@ -212,6 +213,7 @@ SalesHomeStore.prototype.getCustomerTotal = function (result) {
 SalesHomeStore.prototype.getTodayContactCustomer = function (result) {
     var customerContactTodayObj = this.customerContactTodayObj;
     customerContactTodayObj.loading = result.loading;
+
     if (result.error) {
         customerContactTodayObj.errMsg = result.errMsg;
     } else if (result.resData) {
@@ -231,10 +233,6 @@ SalesHomeStore.prototype.getRecentLoginCustomer = function (result) {
 // 获取最近登录的客户数量
 SalesHomeStore.prototype.getRecentLoginCustomerCount = function (result) {
     var recentLoginCustomerObj = this.recentLoginCustomerObj;
-    // recentLoginCustomerObj.loading = result.loading;
-    // if (result.error) {
-    //     recentLoginCustomerObj.errMsg = result.errMsg;
-    // } else
     if (result.resData) {
         recentLoginCustomerObj.data.total = result.resData;
     }
@@ -250,7 +248,7 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         } else if (result.resData) {
             scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list));
             scheduleExpiredTodayObj.data.total = result.resData.total;
-            if (_.isArray(scheduleExpiredTodayObj.data.list) && scheduleExpiredTodayObj.data.list.length && !this.selectedCustomerId){
+            if (_.isArray(scheduleExpiredTodayObj.data.list) && scheduleExpiredTodayObj.data.list.length && !this.selectedCustomerId) {
                 this.selectedCustomer = scheduleExpiredTodayObj.data.list[0];
                 this.selectedCustomerId = scheduleExpiredTodayObj.data.list[0].customer_id;
             }
@@ -263,7 +261,7 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
             scheduleTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
             scheduleTodayObj.data.list = scheduleTodayObj.data.list.concat(processScheduleLists(result.resData.list));
-            if (_.isArray(scheduleTodayObj.data.list) && scheduleTodayObj.data.list.length){
+            if (_.isArray(scheduleTodayObj.data.list) && scheduleTodayObj.data.list.length) {
                 this.selectedCustomer = scheduleTodayObj.data.list[0];
                 this.selectedCustomerId = scheduleTodayObj.data.list[0].customer_id;
             }
@@ -307,12 +305,12 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
         if (result.error) {
             concernCustomerObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            _.each(result.resData.list,(item)=>{
+            _.each(result.resData.list, (item) => {
                 item.id = item.customer_id;
             });
             concernCustomerObj.data.list = concernCustomerObj.data.list.concat(result.resData.list);
             concernCustomerObj.data.total = result.resData.total;
-            if (_.isArray(concernCustomerObj.data.list) && concernCustomerObj.data.list.length && !this.selectedCustomerId){
+            if (_.isArray(concernCustomerObj.data.list) && concernCustomerObj.data.list.length && !this.selectedCustomerId) {
                 this.selectedCustomer = concernCustomerObj.data.list[0];
                 this.selectedCustomerId = concernCustomerObj.data.list[0].customer_id;
             }
@@ -324,12 +322,12 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
         if (result.error) {
             appIllegalObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            _.each(result.resData.list,(item)=>{
+            _.each(result.resData.list, (item) => {
                 item.id = item.customer_id;
             });
             appIllegalObj.data.list = appIllegalObj.data.list.concat(result.resData.list);
             appIllegalObj.data.total = result.resData.total;
-            if (_.isArray(appIllegalObj.data.list) && appIllegalObj.data.list.length && !this.selectedCustomerId){
+            if (_.isArray(appIllegalObj.data.list) && appIllegalObj.data.list.length && !this.selectedCustomerId) {
                 this.selectedCustomer = appIllegalObj.data.list[0];
                 this.selectedCustomerId = appIllegalObj.data.list[0].customer_id;
             }
@@ -348,7 +346,7 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         } else if (result.resData) {
             willExpiredAssignCustomer.data.list = willExpiredAssignCustomer.data.list.concat(result.resData.result.day);
             willExpiredAssignCustomer.data.total = result.resData.result.day_tatol;
-            if (_.isArray(willExpiredAssignCustomer.data.list) && willExpiredAssignCustomer.data.list.length && !this.selectedCustomerId){
+            if (_.isArray(willExpiredAssignCustomer.data.list) && willExpiredAssignCustomer.data.list.length && !this.selectedCustomerId) {
                 this.selectedCustomer = willExpiredAssignCustomer.data.list[0];
                 this.selectedCustomerId = willExpiredAssignCustomer.data.list[0].customer_id;
             }
@@ -362,7 +360,7 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         } else if (result.resData) {
             willExpiredTryCustomer.data.list = willExpiredTryCustomer.data.list.concat(result.resData.result.day);
             willExpiredTryCustomer.data.total = result.resData.result.day_tatol;
-            if (_.isArray(willExpiredTryCustomer.data.list) && willExpiredTryCustomer.data.list.length && !this.selectedCustomerId){
+            if (_.isArray(willExpiredTryCustomer.data.list) && willExpiredTryCustomer.data.list.length && !this.selectedCustomerId) {
                 this.selectedCustomer = willExpiredTryCustomer.data.list[0];
                 this.selectedCustomerId = willExpiredTryCustomer.data.list[0].customer_id;
             }
@@ -379,7 +377,7 @@ SalesHomeStore.prototype.getRepeatCustomerList = function (result) {
     } else if (result.resData) {
         repeatCustomerObj.data.list = repeatCustomerObj.data.list.concat(result.resData.result);
         repeatCustomerObj.data.total = result.resData.total;
-        if (_.isArray(repeatCustomerObj.data.result) && repeatCustomerObj.data.result.length && !this.selectedCustomerId){
+        if (_.isArray(repeatCustomerObj.data.result) && repeatCustomerObj.data.result.length && !this.selectedCustomerId) {
             this.selectedCustomer = repeatCustomerObj.data.result[0];
             this.selectedCustomerId = repeatCustomerObj.data.result[0].id;
         }
