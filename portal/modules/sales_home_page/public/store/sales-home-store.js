@@ -246,6 +246,10 @@ SalesHomeStore.prototype.getSalesTeamMembers = function (result) {
         }
     }
 };
+//修改团队成员列表中的信息（销售角色）
+SalesHomeStore.prototype.updateSalesTeamMembersObj = function (salesTeamMembersObj) {
+    this.salesTeamMembersObj = salesTeamMembersObj;
+};
 
 //更换查询时间
 SalesHomeStore.prototype.changeSearchTime = function (timeObj) {

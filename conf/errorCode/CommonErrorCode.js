@@ -129,17 +129,17 @@ function getConfigJson(req) {
         "80002": {"httpCode": 500, "message": backendIntl.get("errorcode.135", "获取客户跟踪记录失败")},
         "80003": {"httpCode": 500, "message": backendIntl.get("errorcode.136", "更新客户跟踪记录失败")},
 
-    // 客户管理，拨打电话
-    "90001": {"httpCode": 500, "message": backendIntl.get("errorcode.143", "通话系统出现未知异常")},
-    "90002": {"httpCode": 500, "message": backendIntl.get("errorcode.144", "通话系统没有响应")},
-    "90003": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机振铃或者通话中
-    "90004": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机等待拨号
-    "90005": {"httpCode": 500, "message": backendIntl.get("errorcode.146", "分机离线")}, 
-    "90006": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机听催挂音时的状态
-    "90021": {"httpCode": 500, "message": backendIntl.get("errorcode.140", "没有权限执行分配线索客户的操作")},
-    "90022": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "该成员不属于您管理")},
-    "90023": {"httpCode": 500, "message": backendIntl.get("errorcode.139", "被分配的用户ID不能为空")},
-    "90024": {"httpCode": 500, "message": backendIntl.get("errorcode.142", "线索客户不存在")},
+        // 客户管理，拨打电话
+        "90001": {"httpCode": 500, "message": backendIntl.get("errorcode.143", "通话系统出现未知异常")},
+        "90002": {"httpCode": 500, "message": backendIntl.get("errorcode.144", "通话系统没有响应")},
+        "90003": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机振铃或者通话中
+        "90004": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机等待拨号
+        "90005": {"httpCode": 500, "message": backendIntl.get("errorcode.146", "分机离线")},
+        "90006": {"httpCode": 500, "message": backendIntl.get("errorcode.145", "座机繁忙")}, // 分机听催挂音时的状态
+        "90021": {"httpCode": 500, "message": backendIntl.get("errorcode.140", "没有权限执行分配线索客户的操作")},
+        "90022": {"httpCode": 500, "message": backendIntl.get("errorcode.141", "该成员不属于您管理")},
+        "90023": {"httpCode": 500, "message": backendIntl.get("errorcode.139", "被分配的用户ID不能为空")},
+        "90024": {"httpCode": 500, "message": backendIntl.get("errorcode.142", "线索客户不存在")},
 
 
         /*************************** 角色权限 *****************************/
@@ -179,6 +179,7 @@ function getConfigJson(req) {
         "16211": {"httpCode": 500, "message": backendIntl.get("errorcode.110", "获取团队失败")},
         "16212": {"httpCode": 500, "message": backendIntl.get("errorcode.111", "团队名已存在")},
         "16213": {"httpCode": 500, "message": backendIntl.get("errorcode.112", "不能删除，当前团队存在下级团队")},
+        "16214": {"httpCode": 500, "message": backendIntl.get("errorcode.149", "该角色已经分配给销售")},
         //组织管理
         "16220": {"httpCode": 500, "message": backendIntl.get("errorcode.114", "删除组织失败")},
         "16221": {"httpCode": 500, "message": backendIntl.get("errorcode.115", "修改组织失败")},
@@ -335,7 +336,7 @@ function getConfigJson(req) {
         "11058": {"httpCode": 500, "message": ""},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         "11059": {"httpCode": 500, "message": backendIntl.get("errorcode.147", "二维码已失效")},
         /*周报统计*/
-        "90008": {"httpCode": 500, "message": backendIntl.get("errorcode.148","电话时长统计视图获取失败")},
+        "90008": {"httpCode": 500, "message": backendIntl.get("errorcode.148", "电话时长统计视图获取失败")},
 
         /*其他*/
         "error-code-not-found": {"httpCode": 500, "message": backendIntl.get("errorcode.132", "未知错误")},

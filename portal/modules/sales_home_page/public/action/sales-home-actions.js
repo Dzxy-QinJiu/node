@@ -15,7 +15,8 @@ function SalesHomeActions() {
         'getExpireUser',//获取过期用户列表
         'getWebsiteConfig',//获取网站个性化设置
         'setWebsiteConfig',//对网站进行个性化设置
-        'setInitState'//设置初始化数据
+        'setInitState',//设置初始化数据
+        'updateSalesTeamMembersObj'//修改团队成员列表中的信息（销售角色）
     );
 
     //获取当前登录销售的角色（销售/经理/总监）

@@ -45,15 +45,18 @@ var SalesSelectField = React.createClass({
             salesManList: [],
             salesTeamList: [],
             loading: false,
-            submitErrorMsg: ''
+            submitErrorMsg: '',
+            salesRole: ""
         };
     },
     componentDidMount: function () {
         //有修改所属销售的权限时
-        if(!this.state.disabled){
+        if (!this.state.disabled) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             this.getSalesManList();
         }
+        //获取销售对应的角色
+        this.getSalesRoleByMemberId(this.state.userId);
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.customerId != this.state.customerId) {
@@ -71,8 +74,11 @@ var SalesSelectField = React.createClass({
                 displayType: "text",
                 isLoadingList: true,//正在获取下拉列表中的数据
                 loading: false,
-                submitErrorMsg: ''
+                submitErrorMsg: '',
+                salesRole: ""
             });
+            //获取销售对应的角色
+            this.getSalesRoleByMemberId(nextProps.userId);
         }
     },
 
@@ -88,6 +94,26 @@ var SalesSelectField = React.createClass({
             this.setState({salesManList: list, salesTeamList: this.getSalesTeamList(this.props.userId, list)});
         }, errorMsg => {
             this.setState({salesManList: []});
+        });
+    },
+    getSalesRoleByMemberId: function (memberId) {
+        $.ajax({
+            url: '/rest/sales/role',
+            type: 'get',
+            dateType: 'json',
+            data: {member_id: memberId},
+            success: (data) => {
+                if (data && data.teamrole_name) {
+                    this.setState({
+                        salesRole: data.teamrole_name,
+                    });
+                }
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    salesRole: "",
+                });
+            }
         });
     },
     // 获取普通销售所在团队里的成员列表
@@ -114,6 +140,7 @@ var SalesSelectField = React.createClass({
     },
     //更新销售人员
     handleSalesManChange: function (userId) {
+        this.getSalesRoleByMemberId(userId);
         this.state.userId = userId;
         Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
         //修改销售人员时，将其对应的所属团队及其相关团队列表一起修改
@@ -141,7 +168,7 @@ var SalesSelectField = React.createClass({
     changeDisplayType: function (type) {
         if (type === 'text') {
             Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
-
+            this.getSalesRoleByMemberId(this.props.userId);
             this.setState({
                 loading: false,
                 displayType: type,
@@ -150,7 +177,8 @@ var SalesSelectField = React.createClass({
                 salesTeam: this.props.salesTeam,
                 salesTeamId: this.props.salesTeamId,
                 salesTeamList: this.getSalesTeamList(this.props.userId, this.state.salesManList),
-                submitErrorMsg: ''
+                submitErrorMsg: '',
+                salesRole: ""
             });
         } else {
             Trace.traceEvent(this.getDOMNode(), "点击设置销售按钮");
@@ -280,6 +308,12 @@ var SalesSelectField = React.createClass({
                     )}
 
 
+                </dd>
+            </dl>
+            <dl className="dl-horizontal crm-basic-item detail_item crm-basic-sales-role">
+                <dt>{Intl.get("crm.detail.sales.role", "销售角色")}</dt>
+                <dd>
+                    {this.state.salesRole}
                 </dd>
             </dl>
         </div>);

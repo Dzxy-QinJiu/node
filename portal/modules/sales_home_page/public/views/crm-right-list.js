@@ -2,8 +2,10 @@
  * 客户、用户、电话、合同统计总数
  * Created by wangliping on 2016/11/14.
  */
-import {Breadcrumb, Icon} from 'antd';
+import {Breadcrumb, Icon, Menu, Dropdown, message} from 'antd';
 import Trace from "LIB_DIR/trace";
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 var SearchInput = require("../../../../components/searchInput");
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
@@ -20,10 +22,16 @@ let CrmRightList = React.createClass({
         return {
             searchInputShow: false,
             searchValue: "",
-            updateScrollBar: false
+            updateScrollBar: false,
+            salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj),//销售团队下的成员列表
+            salesRoleList: []//销售角色列表
         }
     },
+    componentDidMount: function () {
+        this.getSalesRoleList();
+    },
     componentWillReceiveProps: function (nextProps) {
+        this.setState({salesTeamMembersObj: $.extend(true, {}, nextProps.salesTeamMembersObj)});
         if (nextProps.updateScrollBar) {
             this.setState({
                 updateScrollBar: true
@@ -35,6 +43,18 @@ let CrmRightList = React.createClass({
                 }, delayConstant)
             })
         }
+    },
+    //获取销售角色列表
+    getSalesRoleList: function () {
+        getSalesTeamRoleList().sendRequest().success((data) => {
+            this.setState({
+                salesRoleList: _.isArray(data) ? data : [],
+            });
+        }).error((xhr) => {
+            this.setState({
+                salesRoleList: [],
+            });
+        });
     },
     //渲染等待效果、暂无数据的提示
     renderTooltip: function (resultType, errorMsg) {
@@ -147,10 +167,60 @@ let CrmRightList = React.createClass({
         }
         return salesTitle;
     },
+    //更新团队成员角色
+    updateTeamMemberRole: function (sales, role) {
+        let salesTeamMemberList = this.state.salesTeamMembersObj.data;
+        if (_.isArray(salesTeamMemberList) && salesTeamMemberList.length) {
+            _.some(salesTeamMemberList, member => {
+                if (member.userId === sales.userId) {
+                    member.teamRoleId = role.id;
+                    member.teamRoleName = role.name;
+                }
+            });
+            this.state.salesTeamMembersObj.data = salesTeamMemberList;
+            this.setState({
+                salesTeamMembersObj: this.state.salesTeamMembersObj
+            });
+        }
+    },
+    changeSalesRole: function (sales, options) {
+        if (sales.teamRoleId === options.key) {
+            return;
+        }
+        let selectRole = _.find(this.state.salesRoleList, role => role.id === options.key)
+        this.updateTeamMemberRole(sales, selectRole);
+        $.ajax({
+            url: '/rest/sales/role/change',
+            type: 'post',
+            dateType: 'json',
+            data: {member_id: sales.userId, teamrole_id: selectRole.id},
+            success: (result) => {
+                if (result) {
+                    message.success(Intl.get("user.info.setting.succeess", "设置成功！"));
+                    //更新store中对应成员的销售角色
+                    SalesHomeAction.updateSalesTeamMembersObj(this.state.salesTeamMembersObj);
+                }
+            },
+            error: (errorInfo) => {
+                message.error(errorInfo.responseJSON);
+                //还原成员销售角色
+                this.setState({salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj)});
+            }
+        });
+    },
+    //获取销售角色的菜单
+    getSalesRoleMenus: function (sales) {
+        let salesRoleList = this.state.salesRoleList;
+        return (<Menu selectedKeys={[sales.teamRoleId]} onClick={this.changeSalesRole.bind(this, sales)}>
+            {_.isArray(salesRoleList) && salesRoleList.length ? _.map(salesRoleList, role => {
+                return (<Menu.Item key={role.id}>{role.name} </Menu.Item>);
+            }) : null}
+        </Menu>);
+    },
     //获取销售团队的成员列表
     getSalesMemberList: function () {
         let salesListLi = [];
-        let salesTeamMembersObj = this.props.salesTeamMembersObj;
+        let salesTeamMembersObj = this.state.salesTeamMembersObj;
         if (salesTeamMembersObj.resultType) {
             //等待效果及错误提示
             salesListLi = this.renderTooltip(salesTeamMembersObj.resultType, salesTeamMembersObj.errorMsg);
@@ -168,14 +238,24 @@ let CrmRightList = React.createClass({
                             //停用状态
                             name += " ( " + Intl.get("common.stop", "停用") + " ) ";
                         }
-                        salesListLi.push(<li key={salesman.userId}
-                                             className={salesman.status == 0 ? "user-stop-li" : ""}
-                                             onClick={ e => this.selectSalesman(e, salesman)}>
-                            <span className="sales-item-icon" style={{backgroundColor: color}}/>{name}
-                            { salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
-                                <span className="iconfont icon-phone-waiting" title={Intl.get("sales.status.calling", "正在打电话")}/>
-                                : null }
-                        </li>);
+                        salesListLi.push(
+                            <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}>
+                                <span className="sales-item-icon" style={{backgroundColor: color}}/>
+                                <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
+                                {salesman.status != 0 ? hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") ?
+                                    <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
+                                        <span className="sales-role-btn"
+                                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}>
+                                            {salesman.teamRoleName ? salesman.teamRoleName : Intl.get("user.batch.set.role", "设置角色")}
+                                            <Icon type="down"/>
+                                        </span>
+                                    </Dropdown> : salesman.teamRoleName ?
+                                        <span className="sales-role-btn"> {salesman.teamRoleName}</span> : null : null}
+                                { salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
+                                    <span className="iconfont icon-phone-waiting"
+                                          title={Intl.get("sales.status.calling", "正在打电话")}/>
+                                    : null }
+                            </li>);
                     }
                 });
             } else {
