@@ -132,8 +132,6 @@ const SalesRoleManage = React.createClass({
             data: addRole,
             success: (result) => {
                 if (result) {
-                    //TODO 后端接口加上颜色属性后去掉下面一行的处理
-                    result.color = addRole.color;
                     let salesRoleList = this.state.salesRoleList;
                     //数组默认角色后添加输入的销售角色(第一个角色是默认角色)
                     if (salesRoleList.length) {
