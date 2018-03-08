@@ -222,9 +222,7 @@ let CrmRightList = React.createClass({
     //销售角色的渲染
     renderSalesRole: function (salesman) {
         let salesRoleList = this.state.salesRoleList;
-        let salesRole = _.find(salesRoleList, role => role.id === salesman.roleId);
-        //TODO 根据后端接口返回的数据还需修改
-        let color = salesman.teamoleColor && salesRole.color ? salesRole.color : "#123";
+        let color = salesman.teamRoleColor|| "#123";
         if (salesman.status == 0) {//停用的就展示灰色的方块
             return (<span className="sales-item-icon"/>);
         } else if (hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") && _.isArray(salesRoleList) && salesRoleList.length) {//有设置销售角色的权限,并且有角色列表中有角色时
