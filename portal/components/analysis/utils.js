@@ -66,6 +66,7 @@ export function processOrderStageChartData(stageList, data) {
     _.map(data, stage => {
         stage.value = stage.total;
         if (_.isNumber(stage.budget)) {
+            //对预算额做千分位分隔及加单位处理
             stage.budget = parseAmount(stage.budget) + Intl.get("contract.139", "万");
         }
     });
