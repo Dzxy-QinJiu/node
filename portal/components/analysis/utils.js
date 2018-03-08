@@ -1,4 +1,5 @@
 import { DATE_FORMAT } from "./consts";
+import { parseAmount } from "LIB_DIR/func";
 
 //获取xx年xx月xx日格式的截至时间
 export function getEndDateText(endDate) {
@@ -64,6 +65,9 @@ export function processOrderStageChartData(stageList, data) {
     //接口返回数据里没有value字段，但是图表渲染需要该字段，所以需要补上该字段
     _.map(data, stage => {
         stage.value = stage.total;
+        if (_.isNumber(stage.budget)) {
+            stage.budget = parseAmount(stage.budget) + Intl.get("contract.139", "万");
+        }
     });
 
     let processedData = [];
