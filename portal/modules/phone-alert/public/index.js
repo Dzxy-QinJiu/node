@@ -96,11 +96,11 @@ class PhoneAlert extends React.Component {
         //通过座机拨打时，在alert状态之前的busy状态，不会推送电话号码，此电话在客户列表中存在的状态未知
         if (_.isEmpty(this.props.phoneObj) && phonemsgObj.to) {
             phoneAlertAction.setCustomerUnknown(true);
+            sendMessage && sendMessage("座机拨打电话，首次弹屏"+ phonemsgObj.to);
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
             })
-
         }
     };
 
@@ -112,9 +112,9 @@ class PhoneAlert extends React.Component {
             Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         }
         var customerId = _.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length ? this.state.customerInfoArr[0].id : "";
-        sendMessage && sendMessage("state上联系的客户"+ customerId + "实际联系的电话号码" + phoneObj.phoneNum);
+        sendMessage && sendMessage("弹屏上展示的客户id"+ customerId + "实际联系的电话号码" + phoneObj.phoneNum);
         if (phoneObj && phoneObj.customerDetail) {
-            sendMessage && sendMessage("实际联系的客户的id"+ phoneObj.customerDetail.id + "实际联系的电话号码" + phoneObj.phoneNum);
+            sendMessage && sendMessage("客户列表中的客户id"+ phoneObj.customerDetail.id + "实际联系的电话号码" + phoneObj.phoneNum);
             phoneAlertAction.setCustomerInfoArr(phoneObj.customerDetail);
         }
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
@@ -170,11 +170,13 @@ class PhoneAlert extends React.Component {
             //恢复初始数据
             phoneAlertAction.setInitialState();
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
+            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开"+ phonemsgObj.to);
             this.props.setInitialPhoneObj();
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
         if (phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
+            sendMessage && sendMessage("座机拨打电话，弹屏已打开过"+ phonemsgObj.to);
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
@@ -294,6 +296,7 @@ class PhoneAlert extends React.Component {
     };
     retryGetCustomer = () => {
         var phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
+        sendMessage && sendMessage("座机拨打电话，重新获取客户"+ phoneNum );
         phoneAlertAction.getCustomerByPhone(phoneNum);
     };
     //展示已有客户的右侧面板
