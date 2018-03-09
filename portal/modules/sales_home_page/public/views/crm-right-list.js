@@ -221,25 +221,28 @@ let CrmRightList = React.createClass({
     },
     //销售角色的渲染
     renderSalesRole: function (salesman) {
-        let salesRoleList = this.state.salesRoleList;
-        let color = salesman.teamRoleColor|| "#123";
+        let color = salesman.teamRoleColor || "#123";
         if (salesman.status == 0) {//停用的就展示灰色的方块
             return (<span className="sales-item-icon"/>);
-        } else if (hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") && _.isArray(salesRoleList) && salesRoleList.length) {//有设置销售角色的权限,并且有角色列表中有角色时
-            return (
-                <Dropdown overlay={this.getSalesRoleMenus(salesman)} trigger={['click']}>
-                    {salesman.teamRoleName ?
-                        <span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
-                              title={salesman.teamRoleName}/> :
-                        <span className="iconfont icon-role-set sales-role-icon"
-                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}/>
-                    }
-                </Dropdown>);
-        } else if (salesman.teamRoleName) {//有销售角色,无设置权限或角色列表为空时
+        } else if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
             return (<span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
                           title={salesman.teamRoleName}/>)
-        } else {//无销售角色，也无设置权限时，加个占位符
-            return <span className="sales-item-icon"/>;
+        } else {//无销售角色时，展示“未设置角色”的图标
+            return <span className="iconfont icon-role-set sales-role-icon"
+                         title={Intl.get("sales.home.role.null", "未设置角色")}/>;
+        }
+    },
+    renderSalesRoleSetBtn: function (salesman) {
+        let salesRoleList = this.state.salesRoleList;
+        if (salesman.status != 0 && hasPrivilege("MEMBER_TEAM_ROLE_MANAGE") && _.isArray(salesRoleList) && salesRoleList.length) {
+            return (
+                <Dropdown overlay={this.getSalesRoleMenus(salesman)}
+                          getPopupContainer={() => document.getElementById('sales-member-li' + salesman.userId)}>
+                        <span className="iconfont icon-role-auth-config"
+                              title={Intl.get("sales.home.set.role", "点此设置销售角色")}/>
+                </Dropdown>);
+        } else {//停用的成员或没有设置角色权限或销售角色列表为空时，不展示设置角色按钮
+            return null;
         }
     },
     //获取销售团队的成员列表
@@ -264,13 +267,15 @@ let CrmRightList = React.createClass({
                             name += " ( " + Intl.get("common.stop", "停用") + " ) ";
                         }
                         salesListLi.push(
-                            <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}>
+                            <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}
+                                id={"sales-member-li" + salesman.userId}>
                                 {this.renderSalesRole(salesman)}
                                 <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
                                 {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
                                     <span className="iconfont icon-phone-waiting"
                                           title={Intl.get("sales.status.calling", "正在打电话")}/>
                                     : null }
+                                {this.renderSalesRoleSetBtn(salesman)}
                             </li>);
                     }
                 });

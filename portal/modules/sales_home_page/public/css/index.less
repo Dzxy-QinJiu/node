@@ -395,7 +395,7 @@
         }
         //销售（团队）列表
         .sales-list-container {
-          padding: 10px 10px 0 15px;
+          padding: 10px 5px 0 10px;
           //获取即将过期用户数量失败后点击重试，loading按钮样式
           .load8 {
             transform: scale(0.5, 0.5);
@@ -407,22 +407,33 @@
           .ant-alert-error {
             margin-top: 20px;
           }
-          //销售角色及其设置按钮的样式
-          .iconfont.sales-role-icon {
-            padding-right: 10px;
-          }
           .user-stop-li {
             color: #CDCECD;
             .sales-item-icon {
               background-color: #CDCECD !important;
             }
           }
-          li {
+          li:not(.ant-dropdown-menu-item) {
             height: 40px;
             line-height: 40px;
             cursor: pointer;
+            //销售角色按钮的样式
+            .iconfont.sales-role-icon {
+              padding-right: 10px;
+            }
+            //设置角色的按钮
+            .icon-role-auth-config {
+              display: none;
+              float: right;
+              padding-right: 10px;
+              height: 30px;
+              font-size: 14px;
+            }
             &:hover {
               color: #4d96d1;
+              .icon-role-auth-config {
+                display: block;
+              }
             }
             span {
               vertical-align: middle;
