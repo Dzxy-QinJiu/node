@@ -111,9 +111,10 @@ class PhoneAlert extends React.Component {
         if (!this.state.isModalShown) {
             Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         }
-        sendMessage && sendMessage("state上联系的客户"+ this.state.customerInfoArr);
+        var customerId = _.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length ? this.state.customerInfoArr[0].id : "";
+        sendMessage && sendMessage("state上联系的客户"+ customerId + "实际联系的电话号码" + phoneObj.phoneNum);
         if (phoneObj && phoneObj.customerDetail) {
-            sendMessage && sendMessage("实际联系的客户"+ phoneObj.customerDetail);
+            sendMessage && sendMessage("实际联系的客户的id"+ phoneObj.customerDetail.id + "实际联系的电话号码" + phoneObj.phoneNum);
             phoneAlertAction.setCustomerInfoArr(phoneObj.customerDetail);
         }
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
