@@ -1221,6 +1221,7 @@ var zh_CN = {
     "crm.stage.tag": "阶段标签",
     "crm.order.more.customer": "多个订单的客户",
     "crm.call.no.remark": "最后联系但未写跟进记录",
+    "crm.call.no.remark.over30": "超30天未写跟进记录",
     "crm.last.contact": "最后联系",
     "crm.qualified.roll.out": "转出",
     "crm.contact.name.department": "联系人姓名和部门必填一项",

@@ -1203,6 +1203,7 @@ var en_US = {
     "crm.stage.tag": "Phase label",//阶段标签
     "crm.order.more.customer": "Multi-order customers",//多个订单的客户
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
+    "crm.call.no.remark.over30": "No follow-up records over 30 days",//超30天未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
     "crm.qualified.roll.out": "Roll out",//转出
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
