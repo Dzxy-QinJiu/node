@@ -17,7 +17,7 @@ AppUserListStore.prototype.setInitState = function () {
         data: {}
     };
     this.curApplyType = "";//申请类型
-    this.appList = [];//客户下的所属用户列表
+    this.appList = [];
 };
 //获取某个客户下的用户列表
 AppUserListStore.prototype.getCrmUserList = function (result) {
@@ -27,6 +27,8 @@ AppUserListStore.prototype.getCrmUserList = function (result) {
         userListsOfCustomer.errMsg = result.errMsg;
     } else if (result.resData) {
         userListsOfCustomer.data = result.resData;
+        //根据应用的数量从小到大排序，是方便页面上进行布局，因为都是左浮动的，从小到大可以避免中间有卡住的情况
+        userListsOfCustomer.data.data =  _.sortBy(userListsOfCustomer.data.data, "apps");
     }
 };
 //申请类型的修改
@@ -34,6 +36,7 @@ AppUserListStore.prototype.onChangeApplyType = function (curApplyType) {
     this.curApplyType = curApplyType;
 };
 AppUserListStore.prototype.getAppList = function (result) {
+
     this.appList = _.isArray(result) ? result : [];
 };
 

@@ -633,6 +633,10 @@ var SalesHomePage = React.createClass({
                             </div>
                         </div>
                         <div className="col-md-8 customer-content-right">
+                            {/*右侧根据左边不同的panel的类别，右侧展示不同的面板
+                             * 重复客户类型  --- 展示重复客户列表
+                             * 停用后登录，关注客户登录 --- 展示系统消息
+                             * 其他的 --- 展示用户列表和跟进记录*/}
                             {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
                                 <div>
                                     <div className="customer-header-panel">
@@ -642,6 +646,7 @@ var SalesHomePage = React.createClass({
                                         <GeminiScrollbar>
                                             {this.state.selectedCustomerId ? <AppUserLists
                                                 selectedCustomerId={this.state.selectedCustomerId}
+                                                curCustomer={this.state.selectedCustomer}
                                             /> : null}
                                             {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
                                                 curCustomer={this.state.selectedCustomer}

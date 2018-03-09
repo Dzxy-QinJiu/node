@@ -93,15 +93,16 @@ class AppUserLists extends React.Component {
             return appList.map((app) => {
                 let appName = app ? app.app_name || "" : "";
                 let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
+                let overDraftDes = this.renderOverDraft(app);
                 return (
                     <Checkbox checked={app.checked} onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
                         {app.app_logo ?
                             (<img className="crm-user-app-logo" src={app.app_logo || ""} alt={appName}/>)
                             : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
                         }
-                        <span className="user-app-name">{appName || ""}</span>
+                        <span className="user-app-name" title={appName}>{appName || ""}</span>
                         <span className="user-app-type">{app.user_type ? userTypeMap[app.user_type] : ""}</span>
-                        <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
+                        <span className={overDraftCls} title={overDraftDes}>{overDraftDes}</span>
                     </Checkbox>);
             });
         }
@@ -187,9 +188,9 @@ class AppUserLists extends React.Component {
                         </div>
                         <div className="crm-user-apps">
                             <Checkbox>
-                                <span className="user-app-name">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
-                                <span className="user-app-type">{Intl.get("user.last.login", "最近登录")}</span>
-                                <span className="">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
+                                <span className="user-app-name-title">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
+                                <span className="user-app-type-title">{Intl.get("user.last.login", "最近登录")}</span>
+                                <span className="user-app-over-draft-title">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
                             </Checkbox>
                             {this.getUserAppOptions(userObj)}
                         </div>
@@ -295,7 +296,7 @@ class AppUserLists extends React.Component {
                             : null}
                     </div>
                     {this.state.curApplyType && this.state.curApplyType !== APPLY_TYPES.OPEN_APP ? (
-                        <CrmUserApplyForm curApplyType={this.state.curApplyType} APPLY_TYPES={APPLY_TYPES}
+                        <CrmUserApplyForm applyType={this.state.curApplyType} APPLY_TYPES={APPLY_TYPES}
                                           closeApplyPanel={this.closeRightPanel}
                                           crmUserList={this.state.userListsOfCustomer.data.data}/>
                     ) : null}

@@ -53,11 +53,12 @@
         font-size: 18px;
         font-weight: 600;
         padding: 10px 0 0 15px;
+        background: #eee;
       }
       //右侧内容区域
       .crm-user-content {
-        height: 610px;
-        //background-color: #e6edef;
+        height: 630px;
+        background-color: #e6edef;
         div.gm-scroll-view > div {
           //overflow: hidden;
           //background-color:#fff;
@@ -71,16 +72,15 @@
           //  }
           //}
         }
-        .app-user-list{
+        .app-user-list {
           overflow: hidden;
 
           //客户开通用户的列表
           .crm-user-list-container {
             float: left;
-            width: 500px;
             padding: 10px;
             font-size: 14px;
-            color:#333;
+            color: #333;
             //用户数
             .user-number {
               position: relative;
@@ -112,7 +112,7 @@
             //申请处理的form表单
             .crm-user-apply-form-container {
               &:extend(.item-block-style);
-              margin-top: 10px;
+              margin-top: 30px;
               form {
                 padding: 20px 0 10px 5px;
                 .ant-form-item {
@@ -144,11 +144,13 @@
               }
               .pull-right {
                 position: relative;
-                float: right;
+                text-align: right;
                 width: 100%;
+                margin-right: 30px;
                 padding-bottom: 20px;
                 button {
-                  margin-top: 0;
+                  float:right;
+                  margin: 0 10px 0 0;
                 }
               }
             }
@@ -158,6 +160,7 @@
               position: relative;
               float: left;
               width: 100%;
+              margin-top:10px;
               .get-crm-users-error-tip {
                 .ant-alert {
                   left: 20%;
@@ -166,16 +169,24 @@
               }
               //加载数据的等待效果
               .load8 {
-                margin-top: 50px;
+                margin: 50px 0 0 300px;
+                transform: scale(0.5, 0.5);
+                .loader8 {
+                  border-left-color: #394144;
+                }
               }
               .crm-user-item {
                 &:extend(.item-block-style);
-                padding: 10px 0 10px 5px;
-                label.ant-checkbox-wrapper{
+                padding: 10px 10px 10px 5px;
+                float: left;
+                width: 480px;
+                margin-right: 5px;
+                background: #fff;
+                label.ant-checkbox-wrapper {
                   font-size: 14px;
                   font-weight: normal;
                   padding-left: 10px;
-                  margin:0;
+                  margin: 0;
                 }
                 //用户名
                 .crm-user-name {
@@ -183,19 +194,19 @@
                   //label {
                   //  font-weight: bold;
                   //}
-                  .crm-username{
+                  .crm-username {
 
                   }
-                  .crm-nickname{
-                    color:#999;
+                  .crm-nickname {
+                    color: #999;
                   }
                 }
                 //应用列表
                 .crm-user-apps {
-                  border:1px solid #eeeeee;
-                  label.ant-checkbox-wrapper:first-child{
+                  border: 1px solid #eeeeee;
+                  label.ant-checkbox-wrapper:first-child {
                     background: #eee;
-                    font-size:12px;
+                    font-size: 12px;
                     color: #999;
                   }
                   label {
@@ -224,7 +235,7 @@
                     }
                     .user-app-name {
                       display: inline-block;
-                      width: 220px;
+                      width: 150px;
                       margin-right: 20px;
                       white-space: nowrap;
                       text-overflow: ellipsis;
@@ -239,7 +250,27 @@
                     }
                     .user-app-over-draft {
                       display: inline-block;
-                      min-width: 200px;
+                      width: 140px;
+                      padding-left: 20px;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      word-wrap: normal;
+                      vertical-align: middle;
+                    }
+                    .user-app-name-title {
+                      display: inline-block;
+                      width: 160px;
+                      margin-right: 20px;
+                    }
+                    .user-app-type-title {
+                      display: inline-block;
+                      width: 80px;
+                      text-align: center;
+                    }
+                    .user-app-over-draft-title {
+                      display: inline-block;
+                      width: 140px;
                       padding-left: 20px;
                     }
                     .user-app-stopped-status {
@@ -320,7 +351,7 @@
 
         }
       }
-      .ant-collapse-item:last-child{
+      .ant-collapse-item:last-child {
         border-radius: 0;
       }
     }
