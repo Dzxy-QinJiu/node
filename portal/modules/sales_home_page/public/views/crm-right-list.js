@@ -259,6 +259,7 @@ let CrmRightList = React.createClass({
                 salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => {
                     return -item.status
                 });
+                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => item.teamRoleName);
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
                         let name = salesman.nickName;
@@ -267,16 +268,19 @@ let CrmRightList = React.createClass({
                             name += " ( " + Intl.get("common.stop", "停用") + " ) ";
                         }
                         salesListLi.push(
-                            <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}
-                                id={"sales-member-li" + salesman.userId}>
-                                {this.renderSalesRole(salesman)}
-                                <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
-                                {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
-                                    <span className="iconfont icon-phone-waiting"
-                                          title={Intl.get("sales.status.calling", "正在打电话")}/>
-                                    : null }
-                                {this.renderSalesRoleSetBtn(salesman)}
-                            </li>);
+                            <div>
+                                <li key={salesman.userId} className={salesman.status == 0 ? "user-stop-li" : ""}
+                                    id={"sales-member-li" + salesman.userId}>
+                                    {this.renderSalesRole(salesman)}
+                                    <span onClick={ e => this.selectSalesman(e, salesman)}>{name}</span>
+                                    {salesman.status != 0 && this.props.salesCallStatus[salesman.userId] === CALLING_STATUS ?
+                                        <span className="iconfont icon-phone-waiting"
+                                              title={Intl.get("sales.status.calling", "正在打电话")}/>
+                                        : null }
+                                    {this.renderSalesRoleSetBtn(salesman)}
+                                </li>
+                                <hr/>
+                            </div>);
                     }
                 });
             } else {
