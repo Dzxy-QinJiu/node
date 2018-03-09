@@ -255,11 +255,6 @@ let CrmRightList = React.createClass({
         } else {
             let salesTeamMemberList = salesTeamMembersObj.data;
             if (_.isArray(salesTeamMemberList) && salesTeamMemberList.length > 0) {
-                //对团队列表进行排序，启用的放在前面，停用的放在后面
-                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => {
-                    return -item.status
-                });
-                salesTeamMemberList = _.sortBy(salesTeamMemberList, (item) => item.teamRoleName);
                 salesTeamMemberList.map((salesman, i) => {
                     if (salesman.nickName.indexOf(this.state.searchValue) != -1) {
                         let name = salesman.nickName;

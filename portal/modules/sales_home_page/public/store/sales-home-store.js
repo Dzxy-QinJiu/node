@@ -240,8 +240,16 @@ SalesHomeStore.prototype.getSalesTeamMembers = function (result) {
         salesTeamMembersObj.errorMsg = '';
         //获取销售团队只有一个时，根据销售团队id获取成员列表后，再将获取销售团队的loading效果去掉
         this.salesTeamListObj.resultType = '';
-        salesTeamMembersObj.data = result.resData;
-        if (!_.isArray(salesTeamMembersObj.data)) {
+        if (_.isArray(result.resData)) {
+            //对团队列表进行排序
+            //按销售角色排序
+            result.resData = _.sortBy(result.resData, (item) => item.teamRoleName);
+            // 启停用排序，启用的放在前面，停用的放在后面
+            result.resData = _.sortBy(result.resData, (item) => {
+                return -item.status;
+            });
+            salesTeamMembersObj.data = result.resData;
+        } else {
             salesTeamMembersObj.data = [];
         }
     }
