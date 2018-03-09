@@ -12,6 +12,7 @@ var classNames = require("classnames");
 import CrmUserApplyForm from "MOD_DIR//crm/public/views/order/crm-user-apply-form";
 import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
 import {RightPanel} from  "CMP_DIR/rightPanel";
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 //用户类型的转换对象
 const userTypeMap = {
     "正式用户": Intl.get("common.official", "签约"),
@@ -40,7 +41,10 @@ class AppUserLists extends React.Component {
     componentDidMount() {
         AppUserListStore.listen(this.onStoreChange);
         //获取某个客户下的用户列表
-        this.getCrmUserList();
+        setTimeout(()=>{
+            this.getCrmUserList();
+        })
+
     };
 
     //获取某个客户下的用户列表
@@ -172,10 +176,21 @@ class AppUserLists extends React.Component {
                         <div className="crm-user-name">
                             <Checkbox checked={user.checked}
                                       onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                {user.user_name}({user.nick_name})
+                                <span className="crm-username">
+                                    {user.user_name}
+                                </span>
+                                <span className="crm-nickname">
+                                     ({user.nick_name})
+                                </span>
+
                             </Checkbox>
                         </div>
                         <div className="crm-user-apps">
+                            <Checkbox>
+                                <span className="user-app-name">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
+                                <span className="user-app-type">{Intl.get("user.last.login", "最近登录")}</span>
+                                <span className="">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
+                            </Checkbox>
                             {this.getUserAppOptions(userObj)}
                         </div>
                     </div>
@@ -342,7 +357,7 @@ class AppUserLists extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="app-user-list">
                 {this.renderUserContent()}
                 <RightPanel className="crm_user_apply_panel white-space-nowrap"
                             showFlag={this.state.curApplyType && this.state.curApplyType === APPLY_TYPES.OPEN_APP}>

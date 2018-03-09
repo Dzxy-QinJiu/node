@@ -1999,6 +1999,8 @@ var zh_CN = {
     "sales.frontpage.login.after.stop": "停用后登录",
     "sales.frontpage.login.recently": "最近登录的客户",
     "sales.frontpage.has.repeat.customer": "您有重复的客户",
-    "sales.frontpage.contact.customers": "建议您联系以下客户"
+    "sales.frontpage.contact.customers": "建议您联系以下客户",
+    "sales.frontpage.open.app": "已开通应用",
+    "sales.frontpage.expired.date": "到期情况"
 };
 export default zh_CN;

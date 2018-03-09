@@ -25,6 +25,7 @@ const CALL_TYPE_OPTION = {
 var SalesHomePage = React.createClass({
     getInitialState: function () {
         return {
+            showCollapsePanel: '1',//默认打开的面板
             isShowRepeatCustomer: false,//是否展示重复客户
             ...SalesHomeStore.getState()
         }
@@ -75,13 +76,23 @@ var SalesHomePage = React.createClass({
         this.getAppIlleageLogin();
         //获取重复客户列表
         this.getRepeatCustomerList();
-        //获取即将到期的试用用户
-        this.getWillExpireCustomer("试用用户");
-        //获取即将到期的签约用户
-        this.getWillExpireCustomer("正式用户");
+        //获取三天内即将到期的试用用户
+        this.getWillExpireCustomer({
+            tags: "试用用户",
+            start_time: todayTimeRange.start_time,
+            end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE
+        });
+        //获取半年内即将到期的签约用户
+        this.getWillExpireCustomer(
+            {
+                tags: "正式用户",
+                start_time: todayTimeRange.start_time,
+                end_time: todayTimeRange.end_time + 183 * oplateConsts.ONE_DAY_TIME_RANGE
+            }
+        );
     },
-    getWillExpireCustomer: function (tags) {
-        SalesHomeAction.getWillExpireCustomer({tags: tags});
+    getWillExpireCustomer: function (queryObj) {
+        SalesHomeAction.getWillExpireCustomer(queryObj);
     },
     //重复客户列表
     getRepeatCustomerList: function (lastId) {
@@ -228,7 +239,8 @@ var SalesHomePage = React.createClass({
                         <div className="item-header">
                             <span className="customer-name-container">{scheduleItem.customer_name}</span>
                             <span className="schedule-tip pull-right">
-                            {scheduleItem.allDay ? Intl.get("crm.alert.full.day", "全天") : <span>
+                            {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
+                                <span>
                                 {moment(scheduleItem.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                     </span>}
                     </span>
@@ -253,8 +265,9 @@ var SalesHomePage = React.createClass({
                     <div className="item-header">
                         <span className="customer-name-container">{scheduleItem.customer_name}</span>
                         <span className="time-tip pull-right">
-                            {scheduleItem.allDay ? Intl.get("crm.alert.full.day", "全天") : <span>
-                                {moment(scheduleItem.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                            {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
+                                <span>
+                                {moment(scheduleItem.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                     </span>}
                     </span>
                     </div>
@@ -338,31 +351,43 @@ var SalesHomePage = React.createClass({
     //即将到期的签约客户
     renderWillExpiredAssignCustomer: function (panelType) {
         return (_.map(this.state.willExpiredAssignCustomer.data.list, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
-                );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
-                        <div className="item-header">
-                            <span className="customer-name-container">{item.customer_name}</span>
-                        </div>
-                        <div className="item-content"></div>
-                    </div>
+                    _.map(item.customer_list,(customerItem)=>{
+                        var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
+                        );
+                        return (
+                            <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
+                                <div className="item-header">
+                                    <span className="customer-name-container">{customerItem.customer_name}</span>
+                                    <span className="time-tip pull-right">{item.date}</span>
+                                </div>
+                                <div className="item-content"></div>
+                            </div>
+                        )
+                    })
                 )
+
+
             })
         )
     },
     //即将到期的试用客户
     renderWillExpiredTryCustomer: function (panelType) {
         return (_.map(this.state.willExpiredTryCustomer.data.list, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
-                );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
-                        <div className="item-header">
-                            <span className="customer-name-container">{item.customer_name}</span>
-                        </div>
-                        <div className="item-content"></div>
-                    </div>
+                    _.map(item.customer_list,(customerItem)=>{
+                        var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
+                        );
+                        return (
+                            <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
+                                <div className="item-header">
+                                    <span className="customer-name-container">{customerItem.customer_name}</span>
+                                    <span className="time-tip pull-right">{item.date}</span>
+                                </div>
+                                <div className="item-content"></div>
+                            </div>
+                        )
+                    })
                 )
             })
         )
@@ -398,11 +423,21 @@ var SalesHomePage = React.createClass({
     },
 
     //点击收起面板
-    handleClickCollapse: function () {
-        this.setState({
-            listenScrollBottom: true,
-            isShowRepeatCustomer: false
-        })
+    handleClickCollapse: function (argument) {
+        console.log(argument);
+        if (argument) {
+            this.setState({
+                listenScrollBottom: true,
+                isShowRepeatCustomer: false,
+                showCollapsePanel: argument
+            })
+
+        } else {
+            this.setState({
+                isShowRepeatCustomer: false,
+            })
+        }
+
     },
     //点击展示重复客户列表
     handleShowRepeatCustomer: function () {
@@ -481,7 +516,9 @@ var SalesHomePage = React.createClass({
                     </TopNav>
                     <div className="main-content-container">
                         <div className="col-md-4 customer-list-left">
-                            <Collapse accordion defaultActiveKey={['1']} onChange={this.handleClickCollapse}>
+                            <Collapse accordion defaultActiveKey={['1']}
+                                      activeKey={[this.state.showCollapsePanel]}
+                                      onChange={this.handleClickCollapse}>
                                 <Panel header={<span>{Intl.get("sales.frontpage.will.contact.today", "今日待联系")}<span
                                     className="panel-header-count">{this.state.scheduleTodayObj.data.total}</span></span>}
                                        key="1">
