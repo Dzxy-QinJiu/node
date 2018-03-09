@@ -258,7 +258,7 @@
               float: right;
               height: 12px;
             }
-            .icon-jiantou-up.phone-sort-icon{
+            .icon-jiantou-up.phone-sort-icon {
               margin-top: -5px;
             }
             //去掉表格标题上面的间隔
@@ -395,7 +395,7 @@
         }
         //销售（团队）列表
         .sales-list-container {
-          padding: 10px 10px 0 15px;
+          padding: 10px 5px 0 5px;
           //获取即将过期用户数量失败后点击重试，loading按钮样式
           .load8 {
             transform: scale(0.5, 0.5);
@@ -407,27 +407,34 @@
           .ant-alert-error {
             margin-top: 20px;
           }
-          //销售角色的样式
-          span.sales-role-btn {
-            font-size: 12px;
-            color: #108ee9;
-            margin-left: 6px;
-            line-height: 14px;
-            .anticon-down{
-              line-height: 14px;
-              padding-left: 2px;
-            }
-          }
           .user-stop-li {
             color: #CDCECD;
             .sales-item-icon {
               background-color: #CDCECD !important;
             }
           }
-          li {
+          hr {
+            margin: -1px 0px 0px 0px;
+            height: 1px;
+            border: none;
+            background-color: rgb(224, 224, 224);
+          }
+          li:not(.ant-dropdown-menu-item) {
             height: 40px;
             line-height: 40px;
+            padding-left: 5px;
             cursor: pointer;
+            //销售角色按钮的样式
+            .iconfont.sales-role-icon {
+              padding-right: 10px;
+            }
+            //设置角色的按钮
+            .icon-role-auth-config {
+              float: right;
+              padding-right: 10px;
+              height: 30px;
+              font-size: 14px;
+            }
             &:hover {
               color: #4d96d1;
             }

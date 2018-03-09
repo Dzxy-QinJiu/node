@@ -66,7 +66,8 @@ function turnToFrontMember(data) {
                 userName: member.user_name,
                 userLogo: member.user_logo,
                 teamRoleId: member.teamrole_id,
-                teamRoleName: member.teamrole_name
+                teamRoleName: member.teamrole_name,
+                teamRoleColor: member.teamrole_color,
             };
         });
     }
