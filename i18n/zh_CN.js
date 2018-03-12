@@ -1861,6 +1861,10 @@ var zh_CN = {
     "user.current.location": "该次登录地为{currentlocation}。",
     "user.failed.frequent.login": "登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。",
     "user.success.frequent.login": "登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。",
+    "user.login.abnormal.ignore": "忽略",
+    "user.login.abnormal.success": "该条异地信息已忽略!",
+    "user.login.abnormal.failed": "忽略异常登录地失败！",
+
     "call.record.play": "播放录音",
     "call.record.pick.phone": "请拿起话机",
     "call.record.phone.alerting": "已振铃，等待对方接听",

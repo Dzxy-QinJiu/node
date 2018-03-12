@@ -61,4 +61,11 @@ UserAbnormalLoginStore.prototype.getUserApp = function (result) {
         this.appLists = result.dataObj;
     }
 };
+UserAbnormalLoginStore.prototype.deleteAbnormalLoginInfo = function (id) {
+    let idArray = _.pluck(this.abnormalLoginList, 'id');
+    let index = _.indexOf(idArray, id);
+    if (index !== -1) {
+        this.abnormalLoginList.splice(index, 1);
+    }
+};
 module.exports = alt.createStore(UserAbnormalLoginStore , 'UserAbnormalLoginStore');

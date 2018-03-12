@@ -1817,6 +1817,9 @@ var en_US = {
     "user.current.location": "The current login is {currentlocation}.",//该次登录地为{currentlocation}。
     "user.failed.frequent.login": "Login frequency exception. The user's {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.",//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。
     "user.success.frequent.login": "Login frequency exception. The user's {appName} account logins more than 50 times for 1 consecutive hour and each time is a successful login.",//登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。
+    "user.login.abnormal.ignore": "Ignore", // 忽略
+    "user.login.abnormal.success": "This remote information has been ignored.", // 该条异地信息已忽略!
+    "user.login.abnormal.failed": "Failed to Ignored Exception login", // 忽略异常登录地失败！
     "crm.customer.interested": "Add attention",//添加关注
     "crm.customer.uninterested": "Unsubscribe",//取消关注
     "crm.customer.failed.interested": "Failed to update the information!",//修改失败
