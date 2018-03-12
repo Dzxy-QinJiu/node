@@ -173,7 +173,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按阶段标签筛选");
     },
     //销售角色的选择
-    stageRoleSelected: function (role) {
+    salesRoleSelected: function (role) {
         if (this.state.condition.member_role === role) {
             if (role) {//不是全部时，则取消当前选项的选择
                 role = "";
@@ -338,7 +338,7 @@ const CrmFilterPanel = React.createClass({
         //销售角色
         const salesRoleListJsx = this.state.salesRoleList.map((role, idx) => {
             let className = this.state.condition.member_role === role.name ? "selected" : "";
-            return <li key={idx} onClick={this.stageRoleSelected.bind(this, role.name)}
+            return <li key={idx} onClick={this.salesRoleSelected.bind(this, role.name)}
                        className={className}>{role.show_name}</li>
         });
         return (
