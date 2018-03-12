@@ -216,7 +216,7 @@ var UserAbnormalLogin = React.createClass({
                     des += (item.usual_location ? Intl.get("user.usual.location","常用登录地为{usuallocation}。",{"usuallocation":item.usual_location}) :"");
                     //有该次登录地字段时
                     des += (item.current_location ? Intl.get("user.current.location","该次登录地为{currentlocation},",{"currentlocation":item.current_location}) : "");
-                    // 有该次登录的IP
+                    // 有该次登录的IP字段
                     des += (item.user_ip ? Intl.get("user.current.ip","IP为{currentip}。",{"currentip":item.user_ip}) : "");
                     break;
                 case 'loginFailedFrequencyException':
