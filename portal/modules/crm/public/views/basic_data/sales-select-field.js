@@ -285,9 +285,10 @@ var SalesSelectField = React.createClass({
                             {!this.state.disabled ? (
                                 <i className="iconfont icon-update" title={Intl.get("crm.sales.change", "变更销售")}
                                    onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
-                            {!this.state.transferDisabled ? (
-                                <span className="iconfont icon-transfer" title={Intl.get("crm.qualified.roll.out", "转出")}
-                                   onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
+                            {!this.state.transferDisabled && !this.state.isMerge ? (
+                                <span className="iconfont icon-transfer"
+                                      title={Intl.get("crm.qualified.roll.out", "转出")}
+                                      onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
