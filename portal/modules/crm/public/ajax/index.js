@@ -1,7 +1,8 @@
 const hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 const AUTHS = {
     "GETALL": "CUSTOMER_ALL",
-    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL"
+    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL",
+    "TRANSFER_MANAGER": "CRM_MANAGER_TRANSFER"
 };
 //添加客户
 exports.addCustomer = function (newCus) {
@@ -43,7 +44,7 @@ exports.deleteCustomer = function (ids) {
 exports.updateCustomer = function (newCus) {
     if (hasPrivilege(AUTHS.UPDATE_ALL)) {
         newCus.urlType = "manager";
-    }else{
+    } else {
         newCus.urlType = "user";
     }
     if (!newCus.type) {
@@ -62,6 +63,28 @@ exports.updateCustomer = function (newCus) {
         dataType: 'json',
         type: 'put',
         data: {newCus: JSON.stringify(newCus)},
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//转出客户
+exports.transferCustomer = function (transferCustomer) {
+    let urlType = "user";// CRM_USER_TRANSFER
+    if (hasPrivilege(AUTHS.TRANSFER_MANAGER)) {
+        urlType = "manager";
+    }
+    delete transferCustomer.type;
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/:type/transfer_customer'.replace(":type", urlType),
+        dataType: 'json',
+        type: 'put',
+        data: transferCustomer,
         success: function (result) {
             Deferred.resolve(result);
         },
@@ -289,9 +312,9 @@ exports.getUserPhoneNumber = function (member_id) {
 };
 let crmUserListAjax;
 exports.getCrmUserList = function (reqData) {
-    crmUserListAjax&&crmUserListAjax.abort();
+    crmUserListAjax && crmUserListAjax.abort();
     let Deferred = $.Deferred();
-    crmUserListAjax= $.ajax({
+    crmUserListAjax = $.ajax({
         url: '/rest/crm/user_list',
         dataType: 'json',
         type: 'get',
@@ -299,8 +322,8 @@ exports.getCrmUserList = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr , textStatus) {
-            if(textStatus !== 'abort') {
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
             }
         }
