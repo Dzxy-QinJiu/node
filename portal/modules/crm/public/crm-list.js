@@ -540,6 +540,10 @@ var Crm = React.createClass({
         } else {//删除上次筛选时的数据
             delete condition.qualify_label;
         }
+        //销售角色的处理
+        if(condition.member_role){
+            term_fields.push("member_role");
+        }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
             //未打标签的处理

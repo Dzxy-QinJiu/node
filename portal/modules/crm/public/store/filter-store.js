@@ -9,6 +9,7 @@ function FilterStore() {
     this.competitorList = [];//竞品列表
     this.industryList = [];//行业列表
     this.provinceList = [];//地域列表
+    this.salesRoleList = [];
     this.inputCondition = {};
     this.condition = {
         sales_team_id: "",
@@ -17,6 +18,7 @@ function FilterStore() {
         app_ids: [""],
         labels: [""],//标签的筛选
         customer_label: "",//阶段标签
+        member_role: "",//销售角色的筛选
         competing_products: [""],//竞品的筛选
         sales_opportunities: [{
             sale_stages: "",
@@ -77,6 +79,17 @@ FilterStore.prototype.getStageTagList = function (data) {
     this.stageTagList = stageTagList;
 };
 
+FilterStore.prototype.getSalesRoleList= function (data) {
+    let salesRoleList = [{name: "", show_name: Intl.get("common.all", "全部")}];
+    if (!data.errorMsg && _.isArray(data.list)) {
+        let list = _.map(data.list, role => {
+            return {name: role, show_name: role};
+        });
+        salesRoleList = salesRoleList.concat(list);
+    }
+    this.salesRoleList = salesRoleList;
+};
+
 FilterStore.prototype.getTagList = function (list) {
     this.tagList = list;
 };
@@ -102,6 +115,10 @@ FilterStore.prototype.setTag = function (value) {
 };
 FilterStore.prototype.setStageTag = function (value) {
     this.condition.customer_label = value;
+};
+
+FilterStore.prototype.setSalesRole = function (value) {
+    this.condition.member_role = value;
 };
 
 FilterStore.prototype.setCompetitor = function (value) {

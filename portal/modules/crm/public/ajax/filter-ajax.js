@@ -98,6 +98,30 @@ exports.getTagList = function () {
     });
     return Deferred.promise();
 };
+//获取销售角色列表
+let salesRoleListAjax;
+exports.getSalesRoleList=function () {
+    let type="user";//CRM_GET_USER_ROLE
+    if (hasPrivilege("CRM_GET_MANAGER_ROLE")) {
+        type= "manager";
+    }
+    salesRoleListAjax && salesRoleListAjax.abort();
+    let Deferred = $.Deferred();
+    salesRoleListAjax=$.ajax({
+        url: "/rest/crm_filter/:type/sales_role_list".replace(":type",type),
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+            Deferred.resolve(data.result);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
 exports.getStageTagList = function () {
     let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
     if(hasPrivilege("CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL")){

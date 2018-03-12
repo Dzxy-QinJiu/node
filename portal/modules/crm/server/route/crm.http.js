@@ -191,6 +191,14 @@ module.exports = {
         },
         {
             method: 'get',
+            path: '/rest/crm_filter/:type/sales_role_list',
+            handler: 'getFilterSalesRoleList',
+            passport: {
+                needLogin: true
+            }
+        },
+        {
+            method: 'get',
             path: '/rest/crm_filter/provinces/:type',
             handler: 'getFilterProvinces',
             passport: {

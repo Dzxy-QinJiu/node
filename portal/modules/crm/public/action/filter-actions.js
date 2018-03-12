@@ -17,7 +17,8 @@ function FilterAction() {
         'setLevel',
         'showPanel',
         'hidePanel',
-        'setOtherSelectedItem'
+        'setOtherSelectedItem',
+        'setSalesRole'
     );
 
     this.getAppList = function () {
@@ -74,6 +75,14 @@ function FilterAction() {
     //获取阶段标签列表
     this.getStageTagList = function () {
         FilterAjax.getStageTagList().then((list) => {
+            this.dispatch({errorMsg: "", list: list});
+        },  (errorMsg) => {
+            this.dispatch({errorMsg: errorMsg, list: []});
+        });
+    };
+    //获取销售角色列表
+    this.getSalesRoleList=function () {
+        FilterAjax.getSalesRoleList().then((list) => {
             this.dispatch({errorMsg: "", list: list});
         },  (errorMsg) => {
             this.dispatch({errorMsg: errorMsg, list: []});

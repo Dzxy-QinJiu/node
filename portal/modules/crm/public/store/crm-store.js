@@ -62,26 +62,26 @@ CrmStore.prototype.updateCurrentCustomerRemark = function (submitObj) {
     if (customer && _.isArray(customer.customer_traces) && customer.customer_traces.length) {
         customer.customer_traces[0].remark = submitObj.remark;
     }
-    if (customer && submitObj.last_contact_time){
+    if (customer && submitObj.last_contact_time) {
         customer.last_contact_time = submitObj.last_contact_time;
     }
 },
 
 //合并后的处理
-CrmStore.prototype.afterMergeCustomer = function (mergeObj) {
-    if (mergeObj && _.isObject(mergeObj)) {
-        //合并后客户的处理
-        let mergeCustomer = mergeObj.customer;
-        let index = _.findIndex(this.curCustomers, customer => customer.id == mergeCustomer.id);
-        this.curCustomers[index] = mergeCustomer;
-        //过滤掉合并后删除的客户
-        let delCustomerIds = mergeObj.delete_ids;
-        if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
-            this.curCustomers = _.filter(this.curCustomers, customer => delCustomerIds.indexOf(customer.id) === -1);
-            this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
+    CrmStore.prototype.afterMergeCustomer = function (mergeObj) {
+        if (mergeObj && _.isObject(mergeObj)) {
+            //合并后客户的处理
+            let mergeCustomer = mergeObj.customer;
+            let index = _.findIndex(this.curCustomers, customer => customer.id == mergeCustomer.id);
+            this.curCustomers[index] = mergeCustomer;
+            //过滤掉合并后删除的客户
+            let delCustomerIds = mergeObj.delete_ids;
+            if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
+                this.curCustomers = _.filter(this.curCustomers, customer => delCustomerIds.indexOf(customer.id) === -1);
+                this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
+            }
         }
-    }
-};
+    };
 //是否展示客户查重界面的设置
 CrmStore.prototype.setRepeatCustomerShow = function (flag) {
     this.isRepeatCustomerShow = flag;
@@ -168,7 +168,9 @@ CrmStore.prototype.editBasicSuccess = function (newBasic) {
             }
             if (key === "member_role") {//转出客户时，打上”转出“标签
                 if (_.isArray(updateCustomer.labels)) {
-                    updateCustomer.labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                    if (updateCustomer.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
+                        updateCustomer.labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                    }
                 } else {
                     updateCustomer.labels = [Intl.get("crm.qualified.roll.out", "转出")];
                 }
@@ -424,7 +426,7 @@ CrmStore.prototype.batchChangeIndustry = function ({taskInfo, taskParams, curCus
     });
 };
 //批量变更行政级别以后，同步列表数据
-CrmStore.prototype.batchChangeLevel= function ({taskInfo, taskParams, curCustomers}) {
+CrmStore.prototype.batchChangeLevel = function ({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
