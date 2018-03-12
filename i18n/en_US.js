@@ -1209,6 +1209,8 @@ var en_US = {
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     "crm.detail.sales.role": "Sales role",//销售角色
+    "crm.sales.change": "Change sales",//变更销售
+    "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
     // 客户管理end
 
     //客户分析 start

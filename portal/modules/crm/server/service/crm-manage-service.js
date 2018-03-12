@@ -53,6 +53,8 @@ var crmRestApis = {
         updateDetailAddress: "/rest/customer/v2/customer/:url_type/detail_address",
         //关注或者取消关注某客户
         updateInterest: "/rest/customer/v2/customer/:url_type/interest",
+        //转出客户
+        transferCustomer: "/rest/customer/v2/customer/:url_type/transfer"
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
@@ -91,11 +93,11 @@ exports.getFilterProvinces = function (req, res) {
 //获取阶段标签列表
 exports.getStageTagList = function (req, res) {
     return restUtil.authRest.get(
-    {
-        url: crmRestApis.getStageTagList.replace(":type", req.params.type),
-        req: req,
-        res: res
-    }, null);
+        {
+            url: crmRestApis.getStageTagList.replace(":type", req.params.type),
+            req: req,
+            res: res
+        }, null);
 };
 //获取竞品列表
 exports.getCompetitorList = function (req, res) {
@@ -289,6 +291,15 @@ exports.updateCustomer = function (req, res, newCustomer) {
     return restUtil.authRest.put(
         {
             url: url,
+            req: req,
+            res: res
+        }, newCustomer);
+};
+//转出客户的处理
+exports.transferCustomer = function (req, res, newCustomer) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.basic.transferCustomer.replace(":url_type", req.params.type),
             req: req,
             res: res
         }, newCustomer);

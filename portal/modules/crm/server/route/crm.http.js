@@ -54,7 +54,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: []
-        },{
+        }, {
             method: 'get',
             path: '/rest/crm/repeat_customer/:customerId',
             handler: 'getRepeatCustomerById',
@@ -141,6 +141,15 @@ module.exports = {
             privileges: [
                 'CRM_LIST_CUSTOMERS'
             ]
+        },
+        {
+            method: 'put',
+            path: '/rest/crm/:type/transfer_customer',
+            handler: 'transferCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: []
         },
         {
             "method": "get",

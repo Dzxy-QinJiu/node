@@ -52,6 +52,13 @@ let TagEditField = React.createClass({
             stateData.labels = $.extend(true, [], nextProps.labels);
             stateData.disabled = nextProps.disabled;
             this.setState(stateData);
+        } else {
+            let diff1 = _.difference(this.state.labels, nextProps.labels);
+            let diff2 = _.difference(nextProps.labels, this.state.labels);
+            //标签有变化
+            if (diff1.length || diff2.length) {
+                this.setState({labels: nextProps.labels});
+            }
         }
     },
     addTag: function (e) {
@@ -60,21 +67,21 @@ let TagEditField = React.createClass({
         const tag = e.target.value.trim();
         if (!tag) return;
         //”线索“、”转出“标签“不可以添加
-        if(isClueTag(tag) || isTurnOutTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable","不能手动添加'{label}'标签",{label:tag}));
+        if (isClueTag(tag) || isTurnOutTag(tag)) {
+            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
             return;
         }
         this.toggleTag(tag, true);
-        Trace.traceEvent($(this.getDOMNode()).find(".tag-input"),"按enter键添加新标签");
+        Trace.traceEvent($(this.getDOMNode()).find(".tag-input"), "按enter键添加新标签");
         //清空输入框
         this.refs.newTag.refs.input.value = "";
     },
     toggleTag: function (tag, isAdd) {
         //不可以操作'线索'和‘转出’标签
-        if(isClueTag(tag) || isTurnOutTag(tag)) {
+        if (isClueTag(tag) || isTurnOutTag(tag)) {
             return;
         }
-        Trace.traceEvent($(this.getDOMNode()).find(".block-tag-edit"),"点击选中/取消选中某个标签");
+        Trace.traceEvent($(this.getDOMNode()).find(".block-tag-edit"), "点击选中/取消选中某个标签");
         let labels = this.state.labels || [];
 
         if (labels.indexOf(tag) > -1) {
@@ -103,7 +110,7 @@ let TagEditField = React.createClass({
             type: "label",
             labels: this.state.labels
         };
-        Trace.traceEvent(e,"保存对标签的添加");
+        Trace.traceEvent(e, "保存对标签的添加");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.setState({
@@ -113,7 +120,7 @@ let TagEditField = React.createClass({
             });
         } else {
             this.setState({loading: true});
-            CrmBasicAjax.updateCustomer(submitData).then(result=> {
+            CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.setState({
                         loading: false,
@@ -123,7 +130,7 @@ let TagEditField = React.createClass({
                     //更新列表中的客户名
                     this.props.modifySuccess(submitData);
                 }
-            }, errorMsg=> {
+            }, errorMsg => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: errorMsg || Intl.get("crm.164", "修改客户标签失败")
@@ -133,7 +140,7 @@ let TagEditField = React.createClass({
     },
 
     handleCancel: function (e) {
-        Trace.traceEvent(e,"取消对标签的添加");
+        Trace.traceEvent(e, "取消对标签的添加");
         this.setState({
             labels: $.extend(true, [], this.props.labels),
             displayType: "text",
@@ -142,7 +149,7 @@ let TagEditField = React.createClass({
     },
 
     setEditable: function (e) {
-        Trace.traceEvent(e,"点击设置标签");
+        Trace.traceEvent(e, "点击设置标签");
         this.setState({displayType: "edit"});
     },
     render: function () {
@@ -158,7 +165,9 @@ let TagEditField = React.createClass({
                 {
                     !this.state.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get("crm.165", "设置标签")}
-                           onClick={(e)=>{this.setEditable(e)}}/>
+                           onClick={(e) => {
+                               this.setEditable(e)
+                           }}/>
                     ) : null
                 }
 
@@ -173,16 +182,21 @@ let TagEditField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e)=>{this.handleSubmit(e)}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e)=>{this.handleCancel(e)}}/>
+                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e) => {
+                    this.handleSubmit(e)
+                }}/>
+                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
+                   onClick={(e) => {
+                       this.handleCancel(e)
+                   }}/>
             </div>
         );
         var selectedTagsArray = this.state.labels ? this.state.labels : [];
         var recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         //过滤掉线索、转出标签，保证selectedTagsArray中有”线索“、“转出”标签，则只展示，没有就不展示
-        recommendTagsArray = _.filter(recommendTagsArray, tag =>tag!=Intl.get("crm.sales.clue", "线索") && tag != Intl.get("crm.qualified.roll.out", "转出"));
+        recommendTagsArray = _.filter(recommendTagsArray, tag => tag != Intl.get("crm.sales.clue", "线索") && tag != Intl.get("crm.qualified.roll.out", "转出"));
         var unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
-        var tagsJsx = unionTagsArray.map((tag, index)=> {
+        var tagsJsx = unionTagsArray.map((tag, index) => {
             let className = "customer-tag";
             className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";
             return (<span key={index} onClick={() => this.toggleTag(tag)} className={className}>{tag}</span>);

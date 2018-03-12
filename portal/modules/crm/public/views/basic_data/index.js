@@ -282,6 +282,7 @@ var BasicData = React.createClass({
                                 </div>
                                 <SalesSelectField
                                     disabled={hasPrivilege("CUSTOMER_UPDATE_SALES") ? false : true}
+                                    transferDisabled={hasPrivilege("CRM_USER_TRANSFER") || hasPrivilege("CRM_MANAGER_TRANSFER") ? false : true}
                                     isMerge={this.props.isMerge}
                                     updateMergeCustomer={this.props.updateMergeCustomer}
                                     customerId={basicData.id}

@@ -166,6 +166,14 @@ CrmStore.prototype.editBasicSuccess = function (newBasic) {
             if (newBasic[key] || newBasic[key] == "") {
                 updateCustomer[key] = newBasic[key];
             }
+            if (key === "member_role") {//转出客户时，打上”转出“标签
+                if (_.isArray(updateCustomer.labels)) {
+                    updateCustomer.labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                } else {
+                    updateCustomer.labels = [Intl.get("crm.qualified.roll.out", "转出")];
+                }
+
+            }
         }
     }
 };

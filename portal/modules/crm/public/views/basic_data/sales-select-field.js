@@ -36,6 +36,7 @@ var SalesSelectField = React.createClass({
             displayType: "text",
             isLoadingList: true,//正在获取下拉列表中的数据
             disabled: this.props.disabled,
+            transferDisabled: this.props.transferDisabled,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
             userName: this.props.userName,
@@ -70,6 +71,7 @@ var SalesSelectField = React.createClass({
                 salesTeamId: nextProps.salesTeamId,
                 salesTeamList: this.getSalesTeamList(nextProps.userId, this.state.salesManList),
                 disabled: nextProps.disabled,
+                transferDisabled: nextProps.transferDisabled,
                 list: [],//下拉列表中的数据
                 displayType: "text",
                 isLoadingList: true,//正在获取下拉列表中的数据
@@ -205,7 +207,7 @@ var SalesSelectField = React.createClass({
                 displayType: 'text',
                 submitErrorMsg: ''
             });
-        } else {
+        } else if (this.state.displayType === "edit") {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
@@ -221,6 +223,25 @@ var SalesSelectField = React.createClass({
                 this.setState({
                     loading: false,
                     submitErrorMsg: errorMsg || Intl.get("crm.172", "修改客户所属销售失败")
+                });
+            });
+        } else if (this.state.displayType === "transfer") {
+            this.setState({loading: true});
+            submitData.member_role = this.state.salesRole;
+            CrmBasicAjax.transferCustomer(submitData).then(result => {
+                if (result) {
+                    this.setState({
+                        loading: false,
+                        displayType: 'text',
+                        submitErrorMsg: ''
+                    });
+                    //更新列表中的客户地域
+                    this.props.modifySuccess(submitData);
+                }
+            }, errorMsg => {
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: errorMsg || Intl.get("crm.customer.transfer.failed", "转出客户失败")
                 });
             });
         }
@@ -262,8 +283,12 @@ var SalesSelectField = React.createClass({
                             <span>{this.state.userName}</span>
 
                             {!this.state.disabled ? (
-                                <i className="iconfont icon-update" title={Intl.get("crm.173", "设置销售")}
+                                <i className="iconfont icon-update" title={Intl.get("crm.sales.change", "变更销售")}
                                    onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                            {!this.state.transferDisabled && !this.state.isMerge ? (
+                                <span className="iconfont icon-transfer"
+                                      title={Intl.get("crm.qualified.roll.out", "转出")}
+                                      onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
