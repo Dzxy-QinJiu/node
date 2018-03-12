@@ -252,7 +252,7 @@ var UserAbnormalLogin = React.createClass({
                 <div>
                     <Select style={{width:120}}
                             onChange={this.handleChange}
-                            value={this.state.app}
+                            value={this.state.appId}
                     >
                         {list}
                     </Select>
