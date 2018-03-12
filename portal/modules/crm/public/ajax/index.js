@@ -73,18 +73,18 @@ exports.updateCustomer = function (newCus) {
     return Deferred.promise();
 };
 //转出客户
-exports.transferCustomer = function (transferCustomer) {
+exports.transferCustomer = function (customer) {
     let urlType = "user";// CRM_USER_TRANSFER
     if (hasPrivilege(AUTHS.TRANSFER_MANAGER)) {
         urlType = "manager";
     }
-    delete transferCustomer.type;
+    delete customer.type;
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/:type/transfer_customer'.replace(":type", urlType),
         dataType: 'json',
         type: 'put',
-        data: transferCustomer,
+        data: customer,
         success: function (result) {
             Deferred.resolve(result);
         },
