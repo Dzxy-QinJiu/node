@@ -34,6 +34,8 @@ var crmRestApis = {
     getCustomerByPhone: "/rest/customer/v2/customer/query/term/customer",
     //根据客户名获取行政级别
     getAdministrativeLevel: "/rest/customer/v2/customer/administrative_level/:customer_name",
+    //获取销售角色列表（type:manager、user）
+    getFilterSalesRoleList: "/rest/customer/v2/customer/:type/member/role",
     basic: {//type:manager(管理员调用)，type:user(非管理员调用)
         //修改客户名
         updateName: "/rest/customer/v2/customer/:url_type/name",
@@ -76,6 +78,15 @@ exports.getFilterIndustries = function (req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterIndustries,
+            req: req,
+            res: res
+        }, null);
+};
+//获取筛选面板的销售角色列表
+exports.getFilterSalesRoleList = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getFilterSalesRoleList.replace(":type", req.params.type),
             req: req,
             res: res
         }, null);

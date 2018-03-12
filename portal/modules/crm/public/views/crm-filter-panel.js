@@ -26,7 +26,7 @@ const otherFilterArray = [{
 }, {
     name: Intl.get("crm.call.no.remark", "最后联系但未写跟进记录"),
     value: "last_call_no_record"
-},{
+}, {
     name: Intl.get("crm.call.no.remark.over30", "超30天未写跟进记录"),
     value: "last_trace"
 }, {
@@ -53,6 +53,7 @@ const CrmFilterPanel = React.createClass({
     componentDidMount: function () {
         FilterStore.listen(this.onStoreChange);
         FilterAction.getTeamList();
+        FilterAction.getSalesRoleList();
         FilterAction.getStageList();
         FilterAction.getTagList();
         FilterAction.getStageTagList();
@@ -133,7 +134,7 @@ const CrmFilterPanel = React.createClass({
             //如果之前处于选中状态则取消选择
             if (labels.indexOf(tag) > -1) {
                 selectedTags = _.filter(labels, label => label != tag);
-                if(selectedTags.length===0){//都取消选择后，选中全部
+                if (selectedTags.length === 0) {//都取消选择后，选中全部
                     selectedTags = [""];
                 }
             }
@@ -170,6 +171,19 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setStageTag(stageTag);
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按阶段标签筛选");
+    },
+    //销售角色的选择
+    stageRoleSelected: function (role) {
+        if (this.state.condition.member_role === role) {
+            if (role) {//不是全部时，则取消当前选项的选择
+                role = "";
+            } else {//全部时，不做处理
+                return;
+            }
+        }
+        FilterAction.setSalesRole(role);
+        setTimeout(() => this.props.search());
+        Trace.traceEvent($(this.getDOMNode()).find("li"), "按销售角色筛选");
     },
     //竞品的选择
     competitorSelected: function (tag) {
@@ -321,6 +335,12 @@ const CrmFilterPanel = React.createClass({
             return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
                        className={className}>{item || Intl.get("common.all", "全部")}</li>
         });
+        //销售角色
+        const salesRoleListJsx = this.state.salesRoleList.map((role, idx) => {
+            let className = this.state.condition.member_role === role.name ? "selected" : "";
+            return <li key={idx} onClick={this.stageRoleSelected.bind(this, role.name)}
+                       className={className}>{role.show_name}</li>
+        });
         return (
             <div data-tracename="筛选">
                 <div className="crm-filter-panel">
@@ -340,6 +360,12 @@ const CrmFilterPanel = React.createClass({
                             </dd>
                         </dl>
                     )}
+                    <dl>
+                        <dt>{Intl.get("crm.detail.sales.role", "销售角色")} :</dt>
+                        <dd>
+                            <ul>{salesRoleListJsx}</ul>
+                        </dd>
+                    </dl>
                     <dl>
                         <dt><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段"/> :</dt>
                         <dd>

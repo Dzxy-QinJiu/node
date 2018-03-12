@@ -97,6 +97,15 @@ exports.getFilterIndustries = function (req, res) {
         res.status(500).json(err.message);
     });
 };
+//获取筛选面板的销售角色列表
+exports.getFilterSalesRoleList = function (req, res) {
+    crmService.getFilterSalesRoleList(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
 //获取筛选面板的地域列表
 exports.getFilterProvinces = function (req, res) {
     crmService.getFilterProvinces(req, res)
