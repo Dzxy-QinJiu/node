@@ -15,5 +15,16 @@ module.exports = {
         "privileges": [
             "GET_LOGIN_EXCEPTION_USERS"
         ]
-    },]
+    },{
+        "method": "post",
+        "path": "/rest/user/abnormal/ignore",
+        "handler": "ignoreAbnormalLogin",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": [
+            "GET_LOGIN_EXCEPTION_USERS"
+        ]
+    }
+    ]
 }

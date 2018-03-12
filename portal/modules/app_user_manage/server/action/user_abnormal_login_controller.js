@@ -14,3 +14,12 @@ exports.getUserAbnormalLogin = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+// 忽略异常登录地
+exports.ignoreAbnormalLogin = (req, res) => {
+    var id = req.body.id;
+    userAbnormalLogin.ignoreAbnormalLogin(req, res, id).on("success",  (data) => {
+        res.status(200).json(data);
+    }).on("error",  (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

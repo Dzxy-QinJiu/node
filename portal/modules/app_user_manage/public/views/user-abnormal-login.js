@@ -15,7 +15,10 @@ var TimeLine = require("CMP_DIR/time-line");
 //滚动条
 var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
 var Spinner = require("CMP_DIR/spinner");
-import {Select,Alert} from 'antd';
+import {Select,Alert, Button} from 'antd';
+import UserAbnormalLoginAjax from "../ajax/user-abnormal-login-ajax";
+import { hasPrivilege } from "CMP_DIR/privilege/checker";
+
 var Option = Select.Option;
 // 没有消息的提醒
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
@@ -24,6 +27,7 @@ var LAYOUT_CONSTANTS = {
     TOP_HEIGHT: 90,
     BOTTOM_HEIGHT: 20,
 };
+const IGNORE_ABNORMAL_SUCCESS = Intl.get("user.login.abnormal.success", "该条异地信息已忽略！");
 var UserAbnormalLogin = React.createClass({
     getDefaultProps: function () {
         return {
@@ -32,7 +36,11 @@ var UserAbnormalLogin = React.createClass({
         };
     },
     getInitialState: function () {
-        return this.getStateData();
+        return {
+            ignoreAbnormalErrorMsg: '', // 忽略异地登录信息的失败的提示信息，默认为空
+            ignoreId: '', // 忽略的id
+            ...this.getStateData()
+        }
     },
     onStateChange: function () {
         this.setState(this.getStateData());
@@ -82,7 +90,7 @@ var UserAbnormalLogin = React.createClass({
     componentWillUnmount: function () {
         setTimeout(()=>{
             UserAbnormalLoginAction.resetState();
-        })
+        });
         UserAbnormalLoginStore.unlisten(this.onStateChange);
     },
     retryGetAbnormalLogin: function () {
@@ -145,6 +153,54 @@ var UserAbnormalLogin = React.createClass({
         }
         this.getAbnormalLoginLists(searchObj);
     },
+    // 处理忽略的事件
+    handleIgnoreAbnormal(item) {
+        if (item.id) {
+            UserAbnormalLoginAjax.ignoreAbnormalLogin(item.id).then( (result) => {
+                if (result == true) {
+                    this.setState({
+                        ignoreAbnormalErrorMsg: '',
+                        ignoreId: item.id
+                    });
+                } else {
+                    this.setState({
+                        ignoreAbnormalErrorMsg: Intl.get("user.login.abnormal.failed", "忽略异常登录地失败！"),
+                        ignoreId: item.id
+                    });
+                }
+            }, (errMessage) => {
+                this.setState({
+                    ignoreAbnormalErrorMsg: errMessage,
+                    ignoreId: item.id,
+                });
+            } );
+        }
+    },
+    // 关闭忽略异常登录的提示信息
+    onCloseAbnormalIgnoreTips() {
+        if (!this.state.ignoreAbnormalErrorMsg) {
+            UserAbnormalLoginAction.deleteAbnormalLoginInfo(this.state.ignoreId);
+        }
+    },
+    // 点忽略之后的显示提示信息
+    showIgnoreAbnormalTips(tips) {
+        let type = "info";
+        let message = IGNORE_ABNORMAL_SUCCESS;
+        if (tips) {
+            type = "error";
+            message = tips;
+        }
+        return (
+            <div className="ignore-abnormal-tips">
+                <Alert
+                    message={message}
+                    type={type}
+                    closable
+                    onClose={this.onCloseAbnormalIgnoreTips}
+                />
+            </div>
+        );
+    },
     renderTimeLineItem: function (item) {
         var des = "";
         var appObj = _.find(this.state.appLists,(app)=>{return app.app_id == item.client_id});
@@ -159,7 +215,9 @@ var UserAbnormalLogin = React.createClass({
                     //有常用登录地字段时
                     des += (item.usual_location ? Intl.get("user.usual.location","常用登录地为{usuallocation}。",{"usuallocation":item.usual_location}) :"");
                     //有该次登录地字段时
-                    des += (item.current_location ? Intl.get("user.current.location","该次登录地为{currentlocation}。",{"currentlocation":item.current_location}) : "");
+                    des += (item.current_location ? Intl.get("user.current.location","该次登录地为{currentlocation},",{"currentlocation":item.current_location}) : "");
+                    // 有该次登录的IP字段
+                    des += (item.user_ip ? Intl.get("user.current.ip","IP为{currentip}。",{"currentip":item.user_ip}) : "");
                     break;
                 case 'loginFailedFrequencyException':
                     des = Intl.get("user.failed.frequent.login","登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。",{"appName":appName});
@@ -172,7 +230,18 @@ var UserAbnormalLogin = React.createClass({
         return (
             <dl>
                 <dd>
-                    <p>{des}</p>
+                    <p>
+                        {des}
+                        {
+                            hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && item.type == 'illegalLocation' ?
+                                <Button type="primary" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
+                                    {Intl.get("user.login.abnormal.ignore", "忽略")}
+                                </Button> : null
+                        }
+                    </p>
+                    {
+                        item.id == this.state.ignoreId ? this.showIgnoreAbnormalTips(this.state.ignoreAbnormalErrorMsg) : null
+                    }
                 </dd>
                 <dt>{moment(item.timeStamp).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>

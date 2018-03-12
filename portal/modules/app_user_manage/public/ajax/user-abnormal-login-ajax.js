@@ -24,3 +24,23 @@ exports.getUserAbnormalLogin = function(data){
     });
     return Deferred.promise();
 };
+
+// 忽略异常登录地
+let ignoreAbnormalLoginAjax = null;
+exports.ignoreAbnormalLogin = function (id) {
+    let Deferred = $.Deferred();
+    ignoreAbnormalLoginAjax && ignoreAbnormalLoginAjax.abort();
+    ignoreAbnormalLoginAjax = $.ajax({
+        url: '/rest/user/abnormal/ignore',
+        dataType: 'json',
+        type: 'post',
+        data: { id: id },
+        success:  (result) => {
+            Deferred.resolve(result);
+        },
+        error:  (xhr) => {
+            Deferred.reject(xhr.responseJSON || Intl.get("user.login.abnormal.failed", "忽略异常登录地失败！"));
+        }
+    });
+    return Deferred.promise();
+};
