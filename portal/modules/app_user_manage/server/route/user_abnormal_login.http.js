@@ -22,7 +22,9 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges": []
+        "privileges": [
+            "GET_LOGIN_EXCEPTION_USERS"
+        ]
     }
     ]
 }

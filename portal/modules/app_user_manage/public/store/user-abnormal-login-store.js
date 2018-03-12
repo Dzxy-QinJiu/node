@@ -62,10 +62,10 @@ UserAbnormalLoginStore.prototype.getUserApp = function (result) {
     }
 };
 UserAbnormalLoginStore.prototype.deleteAbnormalLoginInfo = function (id) {
-    let idArray = _.pluck(this.abnormalLoginList, 'id');
-    let index = _.indexOf(idArray, id);
-    if (index !== -1) {
-        this.abnormalLoginList.splice(index, 1);
-    }
+    this.abnormalLoginList =_.filter(this.abnormalLoginList, (itemLogin) => {
+       if (itemLogin.id != id) {
+           return itemLogin;
+       }
+    });
 };
 module.exports = alt.createStore(UserAbnormalLoginStore , 'UserAbnormalLoginStore');
