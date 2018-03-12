@@ -53,9 +53,10 @@ let TagEditField = React.createClass({
             stateData.disabled = nextProps.disabled;
             this.setState(stateData);
         } else {
-            let uniqLabels = _.uniq(this.state.labels, nextProps.labels);
-            //标签有变化时，更新
-            if (_.isArray(uniqLabels) && uniqLabels.length) {
+            let diff1 = _.difference(this.state.labels, nextProps.labels);
+            let diff2 = _.difference(nextProps.labels, this.state.labels);
+            //标签有变化
+            if (diff1.length || diff2.length) {
                 this.setState({labels: nextProps.labels});
             }
         }
