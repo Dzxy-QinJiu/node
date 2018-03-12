@@ -383,7 +383,7 @@ var UserTabContent = React.createClass({
                                 <input type="hidden" className="hidden_user_id" value={user_id}/>
                             </div>
                             <div className="user-list-tags">
-                                {app.create_tag && app.create_tag === "register" ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
+                                {app.create_tag && app.create_tag === "register" ? <Tag className="user-tag-style">{Intl.get("oplate.user.register.self", "自注册")}</Tag> : null}
                                 {contract_tag ? <Tag className="user-tag-style">{contract_tag}</Tag> : null}
                             </div>
                         </div>
