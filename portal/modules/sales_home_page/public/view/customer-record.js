@@ -675,13 +675,6 @@ const CustomerRecord = React.createClass({
                         </GeminiScrollbar>
                     </div>
                     <div className="show-foot">
-                        <ReactIntl.FormattedMessage
-                            id="customer.total.record"
-                            defaultMessage={`共{num}条跟进记录`}
-                            values={{
-                                'num': this.state.total
-                            }}
-                        />
                         {/*
                          底部播放器
                          */}
