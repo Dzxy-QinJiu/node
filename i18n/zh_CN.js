@@ -1770,8 +1770,8 @@ var zh_CN = {
     "customer.fail.get.customer.trace": "获取客户跟踪记录列表失败",
     "customer.fail.add.customer.trace": "增加客户跟踪记录列表失败",
     "customer.trace.content": "客户跟进记录内容不能为空",
-    "customer.input.customer.trace.content": "请填写客户跟进内容",
-    "customer.add.customer.trace.detail": "请补充客户跟进记录详情",
+    "customer.input.customer.trace.content": "请填写跟进内容，保存后不可修改",
+    "customer.add.customer.trace.detail": "请补充跟进记录详情",
     "customer.total.record": "共{num}条跟进记录",
     "customer.confirm.trace": "是否添加此跟进内容？",
     "common.visit": "拜访",
@@ -1804,7 +1804,7 @@ var zh_CN = {
     //跟踪记录
     "fail.get.customer.trace": "获取客户跟踪记录列表失败",
     "fail.add.customer.trace": "增加客户跟踪记录列表失败",
-    "add.customer.trace.detail": "请补充客户跟进记录详情",
+    "add.customer.trace.detail": "请补充跟进记录详情，保存后不可修改",
     "click.to.add.trace.detail": "请点击此处补充跟进内容",
     "contact.phone": "联系电话",
     "customer.visit": "拜访",
@@ -2001,6 +2001,11 @@ var zh_CN = {
     "sales.frontpage.has.repeat.customer": "您有重复的客户",
     "sales.frontpage.contact.customers": "建议您联系以下客户",
     "sales.frontpage.open.app": "已开通应用",
-    "sales.frontpage.expired.date": "到期情况"
+    "sales.frontpage.expired.date": "到期情况",
+    "sales.frontpage.total.list":"共{n}条",
+    "sales.frontpage.recent.record":"最近跟进",
+    "sales.frontpage.add.customer":"添加跟进记录",
+    "sales.frontpage.trace.type":"跟进类型",
+    "sales.frontpage.trace.time":"跟进时间"
 };
 export default zh_CN;

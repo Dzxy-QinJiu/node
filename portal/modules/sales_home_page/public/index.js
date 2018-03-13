@@ -11,7 +11,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import AppUserLists from "./view/app-user-lists";
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
-import CustomerRecord from "MOD_DIR/crm/public/views/customer_record";
+import CustomerRecord from "./view/customer-record";
 var Spinner = require("CMP_DIR/spinner");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
 import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
@@ -449,11 +449,12 @@ var SalesHomePage = React.createClass({
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
-        var text = "sdfsd";
         const fixedHeight = $(window).height() - 38 * 8 - 140;
+        const rightHeight = $(window).height() - 140;
         var repeatCls = classNames("reapeat-customer-header",
             {"repeat-customer-active": this.state.isShowRepeatCustomer}
         );
+        console.log(fixedHeight);
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
@@ -643,17 +644,22 @@ var SalesHomePage = React.createClass({
                                         {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
                                     </div>
                                     <div className="crm-user-content">
-                                        <GeminiScrollbar>
-                                            {this.state.selectedCustomerId ? <AppUserLists
-                                                selectedCustomerId={this.state.selectedCustomerId}
-                                                curCustomer={this.state.selectedCustomer}
-                                            /> : null}
-                                            {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
-                                                curCustomer={this.state.selectedCustomer}
-                                                refreshCustomerList={function () {
-                                                }}
-                                            /> : null}
-                                        </GeminiScrollbar>
+                                        <div style={{height: 240}}>
+                                            <GeminiScrollbar>
+                                                {this.state.selectedCustomerId ? <AppUserLists
+                                                    selectedCustomerId={this.state.selectedCustomerId}
+                                                    curCustomer={this.state.selectedCustomer}
+                                                /> : null}
+                                            </GeminiScrollbar>
+                                        </div>
+                                        <div style={{height: rightHeight - 240}}>
+                                                {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
+                                                    curCustomer={this.state.selectedCustomer}
+                                                    refreshCustomerList={function () {
+                                                    }}
+                                                /> : null}
+                                        </div>
+
                                     </div>
                                 </div>
                             }

@@ -1,5 +1,258 @@
 @import '../../../../public/css/common-variables';
-#customer-container{
-  font-size: 14px;
 
+@Icon-Purple-Color: #9C5DF5;
+@Icon-Green-Color: #5DD778;
+@Icon-Blue-Color: #8DA8C5;
+#customer-trace-container {
+  font-size: 14px;
+  .add-customer-title {
+    padding: 0 0 0 20px;
+  }
+  //添加跟进记录
+  #add-trace-container {
+    overflow: hidden;
+    border-radius: @border-radius;
+    color: #464b4e;
+    padding: 10px 36px 5px 20px;
+    width: 100%;
+    //添加跟进记录按钮
+    .add-customer-record {
+      cursor: pointer;
+      color: #90AAC6;
+    }
+    //添加跟进记录的面板
+    .add-customer-trace-wrap {
+      padding: 10px 15px;
+      background: #fff;
+      .add-customer-trace-content {
+        padding: 10px 5px;
+        .add-customer-body {
+          color: #999;
+          position: relative;
+          .add-trace-item {
+            margin-bottom: 5px;
+            overflow: hidden;
+            .add-content-input {
+              width: 100%;
+              height: 72px;
+              border-radius: @border-radius;
+              padding: 6px 9px;
+              background-color: #fff;
+              margin-left: 0;
+              outline: none;
+            }
+            .add-content-input::-webkit-input-placeholder {
+              color: #A9A9A9;
+            }
+            .right-col {
+              margin-left: 20px;
+              color: #333;
+              width: 90%;
+              position: relative;
+              .ant-radio-group {
+                .ant-radio-wrapper {
+                  font-size: 14px;
+                  font-weight: normal;
+                  .iconfont {
+                    margin-right: 5px;
+                  }
+                  .ant-radio + span {
+                    color: #eeeeee;
+                  }
+                  .ant-radio.ant-radio-checked + span {
+                    color: #333;
+                    .icon-schedule-visit {
+                      color: @Icon-Purple-Color;
+                    }
+                    .icon-schedule-other {
+                      color: @Icon-Green-Color
+                    }
+                  }
+
+                }
+              }
+              //提示内容不能为空
+              .ant-alert {
+                position: absolute;
+                z-index: 100;
+                width: 260px;
+                top: 20px;
+                left: 33%;
+                text-align: center
+              }
+            }
+
+          }
+          //增加成功或者失败后的提示
+          .resultTip {
+            .ant-alert {
+              position: absolute;
+              z-index: 100;
+              width: 260px;
+              top: 70px;
+              left: 35%;
+              text-align: center;
+            }
+            //错误提示长一些
+            .ant-alert-error {
+              width: 300px;
+              left: 30%;
+            }
+          }
+
+        }
+        .add-customer-footer {
+          overflow: hidden;
+          button {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+  #show-container {
+    position: relative;
+    .show-customer-trace {
+      .load8 {
+        position: absolute;
+        top: 30px;
+        left: 350px;
+        transform: scale(0.5, 0.5);
+        .loader8 {
+          border-left-color: #394144;
+        }
+      }
+      .time-line.group-by-day .group-day {
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+      .ant-timeline-item-head {
+        background: @Icon-Blue-Color;
+      }
+      .time-line.group-by-day .ant-timeline {
+        margin-left: 20px;
+      }
+      .ant-timeline-item-head-blue {
+        border-color: @Icon-Blue-Color;
+        color: @Icon-Blue-Color;
+      }
+      .ant-timeline-item-content {
+        dl {
+          background: #fff;
+          padding: 10px;
+          font-size: 14px;
+          dd .item-detail-tip span {
+            margin-right: 10px;
+            font-weight: 800;
+            .iconfont {
+              color: @Icon-Blue-Color;
+            }
+          }
+          .item-detail-content {
+            margin: 10px 0 10px 25px;
+            .add-detail-tip {
+              color: #82C0F9
+            }
+            .add-detail-container{
+              width: 100%;
+              padding: 0 18px 8px 0;
+              position: relative;
+              //输入内容不能为空的提示
+              .ant-alert{
+                position: absolute;
+                z-index: 100;
+                width: 250px;
+                top: 30px;
+                left: 27%;
+                text-align: center
+              }
+              //补充客户跟踪记录
+              .add-detail-content{
+                .ant-alert{
+                  position: absolute;
+                  z-index: 100;
+                  width: 250px;
+                  top: 30px;
+                  left: 27%;
+                  text-align: center
+                }
+                .add-detail-content-input{
+                  width: 100%;
+                  height: 60px;
+                  outline: none;
+                  border-radius: @border-radius;
+                  padding: 6px 9px;
+                  margin-bottom: 7px;
+                }
+
+                .add-detail-content-input::-webkit-input-placeholder{
+                  color:#A9A9A9;
+                }
+                .resultDetailTip{
+                  .ant-alert{
+                    position: absolute;
+                    z-index: 100;
+                    width: 300px;
+                    top: 55px;
+                    left: 17%;
+                    text-align: center
+                  }
+                }
+              }
+              .add-detail-foot{
+                overflow: hidden;
+                .submit-btn{
+                  margin-right: 10px;
+                }
+              }
+            }
+          }
+          dt {
+            margin: 0 20px 0 25px;
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+            overflow: hidden;
+            .audio-container {
+              display: inline-block;
+              height: 25px;
+              width: 70px;
+              padding: 0px 6px;
+              border: 1px solid #aaa;
+              border-radius: 4px;
+              text-align: center;
+              .vertical-style {
+                position: relative;
+                top: -2px;
+              }
+              .no-connected {
+                position: relative;
+                top: 3px;
+              }
+              .iconfont.icon-audio-play {
+                margin-right: 8px;
+                font-size: 16px;
+                color: @blue;
+                cursor: pointer;
+              }
+              .iconfont.icon-audio-play.play-enabled {
+                color: #aaa;
+              }
+              .iconfont.icon-audio-play.icon-selected {
+                color: #C20C0C;
+              }
+
+            }
+          }
+        }
+      }
+    }
+    //出错时的提示
+    .alert-wrap {
+      a {
+        margin: 20px 0 0 20px;
+      }
+    }
+  }
 }

@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
-var CustomerRecordActions = require("../action/customer-record-action");
+var CustomerRecordActions = require("../action/customer-record-actions");
 
 function CustomerRecordStore() {
     //初始化state数据
@@ -17,8 +17,10 @@ CustomerRecordStore.prototype.resetState = function () {
     this.addCustomerLoading = false;//正在保存增加的用户跟踪记录
     this.addCustomerErrMsg = '';//保存增加的用户跟踪记录错误
     this.addCustomerSuccMsg = '';//保存增加的用户跟踪记录成功
+
     this.selectedtracetype = 'other';//下拉框选中的类型
     this.initialType = 'other';//下拉框默认选中的类型
+
     this.total = 0;//共获取的数据总数
     this.addErrTip = '';//添加内容为空的提示
     this.inputContent = '';//输入框中的内容

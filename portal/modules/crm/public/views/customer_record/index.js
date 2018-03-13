@@ -320,7 +320,7 @@ const CustomerRecord = React.createClass({
             <div className="add-customer-trace">
                 <div className="add-content">
                     <textarea className="add-content-input" id="add-content-input" type="text"
-                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写客户跟进记录内容")}
+                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写跟进内容，保存后不可修改")}
                               onFocus={this.inputOnFocus}
                               onChange={this.handleInputChange} value={this.state.inputContent}/>
                     {this.state.addErrTip ?
@@ -410,7 +410,7 @@ const CustomerRecord = React.createClass({
                     {this.state.addDetailErrMsg ? this.handleUpdateResult() : null}
                     <textarea
                         type="text"
-                        placeholder={Intl.get("add.customer.trace.detail", "请补充客户跟进记录详情")}
+                        placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
                         onChange={this.handleAddDetailChange}
                         value={this.state.detailContent}
                         className="add-detail-content-input"

@@ -1,5 +1,5 @@
 //将后端传来的字段拼接成句子
-const processForTrace = function (item) {
+exports.processForTrace = function (item) {
     var traceObj = {
         traceDsc: "",
         iconClass: "",

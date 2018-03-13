@@ -15,7 +15,7 @@ var Option = Select.Option;
 var AlertTimer = require("CMP_DIR/alert-timer");
 import CustomerRecordActions from '../action/customer-record-actions';
 import CustomerRecordStore from '../store/customer-record-store';
-var crmUtil = require("./../../utils/crm-util");
+var crmUtil = require("../utils/crm-util");
 var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
 var Spinner = require("CMP_DIR/spinner");
 var TimeLine = require("CMP_DIR/time-line");
@@ -27,6 +27,7 @@ import ajax from "../ajax/customer-record-ajax";
 import {getInvalidPhone, addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
 import AudioPlayer from "CMP_DIR/audioPlayer";
 var classNames = require("classnames");
+import AddCustomerTrace from "./add-customer-trace-panel";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_HEIGHT_OPEN: 250,
@@ -46,6 +47,7 @@ const CustomerRecord = React.createClass({
             playingItemPhone: "",//正在听的录音所属的电话号码
             isAddingInvalidPhone: false,//正在添加无效电话
             addingInvalidPhoneErrMsg: "",//添加无效电话出错的情况
+            showAddCustomerTrace: false,//展示添加跟进记录面板
             ...CustomerRecordStore.getState()
         };
     },
@@ -208,39 +210,40 @@ const CustomerRecord = React.createClass({
             focus: false
         });
     },
+    //todo 待删除
     //提交输入客户跟踪记录成功或者失败后的提示信息
     handleSubmitResult: function () {
-        var hide = () => {
-            this.setState({
-                addCustomerErrMsg: '',
-                addCustomerSuccMsg: ''
-            });
-        };
-        if (this.state.addCustomerErrMsg) {
-            return (
-                <div className="resultTip">
-                    <AlertTimer
-                        time={2000}
-                        message={this.state.addCustomerErrMsg}
-                        type="error"
-                        showIcon
-                        onHide={hide}
-                    />
-                </div>
-            );
-        } else {
-            return (
-                <div className="resultTip">
-                    <AlertTimer
-                        time={2000}
-                        message={this.state.addCustomerSuccMsg}
-                        type="info"
-                        showIcon
-                        onHide={hide}
-                    />
-                </div>
-            );
-        }
+        // var hide = () => {
+        this.setState({
+            addCustomerErrMsg: '',
+            addCustomerSuccMsg: ''
+        });
+        // };
+        // if (this.state.addCustomerErrMsg) {
+        //     return (
+        //         <div className="resultTip">
+        //             <AlertTimer
+        //                 time={2000}
+        //                 message={this.state.addCustomerErrMsg}
+        //                 type="error"
+        //                 showIcon
+        //                 onHide={hide}
+        //             />
+        //         </div>
+        //     );
+        // } else {
+        //     return (
+        //         <div className="resultTip">
+        //             <AlertTimer
+        //                 time={2000}
+        //                 message={this.state.addCustomerSuccMsg}
+        //                 type="info"
+        //                 showIcon
+        //                 onHide={hide}
+        //             />
+        //         </div>
+        //     );
+        // }
     },
     //更新失败后的提示信息
     handleUpdateResult: function () {
@@ -309,6 +312,7 @@ const CustomerRecord = React.createClass({
             }
         }
     },
+    //todo 待删除的方法 1
     //渲染顶部增加记录的teaxare框
     addTrace: function () {
         var hide = () => {
@@ -321,7 +325,7 @@ const CustomerRecord = React.createClass({
             <div className="add-customer-trace">
                 <div className="add-content">
                     <textarea className="add-content-input" id="add-content-input" type="text"
-                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写客户跟进记录内容")}
+                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写跟进内容，保存后不可修改")}
                               onFocus={this.inputOnFocus}
                               onChange={this.handleInputChange} value={this.state.inputContent}/>
                     {this.state.addErrTip ?
@@ -370,6 +374,7 @@ const CustomerRecord = React.createClass({
             </div>
         )
     },
+    //todo 待删除的方法 end
     addDetailContent: function (item) {
         if (this.state.isEdit) {
             message.error(Intl.get("crm.save.customertrace.first", "请先保存或取消保存已编辑的跟进记录内容"));
@@ -411,7 +416,7 @@ const CustomerRecord = React.createClass({
                     {this.state.addDetailErrMsg ? this.handleUpdateResult() : null}
                     <textarea
                         type="text"
-                        placeholder={Intl.get("add.customer.trace.detail", "请补充客户跟进记录详情")}
+                        placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
                         onChange={this.handleAddDetailChange}
                         value={this.state.detailContent}
                         className="add-detail-content-input"
@@ -488,6 +493,38 @@ const CustomerRecord = React.createClass({
             playingItemPhone: ""
         });
     },
+    calculateTime: function (billsec) {
+        var secondTime = parseInt(billsec);// 秒
+        var minuteTime = 0;// 分
+        var hourTime = 0;// 小时
+        if (secondTime > 60) {//如果秒数大于60，将秒数转换成整数
+            //获取分钟，除以60取整数，得到整数分钟
+            minuteTime = parseInt(secondTime / 60);
+            //获取秒数，秒数取佘，得到整数秒数
+            secondTime = parseInt(secondTime % 60);
+            //如果分钟大于60，将分钟转换成小时
+            if (minuteTime > 60) {
+                //获取小时，获取分钟除以60，得到整数小时
+                hourTime = parseInt(minuteTime / 60);
+                //获取小时后取佘的部分，获取分钟除以60取佘的分
+                minuteTime = parseInt(minuteTime % 60);
+            }
+        }
+        var result = [];
+        if (0 < hourTime && hourTime < 10) {
+            hourTime = "0" + hourTime;
+            result.push(hourTime);
+        }
+        if (minuteTime < 10) {
+            minuteTime = "0" + minuteTime;
+        }
+        result.push(minuteTime);
+        if (secondTime < 10) {
+            secondTime = "0" + secondTime;
+        }
+        result.push(secondTime);
+        return result.join(":");
+    },
     renderTimeLineItem: function (item) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
@@ -500,14 +537,10 @@ const CustomerRecord = React.createClass({
             <dl>
                 <dd>
                     <p className="item-detail-tip">
-                        <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                        <span>{traceDsc}</span>
-                        <span className="audio-container">{
-                            /* 电话已接通并且有recording这个字段展示播放图标*/
-                            item.recording && item.billsec != 0 ?
-                                <i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                   title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i> : null
-                        }</span>
+                        <span className="icon-container" title={title}>
+                            <i className={iconClass}></i></span>
+                        <span>{item.contact_name}</span>
+                        <span>{item.dst}</span>
                     </p>
                     <div className="item-detail-content" id={item.id}>
                         {item.remark ? item.remark : ( item.showAdd ? null :
@@ -518,8 +551,21 @@ const CustomerRecord = React.createClass({
                     </div>
                 </dd>
                 <dt>
-                    <span className="sale-name">{item.nick_name}</span>
-                    {moment(item.time).format(oplateConsts.DATE_TIME_FORMAT)}
+                    <span className="audio-container">{
+                        /* 电话已接通并且有recording这个字段展示播放图标*/
+                        item.recording && item.billsec && item.billsec != 0 ?
+                            <span><i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                      title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i>
+                                <span className="vertical-style">{this.calculateTime(item.billsec)}</span> </span>
+                            : (item.billsec && item.billsec != 0 ? <span><i className="iconfont icon-audio-play play-enabled"></i>
+                            <span className="vertical-style">{this.calculateTime(item.billsec)}</span></span> :
+                            <span className="no-connected">{Intl.get("customer.no.connect", "未接通")}</span>)
+                    }
+
+                    </span>
+                    <span
+                        className="pull-right">{moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}</span>
+
                 </dt>
             </dl>
         );
@@ -565,6 +611,7 @@ const CustomerRecord = React.createClass({
             addingInvalidPhoneErrMsg: ""
         })
     },
+    //渲染跟进记录列表
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
@@ -577,10 +624,10 @@ const CustomerRecord = React.createClass({
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
             var errMsg = <span>{this.state.customerRecordErrMsg}
-                <a onClick={this.retryChangeRecord} style={{marginLeft: "20px", marginTop: "20px"}}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
+                <a onClick={this.retryChangeRecord}>
+                    {Intl.get("user.info.retry", "请重试")}
+                </a>
+            </span>;
             return (
                 <div className="alert-wrap">
                     <Alert
@@ -661,6 +708,25 @@ const CustomerRecord = React.createClass({
     hideModalDialog: function () {
         CustomerRecordActions.setModalDialogFlag(false);
     },
+    showAddCustomerTrace: function () {
+        this.setState({
+            showAddCustomerTrace: true
+        })
+    },
+    closeAddCustomerTrace: function () {
+        Trace.traceEvent($(this.getDOMNode()).find(".add-customer-trace .add-foot .cancel-btn"), "关闭添加跟进内容输入区");
+        //下拉框的默认选项为拜访
+        CustomerRecordActions.setType(this.state.initialType);
+        CustomerRecordActions.setContent(this.state.initialContent);
+        this.setState({
+            showAddCustomerTrace: false
+        })
+    },
+    afterHideErrTip: function () {
+        this.setState({
+            addErrTip: ""
+        })
+    },
     render: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
@@ -668,9 +734,33 @@ const CustomerRecord = React.createClass({
         var detail = $.trim(this.state.detailContent);
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
         return (
-            <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
-                <div className="add-container" id="add-container">
-                    {this.addTrace()}
+            <div className="customer-container" data-tracename="跟进记录页面" id="customer-trace-container">
+                <div className="add-customer-title">{Intl.get("sales.frontpage.recent.record", "最近跟进")}：</div>
+                <div className="add-container" id="add-trace-container">
+                    {this.state.showAddCustomerTrace ?
+                        <AddCustomerTrace
+                            selectedtracetype={this.state.selectedtracetype}
+                            closeAddCustomerTrace={this.closeAddCustomerTrace}
+                            handleChange={this.handleChange}
+                            handleInputChange={this.handleInputChange}
+                            showModalDialog={this.showModalDialog}
+                            addCustomerLoading={this.state.addCustomerLoading}
+                            inputContent={this.state.inputContent}
+                            addErrTip={this.state.addErrTip}
+                            addCustomerErrMsg={this.state.addCustomerErrMsg}
+                            addCustomerSuccMsg={this.state.addCustomerSuccMsg}
+                            handleSubmitResult={this.handleSubmitResult}
+                            afterHideErrTip={this.afterHideErrTip}
+                        /> : <div>
+                            <div className="add-customer-record pull-right">
+                                <i className="iconfont icon-add" onClick={this.showAddCustomerTrace}></i>
+                            </div>
+                            <div className="customer-list-total">
+                                {
+                                    Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.customerRecord.length})
+                                }</div>
+                        </div>}
+                    {/*{this.addTrace()}*/}
                 </div>
                 <div className="show-container" id="show-container">
                     {this.renderCustomerRecordLists()}
