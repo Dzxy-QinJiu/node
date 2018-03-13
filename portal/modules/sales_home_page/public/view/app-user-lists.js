@@ -6,7 +6,7 @@
 var AppUserListStore = require("../store/app-user-list-store");
 var AppUserListAction = require("../action/app-user-list-actions");
 import Spinner from 'CMP_DIR/spinner';
-import {Checkbox, Button} from "antd";
+import {Checkbox, Button, Alert} from "antd";
 const userData = require("PUB_DIR/sources/user-data");
 var classNames = require("classnames");
 import CrmUserApplyForm from "MOD_DIR//crm/public/views/order/crm-user-apply-form";
@@ -42,7 +42,7 @@ class AppUserLists extends React.Component {
     componentDidMount() {
         AppUserListStore.listen(this.onStoreChange);
         //获取某个客户下的用户列表
-        setTimeout(()=>{
+        setTimeout(() => {
             this.getCrmUserList();
         })
 
@@ -189,9 +189,11 @@ class AppUserLists extends React.Component {
                         </div>
                         <div className="crm-user-apps">
                             <Checkbox>
-                                <span className="user-app-name-title">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
+                                <span
+                                    className="user-app-name-title">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
                                 <span className="user-app-type-title">{Intl.get("user.last.login", "最近登录")}</span>
-                                <span className="user-app-over-draft-title">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
+                                <span
+                                    className="user-app-over-draft-title">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
                             </Checkbox>
                             {this.getUserAppOptions(userObj)}
                         </div>
@@ -307,7 +309,15 @@ class AppUserLists extends React.Component {
                 </div>
             )
         } else {
-            return null;
+            return (
+                <div className="show-customer-user-list">
+                    <Alert
+                        message={Intl.get("common.no.data", "暂无数据")}
+                        type="info"
+                        showIcon={true}
+                    />
+                </div>
+            );
         }
     };
 

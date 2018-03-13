@@ -2003,7 +2003,7 @@ var zh_CN = {
     "sales.frontpage.open.app": "已开通应用",
     "sales.frontpage.expired.date": "到期情况",
     "sales.frontpage.total.list":"共{n}条",
-    "sales.frontpage.recent.record":"最近跟进",
+    "sales.frontpage.recent.record":"最新跟进",
     "sales.frontpage.add.customer":"添加跟进记录",
     "sales.frontpage.trace.type":"跟进类型",
     "sales.frontpage.trace.time":"跟进时间"

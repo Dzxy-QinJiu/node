@@ -721,7 +721,7 @@ const CustomerRecord = React.createClass({
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-trace-container">
-                <div className="add-customer-title">{Intl.get("sales.frontpage.recent.record", "最近跟进")}：</div>
+                <div className="add-customer-title">{Intl.get("sales.frontpage.recent.record", "最新跟进")}：</div>
                 <div className="add-container" id="add-trace-container">
                     {this.state.showAddCustomerTrace ?
                         <AddCustomerTrace
@@ -743,7 +743,7 @@ const CustomerRecord = React.createClass({
                             </div>
                             <div className="customer-list-total">
                                 {
-                                    this.state.customerRecord.length ? Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.customerRecord.length}) : null
+                                    this.state.total ? Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.total}) : null
                                 }</div>
                         </div>}
                     {/*{this.addTrace()}*/}
