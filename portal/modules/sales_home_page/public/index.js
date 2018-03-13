@@ -359,7 +359,7 @@ var SalesHomePage = React.createClass({
                             <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
                                 <div className="item-header">
                                     <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span className="time-tip pull-right">{item.date}</span>
+                                    <span className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
                                 </div>
                                 <div className="item-content"></div>
                             </div>
@@ -382,7 +382,7 @@ var SalesHomePage = React.createClass({
                             <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
                                 <div className="item-header">
                                     <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span className="time-tip pull-right">{item.date}</span>
+                                    <span className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
                                 </div>
                                 <div className="item-content"></div>
                             </div>
