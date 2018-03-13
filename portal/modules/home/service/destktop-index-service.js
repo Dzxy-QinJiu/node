@@ -9,6 +9,7 @@ var request = require("request");
 var restLogger = require("../../../lib/utils/logger").getLogger('rest');
 var pageLogger = require("../../../lib/utils/logger").getLogger('page');
 var restUtil = require("../../../lib/rest/rest-util")(restLogger);
+var EventEmitter = require('events');
 function _getLeftMenus(req) {
     let leftMenus = new LeftMenus(req);
     return leftMenus.getLeftMenuList();
@@ -217,39 +218,60 @@ function getPrivileges(req) {
     return userPrivileges;
 }
 
+//获取数据的promise
+function getDataPromise(req, res, url, pathParams, queryObj) {
+    //url中的参数处理
+    if (pathParams) {
+        for (let key in pathParams) {
+            url += "/" + pathParams[key];
+        }
+    }
+    let resultObj = {error: null, success: null};
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: url,
+                req: req,
+                res: res
+            }, queryObj, {
+                success: function (eventEmitter, data) {
+                    resultObj.success = data;
+                    resolve(resultObj);
+                },
+                error: function (eventEmitter, errorObj) {
+                    resultObj.error = errorObj;
+                    resolve(resultObj);
+                }
+            });
+    });
+}
+
+//获取用户信息
 exports.getUserInfo = function (req, res, userId) {
+    var emitter = new EventEmitter();
     //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
     var queryObj = {with_extentions: false};
-    return restUtil.authRest.get(
-        {
-            url: userInfoRestApis.getUserInfo + "/" + userId,
-            req: req,
-            res: res
-        }, queryObj, {
-            success: function (userEventEmitter, userData) {
-                //获取详细角色信息
-                //能从中区分出销售主管、舆情秘书等细分角色
-                restUtil.authRest.get(
-                    {
-                        url: userInfoRestApis.getMemberRoles,
-                        req: req,
-                        res: res
-                    }, {}, {
-                        success: function (roleEventEmitter, roleData) {
-                            //将详细角色信息并入用户数据
-                            if (_.isObject(userData)) userData.roles = _.isArray(roleData) ? roleData : [];
-
-                            //发送用户数据
-                            userEventEmitter.emit("success", userData);
-                        },
-                        error: function () {
-                            //发送用户数据
-                            userEventEmitter.emit("success", userData);
-                        }
-                    });
-            }
-        });
+    //获取登录用户的基本信息
+    let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
+    //获取登录用户的角色信息
+    let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
+    Promise.all([getUserBasicInfo, getUserRole]).then(resultList => {
+        let userInfoResult = resultList[0] ? resultList[0] : {};
+        //成功获取用户信息
+        if (userInfoResult.success) {
+            let userData = userInfoResult.success;
+            //角色
+            userData.roles = _.isArray(resultList[1].success) ? resultList[1].success : [];
+            emitter.emit("success", userData);
+        } else if (userInfoResult.error) {//只有用户信息获取失败时，才返回失败信息
+            emitter.emit("error", userInfoResult.error);
+        }
+    }).catch(errorObj => {
+        emitter.emit("error", errorObj);
+    });
+    return emitter;
 };
+
 //邮箱激活接口，用于发邮件时，点击激活连接的跳转
 exports.activeEmail = function (req, res, activeCode) {
     return restUtil.baseRest.get(
