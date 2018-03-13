@@ -13,6 +13,7 @@ import CrmUserApplyForm from "MOD_DIR//crm/public/views/order/crm-user-apply-for
 import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
 import {RightPanel} from  "CMP_DIR/rightPanel";
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import Trace from "LIB_DIR/trace";
 //用户类型的转换对象
 const userTypeMap = {
     "正式用户": Intl.get("common.official", "签约"),
@@ -217,7 +218,7 @@ class AppUserLists extends React.Component {
         } else if (curApplyType === APPLY_TYPES.OPEN_APP) {
             traceDescr = "打开申请开通应用面板";
         }
-        // Trace.traceEvent(this.getDOMNode(), traceDescr);
+        Trace.traceEvent(ReactDOM.findDOMNode(this), traceDescr);
         this.setState({curApplyType});
     };
 

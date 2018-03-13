@@ -15,11 +15,21 @@ import CustomerRecord from "./view/customer-record";
 var Spinner = require("CMP_DIR/spinner");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
 import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
+import Trace from "LIB_DIR/trace";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
     PHONE: 'phone',
     APP: 'app'
+};
+const LAYOUT_CONSTS = {
+    COLLAPSE_PADDING_BOTTOM: 16,
+    PADDDING_TOP_AND_BOTTOM: 126,
+    EACH_PANNEL_HEIGHT: 40,
+    RIGHT_CUSTOMER_TITLE_PADDING: 10,
+    RIGHT_CUSTOMER_TITLE_HEIGHT: 40,
+    RIGHT_CUSTOMER_USER_HEIGHT:240
+
 };
 
 var SalesHomePage = React.createClass({
@@ -205,7 +215,7 @@ var SalesHomePage = React.createClass({
         } else if (this.state.scheduleTodayObj.errMsg) {
             //加载完成，出错的情况
             var errMsg = <span>{this.state.scheduleTodayObj.errMsg}
-                <a onClick={this.retryChangeRecord}>
+                <a onClick={this.getScheduleListToday}>
                         <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                         </a>
                          </span>;
@@ -235,8 +245,9 @@ var SalesHomePage = React.createClass({
                     {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId && panelType == this.state.selectedCustomerPanel}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}>
-                        <div className="item-header">
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}
+                         data-tracename="点击今日待联系的客户">
+                        <div className="item-header" data-tracename="今日待联系客户名称">
                             <span className="customer-name-container">{scheduleItem.customer_name}</span>
                             <span className="schedule-tip pull-right">
                             {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
@@ -245,7 +256,7 @@ var SalesHomePage = React.createClass({
                     </span>}
                     </span>
                         </div>
-                        <div className="item-content">
+                        <div className="item-content" data-tracename="今日待联系日程内容">
                             <p>
                                 {scheduleItem.content}
                             </p>
@@ -261,8 +272,9 @@ var SalesHomePage = React.createClass({
             var cls = classNames("list-item-wrap", {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId}
             );
             return (
-                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}>
-                    <div className="item-header">
+                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}
+                     data-tracename="点击查看今日超期日程客户详情">
+                    <div className="item-header" data-tracename="超期日程客户">
                         <span className="customer-name-container">{scheduleItem.customer_name}</span>
                         <span className="time-tip pull-right">
                             {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
@@ -271,7 +283,7 @@ var SalesHomePage = React.createClass({
                     </span>}
                     </span>
                     </div>
-                    <div className="item-content">
+                    <div className="item-content" data-tracename="超期日程内容">
                         <p>
                             {scheduleItem.content}
                         </p>
@@ -286,13 +298,13 @@ var SalesHomePage = React.createClass({
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
-                        <div className="item-header">
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
+                         data-tracename="查看停用后登录的客户">
+                        <div className="item-header" data-tracename="停用后登录客户名称">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
                                 moment(item.notice_time).fromNow()}</span>
                         </div>
-                        <div className="item-content"></div>
                     </div>
                 )
             })
@@ -304,13 +316,13 @@ var SalesHomePage = React.createClass({
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
-                        <div className="item-header">
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
+                         data-tracename="查看关注登录客户详情">
+                        <div className="item-header" data-tracename="关注客户登录">
                             <span className="customer-name-container">{item.customer_name}</span>
                             <span className="time-tip pull-right">{
                                 moment(item.notice_time).fromNow()}</span>
                         </div>
-                        <div className="item-content"></div>
                     </div>
                 )
             })
@@ -322,27 +334,11 @@ var SalesHomePage = React.createClass({
                 var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
                 );
                 return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}>
-                        <div className="item-header">
+                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
+                         data-tracename="查看最近登录客户详情">
+                        <div className="item-header" data-tracename="最近登录客户">
                             <span className="customer-name-container">{item.customer_name}</span>
                         </div>
-                        <div className="item-content"></div>
-                    </div>
-                )
-            })
-        )
-    },
-    //重复的客户
-    renderReapeatCustomer: function () {
-        return (_.map(this.state.repeatCustomerObj.data.list, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.id == this.state.selectedCustomerId}
-                );
-                return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item)}>
-                        <div className="item-header">
-                            <span className="customer-name-container">{item.name}</span>
-                        </div>
-                        <div className="item-content"></div>
                     </div>
                 )
             })
@@ -352,22 +348,22 @@ var SalesHomePage = React.createClass({
     renderWillExpiredAssignCustomer: function (panelType) {
         return (_.map(this.state.willExpiredAssignCustomer.data.list, (item) => {
                 return (
-                    _.map(item.customer_list,(customerItem)=>{
+                    _.map(item.customer_list, (customerItem) => {
                         var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
                         );
                         return (
-                            <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
-                                <div className="item-header">
+                            <div className={cls}
+                                 onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}
+                                 data-tracename="查看即将到期的签约客户详情">
+                                <div className="item-header" data-tracename="即将到期的签约客户">
                                     <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
+                                    <span
+                                        className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
                                 </div>
-                                <div className="item-content"></div>
                             </div>
                         )
                     })
                 )
-
-
             })
         )
     },
@@ -375,16 +371,18 @@ var SalesHomePage = React.createClass({
     renderWillExpiredTryCustomer: function (panelType) {
         return (_.map(this.state.willExpiredTryCustomer.data.list, (item) => {
                 return (
-                    _.map(item.customer_list,(customerItem)=>{
+                    _.map(item.customer_list, (customerItem) => {
                         var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
                         );
                         return (
-                            <div className={cls} onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}>
-                                <div className="item-header">
+                            <div className={cls}
+                                 onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}
+                                 data-tracename="查看即将到期的试用客户详情">
+                                <div className="item-header" data-tracename="即将到期的试用客户">
                                     <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
+                                    <span
+                                        className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
                                 </div>
-                                <div className="item-content"></div>
                             </div>
                         )
                     })
@@ -397,7 +395,7 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.SCHEDULE_TODAY://今日的日程列表
                 this.getScrollData(this.state.scheduleTodayObj, this.getScheduleListToday);
                 break;
-            case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日过期的日程
+            case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
                 this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
                 break;
             case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
@@ -406,8 +404,6 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
                 this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
                 break;
-            case ALL_LISTS_TYPE.REPEAT_CUSTOMER://重复客户登录
-                this.getScrollData(this.state.repeatCustomerObj, this.getRepeatCustomerList)
         }
     },
     getScrollData: function (curDataObj, getDataFunction) {
@@ -424,7 +420,7 @@ var SalesHomePage = React.createClass({
 
     //点击收起面板
     handleClickCollapse: function (argument) {
-        console.log(argument);
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-collapse-header"), "打开不同类型客户面板");
         if (argument) {
             this.setState({
                 listenScrollBottom: true,
@@ -445,21 +441,65 @@ var SalesHomePage = React.createClass({
             isShowRepeatCustomer: true,
         });
     },
+    //渲染消息列表
+    renderCustomerNoticeMessage: function () {
+        return (
+            <div>sdkfhsdkf</div>
+        )
+    },
+    //渲染用户列表和跟进记录
+    renderAppUserLists: function () {
+        var rightHeight = "";
+        if (this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name) {
+            rightHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_HEIGHT;
+        } else {
+            rightHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_PADDING;
+        }
+        return (
+            <div>
+                <div className="customer-header-panel">
+                    {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
+                </div>
+                <div className="crm-user-content">
+                    <div className="crm-user-left col-md-8 col-sm-12">
+                        <div style={{height: LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}}>
+                            <GeminiScrollbar>
+                                {this.state.selectedCustomerId ? <AppUserLists
+                                    selectedCustomerId={this.state.selectedCustomerId}
+                                    curCustomer={this.state.selectedCustomer}
+                                /> : null}
+                            </GeminiScrollbar>
+                        </div>
+                        <div style={{height: rightHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}}>
+                            {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
+                                curCustomer={this.state.selectedCustomer}
+                                refreshCustomerList={function () {
+                                }}
+                                wrapHeight={rightHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}
+                            /> : null}
+                        </div>
+                    </div>
+                    <div className="crm-user-right col-md-4 col-sm-12">
+
+                    </div>
+                </div>
+            </div>
+        )
+    },
 
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
-        const fixedHeight = $(window).height() - 38 * 8 - 140;
-        const rightHeight = $(window).height() - 140;
+        const fixedHeight = $(window).height() - LAYOUT_CONSTS.EACH_PANNEL_HEIGHT * this.state.showCollapsPanelCount - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
+        const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
         var repeatCls = classNames("reapeat-customer-header",
             {"repeat-customer-active": this.state.isShowRepeatCustomer}
         );
-        console.log(fixedHeight);
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
                     <TopNav>
-                        <div className="top_nav_content">
+                        <div className="top_nav_content" data-tracename="顶部区域">
                             <ul>
                                 <li>
                                     <div className="statistic-total-content">
@@ -516,13 +556,17 @@ var SalesHomePage = React.createClass({
                         </div>
                     </TopNav>
                     <div className="main-content-container">
-                        <div className="col-md-4 customer-list-left">
+                        <div className="col-md-4 customer-list-left" data-tracename="左侧不同类型客户列表">
                             <Collapse accordion defaultActiveKey={['1']}
                                       activeKey={[this.state.showCollapsePanel]}
-                                      onChange={this.handleClickCollapse}>
+                                      onChange={this.handleClickCollapse}
+                                      data-tracename="点击左侧列表不同种类的标题栏"
+                            >
                                 <Panel header={<span>{Intl.get("sales.frontpage.will.contact.today", "今日待联系")}<span
                                     className="panel-header-count">{this.state.scheduleTodayObj.data.total}</span></span>}
-                                       key="1">
+                                       key="1"
+                                       data-tracename="今日待联系日程"
+                                >
                                     <div className="today-schedule-container items-customer-container"
                                          style={{height: fixedHeight}}
                                     >
@@ -625,7 +669,8 @@ var SalesHomePage = React.createClass({
                                         </div>
                                     </Panel> : null}
                             </Collapse>
-                            <div className={repeatCls} onClick={this.handleShowRepeatCustomer}>
+                            <div className={repeatCls} onClick={this.handleShowRepeatCustomer}
+                                 data-tracename="点击查看重复客户">
                                     <span>
                                         <span>{Intl.get("sales.frontpage.has.repeat.customer", "您有重复的客户")}</span>
                                         <span
@@ -633,35 +678,14 @@ var SalesHomePage = React.createClass({
                                     </span>
                             </div>
                         </div>
-                        <div className="col-md-8 customer-content-right">
+                        <div className="col-md-8 customer-content-right" data-tracename="右侧客户详情区域"
+                             style={{height: rightContentHeight}}>
                             {/*右侧根据左边不同的panel的类别，右侧展示不同的面板
                              * 重复客户类型  --- 展示重复客户列表
                              * 停用后登录，关注客户登录 --- 展示系统消息
                              * 其他的 --- 展示用户列表和跟进记录*/}
                             {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
-                                <div>
-                                    <div className="customer-header-panel">
-                                        {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
-                                    </div>
-                                    <div className="crm-user-content">
-                                        <div style={{height: 240}}>
-                                            <GeminiScrollbar>
-                                                {this.state.selectedCustomerId ? <AppUserLists
-                                                    selectedCustomerId={this.state.selectedCustomerId}
-                                                    curCustomer={this.state.selectedCustomer}
-                                                /> : null}
-                                            </GeminiScrollbar>
-                                        </div>
-                                        <div style={{height: rightHeight - 240}}>
-                                                {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
-                                                    curCustomer={this.state.selectedCustomer}
-                                                    refreshCustomerList={function () {
-                                                    }}
-                                                /> : null}
-                                        </div>
-
-                                    </div>
-                                </div>
+                                this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : this.renderAppUserLists()
                             }
                         </div>
                     </div>

@@ -30,10 +30,7 @@ var classNames = require("classnames");
 import AddCustomerTrace from "./add-customer-trace-panel";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_HEIGHT_OPEN: 250,
-    TOP_HEIGHT_CLOSE: 178,
-    BOTTOM_HEIGHT: 40,
-    TOP_NAV: 92
+    CUSTOMER_RECORD_HEIGHT: 55
 };
 
 const CustomerRecord = React.createClass({
@@ -555,9 +552,10 @@ const CustomerRecord = React.createClass({
                         /* 电话已接通并且有recording这个字段展示播放图标*/
                         item.recording && item.billsec && item.billsec != 0 ?
                             <span><i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                      title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i>
+                                     title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i>
                                 <span className="vertical-style">{this.calculateTime(item.billsec)}</span> </span>
-                            : (item.billsec && item.billsec != 0 ? <span><i className="iconfont icon-audio-play play-enabled"></i>
+                            : (item.billsec && item.billsec != 0 ?
+                            <span><i className="iconfont icon-audio-play play-enabled"></i>
                             <span className="vertical-style">{this.calculateTime(item.billsec)}</span></span> :
                             <span className="no-connected">{Intl.get("customer.no.connect", "未接通")}</span>)
                     }
@@ -649,18 +647,13 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         } else {
-            var divHeight = '';
-            if (this.state.focus) {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_OPEN - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
-            } else {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_CLOSE - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
-            }
+            var divHeight = this.props.wrapHeight - LAYOUT_CONSTANTS.CUSTOMER_RECORD_HEIGHT;
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
-                    <div className="show-content" style={{'height': divHeight}}>
+                    <div className="show-content" style={{height: divHeight}}>
                         <GeminiScrollbar
                             handleScrollBottom={this.handleScrollBarBottom}
                             listenScrollBottom={this.state.listenScrollBottom}
@@ -750,7 +743,7 @@ const CustomerRecord = React.createClass({
                             </div>
                             <div className="customer-list-total">
                                 {
-                                    Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.customerRecord.length})
+                                    this.state.customerRecord.length ? Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.customerRecord.length}) : null
                                 }</div>
                         </div>}
                     {/*{this.addTrace()}*/}

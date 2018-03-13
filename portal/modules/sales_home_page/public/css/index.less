@@ -72,227 +72,231 @@
           //  }
           //}
         }
-        .app-user-list {
-          overflow: hidden;
+        .crm-user-left{
+          .app-user-list {
+            overflow: hidden;
 
-          //客户开通用户的列表
-          .crm-user-list-container {
-            float: left;
-            padding: 10px;
-            font-size: 14px;
-            color: #333;
-            //用户数
-            .user-number {
-              position: relative;
+            //客户开通用户的列表
+            .crm-user-list-container {
               float: left;
-              width: 100%;
-              line-height: 28px;
-              .crm-user-apply-label {
-                float: left;
-                margin-right: 10px;
-              }
-              .crm-user-apply-btns {
-                float: right;
-                margin-right: 20px;
-                .ant-btn {
-                  float: left;
-                  padding: 2px 10px;
-                  margin-right: 7px;
-                  cursor: pointer;
-                  color: #595959;
-                  border-radius: 3px;
-                  display: inline-block;
-                }
-                button.ant-btn-primary {
-                  color: #fff;
-                  background-color: #4d96d1;
-                }
-              }
-            }
-            //申请处理的form表单
-            .crm-user-apply-form-container {
-              &:extend(.item-block-style);
-              margin-top: 30px;
-              form {
-                padding: 20px 0 10px 5px;
-                .ant-form-item {
-                  width: 100%;
-                  .ant-select {
-                    vertical-align: top;
-                  }
-                  .ant-radio-group {
-                    height: 32px;
-                    line-height: 32px;
-                  }
-                  .ant-input-number-input, .ant-calendar-picker-input {
-                    width: 100%;
-                  }
-                }
-              }
-              .indicator {
-                float: right;
-                margin-right: 20px;
-                .alert-timer {
-                  .ant-alert {
-                    position: relative;
-                    left: 0;
-                    top: 0;
-                    width: auto;
-                    padding-right: 15px;
-                  }
-                }
-              }
-              .pull-right {
+              padding: 10px;
+              font-size: 14px;
+              color: #333;
+              //用户数
+              .user-number {
                 position: relative;
-                text-align: right;
-                width: 100%;
-                margin-right: 30px;
-                padding-bottom: 20px;
-                button {
-                  float:right;
-                  margin: 0 10px 0 0;
-                }
-              }
-            }
-
-            //用户列表
-            .crm-user-list {
-              position: relative;
-              float: left;
-              width: 100%;
-              margin-top:10px;
-              .get-crm-users-error-tip {
-                .ant-alert {
-                  left: 20%;
-                  width: auto;
-                }
-              }
-              //加载数据的等待效果
-              .load8 {
-                margin: 50px 0 0 300px;
-                transform: scale(0.5, 0.5);
-                .loader8 {
-                  border-left-color: #394144;
-                }
-              }
-              .crm-user-item {
-                &:extend(.item-block-style);
-                padding: 10px 10px 10px 5px;
                 float: left;
-                width: 480px;
-                margin:0 5px 5px 0;
-                background: #fff;
-                label.ant-checkbox-wrapper {
-                  font-size: 14px;
-                  font-weight: normal;
-                  padding-left: 10px;
-                  margin: 0;
+                width: 100%;
+                line-height: 28px;
+                .crm-user-apply-label {
+                  float: left;
+                  margin-right: 10px;
                 }
-                //用户名
-                .crm-user-name {
-
-                  //label {
-                  //  font-weight: bold;
-                  //}
-                  .crm-username {
-
+                .crm-user-apply-btns {
+                  float: right;
+                  margin-right: 20px;
+                  .ant-btn {
+                    float: left;
+                    padding: 2px 10px;
+                    margin-right: 7px;
+                    cursor: pointer;
+                    color: #595959;
+                    border-radius: 3px;
+                    display: inline-block;
                   }
-                  .crm-nickname {
-                    color: #999;
+                  button.ant-btn-primary {
+                    color: #fff;
+                    background-color: #4d96d1;
                   }
                 }
-                //应用列表
-                .crm-user-apps {
-                  border: 1px solid #eeeeee;
-                  label.ant-checkbox-wrapper:first-child {
-                    background: #eee;
-                    font-size: 12px;
-                    color: #999;
-                  }
-                  label {
+              }
+              //申请处理的form表单
+              .crm-user-apply-form-container {
+                &:extend(.item-block-style);
+                margin-top: 30px;
+                form {
+                  padding: 20px 0 10px 5px;
+                  .ant-form-item {
                     width: 100%;
-                    padding-top: 5px;
-                    .ant-checkbox-input {
-                      height: auto;
+                    .ant-select {
+                      vertical-align: top;
                     }
-                    //应用名首字母生成的Logo
-                    .crm-user-app-logo-font {
-                      color: #fff;
-                      background-color: #b8d3ea;
-                      text-align: center;
-                      height: 20px;
-                      line-height: 20px;
-                      width: 20px;
-                      margin-right: 10px;
-                      display: inline-block;
+                    .ant-radio-group {
+                      height: 32px;
+                      line-height: 32px;
                     }
-                    .crm-user-app-logo {
-                      text-align: center;
-                      height: 20px;
-                      width: 20px;
-                      margin-right: 10px;
-                      margin-top: -3px;
+                    .ant-input-number-input, .ant-calendar-picker-input {
+                      width: 100%;
                     }
-                    .user-app-name {
-                      display: inline-block;
-                      width: 150px;
-                      margin-right: 20px;
-                      white-space: nowrap;
-                      text-overflow: ellipsis;
-                      overflow: hidden;
-                      word-wrap: normal;
-                      vertical-align: middle;
+                  }
+                }
+                .indicator {
+                  float: right;
+                  margin-right: 20px;
+                  .alert-timer {
+                    .ant-alert {
+                      position: relative;
+                      left: 0;
+                      top: 0;
+                      width: auto;
+                      padding-right: 15px;
                     }
-                    .user-app-type {
-                      display: inline-block;
-                      width: 60px;
-                      text-align: center;
+                  }
+                }
+                .pull-right {
+                  position: relative;
+                  text-align: right;
+                  width: 100%;
+                  margin-right: 30px;
+                  padding-bottom: 20px;
+                  button {
+                    float:right;
+                    margin: 0 10px 0 0;
+                  }
+                }
+              }
+
+              //用户列表
+              .crm-user-list {
+                position: relative;
+                float: left;
+                width: 100%;
+                margin-top:10px;
+                .get-crm-users-error-tip {
+                  .ant-alert {
+                    left: 20%;
+                    width: auto;
+                  }
+                }
+                //加载数据的等待效果
+                .load8 {
+                  margin: 50px 0 0 300px;
+                  transform: scale(0.5, 0.5);
+                  .loader8 {
+                    border-left-color: #394144;
+                  }
+                }
+                .crm-user-item {
+                  &:extend(.item-block-style);
+                  padding: 10px 10px 10px 5px;
+                  float: left;
+                  width: 480px;
+                  margin:0 5px 5px 0;
+                  background: #fff;
+                  label.ant-checkbox-wrapper {
+                    font-size: 14px;
+                    font-weight: normal;
+                    padding-left: 10px;
+                    margin: 0;
+                  }
+                  //用户名
+                  .crm-user-name {
+
+                    //label {
+                    //  font-weight: bold;
+                    //}
+                    .crm-username {
+
                     }
-                    .user-app-over-draft {
-                      display: inline-block;
-                      width: 140px;
-                      padding-left: 20px;
-                      white-space: nowrap;
-                      text-overflow: ellipsis;
-                      overflow: hidden;
-                      word-wrap: normal;
-                      vertical-align: middle;
+                    .crm-nickname {
+                      color: #999;
                     }
-                    .user-app-name-title {
-                      display: inline-block;
-                      width: 160px;
-                      margin-right: 20px;
+                  }
+                  //应用列表
+                  .crm-user-apps {
+                    border: 1px solid #eeeeee;
+                    label.ant-checkbox-wrapper:first-child {
+                      background: #eee;
+                      font-size: 12px;
+                      color: #999;
                     }
-                    .user-app-type-title {
-                      display: inline-block;
-                      width: 80px;
-                      text-align: center;
-                    }
-                    .user-app-over-draft-title {
-                      display: inline-block;
-                      width: 140px;
-                      padding-left: 20px;
-                    }
-                    .user-app-stopped-status {
-                      color: #F41919;
+                    label {
+                      width: 100%;
+                      padding-top: 5px;
+                      .ant-checkbox-input {
+                        height: auto;
+                      }
+                      //应用名首字母生成的Logo
+                      .crm-user-app-logo-font {
+                        color: #fff;
+                        background-color: #b8d3ea;
+                        text-align: center;
+                        height: 20px;
+                        line-height: 20px;
+                        width: 20px;
+                        margin-right: 10px;
+                        display: inline-block;
+                      }
+                      .crm-user-app-logo {
+                        text-align: center;
+                        height: 20px;
+                        width: 20px;
+                        margin-right: 10px;
+                        margin-top: -3px;
+                      }
+                      .user-app-name {
+                        display: inline-block;
+                        width: 150px;
+                        margin-right: 20px;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        word-wrap: normal;
+                        vertical-align: middle;
+                      }
+                      .user-app-type {
+                        display: inline-block;
+                        width: 60px;
+                        text-align: center;
+                      }
+                      .user-app-over-draft {
+                        display: inline-block;
+                        width: 140px;
+                        padding-left: 20px;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        word-wrap: normal;
+                        vertical-align: middle;
+                      }
+                      .user-app-name-title {
+                        display: inline-block;
+                        width: 160px;
+                        margin-right: 20px;
+                      }
+                      .user-app-type-title {
+                        display: inline-block;
+                        width: 80px;
+                        text-align: center;
+                      }
+                      .user-app-over-draft-title {
+                        display: inline-block;
+                        width: 140px;
+                        padding-left: 20px;
+                      }
+                      .user-app-stopped-status {
+                        color: #F41919;
+                      }
                     }
                   }
                 }
               }
+
             }
-
           }
-        }
-        .customer-container {
-          //background-color: #e6edef!important;
-        }
+          .customer-container {
+            //background-color: #e6edef!important;
+          }
+          //客户开通用户的申请面板
+          .crm_user_apply_panel {
+            width: 700px;
+            transform: translate(700px, 0);
+          }
 
-        //客户开通用户的申请面板
-        .crm_user_apply_panel {
-          width: 700px;
-          transform: translate(700px, 0);
         }
+        .crm-user-right{
 
+        }
       }
 
     }
@@ -360,7 +364,6 @@
     }
     .items-customer-container {
       min-height: 10px;
-      max-height: 326px;
     }
     .customer-name-container {
       font-size: 16px;
