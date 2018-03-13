@@ -23,12 +23,11 @@ const CALL_TYPE_OPTION = {
     APP: 'app'
 };
 const LAYOUT_CONSTS = {
-    COLLAPSE_PADDING_BOTTOM: 16,
     PADDDING_TOP_AND_BOTTOM: 126,
-    EACH_PANNEL_HEIGHT: 42,
-    RIGHT_CUSTOMER_TITLE_PADDING: 10,
+    EACH_PANNEL_HEIGHT: 39,
     RIGHT_CUSTOMER_TITLE_HEIGHT: 40,
-    RIGHT_CUSTOMER_USER_HEIGHT:240
+    RIGHT_CUSTOMER_USER_HEIGHT: 240,
+    EACH_PANNEL_BORDER_WIDTH:1
 };
 
 var SalesHomePage = React.createClass({
@@ -447,18 +446,20 @@ var SalesHomePage = React.createClass({
         )
     },
     //渲染用户列表和跟进记录
-    renderAppUserLists: function () {
+    renderAppUserLists: function (rightContentHeight) {
         var rightHeight = "";
         if (this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name) {
-            rightHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_HEIGHT;
+            rightHeight = rightContentHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_HEIGHT;
         } else {
-            rightHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_PADDING;
+            rightHeight = rightContentHeight
         }
         return (
             <div>
-                <div className="customer-header-panel">
-                    {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
-                </div>
+                {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name ?
+                    <div className="customer-header-panel">
+                        {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
+                    </div> : null}
+
                 <div className="crm-user-content">
                     <div className="crm-user-left col-md-8 col-sm-12">
                         <div style={{height: LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}}>
@@ -489,8 +490,8 @@ var SalesHomePage = React.createClass({
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
-        const fixedHeight = $(window).height() - LAYOUT_CONSTS.EACH_PANNEL_HEIGHT * this.state.showCollapsPanelCount - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
-        const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
+        const fixedHeight = $(window).height() - LAYOUT_CONSTS.EACH_PANNEL_HEIGHT * this.state.showCollapsPanelCount - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM + 1 * LAYOUT_CONSTS.EACH_PANNEL_BORDER_WIDTH;
+        const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM + 4 * LAYOUT_CONSTS.EACH_PANNEL_BORDER_WIDTH;
         var repeatCls = classNames("reapeat-customer-header",
             {"repeat-customer-active": this.state.isShowRepeatCustomer}
         );
@@ -684,7 +685,7 @@ var SalesHomePage = React.createClass({
                              * 停用后登录，关注客户登录 --- 展示系统消息
                              * 其他的 --- 展示用户列表和跟进记录*/}
                             {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
-                                this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : this.renderAppUserLists()
+                                this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : this.renderAppUserLists(rightContentHeight)
                             }
                         </div>
                     </div>
