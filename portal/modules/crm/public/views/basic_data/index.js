@@ -22,15 +22,27 @@ import BasicEditInputField from "CMP_DIR/basic-edit-field/input";
 import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
 import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
-import classNames from "classnames";
-
+import userData from "PUB_DIR/sources/user-data";
+//是否是普通销售{userId:"",isCommon:false}
+let isCommonSalesObj = {};
+//获取是否是普通销售
+function getIsCommonSales() {
+    let userId = userData.getUserData().user_id;
+    if (isCommonSalesObj.userId && isCommonSalesObj.userId === userId) {
+        return isCommonSalesObj.isCommon;
+    } else {
+        //是否是普通销售，默认是，普通销售不展示转出按钮
+        return true;
+    }
+}
 function getStateFromStore(isMerge) {
     return {
         basicIsLoading: CRMStore.getBasicState(),
         basicData: _.extend({}, CRMStore.getBasicInfo()),
         editShowFlag: false,
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
-        basicPanelH: getBasicPanelH(isMerge)
+        basicPanelH: getBasicPanelH(isMerge),
+        isCommonSales: getIsCommonSales()//是否是普通销售，默认是，普通销售不展示转出按钮
     };
 }
 function getBasicPanelH(isMerge) {
@@ -54,6 +66,8 @@ var BasicData = React.createClass({
         this.autoLayout();
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
+        //是否是普通销售的处理
+        this.handleIsCommonSalesman();
     },
     autoLayout: function () {
         var _this = this;
@@ -139,6 +153,70 @@ var BasicData = React.createClass({
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
     },
+    //是否是普通销售的处理
+    handleIsCommonSalesman: function () {
+        let userId = userData.getUserData().user_id;
+        //已赋值过是否是普通销售
+        if (isCommonSalesObj.userId) {
+            //当前用户跟之前用户不是一个时，先清空再重新赋值(超时在弹窗中重新登录后，会出现此种情况)
+            if (isCommonSalesObj.userId != userId) {
+                isCommonSalesObj = {};
+                this.setState({isCommonSales: getIsCommonSales()});
+                // 是否是普通销售的判断及设置
+                this.setIsCommonSalesman(userId);
+            }
+        } else {
+            //第一次赋值
+            this.setIsCommonSalesman(userId);
+        }
+    },
+    // 是否是普通销售的判断及设置
+    setIsCommonSalesman: function (userId) {
+        //有获取所有团队数据的权限（即：管理员或运营人员）
+        if (hasPrivilege("GET_TEAM_LIST_ALL")) {
+            isCommonSalesObj.userId = userId;
+            isCommonSalesObj.isCommon = false;
+            this.setState({isCommonSales: false});
+        } else {//销售（即：销售主管、销售总监或普通销售）
+            //获取销售所在团队及下级团队
+            CrmBasicAjax.getMyTeamWithSubteams().then(treeList => {
+                //是否是普通销售的判断（所在团队无下级团队，并且不是销售主管、舆情秘书的即为：普通销售）
+                if (_.isArray(treeList) && treeList[0]) {
+                    let isCommonSales = false;
+                    let myTeam = treeList[0];//销售所在团队
+                    // 销售所在团队是否有子团队
+                    let hasChildGroups = _.isArray(myTeam.child_groups) && myTeam.child_groups.length > 0 ? true : false;
+                    //没有下级团队时
+                    if (!hasChildGroups) {
+                        //是否是销售主管的判断
+                        let isOwner = myTeam.owner_id && myTeam.owner_id == userId ? true : false;
+                        //当前销售是团队的舆情秘书
+                        let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) != -1 ? true : false;
+                        //不是销售主管也不是舆情秘书的即为普通销售
+                        if (!isOwner && !isManager) {
+                            isCommonSales = true;
+                        }
+                    }
+                    isCommonSalesObj.userId = userId;
+                    isCommonSalesObj.isCommon = isCommonSales;
+                    this.setState({isCommonSales: isCommonSales});
+                }
+            });
+        }
+    },
+    //是否有转出客户的权限
+    enableTransferCustomer: function () {
+        let enable = false;
+        //管理员有转出的权限
+        if (hasPrivilege("CRM_MANAGER_TRANSFER")) {
+            enable = true;
+        } else if (hasPrivilege("CRM_USER_TRANSFER") && !this.state.isCommonSales) {
+            //销售主管有转出的权限
+            enable = true;
+        }
+        return enable;
+    },
+
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否显示用户统计内容
@@ -281,8 +359,8 @@ var BasicData = React.createClass({
 
                                 </div>
                                 <SalesSelectField
-                                    disabled={hasPrivilege("CUSTOMER_UPDATE_SALES") ? false : true}
-                                    transferDisabled={hasPrivilege("CRM_USER_TRANSFER") || hasPrivilege("CRM_MANAGER_TRANSFER") ? false : true}
+                                    enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
+                                    enableTransfer={this.enableTransferCustomer()}
                                     isMerge={this.props.isMerge}
                                     updateMergeCustomer={this.props.updateMergeCustomer}
                                     customerId={basicData.id}

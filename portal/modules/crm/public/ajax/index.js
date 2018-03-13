@@ -330,3 +330,28 @@ exports.getCrmUserList = function (reqData) {
     });
     return Deferred.promise();
 };
+//获取所在团队及下级团队列表
+let salesTeamListAjax;
+exports.getMyTeamWithSubteams = function () {
+    let type = "self";//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
+    if (hasPrivilege("GET_TEAM_LIST_ALL")) {
+        type = "all";
+    }
+    salesTeamListAjax && salesTeamListAjax.abort();
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: "/rest/crm/sales_team_tree",
+        dataType: 'json',
+        type: 'get',
+        data: {type: type},
+        success: function (treeList) {
+            Deferred.resolve(treeList);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
