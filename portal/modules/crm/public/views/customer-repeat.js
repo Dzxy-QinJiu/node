@@ -344,14 +344,14 @@ let CustomerRepeat = React.createClass({
         let tableData = this.state.repeatCustomerList;
         const total = Intl.get("crm.14", "共{count}条记录", {count: this.state.repeatCustomersSize});
         return (<div className="customer-repeat-container" data-tracename="客户查重页面">
-            <TopNav>
+            {!this.props.noNeedClose ?   <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
                     this.returnCustomerList(e)
                 }}>
                     <span className="iconfont icon-return-btn"/>
                     <span className="return-btn-font">{Intl.get("crm.52", "返回")}</span>
                 </div>
-            </TopNav>
+            </TopNav>: null}
             <div className="content-block customer-repeat-table splice-table">
                 <div className="repeat-customer-table-thead" ref="thead">
                     {this.renderRepeatCustomerHead()}

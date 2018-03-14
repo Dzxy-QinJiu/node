@@ -1,206 +1,113 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
-var userData = require("../../../../public/sources/user-data");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
-var _ = require("underscore");
+var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitter;
 
 function SalesHomeActions() {
     this.generateActions(
-        'setListIsLoading',//设置是否正在加载数据列表
-        'setActiveView',//设置当前要展示的视图
-        'changeSearchTime',//搜索时间的切换
-        'selectSalesTeam',//选择要展示的销售团队
-        'selectSalesman',//选择要展示的销售人员
-        'returnSalesTeamList',//返回销售团队列表
-        'returnSalesMemberList',//返回销售成员列表
-        'getExpireUser',//获取过期用户列表
-        'getWebsiteConfig',//获取网站个性化设置
-        'setWebsiteConfig',//对网站进行个性化设置
         'setInitState',//设置初始化数据
-        'updateSalesTeamMembersObj'//修改团队成员列表中的信息（销售角色）
+        'setSelectedCustomer',//设置选中的客户
     );
-
-    //获取当前登录销售的角色（销售/经理/总监）
-    this.getSalesType = function () {
-        var _this = this;
-        salesHomeAjax.getSalesType().then(function (list) {
-                _this.dispatch(list);
-                if (list.indexOf('sales') >= 0) {
-                    //TODO 普通销售：sales
-                } else if (list.indexOf('salesleader') >= 0 || list.indexOf('salesseniorleader') >= 0) {//基层领导：salesleader，高层领导：salesseniorleader
-                    //获取销售(团队)-客户列表
-                    _this.actions.getSalesCustomerList();
-                    //获取销售(团队)-电话列表
-                    _this.actions.getSalesPhoneList();
-                    //获取销售(团队)-用户列表
-                    _this.actions.getSalesUserList();
-                    //获取销售(团队)-合同列表
-                    _this.actions.getSalesContractList();
-                }
-            }, function (errorMsg) {
-                _this.dispatch(errorMsg);
-            }
-        );
-    };
-    //获取销售团队列表
-    this.getSalesTeamList = function (type) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getSalesTeamList(type).then(function (resData) {
-            _this.dispatch({loading: false, error: false, resData: resData, type: type});
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-    //获取各销售对应的通话状态
-    this.getSalesCallStatus = function (userIds) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getSalesCallStatus(userIds).then(function (resData) {
-            _this.dispatch({loading: false, error: false, resData: resData});
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-    //获取某销售团队的成员列表
-    this.getSalesTeamMembers = function (teamId) {
-        var _this = this;
-        if (_this.dispatched) {
-            _this.dispatch({loading: true, error: false});
-        }
-        salesHomeAjax.getSalesTeamMembers(teamId).then(function (resData) {
-            _this.dispatch({loading: false, error: false, resData: resData});
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-
-    //获取客户统计总数
-    this.getCustomerTotal = function (reqData) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getCustomerTotal(reqData).then(function (resData) {
-            _this.dispatch({loading: false, error: false, resData: resData});
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-
-    //获取客户统计总数
-    this.getUserTotal = function (reqData) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getUserTotal(reqData).then(function (resData) {
-            _this.dispatch({loading: false, error: false, resData: resData});
-        }, function (errorMsg) {
-            _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
-    };
-
-    //获取销售-客户列表
-    this.getSalesCustomerList = function (timeRange) {
-        var _this = this;
-        salesHomeAjax.getSalesCustomerList(timeRange).then(function (data) {
-                _this.dispatch(data);
-            }, function (errorMsg) {
-                _this.dispatch(errorMsg);
-            }
-        );
-    };
-    //获取销售-电话列表
-    this.getSalesPhoneList = function (reqData) {
-        var _this = this;
+    this.getphoneTotal = function (reqData) {
         let type = 'manager';
         if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
             type = 'user';
         }
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getSalesPhoneList(reqData, type).then(function (resData) {
-                _this.dispatch({loading: false, error: false, resData: resData});
-            }, function (errorMsg) {
-                _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            }
-        );
-    };
-    //获取销售-用户列表
-    this.getSalesUserList = function (timeRange) {
-        var _this = this;
-        salesHomeAjax.getSalesUserList(timeRange).then(function (data) {
-                _this.dispatch(data);
-            }, function (errorMsg) {
-                _this.dispatch(errorMsg);
-            }
-        );
-    };
-    //获取销售-合同列表
-    this.getSalesContractList = function (timeRange) {
-        var _this = this;
-        salesHomeAjax.getSalesContractList(timeRange).then(function (data) {
-                _this.dispatch(data);
-            }, function (errorMsg) {
-                _this.dispatch(errorMsg);
-            }
-        );
-    };
-    //获取过期用户列表
-    this.getExpireUser = function (queryObj) {
-        var _this = this;
-        _this.dispatch({loading: true, error: false});
-        salesHomeAjax.getExpireUser(queryObj).then(function (resData) {
-                _this.dispatch({loading: false, error: false, resData: resData});
-            }, function (errorMsg) {
-                _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            }
-        );
-    };
-    //获取用户信息
-    this.getUserInfo = function () {
-        var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
-            this.dispatch(userInfo);
-        });
-    };
-    //邮箱激活
-    this.activeUserEmail = function (callback) {
-        salesHomeAjax.activeUserEmail().then(function (data) {
-            if (callback) {
-                if (data) {
-                    callback({error: false, data: data});
-                } else {
-                    callback({error: true, errorMsg: Intl.get("user.info.active.user.email.failed","激活失败")});
-                }
-            }
-        }, function (errorMsg) {
-            if (callback) {
-                callback({error: true, errorMsg: errorMsg || Intl.get("user.info.active.user.email.failed","激活失败")});
-            }
-        });
-    };
-    //获取是否已经设置过邮箱不再提醒
-    this.getWebsiteConfig = function () {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getWebsiteConfig().then((resData) => {
+        salesHomeAjax.getphoneTotal(reqData, type).then((resData) => {
                 this.dispatch({loading: false, error: false, resData: resData});
-            },(errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
             }
         );
-
     };
-    //设置邮箱激活不再提醒
-    this.setWebsiteConfig = function (queryObj,callback) {
+    //获取客户统计总数
+    this.getCustomerTotal = function (reqData) {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.setWebsiteConfig(queryObj).then((resData) => {
-                if (callback && _.isFunction(callback)){
-                    callback();
-                }
-            },(errorMsg) => {
-            if (callback && _.isFunction(callback)){
-                callback(errorMsg || Intl.get("failed.set.no.email.tip","设置不再提示邮箱激活提醒失败"));
-            }
-            }
-        );
+        salesHomeAjax.getCustomerTotal(reqData).then((resData) => {
+            this.dispatch({loading: false, error: false, resData: resData});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
+    //获取最近联系的客户
+    this.getTodayContactCustomer = function (rangParams, pageSize, sorter) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getTodayContactCustomer(rangParams, pageSize, sorter).then((result) => {
+            this.dispatch({loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
 
-    }
+    //获取日程管理列表
+    this.getScheduleList = function (queryObj, type) {
+        //左侧过期未完成的日程数据
+        this.dispatch({error: false, loading: true});
+        salesHomeAjax.getScheduleList(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({type: type, error: false, loading: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({
+                type: type,
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get("schedule.get.schedule.list.failed", "获取日程管理列表失败")
+            });
+        });
+    };
+    //获取最近登录的客户
+    this.getRecentLoginCustomer = function (queryObj) {
+        this.dispatch({loading: true, error: false});
+        //获取客户的详情
+        salesHomeAjax.getRecentLoginCustomer(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
+    //获取即将到期的客户
+    this.getWillExpireCustomer = function (queryObj) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getWillExpireCustomer(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({type: queryObj.tags, loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({type: queryObj.tags, loading: false, error: true, errMsg: errorMsg});
+        });
+    };
+    //获取最近登陆的客户数量
+    this.getRecentLoginCustomerCount = function (queryObj) {
+        //获取客户的数量
+        salesHomeAjax.getRecentLoginCustomersCount(queryObj).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
+    //获取关注客户登录，停用客户登录等系统消息
+    this.getSystemNotices = function (queryObj, status, type) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getSystemNotices(queryObj, status).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({type: type, loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({type: type, loading: false, error: true, errMsg: errorMsg});
+        });
+    };
+    //获取重复客户列表
+    this.getRepeatCustomerList = function (queryParams) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getRepeatCustomerList(queryParams).then((result) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({loading: false, error: false, resData: result});
+        }, (errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg || Intl.get("crm.188", "获取重复客户列表失败!")});
+        });
+    };
+
+
 }
 
 module.exports = alt.createActions(SalesHomeActions);

@@ -1,20 +1,15 @@
-let teamAjax = require("../../../common/public/ajax/team");
-/**
- * 获取销售是什么角色
- * 普通销售：sales
- * 基层领导：salesleader
- * 高层领导：salesseniorleader
- * 舆情秘书：salesmanager
- * @param callback
- */
-exports.getSalesType = function () {
+//获取今日电话统计数据
+var getphoneTotalAjax;
+exports.getphoneTotal = function (reqData, type) {
+    getphoneTotalAjax && getphoneTotalAjax.abort();
     var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/group_position',
+    getphoneTotalAjax = $.ajax({
+        url: '/rest/sales/phone/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (list) {
-            Deferred.resolve(list);
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
         },
         error: function (errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
@@ -22,69 +17,6 @@ exports.getSalesType = function () {
     });
     return Deferred.promise();
 };
-
-//获取销售团队列表
-var salesTeamListAjax;
-exports.getSalesTeamList = function (type) {
-    salesTeamListAjax && salesTeamListAjax.abort();
-    var Deferred = $.Deferred();
-    salesTeamListAjax = $.ajax({
-        url: '/rest/crm/sales_team_tree',
-        dataType: 'json',
-        type: 'get',
-        data: {type: type},
-        success: function (resData) {
-            Deferred.resolve(resData);
-        },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-//获取销售对应的通话状态
-let salesCallStatusAjax;
-exports.getSalesCallStatus = function (userIds) {
-    salesCallStatusAjax && salesCallStatusAjax.abort();
-    var Deferred = $.Deferred();
-    salesCallStatusAjax = $.ajax({
-        url: '/rest/sales/call_status',
-        dataType: 'json',
-        type: 'get',
-        data: {user_ids: userIds},
-        success: function (resData) {
-            Deferred.resolve(resData);
-        },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-//获取某销售团队成员列表
-var salesTeamMembersAjax;
-exports.getSalesTeamMembers = function (teamId) {
-    salesTeamMembersAjax && salesTeamMembersAjax.abort();
-    var Deferred = $.Deferred();
-    salesTeamMembersAjax = teamAjax.getMemberListByTeamIdAjax().resolvePath({
-        group_id: teamId
-    }).sendRequest({
-        filter_manager: true,//过滤掉舆情秘书
-        with_teamrole: true
-    }).success(function (list) {
-        Deferred.resolve(list);
-    }).error(function (xhr, statusText) {
-        if (statusText !== 'abort') {
-            Deferred.reject(xhr.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 //获取客户统计总数
 var customerTotalAjax;
 exports.getCustomerTotal = function (reqData) {
@@ -107,99 +39,6 @@ exports.getCustomerTotal = function (reqData) {
     });
     return Deferred.promise();
 };
-
-//获取用户统计总数
-var userTotalAjax;
-exports.getUserTotal = function (reqData) {
-    userTotalAjax && userTotalAjax.abort();
-    reqData = reqData || {};
-    var Deferred = $.Deferred();
-    userTotalAjax = $.ajax({
-        url: '/rest/analysis/user/summary',
-        dataType: 'json',
-        type: 'get',
-        data: reqData,
-        success: function (resData) {
-            Deferred.resolve(resData);
-        },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
-//获取销售-客户列表
-exports.getSalesCustomerList = function (timeRange) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales/customer',
-        dataType: 'json',
-        type: 'get',
-        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取销售-电话列表
-exports.getSalesPhoneList = function (reqData, type) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales/phone/' + type,
-        dataType: 'json',
-        type: 'get',
-        data: reqData,
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取销售-用户列表
-exports.getSalesUserList = function (timeRange) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales/user',
-        dataType: 'json',
-        type: 'get',
-        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//获取销售-合同列表
-exports.getSalesContractList = function (timeRange) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/sales/contract',
-        dataType: 'json',
-        type: 'get',
-        data: {start_time: new Date(timeRange.start_time), end_time: new Date(timeRange.end_time)},
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 /**
  * 过期用户列表
  */
@@ -221,71 +60,182 @@ exports.getExpireUser = function (queryObj) {
     });
     return Deferred.promise();
 };
-//获取用户信息
-exports.getUserInfo = function (userId) {
+//查询最近联系的客户列表
+var getTodayContactCustomerAjax = null;
+exports.getTodayContactCustomer = function (rangParams, pageSize, sorter) {
+    pageSize = pageSize || 10;
+    sorter = sorter ? sorter : {field: "id", order: "ascend"};
     var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user_info/' + userId,
-        dataType: 'json',
-        type: 'get',
-        success: function (usrInfo) {
-            Deferred.resolve(usrInfo);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    })
-    ;
-    return Deferred.promise();
-};
-exports.activeUserEmail = function () {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user_email/active',
+    var data = {
+        rangParams: JSON.stringify(rangParams),
+    };
+    getTodayContactCustomerAjax = $.ajax({
+        url: '/rest/contact_customer/' + pageSize + "/" + sorter.field + "/" + sorter.order,
         dataType: 'json',
         type: 'post',
-        success: function (data) {
-            Deferred.resolve(data);
+        data: data,
+        success: function (list) {
+            Deferred.resolve(list);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61", "获取客户列表失败"));
+            }
         }
     });
     return Deferred.promise();
 };
-//获取网站的个性化设置
-exports.getWebsiteConfig = function () {
+//获取日程列表
+var getTodayScheduleListAjax = null;
+exports.getScheduleList = function (queryObj) {
     var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/getWebsiteConfig',
+    getTodayScheduleListAjax = $.ajax({
+        url: '/rest/get/schedule/list',
         dataType: 'json',
         type: 'get',
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-//对网站进行个性化设置
-var setWebSiteConfigAjax;
-exports.setWebsiteConfig = function (queryObj) {
-    var Deferred = $.Deferred();
-    setWebSiteConfigAjax && setWebSiteConfigAjax.abort();
-    setWebSiteConfigAjax = $.ajax({
-        url: '/rest/setWebsiteConfig',
-        dataType: 'json',
-        type: 'post',
         data: queryObj,
-        success: function (data) {
-            Deferred.resolve(data);
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("errorcode.61", "获取客户列表失败"));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//最近登录的客户
+import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
+var type = commonMethodUtil.getPrivilegeType();
+//查询最近登录的客户列表
+exports.getRecentLoginCustomer = function (data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get_recent_login_customer/' + type,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function (list) {
+            Deferred.resolve(list);
         },
         error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
+        }
+    });
+    return Deferred.promise();
+};
+//获取系统通知
+exports.getSystemNotices = function (queryObj, status) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/notification/system/${status}`,
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (error, errorText) {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON || Intl.get("notification.system.notice.failed", "获取系统消息列表失败"));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//查询最近登录的客户数量
+exports.getRecentLoginCustomersCount= function (data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get_recent_login_customer_count/'+ type,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
         }
     });
     return Deferred.promise();
 };
 
+//获取重复的客户列表
+exports.getRepeatCustomerList = function (queryParams) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/repeat_customer',
+        dataType: 'json',
+        type: 'get',
+        data: queryParams,
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取某个客户下的用户列表
+let crmUserListAjax;
+exports.getCrmUserList = function (reqData) {
+    crmUserListAjax&&crmUserListAjax.abort();
+    let Deferred = $.Deferred();
+    crmUserListAjax= $.ajax({
+        url: '/rest/crm/user_list',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr , textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//获取即将到期的客户
+exports.getWillExpireCustomer= function (data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get_will_expire_customer/'+ type,
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
+        }
+    });
+    return Deferred.promise();
+};
+//系统消息
+let handleSystemNoticeAjax;
+exports.handleSystemNotice =  function (noticeId) {
+    if (handleSystemNoticeAjax) {
+        handleSystemNoticeAjax.abort();
+    }
+    var Deferred = $.Deferred();
+    handleSystemNoticeAjax = $.ajax({
+        url: `/rest/notification/system/handle/${noticeId}`,
+        dataType: 'json',
+        type: 'put',
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (error, errorText) {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON );
+            }
+        }
+    });
+    return Deferred.promise();
+};

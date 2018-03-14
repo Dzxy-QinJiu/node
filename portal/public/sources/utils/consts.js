@@ -106,3 +106,17 @@ export const COLOR_LIST = [
     "#9e9e9e",
     "#607d8b"
 ];
+//不同列表的类型
+export const ALL_LISTS_TYPE = {
+    SCHEDULE_TODAY: "schedule_today",//今日计划联系日程列表
+    WILL_EXPIRED_SCHEDULE_TODAY: "will_expired_schedule_today",//今日到期的日程
+    APP_ILLEAGE_LOGIN: "appIllegal",// 停用后登录
+    CONCERNED_CUSTOMER_LOGIN: "concerCustomerLogin",//关注客户登录
+    REPEAT_CUSTOMER: "repeat_customer",//重复客户
+    WILL_EXPIRED_ASSIGN_CUSTOMER: "will_expired_assign_customer",//即将到期的签约用户
+    WILL_EXPIRED_TRY_CUSTOMER: "will_expired_try_customer",//即将到期的试用用户
+    RECENT_LOGIN_CUSTOMER: "recent_login_customer",//最近登录的客户
+};
+//处理 或者未处理
+//不同列表的类型
+export const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
