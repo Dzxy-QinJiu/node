@@ -15,6 +15,7 @@ var ApplyUserForm = require("./apply-user-form");
 var CustomerRecord = require("./customer_record");
 var crmAjax = require("../ajax");
 import Trace from "LIB_DIR/trace";
+import {tabNameList} from "../utils/crm-util";
 
 var CrmRightPanel = React.createClass({
     getInitialState: function () {
@@ -93,14 +94,6 @@ var CrmRightPanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function (key) {
-        var tabNameList = {
-          "1":"基本资料",
-          "2":"联系人",
-          "3":"订单",
-          "4":"动态",
-          "5":"联系计划",
-          "6":"跟进记录" ,
-        };
         Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"),"查看" + tabNameList[key]);
         this.setState({
             activeKey: key
