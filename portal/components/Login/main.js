@@ -21,6 +21,7 @@ const VIEWS = {
     LOGIN: "login",
     FORGOT_PASSWORD: "forgot_password",
 };
+const USER_LANG_KEY = "userLang";//存储用户语言环境的key
 
 class LoginMain extends React.Component {
     constructor(props) {
@@ -93,10 +94,29 @@ class LoginMain extends React.Component {
 
     //展示界面
     show(captcha) {
-        this.setState({
-            showUi: true,
-            captcha: captcha ? captcha : this.state.captcha
-        });
+        //todo 待统一处理localStorage
+        var lang = localStorage.getItem(USER_LANG_KEY);
+        //之前设置过语言，且没有默认语言设置时,使用设置的语言，重新渲染界面（后端渲染部分）
+        if (lang && !Oplate.lang) {
+            window.location.href = "/login?lang=" + lang;
+        } else {
+            this.setState({
+                showUi: true,
+                captcha: captcha ? captcha : this.state.captcha
+            });
+        }
+    }
+
+    //改变语言环境
+    changeLang(lang) {
+        //todo 待统一处理localStorage
+        localStorage.setItem(USER_LANG_KEY, lang);
+    }
+
+    //从本地缓存获取语言环境
+    getLang() {
+        //todo 待统一处理localStorage
+        return localStorage.getItem(USER_LANG_KEY) || (window.Oplate && window.Oplate.lang) || "zh_CN";
     }
 
     handleTabChange(activeKey) {
@@ -199,8 +219,9 @@ class LoginMain extends React.Component {
         } else {
             const hasWindow = !(typeof window === "undefined");
 
+            const userLang = this.getLang();
             function getLangClassName(lang) {
-                const isSelected = hasWindow && Oplate.lang === lang || false;
+                const isSelected = hasWindow && userLang === lang || false;
                 return classnames("lang-btn", {"lang-selected": isSelected});
             }
             return (
@@ -212,6 +233,7 @@ class LoginMain extends React.Component {
                                 <span>{Intl.get("common.user.lang", "语言")}：</span>
                                 {LANGUAGES.map(lang => {
                                     return <span><a href={`/login?lang=${lang.code}`}
+                                                    onClick={this.changeLang.bind(this, lang.code)}
                                                     className={getLangClassName(lang.code)}>{lang.name}</a></span>
                                 })}
                             </div>
@@ -258,9 +280,10 @@ class LoginMain extends React.Component {
                                     </div>) : this.state.QRCodeErrorMsg ? (
                                         <div className="qrcode-tip-layer">
                                             <div className="qrcode-tip-content">
-                                                <Icon type="exclamation-circle" /><br/>
+                                                <Icon type="exclamation-circle"/><br/>
                                                 <span className="error-text">{this.state.QRCodeErrorMsg}</span><br/>
-                                                <Button onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get("errorcode.147", "二维码已失效") ?
+                                                <Button
+                                                    onClick={this.getLoginQRCode.bind(this)}>{this.state.QRCodeErrorMsg === Intl.get("errorcode.147", "二维码已失效") ?
                                                     Intl.get("common.refresh", "刷新") : Intl.get("common.get.again", "重新获取")}</Button>
                                             </div>
                                         </div>) : null}

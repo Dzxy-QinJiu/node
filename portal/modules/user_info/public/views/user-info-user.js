@@ -291,7 +291,9 @@ var UserInfo = React.createClass({
     cancelEditLang: function () {
         this.setState({lang: Oplate.lang || "zh_CN"});
     },
-    afterEditLangSuccess: function () {
+    afterEditLangSuccess: function (user) {
+        //todo 待统一处理localStorage
+        localStorage.setItem("userLang",user["language"]);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
     },
