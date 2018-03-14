@@ -16,6 +16,7 @@ var Spinner = require("CMP_DIR/spinner");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
 import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
 import Trace from "LIB_DIR/trace";
+import CustomerNoticeMessage from "./view/customer-notice-message";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -23,11 +24,12 @@ const CALL_TYPE_OPTION = {
     APP: 'app'
 };
 const LAYOUT_CONSTS = {
-    PADDDING_TOP_AND_BOTTOM: 126,
+    PADDDING_TOP_AND_BOTTOM: 97,
     EACH_PANNEL_HEIGHT: 39,
     RIGHT_CUSTOMER_TITLE_HEIGHT: 40,
     RIGHT_CUSTOMER_USER_HEIGHT: 240,
-    EACH_PANNEL_BORDER_WIDTH:1
+    RIGHT_NOTICE_MESSAGE_HEIGHT:100,
+    EACH_PANNEL_BORDER_WIDTH: 1
 };
 
 var SalesHomePage = React.createClass({
@@ -127,7 +129,7 @@ var SalesHomePage = React.createClass({
     //停用客户登录
     getAppIlleageLogin: function (lastId) {
         let noticeQueryObj = {
-            notice_type: "appIllegal",
+            notice_type: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN,
             page_size: this.state.page_size,//默认不传是5
         };
         if (lastId) {
@@ -139,7 +141,7 @@ var SalesHomePage = React.createClass({
     //关注客户登录
     getConcernedLogin: function (lastId) {
         let noticeQueryObj = {
-            notice_type: "concerCustomerLogin",
+            notice_type: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN,
             page_size: this.state.page_size,//默认不传是5
         };
         if (lastId) {
@@ -442,16 +444,30 @@ var SalesHomePage = React.createClass({
     //渲染消息列表
     renderCustomerNoticeMessage: function () {
         return (
-            <div>sdkfhsdkf</div>
+            <CustomerNoticeMessage
+                curCustomer={this.state.selectedCustomer}
+            />
         )
     },
-    //渲染用户列表和跟进记录
-    renderAppUserLists: function (rightContentHeight) {
+    //渲染右侧客户详情
+    renderCustomerContentDetail: function (rightContentHeight) {
         var rightHeight = "";
         if (this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name) {
             rightHeight = rightContentHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_HEIGHT;
         } else {
             rightHeight = rightContentHeight
+        }
+        var userLeftTopHeight = "";
+        if (this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN){
+            userLeftTopHeight = LAYOUT_CONSTS.RIGHT_NOTICE_MESSAGE_HEIGHT;
+        }else{
+            userLeftTopHeight = LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT;
+        }
+        {/*右侧左上角根据左边不同的panel的类别，展示不同的面板
+         * 重复客户类型  --- 展示重复客户列表
+         * 停用后登录，关注客户登录 --- 展示系统消息
+         * 其他的 --- 展示用户列表
+         * 右上角的联系人和左下角的跟进记录是一直保留的*/
         }
         return (
             <div>
@@ -459,27 +475,31 @@ var SalesHomePage = React.createClass({
                     <div className="customer-header-panel">
                         {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
                     </div> : null}
-
                 <div className="crm-user-content">
-                    <div className="crm-user-left col-md-8 col-sm-12">
-                        <div style={{height: LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}}>
+                    <div className="crm-user-left col-md-7 col-sm-12">
+                        {/*用户列表和系统消息
+                         关注客户和停用客户登录展示系统消息
+                         */}
+                        <div className="user-list-container" style={{height: userLeftTopHeight}}>
                             <GeminiScrollbar>
-                                {this.state.selectedCustomerId ? <AppUserLists
-                                    selectedCustomerId={this.state.selectedCustomerId}
-                                    curCustomer={this.state.selectedCustomer}
-                                /> : null}
+                                {this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : (this.state.selectedCustomerId ?
+                                    <AppUserLists
+                                        selectedCustomerId={this.state.selectedCustomerId}
+                                        curCustomer={this.state.selectedCustomer}
+                                    /> : null)}
                             </GeminiScrollbar>
                         </div>
-                        <div style={{height: rightHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}}>
+                        {/*跟进记录*/}
+                        <div className="record-trace-container" style={{height: rightHeight - userLeftTopHeight}}>
                             {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
                                 curCustomer={this.state.selectedCustomer}
                                 refreshCustomerList={function () {
                                 }}
-                                wrapHeight={rightHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT}
+                                wrapHeight={rightHeight - userLeftTopHeight}
                             /> : null}
                         </div>
                     </div>
-                    <div className="crm-user-right col-md-4 col-sm-12">
+                    <div className="crm-user-right col-md-5 col-sm-12">
 
                     </div>
                 </div>
@@ -680,12 +700,8 @@ var SalesHomePage = React.createClass({
                         </div>
                         <div className="col-md-8 customer-content-right" data-tracename="右侧客户详情区域"
                              style={{height: rightContentHeight}}>
-                            {/*右侧根据左边不同的panel的类别，右侧展示不同的面板
-                             * 重复客户类型  --- 展示重复客户列表
-                             * 停用后登录，关注客户登录 --- 展示系统消息
-                             * 其他的 --- 展示用户列表和跟进记录*/}
                             {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
-                                this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : this.renderAppUserLists(rightContentHeight)
+                                this.renderCustomerContentDetail(rightContentHeight)
                             }
                         </div>
                     </div>

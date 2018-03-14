@@ -217,4 +217,25 @@ exports.getWillExpireCustomer= function (data) {
     });
     return Deferred.promise();
 };
-
+//系统消息
+let handleSystemNoticeAjax;
+exports.handleSystemNotice =  function (noticeId) {
+    if (handleSystemNoticeAjax) {
+        handleSystemNoticeAjax.abort();
+    }
+    var Deferred = $.Deferred();
+    handleSystemNoticeAjax = $.ajax({
+        url: `/rest/notification/system/handle/${noticeId}`,
+        dataType: 'json',
+        type: 'put',
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (error, errorText) {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON );
+            }
+        }
+    });
+    return Deferred.promise();
+};

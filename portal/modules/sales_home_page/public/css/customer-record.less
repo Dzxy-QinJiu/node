@@ -5,16 +5,13 @@
 @Icon-Blue-Color: #8DA8C5;
 #customer-trace-container {
   font-size: 14px;
-  .add-customer-title {
-    padding: 0 0 0 20px;
-  }
   //添加跟进记录
   #add-trace-container {
     overflow: hidden;
     border-radius: @border-radius;
     color: #464b4e;
-    padding: 10px 0 5px 20px;
-    width: 100%;
+    padding: 0 0 5px 0;
+    width: 98%;
     //添加跟进记录按钮
     .add-customer-record {
       cursor: pointer;
@@ -47,7 +44,7 @@
             .right-col {
               margin-left: 20px;
               color: #333;
-              width: 85%;
+              width: 84%;
               position: relative;
               .ant-radio-group {
                 .ant-radio-wrapper {
@@ -103,7 +100,8 @@
         }
         .add-customer-footer {
           overflow: hidden;
-          button {
+          padding-right: 4px;
+          .submit-btn {
             margin-right: 10px;
           }
         }
@@ -123,7 +121,7 @@
           border-left-color: #394144;
         }
       }
-      .ant-alert{
+      .ant-alert {
         position: absolute;
         z-index: 100;
         width: 180px;
@@ -140,7 +138,7 @@
         background: @Icon-Blue-Color;
       }
       .time-line.group-by-day .ant-timeline {
-        margin-left: 20px;
+        margin-left: 0;
       }
       .ant-timeline-item-head-blue {
         border-color: @Icon-Blue-Color;
@@ -151,6 +149,7 @@
           background: #fff;
           padding: 10px;
           font-size: 14px;
+          width: 98%;
           dd .item-detail-tip span {
             margin-right: 10px;
             font-weight: 800;
@@ -163,12 +162,12 @@
             .add-detail-tip {
               color: #82C0F9
             }
-            .add-detail-container{
+            .add-detail-container {
               width: 100%;
               padding: 0 18px 8px 0;
               position: relative;
               //输入内容不能为空的提示
-              .ant-alert{
+              .ant-alert {
                 position: absolute;
                 z-index: 100;
                 width: 250px;
@@ -177,8 +176,8 @@
                 text-align: center
               }
               //补充客户跟踪记录
-              .add-detail-content{
-                .ant-alert{
+              .add-detail-content {
+                .ant-alert {
                   position: absolute;
                   z-index: 100;
                   width: 250px;
@@ -186,7 +185,7 @@
                   left: 27%;
                   text-align: center
                 }
-                .add-detail-content-input{
+                .add-detail-content-input {
                   width: 100%;
                   height: 60px;
                   outline: none;
@@ -195,11 +194,11 @@
                   margin-bottom: 7px;
                 }
 
-                .add-detail-content-input::-webkit-input-placeholder{
-                  color:#A9A9A9;
+                .add-detail-content-input::-webkit-input-placeholder {
+                  color: #A9A9A9;
                 }
-                .resultDetailTip{
-                  .ant-alert{
+                .resultDetailTip {
+                  .ant-alert {
                     position: absolute;
                     z-index: 100;
                     width: 300px;
@@ -209,9 +208,10 @@
                   }
                 }
               }
-              .add-detail-foot{
+              .add-detail-foot {
                 overflow: hidden;
-                .submit-btn{
+                padding-right: 1px;
+                .submit-btn {
                   margin-right: 10px;
                 }
               }
@@ -263,7 +263,7 @@
         margin: 20px 0 0 20px;
       }
     }
-    .show-foot{
+    .show-foot {
       overflow: hidden;
       //底部录音播放状态的组件展示样式
       .audio-play-container {
@@ -275,14 +275,14 @@
         border-radius: 4px;
         background: #FAFAFA;
         width: 322px;
-        >div{
+        > div {
           background: #FAFAFA;
         }
-        .icon-close{
+        .icon-close {
           cursor: pointer;
         }
       }
-      .audio-play-container.is-playing-audio{
+      .audio-play-container.is-playing-audio {
         height: 36px;
       }
 

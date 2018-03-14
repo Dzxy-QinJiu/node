@@ -200,8 +200,17 @@ class AppUserLists extends React.Component {
                     </div>
                 );
             });
+        }else{
+            return  (
+                <div className="show-customer-user-list">
+                    <Alert
+                        message={Intl.get("common.no.data", "暂无数据")}
+                        type="info"
+                        showIcon={true}
+                    />
+                </div>
+            )
         }
-        return null;
     };
 
     getApplyBtnType = (curApplyType) => {
@@ -309,15 +318,7 @@ class AppUserLists extends React.Component {
                 </div>
             )
         } else {
-            return (
-                <div className="show-customer-user-list">
-                    <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
+            return null;
         }
     };
 

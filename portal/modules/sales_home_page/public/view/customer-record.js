@@ -45,6 +45,7 @@ const CustomerRecord = React.createClass({
             isAddingInvalidPhone: false,//正在添加无效电话
             addingInvalidPhoneErrMsg: "",//添加无效电话出错的情况
             showAddCustomerTrace: false,//展示添加跟进记录面板
+            wrapHeight: this.props.wrapHeight,
             ...CustomerRecordStore.getState()
         };
     },
@@ -142,6 +143,11 @@ const CustomerRecord = React.createClass({
                         this.getCustomerTraceList();
                     }, 10);
                 });
+            })
+        }
+        if (nextProps.wrapHeight !== this.state.wrapHeight) {
+            this.setState({
+                wrapHeight: nextProps.wrapHeight
             })
         }
     },
@@ -647,7 +653,8 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         } else {
-            var divHeight = this.props.wrapHeight - LAYOUT_CONSTANTS.CUSTOMER_RECORD_HEIGHT;
+            var divHeight = this.state.wrapHeight - LAYOUT_CONSTANTS.CUSTOMER_RECORD_HEIGHT;
+            console.log(this.props.wrapHeight);
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
