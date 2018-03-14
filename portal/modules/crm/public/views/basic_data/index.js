@@ -27,11 +27,10 @@ import userData from "PUB_DIR/sources/user-data";
 let isCommonSalesObj = {};
 //获取是否是普通销售
 function getIsCommonSales() {
-    let userId = userData.getUserData().user_id;
-    if (isCommonSalesObj.userId && isCommonSalesObj.userId === userId) {
-        return isCommonSalesObj.isCommon;
-    } else {
-        //是否是普通销售，默认是，普通销售不展示转出按钮
+    let userObj = userData.getUserData();
+    if("isCommonSales" in userObj){
+        return userObj.isCommonSales;
+    } else{//是否是普通销售，默认是，普通销售不展示转出按钮
         return true;
     }
 }
@@ -153,36 +152,23 @@ var BasicData = React.createClass({
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
     },
+
     //是否是普通销售的处理
     handleIsCommonSalesman: function () {
-        let userId = userData.getUserData().user_id;
-        //已赋值过是否是普通销售
-        if (isCommonSalesObj.userId) {
-            //当前用户跟之前用户不是一个时，先清空再重新赋值(超时在弹窗中重新登录后，会出现此种情况)
-            if (isCommonSalesObj.userId != userId) {
-                isCommonSalesObj = {};
-                this.setState({isCommonSales: getIsCommonSales()});
-                // 是否是普通销售的判断及设置
-                this.setIsCommonSalesman(userId);
-            }
-        } else {
-            //第一次赋值
-            this.setIsCommonSalesman(userId);
-        }
-    },
-    // 是否是普通销售的判断及设置
-    setIsCommonSalesman: function (userId) {
+        let userObj = userData.getUserData();
+        let userId = userObj.user_id;
+        //赋值过是否是普通销售
+        if("isCommonSales" in userObj) return;
         //有获取所有团队数据的权限（即：管理员或运营人员）
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-            isCommonSalesObj.userId = userId;
-            isCommonSalesObj.isCommon = false;
+            userObj.isCommonSales = false;
             this.setState({isCommonSales: false});
         } else {//销售（即：销售主管、销售总监或普通销售）
             //获取销售所在团队及下级团队
             CrmBasicAjax.getMyTeamWithSubteams().then(treeList => {
+                let isCommonSales = false;
                 //是否是普通销售的判断（所在团队无下级团队，并且不是销售主管、舆情秘书的即为：普通销售）
                 if (_.isArray(treeList) && treeList[0]) {
-                    let isCommonSales = false;
                     let myTeam = treeList[0];//销售所在团队
                     // 销售所在团队是否有子团队
                     let hasChildGroups = _.isArray(myTeam.child_groups) && myTeam.child_groups.length > 0 ? true : false;
@@ -197,10 +183,9 @@ var BasicData = React.createClass({
                             isCommonSales = true;
                         }
                     }
-                    isCommonSalesObj.userId = userId;
-                    isCommonSalesObj.isCommon = isCommonSales;
-                    this.setState({isCommonSales: isCommonSales});
                 }
+                userObj.isCommonSales = isCommonSales;
+                this.setState({isCommonSales: isCommonSales});
             });
         }
     },
