@@ -14,6 +14,9 @@ const Local = {
         //如果设置了语言，以设置为准
         if (typeof Oplate == "object" && Oplate.lang) {
             lang = Oplate.lang;
+        } else if (typeof localStorage == "object") {
+            //todo 待统一处理localStorage
+            lang = localStorage.getItem("userLang");
         }
         return lang || defaultLanguage;
     },
