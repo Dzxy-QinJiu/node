@@ -97,4 +97,14 @@ exports.CUSTOMER_TAGS={
     SIGN_QUALIFIED: Intl.get("common.official.qualified", "签约合格"),
     HISTORY_QUALIFIED: Intl.get("common.history.qualified", "曾经合格"),
 };
+//tab页上对应的描述
+var tabNameList = {
+    "1":"基本资料",
+    "2":"联系人",
+    "3":"订单",
+    "4":"动态",
+    "5":"联系计划",
+    "6":"跟进记录" ,
+};
+exports.tabNameList = tabNameList;
 

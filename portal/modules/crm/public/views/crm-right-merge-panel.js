@@ -15,6 +15,7 @@ var CustomerRecord = require("./customer_record");
 var CustomerRepeatAction = require("../action/customer-repeat-action");
 import Trace from "LIB_DIR/trace";
 import ajax from "../ajax/index";
+import {tabNameList} from "../utils/crm-util";
 
 var CrmRightMergePanel = React.createClass({
     getInitialState: function () {
@@ -240,7 +241,7 @@ var CrmRightMergePanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function (key) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "点击第" + key + "个tab页");
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "查看" + tabNameList[key]);
         this.setState({
             activeKey: key
         });
