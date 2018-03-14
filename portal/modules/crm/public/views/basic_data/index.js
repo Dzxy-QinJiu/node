@@ -23,8 +23,7 @@ import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
 import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
-//是否是普通销售{userId:"",isCommon:false}
-let isCommonSalesObj = {};
+
 //获取是否是普通销售
 function getIsCommonSales() {
     let userObj = userData.getUserData();
