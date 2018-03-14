@@ -315,75 +315,12 @@ const CustomerRecord = React.createClass({
             }
         }
     },
-    //todo 待删除的方法 1
-    //渲染顶部增加记录的teaxare框
-    addTrace: function () {
-        var hide = () => {
-            this.setState({
-                addErrTip: '',
-            });
-        };
-        //增加跟进记录
-        return (
-            <div className="add-customer-trace">
-                <div className="add-content">
-                    <textarea className="add-content-input" id="add-content-input" type="text"
-                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写跟进内容，保存后不可修改")}
-                              onFocus={this.inputOnFocus}
-                              onChange={this.handleInputChange} value={this.state.inputContent}/>
-                    {this.state.addErrTip ?
-                        <AlertTimer
-                            time={2000}
-                            message={this.state.addErrTip}
-                            type="error"
-                            showIcon
-                            onHide={hide}
-                        />
-                        : null
-                    }
-                </div>
-                {this.state.focus ? (<div className="add-foot">
-                    <Button
-                        type="ghost"
-                        onClick={this.handleCancel}
-                        className="pull-right btn-primary-cancel cancel-btn"
-                    >
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={this.showModalDialog}
-                        className="pull-right btn-primary-sure submit-btn"
-                    >
-                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                        {this.state.addCustomerLoading ?
-                            <Icon type="loading"/> : <span></span>}
-                    </Button>
-                    {this.state.addCustomerErrMsg || this.state.addCustomerSuccMsg ? this.handleSubmitResult() : null}
-                    <Select
-                        style={{width: 90}}
-                        onChange={this.handleChange}
-                        className="pull-left"
-                        value={this.state.selectedtracetype}
-                    >
-                        <Option value="visit">
-                            <ReactIntl.FormattedMessage id="common.visit" defaultMessage="拜访"/>
-                        </Option>
-                        <Option value="other">
-                            <ReactIntl.FormattedMessage id="common.others" defaultMessage="其他"/>
-                        </Option>
-                    </Select>
-                </div>) : null}
-            </div>
-        )
-    },
-    //todo 待删除的方法 end
     addDetailContent: function (item) {
         if (this.state.isEdit) {
             message.error(Intl.get("crm.save.customertrace.first", "请先保存或取消保存已编辑的跟进记录内容"));
             return;
         }
-        Trace.traceEvent($(this.getDOMNode()).find(".show-container .item-detail-content .add-detail-tip"), "点击补充跟进内容区域");
+        Trace.traceEvent($(this.getDOMNode()).find(".show-container .item-detail-content .add-detail-tip"), "补充跟进内容");
         item.showAdd = true;
         this.setState({
             customerRecord: this.state.customerRecord,
@@ -482,7 +419,7 @@ const CustomerRecord = React.createClass({
     },
     //关闭音频播放按钮
     closeAudioPlayContainer: function (e) {
-        Trace.traceEvent(e, '关闭播放器按钮');
+        Trace.traceEvent(e, '关闭录音');
         //找到当前正在播放的那条记录
         var oldSelected = _.find(this.state.customerRecord, function (item) {
             return item.playSelected;
@@ -558,7 +495,7 @@ const CustomerRecord = React.createClass({
                         /* 电话已接通并且有recording这个字段展示播放图标*/
                         item.recording && item.billsec && item.billsec != 0 ?
                             <span><i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                     title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i>
+                                     title={Intl.get("call.record.play", "播放录音")} data-tracename="播放录音"></i>
                                 <span className="vertical-style">{this.calculateTime(item.billsec)}</span> </span>
                             : (item.billsec && item.billsec != 0 ?
                             <span><i className="iconfont icon-audio-play play-enabled"></i>
@@ -654,7 +591,6 @@ const CustomerRecord = React.createClass({
             );
         } else {
             var divHeight = this.state.wrapHeight - LAYOUT_CONSTANTS.CUSTOMER_RECORD_HEIGHT;
-            console.log(this.props.wrapHeight);
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
@@ -753,7 +689,6 @@ const CustomerRecord = React.createClass({
                                     this.state.total ? Intl.get("sales.frontpage.total.list", "共{n}条", {n: this.state.total}) : null
                                 }</div>
                         </div>}
-                    {/*{this.addTrace()}*/}
                 </div>
                 <div className="show-container" id="show-container">
                     {this.renderCustomerRecordLists()}

@@ -576,7 +576,7 @@ var SalesHomePage = React.createClass({
                         </div>
                     </TopNav>
                     <div className="main-content-container">
-                        <div className="col-md-4 customer-list-left" data-tracename="左侧不同类型客户列表">
+                        <div className="col-md-4 customer-list-left" data-tracename="客户分类">
                             <Collapse accordion defaultActiveKey={['1']}
                                       activeKey={[this.state.showCollapsePanel]}
                                       onChange={this.handleClickCollapse}
@@ -698,7 +698,7 @@ var SalesHomePage = React.createClass({
                                     </span>
                             </div>
                         </div>
-                        <div className="col-md-8 customer-content-right" data-tracename="右侧客户详情区域"
+                        <div className="col-md-8 customer-content-right" data-tracename="客户详情"
                              style={{height: rightContentHeight}}>
                             {this.state.isShowRepeatCustomer ? <CustomerRepeat noNeedClose={true}/> :
                                 this.renderCustomerContentDetail(rightContentHeight)
