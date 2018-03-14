@@ -156,19 +156,6 @@ class AppUserLists extends React.Component {
     };
 
     renderCrmUserList() {
-        if (this.state.userListsOfCustomer.loading) {
-            return <Spinner />
-        }
-        if (this.state.userListsOfCustomer.errMsg) {
-            return (
-                <div className="get-crm-users-error-tip">
-                    <Alert
-                        message={this.state.userListsOfCustomer.errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>);
-        }
         let crmUserList = this.state.userListsOfCustomer.data.data;
         if (_.isArray(crmUserList) && crmUserList.length) {
             return crmUserList.map((userObj) => {
@@ -201,15 +188,7 @@ class AppUserLists extends React.Component {
                 );
             });
         }else{
-            return  (
-                <div className="show-customer-user-list">
-                    <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            )
+          return null;
         }
     };
 
@@ -295,11 +274,25 @@ class AppUserLists extends React.Component {
     };
 
     renderUserContent() {
-        var userNum = _.isArray(this.state.userListsOfCustomer.data.data) ? this.state.userListsOfCustomer.data.data.length : "";
+        var userNum = this.state.userListsOfCustomer.data.total ? this.state.userListsOfCustomer.data.total : "";
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
         }
+        if (this.state.userListsOfCustomer.loading) {
+            return <Spinner />
+        }
+        if (this.state.userListsOfCustomer.errMsg) {
+            return (
+                <div className="get-crm-users-error-tip">
+                    <Alert
+                        message={this.state.userListsOfCustomer.errMsg}
+                        type="error"
+                        showIcon={true}
+                    />
+                </div>);
+        }
+
         if (userNum) {
             return (
                 <div className="crm-user-list-container">
@@ -318,7 +311,15 @@ class AppUserLists extends React.Component {
                 </div>
             )
         } else {
-            return null;
+            return  (
+                <div className="show-customer-user-list">
+                    <Alert
+                        message={Intl.get("common.no.data", "暂无数据")}
+                        type="info"
+                        showIcon={true}
+                    />
+                </div>
+            )
         }
     };
 

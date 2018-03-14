@@ -1992,7 +1992,7 @@ var zh_CN = {
     "sales.frontpage.connected.today": "今日通话",
     "sales.frontpage.contact.today": "今日联系客户",
     "sales.frontpage.added.today": "今日新增客户",
-    "sales.frontpage.will.contact.today": "今日待联系",
+    "sales.frontpage.will.contact.today": "今日计划联系",
     "sales.frontpage.expired.not.contact": "超期未联系",
     "sales.frontpage.will.expired.try.user": "即将到期的试用客户",
     "sales.frontpage.will.expired.assgined.user": "即将到期的签约客户",
