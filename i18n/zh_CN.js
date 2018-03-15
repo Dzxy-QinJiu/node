@@ -2023,6 +2023,7 @@ var zh_CN = {
     "sales.frontpage.recent.record":"最新跟进",
     "sales.frontpage.add.customer":"添加跟进记录",
     "sales.frontpage.trace.type":"跟进类型",
-    "sales.frontpage.trace.time":"跟进时间"
+    "sales.frontpage.trace.time":"跟进时间",
+    "sales.frontpage.schedule.has.finished":"完成了"
 };
 export default zh_CN;

@@ -6,6 +6,7 @@ function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
         'setSelectedCustomer',//设置选中的客户
+        'afterHandleStatus'//修改日程状态后的处理
     );
     this.getphoneTotal = function (reqData) {
         let type = 'manager';
@@ -104,6 +105,21 @@ function SalesHomeActions() {
             this.dispatch({loading: false, error: false, resData: result});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errMsg: errorMsg || Intl.get("crm.188", "获取重复客户列表失败!")});
+        });
+    };
+    //修改某条日程管理的状态
+    this.handleScheduleStatus = function (reqData, cb) {
+        this.dispatch({error: false, loading: true});
+        salesHomeAjax.handleScheduleStatus(reqData).then((resData) => {
+            this.dispatch({error: false, loading: false, result: resData});
+            cb(resData);
+        }, (errMsg)=>{
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败")
+            });
+            cb(errMsg)
         });
     };
 

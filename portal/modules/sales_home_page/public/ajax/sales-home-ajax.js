@@ -239,3 +239,19 @@ exports.handleSystemNotice =  function (noticeId) {
     });
     return Deferred.promise();
 };
+//修改某条日程管理的状态
+exports.handleScheduleStatus = function (reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/change/schedule/' + reqData.id + '/' + reqData.status,
+        dataType: 'json',
+        type: 'put',
+        success: function (resData) {
+            Deferred.resolve(resData);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

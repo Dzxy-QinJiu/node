@@ -58,7 +58,6 @@ SalesHomeStore.prototype.setInitState = function () {
     this.scheduleTodayObj = {
         loading: true,
         errMsg: '',
-        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -147,11 +146,8 @@ SalesHomeStore.prototype.setInitState = function () {
     //结束时间
     this.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
     this.status = STATUS.UNHANDLED;//未处理，handled:已处理
-    this.selectedCustomerId = "";//选中的客户的id
-    this.selectedCustomer = {};//选中客户对象
     this.selectedCustomerPanel = ALL_LISTS_TYPE.SCHEDULE_TODAY;//选中客户所在的模块
     this.listenScrollBottom = true;//是否监听滚动
-    this.showCollapsPanelCount = 2;//所打开的面板个数
 };
 //获取今日通话数量和时长
 SalesHomeStore.prototype.getphoneTotal = function (result) {
@@ -233,9 +229,6 @@ SalesHomeStore.prototype.getRecentLoginCustomerCount = function (result) {
     var recentLoginCustomerObj = this.recentLoginCustomerObj;
     if (result.resData) {
         recentLoginCustomerObj.data.total = result.resData;
-        if (recentLoginCustomerObj.data.total > 0) {
-            this.showCollapsPanelCount++;
-        }
     }
 };
 //获取日程列表
@@ -247,11 +240,9 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         if (result.error) {
             scheduleExpiredTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list));
+            scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list,false));
             scheduleExpiredTodayObj.data.total = result.resData.total;
-            if (scheduleExpiredTodayObj.data.total > 0 && scheduleExpiredTodayObj.curPage ===1) {
-                this.showCollapsPanelCount++;
-            }
+
             scheduleExpiredTodayObj.curPage++;
         }
     } else {
@@ -261,18 +252,13 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         if (result.error) {
             scheduleTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            scheduleTodayObj.data.list = scheduleTodayObj.data.list.concat(processScheduleLists(result.resData.list));
-            scheduleTodayObj.curPage++;
-            if (_.isArray(scheduleTodayObj.data.list) && scheduleTodayObj.data.list.length && !this.selectedCustomerId) {
-                this.selectedCustomerId = scheduleTodayObj.data.list[0].customer_id;//选中的客户的id
-                this.selectedCustomer = scheduleTodayObj.data.list[0];//选中客户对象
-            }
+            scheduleTodayObj.data.list = processScheduleLists(result.resData.list,true);
             scheduleTodayObj.data.total = result.resData.total;
         }
     }
 };
 // 对日程进行整理
-function processScheduleLists(list) {
+function processScheduleLists(list,isSort) {
     if (!_.isArray(list)) {
         list = [];
     }
@@ -281,6 +267,19 @@ function processScheduleLists(list) {
             item.allDay = true;
         }
     });
+    if (isSort){
+        //不是全天日程
+        var notFulldaylist = _.filter(list, (item) => {
+            return !item.allDay;
+        });
+        //全天的日程
+        var Fulldaylist = _.filter(list, (item) => {
+            return item.allDay;
+        });
+        //对日程数据进行排序，把全天的放在最上面，已完成的放在最下面
+        var list = _.flatten([notFulldaylist, Fulldaylist,]);
+    }
+
     return list;
 }
 //获取关注客户登录或者是停用客户登录
@@ -297,9 +296,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
             });
             concernCustomerObj.data.list = concernCustomerObj.data.list.concat(result.resData.list);
             concernCustomerObj.data.total = result.resData.total;
-            if (concernCustomerObj.data.total > 0 && concernCustomerObj.curPage === 1) {
-                this.showCollapsPanelCount++;
-            }
             concernCustomerObj.curPage++;
         }
     } else if (result.type === "appIllegal") {
@@ -314,9 +310,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
             });
             appIllegalObj.data.list = appIllegalObj.data.list.concat(result.resData.list);
             appIllegalObj.data.total = result.resData.total;
-            if (appIllegalObj.data.total > 0 && appIllegalObj.curPage === 1) {
-                this.showCollapsPanelCount++;
-            }
             appIllegalObj.curPage++;
         }
     }
@@ -334,9 +327,7 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
             var willExpiredAssignCustomerLists = result.resData.result[0];
             willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
             willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
-            if (willExpiredAssignCustomer.data.total > 0) {
-                this.showCollapsPanelCount++;
-            }
+
         }
     } else if (result.type === "试用用户") {
         //获取即将到期的试用用户
@@ -348,9 +339,6 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
             var willExpiredTryCustomerLists = result.resData.result[0];
             willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
             willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
-            if (willExpiredTryCustomer.data.total > 0) {
-                this.showCollapsPanelCount++;
-            }
         }
     }
 };
@@ -367,10 +355,26 @@ SalesHomeStore.prototype.getRepeatCustomerList = function (result) {
     }
 };
 
+//修改某个提醒的状态
+SalesHomeStore.prototype.afterHandleStatus = function (newStatusObj) {
+    //如果是今日的日程
+    if (newStatusObj.type === ALL_LISTS_TYPE.SCHEDULE_TODAY) {
+        //如果是过期的日程
+        this.scheduleTodayObj.data.list = _.filter(this.scheduleTodayObj.data.list, (schedule) => {
+            return schedule.id !== newStatusObj.id;
+        });
+        this.scheduleTodayObj.data.total--;
+    } else if (newStatusObj.type === ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY) {
+        this.scheduleExpiredTodayObj.data.list = _.filter(this.scheduleExpiredTodayObj.data.list, (schedule) => {
+            return schedule.id !== newStatusObj.id;
+        });
+    }
+};
+
 // 设置要选中的客户的id
 SalesHomeStore.prototype.setSelectedCustomer = function (Item) {
-    this.selectedCustomer = Item.selectedObj;
-    this.selectedCustomerId = Item.selectedObj.customer_id || Item.selectedObj.id;
-    this.selectedCustomerPanel = Item.selectedPanel;
+    // this.selectedCustomer = Item.selectedObj;
+    // this.selectedCustomerId = Item.selectedObj.customer_id || Item.selectedObj.id;
+    // this.selectedCustomerPanel = Item.selectedPanel;
 };
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');
