@@ -195,8 +195,22 @@ var SalesSelectField = React.createClass({
             });
         }
     },
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
+
     handleSubmit: function () {
         if (this.state.loading) return;
+        if (this.state.userId == this.props.userId) {
+            //没做修改时，直接回到展示状态
+            this.backToDisplay();
+            return;
+        }
         let submitData = {
             id: this.state.customerId,
             type: "sales",
@@ -208,20 +222,12 @@ var SalesSelectField = React.createClass({
         Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
-            this.setState({
-                loading: false,
-                displayType: 'text',
-                submitErrorMsg: ''
-            });
+            this.backToDisplay();
         } else if (this.state.displayType === "edit") {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
-                    this.setState({
-                        loading: false,
-                        displayType: 'text',
-                        submitErrorMsg: ''
-                    });
+                    this.backToDisplay();
                     //更新列表中的客户地域
                     this.props.modifySuccess(submitData);
                 }
@@ -236,11 +242,7 @@ var SalesSelectField = React.createClass({
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
-                    this.setState({
-                        loading: false,
-                        displayType: 'text',
-                        submitErrorMsg: ''
-                    });
+                    this.backToDisplay();
                     //更新列表中的客户地域
                     this.props.modifySuccess(submitData);
                 }
