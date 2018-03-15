@@ -299,13 +299,11 @@ const ApplyUserForm = React.createClass({
     renderUserNameInput: function (userName) {
         const placeholder = Intl.get("user.username.write.tip", "请填写用户名");
         let input = (
-            <Validator rules={[{validator: this.checkUserExist}]}>
-                <Input
-                    name="user_name"
-                    placeholder={placeholder}
-                    value={userName}
-                    onChange={this.onUserNameChange}/>
-            </Validator>
+            <Input
+                name="user_name"
+                placeholder={placeholder}
+                value={userName}
+                onChange={this.onUserNameChange}/>
         );
         let customerContacts = this.state.customerContacts;
         let emailList = [];//联系人的邮箱列表
@@ -323,12 +321,13 @@ const ApplyUserForm = React.createClass({
         if (emailList.length) {
             return (
                 <Select combobox
+                        name="user_name"
                         placeholder={placeholder}
                         filterOption={false}
                         onChange={this.selectEmail}
                         value={userName}
                         dropdownMatchSelectWidth={false}
-                        notFoundContent={Intl.get("common.no.data", "暂无数据")}>
+                >
                     {emailList.map((email, i) => {
                         return (<Option key={i} value={email}>{email}</Option>);
                     })}
@@ -376,7 +375,9 @@ const ApplyUserForm = React.createClass({
                                             validateStatus={this.getValidateStatus("user_name")}
                                             help={this.getHelpMessage("user_name")}
                                         >
-                                            {this.renderUserNameInput(formData.user_name)}
+                                            <Validator rules={[{validator: this.checkUserExist}]}>
+                                                {this.renderUserNameInput(formData.user_name)}
+                                            </Validator>
                                         </FormItem>
                                     </div>
                                     <FormItem
