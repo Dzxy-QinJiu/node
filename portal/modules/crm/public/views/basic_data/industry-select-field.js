@@ -92,9 +92,21 @@ var IndustrySelectField = React.createClass({
         }
 
     },
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
     handleSubmit: function () {
         var validation = this.refs.validation;
         if (this.state.loading) {
+            return;
+        }
+        if(this.state.formData.industry == this.props.industry){
+            this.backToDisplay();
             return;
         }
         validation.validate(valid=> {
@@ -109,20 +121,12 @@ var IndustrySelectField = React.createClass({
                 Trace.traceEvent(this.getDOMNode(),"保存对行业的修改");
                 if (this.props.isMerge) {
                     this.props.updateMergeCustomer(submitData);
-                    this.setState({
-                        loading: false,
-                        displayType: 'text',
-                        submitErrorMsg: ''
-                    });
+                    this.backToDisplay();
                 } else {
                     this.setState({loading: true});
                     CrmBasicAjax.updateCustomer(submitData).then(result=> {
                         if (result) {
-                            this.setState({
-                                loading: false,
-                                displayType: 'text',
-                                submitErrorMsg: ''
-                            });
+                           this.backToDisplay();
                             //更新列表中的客户行业
                             this.props.modifySuccess(submitData);
                         }

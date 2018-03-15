@@ -70,6 +70,10 @@ let NameTextareaField = React.createClass({
 
     handleSubmit: function (e) {
         if (this.state.loading) return;
+        if (this.state.formData.name == this.props.name) {
+            this.backToDisplay();
+            return;
+        }
         let validation = this.refs.validation;
         validation.validate(valid=> {
             if (!valid) {
@@ -81,10 +85,6 @@ let NameTextareaField = React.createClass({
                 type: "name",
                 name: $.trim(this.state.formData.name)
             };
-            if(submitData.name == this.props.name){
-                this.backToDisplay();
-                return;
-            }
             if (this.props.isMerge) {
                 this.props.updateMergeCustomer(submitData);
                 this.backToDisplay();

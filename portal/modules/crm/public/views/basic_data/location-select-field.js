@@ -74,6 +74,7 @@ var LocationSelectField = React.createClass({
             && this.state.city == this.props.city
             && this.state.county == this.props.county){
             this.backToDisplay();
+            return;
         }
         let submitData = {
             id: this.state.customerId,
