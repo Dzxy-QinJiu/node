@@ -127,7 +127,7 @@ const CallRecord = React.createClass({
         },(err)=>{
             this.setState({
                 invalidPhoneLists:[],
-                getInvalidPhoneErrMsg:err.msg || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
+                getInvalidPhoneErrMsg:err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
             })
         });
         this.getCallListByAjax();
@@ -840,7 +840,7 @@ const CallRecord = React.createClass({
         },(err)=>{
             this.setState({
                 isAddingInvalidPhone:false,
-                addingInvalidPhoneErrMsg:err.msg || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
+                addingInvalidPhoneErrMsg:err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
             });
         })
     },
