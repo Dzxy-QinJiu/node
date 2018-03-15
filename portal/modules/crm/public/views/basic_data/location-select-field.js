@@ -60,8 +60,21 @@ var LocationSelectField = React.createClass({
             });
         }
     },
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
     handleSubmit: function () {
         if (this.state.loading) return;
+        if(this.state.province == this.props.province
+            && this.state.city == this.props.city
+            && this.state.county == this.props.county){
+            this.backToDisplay();
+        }
         let submitData = {
             id: this.state.customerId,
             type: "address",
@@ -72,20 +85,12 @@ var LocationSelectField = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"保存对地域的修改");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
-            this.setState({
-                loading: false,
-                displayType: 'text',
-                submitErrorMsg: ''
-            });
+            this.backToDisplay();
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result=> {
                 if (result) {
-                    this.setState({
-                        loading: false,
-                        displayType: 'text',
-                        submitErrorMsg: ''
-                    });
+                    this.backToDisplay();
                     //更新列表中的客户地域
                     this.props.modifySuccess(submitData);
                 }
