@@ -49,8 +49,20 @@ let BasicEditInputField = React.createClass({
             displayType: "edit"
         });
     },
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
     handleSubmit: function () {
         if (this.state.loading) return;
+        if (this.state.remarks == this.props.remarks){
+            this.backToDisplay();
+            return;
+        }
         let submitData = {
             id: this.props.customerId,
             type: "comment",
@@ -59,11 +71,7 @@ let BasicEditInputField = React.createClass({
         Trace.traceEvent(this.getDOMNode(),"点击保存备注按钮");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
-            this.setState({
-                loading: false,
-                displayType: 'text',
-                submitErrorMsg: "",
-            });
+            this.backToDisplay();
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result=> {

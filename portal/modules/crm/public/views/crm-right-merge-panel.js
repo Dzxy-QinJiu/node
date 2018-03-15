@@ -254,6 +254,7 @@ var CrmRightMergePanel = React.createClass({
     },
     //合并客户
     mergeRepeatCustomer: function () {
+        if(this.state.isMergingCustomer) return;
         let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList,
             selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id

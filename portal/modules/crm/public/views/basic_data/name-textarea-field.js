@@ -59,8 +59,21 @@ let NameTextareaField = React.createClass({
         Trace.traceEvent(e,"点击设置客户名");
         this.setState({displayType: "edit"});
     },
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
+
     handleSubmit: function (e) {
         if (this.state.loading) return;
+        if (this.state.formData.name == this.props.name) {
+            this.backToDisplay();
+            return;
+        }
         let validation = this.refs.validation;
         validation.validate(valid=> {
             if (!valid) {
@@ -74,20 +87,12 @@ let NameTextareaField = React.createClass({
             };
             if (this.props.isMerge) {
                 this.props.updateMergeCustomer(submitData);
-                this.setState({
-                    loading: false,
-                    displayType: 'text',
-                    submitErrorMsg: ""
-                });
+                this.backToDisplay();
             } else {
                 this.setState({loading: true});
                 CrmBasicAjax.updateCustomer(submitData).then(result=> {
                     if (result) {
-                        this.setState({
-                            loading: false,
-                            displayType: 'text',
-                            submitErrorMsg: ""
-                        });
+                        this.backToDisplay();
                         //更新列表中的客户名
                         this.props.modifySuccess(submitData);
                     }

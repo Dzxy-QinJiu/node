@@ -103,8 +103,23 @@ let TagEditField = React.createClass({
         this.setState(this.state);
     },
 
+    //回到展示状态
+    backToDisplay: function () {
+        this.setState({
+            loading: false,
+            displayType: 'text',
+            submitErrorMsg: ''
+        });
+    },
     handleSubmit: function (e) {
         if (this.state.loading) return;
+        let diff1 = _.difference(this.state.labels, this.props.labels);
+        let diff2 = _.difference(this.props.labels, this.state.labels);
+        //标签没有变化时，直接返回到展示界面
+        if (!(diff1.length || diff2.length)) {
+            this.backToDisplay();
+            return;
+        }
         let submitData = {
             id: this.props.customerId,
             type: "label",
@@ -113,20 +128,12 @@ let TagEditField = React.createClass({
         Trace.traceEvent(e, "保存对标签的添加");
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
-            this.setState({
-                loading: false,
-                displayType: 'text',
-                submitErrorMsg: ""
-            });
+            this.backToDisplay();
         } else {
             this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
-                    this.setState({
-                        loading: false,
-                        displayType: 'text',
-                        submitErrorMsg: ""
-                    });
+                    this.backToDisplay();
                     //更新列表中的客户名
                     this.props.modifySuccess(submitData);
                 }
