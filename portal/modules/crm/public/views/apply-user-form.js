@@ -494,10 +494,7 @@ const ApplyUserForm = React.createClass({
                         </div>
                     </TabPane>
                 </Tabs>
-            </
-                div >
-        )
-            ;
+            </div>);
     }
 });
 
