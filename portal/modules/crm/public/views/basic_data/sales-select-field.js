@@ -35,8 +35,8 @@ var SalesSelectField = React.createClass({
             list: [],//下拉列表中的数据
             displayType: "text",
             isLoadingList: true,//正在获取下拉列表中的数据
-            disabled: this.props.disabled,
-            transferDisabled: this.props.transferDisabled,
+            enableEdit: this.props.enableEdit,
+            enableTransfer: this.props.enableTransfer,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
             userName: this.props.userName,
@@ -52,7 +52,7 @@ var SalesSelectField = React.createClass({
     },
     componentDidMount: function () {
         //有修改所属销售的权限时
-        if (!this.state.disabled) {
+        if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             this.getSalesManList();
         }
@@ -70,8 +70,8 @@ var SalesSelectField = React.createClass({
                 salesTeam: nextProps.salesTeam,
                 salesTeamId: nextProps.salesTeamId,
                 salesTeamList: this.getSalesTeamList(nextProps.userId, this.state.salesManList),
-                disabled: nextProps.disabled,
-                transferDisabled: nextProps.transferDisabled,
+                enableEdit: nextProps.enableEdit,
+                enableTransfer: nextProps.enableTransfer,
                 list: [],//下拉列表中的数据
                 displayType: "text",
                 isLoadingList: true,//正在获取下拉列表中的数据
@@ -81,6 +81,12 @@ var SalesSelectField = React.createClass({
             });
             //获取销售对应的角色
             this.getSalesRoleByMemberId(nextProps.userId);
+        }
+        //由于是否能转出客户的标识需要通过接口获取团队数据后来判断重现赋值，所以如果变了需要重新赋值
+        if (this.state.enableTransfer != nextProps.enableTransfer) {
+            this.setState({
+                enableTransfer: nextProps.enableTransfer
+            });
         }
     },
 
@@ -282,10 +288,10 @@ var SalesSelectField = React.createClass({
                         <div className="basic-sales-field">
                             <span>{this.state.userName}</span>
 
-                            {!this.state.disabled ? (
+                            {this.state.enableEdit ? (
                                 <i className="iconfont icon-update" title={Intl.get("crm.sales.change", "变更销售")}
                                    onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
-                            {!this.state.transferDisabled && !this.state.isMerge ? (
+                            {this.state.enableTransfer && !this.state.isMerge ? (
                                 <span className="iconfont icon-transfer"
                                       title={Intl.get("crm.qualified.roll.out", "转出")}
                                       onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
