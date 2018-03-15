@@ -2,7 +2,8 @@ const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 require("../css/apply-user-form.less");
 require("../../../../public/css/antd-vertical-tabs.css");
-import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Icon, message, Checkbox} from "antd";
+import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox} from "antd";
+const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -17,6 +18,8 @@ const DatePickerUtils = require("../../../../components/date-selector/utils");
 import UserNameTextfieldUtil from '../../../../components/user_manage_components/user-name-textfield/util';
 import {OVER_DRAFT_TYPES} from 'PUB_DIR/sources/utils/consts';
 import commonAppAjax from "MOD_DIR/common/public/ajax/app";
+import contactAjax from "../ajax/contact-ajax";
+
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
 
@@ -32,7 +35,8 @@ const ApplyUserForm = React.createClass({
             appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
             onlyOneUser: false,//是否只能开通一个用户（用户名是邮箱格式时）
-            setAllChecked: false//是否设置到所有应用上
+            setAllChecked: false,//是否设置到所有应用上
+            customerContacts: []//客户的联系人列表
         };
     },
 
@@ -99,6 +103,22 @@ const ApplyUserForm = React.createClass({
             //获取各应用的默认设置
             this.getAppsDefaultConfig(_.pluck(appList, 'client_id'));
         }
+        this.getCustomerContacts();
+    },
+    //获取客户联系人列表
+    getCustomerContacts: function () {
+        let customerId = this.state.formData ? this.state.formData.customer_id : "";
+        if (!customerId) return;
+        contactAjax.getContactList(customerId).then((data) => {
+            let contactList = data && _.isArray(data.result) ? data.result : [];
+            this.setState({
+                customerContacts: contactList
+            });
+        }, (errorMsg) => {
+            this.setState({
+                customerContacts: []
+            });
+        });
     },
     //获取各应用的默认设置
     getAppsDefaultConfig: function (appIds) {
@@ -260,7 +280,7 @@ const ApplyUserForm = React.createClass({
     checkUserExist(rule, value, callback) {
         let customer_id = this.state.formData.customer_id;
         let number = this.state.appFormData.number;
-        let trimValue = value.trim();
+        let trimValue = $.trim(value);
         // 校验的信息提示
         UserNameTextfieldUtil.validatorMessageTips(trimValue, callback);
         let obj = {
@@ -268,6 +288,54 @@ const ApplyUserForm = React.createClass({
             user_name: trimValue
         };
         UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
+    },
+    selectEmail: function (value, field) {
+        value = $.trim(value);
+        if (value) {
+            this.state.formData.user_name = value;
+            this.setState({formData: this.state.formData});
+        }
+    },
+    renderUserNameInput: function (userName) {
+        const placeholder = Intl.get("user.username.write.tip", "请填写用户名");
+        let input = (
+            <Input
+                name="user_name"
+                placeholder={placeholder}
+                value={userName}
+                onChange={this.onUserNameChange}/>
+        );
+        let customerContacts = this.state.customerContacts;
+        let emailList = [];//联系人的邮箱列表
+        if (customerContacts.length) {
+            _.each(customerContacts, contact => {
+                if (_.isArray(contact.email) && contact.email.length) {
+                    _.each(contact.email, email => {
+                        if (email.indexOf(userName) != -1) {
+                            emailList.push(email);
+                        }
+                    });
+                }
+            });
+        }
+        if (emailList.length) {
+            return (
+                <Select combobox
+                        name="user_name"
+                        placeholder={placeholder}
+                        filterOption={false}
+                        onChange={this.selectEmail}
+                        value={userName}
+                        dropdownMatchSelectWidth={false}
+                >
+                    {emailList.map((email, i) => {
+                        return (<Option key={i} value={email}>{email}</Option>);
+                    })}
+                </Select>
+            );
+        } else {
+            return input;
+        }
     },
 
     render: function () {
@@ -308,11 +376,7 @@ const ApplyUserForm = React.createClass({
                                             help={this.getHelpMessage("user_name")}
                                         >
                                             <Validator rules={[{validator: this.checkUserExist}]}>
-                                                <Input
-                                                    name="user_name"
-                                                    placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
-                                                    value={formData.user_name}
-                                                    onChange={this.onUserNameChange}/>
+                                                {this.renderUserNameInput(formData.user_name)}
                                             </Validator>
                                         </FormItem>
                                     </div>
@@ -356,9 +420,10 @@ const ApplyUserForm = React.createClass({
                                                              tab={this.renderTabToolTip(app.client_name)}
                                                              disabled={disabled}>
                                                 <div className="set-all-check-box col-22">
-                                                    <Checkbox checked={this.state.setAllChecked} onChange={this.toggleCheckbox}/>
+                                                    <Checkbox checked={this.state.setAllChecked}
+                                                              onChange={this.toggleCheckbox}/>
                                                     <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                        {Intl.get("user.all.app.set","设置到所有应用上")}
+                                                        {Intl.get("user.all.app.set", "设置到所有应用上")}
                                                     </span>
                                                     {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
                                                 </div>
@@ -429,8 +494,7 @@ const ApplyUserForm = React.createClass({
                         </div>
                     </TabPane>
                 </Tabs>
-            </div>
-        );
+            </div>);
     }
 });
 
