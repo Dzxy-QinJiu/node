@@ -475,8 +475,6 @@ function startSocketIo() {
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(applyUnreadReplyList) {
-    console.log("pushData==============");
-    console.log(applyUnreadReplyList);
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
@@ -486,8 +484,6 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
         applyUnreadReplyObj = JSON.parse(applyUnreadReply);
         //sessionStorage中已存的未读回复列表
         let oldUnreadList = applyUnreadReplyObj[userId];
-        console.log("oldUnreadList=====");
-        console.log(oldUnreadList);
         if (_.isArray(oldUnreadList) && oldUnreadList.length) {
             //遍历新推过来的未读回复列表，将新增的加入已存的未读回复列表中
             _.each(applyUnreadReplyList, unreadReply => {
@@ -504,8 +500,6 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
     } else {
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
     }
-    console.log("afterHandler=");
-    console.log(applyUnreadReplyObj[userId]);
     sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
     notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }

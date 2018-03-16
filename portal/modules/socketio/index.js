@@ -81,7 +81,7 @@ function getPushServerByEureka() {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    // pushLogger.debug("后端推送的消息数据:" + data);
+    pushLogger.debug("后端推送的消息数据:" + data);
     // 将查询结果返给浏览器
     var messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
@@ -108,7 +108,7 @@ function notifyChannelListener(data) {
  * 拨打电话消息监听器
  * */
 function phoneEventChannelListener(data) {
-    // pushLogger.debug("后端推送的拨打电话的数据:" + JSON.stringify(data));
+    pushLogger.debug("后端推送的拨打电话的数据:" + JSON.stringify(data));
     // 将查询结果返给浏览器
     var phonemsgObj = JSON.parse(data) || {};
     if (phonemsgObj.user_id) {
@@ -132,7 +132,7 @@ function phoneEventChannelListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    // pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
+    pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
     // 将查询结果返给浏览器
     var scheduleAlertObj = data || {};
     if (scheduleAlertObj.member_id) {
@@ -211,7 +211,7 @@ function offlineChannelListener(data) {
  * @param data 系统消息
  */
 function systemNoticeListener(notice) {
-    // pushLogger.debug("后端推送的系统消息数据:" + JSON.stringify(notice));
+    pushLogger.debug("后端推送的系统消息数据:" + JSON.stringify(notice));
     if (notice && notice.member_id) {//消息接收者
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[notice.member_id] || [];
@@ -244,8 +244,6 @@ function applyUnreadReplyListener(unreadList) {
     if (_.isArray(unreadList) && unreadList.length) {
         //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
         let memberUnreadObj = _.groupBy(unreadList, "member_id");
-        console.log("MemberUnreadObj===================================");
-        console.log(memberUnreadObj);
         if (!_.isEmpty(memberUnreadObj)) {
             for (let memberId in memberUnreadObj) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
