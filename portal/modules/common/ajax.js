@@ -38,9 +38,15 @@ export default function (arg) {
         success: function (result) {
             Deferred.resolve(result);
         },
-        error: function (errorMsg) {
-            //返回错误对象中有时候没有responseJSON属性
-            Deferred.reject(errorMsg.responseText || errorMsg.responseJSON);
+        error: function (jqXHR, textStatus) {
+            let errMsg = "";
+
+            //当textStatus为parsererror时，意味着错误信息的内容不是json格式的，一般是返回了html内容，此时不返回该错误信息，而是返回空字符串，否则返回错误信息
+            if (textStatus !== "parsererror") {
+                errMsg = jqXHR.responseText || jqXHR.responseJSON;
+            }
+
+            Deferred.reject(errMsg);
         }
     });
 
