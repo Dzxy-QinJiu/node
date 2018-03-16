@@ -39,9 +39,9 @@ export default function (arg) {
             Deferred.resolve(result);
         },
         error: function (jqXHR, textStatus) {
-            let errMsg = "";
+            let errMsg = Intl.get("contract.111", "获取数据失败");
 
-            //当textStatus为parsererror时，意味着错误信息的内容不是json格式的，一般是返回了html内容，此时不返回该错误信息，而是返回空字符串，否则返回错误信息
+            //当textStatus为parsererror时，意味着错误信息的内容不是json格式的，一般是返回了html内容，此时不返回该错误信息，而是返回默认出错信息，否则返回具体错误信息
             if (textStatus !== "parsererror") {
                 errMsg = jqXHR.responseText || jqXHR.responseJSON;
             }
