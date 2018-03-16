@@ -1003,7 +1003,7 @@ var zh_CN = {
     "user.apply.approve": "用户申请审批",
     "user.apply.approve.count": "有{approveCount}条审批消息",
     "user.apply.unread.reply": "有未读回复",
-    "user.apply.no.reply": "暂无回复，{reTryTip}",
+    "user.apply.refresh.reply.tip": "有新回复，点此{refreshTip}",
     "reply.pass.tip.content": "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}",
     "reply.reject.tip.content": "{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}",
     "reply.cancel.tip.content": "{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}",

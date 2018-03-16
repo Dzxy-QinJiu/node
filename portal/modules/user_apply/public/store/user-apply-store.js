@@ -60,7 +60,9 @@ UserApplyStore.prototype.clearUnreadReplyById = function (applyId) {
     if (applyUnreadReply) {
         let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
         let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+        console.log(applyUnreadReplyList);
         applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
+        console.log(applyUnreadReplyList);
         sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
         this.refreshUnreadReplyList(applyUnreadReplyList);
     }

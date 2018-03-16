@@ -371,8 +371,9 @@ var ApplyTabContent = React.createClass({
     },
     //当前展示的详情是否是有未读回复的详情
     getIsUnreadDetail: function () {
-        if (this.state.applyId) {
-            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == this.state.applyId);
+        let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : "";
+        if (selectApplyId) {
+            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == selectApplyId);
         } else {
             return false;
         }

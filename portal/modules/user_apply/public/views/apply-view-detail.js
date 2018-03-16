@@ -126,7 +126,8 @@ const ApplyViewDetail = React.createClass({
         return {
             showNoData: false,
             showBackoutConfirm: false,
-            detailItem: {}
+            detailItem: {},
+            isUnreadDetail: false//是否有未读回复
         };
     },
     getInitialState() {
@@ -302,8 +303,8 @@ const ApplyViewDetail = React.createClass({
         let replyList = replyListInfo.list;
         if (_.isArray(replyList) && replyList.length) {
             return (<div>
-                <Icon type="reload" onClick={this.refreshReplyList} className="pull-right"
-                      title={Intl.get("common.get.again", "重新获取")}/>
+                {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/}
+                      {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
                 <ul>
                     {replyList.map(replyItem => {
                         return (
@@ -327,18 +328,23 @@ const ApplyViewDetail = React.createClass({
                 </ul>
             </div>);
         } else {
-            return (<span className="no-reply-data-tip">
+            return null;
+        }
+    },
+    //渲染刷新回复列表的提示
+    renderRefreshReplyTip: function () {
+        return (<span className="refresh-reply-data-tip">
                         <ReactIntl.FormattedMessage
-                            id="user.apply.no.reply"
-                            defaultMessage={`暂无回复，{reTryTip}`}
+                            id="user.apply.refresh.reply.tip"
+                            defaultMessage={`有新回复，点此{refreshTip}`}
                             values={{
-                                "reTryTip": <a
-                                    onClick={this.refreshReplyList}>{Intl.get("common.get.again", "重新获取")}</a>
+                                "refreshTip": <a
+                                    onClick={this.refreshReplyList}>{Intl.get("common.refresh", "刷新")}</a>
                             }}
                         />
                     </span>);
-        }
     },
+
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -394,6 +400,7 @@ const ApplyViewDetail = React.createClass({
                             {this.renderDetailCenter()}
                             <div className="reply_list_wrap"
                                  style={{display: this.state.applyIsExpanded ? 'none' : 'block'}}>
+                                {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                                 {this.renderReplyList()}
                             </div>
                         </div>
