@@ -249,7 +249,10 @@ var NavSidebar = React.createClass({
     componentDidMount: function () {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
+        //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        //待审批数变化后触发
+        notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.refreshNotificationUnread);
         this.getHasUnreadReply();
         $(window).on('resize', this.resizeFunction);
         var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
@@ -314,6 +317,7 @@ var NavSidebar = React.createClass({
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.refreshNotificationUnread);
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
