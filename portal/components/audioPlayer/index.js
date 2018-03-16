@@ -29,11 +29,11 @@ class AudioPlayer extends React.Component {
     };
     render() {
         return (
-            <div className="audio-player-wrap">
+            <div className="audio-player-wrap" data-tracename="播放录音界面">
                 <audio id="audio" width="320" controls="controls" autoplay="autoplay"
                        src={this.state.playingItemAddr}>
                 </audio>
-                <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer}></i>
+                <i className="iconfont icon-close close-panel" onClick={this.props.closeAudioPlayContainer} data-tracename="关闭播放录音"></i>
                 {/*如果获取无效电话出错时，不要显示上报电话区域*/}
                 {this.props.getInvalidPhoneErrMsg ? null :
                     <div className="report-wrap">
@@ -45,6 +45,7 @@ class AudioPlayer extends React.Component {
                             null :
                             <span className="report-button"
                                   onClick={this.props.handleAddInvalidPhone}
+                                  data-tracename="上报客服电话"
                             >{Intl.get("call.record.report", "上报")}
                                 {this.props.isAddingInvalidPhone ? <Icon type="loading"/> : null}
                             </span>}
