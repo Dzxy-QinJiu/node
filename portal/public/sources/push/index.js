@@ -196,7 +196,7 @@ function getReplyTipContent(data) {
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
         case "pass"://审批通过
-                    // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
             tipContent = Intl.get("reply.pass.tip.content",
                 "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
                     approvalPerson: approvalPerson,
@@ -475,6 +475,8 @@ function startSocketIo() {
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(applyUnreadReplyList) {
+    console.log("pushData==============");
+    console.log(applyUnreadReplyList);
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
@@ -484,24 +486,28 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
         applyUnreadReplyObj = JSON.parse(applyUnreadReply);
         //sessionStorage中已存的未读回复列表
         let oldUnreadList = applyUnreadReplyObj[userId];
+        console.log("oldUnreadList=====");
+        console.log(oldUnreadList);
         if (_.isArray(oldUnreadList) && oldUnreadList.length) {
-            if (_.isArray(applyUnreadReplyList)) {
-                //及时推送的新回复列表（push_type = 0）
-                if (applyUnreadReplyList[0] && applyUnreadReplyList[0].push_type == 0) {
-                    //将及时推送的新回复加入到已有的列表中
-                    applyUnreadReplyObj[userId] = oldUnreadList.concat(applyUnreadReplyList);
-                } else {//所有未读的回复列表
-                    applyUnreadReplyObj[userId] = applyUnreadReplyList;
+            //遍历新推过来的未读回复列表，将新增的加入已存的未读回复列表中
+            _.each(applyUnreadReplyList, unreadReply => {
+                let hasExist = _.some(oldUnreadList, item => item.apply_id == unreadReply.apply_id);
+                //已存的未读回复列表中不存在时，即为新增的未读回复，加入已存列表
+                if (!hasExist) {
+                    oldUnreadList.push(unreadReply);
                 }
-            }
+            });
+            applyUnreadReplyObj[userId] = oldUnreadList;
         } else {
             applyUnreadReplyObj[userId] = applyUnreadReplyList;
         }
     } else {
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
     }
+    console.log("afterHandler=");
+    console.log(applyUnreadReplyObj[userId]);
     sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
-    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);
+    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {

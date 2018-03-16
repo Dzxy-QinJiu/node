@@ -119,13 +119,13 @@ var responsiveLayout = {
 //侧边普通按钮时引导模态框的样式
 var commonIntroModalLayout = {
     //展示孔比原图标要变化的宽度
-    holeGapWidth : 16,
+    holeGapWidth: 16,
     //展示孔比原图标要变化的高度
-    holeGapHeight : 16,
+    holeGapHeight: 16,
     //展示孔展示位置比原图标演示变化的左边距
-    holeGapLeft : -7,
+    holeGapLeft: -7,
     //展示孔展示位置比原图标演示变化的上边距
-    holeGapTop : -8,
+    holeGapTop: -8,
     //提示区域展示位置比原图标展示变化的左边距
     tipAreaLeft: 15,
     //提示区域展示位置比原图标展示变化的上边距
@@ -134,13 +134,13 @@ var commonIntroModalLayout = {
 //变成汉堡包按钮后引导模态框的样式
 var hamburgerIntroModalLayout = {
     //展示孔比原图标要变化的宽度
-    holeGapWidth : -17,
+    holeGapWidth: -17,
     //展示孔比原图标要变化的高度
-    holeGapHeight : 24,
+    holeGapHeight: 24,
     //展示孔展示位置比原图标演示变化的左边距
-    holeGapLeft : 10,
+    holeGapLeft: 10,
     //展示孔展示位置比原图标演示变化的上边距
-    holeGapTop : -12,
+    holeGapTop: -12,
     //提示区域展示位置比原图标展示变化的左边距
     tipAreaLeft: 35,
     //提示区域展示位置比原图标展示变化的上边距
@@ -160,10 +160,11 @@ var NavSidebar = React.createClass({
                 system: 0
             },
             //需要加引导功能的某个元素
-            $introElement:"",
-            isShowIntroModal:false,//是否展示引导的模态框
-            introModalLayout:{},//模态框上蚂蚁及提示的展示样式
-            tipMessage:"",//提示内容
+            $introElement: "",
+            isShowIntroModal: false,//是否展示引导的模态框
+            introModalLayout: {},//模态框上蚂蚁及提示的展示样式
+            tipMessage: "",//提示内容
+            hasUnreadReply: false,//是否有未读的回复
         };
     },
     //轮询获取未读数的清除器
@@ -219,21 +220,21 @@ var NavSidebar = React.createClass({
         this.setState({});
     },
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
-    selectedIntroElement:function () {
+    selectedIntroElement: function () {
         //查看汉堡包按钮是否存在
         var hamburger = document.getElementById("hamburger");
         var isHamburgerShow = hamburger.style.display;
         //要加引导的元素
         var $introElement = "", introModalLayout = {};
-        if (isHamburgerShow == "none"){
+        if (isHamburgerShow == "none") {
             $introElement = $("li." + menu.routePath + "_ico a i");
             introModalLayout = commonIntroModalLayout;
-        }else if (isHamburgerShow == "block"){
+        } else if (isHamburgerShow == "block") {
             $introElement = $("#hamburger");
             introModalLayout = hamburgerIntroModalLayout;
         }
         //只有在要加引导的元素变化之后才会setState，如果元素不变，不需要更改状态
-        if ($introElement !== this.state.$introElement){
+        if ($introElement !== this.state.$introElement) {
             this.setState({
                 isShowIntroModal: true,
                 tipMessage: Intl.get("schedule.tip.intro.message", "日程功能上线了，赶快点开看看吧！"),
@@ -248,6 +249,7 @@ var NavSidebar = React.createClass({
     componentDidMount: function () {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
+        notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         $(window).on('resize', this.resizeFunction);
         var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
         this.needSendNotificationRequest = notificationPrivileges.length >= 1;
@@ -261,18 +263,25 @@ var NavSidebar = React.createClass({
         this.calculateHeight();
         $(window).on('resize', this.calculateHeight);
         //获取已经点击过的模块
-        getWebsiteConfig((WebsiteConfigModuleRecord)=>{
+        getWebsiteConfig((WebsiteConfigModuleRecord) => {
             //本次要加引导的模块是否点击过
-            if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)){
+            if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
                 this.selectedIntroElement();
             }
         });
         //重新渲染一次，需要使用高度
         this.setState({});
     },
+    refreshHasUnreadReply: function (unreadReplyList) {
+        if (_.isArray(unreadReplyList) && unreadReplyList.length) {
+            this.setState({hasUnreadReply: true});
+        } else {
+            this.setState({hasUnreadReply: false});
+        }
+    },
     //本次要加的引导是否没有被点击过
     isIntroModlueNeverClicked: function (WebsiteConfigModuleRecord) {
-       return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
+        return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
     },
     calculateHeight: function () {
         //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
@@ -285,13 +294,14 @@ var NavSidebar = React.createClass({
             $('#menusLists').show();
         }
         //模态框存在时，才需要选要加引导的元素
-        if (this.state.isShowIntroModal){
+        if (this.state.isShowIntroModal) {
             this.selectedIntroElement();
         }
     },
     componentWillUnmount: function () {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
@@ -408,10 +418,11 @@ var NavSidebar = React.createClass({
         return (
             <div className="sidebar-applyentry">
                 <Link to={applyLinks[0].href} activeClassName="active">
-                    <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}>
-                    </i>
+                    <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}/>
+                    {this.state.messages.apply == 0 && this.state.hasUnreadReply ?
+                        <span className="iconfont icon-apply-message-tip"
+                              title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
                 </Link>
-
             </div>
         );
     },
@@ -489,21 +500,20 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
-    handleOnclickHole:function () {
+    handleOnclickHole: function () {
         //跳转到新加模块界面
-        history.pushState({
-        }, "/"+ menu.routePath, {});
+        history.pushState({}, "/" + menu.routePath, {});
         this.saveModalClicked();
     },
     //将该模块存入后端并隐藏模态框
     saveModalClicked: function () {
         this.setState({
-            isShowIntroModal:false
+            isShowIntroModal: false
         });
-        setWebsiteConfigModuleRecord({"module_record":[menu.name]});
+        setWebsiteConfigModuleRecord({"module_record": [menu.name]});
     },
-    hideModalIntro:function () {
-      this.saveModalClicked();
+    hideModalIntro: function () {
+        this.saveModalClicked();
     },
     render: function () {
         var windowHeight = this.navContainerHeightFnc();
@@ -575,7 +585,7 @@ var NavSidebar = React.createClass({
                     handleOnclickHole={this.handleOnclickHole}
                     hideModalIntro={this.hideModalIntro}
                     message={this.state.tipMessage}
-                />:null}
+                /> : null}
             </nav>
         );
     }

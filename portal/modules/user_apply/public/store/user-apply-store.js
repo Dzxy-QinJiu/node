@@ -1,6 +1,5 @@
-var AppUserUtil = require("../util/app-user-util");
 var UserApplyActions = require("../action/user-apply-actions");
-const FORMAT = oplateConsts.DATE_FORMAT;
+var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
 import userData from "PUB_DIR/sources/user-data";
 
 //用户审批界面使用的store
@@ -60,11 +59,13 @@ UserApplyStore.prototype.clearUnreadReplyById = function (applyId) {
     if (applyUnreadReply) {
         let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
         let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-        console.log(applyUnreadReplyList);
         applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
-        console.log(applyUnreadReplyList);
-        sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
-        this.refreshUnreadReplyList(applyUnreadReplyList);
+        applyUnreadReplyObj[userId] = applyUnreadReplyList;
+        sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
+        //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
+        setTimeout(() => {
+            notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);
+        });
     }
 };
 //是否显示更新数据提示,flag:true/false
