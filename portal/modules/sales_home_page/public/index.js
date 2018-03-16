@@ -1,23 +1,19 @@
 var RightContent = require("CMP_DIR/privilege/right-content");
 require("./css/index.less");
 var TopNav = require("CMP_DIR/top-nav");
-import {Collapse, Alert} from "antd";
-const Panel = Collapse.Panel;
 var SalesHomeStore = require("./store/sales-home-store");
 var SalesHomeAction = require("./action/sales-home-actions");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 let TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-import AppUserLists from "./view02/app-user-lists";
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
-import CustomerRecord from "./view02/customer-record";
 var Spinner = require("CMP_DIR/spinner");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
 import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
 import Trace from "LIB_DIR/trace";
-import CustomerNoticeMessage from "./view02/customer-notice-message";
 import ScheduleItem from "./view/schedule-item";
+import CustomerNoticeMessage from "./view/customer-notice-message";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -26,11 +22,6 @@ const CALL_TYPE_OPTION = {
 };
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
-    EACH_PANNEL_HEIGHT: 39,
-    RIGHT_CUSTOMER_TITLE_HEIGHT: 40,
-    RIGHT_CUSTOMER_USER_HEIGHT: 240,
-    RIGHT_NOTICE_MESSAGE_HEIGHT: 100,
-    EACH_PANNEL_BORDER_WIDTH: 1
 };
 
 var SalesHomePage = React.createClass({
@@ -191,208 +182,8 @@ var SalesHomePage = React.createClass({
             return "";
         }
     },
-    // 点击左侧列表中的某个客户
-    handleClickCustomerItem: function (selectedCustomer, panelType) {
-        //不在展示重复客户列表
-        this.setState({isShowRepeatCustomer: false});
-        var itemObj = {
-            selectedObj: selectedCustomer,
-            selectedPanel: panelType//点击客户所在的面板
-        };
-        SalesHomeAction.setSelectedCustomer(itemObj);
-    },
-
-    //渲染今日待联系的日程列表
-    renderScheduleListToday: function (panelType) {
-        if (this.state.scheduleTodayObj.loading && this.state.scheduleTodayObj.curPage == 1) {
-            return (
-                <div>
-                    <Spinner/>
-                </div>
-            )
-        } else if (this.state.scheduleTodayObj.errMsg) {
-            //加载完成，出错的情况
-            var errMsg = <span>{this.state.scheduleTodayObj.errMsg}
-                <a onClick={this.getScheduleListToday}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
-            return (
-                <div className="alert-wrap">
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        } else if (!this.state.scheduleTodayObj.data.list.length && !this.state.scheduleTodayObj.loading) {
-            //加载完成，没有数据的情况
-            return (
-                <div className="show-no-schedule">
-                    <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        } else if (this.state.scheduleTodayObj.data.list.length) {
-            return (_.map(this.state.scheduleTodayObj.data.list, (scheduleItem) => {
-                var cls = classNames("list-item-wrap",
-                    {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId && panelType == this.state.selectedCustomerPanel}
-                );
-                return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}
-                         data-tracename="点击今日待联系的客户">
-                        <div className="item-header" data-tracename="今日待联系客户名称">
-                            <span className="customer-name-container">{scheduleItem.customer_name}</span>
-                            <span className="schedule-tip pull-right">
-                            {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
-                                <span>
-                                {moment(scheduleItem.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                    </span>}
-                    </span>
-                        </div>
-                        <div className="item-content" data-tracename="今日待联系日程内容">
-                            <p>
-                                {scheduleItem.content}
-                            </p>
-                        </div>
-                    </div>
-                )
-            }))
-        }
-    },
-    //渲染今日过期的日程
-    renderExpiredScheduleList: function (panelType) {
-        return (_.map(this.state.scheduleExpiredTodayObj.data.list, (scheduleItem) => {
-            var cls = classNames("list-item-wrap", {"cur-customer": scheduleItem.customer_id == this.state.selectedCustomerId}
-            );
-            return (
-                <div className={cls} onClick={this.handleClickCustomerItem.bind(this, scheduleItem, panelType)}
-                     data-tracename="点击查看今日超期日程客户详情">
-                    <div className="item-header" data-tracename="超期日程客户">
-                        <span className="customer-name-container">{scheduleItem.customer_name}</span>
-                        <span className="time-tip pull-right">
-                            {scheduleItem.allDay ? moment(scheduleItem.start_time).format(oplateConsts.DATE_FORMAT) :
-                                <span>
-                                {moment(scheduleItem.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}-{moment(scheduleItem.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                    </span>}
-                    </span>
-                    </div>
-                    <div className="item-content" data-tracename="超期日程内容">
-                        <p>
-                            {scheduleItem.content}
-                        </p>
-                    </div>
-                </div>
-            )
-        }))
-    },
-    //客户停用后登录
-    renderAppIllegalCustomer: function (panelType) {
-        return (_.map(this.state.appIllegalObj.data.list, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
-                );
-                return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
-                         data-tracename="查看停用后登录的客户">
-                        <div className="item-header" data-tracename="停用后登录客户名称">
-                            <span className="customer-name-container">{item.customer_name}</span>
-                            <span className="time-tip pull-right">{
-                                moment(item.notice_time).fromNow()}</span>
-                        </div>
-                    </div>
-                )
-            })
-        )
-    },
-    //关注客户登录
-    renderConcernedCustomer: function (panelType) {
-        return (_.map(this.state.concernCustomerObj.data.list, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
-                );
-                return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
-                         data-tracename="查看关注登录客户详情">
-                        <div className="item-header" data-tracename="关注客户登录">
-                            <span className="customer-name-container">{item.customer_name}</span>
-                            <span className="time-tip pull-right">{
-                                moment(item.notice_time).fromNow()}</span>
-                        </div>
-                    </div>
-                )
-            })
-        )
-    },
-    //最近登录的客户
-    renderRecentLoginCustomer: function (panelType) {
-        return (_.map(this.state.recentLoginCustomerObj.data.result, (item) => {
-                var cls = classNames("list-item-wrap", {"cur-customer": item.customer_id == this.state.selectedCustomerId}
-                );
-                return (
-                    <div className={cls} onClick={this.handleClickCustomerItem.bind(this, item, panelType)}
-                         data-tracename="查看最近登录客户详情">
-                        <div className="item-header" data-tracename="最近登录客户">
-                            <span className="customer-name-container">{item.customer_name}</span>
-                        </div>
-                    </div>
-                )
-            })
-        )
-    },
-    //即将到期的签约客户
-    renderWillExpiredAssignCustomer: function (panelType) {
-        return (_.map(this.state.willExpiredAssignCustomer.data.list, (item) => {
-                return (
-                    _.map(item.customer_list, (customerItem) => {
-                        var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
-                        );
-                        return (
-                            <div className={cls}
-                                 onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}
-                                 data-tracename="查看即将到期的签约客户详情">
-                                <div className="item-header" data-tracename="即将到期的签约客户">
-                                    <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span
-                                        className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
-                                </div>
-                            </div>
-                        )
-                    })
-                )
-            })
-        )
-    },
-    //即将到期的试用客户
-    renderWillExpiredTryCustomer: function (panelType) {
-        return (_.map(this.state.willExpiredTryCustomer.data.list, (item) => {
-                return (
-                    _.map(item.customer_list, (customerItem) => {
-                        var cls = classNames("list-item-wrap", {"cur-customer": customerItem.customer_id == this.state.selectedCustomerId}
-                        );
-                        return (
-                            <div className={cls}
-                                 onClick={this.handleClickCustomerItem.bind(this, customerItem, panelType)}
-                                 data-tracename="查看即将到期的试用客户详情">
-                                <div className="item-header" data-tracename="即将到期的试用客户">
-                                    <span className="customer-name-container">{customerItem.customer_name}</span>
-                                    <span
-                                        className="time-tip pull-right">{moment(item.date).format(oplateConsts.DATE_FORMAT)}</span>
-                                </div>
-                            </div>
-                        )
-                    })
-                )
-            })
-        )
-    },
     handleScrollBarBottom: function (listType) {
         switch (listType) {
-            // case ALL_LISTS_TYPE.SCHEDULE_TODAY://今日的日程列表
-            //     this.getScrollData(this.state.scheduleTodayObj, this.getScheduleListToday);
-            //     break;
             case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
                 this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
                 break;
@@ -415,106 +206,17 @@ var SalesHomePage = React.createClass({
             });
         }
     },
-
-    //点击收起面板
-    handleClickCollapse: function (argument) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-collapse-header"), "打开不同类型客户面板");
-        if (argument) {
-            this.setState({
-                listenScrollBottom: true,
-                isShowRepeatCustomer: false,
-                showCustomerPanel: argument
-            })
-
-        } else {
-            this.setState({
-                isShowRepeatCustomer: false,
-            })
-        }
-
-    },
-    //点击展示重复客户列表
-    handleShowRepeatCustomer: function () {
-        this.setState({
-            isShowRepeatCustomer: true,
-        });
-    },
-    //渲染消息列表
-    renderCustomerNoticeMessage: function () {
-        return (
-            <CustomerNoticeMessage
-                curCustomer={this.state.selectedCustomer}
-            />
-        )
-    },
-    //渲染右侧客户详情
-    renderCustomerContentDetail: function (rightContentHeight) {
-        var rightHeight = "";
-        if (this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name) {
-            rightHeight = rightContentHeight - LAYOUT_CONSTS.RIGHT_CUSTOMER_TITLE_HEIGHT;
-        } else {
-            rightHeight = rightContentHeight
-        }
-        var userLeftTopHeight = "";
-        if (this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
-            userLeftTopHeight = LAYOUT_CONSTS.RIGHT_NOTICE_MESSAGE_HEIGHT;
-        } else {
-            userLeftTopHeight = LAYOUT_CONSTS.RIGHT_CUSTOMER_USER_HEIGHT;
-        }
-        {/*右侧左上角根据左边不同的panel的类别，展示不同的面板
-         * 重复客户类型  --- 展示重复客户列表
-         * 停用后登录，关注客户登录 --- 展示系统消息
-         * 其他的 --- 展示用户列表
-         * 右上角的联系人和左下角的跟进记录是一直保留的*/
-        }
-        return (
-            <div>
-                {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name ?
-                    <div className="customer-header-panel">
-                        {this.state.selectedCustomer.customer_name || this.state.selectedCustomer.name}
-                    </div> : null}
-                <div className="crm-user-content">
-                    <div className="crm-user-left col-md-7 col-sm-12">
-                        {/*用户列表和系统消息
-                         关注客户和停用客户登录展示系统消息
-                         */}
-                        <div className="user-list-container" style={{height: userLeftTopHeight}}>
-                            <GeminiScrollbar>
-                                {this.state.selectedCustomerPanel === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN || this.state.selectedCustomerPanel === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN ? this.renderCustomerNoticeMessage() : (this.state.selectedCustomerId ?
-                                    <AppUserLists
-                                        selectedCustomerId={this.state.selectedCustomerId}
-                                        curCustomer={this.state.selectedCustomer}
-                                    /> : null)}
-                            </GeminiScrollbar>
-                        </div>
-                        {/*跟进记录*/}
-                        <div className="record-trace-container" style={{height: rightHeight - userLeftTopHeight}}>
-                            {!_.isEmpty(this.state.selectedCustomer) ? <CustomerRecord
-                                curCustomer={this.state.selectedCustomer}
-                                refreshCustomerList={function () {
-                                }}
-                                wrapHeight={rightHeight - userLeftTopHeight}
-                            /> : null}
-                        </div>
-                    </div>
-                    <div className="crm-user-right col-md-5 col-sm-12">
-
-                    </div>
-                </div>
-            </div>
-        )
-    },
-
-    //todo 新开始的代码
+    //渲染左侧列表
     renderDiffCustomerPanel: function () {
         return (
             <ul>
                 {_.map(ALL_CUSTOMER_LISTS_TYPE, (item) => {
                     var cls = classNames("customer-item", {
                         "selected-customer-item": item.value === this.state.showCustomerPanel
-                    })
+                    });
                     return (
-                        <li className={cls} onClick={this.handleClickDiffCustomerType.bind(this, item.value)}>
+                        <li className={cls} onClick={this.handleClickDiffCustomerType.bind(this, item.value)}
+                            data-tracename="选择客户类别">
                             <div>
                                 <span>{item.name}</span>
                                 <span className="data-total">{this.switchDiffCustomerTotalCount(item.value)}</span>
@@ -542,10 +244,10 @@ var SalesHomePage = React.createClass({
                 rightPanel = null;
                 break;
             case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-                rightPanel = null;
+                rightPanel = this.renderAPPIlleageAndConcernedContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
                 break;
             case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-                rightPanel = null;
+                rightPanel = this.renderAPPIlleageAndConcernedContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
                 break;
             case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
                 rightPanel = null;
@@ -605,9 +307,7 @@ var SalesHomePage = React.createClass({
                         }
                     </GeminiScrollbar>
                 </div>
-
             );
-
         } else if (scheduleType === ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY) {
             //今日超期未联系
             data = this.state.scheduleExpiredTodayObj.data.list;
@@ -625,15 +325,53 @@ var SalesHomePage = React.createClass({
                                     isShowTopTitle={true}
                                 />
                             )
-                        })
-                        }
-
+                        })}
                     </GeminiScrollbar>
                 </div>
-
             )
-
-
+        }
+    },
+    //渲染关注客户和停用客户登录情况
+    renderAPPIlleageAndConcernedContent: function (type) {
+        var data = [];
+        if (type === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {
+            //关注客户登录
+            data = this.state.concernCustomerObj.data.list;
+            return (
+                <div className="concerned-customer-container">
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
+                        listenScrollBottom={this.state.listenScrollBottom}>
+                        {_.map(data, (item) => {
+                            return (
+                                <CustomerNoticeMessage
+                                    customerNoticeMessage={item}
+                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "过期X天登录情况")}
+                                />
+                            )
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
+        } else if (type === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
+            //停用后登录
+            data = this.state.appIllegalObj.data.list;
+            return (
+                <div className="app-illeage-container">
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}
+                        listenScrollBottom={this.state.listenScrollBottom}>
+                        {_.map(data, (item) => {
+                            return (
+                                <CustomerNoticeMessage
+                                    customerNoticeMessage={item}
+                                    tableTitleTip={Intl.get("sales.frontpage.appilleage.login", "停用期间用户登录情况")}
+                                />
+                            )
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
         }
     },
     //不同类型的客户所对应的数据
@@ -670,11 +408,7 @@ var SalesHomePage = React.createClass({
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
-        const fixedHeight = $(window).height() - LAYOUT_CONSTS.EACH_PANNEL_HEIGHT * this.state.showCollapsPanelCount - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM + 1 * LAYOUT_CONSTS.EACH_PANNEL_BORDER_WIDTH;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
-        var repeatCls = classNames("reapeat-customer-header",
-            {"repeat-customer-active": this.state.isShowRepeatCustomer}
-        );
         var cls = classNames("col-md-9 customer-content-right", {
             "has-repeat-customer": this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });

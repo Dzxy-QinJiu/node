@@ -291,9 +291,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
         if (result.error) {
             concernCustomerObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            _.each(result.resData.list, (item) => {
-                item.id = item.customer_id;
-            });
             concernCustomerObj.data.list = concernCustomerObj.data.list.concat(result.resData.list);
             concernCustomerObj.data.total = result.resData.total;
             concernCustomerObj.curPage++;
@@ -305,9 +302,6 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
         if (result.error) {
             appIllegalObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            _.each(result.resData.list, (item) => {
-                item.id = item.customer_id;
-            });
             appIllegalObj.data.list = appIllegalObj.data.list.concat(result.resData.list);
             appIllegalObj.data.total = result.resData.total;
             appIllegalObj.curPage++;

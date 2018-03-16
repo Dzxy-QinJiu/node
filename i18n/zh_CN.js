@@ -2019,11 +2019,13 @@ var zh_CN = {
     "sales.frontpage.contact.customers": "建议您联系以下客户",
     "sales.frontpage.open.app": "已开通应用",
     "sales.frontpage.expired.date": "到期情况",
-    "sales.frontpage.total.list":"共{n}条",
-    "sales.frontpage.recent.record":"最新跟进",
-    "sales.frontpage.add.customer":"添加跟进记录",
-    "sales.frontpage.trace.type":"跟进类型",
-    "sales.frontpage.trace.time":"跟进时间",
-    "sales.frontpage.schedule.has.finished":"完成了"
+    "sales.frontpage.total.list": "共{n}条",
+    "sales.frontpage.recent.record": "最新跟进",
+    "sales.frontpage.add.customer": "添加跟进记录",
+    "sales.frontpage.trace.type": "跟进类型",
+    "sales.frontpage.trace.time": "跟进时间",
+    "sales.frontpage.schedule.has.finished": "完成了",
+    "sales.frontpage.appilleage.login": "停用期间用户登录情况",
+    "sales.frontpage.concerned.login": "过期X天登录情况"
 };
 export default zh_CN;

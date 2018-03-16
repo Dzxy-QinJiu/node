@@ -255,6 +255,8 @@ exports.getUserInfo = function (req, res, userId) {
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
+    //获取团队信息
+
     Promise.all([getUserBasicInfo, getUserRole]).then(resultList => {
         let userInfoResult = resultList[0] ? resultList[0] : {};
         //成功获取用户信息
@@ -305,7 +307,8 @@ var userInfoRestApis = {
     getUserInfo: "/rest/base/v1/user/id",
     getMemberRoles: "/rest/base/v1/user/member/roles",
     activeEmail: "/rest/base/v1/user/email/confirm",
-    getUserLanguage: "/rest/base/v1/user/member/language/setting"
+    getUserLanguage: "/rest/base/v1/user/member/language/setting",
+    getMyTeamWithSubTeam:"",
 };
 
 exports.getSidebarMenus = getSidebarMenus;
