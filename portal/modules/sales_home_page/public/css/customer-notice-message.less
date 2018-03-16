@@ -11,15 +11,21 @@
     }
     .customer-content{
         .login-detail-container{
-          overflow: hidden;
-          .login-detail-name{
-            float: left;
-            width: 200px;
+          .login-detail-item{
+            overflow: hidden;
+            .login-detail-name{
+              float: left;
+              width: 200px;
+            }
+            .login-detail-content{
+              float: left;
+              margin-left: 40px;
+            }
           }
-          .login-detail-content{
-            float: left;
-            margin-left: 40px;
+          .login-detail-item:not(:first-child){
+            margin-top:10px;
           }
+
         }
     }
   }

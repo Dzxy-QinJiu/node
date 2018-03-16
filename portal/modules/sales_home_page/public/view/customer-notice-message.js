@@ -33,33 +33,36 @@ class CustomerNoticeMessage extends React.Component {
                     return item.user_id;
                 }));
                 var userDetailData = [];
-                for (var i=0;i<newUserDetailData.length;i++ ){
+                for (var i = 0; i < newUserDetailData.length; i++) {
                     userDetailData.push({
-                        user_id:newUserDetailData[i][0].user_id,
-                        user_name:newUserDetailData[i][0].user_name,
-                        login_detail:newUserDetailData[i]
+                        user_id: newUserDetailData[i][0].user_id,
+                        user_name: newUserDetailData[i][0].user_name,
+                        login_detail: newUserDetailData[i]
                     })
                 }
                 return (
                     <div className="login-detail-container">
-                        <div className="login-detail-name">
-                            {userDetailData[0].user_name}
-                        </div>
-                        <div className="login-detail-content">
-                            {   _.map(userDetailData, (item) => {
-                                return (
-                                    <div>
-                                        {moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                        {_.map(userDetailData, (item) => {
+                            return (
+                                <div className="login-detail-item">
+                                    <div className="login-detail-name">
+                                        {item.user_name}
                                     </div>
-                                )
-                            })}
-                        </div>
+                                    <div className="login-detail-content">
+                                        {   _.map(item.login_detail, (loginItem) => {
+                                            return (
+                                                <div>
+                                                    {moment(loginItem.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
-
                 )
-
             }
-
         },];
         return columns;
     }
@@ -67,7 +70,6 @@ class CustomerNoticeMessage extends React.Component {
 
     render() {
         var message = this.state.customerNoticeMessage;
-
         var newContentData = _.values(_.groupBy(message.detail, (item) => {
             return item.app_id;
         }));
