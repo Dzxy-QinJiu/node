@@ -260,7 +260,6 @@ function applyUnreadReplyListener(unreadList) {
                                     apply_id: unreadReply.apply_id
                                 };
                             });
-                            console.log(memberUnreadReplyList);
                             socket.emit("apply_unread_reply", memberUnreadReplyList);
                         }
                     });
