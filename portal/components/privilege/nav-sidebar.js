@@ -250,6 +250,7 @@ var NavSidebar = React.createClass({
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
+        this.getHasUnreadReply();
         $(window).on('resize', this.resizeFunction);
         var notificationPrivileges = this.getLinkListByPrivilege(NotificationLinkList);
         this.needSendNotificationRequest = notificationPrivileges.length >= 1;
@@ -271,6 +272,17 @@ var NavSidebar = React.createClass({
         });
         //重新渲染一次，需要使用高度
         this.setState({});
+    },
+    getHasUnreadReply:function () {
+        const APPLY_UNREAD_REPLY = "apply_unread_reply";
+        let userId = userData.getUserData().user_id;
+        //获取sessionStore中已存的未读回复列表
+        let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+        if (applyUnreadReply) {
+            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
+            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+            this.refreshHasUnreadReply(applyUnreadReplyList);
+        }
     },
     refreshHasUnreadReply: function (unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
@@ -419,7 +431,7 @@ var NavSidebar = React.createClass({
             <div className="sidebar-applyentry">
                 <Link to={applyLinks[0].href} activeClassName="active">
                     <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}/>
-                    {this.state.messages.apply == 0 && this.state.hasUnreadReply ?
+                    {this.state.messages.approve == 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
                               title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
                 </Link>
