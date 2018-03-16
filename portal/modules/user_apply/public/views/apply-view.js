@@ -35,8 +35,10 @@ var ApplyTabContent = React.createClass({
         } else {
             this.fetchApplyList();
         }
+        this.getUnreadReplyList();
         AppUserUtil.emitter.on("updateSelectedItem", this.updateSelectedItem);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
     componentWillReceiveProps: function (nextProps) {
@@ -48,6 +50,22 @@ var ApplyTabContent = React.createClass({
                 }
             })
         }
+    },
+    //从sessionStorage中获取该用户未读的回复列表
+    getUnreadReplyList: function () {
+        const APPLY_UNREAD_REPLY = "apply_unread_reply";
+        let userId = UserData.getUserData().user_id;
+        //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
+        let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+        if (applyUnreadReply) {
+            let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
+            let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+            this.refreshUnreadReplyList(applyUnreadReplyList);
+        }
+    },
+    //刷新未读回复的列表
+    refreshUnreadReplyList: function (unreadReplyList) {
+        UserApplyActions.refreshUnreadReplyList(unreadReplyList);
     },
     updateSelectedItem: function (approval) {
         const selectedDetailItem = this.state.selectedDetailItem;
@@ -79,6 +97,7 @@ var ApplyTabContent = React.createClass({
         AppUserUtil.emitter.removeListener("updateSelectedItem", this.updateSelectedItem);
         //销毁时，删除申请消息监听器
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     },
 
     retryFetchApplyList: function (e) {
@@ -158,32 +177,35 @@ var ApplyTabContent = React.createClass({
         UserApplyActions.setSelectedDetailItem({obj, idx});
     },
     renderApplyList: function () {
-        var _this = this;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {
-                    this.state.applyListObj.list.map(function (obj, i) {
+                    this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
                             processed: obj.isConsumed == 'true'
                         });
                         var currentClass = classNames({
-                            current: obj.id == _this.state.selectedDetailItem.id && i == _this.state.selectedDetailItemIdx
+                            current: obj.id == this.state.selectedDetailItem.id && i == this.state.selectedDetailItemIdx
                         });
+                        //是否有未读回复
+                        let hasUnreadReply = _.find(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == obj.id);
                         return (
                             <li key={obj.id} className={currentClass}
-                                onClick={_this.clickShowDetail.bind(_this, obj, i)}
+                                onClick={this.clickShowDetail.bind(this, obj, i)}
                             >
                                 <dl>
                                     <dt>
                                         <span>{obj.topic || Intl.get("user.apply.id", "账号申请")}</span>
-                                        <em className={btnClass}>{_this.getApplyStateText(obj)}</em>
+                                        {hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
+                                                                title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
+                                        <em className={btnClass}>{this.getApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={obj.customer_name}>
                                         <span>{obj.customer_name}</span>
                                     </dd>
                                     <dd className="clearfix">
-                                        <span>{Intl.get("user.apply.presenter","申请人")}:{obj.presenter}</span>
-                                        <em>{_this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
+                                        <span>{Intl.get("user.apply.presenter", "申请人")}:{obj.presenter}</span>
+                                        <em>{this.getTimeStr(obj.time, oplateConsts.DATE_TIME_FORMAT)}</em>
                                     </dd>
                                 </dl>
                             </li>
@@ -347,6 +369,15 @@ var ApplyTabContent = React.createClass({
         return !this.state.applyListObj.loadingResult &&
             this.state.applyListObj.list.length >= 10 && !this.state.listenScrollBottom;
     },
+    //当前展示的详情是否是有未读回复的详情
+    getIsUnreadDetail: function () {
+        let selectApplyId = this.state.selectedDetailItem ? this.state.selectedDetailItem.id : "";
+        if (selectApplyId) {
+            return _.some(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == selectApplyId);
+        } else {
+            return false;
+        }
+    },
 
     render: function () {
         //根本就没有用户审批的时候，显示没数据的提示
@@ -392,6 +423,7 @@ var ApplyTabContent = React.createClass({
         if (!noShowApplyDetail) {
             applyDetail = {detail: this.state.applyListObj.list[0], apps: this.state.allApps};
         }
+
         return (
             <div className="app_user_manage_apply_wrap clearfix user-manage-v2">
                 <div className="col-md-4 app_user_manage_apply_list_wrap" data-tracename="申请列表">
@@ -433,6 +465,7 @@ var ApplyTabContent = React.createClass({
                     <ApplyViewDetail
                         applyData={this.state.applyId ? applyDetail : null}
                         detailItem={this.state.selectedDetailItem}
+                        isUnreadDetail={this.getIsUnreadDetail()}
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                     />
                 )}

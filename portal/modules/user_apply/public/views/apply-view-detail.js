@@ -126,7 +126,8 @@ const ApplyViewDetail = React.createClass({
         return {
             showNoData: false,
             showBackoutConfirm: false,
-            detailItem: {}
+            detailItem: {},
+            isUnreadDetail: false//是否有未读回复
         };
     },
     getInitialState() {
@@ -299,40 +300,51 @@ const ApplyViewDetail = React.createClass({
                 />
             </div>;
         }
-        if (!replyListInfo.list || !replyListInfo.list.length) {
+        let replyList = replyListInfo.list;
+        if (_.isArray(replyList) && replyList.length) {
+            return (<div>
+                {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/}
+                      {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
+                <ul>
+                    {replyList.map(replyItem => {
+                        return (
+                            <li>
+                                <dl>
+                                    <dt>
+                                        <img width="44" height="44"
+                                             src={replyItem.user_logo || DefaultHeadIconImage}
+                                             onError={this.userLogoOnError}/>
+                                    </dt>
+                                    <dd>
+                                        <div>
+                                            <em>{replyItem.user_name}</em>
+                                            <span>{replyItem.date}</span>
+                                        </div>
+                                        <p>{replyItem.message}</p>
+                                    </dd>
+                                </dl>
+                            </li>)
+                    })}
+                </ul>
+            </div>);
+        } else {
             return null;
-            //没有回复列表时，不提示，后期要加上推送
-            //var message = <span>暂无回复列表，<Icon type="reload" onClick={this.refreshReplyList} title="重新获取"/></span>
-            //return <div>
-            //    <Alert message={message} type="info" showIcon={true}/>
-            //</div>;
         }
-        return <div>
-            <Icon type="reload" onClick={this.refreshReplyList} className="pull-right"
-                  title={Intl.get("common.get.again", "重新获取")}/>
-            <ul>
-                {
-                    replyListInfo.list.map((replyItem) => {
-                        return <li>
-                            <dl>
-                                <dt>
-                                    <img width="44" height="44" src={replyItem.user_logo || DefaultHeadIconImage}
-                                         onError={this.userLogoOnError}/>
-                                </dt>
-                                <dd>
-                                    <div>
-                                        <em>{replyItem.user_name}</em>
-                                        <span>{replyItem.date}</span>
-                                    </div>
-                                    <p>{replyItem.message}</p>
-                                </dd>
-                            </dl>
-                        </li>;
-                    })
-                }
-            </ul>
-        </div>;
     },
+    //渲染刷新回复列表的提示
+    renderRefreshReplyTip: function () {
+        return (<span className="refresh-reply-data-tip">
+                        <ReactIntl.FormattedMessage
+                            id="user.apply.refresh.reply.tip"
+                            defaultMessage={`有新回复，点此{refreshTip}`}
+                            values={{
+                                "refreshTip": <a
+                                    onClick={this.refreshReplyList}>{Intl.get("common.refresh", "刷新")}</a>
+                            }}
+                        />
+                    </span>);
+    },
+
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -388,6 +400,7 @@ const ApplyViewDetail = React.createClass({
                             {this.renderDetailCenter()}
                             <div className="reply_list_wrap"
                                  style={{display: this.state.applyIsExpanded ? 'none' : 'block'}}>
+                                {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
                                 {this.renderReplyList()}
                             </div>
                         </div>
@@ -1721,7 +1734,7 @@ const ApplyViewDetail = React.createClass({
     renderDuplicationName(errorMsg){
         this.toggleApplyExpanded(false);
         this.renderEditUserName();
-        message.warn( errorMsg || Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！"), 3);
+        message.warn(errorMsg || Intl.get("user.apply.valid.user.name", "用户名已存在，请重新命名该用户！"), 3);
     },
 
     // 用户名没有更改，只改用户数量为1时，需要发送用户名的校验
@@ -1836,7 +1849,7 @@ const ApplyViewDetail = React.createClass({
                         //用户名已存在的提示
                         this.renderDuplicationName();
                         return;
-                    } else if(_.isString(checkUserData)){
+                    } else if (_.isString(checkUserData)) {
                         //用户名校验接口报错的提示
                         this.renderDuplicationName(checkUserData);
                         return;
@@ -2102,12 +2115,12 @@ const ApplyViewDetail = React.createClass({
                     className="customer-user-list-panel"
                     showFlag={this.state.isShowCustomerUserListPanel}
                 >
-                    {this.state.isShowCustomerUserListPanel?
+                    {this.state.isShowCustomerUserListPanel ?
                         <AppUserManage
                             customer_id={this.state.CustomerInfoOfCurrUser.id}
                             hideCustomerUserList={this.closeCustomerUserListPanel}
                             customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        />:null
+                        /> : null
                     }
                 </RightPanel>
             </div>

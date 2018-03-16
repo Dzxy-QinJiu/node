@@ -989,6 +989,8 @@ var en_US = {
     "user.apply.detail.delay.month.show": "month", // 个月
     "user.apply.approve": "User application for approval",//用户申请审批
     "user.apply.approve.count": "There are {approveCount} approval messages",//有{approveCount}条审批消息
+    "user.apply.unread.reply": "Have unread reply",//有未读回复
+    "user.apply.refresh.reply.tip": "Have a new reply, {refreshTip}",//有新回复，点此{refreshTip}
     "reply.pass.tip.content": "{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}",//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     "reply.reject.tip.content": "{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}",//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     "reply.cancel.tip.content": "{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ",//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}

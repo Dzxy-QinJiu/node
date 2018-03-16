@@ -15,16 +15,14 @@
       margin-top:-20px;
     }
   }
-  .apply_detail_operate, .apply_detail_uuid{
-    height:53px;
-    overflow:hidden;
-  }
   .apply_detail_operate{
+    height:30px;
+    overflow:hidden;
     color:#4c8dc3;
     .btn-icon-return, .btn-icon-role-auth{
       cursor:pointer;
       float:right;
-      padding:8px 6px 12px 6px;
+      padding-right: 6px;
     }
     .iconfont{
       font-size:20px;
@@ -53,7 +51,9 @@
     }
   }
   .apply_detail_uuid{
-    line-height:46px;
+    overflow:hidden;
+    height: 53px;
+    line-height: 53px;
     border-bottom:1px solid #ced6da;
     font-size:14px;
     color:#5c5d5d;
@@ -157,8 +157,17 @@
   //回复列表外层容器
   .reply_list_wrap{
     margin:0 31px 0 29px;
+    padding:9px 0 9px 8px;
+    .refresh-reply-data-tip{
+      display: inline-block;
+      width: 100%;
+      line-height: 27px;
+      text-align: center;
+    }
     //loading外层容器
     .reply-loading-wrap{
+      display: block;
+      text-align: center;
       margin:0 0 0 8px;
       font-size:18px;
     }

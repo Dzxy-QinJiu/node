@@ -24,6 +24,8 @@ var phoneEventChannel = "com.antfact.oplate.phone.agent.event";
 const systemNoticeChannel = "com.antfact.ketao.notice";
 //待办日程提醒的推送通道
 const scheduleNoticeChannel = "com.antfact.ketao.schedule";
+//申请审批未读回复的推送通道
+const applyUnreadReplyChannel = "com.antfact.ketao.apply.comment";
 //批量操作处理文件
 var userBatch = require("./batch");
 var _ = require("underscore");
@@ -130,7 +132,7 @@ function phoneEventChannelListener(data) {
  *
  * 日程管理提醒的消息监听器*/
 function scheduleAlertListener(data) {
-    // pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
+    pushLogger.debug("日程管理的消息推送：" + JSON.stringify(data));
     // 将查询结果返给浏览器
     var scheduleAlertObj = data || {};
     if (scheduleAlertObj.member_id) {
@@ -223,6 +225,50 @@ function systemNoticeListener(notice) {
         }
     }
 }
+
+/**
+ * 申请审批未读回复的监听器
+ * @param unreadList 未读回复列表，数据格式如下
+ * [{
+ *    member_id: '3722pgujaa35ioj7klp0TgYZCfUy59xaXD0ieh6cvf4',
+ *    push_type: 0,//即刻新回复（推送的数据）中push_type字段值为：0，一分钟推送一次的所有未读回复中的值为：null
+ *    update_time: null,
+ *    create_time: 1521170377334,
+ *    apply_id: '59ec6aed-04da-4050-b464-68eeab695d68',
+ *    id: '59ec6aed-04da-4050-b464-68eeab695d68_3722pgujaa35ioj7klp0TgYZCfUy59xaXD0ieh6cvf4',
+ *    realm_id: '36mvh13nka',
+ *    status: 0
+ * }]
+ */
+function applyUnreadReplyListener(unreadList) {
+    pushLogger.debug("后端推送的申请审批未读回复数据:" + JSON.stringify(unreadList));
+    if (_.isArray(unreadList) && unreadList.length) {
+        //所有未读回复的列表按接收者分组{userId1:[{member_id,update_time...},{}],userId2:[{...},{...}]}
+        let memberUnreadObj = _.groupBy(unreadList, "member_id");
+        if (!_.isEmpty(memberUnreadObj)) {
+            for (let memberId in memberUnreadObj) {
+                //找到消息接收者对应的socket，将数据推送到浏览器
+                let socketArray = socketStore[memberId] || [];
+                if (socketArray.length > 0) {
+                    socketArray.forEach(function (socketObj) {
+                        let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
+                        if (socket) {
+                            let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
+                                return {
+                                    member_id: unreadReply.member_id,
+                                    push_type: unreadReply.push_type,
+                                    apply_id: unreadReply.apply_id
+                                };
+                            });
+                            socket.emit("apply_unread_reply", memberUnreadReplyList);
+                        }
+                    });
+                }
+            }
+        }
+    }
+}
+
 /*
  * 建立到后端的连接。
  * @ioServer socketIO服务
@@ -247,6 +293,8 @@ function createBackendClient() {
     client.on(systemNoticeChannel, systemNoticeListener);
     //创建日程管理提醒的通道
     client.on(scheduleNoticeChannel, scheduleAlertListener);
+    //创建申请审批未读回复的通道
+    client.on(applyUnreadReplyChannel, applyUnreadReplyListener);
     //监听 disconnect
     client.on('disconnect', function () {
         pushLogger.info('断开后台连接');

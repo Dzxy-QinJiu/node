@@ -2,6 +2,7 @@ import AppUserAjax from '../ajax/app-user-ajax';
 import UserAjax from '../../../common/public/ajax/user';
 import AppUserUtil from '../util/app-user-util';
 import UserData from '../../../../public/sources/user-data';
+import UserApplyAction from './user-apply-actions';
 var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
 import {message} from "antd";
 var timeoutFunc;//定时方法
@@ -106,6 +107,8 @@ class ApplyViewDetailActions {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});
         AppUserAjax.getReplyList(id).then((list) => {
             this.dispatch({loading: false, error: false, list: list, errorMsg: ''});
+            //清除未读回复列表中已读的回复
+            UserApplyAction.clearUnreadReplyById(id);
             //针对reply中的user_id，排重
             var user_ids = _.chain(list).pluck('user_id').uniq().value();
             //针对每一个user_id，获取用户信息
