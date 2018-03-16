@@ -231,6 +231,7 @@ function systemNoticeListener(notice) {
  * @param unreadList 未读回复列表，数据格式如下
  * [{
  *    member_id: '3722pgujaa35ioj7klp0TgYZCfUy59xaXD0ieh6cvf4',
+ *    push_type: 0,//即刻新回复（推送的数据）中push_type字段值为：0，一分钟推送一次的所有未读回复中的值为：null
  *    update_time: null,
  *    create_time: 1521170377334,
  *    apply_id: '59ec6aed-04da-4050-b464-68eeab695d68',
@@ -252,7 +253,15 @@ function applyUnreadReplyListener(unreadList) {
                     socketArray.forEach(function (socketObj) {
                         let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
-                            socket.emit("apply_unread_reply", memberUnreadObj[memberId]);
+                            let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
+                                return {
+                                    member_id: unreadReply.member_id,
+                                    push_type: unreadReply.push_type,
+                                    apply_id: unreadReply.apply_id
+                                };
+                            });
+                            console.log(memberUnreadReplyList);
+                            socket.emit("apply_unread_reply", memberUnreadReplyList);
                         }
                     });
                 }
