@@ -1,6 +1,7 @@
 var AppUserUtil = require("../util/app-user-util");
 var UserApplyActions = require("../action/user-apply-actions");
 const FORMAT = oplateConsts.DATE_FORMAT;
+import userData from "PUB_DIR/sources/user-data";
 
 //用户审批界面使用的store
 function UserApplyStore() {
@@ -43,8 +44,27 @@ UserApplyStore.prototype.resetState = function () {
     this.listenScrollBottom = true;
     //记录所有apps
     this.allApps = [];
+    //有未读回复的列表
+    this.unreadReplyList = [];
 };
-
+//刷新未读回复列表;
+UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
+    this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
+};
+//清除未读回复列表中已读的回复
+UserApplyStore.prototype.clearUnreadReplyById = function (applyId) {
+    const APPLY_UNREAD_REPLY = "apply_unread_reply";
+    let userId = userData.getUserData().user_id;
+    //获取sessionStorage中该用户的未读回复列表
+    let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+    if (applyUnreadReply) {
+        let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
+        let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+        applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
+        sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyList));
+        this.refreshUnreadReplyList(applyUnreadReplyList);
+    }
+};
 //是否显示更新数据提示,flag:true/false
 UserApplyStore.prototype.setShowUpdateTip = function (flag) {
     this.showUpdateTip = flag;

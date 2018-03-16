@@ -29,6 +29,8 @@ exports.notificationEmitter = new EventEmitter();
 exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = "updateNotificationUnread";
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = "showUnhandledApplyCount";
 exports.notificationEmitter.APPLY_UPDATED = "applyUpdated";
+//申请审批未读回复
+exports.notificationEmitter.APPLY_UNREAD_REPLY = "applyUnreadReply";
 //刷新系统消息的emitter
 exports.notificationEmitter.SYSTEM_NOTICE_UPDATED = "systemNoticeUpdated";
 //用户批量推送的emitter
@@ -109,10 +111,10 @@ exports.sessionExpireEmitter.SESSION_EXPIRED = "session_expired";
 //合同相关事件
 const contractEmitter = new EventEmitter();
 contractEmitter.IMPORT_CONTRACT = "import_contract";
-export { contractEmitter };
+export {contractEmitter};
 
 //客户管理相关事件
 const crmEmitter = new EventEmitter();
 crmEmitter.IMPORT_CUSTOMER = "import_customer";
-export { crmEmitter };
+export {crmEmitter};
 

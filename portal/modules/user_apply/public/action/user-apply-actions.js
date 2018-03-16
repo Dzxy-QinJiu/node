@@ -5,13 +5,15 @@ var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scro
  */
 function UserApplyActions() {
     this.generateActions(
-        "getApplyList" //获取申请列表
-        , "setLastApplyId" //设置当前展示列表中最后一个id
-        , "changeApplyListType"//更改筛选类型
-        , "changeSearchInputValue"//修改搜索框的值
-        , "setSelectedDetailItem"//设置当前要查看详情的申请
-        , 'setShowUpdateTip'//设置是否展示更新提示
-        , 'getApplyById'//根据id获取申请（实际是获取申请的详情）
+        "getApplyList", //获取申请列表
+        "setLastApplyId", //设置当前展示列表中最后一个id
+        "changeApplyListType",//更改筛选类型
+        "changeSearchInputValue",//修改搜索框的值
+        "setSelectedDetailItem",//设置当前要查看详情的申请
+        'setShowUpdateTip',//设置是否展示更新提示
+        'getApplyById',//根据id获取申请（实际是获取申请的详情）
+        'refreshUnreadReplyList',//刷新未读回复列表
+        'clearUnreadReplyById'//清除未读回复列表中已读的回复
     );
     //获取申请列表
     this.getApplyList = function (obj) {

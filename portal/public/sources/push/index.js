@@ -74,7 +74,7 @@ function listenOnMessage(data) {
                 break;
             case "reply":
                 //批复类型
-                if(!userData.hasRole("realm_manager")){
+                if (!userData.hasRole("realm_manager")) {
                     //批复类型的通知，不通知管理员
                     notifyReplyInfo(data);
                 }
@@ -125,9 +125,9 @@ function listenSystemNotice(notice) {
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
-           //停用客户登录的通知不自动关闭
+            //停用客户登录的通知不自动关闭
             var isClosedByClick = false;
-            if (notice.type === SYSTEM_NOTICE_TYPES.DISABLE_CUSTOMER_LOGIN){
+            if (notice.type === SYSTEM_NOTICE_TYPES.DISABLE_CUSTOMER_LOGIN) {
                 isClosedByClick = true;
             }
             //桌面通知的展示
@@ -162,7 +162,7 @@ function showDesktopNotification(title, tipContent, isClosedByClick) {
             if (!isClosedByClick) {
                 setTimeout(function () {
                     notification.close();
-                },  TIMEOUTDELAY.closeTimeDelay);
+                }, TIMEOUTDELAY.closeTimeDelay);
             }
         }
 }
@@ -407,6 +407,7 @@ function disconnectListener() {
         socketIo.off('phonemsg', phoneEventListener);
         socketIo.off('scheduleAlertMsg', scheduleAlertListener);
         socketIo.off('system_notice', listenSystemNotice);
+        socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -462,6 +463,8 @@ function startSocketIo() {
         socketIo.on('phonemsg', phoneEventListener);
         //监听日程管理
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
+        //申请审批未读回复的监听
+        socketIo.on('apply_unread_reply', applyUnreadReplyListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
@@ -469,6 +472,36 @@ function startSocketIo() {
         // 判断是否已启用桌面通知
         notificationCheckPermission();
     });
+}
+//申请审批未读回复的监听
+function applyUnreadReplyListener(applyUnreadReplyList) {
+    const APPLY_UNREAD_REPLY = "apply_unread_reply";
+    let userId = userData.getUserData().user_id;
+    //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
+    let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+    let applyUnreadReplyObj = {};//{userId1:unreadList1,userId2:unreadList2}
+    if (applyUnreadReply) {
+        applyUnreadReplyObj = JSON.parse(applyUnreadReply);
+        //sessionStorage中已存的未读回复列表
+        let oldUnreadList = applyUnreadReplyObj[userId];
+        if (_.isArray(oldUnreadList) && oldUnreadList.length) {
+            if (_.isArray(applyUnreadReplyList)) {
+                //及时推送的新回复列表（push_type = 0）
+                if (applyUnreadReplyList[0] && applyUnreadReplyList[0].push_type == 0) {
+                    //将及时推送的新回复加入到已有的列表中
+                    applyUnreadReplyObj[userId] = oldUnreadList.concat(applyUnreadReplyList);
+                } else {//所有未读的回复列表
+                    applyUnreadReplyObj[userId] = applyUnreadReplyList;
+                }
+            }
+        } else {
+            applyUnreadReplyObj[userId] = applyUnreadReplyList;
+        }
+    } else {
+        applyUnreadReplyObj[userId] = applyUnreadReplyList;
+    }
+    sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
+    notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);
 }
 // 判断是否已启用桌面通知
 function notificationCheckPermission() {
