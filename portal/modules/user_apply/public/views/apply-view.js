@@ -19,11 +19,19 @@ import Trace from "LIB_DIR/trace";
 var ApplyTabContent = React.createClass({
 
     fetchApplyList: function () {
+        //如果是待审批的请求，获取到申请列表后，重新获取下待审批的数量。
+        // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? "pass" : this.state.applyListType
+        }, () => {
+            console.log("getApplyList回调，this.state.applyListType=" + this.state.applyListType);
+            if (this.state.applyListType === 'false') {
+                //触发重新获取未读数的消息
+                notificationEmitter.emit(notificationEmitter.GET_MESSAGE_COUNT);
+            }
         });
     },
     componentDidMount: function () {

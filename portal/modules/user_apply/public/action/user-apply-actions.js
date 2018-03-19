@@ -16,12 +16,13 @@ function UserApplyActions() {
         'clearUnreadReplyById'//清除未读回复列表中已读的回复
     );
     //获取申请列表
-    this.getApplyList = function (obj) {
+    this.getApplyList = function (obj, callback) {
         this.dispatch({loading: true, error: false});
         var _this = this;
         UserAjax.getApplyList(obj).then(function (data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: data});
+            (typeof callback === "function") && callback();
         }, function (errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

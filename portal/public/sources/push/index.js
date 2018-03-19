@@ -410,6 +410,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
+        notificationEmitter.removeListener(notificationEmitter.GET_MESSAGE_COUNT, getMessageCount);
     }
 }
 /**
@@ -420,37 +421,10 @@ function startSocketIo() {
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
     socketIo.on('connect', function () {
-        //待审批数、及未读数的权限
-        if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") || hasPrivilege("APP_USER_APPLY_LIST")) {
-            let type = "";
-            if (userData.hasRole("salesmanager")) {
-                //只获取未读数，舆情秘书不展示待审批的申请
-                type = "unread";
-            } else {
-                if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") && hasPrivilege("APP_USER_APPLY_LIST")) {
-                    //获取未读数和未审批数
-                    type = "all";
-                } else if (hasPrivilege("APP_USER_APPLY_LIST")) {
-                    //只获取待审批数
-                    type = "unapproved";
-                } else if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST")) {
-                    //只获取未读数
-                    type = "unread";
-                }
-            }
-            //获取消息未读数
-            getNotificationUnread({type: type}, () => {
-                //获取完未读数后，监听node端推送的弹窗消息
-                socketIo.on('mes', listenOnMessage);
-                //监听系统消息
-                socketIo.on('system_notice', listenSystemNotice);
-            });
-        } else {
-            //获取完未读数后，监听node端推送的弹窗消息
-            socketIo.on('mes', listenOnMessage);
-            //监听系统消息
-            socketIo.on('system_notice', listenSystemNotice);
-        }
+        //监听重新获取消息数的事件，用于特殊情况下，再重新获取一次消息数
+        notificationEmitter.on(notificationEmitter.GET_MESSAGE_COUNT, getMessageCount);
+        // 获取消息数后添加监听
+        getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息
         socketIo.on('offline', listenOnOffline);
         //监听session过期的消息
@@ -472,6 +446,46 @@ function startSocketIo() {
         // 判断是否已启用桌面通知
         notificationCheckPermission();
     });
+}
+
+/**
+ * 获取消息数
+ * @param callback 获取消息数后的回调函数
+ */
+function getMessageCount(callback) {
+    //待审批数、及未读数的权限
+    if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") || hasPrivilege("APP_USER_APPLY_LIST")) {
+        let type = "";
+        if (userData.hasRole("salesmanager")) {
+            //只获取未读数，舆情秘书不展示待审批的申请
+            type = "unread";
+        } else {
+            if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST") && hasPrivilege("APP_USER_APPLY_LIST")) {
+                //获取未读数和未审批数
+                type = "all";
+            } else if (hasPrivilege("APP_USER_APPLY_LIST")) {
+                //只获取待审批数
+                type = "unapproved";
+            } else if (hasPrivilege("NOTIFICATION_APPLYFOR_LIST")) {
+                //只获取未读数
+                type = "unread";
+            }
+        }
+        //获取消息未读数
+        getNotificationUnread({type: type}, callback);
+    } else {
+        typeof callback === "function" && callback();
+    }
+
+}
+//添加未读数的监听，包括申请审批，系统消息等
+function unreadListener() {
+    if (socketIo) {
+        //获取完未读数后，监听node端推送的弹窗消息
+        socketIo.on('mes', listenOnMessage);
+        //监听系统消息
+        socketIo.on('system_notice', listenSystemNotice);
+    }
 }
 //申请审批未读回复的监听
 function applyUnreadReplyListener(applyUnreadReplyList) {
@@ -541,12 +555,12 @@ function getNotificationUnread(queryObj, callback) {
             });
             //更新全局变量里存储的未读数，以便在业务逻辑里使用
             updateGlobalUnreadStorage(messages);
-            if (callback) {
+            if (typeof callback === "function") {
                 callback();
             }
         },
         error: () => {
-            if (callback) {
+            if (typeof callback === "function") {
                 callback();
             }
         }
