@@ -60,7 +60,12 @@ const OTHER_FILTER_ITEMS = {
     INTEREST: "interest",//关注的客户
     MULTI_ORDER: "multi_order"//多个订单的客户
 };
-
+//标签选项下的特殊标签
+const SPECIAL_LABELS = [
+    Intl.get("crm.tag.unknown", "未打标签的客户"),
+    Intl.get("crm.sales.clue", "线索"),
+    Intl.get("crm.qualified.roll.out", "转出")
+];
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
     THIRTY_DAY: 30 * day,//30天
@@ -546,34 +551,37 @@ var Crm = React.createClass({
         }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
-            //未打标签的处理
-            if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
-                unexist.push("labels");
-                delete condition.labels;
-            } else if (condition.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) != -1
-                || condition.labels.indexOf(Intl.get("crm.sales.clue", "线索")) != -1) {
-                //线索、转出不可操作标签的筛选处理
-                condition.immutable_labels = [];
-                if (condition.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) != -1) {
-                    condition.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
-                    //过滤掉转出标签
-                    condition.labels = _.filter(condition.labels, label => label !== Intl.get("crm.qualified.roll.out", "转出"));
+            //未打标签的客户、线索和转出标签的特殊处理
+            SPECIAL_LABELS.some((label, index) => {
+                if (_.contains(condition.labels, label)) {
+                    if (index === 0) {
+                        //未打标签的客户筛选处理
+                        unexist.push("labels");
+                        delete condition.labels;
+                        return true;//终止循环（未打标签的客户与其他标签互斥）
+                    } else {//线索、转出不可操作标签的处理
+                        if (_.isArray(condition.immutable_labels)) {
+                            condition.immutable_labels.push(label);
+                        } else {
+                            condition.immutable_labels = [label];
+                        }
+                        //过滤掉转出或线索标签
+                        condition.labels = _.filter(condition.labels, item => item !== label);
+                    }
                 }
-                if (condition.labels.indexOf(Intl.get("crm.sales.clue", "线索")) != -1) {
-                    condition.immutable_labels.push(Intl.get("crm.sales.clue", "线索"));
-                    //过滤掉线索标签
-                    condition.labels = _.filter(condition.labels, label => label !== Intl.get("crm.sales.clue", "线索"));
+                //遍历到最后一项特殊标签时的处理
+                if (index == (SPECIAL_LABELS.length - 1)) {
+                    if (_.isArray(condition.immutable_labels) && condition.immutable_labels.length) {
+                        term_fields.push("immutable_labels");//精确匹配线索、转出标签的筛选
+                    }
+                    //线索、转出标签处理完后，普通标签的处理
+                    if (_.isArray(condition.labels) && condition.labels.length > 0) {
+                        term_fields.push("labels");
+                    } else {
+                        delete condition.labels;
+                    }
                 }
-                term_fields.push("immutable_labels");//精确匹配
-                //剩下普通标签的筛选
-                if (condition.labels.length == 0) {
-                    delete condition.labels;
-                } else {
-                    term_fields.push("labels");
-                }
-            } else {//标签的筛选，需要精确匹配
-                term_fields.push("labels")
-            }
+            });
         }
         //竞品,精确匹配
         if (condition.competing_products && condition.competing_products.length) {
