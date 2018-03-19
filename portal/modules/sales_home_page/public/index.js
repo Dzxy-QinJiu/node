@@ -159,7 +159,7 @@ var SalesHomePage = React.createClass({
         }
         return authType;
     },
-    getPhontTop10Params: function (params) {
+    getPhoneTop10Params: function () {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -167,10 +167,12 @@ var SalesHomePage = React.createClass({
             filter_phone: false,// 是否过滤114电话号码
             filter_invalid_phone: false//是否过滤客服电话号码
         };
-        if (params.team_id) {
-            queryParams.team_id = params.team_id;
-        } else if (params.member_id) {
-            queryParams.member_id = params.member_id;
+        if (this.state.currShowSalesman) {
+            //查看当前选择销售的统计数据
+            queryParams.member_id = this.state.currShowSalesman.userId;
+        } else if (this.state.currShowSalesTeam) {
+            //查看当前选择销售团队内所有成员的统计数据
+            queryParams.team_id = this.state.currShowSalesTeam.group_id;
         }
         return queryParams;
     },
@@ -187,7 +189,7 @@ var SalesHomePage = React.createClass({
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
         let callTotalAuth = this.getCallTotalAuth();
-        let top10Params = this.getPhontTop10Params(queryParams);
+        let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
         SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
         var queryObj = {};
@@ -375,6 +377,10 @@ var SalesHomePage = React.createClass({
     getChangeCallTypeData: function () {
         let queryParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(queryParams);
+        let callTotalAuth = this.getCallTotalAuth();
+        let top10Params = this.getPhoneTop10Params();
+        //通话总次数、总时长TOP10
+        SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
     },
 
     // 选择通话类型的值
@@ -450,7 +456,7 @@ var SalesHomePage = React.createClass({
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}
                 <div className="phone-table-block" style={{height: this.getPhoneListBlockHeight()}}>
-                    <GeminiScrollbar enabled={this.props.scrollbarEnabled}>
+                    <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
                                    loading={this.state.isLoadingPhoneList}
                                    scroll={{x: this.getPhoneTableMinWidth()}}
@@ -493,7 +499,6 @@ var SalesHomePage = React.createClass({
                     dataSource={dataObj.data}
                     columns={this.getCallDurTopColumn(titleObj)}
                     pagination={false}
-                    scroll={{x: this.getPhoneTableMinWidth()}}
                     bordered
                 />}
             </div>
@@ -616,6 +621,10 @@ var SalesHomePage = React.createClass({
         }, () => {
             var flag = this.state.isSaleTeamShow;
             storageUtil.set(key, flag, pageId);
+            //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
+            setTimeout(() => {
+                this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
+            }, 1000);
         })
     },
     //跳转到个人信息页面
