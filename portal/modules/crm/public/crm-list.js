@@ -541,7 +541,7 @@ var Crm = React.createClass({
             delete condition.qualify_label;
         }
         //销售角色的处理
-        if(condition.member_role){
+        if (condition.member_role) {
             term_fields.push("member_role");
         }
         //标签的处理
@@ -550,6 +550,27 @@ var Crm = React.createClass({
             if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
                 unexist.push("labels");
                 delete condition.labels;
+            } else if (condition.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) != -1
+                || condition.labels.indexOf(Intl.get("crm.sales.clue", "线索")) != -1) {
+                //线索、转出不可操作标签的筛选处理
+                condition.immutable_labels = [];
+                if (condition.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) != -1) {
+                    condition.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                    //过滤掉转出标签
+                    condition.labels = _.filter(condition.labels, label => label !== Intl.get("crm.qualified.roll.out", "转出"));
+                }
+                if (condition.labels.indexOf(Intl.get("crm.sales.clue", "线索")) != -1) {
+                    condition.immutable_labels.push(Intl.get("crm.sales.clue", "线索"));
+                    //过滤掉线索标签
+                    condition.labels = _.filter(condition.labels, label => label !== Intl.get("crm.sales.clue", "线索"));
+                }
+                term_fields.push("immutable_labels");//精确匹配
+                //剩下普通标签的筛选
+                if (condition.labels.length == 0) {
+                    delete condition.labels;
+                } else {
+                    term_fields.push("labels");
+                }
             } else {//标签的筛选，需要精确匹配
                 term_fields.push("labels")
             }
@@ -1059,7 +1080,11 @@ var Crm = React.createClass({
                 className: 'has-filter',
                 sorter: true,
                 render: function (text, record, index) {
-                    var tagsArray = record.labels ? record.labels : [];
+                    var tagsArray = _.isArray(record.labels) ? record.labels : [];
+                    //线索、转出标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
+                    if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
+                        tagsArray = record.immutable_labels.concat(tagsArray);
+                    }
                     var tags = tagsArray.map(function (tag, index) {
                         return (<Tag key={index}>{tag}</Tag>);
                     });
@@ -1156,7 +1181,7 @@ var Crm = React.createClass({
             {
                 title: Intl.get("common.operate", "操作"),
                 width: '60px',
-                render:  (text, record, index) => {
+                render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.name_repeat || record.phone_repeat;
                     //是否处于导入预览状态
@@ -1172,7 +1197,7 @@ var Crm = React.createClass({
                         <span className="cus-op">
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
-                                        onClick={isRepeat? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
+                                        onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
                             ) : null}
                         </span>

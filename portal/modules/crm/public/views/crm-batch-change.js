@@ -152,7 +152,7 @@ var CrmBatchChange = React.createClass({
 
         const tag = e.target.value.trim();
         if (!tag) return;
-        //”线索“、”转出“标签“不可以添加
+        //”线索“、”转出“标签，不可以添加
         if (isClueTag(tag) || isTurnOutTag(tag)) {
             message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
             return;

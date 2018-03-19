@@ -167,12 +167,12 @@ CrmStore.prototype.editBasicSuccess = function (newBasic) {
                 updateCustomer[key] = newBasic[key];
             }
             if (key === "member_role") {//转出客户时，打上”转出“标签
-                if (_.isArray(updateCustomer.labels)) {
-                    if (updateCustomer.labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
-                        updateCustomer.labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                if (_.isArray(updateCustomer.immutable_labels)) {
+                    if (updateCustomer.immutable_labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
+                        updateCustomer.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
                     }
                 } else {
-                    updateCustomer.labels = [Intl.get("crm.qualified.roll.out", "转出")];
+                    updateCustomer.immutable_labels = [Intl.get("crm.qualified.roll.out", "转出")];
                 }
 
             }
