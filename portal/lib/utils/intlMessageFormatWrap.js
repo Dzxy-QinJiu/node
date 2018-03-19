@@ -13,7 +13,7 @@ var IntlMessageFormatWrap = {
         let msg = messages[key];
         if (!msg) {
             //不存在返回null
-            return key + " is null,please translate it";
+            return "null";
         }
         if (options) {
             msg = new IntlMessageFormat(msg, code);
