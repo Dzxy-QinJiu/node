@@ -11,11 +11,9 @@ var IntlMessageFormatWrap = {
         //获取本地语言包
         const messages = Local.chooseLocale(code);
         let msg = messages[key];
-        if (msg == null) {
-            if (defaultMessage != null) {
-                return defaultMessage;
-            }
-            return key;
+        if (!msg) {
+            //不存在返回null
+            return "null";
         }
         if (options) {
             msg = new IntlMessageFormat(msg, code);
