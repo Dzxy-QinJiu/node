@@ -27,9 +27,9 @@ import userData from "PUB_DIR/sources/user-data";
 //获取是否是普通销售
 function getIsCommonSales() {
     let userObj = userData.getUserData();
-    if("isCommonSales" in userObj){
+    if ("isCommonSales" in userObj) {
         return userObj.isCommonSales;
-    } else{//是否是普通销售，默认是，普通销售不展示转出按钮
+    } else {//是否是普通销售，默认是，普通销售不展示转出按钮
         return true;
     }
 }
@@ -157,7 +157,7 @@ var BasicData = React.createClass({
         let userObj = userData.getUserData();
         let userId = userObj.user_id;
         //赋值过是否是普通销售
-        if("isCommonSales" in userObj) return;
+        if ("isCommonSales" in userObj) return;
         //有获取所有团队数据的权限（即：管理员或运营人员）
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
             userObj.isCommonSales = false;
@@ -207,6 +207,11 @@ var BasicData = React.createClass({
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
         var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
+        let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
+        //线索、转出标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
+        if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
+            tagArray = basicData.immutable_labels.concat(tagArray);
+        }
         return (
             <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
                 {this.state.basicIsLoading ? <Spin /> : (
@@ -254,7 +259,7 @@ var BasicData = React.createClass({
                                                 isMerge={this.props.isMerge}
                                                 updateMergeCustomer={this.props.updateMergeCustomer}
                                                 customerId={basicData.id}
-                                                labels={basicData.labels}
+                                                labels={tagArray}
                                                 modifySuccess={this.editBasicSuccess}
                                                 disabled={hasPrivilege("CUSTOMER_UPDATE_LABEL") ? false : true}
                                             />

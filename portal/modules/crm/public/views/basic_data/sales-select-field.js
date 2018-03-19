@@ -228,7 +228,7 @@ var SalesSelectField = React.createClass({
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
-                    //更新列表中的客户地域
+                    //更新列表中的销售人员
                     this.props.modifySuccess(submitData);
                 }
             }, errorMsg => {
@@ -243,7 +243,7 @@ var SalesSelectField = React.createClass({
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
-                    //更新列表中的客户地域
+                    //更新列表中的销售人员
                     this.props.modifySuccess(submitData);
                 }
             }, errorMsg => {

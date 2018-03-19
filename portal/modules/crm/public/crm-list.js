@@ -60,7 +60,12 @@ const OTHER_FILTER_ITEMS = {
     INTEREST: "interest",//关注的客户
     MULTI_ORDER: "multi_order"//多个订单的客户
 };
-
+//标签选项下的特殊标签
+const SPECIAL_LABELS = [
+    Intl.get("crm.tag.unknown", "未打标签的客户"),
+    Intl.get("crm.sales.clue", "线索"),
+    Intl.get("crm.qualified.roll.out", "转出")
+];
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
     THIRTY_DAY: 30 * day,//30天
@@ -541,18 +546,42 @@ var Crm = React.createClass({
             delete condition.qualify_label;
         }
         //销售角色的处理
-        if(condition.member_role){
+        if (condition.member_role) {
             term_fields.push("member_role");
         }
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
-            //未打标签的处理
-            if (condition.labels.indexOf(Intl.get("crm.tag.unknown", "未打标签的客户")) != -1) {
-                unexist.push("labels");
-                delete condition.labels;
-            } else {//标签的筛选，需要精确匹配
-                term_fields.push("labels")
-            }
+            //未打标签的客户、线索和转出标签的特殊处理
+            SPECIAL_LABELS.some((label, index) => {
+                if (_.contains(condition.labels, label)) {
+                    if (index === 0) {
+                        //未打标签的客户筛选处理
+                        unexist.push("labels");
+                        delete condition.labels;
+                        return true;//终止循环（未打标签的客户与其他标签互斥）
+                    } else {//线索、转出不可操作标签的处理
+                        if (_.isArray(condition.immutable_labels)) {
+                            condition.immutable_labels.push(label);
+                        } else {
+                            condition.immutable_labels = [label];
+                        }
+                        //过滤掉转出或线索标签
+                        condition.labels = _.filter(condition.labels, item => item !== label);
+                    }
+                }
+                //遍历到最后一项特殊标签时的处理
+                if (index == (SPECIAL_LABELS.length - 1)) {
+                    if (_.isArray(condition.immutable_labels) && condition.immutable_labels.length) {
+                        term_fields.push("immutable_labels");//精确匹配线索、转出标签的筛选
+                    }
+                    //线索、转出标签处理完后，普通标签的处理
+                    if (_.isArray(condition.labels) && condition.labels.length > 0) {
+                        term_fields.push("labels");
+                    } else {
+                        delete condition.labels;
+                    }
+                }
+            });
         }
         //竞品,精确匹配
         if (condition.competing_products && condition.competing_products.length) {
@@ -1059,7 +1088,11 @@ var Crm = React.createClass({
                 className: 'has-filter',
                 sorter: true,
                 render: function (text, record, index) {
-                    var tagsArray = record.labels ? record.labels : [];
+                    var tagsArray = _.isArray(record.labels) ? record.labels : [];
+                    //线索、转出标签不可操作的标签，在immutable_labels属性中，和普通标签一起展示
+                    if (_.isArray(record.immutable_labels) && record.immutable_labels.length) {
+                        tagsArray = record.immutable_labels.concat(tagsArray);
+                    }
                     var tags = tagsArray.map(function (tag, index) {
                         return (<Tag key={index}>{tag}</Tag>);
                     });
@@ -1156,7 +1189,7 @@ var Crm = React.createClass({
             {
                 title: Intl.get("common.operate", "操作"),
                 width: '60px',
-                render:  (text, record, index) => {
+                render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.name_repeat || record.phone_repeat;
                     //是否处于导入预览状态
@@ -1172,7 +1205,7 @@ var Crm = React.createClass({
                         <span className="cus-op">
                             {isDeleteBtnShow ? (
                                 <Button className="order-btn-class" icon="delete"
-                                        onClick={isRepeat? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
+                                        onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get("common.delete", "删除")}/>
                             ) : null}
                         </span>
