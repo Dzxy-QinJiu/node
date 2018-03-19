@@ -27,10 +27,11 @@ var ApplyTabContent = React.createClass({
             keyword: this.state.searchKeyword,
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? "pass" : this.state.applyListType
         }, () => {
-            console.log("getApplyList回调，this.state.applyListType=" + this.state.applyListType);
-            if (this.state.applyListType === 'false') {
+           //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
+            if (this.state.dealApplyError == "error" && this.state.applyListType === 'false') {
                 //触发重新获取未读数的消息
                 notificationEmitter.emit(notificationEmitter.GET_MESSAGE_COUNT);
+                this.setState({dealApplyError: "success"});
             }
         });
     },
@@ -75,11 +76,12 @@ var ApplyTabContent = React.createClass({
     refreshUnreadReplyList: function (unreadReplyList) {
         UserApplyActions.refreshUnreadReplyList(unreadReplyList);
     },
-    updateSelectedItem: function (approval) {
+    updateSelectedItem: function (message) {
         const selectedDetailItem = this.state.selectedDetailItem;
         selectedDetailItem.isConsumed = 'true';
-        selectedDetailItem.approval_state = approval;
-        this.setState({selectedDetailItem});
+        selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
+        let dealApplyError = message && message.status || this.state.dealApplyError;//处理申请成功还是失败,"success"/"error"
+        this.setState({selectedDetailItem, dealApplyError});
     },
     onWindowResize: function () {
         this.setState(this.getStoreData());

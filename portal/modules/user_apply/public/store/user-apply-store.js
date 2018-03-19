@@ -45,6 +45,8 @@ UserApplyStore.prototype.resetState = function () {
     this.allApps = [];
     //有未读回复的列表
     this.unreadReplyList = [];
+    //处理申请操作失败
+    this.dealApplyError = "success";
 };
 //刷新未读回复列表;
 UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
