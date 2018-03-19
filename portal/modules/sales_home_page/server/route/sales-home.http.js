@@ -1,60 +1,16 @@
 /**
- * Created by wangliping on 2016/9/6
- * * 请求路径 - app
+ * Created by zhangshujuan on 2018/2/27.
  */
 require("../action/sales-home-controller");
-
 module.exports = {
     module: "sales_home_page/server/action/sales-home-controller",
     routes: [{
-        "method": "get",
-        "path": "/rest/sales/customer",
-        "handler": "getSalesCustomer",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": ["SALES_CUSTOMER_LIST"]
-    }, {//获取销售对应的通话状态
-        "method": "get",
-        "path": "/rest/sales/call_status",
-        "handler": "getSalesCallStatus",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": ["CRM_USER_PHONE_STATUS"]
-    },{
-        "method": "get",
-        "path": "/rest/crm/sales_team_tree",
-        "handler": "getSalesTeamTree",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": []
-    }, {
         "method": "get",
         "path": '/rest/sales/phone/:type',
         "handler": "getSalesPhone",
         "passport": {
             "needLogin": true
         }
-    }, {
-        "method": "get",
-        "path": '/rest/sales/user',
-        "handler": "getSalesUser",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": ["SALES_USER_LIST"]
-    }, {
-        "method": "get",
-        "path": '/rest/sales/contract',
-        "handler": "getSalesContract",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": [
-            "SALES_CONTRACT_LIST"
-        ]
     }, {
         "method": "get",
         "path": "/rest/expireuser",
@@ -65,26 +21,36 @@ module.exports = {
         "privileges": [
             "GET_EXPIRE_USER_STATISTIC"
         ]
-    }, {
-        "method": "get",
-        "path": "/rest/getWebsiteConfig",
-        "handler": "getWebsiteConfig",
+    },{
+        "method": "post",
+        "path": "/rest/contact_customer/:pageSize/:sortFeild/:sortOrder",
+        "handler": "queryContactCustomer",
         "passport": {
             "needLogin": true
         },
         "privileges": [
-            "MEMBER_WEBSITE_CONFIG"
+            'CRM_LIST_CUSTOMERS'
         ]
     }, {
         "method": "post",
-        "path": "/rest/setWebsiteConfig",
-        "handler": "setWebsiteConfig",
+        "path": "/rest/get_recent_login_customer/:type",
+        "handler": "getRecentLoginCustomer",
         "passport": {
             "needLogin": true
         },
-        "privileges": [
-            "MEMBER_WEBSITE_CONFIG"
-        ]
-    },
-    ]
+    },{
+        "method": "post",
+        "path": "/rest/get_recent_login_customer_count/:type",
+        "handler": "getRecentLoginCustomerCount",
+        "passport": {
+            "needLogin": true
+        },
+    },{
+        "method": "post",
+        "path": "/rest/get_will_expire_customer/:type",
+        "handler": "getWillExpireCustomer",
+        "passport": {
+            "needLogin": true
+        },
+    }]
 };

@@ -1,0 +1,46 @@
+@TOP_TIME_PANEL: #AAA;
+@TOP_TITLE_PANEL:#362C08;
+@SCHEDULE_CONTENT: #FFF;
+@BOTTOM_CUSTOMER: #EEE;
+@FONT_WHITE: #FFF;
+@FONT_999: #999;
+@FONT_333: #333;
+.schedule-item-container {
+  font-size: 16px;
+  margin-bottom: 10px;
+  .schedule-top-panel{
+    background: @TOP_TITLE_PANEL;
+    color:@FONT_WHITE;
+    padding: 3px 10px;
+  }
+  //中间内容区域
+  .schedule-content-panel {
+    background: @SCHEDULE_CONTENT;
+    //顶部时间面板
+    .top-time-panel {
+      .time-range {
+        display: inline-block;
+        background: @BOTTOM_CUSTOMER;
+      }
+
+    }
+    .schedule-title {
+      color: @FONT_333;
+      padding: 5px 20px 0 10px;
+      overflow: hidden;
+      button{
+        float: right;
+      }
+    }
+    .schedule-content {
+      color: @FONT_999;
+      font-size: 14px;
+      padding: 0 10px 5px 10px;
+    }
+  }
+  .recent-contacter-detail {
+    background: @BOTTOM_CUSTOMER;
+    padding: 5px 10px;
+  }
+
+}

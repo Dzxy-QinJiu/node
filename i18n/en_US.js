@@ -1769,8 +1769,8 @@ var en_US = {
     "companay.hotline": "Service Hotline:400-677-0986",//服务热线: 400-677-0986
     "company.qq": "QQ:{qq}",//企业QQ: 4006770986
     "login.fail.login": "Login service is temporarily unavailable. Please try again later",//登录服务暂时不可用，请稍后重试
-    "customer.input.customer.trace.content": "Please fill in the customer follow-up record",//请填写客户跟进记录内容
-    "customer.add.customer.trace.detail": "Please add details of customer follow-up record",//请补充客户跟进记录详情
+    "customer.input.customer.trace.content": "Please fill in the customer follow-up record, and you cannot edit them!",//请填写跟进内容，保存后不可修改
+    "customer.add.customer.trace.detail": "Please add details of customer follow-up record, and you cannot edit them!",//请补充客户跟进记录详情,保存后不可修改
     "customer.contact.phone": "contact number",//联系电话
     "user.setting.roles": "Set the role",//设置角色
     //补充

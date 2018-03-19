@@ -21,7 +21,7 @@ import AppUserManage from "MOD_DIR/app_user_manage/public";
 import Trace from "LIB_DIR/trace";
 const Option = Select.Option;
 const PAGE_SIZE = 20;
-const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
+import {STATUS } from "PUB_DIR/sources/utils/consts";
 const STATUS_ARRAY = [{
     name: Intl.get("notification.system.untreated", "未处理"),
     value: STATUS.UNHANDLED

@@ -1,0 +1,32 @@
+@BACKGROUND_WHITE: #FFF;
+@FONT_SIZE:16px;
+.customer-notice-message-container {
+  margin-bottom: 10px;
+  font-size: @FONT_SIZE;
+  background: @BACKGROUND_WHITE;
+  .customer-notice-content {
+    padding: 5px;
+    .customer-title{
+      margin-bottom: 10px;
+    }
+    .customer-content{
+        .login-detail-container{
+          .login-detail-item{
+            overflow: hidden;
+            .login-detail-name{
+              float: left;
+              width: 200px;
+            }
+            .login-detail-content{
+              float: left;
+              margin-left: 40px;
+            }
+          }
+          .login-detail-item:not(:first-child){
+            margin-top:10px;
+          }
+
+        }
+    }
+  }
+}
