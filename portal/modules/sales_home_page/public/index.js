@@ -26,6 +26,9 @@ var storageUtil = require("LIB_DIR/utils/storage-util.js");
 var pageId = oplateConsts.PAGE_ID.SALES_HOME;
 var key = "hamburger-button-flag";//用于记录展开或者关闭销售团队列表的状态
 import history from 'PUB_DIR/sources/history';
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
+
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -120,11 +123,11 @@ var SalesHomePage = React.createClass({
     getWebConfig: function () {
         SalesHomeAction.getWebsiteConfig();
     },
-    getPhoneListHeight: function () {
+    getPhoneListBlockHeight: function () {
         let phoneListHeight = null;
         if (this.state.scrollbarEnabled) {
             phoneListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
-                layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM - layoutConstant.THEAD;
+                layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
         }
         return phoneListHeight
     },
@@ -148,6 +151,31 @@ var SalesHomePage = React.createClass({
         }
         return queryParams;
     },
+    //通话总次数和总时长统计权限
+    getCallTotalAuth(){
+        let authType = "user";//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
+        if (hasPrivilege("CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER")) {
+            authType = "manager";
+        }
+        return authType;
+    },
+    getPhoneTop10Params: function () {
+        let queryParams = {
+            start_time: this.state.start_time || 0,
+            end_time: this.state.end_time || moment().toDate().getTime(),
+            type: this.state.callType,
+            filter_phone: false,// 是否过滤114电话号码
+            filter_invalid_phone: false//是否过滤客服电话号码
+        };
+        if (this.state.currShowSalesman) {
+            //查看当前选择销售的统计数据
+            queryParams.member_id = this.state.currShowSalesman.userId;
+        } else if (this.state.currShowSalesTeam) {
+            //查看当前选择销售团队内所有成员的统计数据
+            queryParams.team_id = this.state.currShowSalesTeam.group_id;
+        }
+        return queryParams;
+    },
     //刷新数据
     refreshSalesListData: function () {
         let queryParams = this.getQueryParams();
@@ -160,6 +188,10 @@ var SalesHomePage = React.createClass({
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
+        let callTotalAuth = this.getCallTotalAuth();
+        let top10Params = this.getPhoneTop10Params();
+        //通话总次数、总时长TOP10
+        SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
         var queryObj = {};
         if (queryParams.member_id) {
             queryObj.member_id = queryParams.member_id;
@@ -345,6 +377,10 @@ var SalesHomePage = React.createClass({
     getChangeCallTypeData: function () {
         let queryParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(queryParams);
+        let callTotalAuth = this.getCallTotalAuth();
+        let top10Params = this.getPhoneTop10Params();
+        //通话总次数、总时长TOP10
+        SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
     },
 
     // 选择通话类型的值
@@ -419,14 +455,87 @@ var SalesHomePage = React.createClass({
         } else if (this.state.activeView == viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}
-                <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
-                           loading={this.state.isLoadingPhoneList}
-                           scroll={{x: this.getPhoneTableMinWidth(), y: this.getPhoneListHeight()}}
-                           pagination={false} bordered util={{zoomInSortArea: true}}
-                           onChange={this.onTableChange}
-                />
+                <div className="phone-table-block" style={{height: this.getPhoneListBlockHeight()}}>
+                    <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
+                        <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
+                                   loading={this.state.isLoadingPhoneList}
+                                   scroll={{x: this.getPhoneTableMinWidth()}}
+                                   pagination={false} bordered util={{zoomInSortArea: true}}
+                                   onChange={this.onTableChange}
+                        />
+                        {/*根据电话的排序的通话次数TOP10*/}
+                        {this.renderCallTopTen(this.state.callTotalCountObj, {
+                            title: Intl.get("call.analysis.total.count", "通话总次数"),
+                            dataKey: "count"
+                        })}
+                        {/*根据电话的排序的通话总时长TOP10*/}
+                        {this.renderCallTopTen(this.state.callTotalTimeObj, {
+                            title: Intl.get("call.analysis.total.time", "通话总时长"),
+                            dataKey: "sum"
+                        })}
+                    </GeminiScrollbar>
+                </div>
             </div>);
         }
+    },
+    /* 渲染总时长、总次数为top10的列表
+     * titleObj={title:"通话时长",dataKey:"billsec"}
+     */
+    renderCallTopTen(dataObj, titleObj){
+        return (
+            <div className="call-duration-top-ten">
+                <div className="call-duration-title">
+                    {titleObj.title}TOP10:
+                </div>
+                {dataObj.loading ? <Spinner /> : dataObj.errMsg ? (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={titleObj.errMsg}
+                            type="error"
+                            showIcon={true}
+                        />
+                    </div>
+                ) : <AntcTable
+                    dataSource={dataObj.data}
+                    columns={this.getCallDurTopColumn(titleObj)}
+                    pagination={false}
+                    bordered
+                />}
+            </div>
+        );
+    },
+    // TOP10数据列表
+    getCallDurTopColumn(titleObj){
+        return [
+            {
+                title: Intl.get("common.phone", "电话"),
+                dataIndex: 'dst',
+                width: '120',
+                className: 'table-data-align-right',
+                key: 'call_number'
+            }, {
+                title: titleObj.title,
+                dataIndex: titleObj.dataKey,
+                width: '100',
+                className: 'table-data-align-right',
+                key: 'holding_time',
+                render: function (data) {
+                    return <div>{titleObj.dataKey === "count" ? data : TimeUtil.getFormatTime(data)}</div>;
+                }
+            }, {
+                title: Intl.get("call.record.customer", "客户"),
+                dataIndex: 'customer_name',
+                width: '250',
+                className: 'table-data-align-left',
+                key: 'customer_name'
+            }, {
+                title: Intl.get("call.record.caller", "呼叫者"),
+                dataIndex: 'nick_name',
+                width: '70',
+                className: 'table-data-align-left',
+                key: 'nick_name'
+            }
+        ];
     },
     onTableChange: function (pagination, filters, sorter) {
         this.setState({phoneSorter: sorter});
@@ -512,6 +621,10 @@ var SalesHomePage = React.createClass({
         }, () => {
             var flag = this.state.isSaleTeamShow;
             storageUtil.set(key, flag, pageId);
+            //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
+            setTimeout(() => {
+                this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
+            }, 1000);
         })
     },
     //跳转到个人信息页面
