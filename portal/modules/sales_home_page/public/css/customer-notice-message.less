@@ -1,32 +1,37 @@
 @BACKGROUND_WHITE: #FFF;
-@FONT_SIZE:16px;
+@FONT_SIZE: 16px;
 .customer-notice-message-container {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   font-size: @FONT_SIZE;
   background: @BACKGROUND_WHITE;
+  padding:16px;
   .customer-notice-content {
     padding: 5px;
-    .customer-title{
+    .customer-title {
       margin-bottom: 10px;
     }
-    .customer-content{
-        .login-detail-container{
-          .login-detail-item{
-            overflow: hidden;
-            .login-detail-name{
-              float: left;
-              width: 200px;
-            }
-            .login-detail-content{
-              float: left;
-              margin-left: 40px;
-            }
+    .customer-content {
+      .ant-table-thead {
+        background: #f5f5f5;
+      }
+      .login-detail-container {
+        .login-detail-item {
+          overflow: hidden;
+          .login-detail-name {
+            float: left;
+            width: 200px;
+            color: #2196F3;
           }
-          .login-detail-item:not(:first-child){
-            margin-top:10px;
+          .login-detail-content {
+            float: left;
+            margin-left: 40px;
           }
-
         }
+        .login-detail-item:not(:first-child) {
+          margin-top: 15px;
+        }
+
+      }
     }
   }
 }

@@ -5,6 +5,7 @@
  */
 require("../css/customer-notice-message.less");
 import {AntcTable} from "antc";
+import ContactItem from "./contact-item";
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -87,13 +88,12 @@ class CustomerNoticeMessage extends React.Component {
                     <div className="customer-title">
                         {message.customer_name}
                     </div>
-                    <div className="customer-content">
+                    {this.props.isRecentLoginCustomer ? null : <div className="customer-content">
                         <AntcTable dataSource={data}
                                    columns={this.getListColumn()}
                                    pagination={false}
                                    bordered/>
-                    </div>
-
+                    </div>}
                 </div>
             </div>
         )
@@ -102,8 +102,8 @@ class CustomerNoticeMessage extends React.Component {
 
 CustomerNoticeMessage.defaultProps = {
     customerNoticeMessage: {},
-    tableTitleTip: ""//table的标题
-
+    tableTitleTip: "",//table的标题
+    isRecentLoginCustomer: false,
 
 };
 export default CustomerNoticeMessage;

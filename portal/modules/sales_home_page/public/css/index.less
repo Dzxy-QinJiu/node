@@ -1,11 +1,12 @@
-@LEFT_BACKGROUND_COLOR: #f3f5f7;
+@BACKGROUND_COLOR: #f5f5f5;
 @RIGHT_BACKGROUND_COLOR:#AAA;
 @BACKGROUND_WHITE:#FFF;
 @FONT_WHITE:#FFF;
+@FONT_COLOR_999:#999;
 .sales_home_content {
   .topNav {
     padding: 0 !important;
-    margin-left: 30px;
+    margin-left: 16px;
   }
   .top_nav_content {
     ul {
@@ -51,32 +52,34 @@
     }
     //左侧客户列表
     .customer-list-left {
-      background: @LEFT_BACKGROUND_COLOR;
+      //float: left;
+      //width: 250px;
       ul li {
-        height: 50px;
-        font-size: 18px;
-        padding: 15px 10px;
+        height: 48px;
+        font-size: 16px;
+        padding: 16px;
         cursor: pointer;
         .data-total {
           float: right;
         }
       }
       li.customer-item.selected-customer-item{
-        background: @RIGHT_BACKGROUND_COLOR;
-        color:#fff;
+        color:#2196F3;
+        border-left:4px solid #2196F3;
       }
     }
     //右侧客户详情
     .customer-content-right {
-      background: @RIGHT_BACKGROUND_COLOR;
-      padding: 30px;
+      background: @BACKGROUND_COLOR;
+      padding: 16px;
+      //margin-left: 250px;
       //今日日程列表
       .schedule-day-list{
         height: 100%;
         .schedule-list-tip{
-          font-size: 16px;
-          margin-bottom: 5px;
-          color:@FONT_WHITE;
+          font-size: 12px;
+          margin-bottom: 8px;
+          color:@FONT_COLOR_999;
         }
       }
       //今日过期日程列表
@@ -100,6 +103,10 @@
     }
     //停用后登录
     .app-illeage-container{
+      height: 100%;
+    }
+    //即将过期的签约客户
+    .will-expire-assigned-customer-container{
       height: 100%;
     }
 

@@ -14,6 +14,7 @@ import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE} from "PUB_DIR/sources/utils/con
 import Trace from "LIB_DIR/trace";
 import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
+import WillExpireItem from "./view/will-expire-item";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -231,27 +232,35 @@ var SalesHomePage = React.createClass({
     renderCustomerContent: function () {
         var rightPanel = null;
         switch (this.state.showCustomerPanel) {
+            //今日日程列表
             case ALL_LISTS_TYPE.SCHEDULE_TODAY:
                 rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.SCHEDULE_TODAY);
                 break;
+            //今日过期日程
             case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
                 rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY);
                 break;
+            //即将过期的试用客户
             case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-                rightPanel = null;
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
                 break;
+            //即将过期的签约客户
             case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-                rightPanel = null;
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER);
                 break;
+            //停用客户登录
             case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-                rightPanel = this.renderAPPIlleageAndConcernedContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
                 break;
+            //关注客户登录
             case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-                rightPanel = this.renderAPPIlleageAndConcernedContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
                 break;
+            //最近X日登录的客户
             case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-                rightPanel = null;
+                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER);
                 break;
+            //重复客户
             case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
                 rightPanel = <CustomerRepeat noNeedClose={true}/>;
                 break;
@@ -260,7 +269,7 @@ var SalesHomePage = React.createClass({
     },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
-        Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开"+ customerType +"类型客户面板");
+        Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
         this.setState({
             listenScrollBottom: true,
             showCustomerPanel: customerType
@@ -290,6 +299,7 @@ var SalesHomePage = React.createClass({
                                     scheduleItemDetail={item}
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowTopTitle={false}
+                                    isShowScheduleTimerange={true}
                                 />
                             )
                         })
@@ -299,9 +309,9 @@ var SalesHomePage = React.createClass({
                             return (
                                 <ScheduleItem
                                     scheduleItemDetail={item}
-                                    isShowContentTopTimerange={false}
                                     isShowTopTitle={false}
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
+                                    isShowScheduleTimerange={false}
                                 />
                             )
                         })
@@ -322,8 +332,8 @@ var SalesHomePage = React.createClass({
                                 <ScheduleItem
                                     scheduleType={ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY}
                                     scheduleItemDetail={item}
-                                    isShowContentTopTimerange={false}
                                     isShowTopTitle={true}
+                                    isShowScheduleTimerange={false}
                                 />
                             )
                         })}
@@ -332,8 +342,75 @@ var SalesHomePage = React.createClass({
             )
         }
     },
-    //渲染关注客户和停用客户登录情况
-    renderAPPIlleageAndConcernedContent: function (type) {
+    //渲染即将到期的试用客户和签约客户
+    renderWillExpiredTryAndAssignedCustomer: function (type) {
+        var data = [];
+        if (type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
+            //三天内即将到期的试用客户
+            data = this.state.willExpiredTryCustomer.data.list;
+            var willexpiredTipArr = [
+                "今天到期",
+                "明天到期",
+                "后天到期"
+            ];
+            return (
+                <div className="will-expire-assigned-customer-container">
+                    <GeminiScrollbar>
+                        {_.map(data, (item, index) => {
+                            return (
+                                <div className="">
+                                    <div>
+                                        {willexpiredTipArr[index]}
+                                    </div>
+                                    <div>
+                                        {_.map(item.customer_list, (willExpiredCustomer) => {
+                                            return (
+                                                <WillExpireItem
+                                                    expireItem={willExpiredCustomer}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
+        } else if (type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
+            //半年内即将到期的签约客户
+            data = this.state.willExpiredAssignCustomer.data.list;
+            return (
+                <div className="schedule-day-list">
+                    <GeminiScrollbar>
+                        {_.map(data, (item, index) => {
+                            return (
+                                <div className="">
+                                    <div>
+
+                                    </div>
+                                    <div>
+                                        {_.map(item.customer_list, (willExpiredCustomer) => {
+                                            return (
+                                                <WillExpireItem
+                                                    expireItem={willExpiredCustomer}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
+
+        }
+
+    },
+    //渲染关注客户，停用客户和最近登录的客户情况
+    renderAPPIlleageAndConcernedAndRecentContent: function (type) {
         var data = [];
         if (type === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {
             //关注客户登录
@@ -347,7 +424,7 @@ var SalesHomePage = React.createClass({
                             return (
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
-                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "过期X天登录情况")}
+                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近X天登录情况")}
                                 />
                             )
                         })}
@@ -367,6 +444,23 @@ var SalesHomePage = React.createClass({
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
                                     tableTitleTip={Intl.get("sales.frontpage.appilleage.login", "停用期间用户登录情况")}
+                                />
+                            )
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
+        } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
+            //最近X日登录的客户
+            data = this.state.recentLoginCustomerObj.data.list;
+            return (
+                <div className="recent-login-customer-container">
+                    <GeminiScrollbar>
+                        {_.map(data, (item) => {
+                            return (
+                                <CustomerNoticeMessage
+                                    customerNoticeMessage={item}
+                                    isRecentLoginCustomer={true}
                                 />
                             )
                         })}

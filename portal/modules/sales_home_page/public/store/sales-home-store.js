@@ -221,7 +221,7 @@ SalesHomeStore.prototype.getRecentLoginCustomer = function (result) {
     if (result.error) {
         recentLoginCustomerObj.errMsg = result.errMsg;
     } else if (result.resData) {
-        recentLoginCustomerObj.data.result = result.resData;
+        recentLoginCustomerObj.data.list = result.resData;
     }
 };
 // 获取最近登录的客户数量

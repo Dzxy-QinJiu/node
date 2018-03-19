@@ -7,6 +7,7 @@ require("../css/schedule-item.less");
 import SalesHomePageAction from "../action/sales-home-actions";
 import {Button, message} from "antd";
 import userData from "PUB_DIR/sources/user-data";
+import ContactItem from "./contact-item";
 var user_id = userData.getUserData().user_id;
 class ScheduleItem extends React.Component {
     constructor(props) {
@@ -57,28 +58,13 @@ class ScheduleItem extends React.Component {
         var schedule = this.state.scheduleItemDetail;
         //联系人的相关信息
         var contacts = schedule.contacts ? schedule.contacts : [];
-        var defContacts = _.filter(contacts, (item) => {
-            return item.def_contacts;
-        });
-        var contactDetail = [];
-        if (defContacts.length) {
-            contactDetail = defContacts;
-        } else if (contacts.length) {
-            contactDetail = contacts[0];
-        }
+        var contactTime = moment(schedule.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + "-" +  moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT);
         return (
             <div className="schedule-item-container">
                 {this.props.isShowTopTitle ? <div className="schedule-top-panel">
-                    {moment(schedule).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}-{moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                    {Intl.get("sales.fromtpage.set.contact.time","原定于{initialtime}联系",{initialtime:contactTime})}
                 </div> : null}
                 <div className="schedule-content-panel">
-                    {this.props.isShowContentTopTimerange ? <div className="top-time-panel">
-                        <span className="time-range">
-                              {moment(schedule.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{
-                            moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
-                        }
-                        </span>
-                    </div> : null}
                     <div className="schedule-title">
                         {schedule.topic || schedule.customer_name}
                         {user_id == schedule.member_id && schedule.status !== "handle" ?
@@ -87,13 +73,18 @@ class ScheduleItem extends React.Component {
 
                     </div>
                     <div className="schedule-content">
+                        {this.props.isShowScheduleTimerange ?   <span className="time-range">
+                             [{moment(schedule.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{
+                            moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
+                        }]
+                        </span> : null}
                         {schedule.content}
                     </div>
+                    <ContactItem
+                        contactDetail={contacts}
+                    />
                 </div>
-                <div className="recent-contacter-detail">
-                    {Intl.get("call.record.contacts", "联系人")}:{contactDetail.name}
-                    {_.isArray(contactDetail.phone) && contactDetail.phone.length ? contactDetail.phone.join(" ") : null}
-                </div>
+
             </div>
         )
     }
@@ -102,7 +93,7 @@ class ScheduleItem extends React.Component {
 ScheduleItem.defaultProps = {
     scheduleItemDetail: {},//日程详细信息
     isShowTopTitle: true, //是否展示顶部时间样式
-    isShowContentTopTimerange: true, //今日过期日程的时间
+    isShowScheduleTimerange:true,//是否展示日程的时间范围
 
 };
 export default ScheduleItem;

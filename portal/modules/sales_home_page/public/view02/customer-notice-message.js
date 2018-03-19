@@ -10,6 +10,7 @@ import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES, STATUS} from "PUB_DIR/sourc
 import userData from "PUB_DIR/sources/user-data";
 import {Icon, message} from "antd";
 import Trace from "LIB_DIR/trace";
+import ContactItem from "../view/contact-item";
 var salesHomeAjax = require("../ajax/sales-home-ajax");
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {

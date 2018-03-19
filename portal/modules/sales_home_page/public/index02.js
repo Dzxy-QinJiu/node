@@ -674,7 +674,7 @@ var SalesHomePage = React.createClass({
                                     </Panel> : null}
 
                                 {this.state.recentLoginCustomerObj.data.total > 0 ?
-                                    <Panel header={<span>{Intl.get("sales.frontpage.login.recently", "最近登录的客户")}<span
+                                    <Panel header={<span>{Intl.get("sales.frontpage.login.recently", "近X日登录的客户")}<span
                                         className="panel-header-count">{this.state.recentLoginCustomerObj.data.total}</span></span>}
                                            key="7">
                                         <div className="items-customer-container"

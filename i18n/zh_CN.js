@@ -2016,7 +2016,7 @@ var zh_CN = {
     "sales.frontpage.will.expired.try.user": "即将到期的试用客户",
     "sales.frontpage.will.expired.assgined.user": "即将到期的签约客户",
     "sales.frontpage.login.after.stop": "停用后登录",
-    "sales.frontpage.login.recently": "最近登录的客户",
+    "sales.frontpage.login.recently": "近X日登录的客户",
     "sales.frontpage.has.repeat.customer": "您有重复的客户",
     "sales.frontpage.contact.customers": "建议您联系以下客户",
     "sales.frontpage.open.app": "已开通应用",
@@ -2028,6 +2028,7 @@ var zh_CN = {
     "sales.frontpage.trace.time": "跟进时间",
     "sales.frontpage.schedule.has.finished": "完成了",
     "sales.frontpage.appilleage.login": "停用期间用户登录情况",
-    "sales.frontpage.concerned.login": "过期X天登录情况"
+    "sales.frontpage.concerned.login": "近X天登录情况",
+    "sales.fromtpage.set.contact.time":"原定于{initialtime}联系",
 };
 export default zh_CN;
