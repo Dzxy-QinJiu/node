@@ -160,5 +160,9 @@ UserApplyStore.prototype.setSelectedDetailItem = function ({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
+//更新处理申请错误的状态,"success"或者"error"
+UserApplyStore.prototype.updateDealApplyError = function (status) {
+    this.dealApplyError = status;
+}
 //使用alt导出store
 module.exports = alt.createStore(UserApplyStore, 'UserApplyStore');

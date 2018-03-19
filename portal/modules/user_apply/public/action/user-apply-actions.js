@@ -13,7 +13,8 @@ function UserApplyActions() {
         'setShowUpdateTip',//设置是否展示更新提示
         'getApplyById',//根据id获取申请（实际是获取申请的详情）
         'refreshUnreadReplyList',//刷新未读回复列表
-        'clearUnreadReplyById'//清除未读回复列表中已读的回复
+        'clearUnreadReplyById',//清除未读回复列表中已读的回复
+        'updateDealApplyError'//更新处理申请错误的状态
     );
     //获取申请列表
     this.getApplyList = function (obj, callback) {
