@@ -77,6 +77,8 @@ var SalesHomePage = React.createClass({
     componentDidMount: function () {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
+        //获取统计团队内成员个数的列表
+        SalesHomeAction.getTeamMemberCountList();
         SalesHomeAction.getSalesTeamList(type);
         this.refreshSalesListData();
         this.resizeLayout();
@@ -747,6 +749,7 @@ var SalesHomePage = React.createClass({
                                               salesTeamMembersObj={this.state.salesTeamMembersObj}
                                               updateScrollBar={this.state.updateScrollBar}
                                               salesCallStatus={this.state.salesCallStatus}
+                                              teamMemberCountList={this.state.teamMemberCountList}
                                 />
                             </div>
                         ) : null}

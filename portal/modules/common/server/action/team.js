@@ -21,3 +21,12 @@ exports.getSalesTeamList = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//获取统计团队内成员个数的列表
+exports.getTeamMemberCountList = function (req, res) {
+    TeamService.getTeamMemberCountList(req, res).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

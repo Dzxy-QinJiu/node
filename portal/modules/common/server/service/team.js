@@ -29,6 +29,16 @@ exports.getSalesTeamMemberList = function (req, res, groupId, queryObj) {
         });
 };
 
+//获取统计团队内成员个数的列表
+exports.getTeamMemberCountList = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: "/rest/base/v1/group/team/available/statistic",
+            req: req,
+            res: res
+        }, null);
+};
+
 //获取销售所在团队及其子团队列表
 exports.getSalesTeamList = function (req, res) {
     return restUtil.authRest.get(
@@ -40,7 +50,7 @@ exports.getSalesTeamList = function (req, res) {
             success: function (eventEmitter, data) {
                 //处理数据
                 if (data && data.length > 0) {
-                    data = data.map(salesTeam=> {
+                    data = data.map(salesTeam => {
                         return {
                             groupId: salesTeam.group_id,
                             groupName: salesTeam.group_name
@@ -57,7 +67,7 @@ exports.getSalesTeamList = function (req, res) {
 function turnToFrontMember(data) {
     let frontMemberList = [];
     if (data && data.length > 0) {
-        frontMemberList = data.map(member=> {
+        frontMemberList = data.map(member => {
             return {
                 userId: member.user_id,
                 nickName: member.nick_name,

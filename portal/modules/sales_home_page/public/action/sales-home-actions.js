@@ -61,6 +61,16 @@ function SalesHomeActions() {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
+
+    //获取统计团队内成员个数的列表
+    this.getTeamMemberCountList = function () {
+        salesHomeAjax.getTeamMemberCountList().then((resData) => {
+                this.dispatch(resData);
+            }, (errMsg) => {
+                this.dispatch(errMsg);
+            }
+        );
+    };
     //获取各销售对应的通话状态
     this.getSalesCallStatus = function (userIds) {
         var _this = this;

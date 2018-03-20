@@ -64,6 +64,19 @@ exports.getSalesTeamList = function (type) {
     });
     return Deferred.promise();
 };
+//获取统计团队内成员个数的列表
+let teamMemberCountAjax;
+exports.getTeamMemberCountList = function () {
+    teamMemberCountAjax && teamMemberCountAjax.abort();
+    let Deferred = $.Deferred();
+    teamMemberCountAjax = teamAjax.getTeamMemberCountListAjax().sendRequest()
+        .success(list => {
+            Deferred.resolve(list);
+        }).error(error => {
+            Deferred.resolve(error.responseText);
+        });
+    return Deferred.promise();
+};
 //获取销售对应的通话状态
 let salesCallStatusAjax;
 exports.getSalesCallStatus = function (userIds) {
