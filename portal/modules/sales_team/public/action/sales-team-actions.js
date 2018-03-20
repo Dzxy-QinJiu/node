@@ -38,6 +38,15 @@ function SalesTeamAction() {
         'updateSalesGoals'
     );
 
+    //获取统计团队内成员个数的列表
+    this.getTeamMemberCountList = function () {
+        SalesTeamAjax.getTeamMemberCountList().then((resData) => {
+                this.dispatch(resData);
+            }, (errMsg) => {
+                this.dispatch(errMsg);
+            }
+        );
+    };
     this.getSalesTeamList = function () {
         var _this = this;
         SalesTeamAjax.getSalesTeamList().then(function (list) {

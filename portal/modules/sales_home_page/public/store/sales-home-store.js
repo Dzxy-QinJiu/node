@@ -58,6 +58,8 @@ SalesHomeStore.prototype.setInitState = function () {
         data: [],
         errMsg: ''
     };
+    //统计团队内成员个数的列表
+    this.teamMemberCountList = [];
 };
 // 获取通话总次数、总时长TOP10的数据
 SalesHomeStore.prototype.getCallTotalList = function (dataObj) {
@@ -298,6 +300,11 @@ SalesHomeStore.prototype.getSalesTeamMembers = function (result) {
             salesTeamMembersObj.data = [];
         }
     }
+};
+
+//获取统计团队内成员个数的列表
+SalesHomeStore.prototype.getTeamMemberCountList = function (list) {
+    this.teamMemberCountList = _.isArray(list) ? list : [];
 };
 //修改团队成员列表中的信息（销售角色）
 SalesHomeStore.prototype.updateSalesTeamMembersObj = function (salesTeamMembersObj) {

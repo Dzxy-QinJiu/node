@@ -21,5 +21,13 @@ module.exports = {
             "needLogin": true
         },
         "privileges": []
+    }, {
+        "method": "get",
+        "path": "/rest/team/member/count/list",
+        "handler": "getTeamMemberCountList",
+        "passport": {
+            "needLogin": true
+        },
+        "privileges": []
     }]
 };

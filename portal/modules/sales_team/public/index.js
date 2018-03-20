@@ -56,6 +56,7 @@ var SalesTeamPage = React.createClass({
         $("body").css("overflow", "hidden");
         $(window).on("resize", this.resizeWindow);
         SalesTeamStore.listen(this.onChange);
+        SalesTeamAction.getTeamMemberCountList();
         SalesTeamAction.setSalesTeamLoading(true);
         SalesTeamAction.getSalesTeamList();
         SalesTeamAction.getMemberList();
@@ -178,6 +179,7 @@ var SalesTeamPage = React.createClass({
                             isLoadingTeamMember={this.state.isLoadingTeamMember}
                             delTeamErrorMsg={this.state.delTeamErrorMsg}
                             isAddSalesTeamRoot={this.state.isAddSalesTeamRoot}
+                            teamMemberCountList={this.state.teamMemberCountList}
                         />
                         <MemberList
                             salesTeamMemberWidth={salesTeamMemberWidth}
