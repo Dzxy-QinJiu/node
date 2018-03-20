@@ -112,7 +112,7 @@ class ScheduleItem extends React.Component {
                         {schedule.content}
                     </div>
                     <ContactItem
-                        contactDetail={contacts}
+                        contacts={contacts}
                     />
                 </div>
                 {

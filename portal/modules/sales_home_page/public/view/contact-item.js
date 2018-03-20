@@ -4,44 +4,84 @@
  * Created by zhangshujuan on 2018/3/19.
  */
 require("../css/contact-item.less");
-import {Popover,Button} from "antd";
+var userData = require("PUB_DIR/sources/user-data");
+import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            contactDetail: this.props.contactDetail,
+            contacts: this.props.contacts,
         }
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.contactDetail.id && nextProps.contactDetail.id !== this.state.contactDetail.id) {
+        if (nextProps.contacts.id && nextProps.contacts.id !== this.state.contacts.id) {
             this.setState({
-                contactDetail: nextProps.contactDetail
+                contacts: nextProps.contacts
             })
         }
     };
-    render(){
-        var contacts = this.state.contactDetail;
-        var defContacts = _.filter(contacts, (item) => {
-            return item.def_contacts;
-        });
-        var contactDetail = [];
-        if (defContacts.length) {
-            contactDetail = defContacts;
-        } else if (contacts.length) {
-            contactDetail = contacts[0];
-        }
-        var content = (
-            <div>
-                <Button>{Intl.get("schedule.call.out", "拨打")}</Button>
+
+    // 获取拨打电话的座机号
+    getUserPhoneNumber() {
+        let member_id = userData.getUserData().user_id;
+        crmAjax.getUserPhoneNumber(member_id).then((result) => {
+            if (result.phone_order) {
+                this.setState({
+                    callNumber: result.phone_order
+                });
+            }
+        }, (errMsg) => {
+            this.setState({
+                errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
+            });
+        })
+    };
+
+    renderContactsContent(contactDetail) {
+        return (
+            <div className="contact-content">
+                {_.map(contactDetail, (contactItem) => {
+                    return (
+                        <div className="contact-container">
+                            {_.isArray(contactItem.phone) && contactItem.phone.length ?
+                                <span className="phone-num-container">
+                                {_.map(contactItem.phone, (phoneItem, index) => {
+                                    return (
+                                        <span className="contact-item">
+                                            <i className="iconfont icon-phone-busy"></i>
+                                            {index === 0 ? <span className="contact-name">
+                                            {Intl.get("call.record.contacts", "联系人")}:{contactItem.name}
+                                            </span> : null}
+                                            <span className="phone-num">
+                                                {phoneItem}
+                                            </span>
+                                        </span>
+                                    )
+                                })}
+                            </span> : null}
+                        </div>
+                    )
+                })}
             </div>
-        );
+        )
+
+    };
+
+    render() {
+        var contactDetail = this.state.contacts;
+        // var defContacts = _.filter(contacts, (item) => {
+        //     return item.def_contacts;
+        // });
+        // var contactDetail = [];
+        // if (defContacts.length) {
+        //     contactDetail = defContacts;
+        // } else if (contacts.length) {
+        //     contactDetail = contacts[0];
+        // }
         return (
             <div className="recent-contacter-detail">
-                {Intl.get("call.record.contacts", "联系人")}:{contactDetail.name}
-                {/*<Popover content={content}>*/}
-                {_.isArray(contactDetail.phone) && contactDetail.phone.length ? contactDetail.phone.join(" ") : null}
-                {/*</Popover>*/}
+                {_.isArray(contactDetail) && contactDetail.length ? this.renderContactsContent(contactDetail) : null}
             </div>
         )
     }

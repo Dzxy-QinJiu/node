@@ -62,18 +62,13 @@ var SalesHomePage = React.createClass({
         //获取今日过期的日程列表
         this.getExpiredScheduleList();
         //获取最近登录的客户
-        //获取今天的起止时间
-        var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
-        //默认获取近7天登录的客户
-        SalesHomeAction.getRecentLoginCustomer({
-            "start_time": todayTimeRange.start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
-            "end_time": todayTimeRange.end_time
-        });
-        //获取近7天登录的客户数量
-        SalesHomeAction.getRecentLoginCustomerCount({
-            "start_time": todayTimeRange.start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
-            "end_time": todayTimeRange.end_time
-        });
+        this.getRecentLoginCustomers();
+        //todo 删除
+        // //获取近7天登录的客户数量
+        // SalesHomeAction.getRecentLoginCustomerCount({
+        //     "start_time": todayTimeRange.start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
+        //     "end_time": todayTimeRange.end_time
+        // });
         //关注客户登录
         this.getConcernedLogin();
         //停用客户登录
@@ -81,6 +76,7 @@ var SalesHomePage = React.createClass({
         //获取重复客户列表
         this.getRepeatCustomerList();
         //获取三天内即将到期的试用用户
+        var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         this.getWillExpireCustomer({
             tags: "试用用户",
             start_time: todayTimeRange.start_time,
@@ -96,6 +92,19 @@ var SalesHomePage = React.createClass({
         );
         //获取新分配的客户
         this.getNewDistributeCustomer();
+    },
+    //获取最近登录的客户
+    getRecentLoginCustomers: function (lastId) {
+        var queryObj = {
+            total_size: this.state.page_size,
+            cursor: true,
+        };
+        if (lastId){
+            queryObj.id = lastId;
+        }
+        //获取最近登录的客户
+        //默认获取近7天登录的客户
+        SalesHomeAction.getRecentLoginCustomers({},this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
     },
     getWillExpireCustomer: function (queryObj) {
         SalesHomeAction.getWillExpireCustomer(queryObj);
@@ -204,6 +213,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
                 this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
+                break;
+            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
+                this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
                 break;
         }
     },
@@ -460,7 +472,7 @@ var SalesHomePage = React.createClass({
                             return (
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
-                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近X天登录情况")}
+                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近{X}天登录情况", {X: 7})}
                                 />
                             )
                         })}
@@ -491,7 +503,9 @@ var SalesHomePage = React.createClass({
             data = this.state.recentLoginCustomerObj.data.list;
             return (
                 <div className="recent-login-customer-container">
-                    <GeminiScrollbar>
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER)}
+                        listenScrollBottom={this.state.listenScrollBottom}>
                         {_.map(data, (item) => {
                             return (
                                 <CustomerNoticeMessage

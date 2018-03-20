@@ -58,9 +58,9 @@ class CustomerNoticeMessage extends React.Component {
         }
         this.setState({curShowUserId: user_id});
     };
-    closeRightUserPanel= ()=> {
-    this.setState({curShowUserId: ""});
-};
+    closeRightUserPanel = () => {
+        this.setState({curShowUserId: ""});
+    };
 
     getListColumn() {
         var columns = [{
@@ -88,10 +88,9 @@ class CustomerNoticeMessage extends React.Component {
                                 <div className="login-detail-item">
                                     <div className="login-detail-name">
                                         <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
-
                                     </div>
                                     <div className="login-detail-content">
-                                        {   _.map(item.login_detail, (loginItem) => {
+                                        {_.map(item.login_detail, (loginItem) => {
                                             return (
                                                 <div>
                                                     {moment(loginItem.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
@@ -123,13 +122,16 @@ class CustomerNoticeMessage extends React.Component {
                 user_detail: newContentData[i]
             })
         }
+        var customer_name = message.customer_name ? message.customer_name : message.name;
+        var customer_id = message.customer_id ? message.customer_id : message.id;
         return (
             <div className="customer-notice-message-container">
                 <div className="customer-notice-content">
                     <div className="customer-title">
-                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, message.customer_id)}>
-                            {message.customer_name}
+                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}>
+                            {customer_name}
                         </a>
+                        {message.last_login_time ? <span className="login-time">{moment(message.last_login_time).format(oplateConsts.DATE_TIME_FORMAT)}</span> : null}
 
                     </div>
                     {this.props.isRecentLoginCustomer ? null : <div className="customer-content">

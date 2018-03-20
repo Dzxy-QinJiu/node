@@ -108,11 +108,45 @@ exports.getScheduleList = function (queryObj) {
 //最近登录的客户
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 var type = commonMethodUtil.getPrivilegeType();
-//查询最近登录的客户列表
-exports.getRecentLoginCustomer = function (data) {
+// //查询最近登录的客户列表
+// exports.getRecentLoginCustomer = function (data) {
+//     var Deferred = $.Deferred();
+//     $.ajax({
+//         url: '/rest/get_recent_login_customer/' + type,
+//         dataType: 'json',
+//         type: 'post',
+//         data: data,
+//         success: function (list) {
+//             Deferred.resolve(list);
+//         },
+//         error: function (errorMsg) {
+//             Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
+//         }
+//     });
+//     return Deferred.promise();
+// };
+const hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
+const AUTHS = {
+    "GETALL": "CUSTOMER_ALL",
+    "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL",
+    "TRANSFER_MANAGER": "CRM_MANAGER_TRANSFER"
+};
+//最近登录的客户
+exports.getRecentLoginCustomers = function (condition, rangParams, pageSize, sorter, queryObj) {
+    pageSize = pageSize || 10;
+    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    var data = {
+        data: JSON.stringify(condition),
+        rangParams: JSON.stringify(rangParams),
+        queryObj: JSON.stringify(queryObj)
+    };
+    if (hasPrivilege(AUTHS.GETALL)) {
+        data.hasManageAuth = true;
+    }
     var Deferred = $.Deferred();
+
     $.ajax({
-        url: '/rest/get_recent_login_customer/' + type,
+        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -120,7 +154,7 @@ exports.getRecentLoginCustomer = function (data) {
             Deferred.resolve(list);
         },
         error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
@@ -144,23 +178,23 @@ exports.getSystemNotices = function (queryObj, status) {
     });
     return Deferred.promise();
 };
-//查询最近登录的客户数量
-exports.getRecentLoginCustomersCount= function (data) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/get_recent_login_customer_count/'+ type,
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function (list) {
-            Deferred.resolve(list);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
-        }
-    });
-    return Deferred.promise();
-};
+// //查询最近登录的客户数量
+// exports.getRecentLoginCustomersCount= function (data) {
+//     var Deferred = $.Deferred();
+//     $.ajax({
+//         url: '/rest/get_recent_login_customer_count/'+ type,
+//         dataType: 'json',
+//         type: 'post',
+//         data: data,
+//         success: function (list) {
+//             Deferred.resolve(list);
+//         },
+//         error: function (errorMsg) {
+//             Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
+//         }
+//     });
+//     return Deferred.promise();
+// };
 
 //获取重复的客户列表
 exports.getRepeatCustomerList = function (queryParams) {

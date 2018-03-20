@@ -2028,7 +2028,7 @@ var zh_CN = {
     "sales.frontpage.trace.time": "跟进时间",
     "sales.frontpage.schedule.has.finished": "完成了",
     "sales.frontpage.appilleage.login": "停用期间用户登录情况",
-    "sales.frontpage.concerned.login": "近X天登录情况",
+    "sales.frontpage.concerned.login": "近{X}天登录情况",
     "sales.fromtpage.set.contact.time":"原定于{initialtime}联系",
     "sales.frontpage.fail.new.distribute.customer":"获取新分配的客户失败",
     "slaes.frontpage.new.distribute.customer":"新分配的客户",

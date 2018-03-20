@@ -144,7 +144,18 @@ SalesHomeStore.prototype.setInitState = function () {
         type: "time",
         name: "last_contact_time"
     }];
-
+    //最近7天登录的客户
+    this.rangParamsLogin = [{//默认展示今天的数据
+        from: TimeStampUtil.getTodayTimeStamp().start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
+        to: TimeStampUtil.getTodayTimeStamp().end_time,
+        type: "time",
+        name: "last_login_time"
+    }];
+    //最近登录的客户
+    this.sorterLogin = {
+        field: "last_login_time",//排序字段
+        order: "descend"
+    };
     this.page_size = 10;
     this.sorter = {
         field: "last_contact_time",//排序字段
@@ -224,13 +235,14 @@ SalesHomeStore.prototype.getTodayContactCustomer = function (result) {
     }
 };
 //获取最近登录的客户列表
-SalesHomeStore.prototype.getRecentLoginCustomer = function (result) {
+SalesHomeStore.prototype.getRecentLoginCustomers = function (result) {
     var recentLoginCustomerObj = this.recentLoginCustomerObj;
     recentLoginCustomerObj.loading = result.loading;
     if (result.error) {
         recentLoginCustomerObj.errMsg = result.errMsg;
     } else if (result.resData) {
-        recentLoginCustomerObj.data.list = result.resData;
+        recentLoginCustomerObj.data.list = recentLoginCustomerObj.data.list.concat(result.resData.result);
+        recentLoginCustomerObj.data.total = result.resData.total;
     }
 };
 //获取新分配的客户列表
@@ -244,13 +256,13 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
         newDistributeCustomer.data.total = result.resData.total;
     }
 };
-// 获取最近登录的客户数量
-SalesHomeStore.prototype.getRecentLoginCustomerCount = function (result) {
-    var recentLoginCustomerObj = this.recentLoginCustomerObj;
-    if (result.resData) {
-        recentLoginCustomerObj.data.total = result.resData;
-    }
-};
+// // 获取最近登录的客户数量
+// SalesHomeStore.prototype.getRecentLoginCustomerCount = function (result) {
+//     var recentLoginCustomerObj = this.recentLoginCustomerObj;
+//     if (result.resData) {
+//         recentLoginCustomerObj.data.total = result.resData;
+//     }
+// };
 //获取日程列表
 SalesHomeStore.prototype.getScheduleList = function (result) {
     if (result.type === "expired") {
