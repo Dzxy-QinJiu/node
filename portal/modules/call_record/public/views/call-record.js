@@ -58,7 +58,7 @@ const CALL_STATUS_OPTION = {
 
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
-    ALL: 'all',
+    ALL: '',
     PHONE: 'phone',
     APP: 'app'
 };
