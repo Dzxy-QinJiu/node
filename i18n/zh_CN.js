@@ -1231,6 +1231,7 @@ var zh_CN = {
     "crm.detail.sales.role": "销售角色",
     "crm.sales.change": "变更销售",
     "crm.customer.transfer.failed": "转出客户失败",
+    "crm.right.schedule": "联系计划",
     // 客户管理end
 
     // 客户分析start
