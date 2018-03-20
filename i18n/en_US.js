@@ -1967,5 +1967,10 @@ var en_US = {
     "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
     "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
     "shedule.list.add.todo": "To do",//待办
+    "crm.get.phone.failed": "Failed to get phone number",//获取座机号失败!
+    "crm.call.phone.success": "Call out successlly",//拨打成功
+    "crm.call.phone.failed": "Failed to call out",//拨打失败
+    "crm.bind.phone": "Please bind the extension number first!",//请先绑定分机号！
+    "crm.click.call.phone": "Click to call out"//点击拨打电话
 };
 export default en_US;

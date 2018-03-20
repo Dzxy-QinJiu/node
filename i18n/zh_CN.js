@@ -2009,5 +2009,10 @@ var zh_CN = {
     "batch.failed.add.schedule": "{customerName}添加联系计划失败",
     "batch.success.add.schedule": "所有联系计划均添加成功",
     "shedule.list.add.todo": "待办",
+    "crm.get.phone.failed": "获取座机号失败!",
+    "crm.call.phone.success": "拨打成功",
+    "crm.call.phone.failed": "拨打失败",
+    "crm.bind.phone": "请先绑定分机号！",
+    "crm.click.call.phone": "点击拨打电话"
 };
 export default zh_CN;
