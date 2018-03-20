@@ -68,7 +68,6 @@ class WillExpireItem extends React.Component {
                                 <div className="pull-left delay-time">
                                     {moment(item.end_time).format(oplateConsts.DATE_FORMAT)}
                                     {this.props.willExpiredTip}
-                                    试用到期停用
                                 </div>
                             </div>
                         )
