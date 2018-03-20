@@ -253,9 +253,8 @@ const ApplyUserForm = React.createClass({
                     if (result === true) {
                         message.success(Intl.get("user.apply.success", "申请成功"));
                         this.handleCancel();
-                    }
-                    else {
-                        message.error(result);
+                    } else {
+                        message.error(result || Intl.get("common.apply.failed", "申请失败"));
                     }
                 });
             }
