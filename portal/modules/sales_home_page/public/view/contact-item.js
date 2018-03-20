@@ -3,14 +3,19 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/19.
  */
+import {message} from "antd";
 require("../css/contact-item.less");
-var userData = require("PUB_DIR/sources/user-data");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
+import Trace from "LIB_DIR/trace";
+var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            contacts: this.props.contacts,
+            contacts: this.props.contacts,//联系人信息
+            customerData: this.props.customerData,//客户详情
+            callNumber: this.props.callNumber,//座机号
+            errMsg: this.props.errMsg//获取座机号失败的提示
         }
     };
 
@@ -20,28 +25,58 @@ class ContactItem extends React.Component {
                 contacts: nextProps.contacts
             })
         }
+        if (nextProps.customerData.id && nextProps.customerData.id !== this.state.customerData.id) {
+            this.setState({
+                customerData: nextProps.customerData
+            })
+        }
+        if (nextProps.callNumber !== this.state.callNumber) {
+            this.setState({
+                callNumber: nextProps.callNumber
+            })
+        }
     };
 
-    // 获取拨打电话的座机号
-    getUserPhoneNumber() {
-        let member_id = userData.getUserData().user_id;
-        crmAjax.getUserPhoneNumber(member_id).then((result) => {
-            if (result.phone_order) {
-                this.setState({
-                    callNumber: result.phone_order
+    // 自动拨号
+    handleClickCallOut(phoneNumber, record) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
+        if (this.state.errMsg) {
+            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
+        } else {
+            if (this.state.callNumber) {
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        phoneNum: phoneNumber.replace('-', ''),
+                        contact: record.contact,
+                        customerDetail: record,//客户基本信息
+                    }
+                );
+                let reqData = {
+                    from: this.state.callNumber,
+                    to: phoneNumber.replace('-', '')
+                };
+                crmAjax.callOut(reqData).then((result) => {
+                    if (result.code == 0) {
+                        message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                    }
+                }, (errMsg) => {
+                    message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
                 });
+            } else {
+                message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
             }
-        }, (errMsg) => {
-            this.setState({
-                errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
-            });
-        })
+        }
     };
 
     renderContactsContent(contactDetail) {
+        var record = this.state.customerData;
+        if (this.props.itemType === "schedule") {
+            record.name = record.customer_name;
+            record.id = record.customer_id;
+        }
         return (
             <div className="contact-content">
-                {_.map(contactDetail, (contactItem) => {
+                {_.map(contactDetail, (contactItem, idx) => {
                     return (
                         <div className="contact-container">
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
@@ -49,10 +84,15 @@ class ContactItem extends React.Component {
                                 {_.map(contactItem.phone, (phoneItem, index) => {
                                     return (
                                         <span className="contact-item">
-                                            <i className="iconfont icon-phone-busy"></i>
                                             {index === 0 ? <span className="contact-name">
-                                            {Intl.get("call.record.contacts", "联系人")}:{contactItem.name}
+                                                {idx === 0 ?
+                                                    <span>{Intl.get("call.record.contacts", "联系人")}:</span> : null}
+                                                <i
+                                                    className="iconfont icon-phone-busy"
+                                                    title={Intl.get("crm.click.call.phone", "点击拨打电话")}
+                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, record)}></i> {contactItem.name ? contactItem.name : ""}
                                             </span> : null}
+                                            {index !== 0 ? <i className="iconfont icon-phone-busy"></i> : null}
                                             <span className="phone-num">
                                                 {phoneItem}
                                             </span>
@@ -88,7 +128,9 @@ class ContactItem extends React.Component {
 
 }
 ContactItem.defaultProps = {
-    contactDetail: {},//联系人信息
-
+    contacts: [],//联系人信息
+    customerData: {},//客户信息
+    itemType: "",
+    callNumber: "",//座机号
 };
 export default ContactItem;

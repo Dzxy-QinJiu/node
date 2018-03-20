@@ -56,17 +56,6 @@ function SalesHomeActions() {
             });
         });
     };
-    // //获取最近登录的客户
-    // this.getRecentLoginCustomer = function (queryObj) {
-    //     this.dispatch({loading: true, error: false});
-    //     //获取客户的详情
-    //     salesHomeAjax.getRecentLoginCustomer(queryObj).then((result) => {
-    //         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-    //         this.dispatch({loading: false, error: false, resData: result});
-    //     }, (errorMsg) => {
-    //         this.dispatch({loading: false, error: true, errMsg: errorMsg});
-    //     });
-    // };
     //获取即将到期的客户
     this.getWillExpireCustomer = function (queryObj) {
         this.dispatch({loading: true, error: false});
@@ -77,16 +66,6 @@ function SalesHomeActions() {
             this.dispatch({type: queryObj.tags, loading: false, error: true, errMsg: errorMsg});
         });
     };
-    // //获取最近登陆的客户数量
-    // this.getRecentLoginCustomerCount = function (queryObj) {
-    //     //获取客户的数量
-    //     salesHomeAjax.getRecentLoginCustomersCount(queryObj).then((result) => {
-    //         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-    //         this.dispatch({loading: false, error: false, resData: result});
-    //     }, (errorMsg) => {
-    //         this.dispatch({loading: false, error: true, errMsg: errorMsg});
-    //     });
-    // };
     //获取关注客户登录，停用客户登录等系统消息
     this.getSystemNotices = function (queryObj, status, type) {
         this.dispatch({loading: true, error: false});
@@ -149,8 +128,6 @@ function SalesHomeActions() {
             });
         });
     };
-
-
 }
 
 module.exports = alt.createActions(SalesHomeActions);

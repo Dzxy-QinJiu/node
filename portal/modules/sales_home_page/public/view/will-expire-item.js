@@ -4,19 +4,12 @@
  * Created by zhangshujuan on 2018/3/16.
  */
 require("../css/will-expire-customer.less");
-import contactItem from "./contact-item";
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
-import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel}  from "CMP_DIR/rightPanel";
+import ContactItem from "./contact-item";
 class WillExpireItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             expireItem: this.props.expireItem,
-            curShowCustomerId: "",//展示客户详情的客户id
-            curShowUserId: "",//展示用户详情的用户id
-            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
         }
     };
 
@@ -27,26 +20,8 @@ class WillExpireItem extends React.Component {
             })
         }
     };
-    closeCustomerUserListPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false
-        })
-    };
-    closeRightCustomerPanel = () => {
-        this.setState({curShowCustomerId: ""});
-    };
-    ShowCustomerUserListPanel = (data) => {
-        this.setState({
-            isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
-        });
-
-    };
     openCustomerDetail = (customer_id) => {
-        if (this.state.curShowUserId) {
-            this.closeRightUserPanel();
-        }
-        this.setState({curShowCustomerId: customer_id});
+        this.props.openCustomerDetail(customer_id);
     };
 
     render() {
@@ -73,39 +48,23 @@ class WillExpireItem extends React.Component {
                         )
                     })}
                 </div>
-                <contactItem
-                    contactDetail= {"yyy"}
+                <ContactItem
+                    contacts={expireItem.contact_list}
+                    callNumber={this.props.callNumber}
+                    errMsg={this.props.errMsg}
                 />
-                {
-                    this.state.curShowCustomerId ? <CrmRightPanel
-                        currentId={this.state.curShowCustomerId}
-                        showFlag={true}
-                        hideRightPanel={this.closeRightCustomerPanel}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        refreshCustomerList={function () {
-                        }}
-                    /> : null
-                }
-                {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    { this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+
             </div>
         )
     }
 }
 WillExpireItem.defaultProps = {
     expireItem: {},
-    willExpiredTip:""
+    willExpiredTip:"",
+    openCustomerDetail: function () {
+        
+    }
+    
 
 };
 export default WillExpireItem;

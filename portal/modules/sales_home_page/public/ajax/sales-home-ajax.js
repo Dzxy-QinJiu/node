@@ -106,25 +106,6 @@ exports.getScheduleList = function (queryObj) {
     return Deferred.promise();
 };
 //最近登录的客户
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-var type = commonMethodUtil.getPrivilegeType();
-// //查询最近登录的客户列表
-// exports.getRecentLoginCustomer = function (data) {
-//     var Deferred = $.Deferred();
-//     $.ajax({
-//         url: '/rest/get_recent_login_customer/' + type,
-//         dataType: 'json',
-//         type: 'post',
-//         data: data,
-//         success: function (list) {
-//             Deferred.resolve(list);
-//         },
-//         error: function (errorMsg) {
-//             Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
-//         }
-//     });
-//     return Deferred.promise();
-// };
 const hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 const AUTHS = {
     "GETALL": "CUSTOMER_ALL",
@@ -178,23 +159,6 @@ exports.getSystemNotices = function (queryObj, status) {
     });
     return Deferred.promise();
 };
-// //查询最近登录的客户数量
-// exports.getRecentLoginCustomersCount= function (data) {
-//     var Deferred = $.Deferred();
-//     $.ajax({
-//         url: '/rest/get_recent_login_customer_count/'+ type,
-//         dataType: 'json',
-//         type: 'post',
-//         data: data,
-//         success: function (list) {
-//             Deferred.resolve(list);
-//         },
-//         error: function (errorMsg) {
-//             Deferred.reject(errorMsg.responseJSON || errorMsg.responseText);
-//         }
-//     });
-//     return Deferred.promise();
-// };
 
 //获取重复的客户列表
 exports.getRepeatCustomerList = function (queryParams) {
@@ -234,6 +198,8 @@ exports.getCrmUserList = function (reqData) {
     });
     return Deferred.promise();
 };
+import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
+var type = commonMethodUtil.getPrivilegeType();
 //获取即将到期的客户
 exports.getWillExpireCustomer= function (data) {
     var Deferred = $.Deferred();

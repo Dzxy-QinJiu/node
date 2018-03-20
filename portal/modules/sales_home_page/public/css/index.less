@@ -9,26 +9,32 @@
     margin-left: 16px;
   }
   .top_nav_content {
+    height: 100%;
     ul {
       overflow: hidden;
+      height: 100%;
       li {
         float: left;
-        width: 250px;
+        width: 25%;
+        height: 100%;
         .statistic-total-content {
-          height: 75px;
           overflow: hidden;
-          .content-left {
-            float: left;
-            .iconfont {
-              font-size: 45px;
-            }
-          }
+          padding: 10px 0;
+          background: @BACKGROUND_COLOR;
+          margin: 10px 2px;
           .content-right {
             font-size: 14px;
             float: left;
-            margin: 12px 0 0 10px;
+            width: 100%;
+            padding-left: 10px;
+            .data-container{
+              margin-left: 15px;
+              span{
+                font-weight: 600;
+              }
+
+            }
             .phone-total-data {
-              margin-left: 10px;
               > span {
                 display: inline-block;
               }
@@ -107,6 +113,10 @@
     }
     //即将过期的签约客户
     .will-expire-assigned-customer-container{
+      height: 100%;
+    }
+    //新分配的客户
+    .new-distribute-customer-container{
       height: 100%;
     }
 

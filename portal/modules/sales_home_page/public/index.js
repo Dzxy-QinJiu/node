@@ -16,6 +16,12 @@ import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
 import WillExpireItem from "./view/will-expire-item";
 import NewDistributeCustomer from "./view/new-distribute-customer";
+import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import AppUserManage from "MOD_DIR/app_user_manage/public";
+import {RightPanel}  from "CMP_DIR/rightPanel";
+import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+var userData = require("PUB_DIR/sources/user-data");
+import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -31,6 +37,10 @@ var SalesHomePage = React.createClass({
         return {
             showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
             isShowRepeatCustomer: false,//是否展示重复客户
+            curShowCustomerId: "",//展示客户详情的客户id
+            curShowUserId: "",//展示用户详情的用户id
+            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
+            CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             ...SalesHomeStore.getState()
         }
     },
@@ -39,13 +49,44 @@ var SalesHomePage = React.createClass({
         this.getSalesListData();
         $(".customer-list-left").on("click", ".repeat-customer-panel.panel-header-count", function (e) {
             $(".repeat-customer-panel.panel-header-count").closest(".ant-collapse-header").next(".ant-collapse-content").hide();
-        })
+        });
+        this.getUserPhoneNumber();
     },
     componentWillUnmount: function () {
         SalesHomeStore.unlisten(this.onChange);
     },
     onChange: function () {
         this.setState(SalesHomeStore.getState());
+    },
+    closeCustomerUserListPanel: function () {
+        this.setState({
+            isShowCustomerUserListPanel: false
+        })
+    },
+    closeRightCustomerPanel: function () {
+        this.setState({curShowCustomerId: ""});
+    },
+    ShowCustomerUserListPanel: function (data) {
+        this.setState({
+            isShowCustomerUserListPanel: true,
+            CustomerInfoOfCurrUser: data.customerObj
+        });
+
+    },
+    openCustomerDetail: function (customer_id) {
+        if (this.state.curShowUserId) {
+            this.closeRightUserPanel();
+        }
+        this.setState({curShowCustomerId: customer_id});
+    },
+    openUserDetail: function (user_id) {
+        if (this.state.curShowCustomerId) {
+            this.closeRightCustomerPanel();
+        }
+        this.setState({curShowUserId: user_id});
+    },
+    closeRightUserPanel: function () {
+        this.setState({curShowUserId: ""});
     },
     getSalesListData: function () {
         let queryParams = this.getQueryParams();
@@ -99,12 +140,12 @@ var SalesHomePage = React.createClass({
             total_size: this.state.page_size,
             cursor: true,
         };
-        if (lastId){
+        if (lastId) {
             queryObj.id = lastId;
         }
         //获取最近登录的客户
         //默认获取近7天登录的客户
-        SalesHomeAction.getRecentLoginCustomers({},this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
+        SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
     },
     getWillExpireCustomer: function (queryObj) {
         SalesHomeAction.getWillExpireCustomer(queryObj);
@@ -313,6 +354,21 @@ var SalesHomePage = React.createClass({
             </div>
         )
     },
+    // 获取拨打电话的座机号
+    getUserPhoneNumber: function () {
+        let member_id = userData.getUserData().user_id;
+        crmAjax.getUserPhoneNumber(member_id).then((result) => {
+            if (result.phone_order) {
+                this.setState({
+                    callNumber: result.phone_order
+                });
+            }
+        }, (errMsg) => {
+            this.setState({
+                errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
+            });
+        })
+    },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
         Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
@@ -346,6 +402,9 @@ var SalesHomePage = React.createClass({
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={true}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })
@@ -358,6 +417,9 @@ var SalesHomePage = React.createClass({
                                     isShowTopTitle={false}
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowScheduleTimerange={false}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })
@@ -380,6 +442,9 @@ var SalesHomePage = React.createClass({
                                     scheduleItemDetail={item}
                                     isShowTopTitle={true}
                                     isShowScheduleTimerange={false}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })}
@@ -414,6 +479,9 @@ var SalesHomePage = React.createClass({
                                                 <WillExpireItem
                                                     expireItem={willExpiredCustomer}
                                                     willExpiredTip={Intl.get("sales.frontpage.try.expired", "试用到期停用")}
+                                                    openCustomerDetail={this.openCustomerDetail}
+                                                    callNumber={this.state.callNumber}
+                                                    errMsg={this.state.errMsg}
                                                 />
                                             )
                                         })}
@@ -442,6 +510,9 @@ var SalesHomePage = React.createClass({
                                                 <WillExpireItem
                                                     expireItem={willExpiredCustomer}
                                                     willExpiredTip={Intl.get("sales.frontpage.assigned.expired", "签约到期停用")}
+                                                    openCustomerDetail={this.openCustomerDetail}
+                                                    callNumber={this.state.callNumber}
+                                                    errMsg={this.state.errMsg}
                                                 />
                                             )
                                         })}
@@ -473,6 +544,10 @@ var SalesHomePage = React.createClass({
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
                                     tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近{X}天登录情况", {X: 7})}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    openUserDetail={this.openUserDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })}
@@ -492,6 +567,10 @@ var SalesHomePage = React.createClass({
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
                                     tableTitleTip={Intl.get("sales.frontpage.appilleage.login", "停用期间用户登录情况")}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    openUserDetail={this.openUserDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })}
@@ -511,6 +590,10 @@ var SalesHomePage = React.createClass({
                                 <CustomerNoticeMessage
                                     customerNoticeMessage={item}
                                     isRecentLoginCustomer={true}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    openUserDetail={this.openUserDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
                                 />
                             )
                         })}
@@ -557,7 +640,7 @@ var SalesHomePage = React.createClass({
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
-        var cls = classNames("col-md-9 customer-content-right", {
+        var cls = classNames("col-md-10 customer-content-right", {
             "has-repeat-customer": this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
         return (
@@ -568,52 +651,57 @@ var SalesHomePage = React.createClass({
                             <ul>
                                 <li>
                                     <div className="statistic-total-content">
-                                        <div className="content-left">
-                                            <i className="iconfont icon-phone-waiting"></i>
-                                        </div>
                                         <div className="content-right">
-                                            <p>
-                                                {Intl.get("sales.frontpage.connected.today", "今日通话")}
-                                            </p>
-                                            <p>
+                                            <span>
+                                                {Intl.get("sales.frontpage.connected.today", "今日通话个数")}
+                                            </span>
+                                            <span className="data-container">
                                                 <span className="phone-total-count total-data-style">
-                                                    {Intl.get("sales.home.count", "{count}个", {"count": phoneData.totalCount})}
+                                                    {phoneData.totalCount}
                                                 </span>
-                                                <span className="phone-total-time phone-total-data">
-                                {time.hours > 0 ? <span>{time.hours}<span
-                                    className="total-data-desc">{Intl.get("user.time.hour", "小时")} </span></span> : null}
-                                                    {time.minutes > 0 ? <span>{time.minutes}<span
-                                                        className="total-data-desc">{Intl.get("user.time.minute", "分")} </span></span> : null}
-                                                    {time.second > 0 ? <span>{time.second}<span
-                                                        className="total-data-desc">{Intl.get("user.time.second", "秒")} </span></span> : null}
-                                                    {time.timeDescr == 0 ? time.timeDescr : null}
-                                        </span>
-                                            </p>
+                                            </span>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="statistic-total-content">
-                                        <div className="content-left">
-                                            <i className="iconfont icon-phone-waiting"></i>
-                                        </div>
                                         <div className="content-right">
-                                            <p>{Intl.get("sales.frontpage.contact.today", "今日联系客户")}</p>
-                                            <p>
-                                                {Intl.get("sales.home.count", "{count}个", {"count": this.state.customerContactTodayObj.data.total})}</p>
+                                            <span>
+                                                {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
+                                            </span>
+                                            <span className="data-container">
+                                                <span className="phone-total-time phone-total-data">
+                                {time.hours > 0 ? <span>{time.hours}:</span> : null}
+                                                    {time.minutes > 0 ? <span>{time.minutes}:</span> : null}
+                                                    {time.second > 0 ? <span>{time.second}</span> : null}
+                                                    {time.timeDescr == 0 ? time.timeDescr : null}
+                                        </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="statistic-total-content">
+                                        <div className="content-right">
+                                            <span>{Intl.get("sales.frontpage.contact.today", "今日已跟进客户")}</span>
+                                            <span className="data-container">
+                                                <span>
+                                                  {this.state.customerContactTodayObj.data.total}
+                                                </span>
+                                                </span>
                                         </div>
 
                                     </div>
                                 </li>
                                 <li>
                                     <div className="statistic-total-content">
-                                        <div className="content-left">
-                                            <i className="iconfont icon-phone-waiting"></i>
-                                        </div>
                                         <div className="content-right">
-                                            <p>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</p>
-                                            <p>
-                                                {Intl.get("sales.home.count", "{count}个", {"count": this.state.customerTotalObj.data.added})}</p>
+                                            <span>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</span>
+                                            <span className="data-container">
+                                                <span>
+                                                    {this.state.customerTotalObj.data.added}
+                                                </span>
+                                                </span>
                                         </div>
                                     </div>
                                 </li>
@@ -621,13 +709,45 @@ var SalesHomePage = React.createClass({
                         </div>
                     </TopNav>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
-                        <div className="col-md-3 customer-list-left" data-tracename="客户分类">
+                        <div className="col-md-2 customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
                         </div>
                         <div className={cls} data-tracename="客户详情">
                             {this.renderCustomerContent()}
                         </div>
                     </div>
+                    {
+                        this.state.curShowCustomerId ? <CrmRightPanel
+                            currentId={this.state.curShowCustomerId}
+                            showFlag={true}
+                            hideRightPanel={this.closeRightCustomerPanel}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                            refreshCustomerList={function () {
+                            }}
+                        /> : null
+                    }
+                    {/*该客户下的用户列表*/}
+                    <RightPanel
+                        className="customer-user-list-panel"
+                        showFlag={this.state.isShowCustomerUserListPanel}
+                    >
+                        { this.state.isShowCustomerUserListPanel ?
+                            <AppUserManage
+                                customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                hideCustomerUserList={this.closeCustomerUserListPanel}
+                                customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            /> : null
+                        }
+                    </RightPanel>
+                    {
+                        this.state.curShowUserId ?
+                            <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"
+                                        showFlag={this.state.curShowUserId}>
+                                <UserDetail userId={this.state.curShowUserId}
+                                            closeRightPanel={this.closeRightUserPanel}/>
+                            </RightPanel>
+                            : null
+                    }
                 </div>
             </RightContent>
         )

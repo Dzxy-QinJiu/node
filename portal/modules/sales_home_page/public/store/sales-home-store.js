@@ -256,13 +256,6 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
         newDistributeCustomer.data.total = result.resData.total;
     }
 };
-// // 获取最近登录的客户数量
-// SalesHomeStore.prototype.getRecentLoginCustomerCount = function (result) {
-//     var recentLoginCustomerObj = this.recentLoginCustomerObj;
-//     if (result.resData) {
-//         recentLoginCustomerObj.data.total = result.resData;
-//     }
-// };
 //获取日程列表
 SalesHomeStore.prototype.getScheduleList = function (result) {
     if (result.type === "expired") {

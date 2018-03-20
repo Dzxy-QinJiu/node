@@ -131,7 +131,7 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     },//即将到期的签约用户
     {value: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, name: Intl.get("sales.frontpage.login.after.stop", "停用后登录")},// 停用后登录
     {value: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, name: Intl.get("ketao.frontpage.focus.customer.login", "关注客户登录")},//关注客户登录
-    {value: ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER, name: Intl.get("sales.frontpage.login.recently", "近X日登录的客户")},//近X日登录的客户
+    {value: ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER, name: Intl.get("sales.frontpage.login.recently", "近{X}日登录的客户",{X:7})},//近7日登录的客户
     {value: ALL_LISTS_TYPE.REPEAT_CUSTOMER, name: Intl.get("sales.frontpage.has.repeat.customer", "您有重复的客户")},//重复客户
     {value: ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER, name: Intl.get("slaes.frontpage.new.distribute.customer", "新分配的客户")}
 ];

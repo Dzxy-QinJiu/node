@@ -8,9 +8,6 @@ import SalesHomePageAction from "../action/sales-home-actions";
 import {Button, message} from "antd";
 import userData from "PUB_DIR/sources/user-data";
 import ContactItem from "./contact-item";
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
-import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel}  from "CMP_DIR/rightPanel";
 var user_id = userData.getUserData().user_id;
 class ScheduleItem extends React.Component {
     constructor(props) {
@@ -19,10 +16,6 @@ class ScheduleItem extends React.Component {
             scheduleItemDetail: this.props.scheduleItemDetail,
             handleStatusLoading: false,//正在提交修改日程的状态
             isEdittingItemId: "",//正在修改状态的那条日程的id
-            curShowCustomerId: "",//展示客户详情的客户id
-            curShowUserId: "",//展示用户详情的用户id
-            isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
-            CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
         }
     };
 
@@ -33,27 +26,8 @@ class ScheduleItem extends React.Component {
             })
         }
     };
-
-    closeCustomerUserListPanel = () => {
-        this.setState({
-            isShowCustomerUserListPanel: false
-        })
-    };
-    closeRightCustomerPanel = () => {
-        this.setState({curShowCustomerId: ""});
-    };
-    ShowCustomerUserListPanel = (data) => {
-        this.setState({
-            isShowCustomerUserListPanel: true,
-            CustomerInfoOfCurrUser: data.customerObj
-        });
-
-    };
     openCustomerDetail = (customer_id) => {
-        if (this.state.curShowUserId) {
-            this.closeRightUserPanel();
-        }
-        this.setState({curShowCustomerId: customer_id});
+        this.props.openCustomerDetail(customer_id);
     };
 
     handleFinishedSchedule(scheduleId) {
@@ -113,31 +87,12 @@ class ScheduleItem extends React.Component {
                     </div>
                     <ContactItem
                         contacts={contacts}
+                        customerData={schedule}
+                        itemType = "schedule"
+                        callNumber={this.props.callNumber}
+                        errMsg={this.props.errMsg}
                     />
                 </div>
-                {
-                    this.state.curShowCustomerId ? <CrmRightPanel
-                        currentId={this.state.curShowCustomerId}
-                        showFlag={true}
-                        hideRightPanel={this.closeRightCustomerPanel}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        refreshCustomerList={function () {
-                        }}
-                    /> : null
-                }
-                {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    { this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
             </div>
         )
     }
@@ -147,6 +102,9 @@ ScheduleItem.defaultProps = {
     scheduleItemDetail: {},//日程详细信息
     isShowTopTitle: true, //是否展示顶部时间样式
     isShowScheduleTimerange: true,//是否展示日程的时间范围
+    openCustomerDetail:function () {
+        
+    }
 
 };
 export default ScheduleItem;
