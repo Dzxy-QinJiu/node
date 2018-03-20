@@ -31,6 +31,9 @@ function OrderActions() {
             ajax(arg).then(result => {
                 this.dispatch(result);
                 if (cb) cb(result);
+            }, (errorMsg) => {
+                this.dispatch(errorMsg);
+                if (cb) cb(errorMsg);
             });
         };
     });
