@@ -14,57 +14,58 @@ const language = require("../../../public/language/getLanguage");
 
 let userInfo = [];
 let userExistTimeout = null;
+let checkUserExistIntervalTime = 2000;//检查用户是否存在的间隔时间
 
 function checkUserExistAjax(obj) {
     return Ajax.checkUserName(obj);
 }
 
-function clickUserName(user_id, username_block){
-    var text = Intl.get("user.user.check","查看该用户");
+function clickUserName(user_id, username_block) {
+    var text = Intl.get("user.user.check", "查看该用户");
     var a = `<a href='javascript:void(0)' id='app_user_name_exist_view'>${text}</a>`;
-    const $explain = $(".ant-form-explain",username_block);
+    const $explain = $(".ant-form-explain", username_block);
     $explain.html(
-        Intl.get("user.user.exist.check.tip","用户已存在，是否{check}?",{'check':a})
+        Intl.get("user.user.exist.check.tip", "用户已存在，是否{check}?", {'check': a})
     );
     $("#app_user_name_exist_view").click((e) => {
         e.preventDefault();
         var loc = window.location.href;
-        if(/\/user\/list/.test(loc)) {
+        if (/\/user\/list/.test(loc)) {
             //清除表单内容
             AppUserFormActions.resetState();
             //展示详情
             AppUserActions.showUserDetail({
-                user : {
-                    user_id : user_id
+                user: {
+                    user_id: user_id
                 }
             });
         } else {
-            history.pushState({},"/user/list",{});
+            history.pushState({}, "/user/list", {});
             //清除表单内容
             AppUserFormActions.resetState();
             //展示详情
             AppUserActions.showUserDetail({
-                user : {
-                    user_id :  user_id
+                user: {
+                    user_id: user_id
                 }
             });
         }
     });
 }
 
-exports.checkUserExist = function(rule,obj,callback, number, username_block) {
+exports.checkUserExist = function (rule, obj, callback, number, username_block) {
     clearTimeout(userExistTimeout);
     userExistTimeout = setTimeout(() => {
         checkUserExistAjax(obj).then((result) => {  // 通过验证情况
             userInfo = result;
             if (result.length == 0) {
                 callback();
-            }else {   // 不通过验证的情况，分为两种情况
+            } else {   // 不通过验证的情况，分为两种情况
                 // 第一种情况：同一个客户下，用户数多个时，通过， 一个时，不通过（提示用户名已存在，并且可以查看同名的用户详情信息）
                 // 第二种情况：不同客户下，不通过，有多个用户名前缀相同时（提示用户名已存在）,有一个相同时，(提示用户名已存在，并且可以查看同名的用户详情信息)
                 let customerIdArray = _.pluck(result, 'customer_id');
                 let index = _.indexOf(customerIdArray, obj.customer_id);
-                if(index != -1) {  // 有相同的customer_id
+                if (index != -1) {  // 有相同的customer_id
                     if (result.length == 1) { // 重复的用户数只有一个
                         if (number == 1) {  // 申请的用户数为1， 不通过
                             callback(Intl.get("user.user.exist.tip", "用户已存在"));
@@ -85,19 +86,19 @@ exports.checkUserExist = function(rule,obj,callback, number, username_block) {
                     }
                 }
             }
-        },() => {
+        }, () => {
             callback();
         });
-    } , 1000);
+    }, checkUserExistIntervalTime);
 };
 
-exports.validatorMessageTips = function(value, callback) {
-    let userNameRegex =/^[0-9a-zA-Z_@.-]{1,50}$/;
-    if (language.lan() == "es"){
+exports.validatorMessageTips = function (value, callback) {
+    let userNameRegex = /^[0-9a-zA-Z_@.-]{1,50}$/;
+    if (language.lan() == "es") {
         // 西班牙语中用户名的验证规则（Ññ Áá Éé Óó Úú Íí）
-        userNameRegex =/^[0-9a-zA-ZñáçéíóúüÑÁÇÉÍÓÚÜ_@.-]{1,50}$/
+        userNameRegex = /^[0-9a-zA-ZñáçéíóúüÑÁÇÉÍÓÚÜ_@.-]{1,50}$/
     }
-    if(!value) {
+    if (!value) {
         callback(Intl.get("user.username.write.tip", "请填写用户名"));
         return;
     }
@@ -109,7 +110,7 @@ exports.validatorMessageTips = function(value, callback) {
         callback(Intl.get("crm.102", "用户名必须为字母、数字、下划线的组合或合法格式的邮箱"));
         return;
     }
-    if(value) {
+    if (value) {
         callback();
         return;
     }
