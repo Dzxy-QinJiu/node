@@ -28,7 +28,9 @@ exports.cardEmitter.ADD_CARD = "addCard";
 exports.notificationEmitter = new EventEmitter();
 exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = "updateNotificationUnread";
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = "showUnhandledApplyCount";
+
 exports.notificationEmitter.APPLY_UPDATED = "applyUpdated";
+
 //申请审批未读回复
 exports.notificationEmitter.APPLY_UNREAD_REPLY = "applyUnreadReply";
 //刷新系统消息的emitter

@@ -45,6 +45,8 @@ UserApplyStore.prototype.resetState = function () {
     this.allApps = [];
     //有未读回复的列表
     this.unreadReplyList = [];
+    //处理申请操作失败
+    this.dealApplyError = "success";
 };
 //刷新未读回复列表;
 UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
@@ -158,5 +160,9 @@ UserApplyStore.prototype.setSelectedDetailItem = function ({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
+//更新处理申请错误的状态,"success"或者"error"
+UserApplyStore.prototype.updateDealApplyError = function (status) {
+    this.dealApplyError = status;
+}
 //使用alt导出store
 module.exports = alt.createStore(UserApplyStore, 'UserApplyStore');

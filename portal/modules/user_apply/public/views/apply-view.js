@@ -16,16 +16,42 @@ var SearchInput = require("../../../../components/searchInput");
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import Trace from "LIB_DIR/trace";
 
+
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+//更新申请的待审批数
+function updateUnapprovedCount(count) {
+    if (Oplate && Oplate.unread) {
+        Oplate.unread.approve = count;
+        if (timeoutFunc) {
+            clearTimeout(timeoutFunc);
+        }
+        timeoutFunc = setTimeout(function () {
+            //触发展示的组件待审批数的刷新
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
+        }, timeout);
+    }
+}
 var ApplyTabContent = React.createClass({
 
     fetchApplyList: function () {
+        //如果是待审批的请求，获取到申请列表后，更新下待审批的数量。
+        // 解决通过或驳回操作失败（后台其实是成功）后，刷新没有待审批的申请但数量不变的问题
         UserApplyActions.getApplyList({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? "pass" : this.state.applyListType
+        }, (count) => {
+            //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
+            if (this.state.dealApplyError == "error" && this.state.applyListType === 'false') {
+                //触发更新待审批数
+                updateUnapprovedCount(count);
+                UserApplyActions.updateDealApplyError("success");
+            }
         });
     },
+
     componentDidMount: function () {
         UserApplyStore.listen(this.onStoreChange);
         $(window).on('resize', this.onWindowResize);
@@ -67,11 +93,13 @@ var ApplyTabContent = React.createClass({
     refreshUnreadReplyList: function (unreadReplyList) {
         UserApplyActions.refreshUnreadReplyList(unreadReplyList);
     },
-    updateSelectedItem: function (approval) {
+    updateSelectedItem: function (message) {
         const selectedDetailItem = this.state.selectedDetailItem;
         selectedDetailItem.isConsumed = 'true';
-        selectedDetailItem.approval_state = approval;
+        selectedDetailItem.approval_state = message && message.approval || selectedDetailItem.approval_state;
         this.setState({selectedDetailItem});
+        //处理申请成功还是失败,"success"/"error"
+        UserApplyActions.updateDealApplyError(message && message.status || this.state.dealApplyError);
     },
     onWindowResize: function () {
         this.setState(this.getStoreData());

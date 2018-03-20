@@ -126,10 +126,12 @@ class ApplyViewDetailActions {
         AppUserAjax.submitApply(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
             //更新选中的申请单类型
-            AppUserUtil.emitter.emit("updateSelectedItem", obj.approval);
+            AppUserUtil.emitter.emit("updateSelectedItem", {approval: obj.approval, status: "success"});
             //刷新用户审批未处理数
             updateUnapprovedCount();
         }, (errorMsg) => {
+            //更新选中的申请单类型
+            AppUserUtil.emitter.emit("updateSelectedItem", {status: "error"});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     }
@@ -164,12 +166,13 @@ class ApplyViewDetailActions {
         AppUserAjax.saleBackoutApply(obj).then((data) => {
             if (data) {
                 message.success(Intl.get("user.apply.detail.backout.success", "撤销成功"));
-                AppUserUtil.emitter.emit("updateSelectedItem", '3');
+                AppUserUtil.emitter.emit("updateSelectedItem", {approval: '3', status: "success"});
                 this.dispatch(data);
                 //刷新用户审批未处理数(左侧导航中待审批数)
                 updateUnapprovedCount();
             }
         }, (errorMsg) => {
+            AppUserUtil.emitter.emit("updateSelectedItem", {status: "error"});
             message.error(errorMsg || Intl.get("user.apply.detail.backout.error", "撤销申请失败"));
             this.dispatch(errorMsg);
         });
