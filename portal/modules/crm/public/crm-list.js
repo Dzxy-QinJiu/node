@@ -864,7 +864,7 @@ var Crm = React.createClass({
     handleClickCallOut(phoneNumber, record) {
         Trace.traceEvent($(this.getDOMNode()).find(".column-contact-way"), "拨打电话");
         if (this.state.errMsg) {
-            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
+            message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!"));
         } else {
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
