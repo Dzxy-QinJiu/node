@@ -1213,6 +1213,7 @@ var en_US = {
     "crm.detail.sales.role": "Sales role",//销售角色
     "crm.sales.change": "Change sales",//变更销售
     "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
+    "crm.right.schedule": "Contact schedule",//联系计划
     // 客户管理end
 
     //客户分析 start
