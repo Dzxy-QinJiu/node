@@ -15,6 +15,7 @@ import Trace from "LIB_DIR/trace";
 import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
 import WillExpireItem from "./view/will-expire-item";
+import NewDistributeCustomer from "./view/new-distribute-customer";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -93,6 +94,8 @@ var SalesHomePage = React.createClass({
                 end_time: todayTimeRange.end_time + 183 * oplateConsts.ONE_DAY_TIME_RANGE
             }
         );
+        //获取新分配的客户
+        this.getNewDistributeCustomer();
     },
     getWillExpireCustomer: function (queryObj) {
         SalesHomeAction.getWillExpireCustomer(queryObj);
@@ -105,6 +108,14 @@ var SalesHomePage = React.createClass({
         }
         //获取重复客户列表
         SalesHomeAction.getRepeatCustomerList(queryObj);
+    },
+    //获取新分配的客户
+    getNewDistributeCustomer: function (lastId) {
+        var queryObj = {
+            rangParams: [{"from": 0, "to": moment().valueOf(), "type": "time", "name": "allot_time"}]
+        };
+        //获取新分配的客户
+        SalesHomeAction.getNewDistributeCustomer(queryObj);
     },
     //获取今日的日程列表
     getScheduleListToday: function () {
@@ -264,8 +275,31 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
                 rightPanel = <CustomerRepeat noNeedClose={true}/>;
                 break;
+            //新分配的客户
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+                rightPanel = this.renderNewDistributeCustomer();
+                break;
         }
         return rightPanel;
+    },
+    //新分配的客户
+    renderNewDistributeCustomer: function () {
+        var data = this.state.newDistributeCustomer.data.list;
+        return (
+            <div className="new-distribute-customer-container">
+                <GeminiScrollbar>
+                    {_.map(data, (item) => {
+                        return (
+                            <NewDistributeCustomer
+                                newDistributeCustomer={item}
+                            />
+
+                        )
+                    })}
+                </GeminiScrollbar>
+
+            </div>
+        )
     },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
@@ -349,9 +383,9 @@ var SalesHomePage = React.createClass({
             //三天内即将到期的试用客户
             data = this.state.willExpiredTryCustomer.data.list;
             var willexpiredTipArr = [
-                "今天到期",
-                "明天到期",
-                "后天到期"
+                Intl.get("sales.frontpage.expired.today", "今日到期"),
+                Intl.get("sales.frontpage.expired.tomorrow", "明天到期"),
+                Intl.get("sales.frontpage.expired.today", "今日到期")
             ];
             return (
                 <div className="will-expire-assigned-customer-container">
@@ -367,6 +401,7 @@ var SalesHomePage = React.createClass({
                                             return (
                                                 <WillExpireItem
                                                     expireItem={willExpiredCustomer}
+                                                    willExpiredTip={Intl.get("sales.frontpage.try.expired", "试用到期停用")}
                                                 />
                                             )
                                         })}
@@ -394,6 +429,7 @@ var SalesHomePage = React.createClass({
                                             return (
                                                 <WillExpireItem
                                                     expireItem={willExpiredCustomer}
+                                                    willExpiredTip={Intl.get("sales.frontpage.assigned.expired", "签约到期停用")}
                                                 />
                                             )
                                         })}
@@ -496,6 +532,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
                 total = this.state.repeatCustomerObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+                total = this.state.newDistributeCustomer.data.total;
                 break;
         }
         return total;

@@ -2030,5 +2030,12 @@ var zh_CN = {
     "sales.frontpage.appilleage.login": "停用期间用户登录情况",
     "sales.frontpage.concerned.login": "近X天登录情况",
     "sales.fromtpage.set.contact.time":"原定于{initialtime}联系",
+    "sales.frontpage.fail.new.distribute.customer":"获取新分配的客户失败",
+    "slaes.frontpage.new.distribute.customer":"新分配的客户",
+    "sales.frontpage.expired.today":"今日到期",
+    "sales.frontpage.expired.tomorrow":"明天到期",
+    "sales.frontpage.expired.after.tomorrow":"后天到期",
+    "sales.frontpage.try.expired":"试用到期停用",
+    "sales.frontpage.assigned.expired":"签约到期停用"
 };
 export default zh_CN;

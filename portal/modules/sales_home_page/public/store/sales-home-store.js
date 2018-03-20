@@ -129,6 +129,15 @@ SalesHomeStore.prototype.setInitState = function () {
             total: ""
         }
     };
+    //新分配的客户
+    this.newDistributeCustomer = {
+        loading: true,
+        errMsg: "",
+        data: {
+            list: [],
+            total: ""
+        }
+    };
     this.rangParams = [{//默认展示今天的数据
         from: TimeStampUtil.getTodayTimeStamp().start_time,
         to: TimeStampUtil.getTodayTimeStamp().end_time,
@@ -222,6 +231,17 @@ SalesHomeStore.prototype.getRecentLoginCustomer = function (result) {
         recentLoginCustomerObj.errMsg = result.errMsg;
     } else if (result.resData) {
         recentLoginCustomerObj.data.list = result.resData;
+    }
+};
+//获取新分配的客户列表
+SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
+    var newDistributeCustomer = this.newDistributeCustomer;
+    newDistributeCustomer.loading = result.loading;
+    if (result.error) {
+        newDistributeCustomer.errMsg = result.errMsg;
+    } else if (result.resData) {
+        newDistributeCustomer.data.list = result.resData.result;
+        newDistributeCustomer.data.total = result.resData.total;
     }
 };
 // 获取最近登录的客户数量

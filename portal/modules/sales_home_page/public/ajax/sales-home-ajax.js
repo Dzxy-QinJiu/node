@@ -255,3 +255,26 @@ exports.handleScheduleStatus = function (reqData) {
     });
     return Deferred.promise();
 };
+//获取新分配的客户
+let getNewDistributeCustomerAjax;
+exports.getNewDistributeCustomer =  function (data) {
+    if (getNewDistributeCustomerAjax) {
+        getNewDistributeCustomerAjax.abort();
+    }
+    var Deferred = $.Deferred();
+    getNewDistributeCustomerAjax = $.ajax({
+        url: '/rest/get_new_distribute_customer',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (error, errorText) {
+            if (errorText !== 'abort') {
+                Deferred.reject(error && error.responseJSON );
+            }
+        }
+    });
+    return Deferred.promise();
+};

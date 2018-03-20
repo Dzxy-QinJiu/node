@@ -113,15 +113,28 @@ function SalesHomeActions() {
         salesHomeAjax.handleScheduleStatus(reqData).then((resData) => {
             this.dispatch({error: false, loading: false, result: resData});
             cb(resData);
-        }, (errMsg)=>{
+        }, (errMsg) => {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败")
+                errorMsg: errorMsg || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败")
             });
             cb(errMsg)
         });
     };
+    //获取新分配的客户
+    this.getNewDistributeCustomer = function (reqData) {
+        this.dispatch({error: false, loading: true});
+        salesHomeAjax.getNewDistributeCustomer(reqData).then((resData) => {
+            this.dispatch({error: false, loading: false, resData: resData});
+        }, (errMsg) => {
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errMsg || Intl.get("sales.frontpage.fail.new.distribute.customer", "获取新分配的客户失败")
+            });
+        })
+    }
 
 
 }
