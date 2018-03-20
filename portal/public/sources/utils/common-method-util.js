@@ -2,26 +2,34 @@
  * 不同模块调用的公共方法
  * Created by wangliping on 2017/5/25.
  */
-//获取递归遍历计算树形团队内的成员个数
-exports.getTeamMemberCount = function (salesTeam) {
-    let teamMemberCount = 0;
-
-    let memberArray = [];
-    if (salesTeam.ownerId) {
-        memberArray.push(salesTeam.ownerId);
+/**
+ *获取递归遍历计算树形团队内的成员个数（与oplate中的计算组织成员个数的方法不同）
+ * @param salesTeam: 计算成员个数的团队
+ * @param teamMemberCount: 团队人数
+ * @param teamMemberCountList: 所有团队成员人数统计列表[{team_id:xxx,available:{owner:xx,manager:xx,user:xx},total:xxx}]
+ * @param filterManager: 是否过滤掉舆情秘书
+ */
+exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
+    let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
+    let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == curTeamId);
+    //该团队启用状态下的人数
+    let availableObj = teamMemberCountObj && teamMemberCountObj.available ? teamMemberCountObj.available : {}
+    if (availableObj.owner) {
+        teamMemberCount += availableObj.owner;
     }
-    if (_.isArray(salesTeam.managerIds) && salesTeam.managerIds.length > 0) {
-        memberArray = memberArray.concat(salesTeam.managerIds);
+    //加上舆情秘书的个数统计（销售首页的团队人数统计中不计算舆情秘书）
+    if(!filterManager && availableObj.manager){
+        teamMemberCount += availableObj.manager;
     }
-    if (_.isArray(salesTeam.userIds) && salesTeam.userIds.length > 0) {
-        memberArray = memberArray.concat(salesTeam.userIds);
+    if (availableObj.user) {
+        teamMemberCount += availableObj.user;
     }
-    memberArray = _.uniq(memberArray);//去重
-    teamMemberCount = memberArray.length;
+    //子团队，团队管理界面是child_group，销售首页是children
+    let childGroup = salesTeam.child_groups || salesTeam.children;
     //递归遍历子团队，加上子团队的人数
-    if (_.isArray(salesTeam.children) && salesTeam.children.length > 0) {
-        salesTeam.children.forEach(team=> {
-            teamMemberCount += this.getTeamMemberCount(team);
+    if (_.isArray(childGroup) && childGroup.length > 0) {
+        childGroup.forEach(team => {
+            teamMemberCount = this.getTeamMemberCount(team, teamMemberCount, teamMemberCountList, filterManager);
         });
     }
     return teamMemberCount;

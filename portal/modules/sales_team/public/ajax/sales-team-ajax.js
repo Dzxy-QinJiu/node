@@ -17,6 +17,20 @@ exports.getSalesTeamList = function () {
     return Deferred.promise();
 };
 
+//获取统计团队内成员个数的列表
+let teamMemberCountAjax;
+exports.getTeamMemberCountList = function () {
+    teamMemberCountAjax && teamMemberCountAjax.abort();
+    let Deferred = $.Deferred();
+    teamMemberCountAjax = teamAjax.getTeamMemberCountListAjax().sendRequest()
+        .success(list => {
+            Deferred.resolve(list);
+        }).error(error => {
+            Deferred.resolve(error.responseText);
+        });
+    return Deferred.promise();
+};
+
 exports.filterSalesTeamList = function (userName) {
     var Deferred = $.Deferred();
     $.ajax({

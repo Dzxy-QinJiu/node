@@ -7,6 +7,7 @@ import Trace from "LIB_DIR/trace";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
+import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 var SearchInput = require("../../../../components/searchInput");
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var OplateCustomerAnalysisAction = require("../../../oplate_customer_analysis/public/action/oplate-customer-analysis.action");
@@ -293,7 +294,7 @@ let CrmRightList = React.createClass({
         let teamMemberCountList = this.state.teamMemberCountList;
         if (_.isArray(salesTeamList) && salesTeamList.length > 0) {
             salesTeamList.map((salesTeam, i) => {
-                let teamMemberCount = this.getTeamMemberCount(salesTeam, 0, teamMemberCountList);
+                let teamMemberCount = commonMethodUtil.getTeamMemberCount(salesTeam, 0, teamMemberCountList, true);
                 if (salesTeam.group_name.indexOf(this.state.searchValue) != -1) {
                     let color = this.getBgColor(i);
                     salesListLi.push(<li key={salesTeam.group_id} onClick={e => this.selectSalesTeam(e, salesTeam)}>
@@ -308,25 +309,7 @@ let CrmRightList = React.createClass({
         }
         return salesListLi;
     },
-    //获取销售团队内的成员个数
-    getTeamMemberCount: function (salesTeam, teamMemberCount, teamMemberCountList) {
-        let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == salesTeam.group_id);
-        //该团队启用成员数
-        let availableObj = teamMemberCountObj && teamMemberCountObj.available ? teamMemberCountObj.available : {}
-        if (availableObj.owner) {
-            teamMemberCount += availableObj.owner;
-        }
-        if (availableObj.user) {
-            teamMemberCount += availableObj.user;
-        }
-        //递归遍历子团队，加上子团队的人数
-        if (_.isArray(salesTeam.child_groups) && salesTeam.child_groups.length > 0) {
-            salesTeam.child_groups.forEach(team => {
-                teamMemberCount = this.getTeamMemberCount(team, teamMemberCount, teamMemberCountList);
-            });
-        }
-        return teamMemberCount;
-    },
+
     searchEvent: function (searchValue) {
         this.setState({
             searchValue: searchValue

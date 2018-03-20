@@ -24,10 +24,14 @@ function SalesTeamStore() {
     this.delTeamErrorMsg = "";//删除团队失败的错误提示
     this.isAddSalesTeamRoot = false;//是否是添加根团队
     this.salesGoals = {};//销售目标
+    this.teamMemberCountList = [];//统计团队内成员个数的列表
 
     this.bindActions(SalesTeamActions);
 }
-
+//获取统计团队内成员个数的列表
+SalesTeamStore.prototype.getTeamMemberCountList = function (list) {
+    this.teamMemberCountList = _.isArray(list) ? list : [];
+};
 //获取销售目标
 SalesTeamStore.prototype.getSalesGoals = function (salesGoals) {
     this.salesGoals = _.isObject(salesGoals) ? salesGoals : {};
