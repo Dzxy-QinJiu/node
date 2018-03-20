@@ -410,7 +410,6 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
-        notificationEmitter.removeListener(notificationEmitter.GET_MESSAGE_COUNT, getMessageCount);
     }
 }
 /**
@@ -421,8 +420,6 @@ function startSocketIo() {
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
     socketIo.on('connect', function () {
-        //监听重新获取消息数的事件，用于特殊情况下，再重新获取一次消息数
-        notificationEmitter.on(notificationEmitter.GET_MESSAGE_COUNT, getMessageCount);
         // 获取消息数后添加监听
         getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息

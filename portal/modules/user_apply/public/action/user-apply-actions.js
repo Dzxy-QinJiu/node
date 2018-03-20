@@ -23,7 +23,7 @@ function UserApplyActions() {
         UserAjax.getApplyList(obj).then(function (data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: data});
-            (typeof callback === "function") && callback();
+            (typeof callback === "function") && callback(data.total);
         }, function (errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });

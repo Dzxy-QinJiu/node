@@ -30,8 +30,7 @@ exports.notificationEmitter.UPDATE_NOTIFICATION_UNREAD = "updateNotificationUnre
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT = "showUnhandledApplyCount";
 
 exports.notificationEmitter.APPLY_UPDATED = "applyUpdated";
-//获取申请数
-exports.notificationEmitter.GET_MESSAGE_COUNT = "getMessageCount";
+
 //申请审批未读回复
 exports.notificationEmitter.APPLY_UNREAD_REPLY = "applyUnreadReply";
 //刷新系统消息的emitter
