@@ -124,7 +124,7 @@ function init(options) {
             case 'sales_home_page':
                 //如果是普通销售
                 if (user.isCommonSales) {
-                    // childRoutes.push(require("../../modules/common_sales_home_page"));
+                    childRoutes.push(require("../../modules/common_sales_home_page"));
                 } else {
                     childRoutes.push(require("../../modules/sales_home_page"));
                 };
