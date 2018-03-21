@@ -39,7 +39,8 @@ class ContactItem extends React.Component {
     };
 
     // 自动拨号
-    handleClickCallOut(phoneNumber, record) {
+    handleClickCallOut(phoneNumber, contactName, record) {
+        console.log(record);
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
         if (this.state.errMsg) {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
@@ -48,8 +49,8 @@ class ContactItem extends React.Component {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
-                        contact: record.contact,
-                        customerDetail: record,//客户基本信息
+                        contact: contactName,
+                        customerId: record.customer_id,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -93,7 +94,7 @@ class ContactItem extends React.Component {
                                             {index === 0 ? <span className={cls}>
                                                 <i className="iconfont icon-phone-busy"
                                                    title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, record)}
+                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, contactItem.name, record)}
                                                    data-tracename="拨打电话"></i> {contactItem.name}
                                             </span> : null}
                                             {index !== 0 ? <i className="iconfont icon-phone-busy"></i> : null}
