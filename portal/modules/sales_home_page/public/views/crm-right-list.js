@@ -291,7 +291,7 @@ let CrmRightList = React.createClass({
     //获取销售团队列表
     getSalesTeamList: function () {
         let salesListLi = [], salesTeamList = this.props.salesTeamListObj.data;
-        let teamMemberCountList = this.state.teamMemberCountList;
+        let teamMemberCountList = this.props.teamMemberCountList;
         if (_.isArray(salesTeamList) && salesTeamList.length > 0) {
             salesTeamList.map((salesTeam, i) => {
                 let teamMemberCount = commonMethodUtil.getTeamMemberCount(salesTeam, 0, teamMemberCountList, true);
