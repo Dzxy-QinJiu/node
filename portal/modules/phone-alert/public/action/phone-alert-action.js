@@ -12,7 +12,7 @@ function PhoneAlertAction() {
         'setAddCustomerInfo',
         'setSubmitErrMsg',
         'setCustomerInfoArr'
-    )
+    );
     this.getCustomerByPhone = function (phoneNum) {
         var rangParams = [{//时间范围参数
             from: "",
@@ -28,6 +28,14 @@ function PhoneAlertAction() {
         };
         this.dispatch({loading:true,error:false});
         phoneAlertAjax.getCustomerByPhone(data).then((data) => {
+            this.dispatch({loading:false,error:false,data:data})
+        }, (errorMsg)=>{
+            this.dispatch({loading:false,error:true,errorMsg:errorMsg})
+        });
+    };
+    this.getCustomerById = function (customerId) {
+        this.dispatch({loading:true,error:false});
+        phoneAlertAjax.getCustomerById(customerId).then((data) => {
             this.dispatch({loading:false,error:false,data:data})
         }, (errorMsg)=>{
             this.dispatch({loading:false,error:true,errorMsg:errorMsg})

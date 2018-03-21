@@ -92,11 +92,16 @@ class PhoneAlert extends React.Component {
         if (this.props.phoneObj && this.props.phoneObj.customerDetail) {
             phoneAlertAction.setCustomerInfoArr(this.props.phoneObj.customerDetail);
         }
+        //如果拿不到客户的详情，只能取到客户的id时，通过发请求获取客户的信息
+        //如果state上的客户信息存在，并且state上的客户id和传过来的客户id一致的时候，不需要再重新取数据
+        if (this.props.phoneObj && this.props.phoneObj.customerId && ((this.state.customerInfoArr.length === 0 || ((this.state.customerInfoArr.length && this.state.customerInfoArr[0].id !== this.props.phoneObj.customerId) )))) {
+            phoneAlertAction.getCustomerById(this.props.phoneObj.customerId);
+        }
         var phonemsgObj = this.props.phonemsgObj;
         //通过座机拨打时，在alert状态之前的busy状态，不会推送电话号码，此电话在客户列表中存在的状态未知
         if (_.isEmpty(this.props.phoneObj) && phonemsgObj.to) {
             phoneAlertAction.setCustomerUnknown(true);
-            sendMessage && sendMessage("座机拨打电话，首次弹屏"+ phonemsgObj.to);
+            sendMessage && sendMessage("座机拨打电话，首次弹屏" + phonemsgObj.to);
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
@@ -112,15 +117,20 @@ class PhoneAlert extends React.Component {
             Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         }
         var customerId = _.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length ? this.state.customerInfoArr[0].id : "";
-        sendMessage && sendMessage("弹屏上展示的客户id"+ customerId + "实际联系的电话号码" + phoneObj.phoneNum);
+        sendMessage && sendMessage("弹屏上展示的客户id" + customerId + "实际联系的电话号码" + phoneObj.phoneNum);
         if (phoneObj && phoneObj.customerDetail) {
-            sendMessage && sendMessage("客户列表中的客户id"+ phoneObj.customerDetail.id + "实际联系的电话号码" + phoneObj.phoneNum);
+            sendMessage && sendMessage("客户列表中的客户id" + phoneObj.customerDetail.id + "实际联系的电话号码" + phoneObj.phoneNum);
             phoneAlertAction.setCustomerInfoArr(phoneObj.customerDetail);
+        }
+        //如果拿不到客户的详情，只能取到客户的id时，通过发请求获取客户的信息
+        //如果state上的客户信息存在，并且state上的客户id和传过来的客户id一致的时候，不需要再重新取数据
+        if (phoneObj && phoneObj.customerId && ((this.state.customerInfoArr.length === 0 || (this.state.customerInfoArr.length && this.state.customerInfoArr[0].id !== phoneObj.customerId)))) {
+            phoneAlertAction.getCustomerById(phoneObj.customerId);
         }
         //这个判断是为了防止第一个电话拨打完毕后，表示结束的状态未推送过来，当打第二个电话的时候，要把推送过来的状态和页面emitter过来的电话号码进行比较，一致的时候，再把推送内容改到state中
         // 这样能保证在系统内拨号的时候，避免前一个电话的状态影响后一个电话的状态
         //后端推送过来的电话，要么是在电话号码前面加0，要么是把电话的 - 去掉
-       //phoneNum 是界面上emitter过来的电话号码
+        //phoneNum 是界面上emitter过来的电话号码
         var phoneNum = phoneObj && phoneObj.phoneNum ? phoneObj.phoneNum.replace("-", "") : "";
         //如果后端推送过来的状态是Bye或者record，电话是在.to 这个属性上，判断这个电话与界面上的电话是否不一样
         var phoneToDiff = phoneNum && phonemsgObj.to && (phonemsgObj.to !== phoneNum && phonemsgObj.to !== "0" + phoneNum);
@@ -147,7 +157,7 @@ class PhoneAlert extends React.Component {
             });
         }
         //通话结束后，包含输入跟进记录的容器的高度需要变大
-        if (phonemsgObj.type === PHONERINGSTATUS.record || phonemsgObj.type === PHONERINGSTATUS.BYE || phonemsgObj.type === PHONERINGSTATUS.phone){
+        if (phonemsgObj.type === PHONERINGSTATUS.record || phonemsgObj.type === PHONERINGSTATUS.BYE || phonemsgObj.type === PHONERINGSTATUS.phone) {
             this.setState({
                 isInitialHeight: false
             })
@@ -159,7 +169,7 @@ class PhoneAlert extends React.Component {
         if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
             //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
             this.state.phoneNum = phonemsgObj.to;
-            this.state.phoneObj  = {};
+            this.state.phoneObj = {};
             this.state.phonemsgObj = phonemsgObj;
             this.state.isAddFlag = false;
             this.state.rightPanelIsShow = false;
@@ -170,13 +180,13 @@ class PhoneAlert extends React.Component {
             //恢复初始数据
             phoneAlertAction.setInitialState();
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
-            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开"+ phonemsgObj.to);
+            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phonemsgObj.to);
             this.props.setInitialPhoneObj();
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
         if (phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
-            sendMessage && sendMessage("座机拨打电话，弹屏已打开过"+ phonemsgObj.to);
+            sendMessage && sendMessage("座机拨打电话，弹屏已打开过" + phonemsgObj.to);
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
@@ -189,9 +199,11 @@ class PhoneAlert extends React.Component {
             })
         }
     };
+
     componentWillUnmount() {
         phoneAlertStore.unlisten(this.onStoreChange);
     };
+
     //获取页面上的描述
     getPhoneTipMsg(phonemsgObj) {
         var customerInfoArr = this.state.customerInfoArr;
@@ -295,9 +307,14 @@ class PhoneAlert extends React.Component {
         phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     retryGetCustomer = () => {
-        var phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
-        sendMessage && sendMessage("座机拨打电话，重新获取客户"+ phoneNum );
-        phoneAlertAction.getCustomerByPhone(phoneNum);
+        if (this.props.phoneObj && this.props.phoneObj.customerId) {
+            phoneAlertAction.getCustomerById(this.props.phoneObj.customerId);
+        } else {
+            var phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
+            sendMessage && sendMessage("座机拨打电话，重新获取客户" + phoneNum);
+            phoneAlertAction.getCustomerByPhone(phoneNum);
+        }
+
     };
     //展示已有客户的右侧面板
     showRightPanel = (id) => {
@@ -365,13 +382,16 @@ class PhoneAlert extends React.Component {
                                 var location = [];
                                 if (item.province) {
                                     location.push(item.province);
-                                };
+                                }
+                                ;
                                 if (item.city) {
                                     location.push(item.city)
-                                };
+                                }
+                                ;
                                 if (item.county) {
                                     location.push(item.county)
-                                };
+                                }
+                                ;
                                 return (
                                     <div className="customer-name">
                                         <h3>
@@ -696,10 +716,12 @@ class PhoneAlert extends React.Component {
             </div>
         );
     }
-};
+}
+;
 PhoneAlert.defaultProps = {
     phonemsgObj: {},
     phoneObj: {},
-    setInitialPhoneObj: function () {}
+    setInitialPhoneObj: function () {
+    }
 };
 export default PhoneAlert;

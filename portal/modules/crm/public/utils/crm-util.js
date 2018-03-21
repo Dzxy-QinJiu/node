@@ -77,7 +77,6 @@ exports.getCrmLabelCls=function (customer_label) {
             "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
             "qualified-tag-style": customer_label == 1,//合格
             "history-qualified-tag-style": customer_label == 2,//曾经合格
-            "sign-tag-style": customer_label === LABEL_TYPES.SIGN_TAG,
             "loss-tag-style": customer_label === LABEL_TYPES.LOSS_TAG,
         });
     }

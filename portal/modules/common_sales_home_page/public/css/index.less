@@ -1,0 +1,133 @@
+@BACKGROUND_COLOR: #f5f5f5;
+@RIGHT_BACKGROUND_COLOR: #AAA;
+@BACKGROUND_WHITE: #FFF;
+@FONT_WHITE: #FFF;
+@FONT_COLOR_999: #999;
+.sales_home_content {
+  cursor: default;
+  .topNav {
+    padding: 0 !important;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .top_nav_content {
+    height: 100%;
+    ul {
+      overflow: hidden;
+      height: 100%;
+      li {
+        float: left;
+        width: 25%;
+        height: 100%;
+        .statistic-total-content {
+          overflow: hidden;
+          padding: 10px 0;
+          background: @BACKGROUND_COLOR;
+          margin: 10px 2px;
+          .content-right {
+            font-size: 14px;
+            float: left;
+            width: 100%;
+            padding-left: 10px;
+            .data-container {
+              margin-left: 15px;
+              span {
+                font-weight: 600;
+              }
+
+            }
+            .phone-total-data {
+              > span {
+                display: inline-block;
+              }
+            }
+            p:last-child {
+              margin-top: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+  //下部主要内容
+  .main-content-container {
+    margin: 73px 16px 16px 16px;
+    overflow: hidden;
+    .customer-list-left, .customer-content-right {
+      padding: 0px;
+      font-size: 14px;
+      height: 100%;
+    }
+    //左侧客户列表
+    .customer-list-left {
+      //float: left;
+      //width: 250px;
+      border: 1px solid #f3f5f7;
+      ul li {
+        height: 48px;
+        font-size: 16px;
+        padding: 16px;
+        cursor: pointer;
+        .data-total {
+          float: right;
+        }
+      }
+      li.customer-item.selected-customer-item {
+        color: #2196F3;
+        border-left: 4px solid #2196F3;
+      }
+    }
+    //右侧客户详情
+    .customer-content-right {
+      background: @BACKGROUND_COLOR;
+      padding: 16px 4px 16px 16px;
+      //margin-left: 250px;
+      //客户名称
+      .sale-home-customer-name {
+        cursor: pointer;
+        color: #333;
+        font-size: 16px;
+      }
+      //今日日程列表
+      .schedule-day-list {
+        height: 100%;
+        .schedule-list-tip {
+          font-size: 12px;
+          margin-bottom: 8px;
+          color: @FONT_COLOR_999;
+        }
+      }
+      //今日过期日程列表
+      .today-expired-schedule {
+        height: 100%;
+      }
+
+      //客户查重界面
+      .customer-repeat-container .customer-repeat-table {
+        background: @BACKGROUND_WHITE;
+        padding: 0 10px 20px 10px;
+      }
+    }
+    //包含重复客户时的右侧客户详情
+    .customer-content-right.has-repeat-customer {
+      padding: 0px;
+    }
+    //关注客户
+    .concerned-customer-container {
+      height: 100%;
+    }
+    //停用后登录
+    .app-illeage-container {
+      height: 100%;
+    }
+    //即将过期的签约客户
+    .will-expire-assigned-customer-container {
+      height: 100%;
+    }
+    //新分配的客户
+    .new-distribute-customer-container {
+      height: 100%;
+    }
+
+  }
+}

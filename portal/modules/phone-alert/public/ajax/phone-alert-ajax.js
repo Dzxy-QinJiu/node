@@ -1,5 +1,5 @@
 var getCustomerByPhoneAjax;
-exports.getCustomerByPhone = function(data) {
+exports.getCustomerByPhone = function (data) {
     getCustomerByPhoneAjax && getCustomerByPhoneAjax.abort();
     var Deferred = $.Deferred();
     var pageSize = 10;
@@ -11,10 +11,28 @@ exports.getCustomerByPhone = function(data) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
-            if(textStatus !== 'abort') {
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
+        }
+    });
+    return Deferred.promise();
+};
+var getCustomerByIdAjax;
+//根据客户id获取客户信息
+exports.getCustomerById = function (customerId) {
+    getCustomerByIdAjax && getCustomerByIdAjax.abort();
+    var Deferred = $.Deferred();
+    getCustomerByIdAjax = $.ajax({
+        url: '/rest/crm/customer/' + customerId,
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
@@ -31,8 +49,8 @@ exports.getAppLists = function () {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
-            if(textStatus !== 'abort') {
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
         }
@@ -53,8 +71,8 @@ exports.addAppFeedback = function (sumbitObj) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
-            if(textStatus !== 'abort') {
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
         }
