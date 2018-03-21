@@ -20,6 +20,8 @@ import AlwaysShowSelect from "CMP_DIR/always-show-select";
 import crmUtil from "../utils/crm-util";
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: "changeSales",//变更销售人员
+    CHANGER_SALES_URL: "user",//变更销售人员url中传的type
+    TRANSFER_CUSTOMER: "transfer_customer",//转出客户和url中传的type
     CHANGE_TAG: "changeTag",//更新标签
     CHANGE_LABEL: "change_label",//更新标签url中传的type
     ADD_TAG: "addTag",//添加标签
@@ -36,10 +38,10 @@ var CrmScheduleForm = require("./schedule/form");
 var CrmBatchChange = React.createClass({
     mixins: [ValidateMixin],
     getInitialState: function () {
-        return{
+        return {
             ...BatchChangeStore.getState(),
-             stopContentHide: false,//content内容中有select下拉框时，
-         };
+            stopContentHide: false,//content内容中有select下拉框时，
+        };
     },
     onStoreChange: function () {
         this.setState(BatchChangeStore.getState());
@@ -56,7 +58,7 @@ var CrmBatchChange = React.createClass({
     setCurrentTab: function (tab) {
         Trace.traceEvent($(this.getDOMNode()).find(".op-type"), "点击切换变更类型");
         BatchChangeActions.setCurrentTab(tab);
-        if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS){
+        if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS) {
             this.state.stopContentHide = true;
         }
     },
@@ -91,7 +93,12 @@ var CrmBatchChange = React.createClass({
             sales_team_name: teamName
         };
     },
-    doTransfer: function () {
+    /**
+     * 变更销售/转出客户
+     * @param transferType: user/transfer_customer
+     * @param title: 变更销售/转出客户
+     */
+    doTransfer: function (transferType, title) {
         if (!this.state.sales_man) {
             // message.error(Intl.get("crm.17", "请选择销售人员"));
             BatchChangeActions.setUnSelectDataTip(Intl.get("crm.17", "请选择销售人员"));
@@ -115,7 +122,7 @@ var CrmBatchChange = React.createClass({
                 return customer.id
             });
         }
-        BatchChangeActions.doBatch("user", condition, (result) => {
+        BatchChangeActions.doBatch(transferType, condition, (result) => {
             BatchChangeActions.setLoadingState(false);
             if (result.code == 0) {
                 //批量操作参数
@@ -137,10 +144,15 @@ var CrmBatchChange = React.createClass({
                     taskId: result.taskId,
                     total: totalSelectedSize,
                     running: totalSelectedSize,
-                    typeText: Intl.get("crm.18", "变更销售人员")
+                    typeText: title
                 });
-                //隐藏批量变更销售面板
-                this.refs.changeSales.handleCancel();
+                if (transferType === BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER) {
+                    //隐藏转出客户面板
+                    this.refs.transferCustomer.handleCancel();
+                } else {
+                    //隐藏批量变更销售面板
+                    this.refs.changeSales.handleCancel();
+                }
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -417,7 +429,10 @@ var CrmBatchChange = React.createClass({
         var currentTab = this.state.currentTab;
         switch (currentTab) {
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
-                this.doTransfer();
+                this.doTransfer(BATCH_OPERATE_TYPE.CHANGER_SALES_URL, Intl.get("crm.18", "变更销售人员"));
+                break;
+            case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
+                this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get("crm.customer.transfer", "转出客户"));
                 break;
             case BATCH_OPERATE_TYPE.CHANGE_TAG:
                 this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get("crm.206", "更新标签"));
@@ -543,7 +558,7 @@ var CrmBatchChange = React.createClass({
                     ref="crmScheduleForm"
                     cancelAddSchedule={this.cancelAddSchedule}
                     closeContent={this.closeContent}
-                    />
+                />
             </div>
         )
     },
@@ -620,6 +635,8 @@ var CrmBatchChange = React.createClass({
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TERRITORY)}>{Intl.get("crm.21", "变更地域")}</Button>),
             sales: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_SALES)}>{Intl.get("crm.18", "变更销售人员")}</Button>),
+            transfer: (<Button
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER)}>{Intl.get("crm.qualified.roll.out", "转出")}</Button>),
             schedule: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get("crm.214", "添加联系计划")}</Button>)
         };
@@ -685,9 +702,23 @@ var CrmBatchChange = React.createClass({
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
                 />
+                {   //普通销售不可做转出操作
+                    !userData.getUserData().isCommonSales ? (<AntcDropdown
+                        ref="transferCustomer"
+                        content={changeBtns.transfer}
+                        overlayTitle={Intl.get("user.salesman", "销售人员")}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get("crm.qualified.roll.out", "转出")}
+                        cancelTitle={Intl.get("common.cancel", "取消")}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                    />) : null
+                }
                 <AntcDropdown
                     ref="addSchedule"
-                    stopContentHide = {this.state.stopContentHide}
+                    stopContentHide={this.state.stopContentHide}
                     content={changeBtns.schedule}
                     overlayTitle={Intl.get("crm.214", "添加联系计划")}
                     isSaving={this.state.isLoading}
