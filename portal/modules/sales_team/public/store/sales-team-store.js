@@ -317,7 +317,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                     curShowTeam.user_ids = [data.owner_id];
                 }
             } else {//删除所有者后，将团队的人数减一
-                curShowTeam.available_num -= 1;
+                this.delTeamMemberCount(curTeamId, [data.owner_id], "owner");
             }
         } else if (data.type == "manager") {//管理员的处理
             //删除选中的管理员
@@ -331,7 +331,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                     curShowTeam.user_ids = data.user_ids;
                 }
             } else {//删除管理员后，将团队的人数统计减去删除的管理员的个数
-                curShowTeam.available_num -= data.user_ids.length;
+                this.delTeamMemberCount(curTeamId, data.user_ids, "manager");
             }
         } else if (data.type == "user") {//普通成员的处理
             //删除选中的普通成员
@@ -345,11 +345,38 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
                     curShowTeam.manager_ids = data.user_ids;
                 }
             } else {//删除成员后，将团队的人数统计减去删除的成员的个数
-                curShowTeam.available_num -= data.user_ids.length;
+                this.delTeamMemberCount(curTeamId, data.user_ids, "user");
             }
         }
         //更新左侧团队树中对应团队的成员信息
         this.salesTeamTree(true);
+    }
+};
+/**
+ * 删除团队的人数
+ * @param curTeamId 删除成员的团队id
+ * @param userIds:删除的成员id列表
+ * @param memberType: 删除的是owner、manager还是user
+ */
+SalesTeamStore.prototype.delTeamMemberCount = function (curTeamId, userIds, memberType) {
+    //删除的启用状态成员个数
+    let delAvailableMemberCount = 0;
+    _.each(userIds, userId => {
+        let member = null;
+        if (memberType == "owner") {//所有者
+            member = this.curShowTeamMemberObj.owner;
+        } else {//manager、user
+            member = _.find(this.curShowTeamMemberObj[memberType + "s"], member => member.userId == userId);
+        }
+        if (member && member.status == 1) {
+            delAvailableMemberCount++;
+        }
+    });
+    //删除后，将团队的人数统计删除对应个数
+    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id == curTeamId);
+    if (curTeamMemberCountObj) {
+        curTeamMemberCountObj.available[memberType] -= delAvailableMemberCount;
+        curTeamMemberCountObj.total -= userIds.length;
     }
 };
 
@@ -366,7 +393,9 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
         });
         //添加成员后
         var userIds = JSON.parse(data.userIds);
-        if (_.isArray(userIds) && userIds.length > 0) {
+        //添加的所有成员个数
+        let addUserCount = _.isArray(userIds) ? userIds.length : 0;
+        if (addUserCount) {
             //该团队中原来就有成员则加入新增成员，原来无成员则新建成员列表
             if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
                 userIds.forEach(function (id) {
@@ -376,13 +405,41 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
                 curShowTeam.user_ids = userIds;
             }
             //添加成员后，将团队的人数统计加上新加的成员个数
-            curShowTeam.available_num += userIds.length;
+            this.addTeamMemberCount(curTeamId, userIds);
         }
         //更新左侧团队树中对应团队的成员信息
         this.salesTeamTree(true);
     }
 };
-
+/**
+ * 添加团队的人数
+ * @param curTeamId 添加成员的团队id
+ * @param userIds:添加的成员id列表
+ */
+SalesTeamStore.prototype.addTeamMemberCount = function (curTeamId, userIds) {
+    let addUserCount = userIds.length;
+    //添加的启用状态成员个数
+    let addAvailableUserCount = 0;
+    _.each(userIds, userId => {
+        let user = _.find(this.addMemberList, member => member.userId == userId);
+        if (user && user.status == 1) {
+            addAvailableUserCount++;
+        }
+    });
+    //添加成员后，将团队的人数统计加上新加的成员个数
+    let curTeamMemberCountObj = _.find(this.teamMemberCountList, item => item.team_id == curTeamId);
+    if (curTeamMemberCountObj) {
+        curTeamMemberCountObj.available.user += addAvailableUserCount;
+        curTeamMemberCountObj.total += addUserCount;
+    } else {//给新加的团队添加成员时
+        let newTeamCountObj = {
+            available: {owner: 0, manager: 0, user: addAvailableUserCount},
+            team_id: curTeamId,
+            total: addUserCount
+        };
+        this.teamMemberCountList.push(newTeamCountObj);
+    }
+};
 //获取当前团队的成员列表
 SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
     this.isLoadingTeamMember = false;
