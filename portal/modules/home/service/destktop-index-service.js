@@ -258,7 +258,7 @@ exports.getUserInfo = function (req, res, userId) {
     let promiseList = [getUserBasicInfo, getUserRole];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
-    let hasGetAllTeamPrivilege = userPrivileges.indexOf("GET_TEAM_LIST_ALL") !== -1 ? true : false;
+    let hasGetAllTeamPrivilege = userPrivileges.indexOf("GET_TEAM_LIST_ALL") !== -1;
     //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
     if (!hasGetAllTeamPrivilege) {
         promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
@@ -292,13 +292,13 @@ function getIsCommonSalesByTeams(userId, teamTreeList) {
     if (_.isArray(teamTreeList) && teamTreeList[0]) {
         let myTeam = teamTreeList[0];//销售所在团队
         // 销售所在团队是否有子团队
-        let hasChildGroups = _.isArray(myTeam.child_groups) && myTeam.child_groups.length > 0 ? true : false;
+        let hasChildGroups = _.isArray(myTeam.child_groups) && myTeam.child_groups.length > 0;
         //没有下级团队时
         if (!hasChildGroups) {
             //是否是销售主管的判断
             let isOwner = myTeam.owner_id && myTeam.owner_id == userId ? true : false;
             //当前销售是团队的舆情秘书
-            let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) != -1 ? true : false;
+            let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) != -1;
             //不是销售主管也不是舆情秘书的即为普通销售
             if (!isOwner && !isManager) {
                 isCommonSales = true;

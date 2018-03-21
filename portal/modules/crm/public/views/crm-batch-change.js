@@ -20,7 +20,7 @@ import AlwaysShowSelect from "CMP_DIR/always-show-select";
 import crmUtil from "../utils/crm-util";
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: "changeSales",//变更销售人员
-    CHANGER_SALES_URL: "user",//变更销售人员url中传的type
+    USER: "user",//变更销售人员url中传的type
     TRANSFER_CUSTOMER: "transfer_customer",//转出客户和url中传的type
     CHANGE_TAG: "changeTag",//更新标签
     CHANGE_LABEL: "change_label",//更新标签url中传的type
@@ -429,7 +429,7 @@ var CrmBatchChange = React.createClass({
         var currentTab = this.state.currentTab;
         switch (currentTab) {
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
-                this.doTransfer(BATCH_OPERATE_TYPE.CHANGER_SALES_URL, Intl.get("crm.18", "变更销售人员"));
+                this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get("crm.18", "变更销售人员"));
                 break;
             case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
                 this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get("crm.customer.transfer", "转出客户"));
