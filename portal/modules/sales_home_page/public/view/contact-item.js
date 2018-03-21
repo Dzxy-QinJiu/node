@@ -78,6 +78,7 @@ class ContactItem extends React.Component {
 
         return (
             <div className="contact-content">
+                <div className="pull-left contact-label">{Intl.get("call.record.contacts", "联系人")}:</div>
                 {_.map(contactDetail, (contactItem, idx) => {
                     return (
                         <div className="contact-container">
@@ -90,12 +91,10 @@ class ContactItem extends React.Component {
                                     return (
                                         <span className="contact-item">
                                             {index === 0 ? <span className={cls}>
-                                                {idx === 0 ?
-                                                    <span>{Intl.get("call.record.contacts", "联系人")}:</span> : null}
-                                                <i
-                                                    className="iconfont icon-phone-busy"
-                                                    title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, record)} data-tracename="拨打电话"></i> {contactItem.name}
+                                                <i className="iconfont icon-phone-busy"
+                                                   title={Intl.get("crm.click.call.phone", "点击拨打电话")}
+                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, record)}
+                                                   data-tracename="拨打电话"></i> {contactItem.name}
                                             </span> : null}
                                             {index !== 0 ? <i className="iconfont icon-phone-busy"></i> : null}
                                             <span className="phone-num">
@@ -115,15 +114,6 @@ class ContactItem extends React.Component {
 
     render() {
         var contactDetail = this.state.contacts;
-        // var defContacts = _.filter(contacts, (item) => {
-        //     return item.def_contacts;
-        // });
-        // var contactDetail = [];
-        // if (defContacts.length) {
-        //     contactDetail = defContacts;
-        // } else if (contacts.length) {
-        //     contactDetail = contacts[0];
-        // }
         return (
             <div className="recent-contacter-detail">
                 {_.isArray(contactDetail) && contactDetail.length ? this.renderContactsContent(contactDetail) : null}

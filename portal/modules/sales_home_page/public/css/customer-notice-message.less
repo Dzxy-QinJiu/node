@@ -6,39 +6,41 @@
   margin-right: 12px;
   font-size: @FONT_SIZE;
   background: @BACKGROUND_WHITE;
-  padding:16px;
+  padding: 16px;
   .customer-notice-content {
     padding: 5px;
     .customer-title {
-      margin-bottom: 10px;
-      .login-time{
+      margin-bottom: 8px;
+      color: #333;
+      overflow: hidden;
+      .login-time {
         margin-left: 10px;
+      }
+      .customer-name {
+        cursor: pointer;
+
+      }
+      button {
+        float: right;
       }
     }
     .customer-content {
-      .ant-table-thead {
-        background: #f5f5f5;
+      font-size: 14px;
+      color: #999;
+      .system-notice-item {
+        margin-bottom: 12px;
       }
-      .login-detail-container {
-        .login-detail-item {
-          overflow: hidden;
-          .login-detail-name {
-            float: left;
-            width: 200px;
-            color: #2196F3;
-          }
-          .login-detail-content {
-            float: left;
-            margin-left: 40px;
-          }
-        }
-        .login-detail-item:not(:first-child) {
-          margin-top: 15px;
-        }
+      .user-name {
+        color: #2196f3;
+        margin: 0px 5px;
+        cursor: pointer;
       }
-
+      .notice-detail-more {
+        color: #8da8c5;
+        cursor: pointer;
+      }
     }
-    .recent-contacter-detail{
+    .recent-contacter-detail {
       padding: 8px 0;
     }
     //客户标签的样式设置
@@ -53,26 +55,26 @@
       color: @tag-font-color;
       background-color: #b8c4ca;
     }
-    .customer-label.info-tag-style{
+    .customer-label.info-tag-style {
       background-color: @info-tag-color;
     }
-    .customer-label.intent-tag-style{
+    .customer-label.intent-tag-style {
       background-color: @intent-tag-color;
     }
-    .customer-label.trial-tag-style{
+    .customer-label.trial-tag-style {
       background-color: @trial-tag-color;
     }
-    .customer-label.sign-tag-style{
+    .customer-label.sign-tag-style {
       background-color: @sign-tag-color;
     }
-    .customer-label.qualified-tag-style{
+    .customer-label.qualified-tag-style {
       background-color: @qualified-tag-color;
     }
-    .customer-label.history-qualified-tag-style{
+    .customer-label.history-qualified-tag-style {
       background-color: @history-qualified-tag-color;
     }
-    .customer-label.loss-tag-style{
-      background-color:@loss-tag-color;
+    .customer-label.loss-tag-style {
+      background-color: @loss-tag-color;
     }
   }
 }

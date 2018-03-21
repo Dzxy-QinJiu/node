@@ -463,6 +463,9 @@ var SalesHomePage = React.createClass({
             )
         }
     },
+    afterHandleMessage: function (messageObj) {
+        SalesHomeAction.afterHandleMessage(messageObj);
+    },
     //渲染即将到期的试用客户和签约客户
     renderWillExpiredTryAndAssignedCustomer: function (type) {
         var data = [];
@@ -552,12 +555,14 @@ var SalesHomePage = React.createClass({
                         {_.map(data, (item) => {
                             return (
                                 <CustomerNoticeMessage
+                                    noticeType={ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN}
                                     customerNoticeMessage={item}
                                     tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近{X}天登录情况", {X: 7})}
                                     openCustomerDetail={this.openCustomerDetail}
                                     openUserDetail={this.openUserDetail}
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
+                                    afterHandleMessage={this.afterHandleMessage}
                                 />
                             )
                         })}
@@ -575,12 +580,14 @@ var SalesHomePage = React.createClass({
                         {_.map(data, (item) => {
                             return (
                                 <CustomerNoticeMessage
+                                    noticeType={ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN}
                                     customerNoticeMessage={item}
                                     tableTitleTip={Intl.get("sales.frontpage.appilleage.login", "停用期间用户登录情况")}
                                     openCustomerDetail={this.openCustomerDetail}
                                     openUserDetail={this.openUserDetail}
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
+                                    afterHandleMessage={this.afterHandleMessage}
                                 />
                             )
                         })}

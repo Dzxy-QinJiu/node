@@ -75,10 +75,10 @@ class ScheduleItem extends React.Component {
                             moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                         }]
                         </span> : null}
-                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, schedule.customer_id)} data-tracename="打开客户详情">
+                        <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, schedule.customer_id)} data-tracename="打开客户详情">
 
                             {schedule.topic || schedule.customer_name}
-                        </a>
+                        </span>
                         {user_id == schedule.member_id && schedule.status !== "handle" ?
                             <Button type="primary" data-tracename="处理日程" size="small"
                                     onClick={this.handleFinishedSchedule.bind(this, schedule.id)}

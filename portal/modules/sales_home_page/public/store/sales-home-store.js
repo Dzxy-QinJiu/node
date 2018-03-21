@@ -265,7 +265,7 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         if (result.error) {
             scheduleExpiredTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list,false));
+            scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list, false));
             scheduleExpiredTodayObj.data.total = result.resData.total;
 
             scheduleExpiredTodayObj.curPage++;
@@ -277,13 +277,13 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         if (result.error) {
             scheduleTodayObj.errMsg = result.errMsg;
         } else if (result.resData) {
-            scheduleTodayObj.data.list = processScheduleLists(result.resData.list,true);
+            scheduleTodayObj.data.list = processScheduleLists(result.resData.list, true);
             scheduleTodayObj.data.total = result.resData.total;
         }
     }
 };
 // 对日程进行整理
-function processScheduleLists(list,isSort) {
+function processScheduleLists(list, isSort) {
     if (!_.isArray(list)) {
         list = [];
     }
@@ -292,7 +292,7 @@ function processScheduleLists(list,isSort) {
             item.allDay = true;
         }
     });
-    if (isSort){
+    if (isSort) {
         //不是全天日程
         var notFulldaylist = _.filter(list, (item) => {
             return !item.allDay;
@@ -343,11 +343,11 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         if (result.error) {
             willExpiredAssignCustomer.errMsg = result.errMsg;
         } else if (result.resData && _.isArray(result.resData.result)) {
-            if (result.resData.result.length){
+            if (result.resData.result.length) {
                 var willExpiredAssignCustomerLists = result.resData.result[0];
                 willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
                 willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
-            }else{
+            } else {
                 willExpiredAssignCustomer.data.total = 0;
             }
 
@@ -360,11 +360,11 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         if (result.error) {
             willExpiredTryCustomer.errMsg = result.errMsg;
         } else if (result.resData && _.isArray(result.resData.result)) {
-            if (result.resData.result.length){
+            if (result.resData.result.length) {
                 var willExpiredTryCustomerLists = result.resData.result[0];
                 willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
                 willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
-            }else{
+            } else {
                 willExpiredTryCustomer.data.total = 0;
             }
 
@@ -398,6 +398,21 @@ SalesHomeStore.prototype.afterHandleStatus = function (newStatusObj) {
             return schedule.id !== newStatusObj.id;
         });
     }
+};
+SalesHomeStore.prototype.afterHandleMessage = function (messageObj) {
+    //关注客户登录
+    var data = [];
+    if (messageObj.noticeType === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {
+        data = this.concernCustomerObj.data.list;
+        this.concernCustomerObj.data.list = _.filter(data, item => item.id !== messageObj.noticeId);
+        this.concernCustomerObj.data.total = this.concernCustomerObj.data.total - 1;
+
+    } else if (messageObj.noticeType === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
+        data = this.appIllegalObj.data.list;
+        this.appIllegalObj.data.list = _.filter(data, item => item.id !== messageObj.noticeId);
+        this.appIllegalObj.data.total = this.appIllegalObj.data.total - 1;
+    }
+
 };
 
 // 设置要选中的客户的id

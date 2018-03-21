@@ -4,10 +4,14 @@
  * Created by zhangshujuan on 2018/3/16.
  */
 require("../css/customer-notice-message.less");
-import {AntcTable} from "antc";
 import ContactItem from "./contact-item";
-import {Tag} from "antd";
+import {Tag, message, Icon, Button} from "antd";
 import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
+import userData from "PUB_DIR/sources/user-data";
+import notificationAjax from "MOD_DIR/notification/public/ajax/notification-ajax";
+import Trace from "LIB_DIR/trace";
+import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
+var TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -28,54 +32,6 @@ class CustomerNoticeMessage extends React.Component {
         this.props.openUserDetail(userId);
     };
 
-    getListColumn() {
-        var columns = [{
-            title: Intl.get("common.app", "应用"),
-            width: '240px',
-            dataIndex: 'app_name',
-        }, {
-            title: this.props.tableTitleTip,
-            render: (text, row, index) => {
-                var newUserDetailData = _.values(_.groupBy(row.user_detail, (item) => {
-                    return item.user_id;
-                }));
-                var userDetailData = [];
-                for (var i = 0; i < newUserDetailData.length; i++) {
-                    userDetailData.push({
-                        user_id: newUserDetailData[i][0].user_id,
-                        user_name: newUserDetailData[i][0].user_name,
-                        login_detail: newUserDetailData[i]
-                    })
-                }
-                return (
-                    <div className="login-detail-container">
-                        {_.map(userDetailData, (item) => {
-                            return (
-                                <div className="login-detail-item">
-                                    <div className="login-detail-name">
-                                        <a onClick={this.openUserDetail.bind(this, item.user_id)}
-                                           data-tracename="打开用户详情">{item.user_name}</a>
-                                    </div>
-                                    <div className="login-detail-content">
-                                        {_.map(item.login_detail, (loginItem) => {
-                                            return (
-                                                <div>
-                                                    {moment(loginItem.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                )
-            }
-        },];
-        return columns;
-    }
-    ;
-
     openCustomerDetail(customer_id) {
         this.props.openCustomerDetail(customer_id);
     };
@@ -86,7 +42,7 @@ class CustomerNoticeMessage extends React.Component {
                 {customerMessage.customer_label ? (
                     <Tag
                         className={crmUtil.getCrmLabelCls(customerMessage.customer_label)}>
-                        {customerMessage.customer_label.substr(0, 1)}</Tag>) : null
+                        {customerMessage.customer_label}</Tag>) : null
                 }
                 {customerMessage.qualify_label ? (
                     <Tag className={crmUtil.getCrmLabelCls(customerMessage.qualify_label)}>
@@ -96,44 +52,112 @@ class CustomerNoticeMessage extends React.Component {
         )
     };
 
-    render() {
-        var message = this.state.customerNoticeMessage;
-        var newContentData = _.values(_.groupBy(message.detail, (item) => {
-            return item.app_id;
-        }));
-        var data = [];
-        for (var i = 0; i < newContentData.length; i++) {
-            data.push({
-                app_id: newContentData[i][0].app_id,
-                app_name: newContentData[i][0].app_name,
-                user_detail: newContentData[i]
-            })
+    renderMessageContent(customerMessage) {
+        let showList = [];
+        if (_.isArray(customerMessage.detail) && customerMessage.detail.length > 3 && !customerMessage.showMore) {//超过三条时，只展示前三条
+            showList = customerMessage.detail.slice(0, 3);
+        } else {
+            showList = customerMessage.detail;
         }
-        var customer_name = message.customer_name ? message.customer_name : message.name;
-        var customer_id = message.customer_id ? message.customer_id : message.id;
+        ;
+        return showList.map((item) => {
+            return <div className="system-notice-item">
+                <span className="system-notice-time">
+                    {this.getRelativeTime(item.create_time)}
+                    {this.getRelativeTime(item.create_time) ? moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                </span>
+                <span className="user-name"
+                      onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
+                {item.app_name ?
+                    <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
+            </div>
+        })
+    };
+
+    setHandlingFlag(notice, flag) {
+        notice.isHandling = flag;
+        this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
+    };
+
+    //处理系统消息
+    handleSystemNotice(notice, e) {
+        Trace.traceEvent(e, "处理系统消息");
+        if (notice.isHandling) {
+            return;
+        }
+        this.setHandlingFlag(notice, true);
+        notificationAjax.handleSystemNotice(notice.id).then(result => {
+            this.setHandlingFlag(notice, false);
+            if (result) {//处理成功后，将该消息从未处理消息中删除
+                var messageObj = {
+                    noticeType: this.props.noticeType,
+                    noticeId: notice.id
+                };
+                this.props.afterHandleMessage(messageObj);
+            }
+        }, errorMsg => {
+            this.setHandlingFlag(notice, false);
+            message.error(errorMsg || Intl.get("notification.system.handle.failed", "将系统消息设为已处理失败"));
+        });
+    };
+
+    checkMore(notice) {
+        notice.showMore = !notice.showMore;
+        this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
+    };
+
+    getRelativeTime(time) {
+        var relativeTime = "";
+        var todayStartTime = TimeStampUtil.getTodayTimeStamp().start_time;
+        var todayEndTime = TimeStampUtil.getTodayTimeStamp().end_time;
+        if (time >= todayStartTime && time <= todayEndTime) {
+            relativeTime = Intl.get("user.time.today", "今天");
+        } else if (time >= todayStartTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
+            relativeTime = Intl.get("user.time.yesterday", "昨天");
+        } else if (time >= todayStartTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+            relativeTime = Intl.get("sales.frontpage.before.yesterday", "前天")
+        }
+        return relativeTime;
+    };
+
+    render() {
+        var customerMessage = this.state.customerNoticeMessage;
+        var customer_name = customerMessage.customer_name ? customerMessage.customer_name : customerMessage.name;
+        var customer_id = customerMessage.customer_id ? customerMessage.customer_id : customerMessage.id;
+        let loginUser = userData.getUserData();
+        let loginUserId = loginUser ? loginUser.user_id : "";//只可以处理自己的系统消息
         return (
             <div className="customer-notice-message-container">
                 <div className="customer-notice-content">
                     <div className="customer-title">
-                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
-                           data-tracename="打开客户详情">
-                            {this.props.isRecentLoginCustomer ? this.renderTagsContent(message) : null}
+                        <span className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
+                              data-tracename="打开客户详情">
+                            {this.props.isRecentLoginCustomer ? this.renderTagsContent(customerMessage) : null}
                             {customer_name}
-                        </a>
-                        {message.last_login_time ? <span
-                            className="login-time">{moment(message.last_login_time).format(oplateConsts.DATE_TIME_FORMAT)}</span> : null}
+                        </span>
+                        {
+                            loginUserId === customerMessage.member_id ?
+                                <Button type="primary" className="notice-handled-set"
+                                        onClick={this.handleSystemNotice.bind(this, customerMessage)}>
+                                    {Intl.get("notification.system.handled.set", "处理")}{customerMessage.isHandling ?
+                                    <Icon type="loading"/> : null}
+                                </Button> : null
+                        }
+                        {customerMessage.last_login_time ? <span
+                            className="login-time">{moment(customerMessage.last_login_time).format(oplateConsts.DATE_TIME_FORMAT)}</span> : null}
 
                     </div>
                     {this.props.isRecentLoginCustomer ? null : <div className="customer-content">
-                        <AntcTable dataSource={data}
-                                   columns={this.getListColumn()}
-                                   pagination={false}
-                                   bordered/>
+                        {this.renderMessageContent(customerMessage)}
+                        {customerMessage.detail.length > 3 ?
+                            <p className="notice-detail-more" onClick={this.checkMore.bind(this, customerMessage)}>
+                                {customerMessage.showMore ? Intl.get("common.app.status.close", "关闭") : Intl.get("notification.system.more", "展开全部")}
+                            </p> : null}
                     </div>}
                 </div>
                 <div>
                     {this.props.isRecentLoginCustomer ?
-                        <ContactItem contacts={message.contacts} callNumber={this.props.callNumber}
+                        <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
                                      errMsg={this.props.errMsg}/> : null}
                 </div>
             </div>
@@ -142,6 +166,7 @@ class CustomerNoticeMessage extends React.Component {
 }
 
 CustomerNoticeMessage.defaultProps = {
+    noticeType: "",
     customerNoticeMessage: {},
     tableTitleTip: "",//table的标题
     isRecentLoginCustomer: false,
@@ -149,6 +174,9 @@ CustomerNoticeMessage.defaultProps = {
 
     },
     openUserDetail: function () {
+
+    },
+    afterHandleMessage: function () {
 
     }
 };

@@ -6,7 +6,8 @@ function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
         'setSelectedCustomer',//设置选中的客户
-        'afterHandleStatus'//修改日程状态后的处理
+        'afterHandleStatus',//修改日程状态后的处理
+        'afterHandleMessage'//处理消息后的处理
     );
     this.getphoneTotal = function (reqData) {
         let type = 'manager';

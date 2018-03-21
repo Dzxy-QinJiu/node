@@ -20,6 +20,7 @@ class WillExpireItem extends React.Component {
             })
         }
     };
+
     openCustomerDetail = (customer_id) => {
         this.props.openCustomerDetail(customer_id);
     };
@@ -29,11 +30,12 @@ class WillExpireItem extends React.Component {
         return (
             <div className="will-expire-container">
                 <div className="will-customer-title">
-                    <a className="customer-name" onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
+                    <span className="sale-home-customer-name"
+                          onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
                         {expireItem.customer_name}
-                    </a>
+                    </span>
                 </div>
-                <div className="will-customer-content">
+                <div className="will-customer-content" style={{display: "none"}}>
                     {_.map(expireItem.app_list, (item) => {
                         return (
                             <div className="app-item">
@@ -60,11 +62,11 @@ class WillExpireItem extends React.Component {
 }
 WillExpireItem.defaultProps = {
     expireItem: {},
-    willExpiredTip:"",
+    willExpiredTip: "",
     openCustomerDetail: function () {
-        
+
     }
-    
+
 
 };
 export default WillExpireItem;

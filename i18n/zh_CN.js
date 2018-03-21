@@ -819,7 +819,7 @@ var zh_CN = {
     "notification.system.on": "在",
     "notification.system.login": "登录了",
     "notification.system.use.account": "用账号",
-    "notification.system.more": "更多",
+    "notification.system.more": "展开全部",
     "notification.system.handle.failed": "将系统消息设为已处理失败",
     "notification.system.handled.set": "处理",
     "notification.system.handled": "已处理",
@@ -2032,12 +2032,13 @@ var zh_CN = {
     "sales.frontpage.concerned.login": "近{X}天登录情况",
     "sales.fromtpage.set.contact.time":"原定于{initialtime}联系",
     "sales.frontpage.fail.new.distribute.customer":"获取新分配的客户失败",
-    "slaes.frontpage.new.distribute.customer":"新分配的客户",
+    "sales.frontpage.new.distribute.customer":"新分配但未联系的客户",
     "sales.frontpage.expired.today":"今日到期",
     "sales.frontpage.expired.tomorrow":"明天到期",
     "sales.frontpage.expired.after.tomorrow":"后天到期",
     "sales.frontpage.try.expired":"试用到期停用",
     "sales.frontpage.assigned.expired":"签约到期停用",
-    "sales.frontpage.set.time":"定时"
+    "sales.frontpage.set.time":"定时",
+    "sales.frontpage.before.yesterday":"前天"
 };
 export default zh_CN;

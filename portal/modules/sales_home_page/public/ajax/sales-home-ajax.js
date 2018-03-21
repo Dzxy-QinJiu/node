@@ -1,3 +1,4 @@
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //获取今日电话统计数据
 var getphoneTotalAjax;
 exports.getphoneTotal = function (reqData, type) {
@@ -106,7 +107,6 @@ exports.getScheduleList = function (queryObj) {
     return Deferred.promise();
 };
 //最近登录的客户
-const hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 const AUTHS = {
     "GETALL": "CUSTOMER_ALL",
     "UPDATE_ALL": "CUSTOMER_MANAGER_UPDATE_ALL",
@@ -180,9 +180,9 @@ exports.getRepeatCustomerList = function (queryParams) {
 //获取某个客户下的用户列表
 let crmUserListAjax;
 exports.getCrmUserList = function (reqData) {
-    crmUserListAjax&&crmUserListAjax.abort();
+    crmUserListAjax && crmUserListAjax.abort();
     let Deferred = $.Deferred();
-    crmUserListAjax= $.ajax({
+    crmUserListAjax = $.ajax({
         url: '/rest/crm/user_list',
         dataType: 'json',
         type: 'get',
@@ -190,21 +190,22 @@ exports.getCrmUserList = function (reqData) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr , textStatus) {
-            if(textStatus !== 'abort') {
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
             }
         }
     });
     return Deferred.promise();
 };
-import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-var type = commonMethodUtil.getPrivilegeType();
+
 //获取即将到期的客户
-exports.getWillExpireCustomer= function (data) {
+exports.getWillExpireCustomer = function (data) {
     var Deferred = $.Deferred();
+    //普通销售，销售领导和舆情秘书用common，其他的用manager
+    let type = hasPrivilege("KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON") ? "common" : "manager";
     $.ajax({
-        url: '/rest/get_will_expire_customer/'+ type,
+        url: '/rest/get_will_expire_customer/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
@@ -219,7 +220,7 @@ exports.getWillExpireCustomer= function (data) {
 };
 //系统消息
 let handleSystemNoticeAjax;
-exports.handleSystemNotice =  function (noticeId) {
+exports.handleSystemNotice = function (noticeId) {
     if (handleSystemNoticeAjax) {
         handleSystemNoticeAjax.abort();
     }
@@ -233,7 +234,7 @@ exports.handleSystemNotice =  function (noticeId) {
         },
         error: function (error, errorText) {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON );
+                Deferred.reject(error && error.responseJSON);
             }
         }
     });
@@ -257,7 +258,7 @@ exports.handleScheduleStatus = function (reqData) {
 };
 //获取新分配的客户
 let getNewDistributeCustomerAjax;
-exports.getNewDistributeCustomer =  function (data) {
+exports.getNewDistributeCustomer = function (data) {
     if (getNewDistributeCustomerAjax) {
         getNewDistributeCustomerAjax.abort();
     }
@@ -272,7 +273,7 @@ exports.getNewDistributeCustomer =  function (data) {
         },
         error: function (error, errorText) {
             if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON );
+                Deferred.reject(error && error.responseJSON);
             }
         }
     });

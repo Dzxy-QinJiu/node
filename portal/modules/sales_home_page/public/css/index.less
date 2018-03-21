@@ -1,9 +1,10 @@
 @BACKGROUND_COLOR: #f5f5f5;
-@RIGHT_BACKGROUND_COLOR:#AAA;
-@BACKGROUND_WHITE:#FFF;
-@FONT_WHITE:#FFF;
-@FONT_COLOR_999:#999;
+@RIGHT_BACKGROUND_COLOR: #AAA;
+@BACKGROUND_WHITE: #FFF;
+@FONT_WHITE: #FFF;
+@FONT_COLOR_999: #999;
 .sales_home_content {
+  cursor: default;
   .topNav {
     padding: 0 !important;
     margin-left: 16px;
@@ -28,9 +29,9 @@
             float: left;
             width: 100%;
             padding-left: 10px;
-            .data-container{
+            .data-container {
               margin-left: 15px;
-              span{
+              span {
                 font-weight: 600;
               }
 
@@ -53,7 +54,7 @@
     margin: 73px 16px 16px 16px;
     overflow: hidden;
     .customer-list-left, .customer-content-right {
-      padding:0px;
+      padding: 0px;
       font-size: 14px;
       height: 100%;
     }
@@ -71,9 +72,9 @@
           float: right;
         }
       }
-      li.customer-item.selected-customer-item{
-        color:#2196F3;
-        border-left:4px solid #2196F3;
+      li.customer-item.selected-customer-item {
+        color: #2196F3;
+        border-left: 4px solid #2196F3;
       }
     }
     //右侧客户详情
@@ -81,44 +82,50 @@
       background: @BACKGROUND_COLOR;
       padding: 16px 4px 16px 16px;
       //margin-left: 250px;
+      //客户名称
+      .sale-home-customer-name {
+        cursor: pointer;
+        color: #333;
+        font-size: 16px;
+      }
       //今日日程列表
-      .schedule-day-list{
+      .schedule-day-list {
         height: 100%;
-        .schedule-list-tip{
+        .schedule-list-tip {
           font-size: 12px;
           margin-bottom: 8px;
-          color:@FONT_COLOR_999;
+          color: @FONT_COLOR_999;
         }
       }
       //今日过期日程列表
-      .today-expired-schedule{
+      .today-expired-schedule {
         height: 100%;
       }
 
       //客户查重界面
-      .customer-repeat-container .customer-repeat-table{
+      .customer-repeat-container .customer-repeat-table {
         background: @BACKGROUND_WHITE;
         padding: 0 10px 20px 10px;
       }
     }
     //包含重复客户时的右侧客户详情
-    .customer-content-right.has-repeat-customer{
+    .customer-content-right.has-repeat-customer {
       padding: 0px;
     }
     //关注客户
-    .concerned-customer-container{
+    .concerned-customer-container {
       height: 100%;
     }
     //停用后登录
-    .app-illeage-container{
+    .app-illeage-container {
       height: 100%;
     }
     //即将过期的签约客户
-    .will-expire-assigned-customer-container{
+    .will-expire-assigned-customer-container {
       height: 100%;
     }
     //新分配的客户
-    .new-distribute-customer-container{
+    .new-distribute-customer-container {
       height: 100%;
     }
 

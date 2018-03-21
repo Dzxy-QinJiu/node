@@ -267,7 +267,7 @@ let SystemNotification = React.createClass({
                     {this.renderUnHandledNoticeContent(notice)}
                     {notice.detail.length > 3 ?
                         <a className="notice-detail-more" onClick={this.checkMore.bind(this, notice)}>
-                            {notice.showMore ? Intl.get("common.app.status.close", "关闭") : Intl.get("notification.system.more", "更多")}
+                            {notice.showMore ? Intl.get("common.app.status.close", "关闭") : Intl.get("notification.system.more", "展开全部")}
                         </a> : null}
                     {notice.detail.length > 3 && loginUserId === notice.member_id ?
                         <span className="notice-split-line">|</span> : ""}
