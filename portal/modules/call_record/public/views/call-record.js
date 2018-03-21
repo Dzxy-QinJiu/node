@@ -313,6 +313,7 @@ const CallRecord = React.createClass({
                     onChange={this.onSelectFilterObj.bind(this, filterKey)}
                     value={this.state.callType}
                     onSelect={this.handleSelect.bind(this, filterKey)}
+                    style={{minWidth: "50px"}}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
                         <i className="iconfont  icon-all"></i>
