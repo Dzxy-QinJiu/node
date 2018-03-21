@@ -6,6 +6,8 @@
 require("../css/customer-notice-message.less");
 import {AntcTable} from "antc";
 import ContactItem from "./contact-item";
+import {Tag} from "antd";
+import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -21,9 +23,11 @@ class CustomerNoticeMessage extends React.Component {
             })
         }
     };
-    openUserDetail(userId){
+
+    openUserDetail(userId) {
         this.props.openUserDetail(userId);
     };
+
     getListColumn() {
         var columns = [{
             title: Intl.get("common.app", "应用"),
@@ -49,7 +53,8 @@ class CustomerNoticeMessage extends React.Component {
                             return (
                                 <div className="login-detail-item">
                                     <div className="login-detail-name">
-                                        <a onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</a>
+                                        <a onClick={this.openUserDetail.bind(this, item.user_id)}
+                                           data-tracename="打开用户详情">{item.user_name}</a>
                                     </div>
                                     <div className="login-detail-content">
                                         {_.map(item.login_detail, (loginItem) => {
@@ -70,8 +75,25 @@ class CustomerNoticeMessage extends React.Component {
         return columns;
     }
     ;
-    openCustomerDetail(customer_id){
+
+    openCustomerDetail(customer_id) {
         this.props.openCustomerDetail(customer_id);
+    };
+
+    renderTagsContent(customerMessage) {
+        return (
+            <span>
+                {customerMessage.customer_label ? (
+                    <Tag
+                        className={crmUtil.getCrmLabelCls(customerMessage.customer_label)}>
+                        {customerMessage.customer_label.substr(0, 1)}</Tag>) : null
+                }
+                {customerMessage.qualify_label ? (
+                    <Tag className={crmUtil.getCrmLabelCls(customerMessage.qualify_label)}>
+                        {customerMessage.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                            customerMessage.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null}
+            </span>
+        )
     };
 
     render() {
@@ -93,10 +115,13 @@ class CustomerNoticeMessage extends React.Component {
             <div className="customer-notice-message-container">
                 <div className="customer-notice-content">
                     <div className="customer-title">
-                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}>
+                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
+                           data-tracename="打开客户详情">
+                            {this.props.isRecentLoginCustomer ? this.renderTagsContent(message) : null}
                             {customer_name}
                         </a>
-                        {message.last_login_time ? <span className="login-time">{moment(message.last_login_time).format(oplateConsts.DATE_TIME_FORMAT)}</span> : null}
+                        {message.last_login_time ? <span
+                            className="login-time">{moment(message.last_login_time).format(oplateConsts.DATE_TIME_FORMAT)}</span> : null}
 
                     </div>
                     {this.props.isRecentLoginCustomer ? null : <div className="customer-content">
@@ -105,6 +130,11 @@ class CustomerNoticeMessage extends React.Component {
                                    pagination={false}
                                    bordered/>
                     </div>}
+                </div>
+                <div>
+                    {this.props.isRecentLoginCustomer ?
+                        <ContactItem contacts={message.contacts} callNumber={this.props.callNumber}
+                                     errMsg={this.props.errMsg}/> : null}
                 </div>
             </div>
         )
@@ -115,11 +145,11 @@ CustomerNoticeMessage.defaultProps = {
     customerNoticeMessage: {},
     tableTitleTip: "",//table的标题
     isRecentLoginCustomer: false,
-    openCustomerDetail:function () {
-        
+    openCustomerDetail: function () {
+
     },
-    openUserDetail:function () {
-        
+    openUserDetail: function () {
+
     }
 };
 export default CustomerNoticeMessage;

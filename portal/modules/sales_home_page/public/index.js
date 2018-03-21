@@ -279,9 +279,16 @@ var SalesHomePage = React.createClass({
                     var cls = classNames("customer-item", {
                         "selected-customer-item": item.value === this.state.showCustomerPanel
                     });
+                    //新分配客户和重复客户数量为0 时，不展示左侧标题
+                    if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.newDistributeCustomer.data.list.length === 0) {
+                        return;
+                    }
+                    if (item.value === ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER && this.state.repeatCustomerObj.data.list.length === 0) {
+                        return;
+                    }
+
                     return (
-                        <li className={cls} onClick={this.handleClickDiffCustomerType.bind(this, item.value)}
-                            data-tracename="选择客户类别">
+                        <li className={cls} onClick={this.handleClickDiffCustomerType.bind(this, item.value)}>
                             <div>
                                 <span>{item.name}</span>
                                 <span className="data-total">{this.switchDiffCustomerTotalCount(item.value)}</span>
@@ -345,6 +352,7 @@ var SalesHomePage = React.createClass({
                         return (
                             <NewDistributeCustomer
                                 newDistributeCustomer={item}
+                                openCustomerDetail={this.openCustomerDetail}
                             />
 
                         )
@@ -392,9 +400,10 @@ var SalesHomePage = React.createClass({
                 return item.allDay;
             });
             return (
-                <div className="schedule-day-list">
+                <div className="schedule-day-list" data-tracename="今日日程列表">
                     <GeminiScrollbar>
-                        {notFulldaylist.length ? <div className="schedule-list-tip">定时</div> : null}
+                        {notFulldaylist.length ? <div
+                            className="schedule-list-tip">{Intl.get("sales.frontpage.set.time", "定时")}</div> : null}
                         {_.map(notFulldaylist, (item) => {
                             return (
                                 <ScheduleItem
@@ -409,7 +418,8 @@ var SalesHomePage = React.createClass({
                             )
                         })
                         }
-                        {Fulldaylist.length ? <div className="schedule-list-tip">全天</div> : null}
+                        {Fulldaylist.length ?
+                            <div className="schedule-list-tip">{Intl.get("crm.alert.full.day", "全天")}</div> : null}
                         {_.map(Fulldaylist, (item) => {
                             return (
                                 <ScheduleItem
@@ -653,20 +663,6 @@ var SalesHomePage = React.createClass({
                                     <div className="statistic-total-content">
                                         <div className="content-right">
                                             <span>
-                                                {Intl.get("sales.frontpage.connected.today", "今日通话个数")}
-                                            </span>
-                                            <span className="data-container">
-                                                <span className="phone-total-count total-data-style">
-                                                    {phoneData.totalCount}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="statistic-total-content">
-                                        <div className="content-right">
-                                            <span>
                                                 {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
                                             </span>
                                             <span className="data-container">
@@ -676,6 +672,20 @@ var SalesHomePage = React.createClass({
                                                     {time.second > 0 ? <span>{time.second}</span> : null}
                                                     {time.timeDescr == 0 ? time.timeDescr : null}
                                         </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="statistic-total-content">
+                                        <div className="content-right">
+                                            <span>
+                                                {Intl.get("sales.frontpage.connected.today", "今日通话个数")}
+                                            </span>
+                                            <span className="data-container">
+                                                <span className="phone-total-count total-data-style">
+                                                    {phoneData.totalCount}
+                                                </span>
                                             </span>
                                         </div>
                                     </div>

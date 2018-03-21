@@ -22,28 +22,35 @@ class NewDistributeCustomer extends React.Component {
         }
     };
 
+    openCustomerDetail(customer_id) {
+        this.props.openCustomerDetail(customer_id);
+    }
+
     render() {
-        var expireItem = this.state.newDistributeCustomer;
+        var newDistributeCustomer = this.state.newDistributeCustomer;
         return (
             <div className="new-distribute-customer">
                 <div className="new-distribute-customer-title">
-                    {expireItem.customer_label ? (
+                    {newDistributeCustomer.customer_label ? (
                         <Tag
-                            className={crmUtil.getCrmLabelCls(expireItem.customer_label)}>
-                            {expireItem.customer_label}</Tag>) : null
+                            className={crmUtil.getCrmLabelCls(newDistributeCustomer.customer_label)}>
+                            {newDistributeCustomer.customer_label.substr(0, 1)}</Tag>) : null
                     }
-                    {expireItem.qualify_label ? (
-                        <Tag className={crmUtil.getCrmLabelCls(expireItem.qualify_label)}>
-                            {expireItem.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                expireItem.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null}
-                    {expireItem.name}
+                    {newDistributeCustomer.qualify_label ? (
+                        <Tag className={crmUtil.getCrmLabelCls(newDistributeCustomer.qualify_label)}>
+                            {newDistributeCustomer.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                newDistributeCustomer.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null}
+                    <a onClick={this.openCustomerDetail.bind(this, newDistributeCustomer.id)} data-tracename="打开客户详情">{newDistributeCustomer.customer_name || newDistributeCustomer.name}</a>
                 </div>
             </div>
         )
     }
 }
 NewDistributeCustomer.defaultProps = {
-    newDistributeCustomer: {}
+    newDistributeCustomer: {},
+    openCustomerDetail: function () {
+
+    }
 
 };
 export default NewDistributeCustomer;

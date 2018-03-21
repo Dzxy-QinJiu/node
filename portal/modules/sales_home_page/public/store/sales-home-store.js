@@ -342,10 +342,15 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         willExpiredAssignCustomer.loading = result.loading;
         if (result.error) {
             willExpiredAssignCustomer.errMsg = result.errMsg;
-        } else if (result.resData && _.isArray(result.resData.result) && result.resData.result.length) {
-            var willExpiredAssignCustomerLists = result.resData.result[0];
-            willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
-            willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
+        } else if (result.resData && _.isArray(result.resData.result)) {
+            if (result.resData.result.length){
+                var willExpiredAssignCustomerLists = result.resData.result[0];
+                willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
+                willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
+            }else{
+                willExpiredAssignCustomer.data.total = 0;
+            }
+
 
         }
     } else if (result.type === "试用用户") {
@@ -354,10 +359,15 @@ SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
         willExpiredTryCustomer.loading = result.loading;
         if (result.error) {
             willExpiredTryCustomer.errMsg = result.errMsg;
-        } else if (result.resData && _.isArray(result.resData.result) && result.resData.result.length) {
-            var willExpiredTryCustomerLists = result.resData.result[0];
-            willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
-            willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
+        } else if (result.resData && _.isArray(result.resData.result)) {
+            if (result.resData.result.length){
+                var willExpiredTryCustomerLists = result.resData.result[0];
+                willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
+                willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
+            }else{
+                willExpiredTryCustomer.data.total = 0;
+            }
+
         }
     }
 };

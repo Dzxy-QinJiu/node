@@ -26,6 +26,7 @@ class ScheduleItem extends React.Component {
             })
         }
     };
+
     openCustomerDetail = (customer_id) => {
         this.props.openCustomerDetail(customer_id);
     };
@@ -69,26 +70,28 @@ class ScheduleItem extends React.Component {
                 </div> : null}
                 <div className="schedule-content-panel">
                     <div className="schedule-title">
-                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, schedule.customer_id)}>
-                            {schedule.topic || schedule.customer_name}
-                        </a>
-                        {user_id == schedule.member_id && schedule.status !== "handle" ?
-                            <Button type="primary" data-tracename="点击标记完成了按钮" size="small"
-                                    onClick={this.handleFinishedSchedule.bind(this, schedule.id)}>{Intl.get("sales.frontpage.schedule.has.finished", "完成了")}</Button> : null}
-
-                    </div>
-                    <div className="schedule-content">
                         {this.props.isShowScheduleTimerange ? <span className="time-range">
                              [{moment(schedule.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}-{
                             moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                         }]
                         </span> : null}
+                        <a className="customer-name" onClick={this.openCustomerDetail.bind(this, schedule.customer_id)} data-tracename="打开客户详情">
+
+                            {schedule.topic || schedule.customer_name}
+                        </a>
+                        {user_id == schedule.member_id && schedule.status !== "handle" ?
+                            <Button type="primary" data-tracename="处理日程" size="small"
+                                    onClick={this.handleFinishedSchedule.bind(this, schedule.id)}
+                            >{Intl.get("sales.frontpage.schedule.has.finished", "完成了")}</Button> : null}
+
+                    </div>
+                    <div className="schedule-content">
                         {schedule.content}
                     </div>
                     <ContactItem
                         contacts={contacts}
                         customerData={schedule}
-                        itemType = "schedule"
+                        itemType="schedule"
                         callNumber={this.props.callNumber}
                         errMsg={this.props.errMsg}
                     />
@@ -102,8 +105,8 @@ ScheduleItem.defaultProps = {
     scheduleItemDetail: {},//日程详细信息
     isShowTopTitle: true, //是否展示顶部时间样式
     isShowScheduleTimerange: true,//是否展示日程的时间范围
-    openCustomerDetail:function () {
-        
+    openCustomerDetail: function () {
+
     }
 
 };

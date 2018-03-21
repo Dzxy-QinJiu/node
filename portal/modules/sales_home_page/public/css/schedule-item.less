@@ -17,13 +17,6 @@
   .schedule-content-panel {
     background: @SCHEDULE_CONTENT;
     border-radius: 4px;
-    //顶部时间面板
-    .top-time-panel {
-      .time-range {
-        display: inline-block;
-        background: @SCHEDULE_CONTENT;
-      }
-    }
     //日程标题上的客户名称
     .schedule-title {
       color: @FONT_333;
@@ -33,17 +26,16 @@
         float: right;
         width: 72px;
       }
+      .time-range{
+        color:#8DA8C5;
+        margin-right: 5px;
+      }
     }
     //日程内容区域
     .schedule-content {
       color: @FONT_999;
       font-size: 14px;
       padding: 0 10px 12px 16px;
-      .time-range{
-        color:#8DA8C5;
-        margin-right: 5px;
-
-      }
     }
   }
 }

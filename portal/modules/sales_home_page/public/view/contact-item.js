@@ -8,6 +8,7 @@ require("../css/contact-item.less");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from "LIB_DIR/trace";
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
+import classNames from "classnames";
 class ContactItem extends React.Component {
     constructor(props) {
         super(props);
@@ -74,6 +75,7 @@ class ContactItem extends React.Component {
             record.name = record.customer_name;
             record.id = record.customer_id;
         }
+
         return (
             <div className="contact-content">
                 {_.map(contactDetail, (contactItem, idx) => {
@@ -82,15 +84,18 @@ class ContactItem extends React.Component {
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                 {_.map(contactItem.phone, (phoneItem, index) => {
+                                    var cls = classNames({
+                                        "contact-name": contactItem.name
+                                    });
                                     return (
                                         <span className="contact-item">
-                                            {index === 0 ? <span className="contact-name">
+                                            {index === 0 ? <span className={cls}>
                                                 {idx === 0 ?
                                                     <span>{Intl.get("call.record.contacts", "联系人")}:</span> : null}
                                                 <i
                                                     className="iconfont icon-phone-busy"
                                                     title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, record)}></i> {contactItem.name ? contactItem.name : ""}
+                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, record)} data-tracename="拨打电话"></i> {contactItem.name}
                                             </span> : null}
                                             {index !== 0 ? <i className="iconfont icon-phone-busy"></i> : null}
                                             <span className="phone-num">

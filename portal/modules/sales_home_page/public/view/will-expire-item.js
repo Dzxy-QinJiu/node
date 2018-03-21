@@ -29,7 +29,7 @@ class WillExpireItem extends React.Component {
         return (
             <div className="will-expire-container">
                 <div className="will-customer-title">
-                    <a className="customer-name" onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)}>
+                    <a className="customer-name" onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
                         {expireItem.customer_name}
                     </a>
                 </div>

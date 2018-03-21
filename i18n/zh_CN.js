@@ -2037,6 +2037,7 @@ var zh_CN = {
     "sales.frontpage.expired.tomorrow":"明天到期",
     "sales.frontpage.expired.after.tomorrow":"后天到期",
     "sales.frontpage.try.expired":"试用到期停用",
-    "sales.frontpage.assigned.expired":"签约到期停用"
+    "sales.frontpage.assigned.expired":"签约到期停用",
+    "sales.frontpage.set.time":"定时"
 };
 export default zh_CN;
