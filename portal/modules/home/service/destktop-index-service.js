@@ -255,13 +255,27 @@ exports.getUserInfo = function (req, res, userId) {
     let getUserBasicInfo = getDataPromise(req, res, userInfoRestApis.getUserInfo, {userId: userId}, queryObj);
     //获取登录用户的角色信息
     let getUserRole = getDataPromise(req, res, userInfoRestApis.getMemberRoles);
-    Promise.all([getUserBasicInfo, getUserRole]).then(resultList => {
+    let promiseList = [getUserBasicInfo, getUserRole];
+    let userPrivileges = getPrivileges(req);
+    //是否有获取所有团队数据的权限
+    let hasGetAllTeamPrivilege = userPrivileges.indexOf("GET_TEAM_LIST_ALL") !== -1 ? true : false;
+    //没有获取所有团队数据的权限,通过获取我所在的团队及下级团队来判断是否是普通销售
+    if (!hasGetAllTeamPrivilege) {
+        promiseList.push(getDataPromise(req, res, userInfoRestApis.getMyTeamWithSubteams));
+    }
+    Promise.all(promiseList).then(resultList => {
         let userInfoResult = resultList[0] ? resultList[0] : {};
         //成功获取用户信息
         if (userInfoResult.success) {
             let userData = userInfoResult.success;
             //角色
             userData.roles = _.isArray(resultList[1].success) ? resultList[1].success : [];
+            //是否是普通销售
+            if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
+                userData.isCommonSales = false;
+            } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
+                userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, resultList[2] && resultList[2].success);
+            }
             emitter.emit("success", userData);
         } else if (userInfoResult.error) {//只有用户信息获取失败时，才返回失败信息
             emitter.emit("error", userInfoResult.error);
@@ -271,6 +285,28 @@ exports.getUserInfo = function (req, res, userId) {
     });
     return emitter;
 };
+//通过我所在的团队及下级团队来判断是否是普通销售
+function getIsCommonSalesByTeams(userId, teamTreeList) {
+    let isCommonSales = false;//是否是普通销售
+    //是否是普通销售的判断（所在团队无下级团队，并且不是销售主管、舆情秘书的即为：普通销售）
+    if (_.isArray(teamTreeList) && teamTreeList[0]) {
+        let myTeam = teamTreeList[0];//销售所在团队
+        // 销售所在团队是否有子团队
+        let hasChildGroups = _.isArray(myTeam.child_groups) && myTeam.child_groups.length > 0 ? true : false;
+        //没有下级团队时
+        if (!hasChildGroups) {
+            //是否是销售主管的判断
+            let isOwner = myTeam.owner_id && myTeam.owner_id == userId ? true : false;
+            //当前销售是团队的舆情秘书
+            let isManager = _.isArray(myTeam.manager_ids) && myTeam.manager_ids.indexOf(userId) != -1 ? true : false;
+            //不是销售主管也不是舆情秘书的即为普通销售
+            if (!isOwner && !isManager) {
+                isCommonSales = true;
+            }
+        }
+    }
+    return isCommonSales;
+}
 
 //邮箱激活接口，用于发邮件时，点击激活连接的跳转
 exports.activeEmail = function (req, res, activeCode) {
@@ -305,7 +341,8 @@ var userInfoRestApis = {
     getUserInfo: "/rest/base/v1/user/id",
     getMemberRoles: "/rest/base/v1/user/member/roles",
     activeEmail: "/rest/base/v1/user/email/confirm",
-    getUserLanguage: "/rest/base/v1/user/member/language/setting"
+    getUserLanguage: "/rest/base/v1/user/member/language/setting",
+    getMyTeamWithSubteams: "/rest/base/v1/group/teams/tree/self"
 };
 
 exports.getSidebarMenus = getSidebarMenus;

@@ -86,6 +86,7 @@ exports.getUserData = function (req, res) {
                 user.team_name = data.team_name;
                 user.roles = data.roles;
                 user.lang = lang;
+                user.isCommonSales = data.isCommonSales;//是否是普通销售
                 req.session.user.roles = user.roles;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function () {
