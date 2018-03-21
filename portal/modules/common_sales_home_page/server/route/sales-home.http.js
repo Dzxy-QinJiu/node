@@ -3,7 +3,7 @@
  */
 require("../action/sales-home-controller");
 module.exports = {
-    module: "sales_home_page/server/action/sales-home-controller",
+    module: "common_sales_home_page/server/action/sales-home-controller",
     routes: [{
         "method": "get",
         "path": '/rest/sales/phone/:type',
