@@ -290,6 +290,7 @@ exports.getUserInfo = function (req, res, userId) {
 /**
  * 通过我所在的团队及下级团队来判断是否是普通销售
  * teamTreeList=[{group_id, group_name, child_groups:[{group_id,group_name,child_groups:...}]}]
+ * teamTreeList销售所在团队只会返回一个（管理员或运营人员获取所有的时候才会返回多个）
  */
 function getIsCommonSalesByTeams(userId, teamTreeList) {
     let isCommonSales = false;//是否是普通销售
