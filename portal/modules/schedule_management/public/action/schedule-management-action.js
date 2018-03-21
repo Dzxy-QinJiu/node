@@ -29,17 +29,10 @@ function ScheduleManagementActions() {
     };
     //修改某条日程管理的状态
     this.handleScheduleStatus = function (reqData, cb) {
-        this.dispatch({error: false, loading: true});
         scheduleManagementAjax.handleScheduleStatus(reqData).then((resData) => {
-            this.dispatch({error: false, loading: false, result: resData});
             cb(resData);
         }, (errMsg)=>{
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: errorMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败")
-            });
-            cb(errMsg)
+            cb(errMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败"))
         });
     };
 }
