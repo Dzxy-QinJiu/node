@@ -11,16 +11,6 @@ module.exports = {
         "passport": {
             "needLogin": true
         }
-    }, {
-        "method": "get",
-        "path": "/rest/expireuser",
-        "handler": "getExpireUser",
-        "passport": {
-            "needLogin": true
-        },
-        "privileges": [
-            "GET_EXPIRE_USER_STATISTIC"
-        ]
     },{
         "method": "post",
         "path": "/rest/contact_customer/:pageSize/:sortFeild/:sortOrder",
@@ -31,20 +21,6 @@ module.exports = {
         "privileges": [
             'CRM_LIST_CUSTOMERS'
         ]
-    }, {
-        "method": "post",
-        "path": "/rest/get_recent_login_customer/:type",
-        "handler": "getRecentLoginCustomer",
-        "passport": {
-            "needLogin": true
-        },
-    },{
-        "method": "post",
-        "path": "/rest/get_recent_login_customer_count/:type",
-        "handler": "getRecentLoginCustomerCount",
-        "passport": {
-            "needLogin": true
-        },
     },{
         "method": "post",
         "path": "/rest/get_will_expire_customer/:type",

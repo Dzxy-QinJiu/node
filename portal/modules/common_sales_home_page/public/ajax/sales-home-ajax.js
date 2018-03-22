@@ -40,27 +40,6 @@ exports.getCustomerTotal = function (reqData) {
     });
     return Deferred.promise();
 };
-/**
- * 过期用户列表
- */
-exports.getExpireUser = function (queryObj) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/expireuser',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl.get("sales.home.get.expired.list.failed", "获取过期用户列表失败!"));
-            }
-        }
-    });
-    return Deferred.promise();
-};
 //查询最近联系的客户列表
 var getTodayContactCustomerAjax = null;
 exports.getTodayContactCustomer = function (rangParams, pageSize, sorter) {
