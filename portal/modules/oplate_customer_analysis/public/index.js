@@ -16,7 +16,7 @@ import AnalysisFilter from "../../../components/analysis/filter";
 import {hasPrivilege, getDataAuthType} from "CMP_DIR/privilege/checker";
 import SummaryNumber from "CMP_DIR/analysis-summary-number";
 import {Row, Col} from "antd";
-import CardContainer from "CMP_DIR/card-container";
+import { AntcCardContainer } from "antc"; 
 const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT=240;
@@ -404,13 +404,13 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                     return chart.hide? null : (
                                         <div className="analysis_chart col-md-6 col-sm-12" data-title={chart.title}>
                                             <div className="chart-holder" ref="chartWidthDom" data-tracename={chart.title}>
-                                                <CardContainer
+                                                <AntcCardContainer
                                                     title={chart.title}
                                                     csvFileName={refName + ".csv"}
                                                     exportData={exportData.bind(this)}
                                                 >
                                                     {chart.content}
-                                                </CardContainer>
+                                                </AntcCardContainer>
                                             </div>
                                         </div>
                                     );
