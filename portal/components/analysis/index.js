@@ -272,7 +272,12 @@ const Analysis = React.createClass({
         if (column) {
             processedData = exportUtil.handleTableData(processedData, column);
         } else {
-            processedData = exportUtil[funcName](processedData, valueField);
+            let func = exportUtil[funcName];
+            //找不到对应类型的处理函数时，用通用处理函数处理
+            if (!_.isFunction(func)) {
+                func = exportUtil.processChartExportData;
+            }
+            processedData = func(processedData, valueField);
         }
 
         return processedData;

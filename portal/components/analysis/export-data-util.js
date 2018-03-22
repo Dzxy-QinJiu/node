@@ -490,7 +490,7 @@ export function handleTableData(processData, columns) {
  * processData的数据结构：
  * [{name: "鹰眼全网监测", count: 20}, {name: "鹰击微博舆情", count: 666}]
  */
-export function handleFunnelChartData(processData, valueField = "count") {
+export function processChartExportData(processData, valueField = "count") {
     let exportData = [];
     if (_.isArray(processData) && processData.length) {
         let titleArray = _.pluck(processData, 'name');
