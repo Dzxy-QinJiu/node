@@ -320,6 +320,27 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             </Row>
         )
     },
+    getCharts : function() {
+        return [{
+            title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
+            content: this.getCustomerChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.3", "地域统计"),
+            content: this.getZoneChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.5", "行业统计"),
+            content: this.getIndustryChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.4", "团队统计"),
+            content: this.getTeamChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
+            content: this.getCustomerStageChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
+            content: this.getOrderStageChart(),
+        }];
+    },
     render : function() {
         var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
         var windowWidth = $(window).width();
@@ -340,6 +361,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             "col-sm-12": true,
             "stageHide":!(["total", "added"].indexOf(this.state.currentTab) > -1)
         });
+
+        const charts = this.getCharts();
+
         return (
             <div className="oplate_customer_analysis" data-tracename="客户分析">
                 <TopNav>
@@ -372,57 +396,19 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 <div ref="chart_list" style={{height:chartListHeight}}>
                         <GeminiScrollbar>
                             <div className="chart_list">
-                                <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.1", "趋势统计")}>
-                                    <div className="chart-holder" ref="chartWidthDom" data-tracename="趋势统计信息">
-                                        <CardContainer
-                                            title={Intl.get("oplate_customer_analysis.1", "趋势统计")}
-                                        >
-                                            {this.getCustomerChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>
-                                <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.3", "地域统计")}>
-                                    <div className="chart-holder" data-tracename="地域统计信息">
-                                        <CardContainer
-                                            title={Intl.get("oplate_customer_analysis.3", "地域统计")}
-                                        >
-                                            {this.getZoneChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>
-                                <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.5", "行业统计")}>
-                                    <div className="chart-holder" data-tracename="行业统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.5", "行业统计")}>
-                                            {this.getIndustryChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>
-                                {this.state.userType && this.state.userType.indexOf("sales") === -1? (
-                                <div className="analysis_chart col-md-6 col-sm-12" data-title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
-                                    <div className="chart-holder" data-tracename="销售团队统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.4", "团队统计")}>
-                                            {this.getTeamChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>
-                                ) : null}
-
-                                {this.state.currentTab === "total"? (<div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
-                                    <div className="chart-holder" data-tracename="客户阶段统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计")}>
-                                            {this.getCustomerStageChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>) : null}
-
-                                <div className={stageClassNames} data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
-                                    <div className="chart-holder" data-tracename="订单阶段统计信息">
-                                        <CardContainer title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
-                                            {this.getOrderStageChart()}
-                                        </CardContainer>
-                                    </div>
-                                </div>
-
+                                {charts.map(chart => {
+                                    return (
+                                        <div className="analysis_chart col-md-6 col-sm-12" data-title={chart.title}>
+                                            <div className="chart-holder" ref="chartWidthDom" data-tracename={chart.title}>
+                                                <CardContainer
+                                                    title={chart.title}
+                                                >
+                                                    {chart.content}
+                                                </CardContainer>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </GeminiScrollbar>
                 </div>
