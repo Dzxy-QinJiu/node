@@ -5,17 +5,16 @@ var scrollBarEmitter = require("PUB_DIR/sources/utils/emitters").scrollBarEmitte
 function SalesHomeActions() {
     this.generateActions(
         'setInitState',//设置初始化数据
-        'setSelectedCustomer',//设置选中的客户
         'afterHandleStatus',//修改日程状态后的处理
         'afterHandleMessage'//处理消息后的处理
     );
-    this.getphoneTotal = function (reqData) {
+    this.getPhoneTotal = function (reqData) {
         let type = 'manager';
         if (hasPrivilege("CALL_RECORD_VIEW_USER")) {
             type = 'user';
         }
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getphoneTotal(reqData, type).then((resData) => {
+        salesHomeAjax.getPhoneTotal(reqData, type).then((resData) => {
                 this.dispatch({loading: false, error: false, resData: resData});
             }, (errorMsg) => {
                 this.dispatch({loading: false, error: true, errMsg: errorMsg});
@@ -111,7 +110,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errMsg || Intl.get("sales.frontpage.fail.new.distribute.customer", "获取新分配的客户失败")
+                errMsg: errMsg || Intl.get("sales.frontpage.fail.new.distribute.customer", "获取新分配的客户失败")
             });
         })
     };

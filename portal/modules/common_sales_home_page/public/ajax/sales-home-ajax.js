@@ -1,10 +1,10 @@
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //获取今日电话统计数据
-var getphoneTotalAjax;
-exports.getphoneTotal = function (reqData, type) {
-    getphoneTotalAjax && getphoneTotalAjax.abort();
+var getPhoneTotalAjax;
+exports.getPhoneTotal = function (reqData, type) {
+    getPhoneTotalAjax && getPhoneTotalAjax.abort();
     var Deferred = $.Deferred();
-    getphoneTotalAjax = $.ajax({
+    getPhoneTotalAjax = $.ajax({
         url: '/rest/sales/phone/' + type,
         dataType: 'json',
         type: 'get',
@@ -182,7 +182,7 @@ exports.getCrmUserList = function (reqData) {
 exports.getWillExpireCustomer = function (data) {
     var Deferred = $.Deferred();
     //普通销售，销售领导和舆情秘书用common，其他的用manager
-    let type = hasPrivilege("KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON") ? "common" : "manager";
+    let type = hasPrivilege("KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER") ? "manager" : "common";
     $.ajax({
         url: '/rest/get_will_expire_customer/' + type,
         dataType: 'json',

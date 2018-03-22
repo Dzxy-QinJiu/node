@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/19.
  */
-import {message} from "antd";
+import {message, Tooltip} from "antd";
 require("../css/contact-item.less");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from "LIB_DIR/trace";
@@ -81,7 +81,7 @@ class ContactItem extends React.Component {
             <div className="contact-content">
                 <div className="pull-left contact-label">{Intl.get("call.record.contacts", "联系人")}:</div>
                 {_.map(contactDetail, (contactItem, idx) => {
-                    var contactName = contactItem.name || "";
+                    var contactName = $.trim(contactItem.name) || "";
                     return (
                         <div className="contact-container">
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
@@ -90,17 +90,14 @@ class ContactItem extends React.Component {
                                     var cls = classNames({
                                         "contact-name": contactItem.name
                                     });
+                                    var text = <span className="call-out-tip"><i className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
                                     return (
-                                        <span className="contact-item">
-                                            {index === 0 ? <span className={cls}>
-                                                <i className="iconfont icon-phone-busy"
-                                                   title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                   data-tracename="拨打电话"></i> {contactName}
-                                            </span> : <i className="iconfont icon-phone-busy"
-                                                         title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                         onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                                         data-tracename="拨打电话"></i>}
+                                        <span className="contact-item"
+                                              onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                              data-tracename="拨打电话">
+                                            {index === 0 && contactName ? <span className={cls}>
+                                                <i className="iconfont icon-phone-call-out"></i>{contactName}</span> :
+                                                <i className="iconfont icon-phone-call-out"></i>}
                                             <span className="phone-num">
                                                 {phoneItem}
                                             </span>

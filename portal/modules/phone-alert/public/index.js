@@ -383,15 +383,12 @@ class PhoneAlert extends React.Component {
                                 if (item.province) {
                                     location.push(item.province);
                                 }
-                                ;
                                 if (item.city) {
                                     location.push(item.city)
                                 }
-                                ;
                                 if (item.county) {
                                     location.push(item.county)
                                 }
-                                ;
                                 return (
                                     <div className="customer-name">
                                         <h3>

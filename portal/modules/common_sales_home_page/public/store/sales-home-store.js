@@ -170,7 +170,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.listenScrollBottom = true;//是否监听滚动
 };
 //获取今日通话数量和时长
-SalesHomeStore.prototype.getphoneTotal = function (result) {
+SalesHomeStore.prototype.getPhoneTotal = function (result) {
     this.phoneTotalObj.loading = result.loading;
     if (result.error) {
         this.phoneTotalObj.errMsg = result.errMsg;
@@ -299,7 +299,7 @@ function processScheduleLists(list, isSort) {
         list = [];
     }
     _.each(list, (item) => {
-        if (item.end_time - item.start_time === 24 * 60 * 60 * 1000 - 1000) {
+        if (item.end_time - item.start_time === oplateConsts.ONE_DAY_TIME_RANGE - 1000) {
             item.allDay = true;
         }
     });
@@ -425,12 +425,5 @@ SalesHomeStore.prototype.afterHandleMessage = function (messageObj) {
         this.appIllegalObj.data.total = this.appIllegalObj.data.total - 1;
     }
 
-};
-
-// 设置要选中的客户的id
-SalesHomeStore.prototype.setSelectedCustomer = function (Item) {
-    // this.selectedCustomer = Item.selectedObj;
-    // this.selectedCustomerId = Item.selectedObj.customer_id || Item.selectedObj.id;
-    // this.selectedCustomerPanel = Item.selectedPanel;
 };
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

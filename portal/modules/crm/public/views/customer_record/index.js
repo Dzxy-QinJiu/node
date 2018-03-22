@@ -137,10 +137,8 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.dismiss();
                 //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
                 this.getContactPhoneNum(nextCustomerId, () => {
-                    setTimeout(() => {
-                        //获取客户跟踪记录列表
-                        this.getCustomerTraceList();
-                    }, 10);
+                   //获取客户跟踪记录列表
+                   this.getCustomerTraceList();
                 });
             })
         }

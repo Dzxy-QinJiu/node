@@ -58,8 +58,7 @@ class CustomerNoticeMessage extends React.Component {
             showList = customerMessage.detail.slice(0, 3);
         } else {
             showList = customerMessage.detail;
-        }
-        ;
+        };
         return showList.map((item) => {
             return <div className="system-notice-item">
                 <span className="system-notice-time">
@@ -155,11 +154,9 @@ class CustomerNoticeMessage extends React.Component {
                             </p> : null}
                     </div>}
                 </div>
-                <div>
-                    {this.props.isRecentLoginCustomer ?
-                        <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
-                                     errMsg={this.props.errMsg}/> : null}
-                </div>
+                {this.props.isRecentLoginCustomer ?
+                    <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
+                                 errMsg={this.props.errMsg}/> : null}
             </div>
         )
     }

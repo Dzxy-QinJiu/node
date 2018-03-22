@@ -3,15 +3,14 @@
 @BACKGROUND_WHITE: #FFF;
 @FONT_WHITE: #FFF;
 @FONT_COLOR_999: #999;
+@FONT_COLOR_333: #333;
+@import "../../../../public/css/common-variables";
 .sales_home_content {
   cursor: default;
-  .topNav {
-    padding: 0 !important;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
   .top_nav_content {
     height: 100%;
+    margin-left: 16px;
+    margin-right: 16px;
     ul {
       overflow: hidden;
       height: 100%;
@@ -28,10 +27,13 @@
             font-size: 14px;
             float: left;
             width: 100%;
-            padding-left: 10px;
+            padding-left: 16px;
+            color:@FONT_COLOR_999;
             .data-container {
-              margin-left: 15px;
+              margin-left: 16px;
               span {
+                font-size:16px;
+                color:@FONT_COLOR_333;
                 font-weight: 600;
               }
 
@@ -51,7 +53,7 @@
   }
   //下部主要内容
   .main-content-container {
-    margin: 73px 16px 16px 16px;
+    margin: 12px 16px 16px 16px;
     overflow: hidden;
     .customer-list-left, .customer-content-right {
       padding: 0px;
@@ -68,6 +70,7 @@
         font-size: 16px;
         padding: 16px;
         cursor: pointer;
+        color: @FONT_COLOR_999;
         .data-total {
           float: right;
         }
@@ -123,11 +126,49 @@
     //即将过期的签约客户
     .will-expire-assigned-customer-container {
       height: 100%;
+      .expire-customer-item{
+        .expire-customer-tip{
+          margin-bottom: 8px;
+        }
+      }
     }
     //新分配的客户
     .new-distribute-customer-container {
       height: 100%;
     }
+    //客户标签的样式设置
+    .customer-label {
+      float: left;
+      margin-left: 0;
+      margin-right: 4px;
+      height: 20px;
+      line-height: 19px;
+      font-size: 12px;
+      color: @tag-font-color;
+      background-color: #b8c4ca;
+    }
+    .customer-label.info-tag-style{
+      background-color: @info-tag-color;
+    }
+    .customer-label.intent-tag-style{
+      background-color: @intent-tag-color;
+    }
+    .customer-label.trial-tag-style{
+      background-color: @trial-tag-color;
+    }
+    .customer-label.sign-tag-style{
+      background-color: @sign-tag-color;
+    }
+    .customer-label.qualified-tag-style{
+      background-color: @qualified-tag-color;
+    }
+    .customer-label.history-qualified-tag-style{
+      background-color: @history-qualified-tag-color;
+    }
+    .customer-label.loss-tag-style{
+      background-color:@loss-tag-color;
+    }
+
 
   }
 }

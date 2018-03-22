@@ -47,9 +47,6 @@ var SalesHomePage = React.createClass({
     componentDidMount: function () {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
-        $(".customer-list-left").on("click", ".repeat-customer-panel.panel-header-count", function (e) {
-            $(".repeat-customer-panel.panel-header-count").closest(".ant-collapse-header").next(".ant-collapse-content").hide();
-        });
         this.getUserPhoneNumber();
     },
     componentWillUnmount: function () {
@@ -95,7 +92,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getCustomerTotal(queryParams);
         //电话统计取今天的开始和结束时间
         let phoneParams = this.getPhoneParams();
-        SalesHomeAction.getphoneTotal(phoneParams);
+        SalesHomeAction.getPhoneTotal(phoneParams);
         //获取今日联系的客户
         SalesHomeAction.getTodayContactCustomer(this.state.rangParams, this.state.page_size, this.state.sorter);
         //获取今日的日程列表
@@ -104,12 +101,6 @@ var SalesHomePage = React.createClass({
         this.getExpiredScheduleList();
         //获取最近登录的客户
         this.getRecentLoginCustomers();
-        //todo 删除
-        // //获取近7天登录的客户数量
-        // SalesHomeAction.getRecentLoginCustomerCount({
-        //     "start_time": todayTimeRange.start_time - 7 * oplateConsts.ONE_DAY_TIME_RANGE,
-        //     "end_time": todayTimeRange.end_time
-        // });
         //关注客户登录
         this.getConcernedLogin();
         //停用客户登录
@@ -119,14 +110,14 @@ var SalesHomePage = React.createClass({
         //获取三天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         this.getWillExpireCustomer({
-            tags: "试用用户",
+            tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time,
             end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE
         });
         //获取半年内即将到期的签约用户
         this.getWillExpireCustomer(
             {
-                tags: "正式用户",
+                tags: Intl.get("common.trial.official", "正式用户"),
                 start_time: todayTimeRange.start_time,
                 end_time: todayTimeRange.end_time + 183 * oplateConsts.ONE_DAY_TIME_RANGE
             }
@@ -159,8 +150,9 @@ var SalesHomePage = React.createClass({
         //获取重复客户列表
         SalesHomeAction.getRepeatCustomerList(queryObj);
     },
-    //获取新分配的客户
-    getNewDistributeCustomer: function (lastId) {
+    //获取新分配但未联系的客户
+    getNewDistributeCustomer: function () {
+        // 分配时间字段 allot_time
         var queryObj = {
             rangParams: [{"from": 0, "to": moment().valueOf(), "type": "time", "name": "allot_time"}]
         };
@@ -215,7 +207,6 @@ var SalesHomePage = React.createClass({
             constObj.id = lastId;
         }
         SalesHomeAction.getScheduleList(constObj, "expired");
-
     },
 
     //获取查询参数
@@ -482,8 +473,8 @@ var SalesHomePage = React.createClass({
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
                             return (
-                                <div className="">
-                                    <div>
+                                <div className="expire-customer-item">
+                                    <div className="expire-customer-tip">
                                         {willexpiredTipArr[index]}
                                     </div>
                                     <div>
@@ -663,7 +654,6 @@ var SalesHomePage = React.createClass({
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
-                    <TopNav>
                         <div className="top_nav_content" data-tracename="顶部区域">
                             <ul>
                                 <li>
@@ -674,9 +664,9 @@ var SalesHomePage = React.createClass({
                                             </span>
                                             <span className="data-container">
                                                 <span className="phone-total-time phone-total-data">
-                                {time.hours > 0 ? <span>{time.hours}:</span> : null}
-                                                    {time.minutes > 0 ? <span>{time.minutes}:</span> : null}
-                                                    {time.second > 0 ? <span>{time.second}</span> : null}
+                                {time.hours > 0 ? <span>{time.hours}</span> : null}
+                                                    {time.minutes > 0 ? <span>:{time.minutes}</span> : null}
+                                                    {time.second > 0 ? <span>:{time.second}</span> : null}
                                                     {time.timeDescr == 0 ? time.timeDescr : null}
                                         </span>
                                             </span>
@@ -687,7 +677,7 @@ var SalesHomePage = React.createClass({
                                     <div className="statistic-total-content">
                                         <div className="content-right">
                                             <span>
-                                                {Intl.get("sales.frontpage.connected.today", "今日通话个数")}
+                                                {Intl.get("sales.frontpage.connected.today", "今日接通电话")}
                                             </span>
                                             <span className="data-container">
                                                 <span className="phone-total-count total-data-style">
@@ -724,7 +714,6 @@ var SalesHomePage = React.createClass({
                                 </li>
                             </ul>
                         </div>
-                    </TopNav>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
                         <div className="col-md-2 customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
