@@ -61,6 +61,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         props.height = (props.height ? props.height :214);
         props.localStorageAppIdKey = localStorageAppIdKey;
 
+        props.ref = (ref) => {this.refs[props.refName] = ref};
+
         return React.createElement(component, props, null);
     },
     /**
@@ -81,6 +83,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getCustomerChart : function() {
         return (
             this.getComponent(Analysis, {
+                refName: "qu_shi_tong_ji",
                 chartType: "line",
                 target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
@@ -112,6 +115,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         var legend = [{name:Intl.get("oplate_customer_analysis.2", "总数"),key:"total"}];
         return (
             this.getComponent(Analysis, {
+                refName: "di_yu_tong_ji",
                 chartType: "bar",
                 target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
@@ -145,6 +149,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         }
         return (
             this.getComponent(Analysis, {
+                refName: "tuan_dui_tong_ji",
                 chartType: "bar",
                 target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
@@ -173,6 +178,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getIndustryChart : function() {
         return (
             this.getComponent(Analysis, {
+                refName: "hang_ye_tong_ji",
                 chartType: "bar",
                 target: "Customer"+getDataAuthType(),
                 type: this.state.currentTab,
@@ -202,6 +208,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getCustomerStageChart : function() {
         return (
             this.getComponent(Analysis, {
+                refName: "ke_hu_jie_duan_tong_ji",
                 handler: "getCustomerStageAnalysis",
                 type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
@@ -224,6 +231,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getOrderStageChart : function() {
         return (
             this.getComponent(Analysis, {
+                refName: "ding_dan_jie_duan_tong_ji",
                 target: "Customer"+getDataAuthType(),
                 chartType: "horizontalStage",
                 type: this.state.currentTab,
