@@ -484,3 +484,27 @@ export function handleTableData(processData, columns) {
     }
     return exportData;
 };
+
+/**
+ * 漏斗图数据的处理
+ * processData的数据结构：
+ * [{name: "鹰眼全网监测", count: 20}, {name: "鹰击微博舆情", count: 666}]
+ */
+export function handleFunnelChartData(processData, valueField = "count") {
+    let exportData = [];
+    if (_.isArray(processData) && processData.length) {
+        let titleArray = _.pluck(processData, 'name');
+        let titleArrayName = titleArray.map((item) => {
+            let title = item;
+            if(item === 'unknown') {
+                title = Intl.get('common.unknown', '未知');
+            }
+            return title;
+        });
+        exportData.push(titleArrayName);
+        let countArray = _.pluck(processData, valueField);
+        exportData.push(countArray);
+    }
+    return exportData;
+}
+
