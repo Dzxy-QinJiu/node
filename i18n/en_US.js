@@ -991,6 +991,10 @@ var en_US = {
     "user.apply.approve.count": "There are {approveCount} approval messages",//有{approveCount}条审批消息
     "user.apply.unread.reply": "Have unread reply",//有未读回复
     "user.apply.refresh.reply.tip": "Have a new reply, {refreshTip}",//有新回复，点此{refreshTip}
+    "user.apply.unread.reply.check": "Application for unread reply, {check}",//有未读回复的申请，{check}
+    "user.apply.check": "Check",//查看
+    "user.apply.cancel.check": "Cancel check",//取消查看
+    "user.apply.unread.apply.list.failed": "Failure to obtain an application list with unread reply",//获取有未读回复的申请列表失败
     "reply.pass.tip.content": "{approvalPerson} has passed the {userType} user {userNames}, that {salesName} has applied to the customer {customerName}",//{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     "reply.reject.tip.content": "{approvalPerson} rejected the {userType} user {userNames}, that {salesName} applied to the customer {customerName}",//{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}
     "reply.cancel.tip.content": "{approvalPerson} revoked the {userType} user {userNames}, applied to the customer {customerName} ",//{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}
@@ -1964,8 +1968,8 @@ var en_US = {
     "clue.customer.clue.name": "clue names",//线索名称
     "clue.customer.fillin.clue.name": "Please fill in the clue names",//请填写线索名称
     "clue.customer.register.user": "registered user",//注册用户
-    "batch.failed.add.schedule":"{customerName} failed to add schedule",//{customerName}添加联系计划失败
-    "batch.success.add.schedule":"All schedules are added successfully",//所有联系计划均添加成功
+    "batch.failed.add.schedule": "{customerName} failed to add schedule",//{customerName}添加联系计划失败
+    "batch.success.add.schedule": "All schedules are added successfully",//所有联系计划均添加成功
     "shedule.list.add.todo": "To do",//待办
     "crm.get.phone.failed": "Failed to get phone number",//获取座机号失败!
     "crm.call.phone.success": "Call out successlly",//拨打成功

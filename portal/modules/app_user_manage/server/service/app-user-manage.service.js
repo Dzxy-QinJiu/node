@@ -59,6 +59,8 @@ var AppUserRestApis = {
     editAppUserCustomer: "/rest/base/v1/user/belong/customer",
     //获取用户审批列表
     getApplyList: "/rest/base/v1/message/applylist",
+    //获取有未读回复的申请列表
+    getUnreadApplyList: "/rest/base/v1/message/applylist/comment/unread",
     //获取申请单详情
     getApplyDetail: "/rest/base/v1/message/apply/:apply_id",
     //审批申请单（新创建用户）
@@ -291,8 +293,16 @@ exports.batchUpdate = function (req, res, field, data, application_ids) {
  * 获取申请列表
  */
 exports.getApplyList = function (req, res, obj) {
+    let url = AppUserRestApis.getApplyList;
+    //获取有未读回复的申请列表
+    if (obj.isUnreadApply) {
+        obj = {id: obj.id, page_size: obj.page_size};
+        url = AppUserRestApis.getUnreadApplyList;
+    } else {
+        delete obj.isUnreadApply;
+    }
     return restUtil.authRest.get({
-        url: AppUserRestApis.getApplyList,
+        url: url,
         req: req,
         res: res
     }, obj, {
@@ -306,7 +316,6 @@ exports.getApplyList = function (req, res, obj) {
         }
     });
 };
-
 //修改用户字段
 exports.editAppUser = function (req, res, obj) {
     //调用接口
