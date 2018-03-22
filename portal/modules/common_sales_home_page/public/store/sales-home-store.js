@@ -241,6 +241,17 @@ SalesHomeStore.prototype.getRecentLoginCustomers = function (result) {
     if (result.error) {
         recentLoginCustomerObj.errMsg = result.errMsg;
     } else if (result.resData) {
+        //把客户的id加到联系人中，这样在拨打电话时，可以用客户的id查询客户的详情
+        if (_.isArray(result.resData.result) && result.resData.result.length) {
+            _.each(result.resData.result, (customerItem) => {
+                var contacts = result.resData.result.contacts;
+                if (_.isArray(customerItem.contacts) && customerItem.contacts.length) {
+                    _.map(customerItem.contacts, (contactItem) => {
+                        contactItem.customer_id = customerItem.id;
+                    })
+                }
+            })
+        }
         recentLoginCustomerObj.data.list = recentLoginCustomerObj.data.list.concat(result.resData.result);
         recentLoginCustomerObj.data.total = result.resData.total;
     }
@@ -397,6 +408,7 @@ SalesHomeStore.prototype.afterHandleStatus = function (newStatusObj) {
         this.scheduleExpiredTodayObj.data.list = _.filter(this.scheduleExpiredTodayObj.data.list, (schedule) => {
             return schedule.id !== newStatusObj.id;
         });
+        this.scheduleExpiredTodayObj.data.total--;
     }
 };
 SalesHomeStore.prototype.afterHandleMessage = function (messageObj) {

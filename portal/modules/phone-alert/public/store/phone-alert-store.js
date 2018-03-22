@@ -54,9 +54,7 @@ PhoneAlertStore.prototype.getCustomerByPhone = function (result) {
 
 //跟据客户的id获取客户的详情
 PhoneAlertStore.prototype.getCustomerById = function (result) {
-    //客户存在状态已知
-    this.customerUnknown = false;
-    this.addCustomer = false;
+
     if (result.loading){
         this.isGettingCustomer = true;
         this.getCustomerErrMsg = "";
@@ -69,6 +67,9 @@ PhoneAlertStore.prototype.getCustomerById = function (result) {
         this.isGettingCustomer = false;
         this.getCustomerErrMsg = "";
         this.customerInfoArr = crmStore.processForList([result.data]);
+        //客户存在状态已知
+        this.customerUnknown = false;
+        this.addCustomer = false;
     }
 };
 //添加客户成功后把新添加的客户资料放在state上，不用再去发请求获取了
