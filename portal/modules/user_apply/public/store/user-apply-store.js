@@ -155,6 +155,7 @@ UserApplyStore.prototype.changeApplyListType = function (type) {
     this.lastApplyId = "";
     this.ifClickedFilterLabel = true;
     this.showUpdateTip = false;
+    this.unreadApplyListShow = false;
 };
 
 //输入框的值改变

@@ -1,8 +1,9 @@
+
 /**
  * 获取用户审批列表
  */
 var applyListAjax;
-exports.getApplyList = function (obj) {
+exports.getApplyList = function(obj) {
     var Deferred = $.Deferred();
     applyListAjax && applyListAjax.abort();
     applyListAjax = $.ajax({
@@ -13,8 +14,8 @@ exports.getApplyList = function (obj) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (data, textStatus) {
-            if (textStatus !== 'abort') {
+        error: function (data,textStatus) {
+            if(textStatus !== 'abort') {
                 Deferred.reject(data && data.message || Intl.get("common.get.user.apply.failed", "获取用户审批列表失败"));
             }
         }
@@ -26,7 +27,7 @@ exports.getApplyList = function (obj) {
  * 获取申请详情
  */
 var applyDetailAjax;
-exports.getApplyDetail = function (id) {
+exports.getApplyDetail = function(id) {
     var Deferred = $.Deferred();
     applyDetailAjax && applyDetailAjax.abort();
     applyDetailAjax = $.ajax({
@@ -36,8 +37,8 @@ exports.getApplyDetail = function (id) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
+        error: function (xhr,textStatus) {
+            if(textStatus !== 'abort') {
                 Deferred.reject(xhr && xhr.responseJSON || Intl.get("user.apply.detail.get.failed", "获取申请详情失败"));
             }
         }
@@ -55,7 +56,7 @@ exports.getReplyList = function (id) {
         url: '/rest/appuser/replylist/' + id,
         dataType: 'json',
         type: 'get',
-        timeout: 180 * 1000,
+        timeout : 180 * 1000,
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -69,15 +70,15 @@ exports.getReplyList = function (id) {
 /**
  * 提交审批
  */
-exports.submitApply = function (obj) {
+exports.submitApply = function(obj) {
     var Deferred = $.Deferred();
-    var submitData = $.extend(true, {}, obj);
+    var submitData = $.extend(true,{}, obj);
     $.ajax({
         url: '/rest/appuser/apply/' + obj.message_id,
         dataType: 'json',
         type: 'post',
-        data: submitData,
-        timeout: 180 * 1000,
+        data : submitData,
+        timeout : 180 * 1000,
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -101,14 +102,14 @@ exports.applyUser = function (data) {
             Deferred.resolve(result);
         },
         error: function () {
-            Deferred.reject(Intl.get("common.apply.failed", "申请失败"));
+            Deferred.reject( Intl.get("common.apply.failed", "申请失败"));
         }
     });
     return Deferred.promise();
 };
 
 //添加回复
-exports.addReply = function (data) {
+exports.addReply = function(data) {
     const ERROR_MSG = Intl.get("user.apply.reply.error", "添加回复失败");
     var Deferred = $.Deferred();
     $.ajax({
@@ -127,8 +128,8 @@ exports.addReply = function (data) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function (obj) {
-    const ERROR_MSG = Intl.get("user.apply.detail.backout.error", "撤销申请失败");
+exports.saleBackoutApply = function(obj) {
+    const ERROR_MSG =Intl.get("user.apply.detail.backout.error", "撤销申请失败");
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/backout_apply',
@@ -137,7 +138,7 @@ exports.saleBackoutApply = function (obj) {
         data: obj,
         success: function (result) {
             //操作成功返回true
-            if (result === true) {
+            if(result === true) {
                 Deferred.resolve(result);
             } else {
                 Deferred.reject(ERROR_MSG);

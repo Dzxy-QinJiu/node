@@ -124,6 +124,7 @@ exports.getApplyList = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
 //获取申请详情
 exports.getApplyDetail = function (req, res, next) {
     //申请单id
