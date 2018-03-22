@@ -234,6 +234,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 refName: "ding_dan_jie_duan_tong_ji",
                 target: "Customer"+getDataAuthType(),
                 chartType: "horizontalStage",
+                isGetDataOnMount: true,
                 type: this.state.currentTab,
                 sendRequest:this.state.sendRequest,
                 property: "stage",
