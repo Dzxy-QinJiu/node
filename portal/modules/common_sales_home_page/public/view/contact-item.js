@@ -7,6 +7,7 @@ import {message} from "antd";
 require("../css/contact-item.less");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from "LIB_DIR/trace";
+import {isEqualArray} from "LIB_DIR/func";
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 import classNames from "classnames";
 class ContactItem extends React.Component {
@@ -21,7 +22,7 @@ class ContactItem extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.contacts && JSON.stringify(nextProps.contacts) !== JSON.stringify(this.state.contacts)) {
+        if (nextProps.contacts && !isEqualArray(nextProps.contacts, this.state.contacts)) {
             this.setState({
                 contacts: nextProps.contacts
             })
