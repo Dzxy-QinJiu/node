@@ -295,7 +295,7 @@ exports.batchUpdate = function (req, res, field, data, application_ids) {
 exports.getApplyList = function (req, res, obj) {
     let url = AppUserRestApis.getApplyList;
     //获取有未读回复的申请列表
-    if (obj.isUnreadApply) {
+    if (obj.isUnreadApply=="true") {
         obj = {id: obj.id, page_size: obj.page_size};
         url = AppUserRestApis.getUnreadApplyList;
     } else {
