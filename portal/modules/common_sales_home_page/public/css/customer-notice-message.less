@@ -1,14 +1,13 @@
 @BACKGROUND_WHITE: #FFF;
 @FONT_SIZE: 16px;
-@import "../../../../public/css/common-variables";
+
 .customer-notice-message-container {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   margin-right: 12px;
   font-size: @FONT_SIZE;
   background: @BACKGROUND_WHITE;
-  padding: 16px;
   .customer-notice-content {
-    padding: 5px;
+    padding: 16px 16px 0 16px;
     .customer-title {
       margin-bottom: 8px;
       color: #333;
@@ -28,7 +27,7 @@
       font-size: 14px;
       color: #999;
       .system-notice-item {
-        margin-bottom: 12px;
+        padding-bottom: 12px;
       }
       .user-name {
         color: #2196f3;
@@ -43,38 +42,8 @@
     .recent-contacter-detail {
       padding: 8px 0;
     }
-    //客户标签的样式设置
     .customer-label {
-      float: left;
-      margin-left: 0;
-      margin-right: 4px;
       padding: 0 5px;
-      height: 20px;
-      line-height: 19px;
-      font-size: 12px;
-      color: @tag-font-color;
-      background-color: #b8c4ca;
-    }
-    .customer-label.info-tag-style {
-      background-color: @info-tag-color;
-    }
-    .customer-label.intent-tag-style {
-      background-color: @intent-tag-color;
-    }
-    .customer-label.trial-tag-style {
-      background-color: @trial-tag-color;
-    }
-    .customer-label.sign-tag-style {
-      background-color: @sign-tag-color;
-    }
-    .customer-label.qualified-tag-style {
-      background-color: @qualified-tag-color;
-    }
-    .customer-label.history-qualified-tag-style {
-      background-color: @history-qualified-tag-color;
-    }
-    .customer-label.loss-tag-style {
-      background-color: @loss-tag-color;
     }
   }
 }

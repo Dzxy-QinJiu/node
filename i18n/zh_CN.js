@@ -1799,7 +1799,6 @@ var zh_CN = {
     "common.export.failure": "导出失败",
     "common.gross_profit_rate": "毛利率",
     "common.summation": "合计",
-
     "customer.contact.phone": "联系电话",
     "user.user.lists": "用户列表",
     "user.user.applies": "用户申请",
@@ -2015,7 +2014,7 @@ var zh_CN = {
     "crm.call.phone.failed": "拨打失败",
     "crm.bind.phone": "请先绑定分机号！",
     "crm.click.call.phone": "点击拨打电话",
-    "sales.frontpage.connected.today": "今日通话个数",
+    "sales.frontpage.connected.today": "今日接通电话",
     "sales.frontpage.connected.range":"今日通话时长",
     "sales.frontpage.contact.today": "今日已跟进客户",
     "sales.frontpage.added.today": "今日新增客户",
@@ -2046,6 +2045,7 @@ var zh_CN = {
     "sales.frontpage.try.expired":"试用到期停用",
     "sales.frontpage.assigned.expired":"签约到期停用",
     "sales.frontpage.set.time":"定时",
-    "sales.frontpage.before.yesterday":"前天"
+    "sales.frontpage.before.yesterday":"前天",
+    "common.sales.frontpage.click.phone": "点击即可拨打。"
 };
 export default zh_CN;
