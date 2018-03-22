@@ -300,7 +300,7 @@ class LoginMain extends React.Component {
                                             defaultMessage={`请使用{appName}扫描二维码安全登录`}
                                             values={{
                                                 'appName': <a className="ketao-font-style"
-                                                              onClick={this.showDownLoadKetaoQRCode.bind(this)}>{Intl.get("ketao.app.name", "客套APP")}</a>,
+                                                              onClick={this.showDownLoadKetaoQRCode.bind(this)}>{Intl.get("login.ketao.app.name", "客套APP")}</a>,
                                             }}
                                         />
                                     </div>
