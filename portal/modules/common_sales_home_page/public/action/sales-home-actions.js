@@ -97,7 +97,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败")
+                errorMsg: errMsg || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败")
             });
             cb(errMsg)
         });

@@ -21,7 +21,7 @@ class ContactItem extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.contacts.id && nextProps.contacts.id !== this.state.contacts.id) {
+        if (nextProps.contacts && nextProps.contacts !== this.state.contacts) {
             this.setState({
                 contacts: nextProps.contacts
             })
@@ -39,18 +39,17 @@ class ContactItem extends React.Component {
     };
 
     // 自动拨号
-    handleClickCallOut(phoneNumber, contactName, record) {
-        console.log(record);
+    handleClickCallOut(phoneNumber, contactName, customerId) {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
         if (this.state.errMsg) {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
         } else {
-            if (this.state.callNumber) {
+            if (this.state.callNumber) {``
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
                         phoneNum: phoneNumber.replace('-', ''),
                         contact: contactName,
-                        customerId: record.customer_id,//客户基本信息
+                        customerId: customerId,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -71,16 +70,17 @@ class ContactItem extends React.Component {
     };
 
     renderContactsContent(contactDetail) {
-        var record = this.state.customerData;
+        var customerId = "";
         if (this.props.itemType === "schedule") {
-            record.name = record.customer_name;
-            record.id = record.customer_id;
+            customerId = this.state.customerData.customer_id;
+        } else if (_.isArray(this.state.contacts) && this.state.contacts.length) {
+            customerId = this.state.contacts[0].customer_id;
         }
-
         return (
             <div className="contact-content">
                 <div className="pull-left contact-label">{Intl.get("call.record.contacts", "联系人")}:</div>
                 {_.map(contactDetail, (contactItem, idx) => {
+                    var contactName = contactItem.name || "";
                     return (
                         <div className="contact-container">
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
@@ -94,10 +94,12 @@ class ContactItem extends React.Component {
                                             {index === 0 ? <span className={cls}>
                                                 <i className="iconfont icon-phone-busy"
                                                    title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, contactItem.name, record)}
-                                                   data-tracename="拨打电话"></i> {contactItem.name}
-                                            </span> : null}
-                                            {index !== 0 ? <i className="iconfont icon-phone-busy"></i> : null}
+                                                   onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                                   data-tracename="拨打电话"></i> {contactName}
+                                            </span> : <i className="iconfont icon-phone-busy"
+                                                         title={Intl.get("crm.click.call.phone", "点击拨打电话")}
+                                                         onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                                         data-tracename="拨打电话"></i>}
                                             <span className="phone-num">
                                                 {phoneItem}
                                             </span>
