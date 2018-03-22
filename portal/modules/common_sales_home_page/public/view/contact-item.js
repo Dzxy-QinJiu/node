@@ -21,7 +21,7 @@ class ContactItem extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.contacts && nextProps.contacts !== this.state.contacts) {
+        if (nextProps.contacts && JSON.stringify(nextProps.contacts) !== JSON.stringify(this.state.contacts)) {
             this.setState({
                 contacts: nextProps.contacts
             })
@@ -92,11 +92,11 @@ class ContactItem extends React.Component {
                                     return (
                                         <span className="contact-item">
                                             {index === 0 ? <span className={cls}>
-                                                <i className="iconfont icon-phone-call-out"
+                                                <i className="iconfont icon-phone-busy"
                                                    title={Intl.get("crm.click.call.phone", "点击拨打电话")}
                                                    onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
                                                    data-tracename="拨打电话"></i> {contactName}
-                                            </span> : <i className="iconfont icon-phone-call-out"
+                                            </span> : <i className="iconfont icon-phone-busy"
                                                          title={Intl.get("crm.click.call.phone", "点击拨打电话")}
                                                          onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
                                                          data-tracename="拨打电话"></i>}
