@@ -47,6 +47,14 @@ UserApplyStore.prototype.resetState = function () {
     this.unreadReplyList = [];
     //处理申请操作失败
     this.dealApplyError = "success";
+    //是否展示有未读回复的申请列表
+    this.unreadApplyListShow = false;
+
+};
+
+//设置是否展示有未读回复的申请列表
+UserApplyStore.prototype.setUnreadApplyListShow = function (flag) {
+    this.unreadApplyListShow = flag;
 };
 //刷新未读回复列表;
 UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
@@ -112,6 +120,7 @@ UserApplyStore.prototype.getApplyList = function (obj) {
         }
     }
 };
+
 //根据id获取申请（通过邮件中的链接查看申请时）
 UserApplyStore.prototype.getApplyById = function (obj) {
     if (obj.error) {
@@ -146,6 +155,7 @@ UserApplyStore.prototype.changeApplyListType = function (type) {
     this.lastApplyId = "";
     this.ifClickedFilterLabel = true;
     this.showUpdateTip = false;
+    this.unreadApplyListShow = false;
 };
 
 //输入框的值改变

@@ -41,6 +41,7 @@ var ApplyTabContent = React.createClass({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
+            isUnreadApply: this.state.unreadApplyListShow,
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? "pass" : this.state.applyListType
         }, (count) => {
             //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
@@ -199,14 +200,35 @@ var ApplyTabContent = React.createClass({
         }
         return moment(new Date(d)).format(format || oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
     },
+    //(取消)展示有未读回复的申请列表
+    toggleUnreadApplyList: function () {
+        UserApplyActions.setUnreadApplyListShow(!this.state.unreadApplyListShow);
+        UserApplyActions.setLastApplyId("");
+        setTimeout(() => this.fetchApplyList());
+    },
     //点击展示详情
     clickShowDetail: function (obj, idx) {
         Trace.traceEvent($(this.getDOMNode()).find(".app_user_manage_apply_list"), "查看申请详情");
         UserApplyActions.setSelectedDetailItem({obj, idx});
     },
     renderApplyList: function () {
+        let unreadReplyList = this.state.unreadReplyList;
+        //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
+        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType == "all";
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
+                {showUnreadTip ? (
+                    <li className="has-unread-reply-tip">
+                        <ReactIntl.FormattedMessage
+                            id="user.apply.unread.reply.check"
+                            defaultMessage={`有未读回复的申请，{check}`}
+                            values={{
+                                "check": <a onClick={this.toggleUnreadApplyList}>
+                                    {this.state.unreadApplyListShow ? Intl.get("user.apply.cancel.check", "取消查看") : Intl.get("user.apply.check", "查看")}</a>
+                            }}
+                        />
+                    </li>
+                ) : null}
                 {
                     this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
@@ -216,7 +238,7 @@ var ApplyTabContent = React.createClass({
                             current: obj.id == this.state.selectedDetailItem.id && i == this.state.selectedDetailItemIdx
                         });
                         //是否有未读回复
-                        let hasUnreadReply = _.find(this.state.unreadReplyList, unreadReply => unreadReply.apply_id == obj.id);
+                        let hasUnreadReply = _.find(unreadReplyList, unreadReply => unreadReply.apply_id == obj.id);
                         return (
                             <li key={obj.id} className={currentClass}
                                 onClick={this.clickShowDetail.bind(this, obj, i)}
