@@ -114,7 +114,7 @@ var SalesHomePage = React.createClass({
             start_time: todayTimeRange.start_time,
             end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE
         });
-        //获取半年内即将到期的签约用户
+        //获取半年内即将到期的签约用户 183是取的半年的数据
         this.getWillExpireCustomer(
             {
                 tags: Intl.get("common.trial.official", "正式用户"),
