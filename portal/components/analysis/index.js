@@ -261,6 +261,7 @@ const Analysis = React.createClass({
             );
         }
     },
+    //获取适合导出格式的数据
     getProcessedData() {
         let processedData = this.state.chartData;
         let chartType = this.props.chartType;
