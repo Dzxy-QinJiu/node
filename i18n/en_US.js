@@ -1212,6 +1212,7 @@ var en_US = {
     "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     "crm.detail.sales.role": "Sales role",//销售角色
     "crm.sales.change": "Change sales",//变更销售
+    "crm.customer.transfer": "Transfer customer",//转出客户
     "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
     "crm.right.schedule": "Contact schedule",//联系计划
     // 客户管理end

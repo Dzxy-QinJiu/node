@@ -1230,6 +1230,7 @@ var zh_CN = {
     "crm.delete.duplicate.customer.failed": "删除重复客户失败",
     "crm.detail.sales.role": "销售角色",
     "crm.sales.change": "变更销售",
+    "crm.customer.transfer": "转出客户",
     "crm.customer.transfer.failed": "转出客户失败",
     "crm.right.schedule": "联系计划",
     // 客户管理end

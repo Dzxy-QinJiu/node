@@ -53,6 +53,8 @@ exports.batchPushEmitter.TASK_GRANT_DELAY = "batchtask.task_grant_delay";
 exports.batchPushEmitter.TASK_GRANT_UPDATE = "batchtask.task_grant_update";
 //客户管理批量-变更销售人员
 exports.batchPushEmitter.CRM_BATCH_CHANGE_SALES = "batchtask.crm_batch_change_sales";
+//客户管理批量-转出客户
+exports.batchPushEmitter.CRM_BATCH_TRANSFER_CUSTOMER = "batchtask.crm_batch_transfer_customer";
 //客户管理批量-变更标签
 exports.batchPushEmitter.CRM_BATCH_CHANGE_LABELS = "batchtask.crm_batch_change_labels";
 //客户管理批量-添加标签

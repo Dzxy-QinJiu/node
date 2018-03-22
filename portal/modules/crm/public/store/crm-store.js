@@ -322,6 +322,16 @@ CrmStore.prototype.batchChangeSalesman = function ({taskInfo, taskParams, curCus
         customerInfo.user_name = sales_nick_name;
         customerInfo.sales_team = sales_team_name;
         customerInfo.sales_team_id = sales_team_id;
+        if (taskInfo.type == "crm_batch_transfer_customer") {
+            //批量转出客户时，打上”转出“标签
+            if (_.isArray(customerInfo.immutable_labels)) {
+                if (customerInfo.immutable_labels.indexOf(Intl.get("crm.qualified.roll.out", "转出")) == -1) {
+                    customerInfo.immutable_labels.push(Intl.get("crm.qualified.roll.out", "转出"));
+                }
+            } else {
+                customerInfo.immutable_labels = [Intl.get("crm.qualified.roll.out", "转出")];
+            }
+        }
         var sales_opportunities = customerInfo.sales_opportunities || [];
         _.each(sales_opportunities, (sales_opportunity) => {
             sales_opportunity = sales_opportunity || {};
