@@ -336,9 +336,11 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
             content: this.getCustomerStageChart(),
+            hide: this.state.currentTab !== "total",
         }, {
             title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
             content: this.getOrderStageChart(),
+            hide: this.state.currentTab !== "total",
         }];
     },
     render : function() {
@@ -355,12 +357,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
         var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
         const storedAppId = localStorage[localStorageAppIdKey];
-        var stageClassNames = classnames({
-            'analysis_chart': true,
-            'col-md-6': true,
-            "col-sm-12": true,
-            "stageHide":!(["total", "added"].indexOf(this.state.currentTab) > -1)
-        });
 
         const charts = this.getCharts();
 
@@ -397,11 +393,21 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                         <GeminiScrollbar>
                             <div className="chart_list">
                                 {charts.map(chart => {
-                                    return (
+                                    const props = chart.content.props;
+                                    const refName = props.refName;
+                                    const ref = this.refs[refName];
+                                    const exportData = () => {
+                                        if (!ref) return;
+    
+                                        return ref.getProcessedData();
+                                    }
+                                    return chart.hide? null : (
                                         <div className="analysis_chart col-md-6 col-sm-12" data-title={chart.title}>
                                             <div className="chart-holder" ref="chartWidthDom" data-tracename={chart.title}>
                                                 <CardContainer
                                                     title={chart.title}
+                                                    csvFileName={refName + ".csv"}
+                                                    exportData={exportData.bind(this)}
                                                 >
                                                     {chart.content}
                                                 </CardContainer>
