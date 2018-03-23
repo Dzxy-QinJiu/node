@@ -1404,7 +1404,7 @@ var en_VE = {
     "retry.is.submitting": "Entregando...",
     "retry.failed.get.code": "Falló en conseguir el código de captcha",
     "retry.login.again": "Reiniciar sesión",
-    "retry.modify.password": "Su cuenta está iniciando sesión desde otro lugar, si no fuera la operación suya, le sugería que cambiara la contraseña tan pronto como sea posible..",
+    "login.by.another": "Su cuenta está iniciando sesión desde otro lugar, si no fuera la operación suya, le sugería que cambiara la contraseña tan pronto como sea posible..",
     "retry.token.expired": "Token caducado",
     "retry.token.status": "403,Token caducado",
     "retry.input.captcha": "Introducir el código de captcha",

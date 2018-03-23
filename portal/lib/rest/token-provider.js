@@ -6,9 +6,9 @@ var config = require("../../../conf/config");
 var EventEmitter = require("events").EventEmitter;
 var CommonUtil = require("../utils/common-utils");
 var AccessToken = require("./access-token");
+var constUtil = require("./const-util");
 
 var oauthTokenUrl = "/auth2/authz/token";
-var checkUserTokenExistUrl = "/auth2/authz/validate";
 
 var forceUserOutErrorCodes = {};
 if (Array.isArray(config.forceUserOutErrorCodes) && config.forceUserOutErrorCodes.length) {
@@ -45,7 +45,6 @@ var realmId = config.loginParams.realm;
  */
 var TokenProvider = function () {
 };
-
 /**
  *  设置请求头
  * @param browserReq
@@ -245,53 +244,40 @@ TokenProvider.prototype.refreshAccessToken = function (refreshToken, req, userna
  * 6. other-error                        // function() {}
  *
  * @param errorCode {object}
- * @param token {AccessToken}
+ * @param refreshToken {AccessToken}
  * @param username {string}
  * @param req{req}
  *
  * @return EventEmitter 的一个新实例
  */
-TokenProvider.prototype.processUserTokenError = function (errorCode, token, username, req) {
+TokenProvider.prototype.processUserTokenError = function (errorCode, refreshToken, username, req) {
     var self = this, eventEmitter = new EventEmitter();
     var inProcessType = "";
-    if (errorCode == 19300 && token) {
+    if (errorCode == 19300 && refreshToken) {
         // 1. 拦截 token 过期异常
         inProcessType = "refresh-token";
         logger.debug("user (%s) token was expired or invalid, try to refresh token now.", username);
-        self.refreshAccessToken(token, req, username).on("success", function (newToken) {
+        self.refreshAccessToken(refreshToken, req, username).on("success", function (newToken) {
             logger.debug("user (%s) token refresh success.", username);
-            eventEmitter.emit("after-token-refresh-successful", newToken);
+            eventEmitter.emit(constUtil.errors.REFRESH_TOKEN_SUCCESS, newToken);
         }).on("error", function (result, response) {
             logger.error("user (" + username + ") refresh token has error: ", result);
-            eventEmitter.emit("refresh-token-error", result, response);
+            eventEmitter.emit(constUtil.errors.REFRESH_TOKEN_ERROR);
         });
-    } else if (errorCode == 19302 || errorCode == 19301 || errorCode == 11473) {
-        //  11011,19302 拦截 token 不存在异常; 19301被踢出 ;   11473  token 被单点退出
-        switch (errorCode) {
-            case 19301:
-                inProcessType = "login-only-one";
-                break;
-            case 19302:
-                inProcessType = "token-not-exist";
-                break;
-            case 11473:
-                inProcessType = "token-kicked-by-sso";
-                break;
+    } else {
+        //刷新token不存在时，记录日志
+        if (!refreshToken) {
+            logger.error("user (" + username + ") refreshToken is null");
         }
-        process.nextTick(function () {
-            eventEmitter.emit(inProcessType);
-            logger.warn("user (%s) token occured authorization error(code: %s) which must be logout.", username, errorCode);
-        });
     }
     eventEmitter["inProcessType"] = inProcessType;
     return eventEmitter;
 };
 
-
 /**
  * 7. 处理 app token 的一些过期等问题
  * 抛出事件：
- * 1. token-reFetched                    // function(token) {}
+ * 1. app-token-refetched
  *
  * @param errorCode {object}
  *
@@ -301,12 +287,12 @@ TokenProvider.prototype.processAppTokenError = function (errorCode) {
     var self = this, eventEmitter = new EventEmitter();
 
     // 不管是 Token过期, 还是 Token不存在, 都自动的再次获取 appToken (非刷新机制)
-    if (errorCode === 11012 || errorCode == 11011) {
+    if (constUtil.tokenIsInvalid(errorCode, 2)) {
         appAccessToken = null;
         eventEmitter["inProcessType"] = "re-fetching-app-token";
         process.nextTick(function () {
             tokenProviderInstance.fetchAppToken(true).on("success", function (token) {
-                eventEmitter.emit("token-reFetched", token);
+                eventEmitter.emit(constUtil.errors.REFETCHED_APP_TOKEN, token);
             });
         });
     }

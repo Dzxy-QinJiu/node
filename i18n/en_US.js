@@ -1813,7 +1813,8 @@ var en_US = {
     "retry.is.submitting": "submitting",//提交中...
     "retry.failed.get.code": "Failed to get the verification code",//获取验证码错误
     "retry.login.again": "Relogin",//重新登录
-    "retry.modify.password": "Your account logged in somewhere else, if it is not your own operation, please change your password as soon as possible!",//您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！
+    "login.by.another": "Your account logged in somewhere else, if it is not your own operation, please change your password as soon as possible!",//您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！
+    "kicked.by.admin": "Your account has been kicked by admin,please log in again",//被管理员踢出，请重新登录
     "retry.token.expired": "Token expired",//Token过期
     "retry.token.status": "status:403, token expired",//status:403,Token过期
     "retry.input.captcha": "Input the captcha",//请输入验证码

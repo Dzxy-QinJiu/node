@@ -178,25 +178,13 @@ SalesHomeStore.prototype.getPhoneTotal = function (result) {
         let salesPhoneList = result.resData && _.isArray(result.resData.salesPhoneList) ? result.resData.salesPhoneList : [];
         salesPhoneList = salesPhoneList.map((salesPhone) => {
             return {
-                averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
-                averageTime: getData(salesPhone.averageTime),//日均时长
-                averageTimeDescr: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
-                totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
-                totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
-                callinCount: getData(salesPhone.callinCount),//呼入次数
-                callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
-                callinRate: formatData(salesPhone.callinRate),//呼入接通率
-                calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
-                calloutRate: formatData(salesPhone.calloutRate),//呼出接通率
-                billingTime: getBillingTime(salesPhone.totalTime)//计费时长
             };
         });
         let totalTime = 0, totalCount = 0;
         salesPhoneList.forEach((phone) => {
-            totalCount += phone.totalAnswer || 0;
+            totalCount += phone.calloutSuccess || 0;
             totalTime += phone.totalTime || 0;
         });
         this.phoneTotalObj.data = {

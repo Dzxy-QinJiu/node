@@ -94,7 +94,7 @@ exports.getAdministrativeLevel = function (queryObj) {
 exports.checkOnlyCustomer = function (queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/customer_only/check',
+        url: '/rest/sales_clue/only/check',
         dataType: 'json',
         type: 'get',
         data: queryObj,

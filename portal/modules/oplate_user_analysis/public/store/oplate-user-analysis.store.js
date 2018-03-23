@@ -477,6 +477,7 @@ OplateUserAnalysisStore.prototype.getRetention = function (result) {
 OplateUserAnalysisStore.prototype.changeSearchTime = function({startTime,endTime}) {
     this.startTime = startTime;
     this.endTime = endTime;
+    this.resetChartData('loading');
 };
 
 //更换选中应用

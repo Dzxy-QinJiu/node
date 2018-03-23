@@ -356,7 +356,7 @@ var SalesHomePage = React.createClass({
     renderNewDistributeCustomer: function () {
         var data = this.state.newDistributeCustomer.data.list;
         return (
-            <div className="new-distribute-customer-container">
+            <div className="new-distribute-customer-container" ref="tableWrap">
                 <GeminiScrollbar>
                     {_.map(data, (item) => {
                         return (
@@ -390,9 +390,10 @@ var SalesHomePage = React.createClass({
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
         Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
+        GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
             listenScrollBottom: true,
-            showCustomerPanel: customerType
+            showCustomerPanel: customerType,
         })
     },
     //渲染日程列表
@@ -410,7 +411,7 @@ var SalesHomePage = React.createClass({
                 return item.allDay;
             });
             return (
-                <div className="schedule-day-list" data-tracename="今日日程列表">
+                <div className="schedule-day-list" data-tracename="今日日程列表" ref="tableWrap">
                     <GeminiScrollbar>
                         {notFulldaylist.length ? <div
                             className="schedule-list-tip">{Intl.get("sales.frontpage.set.time", "定时")}</div> : null}
@@ -451,7 +452,7 @@ var SalesHomePage = React.createClass({
             //今日超期未联系
             data = this.state.scheduleExpiredTodayObj.data.list;
             return (
-                <div className="today-expired-schedule">
+                <div className="today-expired-schedule" ref="tableWrap">
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY)}
                         listenScrollBottom={this.state.listenScrollBottom}>
@@ -488,7 +489,7 @@ var SalesHomePage = React.createClass({
                 Intl.get("sales.frontpage.expired.after.tomorrow", "后天到期")
             ];
             return (
-                <div className="will-expire-assigned-customer-container">
+                <div className="will-expire-assigned-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
                             if (_.isArray(item.customer_list) && item.customer_list.length){
@@ -525,6 +526,7 @@ var SalesHomePage = React.createClass({
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
                 <div className="will-expire-try-customer-container">
+                <div className="will-expire-try-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
                             if (_.isArray(item.customer_list) && item.customer_list.length){
@@ -552,8 +554,6 @@ var SalesHomePage = React.createClass({
                             }else {
                                 return null;
                             }
-
-
                         })}
                     </GeminiScrollbar>
                 </div>
@@ -569,7 +569,7 @@ var SalesHomePage = React.createClass({
             //关注客户登录
             data = this.state.concernCustomerObj.data.list;
             return (
-                <div className="concerned-customer-container">
+                <div className="concerned-customer-container" ref="tableWrap">
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
                         listenScrollBottom={this.state.listenScrollBottom}>
@@ -594,7 +594,7 @@ var SalesHomePage = React.createClass({
             //停用后登录
             data = this.state.appIllegalObj.data.list;
             return (
-                <div className="app-illeage-container">
+                <div className="app-illeage-container" ref="tableWrap">
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}
                         listenScrollBottom={this.state.listenScrollBottom}>
@@ -619,7 +619,7 @@ var SalesHomePage = React.createClass({
             //最近X日登录的客户
             data = this.state.recentLoginCustomerObj.data.list;
             return (
-                <div className="recent-login-customer-container">
+                <div className="recent-login-customer-container" ref="tableWrap">
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER)}
                         listenScrollBottom={this.state.listenScrollBottom}>
