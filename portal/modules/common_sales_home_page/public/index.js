@@ -41,7 +41,6 @@ var SalesHomePage = React.createClass({
             curShowUserId: "",//展示用户详情的用户id
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
-            isScrollTop: false,
             ...SalesHomeStore.getState()
         }
     },
@@ -49,15 +48,6 @@ var SalesHomePage = React.createClass({
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
         this.getUserPhoneNumber();
-    },
-    componentDidUpdate: function () {
-        if (this.state.isScrollTop) {
-            this.scrollTop();
-        }
-    },
-    scrollTop: function () {
-        GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
-        this.setState({isScrollTop: false});
     },
     componentWillUnmount: function () {
         SalesHomeStore.unlisten(this.onChange);
@@ -381,10 +371,10 @@ var SalesHomePage = React.createClass({
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
         Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
+        GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
             listenScrollBottom: true,
             showCustomerPanel: customerType,
-            isScrollTop: true
         })
     },
     //渲染日程列表
