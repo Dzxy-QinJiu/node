@@ -48,8 +48,26 @@ var SalesHomePage = React.createClass({
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
         this.getUserPhoneNumber();
+        //绑定window的resize，进行缩放处理
+        $(window).on('resize', this.windowResize);
+        //给点击查看客户详情的客户加样式
+        $(".sales_home_content").on("click", ".sale-home-customer-name", function (e) {
+           $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
+           $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
+        });
+    },
+    //缩放延时，避免页面卡顿
+    resizeTimeout: null,
+    //窗口缩放时候的处理函数
+    windowResize(){
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            //窗口缩放的时候，调用setState，重新走render逻辑渲染
+            this.setState(SalesHomeStore.getState());
+        });
     },
     componentWillUnmount: function () {
+        $(window).off('resize', this.windowResize);
         SalesHomeStore.unlisten(this.onChange);
     },
     onChange: function () {
@@ -61,6 +79,7 @@ var SalesHomePage = React.createClass({
         })
     },
     closeRightCustomerPanel: function () {
+        $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
         this.setState({curShowCustomerId: ""});
     },
     ShowCustomerUserListPanel: function (data) {
@@ -465,34 +484,39 @@ var SalesHomePage = React.createClass({
             //三天内即将到期的试用客户
             data = this.state.willExpiredTryCustomer.data.list;
             var willexpiredTipArr = [
-                Intl.get("sales.frontpage.expired.today", "今日到期"),
+                Intl.get("sales.frontpage.expired.today", "今天到期"),
                 Intl.get("sales.frontpage.expired.tomorrow", "明天到期"),
-                Intl.get("sales.frontpage.expired.today", "今日到期")
+                Intl.get("sales.frontpage.expired.after.tomorrow", "后天到期")
             ];
             return (
                 <div className="will-expire-assigned-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
-                            return (
-                                <div className="expire-customer-item">
-                                    <div className="expire-customer-tip">
-                                        {willexpiredTipArr[index]}
+                            if (_.isArray(item.customer_list) && item.customer_list.length){
+                                return (
+                                    <div className="expire-customer-item">
+                                        <div className="expire-customer-tip">
+                                            {willexpiredTipArr[index]}
+                                        </div>
+                                        <div>
+                                            {_.map(item.customer_list, (willExpiredCustomer) => {
+                                                return (
+                                                    <WillExpireItem
+                                                        expireItem={willExpiredCustomer}
+                                                        willExpiredTip={Intl.get("sales.frontpage.try.expired", "试用到期停用")}
+                                                        openCustomerDetail={this.openCustomerDetail}
+                                                        callNumber={this.state.callNumber}
+                                                        errMsg={this.state.errMsg}
+                                                        willExpiredTime={willexpiredTipArr[index].substr(0,2)}
+                                                    />
+                                                )
+                                            })}
+                                        </div>
                                     </div>
-                                    <div>
-                                        {_.map(item.customer_list, (willExpiredCustomer) => {
-                                            return (
-                                                <WillExpireItem
-                                                    expireItem={willExpiredCustomer}
-                                                    willExpiredTip={Intl.get("sales.frontpage.try.expired", "试用到期停用")}
-                                                    openCustomerDetail={this.openCustomerDetail}
-                                                    callNumber={this.state.callNumber}
-                                                    errMsg={this.state.errMsg}
-                                                />
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )
+                                )
+                            }else{
+                                return null;
+                            }
                         })}
                     </GeminiScrollbar>
                 </div>
@@ -501,30 +525,35 @@ var SalesHomePage = React.createClass({
             //半年内即将到期的签约客户
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
-                <div className="schedule-day-list" ref="tableWrap">
+                <div className="will-expire-try-customer-container">
+                <div className="will-expire-try-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
-                            return (
-                                <div className="">
-                                    <div>
-
+                            if (_.isArray(item.customer_list) && item.customer_list.length){
+                                return (
+                                    <div className="expire-customer-item">
+                                        <div className="expire-customer-tip">
+                                            {moment(item.date).format(oplateConsts.DATE_FORMAT)}
+                                        </div>
+                                        <div>
+                                            {_.map(item.customer_list, (willExpiredCustomer) => {
+                                                return (
+                                                    <WillExpireItem
+                                                        expireItem={willExpiredCustomer}
+                                                        willExpiredTip={Intl.get("sales.frontpage.assigned.expired", "签约到期停用")}
+                                                        openCustomerDetail={this.openCustomerDetail}
+                                                        callNumber={this.state.callNumber}
+                                                        errMsg={this.state.errMsg}
+                                                        willExpiredTime={moment(item.date).format(oplateConsts.DATE_FORMAT)}
+                                                    />
+                                                )
+                                            })}
+                                        </div>
                                     </div>
-                                    <div>
-                                        {_.map(item.customer_list, (willExpiredCustomer) => {
-                                            return (
-                                                <WillExpireItem
-                                                    expireItem={willExpiredCustomer}
-                                                    willExpiredTip={Intl.get("sales.frontpage.assigned.expired", "签约到期停用")}
-                                                    openCustomerDetail={this.openCustomerDetail}
-                                                    callNumber={this.state.callNumber}
-                                                    errMsg={this.state.errMsg}
-                                                />
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )
-
+                                )
+                            }else {
+                                return null;
+                            }
                         })}
                     </GeminiScrollbar>
                 </div>

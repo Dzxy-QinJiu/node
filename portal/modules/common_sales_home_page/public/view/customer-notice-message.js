@@ -126,10 +126,10 @@ class CustomerNoticeMessage extends React.Component {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : "";//只可以处理自己的系统消息
         return (
-            <div className="customer-notice-message-container">
+            <div className="customer-notice-message-container customer-detail-item">
                 <div className="customer-notice-content">
                     <div className="customer-title">
-                        <span className="customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
+                        <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
                               data-tracename="打开客户详情">
                             {this.props.isRecentLoginCustomer ? this.renderTagsContent(customerMessage) : null}
                             {customer_name}
