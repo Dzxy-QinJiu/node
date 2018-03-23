@@ -134,3 +134,9 @@ export const isEqualArray = function (array1, array2) {
     array2 = _.sortBy(array2);
     return _.isEqual(array1, array2);
 };
+
+//将字符串首字母改为大写
+export const capitalizeFirstLetter = function (str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+

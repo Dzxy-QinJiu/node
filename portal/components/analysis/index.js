@@ -20,6 +20,8 @@ const DateSelectorUtils = require("../datepicker/utils");
 import { getEndDateText } from "./utils";
 import { TIME_RANGE, USER_TYPE_LEGEND } from "./consts";
 var Spinner = require("../spinner");
+import * as exportUtil from "./export-data-util";
+import { capitalizeFirstLetter } from "LIB_DIR/func";
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
@@ -258,6 +260,28 @@ const Analysis = React.createClass({
                 </div>
             );
         }
+    },
+    //获取适合导出格式的数据
+    getProcessedData() {
+        let processedData = this.state.chartData;
+        let chartType = this.props.chartType;
+        chartType = capitalizeFirstLetter(chartType);
+        const funcName = "handle" + chartType + "ChartData";
+        const valueField = this.props.valueField || "value";
+        const column = this.props.column;
+
+        if (column) {
+            processedData = exportUtil.handleTableData(processedData, column);
+        } else {
+            let func = exportUtil[funcName];
+            //找不到对应类型的处理函数时，用通用处理函数处理
+            if (!_.isFunction(func)) {
+                func = exportUtil.processChartExportData;
+            }
+            processedData = func(processedData, valueField);
+        }
+
+        return processedData;
     },
     render() {
         const props = {
