@@ -56,6 +56,13 @@ module.exports = {
             handler: 'updateCluecustomerDetail',
             passport: {
                 needLogin: true
+            },
+        },{
+            method: 'get',
+            path: '/rest/sales_clue/only/check',
+            handler: 'checkOnlySalesClue',
+            passport: {
+            needLogin: true
         },
         }
     ]
