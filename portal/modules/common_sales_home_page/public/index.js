@@ -525,7 +525,6 @@ var SalesHomePage = React.createClass({
             //半年内即将到期的签约客户
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
-                <div className="will-expire-try-customer-container">
                 <div className="will-expire-try-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
