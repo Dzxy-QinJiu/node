@@ -8,8 +8,9 @@ var _ = require("underscore");
 var constUtil = require("../lib/rest/const-util");
 //发送到界面的错误信息
 var UI_CONST = require("../lib/utils/request-error-util");
+
 /**
- *   回403错误信息
+ * 返回403错误信息
  * @param req
  * @param res
  * @param data  发送到界面的数据
@@ -22,6 +23,7 @@ function cleanAuthAndSendData(req, res, data) {
 }
 //添加全局请求头
 //restManage.baseRest.addCustomGlobalHeader("test", "testvalue");
+
 restManage.userAuthRest.globalEmitter.on("timeout", function (req, res, data) {//rest请求超时
     res.status(data.httpCode).json(data.message);
 }).on(constUtil.errors.REFRESH_TOKEN_SUCCESS, function (newToken, userBaseInfo, req) {//刷新token成功

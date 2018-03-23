@@ -29,7 +29,6 @@ var commonErrorCodeMessageMap = {
  *  11011  Token不存在
  *  11012 Token过期
  */
-
 var appTokenErrorCodeMessageMap = {
     11011: errors.TOKEN_NOT_EXIST,
     11012: errors.TOKEN_EXPIRED,
@@ -41,7 +40,6 @@ var appTokenErrorCodeMessageMap = {
  *  19302 拦截 token 不存在;
  *  19301 被他人踢出 ;
  */
-
 var userTokenErrorCodeMessageMap = {
     11473: errors.TOKEN_KICKED_BY_SSO,
     19300: errors.TOKEN_EXPIRED,

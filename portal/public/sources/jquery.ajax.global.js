@@ -5,7 +5,8 @@
  *       页面会使用$.tooltip提示一个错误信息 "您已很长时间没有进行操作，为了保障帐号安全，请重新登录系统"
  */
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
-import UI_ERROR from "../../lib/utils/request-error-util";
+var UI_ERROR = require("../../lib/utils/request-error-util");
+
 (function () {
     let Modal = require("antd").Modal;
     let crypto = require("crypto");
