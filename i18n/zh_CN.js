@@ -2043,13 +2043,14 @@ var zh_CN = {
     "sales.fromtpage.set.contact.time": "原定于{initialtime}联系",
     "sales.frontpage.fail.new.distribute.customer": "获取新分配的客户失败",
     "sales.frontpage.new.distribute.customer": "新分配但未联系的客户",
-    "sales.frontpage.expired.today": "今日到期",
+    "sales.frontpage.expired.today": "今天到期",
     "sales.frontpage.expired.tomorrow": "明天到期",
     "sales.frontpage.expired.after.tomorrow": "后天到期",
     "sales.frontpage.try.expired": "试用到期停用",
     "sales.frontpage.assigned.expired": "签约到期停用",
     "sales.frontpage.set.time": "定时",
     "sales.frontpage.before.yesterday": "前天",
-    "common.sales.frontpage.click.phone": "点击即可拨打。"
+    "common.sales.frontpage.click.phone": "点击即可拨打。",
+    "common.sales.fronpage.user.login": "{relativedata}有应用到期"
 };
 export default zh_CN;

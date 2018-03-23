@@ -4,6 +4,8 @@
 @FONT_WHITE: #FFF;
 @FONT_COLOR_999: #999;
 @FONT_COLOR_333: #333;
+@LINE_COLOR:#2196F3;
+@BORDER:4px solid @LINE_COLOR;
 @import "../../../../public/css/common-variables";
 .sales_home_content {
   cursor: default;
@@ -76,21 +78,33 @@
         }
       }
       li.customer-item.selected-customer-item {
-        color: #2196F3;
-        border-left: 4px solid #2196F3;
+        color: @LINE_COLOR;
+        border-left: @BORDER;
       }
     }
     //右侧客户详情
     .customer-content-right {
+      //margin-left: 250px;
       background: @BACKGROUND_COLOR;
       padding: 16px 4px 16px 16px;
-      //margin-left: 250px;
       //客户名称
       .sale-home-customer-name {
         cursor: pointer;
         color: #333;
         font-size: 16px;
       }
+      //每个客户的外层容器
+      .customer-detail-item{
+        margin-bottom: 8px;
+        margin-right: 12px;
+        font-size: 16px;
+        background: #FFF;
+        border-radius: 4px;
+      }
+      .selected-customer-detail-item.customer-detail-item{
+        border-left: @BORDER;
+      }
+
       //今日日程列表
       .schedule-day-list {
         height: 100%;
@@ -98,6 +112,9 @@
           font-size: 12px;
           margin-bottom: 8px;
           color: @FONT_COLOR_999;
+        }
+        .schedule-list-tip:not(:first-child){
+          margin-top: 16px;
         }
       }
       //今日过期日程列表
@@ -124,7 +141,7 @@
       height: 100%;
     }
     //即将过期的签约客户
-    .will-expire-assigned-customer-container {
+    .will-expire-assigned-customer-container,.will-expire-try-customer-container {
       height: 100%;
       .expire-customer-item{
         .expire-customer-tip{
@@ -132,6 +149,7 @@
         }
       }
     }
+
     //新分配的客户
     .new-distribute-customer-container {
       height: 100%;

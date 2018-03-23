@@ -28,26 +28,16 @@ class WillExpireItem extends React.Component {
     render() {
         var expireItem = this.state.expireItem;
         return (
-            <div className="will-expire-container">
+            <div className="will-expire-container customer-detail-item">
                 <div className="will-customer-title">
                     <span className="sale-home-customer-name"
                           onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
                         {expireItem.customer_name}
                     </span>
                 </div>
-                <div className="will-customer-content" style={{display: "none"}}>
-                    {_.map(expireItem.app_list, (item) => {
-                        return (
-                            <div className="app-item">
-                                <div className="pull-left customer-name">
-                                    {item.app_name}
-                                </div>
-                                <div className="pull-left delay-time">
-                                    {moment(item.end_time).format(oplateConsts.DATE_FORMAT)}
-                                    {this.props.willExpiredTip}
-                                </div>
-                            </div>
-                        )
+                <div className="will-customer-content">
+                    {Intl.get("common.sales.fronpage.user.login", "{relativedata}有应用到期", {
+                        relativedata:this.props.willExpiredTime
                     })}
                 </div>
                 <ContactItem
@@ -62,10 +52,10 @@ class WillExpireItem extends React.Component {
 }
 WillExpireItem.defaultProps = {
     expireItem: {},
-    willExpiredTip: "",
     openCustomerDetail: function () {
 
-    }
+    },
+    willExpiredTime:""//即将到期的时间
 
 
 };

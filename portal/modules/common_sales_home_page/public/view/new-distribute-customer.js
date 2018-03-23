@@ -29,7 +29,7 @@ class NewDistributeCustomer extends React.Component {
     render() {
         var newDistributeCustomer = this.state.newDistributeCustomer;
         return (
-            <div className="new-distribute-customer">
+            <div className="new-distribute-customer customer-detail-item">
                 <div className="new-distribute-customer-title">
                     {newDistributeCustomer.customer_label ? (
                         <Tag

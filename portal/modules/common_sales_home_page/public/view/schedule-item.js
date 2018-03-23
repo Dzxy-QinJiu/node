@@ -64,7 +64,7 @@ class ScheduleItem extends React.Component {
         var contacts = schedule.contacts ? schedule.contacts : [];
         var contactTime = moment(schedule.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + "-" + moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT);
         return (
-            <div className="schedule-item-container">
+            <div className="schedule-item-container customer-detail-item">
                 {this.props.isShowTopTitle ? <div className="schedule-top-panel">
                     {Intl.get("sales.fromtpage.set.contact.time", "原定于{initialtime}联系", {initialtime: contactTime})}
                 </div> : null}
