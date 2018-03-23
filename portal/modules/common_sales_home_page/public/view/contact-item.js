@@ -90,7 +90,8 @@ class ContactItem extends React.Component {
                                     var cls = classNames({
                                         "contact-name": contactItem.name
                                     });
-                                    var text = <span className="call-out-tip"><i className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
+                                    var text = <span className="call-out-tip"><i
+                                        className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
                                     return (
                                         <span className="contact-item"
                                               onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}

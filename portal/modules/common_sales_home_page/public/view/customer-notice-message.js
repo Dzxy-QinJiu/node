@@ -154,7 +154,7 @@ class CustomerNoticeMessage extends React.Component {
                             </p> : null}
                     </div>}
                 </div>
-                {this.props.isRecentLoginCustomer ?
+                {customerMessage.contacts ?
                     <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
                                  errMsg={this.props.errMsg}/> : null}
             </div>

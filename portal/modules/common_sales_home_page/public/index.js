@@ -114,12 +114,12 @@ var SalesHomePage = React.createClass({
             start_time: todayTimeRange.start_time,
             end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE
         });
-        //获取半年内即将到期的签约用户 183是取的半年的数据
+        //获取半年内即将到期的签约用户 30*6是取的半年的数据
         this.getWillExpireCustomer(
             {
                 tags: Intl.get("common.trial.official", "正式用户"),
                 start_time: todayTimeRange.start_time,
-                end_time: todayTimeRange.end_time + 183 * oplateConsts.ONE_DAY_TIME_RANGE
+                end_time: todayTimeRange.end_time + 30 * 6 * oplateConsts.ONE_DAY_TIME_RANGE
             }
         );
         //获取新分配的客户
@@ -654,66 +654,66 @@ var SalesHomePage = React.createClass({
         return (
             <RightContent>
                 <div className="sales_home_content" data-tracename="销售首页">
-                        <div className="top_nav_content" data-tracename="顶部区域">
-                            <ul>
-                                <li>
-                                    <div className="statistic-total-content">
-                                        <div className="content-right">
+                    <div className="top_nav_content" data-tracename="顶部区域">
+                        <ul>
+                            <li>
+                                <div className="statistic-total-content">
+                                    <div className="content-right">
                                             <span>
                                                 {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
                                             </span>
-                                            <span className="data-container">
+                                        <span className="data-container">
                                                 <span className="phone-total-time phone-total-data">
-                                {time.hours > 0 ? <span>{time.hours}</span> : null}
-                                                    {time.minutes > 0 ? <span>:{time.minutes}</span> : null}
-                                                    {time.second > 0 ? <span>:{time.second}</span> : null}
+                                {time.hours > 0 ? <span>{time.hours}:</span> : null}
+                                                    {time.minutes > 0 ? <span>{time.minutes}:</span> : null}
+                                                    {time.second > 0 ? <span>{time.second}</span> : null}
                                                     {time.timeDescr == 0 ? time.timeDescr : null}
                                         </span>
                                             </span>
-                                        </div>
                                     </div>
-                                </li>
-                                <li>
-                                    <div className="statistic-total-content">
-                                        <div className="content-right">
+                                </div>
+                            </li>
+                            <li>
+                                <div className="statistic-total-content">
+                                    <div className="content-right">
                                             <span>
                                                 {Intl.get("sales.frontpage.connected.today", "今日接通电话")}
                                             </span>
-                                            <span className="data-container">
+                                        <span className="data-container">
                                                 <span className="phone-total-count total-data-style">
                                                     {phoneData.totalCount}
                                                 </span>
                                             </span>
-                                        </div>
                                     </div>
-                                </li>
-                                <li>
-                                    <div className="statistic-total-content">
-                                        <div className="content-right">
-                                            <span>{Intl.get("sales.frontpage.contact.today", "今日已跟进客户")}</span>
-                                            <span className="data-container">
+                                </div>
+                            </li>
+                            <li>
+                                <div className="statistic-total-content">
+                                    <div className="content-right">
+                                        <span>{Intl.get("sales.frontpage.contact.today", "今日已跟进客户")}</span>
+                                        <span className="data-container">
                                                 <span>
                                                   {this.state.customerContactTodayObj.data.total}
                                                 </span>
                                                 </span>
-                                        </div>
-
                                     </div>
-                                </li>
-                                <li>
-                                    <div className="statistic-total-content">
-                                        <div className="content-right">
-                                            <span>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</span>
-                                            <span className="data-container">
+
+                                </div>
+                            </li>
+                            <li>
+                                <div className="statistic-total-content">
+                                    <div className="content-right">
+                                        <span>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</span>
+                                        <span className="data-container">
                                                 <span>
                                                     {this.state.customerTotalObj.data.added}
                                                 </span>
                                                 </span>
-                                        </div>
                                     </div>
-                                </li>
-                            </ul>
-                        </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
                         <div className="col-md-2 customer-list-left" data-tracename="客户分类">
                             {this.renderDiffCustomerPanel()}
