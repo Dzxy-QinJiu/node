@@ -47,14 +47,14 @@ UserApplyStore.prototype.resetState = function () {
     this.unreadReplyList = [];
     //处理申请操作失败
     this.dealApplyError = "success";
-    //是否展示有未读回复的申请列表
-    this.unreadApplyListShow = false;
+    //是否查看未读回复的申请列表
+    this.isCheckUnreadApplyList = false;
 
 };
 
-//设置是否展示有未读回复的申请列表
-UserApplyStore.prototype.setUnreadApplyListShow = function (flag) {
-    this.unreadApplyListShow = flag;
+//设置是否查看未读回复的申请列表
+UserApplyStore.prototype.setIsCheckUnreadApplyList = function (flag) {
+    this.isCheckUnreadApplyList = flag;
 };
 //刷新未读回复列表;
 UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
@@ -155,7 +155,7 @@ UserApplyStore.prototype.changeApplyListType = function (type) {
     this.lastApplyId = "";
     this.ifClickedFilterLabel = true;
     this.showUpdateTip = false;
-    this.unreadApplyListShow = false;
+    this.isCheckUnreadApplyList = false;
 };
 
 //输入框的值改变

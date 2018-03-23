@@ -41,7 +41,7 @@ var ApplyTabContent = React.createClass({
             id: this.state.lastApplyId,
             page_size: this.state.pageSize,
             keyword: this.state.searchKeyword,
-            isUnreadApply: this.state.unreadApplyListShow,
+            isUnreadApply: this.state.isCheckUnreadApplyList,
             approval_state: UserData.hasRole(UserData.ROLE_CONSTANS.SECRETARY) ? "pass" : this.state.applyListType
         }, (count) => {
             //处理申请有过失败的情况，并且是筛选待审批的申请时,重新获取消息数；否则不发请求
@@ -202,7 +202,7 @@ var ApplyTabContent = React.createClass({
     },
     //(取消)展示有未读回复的申请列表
     toggleUnreadApplyList: function () {
-        UserApplyActions.setUnreadApplyListShow(!this.state.unreadApplyListShow);
+        UserApplyActions.setIsCheckUnreadApplyList(!this.state.isCheckUnreadApplyList);
         UserApplyActions.setLastApplyId("");
         setTimeout(() => this.fetchApplyList());
     },
@@ -224,7 +224,7 @@ var ApplyTabContent = React.createClass({
                             defaultMessage={`有未读回复的申请，{check}`}
                             values={{
                                 "check": <a onClick={this.toggleUnreadApplyList}>
-                                    {this.state.unreadApplyListShow ? Intl.get("user.apply.cancel.check", "取消查看") : Intl.get("user.apply.check", "查看")}</a>
+                                    {this.state.isCheckUnreadApplyList ? Intl.get("user.apply.cancel.check", "取消查看") : Intl.get("user.apply.check", "查看")}</a>
                             }}
                         />
                     </li>

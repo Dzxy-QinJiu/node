@@ -15,7 +15,7 @@ function UserApplyActions() {
         'refreshUnreadReplyList',//刷新未读回复列表
         'clearUnreadReplyById',//清除未读回复列表中已读的回复
         'updateDealApplyError',//更新处理申请错误的状态
-        'setUnreadApplyListShow'//设置是否展示有未读回复的申请列表
+        'setIsCheckUnreadApplyList'//设置是否查看有未读回复的申请列表
     );
     //获取申请列表
     this.getApplyList = function (obj, callback) {
