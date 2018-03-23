@@ -487,9 +487,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             endTime = moment().endOf("day").toDate().getTime();
         }
         OplateUserAnalysisAction.changeSearchTime({ startTime, endTime });
-        this.getChartData({
-            startTime: startTime,
-            endTime: endTime
+        //加一个延迟，以使日期选择面板收起后再开始发请求
+        setTimeout(() => {
+            this.getChartData({
+                startTime: startTime,
+                endTime: endTime
+            });
         });
     },
     /**
