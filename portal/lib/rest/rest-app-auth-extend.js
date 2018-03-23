@@ -16,7 +16,7 @@ var tokenProvider = require("./token-provider");
 var logger = require("./../utils/logger").getLogger('auth');
 var Request = require('request').Request;
 var EventEmitter = require("events").EventEmitter;
-
+var constUtil = require("./const-util");
 /**
  * Restler 的一些相关扩展
  */
@@ -73,11 +73,12 @@ var RestlerExtend = {
 
             var retEmitter,
                 errorCode = (errorObj && typeof errorObj === "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
-            if (errorCode === 11012 || errorCode == 11011) {
-                logger.debug(" req.session.processAppTokenError appToken:" + appToken);
+            // 实参2 标示app token
+            if (constUtil.tokenIsInvalid(errorCode,2)) {
+                logger.debug(" req.session.processAppTokenError appToken:" + appToken.access_token);
                 if (req.session.refreshingToken) {
                     instance["_process_token_validate"] = true;
-                    appAuthRest.globalEmitter.once("after-get-appToken-successful", function (newToken) {
+                    appAuthRest.globalEmitter.once(constUtil.errors.REFRESH_APP_TOKEN_SUCCESS, function (newToken) {
                         delete instance["_process_token_validate"];
                         // 根据新token重新发送请求
                         logger.debug("Other waited request get new_app_token :" + newToken.access_token);
@@ -89,10 +90,10 @@ var RestlerExtend = {
                     if (retEmitter["inProcessType"]) {
                         req.session.refreshingToken = true;
                         instance["_process_token_validate"] = true;
-                        retEmitter.on("token-reFetched", function (newToken) {
+                        retEmitter.on(constUtil.errors.REFETCHED_APP_TOKEN, function (newToken) {
                             handleFlag(instance, req);
                             // 将新 token 抛出去
-                            appAuthRest.globalEmitter.emit("after-get-appToken-successful", newToken, req);
+                            appAuthRest.globalEmitter.emit(constUtil.errors.REFRESH_APP_TOKEN_SUCCESS, newToken, req);
                             // 根据新token重新发送请求
                             reTryRequest(instance, newToken.access_token, realmId, req, res);
                         });

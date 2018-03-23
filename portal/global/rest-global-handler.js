@@ -5,42 +5,38 @@
 var restManage = require("../lib/rest/rest-manage");
 var auth = require("../lib/utils/auth");
 var _ = require("underscore");
-var tokenExpired = "Token过期";
-
+var constUtil = require("../lib/rest/const-util");
+//发送到界面的错误信息
+var UI_CONST = require("../lib/utils/request-error-util");
+/**
+ *   回403错误信息
+ * @param req
+ * @param res
+ * @param data  发送到界面的数据
+ */
+function cleanAuthAndSendData(req, res, data) {
+    try {
+        res.status(403).json(data);
+    } catch (e) {
+    }
+}
 //添加全局请求头
 //restManage.baseRest.addCustomGlobalHeader("test", "testvalue");
-
-//rest请求超时
-restManage.userAuthRest.globalEmitter.on("timeout", function (req, res, data) {
+restManage.userAuthRest.globalEmitter.on("timeout", function (req, res, data) {//rest请求超时
     res.status(data.httpCode).json(data.message);
-});
-//token 失效
-restManage.userAuthRest.globalEmitter.on("token-expired", function (req, res, data) {
-    //清理lisession，并返回403错误信息
-    auth.clean(req, res).then(function () {
-        res.status(403).json(tokenExpired);
-    });
-});
-//刷新token成功
-restManage.userAuthRest.globalEmitter.on("after-token-refresh-successful", function (newToken, userBaseInfo, req) {
+}).on(constUtil.errors.REFRESH_TOKEN_SUCCESS, function (newToken, userBaseInfo, req) {//刷新token成功
     //复制一份用户数据
     var user = _.clone(userBaseInfo);
     user.auth.access_token = newToken.access_token;
     user.auth.refresh_token = newToken.refresh_token;
     auth.saveUserInfo(req, user);
+}).on(constUtil.errors.GLOBAL_ERROR, function (req, res, error) {//error 标示不同的错误类型
+    if (error == constUtil.errors.LOGIN_ONLY_ONE) {
+        cleanAuthAndSendData(req, res, UI_CONST.LOGIN_ONLY_ONE);//被他人踢出，只允许1人登录时
+    } else if (error == constUtil.errors.KICKED_BY_ADMIN) {
+        cleanAuthAndSendData(req, res, UI_CONST.KICKED_BY_ADMIN);//被管理员踢出
+    } else {
+        cleanAuthAndSendData(req, res, UI_CONST.TOKEN_EXPIRED);//刷新token失败,token过期，token不存在，或已退出
+    }
 });
-//不允许多人登录的踢出
-restManage.userAuthRest.globalEmitter.on("login-only-one", function (req, res) {
-    res.status(403).json("login-only-one-error");
-});
-//token 相关处理
-restManage.userAuthRest.globalEmitter.on("refresh-token-error", function (req, res) {
-    //清理lisession，并返回403错误信息
-    auth.clean(req, res).then(function () {
-        res.status(403).json(tokenExpired);
-    });
-}).on("token-not-exist", function (req, res) {
-    auth.clean(req, res).then(function () {
-        res.status(403).json(tokenExpired);
-    });
-})
+

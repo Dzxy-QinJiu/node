@@ -13,6 +13,7 @@ var tokenProvider = require("./token-provider");
 var EventEmitter = require("events").EventEmitter;
 var auth = require("./../utils/auth");
 var Request = require('request').Request;
+var constUtil = require("./const-util");
 
 var RestlerExtend = {
     prepareRequest: function (req, res) {
@@ -60,13 +61,13 @@ var RestlerExtend = {
 
         // 授权出错的拦截
         requestInstance.on("oauth-proxy-fail", function (errorObj, response) {
-            var retEmitter,
-                errorCode = (errorObj && typeof errorObj == "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
-            if (errorCode == 19300 || errorCode == 19301 || errorCode == 19302 || errorCode == 11473) {
+            var errorCode = (errorObj && typeof errorObj == "object") ? parseInt(errorObj["error_code"] || errorObj["errorCode"]) : false;
+            //实参 1标示用户访问token
+            if (constUtil.tokenIsInvalid(errorCode, 1)) {
                 logger.debug(" req.session.refreshingToken:" + req.session.refreshingToken);
                 if (req.session.refreshingToken) {
                     requestInstance["_process_token_validate"] = true;
-                    authRequest.globalEmitter.once("after-token-refresh-successful", function (newToken, refreshedUser) {
+                    authRequest.globalEmitter.once(constUtil.errors.REFRESH_TOKEN_SUCCESS, function (newToken, refreshedUser) {
                         //如果刷新token的rest请求中，用户原始token和当前rest请求的用户原始token一致
                         logger.debug("Other waited request  user :" + userBaseInfo.user_id + ",refreshedUser :" + refreshedUser.user_id);
                         if (refreshedUser && refreshedUser.auth && userBaseInfo && userBaseInfo.auth && refreshedUser.auth.access_token == userBaseInfo.auth.access_token) {
@@ -77,42 +78,38 @@ var RestlerExtend = {
                             reTryRequest(requestInstance, newToken.access_token, userBaseInfo, req, res);
                         }
                     });
-                    authRequest.globalEmitter.once("refresh-token-error", function (err, response) {
+                    authRequest.globalEmitter.once(constUtil.errors.REFRESH_TOKEN_ERROR, function (err, response) {
                         delete requestInstance["_process_token_validate"];
                         requestInstance.emit("fail", err, response);
                     });
                 } else {
-                    req.session.refreshingToken = true;
-                    retEmitter = tokenProvider.processUserTokenError(errorCode, refreshToken, userBaseInfo.user_name, req);
-                    if (retEmitter["inProcessType"]) {
-                        requestInstance["_process_token_validate"] = true;
+                    //终止正常流程的错误处理
+                    requestInstance["_process_token_validate"] = true;
+                    if (errorCode == 19300) {//19300 是token过期的情况，可以刷新token后重新发请求
+                        var retEmitter = tokenProvider.processUserTokenError(errorCode, refreshToken, userBaseInfo.user_name, req);
+                        if (retEmitter["inProcessType"]) {
+                            req.session.refreshingToken = true;
+                            retEmitter.once(constUtil.errors.REFRESH_TOKEN_SUCCESS, function (newToken) {
+                                handleFlag(requestInstance, req);
+                                logger.debug("user (%s) Current request get new_access_token: " + newToken.access_token, userBaseInfo.user_name);
+                                logger.debug("user (%s) Current request url :" + requestInstance.restOptions.method + "  " + requestInstance.restOptions.url, userBaseInfo.user_name);
+                                logger.debug("user (%s) Current request user :" + userBaseInfo.user_id, userBaseInfo.user_name);
+                                // 将新 token 抛出去
+                                authRequest.globalEmitter.emit(constUtil.errors.REFRESH_TOKEN_SUCCESS, newToken, userBaseInfo, req);
+                                // 根据新token重新发送请求
+                                reTryRequest(requestInstance, newToken.access_token, userBaseInfo, req, res);
+                            }).once(constUtil.errors.REFRESH_TOKEN_ERROR, function () {
+                                req.session.refreshingToken = false;
+                                authRequest.globalEmitter.emit(constUtil.errors.GLOBAL_ERROR, req, res,constUtil.errors.REFRESH_TOKEN_ERROR);
+                            })
+                        }
+                    } else {
+                        //其他错误直接返回（emitter到全局控制）
+                        var error = constUtil.userTokenErrorCodeMessageMap[errorCode] || constUtil.commonErrorCodeMessageMap[errorCode];
+                        logger.debug("user (%s) %s", userBaseInfo.user_name, error);
+                        logger.warn("user (%s) token occured authorization error(code: %s) which must be logout.", userBaseInfo.user_name, errorCode);
+                        authRequest.globalEmitter.emit(constUtil.errors.GLOBAL_ERROR, req, res, error);
                     }
-                    retEmitter.on("after-token-refresh-successful", function (newToken) {
-                        handleFlag(requestInstance, req);
-                        logger.debug("user (%s) Current request get new_access_token: " + newToken.access_token, userBaseInfo.user_name);
-                        logger.debug("user (%s) Current request url :" + requestInstance.restOptions.method + "  " + requestInstance.restOptions.url, userBaseInfo.user_name);
-                        logger.debug("user (%s) Current request user :" + userBaseInfo.user_id, userBaseInfo.user_name);
-                        // 将新 token 抛出去
-                        authRequest.globalEmitter.emit("after-token-refresh-successful", newToken, userBaseInfo, req);
-                        // 根据新token重新发送请求
-                        reTryRequest(requestInstance, newToken.access_token, userBaseInfo, req, res);
-                    }).on("refresh-token-error", function (err, response) {
-                        logger.debug("user (%s) refresh token error ", userBaseInfo.user_name);
-                        handleFlag(requestInstance, req);
-                        authRequest.globalEmitter.emit("refresh-token-error", req, res);
-                    }).on("token-not-exist", function (type, data) {
-                        logger.debug("user (%s) refresh token token not exist ", userBaseInfo.user_name);
-                        handleFlag(requestInstance, req);
-                        authRequest.globalEmitter.emit("token-not-exist", req, res);
-                    }).on("login-only-one", function (errorCode) {
-                        logger.debug("user (%s) refresh token login only one ", userBaseInfo.user_name);
-                        handleFlag(requestInstance, req);
-                        authRequest.globalEmitter.emit("login-only-one", req, res, errorCode);
-                    }).on("token-kicked-by-sso", function () {
-                        logger.debug("user (%s) refresh token ,token was kicked by sso ", userBaseInfo.user_name);
-                        handleFlag(requestInstance, req);
-                        authRequest.globalEmitter.emit("token-not-exist", req, res, errorCode);
-                    });
                 }
 
             }
@@ -126,7 +123,7 @@ var RestlerExtend = {
 function setAuthHeader(requestInstance, accessToken, realm_id, user_id) {
     // 1. 将 accessToken 放入请求头中
     requestInstance.setHeader("token", accessToken);
-    //兼容auth2
+    //兼容auth2,退出登录时需要使用，不能删除
     requestInstance.setHeader("Authorization", "oauth2 " + accessToken);
     //将realm_id，user_id放入请求头
     requestInstance.setHeader("realm", realm_id);

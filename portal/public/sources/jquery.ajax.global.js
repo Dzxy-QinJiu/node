@@ -5,14 +5,13 @@
  *       页面会使用$.tooltip提示一个错误信息 "您已很长时间没有进行操作，为了保障帐号安全，请重新登录系统"
  */
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
+import UI_ERROR from "../../lib/utils/request-error-util";
 (function () {
     let Modal = require("antd").Modal;
     let crypto = require("crypto");
     //socket的emitter
     var socketEmitter = require("./utils/emitters").socketEmitter;
     let userData = require("./user-data");
-    //不允许多人登录，被下线的错误码
-    var RELOGIN_ERROR = "login-only-one-error";
     const BASE64_PREFIX = "data:image/png;base64,";
     const NO_SERVICE_ERROR = Intl.get("login.error.retry", "登录服务暂时不可用，请稍后重试");
     module.exports.handleSessionExpired = handel401Ajax;
@@ -245,19 +244,22 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
 
     //处理403错误请求（token过期）
     function handel403Ajax(xhr) {
-        if (xhr.responseJSON === Intl.get("retry.token.expired", "Token过期")) {
+        if (xhr.responseJSON == UI_ERROR.TOKEN_EXPIRED) {
             sendMessage && sendMessage(Intl.get("retry.token.status", "status:403,Token过期"));
             window.location.href = "/login";
         }
     }
 
-    //不允许多人登录，被下线的处理
-    function handleReloginError() {
+    /**
+     *不允许多人登录，被下线的处理
+     * @param tipContent
+     */
+    function handleReloginError(tipContent) {
         //让socket断开连接
         socketEmitter.emit(socketEmitter.DISCONNECT);
         Modal.error({
             wrapClassName: 'socket-io',
-            content: Intl.get("retry.modify.password", "您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！"),
+            content: tipContent,
             okText: Intl.get("retry.login.again", "重新登录"),
             onOk: function () {
                 window.location.href = '/logout';
@@ -282,8 +284,10 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
                 break;
             case 403:
                 //不允许多人登录被踢出的统一处理
-                if (xhr.responseJSON == RELOGIN_ERROR) {
-                    handleReloginError();
+                if (xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON == UI_ERROR.KICKED_BY_ADMIN) {
+                    let reloginError = Intl.get("login.by.another", "您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！");
+                    let kickedByAmdin = Intl.get("kicked.by.admin", "您已被被管理员踢出，请重新登录!");
+                    handleReloginError((xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
                 } else {
                     handel403Ajax(xhr);
                 }
