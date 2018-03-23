@@ -721,59 +721,61 @@ var CallRecordAnalyis = React.createClass({
                         <i className="iconfont icon-export"></i>{Intl.get("common.export", "导出")} </a>
                 </div>}
                 <GeminiScrollBar>
-                    <div className="call-info col-xs-12">{this.renderCallInfo()}</div>
-                    <div className="col-xs-12">
-                        {/*根据电话的排序的通话次数TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalCountObj, {
-                            title: Intl.get("call.analysis.total.count", "通话总次数"),
-                            dataKey: "count"
-                        })}
-                        {/*根据电话的排序的通话总时长TOP10*/}
-                        {this.renderCallTopTen(this.state.callTotalTimeObj, {
-                            title: Intl.get("call.analysis.total.time", "通话总时长"),
-                            dataKey: "sum"
-                        })}
-                    </div>
-                    <div className="col-xs-12">
-                        {/*根据电话的排序的单次通话时长TOP10*/}
-                        {this.renderCallTopTen(this.state.callDurList, {
-                            title: Intl.get("sales.home.call.top.ten", "单次通话时长"),
-                            dataKey: "billsec"
-                        })}
-                        <div className="call-service-rate col-xs-6">
-                            <div className="call-rate">
-                                <div className="call-rate-title">
-                                    {Intl.get("call.record.service.phone.rate", "114占比统计：")}
+                    <div className="analysis-wrapper">
+                        <div className="call-info col-xs-12">{this.renderCallInfo()}</div>
+                        <div className="col-xs-12">
+                            {/*根据电话的排序的通话次数TOP10*/}
+                            {this.renderCallTopTen(this.state.callTotalCountObj, {
+                                title: Intl.get("call.analysis.total.count", "通话总次数"),
+                                dataKey: "count"
+                            })}
+                            {/*根据电话的排序的通话总时长TOP10*/}
+                            {this.renderCallTopTen(this.state.callTotalTimeObj, {
+                                title: Intl.get("call.analysis.total.time", "通话总时长"),
+                                dataKey: "sum"
+                            })}
+                        </div>
+                        <div className="col-xs-12">
+                            {/*根据电话的排序的单次通话时长TOP10*/}
+                            {this.renderCallTopTen(this.state.callDurList, {
+                                title: Intl.get("sales.home.call.top.ten", "单次通话时长"),
+                                dataKey: "billsec"
+                            })}
+                            <div className="call-service-rate col-xs-6">
+                                <div className="call-rate">
+                                    <div className="call-rate-title">
+                                        {Intl.get("call.record.service.phone.rate", "114占比统计：")}
+                                    </div>
+                                    {this.renderCallRateChar("114")}
                                 </div>
-                                {this.renderCallRateChar("114")}
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xs-12">
-                        <div className="call-service-rate col-xs-6">
-                            <div className="call-rate">
-                                <div className="call-rate-title">
-                                    {Intl.get("call.record.servicecall", "客服电话统计：")}
+                        <div className="col-xs-12">
+                            <div className="call-service-rate col-xs-6">
+                                <div className="call-rate">
+                                    <div className="call-rate-title">
+                                        {Intl.get("call.record.servicecall", "客服电话统计：")}
+                                    </div>
+                                    {this.renderCallRateChar("service")}
                                 </div>
-                                {this.renderCallRateChar("service")}
                             </div>
-                        </div>
-                        <div className="call-interval-block col-xs-6">
-                            <div className="call-interval-title">
-                                {Intl.get("call.record.interval", "通话时段统计")}
+                            <div className="call-interval-block col-xs-6">
+                                <div className="call-interval-title">
+                                    {Intl.get("call.record.interval", "通话时段统计")}
+                                </div>
+                                <div className="call-interval-radio clearfix">
+                                    <RadioGroup onChange={this.onChangeCallIntervalRadio}
+                                                value={this.state.selectedCallInterval}>
+                                        <Radio value={CALL_RADIO_VALUES.COUNT}>
+                                            {Intl.get('sales.home.call.cout', '通话数量')}
+                                        </Radio>
+                                        <Radio value={CALL_RADIO_VALUES.DURATION}>
+                                            {Intl.get('call.record.call.duration', '通话时长')}
+                                        </Radio>
+                                    </RadioGroup>
+                                </div>
+                                {this.renderCallIntervalChart()}
                             </div>
-                            <div className="call-interval-radio clearfix">
-                                <RadioGroup onChange={this.onChangeCallIntervalRadio}
-                                            value={this.state.selectedCallInterval}>
-                                    <Radio value={CALL_RADIO_VALUES.COUNT}>
-                                        {Intl.get('sales.home.call.cout', '通话数量')}
-                                    </Radio>
-                                    <Radio value={CALL_RADIO_VALUES.DURATION}>
-                                        {Intl.get('call.record.call.duration', '通话时长')}
-                                    </Radio>
-                                </RadioGroup>
-                            </div>
-                            {this.renderCallIntervalChart()}
                         </div>
                     </div>
                 </GeminiScrollBar>
