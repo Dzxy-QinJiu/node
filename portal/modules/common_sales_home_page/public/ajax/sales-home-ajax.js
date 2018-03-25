@@ -5,7 +5,7 @@ exports.getPhoneTotal = function (reqData, type) {
     getPhoneTotalAjax && getPhoneTotalAjax.abort();
     var Deferred = $.Deferred();
     getPhoneTotalAjax = $.ajax({
-        url: '/rest/sales/phone/' + type,
+        url: '/rest/commonsales/phone/' + type,
         dataType: 'json',
         type: 'get',
         data: reqData,
