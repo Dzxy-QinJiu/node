@@ -6,7 +6,7 @@ module.exports = {
     module: "common_sales_home_page/server/action/sales-home-controller",
     routes: [{
         "method": "get",
-        "path": '/rest/sales/phone/:type',
+        "path": '/rest/commonsales/phone/:type',
         "handler": "getSalesPhone",
         "passport": {
             "needLogin": true
