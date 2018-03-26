@@ -20,7 +20,9 @@ import userAjax from "../ajax/app-user-ajax";
 import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
+var storageUtil = require("LIB_DIR/utils/storage-util.js");
+var key = "recent-login-user-selected-app-id";
+import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
@@ -33,8 +35,24 @@ class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
+        var defaultTeam = {group_id: "", group_name: Intl.get("common.all", "全部")};
+        var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
+        var selectedAppId = "";
+        console.log(localStorage.getItem("websiteConfig")[key]);
+        if (this.props.selectedAppId){
+            //如果外面选中一个应用，最近登录的用户，默认用此应用
+            selectedAppId = this.props.selectedAppId;
+        }else if(localStorage.getItem("websiteConfig")[key]){
+            //如果外面没有选中应用，就用上一次选中的应用
+            selectedAppId = "";
+        }else{
+            //如果上面两种情况都没有，就用列表中第一个
+            selectedAppId = this.props.appList[0] ? this.props.appList[0].app_id : ""
+        }
+
         this.state = {
-            selectedAppId: this.props.appList[0] ? this.props.appList[0].app_id : "",
+            selectedAppId: selectedAppId,
+            teamlists: teamLists,
             start_time: timeRange.start_time,
             end_time: timeRange.end_time,
             user_type: "",
@@ -48,7 +66,8 @@ class RecentLoginUsers extends React.Component {
             userId: '',//要查看详情的用户id
             curUserDetail: {},//当前要查看的用户详情
             isShownExceptionTab: false,//是否展示异常登录信息
-            filter_type: ""  // 是否过期，默认（全部）
+            filter_type: "", // 是否过期，默认（全部）
+            team_ids: "" //默认选中的团队(全部)
         };
     }
 
@@ -68,7 +87,9 @@ class RecentLoginUsers extends React.Component {
         }
         $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date})? true: false;
+        userObj.isShownExceptionTab = _.find(userObj.apps, app => {
+            return app.exception_mark_date
+        }) ? true : false;
         this.setState({
             isShowUserDetail: true,
             userId: user_id,
@@ -89,6 +110,8 @@ class RecentLoginUsers extends React.Component {
         if (oldAppId != newAppId) {
             this.setState({selectedAppId: newAppId}, this.getRecentLoginUsers());
         }
+        //todo
+
     }
 
     getTodayTimeRange() {
@@ -111,6 +134,9 @@ class RecentLoginUsers extends React.Component {
         };
         if (this.state.user_type) {
             paramObj.user_type = this.state.user_type;
+        }
+        if (this.state.team_ids) {
+            paramObj.team_ids = this.state.team_ids
         }
         if (this.state.filter_type) {
             paramObj.outdate = this.state.filter_type;
@@ -184,7 +210,9 @@ class RecentLoginUsers extends React.Component {
         this.setState({
             selectedAppId: app_id,
             pageNum: 1,
-        }, () => this.getRecentLoginUsers());
+        }, () => {
+            setWebsiteConfig({key:app_id});
+            this.getRecentLoginUsers()});
         //当应用列表重新布局的时候，让顶部导航重新渲染
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     }
@@ -375,9 +403,16 @@ class RecentLoginUsers extends React.Component {
         this.setState({user_type: type, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
+
     // 是否过期类型的选择
     onFilterTypeChange(type) {
         this.setState({filter_type: type, pageNum: 1});
+        setTimeout(() => this.getRecentLoginUsers());
+    }
+
+    // 修改所选中的团队
+    onTeamTypeChange(type) {
+        this.setState({team_ids: type, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
@@ -429,16 +464,29 @@ class RecentLoginUsers extends React.Component {
                         </Select>
                     </div>
                     <div className="inline-block recent-login-filter-type-select">
-                            <SelectFullWidth
-                                value={this.state.filter_type}
-                                onChange={this.onFilterTypeChange.bind(this)}
-                            >
-                                {
-                                    _.map(filterTypeList, (filterType, index) => {
-                                        return <Option key={index} value={filterType.value}>{filterType.name}</Option>
-                                    })
-                                }
-                            </SelectFullWidth>
+                        <SelectFullWidth
+                            value={this.state.team_ids}
+                            onChange={this.onTeamTypeChange.bind(this)}
+                        >
+                            {
+                                _.map(this.state.teamlists, (teamType, index) => {
+                                    return <Option key={index} value={teamType.group_id}>{teamType.group_name}</Option>
+                                })
+                            }
+                        </SelectFullWidth>
+                    </div>
+                    <div className="inline-block recent-login-filter-type-select">
+                        <SelectFullWidth
+                            value={this.state.filter_type}
+                            onChange={this.onFilterTypeChange.bind(this)}
+                        >
+
+                            {
+                                _.map(filterTypeList, (filterType, index) => {
+                                    return <Option key={index} value={filterType.value}>{filterType.name}</Option>
+                                })
+                            }
+                        </SelectFullWidth>
                     </div>
                     <RightPanelClose title={Intl.get("common.app.status.close", "关闭")}
                                      onClick={this.props.hideRecentLoginPanel}/>

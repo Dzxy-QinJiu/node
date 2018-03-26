@@ -27,7 +27,9 @@ module.exports = {
         //销售首页页面
         SALES_HOME:"sales-home",
         //线索客户
-        CLUE_CUSTOMER: "clue-customer"
+        CLUE_CUSTOMER: "clue-customer",
+        //用户管理
+        USER_LIST: "user-list"
     },
     //存储已经点击过的功能
     STORE_NEW_FUNCTION:{

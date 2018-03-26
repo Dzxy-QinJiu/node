@@ -122,6 +122,8 @@ var AppUserManage = React.createClass({
                     // 点击刷新按钮时
                     //查询所有用户
                     AppUserAction.getAppUserList();
+                    //查询团队列表
+                    AppUserAction.getTeamLists();
                 }
             }
         }else if (currentView === 'user' && this.props.customer_id ){
@@ -211,9 +213,9 @@ var AppUserManage = React.createClass({
             AppUserAction.getRolesByAppId(app_id);
         }
         //获取团队列表
-        if (app_id) {
-            AppUserAction.getTeamLists();
-        }
+        // if (app_id) {
+        //     AppUserAction.getTeamLists();
+        // }
         //延迟搜索，等待界面改变搜索参数
         setTimeout(() => {
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);
@@ -543,8 +545,11 @@ var AppUserManage = React.createClass({
                     className="recent_login_users_panel"
                     showFlag={this.state.isShowRecentLoginPanel}
                 >
-                    {this.state.isShowRecentLoginPanel ? (<RecentLoginUsersPanel appList={this.state.appList}
-                                                                                 hideRecentLoginPanel={this.hideRecentLoginPanel}/>) : null}
+                    {this.state.isShowRecentLoginPanel ? (<RecentLoginUsersPanel
+                        teamlists={this.state.filterTeams.teamlists}
+                        selectedAppId={this.state.selectedAppId}
+                        appList={this.state.appList}
+                        hideRecentLoginPanel={this.hideRecentLoginPanel}/>) : null}
                 </RightPanel>
             </div>
         );
