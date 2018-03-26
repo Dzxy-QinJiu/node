@@ -63,7 +63,7 @@ exports.urlConifg = function(itemLocal,itemRecord,itemType){
     if (itemType === "app"){
         phoneType = "/record/app/"
     }
-    return {"local":local,"audioType":audioType,"phoneType":phoneType}
+    return phoneType + local + itemRecord + audioType;
 };
 //去除json对象中的空白项
 const removeEmptyItem = function (obj) {
