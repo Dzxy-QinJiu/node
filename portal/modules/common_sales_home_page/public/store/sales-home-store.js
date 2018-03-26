@@ -165,7 +165,7 @@ SalesHomeStore.prototype.setInitState = function () {
     };
     //最近分配的客户
     this.sorterDistribute = {
-        field: "allot-time",
+        field: "allot_time",
         order: "descend"
     };
     this.page_size = 10;

@@ -171,16 +171,17 @@ var SalesHomePage = React.createClass({
     },
     //获取新分配但未联系的客户
     getNewDistributeCustomer: function (lastId) {
-        //客户被分配后是否已联系 allot_no_contact：\"0\"未联系，\"1\"已联系"
+        //客户被分配后是否已联系 allot_no_contact  未联系 : 0 ，已联系 :1
+        var pageSize = this.state.page_size + 5;
         var queryObj = {
-            total_size: this.state.page_size,
+            total_size: pageSize,
             cursor: true,
             allot_no_contact: 0
         };
         if (lastId) {
             queryObj.id = lastId;
         }
-        var pageSize = this.state.page_size + 5;
+
         //获取新分配的客户
         SalesHomeAction.getNewDistributeCustomer({}, this.state.rangParamsDistribute, pageSize, this.state.sorterDistribute, queryObj);
     },

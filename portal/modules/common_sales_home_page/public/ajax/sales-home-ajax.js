@@ -238,6 +238,29 @@ exports.handleScheduleStatus = function (reqData) {
 //获取新分配的客户
 let getNewDistributeCustomerAjax;
 exports.getNewDistributeCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
+    //condition 用于存储查询时的过滤条件 数据格式{}
+    //rangeParams 用于存储查询的起止时间，以及根据哪个字段进行查询 数据格式
+    /*{
+      from: 0,
+      to:  moment().valueOf(),
+      type: "time",
+      name: "allot_time"}
+    */
+    //pageSize 存储每页获取的数据数量 数字类型
+    //sorter 根据某个字段进行排序及排序顺序
+    /*
+    数据格式
+     {
+     field: "allot_time",
+     order: "descend"
+     };
+    */
+    //queryObj 用于存储和下拉加载有关属性
+    /*{
+     total_size: this.state.page_size,//这个接口是设计成翻页的，
+     cursor: true,//前翻页还是后翻页
+     allot_no_contact: 0 //分配后未联系
+    }*/
     if (getNewDistributeCustomerAjax) {
         getNewDistributeCustomerAjax.abort();
     }
