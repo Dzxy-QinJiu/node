@@ -16,6 +16,7 @@ var CustomerRecord = require("./customer_record");
 var crmAjax = require("../ajax");
 import Trace from "LIB_DIR/trace";
 import {tabNameList} from "../utils/crm-util";
+import BasicInfo from "./basic_info";
 
 var CrmRightPanel = React.createClass({
     getInitialState: function () {
@@ -107,8 +108,15 @@ var CrmRightPanel = React.createClass({
         }
         return (
             <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap table-btn-fix" data-tracename="客户详情">
+                <span className="iconfont icon-close" onClick={(e)=>{this.hideRightPanel(e)}}/>
                 <div className={className}>
-                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e)}}/>
+                    <BasicInfo isRepeat={this.props.isRepeat}
+                               curCustomer={this.state.curCustomer}
+                               refreshCustomerList={this.props.refreshCustomerList}
+                               editCustomerBasic={this.props.editCustomerBasic}
+                               ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                               userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                    />
                     <div className="crm-right-panel-content">
                         {this.state.curCustomer? (
                         <Tabs

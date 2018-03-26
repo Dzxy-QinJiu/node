@@ -1,4 +1,33 @@
 @import "../../../../public/css/common-variables";
+
+@right_panel_width: 504px;
+@right_panel_content_width: 480px;
+@right_panel_bgcolor: #f5f5f5;
+//新版客户详情的样式
+.crm_content {
+  //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
+  .crm-right-panel {
+    width: @right_panel_width !important;
+    transform: translate(@right_panel_width, 0);
+    background-color: transparent !important;
+    .right-panel-content {
+      width: @right_panel_content_width;
+      box-shadow: -4px 0 20px #cac8c8;
+      background-color: @right_panel_bgcolor !important;
+    }
+    .icon-close {
+      color: #fff;
+      background-color: #8ea9c4;
+      border-radius: 0 !important;
+      width: 24px;
+      height: 24px;
+      float: left;
+      font-size: 14px;
+      z-index: 1010;
+    }
+  }
+}
+
 @font-color: #5D5D5D;
 //合并客户时，下拉列表的样式设置
 .merge-customer-select.ant-select-dropdown {
@@ -114,39 +143,39 @@
   }
 
   .block-tag {
-      .ant-tag {
-          font-size: 14px;
-          border-radius: 4px;
-          background: #c0d7e8;
-          margin-top: 4px;
-          float: none;
-          a {
-              color: #000;
-          }
-          i {
-              color: #3879d9;
-          }
+    .ant-tag {
+      font-size: 14px;
+      border-radius: 4px;
+      background: #c0d7e8;
+      margin-top: 4px;
+      float: none;
+      a {
+        color: #000;
       }
+      i {
+        color: #3879d9;
+      }
+    }
   }
 
   .block-tag-edit {
-      font-size: 14px;
-      width: 550px;
-      white-space: normal;
-      margin-top: -2px;
-      .customer-tag {
-          margin-right: 8px;
-          cursor: pointer;
+    font-size: 14px;
+    width: 550px;
+    white-space: normal;
+    margin-top: -2px;
+    .customer-tag {
+      margin-right: 8px;
+      cursor: pointer;
       padding: 3px 8px;
-          display: inline-block;
-          margin-bottom: 8px;
-      }
-      .tag-selected {
-          background: #4d96d1;
-          border-radius: 4px;
-          color: white;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .tag-selected {
+      background: #4d96d1;
+      border-radius: 4px;
+      color: white;
       padding: 3px 8px;
-      }
+    }
   }
 
   .ant-form-explain {
@@ -158,16 +187,16 @@
 .sales-clue-form {
   .ant-form-item {
     .ant-calendar-picker {
-      .ant-calendar-picker-input{
+      .ant-calendar-picker-input {
         width: 155px;
       }
     }
-    .indicator{
+    .indicator {
       position: absolute;
       float: right;
       right: 150px;
       top: 16px;
-      .ant-alert{
+      .ant-alert {
         position: relative;
         width: auto;
         top: auto;
@@ -175,8 +204,8 @@
         padding: 8px;
       }
     }
-    .form-cancel-btn{
-      margin-right:16px;
+    .form-cancel-btn {
+      margin-right: 16px;
     }
   }
 }
@@ -189,35 +218,35 @@
   -webkit-transform: translateX(100%);
   background-color: #fff;
   display: block;
-  .no-more-data-tip .ant-alert{
+  .no-more-data-tip .ant-alert {
     width: 100%;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
   }
-  .user_manage_return_block{
-    .icon-return.return-btn{
+  .user_manage_return_block {
+    .icon-return.return-btn {
       margin-top: 10px;
       margin-left: 20px;
       left: 0;
     }
-    .customer_name_wrap{
+    .customer_name_wrap {
       font-size: 15px;
       margin-top: 28px;
       margin-left: 55px;
     }
   }
-  .user_manage_filter_block{
-    .user_manage_droplist{
+  .user_manage_filter_block {
+    .user_manage_droplist {
       margin-right: 65px;
     }
-    .ant-select{
+    .ant-select {
       width: auto;
     }
   }
   .topNav {
     left: 0 !important;
-    .topnav-links-wrap{
-      display: none!important;
+    .topnav-links-wrap {
+      display: none !important;
     }
   }
 }

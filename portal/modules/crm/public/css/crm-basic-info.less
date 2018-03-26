@@ -1,0 +1,51 @@
+//客户基本信息
+@right_panel_padding: 24px;
+@white_color: #ffffff;
+@btn-margin: 8px;
+@split-line-color: #e2e2e2;
+.basic-info-contianer {
+  float: left;
+  background-color: @white_color;
+  padding: @right_panel_padding @right_panel_padding 0 @right_panel_padding;
+
+  //客户名和按钮展示区域
+  .basic-info-title-block {
+    .basic-info-name {
+      float: left;
+      width: 370px;
+      border-right: 1px solid @split-line-color;
+      white-space: normal;
+      word-wrap: break-word;
+      word-break: break-all;
+      //客户标签
+      .customer-label {
+        display: inline-block;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 3px;
+        margin-left: 0;
+        margin-right: 4px;
+        font-size: 12px;
+        color: @white_color;
+      }
+      //客户名
+      span.basic-name-text {
+        display: inline;
+        line-height: 18px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+    //查看详情、关注按钮区域的样式
+    .basic-info-btns {
+      float: left;
+      height: 40px;
+      margin-left: @btn-margin;
+      span.iconfont {
+        margin-left: @btn-margin;
+      }
+
+    }
+  }
+
+}
