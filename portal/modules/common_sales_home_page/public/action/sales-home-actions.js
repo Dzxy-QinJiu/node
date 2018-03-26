@@ -101,10 +101,11 @@ function SalesHomeActions() {
             cb(errMsg)
         });
     };
-    //获取新分配的客户
-    this.getNewDistributeCustomer = function (reqData) {
+    //获取新分配，但未联系的客户
+    this.getNewDistributeCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
         this.dispatch({error: false, loading: true});
-        salesHomeAjax.getNewDistributeCustomer(reqData).then((resData) => {
+        salesHomeAjax.getNewDistributeCustomer(condition, rangParams, pageSize, sorter, queryObj).then((resData) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({error: false, loading: false, resData: resData});
         }, (errMsg) => {
             this.dispatch({

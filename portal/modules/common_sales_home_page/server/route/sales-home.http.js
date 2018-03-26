@@ -28,12 +28,5 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-    },{
-        "method": "post",
-        "path": "/rest/get_new_distribute_customer",
-        "handler": "getNewDistributeCustomers",
-        "passport": {
-            "needLogin": true
-        },
     }]
 };

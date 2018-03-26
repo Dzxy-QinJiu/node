@@ -151,9 +151,21 @@ SalesHomeStore.prototype.setInitState = function () {
         type: "time",
         name: "last_login_time"
     }];
+    //新分配未联系的客户
+    this.rangParamsDistribute = [{
+        from: 0,
+        to:  moment().valueOf(),
+        type: "time",
+        name: "allot_time"
+    }];
     //最近登录的客户
     this.sorterLogin = {
         field: "last_login_time",//排序字段
+        order: "descend"
+    };
+    //最近分配的客户
+    this.sorterDistribute = {
+        field: "allot-time",
         order: "descend"
     };
     this.page_size = 10;
@@ -251,7 +263,7 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
     if (result.error) {
         newDistributeCustomer.errMsg = result.errMsg;
     } else if (result.resData) {
-        newDistributeCustomer.data.list = result.resData.result;
+        newDistributeCustomer.data.list = newDistributeCustomer.data.list.concat(result.resData.result);
         newDistributeCustomer.data.total = result.resData.total;
     }
 };

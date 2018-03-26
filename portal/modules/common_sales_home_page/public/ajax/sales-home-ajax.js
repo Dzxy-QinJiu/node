@@ -237,23 +237,31 @@ exports.handleScheduleStatus = function (reqData) {
 };
 //获取新分配的客户
 let getNewDistributeCustomerAjax;
-exports.getNewDistributeCustomer = function (data) {
+exports.getNewDistributeCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
     if (getNewDistributeCustomerAjax) {
         getNewDistributeCustomerAjax.abort();
     }
+    pageSize = pageSize || 10;
+    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    var data = {
+        data: JSON.stringify(condition),
+        rangParams: JSON.stringify(rangParams),
+        queryObj: JSON.stringify(queryObj)
+    };
+    if (hasPrivilege(AUTHS.GETALL)) {
+        data.hasManageAuth = true;
+    }
     var Deferred = $.Deferred();
     getNewDistributeCustomerAjax = $.ajax({
-        url: '/rest/get_new_distribute_customer',
+        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (result) {
-            Deferred.resolve(result);
+        success: function (list) {
+            Deferred.resolve(list);
         },
-        error: function (error, errorText) {
-            if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON);
-            }
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();

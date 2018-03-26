@@ -34,13 +34,3 @@ exports.getWillExpireCustomer = function (req, res) {
             res.status(500).json(err.message);
         });
 };
-//获取新分配的客户
-exports.getNewDistributeCustomers = function (req, res) {
-    salesHomeService.getNewDistributeCustomers(req, res)
-        .on("success", function (data) {
-            res.status(200).json(data);
-        })
-        .on("error", function (err) {
-            res.status(500).json(err.message);
-        });
-};
