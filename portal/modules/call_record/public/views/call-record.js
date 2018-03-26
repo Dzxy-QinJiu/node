@@ -496,7 +496,7 @@ const CallRecord = React.createClass({
         item.playSelected = true;
         this.setState({
             callRecord: this.state.callRecord,
-            playingItemAddr: commonMethodUtil.urlConifg(item.local, item.recording, item.type),
+            playingItemAddr: commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type),
             playingItemPhone: item.dst//正在播放的录音所属的电话号码
         }, () => {
             if ($(".audio-play-container").height() < 45) {
