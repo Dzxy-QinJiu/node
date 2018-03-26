@@ -1,6 +1,6 @@
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var AppUserRestApis = {
     getAppNoticeList: "/rest/base/v1/application/notice",
     addAppNotice : "/rest/base/v1/application/notice"

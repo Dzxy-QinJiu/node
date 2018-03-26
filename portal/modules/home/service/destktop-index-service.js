@@ -8,7 +8,7 @@ var fs = require("fs");
 var request = require("request");
 var restLogger = require("../../../lib/utils/logger").getLogger('rest');
 var pageLogger = require("../../../lib/utils/logger").getLogger('page');
-var restUtil = require("../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var EventEmitter = require('events');
 function _getLeftMenus(req) {
     let leftMenus = new LeftMenus(req);

@@ -51,7 +51,7 @@ var util = {
 var moduleData = {
     serviceData: `"use strict";
     var restLogger = require("LIB_DIR/utils/logger").getLogger('rest');
-    var restUtil = require("LIB_DIR/rest/rest-util")(restLogger);
+    var restUtil = require("ant-auth-request").restUtil(restLogger);
     /**
      * restUtil.authRest请求方法参数
      * option {

@@ -4,7 +4,7 @@
 
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var telePaths = {
     add: "/rest/customer/v2/callrecord/invalid_phone",
     del: "/rest/customer/v2/callrecord/invalid_phone/",

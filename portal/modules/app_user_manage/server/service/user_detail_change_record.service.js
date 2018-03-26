@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var UserChangeRecordApis = {
     //获取用户详细变更记录
     getUserChangeRecord: "/rest/base/v1/user/timeline",

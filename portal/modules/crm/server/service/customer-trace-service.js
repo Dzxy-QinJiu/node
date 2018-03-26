@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var restApis = {
     //获取客户跟踪记录
     getCustomerTraceList: "/rest/callrecord/v2/callrecord/query/trace/customer",

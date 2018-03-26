@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/10/12.
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger("rest");
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var EventEmitter = require("events").EventEmitter;
 var Promise = require("bluebird");
 var _ = require("underscore");

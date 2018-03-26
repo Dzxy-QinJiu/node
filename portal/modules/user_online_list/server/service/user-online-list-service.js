@@ -1,5 +1,5 @@
 var restLogger = require("../../../../lib/utils/logger").getLogger("rest");
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //在线用户列表url抽取
 var urls = {

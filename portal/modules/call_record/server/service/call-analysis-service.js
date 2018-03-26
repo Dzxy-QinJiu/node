@@ -1,6 +1,6 @@
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var CallObj = require('../dto/call-analysis');
 var _ = require("underscore");
 var Promise = require('bluebird');

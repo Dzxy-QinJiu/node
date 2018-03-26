@@ -1,5 +1,5 @@
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //获取销售人员列表
 exports.getSalesmanList = function (req, res) {

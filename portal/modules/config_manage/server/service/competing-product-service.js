@@ -3,7 +3,7 @@
  */
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 const CompetingProductRestApis = {
     CompetingProduct: "/rest/customer/v2/customer/competing_product"

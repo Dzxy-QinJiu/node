@@ -5,7 +5,7 @@
 
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 //用户在线统计api
 var UserOnlineAnalysisApis = {
     //获取各个应用在线统计基本情况

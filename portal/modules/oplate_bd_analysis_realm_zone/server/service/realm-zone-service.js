@@ -3,7 +3,7 @@
  * 说明：统计分析-安全域分析-当前区域安全域分析 的service文件
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //定义url
 var urls = {

@@ -3,7 +3,7 @@
  */
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var salesTeamRestApis = {
     getSalesTeamList: "/rest/base/v1/group/list",
     filterSalesTeamList: "/rest/base/v1/group",

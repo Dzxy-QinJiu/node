@@ -3,7 +3,7 @@
  */
 
 let restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-let restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 let userDto = require("../dto/user");
 var _ = require("underscore");
 let getUserListByRoleUrl = "/rest/base/v1/user/byrole";
