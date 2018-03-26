@@ -46,7 +46,7 @@ exports.checkWav = function(str){
 //返回录音url的配置
 exports.getAudioRecordUrl = function(itemLocal,itemRecord,phoneType){
     //播放长沙，济南和北京的录音
-    var local = "changsha", audioType = "", recordUrl= "/record/";
+    var local = "changsha", audioType = "";
     if (itemLocal == "jinan"){
         local = "jinan";
     }else if (itemLocal == "beijing"){
