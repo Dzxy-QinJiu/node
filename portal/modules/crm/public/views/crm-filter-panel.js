@@ -33,7 +33,7 @@ const otherFilterArray = [{
     name: Intl.get("crm.concerned.customer", "关注的客户"),
     value: "interest"
 }, {
-    name: Intl.get("crm.multi.order.customer", "多个订单的客户"),
+    name: Intl.get("crm.order.more.customer", "多个订单的客户"),
     value: "multi_order"
 }];
 //只有管理员可以过滤未分配的客户
