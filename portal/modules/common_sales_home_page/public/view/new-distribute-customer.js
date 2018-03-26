@@ -34,7 +34,7 @@ class NewDistributeCustomer extends React.Component {
                     {newDistributeCustomer.customer_label ? (
                         <Tag
                             className={crmUtil.getCrmLabelCls(newDistributeCustomer.customer_label)}>
-                            {newDistributeCustomer.customer_label.substr(0, 1)}</Tag>) : null
+                            {newDistributeCustomer.customer_label}</Tag>) : null
                     }
                     {newDistributeCustomer.qualify_label ? (
                         <Tag className={crmUtil.getCrmLabelCls(newDistributeCustomer.qualify_label)}>

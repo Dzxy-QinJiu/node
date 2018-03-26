@@ -52,8 +52,8 @@ var SalesHomePage = React.createClass({
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
         $(".sales_home_content").on("click", ".sale-home-customer-name", function (e) {
-           $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
-           $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
+            $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
+            $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
         });
     },
     //缩放延时，避免页面卡顿
@@ -170,13 +170,18 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getRepeatCustomerList(queryObj);
     },
     //获取新分配但未联系的客户
-    getNewDistributeCustomer: function () {
-        // 分配时间字段 allot_time
+    getNewDistributeCustomer: function (lastId) {
+        //客户被分配后是否已联系 allot_no_contact  未联系 : 0 ，已联系 :1
         var queryObj = {
-            rangParams: [{"from": 0, "to": moment().valueOf(), "type": "time", "name": "allot_time"}]
+            total_size: this.state.page_size,
+            cursor: true,
+            allot_no_contact: 0
         };
+        if (lastId) {
+            queryObj.id = lastId;
+        }
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer(queryObj);
+        SalesHomeAction.getNewDistributeCustomer({}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
     },
     //获取今日的日程列表
     getScheduleListToday: function () {
@@ -268,6 +273,9 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
                 this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
                 break;
+            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
+                this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
+                break;
         }
     },
     getScrollData: function (curDataObj, getDataFunction) {
@@ -357,7 +365,10 @@ var SalesHomePage = React.createClass({
         var data = this.state.newDistributeCustomer.data.list;
         return (
             <div className="new-distribute-customer-container" ref="tableWrap">
-                <GeminiScrollbar>
+                <GeminiScrollbar
+                    handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER)}
+                    listenScrollBottom={this.state.listenScrollBottom}
+                >
                     {_.map(data, (item) => {
                         return (
                             <NewDistributeCustomer
@@ -492,7 +503,7 @@ var SalesHomePage = React.createClass({
                 <div className="will-expire-assigned-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
-                            if (_.isArray(item.customer_list) && item.customer_list.length){
+                            if (_.isArray(item.customer_list) && item.customer_list.length) {
                                 return (
                                     <div className="expire-customer-item">
                                         <div className="expire-customer-tip">
@@ -507,14 +518,14 @@ var SalesHomePage = React.createClass({
                                                         openCustomerDetail={this.openCustomerDetail}
                                                         callNumber={this.state.callNumber}
                                                         errMsg={this.state.errMsg}
-                                                        willExpiredTime={willexpiredTipArr[index].substr(0,2)}
+                                                        willExpiredTime={willexpiredTipArr[index].substr(0, 2)}
                                                     />
                                                 )
                                             })}
                                         </div>
                                     </div>
                                 )
-                            }else{
+                            } else {
                                 return null;
                             }
                         })}
@@ -528,7 +539,7 @@ var SalesHomePage = React.createClass({
                 <div className="will-expire-try-customer-container" ref="tableWrap">
                     <GeminiScrollbar>
                         {_.map(data, (item, index) => {
-                            if (_.isArray(item.customer_list) && item.customer_list.length){
+                            if (_.isArray(item.customer_list) && item.customer_list.length) {
                                 return (
                                     <div className="expire-customer-item">
                                         <div className="expire-customer-tip">
@@ -550,7 +561,7 @@ var SalesHomePage = React.createClass({
                                         </div>
                                     </div>
                                 )
-                            }else {
+                            } else {
                                 return null;
                             }
                         })}

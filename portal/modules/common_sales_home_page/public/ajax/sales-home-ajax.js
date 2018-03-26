@@ -235,25 +235,55 @@ exports.handleScheduleStatus = function (reqData) {
     });
     return Deferred.promise();
 };
-//获取新分配的客户
+/**
+ * 获取新分配的客户
+ * @param condition 用于存储查询时的过滤条件 数据格式 {}
+ * @param rangeParams 用于存储查询的起止时间，以及根据哪个字段进行查询
+ * {
+ *  from: 0,
+ *  to:  moment().valueOf(),
+ *  type: "time",
+ *  name: "allot_time"
+ * }
+ * @param pageSize 存储每页获取的数据数量 数字类型
+ * @param sorter 根据某个字段进行排序及排序顺序
+ * {
+ *  field: "allot_time",
+ *  order: "descend"
+ *  };
+ * @param queryObj 用于存储和下拉加载有关属性
+ * {
+ *  total_size: this.state.page_size,//这个接口是设计成翻页的，
+ *  cursor: true,//前翻页还是后翻页
+ *  allot_no_contact: 0 //分配后未联系
+ *  }
+ */
 let getNewDistributeCustomerAjax;
-exports.getNewDistributeCustomer = function (data) {
+exports.getNewDistributeCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
     if (getNewDistributeCustomerAjax) {
         getNewDistributeCustomerAjax.abort();
     }
+    pageSize = pageSize || 20;
+    sorter = sorter ? sorter : {field: "id", order: "ascend"};
+    var data = {
+        data: JSON.stringify(condition),
+        rangParams: JSON.stringify(rangParams),
+        queryObj: JSON.stringify(queryObj)
+    };
+    if (hasPrivilege(AUTHS.GETALL)) {
+        data.hasManageAuth = true;
+    }
     var Deferred = $.Deferred();
     getNewDistributeCustomerAjax = $.ajax({
-        url: '/rest/get_new_distribute_customer',
+        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + sorter.field + "/" + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (result) {
-            Deferred.resolve(result);
+        success: function (list) {
+            Deferred.resolve(list);
         },
-        error: function (error, errorText) {
-            if (errorText !== 'abort') {
-                Deferred.reject(error && error.responseJSON);
-            }
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();

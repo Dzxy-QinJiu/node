@@ -12,8 +12,6 @@ var restApis = {
     queryContactCustomer: "/rest/customer/v2/customer/range",//查询客户
     //即将到期的客户
     getWillExpiredCustomers: "/rest/analysis/customer/v2/statistic/:type/expire/customer",
-    //获取新分配的客户
-    getNewDistributeCustomers: "/rest/customer/v2/customer/query/allot/nocontacted",
 };
 exports.restUrls = restApis;
 //获取销售-电话列表
@@ -52,14 +50,4 @@ exports.getWillExpireCustomer = function (req, res) {
         req: req,
         res: res
     }, req.body)
-};
-//获取新分配的客户
-exports.getNewDistributeCustomers = function (req, res) {
-    var url = restApis.getNewDistributeCustomers;
-    return restUtil.authRest.post(
-        {
-            url: url,
-            req: req,
-            res: res
-        },  req.body);
 };
