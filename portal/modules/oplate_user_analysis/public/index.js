@@ -50,6 +50,8 @@ const LEGEND = [{ name: Intl.get("common.official", "签约"), key: "formal" },
 { name: Intl.get("user.type.employee", "员工"), key: "internal" },
 { name: Intl.get("user.unknown", "未知"), key: "unknown" }];
 
+//延期用户tab标识
+const DELAYED_USERS_SYMBOL = "-";
 
 //用户类型常量
 var USER_TYPE_CONSTANTS = {
@@ -2067,6 +2069,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 <SummaryNumber
                                     resultType={this.state.summaryNumbers.resultType}
                                     desp="延期用户"
+                                    num={DELAYED_USERS_SYMBOL}
                                     active={this.state.currentTab === 'delay'}
                                     onClick={this.changeCurrentTab.bind(this, 'delay')} />
                             </Col> : null}
