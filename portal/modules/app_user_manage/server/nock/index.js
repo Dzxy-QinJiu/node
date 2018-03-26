@@ -1,5 +1,6 @@
 var path = require("path")
-var RestUtil = require(path.resolve(portal_root_path , "./lib/rest/rest-util"));
+var restLogger = require("../../../../lib/utils/logger").getLogger('nock');
+var RestUtil = require("ant-auth-request").restUtil(restLogger)(restLogger);
 var nock = require("nock");
 var nockParser = require(path.resolve(portal_root_path , "./lib/utils/nockParser"));
 var AppUserManageService = require("../service/app-user-manage.service");

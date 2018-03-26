@@ -2,7 +2,7 @@
  * Created by liwenjun on 2015/12/25.
  */
 var testLogger = require("../../lib/utils/logger").getLogger('test');
-var restUtil = require("../../lib/rest/rest-util")(testLogger);
+var restUtil = require("ant-auth-request").restUtil(testLogger);
 
 var config = require('../../../conf/config');
 var test = require('./test');

@@ -3,7 +3,7 @@
  */
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var AppUserRestApis = {
 	getUserTypeConfig: "/rest/base/v1/application/extra/grantinfos",
 	addUserTypeConfig: "/rest/base/v1/application/extra/grantinfo",

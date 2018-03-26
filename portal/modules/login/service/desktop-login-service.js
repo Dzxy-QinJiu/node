@@ -1,5 +1,5 @@
 var restLogger = require("../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var config = require('../../../../conf/config');
 //后端国际化
 let BackendIntl = require("../../../lib/utils/backend_intl");

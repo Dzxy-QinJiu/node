@@ -6,7 +6,7 @@ var urls = {
     changeOrganization : "/rest/base/v1/usergroup/user/:user_id/:group_id"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var organizationDto = require("../dto/organization");
 var _ = require("underscore");
 //根据当前用户数据权限，获取应用列表

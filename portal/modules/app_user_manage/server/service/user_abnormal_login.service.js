@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/8/8.
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var UserAbnormalLoginApis = {
     //获取用户异常登录列表
     getUserAbnormalLogin: "/rest/base/v1/user/login/exception/list",

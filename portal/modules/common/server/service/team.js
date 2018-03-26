@@ -2,7 +2,7 @@
  * Created by wangliping on 2017/4/13.
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 let _ = require("underscore");
 
 /**

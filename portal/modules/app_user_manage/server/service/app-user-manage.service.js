@@ -5,7 +5,7 @@
 
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var customersDto = require("../dto/customers");
 var applyDto = require("../dto/apply");
 var replyDto = require("../dto/reply");

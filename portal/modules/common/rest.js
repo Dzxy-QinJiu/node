@@ -1,6 +1,6 @@
 const querystring = require("querystring");
 const restLogger = require("../../lib/utils/logger").getLogger('rest');
-const restUtil = require("../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 const routes = require("./route");
 const _ = require("underscore");
 

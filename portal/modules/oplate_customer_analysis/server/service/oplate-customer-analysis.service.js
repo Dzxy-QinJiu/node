@@ -2,7 +2,7 @@
  * 说明：统计分析-客户分析的service文件
  */
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //定义url
 var urls = {

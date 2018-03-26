@@ -5,7 +5,7 @@
  */
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 import CallRecord from "../dto/callRecord";
 var _ = require("underscore");
 //获取全部和客户电话的列表（团队）

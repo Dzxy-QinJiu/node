@@ -5,7 +5,7 @@ var urls = {
     getCustomerSuggest : "/rest/customer/v2/customer/query/100/id/descend"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var customerDto = require("../dto/customer");
 var _ = require("underscore");
 var transformUtils = require("../utils/transform-fields");

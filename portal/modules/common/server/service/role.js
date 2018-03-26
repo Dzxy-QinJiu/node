@@ -1,5 +1,5 @@
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var roleDto = require("../dto/role");
 var _ = require("underscore");
 //获取java端rest的地址

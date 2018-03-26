@@ -11,7 +11,7 @@ var urls = {
     getAppConfigPromise: "/rest/base/v1/application/extra/grantinfos"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var appDto = require("../dto/app");
 var _ = require("underscore");
 var Promise = require('bluebird');

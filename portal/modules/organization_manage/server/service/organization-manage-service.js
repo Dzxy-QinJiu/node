@@ -4,7 +4,7 @@
 "use strict";
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 var organizationRestApis = {
     getOrganizationList: "/rest/base/v1/usergroup/list",
     getOrganizationMemberList: "/rest/base/v1/usergroup/users",

@@ -5,7 +5,7 @@
  */
 "use strict";
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
-var restUtil = require("../../../../lib/rest/rest-util")(restLogger);
+var restUtil = require("ant-auth-request").restUtil(restLogger);
 const restApis = {
     //获取线索来源
     getClueSource: "/rest/customer/v2/clue/clue_source/100/1",
