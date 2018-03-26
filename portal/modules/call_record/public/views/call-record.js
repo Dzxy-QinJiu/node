@@ -494,9 +494,9 @@ const CallRecord = React.createClass({
         }
         //给本条记录加上标识
         item.playSelected = true;
-        var urlObj = commonMethodUtil.urlConifg(item.local, item.recording);
+        var urlObj = commonMethodUtil.urlConifg(item.local, item.recording, item.type);
         //录音的地址
-        var playItemAddr = "/record/" + urlObj.local + item.recording + urlObj.audioType;
+        var playItemAddr = urlObj.phoneType + urlObj.local + item.recording + urlObj.audioType;
         this.setState({
             callRecord: this.state.callRecord,
             playingItemAddr: playItemAddr,
