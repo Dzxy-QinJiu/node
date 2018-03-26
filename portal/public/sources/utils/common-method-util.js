@@ -44,9 +44,9 @@ exports.checkWav = function(str){
     }
 };
 //返回录音url的配置
-exports.urlConifg = function(itemLocal,itemRecord){
+exports.getAudioRecordUrl = function(itemLocal,itemRecord,phoneType){
     //播放长沙，济南和北京的录音
-    var local = "changsha", audioType = "";
+    var local = "changsha", audioType = "", record= "/record/";
     if (itemLocal == "jinan"){
         local = "jinan";
     }else if (itemLocal == "beijing"){
@@ -59,7 +59,11 @@ exports.urlConifg = function(itemLocal,itemRecord){
         audioType = ".mp3";
     }
     local = local ? local + "/" : "";
-    return {"local":local,"audioType":audioType}
+    //如果是录音类型是app类型的
+    if (phoneType === "app"){
+        record = "/record/app/"
+    }
+    return record + local + itemRecord + audioType;
 };
 //去除json对象中的空白项
 const removeEmptyItem = function (obj) {

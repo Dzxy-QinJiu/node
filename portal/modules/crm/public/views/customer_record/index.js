@@ -449,12 +449,9 @@ const CustomerRecord = React.createClass({
         }
         //给本条记录加上标识
         item.playSelected = true;
-        var urlObj = commonMethodUtil.urlConifg(item.local, item.recording);
-        //录音的地址
-        var playItemAddr = "/record/" + urlObj.local + item.recording + urlObj.audioType;
         this.setState({
             customerRecord: this.state.customerRecord,
-            playingItemAddr: playItemAddr,
+            playingItemAddr: commonMethodUtil.getAudioRecordUrl(item.local, item.recording, item.type),
             playingItemPhone: item.dst //正在播放的录音所属的电话号码
         }, () => {
             var audio = $("#audio")[0];
