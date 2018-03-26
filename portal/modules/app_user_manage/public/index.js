@@ -212,10 +212,6 @@ var AppUserManage = React.createClass({
         if (app_id && this.state.filterRoles.shouldShow) {
             AppUserAction.getRolesByAppId(app_id);
         }
-        //获取团队列表
-        // if (app_id) {
-        //     AppUserAction.getTeamLists();
-        // }
         //延迟搜索，等待界面改变搜索参数
         setTimeout(() => {
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST);

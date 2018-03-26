@@ -20,7 +20,6 @@ import userAjax from "../ajax/app-user-ajax";
 import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-var key = "recent-login-user-selected-app-id";
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -36,20 +35,8 @@ class RecentLoginUsers extends React.Component {
         let timeRange = this.getTodayTimeRange();
         var defaultTeam = {group_id: "", group_name: Intl.get("common.all", "全部")};
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
-        var selectedAppId = "";
-        var localSelectedAppId = JSON.parse(localStorage.getItem("websiteConfig"))["recent-login-user-selected-app-id"];
-        if (this.props.selectedAppId){
-            //如果外面选中一个应用，最近登录的用户，默认用此应用
-            selectedAppId = this.props.selectedAppId;
-        }else if(localSelectedAppId){
-            //如果外面没有选中应用，就用上一次选中的应用
-            selectedAppId = localSelectedAppId;
-        }else{
-            //如果上面两种情况都没有，就用列表中第一个
-            selectedAppId = this.props.appList[0] ? this.props.appList[0].app_id : ""
-        }
         this.state = {
-            selectedAppId: selectedAppId,
+            selectedAppId: this.getSelectedAppId(this.props),
             teamlists: teamLists,
             start_time: timeRange.start_time,
             end_time: timeRange.end_time,
@@ -85,9 +72,7 @@ class RecentLoginUsers extends React.Component {
         }
         $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app => {
-            return app.exception_mark_date
-        }) ? true : false;
+        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date})? true: false;
         this.setState({
             isShowUserDetail: true,
             userId: user_id,
@@ -101,15 +86,28 @@ class RecentLoginUsers extends React.Component {
         });
         $(".recent-login-users-table-wrap .current_row").removeClass("current_row");
     }
-
+    getSelectedAppId(props){
+        var selectedAppId = "";
+        //上次手动选中的appid
+        var localSelectedAppId = JSON.parse(localStorage.getItem("websiteConfig"))["recent-login-user-selected-app-id"];
+        if (props.selectedAppId){
+            //如果外面选中一个应用，最近登录的用户，默认用此应用
+            selectedAppId = props.selectedAppId;
+        }else if(localSelectedAppId){
+            //如果外面没有选中应用，但上次在最近登录的用户的应用列表中选中过一个应用，就用上一次选中的应用
+            selectedAppId = localSelectedAppId;
+        }else{
+            //如果上面两种情况都没有，就用应用列表中第一个
+            selectedAppId = props.appList[0] ? props.appList[0].app_id : ""
+        }
+        return selectedAppId;
+    }
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
-        let newAppId = nextProps.appList[0] ? nextProps.appList[0].app_id : "";
+        let newAppId = this.getSelectedAppId(nextProps);
         if (oldAppId != newAppId) {
             this.setState({selectedAppId: newAppId}, this.getRecentLoginUsers());
-        }
-        //todo
-
+        };
     }
 
     getTodayTimeRange() {
@@ -401,7 +399,6 @@ class RecentLoginUsers extends React.Component {
         this.setState({user_type: type, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
-
     // 是否过期类型的选择
     onFilterTypeChange(type) {
         this.setState({filter_type: type, pageNum: 1});
