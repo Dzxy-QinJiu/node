@@ -1,6 +1,8 @@
 /**
  *
+ * 配置信息
  */
+var path = require("path");
 //是否是线上环境  isProduction=true表示是线上环境
 var webpackMode = "dev", isProduction = false;
 //是否正式环境
@@ -173,6 +175,7 @@ var config = {
     gateway: getGateway() || 'http://gateway-ketao.antfact.com',//服务网关,测试环境：http://172.19.103.57:9090,公网'https://gtoplate.antfact.com',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || "oplate-web",//日志标签,用来区分是oplate的还是ketao的
+    errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
     pushServerAddress: process.env.PUSH_SERVER_ADDRESS || "http://notify-ketao.antfact.com:80",//推送的服务地址（客套需要配置:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
