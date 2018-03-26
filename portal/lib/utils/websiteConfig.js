@@ -14,9 +14,9 @@ var websiteConfig = {
             const preStorage = JSON.parse(localStorage.getItem("websiteConfig"));
             const curStorage = $.extend({}, preStorage, data);
             localStorage.setItem("websiteConfig", JSON.stringify(curStorage));
-            onSuccess(result);
+           _.isFunction(onSuccess) && onSuccess(result);
         }, err => {
-            onError(err);
+            _.isFunction(onError) &&  onError(err);
         });
     },
     //设置某个模块是否被点击过

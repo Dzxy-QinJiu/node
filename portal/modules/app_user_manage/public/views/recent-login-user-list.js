@@ -20,7 +20,6 @@ import userAjax from "../ajax/app-user-ajax";
 import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-var storageUtil = require("LIB_DIR/utils/storage-util.js");
 var key = "recent-login-user-selected-app-id";
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
 //用于布局的高度
@@ -38,11 +37,11 @@ class RecentLoginUsers extends React.Component {
         var defaultTeam = {group_id: "", group_name: Intl.get("common.all", "全部")};
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
         var selectedAppId = "";
-        console.log(localStorage.getItem("websiteConfig")[key]);
+        console.log(localStorage.getItem("websiteConfig")["recent-login-user-selected-app-id"]);
         if (this.props.selectedAppId){
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = this.props.selectedAppId;
-        }else if(localStorage.getItem("websiteConfig")[key]){
+        }else if(localStorage.getItem("websiteConfig")["recent-login-user-selected-app-id"]){
             //如果外面没有选中应用，就用上一次选中的应用
             selectedAppId = "";
         }else{
@@ -211,7 +210,7 @@ class RecentLoginUsers extends React.Component {
             selectedAppId: app_id,
             pageNum: 1,
         }, () => {
-            setWebsiteConfig({key:app_id});
+            setWebsiteConfig({"recent-login-user-selected-app-id":app_id});
             this.getRecentLoginUsers()});
         //当应用列表重新布局的时候，让顶部导航重新渲染
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
