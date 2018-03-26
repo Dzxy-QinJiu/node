@@ -168,7 +168,7 @@ SalesHomeStore.prototype.setInitState = function () {
         field: "allot_time",
         order: "descend"
     };
-    this.page_size = 10;
+    this.page_size = 20;
     this.sorter = {
         field: "last_contact_time",//排序字段
         order: "descend"

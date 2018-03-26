@@ -172,18 +172,16 @@ var SalesHomePage = React.createClass({
     //获取新分配但未联系的客户
     getNewDistributeCustomer: function (lastId) {
         //客户被分配后是否已联系 allot_no_contact  未联系 : 0 ，已联系 :1
-        var pageSize = this.state.page_size + 5;
         var queryObj = {
-            total_size: pageSize,
+            total_size: this.state.page_size,
             cursor: true,
             allot_no_contact: 0
         };
         if (lastId) {
             queryObj.id = lastId;
         }
-
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({}, this.state.rangParamsDistribute, pageSize, this.state.sorterDistribute, queryObj);
+        SalesHomeAction.getNewDistributeCustomer({}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
     },
     //获取今日的日程列表
     getScheduleListToday: function () {
