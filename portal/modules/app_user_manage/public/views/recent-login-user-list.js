@@ -37,13 +37,14 @@ class RecentLoginUsers extends React.Component {
         var defaultTeam = {group_id: "", group_name: Intl.get("common.all", "全部")};
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
         var selectedAppId = "";
-        console.log(localStorage.getItem("websiteConfig")["recent-login-user-selected-app-id"]);
+        var localSelectedAppId = JSON.parse(localStorage.getItem("websiteConfig"))["recent-login-user-selected-app-id"];
+        console.log(localSelectedAppId);
         if (this.props.selectedAppId){
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = this.props.selectedAppId;
-        }else if(localStorage.getItem("websiteConfig")["recent-login-user-selected-app-id"]){
+        }else if(localSelectedAppId){
             //如果外面没有选中应用，就用上一次选中的应用
-            selectedAppId = "";
+            selectedAppId = localSelectedAppId;
         }else{
             //如果上面两种情况都没有，就用列表中第一个
             selectedAppId = this.props.appList[0] ? this.props.appList[0].app_id : ""
