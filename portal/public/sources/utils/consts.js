@@ -111,6 +111,7 @@ export const ALL_LISTS_TYPE = {
     SCHEDULE_TODAY: "schedule_today",//今日计划联系日程列表
     WILL_EXPIRED_SCHEDULE_TODAY: "will_expired_schedule_today",//今日到期的日程
     WILL_EXPIRED_TRY_CUSTOMER: "will_expired_try_customer",//即将到期的试用用户
+    HAS_EXPIRED_TRY_CUSTOMER: "has_expired_try_customer",//过去十天已经到期的试用用户
     WILL_EXPIRED_ASSIGN_CUSTOMER: "will_expired_assign_customer",//即将到期的签约用户
     APP_ILLEAGE_LOGIN: "appIllegal",// 停用后登录
     CONCERNED_CUSTOMER_LOGIN: "concerCustomerLogin",//关注客户登录
@@ -123,17 +124,21 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY, name: Intl.get("sales.frontpage.expired.not.contact", "超期未联系")},//今日到期的日程
     {
         value: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER,
-        name: Intl.get("sales.frontpage.will.expired.try.user", "即将到期的试用客户")
+        name: Intl.get("sales.frontpage.will.expired.try.user", "近{X}天将到期的试用客户",{X:Intl.get("user.number.three", "三")})
     },//即将到期的试用用户
     {
+        value: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER,
+        name: Intl.get("sales.frontpage.has.expired.try.user", "近{X}天已过期的试用客户",{X:Intl.get("user.num.ten", "十")})
+    },//已经到期的试用用户
+    {
         value: ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER,
-        name: Intl.get("sales.frontpage.will.expired.assgined.user", "即将到期的签约客户")
+        name: Intl.get("sales.frontpage.will.expired.assgined.user", "近{X}将到期的签约客户",{X:Intl.get("user.time.half.year1", "半年")})
     },//即将到期的签约用户
     {value: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, name: Intl.get("sales.frontpage.login.after.stop", "停用后登录")},// 停用后登录
     {value: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, name: Intl.get("ketao.frontpage.focus.customer.login", "关注客户登录")},//关注客户登录
     {
         value: ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER,
-        name: Intl.get("sales.frontpage.login.recently", "近{X}日登录的客户", {X: 7})
+        name: Intl.get("sales.frontpage.login.recently", "近{X}日登录的客户", {X: Intl.get("user.num.seven", "七")})
     },//近7日登录的客户
     {value: ALL_LISTS_TYPE.REPEAT_CUSTOMER, name: Intl.get("sales.frontpage.has.repeat.customer", "您有重复的客户")},//重复客户
     {

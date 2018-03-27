@@ -22,6 +22,7 @@ import {RightPanel}  from "CMP_DIR/rightPanel";
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 var userData = require("PUB_DIR/sources/user-data");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
+import {getRelativeTime} from "./utils/util";
 // 通话类型的常量
 const CALL_TYPE_OPTION = {
     ALL: 'all',
@@ -128,19 +129,28 @@ var SalesHomePage = React.createClass({
         this.getRepeatCustomerList();
         //获取三天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
-        this.getWillExpireCustomer({
+        this.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time,
-            end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE
+            end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE,
+            dataType: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER
         });
         //获取半年内即将到期的签约用户 30*6是取的半年的数据
-        this.getWillExpireCustomer(
+        this.getExpireCustomer(
             {
                 tags: Intl.get("common.trial.official", "正式用户"),
                 start_time: todayTimeRange.start_time,
-                end_time: todayTimeRange.end_time + 30 * 6 * oplateConsts.ONE_DAY_TIME_RANGE
+                end_time: todayTimeRange.end_time + 30 * 6 * oplateConsts.ONE_DAY_TIME_RANGE,
+                dataType: ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER
             }
         );
+        //获取过去十天内过期未处理试用客户
+        this.getExpireCustomer({
+            tags: Intl.get("common.trial.user", "试用用户"),
+            start_time: todayTimeRange.start_time - 10 * oplateConsts.ONE_DAY_TIME_RANGE,
+            end_time: todayTimeRange.end_time -  oplateConsts.ONE_DAY_TIME_RANGE,
+            dataType: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER
+        });
         //获取新分配的客户
         this.getNewDistributeCustomer();
     },
@@ -157,8 +167,8 @@ var SalesHomePage = React.createClass({
         //默认获取近7天登录的客户
         SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
     },
-    getWillExpireCustomer: function (queryObj) {
-        SalesHomeAction.getWillExpireCustomer(queryObj);
+    getExpireCustomer: function (queryObj) {
+        SalesHomeAction.getExpireCustomer(queryObj);
     },
     //重复客户列表
     getRepeatCustomerList: function (lastId) {
@@ -332,6 +342,9 @@ var SalesHomePage = React.createClass({
             //即将过期的试用客户
             case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
                 rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
+                break;
+            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER);
                 break;
             //即将过期的签约客户
             case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
@@ -514,7 +527,6 @@ var SalesHomePage = React.createClass({
                                                 return (
                                                     <WillExpireItem
                                                         expireItem={willExpiredCustomer}
-                                                        willExpiredTip={Intl.get("sales.frontpage.try.expired", "试用到期停用")}
                                                         openCustomerDetail={this.openCustomerDetail}
                                                         callNumber={this.state.callNumber}
                                                         errMsg={this.state.errMsg}
@@ -550,11 +562,10 @@ var SalesHomePage = React.createClass({
                                                 return (
                                                     <WillExpireItem
                                                         expireItem={willExpiredCustomer}
-                                                        willExpiredTip={Intl.get("sales.frontpage.assigned.expired", "签约到期停用")}
                                                         openCustomerDetail={this.openCustomerDetail}
                                                         callNumber={this.state.callNumber}
                                                         errMsg={this.state.errMsg}
-                                                        willExpiredTime={moment(item.date).format(oplateConsts.DATE_FORMAT)}
+                                                        willExpiredTime={getRelativeTime(item.date)}
                                                     />
                                                 )
                                             })}
@@ -568,7 +579,41 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             )
-
+        }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
+            //近10天过期未处理试用客户
+            data = this.state.hasExpiredTryCustomer.data.list;
+            return (
+                <div className="will-expire-try-customer-container" ref="tableWrap">
+                    <GeminiScrollbar>
+                        {_.map(data, (item, index) => {
+                            if (_.isArray(item.customer_list) && item.customer_list.length) {
+                                return (
+                                    <div className="expire-customer-item">
+                                        <div className="expire-customer-tip">
+                                            {moment(item.date).format(oplateConsts.DATE_FORMAT)}
+                                        </div>
+                                        <div>
+                                            {_.map(item.customer_list, (hasExpiredCustomer) => {
+                                                return (
+                                                    <WillExpireItem
+                                                        expireItem={hasExpiredCustomer}
+                                                        openCustomerDetail={this.openCustomerDetail}
+                                                        callNumber={this.state.callNumber}
+                                                        errMsg={this.state.errMsg}
+                                                        willExpiredTime={getRelativeTime(item.date)}
+                                                    />
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )
+                            } else {
+                                return null;
+                            }
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            )
         }
 
     },
@@ -659,6 +704,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
                 total = this.state.scheduleExpiredTodayObj.data.total;
+                break;
+            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+                total = this.state.hasExpiredTryCustomer.data.total;
                 break;
             case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
                 total = this.state.willExpiredTryCustomer.data.total;

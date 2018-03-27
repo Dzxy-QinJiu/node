@@ -308,6 +308,7 @@ var en_US = {
     "user.time.this.month": "This month",//本月
     "user.time.prev.month": "Last month",//上月
     "user.time.half.year": "Half year",//半年内
+    "user.time.half.year1": "Half year",//半年
     "user.time.sunday": "Sunday",//周日
     "user.time.monday": "Monday",//周一
     "user.time.tuesday": "Tuesday",//周二
@@ -438,6 +439,8 @@ var en_US = {
     "user.number.second": "Two",//二
     "user.number.three": "Three",//三
     "user.number.four": "Four",//四
+    "user.num.seven": "Seven",//七
+    "user.num.ten": "Ten",//十
     "user.retry": "Please {retry}",//请{retry}@
     "user.total.data": "{number} users",//共个用户@
     "user.change.record": "Change Records",//变更记录
@@ -1977,6 +1980,37 @@ var en_US = {
     "crm.call.phone.success": "Call out successlly",//拨打成功
     "crm.call.phone.failed": "Failed to call out",//拨打失败
     "crm.bind.phone": "Please bind the extension number first!",//请先绑定分机号！
-    "crm.click.call.phone": "Click to call out"//点击拨打电话
+    "crm.click.call.phone": "Click to call out",//点击拨打电话
+    "sales.frontpage.connected.today": "Phone connected today",//今日接通电话
+    "sales.frontpage.connected.range": "Call duration today",//今日通话时长
+    "sales.frontpage.contact.today": "Customers has followed today",//今日已跟进客户
+    "sales.frontpage.added.today": "Customers new added today",//今日新增客户
+    "sales.frontpage.will.contact.today": "Contact plan today",//今日计划联系
+    "sales.frontpage.expired.not.contact": "Expired without contact",//超期未联系
+    "sales.frontpage.will.expired.try.user": "Trial customers will expire in {X} days",//近{X}天将到期的试用客户
+    "sales.frontpage.has.expired.try.user": "Trial customers has expired in past {X} days",//近{X}天已过期的试用客户
+    "sales.frontpage.will.expired.assgined.user": "Contracted customers will expire in {X} days",//近{X}将到期的签约客户
+    "sales.frontpage.login.after.stop": "Login after deactivation",//停用后登录
+    "sales.frontpage.login.recently": "Customers logged in {X} days",//近{X}日登录的客户
+    "sales.frontpage.has.repeat.customer": "You have duplicate customers",//您有重复的客户
+    "sales.frontpage.schedule.has.finished": "完成了",//
+    "sales.frontpage.appilleage.login": "停用期间用户登录情况",//
+    "sales.frontpage.concerned.login": "近{X}天登录情况",//
+    "sales.fromtpage.set.contact.time": "原定于{initialtime}联系",//
+    "sales.frontpage.fail.new.distribute.customer": "获取新分配的客户失败",//
+    "sales.frontpage.new.distribute.customer": "新分配但未联系的客户",//
+    "sales.frontpage.expired.today": "今天到期",//
+    "sales.frontpage.expired.tomorrow": "明天到期",//
+    "sales.frontpage.expired.after.tomorrow": "后天到期",//
+    "sales.frontpage.today":"今天",//
+    "sales.frontpage.tomorrow":"明天",//
+    "sales.frontpage.after.tomorrow":"后天",//
+    "sales.frontpage.try.expired": "试用到期停用",//
+    "sales.frontpage.assigned.expired": "签约到期停用",//
+    "sales.frontpage.set.time": "定时",//
+    "sales.frontpage.before.yesterday": "前天",//
+    "common.sales.frontpage.click.phone": "点击即可拨打。",//
+    "common.sales.fronpage.user.login": "{relativedata}有应用到期",//
+    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户"//
 };
 export default en_US;

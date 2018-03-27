@@ -178,13 +178,13 @@ exports.getCrmUserList = function (reqData) {
     return Deferred.promise();
 };
 
-//获取即将到期的客户
-exports.getWillExpireCustomer = function (data) {
+//获取到期或者即将到期的客户
+exports.getExpireCustomer = function (data) {
     var Deferred = $.Deferred();
     //普通销售，销售领导和舆情秘书用common，其他的用manager
     let type = hasPrivilege("KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER") ? "manager" : "common";
     $.ajax({
-        url: '/rest/get_will_expire_customer/' + type,
+        url: '/rest/get_expire_customer/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
