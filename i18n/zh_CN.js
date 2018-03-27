@@ -1237,6 +1237,8 @@ var zh_CN = {
     "crm.customer.transfer": "转出客户",
     "crm.customer.transfer.failed": "转出客户失败",
     "crm.right.schedule": "联系计划",
+    "crm.basic.detail.show": "展开详情",
+    "crm.basic.detail.hide": "收起详情",
     // 客户管理end
 
     // 客户分析start

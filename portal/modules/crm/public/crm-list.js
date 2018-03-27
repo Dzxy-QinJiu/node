@@ -575,13 +575,13 @@ var Crm = React.createClass({
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
                     }
                     term_fields.push("immutable_labels");//精确匹配
-               }
-               //剩下普通标签的筛选
-               if (condition.labels.length == 0) {
-                   delete condition.labels;
-               } else {
-                   term_fields.push("labels");
-               }
+                }
+                //剩下普通标签的筛选
+                if (condition.labels.length == 0) {
+                    delete condition.labels;
+                } else {
+                    term_fields.push("labels");
+                }
             }
         }
         //竞品,精确匹配
@@ -1337,6 +1337,7 @@ var Crm = React.createClass({
                         curCustomer={this.state.curCustomer}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                        handleFocusCustomer={this.handleFocusCustomer}
                     />
                 ) : null}
                 {/*该客户下的用户列表*/}

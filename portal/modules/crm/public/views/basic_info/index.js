@@ -1,4 +1,5 @@
 import '../../css/crm-basic-info.less';
+import classNames from 'classnames';
 // require('../../css/crm-basic.less');
 // require("../../css/basic-edit-field.less");
 var CRMStore = require("../../store/basic-store");
@@ -30,7 +31,8 @@ function getStateFromStore(isMerge) {
         basicData: _.extend({}, CRMStore.getBasicInfo()),
         editShowFlag: false,
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
-        basicPanelH: getBasicPanelH(isMerge)
+        basicPanelH: getBasicPanelH(isMerge),
+        showDetailFlag: false//控制客户详情展示隐藏的标识
     };
 }
 function getBasicPanelH(isMerge) {
@@ -152,6 +154,12 @@ var BasicData = React.createClass({
         }
         return enable;
     },
+    //控制客户详情展示隐藏的方法
+    toggleBasicDetail: function () {
+        this.setState({
+            showDetailFlag: !this.state.showDetailFlag
+        });
+    },
 
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -164,14 +172,26 @@ var BasicData = React.createClass({
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
-
+        //地域
+        var location = [];
+        if (basicData.province) {
+            location.push(basicData.province);
+        }
+        if (basicData.city) {
+            location.push(basicData.city);
+        }
+        if (basicData.county) {
+            location.push(basicData.county);
+        }
+        //是否是关注客户的标识
+        let interestFlag = basicData.interest === "true";
         return (
             <div className="basic-info-contianer">
                 <div className="basic-info-title-block">
                     <div className="basic-info-name">
                         {basicData.customer_label ? (
                             <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-                                {basicData.customer_label.substr(0,1)}</Tag>) : null
+                                {basicData.customer_label.substr(0, 1)}</Tag>) : null
                         }
                         {basicData.qualify_label ? (
                             <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
@@ -181,14 +201,42 @@ var BasicData = React.createClass({
                         <span className="basic-name-text">{basicData.name}</span>
                     </div>
                     <div className="basic-info-btns">
-                        <span className="iconfont icon-detail-list"/>
-                        <span className="iconfont icon-uninterested"/>
+                        <span
+                            className={classNames("iconfont icon-detail-list", {"btn-active": this.state.showDetailFlag})}
+                            title={this.state.showDetailFlag ? Intl.get("crm.basic.detail.hide", "收起详情") :
+                                Intl.get("crm.basic.detail.show", "展开详情")}
+                            onClick={this.toggleBasicDetail}/>
+                        <span
+                            className={classNames("iconfont", {
+                                "icon-interested": interestFlag,
+                                "icon-uninterested": !interestFlag
+                            })}
+                            title={interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
+                                Intl.get("crm.customer.interested", "添加关注")}
+                            onClick={this.props.handleFocusCustomer.bind(this, basicData)}
+                        />
                     </div>
                 </div>
-                <div className="basic-info-detail-block">
-                    详情
-
-                </div>
+                {this.state.showDetailFlag ? (<div className="basic-info-detail-block">
+                    <div className="basic-info-administrative basic-info-item">
+                        <span className="iconfont icon-administrative basic-info-icon"/>
+                        <span
+                            className="administrative-text basic-info-text">{this.getAdministrativeLevel(level)}</span>
+                    </div>
+                    <div className="basic-info-indestry basic-info-item">
+                        <span className="iconfont icon-industry basic-info-icon"/>
+                        <span className="indestry-text  basic-info-text">{basicData.industry}</span>
+                    </div>
+                    <div className="basic-info-address basic-info-item">
+                        <span className="iconfont icon-address basic-info-icon"/>
+                        <span className="address-text basic-info-text">{location.join('/')}</span>
+                        <span className="address-detail-text  basic-info-text">{basicData.address}</span>
+                    </div>
+                    <div className="basic-info-remark basic-info-item">
+                        <span className="iconfont icon-remark basic-info-icon"/>
+                        <span className="remark-text  basic-info-text">{basicData.remarks}</span>
+                    </div>
+                </div>) : null}
             </div>
             // <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
             //     {this.state.basicIsLoading ? <Spin /> : (

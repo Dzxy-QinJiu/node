@@ -1219,6 +1219,8 @@ var en_US = {
     "crm.customer.transfer": "Transfer customer",//转出客户
     "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
     "crm.right.schedule": "Contact schedule",//联系计划
+    "crm.basic.detail.show": "Show detail",//展开详情
+    "crm.basic.detail.hide": "Hide detail",//收起详情
     // 客户管理end
 
     //客户分析 start

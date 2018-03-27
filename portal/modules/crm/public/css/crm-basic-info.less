@@ -3,22 +3,33 @@
 @white_color: #ffffff;
 @right_panel_margin: 8px;
 @btn_color: #8da8c5;
+@btn_active_color: #2196f3;
 @split_line_color: #e2e2e2;
+@border_style: 1px solid #f5f5f5;
+@icon_color: #c2c2c2;
+@font_color: #333333;
+@interested_color: #F9B706;
+
+//换行
+.overflow-break {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
 .basic-info-contianer {
   float: left;
   background-color: @white_color;
-  padding: @right_panel_padding @right_panel_padding 12px 20px;
+  padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
 
   //客户名和按钮展示区域
   .basic-info-title-block {
     .basic-info-name {
       float: left;
-      width: 366px;
+      width: 368px;
       padding-right: @right_panel_margin;
       border-right: 1px solid @split_line_color;
-      white-space: normal;
-      word-wrap: break-word;
-      word-break: break-all;
+      &:extend(.overflow-break);
       //客户标签
       .customer-label {
         display: inline-block;
@@ -36,6 +47,7 @@
         line-height: 18px;
         font-size: 14px;
         font-weight: bold;
+        color: @font_color;
       }
     }
     //查看详情、关注按钮区域的样式
@@ -49,14 +61,56 @@
         color: @btn_color;
         cursor: pointer;
       }
-
+      .icon-detail-list.btn-active {
+        color: @btn_active_color;
+      }
+      .iconfont.icon-interested {
+        color: @interested_color;
+      }
     }
   }
 
   //客户基本信息展示区域
-  .basic-info-detail-block{
+  .basic-info-detail-block {
     float: left;
     width: 100%;
+    border-top: @border_style;
+    margin-top: 10px;
+    padding-top: 10px;
+    //基本信息
+    .basic-info-item {
+      float: left;
+      width: 100%;
+      //代表基本信息的图标
+      .basic-info-icon {
+        float: left;
+        color: @icon_color;
+      }
+      .icon-administrative {
+        padding-left: 3px;
+        font-size: 14px;
+      }
+      .icon-industry {
+        padding-left: 3px;
+        font-size: 16px;
+      }
+      .icon-address {
+        padding-left: 2px;
+        font-size: 16px;
+      }
+      .icon-remark {
+        padding-left: 4px;
+        font-size: 16px;
+      }
+      .basic-info-text {
+        display: inline-block;
+        max-width: 400px;
+        line-height: 24px;
+        margin-left: 6px;
+        color: @font_color;
+        &:extend(.overflow-break);
+      }
+    }
 
   }
 

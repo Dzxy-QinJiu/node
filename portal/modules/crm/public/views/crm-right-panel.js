@@ -116,6 +116,7 @@ var CrmRightPanel = React.createClass({
                                editCustomerBasic={this.props.editCustomerBasic}
                                ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                               handleFocusCustomer={this.props.handleFocusCustomer}
                     />
                     <div className="crm-right-panel-content">
                         {this.state.curCustomer? (
