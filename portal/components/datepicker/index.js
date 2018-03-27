@@ -610,9 +610,10 @@ class DatePicker extends React.Component {
      */
     computeHeight(datepicker_wrap) {
         if (!datepicker_wrap)return;
-        var datepicker_wrap_height_withQuarter = 252;//有季度显示时，时间选择器高度
+        var datepicker_wrap_height_withQuarter = 256;//有季度显示时，时间选择器最小高度
         var datepicker_wrap_height = datepicker_wrap.outerHeight();
-        if (this.state.timeRange === "quarter" && datepicker_wrap_height < datepicker_wrap_height_withQuarter) {
+        //当显示季度，并且当前高度小于等于最小高度时，使用最小高度
+        if (this.state.timeRange === "quarter" && (!datepicker_wrap_height || datepicker_wrap_height <= datepicker_wrap_height_withQuarter)) {
             datepicker_wrap.css({height: datepicker_wrap_height_withQuarter});
         } else {
             datepicker_wrap.css({height: "auto"});
