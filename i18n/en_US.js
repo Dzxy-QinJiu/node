@@ -1993,24 +1993,24 @@ var en_US = {
     "sales.frontpage.login.after.stop": "Login after deactivation",//停用后登录
     "sales.frontpage.login.recently": "Customers logged in {X} days",//近{X}日登录的客户
     "sales.frontpage.has.repeat.customer": "You have duplicate customers",//您有重复的客户
-    "sales.frontpage.schedule.has.finished": "完成了",//
-    "sales.frontpage.appilleage.login": "停用期间用户登录情况",//
-    "sales.frontpage.concerned.login": "近{X}天登录情况",//
-    "sales.fromtpage.set.contact.time": "原定于{initialtime}联系",//
-    "sales.frontpage.fail.new.distribute.customer": "获取新分配的客户失败",//
-    "sales.frontpage.new.distribute.customer": "新分配但未联系的客户",//
-    "sales.frontpage.expired.today": "今天到期",//
-    "sales.frontpage.expired.tomorrow": "明天到期",//
-    "sales.frontpage.expired.after.tomorrow": "后天到期",//
-    "sales.frontpage.today":"今天",//
-    "sales.frontpage.tomorrow":"明天",//
-    "sales.frontpage.after.tomorrow":"后天",//
-    "sales.frontpage.try.expired": "试用到期停用",//
-    "sales.frontpage.assigned.expired": "签约到期停用",//
-    "sales.frontpage.set.time": "定时",//
-    "sales.frontpage.before.yesterday": "前天",//
-    "common.sales.frontpage.click.phone": "点击即可拨打。",//
-    "common.sales.fronpage.user.login": "{relativedata}有应用到期",//
-    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户"//
+    "sales.frontpage.schedule.has.finished": "Has finished",//完成了
+    "sales.frontpage.appilleage.login": "User login during deactivation",//停用期间用户登录情况
+    "sales.frontpage.concerned.login": "Login in nearly {X} days ",//近{X}天登录情况
+    "sales.fromtpage.set.contact.time": "Scheduled originally in {initialtime}",//原定于{initialtime}联系
+    "sales.frontpage.fail.new.distribute.customer": "Failed to get newly assigned customer",//获取新分配的客户失败
+    "sales.frontpage.new.distribute.customer": "Customers newly allocated but unconnected ",//新分配但未联系的客户
+    "sales.frontpage.expired.today": "Expired today",//今天到期
+    "sales.frontpage.expired.tomorrow": "Expired tomorrow",//明天到期
+    "sales.frontpage.expired.after.tomorrow": "Expired acquired",//后天到期
+    "sales.frontpage.today":"Today",//今天
+    "sales.frontpage.tomorrow":"Tomorrow",//明天
+    "sales.frontpage.after.tomorrow":"Acquired",//后天
+    "sales.frontpage.try.expired": "Expiration of trial customer",//试用到期停用
+    "sales.frontpage.assigned.expired": "Expiration of aasigned customer",//签约到期停用
+    "sales.frontpage.set.time": "timing",//定时
+    "sales.frontpage.before.yesterday": "The day before yesterday",//前天
+    "common.sales.frontpage.click.phone": "Click to call",//点击即可拨打。
+    "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
+    "common.sales.fronpage.has.expired":"Expired customers of past {X} days"//近{X}天过期未处理客户
 };
 export default en_US;

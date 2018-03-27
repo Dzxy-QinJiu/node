@@ -519,9 +519,9 @@ var SalesHomePage = React.createClass({
                             if (_.isArray(item.customer_list) && item.customer_list.length) {
                                 return (
                                     <div className="expire-customer-item">
-                                        <div className="expire-customer-tip">
-                                            {willexpiredTipArr[index]}
-                                        </div>
+                                        {/*<div className="expire-customer-tip">*/}
+                                            {/*{willexpiredTipArr[index]}*/}
+                                        {/*</div>*/}
                                         <div>
                                             {_.map(item.customer_list, (willExpiredCustomer) => {
                                                 return (
@@ -554,9 +554,9 @@ var SalesHomePage = React.createClass({
                             if (_.isArray(item.customer_list) && item.customer_list.length) {
                                 return (
                                     <div className="expire-customer-item">
-                                        <div className="expire-customer-tip">
-                                            {moment(item.date).format(oplateConsts.DATE_FORMAT)}
-                                        </div>
+                                        {/*<div className="expire-customer-tip">*/}
+                                            {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
+                                        {/*</div>*/}
                                         <div>
                                             {_.map(item.customer_list, (willExpiredCustomer) => {
                                                 return (
@@ -589,9 +589,9 @@ var SalesHomePage = React.createClass({
                             if (_.isArray(item.customer_list) && item.customer_list.length) {
                                 return (
                                     <div className="expire-customer-item">
-                                        <div className="expire-customer-tip">
-                                            {moment(item.date).format(oplateConsts.DATE_FORMAT)}
-                                        </div>
+                                        {/*<div className="expire-customer-tip">*/}
+                                            {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
+                                        {/*</div>*/}
                                         <div>
                                             {_.map(item.customer_list, (hasExpiredCustomer) => {
                                                 return (
