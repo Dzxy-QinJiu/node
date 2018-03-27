@@ -369,44 +369,16 @@ function getExpireCustomerData(stateData,resultData) {
 }
 //获取即将到期的客户
 SalesHomeStore.prototype.getExpireCustomer = function (result) {
-    //签约用户
     if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
-        //获取的过期日程列表
-        // var willExpiredAssignCustomer = this.willExpiredAssignCustomer;
+        //获取即将到期的签约用户
         getExpireCustomerData(this.willExpiredAssignCustomer,result);
-        // willExpiredAssignCustomer.loading = result.loading;
-        // if (result.error) {
-        //     willExpiredAssignCustomer.errMsg = result.errMsg;
-        // } else if (result.resData && _.isArray(result.resData.result)) {
-        //     if (result.resData.result.length) {
-        //         var willExpiredAssignCustomerLists = result.resData.result[0];
-        //         willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
-        //         willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
-        //     } else {
-        //         willExpiredAssignCustomer.data.total = 0;
-        //     }
-        // }
     } else if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
+        //获取即将到期的试用用户
         getExpireCustomerData(this.willExpiredTryCustomer,result);
-
-        // //获取即将到期的试用用户
-        // var willExpiredTryCustomer = this.willExpiredTryCustomer;
-        // willExpiredTryCustomer.loading = result.loading;
-        // if (result.error) {
-        //     willExpiredTryCustomer.errMsg = result.errMsg;
-        // } else if (result.resData && _.isArray(result.resData.result)) {
-        //     if (result.resData.result.length) {
-        //         var willExpiredTryCustomerLists = result.resData.result[0];
-        //         willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
-        //         willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
-        //     } else {
-        //         willExpiredTryCustomer.data.total = 0;
-        //     }
-        //
-        // }
     }else if (result.type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
+        //获取过期十天已经过期的试用用户
         getExpireCustomerData(this.hasExpiredTryCustomer,result);
-        //将数据进行颠倒
+        //将数据进行颠倒，昨天的数据要排在最上面
         this.hasExpiredTryCustomer.data.list.reverse();
     }
 };
