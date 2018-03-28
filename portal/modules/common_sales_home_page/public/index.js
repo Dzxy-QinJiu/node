@@ -494,9 +494,8 @@ var SalesHomePage = React.createClass({
     afterHandleMessage: function (messageObj) {
         SalesHomeAction.afterHandleMessage(messageObj);
     },
-    renderExpiredCustomerContent: function (cls,data) {
+    renderExpiredCustomerContent: function (data) {
         return (
-            <div className={cls} ref="tableWrap">
                 <GeminiScrollbar>
                     {_.map(data, (item, index) => {
                         if (_.isArray(item.customer_list) && item.customer_list.length) {
@@ -525,7 +524,6 @@ var SalesHomePage = React.createClass({
                         }
                     })}
                 </GeminiScrollbar>
-            </div>
         )
 
     },
@@ -541,24 +539,24 @@ var SalesHomePage = React.createClass({
                 Intl.get("sales.frontpage.expired.after.tomorrow", "后天到期")
             ];
             return (
-                <div>
-                    {this.renderExpiredCustomerContent("will-expire-assigned-customer-container",data)}
+                <div className="will-expire-assigned-customer-container" ref="tableWrap">
+                    {this.renderExpiredCustomerContent(data)}
                 </div>
             )
         } else if (type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
             //半年内即将到期的签约客户
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
-                <div>
-                    {this.renderExpiredCustomerContent("will-expire-try-customer-container",data)}
+                <div className="will-expire-try-customer-container" ref="tableWrap">
+                    {this.renderExpiredCustomerContent(data)}
                 </div>
             )
         }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
             //近10天过期未处理试用客户
             data = this.state.hasExpiredTryCustomer.data.list;
             return (
-                <div>
-                    {this.renderExpiredCustomerContent("has-expired-try-customer-container",data)}
+                <div className="has-expired-try-customer-container" ref="tableWrap">
+                    {this.renderExpiredCustomerContent(data)}
                 </div>
             )
         }
