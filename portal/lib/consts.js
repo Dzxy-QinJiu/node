@@ -33,5 +33,11 @@ module.exports = {
     STORE_NEW_FUNCTION:{
         //日程管理模块
         SCHEDULE_MANAGEMENT: {"name":"schedule-management","routePath":"schedule_management"}
+    },
+    //存储个人配置中的信息
+    STORE_PERSONNAL_SETTING:{
+        WEBSITE_CONFIG: "websiteConfig",
+        RECENT_LOGIN_USER_SELECTED_APP_ID:"recent-login-user-selected-app-id"
     }
+
 };

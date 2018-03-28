@@ -21,6 +21,7 @@ import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
+import CONSTS from  "LIB_DIR/consts";
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
@@ -89,7 +90,7 @@ class RecentLoginUsers extends React.Component {
     getSelectedAppId(props){
         var selectedAppId = "";
         //上次手动选中的appid
-        var localSelectedAppId = JSON.parse(localStorage.getItem("websiteConfig"))["recent-login-user-selected-app-id"];
+        var localSelectedAppId = JSON.parse(localStorage.getItem(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG))[CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID];
         if (props.selectedAppId){
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;
@@ -107,7 +108,7 @@ class RecentLoginUsers extends React.Component {
         let newAppId = this.getSelectedAppId(nextProps);
         if (oldAppId != newAppId) {
             this.setState({selectedAppId: newAppId}, this.getRecentLoginUsers());
-        };
+        }
     }
 
     getTodayTimeRange() {
@@ -202,12 +203,15 @@ class RecentLoginUsers extends React.Component {
     }
 
     onSelectedAppChange(app_id) {
+        var configKey = CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID;
+        var obj = {};
+        obj[configKey] = app_id;
         //设置当前选中应用
         this.setState({
             selectedAppId: app_id,
             pageNum: 1,
         }, () => {
-            setWebsiteConfig({"recent-login-user-selected-app-id":app_id});
+            setWebsiteConfig(obj);
             this.getRecentLoginUsers()});
         //当应用列表重新布局的时候，让顶部导航重新渲染
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
@@ -406,8 +410,8 @@ class RecentLoginUsers extends React.Component {
     }
 
     // 修改所选中的团队
-    onTeamTypeChange(type) {
-        this.setState({team_ids: type, pageNum: 1});
+    onTeamChange(team_ids) {
+        this.setState({team_ids: team_ids, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
 
@@ -461,11 +465,11 @@ class RecentLoginUsers extends React.Component {
                     <div className="inline-block recent-login-filter-type-select">
                         <SelectFullWidth
                             value={this.state.team_ids}
-                            onChange={this.onTeamTypeChange.bind(this)}
+                            onChange={this.onTeamChange.bind(this)}
                         >
                             {
-                                _.map(this.state.teamlists, (teamType, index) => {
-                                    return <Option key={index} value={teamType.group_id}>{teamType.group_name}</Option>
+                                _.map(this.state.teamlists, (teamItem, index) => {
+                                    return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>
                                 })
                             }
                         </SelectFullWidth>
