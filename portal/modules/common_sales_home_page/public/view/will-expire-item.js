@@ -40,12 +40,11 @@ class WillExpireItem extends React.Component {
                         relativedata:this.props.willExpiredTime
                     })}
                 </div>
-                <ContactItem
+                {_.isArray(expireItem.contact_list) && expireItem.contact_list.length ? <ContactItem
                     contacts={expireItem.contact_list}
                     callNumber={this.props.callNumber}
                     errMsg={this.props.errMsg}
-                />
-
+                /> :null}
             </div>
         )
     }

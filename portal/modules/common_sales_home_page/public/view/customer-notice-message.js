@@ -10,8 +10,7 @@ import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 import userData from "PUB_DIR/sources/user-data";
 import notificationAjax from "MOD_DIR/notification/public/ajax/notification-ajax";
 import Trace from "LIB_DIR/trace";
-import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-var TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
+import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -62,8 +61,8 @@ class CustomerNoticeMessage extends React.Component {
         return showList.map((item) => {
             return <div className="system-notice-item">
                 <span className="system-notice-time">
-                    {this.getRelativeTime(item.create_time)}
-                    {this.getRelativeTime(item.create_time) ? moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
+                    {getRelativeTime(item.create_time)}
+                    {getRelativeTime(item.create_time) ? moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </span>
                 <span className="user-name"
                       onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
@@ -104,21 +103,6 @@ class CustomerNoticeMessage extends React.Component {
         notice.showMore = !notice.showMore;
         this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
     };
-
-    getRelativeTime(time) {
-        var relativeTime = "";
-        var todayStartTime = TimeStampUtil.getTodayTimeStamp().start_time;
-        var todayEndTime = TimeStampUtil.getTodayTimeStamp().end_time;
-        if (time >= todayStartTime && time <= todayEndTime) {
-            relativeTime = Intl.get("user.time.today", "今天");
-        } else if (time >= todayStartTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
-            relativeTime = Intl.get("user.time.yesterday", "昨天");
-        } else if (time >= todayStartTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
-            relativeTime = Intl.get("sales.frontpage.before.yesterday", "前天")
-        }
-        return relativeTime;
-    };
-
     render() {
         var customerMessage = this.state.customerNoticeMessage;
         var customer_name = customerMessage.customer_name ? customerMessage.customer_name : customerMessage.name;
@@ -154,7 +138,7 @@ class CustomerNoticeMessage extends React.Component {
                             </p> : null}
                     </div>}
                 </div>
-                {customerMessage.contacts ?
+                {_.isArray(customerMessage.contacts) && customerMessage.contacts.length ?
                     <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
                                  errMsg={this.props.errMsg}/> : null}
             </div>

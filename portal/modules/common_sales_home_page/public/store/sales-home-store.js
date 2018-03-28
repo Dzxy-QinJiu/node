@@ -1,6 +1,5 @@
 var SalesHomeActions = require("../action/sales-home-actions");
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-var TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
 const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
 import {ALL_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
 function SalesHomeStore() {
@@ -113,6 +112,15 @@ SalesHomeStore.prototype.setInitState = function () {
     };
     //即将到期的签约用户
     this.willExpiredAssignCustomer = {
+        loading: true,
+        errMsg: "",
+        data: {
+            list: [],
+            total: ""
+        }
+    };
+    //已到期的试用客户
+    this.hasExpiredTryCustomer = {
         loading: true,
         errMsg: "",
         data: {
@@ -344,42 +352,34 @@ SalesHomeStore.prototype.getSystemNotices = function (result) {
         }
     }
 };
+function getExpireCustomerData(stateData,resultData) {
+    stateData.loading = resultData.loading;
+    if (resultData.error) {
+        stateData.errMsg = resultData.errMsg;
+    } else if (resultData.resData && _.isArray(resultData.resData.result)) {
+        if (resultData.resData.result.length) {
+            var willExpiredAssignCustomerLists = resultData.resData.result[0];
+            stateData.data.list = willExpiredAssignCustomerLists.day_list;
+            stateData.data.total = willExpiredAssignCustomerLists.customer_tags_total;
+        } else {
+            stateData.data.list = [];
+            stateData.data.total = 0;
+        }
+    }
+}
 //获取即将到期的客户
-SalesHomeStore.prototype.getWillExpireCustomer = function (result) {
-    //签约用户
-    if (result.type === "正式用户") {
-        //获取的过期日程列表
-        var willExpiredAssignCustomer = this.willExpiredAssignCustomer;
-        willExpiredAssignCustomer.loading = result.loading;
-        if (result.error) {
-            willExpiredAssignCustomer.errMsg = result.errMsg;
-        } else if (result.resData && _.isArray(result.resData.result)) {
-            if (result.resData.result.length) {
-                var willExpiredAssignCustomerLists = result.resData.result[0];
-                willExpiredAssignCustomer.data.list = willExpiredAssignCustomerLists.day_list;
-                willExpiredAssignCustomer.data.total = willExpiredAssignCustomerLists.customer_tags_total;
-            } else {
-                willExpiredAssignCustomer.data.total = 0;
-            }
-
-
-        }
-    } else if (result.type === "试用用户") {
+SalesHomeStore.prototype.getExpireCustomer = function (result) {
+    if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
+        //获取即将到期的签约用户
+        getExpireCustomerData(this.willExpiredAssignCustomer,result);
+    } else if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
         //获取即将到期的试用用户
-        var willExpiredTryCustomer = this.willExpiredTryCustomer;
-        willExpiredTryCustomer.loading = result.loading;
-        if (result.error) {
-            willExpiredTryCustomer.errMsg = result.errMsg;
-        } else if (result.resData && _.isArray(result.resData.result)) {
-            if (result.resData.result.length) {
-                var willExpiredTryCustomerLists = result.resData.result[0];
-                willExpiredTryCustomer.data.list = willExpiredTryCustomerLists.day_list;
-                willExpiredTryCustomer.data.total = willExpiredTryCustomerLists.customer_tags_total;
-            } else {
-                willExpiredTryCustomer.data.total = 0;
-            }
-
-        }
+        getExpireCustomerData(this.willExpiredTryCustomer,result);
+    }else if (result.type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
+        //获取过期十天已经过期的试用用户
+        getExpireCustomerData(this.hasExpiredTryCustomer,result);
+        //将数据进行颠倒，昨天的数据要排在最上面
+        this.hasExpiredTryCustomer.data.list.reverse();
     }
 };
 

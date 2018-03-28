@@ -57,13 +57,15 @@ function SalesHomeActions() {
         });
     };
     //获取即将到期的客户
-    this.getWillExpireCustomer = function (queryObj) {
+    this.getExpireCustomer = function (queryObj) {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getWillExpireCustomer(queryObj).then((result) => {
+        var dataType = queryObj.dataType;
+        delete queryObj.dataType;
+        salesHomeAjax.getExpireCustomer(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({type: queryObj.tags, loading: false, error: false, resData: result});
+            this.dispatch({type: dataType, loading: false, error: false, resData: result});
         }, (errorMsg) => {
-            this.dispatch({type: queryObj.tags, loading: false, error: true, errMsg: errorMsg});
+            this.dispatch({type: dataType, loading: false, error: true, errMsg: errorMsg});
         });
     };
     //获取关注客户登录，停用客户登录等系统消息
