@@ -2048,6 +2048,7 @@ var zh_CN = {
     "sales.frontpage.before.yesterday": "前天",
     "common.sales.frontpage.click.phone": "点击即可拨打。",
     "common.sales.fronpage.user.login": "{relativedata}有应用到期",
-    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户"
+    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户",
+    "user.list.all.teamlist": "全部团队"
 };
 export default zh_CN;

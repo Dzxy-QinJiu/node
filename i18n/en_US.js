@@ -2007,6 +2007,7 @@ var en_US = {
     "sales.frontpage.before.yesterday": "The day before yesterday",//前天
     "common.sales.frontpage.click.phone": "Click to call",//点击即可拨打。
     "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
-    "common.sales.fronpage.has.expired":"Expired customers of past {X} days"//近{X}天过期未处理客户
+    "common.sales.fronpage.has.expired":"Expired customers of past {X} days",//近{X}天过期未处理客户
+    "user.list.all.teamlist": "All teamlists"//全部团队
 };
 export default en_US;

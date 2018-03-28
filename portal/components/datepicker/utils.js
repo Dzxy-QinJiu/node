@@ -312,11 +312,9 @@ exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
     let dateObj = {};
     let start_time, end_time;
     if (timeRange === 'all') {
-        dateObj.start_time = "";
-        dateObj.end_time = "";
+        start_time = end_time = "";
     } else if (timeRange === 'day') {
-        dateObj.start_time = time_moment.format(MOMENT_DATE_FORMAT);
-        dateObj.end_time = time_moment.format(MOMENT_DATE_FORMAT);
+        start_time = end_time = time_moment.format(MOMENT_DATE_FORMAT);
     } else if (timeRange === 'week') {
         start_time = time_moment.startOf("week").format(MOMENT_DATE_FORMAT);
         end_time = time_moment.endOf("week").format(MOMENT_DATE_FORMAT);
@@ -336,14 +334,14 @@ exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
         if (moment(end_time, MOMENT_DATE_FORMAT).isAfter(moment())) {
             end_time = moment().format(MOMENT_DATE_FORMAT);
         }
-        dateObj.start_time = start_time;
-        dateObj.end_time = end_time;
     }
+    dateObj.start_time = start_time;
+    dateObj.end_time = end_time;
     return dateObj;
 };
 
 // 近一周的时间
-exports.getNearlyWeekTime = function() {
+exports.getNearlyWeekTime = function () {
     return {
         start_time: moment().add(-7, "days"),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -351,7 +349,7 @@ exports.getNearlyWeekTime = function() {
 };
 
 // 近一月的时间
-exports.getNearlyMonthTime = function() {
+exports.getNearlyMonthTime = function () {
     return {
         start_time: moment().subtract(1, 'months').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -359,7 +357,7 @@ exports.getNearlyMonthTime = function() {
 };
 
 // 近一季度的时间
-exports.getNearlyQuarterTime = function() {
+exports.getNearlyQuarterTime = function () {
     return {
         start_time: moment().subtract(1, 'quarter').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -367,7 +365,7 @@ exports.getNearlyQuarterTime = function() {
 };
 
 // 近一年的时间
-exports.getNearlyYearTime = function() {
+exports.getNearlyYearTime = function () {
     return {
         start_time: moment().subtract(1, 'year').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)
