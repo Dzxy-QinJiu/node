@@ -122,14 +122,14 @@ var SalesHomePage = React.createClass({
         this.getRepeatCustomerList();
         //获取三天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
-        this.getExpireCustomer({
+        SalesHomeAction.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time,
             end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER
         });
         //获取半年内即将到期的签约用户 30*6是取的半年的数据
-        this.getExpireCustomer(
+        SalesHomeAction.getExpireCustomer(
             {
                 tags: Intl.get("common.trial.official", "正式用户"),
                 start_time: todayTimeRange.start_time,
@@ -138,7 +138,7 @@ var SalesHomePage = React.createClass({
             }
         );
         //获取过去十天内过期未处理试用客户
-        this.getExpireCustomer({
+        SalesHomeAction.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time - 10 * oplateConsts.ONE_DAY_TIME_RANGE,
             end_time: todayTimeRange.end_time -  oplateConsts.ONE_DAY_TIME_RANGE,
@@ -159,9 +159,6 @@ var SalesHomePage = React.createClass({
         //获取最近登录的客户
         //默认获取近7天登录的客户
         SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
-    },
-    getExpireCustomer: function (queryObj) {
-        SalesHomeAction.getExpireCustomer(queryObj);
     },
     //重复客户列表
     getRepeatCustomerList: function (lastId) {
@@ -501,9 +498,6 @@ var SalesHomePage = React.createClass({
                         if (_.isArray(item.customer_list) && item.customer_list.length) {
                             return (
                                 <div className="expire-customer-item">
-                                    {/*<div className="expire-customer-tip">*/}
-                                    {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
-                                    {/*</div>*/}
                                     <div>
                                         {_.map(item.customer_list, (willExpiredCustomer) => {
                                             return (
@@ -533,11 +527,6 @@ var SalesHomePage = React.createClass({
         if (type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
             //三天内即将到期的试用客户
             data = this.state.willExpiredTryCustomer.data.list;
-            var willexpiredTipArr = [
-                Intl.get("sales.frontpage.expired.today", "今天到期"),
-                Intl.get("sales.frontpage.expired.tomorrow", "明天到期"),
-                Intl.get("sales.frontpage.expired.after.tomorrow", "后天到期")
-            ];
             return (
                 <div className="will-expire-assigned-customer-container" ref="tableWrap">
                     {this.renderExpiredCustomerContent(data)}

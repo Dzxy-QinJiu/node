@@ -362,6 +362,7 @@ function getExpireCustomerData(stateData,resultData) {
             stateData.data.list = willExpiredAssignCustomerLists.day_list;
             stateData.data.total = willExpiredAssignCustomerLists.customer_tags_total;
         } else {
+            stateData.data.list = [];
             stateData.data.total = 0;
         }
     }
