@@ -201,6 +201,7 @@ var en_US = {
     "common.label.days": "days",//"天",
     "common.label.hours": "hours",//"小时",
     "common.app.minute": "minutes",//"分钟",
+    "common.request.timeout": "Error. Request timeout",//"请求超时",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
@@ -1999,15 +2000,15 @@ var en_US = {
     "sales.fromtpage.set.contact.time": "Scheduled originally in {initialtime}",//原定于{initialtime}联系
     "sales.frontpage.fail.new.distribute.customer": "Failed to get newly assigned customer",//获取新分配的客户失败
     "sales.frontpage.new.distribute.customer": "Customers newly allocated but unconnected ",//新分配但未联系的客户
-    "sales.frontpage.tomorrow":"Tomorrow",//明天
-    "sales.frontpage.after.tomorrow":"Acquired",//后天
+    "sales.frontpage.tomorrow": "Tomorrow",//明天
+    "sales.frontpage.after.tomorrow": "Acquired",//后天
     "sales.frontpage.try.expired": "Expiration of trial customer",//试用到期停用
     "sales.frontpage.assigned.expired": "Expiration of aasigned customer",//签约到期停用
     "sales.frontpage.set.time": "timing",//定时
     "sales.frontpage.before.yesterday": "The day before yesterday",//前天
     "common.sales.frontpage.click.phone": "Click to call",//点击即可拨打。
     "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
-    "common.sales.fronpage.has.expired":"Expired customers of past {X} days",//近{X}天过期未处理客户
+    "common.sales.fronpage.has.expired": "Expired customers of past {X} days",//近{X}天过期未处理客户
     "user.list.all.teamlist": "All teamlists"//全部团队
 };
 export default en_US;
