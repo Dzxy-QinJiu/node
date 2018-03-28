@@ -312,11 +312,9 @@ exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
     let dateObj = {};
     let start_time, end_time;
     if (timeRange === 'all') {
-        dateObj.start_time = "";
-        dateObj.end_time = "";
+        start_time = end_time = "";
     } else if (timeRange === 'day') {
-        dateObj.start_time = time_moment.format(MOMENT_DATE_FORMAT);
-        dateObj.end_time = time_moment.format(MOMENT_DATE_FORMAT);
+        start_time = end_time = time_moment.format(MOMENT_DATE_FORMAT);
     } else if (timeRange === 'week') {
         start_time = time_moment.startOf("week").format(MOMENT_DATE_FORMAT);
         end_time = time_moment.endOf("week").format(MOMENT_DATE_FORMAT);
