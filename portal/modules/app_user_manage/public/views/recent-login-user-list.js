@@ -34,7 +34,7 @@ class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
         let timeRange = this.getTodayTimeRange();
-        var defaultTeam = {group_id: "", group_name: Intl.get("common.all", "全部")};
+        var defaultTeam = {group_id: "", group_name: Intl.get("user.list.all.teamlist", "全部团队")};
         var teamLists = _.flatten([[defaultTeam], this.props.teamlists]);
         this.state = {
             selectedAppId: this.getSelectedAppId(this.props),
