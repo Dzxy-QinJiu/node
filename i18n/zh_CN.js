@@ -164,6 +164,7 @@ var zh_CN = {
     "common.official": "签约",
     "common.trial": "试用",
     "common.qualified": "合格",
+    "common.unqualified": "不合格",
     "common.official.qualified": "签约合格",
     "common.trial.qualified": "试用合格",
     "common.history.qualified": "曾经合格",
@@ -1237,6 +1238,7 @@ var zh_CN = {
     "crm.customer.transfer": "转出客户",
     "crm.customer.transfer.failed": "转出客户失败",
     "crm.right.schedule": "联系计划",
+    "crm.sales.customerStage": "客户阶段变更统计",
     // 客户管理end
 
     // 客户分析start

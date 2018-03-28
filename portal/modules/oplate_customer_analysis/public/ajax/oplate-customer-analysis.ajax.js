@@ -75,3 +75,32 @@ exports.getSalesStageList = function () {
     return Deferred.promise();
 };
 
+const ajaxPro = function(config) {
+    let jqXHR = null;
+    return function (param) {
+        return new Promise((resolve, reject) => {
+            if (typeof param === "object") {
+                config.data = param;
+            }        
+            //默认格式为json
+            if(!config.dataType) {
+                config.dataType = "json";
+            } 
+            _.extend(config,{
+                success: function(result) {
+                    resolve(result)
+                },
+                error: function (xhr, status) {
+                    if (status !== 'abort') {
+                        reject(xhr.responseJSON);
+                    }
+                }
+            });        
+            jqXHR && jqXHR.abort();
+            jqXHR = $.ajax(config);
+        })       
+    }
+};
+
+//获取客户阶段变更数据todo
+exports.getCustomerStageData = ajaxPro("customerStage");

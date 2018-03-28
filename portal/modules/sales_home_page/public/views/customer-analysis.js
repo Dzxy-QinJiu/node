@@ -21,7 +21,11 @@ var constantUtil = require("../util/constant");
 var delayConstant = constantUtil.DELAY.TIMERANG;
 import Analysis from "CMP_DIR/analysis";
 import { processCustomerStageChartData, processOrderStageChartData } from "CMP_DIR/analysis/utils";
-import { AntcHorizontalStageChart } from "antc";
+import { AntcHorizontalStageChart, AntcTable } from "antc";
+import { Alert } from "antd";
+var RightPanel = require("CMP_DIR/rightPanel").RightPanel;
+import CustomerStageTable from "./customer-stage-table";
+let Spinner = require("CMP_DIR/spinner");
 
 //客户分析
 var CustomerAnalysis = React.createClass({
@@ -33,7 +37,8 @@ var CustomerAnalysis = React.createClass({
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
-            updateScrollBar:false
+            updateScrollBar:false,
+            isShowCustomerStageTable: false
         };
     },
     onStateChange: function () {
@@ -71,6 +76,12 @@ var CustomerAnalysis = React.createClass({
         } else {
             return "";
         }
+    },
+    //获取客户阶段变更数据
+    getCustomerStageData: function(order) {
+        OplateCustomerAnalysisAction.getCustomerStageData({
+            order
+        });
     },
     getChartData: function () {
         const queryParams = {
@@ -125,9 +136,21 @@ var CustomerAnalysis = React.createClass({
         OplateCustomerAnalysisStore.listen(this.onStateChange);
         OplateCustomerAnalysisAction.getSalesStageList();
         this.getChartData();
+        setTimeout(() => this.getCustomerStageData());
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         $(".statistic-data-analysis .thumb").hide();
+    },
+    //展示客户阶段统计
+    showCusStageMetic: function() {
+        this.setState({
+            isShowCustomerStageTable: true
+        })
+    },
+    closeCustomerStageTable: function() {
+        this.setState({
+            isShowCustomerStageTable: false
+        })
     },
     componentWillUnmount: function () {
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
@@ -313,6 +336,113 @@ var CustomerAnalysis = React.createClass({
             />
         );
     },
+    //处理阶段点击的回调 
+    handleStageNumClick: function(item, type) {
+        this.setState({
+            selectedCustomerStage: {
+                type,
+                date: item.date
+            }
+        }, () => {this.showCusStageMetic()});
+    },
+    /**
+     * 参数说明，ant-design的table组件
+     * @param pagination   分页参数，当前不需要使用分页
+     * @param filters      过滤器参数，当前不需要使用过滤器
+     * @param sorter       排序参数，当前需要使用sorter
+     *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
+     */
+    onSortChange(pagination, filters, sorter) {       
+        this.getCustomerStageData(sorter.order);
+    },
+    renderCustomerStage: function() {
+        const columns = [
+            {
+                title: Intl.get("crm.146", "日期"),
+                dataIndex: 'date',
+                key: 'date',
+                sorter: true,
+            },{
+                title: Intl.get("sales.stage.message", "信息"),
+                dataIndex: "info",
+                key: "info",
+                render: (text, item, index) => {
+                    return (
+                        <span onClick={this.handleStageNumClick.bind(this, item, "info")}>{text}</span>
+                    )
+                }
+            },{
+                title: Intl.get("sales.stage.intention", "意向"),
+                dataIndex: "intention",
+                key: "intention",
+                render: (text, item, index) => {
+                    return (
+                        <span onClick={this.handleStageNumClick.bind(this, item, "intention")}>{text}</span>
+                    )
+                }
+            },{
+                title: Intl.get("sales.stage.signed", "签约"),
+                dataIndex: "signed",
+                key: "signed",
+                render: (text, item, index) => {
+                    return (
+                        <span onClick={this.handleStageNumClick.bind(this, item, "signed")}>{text}</span>
+                    )
+                }
+            },{
+                title: Intl.get("common.trial", "试用"),
+                dataIndex: "trial",
+                key: "trial",
+                render: (text, item, index) => {
+                    return (
+                        <span onClick={this.handleStageNumClick.bind(this, item, "trial")}>{text}</span>
+                    )
+                }
+            },{
+                title: Intl.get("common.trial.qualified", "试用合格"),
+                dataIndex: "qualified",
+                key: "qualified",
+                render: (text, item, index) => {
+                    return (
+                        <span onClick={this.handleStageNumClick.bind(this, item, "qualified")}>{text}</span>
+                    )
+                }
+            },{
+                title: Intl.get("sales.home.sales", "销售"),
+                dataIndex: "sales",
+                key: "sales"
+            },{
+                title: Intl.get("common.belong.team", "所属团队"),
+                dataIndex: "team",
+                key: "team"
+            }
+        ];
+        if (this.state.customerStage.errorMsg) {
+            return (
+                <Alert
+                    message={this.state.customerStage.errorMsg}
+                    type="error"
+                    showIcon
+                />
+            )
+        } else if (this.state.customerStage.loading) {
+            return (
+                <Spinner/>
+            )
+        } else {
+            return (
+                <AntcTable
+                    util={{zoomInSortArea: true}}
+                    dataSource={this.state.customerStage.data}
+                    loading={this.state.customerStage.loading}
+                    pagination={false}
+                    columns={columns}
+                    onChange={this.onSortChange}
+                />
+            )
+        }
+        
+    },
     changeCurrentTab: function (tabName, event) {
         OplateCustomerAnalysisAction.changeCurrentTab(tabName);
         this.getChartData();
@@ -376,6 +506,15 @@ var CustomerAnalysis = React.createClass({
                       </div>
                   </div>
               )}
+              <div className="analysis_chart col-md-6 col-sm-12"
+                data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
+                <div className="chart-holder" data-tracename="客户阶段变更统计">
+                    <div className="title"><ReactIntl.FormattedMessage id="crm.sales.customerStage"
+                                                                        defaultMessage="客户阶段变更统计"/>
+                    </div>
+                    {this.renderCustomerStage()}
+                </div>
+              </div>
               {
                   //hideTeamChart ? null : (
                   //<div className="analysis_chart col-md-6 col-sm-12"
@@ -411,11 +550,22 @@ var CustomerAnalysis = React.createClass({
         this.chartWidth = layoutParams.chartWidth;
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+        //todo dispatch结束后再render
         return (
             <div className="oplate_customer_analysis">
                 <div ref="chart_list" style={{height: layoutParams.chartListHeight}}>
                     {this.renderContent()}
                 </div>
+                <RightPanel
+                    className="customer-stage-table-wrapper"
+                    showFlag={this.state.isShowCustomerStageTable}
+                >
+                    {this.state.isShowCustomerStageTable?
+                    <CustomerStageTable
+                        params={this.state.customerStageParams}
+                        onClose={this.closeCustomerStageTable}
+                    />: null }
+                </RightPanel>
             </div>
         );
     }

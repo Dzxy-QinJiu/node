@@ -65,6 +65,18 @@ function OplateCustomerAnalysisActions() {
             _this.dispatch(errorMsg);
         });
     };
+
+    //获取客户阶段变更数据
+    this.getCustomerStageData = function () {
+        var _this = this;
+        _this.dispatch({loading:true,error:false});
+        OplateCustomerAnalysisAjax.getCustomerStageData().then(function (data) {
+            _this.dispatch({loading: false, errorMsg: "", data});
+        }, function(errorMsg) {
+            _this.dispatch({loading: false, errorMsg, data: []});
+        });
+    };
+
 };
 
 //使用alt导出一个action
