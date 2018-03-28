@@ -2052,6 +2052,7 @@ var zh_CN = {
     "sales.frontpage.set.time": "定时",
     "sales.frontpage.before.yesterday": "前天",
     "common.sales.frontpage.click.phone": "点击即可拨打。",
-    "common.sales.fronpage.user.login": "{relativedata}有应用到期"
+    "common.sales.fronpage.user.login": "{relativedata}有应用到期",
+    "user.list.all.teamlist": "全部团队"
 };
 export default zh_CN;
