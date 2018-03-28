@@ -103,4 +103,7 @@ const ajaxPro = function(config) {
 };
 
 //获取客户阶段变更数据todo
-exports.getCustomerStageData = ajaxPro("customerStage");
+exports.getCustomerStageData = ajaxPro({
+    url: "customerStage",
+    type: "get"
+});
