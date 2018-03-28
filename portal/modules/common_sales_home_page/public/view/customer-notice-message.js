@@ -10,9 +10,7 @@ import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 import userData from "PUB_DIR/sources/user-data";
 import notificationAjax from "MOD_DIR/notification/public/ajax/notification-ajax";
 import Trace from "LIB_DIR/trace";
-import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-var TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
-import {getRelativeTime} from "../utils/util";
+import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);

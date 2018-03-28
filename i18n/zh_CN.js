@@ -2043,7 +2043,6 @@ var zh_CN = {
     "sales.frontpage.expired.today": "今天到期",
     "sales.frontpage.expired.tomorrow": "明天到期",
     "sales.frontpage.expired.after.tomorrow": "后天到期",
-    "sales.frontpage.today":"今天",
     "sales.frontpage.tomorrow":"明天",
     "sales.frontpage.after.tomorrow":"后天",
     "sales.frontpage.try.expired": "试用到期停用",

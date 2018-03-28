@@ -1,6 +1,5 @@
 var RightContent = require("CMP_DIR/privilege/right-content");
 require("./css/index.less");
-var TopNav = require("CMP_DIR/top-nav");
 var SalesHomeStore = require("./store/sales-home-store");
 var SalesHomeAction = require("./action/sales-home-actions");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
@@ -8,9 +7,8 @@ let TimeUtil = require("PUB_DIR/sources/utils/time-format-util");
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
-var Spinner = require("CMP_DIR/spinner");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
-import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE} from "PUB_DIR/sources/utils/consts";
+import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE,CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import Trace from "LIB_DIR/trace";
 import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
@@ -22,13 +20,7 @@ import {RightPanel}  from "CMP_DIR/rightPanel";
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 var userData = require("PUB_DIR/sources/user-data");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-import {getRelativeTime} from "./utils/util";
-// 通话类型的常量
-const CALL_TYPE_OPTION = {
-    ALL: 'all',
-    PHONE: 'phone',
-    APP: 'app'
-};
+import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -52,6 +44,7 @@ var SalesHomePage = React.createClass({
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
+        //之所以用jquery不用类名加样式，是因为客户会有重复的，通过customerId无法进行判断
         $(".sales_home_content").on("click", ".sale-home-customer-name", function (e) {
             $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
             $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
@@ -501,6 +494,41 @@ var SalesHomePage = React.createClass({
     afterHandleMessage: function (messageObj) {
         SalesHomeAction.afterHandleMessage(messageObj);
     },
+    renderExpiredCustomerContent: function (cls,data) {
+        return (
+            <div className={cls} ref="tableWrap">
+                <GeminiScrollbar>
+                    {_.map(data, (item, index) => {
+                        if (_.isArray(item.customer_list) && item.customer_list.length) {
+                            return (
+                                <div className="expire-customer-item">
+                                    {/*<div className="expire-customer-tip">*/}
+                                    {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
+                                    {/*</div>*/}
+                                    <div>
+                                        {_.map(item.customer_list, (willExpiredCustomer) => {
+                                            return (
+                                                <WillExpireItem
+                                                    expireItem={willExpiredCustomer}
+                                                    openCustomerDetail={this.openCustomerDetail}
+                                                    callNumber={this.state.callNumber}
+                                                    errMsg={this.state.errMsg}
+                                                    willExpiredTime={getRelativeTime(item.date)}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return null;
+                        }
+                    })}
+                </GeminiScrollbar>
+            </div>
+        )
+
+    },
     //渲染即将到期的试用客户和签约客户
     renderWillExpiredTryAndAssignedCustomer: function (type) {
         var data = [];
@@ -513,105 +541,24 @@ var SalesHomePage = React.createClass({
                 Intl.get("sales.frontpage.expired.after.tomorrow", "后天到期")
             ];
             return (
-                <div className="will-expire-assigned-customer-container" ref="tableWrap">
-                    <GeminiScrollbar>
-                        {_.map(data, (item, index) => {
-                            if (_.isArray(item.customer_list) && item.customer_list.length) {
-                                return (
-                                    <div className="expire-customer-item">
-                                        {/*<div className="expire-customer-tip">*/}
-                                            {/*{willexpiredTipArr[index]}*/}
-                                        {/*</div>*/}
-                                        <div>
-                                            {_.map(item.customer_list, (willExpiredCustomer) => {
-                                                return (
-                                                    <WillExpireItem
-                                                        expireItem={willExpiredCustomer}
-                                                        openCustomerDetail={this.openCustomerDetail}
-                                                        callNumber={this.state.callNumber}
-                                                        errMsg={this.state.errMsg}
-                                                        willExpiredTime={willexpiredTipArr[index].substr(0, 2)}
-                                                    />
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </GeminiScrollbar>
+                <div>
+                    {this.renderExpiredCustomerContent("will-expire-assigned-customer-container",data)}
                 </div>
             )
         } else if (type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
             //半年内即将到期的签约客户
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
-                <div className="will-expire-try-customer-container" ref="tableWrap">
-                    <GeminiScrollbar>
-                        {_.map(data, (item, index) => {
-                            if (_.isArray(item.customer_list) && item.customer_list.length) {
-                                return (
-                                    <div className="expire-customer-item">
-                                        {/*<div className="expire-customer-tip">*/}
-                                            {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
-                                        {/*</div>*/}
-                                        <div>
-                                            {_.map(item.customer_list, (willExpiredCustomer) => {
-                                                return (
-                                                    <WillExpireItem
-                                                        expireItem={willExpiredCustomer}
-                                                        openCustomerDetail={this.openCustomerDetail}
-                                                        callNumber={this.state.callNumber}
-                                                        errMsg={this.state.errMsg}
-                                                        willExpiredTime={getRelativeTime(item.date)}
-                                                    />
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </GeminiScrollbar>
+                <div>
+                    {this.renderExpiredCustomerContent("will-expire-try-customer-container",data)}
                 </div>
             )
         }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
             //近10天过期未处理试用客户
             data = this.state.hasExpiredTryCustomer.data.list;
             return (
-                <div className="will-expire-try-customer-container" ref="tableWrap">
-                    <GeminiScrollbar>
-                        {_.map(data, (item, index) => {
-                            if (_.isArray(item.customer_list) && item.customer_list.length) {
-                                return (
-                                    <div className="expire-customer-item">
-                                        {/*<div className="expire-customer-tip">*/}
-                                            {/*{moment(item.date).format(oplateConsts.DATE_FORMAT)}*/}
-                                        {/*</div>*/}
-                                        <div>
-                                            {_.map(item.customer_list, (hasExpiredCustomer) => {
-                                                return (
-                                                    <WillExpireItem
-                                                        expireItem={hasExpiredCustomer}
-                                                        openCustomerDetail={this.openCustomerDetail}
-                                                        callNumber={this.state.callNumber}
-                                                        errMsg={this.state.errMsg}
-                                                        willExpiredTime={getRelativeTime(item.date)}
-                                                    />
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </GeminiScrollbar>
+                <div>
+                    {this.renderExpiredCustomerContent("has-expired-try-customer-container",data)}
                 </div>
             )
         }

@@ -2002,7 +2002,6 @@ var en_US = {
     "sales.frontpage.expired.today": "Expired today",//今天到期
     "sales.frontpage.expired.tomorrow": "Expired tomorrow",//明天到期
     "sales.frontpage.expired.after.tomorrow": "Expired acquired",//后天到期
-    "sales.frontpage.today":"Today",//今天
     "sales.frontpage.tomorrow":"Tomorrow",//明天
     "sales.frontpage.after.tomorrow":"Acquired",//后天
     "sales.frontpage.try.expired": "Expiration of trial customer",//试用到期停用

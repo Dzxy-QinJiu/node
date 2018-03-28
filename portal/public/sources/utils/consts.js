@@ -150,3 +150,8 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
 //处理 或者未处理
 //不同列表的类型
 export const STATUS = {UNHANDLED: "unhandled", HANDLED: "handled"};
+export const CALL_TYPE_OPTION = {
+    ALL: 'all',
+    PHONE: 'phone',
+    APP: 'app'
+};

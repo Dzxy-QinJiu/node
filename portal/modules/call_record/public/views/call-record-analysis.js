@@ -29,14 +29,7 @@ import Trace from "LIB_DIR/trace";
 import ScatterChart from 'CMP_DIR/chart/scatter';
 import {AntcTable} from "antc";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
-
-// 通话类型的常量
-const CALL_TYPE_OPTION = {
-    ALL: 'all',
-    PHONE: 'phone',
-    APP: 'app'
-};
-
+import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
     ORIGIN_WIDTH: 135,
