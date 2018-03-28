@@ -43,7 +43,7 @@ exports.checkWav = function(str){
         return index + 4 === str.length;
     }
 };
-//返回录音url地址
+//返回录音url的配置
 exports.urlConifg = function(itemLocal,itemRecord){
     //播放长沙，济南和北京的录音
     var local = "changsha", audioType = "";
