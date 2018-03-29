@@ -6,7 +6,7 @@
  */
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
 var UI_ERROR = require("../../lib/utils/request-error-util");
-import {message, Modal} from 'antd';
+import {Modal} from 'antd';
 
 (function () {
     let crypto = require("crypto");
@@ -283,8 +283,7 @@ import {message, Modal} from 'antd';
      * @param options
      */
     function handleTimeout(xhr, options) {
-        sendMessage && sendMessage("Error requesting " + options.url + ": " + xhr.status + " " + xhr.statusText);
-        message.error(Intl.get("common.request.timeout", "请求超时!"));
+        sendMessage && sendMessage("Error requesting " + options && options.url + ": " + xhr.status + " " + xhr.statusText);
     }
 
     /**
