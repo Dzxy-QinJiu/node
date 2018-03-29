@@ -474,75 +474,82 @@ var CustomerAnalysis = React.createClass({
                 )
             }
         }
-        if (this.state.transferCustomers.errorMsg) {
-            return (
-                <Alert
-                    message={this.state.transferCustomers.errorMsg}
-                    type="error"
-                    showIcon
-                />
-            )
-        } else if (loadingFirst) {
-            return (
-                <Spinner />
-            )
-        } else {
-            const showNoMoreDataTip = !loadingNotFirst && !this.state.transferCustomers.listenScrollBottom;
-            console.log(showNoMoreDataTip)
-            return (
-                <div
-                    className="chart-holder transfer-customer-container scrollbar-container"
-                    data-tracename="转出客户统计"
-                    style={{ height: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "246px" : "540px" }}
-                >
-                    <GeminiScrollbar senabled={true} >
-                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.moveoutCustomer"
-                            defaultMessage="转出客户统计" />
-                        </div>
-                        <div>
-                            <AntcTable
-                                rowKey={getRowKey}
-                                rowClassName={handleRowClassName}
-                                util={{ zoomInSortArea: true }}
-                                columns={columns}
-                                pagination={false}
-                                onChange={this.onSortChange.bind(this)}
-                                dataSource={this.state.transferCustomers.data}
-                                loading={loadingFirst}
-                            />
-                            <div className="load-more-container">
-                                {!showNoMoreDataTip?renderLoadMore():null}
-                                {<NoMoreDataTip
-                                    fontSize="12"
-                                    show={() => showNoMoreDataTip}                                   
-                                />}
-                            </div>
-                        </div>
-                    </GeminiScrollbar>
-                    <CrmRightPanel
-                        showFlag={this.state.showRightPanel}
-                        currentId={this.state.selectedCustomerId}
-                        hideRightPanel={this.hideRightPanel}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+        const renderErr = () => {
+            if (this.state.transferCustomers.errorMsg) {
+                return (
+                    <Alert
+                        message={this.state.transferCustomers.errorMsg}
+                        type="error"
+                        showIcon
                     />
-                    <RightPanel
-                        className="customer-user-list-panel"
-                        showFlag={this.state.isShowCustomerUserListPanel}
-                    >
-                        {this.state.isShowCustomerUserListPanel ?
-                            <AppUserManage
-                                customer_id={this.state.CustomerInfoOfCurrUser.id}
-                                hideCustomerUserList={this.closeCustomerUserListPanel}
-                                customer_name={this.state.CustomerInfoOfCurrUser.name}
-                            /> : null
-                        }
-                    </RightPanel>
-                </div>
+                )
+            }
+        }
+        const renderSpiner = () => {
+            if (loadingFirst) {
+                return (
+                    <Spinner />
+                )
+            } 
+        }
+        const hideTable = this.state.transferCustomers.errorMsg || this.state.transferCustomers.loading;
+        const showNoMoreDataTip = !loadingNotFirst && !this.state.transferCustomers.listenScrollBottom;
+        return (
+            <div
+                className="chart-holder transfer-customer-container scrollbar-container"
+                data-tracename="转出客户统计"
+                style={{ height: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "246px" : "540px" }}
+            >
+                <GeminiScrollbar senabled={true} >
+                    <div className="title"><ReactIntl.FormattedMessage id="user.analysis.moveoutCustomer"
+                        defaultMessage="转出客户统计" />
+                    </div>
+                    {renderErr()}
+                    {renderSpiner()}
+                    <div className={hideTable?"hide": ""}>
+                        <AntcTable
+                            rowKey={getRowKey}
+                            rowClassName={handleRowClassName}
+                            util={{ zoomInSortArea: true }}
+                            columns={columns}
+                            pagination={false}
+                            onChange={this.onSortChange.bind(this)}
+                            dataSource={this.state.transferCustomers.data}
+                            loading={loadingFirst}
+                        />
+                        <div className="load-more-container">
+                            {!showNoMoreDataTip? renderLoadMore(): null}
+                            {<NoMoreDataTip
+                                fontSize="12"
+                                show={() => showNoMoreDataTip}                                   
+                            />}
+                        </div>
+                    </div>
+                </GeminiScrollbar>
+                <CrmRightPanel
+                    showFlag={this.state.showRightPanel}
+                    currentId={this.state.selectedCustomerId}
+                    hideRightPanel={this.hideRightPanel}
+                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                    updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                />
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    {this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
+            </div>
 
 
             )
-        }
+        
     },
     renderChartContent: function () {
         //销售不展示团队的数据统计
