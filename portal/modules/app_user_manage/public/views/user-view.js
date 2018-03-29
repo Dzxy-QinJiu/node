@@ -58,10 +58,12 @@ var UserTabContent = React.createClass({
         };
     },
     componentDidMount: function () {
-        //获取线索来源
-        this.getClueSource();
-        //获取线索渠道
-        this.getClueChannel();
+        if (hasPrivilege("CUSTOMER_ADD_CLUE")){
+            //获取线索来源
+            this.getClueSource();
+            //获取线索渠道
+            this.getClueChannel();
+        }
     },
     getClueSource: function () {
         clueCustomerAjax.getClueSource().then(data => {
