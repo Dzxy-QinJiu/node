@@ -401,7 +401,6 @@ var CustomerAnalysis = React.createClass({
         this.setState({
             showRightPanel: false
         });
-        // $(".ant-table-row").removeClass("current-row");
     },
     renderTransferedCustomerTable: function () {
         const handleCustomerClick = (item, index) => {
