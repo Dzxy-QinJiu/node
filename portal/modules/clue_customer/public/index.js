@@ -55,10 +55,12 @@ const ClueCustomer = React.createClass({
     componentDidMount: function () {
         this.changeTableHeight();
         clueCustomerStore.listen(this.onStoreChange);
-        //获取线索来源
-        this.getClueSource();
-        //获取线索渠道
-        this.getClueChannel();
+        if (hasPrivilege("CUSTOMER_ADD_CLUE")){
+            //获取线索来源
+            this.getClueSource();
+            //获取线索渠道
+            this.getClueChannel();
+        }
         //管理员、销售领导默认展示待分配的线索客户 0
         if (this.isSalesManager()){
             clueCustomerAction.getSalesManList();
