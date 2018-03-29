@@ -1542,6 +1542,7 @@ var en_US = {
     "operation.report.month.active": "Active monthly",//月活@
     "operation.report.app.login.statistic": "Login statistics of every application ",//各应用登录统计@
     "operation.report.time.duration": "Until {time}",//至{time}为止@
+    "operation.report.activity.unit": "Activity degree",//""活跃度(%)",
     //用户分析
     "oplate.user.analysis.4": "Membership statistics",//成员统计@
     "oplate.user.analysis.5": "Active period statistics",//活跃时间段统计@
