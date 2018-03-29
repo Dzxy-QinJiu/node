@@ -155,7 +155,6 @@ class TagCard extends React.Component {
                             <span className="iconfont icon-add" ref="newTagAdd"
                                   onClick={this.addTag.bind(this)}/>
                         </div>
-                        {this.renderTagButtons()}
                     </div>)
                 }
             </div>
@@ -177,8 +176,14 @@ class TagCard extends React.Component {
 
     render() {
         return (
-            <DetailCard title={this.renderTagTitle()} content={this.renderTagContent()}
-                        isEdit={this.state.displayType === "edit"}/>
+            <DetailCard title={this.renderTagTitle()}
+                        content={this.renderTagContent()}
+                        isEdit={this.state.displayType === "edit"}
+                        loading={this.state.loading}
+                        saveErrorMsg={this.state.submitErrorMsg}
+                        handleSubmit={this.handleSubmit.bind(this)}
+                        handleCancel={this.handleCancel.bind(this)}
+            />
         )
     }
 }

@@ -1,6 +1,8 @@
 //客户详情概览页
 @font_color: #333333;
+@label_color: #999999;
 @btn_color: #8da8c5;
+@card_margin: 8px;
 .basic-overview-contianer {
   //有应用签约到期的提示
   .app-expire-tip {
@@ -15,6 +17,45 @@
     .icon-arrow-right {
       float: right;
       color: @btn_color;
+    }
+  }
+  //所属销售的样式
+  .sales-team-container {
+    .detail-card-title {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .sales-team-show-block {
+      font-size: 14px;
+      .sales-team-label {
+        color: @label_color;
+        margin-right: @card_margin;
+      }
+      .sales-team-text {
+        color: @font_color;
+      }
+      span.iconfont {
+        float: right;
+        font-size: 16px;
+        color: @btn_color;
+      }
+    }
+    //编辑区域样式
+    .sales-team-edit-block {
+      .edit-label {
+        margin-right: @card_margin;
+        font-size: 14px;
+        color: @font_color;
+      }
+      .ant-select {
+        width: 358px;
+      }
+    }
+  }
+  .sales-team-container.detail-card-edit-status {
+    .detail-card-title {
+      margin-bottom: @card_margin;
     }
   }
 }

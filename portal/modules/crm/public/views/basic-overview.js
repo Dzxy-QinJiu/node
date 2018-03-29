@@ -1,8 +1,8 @@
 import '../css/basic-overview.less';
 import DetailCard from "CMP_DIR/detail-card";
 import {hasPrivilege} from "CMP_DIR/privilege/checker"
-import SalesSelectField from "./basic_info/sales-select-field";
 import TagCard from "CMP_DIR/detail-card/tag-card";
+import SalesTeamCard from "./basic_info/sales-team-card"
 import {isClueTag, isTurnOutTag} from "../utils/crm-util";
 import classNames from 'classnames';
 var CRMStore = require("../store/basic-store");
@@ -200,28 +200,8 @@ var BasicOverview = React.createClass({
             </div>);
         return (<DetailCard content={tip}/>);
     },
-    //渲染所属销售
-    renderSalesContent: function (basicData) {
-        return (<SalesSelectField
-            enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
-            enableTransfer={this.enableTransferCustomer()}
-            isMerge={this.props.isMerge}
-            updateMergeCustomer={this.props.updateMergeCustomer}
-            customerId={basicData.id}
-            userName={basicData.user_name}
-            userId={basicData.user_id}
-            salesTeam={basicData.sales_team}
-            salesTeamId={basicData.sales_team_id}
-            modifySuccess={this.editBasicSuccess}
-        />);
-    },
-
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
-        //是否显示用户统计内容
-        var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
-        var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
-        let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
         //线索、转出标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
         if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
@@ -230,14 +210,23 @@ var BasicOverview = React.createClass({
         return (
             <div className="basic-overview-contianer">
                 {this.renderExpireTip()}
-                <DetailCard content={this.renderSalesContent(basicData)}/>
+                <SalesTeamCard
+                    enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
+                    enableTransfer={this.enableTransferCustomer()}
+                    customerId={basicData.id}
+                    userName={basicData.user_name}
+                    userId={basicData.user_id}
+                    salesTeam={basicData.sales_team}
+                    salesTeamId={basicData.sales_team_id}
+                    modifySuccess={this.editBasicSuccess}
+                />
                 <TagCard title={Intl.get("common.tag", "标签") + ":"}
+                         placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
                          data={basicData}
                          tags={tagArray}
                          recommendTags={this.state.recommendTags}
                          enableEdit={hasPrivilege("CUSTOMER_UPDATE_LABEL")}
                          saveTags={this.saveEditTags}
-                         placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
                 />
             </div>
         );
