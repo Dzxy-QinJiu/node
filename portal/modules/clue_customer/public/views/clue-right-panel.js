@@ -11,26 +11,46 @@ import {checkEmail} from "../utils/clue-customer-utils";
 var clueCustomerAction = require("../action/clue-customer-action");
 var clueCustomerStore = require("../store/clue-customer-store");
 var clueCustomerAjax = require("../ajax/clue-customer-ajax");
-let SalesSelectField = require("MOD_DIR/crm/public/views/basic_data/sales-select-field");
+import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 var userData = require("../../../../public/sources/user-data");
 const noop = function () {};
+var crmAjax = require("MOD_DIR/crm/public/ajax");
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             curCustomer: this.props.curCustomer,
+            relatedCustomer:{},//与线索相关联的客户
             ...clueCustomerStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
     };
 
     componentDidMount() {
+        var currentId = this.state.curCustomer.id;
+        if (currentId){
+            crmAjax.queryCustomer({customer_clue_id: currentId}, 1, 1).then((data) => {
+                if (data && _.isArray(data.result) && data.result[0]) {
+                    this.setState({
+                        relatedCustomer: data.result[0]
+                    });
+                }
+            }, () => {
+                this.setState({
+                    relatedCustomer:{}
+                });
+            });
+        }
         clueCustomerStore.listen(this.onStoreChange);
     };
 
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
+    };
+    //是否是销售领导 或者是域管理员
+    isSalesManager() {
+        return userData.isSalesManager()
     };
 
     componentWillReceiveProps(nextProps) {
@@ -114,26 +134,7 @@ class ClueRightPanel extends React.Component {
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
     };
-    //把线索客户分配给销售
-    distributeCustomerToSale = (submitObj) => {
-        var updateObj = {
-            "customer_id": submitObj.id,
-            "sale_id": submitObj.user_id,
-            "sale_name": submitObj.user_name,
-            "team_name": submitObj.sales_team,
-            "team_id": submitObj.sales_team_id,
-        };
-        clueCustomerAction.distributeCluecustomerToSale(updateObj, () => {
-            clueCustomerAction.afterEditCustomerDetail({
-                "user_name": submitObj.user_name,
-                "user_id": submitObj.user_id,
-                "sales_team": submitObj.sales_team,
-                "sales_team_id": submitObj.sales_team_id
-            });
-            //把分配线索客户设置为text格式
-            this.refs.distribute.changeDisplayType("text");
-        });
-    };
+
     render() {
         var curCustomer = this.state.curCustomer || {};
         var phone = "", qq = "", email = "", id = "";
@@ -281,22 +282,10 @@ class ClueRightPanel extends React.Component {
                             </dl>
                         </div>
                     </div>
-                    <div className="sales-assign-wrap">
-                        <h5>{Intl.get("cluecustomer.trace.person", "跟进人")}</h5>
-                        <div className="sales-assign-content">
-                            <SalesSelectField
-                                ref="distribute"
-                                disabled={(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER"))?false:true}
-                                isMerge={true}
-                                updateMergeCustomer={this.distributeCustomerToSale}
-                                customerId={curCustomer.id}
-                                userName={curCustomer.user_name}
-                                userId={curCustomer.user_id}
-                                salesTeam={curCustomer.sales_team}
-                                salesTeamId={curCustomer.sales_team_id}
-                            />
-                        </div>
-                    </div>
+                    <AssignClueAndSelectCustomer
+                        curClueDetail = {curCustomer}
+
+                    />
                 </GeminiScrollbar>
             </RightPanel>
         )

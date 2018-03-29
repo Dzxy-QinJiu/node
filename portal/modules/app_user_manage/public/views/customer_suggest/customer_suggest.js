@@ -310,7 +310,7 @@ var CustomerSuggest = React.createClass({
                         onChange={this.customerChoosen}
                         value={this.state.keyword}
                         dropdownMatchSelectWidth={false}
-                        prefixCls="customer_combobox_search ant-select"
+                        dropdownClassName="customer_combobox_search"
                         notFoundContent={Intl.get("common.no.data", "暂无数据")}>
                         {
                             this.state.list.map(function (item) {
