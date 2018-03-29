@@ -54,14 +54,20 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser("83DHWG36"));
 
-
 //引用express-domain-middleware插件
 //该插件为每次请求的req和res创建一个单独的domain
 //这样在异步请求里发生的错误就能被express的错误处理函数捕获了，而不至于将当前请求挂起
 app.use(require('express-domain-middleware'));
 //线上环境才添加追踪
 if (commonUtils.ip.isProductionEnvironment()) {
-    app.all("*", config.oplateTrace.trace);
+    //分布式跟踪
+//数据请求追踪
+    var dataTrace = require("distributed-trace-for-nodejs");
+    dataTrace.init({
+        zipkinUrl: config.traceConfig.zipkinUrl,
+        serviceName: config.traceConfig.serviceName
+    });
+    app.all("*", dataTrace.trace);
 }
 //引入session
 var sessionMiddleware = require("./portal/lib/middlewares/session");
@@ -97,7 +103,7 @@ var server = app.listen(app.get('port'), function () {
 });
 
 //初始化coordinator
-if ( auth.getLang() !== "es_VE") {
+if (auth.getLang() !== "es_VE") {
     coordinator(function () {
         //Coordinator启动后，创建socketIO,启动推送
         require("./portal/modules/socketio").startSocketio(server);
