@@ -202,6 +202,7 @@ var zh_CN = {
     "common.label.days": "天",
     "common.label.hours": "小时",
     "common.app.minute": "分钟",
+    "common.load.more": "加载更多",
     //公共部分--end
     "login.login": "登录",
     "login.service.error": "很抱歉,服务器出现了异常状况",
@@ -1237,6 +1238,8 @@ var zh_CN = {
     "crm.customer.transfer": "转出客户",
     "crm.customer.transfer.failed": "转出客户失败",
     "crm.right.schedule": "联系计划",
+    "crm.customer.transfer.sales": "销售代表",
+    "crm.customer.transfer.manager": "客户经理",
     // 客户管理end
 
     // 客户分析start
@@ -1501,6 +1504,7 @@ var zh_CN = {
     "user.analysis.team.add": "团队-新增",//各团队新增用户、客户数
     "user.analysis.industry.add": "行业-新增",//各行业新增用户、客户数
     "user.analysis.active.customer": "活跃客户",
+    "user.analysis.moveoutCustomer": "转出客户统计",
 
     //销售首页-新增客户分析
     "customer.analysis": "客户分析",

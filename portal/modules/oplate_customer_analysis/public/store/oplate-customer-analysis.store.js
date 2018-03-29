@@ -32,6 +32,23 @@ OplateCustomerAnalysisStore.prototype.resetState = function() {
     this.sendRequest = true;
     //展示销售阶段漏斗图的max属性
     this.renderStageMax = 0;
+    //客户详情面板相关变量
+    this.showRightPanel = false;
+    this.selectedCustomerId = "";
+    this.selectedCustomerIndex = "";
+    this.CustomerInfoOfCurrUser = {};
+    //迁出客户数据
+    this.transferCustomers = {
+        loading: false,
+        data: [],
+        errorMsg: "",
+        sortId: "",
+        listenScrollBottom: true,
+        sorter: {
+            field: "time",
+            order: "descend"
+        }
+    }
 };
 //重置图表数据
 OplateCustomerAnalysisStore.prototype.resetChartData = function(type) {
@@ -168,6 +185,41 @@ OplateCustomerAnalysisStore.prototype.getUserType = function(userType) {
 //获取销售阶段列表
 OplateCustomerAnalysisStore.prototype.getSalesStageList = function(list) {
      if (_.isArray(list)) this.salesStageList = list;
+};
+
+
+//查询迁出客户
+OplateCustomerAnalysisStore.prototype.getTransferCustomers = function({loading, errorMsg, data, paramObj}) {
+    if (loading) {
+        this.transferCustomers.loading = true;
+        this.transferCustomers.errorMsg = "";
+    } else if (errorMsg) {
+        this.transferCustomers.loading = false;
+        this.transferCustomers.errorMsg = errorMsg;
+        this.transferCustomers.data = [];
+    } else {
+        this.transferCustomers.loading = false;
+        this.transferCustomers.errorMsg = "";
+        let customers = [];
+        if (data.result && data.result.length > 0) {
+            customers = data.result.map(item => {
+                return {
+                    ...item,
+                    time: item.time?moment(item.time).format(oplateConsts.DATE_FORMAT): ""
+                }
+            })
+            this.transferCustomers.sortId = customers[customers.length - 1].id;
+        }
+        if (paramObj.isFirst) {
+            this.transferCustomers.data = customers;
+        } else {
+            this.transferCustomers.data = this.transferCustomers.data.concat(customers);
+        }
+        //总数等于前端数组长度时，不监听下拉加载
+        if (data.total == this.transferCustomers.data.length) {
+            this.transferCustomers.listenScrollBottom = false;
+        }
+    }
 };
 
 //导出 客户分析-客户构成 的store
