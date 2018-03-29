@@ -49,8 +49,10 @@ var BasicData = React.createClass({
         return getStateFromStore(this.props.isMerge);
     },
     onChange: function () {
-        var datas = getStateFromStore(this.props.isMerge);
-        this.setState(datas);
+        this.setState({
+            basicIsLoading: CRMStore.getBasicState(),
+            basicData: _.extend({}, CRMStore.getBasicInfo()),
+        });
     },
     componentDidMount: function () {
         this.autoLayout();
@@ -158,6 +160,9 @@ var BasicData = React.createClass({
     toggleBasicDetail: function () {
         this.setState({
             showDetailFlag: !this.state.showDetailFlag
+        });
+        setTimeout(() => {
+            this.props.setTabsContainerHeight();
         });
     },
 

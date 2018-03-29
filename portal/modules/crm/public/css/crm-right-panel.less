@@ -3,6 +3,7 @@
 @right_panel_width: 504px;
 @right_panel_content_width: 480px;
 @right_panel_bgcolor: #f5f5f5;
+@box_shadow_color: #cac8c8;
 //新版客户详情的样式
 .crm_content {
   //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
@@ -12,10 +13,10 @@
     background-color: transparent !important;
     .right-panel-content {
       width: @right_panel_content_width;
-      box-shadow: -4px 0 20px #cac8c8;
+      box-shadow: -4px 0 20px @box_shadow_color;
       background-color: @right_panel_bgcolor !important;
     }
-    .icon-close {
+    > .icon-close {
       color: #fff;
       background-color: #8ea9c4;
       border-radius: 0 !important;
@@ -140,46 +141,6 @@
 
   .crm-right-panel-addbtn:hover {
     background-color: #B9DBEA;
-  }
-
-  .block-tag {
-    .ant-tag {
-      font-size: 14px;
-      border-radius: 4px;
-      background: #c0d7e8;
-      margin-top: 4px;
-      float: none;
-      a {
-        color: #000;
-      }
-      i {
-        color: #3879d9;
-      }
-    }
-  }
-
-  .block-tag-edit {
-    font-size: 14px;
-    width: 550px;
-    white-space: normal;
-    margin-top: -2px;
-    .customer-tag {
-      margin-right: 8px;
-      cursor: pointer;
-      padding: 3px 8px;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-    .tag-selected {
-      background: #4d96d1;
-      border-radius: 4px;
-      color: white;
-      padding: 3px 8px;
-    }
-  }
-
-  .ant-form-explain {
-    white-space: normal;
   }
 }
 

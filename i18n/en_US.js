@@ -1221,6 +1221,9 @@ var en_US = {
     "crm.right.schedule": "Contact schedule",//联系计划
     "crm.basic.detail.show": "Show detail",//展开详情
     "crm.basic.detail.hide": "Hide detail",//收起详情
+    "crm.basic.overview": "Overview",//概览
+    "crm.overview.expire.tip": "The signing of {days} days is due to expire",//有应用{days}天后签约到期
+    "crm.input.new.tag": "Please enter a new label",//请输入新标签
     // 客户管理end
 
     //客户分析 start

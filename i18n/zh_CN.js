@@ -1239,6 +1239,9 @@ var zh_CN = {
     "crm.right.schedule": "联系计划",
     "crm.basic.detail.show": "展开详情",
     "crm.basic.detail.hide": "收起详情",
+    "crm.basic.overview": "概览",
+    "crm.overview.expire.tip": "有应用{days}天后签约到期",
+    "crm.input.new.tag": "请输入新标签",
     // 客户管理end
 
     // 客户分析start
