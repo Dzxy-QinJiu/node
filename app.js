@@ -60,8 +60,7 @@ app.use(cookieParser("83DHWG36"));
 app.use(require('express-domain-middleware'));
 //线上环境才添加追踪
 if (commonUtils.ip.isProductionEnvironment()) {
-    //分布式跟踪
-//数据请求追踪
+    //数据请求追踪
     var dataTrace = require("distributed-trace-for-nodejs");
     dataTrace.init({
         zipkinUrl: config.traceConfig.zipkinUrl,
