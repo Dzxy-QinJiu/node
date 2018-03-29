@@ -58,7 +58,14 @@ var CustomerAnalysis = React.createClass({
             endTime: nextProps.endTime,
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
-        this.setState(timeObj);
+        const timeChanged = (this.props.startTime != nextProps.startTime) || (this.props.endTime != nextProps.endTime);
+        this.setState(timeObj, () => {
+            if (timeChanged) {
+                setTimeout(() => {
+                    this.getTransferCustomers({ isFirst: true });
+                })
+            }
+        });
         if (nextProps.updateScrollBar){
             this.setState({
                 updateScrollBar:true
@@ -171,13 +178,32 @@ var CustomerAnalysis = React.createClass({
             sort_field: this.state.transferCustomers.sorter.field,
             order: this.state.transferCustomers.sorter.order,
             page_size: DEFAULT_TABLE_PAGESIZE,
-            query: { cursor: true }
+            query: {},
+            parentQuery: {
+                "query": {},
+                "parentQuery": {},
+                "rang_params": [
+                  {
+                    "from": this.state.startTime,
+                    "to": this.state.endTime,
+                    // "name": "string",
+                    "type": "time"
+                  }
+                ],
+            }
         }
         const sortId = this.state.transferCustomers.sortId;
         if (sortId && !isFirst) {
             params.query.id = sortId;
         }
-        OplateCustomerAnalysisAction.getTransferCustomers(params);
+        if (isFirst) {
+            this.state.transferCustomers.sortId = "";
+            this.setState({transferCustomers: this.state.transferCustomers}, () => {
+                OplateCustomerAnalysisAction.getTransferCustomers(params);
+            })
+        } else {
+            OplateCustomerAnalysisAction.getTransferCustomers(params);
+        }
     },
     //趋势统计
     getCustomerChart: function () {
@@ -402,13 +428,12 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get("common.login.time", "时间"),
                 dataIndex: "time",
                 key: 'time',
-                width: 100,
                 sorter: true
             }, {
                 title: Intl.get("crm.41", "客户名"),
                 dataIndex: "customer_name",
                 key: 'customer_name',
-                width: 150,
+                className: "customer-name",
                 sorter: true,
                 render: function (text, item, index) {
                     return (
@@ -419,19 +444,16 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get("crm.customer.transfer.sales", "销售代表"),
                 dataIndex: "old_member_nick_name",
                 key: 'old_member_nick_name',
-                width: 80,
                 sorter: true
             }, {
                 title: Intl.get("crm.customer.transfer.manager", "客户经理"),
                 dataIndex: "new_member_nick_name",
                 key: 'new_member_nick_name',
-                width: 80,
                 sorter: true
             }, {
                 title: Intl.get("user.sales.team", "销售团队"),
                 dataIndex: "sales_team",
                 key: 'sales_team',
-                width: 100,
             }
 
         ];
