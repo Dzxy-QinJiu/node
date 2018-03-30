@@ -201,6 +201,7 @@ var en_US = {
     "common.label.days": "days",//"天",
     "common.label.hours": "hours",//"小时",
     "common.app.minute": "minutes",//"分钟",
+    "common.load.more": "load more",//"加载更多",
     "common.request.timeout": "Error. Request timeout",//"请求超时",
     //公共部分--end
     "login.login": "Login",//登录
@@ -1223,6 +1224,8 @@ var en_US = {
     "crm.customer.transfer": "Transfer customer",//转出客户
     "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
     "crm.right.schedule": "Contact schedule",//联系计划
+    "crm.customer.transfer.sales": "Sales",//"销售代表",
+    "crm.customer.transfer.manager": "Manager",//"客户经理",
     // 客户管理end
 
     //客户分析 start
@@ -1475,6 +1478,7 @@ var en_US = {
     "user.analysis.team.add": "Team-Newly added",//各团队新增用户、客户数  团队-新增@
     "user.analysis.industry.add": "Industry-Newly added",//各行业新增用户、客户数  行业-新增@
     "user.analysis.active.customer": "Active customer",//活跃客户
+    "user.analysis.moveoutCustomer": "Move-out customer ",// "转出客户统计",
 
     //销售首页-新增客户分析
     "customer.analysis": "Customer Analysis",//客户分析@
