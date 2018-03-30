@@ -497,7 +497,7 @@ var CustomerAnalysis = React.createClass({
                 data-tracename="转出客户统计"
                 style={{ height: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "246px" : "540px" }}
             >
-                <GeminiScrollbar enabled={true} >
+                <GeminiScrollbar>
                     <div className="title"><ReactIntl.FormattedMessage id="user.analysis.moveoutCustomer"
                         defaultMessage={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")} />
                     </div>
