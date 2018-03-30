@@ -1749,9 +1749,6 @@ var en_US = {
     "errorcode.147": "The qr code has expired",//二维码已失效
     "errorcode.148": "The call duration statistics view fails to be obtained",//电话时长统计视图获取失败
     "errorcode.149": "The role has been allocated to sales",//该角色已经分配给销售
-    "errorcode.150": "Query exception",//查询类异常
-    "errorcode.151": "The server rejected the requested exception",//服务器拒绝请求的异常
-    "errorcode.152": "Server crashes abnormally",//服务器崩溃异常
     "user.input.phone": "Please input your phone",//请输入手机号
     "customer.search.by.customer.name": "Please search by customer name",//请输入客户名称搜索
     "user.user.info": "information",//开通信息
