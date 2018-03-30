@@ -238,9 +238,9 @@ class AssignClueAndSelectCustomer extends React.Component {
         return (
             <div className="" ref="wrap">
                 {this.renderCustomerBlock()}
-                {showBtnBool ? <span className="iconfont icon-choose" onClick={this.submit.bind(this)}></span> : null}
+                {showBtnBool ? <span className="iconfont icon-choose" onClick={this.submit.bind(this)} data-tracename="保存关联客户"></span> : null}
                 {showBtnBool ? <span className="iconfont icon-close"
-                                     onClick={this.changeDisplayCustomerType.bind(this, "text")}></span> : null}
+                                     onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></span> : null}
                 {this.renderIndicator()}
             </div>
         );
@@ -271,10 +271,10 @@ class AssignClueAndSelectCustomer extends React.Component {
         var canEdit = hasPrivilege("CRM_MANAGER_CUSTOMER_CLUE_ID") || hasPrivilege("CRM_USER_CUSTOMER_CLUE_ID");
         return (
             <div className="user-basic-edit-field">
-                <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)}>{this.state.relatedCustomerName}</span>
+                <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)} data-tracename="点击查看客户详情">{this.state.relatedCustomerName}</span>
                 {
                     canEdit ? <i className="iconfont icon-update"
-                                 onClick={this.changeDisplayCustomerType.bind(this, "select")}></i> : null
+                                 onClick={this.changeDisplayCustomerType.bind(this, "select")} data-tracename="点击修改/添加关联客户"></i> : null
                 }
             </div>
         )
