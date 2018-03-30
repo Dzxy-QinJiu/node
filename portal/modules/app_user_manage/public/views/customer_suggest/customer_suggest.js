@@ -118,6 +118,8 @@ var CustomerSuggest = React.createClass({
     suggestChange: function (value) {
         clearTimeout(this.suggestTimer);
         var _this = this;
+        //是否展示客户名后的对号或者叉号
+        _.isFunction(this.props.isShowUpdateOrClose) && this.props.isShowUpdateOrClose(false);
         this.setState({
             result_type : 'loading',
             suggest_error_msg : '',
@@ -138,6 +140,7 @@ var CustomerSuggest = React.createClass({
                     show_tip : list.length <= 0
                 },() => {
                     _this.adjustDropDownRightPos();
+                    _.isFunction(_this.props.isShowUpdateOrClose) && _this.props.isShowUpdateOrClose(true);
                 });
             } , function(errorMsg) {
                 _this.setState({
@@ -147,6 +150,7 @@ var CustomerSuggest = React.createClass({
                     list : []
                 },() => {
                     _this.adjustDropDownRightPos();
+                    _.isFunction(_this.props.isShowUpdateOrClose) && _this.props.isShowUpdateOrClose(true);
                 });
             });
         } , 300);

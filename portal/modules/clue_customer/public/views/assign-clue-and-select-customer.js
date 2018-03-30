@@ -15,6 +15,9 @@ const RELATEAUTHS = {
     "RELATESELF": "CRM_USER_CUSTOMER_CLUE_ID"
 };
 var crmAjax = require("MOD_DIR/crm/public/ajax");
+import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import AppUserManage from "MOD_DIR/app_user_manage/public";
+import {RightPanel}  from "CMP_DIR/rightPanel";
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -28,7 +31,12 @@ class AssignClueAndSelectCustomer extends React.Component {
             relatedCustomer: {},//已经关联上的客户的详情
             relatedCustomerName: "",//已经关联上的客户名称
             relatedCustomerId: "",//已经关联上的客户的id
-            error_message: ""//关联客户失败后的信息
+            error_message: "",//关联客户失败后的信息
+            curShowCustomerId: "",
+            isShowCustomerUserListPanel: false,
+            CustomerInfoOfCurrUser: {},
+            //是否显示客户名后面的对号和叉号
+            ShowUpdateOrClose : true
         }
     };
     //是否是销售领导
@@ -109,7 +117,12 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         }
     };
-
+   //是否显示对号和叉号
+    isShowUpdateOrClose = (flag) =>{
+        this.setState({
+            ShowUpdateOrClose: flag
+        })
+    };
     hideCustomerError = () => {
         this.setState({
             isShowCustomerError: false
@@ -128,6 +141,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                         show_error={this.state.isShowCustomerError}
                         onCustomerChoosen={this.onCustomerChoosen}
                         hideCustomerError={this.hideCustomerError}
+                        isShowUpdateOrClose={this.isShowUpdateOrClose}
                     />
                 </div>
             </div>
@@ -220,7 +234,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     };
     //渲染客户的编辑状态
     renderEditCustomer() {
-        const showBtnBool = !/success/.test(this.state.submitType);
+        const showBtnBool = !/success/.test(this.state.submitType) && this.state.ShowUpdateOrClose;
         return (
             <div className="" ref="wrap">
                 {this.renderCustomerBlock()}
@@ -232,12 +246,32 @@ class AssignClueAndSelectCustomer extends React.Component {
         );
     };
 
+    clickShowCustomerDetail = (customerId) => {
+        this.setState({
+            curShowCustomerId: customerId
+        })
+    };
+
+    closeRightCustomerPanel = () => {
+        this.setState({curShowCustomerId: ""});
+    };
+    ShowCustomerUserListPanel = (data) => {
+        this.setState({
+            isShowCustomerUserListPanel: true,
+            CustomerInfoOfCurrUser: data.customerObj
+        });
+    };
+    closeCustomerUserListPanel = () => {
+        this.setState({
+            isShowCustomerUserListPanel: false
+        })
+    };
     renderTextCustomer() {
         //是否有修改线索所属客户的权利
         var canEdit = hasPrivilege("CRM_MANAGER_CUSTOMER_CLUE_ID") || hasPrivilege("CRM_USER_CUSTOMER_CLUE_ID");
         return (
             <div className="user-basic-edit-field">
-                <span className="customer-name">{this.state.relatedCustomerName}</span>
+                <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)}>{this.state.relatedCustomerName}</span>
                 {
                     canEdit ? <i className="iconfont icon-update"
                                  onClick={this.changeDisplayCustomerType.bind(this, "select")}></i> : null
@@ -274,6 +308,29 @@ class AssignClueAndSelectCustomer extends React.Component {
                         {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
                     </div>
                 </div>
+                {
+                    this.state.curShowCustomerId ? <CrmRightPanel
+                        currentId={this.state.curShowCustomerId}
+                        showFlag={true}
+                        hideRightPanel={this.closeRightCustomerPanel}
+                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                        refreshCustomerList={function () {
+                        }}
+                    /> : null
+                }
+                {/*该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    { this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
             </div>
         )
     }
