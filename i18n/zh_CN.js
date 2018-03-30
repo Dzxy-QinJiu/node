@@ -1781,6 +1781,9 @@ var zh_CN = {
     "errorcode.147": "二维码已失效",
     "errorcode.148": "电话时长统计视图获取失败",
     "errorcode.149": "该角色已经分配给销售",
+    "errorcode.150": "查询类异常",
+    "errorcode.151": "服务器拒绝请求的异常",
+    "errorcode.152": "服务器崩溃异常",
 
     //遗漏部分
     "user.input.phone": "请输入手机号",
