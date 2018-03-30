@@ -120,10 +120,12 @@ let TagEditField = React.createClass({
             this.backToDisplay();
             return;
         }
+        //保存前先过滤掉线索、转出标签
+        let labels = _.filter(this.state.labels, label => !isClueTag(label) && !isTurnOutTag(label));
         let submitData = {
             id: this.props.customerId,
             type: "label",
-            labels: this.state.labels
+            labels: labels
         };
         Trace.traceEvent(e, "保存对标签的添加");
         if (this.props.isMerge) {
