@@ -737,7 +737,7 @@ var CallRecordAnalyis = React.createClass({
                             <div className="call-service-rate col-xs-6">
                                 <div className="call-rate">
                                     <div className="call-rate-title">
-                                        {Intl.get("call.record.service.phone.rate", "114占比统计：")}
+                                        {Intl.get("call.record.service.phone.rate", "114占比统计")}:
                                     </div>
                                     {this.renderCallRateChar("114")}
                                 </div>

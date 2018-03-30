@@ -929,6 +929,7 @@ var en_US = {
     "call.analysis.total.time": "Duration of call ",//通话总时长
     "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
     "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
+    "call.record.service.phone.rate": "Statistics of the ratio of 114",//114占比统计
     //通话分析-end
 
 
