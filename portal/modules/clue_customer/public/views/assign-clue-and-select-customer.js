@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
- * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/28.
  */
 var userData = require("../../../../public/sources/user-data");
@@ -11,8 +11,8 @@ import {Icon, Alert} from "antd";
 import CustomerSuggest from 'MOD_DIR/app_user_manage/public/views/customer_suggest/customer_suggest';
 import AlertTimer from 'CMP_DIR/alert-timer';
 const RELATEAUTHS = {
-    "RELATEALL": "CRM_MANAGER_CUSTOMER_CLUE_ID",
-    "RELATESELF": "CRM_USER_CUSTOMER_CLUE_ID"
+    "RELATEALL": "CRM_MANAGER_CUSTOMER_CLUE_ID",//管理员通过线索id查询客户的权限
+    "RELATESELF": "CRM_USER_CUSTOMER_CLUE_ID"//普通销售通过线索id查询客户的权限
 };
 var crmAjax = require("MOD_DIR/crm/public/ajax");
 import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
@@ -44,9 +44,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         return userData.isSalesManager()
     };
     componentDidMount(){
-        if (this.state.curClueDetail.id){
-            this.queryCustomerByClueId(this.state.curClueDetail.id);
-        }
+      this.queryCustomerByClueId(this.state.curClueDetail.id);
     }
     //根据线索的id查询该线索关联的客户
     queryCustomerByClueId(currentId) {
@@ -162,12 +160,11 @@ class AssignClueAndSelectCustomer extends React.Component {
             //线索的创建时间
             customer_clue_start_time: this.state.curClueDetail.start_time
         };
-        var _this = this;
         this.setState({
             submitType: 'loading'
         });
         var type = "self";
-        if (hasPrivilege("CRM_MANAGER_CUSTOMER_CLUE_ID")) {
+        if (hasPrivilege(RELATEAUTHS.RELATEALL)) {
             type = "all"
         }
         $.ajax({
@@ -176,16 +173,16 @@ class AssignClueAndSelectCustomer extends React.Component {
             contentType: 'application/json',
             type: 'put',
             data: JSON.stringify(submitObj),
-            success: function (bool) {
-                _this.setState({
+            success: () =>{
+                this.setState({
                     error_message: '',
                     submitType: 'success',
-                    relatedCustomerName: _this.state.customer_name,
-                    relatedCustomerId: _this.state.customer_id
+                    relatedCustomerName: this.state.customer_name,
+                    relatedCustomerId: this.state.customer_id
                 });
             },
-            error: function (xhr) {
-                _this.setState({
+            error:  (xhr) =>{
+                this.setState({
                     submitType: 'error',
                     relatedCustomerName:"",
                     error_message: xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
@@ -229,7 +226,6 @@ class AssignClueAndSelectCustomer extends React.Component {
                 customer_id: this.props.customer_id,
                 customer_name: this.props.customer_name
             });
-            this.onCustomerChoosen();
         }
     };
     //渲染客户的编辑状态
@@ -238,9 +234,12 @@ class AssignClueAndSelectCustomer extends React.Component {
         return (
             <div className="" ref="wrap">
                 {this.renderCustomerBlock()}
-                {showBtnBool ? <span className="iconfont icon-choose" onClick={this.submit.bind(this)} data-tracename="保存关联客户"></span> : null}
-                {showBtnBool ? <span className="iconfont icon-close"
-                                     onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></span> : null}
+                {showBtnBool ? <span>
+                    <span className="iconfont icon-choose" onClick={this.submit.bind(this)}
+                          data-tracename="保存关联客户"></span>
+                    <span className="iconfont icon-close"
+                          onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></span>
+                </span> : null}
                 {this.renderIndicator()}
             </div>
         );
@@ -268,7 +267,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     };
     renderTextCustomer() {
         //是否有修改线索所属客户的权利
-        var canEdit = hasPrivilege("CRM_MANAGER_CUSTOMER_CLUE_ID") || hasPrivilege("CRM_USER_CUSTOMER_CLUE_ID");
+        var canEdit = hasPrivilege(RELATEAUTHS.RELATEALL) || hasPrivilege(RELATEAUTHS.RELATESELF);
         return (
             <div className="user-basic-edit-field">
                 <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)} data-tracename="点击查看客户详情">{this.state.relatedCustomerName}</span>
