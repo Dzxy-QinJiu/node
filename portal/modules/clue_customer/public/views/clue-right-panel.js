@@ -15,36 +15,20 @@ import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 var userData = require("../../../../public/sources/user-data");
 const noop = function () {};
-var crmAjax = require("MOD_DIR/crm/public/ajax");
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             curCustomer: this.props.curCustomer,
-            relatedCustomer:{},//与线索相关联的客户
+            relatedCustomer: {},//与线索相关联的客户
             ...clueCustomerStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
     };
 
     componentDidMount() {
-        var currentId = this.state.curCustomer.id;
-        if (currentId){
-            crmAjax.queryCustomer({customer_clue_id: currentId}, 1, 1).then((data) => {
-                if (data && _.isArray(data.result) && data.result[0]) {
-                    this.setState({
-                        relatedCustomer: data.result[0]
-                    });
-                }
-            }, () => {
-                this.setState({
-                    relatedCustomer:{}
-                });
-            });
-        }
         clueCustomerStore.listen(this.onStoreChange);
     };
-
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
     };
@@ -55,6 +39,7 @@ class ClueRightPanel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
+            // this.queryCustomerByClueId(nextProps.curCustomer.id)
             this.setState({
                 curCustomer: nextProps.curCustomer
             })
@@ -134,7 +119,12 @@ class ClueRightPanel extends React.Component {
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
     };
-
+    hideRightPanel =() =>{
+        this.setState({
+            relatedCustomer:{}
+        });
+        this.props.hideRightPanel();
+    };
     render() {
         var curCustomer = this.state.curCustomer || {};
         var phone = "", qq = "", email = "", id = "";
@@ -150,7 +140,7 @@ class ClueRightPanel extends React.Component {
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
                 showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
-                <RightPanelClose onClick={this.props.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
+                <RightPanelClose onClick={this.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
                 <GeminiScrollbar>
                     <div className="clue_customer_content_wrap">
                         <h5>{curCustomer.name}</h5>
@@ -164,7 +154,7 @@ class ClueRightPanel extends React.Component {
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={curCustomer.contact}
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate ?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate ? false : true}
                                         placeholder={Intl.get("crm.90", "请输入姓名")}
                                         field="contact_name"
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -283,8 +273,7 @@ class ClueRightPanel extends React.Component {
                         </div>
                     </div>
                     <AssignClueAndSelectCustomer
-                        curClueDetail = {curCustomer}
-
+                        curClueDetail={curCustomer}
                     />
                 </GeminiScrollbar>
             </RightPanel>

@@ -19,6 +19,7 @@ const routes = require("../../../crm/common/route");
 import routeList from "../../../common/route";
 import commonAjax from "../../../common/ajax";
 import {checkCustomerName,checkEmail} from "../utils/clue-customer-utils";
+import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var clueCustomerAction = require("../action/clue-customer-action");
 const PHONE_INPUT_ID = "phoneInput";
 const SalesClueAddForm = React.createClass({
@@ -57,7 +58,9 @@ const SalesClueAddForm = React.createClass({
             },
             isSaving: false,
             saveMsg: "",
-            saveResult: ""
+            saveResult: "",
+            isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
+            newAddClue: {}//新增加的线索
         };
     },
 
@@ -156,6 +159,9 @@ const SalesClueAddForm = React.createClass({
                         if (_.isObject(data) && data.code == 0) {
                             //添加成功
                             this.setResultData(Intl.get("user.user.add.success", "添加成功"), "success");
+                            this.setState({
+                                newAddClue: data.result
+                            });
                             clueCustomerAction.afterAddSalesClue(data.result);
                             //如果线索来源或者接入渠道加入新的类型
                             if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
@@ -188,7 +194,9 @@ const SalesClueAddForm = React.createClass({
     //去掉保存后提示信息
     hideSaveTooltip: function () {
         if (this.state.saveResult == "success") {
-            this.closeAddPanel();
+            this.setState({
+                isShowAssignAndRelate: true
+            })
         } else {
             this.setState({
                 saveMsg: "",
@@ -230,18 +238,26 @@ const SalesClueAddForm = React.createClass({
             }
         }];
     },
-    render() {
+    renderAssignAndRelate(){
+        return (
+            <div className="assign-and-relate-wrap">
+                <AssignClueAndSelectCustomer
+                    curClueDetail={this.state.newAddClue}
+                />
+            </div>
+        )
+    },
+    renderAddForm(){
         let formData = this.state.formData;
         let status = this.state.status;
         let saveResult = this.state.saveResult;
         return (
-            <RightPanel showFlag={true} data-tracename="添加线索客户">
-                <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加销售线索面板"/>
+            <div className="add-form-wrap">
                 <GeminiScrollbar>
                     <Form horizontal className="crm-add-form sales-clue-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem
-                                label={Intl.get("clue.customer.clue.name","线索名称")}
+                                label={Intl.get("clue.customer.clue.name", "线索名称")}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                                 validateStatus={this.renderValidateStyle('name')}
@@ -249,7 +265,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
-                                           placeholder={Intl.get("clue.customer.fillin.clue.name","请填写线索名称")}
+                                           placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
                                            value={formData.name}
                                            onBlur={this.autoFillContentByName}
                                            onChange={this.setField.bind(this, 'name')}
@@ -319,9 +335,9 @@ const SalesClueAddForm = React.createClass({
                                 >
                                     {
                                         _.isArray(this.props.clueSourceArray) ?
-                                        this.props.clueSourceArray.map((source, idx) => {
-                                            return (<Option key={idx} value={source}>{source}</Option>)
-                                        }) : null
+                                            this.props.clueSourceArray.map((source, idx) => {
+                                                return (<Option key={idx} value={source}>{source}</Option>)
+                                            }) : null
                                     }
                                 </Select>
                             </FormItem>
@@ -392,6 +408,15 @@ const SalesClueAddForm = React.createClass({
                 {this.state.isSaving ? (<div className="right-pannel-block">
                     <Spinner className="right-panel-saving"/>
                 </div>) : ""}
+            </div>
+        )
+    },
+
+    render() {
+        return (
+            <RightPanel showFlag={true} data-tracename="添加线索客户">
+                <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加销售线索面板"/>
+                {this.state.isShowAssignAndRelate ? this.renderAssignAndRelate() : this.renderAddForm()}
             </RightPanel>
         );
     }

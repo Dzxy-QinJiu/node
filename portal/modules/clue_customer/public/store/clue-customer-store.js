@@ -136,12 +136,18 @@ ClueCustomerStore.prototype.distributeCluecustomerToSale = function (result) {
         this.distributeErrMsg = "";
     }
 };
-//查看某个客户的详情
+//查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function (id) {
-    this.currentId = id;
-    this.curCustomer = _.find(this.curCustomers, customer => {
-        return customer.id === id;
-    });
+    if (id){
+        this.currentId = id;
+        this.curCustomer = _.find(this.curCustomers, customer => {
+            return customer.id === id;
+        });
+    }else{
+        this.currentId = "";
+        this.curCustomer = {};
+    }
+
 };
 //添加完销售线索后的处理
 ClueCustomerStore.prototype.afterAddSalesClue = function (newCustomer) {
@@ -153,6 +159,9 @@ ClueCustomerStore.prototype.afterAddSalesClue = function (newCustomer) {
         this.curCustomers.unshift(newCustomer);
         this.customersSize++;
     }
+    //新添加的是正在展示的那条日程
+    this.curCustomer = newCustomer;
+    this.currentId = newCustomer.id;
 };
 //用于设置下拉加载的最后一个客户的id
 ClueCustomerStore.prototype.setLastCustomerId = function (id) {

@@ -14,27 +14,67 @@ const RELATEAUTHS = {
     "RELATEALL": "CRM_MANAGER_CUSTOMER_CLUE_ID",
     "RELATESELF": "CRM_USER_CUSTOMER_CLUE_ID"
 };
+var crmAjax = require("MOD_DIR/crm/public/ajax");
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            curClueDetail: this.props.curClueDetail,
-            displayType: "text",
-            submitType: "",
-            isShowCustomerError:false,
-            customer_id:"",//所有要关联客户的id
+            curClueDetail: this.props.curClueDetail,//展示线索的详情
+            displayType: "text",//所绑定的客户是在展示状态 edit表示在编辑状态
+            submitType: "",//提交后的状态
+            isShowCustomerError: false,//是否展示出错
+            customer_id: "",//将要关联客户的id
+            customer_name: "",//将要关联客户的名字
+            relatedCustomer: {},//已经关联上的客户的详情
+            relatedCustomerName: "",//已经关联上的客户名称
+            relatedCustomerId: "",//已经关联上的客户的id
+            error_message: ""//关联客户失败后的信息
         }
     };
-
+    //是否是销售领导
     isSalesManager() {
         return userData.isSalesManager()
+    };
+    componentDidMount(){
+        if (this.state.curClueDetail.id){
+            this.queryCustomerByClueId(this.state.curClueDetail.id);
+        }
+    }
+    //根据线索的id查询该线索关联的客户
+    queryCustomerByClueId(currentId) {
+        if (currentId) {
+            crmAjax.queryCustomer({customer_clue_id: currentId}, 1, 1).then((data) => {
+                if (data && _.isArray(data.result)) {
+                    if (data.result.length) {
+                        this.setState({
+                            relatedCustomer: data.result[0],
+                            relatedCustomerName:data.result[0].name,
+                            relatedCustomerId:data.result[0].id
+                        });
+                    } else {
+                        this.setState({
+                            relatedCustomer: {},
+                            relatedCustomerName:"",
+                            relatedCustomerId:""
+                        });
+                    }
+                }
+            }, () => {
+                this.setState({
+                    relatedCustomer: {},
+                    relatedCustomerName:"",
+                    relatedCustomerId:""
+                });
+            });
+        }
     };
 
     componentWillReceiveProps(nextProps) {
         if (this.state.curClueDetail.id !== nextProps.curClueDetail.id) {
-           this.setState({
-               curClueDetail:nextProps.curClueDetail
-           })
+            this.queryCustomerByClueId(nextProps.curClueDetail.id);
+            this.setState({
+                curClueDetail: nextProps.curClueDetail
+            })
         }
     };
 
@@ -58,25 +98,32 @@ class AssignClueAndSelectCustomer extends React.Component {
             this.refs.distribute.changeDisplayType("text");
         });
     };
+    //客户下拉框中选择客户后
     onCustomerChoosen = (info) => {
         var customer_id = info && info.customer && info.customer.id || '';
-        if(customer_id) {
+        var customer_name = info && info.customer && info.customer.name || '';
+        if (customer_id) {
             this.setState({
-                customer_id : customer_id,
+                customer_id: customer_id,
+                customer_name: customer_name,
             });
         }
     };
-    hideCustomerError = () =>{
+
+    hideCustomerError = () => {
         this.setState({
-            isShowCustomerError:false
+            isShowCustomerError: false
         })
     };
-
+    //搜索客户的下拉框
     renderCustomerBlock() {
         return (
             <div className="select_text_wrap">
                 <div className="pull-left form-item-content">
                     <CustomerSuggest
+                        customer_id={this.state.relatedCustomerId}
+                        customer_name={this.state.relatedCustomerName}
+                        keyword={this.state.relatedCustomerName}
                         required={false}
                         show_error={this.state.isShowCustomerError}
                         onCustomerChoosen={this.onCustomerChoosen}
@@ -92,28 +139,15 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (this.state.submitType === 'loading') {
             return;
         }
-        var $input = $(".ant-select-search__field", this.refs.wrap);
-        var input_val = $input[0] && $input.val();
-        if (input_val !== undefined) {
-            if (!input_val) {
-                this.state.customer_id = '';
-            } else if (input_val !== this.props.customer_name) {
-                this.setState({
-                    show_customer_error: true
-                });
-                return;
-            }
-        }
         //要提交的数据
         var submitObj = {
             //线索的id
             customer_clue_id: this.state.curClueDetail.id,
-            //要关联的客户id
-            customer_id: this.state.customer_id,
+            //将要关联的客户id
+            id: this.state.customer_id,
             //线索的创建时间
             customer_clue_start_time: this.state.curClueDetail.start_time
         };
-        console.log(submitObj);
         var _this = this;
         this.setState({
             submitType: 'loading'
@@ -129,31 +163,25 @@ class AssignClueAndSelectCustomer extends React.Component {
             type: 'put',
             data: JSON.stringify(submitObj),
             success: function (bool) {
-               _this.setState({
-                        error_message: '',
-                        submitType: 'success'
-                    });
-                _this.props.onChangeSuccess({
-                        user_id: _this.props.user_id,
-                        customer_id: _this.state.customer_id,
-                        customer_name: _this.state.customer_name,
-                        sales_id: _this.state.sales_id,
-                        sales_name: _this.state.sales_name,
-                        sales_team_id: _this.state.sales_team_id,
-                        sales_team_name: _this.state.sales_team_name
-                    });
-
+                _this.setState({
+                    error_message: '',
+                    submitType: 'success',
+                    relatedCustomerName: _this.state.customer_name,
+                    relatedCustomerId: _this.state.customer_id
+                });
             },
             error: function (xhr) {
                 _this.setState({
                     submitType: 'error',
+                    relatedCustomerName:"",
                     error_message: xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
                 });
             }
         });
     };
-
+    //渲染提示信息
     renderIndicator() {
+        //提交中的状态
         if (this.state.submitType === 'loading') {
             return (<Icon type="loading"/>);
         }
@@ -165,14 +193,13 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         };
         if (this.state.submitType === 'success') {
-            return <AlertTimer message={Intl.get("user.edit.success", "修改成功")} type="success" onHide={onSuccessHide}
-                               showIcon/>;
+            return <AlertTimer message={Intl.get("user.edit.success", "修改成功")} type="success" onHide={onSuccessHide} showIcon/>;
         }
         if (this.state.submitType === 'error') {
             return <Alert message={this.state.error_message} type="error" showIcon/>;
         }
     };
-
+    //修改客户是编辑还是展示的状态
     changeDisplayCustomerType(type) {
         if (this.state.submitType === 'loading') {
             return;
@@ -191,7 +218,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             this.onCustomerChoosen();
         }
     };
-
+    //渲染客户的编辑状态
     renderEditCustomer() {
         const showBtnBool = !/success/.test(this.state.submitType);
         return (
@@ -210,7 +237,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         var canEdit = hasPrivilege("CRM_MANAGER_CUSTOMER_CLUE_ID") || hasPrivilege("CRM_USER_CUSTOMER_CLUE_ID");
         return (
             <div className="user-basic-edit-field">
-                <span className="customer-name">{this.props.customer_name}</span>
+                <span className="customer-name">{this.state.relatedCustomerName}</span>
                 {
                     canEdit ? <i className="iconfont icon-update"
                                  onClick={this.changeDisplayCustomerType.bind(this, "select")}></i> : null
@@ -218,45 +245,6 @@ class AssignClueAndSelectCustomer extends React.Component {
             </div>
         )
 
-    };
-
-    renderCustomer() {
-        return (
-            <div className="user-basic-edit-field">
-                <span className="customer-name-lable">{Intl.get("clue.customer.associate.customer", "关联客户")}</span>
-                <span className="">
-                 {this.state.displayType === 'text' ? this.renderEditCustomer() : this.renderTextCustomer()}
-             </span>
-
-            </div>
-        );
-
-        if (this.state.displayType === 'text') {
-            //是否有修改线索所属客户的权利
-            var canEdit = (hasPrivilege("APP_USER_EDIT") || hasPrivilege("CHANGE_USER_CUSTOMER")) && hasPrivilege("CRM_LIST_CUSTOMERS");
-            return (
-                <div className="user-basic-edit-field">
-                    <span className="customer-name-lable">{Intl.get("clue.customer.associate.customer", "关联客户")}</span>
-                    <span className="customer-name">{this.props.customer_name}</span>
-                    {/*todo 待修改*/}
-                    {
-                        canEdit || true ? <i className="iconfont icon-update"
-                                             onClick={this.changeDisplayCustomerType.bind(this, "select")}></i> : null
-                    }
-                </div>
-            );
-        }
-
-        const showBtnBool = !/success/.test(this.state.submitType);
-        return (
-            <div className="" ref="wrap">
-                {this.renderCustomerBlock()}
-                {showBtnBool ? <span className="iconfont icon-choose" onClick={this.submit.bind(this)}></span> : null}
-                {showBtnBool ? <span className="iconfont icon-close"
-                                     onClick={this.changeDisplayCustomerType.bind(this, "text")}></span> : null}
-                {this.renderIndicator()}
-            </div>
-        );
     };
 
     render() {
@@ -281,11 +269,10 @@ class AssignClueAndSelectCustomer extends React.Component {
                     </div>
                 </div>
                 <div className="associate-customer-wrap">
-                    <span
-                        className="pull-left customer-name-lable">{Intl.get("clue.customer.associate.customer", "关联客户")}</span>
-                    <span className="pull-left">
-                 {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
-             </span>
+                    <h5>{Intl.get("clue.customer.associate.customer", "关联客户")}</h5>
+                    <div className="customer-text-and-edit">
+                        {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
+                    </div>
                 </div>
             </div>
         )
