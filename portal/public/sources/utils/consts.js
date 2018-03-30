@@ -124,7 +124,7 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY, name: Intl.get("sales.frontpage.expired.not.contact", "超期未联系")},//今日到期的日程
     {
         value: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER,
-        name: Intl.get("sales.frontpage.will.expired.try.user", "近{X}天将到期的试用客户",{X:Intl.get("user.number.three", "三")})
+        name: Intl.get("sales.frontpage.will.expired.try.user", "近{X}天将到期的试用客户",{X:Intl.get("user.num.ten", "十")})
     },//即将到期的试用用户
     {
         value: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER,
