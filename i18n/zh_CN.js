@@ -1574,6 +1574,7 @@ var zh_CN = {
     "operation.report.month.active": "月活",
     "operation.report.app.login.statistic": "各应用登录统计",
     "operation.report.time.duration": "至{time}为止",
+    "operation.report.activity.unit": "活跃度(%)",
     //用户分析
     "oplate.user.analysis.4": "成员统计",
     "oplate.user.analysis.5": "活跃时间段统计",
