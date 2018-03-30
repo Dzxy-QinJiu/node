@@ -164,7 +164,7 @@ var CustomerAnalysis = React.createClass({
      */
     onSortChange(pagination, filters, sorter) {
         this.state.transferCustomers.sorter = sorter;
-        this.state.transferCustomers.sortId = "";
+        this.state.transferCustomers.lastId = "";
         this.setState({
             transferCustomers: this.state.transferCustomers
         }, () => {
@@ -172,6 +172,7 @@ var CustomerAnalysis = React.createClass({
         });
 
     },
+    //获取转出客户统计数据
     getTransferCustomers: function ({ isFirst = false }) {
         let params = {
             isFirst,
@@ -179,25 +180,22 @@ var CustomerAnalysis = React.createClass({
             order: this.state.transferCustomers.sorter.order,
             page_size: DEFAULT_TABLE_PAGESIZE,
             query: {},
-            parentQuery: {
-                "query": {},
-                "parentQuery": {},
-                "rang_params": [
-                  {
-                    "from": this.state.startTime,
-                    "to": this.state.endTime,
-                    // "name": "string",
-                    "type": "time"
-                  }
-                ],
-            }
+            rang_params: [
+                {
+                  "from": this.state.startTime,
+                  "to": this.state.endTime,
+                  "name": "time",
+                  "type": "time"
+                }
+            ],
         }
-        const sortId = this.state.transferCustomers.sortId;
-        if (sortId && !isFirst) {
-            params.query.id = sortId;
+        const lastId = this.state.transferCustomers.lastId;
+        if (lastId && !isFirst) {
+            params.query.id = lastId;
         }
         if (isFirst) {
-            this.state.transferCustomers.sortId = "";
+            this.state.transferCustomers.lastId = "";
+            this.state.transferCustomers.listenScrollBottom = true;
             this.setState({transferCustomers: this.state.transferCustomers}, () => {
                 OplateCustomerAnalysisAction.getTransferCustomers(params);
             })
@@ -456,8 +454,8 @@ var CustomerAnalysis = React.createClass({
             }
 
         ];
-        const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.sortId;
-        const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.sortId;
+        const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.lastId;
+        const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
         const renderLoadMore = () => {
             if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length == 0)) {
                 return null
@@ -491,17 +489,17 @@ var CustomerAnalysis = React.createClass({
                 )
             } 
         }
-        const hideTable = this.state.transferCustomers.errorMsg || this.state.transferCustomers.loading;
-        const showNoMoreDataTip = !loadingNotFirst && !this.state.transferCustomers.listenScrollBottom;
+        const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
+        const showNoMoreDataTip = !this.state.transferCustomers.loading && this.state.transferCustomers.lastId && !this.state.transferCustomers.listenScrollBottom;
         return (
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
                 data-tracename="转出客户统计"
                 style={{ height: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "246px" : "540px" }}
             >
-                <GeminiScrollbar senabled={true} >
+                <GeminiScrollbar enabled={true} >
                     <div className="title"><ReactIntl.FormattedMessage id="user.analysis.moveoutCustomer"
-                        defaultMessage="转出客户统计" />
+                        defaultMessage={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")} />
                     </div>
                     {renderErr()}
                     {renderSpiner()}

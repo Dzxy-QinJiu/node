@@ -42,7 +42,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function() {
         loading: false,
         data: [],
         errorMsg: "",
-        sortId: "",
+        lastId: "",
         listenScrollBottom: true,
         sorter: {
             field: "time",
@@ -208,7 +208,7 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = function({loading, 
                     time: item.time?moment(item.time).format(oplateConsts.DATE_FORMAT): ""
                 }
             })
-            this.transferCustomers.sortId = customers[customers.length - 1].id;
+            this.transferCustomers.lastId = customers[customers.length - 1].id;
         }
         if (paramObj.isFirst) {
             this.transferCustomers.data = customers;
