@@ -1011,6 +1011,7 @@ var zh_CN = {
     "user.apply.unread.reply": "有未读回复",
     "user.apply.refresh.reply.tip": "有新回复，点此{refreshTip}",
     "user.apply.unread.reply.check": "有未读回复的申请，{check}",
+    "user.apply.unread.reply.null": "已无未读回复的申请，{return}",
     "user.apply.check": "查看",
     "user.apply.cancel.check": "取消查看",
     "user.apply.unread.apply.list.failed": "获取有未读回复的申请列表失败",
