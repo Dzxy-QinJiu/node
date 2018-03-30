@@ -120,12 +120,12 @@ var SalesHomePage = React.createClass({
         this.getAppIlleageLogin();
         //获取重复客户列表
         this.getRepeatCustomerList();
-        //获取三天内即将到期的试用用户
+        //获取十天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         SalesHomeAction.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time,
-            end_time: todayTimeRange.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE,
+            end_time: todayTimeRange.end_time + 9 * oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER
         });
         //获取半年内即将到期的签约用户 30*6是取的半年的数据
