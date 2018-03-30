@@ -214,7 +214,7 @@ var ApplyTabContent = React.createClass({
     renderApplyList: function () {
         let unreadReplyList = this.state.unreadReplyList;
         //是否展示有未读申请的提示，后端推送过来的未读回复列表中有数据，并且是在全部类型下可展示，其他待审批、已通过等类型下不展示
-        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType == "all";
+        let showUnreadTip = _.isArray(unreadReplyList) && unreadReplyList.length > 0 && this.state.applyListType == "all" && !this.state.searchKeyword;
         return (
             <ul className="list-unstyled app_user_manage_apply_list">
                 {showUnreadTip ? (
@@ -228,7 +228,13 @@ var ApplyTabContent = React.createClass({
                             }}
                         />
                     </li>
-                ) : null}
+                ) : this.state.isCheckUnreadApplyList ? (<li className="has-unread-reply-tip">
+                    <ReactIntl.FormattedMessage
+                        id="user.apply.unread.reply.null"
+                        defaultMessage={`已无未读回复的申请，{return}`}
+                        values={{"return": <a onClick={this.toggleUnreadApplyList}>{Intl.get("crm.52", "返回")}</a>}}
+                    />
+                </li>) : null}
                 {
                     this.state.applyListObj.list.map((obj, i) => {
                         var btnClass = classNames({
@@ -432,9 +438,14 @@ var ApplyTabContent = React.createClass({
     render: function () {
         //根本就没有用户审批的时候，显示没数据的提示
         if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
+            let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
+                id="user.apply.unread.reply.null"
+                defaultMessage={`已无未读回复的申请，{return}`}
+                values={{"return": <a onClick={this.toggleUnreadApplyList}>{Intl.get("crm.52", "返回")}</a>}}
+            />) : Intl.get("user.apply.no.apply", "还没有用户审批诶...");
             return (
                 <div className="app_user_manage_apply_wrap">
-                    <NoData msg={Intl.get("user.apply.no.apply", "还没有用户审批诶...")}/>
+                    <NoData msg={noDataTip}/>
                 </div>
             );
         }

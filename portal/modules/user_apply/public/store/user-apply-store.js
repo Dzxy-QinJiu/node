@@ -61,15 +61,19 @@ UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
     this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
 };
 //清除未读回复列表中已读的回复
-UserApplyStore.prototype.clearUnreadReplyById = function (applyId) {
+UserApplyStore.prototype.clearUnreadReply = function (applyId) {
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //获取sessionStorage中该用户的未读回复列表
     let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
     if (applyUnreadReply) {
         let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
-        let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
-        applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
+        let applyUnreadReplyList = [];//获取未读回复申请列表为空时，会清空所有未读回复的申请列表
+        //清除某条申请
+        if (applyId) {
+            applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
+            applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
+        }
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
         sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
@@ -117,6 +121,10 @@ UserApplyStore.prototype.getApplyList = function (obj) {
             this.listenScrollBottom = this.applyListObj.list.length < this.totalSize;
         } else if (!this.lastApplyId) {//获取第一页就没有数据时
             this.clearData();
+            //获取的未读回复列表为空时，清除sessionStore中存的未读回复的申请
+            if (this.isCheckUnreadApplyList) {
+                this.clearUnreadReply();
+            }
         }
     }
 };

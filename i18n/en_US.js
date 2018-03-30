@@ -997,6 +997,7 @@ var en_US = {
     "user.apply.unread.reply": "Have unread reply",//有未读回复
     "user.apply.refresh.reply.tip": "Have a new reply, {refreshTip}",//有新回复，点此{refreshTip}
     "user.apply.unread.reply.check": "Application for unread reply, {check}",//有未读回复的申请，{check}
+    "user.apply.unread.reply.null": "No unread reply，{return}",//已无未读回复的申请，{return}
     "user.apply.check": "Check",//查看
     "user.apply.cancel.check": "Cancel check",//取消查看
     "user.apply.unread.apply.list.failed": "Failure to obtain an application list with unread reply",//获取有未读回复的申请列表失败
