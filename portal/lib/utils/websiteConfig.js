@@ -1,5 +1,6 @@
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
+import CONSTS from  "LIB_DIR/consts";
 
 //设置网站个性化配置
 var websiteConfig = {
@@ -11,12 +12,12 @@ var websiteConfig = {
             data
         };
         ajax(arg).then(result => {
-            const preStorage = JSON.parse(localStorage.getItem("websiteConfig"));
+            const preStorage = JSON.parse(localStorage.getItem(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG));
             const curStorage = $.extend({}, preStorage, data);
-            localStorage.setItem("websiteConfig", JSON.stringify(curStorage));
-            onSuccess(result);
+            localStorage.setItem(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG, JSON.stringify(curStorage));
+           _.isFunction(onSuccess) && onSuccess(result);
         }, err => {
-            onError(err);
+            _.isFunction(onError) &&  onError(err);
         });
     },
     //设置某个模块是否被点击过

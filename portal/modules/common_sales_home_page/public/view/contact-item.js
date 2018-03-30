@@ -3,7 +3,7 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/3/19.
  */
-import {message, Tooltip} from "antd";
+import {message} from "antd";
 require("../css/contact-item.less");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from "LIB_DIR/trace";
