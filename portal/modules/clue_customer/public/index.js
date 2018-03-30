@@ -188,6 +188,8 @@ const ClueCustomer = React.createClass({
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
+        //关闭右侧面板后，将当前展示线索的id置为空
+        clueCustomerAction.setCurrentCustomer("");
     },
     showNoMoreDataTip: function () {
         return !this.state.isLoading &&
@@ -433,7 +435,8 @@ const ClueCustomer = React.createClass({
                     "has-trace": item.status == SELECT_TYPE.HAS_TRACE,
                 });
                 var listCls = classNames("list-item", {
-                    "current-row": this.state.currentId === item.id && rightPanelShow
+                    //当添加完一个线索后,新加线索就是当前展示的线索
+                    "current-row": this.state.currentId === item.id && (rightPanelShow || this.state.clueAddFormShow)
                 });
                 var addContent = "", addTime = "";
                 if (_.isArray(item.customer_traces) && item.customer_traces.length) {

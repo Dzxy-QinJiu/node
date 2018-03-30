@@ -79,7 +79,7 @@ class ClueCustomerSearchBlock extends React.Component {
                 <div className="date-picker-wrap">
                     <DatePicker
                         disableDateAfterToday={true}
-                        range="day"
+                        range="week"
                         onSelect={this.onSelectDate}>
                         <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
                         <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>

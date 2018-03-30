@@ -211,18 +211,24 @@ exports.queryCustomer = function (req, res, condition) {
     let url = "";
     let call_phone = condition && condition.call_phone;
     let id = condition && condition.id;
+    //可以通过线索的id查询客户
+    let customer_clue_id = condition && condition.customer_clue_id;
     delete condition.call_phone;
     let queryObj = {};
     if (call_phone) {  // 通话记录，查看客户详情
         url = crmRestApis.getCustomerByPhone + "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
         queryObj = _.clone(condition);
-    } else if (id) {  // 根据客户的id查询客户详情
+    } else if (id || customer_clue_id) {  // 根据客户的id,或者线索的id查询客户详情
         url = crmRestApis.query;
         if (req.body.hasManageAuth) {
             url = crmRestApis.managerQuery;
         }
         url += "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
-        queryObj.query = {"id": id};
+        if (id){
+            queryObj.query = {"id": id};
+        }else if (customer_clue_id){
+            queryObj.query = {"customer_clue_id": customer_clue_id};
+        }
     } else {  // 客户列表
         let baseUrl = "";
         if (req.body.hasManageAuth) {

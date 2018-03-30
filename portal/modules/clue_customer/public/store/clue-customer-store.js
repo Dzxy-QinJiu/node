@@ -4,16 +4,15 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 var ClueCustomerAction = require("../action/clue-customer-action");
-let userData = require("PUB_DIR/sources/user-data");
 import {addHyphenToPhoneNumber} from "LIB_DIR/func";
-const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
+const datePickerUtils= require("CMP_DIR/datepicker/utils");
 function ClueCustomerStore() {
     //初始化state数据
     this.getState();
     this.bindActions(ClueCustomerAction);
 }
 ClueCustomerStore.prototype.getState = function () {
-    let timeStamp = TimeStampUtil.getTodayTimeStamp();
+    var timeObj = datePickerUtils.getThisWeekTime();  // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
     this.curCustomers = [];//查询到的线索客户列表
@@ -25,8 +24,8 @@ ClueCustomerStore.prototype.getState = function () {
     this.currentId = "";//当前展示的客户的id
     this.curCustomer = {}; //当前展示的客户详情
     this.rangParams = [{//时间范围参数
-        from: timeStamp.start_time,
-        to: timeStamp.end_time,
+        from: datePickerUtils.getMilliseconds(timeObj.start_time),
+        to: datePickerUtils.getMilliseconds(timeObj.end_time, true),
         type: "time",
         name: "start_time"
     }];
@@ -137,12 +136,18 @@ ClueCustomerStore.prototype.distributeCluecustomerToSale = function (result) {
         this.distributeErrMsg = "";
     }
 };
-//查看某个客户的详情
+//查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function (id) {
-    this.currentId = id;
-    this.curCustomer = _.find(this.curCustomers, customer => {
-        return customer.id === id;
-    });
+    if (id){
+        this.currentId = id;
+        this.curCustomer = _.find(this.curCustomers, customer => {
+            return customer.id === id;
+        });
+    }else{
+        this.currentId = "";
+        this.curCustomer = {};
+    }
+
 };
 //添加完销售线索后的处理
 ClueCustomerStore.prototype.afterAddSalesClue = function (newCustomer) {
@@ -154,6 +159,9 @@ ClueCustomerStore.prototype.afterAddSalesClue = function (newCustomer) {
         this.curCustomers.unshift(newCustomer);
         this.customersSize++;
     }
+    //新添加的是正在展示的那条日程
+    this.curCustomer = newCustomer;
+    this.currentId = newCustomer.id;
 };
 //用于设置下拉加载的最后一个客户的id
 ClueCustomerStore.prototype.setLastCustomerId = function (id) {

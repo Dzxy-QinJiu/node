@@ -11,7 +11,7 @@ import {checkEmail} from "../utils/clue-customer-utils";
 var clueCustomerAction = require("../action/clue-customer-action");
 var clueCustomerStore = require("../store/clue-customer-store");
 var clueCustomerAjax = require("../ajax/clue-customer-ajax");
-let SalesSelectField = require("MOD_DIR/crm/public/views/basic_data/sales-select-field");
+import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 var userData = require("../../../../public/sources/user-data");
 const noop = function () {};
@@ -20,6 +20,7 @@ class ClueRightPanel extends React.Component {
         super(props);
         this.state = {
             curCustomer: this.props.curCustomer,
+            relatedCustomer: {},//与线索相关联的客户
             ...clueCustomerStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
@@ -28,13 +29,17 @@ class ClueRightPanel extends React.Component {
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
     };
-
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
+    };
+    //是否是销售领导 或者是域管理员
+    isSalesManager() {
+        return userData.isSalesManager()
     };
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
+            // this.queryCustomerByClueId(nextProps.curCustomer.id)
             this.setState({
                 curCustomer: nextProps.curCustomer
             })
@@ -114,25 +119,11 @@ class ClueRightPanel extends React.Component {
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
     };
-    //把线索客户分配给销售
-    distributeCustomerToSale = (submitObj) => {
-        var updateObj = {
-            "customer_id": submitObj.id,
-            "sale_id": submitObj.user_id,
-            "sale_name": submitObj.user_name,
-            "team_name": submitObj.sales_team,
-            "team_id": submitObj.sales_team_id,
-        };
-        clueCustomerAction.distributeCluecustomerToSale(updateObj, () => {
-            clueCustomerAction.afterEditCustomerDetail({
-                "user_name": submitObj.user_name,
-                "user_id": submitObj.user_id,
-                "sales_team": submitObj.sales_team,
-                "sales_team_id": submitObj.sales_team_id
-            });
-            //把分配线索客户设置为text格式
-            this.refs.distribute.changeDisplayType("text");
+    hideRightPanel =() =>{
+        this.setState({
+            relatedCustomer:{}
         });
+        this.props.hideRightPanel();
     };
     render() {
         var curCustomer = this.state.curCustomer || {};
@@ -149,7 +140,7 @@ class ClueRightPanel extends React.Component {
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
                 showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
-                <RightPanelClose onClick={this.props.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
+                <RightPanelClose onClick={this.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
                 <GeminiScrollbar>
                     <div className="clue_customer_content_wrap">
                         <h5>{curCustomer.name}</h5>
@@ -163,7 +154,7 @@ class ClueRightPanel extends React.Component {
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={curCustomer.contact}
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate ?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate ? false : true}
                                         placeholder={Intl.get("crm.90", "请输入姓名")}
                                         field="contact_name"
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -281,22 +272,9 @@ class ClueRightPanel extends React.Component {
                             </dl>
                         </div>
                     </div>
-                    <div className="sales-assign-wrap">
-                        <h5>{Intl.get("cluecustomer.trace.person", "跟进人")}</h5>
-                        <div className="sales-assign-content">
-                            <SalesSelectField
-                                ref="distribute"
-                                disabled={(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER"))?false:true}
-                                isMerge={true}
-                                updateMergeCustomer={this.distributeCustomerToSale}
-                                customerId={curCustomer.id}
-                                userName={curCustomer.user_name}
-                                userId={curCustomer.user_id}
-                                salesTeam={curCustomer.sales_team}
-                                salesTeamId={curCustomer.sales_team_id}
-                            />
-                        </div>
-                    </div>
+                    <AssignClueAndSelectCustomer
+                        curClueDetail={curCustomer}
+                    />
                 </GeminiScrollbar>
             </RightPanel>
         )

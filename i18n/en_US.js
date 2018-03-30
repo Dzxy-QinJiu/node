@@ -1988,6 +1988,7 @@ var en_US = {
     "crm.call.phone.failed": "Failed to call out",//拨打失败
     "crm.bind.phone": "Please bind the extension number first!",//请先绑定分机号！
     "crm.click.call.phone": "Click to call out",//点击拨打电话
+    "clue.customer.associate.customer": "Relate customer",//关联客户
     "sales.frontpage.connected.today": "Phone connected today",//今日接通电话
     "sales.frontpage.connected.range": "Call duration today",//今日通话时长
     "sales.frontpage.contact.today": "Customers has followed today",//今日已跟进客户
@@ -2016,5 +2017,6 @@ var en_US = {
     "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
     "common.sales.fronpage.has.expired": "Expired customers of past {X} days",//近{X}天过期未处理客户
     "user.list.all.teamlist": "All teamlists"//全部团队
+
 };
 export default en_US;
