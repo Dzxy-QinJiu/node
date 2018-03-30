@@ -88,13 +88,13 @@ class ScheduleItem extends React.Component {
                     <div className="schedule-content">
                         {schedule.content}
                     </div>
-                    <ContactItem
+                    {_.isArray(contacts) && contacts.length ?<ContactItem
                         contacts={contacts}
                         customerData={schedule}
                         itemType="schedule"
                         callNumber={this.props.callNumber}
                         errMsg={this.props.errMsg}
-                    />
+                    />: null}
                 </div>
             </div>
         )

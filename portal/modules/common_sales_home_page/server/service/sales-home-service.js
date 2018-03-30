@@ -10,8 +10,8 @@ var restApis = {
     //获取销售-电话列表
     getSalesPhone: "/rest/callrecord/v2/callrecord/query/:type/call_record/view",
     queryContactCustomer: "/rest/customer/v2/customer/range",//查询客户
-    //即将到期的客户
-    getWillExpiredCustomers: "/rest/analysis/customer/v2/statistic/:type/expire/customer",
+    //过期或者即将到期的客户
+    getExpiredCustomers: "/rest/analysis/customer/v2/statistic/:type/expire/customer",
 };
 exports.restUrls = restApis;
 //获取销售-电话列表
@@ -42,9 +42,9 @@ exports.queryContactCustomer = function (req, res) {
     }, queryObj);
 };
 
-//获取即将到期的客户
-exports.getWillExpireCustomer = function (req, res) {
-    var url = restApis.getWillExpiredCustomers;
+//获取过期或即将到期的客户
+exports.getExpireCustomer = function (req, res) {
+    var url = restApis.getExpiredCustomers;
     return restUtil.authRest.get({
         url: url.replace(":type", req.params.type),
         req: req,

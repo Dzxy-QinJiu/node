@@ -1,3 +1,6 @@
+import ajax from "../../../common/ajax";
+const routes  = require("../../../common/route");
+
 //获取统计总数
 var summaryNumbersAjax;
 exports.getSummaryNumbers = function(reqData) {
@@ -75,3 +78,23 @@ exports.getSalesStageList = function () {
     return Deferred.promise();
 };
 
+
+//查询迁出客户
+exports.getTransferCustomers = function(paramObj) {
+    const handler = "getTransferCustomers";
+    const route = routes.find(x => x.handler == handler);
+    const {page_size, sort_field, order} = paramObj;
+    let queryObj = $.extend(true, {}, paramObj.query);
+    paramObj.query = {};
+    return ajax({
+        url: route.path,
+        type: route.method,
+        query: queryObj,
+        params: {
+            page_size, 
+            sort_field, 
+            order
+        },
+        data: paramObj
+    })
+};

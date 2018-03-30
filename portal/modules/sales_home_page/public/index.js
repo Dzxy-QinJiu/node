@@ -28,13 +28,7 @@ var key = "hamburger-button-flag";//用于记录展开或者关闭销售团队�
 import history from 'PUB_DIR/sources/history';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
-
-// 通话类型的常量
-const CALL_TYPE_OPTION = {
-    ALL: 'all',
-    PHONE: 'phone',
-    APP: 'app'
-};
+import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;

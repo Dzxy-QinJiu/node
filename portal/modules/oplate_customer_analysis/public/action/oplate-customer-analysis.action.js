@@ -1,4 +1,21 @@
 var OplateCustomerAnalysisAjax = require("../ajax/oplate-customer-analysis.ajax");
+const asyncDispatcher = function (ajax) {
+    return function (paramObj) {
+        var _this = this;
+        _this.dispatch({ errorMsg: "", loading: true });
+        return new Promise((resolve, reject) => {
+            ajax(paramObj)
+                .then(function (data) {                   
+                    _this.dispatch({ loading: false, data, paramObj, errorMsg: "" });
+                    resolve({ data })
+                })
+                .fail(function (errorMsg) {
+                    _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
+                    reject({ errorMsg });
+                });
+        })
+    }
+};
 
 //客户分析的action
 function OplateCustomerAnalysisActions() {
@@ -65,6 +82,10 @@ function OplateCustomerAnalysisActions() {
             _this.dispatch(errorMsg);
         });
     };
+
+    //查询迁出客户
+    this.getTransferCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getTransferCustomers);
+
 };
 
 //使用alt导出一个action
