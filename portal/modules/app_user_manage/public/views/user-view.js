@@ -30,7 +30,7 @@ const EXCEPTION_TYPES = [{
     name: Intl.get("common.all", "全部"),
     value: ""
 }, {
-    name: Intl.get("user.stop.login", "停用登录"),
+    name: Intl.get("user.disable.logon", "停用登录"),
     value: "app_illegal"
 }, {
     name: Intl.get("ketao.frontpage.illegal.location.login", "异地登录"),
