@@ -9,6 +9,7 @@
 @icon_color: #c2c2c2;
 @font_color: #333333;
 @interested_color: #F9B706;
+@item_height: 24px;
 
 //换行
 .overflow-break {
@@ -19,17 +20,34 @@
 
 .basic-info-contianer {
   float: left;
+  width: 100%;
   background-color: @white_color;
   padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
 
   //客户名和按钮展示区域
   .basic-info-title-block {
     .basic-info-name {
+      position: relative;
       float: left;
       width: 368px;
-      padding-right: @right_panel_margin;
+      padding-right: 26px;
       border-right: 1px solid @split_line_color;
       &:extend(.overflow-break);
+      //客户名的编辑
+      .icon-edit-btn {
+        display: none;
+      }
+      &:hover {
+        .icon-edit-btn {
+          display: block;
+          position: absolute;
+          float: right;
+          right: 0;
+          top: 0;
+          padding-right: 8px;
+          font-size: 14px;
+        }
+      }
       //客户标签
       .customer-label {
         display: inline-block;
@@ -69,7 +87,45 @@
       }
     }
   }
-
+  //客户名的编辑表单
+  .name-form {
+    //客户名
+    .ant-form-item {
+      width: 432px;
+      textarea {
+        width: 100%;
+      }
+    }
+    .tip-customer-exist {
+      margin-top: -13px;
+      line-height: 20px;
+      margin-bottom: 10px;
+    }
+    //客户名名保存、取消按钮趋势
+    .button-container {
+      height: @item_height;
+      button {
+        float: right;
+        margin-left: 10px;
+        height: @item_height;
+      }
+      .button-cancel {
+        color: @font_color;
+      }
+      //等待样式
+      .save-loading {
+        float: right;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      //错误提示样式
+      .save-error {
+        float: right;
+        line-height: 24px;
+        color: #f50;
+      }
+    }
+  }
   //客户基本信息展示区域
   .basic-info-detail-block {
     float: left;

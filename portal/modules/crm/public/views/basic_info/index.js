@@ -22,15 +22,16 @@ import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
 import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
+import {DetailEditBtn} from "CMP_DIR/rightPanel";
 
 function getStateFromStore(isMerge) {
     return {
         basicIsLoading: CRMStore.getBasicState(),
         basicData: _.extend({}, CRMStore.getBasicInfo()),
-        editShowFlag: false,
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         basicPanelH: getBasicPanelH(isMerge),
-        showDetailFlag: false//控制客户详情展示隐藏的标识
+        showDetailFlag: false,//控制客户详情展示隐藏的标识
+        editNameFlag: false//编辑客户名的标识
     };
 }
 function getBasicPanelH(isMerge) {
@@ -67,19 +68,15 @@ var BasicData = React.createClass({
     },
     componentWillReceiveProps: function (nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
+        if(this.state.basicData.id!==nextProps.curCustomer.id){
+            this.setState({
+                showDetailFlag: false,
+                editNameFlag: false
+            });
+        }
     },
     componentWillUnmount: function () {
         CRMStore.unlisten(this.onChange);
-    },
-
-    //展示编辑基本资料页面
-    showEditForm: function () {
-        this.setState({editShowFlag: true});
-    },
-
-    //返回基本资料展示页面
-    returnInfoPanel: function () {
-        this.setState({editShowFlag: false});
     },
 
     //提交修改
@@ -163,6 +160,10 @@ var BasicData = React.createClass({
             this.props.setTabsContainerHeight();
         });
     },
+    //编辑客户名的标识
+    setEditNameFlag: function (flag) {
+        this.setState({editNameFlag: flag});
+    },
 
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
@@ -190,37 +191,51 @@ var BasicData = React.createClass({
         let interestFlag = basicData.interest === "true";
         return (
             <div className="basic-info-contianer">
-                <div className="basic-info-title-block">
-                    <div className="basic-info-name">
-                        {basicData.customer_label ? (
-                            <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-                                {basicData.customer_label.substr(0, 1)}</Tag>) : null
-                        }
-                        {basicData.qualify_label ? (
-                            <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-                                {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                    basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
-                        }
-                        <span className="basic-name-text">{basicData.name}</span>
-                        <span className="basic-name-text">{basicData.name}</span>
-                    </div>
-                    <div className="basic-info-btns">
+                {this.state.editNameFlag ? (
+                    <NameTextareaField
+                        isMerge={this.props.isMerge}
+                        updateMergeCustomer={this.props.updateMergeCustomer}
+                        customerId={basicData.id}
+                        name={basicData.name}
+                        modifySuccess={this.editBasicSuccess}
+                        setEditNameFlag={this.setEditNameFlag}
+                        showRightPanel={this.props.showRightPanel}
+                    /> ) : (
+                    <div className="basic-info-title-block">
+                        <div className="basic-info-name">
+                            {basicData.customer_label ? (
+                                <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
+                                    {basicData.customer_label.substr(0, 1)}</Tag>) : null
+                            }
+                            {basicData.qualify_label ? (
+                                <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
+                                    {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                        basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
+                            }
+                            <span className="basic-name-text">{basicData.name}</span>
+                            {hasPrivilege("CUSTOMER_UPDATE_NAME") ? (
+                                <DetailEditBtn title={Intl.get("common.edit", "编辑")}
+                                               onClick={this.setEditNameFlag.bind(this, true)}/>) : null}
+                        </div>
+                        <div className="basic-info-btns">
                         <span
                             className={classNames("iconfont icon-detail-list", {"btn-active": this.state.showDetailFlag})}
                             title={this.state.showDetailFlag ? Intl.get("crm.basic.detail.hide", "收起详情") :
                                 Intl.get("crm.basic.detail.show", "展开详情")}
                             onClick={this.toggleBasicDetail}/>
-                        <span
-                            className={classNames("iconfont", {
-                                "icon-interested": interestFlag,
-                                "icon-uninterested": !interestFlag
-                            })}
-                            title={interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
-                                Intl.get("crm.customer.interested", "添加关注")}
-                            onClick={this.props.handleFocusCustomer.bind(this, basicData)}
-                        />
+                            <span
+                                className={classNames("iconfont", {
+                                    "icon-interested": interestFlag,
+                                    "icon-uninterested": !interestFlag
+                                })}
+                                title={interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
+                                    Intl.get("crm.customer.interested", "添加关注")}
+                                onClick={this.props.handleFocusCustomer.bind(this, basicData)}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
+
                 {this.state.showDetailFlag ? (<div className="basic-info-detail-block">
                     <div className="basic-info-administrative basic-info-item">
                         <span className="iconfont icon-administrative basic-info-icon"/>

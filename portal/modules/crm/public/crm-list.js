@@ -1338,6 +1338,7 @@ var Crm = React.createClass({
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
                         handleFocusCustomer={this.handleFocusCustomer}
+                        showRightPanel={this.showRightPanel}
                     />
                 ) : null}
                 {/*该客户下的用户列表*/}

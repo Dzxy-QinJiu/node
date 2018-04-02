@@ -18,9 +18,6 @@ import Trace from "LIB_DIR/trace";
 import {tabNameList} from "../utils/crm-util";
 import BasicInfo from "./basic_info";
 import BasicOverview from "./basic-overview";
-// const LAYOUT = {
-//     NAME_PADDING: 24 + 12,//客户名上边距：24，客户名下边距：12
-// }
 var CrmRightPanel = React.createClass({
     getInitialState: function () {
         return {
@@ -136,6 +133,7 @@ var CrmRightPanel = React.createClass({
                                userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                handleFocusCustomer={this.props.handleFocusCustomer}
                                setTabsContainerHeight={this.setTabsContainerHeight}
+                               showRightPanel={this.props.showRightPanel}
                     />
                     <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                         {this.state.curCustomer ? (

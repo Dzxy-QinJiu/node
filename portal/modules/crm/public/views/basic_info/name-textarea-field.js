@@ -1,10 +1,10 @@
+/**
+ * 编辑 客户名 的组件
+ *
+ */
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
-/**
- * 显示、编辑 的组件
- * 可切换状态
- */
-import {Form,Input,Icon} from "antd";
+import {Form, Button, Icon} from "antd";
 let FormItem = Form.Item;
 let crypto = require("crypto");
 let autosize = require("autosize");
@@ -14,13 +14,12 @@ let AutosizeTextarea = require('../../../../../components/autosize-textarea');
 let CrmAction = require("../../action/crm-actions");
 let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
+import userData from "PUB_DIR/sources/user-data";
 
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
     getDefaultProps: function () {
         return {
-            //是否能修改
-            disabled: false,
             customerId: "",
             name: "",
             //修改成功
@@ -31,8 +30,6 @@ let NameTextareaField = React.createClass({
     getInitialState: function () {
         return {
             loading: false,
-            displayType: "text",
-            disabled: this.props.disabled,
             isMerge: this.props.isMerge,
             customerId: this.props.customerId,
             formData: {
@@ -41,6 +38,9 @@ let NameTextareaField = React.createClass({
             status: {
                 name: {}
             },
+            customerNameExist: false,//客户名是否已存在
+            existCustomerList: [],//已存在的客户列表
+            checkNameError: false,//客户名唯一性验证出错
             submitErrorMsg: ''
         };
     },
@@ -51,35 +51,22 @@ let NameTextareaField = React.createClass({
             stateData.isMerge = nextProps.isMerge;
             stateData.customerId = nextProps.customerId;
             stateData.formData.name = nextProps.name;
-            stateData.disabled = nextProps.disabled;
             this.setState(stateData);
         }
-    },
-    setEditable: function (e) {
-        Trace.traceEvent(e,"点击设置客户名");
-        this.setState({displayType: "edit"});
-    },
-    //回到展示状态
-    backToDisplay: function () {
-        this.setState({
-            loading: false,
-            displayType: 'text',
-            submitErrorMsg: ''
-        });
     },
 
     handleSubmit: function (e) {
         if (this.state.loading) return;
         if (this.state.formData.name == this.props.name) {
-            this.backToDisplay();
+            this.props.setEditNameFlag(false);
             return;
         }
         let validation = this.refs.validation;
-        validation.validate(valid=> {
+        validation.validate(valid => {
             if (!valid) {
                 return;
             }
-            Trace.traceEvent(e,"保存对客户名的修改");
+            Trace.traceEvent(e, "保存对客户名的修改");
             let submitData = {
                 id: this.state.customerId,
                 type: "name",
@@ -87,16 +74,16 @@ let NameTextareaField = React.createClass({
             };
             if (this.props.isMerge) {
                 this.props.updateMergeCustomer(submitData);
-                this.backToDisplay();
+                this.props.setEditNameFlag(false);
             } else {
                 this.setState({loading: true});
-                CrmBasicAjax.updateCustomer(submitData).then(result=> {
+                CrmBasicAjax.updateCustomer(submitData).then(result => {
                     if (result) {
-                        this.backToDisplay();
+                        this.props.setEditNameFlag(false);
                         //更新列表中的客户名
                         this.props.modifySuccess(submitData);
                     }
-                }, errorMsg=> {
+                }, errorMsg => {
                     this.setState({
                         loading: false,
                         submitErrorMsg: errorMsg || Intl.get("crm.169", "修改客户名失败")
@@ -115,11 +102,11 @@ let NameTextareaField = React.createClass({
         this.setState({
             formData: formData,
             status: status,
-            displayType: "text",
             submitErrorMsg: '',
             loading: false
         });
-        Trace.traceEvent(e,"取消对客户名的修改");
+        this.props.setEditNameFlag(false);
+        Trace.traceEvent(e, "取消对客户名的修改");
     },
 
     //客户名格式验证
@@ -134,72 +121,127 @@ let NameTextareaField = React.createClass({
             }
         } else {
             this.setState({submitErrorMsg: ''});
-            callback(new Error( Intl.get("crm.81", "请填写客户名称")));
+            callback(new Error(Intl.get("crm.81", "请填写客户名称")));
         }
+    },
+    //客户名唯一性验证
+    checkOnlyCustomerName: function (e) {
+        var customerName = $.trim(this.state.formData.name);
+        //满足验证条件后再进行唯一性验证
+        if (customerName && customerName != this.props.name && nameRegex.test(customerName)) {
+            Trace.traceEvent(e, "添加客户名称");
+            CrmAction.checkOnlyCustomerName(customerName, (data) => {
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    this.setState({customerNameExist: false, checkNameError: true});
+                } else if (_.isObject(data)) {
+                    if (data.result == "true") {
+                        //不存在
+                        this.setState({customerNameExist: false, checkNameError: false});
+                    } else {
+                        //已存在
+                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
+                    }
+                }
+            });
+        } else {
+            this.setState({customerNameExist: false, checkNameError: false});
+        }
+    },
+    //客户名唯一性验证的提示信息
+    renderCustomerNameMsg: function () {
+        if (this.state.customerNameExist) {
+            let name = this.state.formData.name;
+            const list = _.clone(this.state.existCustomerList);
+            const index = _.findIndex(list, item => item.name === name);
+            const existSame = index > -1;
+            let customer;
+            if (existSame) customer = list.splice(index, 1)[0];
+            else customer = list.shift();
+
+            const curUserId = userData.getUserData().user_id;
+
+            return (
+                <div className="tip-customer-exist">
+                    {Intl.get("call.record.customer", "客户")} {existSame ? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
+
+                    {customer.user_id === curUserId ? (
+                        <a href="javascript:void(0)"
+                           onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                    ) : (
+                        <span>{customer.name} ({customer.user_name})</span>
+                    )}
+
+                    {list.length ? (
+                        <div>
+                            {Intl.get("crm.68", "相似的客户还有")}:
+                            {list.map(customer => {
+                                return (
+                                    <div>
+                                        {customer.user_id === curUserId ? (
+                                            <div><a href="javascript:void(0)"
+                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                                            </div>
+                                        ) : (
+                                            <div>{customer.name} ({customer.user_name})</div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                </div>
+            );
+        } else if (this.state.checkNameError) {
+            return (
+                <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
+                </div>);
+        } else {
+            return "";
+        }
+    },
+    renderButtons() {
+        return (
+            <div className="button-container">
+                <Button className="button-save" type="primary"
+                        onClick={this.handleSubmit.bind(this)}>
+                    {Intl.get("common.save", "保存")}
+                </Button>
+                <Button className="button-cancel" onClick={this.handleCancel.bind(this)}>
+                    {Intl.get("common.cancel", "取消")}
+                </Button>
+                {this.state.loading ? (
+                    <Icon type="loading" className="save-loading"/>) : this.state.saveErrorMsg ? (
+                    <span className="save-error">{this.state.saveErrorMsg}</span>
+                ) : null}
+            </div>
+        );
     },
     render: function () {
         let formData = this.state.formData;
         let status = this.state.status;
-        let textBlock = this.state.displayType === 'text' ? (
-            <div>
-                <span className="inline-block">{formData.name}</span>
-                {
-                    !this.state.disabled ? (
-                        <i className="inline-block iconfont icon-update" title={Intl.get("crm.170", "设置客户名")}
-                           onClick={(e)=>this.setEditable(e)}/>
-                    ) : null
-                }
-
-            </div>
-        ) : null;
-
-        let buttonBlock = this.state.loading ? (
-            <Icon type="loading"/>
-        ) : (
-            <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e)=>{this.handleSubmit(e)}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e)=>{this.handleCancel(e)}}/>
-            </div>
-        );
-
-
-        let inputBlock = this.state.displayType === 'edit' ? (
-            <div className="inputWrap" ref="inputWrap">
-                <Form horizontal autoComplete="off">
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        <FormItem
-                            label=""
-                            className="input-customer-name"
-                            labelCol={{span: 0}}
-                            wrapperCol={{span: 24}}
-                            validateStatus={this.renderValidateStyle('name')}
-                            help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
-                        >
-                            <Validator rules={[{validator: this.checkCustomerName}]}>
-                                <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"
-                                                  width={300}
-                                                  onBlur={this.checkOnlyCustomerName}
-                                                  onChange={this.setField.bind(this, 'name')}
-                                />
-                            </Validator>
-                        </FormItem>
-                    </Validation>
-                    <div className="buttons">
-                        {buttonBlock}
-                    </div>
-                </Form>
-                {this.state.submitErrorMsg ? (
-                    <div className="has-error">
-                        <span className="ant-form-explain">{this.state.submitErrorMsg}</span>
-                    </div>) : null
-                }
-            </div>
-        ) : null;
         return (
-            <div data-tracename="客户名">
-                {textBlock}
-                {inputBlock}
-            </div>
+            <Form horizontal autoComplete="off" data-tracename="客户名" className="name-form">
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    <FormItem
+                        label=""
+                        className="input-customer-name"
+                        labelCol={{span: 0}}
+                        wrapperCol={{span: 24}}
+                        validateStatus={this.renderValidateStyle('name')}
+                        help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
+                    >
+                        <Validator rules={[{validator: this.checkCustomerName}]}>
+                            <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"
+                                              onBlur={this.checkOnlyCustomerName}
+                                              onChange={this.setField.bind(this, 'name')}
+                            />
+                        </Validator>
+                    </FormItem>
+                    {this.renderCustomerNameMsg()}
+                </Validation>
+                {this.renderButtons()}
+            </Form>
         );
     }
 });
