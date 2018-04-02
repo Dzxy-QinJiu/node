@@ -2058,6 +2058,9 @@ var zh_CN = {
     "common.sales.fronpage.user.login": "{relativedata}有应用到期",
     "clue.customer.associate.customer": "关联客户",
     "common.sales.fronpage.has.expired":"近{X}天过期未处理客户",
-    "user.list.all.teamlist": "全部团队"
+    "user.list.all.teamlist": "全部团队",
+    "common.sales.frontpage.loading": "加载中",
+    "common.sales.data.err": "出错啦",
+    "common.sales.data.no.data": "暂无此类信息"
 };
 export default zh_CN;

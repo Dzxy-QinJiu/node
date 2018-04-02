@@ -149,7 +149,6 @@ class CustomerNoticeMessage extends React.Component {
 CustomerNoticeMessage.defaultProps = {
     noticeType: "",
     customerNoticeMessage: {},
-    tableTitleTip: "",//table的标题
     isRecentLoginCustomer: false,
     openCustomerDetail: function () {
 

@@ -2017,7 +2017,10 @@ var en_US = {
     "common.sales.frontpage.click.phone": "Click to call",//点击即可拨打。
     "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
     "common.sales.fronpage.has.expired": "Expired customers of past {X} days",//近{X}天过期未处理客户
-    "user.list.all.teamlist": "All teamlists"//全部团队
+    "user.list.all.teamlist": "All teamlists",//全部团队
+    "common.sales.frontpage.loading": "Loading",//加载中
+    "common.sales.data.err": "Error",//出错啦
+    "common.sales.data.no.data": "No such information"//暂无此类信息
 
 };
 export default en_US;

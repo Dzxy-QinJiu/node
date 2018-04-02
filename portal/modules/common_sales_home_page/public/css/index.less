@@ -4,8 +4,8 @@
 @FONT_WHITE: #FFF;
 @FONT_COLOR_999: #999;
 @FONT_COLOR_333: #333;
-@LINE_COLOR:#2196F3;
-@BORDER:4px solid @LINE_COLOR;
+@LINE_COLOR: #2196F3;
+@BORDER: 4px solid @LINE_COLOR;
 @import "../../../../public/css/common-variables";
 .sales_home_content {
   cursor: default;
@@ -30,12 +30,12 @@
             float: left;
             width: 100%;
             padding-left: 16px;
-            color:@FONT_COLOR_999;
+            color: @FONT_COLOR_999;
             .data-container {
               margin-left: 16px;
               span {
-                font-size:16px;
-                color:@FONT_COLOR_333;
+                font-size: 16px;
+                color: @FONT_COLOR_333;
                 font-weight: 600;
               }
 
@@ -94,15 +94,36 @@
         font-size: 16px;
       }
       //每个客户的外层容器
-      .customer-detail-item{
+      .customer-detail-item {
         margin-bottom: 8px;
         margin-right: 12px;
         font-size: 16px;
         background: #FFF;
         border-radius: 4px;
       }
-      .selected-customer-detail-item.customer-detail-item{
+      .selected-customer-detail-item.customer-detail-item {
         border-left: @BORDER;
+      }
+      //加载中，加载完毕和出错的状态
+      .load-content, .err-content, .no-data {
+        margin-top: 260px;
+      }
+      .err-content, .no-data{
+        font-size: 60px;
+        color: #cecece;
+        text-align: center;
+        .icon-data-error,.icon-no-data{
+          font-size: 60px;
+        }
+        .abnornal-status-tip{
+          margin-top: -4px;
+        }
+      }
+      .abnornal-status-tip {
+        text-align: center;
+        margin-top: 16px;
+        color: #999;
+        font-size: 14px;
       }
 
       //今日日程列表
@@ -113,7 +134,7 @@
           margin-bottom: 8px;
           color: @FONT_COLOR_999;
         }
-        .schedule-list-tip:not(:first-child){
+        .schedule-list-tip:not(:first-child) {
           margin-top: 16px;
         }
       }
@@ -141,10 +162,10 @@
       height: 100%;
     }
     //即将过期的签约客户
-    .will-expire-assigned-customer-container,.will-expire-try-customer-container {
+    .will-expire-assigned-customer-container, .will-expire-try-customer-container {
       height: 100%;
-      .expire-customer-item{
-        .expire-customer-tip{
+      .expire-customer-item {
+        .expire-customer-tip {
           margin-bottom: 8px;
         }
       }
@@ -165,28 +186,27 @@
       color: @tag-font-color;
       background-color: #b8c4ca;
     }
-    .customer-label.info-tag-style{
+    .customer-label.info-tag-style {
       background-color: @info-tag-color;
     }
-    .customer-label.intent-tag-style{
+    .customer-label.intent-tag-style {
       background-color: @intent-tag-color;
     }
-    .customer-label.trial-tag-style{
+    .customer-label.trial-tag-style {
       background-color: @trial-tag-color;
     }
-    .customer-label.sign-tag-style{
+    .customer-label.sign-tag-style {
       background-color: @sign-tag-color;
     }
-    .customer-label.qualified-tag-style{
+    .customer-label.qualified-tag-style {
       background-color: @qualified-tag-color;
     }
-    .customer-label.history-qualified-tag-style{
+    .customer-label.history-qualified-tag-style {
       background-color: @history-qualified-tag-color;
     }
-    .customer-label.loss-tag-style{
-      background-color:@loss-tag-color;
+    .customer-label.loss-tag-style {
+      background-color: @loss-tag-color;
     }
-
 
   }
 }
