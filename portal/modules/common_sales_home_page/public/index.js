@@ -427,7 +427,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="err-content">
                     <i className="iconfont icon-data-error"></i>
-                    <p className="abnornal-status-tip">{Intl.get("common.sales.data.err", "出错啦")}</p>
+                    <p className="abnornal-status-tip">{dataObj.errMsg}</p>
                 </div>
             )
         }else if(!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length){
