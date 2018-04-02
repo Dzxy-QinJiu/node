@@ -1,6 +1,8 @@
 var userData = require("../../public/sources/user-data").getUserData();
-//没有userId时，key为projectName
-var userId = (userData && userData.user_id)?(userData.user_id + "-" + Oplate.projectName): Oplate.projectName;
+const config = require("../../../conf/config.js");
+const storageKey = config.storageKey || "storage-key"
+//没有userId时，key为config中的storageKey
+var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey): storageKey;
 /**
  * localstorage工具 * 
  * 对localStorage存取方法的封装
