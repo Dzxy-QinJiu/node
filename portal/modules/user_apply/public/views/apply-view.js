@@ -204,7 +204,14 @@ var ApplyTabContent = React.createClass({
     toggleUnreadApplyList: function () {
         UserApplyActions.setIsCheckUnreadApplyList(!this.state.isCheckUnreadApplyList);
         UserApplyActions.setLastApplyId("");
-        setTimeout(() => this.fetchApplyList());
+        setTimeout(() => {
+            if (this.state.isCheckUnreadApplyList) {
+                Trace.traceEvent($(this.getDOMNode()).find(".app_user_manage_apply_list"), "查看有未读回复的申请");
+            } else {
+                Trace.traceEvent($(this.getDOMNode()).find(".app_user_manage_apply_list"), "取消有未读回复申请的查看");
+            }
+            this.fetchApplyList()
+        });
     },
     //点击展示详情
     clickShowDetail: function (obj, idx) {
