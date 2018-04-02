@@ -1616,59 +1616,64 @@ const ApplyViewDetail = React.createClass({
         if (selectedDetailItem.isConsumed == 'true') {
             return (
                 <div className="approval_block">
-                    <p className="approval_text"></p>
-                    <dl className="dl-horizontal detail_item">
-                        <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/></dt>
-                        <dd>
-                            {detailInfoObj.approval_state == '0' && ''}
-                            {detailInfoObj.approval_state == '1' && Intl.get("user.apply.pass", "已通过")}
-                            {detailInfoObj.approval_state == '2' && Intl.get("user.apply.reject", "已驳回")}
-                            {detailInfoObj.approval_state == '3' && Intl.get("user.apply.backout", "已撤销")}
-                        </dd>
-                    </dl>
-                    {detailInfoObj.approval_comment ? (
-                        <dl className="dl-horizontal detail_item">
-                            <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/></dt>
-                            <dd>
+
+                        <GeminiScrollbar>
+                            <div className="approval_inner_block">
+                            <p className="approval_text"></p>
+                            <dl className="dl-horizontal detail_item">
+                                <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/></dt>
+                                <dd>
+                                    {detailInfoObj.approval_state == '0' && ''}
+                                    {detailInfoObj.approval_state == '1' && Intl.get("user.apply.pass", "已通过")}
+                                    {detailInfoObj.approval_state == '2' && Intl.get("user.apply.reject", "已驳回")}
+                                    {detailInfoObj.approval_state == '3' && Intl.get("user.apply.backout", "已撤销")}
+                                </dd>
+                            </dl>
+                            {detailInfoObj.approval_comment ? (
+                                <dl className="dl-horizontal detail_item">
+                                    <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/></dt>
+                                    <dd>
                                 <span>
                                     {detailInfoObj.approval_comment}
                                 </span>
-                            </dd>
-                        </dl>
-                    ) : null}
+                                    </dd>
+                                </dl>
+                            ) : null}
 
-                    <div className="approval_person clearfix">
-                        <div style={{marginTop: '6px'}}>
-                            {this.renderReplyContent()}
-                        </div>
-                        <div className="col-6">
-                            {/**已审批*/}
-                            {detailInfoObj.approval_state == '3' ? (
-                                <div className="approval_person" style={{paddingTop: '10px'}}>
-                                    <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
-                                                                defaultMessage="撤销人"/>
-                                    <em>{detailInfoObj.sales_name}</em>
+                            <div className="approval_person clearfix">
+                                <div style={{marginTop: '6px'}}>
+                                    {this.renderReplyContent()}
                                 </div>
-                            ) : (
-                                <div className="approval_person" style={{paddingTop: '10px'}}>
-                                    <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
-                                                                defaultMessage="审批人"/>
-                                    <em>{detailInfoObj.approval_person}</em>
+                                <div className="col-6">
+                                    {/**已审批*/}
+                                    {detailInfoObj.approval_state == '3' ? (
+                                        <div className="approval_person" style={{paddingTop: '10px'}}>
+                                            <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
+                                                                        defaultMessage="撤销人"/>
+                                            <em>{detailInfoObj.sales_name}</em>
+                                        </div>
+                                    ) : (
+                                        <div className="approval_person" style={{paddingTop: '10px'}}>
+                                            <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
+                                                                        defaultMessage="审批人"/>
+                                            <em>{detailInfoObj.approval_person}</em>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                        <div className="col-18">
-                            <div className="pull-right">
-                                {this.renderReplyFormResult()}
-                                {
-                                    hasPrivilege("CREATE_APPLY_COMMENT") ?
-                                        <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.addReply}><ReactIntl.FormattedMessage
-                                            id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
-                                }
+                                <div className="col-18">
+                                    <div className="pull-right">
+                                        {this.renderReplyFormResult()}
+                                        {
+                                            hasPrivilege("CREATE_APPLY_COMMENT") ?
+                                                <Button type="primary" className="btn-primary-sure"
+                                                        onClick={this.addReply}><ReactIntl.FormattedMessage
+                                                    id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                          </div>
+                        </GeminiScrollbar>
                 </div>
             );
         } else {
@@ -1679,53 +1684,57 @@ const ApplyViewDetail = React.createClass({
                 userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
             return (
                 <div className="approval_block approval_block_form">
-                    {this.renderReplyContent()}
-                    <div className="approval_person clearfix">
-                        <div className="col-6">
-                            {
-                                isRealmAdmin ? <span>
+                        <GeminiScrollbar>
+                            <div className="approval_inner_block">
+                            {this.renderReplyContent()}
+                            <div className="approval_person clearfix">
+                                <div className="col-6">
+                                    {
+                                        isRealmAdmin ? <span>
                                         <ReactIntl.FormattedMessage id="user.apply.detail.approval.person"
                                                                     defaultMessage="审批人"/>
                                         <em>{userData.getUserData().nick_name}</em>
                                     </span> : <span>&nbsp;</span>
-                            }
-                            {
-                                hasPrivilege("APPLY_CANCEL") && showBackoutApply ? <span>
+                                    }
+                                    {
+                                        hasPrivilege("APPLY_CANCEL") && showBackoutApply ? <span>
                                         <ReactIntl.FormattedMessage id="user.apply.detail.backout.person"
                                                                     defaultMessage="撤销人"/>
                                         <em>{userData.getUserData().nick_name}</em>
                                     </span> : <span>&nbsp;</span>
-                            }
-                        </div>
-                        <div className="col-18">
-                            <div className="pull-right">
-                                {this.renderReplyFormResult()}
-                                {
-                                    hasPrivilege("CREATE_APPLY_COMMENT") ?
-                                        <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.addReply}><ReactIntl.FormattedMessage
-                                            id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
-                                }
-                                {
-                                    hasPrivilege("APPLY_CANCEL") && showBackoutApply ?
-                                        <Button type="primary" className="btn-primary-sure"
-                                                onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
-                                            id="user.apply.detail.backout" defaultMessage="撤销申请"/></Button> : null
-                                }
+                                    }
+                                </div>
+                                <div className="col-18">
+                                    <div className="pull-right">
+                                        {this.renderReplyFormResult()}
+                                        {
+                                            hasPrivilege("CREATE_APPLY_COMMENT") ?
+                                                <Button type="primary" className="btn-primary-sure"
+                                                        onClick={this.addReply}><ReactIntl.FormattedMessage
+                                                    id="user.apply.reply.button" defaultMessage="回复"/></Button> : null
+                                        }
+                                        {
+                                            hasPrivilege("APPLY_CANCEL") && showBackoutApply ?
+                                                <Button type="primary" className="btn-primary-sure"
+                                                        onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
+                                                    id="user.apply.detail.backout" defaultMessage="撤销申请"/></Button> : null
+                                        }
 
-                                {
-                                    isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                           onClick={this.submitApprovalForm.bind(this, "1")}><ReactIntl.FormattedMessage
-                                        id="user.apply.detail.button.pass" defaultMessage="通过"/></Button> : null
-                                }
-                                {
-                                    isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
-                                                           onClick={this.submitApprovalForm.bind(this, "2")}><ReactIntl.FormattedMessage
-                                        id="common.apply.reject" defaultMessage="驳回"/></Button> : null
-                                }
+                                        {
+                                            isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
+                                                                   onClick={this.submitApprovalForm.bind(this, "1")}><ReactIntl.FormattedMessage
+                                                id="user.apply.detail.button.pass" defaultMessage="通过"/></Button> : null
+                                        }
+                                        {
+                                            isRealmAdmin ? <Button type="primary" className="btn-primary-sure"
+                                                                   onClick={this.submitApprovalForm.bind(this, "2")}><ReactIntl.FormattedMessage
+                                                id="common.apply.reject" defaultMessage="驳回"/></Button> : null
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                            </div>
+                        </GeminiScrollbar>
                 </div>
             );
         }
