@@ -202,6 +202,7 @@ var BasicData = React.createClass({
                                     basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
                         }
                         <span className="basic-name-text">{basicData.name}</span>
+                        <span className="basic-name-text">{basicData.name}</span>
                     </div>
                     <div className="basic-info-btns">
                         <span

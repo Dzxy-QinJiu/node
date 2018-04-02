@@ -6,6 +6,7 @@ require("./tag-card.less");
 import DetailCard from "./index";
 import classNames from "classnames";
 import {Button, Icon, Input, message} from "antd";
+import {DetailEditBtn} from "../rightPanel";
 import {isClueTag, isTurnOutTag} from "MOD_DIR/crm/public/utils/crm-util";
 import Trace from "LIB_DIR/trace";
 class TagCard extends React.Component {
@@ -112,24 +113,6 @@ class TagCard extends React.Component {
         this.setState({displayType: "edit"});
     }
 
-    renderTagButtons() {
-        return (
-            <div className="tag-buttons">
-                <Button className="button-cancel tag-btn" onClick={this.handleCancel.bind(this)}>
-                    {Intl.get("common.cancel", "取消")}
-                </Button>
-                <Button className="button-save tag-btn" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("common.save", "保存")}
-                </Button>
-                {this.state.loading ? (
-                    <Icon type="loading" className="tag-save-loading"/>) : this.state.submitErrorMsg ? (
-                    <span className="tag-save-error">{this.state.submitErrorMsg}</span>
-                ) : null}
-            </div>
-        );
-    }
-
     renderTagContent() {
         let tagsArray = this.state.tags ? this.state.tags : [];
         let tags = tagsArray.map(function (tag, index) {
@@ -168,7 +151,7 @@ class TagCard extends React.Component {
         return (<div className="tag-title-container">
             <span className="tag-title-text">{this.props.title}</span>
             {this.props.enableEdit && this.state.displayType === 'text' ?
-                <span className="iconfont icon-edit-btn" title={Intl.get("common.edit", "编辑")} onClick={(e) => {
+                <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={(e) => {
                     this.setEditable(e)
                 }}/> : null}
         </div>);

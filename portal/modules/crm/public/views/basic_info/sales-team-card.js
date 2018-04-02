@@ -6,6 +6,7 @@ let CrmBasicAjax = require("../../ajax/index");
 import batchChangeAjax from '../../ajax/batch-change-ajax';
 import Trace from "LIB_DIR/trace";
 import DetailCard from "CMP_DIR/detail-card";
+import {DetailEditBtn} from "CMP_DIR/rightPanel";
 
 var SalesTeamCard = React.createClass({
     getDefaultProps: function () {
@@ -282,9 +283,8 @@ var SalesTeamCard = React.createClass({
                     <span className="iconfont icon-transfer"
                           title={Intl.get("crm.qualified.roll.out", "转出")}
                           onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
-                {this.state.enableEdit ? (
-                    <span className="iconfont icon-edit-btn" title={Intl.get("crm.sales.change", "变更销售")}
-                          onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                {this.state.enableEdit ? (<DetailEditBtn title={Intl.get("crm.sales.change", "变更销售")}
+                                                         onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
             </div>
         );
     },
