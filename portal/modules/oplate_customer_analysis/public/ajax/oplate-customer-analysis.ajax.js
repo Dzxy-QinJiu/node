@@ -98,35 +98,23 @@ exports.getTransferCustomers = function(paramObj) {
         data: paramObj
     })
 };
-const ajaxPro = function(config) {
-    let jqXHR = null;
-    return function (param) {
-        return new Promise((resolve, reject) => {
-            if (typeof param === "object") {
-                config.data = param;
-            }        
-            //默认格式为json
-            if(!config.dataType) {
-                config.dataType = "json";
-            } 
-            _.extend(config,{
-                success: function(result) {
-                    resolve(result)
-                },
-                error: function (xhr, status) {
-                    if (status !== 'abort') {
-                        reject(xhr.responseJSON);
-                    }
-                }
-            });        
-            jqXHR && jqXHR.abort();
-            jqXHR = $.ajax(config);
-        })       
-    }
-};
 
 //获取客户阶段变更数据todo
-exports.getCustomerStageData = ajaxPro({
-    url: "customerStage",
-    type: "get"
-});
+exports.getStageChangeCustomers = function(paramObj) {
+    const handler = "getStageChangeCustomers";
+    const route = routes.find(x => x.handler == handler);
+    const {page_size, sort_field, order} = paramObj;
+    let queryObj = $.extend(true, {}, paramObj.queryObj);
+    paramObj.query = {};
+    return ajax({
+        url: route.path,
+        type: route.method,
+        query: queryObj,
+        params: {
+            page_size, 
+            sort_field, 
+            order
+        },
+        data: paramObj
+    })
+};

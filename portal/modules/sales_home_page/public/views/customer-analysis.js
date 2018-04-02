@@ -90,8 +90,8 @@ var CustomerAnalysis = React.createClass({
         }
     },
     //获取客户阶段变更数据
-    getCustomerStageData: function(order) {
-        OplateCustomerAnalysisAction.getCustomerStageData({
+    getStageChangeCustomers: function(order) {
+        OplateCustomerAnalysisAction.getStageChangeCustomers({
             order
         });
     },
@@ -149,7 +149,7 @@ var CustomerAnalysis = React.createClass({
         OplateCustomerAnalysisAction.getSalesStageList();
         this.getChartData();
         setTimeout(() => {
-			this.getCustomerStageData();
+			this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
         })
         //绑定window的resize，进行缩放处理
@@ -182,7 +182,7 @@ var CustomerAnalysis = React.createClass({
      * @param sorter       排序参数，当前需要使用sorter
      *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
      */
-    onSortChange(pagination, filters, sorter) {
+    onTransferSortChange(pagination, filters, sorter) {
         this.state.transferCustomers.sorter = sorter;
         this.state.transferCustomers.lastId = "";
         this.setState({
@@ -407,16 +407,9 @@ var CustomerAnalysis = React.createClass({
                 date: item.date
             }
         }, () => {this.showCusStageMetic()});
-    },
-    /**
-     * 参数说明，ant-design的table组件
-     * @param pagination   分页参数，当前不需要使用分页
-     * @param filters      过滤器参数，当前不需要使用过滤器
-     * @param sorter       排序参数，当前需要使用sorter
-     *                      {field : 'xxx' //排序字段 , order : 'descend'/'ascend' //排序顺序}
-     */
-    onSortChange(pagination, filters, sorter) {       
-        this.getCustomerStageData(sorter.order);
+    },   
+    onStageSortChange(pagination, filters, sorter) {       
+        this.getStageChangeCustomers(sorter.order);
     },
     renderCustomerStage: function() {
         const columns = [
@@ -500,7 +493,7 @@ var CustomerAnalysis = React.createClass({
                     loading={this.state.customerStage.loading}
                     pagination={false}
                     columns={columns}
-                    onChange={this.onSortChange}
+                    onChange={this.onStageSortChange.bind(this)}
                 />
             )
         }
@@ -637,7 +630,7 @@ var CustomerAnalysis = React.createClass({
                             util={{ zoomInSortArea: true }}
                             columns={columns}
                             pagination={false}
-                            onChange={this.onSortChange.bind(this)}
+                            onChange={this.onTransferSortChange.bind(this)}
                             dataSource={this.state.transferCustomers.data}
                             loading={loadingFirst}
                         />

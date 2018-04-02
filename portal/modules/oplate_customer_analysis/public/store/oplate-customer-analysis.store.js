@@ -282,7 +282,7 @@ OplateCustomerAnalysisStore.prototype.getCustomerStageData = function ({ loading
         ];
         this.customerStage.data = temp.map(x => {
             let obj = x;
-            obj.date = moment(x.date).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
+            obj.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
             return obj;
         })
     }

@@ -87,15 +87,7 @@ function OplateCustomerAnalysisActions() {
     this.getTransferCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getTransferCustomers);
 
     //获取客户阶段变更数据
-    this.getCustomerStageData = function () {
-        var _this = this;
-        _this.dispatch({loading:true,error:false});
-        OplateCustomerAnalysisAjax.getCustomerStageData().then(function (data) {
-            _this.dispatch({loading: false, errorMsg: "", data});
-        }, function(errorMsg) {
-            _this.dispatch({loading: false, errorMsg, data: []});
-        });
-    };
+    this.getStageChangeCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getStageChangeCustomers);
 
 };
 
