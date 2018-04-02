@@ -1,5 +1,6 @@
 var userData = require("../../public/sources/user-data").getUserData();
-var userId = userData.user_id + "-" + Oplate.projectName;
+//没有userId时，key为projectName
+var userId = (userData && userData.user_id)?(userData.user_id + "-" + Oplate.projectName): Oplate.projectName;
 /**
  * localstorage工具 * 
  * 对localStorage存取方法的封装
