@@ -202,6 +202,8 @@ var en_US = {
     "common.label.days": "days",//"天",
     "common.label.hours": "hours",//"小时",
     "common.app.minute": "minutes",//"分钟",
+    "common.load.more": "load more",//"加载更多",
+    "common.request.timeout": "Error. Request timeout",//"请求超时",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
@@ -309,6 +311,7 @@ var en_US = {
     "user.time.this.month": "This month",//本月
     "user.time.prev.month": "Last month",//上月
     "user.time.half.year": "Half year",//半年内
+    "user.time.half.year1": "Half year",//半年
     "user.time.sunday": "Sunday",//周日
     "user.time.monday": "Monday",//周一
     "user.time.tuesday": "Tuesday",//周二
@@ -439,6 +442,8 @@ var en_US = {
     "user.number.second": "Two",//二
     "user.number.three": "Three",//三
     "user.number.four": "Four",//四
+    "user.num.seven": "Seven",//七
+    "user.num.ten": "Ten",//十
     "user.retry": "Please {retry}",//请{retry}@
     "user.total.data": "{number} users",//共个用户@
     "user.change.record": "Change Records",//变更记录
@@ -926,6 +931,7 @@ var en_US = {
     "call.analysis.total.time": "Duration of call ",//通话总时长
     "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
     "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
+    "call.record.service.phone.rate": "Statistics of the ratio of 114",//114占比统计
     //通话分析-end
 
 
@@ -993,6 +999,7 @@ var en_US = {
     "user.apply.unread.reply": "Have unread reply",//有未读回复
     "user.apply.refresh.reply.tip": "Have a new reply, {refreshTip}",//有新回复，点此{refreshTip}
     "user.apply.unread.reply.check": "Application for unread reply, {check}",//有未读回复的申请，{check}
+    "user.apply.unread.reply.null": "No unread reply，{return}",//已无未读回复的申请，{return}
     "user.apply.check": "Check",//查看
     "user.apply.cancel.check": "Cancel check",//取消查看
     "user.apply.unread.apply.list.failed": "Failure to obtain an application list with unread reply",//获取有未读回复的申请列表失败
@@ -1220,6 +1227,8 @@ var en_US = {
     "crm.customer.transfer": "Transfer customer",//转出客户
     "crm.customer.transfer.failed": "Transfer customer failure",//转出客户失败
     "crm.right.schedule": "Contact schedule",//联系计划
+    "crm.customer.transfer.sales": "Sales",//"销售代表",
+    "crm.customer.transfer.manager": "Manager",//"客户经理",
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     // 客户管理end
 
@@ -1473,6 +1482,7 @@ var en_US = {
     "user.analysis.team.add": "Team-Newly added",//各团队新增用户、客户数  团队-新增@
     "user.analysis.industry.add": "Industry-Newly added",//各行业新增用户、客户数  行业-新增@
     "user.analysis.active.customer": "Active customer",//活跃客户
+    "user.analysis.moveoutCustomer": "Move-out customer ",// "转出客户统计",
 
     //销售首页-新增客户分析
     "customer.analysis": "Customer Analysis",//客户分析@
@@ -1540,6 +1550,7 @@ var en_US = {
     "operation.report.month.active": "Active monthly",//月活@
     "operation.report.app.login.statistic": "Login statistics of every application ",//各应用登录统计@
     "operation.report.time.duration": "Until {time}",//至{time}为止@
+    "operation.report.activity.unit": "Activity(%)",//""活跃度(%)",
     //用户分析
     "oplate.user.analysis.4": "Membership statistics",//成员统计@
     "oplate.user.analysis.5": "Active period statistics",//活跃时间段统计@
@@ -1979,6 +1990,36 @@ var en_US = {
     "crm.call.phone.success": "Call out successlly",//拨打成功
     "crm.call.phone.failed": "Failed to call out",//拨打失败
     "crm.bind.phone": "Please bind the extension number first!",//请先绑定分机号！
-    "crm.click.call.phone": "Click to call out"//点击拨打电话
+    "crm.click.call.phone": "Click to call out",//点击拨打电话
+    "clue.customer.associate.customer": "Relate customer",//关联客户
+    "sales.frontpage.connected.today": "Phone connected today",//今日接通电话
+    "sales.frontpage.connected.range": "Call duration today",//今日通话时长
+    "sales.frontpage.contact.today": "Customers has followed today",//今日已跟进客户
+    "sales.frontpage.added.today": "Customers new added today",//今日新增客户
+    "sales.frontpage.will.contact.today": "Contact plan today",//今日计划联系
+    "sales.frontpage.expired.not.contact": "Expired without contact",//超期未联系
+    "sales.frontpage.will.expired.try.user": "Trial customers will expire in {X} days",//近{X}天将到期的试用客户
+    "sales.frontpage.has.expired.try.user": "Trial customers has expired in past {X} days",//近{X}天已过期的试用客户
+    "sales.frontpage.will.expired.assgined.user": "Contracted customers will expire in {X} days",//近{X}将到期的签约客户
+    "sales.frontpage.login.after.stop": "Login after deactivation",//停用后登录
+    "sales.frontpage.login.recently": "Customers logged in {X} days",//近{X}日登录的客户
+    "sales.frontpage.has.repeat.customer": "You have duplicate customers",//您有重复的客户
+    "sales.frontpage.schedule.has.finished": "Has finished",//完成了
+    "sales.frontpage.appilleage.login": "User login during deactivation",//停用期间用户登录情况
+    "sales.frontpage.concerned.login": "Login in nearly {X} days ",//近{X}天登录情况
+    "sales.fromtpage.set.contact.time": "Scheduled originally in {initialtime}",//原定于{initialtime}联系
+    "sales.frontpage.fail.new.distribute.customer": "Failed to get newly assigned customer",//获取新分配的客户失败
+    "sales.frontpage.new.distribute.customer": "Customers newly allocated but unconnected ",//新分配但未联系的客户
+    "sales.frontpage.tomorrow": "Tomorrow",//明天
+    "sales.frontpage.after.tomorrow": "Acquired",//后天
+    "sales.frontpage.try.expired": "Expiration of trial customer",//试用到期停用
+    "sales.frontpage.assigned.expired": "Expiration of aasigned customer",//签约到期停用
+    "sales.frontpage.set.time": "timing",//定时
+    "sales.frontpage.before.yesterday": "The day before yesterday",//前天
+    "common.sales.frontpage.click.phone": "Click to call",//点击即可拨打。
+    "common.sales.fronpage.user.login": "{relativedata} has expired application",//{relativedata}有应用到期
+    "common.sales.fronpage.has.expired": "Expired customers of past {X} days",//近{X}天过期未处理客户
+    "user.list.all.teamlist": "All teamlists"//全部团队
+
 };
 export default en_US;

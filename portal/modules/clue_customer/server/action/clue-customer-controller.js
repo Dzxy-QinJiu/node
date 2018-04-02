@@ -70,3 +70,12 @@ exports.checkOnlySalesClue=function (req, res) {
         res.status(500).json(err.message);
     });
 };
+//将线索和客户进行关联
+exports.relateClueAndCustomer = function (req, res) {
+    clueCustomerService.relateClueAndCustomer(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};

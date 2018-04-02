@@ -198,11 +198,13 @@ var zh_CN = {
     "common.filter.by.key": "根据{key}过滤",
     "common.table.customize": "自定义表格列",
     "common.upload.img.change": "更改",
-
     "common.label.times": "次",
     "common.label.days": "天",
     "common.label.hours": "小时",
     "common.app.minute": "分钟",
+    "common.load.more": "加载更多",
+    "common.request.timeout":"请求超时",
+
     //公共部分--end
     "login.login": "登录",
     "login.service.error": "很抱歉,服务器出现了异常状况",
@@ -310,6 +312,7 @@ var zh_CN = {
     "user.time.this.month": "本月",
     "user.time.prev.month": "上月",
     "user.time.half.year": "半年内",
+    "user.time.half.year1": "半年",
     "user.time.sunday": "周日",
     "user.time.monday": "周一",
     "user.time.tuesday": "周二",
@@ -440,6 +443,8 @@ var zh_CN = {
     "user.number.second": "二",
     "user.number.three": "三",
     "user.number.four": "四",
+    "user.num.seven": "七",
+    "user.num.ten": "十",
     "user.retry": "请{retry}",
     "user.total.data": "共{number}个用户",
     "user.change.record": "变更记录",
@@ -940,6 +945,7 @@ var zh_CN = {
     "call.analysis.total.time": "通话总时长",
     "call.analysis.total.count.failed": "获取通话总次数TOP10失败",
     "call.analysis.total.time.failed": "获取通话总时长TOP10失败",
+    "call.record.service.phone.rate": "114占比统计",
     //通话分析-end
 
     // 用户审批start
@@ -1006,6 +1012,7 @@ var zh_CN = {
     "user.apply.unread.reply": "有未读回复",
     "user.apply.refresh.reply.tip": "有新回复，点此{refreshTip}",
     "user.apply.unread.reply.check": "有未读回复的申请，{check}",
+    "user.apply.unread.reply.null": "已无未读回复的申请，{return}",
     "user.apply.check": "查看",
     "user.apply.cancel.check": "取消查看",
     "user.apply.unread.apply.list.failed": "获取有未读回复的申请列表失败",
@@ -1238,6 +1245,8 @@ var zh_CN = {
     "crm.customer.transfer": "转出客户",
     "crm.customer.transfer.failed": "转出客户失败",
     "crm.right.schedule": "联系计划",
+    "crm.customer.transfer.sales": "销售代表",
+    "crm.customer.transfer.manager": "客户经理",
     "crm.sales.customerStage": "客户阶段变更统计",
     // 客户管理end
 
@@ -1503,6 +1512,7 @@ var zh_CN = {
     "user.analysis.team.add": "团队-新增",//各团队新增用户、客户数
     "user.analysis.industry.add": "行业-新增",//各行业新增用户、客户数
     "user.analysis.active.customer": "活跃客户",
+    "user.analysis.moveoutCustomer": "转出客户统计",
 
     //销售首页-新增客户分析
     "customer.analysis": "客户分析",
@@ -1571,6 +1581,7 @@ var zh_CN = {
     "operation.report.month.active": "月活",
     "operation.report.app.login.statistic": "各应用登录统计",
     "operation.report.time.duration": "至{time}为止",
+    "operation.report.activity.unit": "活跃度(%)",
     //用户分析
     "oplate.user.analysis.4": "成员统计",
     "oplate.user.analysis.5": "活跃时间段统计",
@@ -2027,33 +2038,28 @@ var zh_CN = {
     "sales.frontpage.added.today": "今日新增客户",
     "sales.frontpage.will.contact.today": "今日计划联系",
     "sales.frontpage.expired.not.contact": "超期未联系",
-    "sales.frontpage.will.expired.try.user": "即将到期的试用客户",
-    "sales.frontpage.will.expired.assgined.user": "即将到期的签约客户",
+    "sales.frontpage.will.expired.try.user": "近{X}天将到期的试用客户",
+    "sales.frontpage.has.expired.try.user": "近{X}天已过期的试用客户",
+    "sales.frontpage.will.expired.assgined.user": "近{X}将到期的签约客户",
     "sales.frontpage.login.after.stop": "停用后登录",
     "sales.frontpage.login.recently": "近{X}日登录的客户",
     "sales.frontpage.has.repeat.customer": "您有重复的客户",
-    "sales.frontpage.contact.customers": "建议您联系以下客户",
-    "sales.frontpage.open.app": "已开通应用",
-    "sales.frontpage.expired.date": "到期情况",
-    "sales.frontpage.total.list": "共{n}条",
-    "sales.frontpage.recent.record": "最新跟进",
-    "sales.frontpage.add.customer": "添加跟进记录",
-    "sales.frontpage.trace.type": "跟进类型",
-    "sales.frontpage.trace.time": "跟进时间",
     "sales.frontpage.schedule.has.finished": "完成了",
     "sales.frontpage.appilleage.login": "停用期间用户登录情况",
     "sales.frontpage.concerned.login": "近{X}天登录情况",
     "sales.fromtpage.set.contact.time": "原定于{initialtime}联系",
     "sales.frontpage.fail.new.distribute.customer": "获取新分配的客户失败",
     "sales.frontpage.new.distribute.customer": "新分配但未联系的客户",
-    "sales.frontpage.expired.today": "今天到期",
-    "sales.frontpage.expired.tomorrow": "明天到期",
-    "sales.frontpage.expired.after.tomorrow": "后天到期",
+    "sales.frontpage.tomorrow":"明天",
+    "sales.frontpage.after.tomorrow":"后天",
     "sales.frontpage.try.expired": "试用到期停用",
     "sales.frontpage.assigned.expired": "签约到期停用",
     "sales.frontpage.set.time": "定时",
     "sales.frontpage.before.yesterday": "前天",
     "common.sales.frontpage.click.phone": "点击即可拨打。",
-    "common.sales.fronpage.user.login": "{relativedata}有应用到期"
+    "common.sales.fronpage.user.login": "{relativedata}有应用到期",
+    "clue.customer.associate.customer": "关联客户",
+    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户",
+    "user.list.all.teamlist": "全部团队"
 };
 export default zh_CN;

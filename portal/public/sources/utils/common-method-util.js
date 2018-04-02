@@ -9,6 +9,7 @@
  * @param teamMemberCountList: 所有团队成员人数统计列表[{team_id:xxx,available:{owner:xx,manager:xx,user:xx},total:xxx}]
  * @param filterManager: 是否过滤掉舆情秘书
  */
+import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == curTeamId);
@@ -43,7 +44,7 @@ exports.checkWav = function(str){
         return index + 4 === str.length;
     }
 };
-//返回录音url的配置
+//返回录音url
 exports.getAudioRecordUrl = function(itemLocal,itemRecord,phoneType){
     //播放长沙，济南和北京的录音
     var local = "changsha", audioType = "";
@@ -93,7 +94,7 @@ exports.getParamByPrivilege = function(){
         reqData.type = 'self';
     }
     return reqData;
-}
+};
 //是否通过两项必填一项的验证
 exports.validateRequiredOne = function (item1, item2) {
     item1 = $.trim(item1);
@@ -104,4 +105,24 @@ exports.validateRequiredOne = function (item1, item2) {
     } else {//联系人姓名和部门都为空
        return false;
     }
-}
+};
+exports.getRelativeTime = function (time) {
+    var relativeTime = "";
+    var todayStartTime = TimeStampUtil.getTodayTimeStamp().start_time;
+    var todayEndTime = TimeStampUtil.getTodayTimeStamp().end_time;
+    if (time >= todayStartTime && time <= todayEndTime) {
+        relativeTime = Intl.get("user.time.today", "今天");
+    } else if (time >= todayStartTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
+        relativeTime = Intl.get("user.time.yesterday", "昨天");
+    } else if (time >= todayStartTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+        relativeTime = Intl.get("sales.frontpage.before.yesterday", "前天");
+    } else if (time >= todayStartTime + 1 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime + 1 * oplateConsts.ONE_DAY_TIME_RANGE) {
+        relativeTime = Intl.get("sales.frontpage.tomorrow", "明天");
+    } else if (time >= todayStartTime + 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= todayEndTime + 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+        relativeTime = Intl.get("sales.frontpage.after.tomorrow", "后天");
+    } else {
+        relativeTime = moment(time).format(oplateConsts.DATE_FORMAT);
+    }
+    return relativeTime;
+};
+

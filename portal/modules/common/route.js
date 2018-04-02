@@ -242,4 +242,12 @@ module.exports = [{
     "passport": {
         "needLogin": true
     }
+}, {
+    //获取迁出客户数据
+    "method": "post",
+    "path": "/rest/customer/v2/customer/transfer/record/:page_size/:sort_field/:order",
+    "handler": "getTransferCustomers",
+    "passport": {
+        "needLogin": true
+    }
 }];

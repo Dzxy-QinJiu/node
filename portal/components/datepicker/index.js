@@ -2,7 +2,7 @@
  *
  提供通用日期选择组件
  <DatePicker
- timeRange="-1w"
+ range="day"
  onSelect={this.onSelectDate}>
  <DatePicker.Option value="all">全部时间</DatePicker.Option>
  <DatePicker.Option value="day">天</DatePicker.Option>
@@ -48,14 +48,14 @@
  默认值是 false
 
  dateSelectRange 表示是否只能在某个时间范围值选择时间
- > 0 表示从现在到dateSelectRange范围内的时间时可选的
+ > 0 表示从现在往前推dateSelectRange范围内的时间时可选的
  0 时是表示对时间范围不禁用
  默认值是 0
 
  比如：
  // 日志范围，从当前时间，3个月内的数据
  const THREE_MONTH_TIME_RANGE = 3 * 30 * 24 * 60 * 60 * 1000;
-  dateSelectRange = THREE_MONTH_TIME_RANGE
+ dateSelectRange = THREE_MONTH_TIME_RANGE
  现在是2017/09/27
  表示可选的时间范围是2017/06/29 -- 2017/09/29
  2017/06/29之前的日期是不可选的
@@ -123,6 +123,7 @@ class DatePicker extends React.Component {
         if (allMenu) {
             menu_lists.push(allMenu);
         }
+        menu_lists = _.uniq(menu_lists, (menu) => menu.value);
         this.componentId = _.uniqueId("DatePicker");
         //验证时间范围
         let timeRange = props.range || "day";
@@ -134,7 +135,13 @@ class DatePicker extends React.Component {
             console.log("Inital time timeRange error");
             timeRange = "day";
         }
-        let timeObj;
+        //判断初始范围（range的值）是否在时间范围选择菜单（menu_lists）中
+        var rangeExist = _.find(menu_lists, (menu) => menu.value === timeRange);
+        //如果默认时间范围（range的值）不在可选选项中，则使用菜单中的第一项的值
+        if (!rangeExist) {
+            timeRange = menu_lists[0].value;
+        }
+        let timeObj, showYear = false;//初始时间及是否显示年日历
         if (timeRange === 'all') {
             timeObj = {start_time: '', end_time: ""};
         } else {
@@ -150,9 +157,11 @@ class DatePicker extends React.Component {
                     break;
                 case 'quarter':
                     timeObj = Utils.getThisQuarterTime(props.disableDateAfterToday ? true : false);
+                    showYear = true;
                     break;
                 case 'year':
                     timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
+                    showYear = true;
                     break;
                 case 'custom':
                     timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
@@ -175,14 +184,14 @@ class DatePicker extends React.Component {
             //是否显示日历
             isShowCalendar: false,
             //显示年份日历
-            showYear: false,
-            showYearRecord: false,
+            showYear: showYear,
+            showYearRecord: showYear,
             //两个日历
             showTwoCalendar: timeRange == "custom" ? true : false,
             showTwoCalendarRecord: timeRange == "custom" ? true : false,
             //显示天日历
-            showDate: true,
-            showDateRecord: true,
+            showDate: !showYear,
+            showDateRecord: !showYear,
             //要显示的季度
             displayQuarterList: QUARTER_CHINESE_TEXT_LIST,
             //初始时间范围
@@ -240,6 +249,7 @@ class DatePicker extends React.Component {
             } else {
                 end_time_millis = Utils.getMilliseconds(end_time) + '';
             }
+            console.log("start_time=" + start_time + ",end_time=" + end_time);
             this.props.onSelect(start_time_millis, end_time_millis, timeRange, label);
         }
     }
@@ -504,10 +514,10 @@ class DatePicker extends React.Component {
                 start_time = "";
                 end_time = "";
                 this.setState({
-                    isShowCalendar: isShowCalendar,
-                    showTwoCalendar: showTwoCalendar,
-                    start_time: start_time,
-                    end_time: end_time,
+                    isShowCalendar,
+                    showTwoCalendar,
+                    start_time,
+                    end_time,
                     timeRange: "all",
                     timeRangeRecord: "all",
                     start_time_record: start_time,
@@ -532,49 +542,31 @@ class DatePicker extends React.Component {
             }
         }
         this.setState({
-            isShowCalendar: isShowCalendar,
-            showTwoCalendar: showTwoCalendar,
-            timeRange: timeRange,
-            start_time: start_time,
-            end_time: end_time,
+            isShowCalendar,
+            showTwoCalendar,
+            timeRange,
+            start_time,
+            end_time,
             quarter: (options && options.quarter) ? options.quarter : this.state.quarter,
             displayQuarterList: (options && options.displayQuarterList) ? options.displayQuarterList : this.state.displayQuarterList,
-            showYear: showYear,
-            showDate: showDate,
+            showYear,
+            showDate,
         }, () => {
             if (isShowCalendar) {
                 $('body').on('mousedown', this.bodyClickFunc = this.checkClickCalendarLayer.bind(this));
                 //根据现实时间选择器的数量设置外层宽度
+                var datepicker_wrap = $(this.refs.datepicker_wrap);
                 if (this.state.showTwoCalendar) {
-                    $(this.refs.datepicker_wrap).addClass("datepicker_wrap_two");
+                    datepicker_wrap.addClass("datepicker_wrap_two");
                 } else {
-                    $(this.refs.datepicker_wrap).removeClass("datepicker_wrap_two");
+                    datepicker_wrap.removeClass("datepicker_wrap_two");
                 }
                 //初始位置
-                $(this.refs.datepicker_wrap).css({left: 0});
-                //计算宽度
-                var window_width = $(window).width();
-                var page_scroll_left = $(document).scrollLeft();
-                var wrapWidth = $(this.refs.datepicker_wrap).outerWidth();
-                var datepicker_pos = $(this.refs.datepicker_wrap).offset();
-                var left = datepicker_pos.left;
-                var rightMargin = 40;//离最右边的边距，预留一定宽度
-                //定位时间选择最外层区域，超出边界处理
-                if ((wrapWidth + left + rightMargin) > (window_width + page_scroll_left)) {
-                    var overage = (wrapWidth + left + rightMargin) - (window_width + page_scroll_left);
-                    $(this.refs.datepicker_wrap).css({left: -overage});
-                    //时间显示框位置
-                    var datePicker = $(this.refs.datepicker_wrap).parents(".range-datepicker");
-                    var datepickerWidth = $(datePicker[0]).outerWidth();
-                    var datePickerLeft = $(datePicker[0]).offset().left;
-                    //日历选择区域的新位置
-                    wrapWidth = $(this.refs.datepicker_wrap).outerWidth();
-                    datepicker_pos = $(this.refs.datepicker_wrap).offset();
-                    left = datepicker_pos.left;
-                    if ((left + wrapWidth) < (datePickerLeft + datepickerWidth)) {
-                        $(this.refs.datepicker_wrap).css({left: "", right: 0});
-                    }
-                }
+                datepicker_wrap.css({left: 0});
+                //重新计算并设置时间选择器位置
+                this.computeWidth(datepicker_wrap);
+                //设置高度
+                this.computeHeight(datepicker_wrap);
                 //删除arrow
                 var $datepicker = $(".datepicker", this.refs.datepicker_wrap);
                 if ($datepicker) {
@@ -582,6 +574,50 @@ class DatePicker extends React.Component {
                 }
             }
         });
+    }
+
+    /**
+     * 重新计算并设置时间选择器位置
+     * @param datepicker_wrap  jquery元素
+     */
+    computeWidth(datepicker_wrap) {
+        if (!datepicker_wrap)return;
+        var window_width = $(window).width();
+        var page_scroll_left = $(document).scrollLeft();
+        var wrapWidth = datepicker_wrap.outerWidth();
+        var datepicker_pos_left = datepicker_wrap.offset().left;
+        var rightMargin = 40;//离最右边的边距，预留一定宽度
+        //定位时间选择最外层区域，超出边界处理
+        if ((wrapWidth + datepicker_pos_left + rightMargin) > (window_width + page_scroll_left)) {
+            var overage = (wrapWidth + datepicker_pos_left + rightMargin) - (window_width + page_scroll_left);
+            datepicker_wrap.css({left: -overage});
+            //时间显示框位置
+            var datePicker = datepicker_wrap.parents(".range-datepicker");
+            var datepickerWidth = $(datePicker[0]).outerWidth();
+            var datePickerLeft = $(datePicker[0]).offset().left;
+            //日历选择区域的新位置
+            wrapWidth = datepicker_wrap.outerWidth();
+            var datepicker_pos_left = datepicker_wrap.offset().left;
+            if ((datepicker_pos_left + wrapWidth) < (datePickerLeft + datepickerWidth)) {
+                datepicker_wrap.css({left: "", right: 0});
+            }
+        }
+    }
+
+    /**
+     * 重新计算并设置时间选择器高度
+     * @param datepicker_wrap  jquery元素
+     */
+    computeHeight(datepicker_wrap) {
+        if (!datepicker_wrap)return;
+        var datepicker_wrap_height_withQuarter = 256;//有季度显示时，时间选择器最小高度
+        var datepicker_wrap_height = datepicker_wrap.outerHeight();
+        //当显示季度，并且当前高度小于等于最小高度时，使用最小高度
+        if (this.state.timeRange === "quarter" && (!datepicker_wrap_height || datepicker_wrap_height <= datepicker_wrap_height_withQuarter)) {
+            datepicker_wrap.css({height: datepicker_wrap_height_withQuarter});
+        } else {
+            datepicker_wrap.css({height: "auto"});
+        }
     }
 
     //渲染时间选择器，一个或两个
@@ -773,7 +809,7 @@ class DatePicker extends React.Component {
 
     render() {
         const props = this.props;
-        const {start_time, end_time, timeRange, onSelect, children, className, endTimeEndOfDay, getEndTimeTip, disableDateAfterToday, dateSelectRange,  ...restProps} = props;
+        const {start_time, end_time, timeRange, onSelect, children, className, endTimeEndOfDay, getEndTimeTip, disableDateAfterToday, dateSelectRange, ...restProps} = props;
         const cls = classNames(CLASS_PREFIX, className, CLASS_PREFIX + '_' + this.state.timeRange);
         var timeObj = this.getDisplayDateText();
         var popover = null;
@@ -828,7 +864,7 @@ function getDefaultProps() {
     //获取结束时间提示语
     const getEndTimeTip = null;
     //禁止选择今天之后的时间
-    const disableDateAfterToday = false;
+    const disableDateAfterToday = true;
     const dateSelectRange = 0;
     return {
         start_time,
@@ -864,7 +900,7 @@ DatePicker.propTypes = {
     //禁止选择今天之后的时间
     disableDateAfterToday: PropTypes.bool,
     //禁止选择某个时间之前的时间范围
-    dateSelectRange:PropTypes.number
+    dateSelectRange: PropTypes.number
 };
 
 /**

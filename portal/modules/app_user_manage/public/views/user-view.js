@@ -30,7 +30,7 @@ const EXCEPTION_TYPES = [{
     name: Intl.get("common.all", "全部"),
     value: ""
 }, {
-    name: Intl.get("user.stop.login", "停用登录"),
+    name: Intl.get("user.disable.logon", "停用登录"),
     value: "app_illegal"
 }, {
     name: Intl.get("ketao.frontpage.illegal.location.login", "异地登录"),
@@ -58,10 +58,12 @@ var UserTabContent = React.createClass({
         };
     },
     componentDidMount: function () {
-        //获取线索来源
-        this.getClueSource();
-        //获取线索渠道
-        this.getClueChannel();
+        if (hasPrivilege("CUSTOMER_ADD_CLUE")){
+            //获取线索来源
+            this.getClueSource();
+            //获取线索渠道
+            this.getClueChannel();
+        }
     },
     getClueSource: function () {
         clueCustomerAjax.getClueSource().then(data => {

@@ -23,8 +23,8 @@ module.exports = {
         ]
     },{
         "method": "post",
-        "path": "/rest/get_will_expire_customer/:type",
-        "handler": "getWillExpireCustomer",
+        "path": "/rest/get_expire_customer/:type",
+        "handler": "getExpireCustomer",
         "passport": {
             "needLogin": true
         },

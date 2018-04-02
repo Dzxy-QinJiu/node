@@ -22,7 +22,10 @@ const restApis = {
     //对线索客户的详情进行更新
     updateCluecustomerDetail:"/rest/customer/v2/clue/update/user/:updateItem",
     //线索名、电话唯一性验证
-    checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search"
+    checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search",
+    //将线索和客户进行关联
+    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation"
+
 };
 //查询客户
 exports.getClueCustomerList = function (req, res) {
@@ -107,3 +110,12 @@ exports.checkOnlySalesClue = function (req, res) {
             res: res
         }, req.query);
 };
+//将线索和客户进行关联
+exports.relateClueAndCustomer = function (req, res) {
+    return restUtil.authRest.put(
+        {
+            url: restApis.RelateClueAndCustomer.replace(":type",req.params.type),
+            req: req,
+            res: res
+        }, req.body)
+}

@@ -4,6 +4,12 @@ var BackendIntl = require("../../portal/lib/utils/backend_intl");
 function getConfigJson(req) {
     var backendIntl = new BackendIntl(req);
     return {
+        // es查询类异常
+        "00001": {"httpCode": 500, "message": backendIntl.get("errorcode.35", "很抱歉，服务器出现了异常状况")},
+        // es服务器拒绝请求的异常
+        "00002": {"httpCode": 500, "message": backendIntl.get("errorcode.35", "很抱歉，服务器出现了异常状况")},
+        // es服务器崩溃异常
+        "00003": {"httpCode": 500, "message": backendIntl.get("errorcode.35", "很抱歉，服务器出现了异常状况")},
         //操作参数错误
         "10001": {"httpCode": 500, "message": backendIntl.get("errorcode.0", "参数错误")},
         /****************  成员 *******************/

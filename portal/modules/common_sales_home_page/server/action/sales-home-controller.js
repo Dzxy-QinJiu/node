@@ -24,9 +24,9 @@ exports.queryContactCustomer = function (req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
-//获取即将过期的客户
-exports.getWillExpireCustomer = function (req, res) {
-    salesHomeService.getWillExpireCustomer(req, res)
+//获取即将过期或者过期的客户
+exports.getExpireCustomer = function (req, res) {
+    salesHomeService.getExpireCustomer(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         })

@@ -6,9 +6,9 @@
  */
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
 var UI_ERROR = require("../../lib/utils/request-error-util");
+import {Modal} from 'antd';
 
 (function () {
-    let Modal = require("antd").Modal;
     let crypto = require("crypto");
     //socket的emitter
     var socketEmitter = require("./utils/emitters").socketEmitter;
@@ -277,7 +277,21 @@ var UI_ERROR = require("../../lib/utils/request-error-util");
         $(document).off("ajaxError");
     }
 
-    function globalErrorHandler(xhr) {
+    /**
+     * 处理请求超时的情况(408)
+     * @param xhr
+     * @param options
+     */
+    function handleTimeout(xhr, options) {
+        sendMessage && sendMessage("Error requesting " + options && options.url + ": " + xhr.status + " " + xhr.statusText);
+    }
+
+    /**
+     * 全局ajax错误处理
+     * @param xhr
+     * @param options
+     */
+    function globalErrorHandler(xhr, options) {
         var status = xhr.status;
         switch (status) {
             case 401:
@@ -293,10 +307,13 @@ var UI_ERROR = require("../../lib/utils/request-error-util");
                     handel403Ajax(xhr);
                 }
                 break;
+            case 408:
+                handleTimeout(xhr, options);
+                break;
         }
     }
 
-    $(document).ajaxError(function (event, xhr, settings, thrownError) {
-        globalErrorHandler(xhr);
+    $(document).ajaxError(function (event, xhr, options, thrownError) {
+        globalErrorHandler(xhr, options);
     });
 })();

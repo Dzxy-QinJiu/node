@@ -64,6 +64,13 @@ module.exports = {
             passport: {
             needLogin: true
         },
+        },{
+            method: 'put',
+            path: '/rest/relate_clue_and_customer/:type',
+            handler: 'relateClueAndCustomer',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

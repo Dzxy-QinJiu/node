@@ -225,6 +225,51 @@
             overflow: hidden;
             padding-left: 10px;
             padding-right: 10px;
+            .scrollbar-container {
+              .gm-scrollbar-container>.gm-scrollbar>.thumb {
+                display: block!important;
+              }
+            }
+            .transfer-customer-container {
+              background-color: white;              
+              margin-bottom: 30px;
+              .load-more-container {
+                text-align: center;
+                line-height: 42px;
+                background-color: white;
+              }
+              &.scrollbar-container {
+                table tr>td {
+                  padding: 5px 10px;
+                }
+              }
+              .title {
+                color: #62696f;
+                line-height: 18px;
+                font-size: 14px;
+                padding: 12px 0 0 16px;
+              }
+              .ant-table-body {
+                .transfer-customer-cell {
+                  cursor: pointer;
+                }
+                th.customer-name {
+                  width: 30%;
+                }
+                th.has-sorter,
+                .customer_column {
+                  cursor: pointer;
+                }
+                .customer_column:hover {
+                  color: #2db7f5;
+                }
+                border-bottom: none !important;
+                .current_row, .current_row:hover {
+                  background: #b6d3f3 !important;
+                }
+              }              
+            }
+
           }
           .chart-holder {
             margin-bottom: 21px;
