@@ -24,6 +24,7 @@ var UserFormStore = require("../store/user-form-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
 import Trace from "LIB_DIR/trace";
+import CommissionAndTarget from "./commission-and-target";
 var UserInfo = React.createClass({
         getInitialState: function () {
             return {
@@ -403,6 +404,29 @@ var UserInfo = React.createClass({
                             />
                         </dd>
                     </dl> }
+                    <dl className="dl-horizontal detail_item member-detail-item">
+                        <dt>{Intl.get("contract.141", "提成比例")}</dt>
+                        <dd>
+                            <CommissionAndTarget
+                                value={50}
+                                displayType = {'text'}
+                                min={0}
+                                max={100}
+                                countTip={"%"}
+                            />
+                        </dd>
+                    </dl>
+                    <dl className="dl-horizontal detail_item member-detail-item">
+                        <dt>{Intl.get("sales.team.sales.goal", "销售目标")}</dt>
+                        <dd>
+                            <CommissionAndTarget
+                                value={30}
+                                displayType = {'text'}
+                                min={0}
+                                countTip={Intl.get( "contract.139", "万")}
+                            />
+                        </dd>
+                    </dl>
                     <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>{Intl.get("user.manage.phone.order", "坐席号")}</dt>
                         <dd>{userInfo.phoneOrder}</dd>
