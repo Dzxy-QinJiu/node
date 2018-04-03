@@ -21,6 +21,9 @@ let chartLegend = [{name: Intl.get("common.official", "签约"), key: "formal"},
     {name: Intl.get("user.unknown", "未知"), key: "unknown"}];
 const CHART_HEIGHT = 214;
 const LEGEND_RIGHT = 20;
+var constantUtil = require("../util/constant");
+//这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
+var delayConstant = constantUtil.DELAY.TIMERANG;
 //用户分析
 var UserAnlyis = React.createClass({
     getStateData: function () {
@@ -30,7 +33,8 @@ var UserAnlyis = React.createClass({
             timeType: this.props.timeType,
             startTime: this.props.startTime,
             endTime: this.props.endTime,
-            originSalesTeamTree: this.props.originSalesTeamTree
+            originSalesTeamTree: this.props.originSalesTeamTree,
+            updateScrollBar:false
         };
     },
     onStateChange: function () {
@@ -48,6 +52,17 @@ var UserAnlyis = React.createClass({
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
         this.setState(timeObj);
+        if (nextProps.updateScrollBar){
+            this.setState({
+                updateScrollBar:true
+            },()=>{
+                setTimeout(()=>{
+                    this.setState({
+                        updateScrollBar:false
+                    })
+                },delayConstant)
+            })
+        }
     },
     getDataType: function () {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
@@ -233,48 +248,67 @@ var UserAnlyis = React.createClass({
             />
         );
     },
-    render: function () {
-        let layoutParams = this.props.getChartLayoutParams();
-        this.chartWidth = layoutParams.chartWidth;
+    renderChartContent: function () {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
+            <div className="chart_list">
+                {this.state.timeType != "day" ? (
+                    <div className="analysis_chart col-md-6 col-sm-12"
+                         data-title={Intl.get("user.analysis.user.add", "用户-新增")}>
+                        <div className="chart-holder" ref="chartWidthDom" data-tracename="用户-新增统计">
+                            <div className="title">{Intl.get("user.analysis.user.add", "用户-新增")}</div>
+                            {this.getUserChart()}
+                        </div>
+                    </div>) : null}
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                    <div className="chart-holder" data-tracename="地域-新增统计">
+                        <div className="title">{Intl.get("user.analysis.location.add", "地域-新增")}</div>
+                        {this.getZoneChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                    <div className="chart-holder" data-tracename="行业-新增统计">
+                        <div className="title">{Intl.get("user.analysis.industry.add", "行业-新增")}</div>
+                        {this.getIndustryChart()}
+                    </div>
+                </div>
+                {hideTeamChart ? null : (
+                    <div className="analysis_chart col-md-6 col-sm-12"
+                         data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                        <div className="chart-holder" data-tracename="团队-新增统计">
+                            <div className="title">{Intl.get("user.analysis.team.add", "团队-新增")}</div>
+                            {this.getTeamChart()}
+                        </div>
+                    </div>)}
+            </div>
+        )
+    },
+    renderContent:function () {
+        if(this.state.updateScrollBar){
+            return (
+                <div>
+                    {this.renderChartContent()}
+                </div>
+            )
+        }else{
+            return (
+                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                    {this.renderChartContent()}
+                </GeminiScrollbar>
+            )
+        }
+    },
+
+    render: function () {
+        let layoutParams = this.props.getChartLayoutParams();
+        this.chartWidth = layoutParams.chartWidth;
+        return (
             <div className="oplate_user_analysis">
                 <div ref="chart_list" style={{height: layoutParams.chartListHeight}}>
-                    <GeminiScrollbar enabled={this.props.scrollbarEnabled}>
-                        <div className="chart_list">
-                            {this.state.timeType != "day" ? (
-                                <div className="analysis_chart col-md-6 col-sm-12"
-                                     data-title={Intl.get("user.analysis.user.add", "用户-新增")}>
-                                    <div className="chart-holder" ref="chartWidthDom" data-tracename="用户-新增统计">
-                                        <div className="title">{Intl.get("user.analysis.user.add", "用户-新增")}</div>
-                                        {this.getUserChart()}
-                                    </div>
-                                </div>) : null}
-                            <div className="analysis_chart col-md-6 col-sm-12"
-                                 data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
-                                <div className="chart-holder" data-tracename="地域-新增统计">
-                                    <div className="title">{Intl.get("user.analysis.location.add", "地域-新增")}</div>
-                                    {this.getZoneChart()}
-                                </div>
-                            </div>
-                            <div className="analysis_chart col-md-6 col-sm-12"
-                                 data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
-                                <div className="chart-holder" data-tracename="行业-新增统计">
-                                    <div className="title">{Intl.get("user.analysis.industry.add", "行业-新增")}</div>
-                                    {this.getIndustryChart()}
-                                </div>
-                            </div>
-                            {hideTeamChart ? null : (
-                                <div className="analysis_chart col-md-6 col-sm-12"
-                                     data-title={Intl.get("user.analysis.team.add","团队-新增")}>
-                                    <div className="chart-holder" data-tracename="团队-新增统计">
-                                        <div className="title">{Intl.get("user.analysis.team.add", "团队-新增")}</div>
-                                        {this.getTeamChart()}
-                                    </div>
-                                </div>)}
-                        </div>
-                    </GeminiScrollbar>
+                    {this.renderContent()}
                 </div>
             </div>
         );
