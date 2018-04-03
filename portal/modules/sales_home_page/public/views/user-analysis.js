@@ -288,11 +288,8 @@ var UserAnlyis = React.createClass({
     },
     renderContent:function () {
         if(this.state.updateScrollBar){
-            return (
-                <div>
-                    {this.renderChartContent()}
-                </div>
-            )
+            return this.renderChartContent();
+
         }else{
             return (
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
