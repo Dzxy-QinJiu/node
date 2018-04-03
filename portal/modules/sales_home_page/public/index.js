@@ -447,7 +447,9 @@ var SalesHomePage = React.createClass({
                                   currShowSalesman={this.state.currShowSalesman}
                                   originSalesTeamTree={this.state.originSalesTeamTree}
                                   getSaleIdByName={this.getSaleIdByName}
-                                  getChartLayoutParams={this.getChartLayoutParams}/>);
+                                  getChartLayoutParams={this.getChartLayoutParams}
+                                  updateScrollBar={this.state.updateScrollBar}
+            />);
         } else if (this.state.activeView == viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}

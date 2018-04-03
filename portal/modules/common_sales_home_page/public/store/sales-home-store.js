@@ -57,6 +57,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.scheduleTodayObj = {
         loading: true,
         errMsg: '',
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -96,6 +97,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.recentLoginCustomerObj = {
         loading: true,
         errMsg: '',
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -105,6 +107,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.repeatCustomerObj = {
         loading: true,
         errMsg: "",
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -114,6 +117,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.willExpiredAssignCustomer = {
         loading: true,
         errMsg: "",
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -123,6 +127,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.hasExpiredTryCustomer = {
         loading: true,
         errMsg: "",
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -132,6 +137,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.willExpiredTryCustomer = {
         loading: true,
         errMsg: "",
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -141,6 +147,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.newDistributeCustomer = {
         loading: true,
         errMsg: "",
+        curPage: 1,
         data: {
             list: [],
             total: ""
@@ -286,7 +293,6 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
         } else if (result.resData) {
             scheduleExpiredTodayObj.data.list = scheduleExpiredTodayObj.data.list.concat(processScheduleLists(result.resData.list, false));
             scheduleExpiredTodayObj.data.total = result.resData.total;
-
             scheduleExpiredTodayObj.curPage++;
         }
     } else {

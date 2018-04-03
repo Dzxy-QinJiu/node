@@ -21,6 +21,7 @@ import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 var userData = require("PUB_DIR/sources/user-data");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import {getRelativeTime} from "PUB_DIR/sources/utils/common-method-util";
+import Spinner from "CMP_DIR/spinner";
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -368,6 +369,7 @@ var SalesHomePage = React.createClass({
         var data = this.state.newDistributeCustomer.data.list;
         return (
             <div className="new-distribute-customer-container" ref="tableWrap">
+                {this.renderLoadingAndErrAndNodataContent(this.state.newDistributeCustomer)}
                 <GeminiScrollbar
                     handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER)}
                     listenScrollBottom={this.state.listenScrollBottom}
@@ -410,6 +412,36 @@ var SalesHomePage = React.createClass({
             showCustomerPanel: customerType,
         })
     },
+    //渲染loading和出错的情况
+    renderLoadingAndErrAndNodataContent: function (dataObj) {
+        //加载中的样式
+        if (dataObj.loading && dataObj.curPage === 1){
+            return (
+                <div className="load-content">
+                   <Spinner />
+                   <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
+                </div>
+            )
+        }else if (dataObj.errMsg){
+            //加载完出错的样式
+            return (
+                <div className="err-content">
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{dataObj.errMsg}</p>
+                </div>
+            )
+        }else if(!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length){
+            //数据为空的样式
+            return (
+                <div className="no-data">
+                    <i className="iconfont icon-no-data"></i>
+                    <p className="abnornal-status-tip">{Intl.get("common.sales.data.no.data", "暂无此类信息")}</p>
+                </div>
+            );
+        }else{
+            return null;
+        }
+    },
     //渲染日程列表
     renderScheduleContent: function (scheduleType) {
         var data = [];
@@ -426,6 +458,7 @@ var SalesHomePage = React.createClass({
             });
             return (
                 <div className="schedule-day-list" data-tracename="今日日程列表" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.scheduleTodayObj)}
                     <GeminiScrollbar>
                         {notFulldaylist.length ? <div
                             className="schedule-list-tip">{Intl.get("sales.frontpage.set.time", "定时")}</div> : null}
@@ -467,6 +500,7 @@ var SalesHomePage = React.createClass({
             data = this.state.scheduleExpiredTodayObj.data.list;
             return (
                 <div className="today-expired-schedule" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.scheduleExpiredTodayObj)}
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY)}
                         listenScrollBottom={this.state.listenScrollBottom}>
@@ -525,10 +559,11 @@ var SalesHomePage = React.createClass({
     renderWillExpiredTryAndAssignedCustomer: function (type) {
         var data = [];
         if (type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
-            //三天内即将到期的试用客户
+            //十天内即将到期的试用客户
             data = this.state.willExpiredTryCustomer.data.list;
             return (
                 <div className="will-expire-assigned-customer-container" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.willExpiredTryCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
             )
@@ -537,6 +572,7 @@ var SalesHomePage = React.createClass({
             data = this.state.willExpiredAssignCustomer.data.list;
             return (
                 <div className="will-expire-try-customer-container" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.willExpiredAssignCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
             )
@@ -545,11 +581,35 @@ var SalesHomePage = React.createClass({
             data = this.state.hasExpiredTryCustomer.data.list;
             return (
                 <div className="has-expired-try-customer-container" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.hasExpiredTryCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
             )
         }
 
+    },
+    //渲染关注客户，停用后登录和最近登录
+    renderFocusAndIlleagalAndRecentContent: function (type, data, isRecentLoginCustomer) {
+        return (
+            <GeminiScrollbar
+                handleScrollBottom={this.handleScrollBarBottom.bind(this, type)}
+                listenScrollBottom={this.state.listenScrollBottom}>
+                {_.map(data, (item) => {
+                    return (
+                        <CustomerNoticeMessage
+                            noticeType={type}
+                            customerNoticeMessage={item}
+                            openCustomerDetail={this.openCustomerDetail}
+                            openUserDetail={this.openUserDetail}
+                            callNumber={this.state.callNumber}
+                            errMsg={this.state.errMsg}
+                            afterHandleMessage={this.afterHandleMessage}
+                            isRecentLoginCustomer={isRecentLoginCustomer}
+                        />
+                    )
+                })}
+            </GeminiScrollbar>
+        )
     },
     //渲染关注客户，停用客户和最近登录的客户情况
     renderAPPIlleageAndConcernedAndRecentContent: function (type) {
@@ -559,24 +619,8 @@ var SalesHomePage = React.createClass({
             data = this.state.concernCustomerObj.data.list;
             return (
                 <div className="concerned-customer-container" ref="tableWrap">
-                    <GeminiScrollbar
-                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN)}
-                        listenScrollBottom={this.state.listenScrollBottom}>
-                        {_.map(data, (item) => {
-                            return (
-                                <CustomerNoticeMessage
-                                    noticeType={ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN}
-                                    customerNoticeMessage={item}
-                                    tableTitleTip={Intl.get("sales.frontpage.concerned.login", "近{X}天登录情况", {X: 7})}
-                                    openCustomerDetail={this.openCustomerDetail}
-                                    openUserDetail={this.openUserDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
-                                    afterHandleMessage={this.afterHandleMessage}
-                                />
-                            )
-                        })}
-                    </GeminiScrollbar>
+                    {this.renderLoadingAndErrAndNodataContent(this.state.concernCustomerObj)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data,false)}
                 </div>
             )
         } else if (type === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
@@ -584,24 +628,8 @@ var SalesHomePage = React.createClass({
             data = this.state.appIllegalObj.data.list;
             return (
                 <div className="app-illeage-container" ref="tableWrap">
-                    <GeminiScrollbar
-                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN)}
-                        listenScrollBottom={this.state.listenScrollBottom}>
-                        {_.map(data, (item) => {
-                            return (
-                                <CustomerNoticeMessage
-                                    noticeType={ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN}
-                                    customerNoticeMessage={item}
-                                    tableTitleTip={Intl.get("sales.frontpage.appilleage.login", "停用期间用户登录情况")}
-                                    openCustomerDetail={this.openCustomerDetail}
-                                    openUserDetail={this.openUserDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
-                                    afterHandleMessage={this.afterHandleMessage}
-                                />
-                            )
-                        })}
-                    </GeminiScrollbar>
+                    {this.renderLoadingAndErrAndNodataContent(this.state.appIllegalObj)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data,false)}
                 </div>
             )
         } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
@@ -609,22 +637,8 @@ var SalesHomePage = React.createClass({
             data = this.state.recentLoginCustomerObj.data.list;
             return (
                 <div className="recent-login-customer-container" ref="tableWrap">
-                    <GeminiScrollbar
-                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER)}
-                        listenScrollBottom={this.state.listenScrollBottom}>
-                        {_.map(data, (item) => {
-                            return (
-                                <CustomerNoticeMessage
-                                    customerNoticeMessage={item}
-                                    isRecentLoginCustomer={true}
-                                    openCustomerDetail={this.openCustomerDetail}
-                                    openUserDetail={this.openUserDetail}
-                                    callNumber={this.state.callNumber}
-                                    errMsg={this.state.errMsg}
-                                />
-                            )
-                        })}
-                    </GeminiScrollbar>
+                    {this.renderLoadingAndErrAndNodataContent(this.state.recentLoginCustomerObj)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER, data, true)}
                 </div>
             )
         }
