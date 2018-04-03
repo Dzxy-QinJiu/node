@@ -324,7 +324,28 @@ exports.getTotalIndustry = function(obj) {
     });
     return Deferred.promise();
 };
-
+//获取销售开通用户统计
+let salesOpenUserAjax;
+exports.getSalesOpenUserAnalysis= function(obj) {
+    salesOpenUserAjax && salesOpenUserAjax.abort();
+    obj = obj || {};
+    var Deferred = $.Deferred();
+    salesOpenUserAjax = $.ajax({
+        url: '/rest/analysis/user/sales/open_user',
+        dataType: 'json',
+        type: 'get',
+        data: obj,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr,textStatus) {
+            if(textStatus !== 'abort') {
+                Deferred.reject(xhr.responseText);
+            }
+        }
+    });
+    return Deferred.promise();
+};
 //获取新增用户的行业统计
 var addedIndustryAjax;
 exports.getAddedIndustry = function(obj) {

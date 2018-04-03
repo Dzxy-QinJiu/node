@@ -8,7 +8,7 @@ var FilterBtn = require("../../../components/filter-btn");
 var TopNav = require("../../../components/top-nav");
 var AnalysisMenu = require("../../../components/analysis_menu");
 var AnalysisAppSelector = require("../../../components/analysis_app_selector");
-import { AntcDatePicker, AntcCardContainer } from "antc";
+import {AntcDatePicker, AntcCardContainer} from "antc";
 var GeminiScrollbar = require("../../../components/react-gemini-scrollbar");
 var AnalysisLayout = require("./utils/analysis-layout");
 var OplateUserAnalysisAction = require("./action/oplate-user-analysis.action");
@@ -23,14 +23,14 @@ var AreaLine = require('CMP_DIR/chart/arealine');
 var SingleLineChart = require("./views/single_line");
 var emitter = require("./utils/emitter");
 var DATE_FORMAT = oplateConsts.DATE_FORMAT;
-import { Checkbox, Row, Col } from 'antd';
+import {Checkbox, Row, Col} from 'antd';
 var PieChart = require("./views/piechart");
 var Retention = require("./views/retention");
 var SingleAppBarChart = require("./views/single-app-bar");
 const StackLineChart = require("./views/stack-line");
 const AppRecordsListAjax = require("../../app_manage/public/ajax/version-upgrade-log-ajax");
 import Trace from "LIB_DIR/trace";
-import { hasPrivilege } from "CMP_DIR/privilege/checker";
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import CardContainer from "CMP_DIR/card-container";
 import {
     handleUserStatis, handleExportData, handlePieChartData, handleActivelyData,
@@ -39,16 +39,18 @@ import {
     handleLoginCountsExport, handleLoginDaysExport, handleLoginTimesExport
 } from './utils/export-data-util'
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
-import { AntcTable } from "antc";
+import {AntcTable} from "antc";
 var SelectFullWidth = require("../../../components/select-fullwidth");
 import ajax from "../../common/ajax";
 import routeList from "../../common/route";
-const LEGEND = [{ name: Intl.get("common.official", "签约"), key: "formal" },
-{ name: Intl.get("common.trial", "试用"), key: "trial" },
-{ name: Intl.get("user.type.presented", "赠送"), key: "special" },
-{ name: Intl.get("user.type.train", "培训"), key: "training" },
-{ name: Intl.get("user.type.employee", "员工"), key: "internal" },
-{ name: Intl.get("user.unknown", "未知"), key: "unknown" }];
+import {handleTableData} from "CMP_DIR/analysis/export-data-util";
+import Spinner from "CMP_DIR/spinner";
+const LEGEND = [{name: Intl.get("common.official", "签约"), key: "formal"},
+    {name: Intl.get("common.trial", "试用"), key: "trial"},
+    {name: Intl.get("user.type.presented", "赠送"), key: "special"},
+    {name: Intl.get("user.type.train", "培训"), key: "training"},
+    {name: Intl.get("user.type.employee", "员工"), key: "internal"},
+    {name: Intl.get("user.unknown", "未知"), key: "unknown"}];
 
 //延期用户tab标识
 const DELAYED_USERS_SYMBOL = "-";
@@ -61,15 +63,15 @@ var USER_TYPE_CONSTANTS = {
 
 //用户状态
 var USER_STATUS = [
-    { name: "全部", value: "" },
-    { name: Intl.get("common.enabled", '启用'), value: "1" },
-    { name: Intl.get("common.stop", '停用'), value: "0" },
+    {name: "全部", value: ""},
+    {name: Intl.get("common.enabled", '启用'), value: "1"},
+    {name: Intl.get("common.stop", '停用'), value: "0"},
 ];
 const deviceTypeLegend = [
-    { name: Intl.get("common.app.count", "数量"), key: "count" }
+    {name: Intl.get("common.app.count", "数量"), key: "count"}
 ];
 const onlineTimeLegend = [
-    { name: Intl.get("common.app.minute", "分钟"), key: "count" }
+    {name: Intl.get("common.app.minute", "分钟"), key: "count"}
 ];
 // ""表示不确定，member表示要获取成员数据，team表示要获取团队数据
 var fetchTeamOrMember = "";
@@ -176,12 +178,12 @@ const rangeParamsProcessor = data => {
     return rangeParams;
 }
 const onlineTimeRange = [
-    { name: "小时", value: "hourly" },
-    { name: "天", value: "daily" },
-    { name: "周", value: "weekly" },
-    { name: "月", value: "monthly" },
-    { name: "季度", value: "quarterly" },
-    { name: "年", value: "yearly" }
+    {name: "小时", value: "hourly"},
+    {name: "天", value: "daily"},
+    {name: "周", value: "weekly"},
+    {name: "月", value: "monthly"},
+    {name: "季度", value: "quarterly"},
+    {name: "年", value: "yearly"}
 ];
 
 //获取用户类型
@@ -317,6 +319,13 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             pageSize: 1
         }
     },
+    getSalesOpenUserAnalysisData(){
+        let authType = "self";//CRM_USER_APP_USER_COUNT
+        if (hasPrivilege("CRM_MANAGER_APP_USER_COUNT")) {
+            authType = "all";
+        }
+        OplateUserAnalysisAction.getSalesOpenUserAnalysis({authType: authType});
+    },
     sendChartAjax: function (obj) {
         var currentTab = obj && obj.currentTab || this.state.currentTab;
         var isComposite = obj && 'isComposite' in obj ? obj.isComposite : this.state.isComposite;
@@ -340,6 +349,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     OplateUserAnalysisAction.getAppsTeam("total", queryParams);
                     OplateUserAnalysisAction.getAppsIndustry("total", queryParams);
                     OplateUserAnalysisAction.getAppsZone("total", queryParams);
+                    this.getSalesOpenUserAnalysisData();
                 } else { // 单个应用条件下
                     OplateUserAnalysisAction.getTotalZone(queryParams);
                     OplateUserAnalysisAction.getTotalIndustry(queryParams);
@@ -488,7 +498,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         if (endTime > new Date().getTime()) {
             endTime = moment().endOf("day").toDate().getTime();
         }
-        OplateUserAnalysisAction.changeSearchTime({ startTime, endTime });
+        OplateUserAnalysisAction.changeSearchTime({startTime, endTime});
         //加一个延迟，以使日期选择面板收起后再开始发请求
         setTimeout(() => {
             this.getChartData({
@@ -511,7 +521,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             isShowAppDownload: false
         });
         var isComposite = isChoosenAll;
-        OplateUserAnalysisAction.changeSelectedApp({ selectedApp: appId, isComposite: isComposite });
+        OplateUserAnalysisAction.changeSelectedApp({selectedApp: appId, isComposite: isComposite});
         //如果当前是活跃度，选中的是全部应用，则切换回总用户，全部应用的时候不能查活跃度
         this.getChartData({
             selectedApp: appId,
@@ -530,7 +540,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         return (
             <div className='error-tips-message'>
                 {errMessage}
-                <a onClick={retryHandler} >{Intl.get("common.retry", "重试")}</a>
+                <a onClick={retryHandler}>{Intl.get("common.retry", "重试")}</a>
             </div>
         );
     },
@@ -1319,21 +1329,21 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 <ul className="list-inline list-unstyled">
                     <li>
                         <label>
-                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "customer")} />
+                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "customer")}/>
                             <ReactIntl.FormattedMessage id="sales.home.customer"
-                                defaultMessage="客户" />
+                                                        defaultMessage="客户"/>
                         </label>
                     </li>
                     <li>
                         <label>
-                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "internal")} />
-                            <ReactIntl.FormattedMessage id="user.type.employee" defaultMessage="员工" />
+                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "internal")}/>
+                            <ReactIntl.FormattedMessage id="user.type.employee" defaultMessage="员工"/>
                         </label>
                     </li>
                     <li>
                         <label>
-                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "special")} />
-                            <ReactIntl.FormattedMessage id="user.type.presented" defaultMessage="赠送" />
+                            <Checkbox defaultChecked={false} onChange={this.toggleFilterParam.bind(this, "special")}/>
+                            <ReactIntl.FormattedMessage id="user.type.presented" defaultMessage="赠送"/>
                         </label>
                     </li>
                 </ul>
@@ -1415,7 +1425,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             } else { // 当下载的时间的小于时间时，补充0
                 let differTime = _.difference(timeArray, groupTime);
                 for (let i = 0; i < differTime.length; i++) {
-                    groupArray.push({ count: 0, time: differTime[i] });
+                    groupArray.push({count: 0, time: differTime[i]});
                 }
                 let sortGroup = _.sortBy(groupArray, 'time');
                 data = _.pluck(sortGroup, 'count');
@@ -1492,8 +1502,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             return this.renderGetDataErrorMessage(this.state.activeZone.errorMsg, this.getActiveZoneData);
         }
         const columns = [
-            { title: '地域', dataIndex: 'name', key: 'name' },
-            { title: '用户数', dataIndex: 'value', key: 'value', className: 'text-align-right' }
+            {title: '地域', dataIndex: 'name', key: 'name'},
+            {title: '用户数', dataIndex: 'value', key: 'value', className: 'text-align-right'}
         ]
         return (
             <div className="user-map-distribute cleardfix" ref="chartmap">
@@ -1506,7 +1516,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     />
                 </div>
                 <div className="user-area-number-table cleardfix">
-                    <AntcTable columns={columns} dataSource={this.state.activeZone.data} pagination={{ pageSize: 12 }} />
+                    <AntcTable columns={columns} dataSource={this.state.activeZone.data} pagination={{pageSize: 12}}/>
                 </div>
             </div>
         )
@@ -1517,7 +1527,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             return this.renderGetDataErrorMessage(this.state.userLoginCounts.errorMsg, this.getUserLoginCountsData);
         }
         return (
-            <CloudChart resultType={this.state.userLoginCounts.resultType} data={this.state.userLoginCounts.data} />
+            <CloudChart resultType={this.state.userLoginCounts.resultType} data={this.state.userLoginCounts.data}/>
         )
     },
     //登录天数
@@ -1526,7 +1536,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             return this.renderGetDataErrorMessage(this.state.userLoginDays.errorMsg, this.getUserLoginDaysData);
         }
         return (
-            <CloudChart resultType={this.state.userLoginDays.resultType} data={this.state.userLoginDays.data} />
+            <CloudChart resultType={this.state.userLoginDays.resultType} data={this.state.userLoginDays.data}/>
         )
     },
     //登录时间
@@ -1535,7 +1545,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             return this.renderGetDataErrorMessage(this.state.userLoginTimes.errorMsg, this.getUserLoginTimesData);
         }
         return (
-            <CloudChart resultType={this.state.userLoginTimes.resultType} data={this.state.userLoginTimes.data} />
+            <CloudChart resultType={this.state.userLoginTimes.resultType} data={this.state.userLoginTimes.data}/>
         )
     },
     //用户在线时长
@@ -1566,9 +1576,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         //是否能看到“活跃时间段统计”和“登录时长统计”
         var isComposite = this.state.isComposite;
         var shouldViewActiveNessChart = !isComposite && !this.state.isSalesRole;
-        const radioValue = [{ value: 'daily', name: Intl.get("operation.report.day.active", "日活") },
-        { value: 'weekly', name: Intl.get("operation.report.week.active", "周活") },
-        { value: 'monthly', name: Intl.get("operation.report.month.active", "月活") }];
+        const radioValue = [{value: 'daily', name: Intl.get("operation.report.day.active", "日活")},
+            {value: 'weekly', name: Intl.get("operation.report.week.active", "周活")},
+            {value: 'monthly', name: Intl.get("operation.report.month.active", "月活")}];
         let appDownLoadData = this.getAppDownloadData(this.state.appDownload.data);
         let appTitleName = _.uniq(_.pluck(this.state.appDownload.data, 'time')); // 时间点
         let chartList = [];
@@ -1588,7 +1598,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (!isComposite) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("operation.report.activity", "活跃度")}>
+                             data-title={Intl.get("operation.report.activity", "活跃度")}>
                             <div className="chart-holder activeness-chart-height">
                                 <CardContainer
                                     title={Intl.get("operation.report.activity", "活跃度")}
@@ -1607,7 +1617,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (shouldViewActiveNessChart) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("oplate.user.analysis.10", "活跃时间段")}>
+                             data-title={Intl.get("oplate.user.analysis.10", "活跃时间段")}>
                             <div className="chart-holder active-time-scatter-height">
                                 <CardContainer
                                     title={Intl.get("oplate.user.analysis.10", "活跃时间段")}
@@ -1619,7 +1629,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             </div>
                         </div>,
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("oplate.user.analysis.6", "在线时长统计")}>
+                             data-title={Intl.get("oplate.user.analysis.6", "在线时长统计")}>
                             <div className="chart-holder">
                                 <CardContainer
                                     title={Intl.get("oplate.user.analysis.6", "在线时长统计")}
@@ -1634,7 +1644,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     if (hasPrivilege("GET_APPLICATION_DOWNLOAD_STATISTIC") && this.state.isShowAppDownload) {
                         chartList.push(
                             <div className="analysis_chart col-md-6 col-sm-12"
-                                data-title={Intl.get("oplate.user.app.download", "各版本下载统计")}>
+                                 data-title={Intl.get("oplate.user.app.download", "各版本下载统计")}>
                                 <div className="chart-holder">
                                     <CardContainer
                                         title={Intl.get("oplate.user.app.download", "各版本下载统计")}
@@ -1653,7 +1663,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (!isComposite) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("operation.report.activity", "活跃度")}>
+                             data-title={Intl.get("operation.report.activity", "活跃度")}>
                             <div className="chart-holder">
                                 <CardContainer
                                     title={Intl.get("operation.report.activity", "活跃度")}
@@ -1673,7 +1683,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (showRetention) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("oplate.user.analysis.9", "用户留存")}>
+                             data-title={Intl.get("oplate.user.analysis.9", "用户留存")}>
                             <div className="chart-holder retention_table_chart height-fix">
                                 <CardContainer
                                     title={Intl.get("oplate.user.analysis.9", "用户留存")}
@@ -1691,7 +1701,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (!isComposite) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("operation.report.activity", "活跃度")}>
+                             data-title={Intl.get("operation.report.activity", "活跃度")}>
                             <div className="chart-holder expired-activeness-chart-height">
                                 <CardContainer
                                     title={Intl.get("operation.report.activity", "活跃度")}
@@ -1710,7 +1720,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 if (shouldViewActiveNessChart) {
                     chartList.push(
                         <div className="analysis_chart col-md-6 col-sm-12"
-                            data-title={Intl.get("oplate.user.analysis.6", "在线时长统计")}>
+                             data-title={Intl.get("oplate.user.analysis.6", "在线时长统计")}>
                             <div className="chart-holder active-time-scatter-height height-fix">
                                 <CardContainer
                                     title={Intl.get("oplate.user.analysis.6", "在线时长统计")}
@@ -1729,7 +1739,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         if (this.state.selectedApp && this.state.selectedApp.indexOf(",") < 0 && this.state.currentTab != "added_expired") {
             chartList.push((
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("oplate.user.analysis.device", "设备统计")}>
+                     data-title={Intl.get("oplate.user.analysis.device", "设备统计")}>
                     <div className="chart-holder">
                         <CardContainer
                             title={Intl.get("oplate.user.analysis.device", "设备统计")}
@@ -1741,85 +1751,85 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     </div>
                 </div>
             ), (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}>
-                        <div className="chart-holder">
-                            <CardContainer
-                                title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}
-                                exportData={handleBrowserExport(this.state.browser.data)}
-                                csvFileName="brower_statis.csv"
-                            >
-                                {this.getBrowserChart()}
-                            </CardContainer>
-                        </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}>
+                    <div className="chart-holder">
+                        <CardContainer
+                            title={Intl.get("oplate.user.analysis.browser", "浏览器统计")}
+                            exportData={handleBrowserExport(this.state.browser.data)}
+                            csvFileName="brower_statis.csv"
+                        >
+                            {this.getBrowserChart()}
+                        </CardContainer>
                     </div>
-                ), (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}>
-                        <div className="chart-holder">
-                            <CardContainer
-                                title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}
-                                exportData={handleLoginCountsExport(this.state.userLoginCounts.data)}
-                                csvFileName="login_counts_statis.csv"
-                            >
-                                {this.getUserLoginCounts()}
-                            </CardContainer>
-                        </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}>
+                    <div className="chart-holder">
+                        <CardContainer
+                            title={Intl.get("oplate.user.analysis.loginCounts", "用户访问次数")}
+                            exportData={handleLoginCountsExport(this.state.userLoginCounts.data)}
+                            csvFileName="login_counts_statis.csv"
+                        >
+                            {this.getUserLoginCounts()}
+                        </CardContainer>
                     </div>
-                ), (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title="活跃用户地域统计">
-                        <div className="chart-holder zone-fix">
-                            <CardContainer
-                                title="活跃用户地域统计"
-                                exportData={handleZoneExportData(this.state.activeZone.data)}
-                                csvFileName="actively_zone_statis.csv"
-                            >
-                                {this.getActiveZoneChart()}
-                            </CardContainer>
-                        </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title="活跃用户地域统计">
+                    <div className="chart-holder zone-fix">
+                        <CardContainer
+                            title="活跃用户地域统计"
+                            exportData={handleZoneExportData(this.state.activeZone.data)}
+                            csvFileName="actively_zone_statis.csv"
+                        >
+                            {this.getActiveZoneChart()}
+                        </CardContainer>
                     </div>
-                ), (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}>
-                        <div className="chart-holder">
-                            <CardContainer
-                                title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}
-                                exportData={handleLoginDaysExport(this.state.userLoginDays.data)}
-                                csvFileName="login_days_statis.csv"
-                            >
-                                {this.getUserLoginDays()}
-                            </CardContainer>
-                        </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}>
+                    <div className="chart-holder">
+                        <CardContainer
+                            title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}
+                            exportData={handleLoginDaysExport(this.state.userLoginDays.data)}
+                            csvFileName="login_days_statis.csv"
+                        >
+                            {this.getUserLoginDays()}
+                        </CardContainer>
                     </div>
-                ), (
-                    <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}>
-                        <div className="chart-holder">
-                            <CardContainer
-                                title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}
-                                exportData={handleLoginTimesExport(this.state.userLoginTimes.data)}
-                                csvFileName="login_times_statis.csv"
-                            >
-                                {this.getUserLoginTimes()}
-                            </CardContainer>
-                        </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}>
+                    <div className="chart-holder">
+                        <CardContainer
+                            title={Intl.get("oplate.user.analysis.loginTimes", "用户在线时间")}
+                            exportData={handleLoginTimesExport(this.state.userLoginTimes.data)}
+                            csvFileName="login_times_statis.csv"
+                        >
+                            {this.getUserLoginTimes()}
+                        </CardContainer>
                     </div>
-                ), (
-                    <div className="analysis_chart col-md-6 col-sm-12 charts-select-fix"
-                        data-title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}>
-                        <div className="chart-holder">
-                            <AntcCardContainer
-                                title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}
-                                exportData={handleAveTimesExport(this.state.onlineTime.data)}
-                                csvFileName="average_times_statis.csv"
-                                subTitle={activeConditionSelector}
-                            >
-                                {this.getOnlineTimeChart()}
-                            </AntcCardContainer>
-                        </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12 charts-select-fix"
+                     data-title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}>
+                    <div className="chart-holder">
+                        <AntcCardContainer
+                            title={Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长")}
+                            exportData={handleAveTimesExport(this.state.onlineTime.data)}
+                            csvFileName="average_times_statis.csv"
+                            subTitle={activeConditionSelector}
+                        >
+                            {this.getOnlineTimeChart()}
+                        </AntcCardContainer>
                     </div>
-                ))
+                </div>
+            ))
         }
         return (
             <div>
@@ -1988,6 +1998,49 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }
         return status;
     },
+    //销售开通用户统计表格
+    renderSalesUsersTable: function () {
+        if (this.state.salesOpenUserAnalysis.resultType === "loading") {
+            return (<Spinner/>);
+        } else if (this.state.salesOpenUserAnalysis.errorMsg) {
+            return this.renderGetDataErrorMessage(this.state.salesOpenUserAnalysis.errorMsg, this.getSalesOpenUserAnalysisData);
+        } else {
+            return (
+                <AntcTable
+                    columns={this.getTableClumns()}
+                    dataSource={this.state.salesOpenUserAnalysis.data}
+                    pagination={false}
+                    bordered={true}
+                />);
+        }
+    },
+
+    //获取表格列
+    getTableClumns(){
+        let columns = [{
+            title: Intl.get("sales.home.sales", "销售"),
+            dataIndex: 'member_name',
+            key: 'member_name'
+        }, {
+            title: Intl.get("user.user.team", "团队"),
+            dataIndex: 'sales_team_name',
+            key: 'sales_team_name'
+        }];
+        let appList = _.isArray(this.state.salesUserApps) ? this.state.salesUserApps : [];
+        appList.forEach(app_name => {
+            columns.push({
+                title: app_name,
+                dataIndex: app_name,
+                key: app_name
+            });
+        });
+        columns.push({
+            title: Intl.get("sales.home.total.compute", "总计"),
+            dataIndex: 'total',
+            key: 'count'
+        });
+        return columns;
+    },
 
     render: function () {
         let clickType = this.state.user_type || this.state.status || this.state.zone || this.state.industy || this.state.zone;
@@ -2011,7 +2064,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         const tabCols = this.state.selectedApp && this.state.selectedApp.includes(",") ? 6 : 5;
         return (
             <div className="oplate_user_analysis"
-                data-tracename="用户分析"
+                 data-tracename="用户分析"
             >
                 <TopNav>
                     <AnalysisMenu />
@@ -2032,15 +2085,20 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 range="week"
                                 data-tracename="选择日期"
                                 onSelect={this.onSelectDate}>
-                                <AntcDatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</AntcDatePicker.Option>
-                                <AntcDatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</AntcDatePicker.Option>
-                                <AntcDatePicker.Option value="week">{Intl.get("common.time.unit.week", "周")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="all">{Intl.get("user.time.all", "全部时间")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="day">{Intl.get("common.time.unit.day", "天")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="week">{Intl.get("common.time.unit.week", "周")}</AntcDatePicker.Option>
                                 <AntcDatePicker.Option
                                     value="month">{Intl.get("common.time.unit.month", "月")}</AntcDatePicker.Option>
                                 <AntcDatePicker.Option
                                     value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</AntcDatePicker.Option>
-                                <AntcDatePicker.Option value="year">{Intl.get("common.time.unit.year", "年")}</AntcDatePicker.Option>
-                                <AntcDatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="year">{Intl.get("common.time.unit.year", "年")}</AntcDatePicker.Option>
+                                <AntcDatePicker.Option
+                                    value="custom">{Intl.get("user.time.custom", "自定义")}</AntcDatePicker.Option>
                             </AntcDatePicker>
                         </div>
                     </div>
@@ -2054,7 +2112,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 desp={Intl.get("oplate.user.analysis.11", "总用户")}
                                 num={this.state.summaryNumbers.data.total}
                                 active={this.state.currentTab === 'total'}
-                                onClick={this.changeCurrentTab.bind(this, 'total')} />
+                                onClick={this.changeCurrentTab.bind(this, 'total')}/>
                         </Col>
                         <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
@@ -2062,7 +2120,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 desp={Intl.get("oplate.user.analysis.12", "新增用户")}
                                 num={this.state.summaryNumbers.data.added}
                                 active={this.state.currentTab === 'added'}
-                                onClick={this.changeCurrentTab.bind(this, 'added')} />
+                                onClick={this.changeCurrentTab.bind(this, 'added')}/>
                         </Col>
                         {this.state.selectedApp && !this.state.selectedApp.includes(",") ?
                             <Col xs={24} sm={12} md={4}>
@@ -2071,7 +2129,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                     desp="延期用户"
                                     num={DELAYED_USERS_SYMBOL}
                                     active={this.state.currentTab === 'delay'}
-                                    onClick={this.changeCurrentTab.bind(this, 'delay')} />
+                                    onClick={this.changeCurrentTab.bind(this, 'delay')}/>
                             </Col> : null}
                         <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
@@ -2079,7 +2137,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 desp={Intl.get("oplate.user.analysis.13", "过期用户")}
                                 num={this.state.summaryNumbers.data.expired}
                                 active={this.state.currentTab === 'expired'}
-                                onClick={this.changeCurrentTab.bind(this, 'expired')} />
+                                onClick={this.changeCurrentTab.bind(this, 'expired')}/>
                         </Col>
                         <Col xs={24} sm={12} md={tabCols}>
                             <SummaryNumber
@@ -2087,7 +2145,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 desp={Intl.get("oplate.user.analysis.14", "新增过期用户")}
                                 num={this.state.summaryNumbers.data.added_expired}
                                 active={this.state.currentTab === 'added_expired'}
-                                onClick={this.changeCurrentTab.bind(this, 'added_expired')} />
+                                onClick={this.changeCurrentTab.bind(this, 'added_expired')}/>
                         </Col>
                     </Row>
                 </div>
@@ -2099,57 +2157,57 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     {/**用户类型*/}
                     {this.state.user_type ? (<span className="show-click-type">
                         {Intl.get("oplate.user.type", "用户类型：")}
-                        {this.transUserTypeShow(this.state.user_type)}
-                        <span className="glyphicon glyphicon-remove"
-                            data-tracename="去掉用户类型的条件"
-                            onClick={this.deleteUserType}
-                        ></span>
+                            {this.transUserTypeShow(this.state.user_type)}
+                            <span className="glyphicon glyphicon-remove"
+                                  data-tracename="去掉用户类型的条件"
+                                  onClick={this.deleteUserType}
+                            ></span>
                     </span>
                     ) : null}
                     {/**应用的启停用状态*/}
                     {this.state.status ? (<span className="show-click-type">
                         {Intl.get("oplate.app.status", "用户状态：")}
-                        {this.transAppStatusShow(this.state.status)}
-                        <span className="glyphicon glyphicon-remove"
-                            data-tracename="去掉应用启停用的条件"
-                            onClick={this.deleteAppStatus}
-                        ></span>
+                            {this.transAppStatusShow(this.state.status)}
+                            <span className="glyphicon glyphicon-remove"
+                                  data-tracename="去掉应用启停用的条件"
+                                  onClick={this.deleteAppStatus}
+                            ></span>
                     </span>
                     ) : null}
                     {/**地域*/}
                     {this.state.zone ? (<span className="show-click-type">
                         {Intl.get("oplate.user.zone", "地域：")}
-                        {this.state.zone == 'unknown' ? '未知' : (this.state.zone)}
-                        <span className="glyphicon glyphicon-remove"
-                            data-tracename="去掉标签关联的条件"
-                            onClick={this.deleteZone}
-                        ></span>
+                            {this.state.zone == 'unknown' ? '未知' : (this.state.zone)}
+                            <span className="glyphicon glyphicon-remove"
+                                  data-tracename="去掉标签关联的条件"
+                                  onClick={this.deleteZone}
+                            ></span>
                     </span>
                     ) : null}
                     {/**行业*/}
                     {this.state.industry ? (<span className="show-click-type">
                         {Intl.get("oplate.user.industry", "行业：")}
-                        {this.state.industry == 'unknown' ? '未知' : (this.state.industry)}
-                        <span className="glyphicon glyphicon-remove"
-                            data-tracename="去掉行业类型的条件"
-                            onClick={this.deleteIndustry}
-                        ></span>
+                            {this.state.industry == 'unknown' ? '未知' : (this.state.industry)}
+                            <span className="glyphicon glyphicon-remove"
+                                  data-tracename="去掉行业类型的条件"
+                                  onClick={this.deleteIndustry}
+                            ></span>
                     </span>
                     ) : null}
                     {/**团队*/}
                     {this.state.team ? (<span className="show-click-type">
                         {Intl.get("oplate.user.team", "团队：")}
-                        {this.state.team == 'unknown' ? '未知' : (this.state.team)}
-                        <span className="glyphicon glyphicon-remove"
-                            data-tracename="去掉团队类型的条件"
-                            onClick={this.deleteTeam}
-                        ></span>
+                            {this.state.team == 'unknown' ? '未知' : (this.state.team)}
+                            <span className="glyphicon glyphicon-remove"
+                                  data-tracename="去掉团队类型的条件"
+                                  onClick={this.deleteTeam}
+                            ></span>
                     </span>
                     ) : null}
                 </div>
                 <div>
                 </div>
-                <div ref="chart_list" style={{ height: chartListHeight }}>
+                <div ref="chart_list" style={{height: chartListHeight}}>
                     <GeminiScrollbar>
                         <div className="chart_list">
                             <div>
@@ -2158,7 +2216,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                  */}
                                 {this.state.isComposite || this.state.currentTab == "delay" ? null : (
                                     <div className="analysis_chart col-md-6 col-sm-12"
-                                        data-title={Intl.get("oplate.user.analysis.user.type", "用户类型")}>
+                                         data-title={Intl.get("oplate.user.analysis.user.type", "用户类型")}>
                                         <div className="chart-holder" data-tracename="用户类型统计信息" ref="chartWidthDom">
                                             <CardContainer
                                                 title={Intl.get("oplate.user.analysis.user.type", "用户类型")}
@@ -2172,7 +2230,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 )}
                                 {this.state.isComposite || this.state.currentTab == "delay" ? null : (
                                     <div className="analysis_chart col-md-6 col-sm-12"
-                                        data-title={Intl.get("oplate.user.analysis.app.status", "用户状态")}>
+                                         data-title={Intl.get("oplate.user.analysis.app.status", "用户状态")}>
                                         <div className="chart-holder" data-tracename="用户状态统计信息" ref="chartWidthDom">
                                             <CardContainer
                                                 title={Intl.get("oplate.user.analysis.app.status", "用户状态")}
@@ -2187,7 +2245,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 {
                                     this.state.currentTab != "delay" ?
                                         <div className="analysis_chart col-md-6 col-sm-12"
-                                            data-title={Intl.get("user.analysis.total", "用户统计")}>
+                                             data-title={Intl.get("user.analysis.total", "用户统计")}>
                                             <div className="chart-holder" data-tracename="用户统计信息" ref="chartWidthDom">
                                                 <CardContainer
                                                     title={fetchTeamOrMember ? Intl.get("user.analysis.total", "用户统计") : ""}
@@ -2202,7 +2260,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 {
                                     this.state.currentTab != "delay" ?
                                         <div className="analysis_chart col-md-6 col-sm-12"
-                                            data-title={this.getTeamChartTitle()}>
+                                             data-title={this.getTeamChartTitle()}>
                                             <div className="chart-holder" data-tracename="销售团队统计信息">
                                                 <CardContainer
                                                     title={this.getTeamChartTitle()}
@@ -2217,7 +2275,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 {
                                     this.state.currentTab == "total" || this.state.currentTab == "added_expired" ?
                                         <div className="analysis_chart col-md-6 col-sm-12"
-                                            data-title={Intl.get("user.analysis.address", "地域统计")}>
+                                             data-title={Intl.get("user.analysis.address", "地域统计")}>
                                             <div className="chart-holder" data-tracename="地域统计信息">
                                                 <CardContainer
                                                     title={fetchTeamOrMember ? Intl.get("user.analysis.address", "地域统计") : ""}
@@ -2232,7 +2290,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 {
                                     this.state.currentTab != "delay" ?
                                         <div className="analysis_chart col-md-6 col-sm-12"
-                                            data-title={Intl.get("user.analysis.industry", "行业统计")}>
+                                             data-title={Intl.get("user.analysis.industry", "行业统计")}>
                                             <div className="chart-holder" data-tracename="行业统计信息">
                                                 <CardContainer
                                                     title={fetchTeamOrMember ? Intl.get("user.analysis.industry", "行业统计") : ""}
@@ -2240,6 +2298,21 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                                     csvFileName="industry_statis.csv"
                                                 >
                                                     {this.getIndustryChart()}
+                                                </CardContainer>
+                                            </div>
+                                        </div> : null
+                                }
+                                {
+                                    this.state.isComposite && this.state.currentTab === "total" ?
+                                        <div className="analysis_chart col-md-12 col-sm-12"
+                                             data-title={Intl.get("user.analysis.sales.users", "销售开通用户统计")}>
+                                            <div className="sales-user-table-container" data-tracename="销售开通用户统计">
+                                                <CardContainer
+                                                    title={Intl.get("user.analysis.sales.users", "销售开通用户统计")}
+                                                    exportData={handleTableData(this.state.salesOpenUserAnalysis.data, this.getTableClumns())}
+                                                    csvFileName="sales_user_statis.csv"
+                                                >
+                                                    {this.renderSalesUsersTable()}
                                                 </CardContainer>
                                             </div>
                                         </div> : null

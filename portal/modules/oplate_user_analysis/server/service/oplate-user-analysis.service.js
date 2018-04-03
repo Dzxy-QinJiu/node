@@ -38,6 +38,8 @@ var urls = {
     getAddedExpiredZone: '/rest/analysis/user/v1/:auth_type/added_expired/zone',
     //获取总用户的行业统计
     getTotalIndustry: '/rest/analysis/user/v1/:auth_type/total/industry',
+    //获取销售开通各应用用户数的统计
+    getSalesOpenUserAnalysis: '/rest/customer/v2/customer/:auth_type/app/user/count',
     //获取新增用户的行业统计
     getAddedIndustry: '/rest/analysis/user/v1/:auth_type/added/industry',
     //获取过期用户的行业统计
@@ -379,6 +381,16 @@ exports.getTotalIndustry = function (req, res, queryParams) {
             req: req,
             res: res
         }, queryParams);
+};
+
+// 获取销售开通各应用用户数的统计
+exports.getSalesOpenUserAnalysis = function (req, res, queryParams) {
+    return restUtil.authRest.get(
+        {
+            url: urls.getSalesOpenUserAnalysis.replace(":auth_type", queryParams.authType),
+            req: req,
+            res: res
+        }, null);
 };
 
 //获取新增用户的行业统计

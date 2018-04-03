@@ -1481,6 +1481,7 @@ var en_US = {
     "user.analysis.industry.add": "Industry-Newly added",//各行业新增用户、客户数  行业-新增@
     "user.analysis.active.customer": "Active customer",//活跃客户
     "user.analysis.moveoutCustomer": "Move-out customer ",// "转出客户统计",
+    "user.analysis.sales.users": "Sales and opening of user statistics",//销售开通用户统计
 
     //销售首页-新增客户分析
     "customer.analysis": "Customer Analysis",//客户分析@
