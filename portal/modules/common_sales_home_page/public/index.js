@@ -702,7 +702,7 @@ var SalesHomePage = React.createClass({
                                                 <span className="phone-total-time phone-total-data">
                                                     {time.hours > 0 ? <span>{time.hours < 10 ? "0" + time.hours : time.hours}:</span> : "00:"}
                                                     {time.minutes > 0 ?<span>{time.minutes < 10 ? "0" + time.minutes : time.minutes}:</span>: "00:"}
-                                                    {time.second > 0 ? <span>{time.second}</span> : "00"}
+                                                    {time.second > 0 ? <span>{time.second < 10 ? "0" + time.second : time.second}:</span> : "00"}
                                         </span>
                                             </span>
                                     </div>
