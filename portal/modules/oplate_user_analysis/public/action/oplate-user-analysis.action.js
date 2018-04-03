@@ -210,6 +210,16 @@ function OplateUserAnalysisActions() {
             _this.dispatch({loading:false,error:true,errorMsg:errorMsg});
         });
     };
+    //获取总用户下，销售开通各应用用户数的统计
+    this.getSalesOpenUserAnalysis = function(obj) {
+        var _this = this;
+        _this.dispatch({loading:true,error:false});
+        OplateUserAnalysisAjax.getSalesOpenUserAnalysis(obj).then(function(data) {
+            _this.dispatch({loading:false,error:false,data:data});
+        } , function(errorMsg) {
+            _this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        });
+    };
     //获取新增用户的行业统计
     this.getAddedIndustry = function(obj) {
         var _this = this;

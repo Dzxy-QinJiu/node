@@ -126,7 +126,14 @@ exports.getTotalIndustry = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+// 获取销售开通各应用用户数的统计
+exports.getSalesOpenUserAnalysis = function (req, res) {
+    OplateUserAnalysisService.getSalesOpenUserAnalysis(req, res, req.query).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 //获取新增用户的行业统计
 exports.getAddedIndustry = function (req, res) {
     OplateUserAnalysisService.getAddedIndustry(req, res, req.query).on("success", function (data) {
@@ -158,7 +165,7 @@ exports.getAddedExpiredIndustry = function (req, res) {
 exports.getActiveNess = function (req, res) {
     var dataType = req.params.dataType;
     var dataRange = req.params.dataRange;
-    OplateUserAnalysisService.getActiveNess(req, res, dataType , dataRange , req.query).on("success", function (data) {
+    OplateUserAnalysisService.getActiveNess(req, res, dataType, dataRange, req.query).on("success", function (data) {
         res.json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -175,58 +182,58 @@ exports.getActiveTime = function (req, res) {
 };
 
 //获取全部成员
-exports.getTotalMember = function(req,res) {
-    OplateUserAnalysisService.getTotalMember(req,res,req.query).on("success",function(data) {
+exports.getTotalMember = function (req, res) {
+    OplateUserAnalysisService.getTotalMember(req, res, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //获取新增成员
-exports.getAddedMember = function(req,res) {
-    OplateUserAnalysisService.getAddedMember(req,res,req.query).on("success",function(data) {
+exports.getAddedMember = function (req, res) {
+    OplateUserAnalysisService.getAddedMember(req, res, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //获取过期成员
-exports.getExpiredMember = function(req,res) {
-    OplateUserAnalysisService.getExpiredMember(req,res,req.query).on("success",function(data) {
+exports.getExpiredMember = function (req, res) {
+    OplateUserAnalysisService.getExpiredMember(req, res, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //获取新增过期成员
-exports.getAddedExpiredMember = function(req,res) {
-    OplateUserAnalysisService.getAddedExpiredMember(req,res,req.query).on("success",function(data) {
+exports.getAddedExpiredMember = function (req, res) {
+    OplateUserAnalysisService.getAddedExpiredMember(req, res, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //获取登陆时长统计
-exports.getLoginLong = function(req,res) {
+exports.getLoginLong = function (req, res) {
     var hours = req.params.hours;
     var dataType = req.params.dataType;
-    OplateUserAnalysisService.getLoginLong(req,res,dataType,hours,req.query).on("success",function(data) {
+    OplateUserAnalysisService.getLoginLong(req, res, dataType, hours, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 
 //获取用户留存
-exports.getRetention = function(req,res) {
-    OplateUserAnalysisService.getRetention(req,res,req.query).on("success",function(data) {
+exports.getRetention = function (req, res) {
+    OplateUserAnalysisService.getRetention(req, res, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -234,19 +241,19 @@ exports.getRetention = function(req,res) {
 // 获取用户类型统计
 exports.getUserTypeStatistics = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getUserTypeStatistics(req, res, analysis_type, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getUserTypeStatistics(req, res, analysis_type, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 获取新增用户类型
-exports.getAddedUserTypeStatistics  = function (req, res) {
+exports.getAddedUserTypeStatistics = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getUserTypeStatistics(req, res, analysis_type, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getUserTypeStatistics(req, res, analysis_type, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -254,47 +261,47 @@ exports.getAddedUserTypeStatistics  = function (req, res) {
 // 获取用户类型统计
 exports.getAppStatus = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getAppStatus(req, res, analysis_type, req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppStatus(req, res, analysis_type, req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 全部应用下，获取团队统计
-exports.getAppsTeam = function(req, res) {
+exports.getAppsTeam = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getAppsTeam(req, res, analysis_type, 'team' , req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsTeam(req, res, analysis_type, 'team', req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 全部应用下，获取行业统计
-exports.getAppsIndustry = function(req, res) {
+exports.getAppsIndustry = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getAppsIndustry(req, res, analysis_type,'industry', req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsIndustry(req, res, analysis_type, 'industry', req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 
 // 全部应用下，获取地域统计
-exports.getAppsZone = function(req, res) {
+exports.getAppsZone = function (req, res) {
     let analysis_type = req.params.analysis_type;
-    OplateUserAnalysisService.getAppsZone(req, res, analysis_type,'zone', req.query).on("success",function(data) {
+    OplateUserAnalysisService.getAppsZone(req, res, analysis_type, 'zone', req.query).on("success", function (data) {
         res.json(data);
-    }).on("error",function(codeMessage) {
+    }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 获取应用下载的统计
-exports.getAppsDownloadStatistics = (req,res) => {
-    OplateUserAnalysisService.getAppsDownloadStatistics(req,res,req.query).on("success", (data) =>{
+exports.getAppsDownloadStatistics = (req, res) => {
+    OplateUserAnalysisService.getAppsDownloadStatistics(req, res, req.query).on("success", (data) => {
         res.json(data);
     }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);

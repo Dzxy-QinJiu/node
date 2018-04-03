@@ -164,6 +164,17 @@ module.exports = {
     },{
         //http方法
         "method": "get",
+        //路径 获取销售开通各应用用户数的统计
+        "path": "/rest/analysis/user/sales/open_user",
+        //action中的方法
+        "handler": "getSalesOpenUserAnalysis",
+        //是否需要登录
+        "passport": {
+            "needLogin": true
+        }
+    },{
+        //http方法
+        "method": "get",
         //路径 获取新增用户的行业统计
         "path": "/rest/analysis/user/added/industry",
         //action中的方法
