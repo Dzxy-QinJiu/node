@@ -220,6 +220,13 @@
             margin-top: 10px;
             padding-left: 10px;
             overflow: hidden;
+            .alert-container {
+              text-align: center;
+              .ant-alert {
+                display: inline-block;
+                margin-top: 50px;
+              }
+            }
           }
           .analysis_chart {
             overflow: hidden;
@@ -230,7 +237,8 @@
                 display: block!important;
               }
             }
-            .transfer-customer-container {
+            .transfer-customer-container, 
+            .stage-change-customer-container {
               background-color: white;              
               margin-bottom: 30px;
               .load-more-container {
@@ -618,9 +626,8 @@
     -webkit-transform:translateX(100%);
     background-color:#fff;
     display:block;
-  .customer-table-close {
-    position: absolute;
-    right: 30px;
-    top:30px;
+  .customer-table-close>.close-pannel {
+    top: -50px;
+    left: -20px;
   }
 }

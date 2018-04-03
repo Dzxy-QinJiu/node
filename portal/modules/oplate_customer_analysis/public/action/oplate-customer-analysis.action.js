@@ -5,13 +5,12 @@ const asyncDispatcher = function (ajax) {
         _this.dispatch({ errorMsg: "", loading: true });
         return new Promise((resolve, reject) => {
             ajax(paramObj)
-                .then(function (data) {                   
+                .then(function (data) {
                     _this.dispatch({ loading: false, data, paramObj, errorMsg: "" });
                     resolve({ data })
                 })
                 .fail(function (errorMsg) {
                     _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
-                    reject({ errorMsg });
                 });
         })
     }
