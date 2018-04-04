@@ -65,6 +65,7 @@ var CustomerAnalysis = React.createClass({
             if (timeChanged) {
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
+                    this.getStageChangeCustomers();
                 })
             }
         });
@@ -90,10 +91,19 @@ var CustomerAnalysis = React.createClass({
         }
     },
     //获取客户阶段变更数据
-    getStageChangeCustomers: function (order) {
-        OplateCustomerAnalysisAction.getStageChangeCustomers({
-            order
-        });
+    getStageChangeCustomers: function () {
+        let params = {           
+            query: {},
+            rang_params: [
+                {
+                    "from": this.state.startTime,
+                    "to": this.state.endTime,
+                    "name": "time",
+                    "type": "time"
+                }
+            ],
+        }
+        OplateCustomerAnalysisAction.getStageChangeCustomers(params);
     },
     getChartData: function () {
         const queryParams = {
@@ -413,69 +423,73 @@ var CustomerAnalysis = React.createClass({
         this.getStageChangeCustomers(sorter.order);
     },
     renderCustomerStage: function () {
+        const handleNum = num => {
+            if (num && num > 0) {
+                return "+" + num
+            }
+        };
         const columns = [
             {
                 title: Intl.get("crm.146", "日期"),
-                dataIndex: 'date',
+                dataIndex: '日期',
                 key: 'date',
                 sorter: true,
             }, {
                 title: Intl.get("sales.stage.message", "信息"),
-                dataIndex: "info",
+                dataIndex: "map.信息",
                 key: "info",
                 render: (text, item, index) => {
                     return (
-                        <span onClick={this.handleStageNumClick.bind(this, item, "信息")}>{text}</span>
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
                     )
                 }
             }, {
                 title: Intl.get("sales.stage.intention", "意向"),
-                dataIndex: "intention",
+                dataIndex: "map.意向",
                 key: "intention",
                 render: (text, item, index) => {
                     return (
-                        <span onClick={this.handleStageNumClick.bind(this, item, "意向")}>{text}</span>
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
                     )
                 }
             }, {
                 title: Intl.get("sales.stage.signed", "签约"),
-                dataIndex: "signed",
+                dataIndex: "map.签约",
                 key: "signed",
                 render: (text, item, index) => {
                     return (
-                        <span onClick={this.handleStageNumClick.bind(this, item, "签约")}>{text}</span>
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
                     )
                 }
             }, {
                 title: Intl.get("common.trial", "试用"),
-                dataIndex: "trial",
+                dataIndex: "map.试用",
                 key: "trial",
                 render: (text, item, index) => {
                     return (
-                        <span onClick={this.handleStageNumClick.bind(this, item, "试用")}>{text}</span>
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
                     )
                 }
             }, {
                 title: Intl.get("common.trial.qualified", "试用合格"),
-                dataIndex: "qualified",
+                dataIndex: "map.试用合格",
                 key: "qualified",
                 render: (text, item, index) => {
                     return (
-                        <span onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{text}</span>
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
                     )
                 }
             }, {
                 title: Intl.get("sales.home.sales", "销售"),
-                dataIndex: "sales",
-                key: "sales"
+                dataIndex: "memberName",
+                key: "memberName"
             }, {
                 title: Intl.get("common.belong.team", "所属团队"),
-                dataIndex: "team",
-                key: "team"
+                dataIndex: "salesTeam",
+                key: "salesTeam"
             }
         ];
-        // const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.lastId;
-        // const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
+        const loading = this.state.customerStage.loading;
         const renderErr = () => {
             if (this.state.customerStage.errorMsg) {
                 return (
@@ -490,14 +504,13 @@ var CustomerAnalysis = React.createClass({
             }
         }
         const renderSpiner = () => {
-            if (this.state.customerStage.loading) {
+            if (loading) {
                 return (
                     <Spinner />
                 )
             }
         };
-        const hideTable = this.state.customerStage.errorMsg || loadingFirst;
-        // const showNoMoreDataTip = !this.state.customerStage.loading && this.state.customerStage.lastId && !this.state.transferCustomers.listenScrollBottom;
+        const hideTable = this.state.customerStage.errorMsg || loading;
         return (
             <div
                 className="chart-holder stage-change-customer-container scrollbar-container"
@@ -508,23 +521,17 @@ var CustomerAnalysis = React.createClass({
                     <div className="title">
                         {Intl.get("crm.sales.customerStage", "客户阶段变更统计")}
                     </div>
+                    {renderErr()}
+                    {renderSpiner()}
                     <div className={hideTable ? "hide" : ""}>
-                    <AntcTable
-                        util={{ zoomInSortArea: true }}
-                        dataSource={this.state.customerStage.data}
-                        loading={this.state.customerStage.loading}
-                        pagination={false}
-                        columns={columns}
-                        onChange={this.onStageSortChange.bind(this)}
-                    />
-                    </div>
-                    <div className="load-more-container">
-                        {!showNoMoreDataTip ? renderLoadMore() : null}
-                        {<NoMoreDataTip
-                            fontSize="12"
-                            show={() => showNoMoreDataTip}
-                        />}
-                    </div>
+                        <AntcTable
+                            util={{ zoomInSortArea: true }}
+                            dataSource={this.state.customerStage.data}
+                            pagination={false}
+                            columns={columns}
+                            onChange={this.onStageSortChange.bind(this)}
+                        />
+                    </div>                   
                 </GeminiScrollbar>
             <RightPanel
                 className="customer-stage-table-wrapper"

@@ -1,6 +1,9 @@
 import ajax from "../../../common/ajax";
 const routes  = require("../../../common/route");
-
+const hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
+const AUTHS = {
+    "GETALL": "CUSTOMER_ALL"
+};
 //获取统计总数
 var summaryNumbersAjax;
 exports.getSummaryNumbers = function(reqData) {
@@ -99,21 +102,21 @@ exports.getTransferCustomers = function(paramObj) {
     })
 };
 
-//获取客户阶段变更数据todo
+//获取客户阶段变更数据
 exports.getStageChangeCustomers = function(paramObj) {
     const handler = "getStageChangeCustomers";
     const route = routes.find(x => x.handler == handler);
-    const {page_size, sort_field, order} = paramObj;
-    let queryObj = $.extend(true, {}, paramObj.queryObj);
-    paramObj.query = {};
+    //普通销售权限
+    let type = "self";
+    if (hasPrivilege(AUTHS.GETALL)) {
+        //管理员权限
+        type = "all";
+    }
     return ajax({
         url: route.path,
         type: route.method,
-        query: queryObj,
         params: {
-            page_size, 
-            sort_field, 
-            order
+            type
         },
         data: paramObj
     })

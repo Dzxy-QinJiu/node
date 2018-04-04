@@ -241,57 +241,25 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = function({loading, 
 
 //获取客户阶段变更数据
 OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = function ({ loading, errorMsg, data }) {
-    var temp = [
-        {
-            qualified: "4",
-            trial: "3",
-            signed: "2",
-            intention: "1",
-            info: "5",
-            date: 1522219137036,
-            sales: "test1",
-            user_id: "3722pgujaa35j7v0bfk4iwn7BdrD5aJbDo0YmiBpgqr",
-            team: "test_zone"
-        },{
-            qualified: "2",
-            trial: "4",
-            signed: "2",
-            intention: "1",
-            info: "5",
-            date: 1522219137036,
-            sales: "test2",
-            user_id: "3722pgujaa35j7v0bfk4iwn7BdrD5aJbDo0YmiBpgqr",
-            team: "test_zone"
-        },{
-            qualified: "5",
-            trial: "1",
-            signed: "9",
-            intention: "1",
-            info: "5",
-            date: 1522219137036,
-            sales: "test3",
-            user_id: "3722pgujaa35j7v0bfk4iwn7BdrD5aJbDo0YmiBpgqr",
-            team: "test_zone"
-        }
-    ];
     if (loading) {
         this.customerStage.loading = true;
         this.customerStage.errorMsg = '';
         this.customerStage.data = [];
     } else if (errorMsg) {
         this.customerStage.loading = false;
-        // this.customerStage.errorMsg = errorMsg;
-        // this.customerStage.data = [];
-        this.customerStage.data = temp.map(x => {
-            let obj = x;
-            obj.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
-            return obj;
-        })
+        this.customerStage.errorMsg = errorMsg;
+        this.customerStage.data = [];       
         
     } else {
         this.customerStage.loading = false;
         this.customerStage.errorMsg = '';
-        this.customerStage.data = data;
+        if (data && data.length) {
+            this.customerStage.data = data.map(x => {
+                let obj = x;
+                obj.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
+                return obj;
+            });
+        }
     }
 }
 
