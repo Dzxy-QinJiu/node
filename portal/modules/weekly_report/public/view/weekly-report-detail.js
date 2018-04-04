@@ -494,7 +494,8 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
             dataIndex: 'district_dredge_scale',
-            className: CLASSNAMES.ALIGNRIGHT
+            className: CLASSNAMES.ALIGNRIGHT,
+            fixNum: 4
         }, {
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'district_login_count',
