@@ -1602,6 +1602,7 @@ const ApplyViewDetail = React.createClass({
                         placeholder={Intl.get("user.apply.reply.placeholder", "请填写内容")}
                         type="textarea"
                         onChange={this.commentInputChange}
+                        autosize={{minRows:2}}
                     />
                 </FormItem>
             </Form>
@@ -1616,10 +1617,8 @@ const ApplyViewDetail = React.createClass({
         if (selectedDetailItem.isConsumed == 'true') {
             return (
                 <div className="approval_block">
-
                         <GeminiScrollbar>
                             <div className="approval_inner_block">
-                            <p className="approval_text"></p>
                             <dl className="dl-horizontal detail_item">
                                 <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/></dt>
                                 <dd>
