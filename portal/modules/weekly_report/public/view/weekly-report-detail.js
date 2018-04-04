@@ -20,7 +20,7 @@ var CLASSNAMES = {
     ALIGNLEFT: "table-data-align-left",
     ALIGNRIGHT: "table-data-align-right"
 };
-import {formatData} from "../utils/weekly-report-utils";
+import {formatRoundingData} from "PUB_DIR/sources/utils/common-method-util";
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
         return {
@@ -129,9 +129,9 @@ const WeeklyReportDetail = React.createClass({
             //更新考核天数
             item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
             //日接通数保留整数
-            item.average_num = formatData(item.total_callout_success /item.real_work_day,0);
+            item.average_num = formatRoundingData(item.total_callout_success /item.real_work_day,0);
             //日均时长保留一位小数
-            item.average_time = formatData(item.total_time / item.real_work_day, 1);
+            item.average_time = formatRoundingData(item.total_time / item.real_work_day, 1);
             this.setState({
                 salesPhone: this.state.salesPhone,
                 isAddingLeaveUserId: "",
@@ -162,9 +162,9 @@ const WeeklyReportDetail = React.createClass({
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
                             //日接通数保留整数
-                            obj.average_num = formatData(obj.total_callout_success /obj.real_work_day,0);
+                            obj.average_num = formatRoundingData(obj.total_callout_success /obj.real_work_day,0);
                             //日均时长保留一位小数
-                            obj.average_time = formatData(obj.total_time / obj.real_work_day, 1);
+                            obj.average_time = formatRoundingData(obj.total_time / obj.real_work_day, 1);
                             initailObj.leave_days = updateObj.leave_days;
                         }
                         if (updateObj.leave_detail) {
@@ -202,9 +202,9 @@ const WeeklyReportDetail = React.createClass({
                         if (item.id === removedId) {
                             Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
                             //日接通数保留整数
-                            Obj.average_num = formatData(Obj.total_callout_success /Obj.real_work_day,0);
+                            Obj.average_num = formatRoundingData(Obj.total_callout_success /Obj.real_work_day,0);
                             //日均时长保留一位小数
-                            Obj.average_time = formatData(Obj.total_time / Obj.real_work_day, 1);
+                            Obj.average_time = formatRoundingData(Obj.total_time / Obj.real_work_day, 1);
                             Obj.leave_info_list.splice(index, 1);
                         }
                     }

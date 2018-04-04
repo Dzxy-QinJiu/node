@@ -1,5 +1,5 @@
 var weeklyReportDetailActions = require("../action/weekly-report-detail-actions");
-import {formatData} from "../utils/weekly-report-utils";
+import {formatRoundingData} from "PUB_DIR/sources/utils/common-method-util";
 function weeklyReportDetailStore() {
     this.setInitState();
     this.bindActions(weeklyReportDetailActions);
@@ -60,9 +60,9 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
         if (_.isArray(result.resData)) {
             _.each(result.resData, (item) => {
                 //日均时长保留一位小数
-                item.average_time = formatData(item.average_time, 1);
+                item.average_time = formatRoundingData(item.average_time, 1);
                 //日接通数保留整数
-                item.average_num = formatData(item.average_num, 0);
+                item.average_num = formatRoundingData(item.average_num, 0);
             })
         }
         this.salesPhone.list = _.isArray(result.resData) ? result.resData : [];
