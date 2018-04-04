@@ -1,5 +1,6 @@
 @import '../../../../public/css/bootstrap-variables.less';
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
+@import '../../../../public/css/common-variables';
 
 @block-bgColor: #dde6ed;
 @block-bgColor-edit: #d3dbe8;
@@ -162,7 +163,7 @@
     .ant-select-arrow { display: none; }
     //必填一项的验证样式
     .name-department-required {
-      color: #f50;
+      color: @error_tips_color;
       margin-left: 50px;
       margin-top: -10px;
     }
@@ -208,7 +209,7 @@
   }
   .need-contact {
     float: left;
-    color: #f50;
+    color: @error_tips_color;
   }
 }
 

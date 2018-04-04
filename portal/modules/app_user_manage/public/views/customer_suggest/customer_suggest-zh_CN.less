@@ -1,3 +1,4 @@
+@import '../../../../../public/css/common-variables';
 .customer_searchbox_wrap {
   //颜色是666
   color:#666;
@@ -16,7 +17,7 @@
   }
   //错误样式
   .customer_suggest_error_tip {
-    color:#f50;
+    color:@error_tips_color;
   }
   //已经选中了客户的样式
   .customer_choosen {
@@ -54,7 +55,7 @@
 
   &.customer_searchbox_error {
     .ant-select-selection--single {
-      border:1px solid #f50;
+      border:1px solid @error_tips_color;
     }
   }
 
