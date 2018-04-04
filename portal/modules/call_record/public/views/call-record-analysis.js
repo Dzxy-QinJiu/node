@@ -30,6 +30,8 @@ import ScatterChart from 'CMP_DIR/chart/scatter';
 import {AntcTable} from "antc";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
+import {handleTableData} from "CMP_DIR/analysis/export-data-util";
+import {exportToCsv} from "LIB_DIR/func";
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
     ORIGIN_WIDTH: 135,
@@ -693,7 +695,10 @@ var CallRecordAnalyis = React.createClass({
             }
         }
     },
-
+    exportPhoneTable:function () {
+        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn());
+        exportToCsv("sales_phone_table.csv",exportData);
+    },
     renderCallAnalysisView: function () {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         return (<div className="call-table-container" ref="phoneList">
@@ -706,16 +711,19 @@ var CallRecordAnalyis = React.createClass({
                 </div>
                 {this.renderCallTrendChart()}
             </div>
-
             <div style={{height: tableHeight}}>
-                {this.state.salesPhoneList.length && <div className="export-file">
-                    <a title={Intl.get("call.time.export.statistic", "点击导出通话时长统计")}
-                       href={"/rest/export/call_rate/" + this.state.callType}>
-                        <i className="iconfont icon-export"></i>{Intl.get("common.export", "导出")} </a>
-                </div>}
+                {this.state.salesPhoneList.length ? (
+                    <div className="export-file" onClick={this.exportPhoneTable.bind(this)}>
+                        <i className="iconfont icon-export"
+                           title={Intl.get("call.time.export.statistic", "点击导出通话时长统计")}>
+                            {Intl.get("common.export", "导出")}
+                        </i>
+                    </div>) : null}
                 <GeminiScrollBar>
                     <div className="analysis-wrapper">
-                        <div className="call-info col-xs-12">{this.renderCallInfo()}</div>
+                        <div className="call-info col-xs-12">
+                            {this.renderCallInfo()}
+                        </div>
                         <div className="col-xs-12">
                             {/*根据电话的排序的通话次数TOP10*/}
                             {this.renderCallTopTen(this.state.callTotalCountObj, {
