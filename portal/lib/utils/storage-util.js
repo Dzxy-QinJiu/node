@@ -7,7 +7,7 @@ var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey
  * localstorage工具 * 
  * 对localStorage存取方法的封装
  * 使用方法: *      
- *   pageId {string} 页面标识(公共数据可不传)
+ *   pageId {string} 页面标识(仅在需要区分页面时传入，比如table自定义列配置)
  *   key {string} 变量名(变量标识，必传) 
  *   
  *   var storageUtil = require("LIB_DIR/utils/storage-util.js"); 
