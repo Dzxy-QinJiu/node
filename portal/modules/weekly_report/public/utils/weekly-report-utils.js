@@ -34,3 +34,4 @@ exports.LEALVE_DURATION_OPTION = [
         label: Intl.get("weekly.report.n.days","{n}天",{n:0.5})
     },
 ];
+
