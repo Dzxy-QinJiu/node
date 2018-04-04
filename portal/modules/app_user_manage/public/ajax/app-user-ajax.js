@@ -1,6 +1,6 @@
 var AppUserUtil = require("../util/app-user-util");
 var appAjaxTrans = require("../../../common/public/ajax/app");
-
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;
@@ -36,7 +36,7 @@ exports.getAppUserList = function (obj) {
     if(appUserAjax) {
         appUserAjax.abort();
     }
-    var pageSize = parseInt(localStorage.getItem(AppUserUtil.localStorageUserViewPageSizeKey));
+    var pageSize = parseInt(storageUtil.get(AppUserUtil.localStorageUserViewPageSizeKey));
     if(!pageSize || !_.isNumber(pageSize) || isNaN(pageSize)) {
         pageSize = 20;
     }
@@ -341,7 +341,7 @@ exports.batchUpdate = function (field, submitData,selectedAppId) {
 exports.getCustomerUserList = function (obj) {
     var Deferred = $.Deferred();
     //首先获取localStorage中保存的页数
-    var pageSize = parseInt(localStorage.getItem(AppUserUtil.localStorageCustomerViewPageSizeKey));
+    var pageSize = parseInt(storageUtil.get(AppUserUtil.localStorageCustomerViewPageSizeKey));
     if(!pageSize || !_.isNumber(pageSize) || isNaN(pageSize)) {
         pageSize = 20;
     }

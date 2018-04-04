@@ -17,6 +17,7 @@ import html2canvasExport from "html2canvas";
 import jsPDF from "jspdf";
 import Trace from "LIB_DIR/trace";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 let Option = Select.Option;
 const chartWidth = '100%', chartHeight = 214, rowHeight = 35;
@@ -78,7 +79,7 @@ let OperationReport = React.createClass({
     getLastSelectAppIds(){
         let user = userData.getUserData();
         //应用id列表的存储格式：LAST_SELECT_APPS_KEY:{userId:[appId1,appId2...]}
-        let selectAppObj = localStorage.getItem(LAST_SELECT_APPS_KEY);
+        let selectAppObj = storageUtil.get(LAST_SELECT_APPS_KEY);
         selectAppObj = selectAppObj ? JSON.parse(selectAppObj) : {};
         return selectAppObj[user.user_id];
     },
@@ -228,10 +229,10 @@ let OperationReport = React.createClass({
     saveSelectAppId(appIdList){
         let user = userData.getUserData();
         //应用id列表的存储格式：LAST_SELECT_APPS_KEY:{userId:[appId1,appId2...]}
-        let selectAppObj = localStorage.getItem(LAST_SELECT_APPS_KEY);
+        let selectAppObj = storageUtil.get(LAST_SELECT_APPS_KEY);
         selectAppObj = selectAppObj ? JSON.parse(selectAppObj) : {};
         selectAppObj[user.user_id] = appIdList;
-        localStorage.setItem(LAST_SELECT_APPS_KEY, JSON.stringify(selectAppObj));
+        storageUtil.set(LAST_SELECT_APPS_KEY, JSON.stringify(selectAppObj));
     },
     //渲染应用下拉列表的选项
     renderSelectOptions(){

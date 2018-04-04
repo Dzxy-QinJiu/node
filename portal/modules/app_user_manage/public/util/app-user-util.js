@@ -3,6 +3,7 @@ var CryptoJS = require("crypto-js");
 var classNames = require("classnames");
 var UserData = require('../../../../public/sources/user-data').getUserData();
 import { ALL_LOG_INFO } from "PUB_DIR/sources/utils/consts";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
 //缓存在localStorage中的客户对应的用户列表每页多少条的key
@@ -14,7 +15,7 @@ exports.saveSelectAppKeyUserId = JSON.stringify(UserData ? UserData.user_id : ""
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
 exports.getLocalStorageObj = function (property ,selectApp){
     let localObj = {};
-    let localValue = localStorage.getItem(JSON.stringify(UserData ? UserData.user_id : ""));
+    let localValue = storageUtil.get(JSON.stringify(UserData ? UserData.user_id : ""));
     if(localValue){
         localObj =  JSON.parse(localValue);
     }

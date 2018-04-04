@@ -21,6 +21,7 @@ const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT=240;
 const BOX_CHARTTYPE = 86;//头部数字区域的高度
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange : function() {
@@ -357,7 +358,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         var rightSpace = AnalysisLayout.LAYOUTS.RIGHT_PADDING + AnalysisLayout.LAYOUTS.TIME_RANGE_WIDTH;
 
         var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
-        const storedAppId = localStorage[localStorageAppIdKey];
+        const storedAppId = storageUtil.get(localStorageAppIdKey);
 
         const charts = this.getCharts();
 

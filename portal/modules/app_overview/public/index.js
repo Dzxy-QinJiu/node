@@ -20,6 +20,8 @@ const Spinner = require('CMP_DIR/spinner');
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 const AppUserUtil = require('../../app_user_manage/public/util/app-user-util');
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
+
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 30,
@@ -62,7 +64,7 @@ const AppOverView = React.createClass({
         $(window).on('resize', this.windowResize);
         AppOverViewAjax.getAppList().then( (result) => {
             let appList = _.isArray(result) ? result : [];
-            let storageValue = JSON.parse(localStorage.getItem(AppUserUtil.saveSelectAppKeyUserId));
+            let storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
             let app_id = storageValue && storageValue[LAST_SELECT_APPS_KEY] ? storageValue[LAST_SELECT_APPS_KEY ]: '';
             if (!app_id) {
                 app_id = appList[0] ? appList[0].app_id : '';
@@ -418,7 +420,7 @@ const AppOverView = React.createClass({
         AppOverViewActions.resetData();
         if (app_id) {
             let obj =  AppUserUtil.getLocalStorageObj(LAST_SELECT_APPS_KEY,app_id );
-            localStorage.setItem(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+            storageUtil.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
         }
         //设置当前选中应用
         this.setState({

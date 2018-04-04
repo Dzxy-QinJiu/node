@@ -3,6 +3,8 @@ var ShareObj = require("../util/app-id-share-util");
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 var AppUserUtil = require("../util/app-user-util");
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
+
 //app用户的store
 function AppUserStore() {
     this.resetState();
@@ -222,7 +224,7 @@ AppUserStore.prototype.setSelectedAppId = function(appId) {
     // this.selectedAppId 为空时，对应的是全部应用
     if(this.selectedAppId){
         let obj =  AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
-        localStorage.setItem(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+        storageUtil.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
     }
     this.appUserPage = 1;
     //切换应用的时候，清除刚才选中的行

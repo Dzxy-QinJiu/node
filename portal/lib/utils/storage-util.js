@@ -26,8 +26,7 @@ const storageUtil = {
     get: (key, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            throw new Error("key must be string");
-            return
+            return undefined
         }
         const obj = JSON.parse(Storage.getItem(userId));
         if (obj) {
@@ -47,8 +46,7 @@ const storageUtil = {
     set: (key, data, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            throw new Error("key must be string");
-            return
+            return undefined
         }
         const preStorage = JSON.parse(Storage.getItem(userId));
         let newProps = null;
@@ -69,8 +67,7 @@ const storageUtil = {
     removeItem: (key, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            throw new Error("key must be string");
-            return
+            return undefined
         }
         const curStorage = JSON.parse(Storage.getItem(userId));
         if (hasPageId) {

@@ -14,6 +14,7 @@ import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 const messages = defineMessages({
     common_email: {id: 'common.email'},//邮箱
@@ -292,8 +293,7 @@ var UserInfo = React.createClass({
         this.setState({lang: Oplate.lang || "zh_CN"});
     },
     afterEditLangSuccess: function (user) {
-        //todo 待统一处理localStorage
-        localStorage.setItem("userLang",user["language"]);
+        storageUtil.set("userLang",user["language"]);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
     },

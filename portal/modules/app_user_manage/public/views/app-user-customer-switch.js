@@ -13,6 +13,7 @@ import ApplyUser from "./v2/apply-user";
 var history = require("../../../../public/sources/history");
 var Table = require("antd").Table;
 var classNames = require("classnames");
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 var dynamicStyle;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -157,7 +158,7 @@ var AppUserCustomerSwitch = React.createClass({
         TableUtil.updatePaginationJumpNewPage(this.refs.tableWrap , this.state.customerUserPage);
     },
     onShowSizeChange : function(current , pageSize) {
-        localStorage.setItem(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
+        storageUtil.set(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
         //改变界面上看到的页数
         AppUserCustomerSwitchActions.setCustomerPageSize(pageSize);
         //计算是否能显示当前页
@@ -302,7 +303,7 @@ var AppUserCustomerSwitch = React.createClass({
                 <RightPanel className="app_user_manage_rightpanel" showFlag={this.state.isShowRightPanel}>
                     <RightPanelClose onClick={this.hideRightPanel}/>
                     <ApplyUser
-                       appList={JSON.parse(localStorage.oplateCrmAppList)}
+                       appList={JSON.parse(storageUtil.get("oplateCrmAppList"))}
                        users={this.state.selectedCustomerUserRows}
                        customerId={this.props.params.customerId}
                        cancelApply={this.hideRightPanel}
