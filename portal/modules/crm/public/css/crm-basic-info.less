@@ -90,18 +90,23 @@
   //客户名的编辑表单
   .name-form {
     //客户名
-    .ant-form-item {
-      width: 432px;
-      textarea {
-        width: 100%;
-      }
+    textarea {
+      width: 100%;
     }
     .tip-customer-exist {
       margin-top: -13px;
       line-height: 20px;
       margin-bottom: 10px;
     }
-    //客户名名保存、取消按钮趋势
+  }
+  form {
+    .ant-form-item {
+      width: 432px;
+      input, textarea, .ant-select {
+        width: 100%;
+      }
+    }
+    //客户名、基本信息的保存、取消按钮趋势
     .button-container {
       height: @item_height;
       button {
@@ -128,11 +133,26 @@
   }
   //客户基本信息展示区域
   .basic-info-detail-block {
+    position: relative;
     float: left;
     width: 100%;
     border-top: @border_style;
     margin-top: 10px;
     padding-top: 10px;
+    //客户基本信息的编辑
+    .icon-edit-btn {
+      display: none;
+    }
+    &:hover {
+      .icon-edit-btn {
+        display: block;
+        position: absolute;
+        float: right;
+        right: 0;
+        top: 0;
+        padding-top: 10px;
+      }
+    }
     //基本信息
     .basic-info-item {
       float: left;

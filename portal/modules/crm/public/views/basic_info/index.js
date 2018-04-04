@@ -23,6 +23,7 @@ import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
+import EditBasicForm from "./edit-basic-form";
 
 function getStateFromStore(isMerge) {
     return {
@@ -31,7 +32,8 @@ function getStateFromStore(isMerge) {
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         basicPanelH: getBasicPanelH(isMerge),
         showDetailFlag: false,//控制客户详情展示隐藏的标识
-        editNameFlag: false//编辑客户名的标识
+        editNameFlag: false,//编辑客户名的标识
+        editBasicFlag: false//编辑客户基本信息的标识
     };
 }
 function getBasicPanelH(isMerge) {
@@ -68,7 +70,7 @@ var BasicData = React.createClass({
     },
     componentWillReceiveProps: function (nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
-        if(this.state.basicData.id!==nextProps.curCustomer.id){
+        if (this.state.basicData.id !== nextProps.curCustomer.id) {
             this.setState({
                 showDetailFlag: false,
                 editNameFlag: false
@@ -160,24 +162,18 @@ var BasicData = React.createClass({
             this.props.setTabsContainerHeight();
         });
     },
-    //编辑客户名的标识
+    //设置编辑客户名的标识
     setEditNameFlag: function (flag) {
         this.setState({editNameFlag: flag});
     },
-
-    render: function () {
-        var basicData = this.state.basicData ? this.state.basicData : {};
-        //是否显示用户统计内容
-        var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
-        var userNum = basicData.app_user_ids && basicData.app_user_ids.length || 0;
-        let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
-        let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
-        //线索、转出标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
-        if (_.isArray(basicData.immutable_labels) && basicData.immutable_labels.length) {
-            tagArray = basicData.immutable_labels.concat(tagArray);
-        }
+    //设置编辑基本资料的标识
+    setEditBasicFlag: function (flag) {
+        this.setState({editBasicFlag: flag});
+    },
+    //渲染客户的基本信息
+    renderBasicBlock: function (basicData) {
         //地域
-        var location = [];
+        let location = [];
         if (basicData.province) {
             location.push(basicData.province);
         }
@@ -187,6 +183,38 @@ var BasicData = React.createClass({
         if (basicData.county) {
             location.push(basicData.county);
         }
+        let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
+        return (<div className="basic-info-detail-block">
+            {this.state.editBasicFlag ? (<EditBasicForm setEditBasicFlag={this.setEditBasicFlag} basicData={basicData}/>) : (
+                <div className="basic-info-detail-show">
+                    <div className="basic-info-administrative basic-info-item">
+                        <span className="iconfont icon-administrative basic-info-icon"/>
+                        <span
+                            className="administrative-text basic-info-text">{this.getAdministrativeLevel(level)}</span>
+                    </div>
+                    <div className="basic-info-indestry basic-info-item">
+                        <span className="iconfont icon-industry basic-info-icon"/>
+                        <span className="indestry-text  basic-info-text">{basicData.industry}</span>
+                    </div>
+                    <div className="basic-info-address basic-info-item">
+                        <span className="iconfont icon-address basic-info-icon"/>
+                        <span className="address-text basic-info-text">{location.join('/')}</span>
+                        <span className="address-detail-text  basic-info-text">{basicData.address}</span>
+                    </div>
+                    <div className="basic-info-remark basic-info-item">
+                        <span className="iconfont icon-remark basic-info-icon"/>
+                        <span className="remark-text  basic-info-text">{basicData.remarks}</span>
+                    </div>
+                    {hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? (
+                        <DetailEditBtn title={Intl.get("common.edit", "编辑")}
+                                       onClick={this.setEditBasicFlag.bind(this, true)}/>) : null}
+                </div>)
+            }
+        </div>);
+
+    },
+    render: function () {
+        var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
         let interestFlag = basicData.interest === "true";
         return (
@@ -235,203 +263,8 @@ var BasicData = React.createClass({
                         </div>
                     </div>
                 )}
-
-                {this.state.showDetailFlag ? (<div className="basic-info-detail-block">
-                    <div className="basic-info-administrative basic-info-item">
-                        <span className="iconfont icon-administrative basic-info-icon"/>
-                        <span
-                            className="administrative-text basic-info-text">{this.getAdministrativeLevel(level)}</span>
-                    </div>
-                    <div className="basic-info-indestry basic-info-item">
-                        <span className="iconfont icon-industry basic-info-icon"/>
-                        <span className="indestry-text  basic-info-text">{basicData.industry}</span>
-                    </div>
-                    <div className="basic-info-address basic-info-item">
-                        <span className="iconfont icon-address basic-info-icon"/>
-                        <span className="address-text basic-info-text">{location.join('/')}</span>
-                        <span className="address-detail-text  basic-info-text">{basicData.address}</span>
-                    </div>
-                    <div className="basic-info-remark basic-info-item">
-                        <span className="iconfont icon-remark basic-info-icon"/>
-                        <span className="remark-text  basic-info-text">{basicData.remarks}</span>
-                    </div>
-                </div>) : null}
+                {this.state.showDetailFlag ? this.renderBasicBlock(basicData) : null}
             </div>
-            // <div className="crm-basic-container" style={{height: this.state.basicPanelH}} data-tracename="基本资料页面">
-            //     {this.state.basicIsLoading ? <Spin /> : (
-            //         <GeminiScrollbar className="geminiScrollbar-vertical">
-            //             <div className="crm-basic-content">
-            //                 <div className="crm-content-block">
-            //                     <div className="client-info-content">
-            //                         <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-name">
-            //                             <dt>{Intl.get("crm.41", "客户名")}</dt>
-            //                             <dd>
-            //                                 <NameTextareaField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     customerId={basicData.id}
-            //                                     name={basicData.name}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_NAME") ? false : true}
-            //                                 />
-            //                                 {basicData.customer_label ? (
-            //                                     <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
-            //                                         {basicData.customer_label}</Tag>) : null
-            //                                 }
-            //                                 {basicData.qualify_label ? (
-            //                                     <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-            //                                         {basicData.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-            //                                             basicData.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null
-            //                                 }
-            //                             </dd>
-            //                         </dl>
-            //                         { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
-            //                             <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
-            //                                 <dt>{Intl.get("crm.competing.products", "竞品")}</dt>
-            //                                 <dd>
-            //                                     {basicData.competing_products.map((products, index) => {
-            //                                         return (<Tag key={index}
-            //                                                      className="customer-label competing-label">{products}</Tag>);
-            //                                     })}
-            //                                 </dd>
-            //                             </dl>
-            //                         ) : null}
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-tags">
-            //                             <dt>{Intl.get("common.tag", "标签")}</dt>
-            //                             <dd>
-            //                                 <TagEditField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     customerId={basicData.id}
-            //                                     labels={tagArray}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_LABEL") ? false : true}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-industry">
-            //                             <dt>{Intl.get("realm.industry", "行业")}</dt>
-            //                             <dd>
-            //                                 <IndustrySelectField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     customerId={basicData.id}
-            //                                     industry={basicData.industry}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-administrative-level">
-            //                             <dt>{Intl.get("crm.administrative.level", "行政级别")}</dt>
-            //                             <dd>
-            //                                 <BasicEditSelectField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     id={basicData.id}
-            //                                     displayText={this.getAdministrativeLevel(level)}
-            //                                     value={level}
-            //                                     field="administrative_level"
-            //                                     selectOptions={this.getAdministrativeLevelOptions()}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
-            //                                     placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
-            //                                     onSelectChange={this.onSelectAdministrativeLevel}
-            //                                     cancelEditField={this.cancelAdministrativeLevel}
-            //                                     saveEditSelect={CrmBasicAjax.updateCustomer}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-loaction">
-            //                             <dt>{Intl.get("crm.96", "地域")}</dt>
-            //                             <dd>
-            //                                 <LocationSelectField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     customerId={basicData.id}
-            //                                     province={basicData.province}
-            //                                     city={basicData.city}
-            //                                     county={basicData.county}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_ADDRESS") ? false : true}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-address"
-            //                             style={{whiteSpace: "normal", wordBreak: "break-all"}}>
-            //                             <dt>{Intl.get("realm.address", "地址")}</dt>
-            //                             <dd>
-            //                                 <BasicEditInputField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     user_id={basicData.id}
-            //                                     value={basicData.address}
-            //                                     field="address"
-            //                                     type="text"
-            //                                     placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_ADDRESS") ? false : true}
-            //                                     saveEditInput={CrmBasicAjax.updateCustomer}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //                         <dl className="dl-horizontal crm-basic-item detail_item crm-basic-remarks"
-            //                             style={{whiteSpace: "normal", wordBreak: "break-all"}}>
-            //                             <dt><ReactIntl.FormattedMessage id="common.remark" defaultMessage="备注"/></dt>
-            //                             <dd>
-            //                                 <CommentTextareaField
-            //                                     isMerge={this.props.isMerge}
-            //                                     updateMergeCustomer={this.props.updateMergeCustomer}
-            //                                     customerId={basicData.id}
-            //                                     remarks={basicData.remarks}
-            //                                     modifySuccess={this.editBasicSuccess}
-            //                                     disabled={hasPrivilege("CUSTOMER_UPDATE_REMARK") ? false : true}
-            //                                 />
-            //                             </dd>
-            //                         </dl>
-            //
-            //                     </div>
-            //                     <SalesSelectField
-            //                         enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
-            //                         enableTransfer={this.enableTransferCustomer()}
-            //                         isMerge={this.props.isMerge}
-            //                         updateMergeCustomer={this.props.updateMergeCustomer}
-            //                         customerId={basicData.id}
-            //                         userName={basicData.user_name}
-            //                         userId={basicData.user_id}
-            //                         salesTeam={basicData.sales_team}
-            //                         salesTeamId={basicData.sales_team_id}
-            //                         modifySuccess={this.editBasicSuccess}
-            //                     />
-            //                 </div>
-            //
-            //                 {showUserStatistic ?
-            //                     <div className="user-statistic-content">
-            //                         <div className=" crm-basic-item detail_item">
-            //                             <label>
-            //                                 <ReactIntl.FormattedMessage
-            //                                     id="crm.198"
-            //                                     defaultMessage={`有{number}个用户`}
-            //                                     values={{
-            //                                         "number": <span className=" statistic-num"> {userNum} </span>
-            //                                     }}
-            //                                 />
-            //                             </label>
-            //                         </div>
-            //                         {this.props.isMerge || this.props.userViewShowCustomerUserListPanel ? null : (
-            //                             <PrivilegeChecker
-            //                                 check="GET_CUSTOMER_USERS"
-            //                             >
-            //                                 <div className=" iconfont icon-turn-user-list"
-            //                                      onClick={this.triggerUserList}></div>
-            //                             </PrivilegeChecker>)}
-            //                     </div>
-            //                     : null}
-            //             </div>
-            //         </GeminiScrollbar>
-            //     )}
-            //
-            // </div>
         );
     }
 });
