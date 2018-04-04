@@ -20,6 +20,7 @@ var CLASSNAMES = {
     ALIGNLEFT: "table-data-align-left",
     ALIGNRIGHT: "table-data-align-right"
 };
+import {formatData} from "../utils/weekly-report-utils";
 const WeeklyReportDetail = React.createClass({
     getDefaultProps() {
         return {
@@ -127,6 +128,10 @@ const WeeklyReportDetail = React.createClass({
             }
             //更新考核天数
             item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
+            //日接通数保留整数
+            item.average_num = formatData(item.total_callout_success /item.real_work_day,0);
+            //日均时长保留一位小数
+            item.average_time = formatData(item.total_time / item.real_work_day, 1);
             this.setState({
                 salesPhone: this.state.salesPhone,
                 isAddingLeaveUserId: "",
@@ -156,6 +161,10 @@ const WeeklyReportDetail = React.createClass({
                     if (initailObj) {
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
+                            //日接通数保留整数
+                            obj.average_num = formatData(obj.total_callout_success /obj.real_work_day,0);
+                            //日均时长保留一位小数
+                            obj.average_time = formatData(obj.total_time / obj.real_work_day, 1);
                             initailObj.leave_days = updateObj.leave_days;
                         }
                         if (updateObj.leave_detail) {
@@ -192,6 +201,10 @@ const WeeklyReportDetail = React.createClass({
                         //因为符合某个条件会item
                         if (item.id === removedId) {
                             Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
+                            //日接通数保留整数
+                            Obj.average_num = formatData(Obj.total_callout_success /Obj.real_work_day,0);
+                            //日均时长保留一位小数
+                            Obj.average_time = formatData(Obj.total_time / Obj.real_work_day, 1);
                             Obj.leave_info_list.splice(index, 1);
                         }
                     }
@@ -202,7 +215,6 @@ const WeeklyReportDetail = React.createClass({
             });
             this.setState({
                 salesPhone: this.state.salesPhone,
-
             });
         });
     },
@@ -351,7 +363,7 @@ const WeeklyReportDetail = React.createClass({
             className: CLASSNAMES.ALIGNRIGHT
         }, {
             title: Intl.get("weekly.report.total.connected", "本周总接通数"),
-            dataIndex: 'total_num',
+            dataIndex: 'total_callout_success',
             className: CLASSNAMES.ALIGNRIGHT
         }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
@@ -414,14 +426,6 @@ const WeeklyReportDetail = React.createClass({
             dataIndex: 'tried',
             className: CLASSNAMES.ALIGNRIGHT
         }, {
-            title: Intl.get("weekly.report.customer.stage.intentioned", "意向阶段"),
-            dataIndex: 'intentioned',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("weekly.report.customer.stage.info", "信息阶段"),
-            dataIndex: 'informationed',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
             title: Intl.get("common.summation", "合计"),
             dataIndex: 'total',
             className: CLASSNAMES.ALIGNRIGHT
@@ -451,7 +455,8 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
             dataIndex: 'city_dredge_scale',
-            className: CLASSNAMES.ALIGNRIGHT
+            className: CLASSNAMES.ALIGNRIGHT,
+            fixNum: 4
         }, {
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'city_login_count',

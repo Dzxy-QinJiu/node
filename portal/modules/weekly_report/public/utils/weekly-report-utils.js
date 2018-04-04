@@ -34,3 +34,12 @@ exports.LEALVE_DURATION_OPTION = [
         label: Intl.get("weekly.report.n.days","{n}天",{n:0.5})
     },
 ];
+//对数字进行四舍五入保留n位小数的方法
+exports.formatData = function (data, n) {
+    if (isNaN(data)) {
+        return "-";
+    } else {
+        //均保留n位小数
+        return data.toFixed(n);
+    }
+};

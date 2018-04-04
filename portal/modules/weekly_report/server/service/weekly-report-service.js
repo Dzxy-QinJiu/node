@@ -11,9 +11,9 @@ const restApis = {
     //添加, 更新，删除员工请假信息
     AskForLeave: "/rest/callrecord/v2/askforleave",
     //合同报表统计
-    getContractInfo: "/rest/analysis/contract/report_form/contract/:type",
+    getContractInfo: "/rest/analysis/contract/report/contract/:type",
     //合同回款统计
-    getRepaymentInfo:"/rest/analysis/contract/report_form/repayment/:type",
+    getRepaymentInfo:"/rest/analysis/contract/report/repayment/:type",
     //区域覆盖情况统计
     getRegionOverlay:"/rest/analysis/customer/v2/statistic/:type/region/overlay",
     //销售阶段统计数据
