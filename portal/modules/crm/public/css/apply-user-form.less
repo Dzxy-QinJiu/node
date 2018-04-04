@@ -1,6 +1,7 @@
 /*
 *客户订单中用户申请界面的样式设置
 */
+@import "../../../../public/css/common-variables";
 .crm-right-panel {
   .right-panel-content > .return-btn {
     position: relative;
@@ -67,7 +68,7 @@
       margin-top: 3px;
     }
     form .number-error-border{
-      border-color:#f50;
+      border-color:@error_tips_color;
     }
     form .ant-form-item .ant-select-selection--single .ant-select-selection__rendered {
       line-height: 32px;
@@ -186,7 +187,7 @@
         padding-left: 95px;
         margin-top: -5px;
         margin-bottom: 5px;
-        color:#f50;
+        color:@error_tips_color;
       }
     }
     .app-user-info {

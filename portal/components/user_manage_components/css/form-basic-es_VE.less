@@ -21,13 +21,13 @@
     vertical-align: top;
     //用户数只能添加1个时的验证样式
     .only-one-user-tip{
-      color:#f50;
+      color:@error_tips_color;
     }
   }
   //用户数只能添加1个时的验证样式，数字框的边框色
   .only-one-user-border{
     .ant-input-number{
-      border-color:#f50;
+      border-color:@error_tips_color;
     }
   }
   //只有文字的表单项
@@ -122,7 +122,7 @@
 
   //表单错误提示
   .error_form_tip {
-    color: #f50;
+    color: @error_tips_color;
   }
 
   .required_label:after {

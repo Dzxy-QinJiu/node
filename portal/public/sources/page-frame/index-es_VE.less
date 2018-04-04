@@ -1,6 +1,7 @@
 @import '../../css/bootstrap-variables.less';
 @import '../../css/iconfont.less';
 @import '../../css/common-es';
+@import "../../../public/css/common-variables";
 
 @font-family: Arial, "SimHei", "SimSun", "Arial Narrow" !important;
 @font-family-macintosh: Arial,  "SimHei",STXihei, "Helvetica Neue", Helvetica, sans-serif !important;
@@ -58,7 +59,7 @@ body.macintosh, body.macintosh pre{
     font-size:14px;
     z-index:1000;
     .icon-warn-icon{
-      color:#f50;
+      color:@error_tips_color;
       font-size:18px;
       margin-right:10px;
     }

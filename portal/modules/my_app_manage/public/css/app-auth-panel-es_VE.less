@@ -1,5 +1,5 @@
 /*app应用权限面板样式设置*/
-
+@import "../../../../public/css/common-variables";
 .app-auth-api-container {
   height: 100%;
   padding-top: 20px;
@@ -78,14 +78,14 @@
         vertical-align: middle;
         //输入框为空时，验证提示的边框样式
         &.validate-error {
-          border: 1px solid #f50;
+          border: 1px solid @error_tips_color;
           box-shadow: 0 0 0 2px #ffddcc;
         }
       }
       //验证提示信息样式
       .permissionApi-validate {
         margin-left: 140px;
-        color: #f50;
+        color: @error_tips_color;
         line-height: 25px;
       }
     }
