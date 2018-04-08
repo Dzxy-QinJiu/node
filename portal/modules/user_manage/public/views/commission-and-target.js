@@ -13,39 +13,32 @@ var CommissionAndTarget = React.createClass({
         return {
             user_id: '',
             //字段
-            field: "email",
+            field: "",
             //是否能修改
             disabled: false,
-            initalValue: "",
             //显示的值
             value: "",
             //提示文案
             title: Intl.get("common.update", "修改"),
-            //修改成功
-            modifySuccess: function () {
-            },
-            onDisplayTypeChange: function () {
-            },
-            onValueChange: function () {
-            },
-            saveEditInput: function () {
+            setSalesGoals: function () {
             },
         };
     },
     getInitialState: function () {
         return {
+            user_id: this.props.user_id,
             loading: false,
             displayType: this.props.displayType || "text",
-            initalValue:this.props.value,
+            initalValue: this.props.value,
             value: "",
             submitErrorMsg: '',
         };
     },
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.user_id !== this.props.user_id) {
-            var value = nextProps.value;
+        if (nextProps.user_id !== this.state.user_id || nextProps.value !== this.state.initalValue) {
             this.setState({
-                value: value,
+                user_id: nextProps.user_id,
+                initalValue: nextProps.value,
             });
         }
     },
@@ -53,70 +46,62 @@ var CommissionAndTarget = React.createClass({
         this.setState({
             displayType: "edit",
         });
-        this.props.onDisplayTypeChange("edit");
         Trace.traceEvent(e, "点击编辑" + this.props.field);
     },
     handleSubmit: function (e) {
         Trace.traceEvent(e, "保存对" + this.props.field + "的修改");
-            var value = this.state.value;
-            var user = {
-                user_id: this.props.user_id
-            };
-            user[this.props.field] = value;
-            this.setState({
-                loading: true
-            });
-
-            function setDisplayState() {
+        var value = this.state.value;
+        this.setState({
+            loading: true
+        });
+        var user = {};
+        user[this.props.field] = value;
+        //如果提成或者目标的id存在，就更新那条记录
+        if (this.props.id) {
+            user.id = this.props.id;
+        } else if (this.props.user_id) {
+            user.user_id = this.props.user_id;
+        }
+        this.props.setSalesGoals(user).then((result) => {
+            if (result) {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
-                    value: value,
+                    initalValue: value,
                     displayType: 'text'
                 });
-            }
-            if ((value != this.state.value)) {
-                this.props.saveEditInput(user).then(function (result) {
-                    if (result) {
-                        setDisplayState();
-                        this.props.modifySuccess(user);
-                    } else {
-                        this.setState({
-                            loading: false,
-                            submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
-                        });
-                    }
-                }, function (errorMsg) {
-                    this.setState({
-                        loading: false,
-                        submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
-                    });
-                });
-
             } else {
-                setDisplayState();
+                this.setState({
+                    loading: false,
+                    submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
+                });
             }
-
+        },(errorMsg) =>  {
+            this.setState({
+                loading: false,
+                submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
+            });
+        });
     },
+
     handleCancel: function (e) {
         this.setState({
             displayType: "text",
             submitErrorMsg: ''
         });
-        this.props.onDisplayTypeChange("text");
         Trace.traceEvent(e, "取消对" + this.props.field + "的修改");
     },
     onInputChange: function (value) {
         this.setState({
             value: value
         });
-        this.props.onValueChange();
     },
     render: function () {
         var displayCls = classNames({
             'commission-target-text': true,
             'editing': this.state.displayType === 'edit'
         });
+
         var textBlock = this.state.displayType === 'text' ? (
             <div>
                 <span className="inline-block">
@@ -155,14 +140,14 @@ var CommissionAndTarget = React.createClass({
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <InputNumber name="input"
-                       defaultValue={this.state.initalValue}
-                       onChange={this.onInputChange}
-                       autoComplete="off"
-                       min={this.props.min}
-                       max={this.props.max}
+                             defaultValue={this.state.initalValue}
+                             onChange={this.onInputChange}
+                             autoComplete="off"
+                             min={this.props.min}
+                             max={this.props.max}
                 />
-                {this.props.countTip}
-                <div className="buttons">
+                <div className="text-container">{this.props.countTip}</div>
+                <div className="buttons-container">
                     {!this.props.hideButtonBlock ? buttonBlock : null}
                 </div>
                 {errorBlock}

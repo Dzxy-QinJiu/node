@@ -214,3 +214,36 @@ exports.checkOnlyEmail = function (email) {
     });
     return Deferred.promise();
 };
+//获取销售目标和提成比例
+exports.getSalesGoals = function (queryObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/contract/goal/users',
+        dataType: 'json',
+        type: 'get',
+        data:queryObj,
+        success: function (list) {
+            Deferred.resolve(list);
+        }, error: function (errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//设置销售目标或者提成比例
+//获取销售目标和提成比例
+exports.setSalesGoals = function (queryObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/set/contract/goal/users',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function (list) {
+            Deferred.resolve(list);
+        }, error: function (errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

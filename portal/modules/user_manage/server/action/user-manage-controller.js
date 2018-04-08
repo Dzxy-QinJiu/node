@@ -157,3 +157,20 @@ exports.checkOnlyEmail = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取销售目标和提成比例
+exports.getSalesGoals = function (req, res) {
+    userManageService.getSalesGoals(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+exports.setSalesGoals = function (req, res) {
+    userManageService.setSalesGoals(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
