@@ -6,7 +6,7 @@ require('PUB_DIR/css/card-info-common.less');
 if (language.lan() == "es" || language.lan() == "en") {
     require('PUB_DIR/css/card-info-es.less');
 }
-import {Spin,Icon,Pagination,Select,Alert,Popconfirm,message} from "antd";
+import {Spin, Icon, Pagination, Select, Alert, Popconfirm, message} from "antd";
 import {getPassStrenth, passwordRegex} from "CMP_DIR/password-strength-bar";
 var Option = Select.Option;
 var rightPanelUtil = require("../../../../components/rightPanel");
@@ -21,9 +21,11 @@ import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var ModalDialog = require("../../../../components/ModalDialog");
 var UserFormStore = require("../store/user-form-store");
+var UserStore = require("../store/user-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
 import Trace from "LIB_DIR/trace";
+import CommissionAndTarget from "./commission-and-target";
 var UserInfo = React.createClass({
         getInitialState: function () {
             return {
@@ -33,9 +35,11 @@ var UserInfo = React.createClass({
                 isDel: false,//是否删除
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
-                isConfirmPasswordShow: false//确认密码的展示标识
+                isConfirmPasswordShow: false,//确认密码的展示标识
+                saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
             };
         },
+
         componentWillReceiveProps: function (nextProps) {
             this.setState({
                 userInfo: $.extend(true, {}, nextProps.userInfo),
@@ -46,7 +50,8 @@ var UserInfo = React.createClass({
         onChange: function () {
             this.setState({
                 userTeamList: UserFormStore.getState().userTeamList,
-                roleList: UserFormStore.getState().roleList
+                roleList: UserFormStore.getState().roleList,
+                saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
             });
         },
         componentWillUnmount: function () {
@@ -79,7 +84,6 @@ var UserInfo = React.createClass({
             this.setState({modalStr: modalStr, isDel: false});
             this.props.showModalDialog();
         },
-
         forbidCard: function (e) {
             var modalStr = Intl.get("member.start.this", "启用此");
             if (this.state.userInfo.status == 1) {
@@ -112,7 +116,7 @@ var UserInfo = React.createClass({
         },
         //团队的选择事件
         onSelectTeam: function (teamId) {
-            Trace.traceEvent(this.getDOMNode(),"选择所属团队");
+            Trace.traceEvent(this.getDOMNode(), "选择所属团队");
             this.state.userInfo.teamId = teamId;
             this.setState({userInfo: this.state.userInfo});
         },
@@ -123,7 +127,7 @@ var UserInfo = React.createClass({
         //修改的所属团队成功后的处理
         afterEditTeamSuccess: function (user) {
             //更新详情中的所属团队
-            let updateTeam = _.find(this.state.userTeamList, team=>team.group_id == user.team);
+            let updateTeam = _.find(this.state.userTeamList, team => team.group_id == user.team);
             UserAction.updateUserTeam(updateTeam);
         },
 
@@ -131,8 +135,8 @@ var UserInfo = React.createClass({
             //更新详情中的角色
             let roleObj = {roleIds: [], roleNames: []}, roleList = this.state.roleList;
             if (_.isArray(user.role) && user.role.length) {
-                user.role.forEach(roleId=> {
-                    let curRole = _.find(roleList, role=>role.roleId == roleId);
+                user.role.forEach(roleId => {
+                    let curRole = _.find(roleList, role => role.roleId == roleId);
                     roleObj.roleIds.push(curRole.roleId);
                     roleObj.roleNames.push(curRole.roleName);
                 });
@@ -168,7 +172,7 @@ var UserInfo = React.createClass({
             return roleOptions
         },
         selectRole: function (roleIds) {
-            Trace.traceEvent(this.getDOMNode(),"选择角色");
+            Trace.traceEvent(this.getDOMNode(), "选择角色");
             this.state.userInfo.roleIds = roleIds;
             this.setState({userInfo: this.state.userInfo});
         },
@@ -203,7 +207,7 @@ var UserInfo = React.createClass({
                 callback();
             } else {
                 this.refs.password.setState({
-                    passStrength:{
+                    passStrength: {
                         passBarShow: false,
                         passStrength: 'L'
                     }
@@ -250,13 +254,38 @@ var UserInfo = React.createClass({
             }
             return "";
         },
+        afterModifySuccess: function (updateObj) {
+            this.setState({
+                saleGoalsAndCommissionRadio:updateObj
+            });
+        },
+
         renderUserItems: function () {
             let userInfo = this.state.userInfo;
             let roleSelectOptions = this.getRoleSelectOptions(userInfo);
-            let roleNames = "";
+            let roleNames = "",isSales = false;
             if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
+                if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1){
+                    //是否是销售角色
+                    isSales = true;
+                }
                 roleNames = userInfo.roleNames.join(',');
+
             }
+            var commissionRadio = "", goal = "", recordId = "", saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio;
+            if (saleGoalsAndCommissionRadio.id) {
+                //某条销售目标和提成比例的id
+                recordId = saleGoalsAndCommissionRadio.id;
+            }
+            if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
+                //提成比例
+                commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
+            }
+            if (saleGoalsAndCommissionRadio.goal || saleGoalsAndCommissionRadio.goal === 0) {
+                //销售目标
+                goal = saleGoalsAndCommissionRadio.goal;
+            }
+
             return (
                 <div data-tracename="用户详情面板">
                     <dl className="dl-horizontal detail_item member-detail-item">
@@ -280,9 +309,14 @@ var UserInfo = React.createClass({
                                 field="nick_name"
                                 type="text"
                                 modifySuccess={this.changeUserFieldSuccess}
-                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                validators={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符") }]}
-                                placeholder={Intl.get("common.required.tip","必填项*")}
+                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                                validators={[{
+                                    required: true,
+                                    min: 1,
+                                    max: 20,
+                                    message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")
+                                }]}
+                                placeholder={Intl.get("common.required.tip", "必填项*")}
                                 saveEditInput={UserInfoAjax.editUser}
                             />
                         </dd>
@@ -299,8 +333,8 @@ var UserInfo = React.createClass({
                                 type="password"
                                 hideButtonBlock={true}
                                 showPasswordStrength={true}
-                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                validators={[{validator:this.checkPass}]}
+                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                                validators={[{validator: this.checkPass}]}
                                 placeholder={Intl.get("common.password.compose.rule", "6-18位字符(由数字，字母，符号组成)")}
                                 title={Intl.get("user.batch.password.reset", "重置密码")}
                                 onDisplayTypeChange={this.onPasswordDisplayTypeChange}
@@ -337,8 +371,8 @@ var UserInfo = React.createClass({
                                 value={userInfo.phone}
                                 field="phone"
                                 type="text"
-                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                validators={[{validator:this.checkPhone}]}
+                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                                validators={[{validator: this.checkPhone}]}
                                 placeholder={Intl.get("user.input.phone", "请输入手机号")}
                                 saveEditInput={UserInfoAjax.editUser}
                                 modifySuccess={this.changeUserFieldSuccess}
@@ -351,11 +385,15 @@ var UserInfo = React.createClass({
                             <UserDetailEditField
                                 user_id={userInfo.id}
                                 value={userInfo.email}
-                                afterValTip={' ('+(userInfo.emailEnable ? Intl.get("common.actived", "已激活") : Intl.get("member.not.actived", "未激活"))+')'}
+                                afterValTip={' (' + (userInfo.emailEnable ? Intl.get("common.actived", "已激活") : Intl.get("member.not.actived", "未激活")) + ')'}
                                 field="email"
                                 type="text"
-                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO")?false:true}
-                                validators={[{type:"email",required:true,message:Intl.get("common.correct.email", "请输入正确的邮箱")}]}
+                                disabled={hasPrivilege("UPDATE_MEMBER_BASE_INFO") ? false : true}
+                                validators={[{
+                                    type: "email",
+                                    required: true,
+                                    message: Intl.get("common.correct.email", "请输入正确的邮箱")
+                                }]}
                                 placeholder={Intl.get("member.input.email", "请输入邮箱")}
                                 saveEditInput={UserInfoAjax.editUser}
                                 modifySuccess={this.changeUserFieldSuccess}
@@ -373,8 +411,12 @@ var UserInfo = React.createClass({
                                 multiple={true}
                                 field="role"
                                 selectOptions={roleSelectOptions}
-                                disabled={hasPrivilege("UPDATE_MEMBER_ROLE")?false:true}
-                                validators={[{required: true, message: Intl.get("member.select.role", "请选择角色") , type: 'array'}]}
+                                disabled={hasPrivilege("UPDATE_MEMBER_ROLE") ? false : true}
+                                validators={[{
+                                    required: true,
+                                    message: Intl.get("member.select.role", "请选择角色"),
+                                    type: 'array'
+                                }]}
                                 placeholder={Intl.get("member.select.role", "请选择角色")}
                                 onSelectChange={this.selectRole}
                                 cancelEditField={this.cancelEditRole}
@@ -393,7 +435,7 @@ var UserInfo = React.createClass({
                                 value={userInfo.teamId}
                                 field="team"
                                 selectOptions={this.getTeamOptions()}
-                                disabled={hasPrivilege("USER_MANAGE_EDIT_USER")?false:true}
+                                disabled={hasPrivilege("USER_MANAGE_EDIT_USER") ? false : true}
                                 placeholder={Intl.get("member.select.group", "请选择团队")}
                                 validators={[{message: Intl.get("member.select.group", "请选择团队")}]}
                                 onSelectChange={this.onSelectTeam}
@@ -403,6 +445,39 @@ var UserInfo = React.createClass({
                             />
                         </dd>
                     </dl> }
+                    {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
+                        <dt>{Intl.get("contract.141", "提成比例")}</dt>
+                        <dd>
+                            <CommissionAndTarget
+                                id={recordId}
+                                field={"commission_ratio"}
+                                user_id={this.state.userInfo.id}
+                                setSalesGoals={UserInfoAjax.setSalesGoals}
+                                value={commissionRadio}
+                                displayType={'text'}
+                                min={0}
+                                max={100}
+                                countTip={"%"}
+                                afterModifySuccess = {this.afterModifySuccess}
+                            />
+                        </dd>
+                    </dl> : null}
+                    {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
+                        <dt>{Intl.get("sales.team.sales.goal", "销售目标")}</dt>
+                        <dd>
+                            <CommissionAndTarget
+                                id={recordId}
+                                field={"goal"}
+                                user_id={this.state.userInfo.id}
+                                setSalesGoals={UserInfoAjax.setSalesGoals}
+                                value={goal}
+                                displayType={'text'}
+                                min={0}
+                                countTip={Intl.get("contract.82", "元")}
+                                afterModifySuccess = {this.afterModifySuccess}
+                            />
+                        </dd>
+                    </dl> : null}
                     <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>{Intl.get("user.manage.phone.order", "坐席号")}</dt>
                         <dd>{userInfo.phoneOrder}</dd>
@@ -422,12 +497,12 @@ var UserInfo = React.createClass({
             )
         },
         uploadImg: function (src) {
-            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"),"点击上传头像");
+            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "点击上传头像");
             this.state.userInfo.image = src;
             this.setState({userInfo: this.state.userInfo, showSaveIconTip: true});
         },
         saveUserIcon: function () {
-            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"),"保存上传头像");
+            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "保存上传头像");
             this.setState({showSaveIconTip: false});
             let userInfo = this.state.userInfo;
             if (userInfo.image && userInfo.image != this.props.userInfo.image) {
@@ -445,7 +520,7 @@ var UserInfo = React.createClass({
             }
         },
         cancelEditIcon: function () {
-            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"),"取消头像的保存");
+            Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "取消头像的保存");
             this.state.userInfo.image = this.props.userInfo.image;
             this.setState({userInfo: this.state.userInfo, showSaveIconTip: false});
         },
@@ -465,7 +540,7 @@ var UserInfo = React.createClass({
             } else {
                 logItems = Intl.get("common.no.data", "暂无数据");
             }
-            var modalContent = Intl.get("member.is.or.not", "是否{modalStr}{modalType}",{
+            var modalContent = Intl.get("member.is.or.not", "是否{modalStr}{modalType}", {
                 "modalStr": this.state.modalStr,
                 "modalType": this.props.modalType
             });
@@ -483,8 +558,10 @@ var UserInfo = React.createClass({
                     <div className="edit-buttons">
                         {!this.props.showAddMemberButton ? (
                             <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
-                                <RightPanelForbid onClick={(e)=>{this.showForbidModalDialog(e)}}
-                                                  isActive={this.state.userInfo.status==0}
+                                <RightPanelForbid onClick={(e) => {
+                                    this.showForbidModalDialog(e)
+                                }}
+                                                  isActive={this.state.userInfo.status == 0}
                                 />
                             </PrivilegeChecker>
                         ) : null}
@@ -511,7 +588,7 @@ var UserInfo = React.createClass({
                                     <Spin size="small"/>) : this.renderUserItems(userInfo)
                                 }
                             </div>
-                            <div className="log-infor-list" style={{display:this.props.hasLog ? 'block' : 'none'}}>
+                            <div className="log-infor-list" style={{display: this.props.hasLog ? 'block' : 'none'}}>
                                 <div className="log-infor-title">
                                     <ReactIntl.FormattedMessage id="member.operation.log" defaultMessage="操作日志"/></div>
                                 <div className="log-list-content">{
@@ -527,7 +604,7 @@ var UserInfo = React.createClass({
                         </GeminiScrollbar>
                     </div>
                     {this.props.showAddMemberButton ? (
-                        <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, "add")} >
+                        <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, "add")}>
                             <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
                                                                                  defaultMessage="添加成员"/></span>
                         </div>
@@ -536,12 +613,14 @@ var UserInfo = React.createClass({
                                  modalShow={this.props.modalDialogShow}
                                  container={this}
                                  hideModalDialog={this.props.hideModalDialog}
-                                 delete={(e)=>{this.forbidCard(e)}}
+                                 delete={(e) => {
+                                     this.forbidCard(e)
+                                 }}
                     />
                 </div>
             );
         }
     })
-    ;
+;
 
 module.exports = UserInfo;

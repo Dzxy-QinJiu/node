@@ -68,6 +68,8 @@ function UserStore() {
     //获取成员详情失败的错误提示
     this.getUserDetailError = "";
     this.isContinueAddButtonShow = false;
+    //销售提成和提成比例
+    this.saleGoalsAndCommissionRadio = {};
 
     this.bindActions(UserActions);
 
@@ -382,6 +384,11 @@ UserStore.prototype.returnInfoPanel = function (newAddUser) {
 
 UserStore.prototype.changeLogNum = function (num) {
     this.logNum = num;
+};
+UserStore.prototype.getSalesGoals = function (result) {
+    if (!result.loading && !result.error){
+        this.saleGoalsAndCommissionRadio = result.data;
+    }
 };
 
 

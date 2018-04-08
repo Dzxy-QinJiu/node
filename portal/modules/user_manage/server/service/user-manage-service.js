@@ -31,7 +31,9 @@ var userRestApis = {
     //修改成员的所属团队
     updateUserTeam: "rest/base/v1/group/user",
     //修改成员角色
-    updateUserRoles: "rest/base/v1/user/member/roles"
+    updateUserRoles: "rest/base/v1/user/member/roles",
+    //查询及添加个人销售目标
+    getAndSetSalesGoals: "/rest/contract/v2/goal/users"
 };
 
 exports.urls = userRestApis;
@@ -232,6 +234,24 @@ exports.checkOnlyEmail = function (req, res, email) {
             req: req,
             res: res
         }, null);
+};
+//查询销售目标和提成比例
+exports.getSalesGoals = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: userRestApis.getAndSetSalesGoals,
+            req: req,
+            res: res
+        }, req.query);
+};
+//设置销售目标或提成比例
+exports.setSalesGoals = function (req, res) {
+    return restUtil.authRest.post(
+        {
+            url: userRestApis.getAndSetSalesGoals,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 

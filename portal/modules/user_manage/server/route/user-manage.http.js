@@ -125,5 +125,19 @@ module.exports = {
         "privileges": [
             "USER_MANAGE_LIST_USERS"
         ]
+    }, {
+        "method": "get",
+        "path": "/rest/get/contract/goal/users",
+        "handler": "getSalesGoals",
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        "method": "post",
+        "path": "/rest/set/contract/goal/users",
+        "handler": "setSalesGoals",
+        "passport": {
+            "needLogin": true
+        }
     }]
 };

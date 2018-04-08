@@ -79,12 +79,13 @@ var UserManage = React.createClass({
             Trace.traceEvent($(".log-infor-scroll"),"关闭模态框");
             UserAction.hideModalDialog();
         },
-
         showUserInfo: function (user) {
             //如果正在展示其他详情，则先不展示当前点击的成员详情
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
             }
+            //跟据用户的id获取销售提成和比例
+            UserAction.getSalesGoals({user_id: user.id});
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
             UserAction.setLogLoading(true);
