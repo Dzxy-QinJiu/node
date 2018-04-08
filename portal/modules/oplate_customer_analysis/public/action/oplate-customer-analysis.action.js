@@ -5,13 +5,12 @@ const asyncDispatcher = function (ajax) {
         _this.dispatch({ errorMsg: "", loading: true });
         return new Promise((resolve, reject) => {
             ajax(paramObj)
-                .then(function (data) {                   
+                .then(function (data) {
                     _this.dispatch({ loading: false, data, paramObj, errorMsg: "" });
                     resolve({ data })
                 })
                 .fail(function (errorMsg) {
                     _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
-                    reject({ errorMsg });
                 });
         })
     }
@@ -85,6 +84,9 @@ function OplateCustomerAnalysisActions() {
 
     //查询迁出客户
     this.getTransferCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getTransferCustomers);
+
+    //获取客户阶段变更数据
+    this.getStageChangeCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getStageChangeCustomers);
 
 };
 

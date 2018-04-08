@@ -164,6 +164,7 @@ var en_US = {
     "common.official": "Signed",//签约
     "common.trial": "Trial",//试用
     "common.qualified": "Qualified",//合格
+    "common.unqualified": "Unqualified",//不合格
     "common.official.qualified": "Signed and qualified ",//签约合格
     "common.trial.qualified": "Trial and qualified",//试用合格
     "common.history.qualified": "Once qualified",//曾经合格
@@ -1229,6 +1230,7 @@ var en_US = {
     "crm.right.schedule": "Contact schedule",//联系计划
     "crm.customer.transfer.sales": "Sales",//"销售代表",
     "crm.customer.transfer.manager": "Manager",//"客户经理",
+    "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     // 客户管理end
 
     //客户分析 start
