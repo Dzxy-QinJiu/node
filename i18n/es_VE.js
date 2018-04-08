@@ -625,7 +625,9 @@ var en_VE = {
 
     "user.open.type.select": "Seleccionar tipo de apertura",//请选择开通类型 
 
-    "user.role.select.tip": "Seleccionar un papel por lo menos",//至少选择一个角色 
+    "user.role.select.tip": "Seleccionar un papel por lo menos",//至少选择一个角色
+
+    "user.add.apps.role.select.tip": "{appName}no se establece ningún rol.", // {appName}未设置角色
 
     "user.change.detail": "Detalles de modificación",//变更详情 
 

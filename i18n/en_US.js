@@ -399,6 +399,7 @@ var en_US = {
     "user.app.info.edit": "Edit production details",//产品信息修改
     "user.open.type.select": "Please select owning type",//请选择开通类型
     "user.role.select.tip": "Select at least one role",//至少选择一个角色
+    "user.add.apps.role.select.tip": "{appName} have no roles.", // {appName}未设置角色
     "user.change.detail": "Change details",//变更详情
     "user.overdue.whether": "Expire or not",//是否过期
     "user.overdue": "Expire",//过期

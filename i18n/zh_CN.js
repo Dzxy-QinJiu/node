@@ -400,6 +400,7 @@ var zh_CN = {
     "user.app.info.edit": "产品信息修改",
     "user.open.type.select": "请选择开通类型",
     "user.role.select.tip": "至少选择一个角色",
+    "user.add.apps.role.select.tip": "{appName}未设置角色",
     "user.change.detail": "变更详情",
     "user.overdue.whether": "是否过期",
     "user.overdue": "过期",

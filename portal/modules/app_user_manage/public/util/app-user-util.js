@@ -290,3 +290,21 @@ exports.handleFilterLogOptions = (option) => {
     }
     return option;
 };
+
+// 提交时，没有选择角色的处理
+exports.handleNoSelectRole = (submitData, selectedApps) => {
+    let noSelectRoleApps = []; // 没有选择角色的应用
+    if (_.isArray(submitData) && submitData.length) {
+        // 没有设置角色的应用名称
+        _.each(submitData, (item) => {
+            if (!item.roles.length) {
+                _.each(selectedApps, (app) => {
+                    if (app.app_id === item.client_id) {
+                        noSelectRoleApps.push(app.app_name);
+                    }
+                });
+            }
+        });
+    }
+    return noSelectRoleApps;
+};
