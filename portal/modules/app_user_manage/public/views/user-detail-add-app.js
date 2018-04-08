@@ -245,11 +245,19 @@ var UserDetailAddApp = React.createClass({
                 return;
             }
         }
+        // 权限设置，需要选择角色
         if(this.hasRolesBlock()) {
             selectedAppId = this.state.formData.rolePermissionApp;
             if(!selectedAppId) {
                 UserDetailAddAppAction.setRolePermissionSelectedAppError(true);
                 return;
+            }
+            // 没有选择角色，则提示错误
+            if(!this.state.formData.roles.length) {
+                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(Intl.get("user.role.select.tip", "至少选择一个角色"));
+                return;
+            } else {
+                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(false);
             }
         }
         //开通产品需要选择应用
@@ -1098,6 +1106,13 @@ var UserDetailAddApp = React.createClass({
                             onRolesPermissionSelect={this.rolesPermissionsChange}
                             updateScrollBar={this.updateScrollBar}
                         />
+                        {
+                            this.state.batchSelectRoleError && !this.state.formData.roles.length ? (
+                                <div className="batch-select-no-role">
+                                    <Alert message={this.state.batchSelectRoleError} showIcon type="error"/>
+                                </div>
+                            ) : null
+                        }
                     </FormItem> : null
                 }
             </div>
