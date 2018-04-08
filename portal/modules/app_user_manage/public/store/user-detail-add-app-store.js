@@ -146,6 +146,8 @@ UserDetailAddAppStore.prototype.resetState = function() {
     this.passStrength = 'L';//密码强度
     //提交的时候，批量操作没有选择应用，则提示错误
     this.batchSelectedAppError = false;
+    // 提交时，批量变更权限设置，若没有选择角色，则提示错误
+    this.batchSelectRoleError = '';
     //提交的时候，角色权限没有选择应用，则提示错误
     this.roleSelectedAppError = false;
 };
@@ -306,6 +308,11 @@ UserDetailAddAppStore.prototype.setDefaultBatchSelectedApps = function(apps) {
     var app_list = _.isArray(apps) ? apps : [];
     this.formData.batchSelectedApps = _.pluck(app_list , 'app_id');
     this.formData.rolePermissionApp = this.formData.batchSelectedApps[0] || '';
+};
+
+// 批量变更权限没有选择角色错误
+UserDetailAddAppStore.prototype.batchChangePermissionNoSelectRoleError = function(error) {
+    this.batchSelectRoleError = error;
 };
 
 //使用alt导出store

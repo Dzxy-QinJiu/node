@@ -308,6 +308,16 @@ const AddOrEditUser = React.createClass({
         }
         //获取提交数据
         const submitData = this.getSubmitData();
+        let products = JSON.parse(submitData.products);
+        //选中的应用列表
+        const selectedApps = this.state.selectedApps;
+        let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
+        if (noSelectRoleApps.length) {
+            AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
+            return;
+        } else {
+            AppUserFormActions.noSelectRoleError('');
+        }
         //获取批量更新使用的额外数据
         const extraData = this.getExtraData();
         //添加用户
@@ -793,6 +803,14 @@ const AddOrEditUser = React.createClass({
             return (
                 <div className="alert-timer">
                     <Alert message={this.state.submitErrorMsg} type="error" showIcon/>
+                </div>
+            );
+        }
+        // 添加应用时，没有选择角色的错误提示
+        if(this.state.submitResult === 'selectRoleError') {
+            return (
+                <div className="apps-no-select-role">
+                    <AlertTimer time={6000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
                 </div>
             );
         }

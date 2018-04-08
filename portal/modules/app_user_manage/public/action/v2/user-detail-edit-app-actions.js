@@ -5,6 +5,7 @@ class UserDetailEditAppActions {
         this.generateActions(
             'resetState',//重置store
             'hideSubmitTip',//隐藏提交提示信息
+            'setAppNoSelectRoleError', // 设置单个应用时，没有选择角色的错误提示
             'setInitialData'//设置表单初始值
         );
     }

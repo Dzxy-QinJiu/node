@@ -10,8 +10,7 @@ if (language.lan() == "es" || language.lan() == "en") {
 }
 
 require("../../../public/css/antd-vertical-tabs.css");
-import userData from '../../../public/sources/user-data';
-import {Tooltip,Tabs} from 'antd';
+import {Tooltip,Tabs, Alert} from 'antd';
 const TabPane = Tabs.TabPane;
 import classNames from 'classnames';
 import GeminiScrollBar from '../../react-gemini-scrollbar';
@@ -22,7 +21,6 @@ import UserTimeRangeField from '../user-time-rangefield';
 import UserOverDraftField from '../user-over-draftfield';
 import UserTwoFactorField from '../user-two-factorfield';
 import UserMultiLoginField from '../user-multilogin-radiofield';
-import appAjaxTrans from '../../../modules/common/public/ajax/app';
 import AppRolePermission from '../app-role-permission';
 
 const PropTypes = React.PropTypes;
@@ -439,6 +437,13 @@ const AppPropertySetting = React.createClass({
                         onRolesPermissionSelect={this.onRolesPermissionSelect}
                         updateScrollBar={this.updateScrollBar}
                     />
+                    {
+                        this.props.appSelectRoleError && !selectedRoles.length ? (
+                            <div className="select-no-role">
+                                <Alert message={this.props.appSelectRoleError} showIcon type="error"/>
+                            </div>
+                        ) : null
+                    }
                 </div>
             </div>
         );

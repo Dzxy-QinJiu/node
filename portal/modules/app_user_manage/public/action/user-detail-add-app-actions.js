@@ -67,6 +67,8 @@ function UserDetailAddAppActions() {
         "setBatchSelectedAppError",
         //设置权限角色设置应用选择错误
         "setRolePermissionSelectedAppError",
+        // 批量变更权限没有选择角色错误
+        "batchChangePermissionNoSelectRoleError",
         //设置默认批量操作的选中的应用
         "setDefaultBatchSelectedApps",
         // 将延期时间设置为截止时间（具体到xx年xx月xx日）

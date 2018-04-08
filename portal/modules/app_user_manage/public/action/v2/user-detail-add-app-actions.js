@@ -1,5 +1,4 @@
 import AppUserAjax from '../../ajax/app-user-ajax';
-import AppUserUtil from '../../util/app-user-util';
 class UserDetailAddAppActions {
     constructor() {
         this.generateActions(
@@ -8,6 +7,8 @@ class UserDetailAddAppActions {
             'setSelectedApps',
             'showSelectedAppsError',
             'hideSubmitTip',
+            'noSelectRoleError', // 添加应用时，没有选择角色的错误提示
+            'someAppsNoSelectRoleError', // 添加多个应用时，有应用没有选择角色的错误提示
             //保存应用的特殊配置
             "saveAppsSetting",
             //将应用的特殊配置同步到全局配置
