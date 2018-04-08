@@ -9,7 +9,7 @@ import Utils from '../utils';
 import insertStyle from "../../../../components/insert-style";
 import Spinner from '../../../../components/spinner';
 import AppUserUtil from '../../../app_user_manage/public/util/app-user-util';
-
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var BootstrapButton = require('react-bootstrap').Button;
 var Modal = require('react-bootstrap').Modal;
@@ -43,7 +43,7 @@ const OnlineUserList = React.createClass({
         Utils.emitter.removeListener(Utils.EMITTER_CONSTANTS.APP_LIST_LOADED, this.appListLoaded);
     },
     appListLoaded: function (list) {
-        var storageValue = JSON.parse(localStorage.getItem(AppUserUtil.saveSelectAppKeyUserId));
+        var storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
         var lastSelectAppId = storageValue && storageValue.onlineAppId ? storageValue.onlineAppId : '';
         if (lastSelectAppId) {
             OnlineUserFilterAction.setCondition({ client_id: lastSelectAppId });

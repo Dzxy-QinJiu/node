@@ -3,6 +3,7 @@ var ShareObj = require("../util/app-id-share-util");
 var DateSelectorUtils = require("../../../../components/datepicker/utils");
 var AppUserUtil = require("../util/app-user-util");
 import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 // 用户审计日志的store
 function UserAuditLogStore(){
     this.resetState();
@@ -57,7 +58,7 @@ UserAuditLogStore.prototype.getUserApp = function(result){
         this.getUserLogErrorMsg = result.errorMsg;
     } else {
        this.userAppArray = result.data;
-       var storageValue = JSON.parse(localStorage.getItem(AppUserUtil.saveSelectAppKeyUserId));
+       var storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
        var lastSelectAppId = storageValue && storageValue.logViewAppId ?  storageValue.logViewAppId : '';
        if(lastSelectAppId){
            //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
@@ -126,7 +127,7 @@ UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
     this.selectAppId = appId;
     ShareObj.app_id = this.selectAppId;
     let obj = AppUserUtil.getLocalStorageObj('logViewAppId', this.selectAppId );
-    localStorage.setItem(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
+    storageUtil.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
     this.sortId = '';
     this.firstLoading = true;
     this.auditLogList = [];

@@ -1,5 +1,6 @@
 var AppUserCustomerSwitchActions = require("../action/app-user-customer-switch-actions");
 var AppUserUtil = require("../util/app-user-util");
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 //客户对应的用户的store
 function AppUserCustomerSwitchStore() {
@@ -22,7 +23,7 @@ AppUserCustomerSwitchStore.prototype.resetState = function () {
     //客户对应的用户翻页页数
     this.customerUserPage = 1;
     //首先获取localStorage中保存的页数
-    this.pageSize = parseInt(localStorage.getItem(AppUserUtil.localStorageCustomerViewPageSizeKey));
+    this.pageSize = parseInt(storageUtil.get(AppUserUtil.localStorageCustomerViewPageSizeKey));
     if(!this.pageSize || !_.isNumber(this.pageSize) || isNaN(this.pageSize)) {
         this.pageSize = 20;
     }

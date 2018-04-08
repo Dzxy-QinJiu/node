@@ -1,6 +1,7 @@
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 import CONSTS from  "LIB_DIR/consts";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 //设置网站个性化配置
 var websiteConfig = {
@@ -12,9 +13,9 @@ var websiteConfig = {
             data
         };
         ajax(arg).then(result => {
-            const preStorage = JSON.parse(localStorage.getItem(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG));
+            const preStorage = JSON.parse(storageUtil.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG));
             const curStorage = $.extend({}, preStorage, data);
-            localStorage.setItem(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG, JSON.stringify(curStorage));
+            storageUtil.set(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG, JSON.stringify(curStorage));
            _.isFunction(onSuccess) && onSuccess(result);
         }, err => {
             _.isFunction(onError) &&  onError(err);
@@ -47,9 +48,9 @@ var websiteConfig = {
         };
         ajax(arg).then(result => {
             if (result && result.personnel_setting) {
-                localStorage.websiteConfig = JSON.stringify(result.personnel_setting);
+                storageUtil.set("websiteConfig", JSON.stringify(result.personnel_setting));
             }else if (result && !result.personnel_setting){
-                localStorage.websiteConfig = JSON.stringify({});
+                storageUtil.set("websiteConfig", JSON.stringify({}));
             }
             //存储是否点击了某个模块
             if (result && result.module_record){
@@ -66,7 +67,7 @@ var websiteConfig = {
 
     //获取本地存储的自定义表格配置
     getLocalWebsiteConfig: () => {
-        return JSON.parse(localStorage.getItem("websiteConfig"));
+        return JSON.parse(storageUtil.get("websiteConfig"));
     }
 }
 module.exports = websiteConfig;

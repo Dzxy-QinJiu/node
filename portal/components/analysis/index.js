@@ -22,6 +22,7 @@ import { TIME_RANGE, USER_TYPE_LEGEND } from "./consts";
 var Spinner = require("../spinner");
 import * as exportUtil from "./export-data-util";
 import { capitalizeFirstLetter } from "LIB_DIR/func";
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
@@ -104,7 +105,7 @@ const Analysis = React.createClass({
 
         if (app_id.indexOf(",") > -1) app_id = "all";
 
-        localStorage[this.props.localStorageAppIdKey] = app_id;
+        storageUtil.set(this.props.localStorageAppIdKey, app_id);
     },
     onDateChange(starttime, endtime) {
         this.setState({starttime, endtime}, () => {
@@ -155,7 +156,7 @@ const Analysis = React.createClass({
             },
         };
 
-        const storedAppId = localStorage[props.localStorageAppIdKey];
+        const storedAppId = storageUtil.get(props.localStorageAppIdKey);
         const appId = this.props.appId || this.state.app_id || storedAppId;
         
         if (appId) {

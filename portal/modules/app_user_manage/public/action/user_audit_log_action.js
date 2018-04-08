@@ -2,6 +2,7 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 var ShareObj = require("../util/app-id-share-util");
 var AppUserUtil = require("../util/app-user-util");
+const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 function UserAuditLogAction() {
     this.generateActions(
@@ -22,7 +23,7 @@ function UserAuditLogAction() {
     this.getUserApp = function (callback) {
         var _this = this;
         userAuditLogAjax.getUserApp().then(function (data) {
-            var storageValue = JSON.parse(localStorage.getItem(AppUserUtil.saveSelectAppKeyUserId));
+            var storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
             var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
             var app_id = '';
             if (lastSelectAppId) {   //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
