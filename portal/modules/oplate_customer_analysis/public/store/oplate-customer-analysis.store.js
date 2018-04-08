@@ -255,9 +255,8 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = function ({ load
         this.customerStage.errorMsg = '';
         if (data && data.length) {
             this.customerStage.data = data.map(x => {
-                let obj = x;
-                obj.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
-                return obj;
+                x.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
+                return x;
             });
         }
     }
