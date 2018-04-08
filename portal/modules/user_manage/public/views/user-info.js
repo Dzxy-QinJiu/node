@@ -272,18 +272,18 @@ var UserInfo = React.createClass({
                 roleNames = userInfo.roleNames.join(',');
 
             }
-            var commissionRadio = "", goal = "", recordId = "";
-            if (this.state.saleGoalsAndCommissionRadio.id) {
+            var commissionRadio = "", goal = "", recordId = "", saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio;
+            if (saleGoalsAndCommissionRadio.id) {
                 //某条销售目标和提成比例的id
-                recordId = this.state.saleGoalsAndCommissionRadio.id;
+                recordId = saleGoalsAndCommissionRadio.id;
             }
-            if (this.state.saleGoalsAndCommissionRadio.commission_ratio || this.state.saleGoalsAndCommissionRadio.commission_ratio === 0) {
+            if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
                 //提成比例
-                commissionRadio = this.state.saleGoalsAndCommissionRadio.commission_ratio;
+                commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
             }
-            if (this.state.saleGoalsAndCommissionRadio.goal || this.state.saleGoalsAndCommissionRadio.goal === 0) {
+            if (saleGoalsAndCommissionRadio.goal || saleGoalsAndCommissionRadio.goal === 0) {
                 //销售目标
-                goal = this.state.saleGoalsAndCommissionRadio.goal;
+                goal = saleGoalsAndCommissionRadio.goal;
             }
 
             return (
