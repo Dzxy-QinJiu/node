@@ -316,7 +316,7 @@ const AddOrEditUser = React.createClass({
             AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
             return;
         } else {
-            AppUserFormActions.noSelectRoleError(false);
+            AppUserFormActions.noSelectRoleError('');
         }
         //获取批量更新使用的额外数据
         const extraData = this.getExtraData();

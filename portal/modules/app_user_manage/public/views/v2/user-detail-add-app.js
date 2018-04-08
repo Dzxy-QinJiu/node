@@ -327,7 +327,7 @@ const UserDetailAddApp = React.createClass({
             UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
             return;
         } else {
-            UserDetailAddAppActions.noSelectRoleError(false);
+            UserDetailAddAppActions.noSelectRoleError('');
         }
         //添加应用
         UserDetailAddAppActions.addUserApps(submitData,(apps)=>{

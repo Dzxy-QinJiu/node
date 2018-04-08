@@ -147,7 +147,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
     //提交的时候，批量操作没有选择应用，则提示错误
     this.batchSelectedAppError = false;
     // 提交时，批量变更权限设置，若没有选择角色，则提示错误
-    this.batchSelectRoleError = false;
+    this.batchSelectRoleError = '';
     //提交的时候，角色权限没有选择应用，则提示错误
     this.roleSelectedAppError = false;
 };

@@ -47,7 +47,7 @@ class UserDetailAddAppStore {
         //是否显示至少选择一个应用
         this.isSelectedAppsError = false;
         // 添加应用时，没有选择角色的错误提示
-        this.appSelectRoleError = false;
+        this.appSelectRoleError = '';
         //提交结果
         this.submitResult = '';
         //提交错误信息

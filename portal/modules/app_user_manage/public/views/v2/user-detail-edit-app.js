@@ -123,7 +123,7 @@ const UserDetailEditApp = React.createClass({
         //多次登录(平台部的单词拼错了)
         submitData.mutilogin = savedAppSetting.multilogin.value;
         if (submitData.roles.length) {
-            UserDetailEditAppActions.setAppNoSelectRoleError(false);
+            UserDetailEditAppActions.setAppNoSelectRoleError('');
         } else {
             UserDetailEditAppActions.setAppNoSelectRoleError(Intl.get("user.role.select.tip", "至少选择一个角色"));
             return;

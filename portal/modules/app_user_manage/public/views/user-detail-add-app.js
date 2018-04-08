@@ -257,7 +257,7 @@ var UserDetailAddApp = React.createClass({
                 UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(Intl.get("user.role.select.tip", "至少选择一个角色"));
                 return;
             } else {
-                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(false);
+                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError('');
             }
         }
         //开通产品需要选择应用
