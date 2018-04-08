@@ -22,7 +22,6 @@ const VIEWS = {
     FORGOT_PASSWORD: "forgot_password",
 };
 const USER_LANG_KEY = "userLang";//存储用户语言环境的key
-const storageUtil = require("../../lib/utils/storage-util");
 
 class LoginMain extends React.Component {
     constructor(props) {
@@ -95,7 +94,8 @@ class LoginMain extends React.Component {
 
     //展示界面
     show(captcha) {
-        var lang = storageUtil.get(USER_LANG_KEY);
+        //todo 待统一处理localStorage
+        var lang = localStorage.getItem(USER_LANG_KEY);
         //之前设置过语言，且没有默认语言设置时,使用设置的语言，重新渲染界面（后端渲染部分）
         if (lang && !Oplate.lang) {
             window.location.href = "/login?lang=" + lang;
@@ -109,12 +109,14 @@ class LoginMain extends React.Component {
 
     //改变语言环境
     changeLang(lang) {
-        storageUtil.set(USER_LANG_KEY, lang);
+        //todo 待统一处理localStorage
+        localStorage.setItem(USER_LANG_KEY, lang);
     }
 
     //从本地缓存获取语言环境
     getLang() {
-        return storageUtil.get(USER_LANG_KEY) || (window.Oplate && window.Oplate.lang) || "zh_CN";
+        //todo 待统一处理localStorage
+        return localStorage.getItem(USER_LANG_KEY) || (window.Oplate && window.Oplate.lang) || "zh_CN";
     }
 
     handleTabChange(activeKey) {

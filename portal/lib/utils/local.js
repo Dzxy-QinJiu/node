@@ -7,8 +7,6 @@ import zh_CN from '../../../i18n/zh_CN';
 import en_US from '../../../i18n/en_US';
 import es_VE from '../../../i18n/es_VE';
 const defaultLanguage = 'zh_CN'; // 缺省语言
-const storageUtil = require("../../lib/utils/storage-util");
-
 const Local = {
     getNavigatorLanguage(){
         //获取浏览器语言
@@ -17,7 +15,8 @@ const Local = {
         if (typeof Oplate == "object" && Oplate.lang) {
             lang = Oplate.lang;
         } else if (typeof localStorage == "object") {
-            lang = storageUtil.get("userLang");
+            //todo 待统一处理localStorage
+            lang = localStorage.getItem("userLang");
         }
         return lang || defaultLanguage;
     },

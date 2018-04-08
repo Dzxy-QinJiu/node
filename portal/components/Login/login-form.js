@@ -9,8 +9,6 @@ var crypto = require("crypto");
 const classnames = require("classnames");
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 import {Icon} from "antd";
-const storageUtil = require("../../lib/utils/storage-util");
-
 //常量定义
 const CAPTCHA = '/captcha';
 //错误信息提示
@@ -44,9 +42,9 @@ var LoginForm = React.createClass({
             return false;
         }
         //记住登录名
-        storageUtil.set("last_login_name", userName);
+        localStorage.setItem("last_login_name", userName);
         //客户分析,第一次登录的时候，默认展示全部应用
-        storageUtil.set("customer_analysis_stored_app_id", "all");
+        localStorage.setItem("customer_analysis_stored_app_id", "all");
         //获取输入的密码
         var value = this.refs.password_input.value;
         if (!value) {
@@ -103,7 +101,7 @@ var LoginForm = React.createClass({
     },
     //展示记录过的用户名，登录按钮变为可用
     showUserName: function () {
-        var userName = window.Oplate.initialProps.username || storageUtil.get("last_login_name") || '';
+        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
         this.setState({
             username: userName,
             loginButtonDisabled: false
