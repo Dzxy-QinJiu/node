@@ -254,6 +254,11 @@ var UserInfo = React.createClass({
             }
             return "";
         },
+        afterModifySuccess: function (updateObj) {
+            this.setState({
+                saleGoalsAndCommissionRadio:updateObj
+            });
+        },
 
         renderUserItems: function () {
             let userInfo = this.state.userInfo;
@@ -449,6 +454,7 @@ var UserInfo = React.createClass({
                                 min={0}
                                 max={100}
                                 countTip={"%"}
+                                afterModifySuccess = {this.afterModifySuccess}
                             />
                         </dd>
                     </dl> : null}
@@ -464,6 +470,7 @@ var UserInfo = React.createClass({
                                 displayType={'text'}
                                 min={0}
                                 countTip={Intl.get("contract.82", "元")}
+                                afterModifySuccess = {this.afterModifySuccess}
                             />
                         </dd>
                     </dl> : null}

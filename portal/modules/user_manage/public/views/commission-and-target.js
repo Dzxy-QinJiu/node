@@ -11,6 +11,9 @@ require("../css/commission.less");
 var CommissionAndTarget = React.createClass({
     getDefaultProps: function () {
         return {
+            //某条销售目标或者提成比例记录的id
+            id : '',
+            //某个用户的id
             user_id: '',
             //字段
             field: "",
@@ -26,6 +29,7 @@ var CommissionAndTarget = React.createClass({
     },
     getInitialState: function () {
         return {
+            id: this.props.id,
             user_id: this.props.user_id,
             loading: false,
             displayType: this.props.displayType || "text",
@@ -35,10 +39,11 @@ var CommissionAndTarget = React.createClass({
         };
     },
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.user_id !== this.state.user_id || nextProps.value !== this.state.initalValue) {
+        if (nextProps.user_id !== this.state.user_id || nextProps.value !== this.state.initalValue || nextProps.id !== this.state.id) {
             this.setState({
                 user_id: nextProps.user_id,
                 initalValue: nextProps.value,
+                id: nextProps.id
             });
         }
     },
@@ -57,19 +62,32 @@ var CommissionAndTarget = React.createClass({
         var user = {};
         user[this.props.field] = value;
         //如果提成或者目标的id存在，就更新那条记录
-        if (this.props.id) {
-            user.id = this.props.id;
+        if (this.state.id) {
+            user.id = this.state.id;
         } else if (this.props.user_id) {
             user.user_id = this.props.user_id;
         }
         this.props.setSalesGoals(user).then((result) => {
-            if (result) {
+            if (result.id) {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
                     initalValue: value,
                     displayType: 'text'
                 });
+                //如果之前没有填写过销售目标和提成比例
+                if (!this.state.id && _.isFunction(this.props.afterModifySuccess)){
+                    var updateObj = {
+                        id:result.id
+                    };
+                    if (result.goal || result.goal === 0){
+                        updateObj.goal = result.goal;
+                    }
+                    if (result.commission_ratio || result.commission_ratio === 0){
+                        updateObj.commission_ratio = result.commission_ratio;
+                    }
+                    this.props.afterModifySuccess(updateObj);
+                }
             } else {
                 this.setState({
                     loading: false,
