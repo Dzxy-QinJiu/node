@@ -93,7 +93,6 @@ var CustomerAnalysis = React.createClass({
     //获取客户阶段变更数据
     getStageChangeCustomers: function () {
         let params = {           
-            query: {},
             rang_params: [
                 {
                     "from": this.state.startTime,
@@ -414,7 +413,7 @@ var CustomerAnalysis = React.createClass({
         this.setState({
             selectedCustomerStage: {
                 type,
-                date: item.date,
+                date: item.time,
                 user_id: item.user_id
             }
         }, () => { this.showCusStageMetic() });
@@ -431,9 +430,10 @@ var CustomerAnalysis = React.createClass({
         const columns = [
             {
                 title: Intl.get("crm.146", "日期"),
-                dataIndex: '日期',
-                key: 'date',
+                dataIndex: 'time',
+                key: 'time',
                 sorter: true,
+                width: 100
             }, {
                 title: Intl.get("sales.stage.message", "信息"),
                 dataIndex: "map.信息",
@@ -453,15 +453,6 @@ var CustomerAnalysis = React.createClass({
                     )
                 }
             }, {
-                title: Intl.get("sales.stage.signed", "签约"),
-                dataIndex: "map.签约",
-                key: "signed",
-                render: (text, item, index) => {
-                    return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
-                    )
-                }
-            }, {
                 title: Intl.get("common.trial", "试用"),
                 dataIndex: "map.试用",
                 key: "trial",
@@ -471,12 +462,21 @@ var CustomerAnalysis = React.createClass({
                     )
                 }
             }, {
-                title: Intl.get("common.trial.qualified", "试用合格"),
-                dataIndex: "map.试用合格",
+                title: Intl.get("common.unqualified", "不合格"),
+                dataIndex: "map.不合格",
                 key: "qualified",
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
+                    )
+                }
+            }, {
+                title: Intl.get("sales.stage.signed", "签约"),
+                dataIndex: "map.签约",
+                key: "signed",
+                render: (text, item, index) => {
+                    return (
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
                     )
                 }
             }, {
@@ -486,7 +486,8 @@ var CustomerAnalysis = React.createClass({
             }, {
                 title: Intl.get("common.belong.team", "所属团队"),
                 dataIndex: "salesTeam",
-                key: "salesTeam"
+                key: "salesTeam",
+                width: 80
             }
         ];
         const loading = this.state.customerStage.loading;
