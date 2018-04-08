@@ -230,6 +230,7 @@ const UserDetailAddApp = React.createClass({
                 <AlertTimer time={3000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
             );
         }
+        // 添加应用时，没有选择角色的错误提示
         if(this.state.submitResult === 'selectRoleError') {
             return (
                 <div className="apps-no-select-role">
@@ -323,10 +324,10 @@ const UserDetailAddApp = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
         if (noSelectRoleApps.length) {
-            UserDetailAddAppActions.addAppsSomeAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
+            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
             return;
         } else {
-            UserDetailAddAppActions.addAppNoSelectRoleError(false);
+            UserDetailAddAppActions.noSelectRoleError(false);
         }
         //添加应用
         UserDetailAddAppActions.addUserApps(submitData,(apps)=>{

@@ -313,10 +313,10 @@ const AddOrEditUser = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
         if (noSelectRoleApps.length) {
-            AppUserFormActions.addAppsSomeAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
+            AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
             return;
         } else {
-            AppUserFormActions.addAppNoSelectRoleError(false);
+            AppUserFormActions.noSelectRoleError(false);
         }
         //获取批量更新使用的额外数据
         const extraData = this.getExtraData();
@@ -806,6 +806,7 @@ const AddOrEditUser = React.createClass({
                 </div>
             );
         }
+        // 添加应用时，没有选择角色的错误提示
         if(this.state.submitResult === 'selectRoleError') {
             return (
                 <div className="apps-no-select-role">

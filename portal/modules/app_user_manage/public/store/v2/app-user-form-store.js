@@ -207,11 +207,11 @@ class AppUserFormStore {
         formData.multilogin = syncAppInfo.multilogin;
     }
     // 添加应用时，没有选择角色的错误提示
-    addAppNoSelectRoleError(error) {
+    noSelectRoleError(error) {
         this.appSelectRoleError = error;
     }
     // 添加多个应用时，有应用没有选择角色的错误提示
-    addAppsSomeAppsNoSelectRoleError(error) {
+    someAppsNoSelectRoleError(error) {
         this.submitResult = "selectRoleError";
         this.submitErrorMsg = error;
     }

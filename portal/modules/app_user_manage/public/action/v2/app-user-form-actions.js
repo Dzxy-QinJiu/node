@@ -23,9 +23,9 @@ class AppUserFormActions {
             //保存应用的特殊配置
             "saveAppsSetting",
             // 添加应用时，没有选择角色的错误提示
-            'addAppNoSelectRoleError',
+            'noSelectRoleError',
             // 添加多个应用时，有应用没有选择角色的错误提示
-            'addAppsSomeAppsNoSelectRoleError',
+            'someAppsNoSelectRoleError',
             //设置选中的组织
             "setSelectedOrganization",
             //将应用的特殊配置同步到全局配置
