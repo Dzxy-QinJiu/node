@@ -417,7 +417,7 @@ var CustomerAnalysis = React.createClass({
                 user_name: item.memberName
             }
         }, () => { 
-            this.showCusStageMetic()
+            // this.showCusStageMetic()
          });
     },
     onStageSortChange(pagination, filters, sorter) {
