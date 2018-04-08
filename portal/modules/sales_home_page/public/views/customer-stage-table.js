@@ -26,7 +26,7 @@ class CustomerStageTable extends React.Component {
                             name: "start_time"
                         }],
                         condition: {
-                            user_id: this.props.params.user_id,
+                            user_name: this.props.params.user_name,
                             customer_label: this.props.params.type,
                             term_fields: ["customer_label"]
                         }

@@ -414,11 +414,10 @@ var CustomerAnalysis = React.createClass({
             selectedCustomerStage: {
                 type,
                 date: item.time,
-                user_id: item.user_id
+                user_name: item.memberName
             }
         }, () => { 
-            //todo 缺销售id 筛选客户列表
-            // this.showCusStageMetic()
+            this.showCusStageMetic()
          });
     },
     onStageSortChange(pagination, filters, sorter) {
