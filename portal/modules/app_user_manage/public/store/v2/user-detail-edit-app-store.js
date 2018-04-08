@@ -15,6 +15,8 @@ class UserDetailEditAppStore {
         this.selectedApps = [];
         //单个应用的配置，传入到AppProperty的appSettingConfig属性上
         this.appSettingConfig = {};
+        // 设置单个应用时，没有选择角色的错误提示
+        this.appSelectRoleError = false;
         //提交结果
         this.submitResult = '';
         //提交错误信息
@@ -92,6 +94,10 @@ class UserDetailEditAppStore {
                 } , 500);
             }
         }
+    }
+    // 设置单个应用时，没有选择角色的错误提示
+    setAppNoSelectRoleError(error) {
+        this.appSelectRoleError = error;
     }
 }
 
