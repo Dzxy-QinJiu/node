@@ -9,7 +9,7 @@ var crypto = require("crypto");
 const classnames = require("classnames");
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from "../../lib/websso";
 import {Icon} from "antd";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+const storageUtil = require("../../lib/utils/storage-util");
 
 //常量定义
 const CAPTCHA = '/captcha';

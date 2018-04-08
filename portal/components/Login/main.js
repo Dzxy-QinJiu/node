@@ -22,7 +22,7 @@ const VIEWS = {
     FORGOT_PASSWORD: "forgot_password",
 };
 const USER_LANG_KEY = "userLang";//存储用户语言环境的key
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+const storageUtil = require("../../lib/utils/storage-util");
 
 class LoginMain extends React.Component {
     constructor(props) {
