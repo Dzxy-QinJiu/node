@@ -434,7 +434,6 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get("crm.146", "日期"),
                 dataIndex: 'time',
                 key: 'time',
-                sorter: true,
                 width: 100
             }, {
                 title: Intl.get("sales.stage.message", "信息"),
