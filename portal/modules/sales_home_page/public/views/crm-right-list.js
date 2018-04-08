@@ -15,7 +15,8 @@ let userData = require("../../../../public/sources/user-data");
 let SalesHomeAction = require("../action/sales-home-actions");
 let constantUtil = require("../util/constant");
 let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型常量（销售团队列表、团队成员列表、销售的待办事宜）
-let _ = require('underscore');
+const Emitters = require("PUB_DIR/sources/utils/emitters");
+const teamTreeEmitter = Emitters.teamTreeEmitter;
 
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = "busy";//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
@@ -70,6 +71,7 @@ let CrmRightList = React.createClass({
     selectSalesTeam: function (e, team) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.selectSalesTeam(team);
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team.group_id);
         //刷新左侧的统计、分析数据
         setTimeout(() => {
             this.props.refreshDataByChangeSales();
@@ -81,6 +83,7 @@ let CrmRightList = React.createClass({
     selectSalesman: function (e, user) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.selectSalesman(user);
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, user.userId);
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
