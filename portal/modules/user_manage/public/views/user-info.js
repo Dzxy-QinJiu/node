@@ -266,6 +266,7 @@ var UserInfo = React.createClass({
             let roleNames = "",isSales = false;
             if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
                 if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1){
+                    //是否是销售角色
                     isSales = true;
                 }
                 roleNames = userInfo.roleNames.join(',');
@@ -273,12 +274,15 @@ var UserInfo = React.createClass({
             }
             var commissionRadio = "", goal = "", recordId = "";
             if (this.state.saleGoalsAndCommissionRadio.id) {
+                //某条销售目标和提成比例的id
                 recordId = this.state.saleGoalsAndCommissionRadio.id;
             }
             if (this.state.saleGoalsAndCommissionRadio.commission_ratio || this.state.saleGoalsAndCommissionRadio.commission_ratio === 0) {
+                //提成比例
                 commissionRadio = this.state.saleGoalsAndCommissionRadio.commission_ratio;
             }
             if (this.state.saleGoalsAndCommissionRadio.goal || this.state.saleGoalsAndCommissionRadio.goal === 0) {
+                //销售目标
                 goal = this.state.saleGoalsAndCommissionRadio.goal;
             }
 

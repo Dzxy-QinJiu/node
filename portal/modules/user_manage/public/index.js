@@ -25,7 +25,6 @@ var UserManage = React.createClass({
         this.setState(UserStore.getState());
     },
     componentDidMount: function () {
-
         $("body").css("overflow", "hidden");
         UserStore.listen(this.onChange);
     },
@@ -80,17 +79,12 @@ var UserManage = React.createClass({
             Trace.traceEvent($(".log-infor-scroll"),"关闭模态框");
             UserAction.hideModalDialog();
         },
-        getSalesGoals: function (queryObj) {
-            //获取销售目标和提成比例
-            UserAction.getSalesGoals(queryObj);
-        },
         showUserInfo: function (user) {
             //如果正在展示其他详情，则先不展示当前点击的成员详情
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
             }
             //跟据用户的id获取销售提成和比例
-            console.log(user);
             UserAction.getSalesGoals({user_id: user.id});
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
