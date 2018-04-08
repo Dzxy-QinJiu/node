@@ -416,7 +416,10 @@ var CustomerAnalysis = React.createClass({
                 date: item.time,
                 user_id: item.user_id
             }
-        }, () => { this.showCusStageMetic() });
+        }, () => { 
+            //todo 缺销售id 筛选客户列表
+            // this.showCusStageMetic()
+         });
     },
     onStageSortChange(pagination, filters, sorter) {
         this.getStageChangeCustomers(sorter.order);
