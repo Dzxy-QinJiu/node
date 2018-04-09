@@ -109,10 +109,6 @@ var BasicData = React.createClass({
             CrmRepeatAction.editBasicSuccess(newBasic);
         } else {
             CrmAction.editBasicSuccess(newBasic);
-            //如果修改的是标签，则刷新标签列表
-            if (newBasic.labels) {
-                FilterAction.getTagList();
-            }
             if (_.isFunction(this.props.editCustomerBasic)) {
                 this.props.editCustomerBasic(newBasic);
             }
@@ -185,7 +181,8 @@ var BasicData = React.createClass({
         }
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         return (<div className="basic-info-detail-block">
-            {this.state.editBasicFlag ? (<EditBasicForm setEditBasicFlag={this.setEditBasicFlag} basicData={basicData}/>) : (
+            {this.state.editBasicFlag ? (
+                <EditBasicForm setEditBasicFlag={this.setEditBasicFlag} basicData={basicData}/>) : (
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
                         <span className="iconfont icon-administrative basic-info-icon"/>
@@ -207,6 +204,7 @@ var BasicData = React.createClass({
                     </div>
                     {hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? (
                         <DetailEditBtn title={Intl.get("common.edit", "编辑")}
+                                       modifySuccess={this.editBasicSuccess}
                                        onClick={this.setEditBasicFlag.bind(this, true)}/>) : null}
                 </div>)
             }

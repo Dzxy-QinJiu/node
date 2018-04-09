@@ -144,6 +144,17 @@ module.exports = {
         },
         {
             method: 'put',
+            path: '/rest/crm/edit/basic/:auth_type',
+            handler: 'editBasicInfo',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CRM_LIST_CUSTOMERS'
+            ]
+        },
+        {
+            method: 'put',
             path: '/rest/crm/:type/transfer_customer',
             handler: 'transferCustomer',
             passport: {

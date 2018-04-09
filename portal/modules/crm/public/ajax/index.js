@@ -40,7 +40,7 @@ exports.deleteCustomer = function (ids) {
     return Deferred.promise();
 };
 
-//更新客户
+//更新客户（单项修改）
 exports.updateCustomer = function (newCus) {
     if (hasPrivilege(AUTHS.UPDATE_ALL)) {
         newCus.urlType = "manager";
@@ -63,6 +63,26 @@ exports.updateCustomer = function (newCus) {
         dataType: 'json',
         type: 'put',
         data: {newCus: JSON.stringify(newCus)},
+        success: function (result) {
+            Deferred.resolve(result);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+exports.editBasicInfo = function (newCus) {
+    let urlType = "user";
+    if (hasPrivilege(AUTHS.UPDATE_ALL)) {
+        urlType = "manager";
+    }
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/crm/edit/basic/${urlType}`,
+        dataType: 'json',
+        type: 'put',
+        data: newCus,
         success: function (result) {
             Deferred.resolve(result);
         },

@@ -5,7 +5,7 @@
 
 "use strict";
 var crmService = require("../service/crm-manage-service");
-
+var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(example)]);
     res.setHeader("Content-disposition", "attachement; filename=" + filename);
@@ -232,6 +232,52 @@ exports.updateCustomer = function (req, res) {
         res.status(500).json(err && err.message);
     });
 };
+
+function getEditBasicPromise(req, res, editBasicService, newCustomer, title) {
+    return new Promise((resolve, reject) => {
+        editBasicService(req, res, newCustomer, req.params.auth_type)
+            .on("success", function (data) {
+                restLogger.info(`修改客户${title}成功（customer = ${JSON.stringify(newCustomer)}）`);
+                resolve(data);
+            }).on("error", function (codeMessage) {
+                restLogger.info(`修改客户${title}失败（customer_id=${JSON.stringify(newCustomer)}）`);
+                reject(codeMessage && codeMessage.message);
+            }
+        );
+    })
+}
+exports.editBasicInfo = function (req, res) {
+    let promises = [];
+    let newCustomer = req.body;
+    //所有需要修改的属性对应的key
+    let keys = Object.keys(newCustomer);
+    //修改了行政级别
+    if (keys.indexOf("administrative_level") != -1) {
+        promises.push(getEditBasicPromise(req, res, crmService.updateAdministrativeLevel, newCustomer, "行政级别"));
+    }
+    //修改了行业
+    if (keys.indexOf("industry") != -1) {
+        promises.push(getEditBasicPromise(req, res, crmService.updateIndustry, newCustomer, "行业"));
+    }
+    //修改了地域
+    if (keys.indexOf("province") != -1) {
+        promises.push(getEditBasicPromise(req, res, crmService.updateRegion, newCustomer, "地域"));
+    }
+    //修改了详细地址
+    if (keys.indexOf("address") != -1) {
+        promises.push(getEditBasicPromise(req, res, crmService.updateDetailAddress, newCustomer, "详细地址"));
+    }
+    //修改了备注
+    if (keys.indexOf("remarks") != -1) {
+        promises.push(getEditBasicPromise(req, res, crmService.updateComment, newCustomer, "备注"));
+    }
+    return Promise.all(promises).then(function (data) {
+        res.status(200).json(data);
+    }, function (errorMsg) {
+        res.status(500).json(errorMsg);
+    });
+};
+
 //转出客户的处理
 exports.transferCustomer = function (req, res) {
     crmService.transferCustomer(req, res, req.body)
