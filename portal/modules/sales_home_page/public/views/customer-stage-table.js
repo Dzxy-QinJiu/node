@@ -131,10 +131,11 @@ class CustomerStageTable extends React.Component {
                     {renderSpiner()}
                     <div className={hideTable? "hide": ""}>
                         <AntcTable
+                            bordered={true}
                             dropLoad={{
                                 loading: loadingNotFirst,
                                 handleScrollBottom: this.handleScrollBottom.bind(this),
-                                listenScrollBottom,
+                                listenScrollBottom: listenScrollBottom && !loading,
                                 showNoMoreDataTip
                             }}
                             rowKey={getRowKey}
