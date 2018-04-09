@@ -295,7 +295,7 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler
     }
 });
 
-//更换当前tab页
+//显示隐藏客户阶段的客户列表面板
 OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
     this.isShowCustomerStageTable = !this.isShowCustomerStageTable;
 };
