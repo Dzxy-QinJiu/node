@@ -7,6 +7,11 @@ import rightPanelUtil from "CMP_DIR/rightPanel";
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 const RightPanel = rightPanelUtil.RightPanel;
 var AppUserManage = require("MOD_DIR/app_user_manage/public");
+//计算距离所需布局距离
+const LAYOUT = {
+    TOP: 150//顶部留白
+}
+
 class CustomerStageTable extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +30,7 @@ class CustomerStageTable extends React.Component {
     }
     //计算表格高度
     changeTableHeight = () => {
-        var tableHeight = $(window).height() - 150;
+        var tableHeight = $(window).height() - LAYOUT.TOP;
         this.setState({ tableHeight });
     }
     componentWillUnmount() {
