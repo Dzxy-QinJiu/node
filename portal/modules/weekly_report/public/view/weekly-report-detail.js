@@ -41,6 +41,9 @@ const WeeklyReportDetail = React.createClass({
     },
     componentDidMount() {
         WeeklyReportDetailStore.listen(this.onStoreChange);
+        setTimeout(()=>{
+            WeeklyReportDetailAction.getSalesStageList();
+        })
         if (this.state.selectedItem.teamId && this.state.selectedItem.nWeek) {
             this.getWeeklyReportData(); // 获取电话统计、、、 数据
         }
@@ -405,31 +408,36 @@ const WeeklyReportDetail = React.createClass({
             title: Intl.get("user.salesman", "销售人员"),
             dataIndex: 'nick_name',
             className: CLASSNAMES.ALIGNLEFT,
-        }, {
-            title: Intl.get("crm.142", "执行阶段"),
-            dataIndex: 'executed',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.141", "成交阶段"),
-            dataIndex: 'dealed',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.145", "谈判阶段"),
-            dataIndex: 'negotiated',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("weekly.report.customer.stage.projected", "立项阶段"),
-            dataIndex: 'projected',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.143", "试用阶段"),
-            dataIndex: 'tried',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("common.summation", "合计"),
-            dataIndex: 'total',
-            className: CLASSNAMES.ALIGNRIGHT
         }];
+        _.each(this.state.salesStageObj.list, (stageItem) => {
+            columns.push({
+                title: stageItem.name,
+                className: CLASSNAMES.ALIGNRIGHT,
+                render: (text) => {
+                    var data = text.statistic_list;
+                    if (!this.state.salesStageObj.loading){
+                        if (!this.state.salesStageObj.errMsg){
+                            //如果获取销售阶段完成并且没有出错时
+                            if (stageItem.id && _.isArray(data)){
+                               var obj =  _.find(data, (item)=>{return item.stage_id === stageItem.id});
+                               return (<span>{obj && obj.statistic_data ? obj.statistic_data: 0}</span>)
+                            }
+                        }else{
+                            //如果获取销售阶段出错时，用默认的销售阶段
+                            var obj =  _.find(data, (item)=>{return item.stage_name === stageItem.name});
+                            return (<span>{obj && obj.statistic_data ? obj.statistic_data: 0}</span>)
+                        }
+                    }else {
+                        return null;
+                    }
+                }
+            })
+        });
+        columns.push({
+                title: Intl.get("common.summation", "合计"),
+                dataIndex: 'total',
+                className: CLASSNAMES.ALIGNRIGHT
+            });
         return columns;
     },
     getRegionOverlayListColumn(){

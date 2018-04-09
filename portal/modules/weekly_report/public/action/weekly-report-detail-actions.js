@@ -56,6 +56,16 @@ function weeklyReportDetailActions() {
             }
         );
     };
+    //获取销售阶段
+    this.getSalesStageList = function () {
+        this.dispatch({loading: true, error: false});
+        weeklyReportAjax.getSalesStageList().then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData.result});
+            }, (errorMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            }
+        );
+    };
     // 获取回款情况
     this.getRepaymentInfo = function (reqData, type) {
         this.dispatch({loading: true, error: false});
@@ -86,6 +96,5 @@ function weeklyReportDetailActions() {
             }
         );
     };
-
 }
 module.exports = alt.createActions(weeklyReportDetailActions);

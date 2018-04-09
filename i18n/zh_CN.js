@@ -2018,7 +2018,7 @@ var zh_CN = {
     "weekly.report.active.radio": "活跃率",
     "weekly.report.district.country": "区县",
     "weekly.report.customer.stage": "客户阶段",
-    "weekly.report.customer.stage.projected": "立项阶段",
+    "weekly.report.customer.stage.projected": "立项报价阶段",
     "weekly.report.customer.stage.intentioned": "意向阶段",
     "weekly.report.customer.stage.info": "信息阶段",
     "app.user.trans.clue.customer": "生成线索",

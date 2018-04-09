@@ -44,6 +44,18 @@ weeklyReportDetailStore.prototype.setInitState = function () {
         loading: false,
         errMsg: ""//获取数据失败
     };
+    //销售阶段
+    this.salesStageObj = {
+        list :[
+            {name: Intl.get("crm.142", "执行阶段")},
+            {name: Intl.get("crm.141", "成交阶段")},
+            {name: Intl.get("crm.145", "谈判阶段")},
+            {name: Intl.get("weekly.report.customer.stage.projected", "立项报价阶段")},
+            {name: Intl.get("crm.143", "试用阶段")}
+        ],
+        loading: false,
+        errMsg:""//获取数据失败
+    };
     //保存员工请假信息
     this.addAskForLeave = {
         submitting: false,//正在保存
@@ -95,6 +107,16 @@ weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
         this.regionOverlayData.errMsg = result.errMsg;
     } else {
         this.regionOverlayData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].res_list : [];
+    }
+};
+
+//获取销售阶段
+weeklyReportDetailStore.prototype.getSalesStageList = function (result) {
+    this.salesStageObj.loading = result.loading;
+    if (result.error){
+        this.salesStageObj.errMsg = result.errMsg;
+    }else if (_.isArray(result.resData)){
+        this.salesStageObj.list = result.resData.reverse();
     }
 };
 
