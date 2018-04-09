@@ -56,12 +56,14 @@ var UserInfo = React.createClass({
             });
         },
         componentWillUnmount: function () {
+            UserStore.unlisten(this.onChange);
             UserFormStore.unlisten(this.onChange);
         },
         componentDidMount: function () {
             var _this = this;
             _this.layout();
             UserFormStore.listen(_this.onChange);
+            UserStore.listen(this.onChange);
             $(window).resize(function (e) {
                 e.stopPropagation();
                 _this.layout();
@@ -453,6 +455,7 @@ var UserInfo = React.createClass({
                                 id={recordId}
                                 field={"commission_ratio"}
                                 user_id={this.state.userInfo.id}
+                                userInfo = {this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={commissionRadio}
                                 displayType={'text'}
@@ -470,6 +473,7 @@ var UserInfo = React.createClass({
                                 id={recordId}
                                 field={"goal"}
                                 user_id={this.state.userInfo.id}
+                                userInfo = {this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={goal}
                                 displayType={'text'}
