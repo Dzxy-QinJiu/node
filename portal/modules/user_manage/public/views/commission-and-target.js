@@ -64,8 +64,12 @@ var CommissionAndTarget = React.createClass({
         //如果提成或者目标的id存在，就更新那条记录
         if (this.state.id) {
             user.id = this.state.id;
-        } else if (this.props.user_id) {
+        }
+        if (this.props.user_id) {
             user.user_id = this.props.user_id;
+            user.user_name = this.props.userInfo.user_name;
+            user.sales_team = this.props.userInfo.teamName;
+            user.sales_team_id = this.props.userInfo.teamId;
         }
         this.props.setSalesGoals(user).then((result) => {
             if (result.id) {
