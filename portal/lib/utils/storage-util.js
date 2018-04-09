@@ -20,11 +20,7 @@ var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey
  * set自动转化为字符串
  */
 
-const Storage = (window && window.localStorage) || localStorage || {
-    getItem: () => {},
-    setItme: () => {},
-    removeItem: () => {}
-};
+const Storage = window.localStorage;
 
 const storageUtil = {
     get: (key, pageId) => {

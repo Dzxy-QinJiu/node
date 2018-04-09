@@ -11,7 +11,7 @@ exports.localStorageCustomerViewPageSizeKey = 'app_user_manage.customer_view.pag
 //缓存在localStorage中的用户审计日志列表每页多少条的key
 exports.localStorageLogViewPageSizeKey = 'app_user_manage.log_view.page_size';
 // 审计日志和在线用户选择应用时，将应用保存到localStorage中，将当前用户user_id作为key
-exports.saveSelectAppKeyUserId = JSON.stringify(UserData ? UserData.user_id : "");
+exports.saveSelectAppKeyUserId = UserData ? UserData.user_id : "";
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
 exports.getLocalStorageObj = function (property ,selectApp){
     let localObj = {};
