@@ -56,12 +56,14 @@ var UserInfo = React.createClass({
             });
         },
         componentWillUnmount: function () {
+            UserStore.unlisten(this.onChange);
             UserFormStore.unlisten(this.onChange);
         },
         componentDidMount: function () {
             var _this = this;
             _this.layout();
             UserFormStore.listen(_this.onChange);
+            UserStore.listen(this.onChange);
             $(window).resize(function (e) {
                 e.stopPropagation();
                 _this.layout();
