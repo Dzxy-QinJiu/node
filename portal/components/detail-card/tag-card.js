@@ -150,6 +150,8 @@ class TagCard extends React.Component {
         }
         return (<div className="tag-title-container">
             <span className="tag-title-text">{this.props.title}</span>
+            {this.props.noDataTip && this.state.displayType == "text" ?
+                <span className="no-tag-text">{this.props.noDataTip}</span> : null}
             {this.props.enableEdit && this.state.displayType === 'text' ?
                 <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={(e) => {
                     this.setEditable(e)
@@ -158,6 +160,10 @@ class TagCard extends React.Component {
     }
 
     render() {
+        //没有标签数据时，只展示标题、无数据的提示和编辑按钮
+        if (this.props.title && this.props.noDataTip && this.state.displayType === "text") {
+            return (<DetailCard content={this.renderTagTitle()}/>);
+        }
         return (
             <DetailCard title={this.renderTagTitle()}
                         content={this.renderTagContent()}
@@ -176,6 +182,7 @@ DetailCard.defaultProps = {
     tags: [], //标签(Array)
     recommendTags: [],//所有推荐标签的列表
     enableEdit: false,//能否编辑(Boolean)
+    noDataTip: "",//无数据时的提示
     saveTags: function () {
     }//保存修改后的标签列表（Function）
 };

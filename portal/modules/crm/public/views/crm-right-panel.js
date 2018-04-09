@@ -42,7 +42,7 @@ var CrmRightPanel = React.createClass({
     },
     componentDidMount: function () {
         this.setTabsContainerHeight();
-        $(window).resize(function (e) {
+        $(window).resize(e => {
             e.stopPropagation();
             this.setTabsContainerHeight();
         });

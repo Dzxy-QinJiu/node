@@ -19,6 +19,7 @@ import crmUtil from "../utils/crm-util";
 import CrmBasicAjax from "../ajax/index";
 import batchAjax from "../ajax/batch-change-ajax";
 import userData from "PUB_DIR/sources/user-data";
+import CustomerRecord from "./customer_record";
 
 function getStateFromStore(isMerge) {
     return {
@@ -200,6 +201,12 @@ var BasicOverview = React.createClass({
             </div>);
         return (<DetailCard content={tip}/>);
     },
+    renderCustomerRcord: function () {
+        return <CustomerRecord
+            curCustomer={this.state.basicData}
+            refreshCustomerList={this.props.refreshCustomerList}
+        />
+    },
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -220,13 +227,17 @@ var BasicOverview = React.createClass({
                     salesTeamId={basicData.sales_team_id}
                     modifySuccess={this.editBasicSuccess}
                 />
-                <TagCard title={Intl.get("common.tag", "标签") + ":"}
+                <TagCard title={`${Intl.get("common.tag", "标签")}:`}
                          placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
                          data={basicData}
                          tags={tagArray}
                          recommendTags={this.state.recommendTags}
                          enableEdit={hasPrivilege("CUSTOMER_UPDATE_LABEL")}
+                         noDataTip={tagArray.length ? "" : Intl.get("crm.detail.no.tag", "暂无标签")}
                          saveTags={this.saveEditTags}
+                />
+                <DetailCard title={`${Intl.get("sales.frontpage.recent.record", "最新跟进")}:`}
+                            content={this.renderCustomerRcord()}
                 />
             </div>
         );

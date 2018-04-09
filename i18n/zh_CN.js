@@ -1242,6 +1242,7 @@ var zh_CN = {
     "crm.basic.overview": "概览",
     "crm.overview.expire.tip": "有应用{days}天后签约到期",
     "crm.input.new.tag": "请输入新标签",
+    "crm.detail.no.tag": "暂无标签",
     // 客户管理end
 
     // 客户分析start

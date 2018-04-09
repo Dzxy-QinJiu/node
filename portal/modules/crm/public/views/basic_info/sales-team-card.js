@@ -278,7 +278,9 @@ var SalesTeamCard = React.createClass({
         return (
             <div className="sales-team-show-block">
                 <span className="sales-team-label">{Intl.get("common.belong.sales", "所属销售")}:</span>
-                <span className="sales-team-text">{this.state.userName} - {this.state.salesTeam}</span>
+                <span className="sales-team-text">
+                    {this.state.userName} {this.state.salesTeam ? ` - ${this.state.salesTeam}` : ""}
+                </span>
                 {this.state.enableTransfer && !this.state.isMerge ? (
                     <span className="iconfont icon-transfer"
                           title={Intl.get("crm.qualified.roll.out", "转出")}
