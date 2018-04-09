@@ -279,7 +279,7 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("c
     }    
 });
 
-//获取客户阶段变更数据
+//获取客户阶段变更对应的客户列表数据
 OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler("stageChangedCustomerList", function ({ loading, errorMsg, data, paramObj }) {
     if (paramObj.isFirst) {
         this.stageChangedCustomerList.data = data.list;
