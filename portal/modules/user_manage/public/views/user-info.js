@@ -26,6 +26,7 @@ var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
 import Trace from "LIB_DIR/trace";
 import CommissionAndTarget from "./commission-and-target";
+const UserData = require("PUB_DIR/sources/user-data");
 var UserInfo = React.createClass({
         getInitialState: function () {
             return {
@@ -527,6 +528,8 @@ var UserInfo = React.createClass({
         render: function () {
             //当前要展示的信息
             var userInfo = this.state.userInfo;
+            let user_id = userInfo.id;
+            let loginUserInfo =  UserData.getUserData();
             //个人日志
             var logItems = [];
             var logList = this.state.logList;
@@ -555,7 +558,7 @@ var UserInfo = React.createClass({
             return (
                 <div className={className} data-tracename="成员详情">
                     <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
-                    <div className="edit-buttons">
+                    {user_id !== loginUserInfo.user_id ? <div className="edit-buttons">
                         {!this.props.showAddMemberButton ? (
                             <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
                                 <RightPanelForbid onClick={(e) => {
@@ -565,7 +568,7 @@ var UserInfo = React.createClass({
                                 />
                             </PrivilegeChecker>
                         ) : null}
-                    </div>
+                    </div>: null}
                     <Popconfirm title="是否保存上传的头像？"
                                 visible={this.state.showSaveIconTip}
                                 onConfirm={this.saveUserIcon} onCancel={this.cancelEditIcon}>
