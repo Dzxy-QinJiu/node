@@ -20,24 +20,28 @@ var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey
  * set自动转化为字符串
  */
 
-const Storage = window.localStorage;
+const Storage = (window && window.localStorage) || localStorage || {
+    getItem: () => {},
+    setItme: () => {},
+    removeItem: () => {}
+};
 
 const storageUtil = {
     get: (key, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            return undefined
+            return null
         }
         const obj = JSON.parse(Storage.getItem(userId));
         if (obj) {
             if (hasPageId) {
                 if (obj[pageId]) {
-                    return obj[pageId][key];
+                    return obj[pageId][key] || null;
                 } else {
                     return null;
                 }
             } else {
-                return obj[key];
+                return obj[key] || null;
             }
         } else {
             return null
@@ -46,7 +50,7 @@ const storageUtil = {
     set: (key, data, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            return undefined
+            return null
         }
         const preStorage = JSON.parse(Storage.getItem(userId));
         let newProps = null;
@@ -67,7 +71,7 @@ const storageUtil = {
     removeItem: (key, pageId) => {
         const hasPageId = pageId && typeof pageId == "string";
         if (typeof key != 'string') {
-            return undefined
+            return null
         }
         const curStorage = JSON.parse(Storage.getItem(userId));
         if (hasPageId) {
