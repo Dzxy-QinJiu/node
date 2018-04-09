@@ -67,7 +67,7 @@ var CommissionAndTarget = React.createClass({
         }
         if (this.props.user_id) {
             user.user_id = this.props.user_id;
-            user.user_name = this.props.userInfo.user_name;
+            user.user_name = this.props.userInfo.userName;
             user.sales_team = this.props.userInfo.teamName;
             user.sales_team_id = this.props.userInfo.teamId;
         }
