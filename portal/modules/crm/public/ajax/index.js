@@ -72,26 +72,7 @@ exports.updateCustomer = function (newCus) {
     });
     return Deferred.promise();
 };
-exports.editBasicInfo = function (newCus) {
-    let urlType = "user";
-    if (hasPrivilege(AUTHS.UPDATE_ALL)) {
-        urlType = "manager";
-    }
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: `/rest/crm/edit/basic/${urlType}`,
-        dataType: 'json',
-        type: 'put',
-        data: newCus,
-        success: function (result) {
-            Deferred.resolve(result);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
+
 //转出客户
 exports.transferCustomer = function (customer) {
     let urlType = "user";// CRM_USER_TRANSFER

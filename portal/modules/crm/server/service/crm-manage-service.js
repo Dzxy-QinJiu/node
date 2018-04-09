@@ -307,56 +307,6 @@ exports.updateCustomer = function (req, res, newCustomer) {
         }, newCustomer);
 };
 
-//修改客户行政级别
-exports.updateAdministrativeLevel = function (req, res, newCustomer, urlType) {
-    return restUtil.authRest.put(
-        {
-            url: crmRestApis.basic.updateAdministrativeLevel.replace(":url_type", urlType),
-            req: req,
-            res: res
-        }, {id: newCustomer.id, administrative_level: newCustomer.administrative_level});
-};
-
-//修改客户行业
-exports.updateIndustry = function (req, res, newCustomer, urlType) {
-    return restUtil.authRest.put(
-        {
-            url: crmRestApis.basic.updateIndustry.replace(":url_type", urlType),
-            req: req,
-            res: res
-        }, {id: newCustomer.id, industry: newCustomer.industry});
-};
-
-//修改客户地域
-exports.updateRegion = function (req, res, newCustomer, urlType) {
-    return restUtil.authRest.put(
-        {
-            url: crmRestApis.basic.updateAddress.replace(":url_type", urlType),
-            req: req,
-            res: res
-        }, {id: newCustomer.id, province: newCustomer.province, city: newCustomer.city, county: newCustomer.county});
-};
-
-//修改客户详细地址
-exports.updateDetailAddress = function (req, res, newCustomer, urlType) {
-    return restUtil.authRest.put(
-        {
-            url: crmRestApis.basic.updateDetailAddress.replace(":url_type", urlType),
-            req: req,
-            res: res
-        }, {id: newCustomer.id, address: newCustomer.address});
-};
-
-//修改客户备注
-exports.updateComment = function (req, res, newCustomer, urlType) {
-    return restUtil.authRest.put(
-        {
-            url: crmRestApis.basic.updateComment.replace(":url_type", urlType),
-            req: req,
-            res: res
-        }, {id: newCustomer.id, remarks: newCustomer.remarks});
-};
-
 //转出客户的处理
 exports.transferCustomer = function (req, res, newCustomer) {
     return restUtil.authRest.put(

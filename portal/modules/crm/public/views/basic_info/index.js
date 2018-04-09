@@ -1,7 +1,5 @@
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
-// require('../../css/crm-basic.less');
-// require("../../css/basic-edit-field.less");
 var CRMStore = require("../../store/basic-store");
 var CRMAction = require("../../action/basic-actions");
 var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");
@@ -23,7 +21,6 @@ import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
-import EditBasicForm from "./edit-basic-form";
 
 function getStateFromStore(isMerge) {
     return {
@@ -180,9 +177,8 @@ var BasicData = React.createClass({
             location.push(basicData.county);
         }
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
-        return (<div className="basic-info-detail-block">
-            {this.state.editBasicFlag ? (
-                <EditBasicForm setEditBasicFlag={this.setEditBasicFlag} basicData={basicData}/>) : (
+        return (
+            <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
                         <span className="iconfont icon-administrative basic-info-icon"/>
@@ -206,10 +202,8 @@ var BasicData = React.createClass({
                         <DetailEditBtn title={Intl.get("common.edit", "编辑")}
                                        modifySuccess={this.editBasicSuccess}
                                        onClick={this.setEditBasicFlag.bind(this, true)}/>) : null}
-                </div>)
-            }
-        </div>);
-
+                </div>
+            </div>);
     },
     render: function () {
         var basicData = this.state.basicData ? this.state.basicData : {};
