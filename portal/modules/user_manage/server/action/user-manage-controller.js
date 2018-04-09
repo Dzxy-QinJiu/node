@@ -7,7 +7,7 @@
 require('../nock');
 //用户管理服务
 var userManageService = require("../service/user-manage-service");
-
+let BackendIntl = require("../../../../lib/utils/backend_intl");
 
 /*
  * list log handler.
@@ -111,11 +111,15 @@ exports.updateUserRoles = function (req, res) {
  * stop/start user handler
  */
 exports.updateUserStatus = function (req, res) {
-    userManageService.updateUserStatus(req, res, req.body).on("success", function (data) {
-        res.status(200).json(data);
-    }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+    if (req.session.user && req.session.user.userid && req.session.user.userid == req.body.id) {
+        res.status(500).json(BackendIntl.get("member.forbidden.self", "禁止禁用自己"));
+    } else {
+        userManageService.updateUserStatus(req, res, req.body).on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+    }
 };
 
 

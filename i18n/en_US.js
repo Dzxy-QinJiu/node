@@ -616,6 +616,7 @@ var en_US = {
     "member.get.role.lists": "Getting role lists",//正在获取角色列表
     "member.is.building": "Setting up",//创建中
     "member.create.time": "Create Time",//创建时间
+    "member.forbidden.self": "Don't disable yourself", // 禁止禁用自己
     //后台管理-成员end
     //组织管理start
     "organization.no.organization.tip": "No organization,please add one first",//暂无组织，请先添加

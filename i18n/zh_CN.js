@@ -623,6 +623,7 @@ var zh_CN = {
     "member.get.role.lists": "正在获取角色列表",
     "member.is.building": "创建中",
     "member.create.time": "创建时间",
+    "member.forbidden.self": "禁止禁用自己",
     //后台管理-成员end
     //组织管理start
     "organization.no.organization.tip": "暂无组织，请先添加",
