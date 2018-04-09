@@ -239,8 +239,7 @@
             }
             .stage-change-customer-container {
               span.customer-stage-number {
-                // todo
-                // cursor: pointer;
+                cursor: pointer;
               }
             }
             .transfer-customer-container, 
@@ -631,9 +630,11 @@
     transform:translateX(100%);
     -webkit-transform:translateX(100%);
     background-color:#fff;
-    display:block;
-  .customer-table-close>.close-pannel {
-    top: -50px;
-    left: -20px;
+    display:block;  
+  .stage-changed-customer-list-wrapper {
+    padding: 70px 50px 0;
+    .click-cell {
+      cursor: pointer;
+    }
   }
 }

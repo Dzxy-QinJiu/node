@@ -43,7 +43,6 @@ var CustomerAnalysis = React.createClass({
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
             updateScrollBar: false,
-            isShowCustomerStageTable: false
         };
     },
     onStateChange: function () {
@@ -90,9 +89,35 @@ var CustomerAnalysis = React.createClass({
             return "";
         }
     },
+    getStageChangeCustomerList: function (data) {
+        const { isFirst } = data;
+        const paramObj = {
+            params: {
+                sort_field: this.state.stageChangedCustomerList.sorter.field,
+                order: this.state.stageChangedCustomerList.sorter.order,
+                page_size: DEFAULT_TABLE_PAGESIZE,
+            },
+            ...data
+        }
+        const lastId = this.state.stageChangedCustomerList.lastId;
+        if (lastId && !isFirst) {
+            paramObj.queryObj = {
+                id: lastId
+            };
+        }
+        if (isFirst) {
+            this.state.stageChangedCustomerList.lastId = "";
+            this.state.stageChangedCustomerList.listenScrollBottom = true;
+            this.setState({ stageChangedCustomerList: this.state.stageChangedCustomerList }, () => {
+                OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
+            });
+        } else {
+            OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
+        }
+    },
     //获取客户阶段变更数据
     getStageChangeCustomers: function () {
-        let params = {           
+        let params = {
             rang_params: [
                 {
                     "from": this.state.startTime,
@@ -165,17 +190,10 @@ var CustomerAnalysis = React.createClass({
         $(window).on('resize', this.windowResize);
         $(".statistic-data-analysis .thumb").hide();
     },
-    //展示客户阶段统计
-    showCusStageMetic: function () {
-        this.setState({
-            isShowCustomerStageTable: true
-        })
-    },
-    closeCustomerStageTable: function () {
-        this.setState({
-            isShowCustomerStageTable: false
-        })
-    },
+    //切换展示客户阶段统计
+    toggleCusStageMetic: function () {
+        OplateCustomerAnalysisAction.toggleStageCustomerList();
+    },    
     componentWillUnmount: function () {
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
@@ -413,12 +431,24 @@ var CustomerAnalysis = React.createClass({
         this.setState({
             selectedCustomerStage: {
                 type,
-                date: item.time,
-                user_name: item.memberName
+                time: item.time,
+                nickname: item.memberName
             }
-        }, () => { 
-            // this.showCusStageMetic()
-         });
+        })
+        this.getStageChangeCustomerList({
+            isFirst: true,
+            query: {
+                label: type,
+                nickname: item.memberName
+            },
+            rang_params:[{
+                "from": moment(item.time).startOf('day').valueOf(),
+                "to": moment(item.time).endOf('day').valueOf(),
+                "name": "time",
+                "type": "time"
+            }]
+        });
+        this.toggleCusStageMetic();
     },
     onStageSortChange(pagination, filters, sorter) {
         this.getStageChangeCustomers(sorter.order);
@@ -533,306 +563,307 @@ var CustomerAnalysis = React.createClass({
                             columns={columns}
                             onChange={this.onStageSortChange.bind(this)}
                         />
-                    </div>                   
+                    </div>
                 </GeminiScrollbar>
-            <RightPanel
-                className="customer-stage-table-wrapper"
-                showFlag={this.state.isShowCustomerStageTable}
-            >
-                {this.state.isShowCustomerStageTable ?
-                    <CustomerStageTable
-                        params={this.state.selectedCustomerStage}
-                        onClose={this.closeCustomerStageTable}
-                    /> : null}
-            </RightPanel>
+                <RightPanel
+                    className="customer-stage-table-wrapper"
+                    showFlag={this.state.isShowCustomerStageTable}
+                >
+                    {this.state.isShowCustomerStageTable ?
+                        <CustomerStageTable
+                            params={this.state.selectedCustomerStage}
+                            result={this.state.stageChangedCustomerList}
+                            onClose={this.toggleCusStageMetic}
+                            handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
+                        /> : null}
+                </RightPanel>
             </div >
         )
-        
-        
+
+
     },
-changeCurrentTab: function (tabName, event) {
-    OplateCustomerAnalysisAction.changeCurrentTab(tabName);
-    this.getChartData();
-},
-//客户详情面板相关方法
-ShowCustomerUserListPanel: function (data) {
-    this.setState({
-        isShowCustomerUserListPanel: true,
-        CustomerInfoOfCurrUser: data.customerObj
-    });
-},
-closeCustomerUserListPanel: function () {
-    this.setState({
-        isShowCustomerUserListPanel: false
-    })
-},
-hideRightPanel: function () {
-    this.setState({
-        showRightPanel: false
-    });
-},
-renderTransferedCustomerTable: function () {
-    const handleCustomerClick = (item, index) => {
+    changeCurrentTab: function (tabName, event) {
+        OplateCustomerAnalysisAction.changeCurrentTab(tabName);
+        this.getChartData();
+    },
+    //客户详情面板相关方法
+    ShowCustomerUserListPanel: function (data) {
         this.setState({
-            showRightPanel: true,
-            selectedCustomerId: item.customer_id,
-            selectedCustomerIndex: index
+            isShowCustomerUserListPanel: true,
+            CustomerInfoOfCurrUser: data.customerObj
+        });
+    },
+    closeCustomerUserListPanel: function () {
+        this.setState({
+            isShowCustomerUserListPanel: false
         })
-    }
-    const getRowKey = function (record, index) {
-        return index;
-    }
-    //处理选中行的样式
-    const handleRowClassName = (record, index) => {
-        if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
-            return "current_row";
+    },
+    hideRightPanel: function () {
+        this.setState({
+            showRightPanel: false
+        });
+    },
+    renderTransferedCustomerTable: function () {
+        const handleCustomerClick = (item, index) => {
+            this.setState({
+                showRightPanel: true,
+                selectedCustomerId: item.customer_id,
+                selectedCustomerIndex: index
+            })
         }
-        else {
-            return "";
+        const getRowKey = function (record, index) {
+            return index;
         }
-    }
-    const columns = [
-        {
-            title: Intl.get("common.login.time", "时间"),
-            dataIndex: "time",
-            key: 'time',
-            sorter: true
-        }, {
-            title: Intl.get("crm.41", "客户名"),
-            dataIndex: "customer_name",
-            key: 'customer_name',
-            className: "customer-name",
-            sorter: true,
-            render: function (text, item, index) {
+        //处理选中行的样式
+        const handleRowClassName = (record, index) => {
+            if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
+                return "current_row";
+            }
+            else {
+                return "";
+            }
+        }
+        const columns = [
+            {
+                title: Intl.get("common.login.time", "时间"),
+                dataIndex: "time",
+                key: 'time',
+                sorter: true
+            }, {
+                title: Intl.get("crm.41", "客户名"),
+                dataIndex: "customer_name",
+                key: 'customer_name',
+                className: "customer-name",
+                sorter: true,
+                render: function (text, item, index) {
+                    return (
+                        <span className="transfer-customer-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
+                    )
+                }
+            }, {
+                title: Intl.get("crm.customer.transfer.sales", "销售代表"),
+                dataIndex: "old_member_nick_name",
+                key: 'old_member_nick_name',
+                sorter: true
+            }, {
+                title: Intl.get("crm.customer.transfer.manager", "客户经理"),
+                dataIndex: "new_member_nick_name",
+                key: 'new_member_nick_name',
+                sorter: true
+            }, {
+                title: Intl.get("user.sales.team", "销售团队"),
+                dataIndex: "sales_team",
+                key: 'sales_team',
+            }
+
+        ];
+        const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.lastId;
+        const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
+        const renderLoadMore = () => {
+            if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length == 0)) {
+                return null
+            } else {
                 return (
-                    <span className="transfer-customer-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
+                    <Button
+                        onClick={this.getTransferCustomers.bind(this)}
+                        loading={loadingNotFirst}
+                        disabled={loadingNotFirst}
+                    >
+                        {Intl.get("common.load.more", "加载更多")}
+                    </Button>
                 )
             }
-        }, {
-            title: Intl.get("crm.customer.transfer.sales", "销售代表"),
-            dataIndex: "old_member_nick_name",
-            key: 'old_member_nick_name',
-            sorter: true
-        }, {
-            title: Intl.get("crm.customer.transfer.manager", "客户经理"),
-            dataIndex: "new_member_nick_name",
-            key: 'new_member_nick_name',
-            sorter: true
-        }, {
-            title: Intl.get("user.sales.team", "销售团队"),
-            dataIndex: "sales_team",
-            key: 'sales_team',
         }
+        const renderErr = () => {
+            if (this.state.transferCustomers.errorMsg) {
+                return (
+                    <div className="alert-container">
+                        <Alert
+                            message={this.state.transferCustomers.errorMsg}
+                            type="error"
+                            showIcon
+                        />
+                    </div>
+                )
+            }
+        }
+        const renderSpiner = () => {
+            if (loadingFirst) {
+                return (
+                    <Spinner />
+                )
+            }
+        }
+        const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
+        const showNoMoreDataTip = !this.state.transferCustomers.loading && this.state.transferCustomers.lastId && !this.state.transferCustomers.listenScrollBottom;
+        return (
+            <div
+                className="chart-holder transfer-customer-container scrollbar-container"
+                data-tracename="转出客户统计"
+                style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "initial" : "540px" }}
+            >
+                <GeminiScrollbar>
+                    <div className="title">
+                        {Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}
+                    </div>
+                    {renderErr()}
+                    {renderSpiner()}
+                    <div className={hideTable ? "hide" : ""}>
+                        <AntcTable
+                            rowKey={getRowKey}
+                            rowClassName={handleRowClassName}
+                            util={{ zoomInSortArea: true }}
+                            columns={columns}
+                            pagination={false}
+                            onChange={this.onTransferSortChange.bind(this)}
+                            dataSource={this.state.transferCustomers.data}
+                            loading={loadingFirst}
+                        />
+                        <div className="load-more-container">
+                            {!showNoMoreDataTip ? renderLoadMore() : null}
+                            {<NoMoreDataTip
+                                fontSize="12"
+                                show={() => showNoMoreDataTip}
+                            />}
+                        </div>
+                    </div>
+                </GeminiScrollbar>
+                <CrmRightPanel
+                    showFlag={this.state.showRightPanel}
+                    currentId={this.state.selectedCustomerId}
+                    hideRightPanel={this.hideRightPanel}
+                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                    updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                />
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    {this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
+            </div>
 
-    ];
-    const loadingFirst = this.state.transferCustomers.loading && !this.state.transferCustomers.lastId;
-    const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
-    const renderLoadMore = () => {
-        if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length == 0)) {
-            return null
+
+        )
+
+    },
+    renderChartContent: function () {
+        //销售不展示团队的数据统计
+        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
+        return (
+            <div className="chart_list">
+                {this.state.timeType != "day" ? (
+                    <div className="analysis_chart col-md-6 col-sm-12"
+                        data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
+                        <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
+                            <div className="title"><ReactIntl.FormattedMessage
+                                id="customer.analysis.add.trend" defaultMessage="新增趋势" /></div>
+                            {this.getCustomerChart()}
+                        </div>
+                    </div>) : null}
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
+                    <div className="chart-holder" data-tracename="客户阶段统计">
+                        <div className="title">
+                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage" defaultMessage="客户阶段统计" />
+                        </div>
+                        {this.getCustomerStageChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                    <div className="chart-holder" data-tracename="订单阶段统计">
+                        <div className="title">
+                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计" />
+                        </div>
+                        {this.getStageChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                    <div className="chart-holder">
+                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
+                            defaultMessage="地域-新增" /></div>
+                        {this.getZoneChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                    <div className="chart-holder" data-tracename="行业-新增统计">
+                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
+                            defaultMessage="行业-新增" /></div>
+                        {this.getIndustryChart()}
+                    </div>
+                </div>
+                {hideTeamChart ? null : (
+                    <div className="analysis_chart col-md-6 col-sm-12"
+                        data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                        <div className="chart-holder" data-tracename="团队-新增统计">
+                            <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
+                                defaultMessage="团队-新增" />
+                            </div>
+                            {this.getTeamChart()}
+                        </div>
+                    </div>
+                )}
+                {
+                    //hideTeamChart ? null : (
+                    //<div className="analysis_chart col-md-6 col-sm-12"
+                    //     data-title={Intl.get("user.analysis.active.customer","活跃客户")+"-"+Intl.get("sales.home.new.add", "新增")}>
+                    //    <div className="chart-holder">
+                    //        <div
+                    //            className="title">{Intl.get("user.analysis.active.customer", "活跃客户") + "-" + Intl.get("sales.home.new.add", "新增")}</div>
+                    //        {this.getActiveCustomerChart()}
+                    //    </div>
+                    //</div>)
+                }
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
+                    {this.renderTransferedCustomerTable()}
+
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
+                    {this.renderCustomerStage()}
+                </div>
+            </div>
+        )
+    },
+    renderContent: function () {
+
+        if (this.state.updateScrollBar) {
+            return (
+                <div>
+                    {this.renderChartContent()}
+                </div>
+            )
         } else {
             return (
-                <Button
-                    onClick={this.getTransferCustomers.bind(this)}
-                    loading={loadingNotFirst}
-                    disabled={loadingNotFirst}
-                >
-                    {Intl.get("common.load.more", "加载更多")}
-                </Button>
+                <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
+                    {this.renderChartContent()}
+                </GeminiScrollbar>
             )
         }
-    }
-    const renderErr = () => {
-        if (this.state.transferCustomers.errorMsg) {
-            return (
-                <div className="alert-container">
-                    <Alert
-                        message={this.state.transferCustomers.errorMsg}
-                        type="error"
-                        showIcon
-                    />
-                </div>
-            )
-        }
-    }
-    const renderSpiner = () => {
-        if (loadingFirst) {
-            return (
-                <Spinner />
-            )
-        }
-    }
-    const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
-    const showNoMoreDataTip = !this.state.transferCustomers.loading && this.state.transferCustomers.lastId && !this.state.transferCustomers.listenScrollBottom;
-    return (
-        <div
-            className="chart-holder transfer-customer-container scrollbar-container"
-            data-tracename="转出客户统计"
-            style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "initial" : "540px" }}
-        >
-            <GeminiScrollbar>
-                <div className="title">
-                    {Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}
-                </div>
-                {renderErr()}
-                {renderSpiner()}
-                <div className={hideTable ? "hide" : ""}>
-                    <AntcTable
-                        rowKey={getRowKey}
-                        rowClassName={handleRowClassName}
-                        util={{ zoomInSortArea: true }}
-                        columns={columns}
-                        pagination={false}
-                        onChange={this.onTransferSortChange.bind(this)}
-                        dataSource={this.state.transferCustomers.data}
-                        loading={loadingFirst}
-                    />
-                    <div className="load-more-container">
-                        {!showNoMoreDataTip ? renderLoadMore() : null}
-                        {<NoMoreDataTip
-                            fontSize="12"
-                            show={() => showNoMoreDataTip}
-                        />}
-                    </div>
-                </div>
-            </GeminiScrollbar>
-            <CrmRightPanel
-                showFlag={this.state.showRightPanel}
-                currentId={this.state.selectedCustomerId}
-                hideRightPanel={this.hideRightPanel}
-                ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-            />
-            <RightPanel
-                className="customer-user-list-panel"
-                showFlag={this.state.isShowCustomerUserListPanel}
-            >
-                {this.state.isShowCustomerUserListPanel ?
-                    <AppUserManage
-                        customer_id={this.state.CustomerInfoOfCurrUser.id}
-                        hideCustomerUserList={this.closeCustomerUserListPanel}
-                        customer_name={this.state.CustomerInfoOfCurrUser.name}
-                    /> : null
-                }
-            </RightPanel>
-        </div>
-
-
-    )
-
-},
-renderChartContent: function () {
-    //销售不展示团队的数据统计
-    let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-    return (
-        <div className="chart_list">
-            {this.state.timeType != "day" ? (
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
-                    <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
-                        <div className="title"><ReactIntl.FormattedMessage
-                            id="customer.analysis.add.trend" defaultMessage="新增趋势" /></div>
-                        {this.getCustomerChart()}
-                    </div>
-                </div>) : null}
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
-                <div className="chart-holder" data-tracename="客户阶段统计">
-                    <div className="title">
-                        <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage" defaultMessage="客户阶段统计" />
-                    </div>
-                    {this.getCustomerStageChart()}
-                </div>
-            </div>
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
-                <div className="chart-holder" data-tracename="订单阶段统计">
-                    <div className="title">
-                        <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计" />
-                    </div>
-                    {this.getStageChart()}
-                </div>
-            </div>
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
-                <div className="chart-holder">
-                    <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
-                        defaultMessage="地域-新增" /></div>
-                    {this.getZoneChart()}
-                </div>
-            </div>
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
-                <div className="chart-holder" data-tracename="行业-新增统计">
-                    <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
-                        defaultMessage="行业-新增" /></div>
-                    {this.getIndustryChart()}
-                </div>
-            </div>
-            {hideTeamChart ? null : (
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
-                    <div className="chart-holder" data-tracename="团队-新增统计">
-                        <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
-                            defaultMessage="团队-新增" />
-                        </div>
-                        {this.getTeamChart()}
-                    </div>
-                </div>
-            )}
-            {
-                //hideTeamChart ? null : (
-                //<div className="analysis_chart col-md-6 col-sm-12"
-                //     data-title={Intl.get("user.analysis.active.customer","活跃客户")+"-"+Intl.get("sales.home.new.add", "新增")}>
-                //    <div className="chart-holder">
-                //        <div
-                //            className="title">{Intl.get("user.analysis.active.customer", "活跃客户") + "-" + Intl.get("sales.home.new.add", "新增")}</div>
-                //        {this.getActiveCustomerChart()}
-                //    </div>
-                //</div>)
-            }
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
-                {this.renderTransferedCustomerTable()}
-
-            </div>
-            <div className="analysis_chart col-md-6 col-sm-12"
-                data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
-                {this.renderCustomerStage()}
-            </div>
-        </div>
-    )
-},
-renderContent: function () {
-
-    if (this.state.updateScrollBar) {
+    },
+    render: function () {
+        let layoutParams = this.props.getChartLayoutParams();
+        this.chartWidth = layoutParams.chartWidth;
+        //销售不展示团队的数据统计
+        let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
-            <div>
-                {this.renderChartContent()}
+            <div className="oplate_customer_analysis">
+                <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
+                    {this.renderContent()}
+                </div>
             </div>
-        )
-    } else {
-        return (
-            <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
-                {this.renderChartContent()}
-            </GeminiScrollbar>
-        )
+        );
     }
-},
-render: function () {
-    let layoutParams = this.props.getChartLayoutParams();
-    this.chartWidth = layoutParams.chartWidth;
-    //销售不展示团队的数据统计
-    let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
-    //todo dispatch结束后再render
-    return (
-        <div className="oplate_customer_analysis">
-            <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
-                {this.renderContent()}
-            </div>
-        </div>
-    );
-}
 });
 //返回react对象
 module.exports = CustomerAnalysis;
