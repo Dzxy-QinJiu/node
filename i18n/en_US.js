@@ -1978,7 +1978,7 @@ var en_US = {
     "weekly.report.active.radio": "Active rate",//活跃率
     "weekly.report.district.country": "District",//区县
     "weekly.report.customer.stage": "Customer stage",//客户阶段
-    "weekly.report.customer.stage.projected": "Project stage",//立项阶段
+    "weekly.report.customer.stage.projected": "Project stage",//立项报价阶段
     "weekly.report.customer.stage.intentioned": "Intention stage",//意向阶段
     "weekly.report.customer.stage.info": "Information stage",//信息阶段
     "app.user.trans.clue.customer": "Generate clues",//生成线索
