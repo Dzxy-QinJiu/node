@@ -778,6 +778,7 @@ var MemberList = React.createClass({
         let saveParams = {};
         if (type == SALES_GOALS_TYPE.TEAM) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "保存团队销售目标");
+            var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //团队销售目标
             saveParams = {
                 sales_team_id: curTeamObj.groupId,
@@ -787,6 +788,14 @@ var MemberList = React.createClass({
             if (salesGoals.id) {
                 //修改时加上销售目标的id
                 saveParams.id = salesGoals.id;
+            }
+            //将团队的销售目标加在团队的owner上
+            if (curTeamObj.owner && curTeamObj.owner.nickName && curTeamObj.owner.userId){
+                saveParams.users = [{
+                    goal: salesGoals.goal,
+                    user_id: curTeamObj.owner.userId,
+                    user_name: curTeamObj.owner.nickName
+                }]
             }
         } else if (type == SALES_GOALS_TYPE.MEMBER) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "保存个人销售目标");
