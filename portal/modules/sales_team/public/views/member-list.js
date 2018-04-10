@@ -795,7 +795,14 @@ var MemberList = React.createClass({
                     goal: salesGoals.goal,
                     user_id: curTeamObj.owner.userId,
                     user_name: curTeamObj.owner.nickName
-                }]
+                }];
+                if (_.isArray(salesGoals.users)){
+                  let ownerItem = _.find(salesGoals.users, userItem => userItem.user_id === curTeamObj.owner.userId);
+                  //修改团队目标时，如果团队owner的id存在，也要把团队owner的id加上
+                    if (ownerItem && ownerItem.id){
+                        saveParams.users[0].id = ownerItem.id;
+                    }
+                }
             }
         } else if (type == SALES_GOALS_TYPE.MEMBER) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "保存个人销售目标");
@@ -812,8 +819,8 @@ var MemberList = React.createClass({
                         goal: salesGoals.member_goal
                     };
                     //修改时id的处理
-                    if (_.isArray(salesGoals.user_sales_goals) && salesGoals.user_sales_goals.length) {
-                        let oldUserGoal = _.find(salesGoals.user_sales_goals, goal => goal.user_id == user.userId);
+                    if (_.isArray(salesGoals.users) && salesGoals.users.length) {
+                        let oldUserGoal = _.find(salesGoals.users, goal => goal.user_id == user.userId);
                         if (oldUserGoal && oldUserGoal.id) {
                             userGoal.id = oldUserGoal.id;
                         }
