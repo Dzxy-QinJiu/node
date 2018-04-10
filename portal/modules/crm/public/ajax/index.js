@@ -47,16 +47,6 @@ exports.updateCustomer = function (newCus) {
     } else {
         newCus.urlType = "user";
     }
-    if (!newCus.type) {
-        let keys = _.keys(newCus);
-        if (keys.indexOf("administrative_level") != -1) {
-            newCus.type = "administrative_level";
-        } else if (keys.indexOf("address") != -1) {
-            newCus.id = newCus.user_id;
-            delete newCus.user_id;
-            newCus.type = "detail_address";
-        }
-    }
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/update_customer',

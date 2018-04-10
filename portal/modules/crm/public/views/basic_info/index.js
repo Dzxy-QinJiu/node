@@ -10,18 +10,15 @@ import {Tag, Spin} from "antd";
 var history = require("../../../../../public/sources/history");
 var FilterAction = require("../../action/filter-actions");
 let NameTextareaField = require("./name-textarea-field");
-let CommentTextareaField = require("./comment-textarea-field");
-let IndustrySelectField = require("./industry-select-field");
-let LocationSelectField = require("./location-select-field");
 let CrmAction = require("../../action/crm-actions");
 let CrmRepeatAction = require("../../action/customer-repeat-action");
-import BasicEditInputField from "CMP_DIR/basic-edit-field/input";
-import BasicEditSelectField from "CMP_DIR/basic-edit-field/select";
+import BasicEditInputField from "CMP_DIR/basic-edit-field-new/input";
+import BasicEditSelectField from "CMP_DIR/basic-edit-field-new/select";
+import LocationSelectField from "CMP_DIR/basic-edit-field-new/location-select";
 import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
-
 function getStateFromStore(isMerge) {
     return {
         basicIsLoading: CRMStore.getBasicState(),
@@ -206,19 +203,27 @@ var BasicData = React.createClass({
         this.state.basicData.industry = CRMStore.getBasicInfo().industry;
         this.setState({basicData: this.state.basicData});
     },
+    //保存修改的基本信息
+    saveEditBasicInfo: function (type, saveObj, successFunc, errorFunc) {
+        saveObj.type = type;
+        if (this.props.isMerge) {
+            this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            CrmBasicAjax.updateCustomer(saveObj).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.editBasicSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+    },
     //渲染客户的基本信息
     renderBasicBlock: function (basicData) {
-        //地域
-        let location = [];
-        if (basicData.province) {
-            location.push(basicData.province);
-        }
-        if (basicData.city) {
-            location.push(basicData.city);
-        }
-        if (basicData.county) {
-            location.push(basicData.county);
-        }
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
         let industryOptions = this.state.industryList.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
@@ -236,12 +241,11 @@ var BasicData = React.createClass({
                             value={level}
                             field="administrative_level"
                             selectOptions={this.getAdministrativeLevelOptions()}
-                            disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
+                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
                             placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
                             onSelectChange={this.onSelectAdministrativeLevel}
                             cancelEditField={this.cancelAdministrativeLevel}
-                            saveEditSelect={CrmBasicAjax.updateCustomer}
-                            modifySuccess={this.editBasicSuccess}
+                            saveEditSelect={this.saveEditBasicInfo.bind(this, "administrative_level")}
                         />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
@@ -254,27 +258,47 @@ var BasicData = React.createClass({
                             value={basicData.industry}
                             field="industry"
                             selectOptions={industryOptions}
-                            disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
+                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
                             placeholder={Intl.get("crm.22", "请选择行业")}
                             onSelectChange={this.onSelectIndustry}
                             cancelEditField={this.cancelEditIndustry}
-                            saveEditSelect={CrmBasicAjax.updateCustomer}
-                            modifySuccess={this.editBasicSuccess}
+                            saveEditSelect={this.saveEditBasicInfo.bind(this, "industry")}
                         />
                     </div>
                     <div className="basic-info-address basic-info-item">
                         <span className="iconfont icon-address basic-info-icon"/>
-                        <span className="address-text basic-info-text">{location.join('/')}</span>
-                        <span className="address-detail-text  basic-info-text">{basicData.address}</span>
+                        <LocationSelectField
+                            id={basicData.id}
+                            province={basicData.province}
+                            city={basicData.city}
+                            county={basicData.county}
+                            saveEditLocation={this.saveEditBasicInfo.bind(this, "address")}
+                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_ADDRESS")}
+                        />
+                    </div>
+                    <div className="basic-info-detail-address basic-info-item">
+                        <span className="iconfont icon-detail-address basic-info-icon"/>
+                        <BasicEditInputField
+                            id={basicData.id}
+                            value={basicData.address}
+                            field="address"
+                            type="input"
+                            placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
+                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_ADDRESS")}
+                            saveEditInput={this.saveEditBasicInfo.bind(this, "detail_address")}
+                        />
                     </div>
                     <div className="basic-info-remark basic-info-item">
                         <span className="iconfont icon-remark basic-info-icon"/>
-                        <span className="remark-text  basic-info-text">{basicData.remarks}</span>
+                        <BasicEditInputField
+                            id={basicData.id}
+                            type="textarea"
+                            field="remarks"
+                            value={basicData.remarks}
+                            hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_REMARK")}
+                            saveEditInput={this.saveEditBasicInfo.bind(this, "remarks")}
+                        />
                     </div>
-                    {hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? (
-                        <DetailEditBtn title={Intl.get("common.edit", "编辑")}
-                                       modifySuccess={this.editBasicSuccess}
-                                       onClick={this.setEditBasicFlag.bind(this, true)}/>) : null}
                 </div>
             </div>);
     },

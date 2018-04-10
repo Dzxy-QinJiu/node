@@ -139,28 +139,25 @@
     border-top: @border_style;
     margin-top: 10px;
     padding-top: 10px;
-    //客户基本信息的编辑
-    //.icon-edit-btn {
-    //  display: none;
-    //}
-    //&:hover {
-    //  .icon-edit-btn {
-    //    display: block;
-    //    position: absolute;
-    //    float: right;
-    //    right: 0;
-    //    top: 0;
-    //    padding-top: 10px;
-    //  }
-    //}
     //基本信息
     .basic-info-item {
       float: left;
       width: 100%;
+      //编辑按钮hover时才展示
+      .icon-edit-btn {
+        display: none;
+      }
+      &:hover {
+        background-color: #f6fbff;
+        .icon-edit-btn {
+          display: block;
+        }
+      }
       //代表基本信息的图标
       .basic-info-icon {
         float: left;
         color: @icon_color;
+        cursor: default;
       }
       .icon-administrative {
         padding-left: 3px;
@@ -174,18 +171,10 @@
         padding-left: 2px;
         font-size: 16px;
       }
-      .icon-remark {
+      .icon-remark, .icon-detail-address {
         padding-left: 4px;
         font-size: 16px;
       }
-      //.basic-info-text {
-      //  display: inline-block;
-      //  max-width: 400px;
-      //  line-height: 24px;
-      //  margin-left: 6px;
-      //  color: @font_color;
-      //  &:extend(.overflow-break);
-      //}
     }
 
   }
