@@ -30,7 +30,9 @@ function getStateFromStore(isMerge) {
         basicPanelH: getBasicPanelH(isMerge),
         showDetailFlag: false,//控制客户详情展示隐藏的标识
         editNameFlag: false,//编辑客户名的标识
-        editBasicFlag: false//编辑客户基本信息的标识
+        editBasicFlag: false,//编辑客户基本信息的标识
+        isLoadingIndustryList: false,
+        industryList: []
     };
 }
 function getBasicPanelH(isMerge) {
@@ -56,6 +58,7 @@ var BasicData = React.createClass({
         this.autoLayout();
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
+        this.getIndustryList();
     },
     autoLayout: function () {
         var _this = this;
@@ -76,6 +79,18 @@ var BasicData = React.createClass({
     },
     componentWillUnmount: function () {
         CRMStore.unlisten(this.onChange);
+    },
+    //获取行业列表
+    getIndustryList: function () {
+        //获取后台管理中设置的行业列表
+        this.setState({isLoadingIndustryList: true});
+        CrmAction.getIndustries(result => {
+            let list = _.isArray(result) ? result : [];
+            if (list.length > 0) {
+                list = _.pluck(list, "industry");
+            }
+            this.setState({isLoadingIndustryList: false, industryList: list});
+        });
     },
 
     //提交修改
@@ -163,6 +178,34 @@ var BasicData = React.createClass({
     setEditBasicFlag: function (flag) {
         this.setState({editBasicFlag: flag});
     },
+    getAdministrativeLevelOptions: function () {
+        let options = crmUtil.administrativeLevels.map(obj => {
+            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
+        });
+        options.unshift(<Option key="" value="">&nbsp;</Option>);
+        return options;
+    },
+    onSelectAdministrativeLevel: function (administrative_level) {
+        administrative_level = parseInt(administrative_level);
+        if (!_.isNaN(administrative_level)) {
+            this.state.basicData.administrative_level = parseInt(administrative_level);
+            this.setState({basicData: this.state.basicData});
+        }
+    },
+    cancelAdministrativeLevel: function () {
+        this.state.basicData.administrative_level = CRMStore.getBasicInfo().administrative_level;
+        this.setState({basicData: this.state.basicData});
+    },
+    onSelectIndustry: function (industry) {
+        if (industry) {
+            this.state.basicData.industry = industry;
+            this.setState({basicData: this.state.basicData});
+        }
+    },
+    cancelEditIndustry: function () {
+        this.state.basicData.industry = CRMStore.getBasicInfo().industry;
+        this.setState({basicData: this.state.basicData});
+    },
     //渲染客户的基本信息
     renderBasicBlock: function (basicData) {
         //地域
@@ -177,17 +220,47 @@ var BasicData = React.createClass({
             location.push(basicData.county);
         }
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
+        let industryOptions = this.state.industryList.map((item, i) => {
+            return (<Option key={i} value={item}>{item}</Option>);
+        });
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
                     <div className="basic-info-administrative basic-info-item">
                         <span className="iconfont icon-administrative basic-info-icon"/>
-                        <span
-                            className="administrative-text basic-info-text">{this.getAdministrativeLevel(level)}</span>
+                        <BasicEditSelectField
+                            isMerge={this.props.isMerge}
+                            updateMergeCustomer={this.props.updateMergeCustomer}
+                            id={basicData.id}
+                            displayText={this.getAdministrativeLevel(level)}
+                            value={level}
+                            field="administrative_level"
+                            selectOptions={this.getAdministrativeLevelOptions()}
+                            disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
+                            placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
+                            onSelectChange={this.onSelectAdministrativeLevel}
+                            cancelEditField={this.cancelAdministrativeLevel}
+                            saveEditSelect={CrmBasicAjax.updateCustomer}
+                            modifySuccess={this.editBasicSuccess}
+                        />
                     </div>
                     <div className="basic-info-indestry basic-info-item">
                         <span className="iconfont icon-industry basic-info-icon"/>
-                        <span className="indestry-text  basic-info-text">{basicData.industry}</span>
+                        <BasicEditSelectField
+                            isMerge={this.props.isMerge}
+                            updateMergeCustomer={this.props.updateMergeCustomer}
+                            id={basicData.id}
+                            displayText={basicData.industry}
+                            value={basicData.industry}
+                            field="industry"
+                            selectOptions={industryOptions}
+                            disabled={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY") ? false : true}
+                            placeholder={Intl.get("crm.22", "请选择行业")}
+                            onSelectChange={this.onSelectIndustry}
+                            cancelEditField={this.cancelEditIndustry}
+                            saveEditSelect={CrmBasicAjax.updateCustomer}
+                            modifySuccess={this.editBasicSuccess}
+                        />
                     </div>
                     <div className="basic-info-address basic-info-item">
                         <span className="iconfont icon-address basic-info-icon"/>
