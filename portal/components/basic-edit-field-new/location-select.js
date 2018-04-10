@@ -10,6 +10,8 @@ const LocationSelectField = React.createClass({
             province: "",
             city: "",
             county: "",
+            //编辑按钮的提示文案
+            editBtnTip: Intl.get("crm.175", "设置地域"),
             onChange: function () {
             },
             onModifySuccess: function () {
@@ -114,7 +116,7 @@ const LocationSelectField = React.createClass({
                 <div className="basic-location-field basic-edit-field">
                     <span className="inline-block basic-info-text">{location.join('/')}</span>
                     {this.props.hasEditPrivilege ? (
-                        <DetailEditBtn title={this.props.title || Intl.get("crm.175", "设置地域")}
+                        <DetailEditBtn title={this.props.editBtnTip}
                                        onClick={this.changeDisplayType.bind(this, "edit")}/>) : null
                     }
                 </div>

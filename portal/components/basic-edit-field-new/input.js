@@ -32,8 +32,8 @@ const BasicEditField = React.createClass({
             placeholder: Intl.get("user.email.write.tip", "请填写邮箱"),
             //显示的值
             value: '',
-            //提示文案
-            title: Intl.get("common.update", "修改"),
+            //编辑按钮的提示文案
+            editBtnTip: Intl.get("common.update", "修改"),
             //修改成功
             modifySuccess: function () {
             },
@@ -218,7 +218,7 @@ const BasicEditField = React.createClass({
                     {displayText}{this.props.afterValTip ? this.props.afterValTip : ""}
                 </span>
                 {this.props.hasEditPrivilege ? (
-                    <DetailEditBtn title={this.props.title || Intl.get("common.edit", "编辑")}
+                    <DetailEditBtn title={this.props.editBtnTip}
                                    onClick={this.setEditable.bind(this)}/>) : null
                 }
             </div>

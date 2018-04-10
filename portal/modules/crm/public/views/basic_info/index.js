@@ -260,6 +260,7 @@ var BasicData = React.createClass({
                             selectOptions={industryOptions}
                             hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
                             placeholder={Intl.get("crm.22", "请选择行业")}
+                            editBtnTip={Intl.get("crm.163", "设置行业")}
                             onSelectChange={this.onSelectIndustry}
                             cancelEditField={this.cancelEditIndustry}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, "industry")}
@@ -295,6 +296,7 @@ var BasicData = React.createClass({
                             type="textarea"
                             field="remarks"
                             value={basicData.remarks}
+                            editBtnTip={Intl.get("user.remark.set.tip", "设置备注")}
                             hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_REMARK")}
                             saveEditInput={this.saveEditBasicInfo.bind(this, "remarks")}
                         />
