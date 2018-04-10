@@ -42,20 +42,10 @@ weeklyReportDetailStore.prototype.setInitState = function () {
     this.customerStageData = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: "",//获取数据失败
     };
     //销售阶段
-    this.salesStageObj = {
-        list :[
-            {name: Intl.get("crm.142", "执行阶段")},
-            {name: Intl.get("crm.141", "成交阶段")},
-            {name: Intl.get("crm.145", "谈判阶段")},
-            {name: Intl.get("weekly.report.customer.stage.projected", "立项报价阶段")},
-            {name: Intl.get("crm.143", "试用阶段")}
-        ],
-        loading: false,
-        errMsg:""//获取数据失败
-    };
+    this.salesStageList = [];
     //保存员工请假信息
     this.addAskForLeave = {
         submitting: false,//正在保存
@@ -127,6 +117,7 @@ weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
         this.customerStageData.errMsg = result.errMsg;
     } else {
         this.customerStageData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].this_week_sta : [];
+        this.stageList = _.isArray(result.stageList) ? result.stageList : [];
     }
 };
 

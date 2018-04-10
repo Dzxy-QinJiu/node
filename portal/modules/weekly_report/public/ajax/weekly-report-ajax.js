@@ -212,23 +212,3 @@ exports.getCustomerStageInfo = function (reqData, type) {
     });
     return Deferred.promise();
 };
-//获取销售阶段
-var getSalesStageListAjax = null;
-exports.getSalesStageList = function () {
-    var Deferred = $.Deferred();
-    getSalesStageListAjax && getSalesStageListAjax.abort();
-    getSalesStageListAjax = $.ajax({
-        url: '/rest/sales_stage_list',
-        dataType: 'json',
-        type: 'get',
-        success: function (list) {
-            Deferred.resolve(list);
-        },
-        error: function (xhr,statusText) {
-            if(statusText !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
