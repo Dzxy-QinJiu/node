@@ -29,7 +29,9 @@ function OplateCustomerAnalysisActions() {
         //显示没有数据
         "showNoData",
         //清除chart数据
-        "resetChartData"
+        "resetChartData",
+        //切换展示客户阶段点击数字打开的客户列表
+        "toggleStageCustomerList"
     );
 
     //获取统计总数
@@ -88,6 +90,8 @@ function OplateCustomerAnalysisActions() {
     //获取客户阶段变更数据
     this.getStageChangeCustomers = asyncDispatcher(OplateCustomerAnalysisAjax.getStageChangeCustomers);
 
+    //获取客户阶段变更的客户列表
+    this.getStageChangeCustomerList = asyncDispatcher(OplateCustomerAnalysisAjax.getStageChangeCustomerList);
 };
 
 //使用alt导出一个action

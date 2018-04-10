@@ -841,6 +841,7 @@ var zh_CN = {
     "sales.stage.signed": "签约",
     "sales.stage.intention": "意向",
     "sales.stage.message": "信息",
+    "sales.stage.lost": "流失",
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "暂无团队，请先添加：",

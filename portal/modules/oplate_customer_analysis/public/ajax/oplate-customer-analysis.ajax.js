@@ -121,3 +121,26 @@ exports.getStageChangeCustomers = function(paramObj) {
         data: paramObj
     })
 };
+
+//获取客户阶段变动的客户列表
+exports.getStageChangeCustomerList = function(paramObj) {
+    const handler = "getStageChangeCustomerList";
+    const route = routes.find(x => x.handler == handler);
+    //普通销售权限
+    let type = "self";
+    if (hasPrivilege(AUTHS.GETALL)) {
+        //管理员权限
+        type = "all";
+    }
+    let queryObj = paramObj.queryObj;
+    return ajax({
+        url: route.path,
+        type: route.method,
+        params: {
+            ...paramObj.params,
+            type,
+        },
+        query: queryObj,
+        data: paramObj
+    })
+};

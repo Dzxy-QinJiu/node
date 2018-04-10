@@ -258,4 +258,12 @@ module.exports = [{
     "passport": {
         "needLogin": true
     }
+}, {
+    //获取客户阶段变更的客户数据
+    "method": "post",
+    "path": "/rest/customer/v2/customer/query/label/record/:type/:page_size/:sort_field/:order",
+    "handler": "getStageChangeCustomerList",
+    "passport": {
+        "needLogin": true
+    }
 }];

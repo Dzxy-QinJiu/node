@@ -55,11 +55,24 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         data: [],
         errorMsg: ""
     },
-    //点击客户阶段数字进入的客户列表所需的参数
-    this.selectedCustomerStage = {
-        type: "",//阶段标签 
-        date: "",
-        user_id: ""//所属销售id
+        //点击客户阶段数字进入的客户列表所需的参数
+        this.selectedCustomerStage = {
+            type: "",//阶段标签 
+            time: ""
+        }
+    //是否展示客户阶段点击数字打开的客户列表
+    this.isShowCustomerStageTable = false;
+    //客户阶段变更的客户列表数据
+    this.stageChangedCustomerList = {
+        data: [],
+        errorMsg: "",
+        loading: false,
+        lastId: "",
+        sorter: {
+            field: "time",
+            order: "descend"
+        },
+        listenScrollBottom: true
     }
 };
 //重置图表数据
@@ -205,62 +218,87 @@ OplateCustomerAnalysisStore.prototype.getSalesStageList = function (list) {
 };
 
 
-//查询迁出客户
-OplateCustomerAnalysisStore.prototype.getTransferCustomers = function({loading, errorMsg, data, paramObj}) {
-    if (loading) {
-        this.transferCustomers.loading = true;
-        this.transferCustomers.errorMsg = "";
-    } else if (errorMsg) {
-        this.transferCustomers.loading = false;
-        this.transferCustomers.errorMsg = errorMsg;
-        this.transferCustomers.data = [];
-    } else {
-        this.transferCustomers.loading = false;
-        this.transferCustomers.errorMsg = "";
-        let customers = [];
-        if (data.result && data.result.length > 0) {
-            customers = data.result.map(item => {
-                return {
-                    ...item,
-                    time: item.time?moment(item.time).format(oplateConsts.DATE_FORMAT): ""
-                }
-            })
-            this.transferCustomers.lastId = customers[customers.length - 1].id;
+/**
+ * 函数外取不到state执行环境，所以传字符串
+ * resultString[string]: 用于存放loading和errorMsg的对象名
+ * fn: 请求成功触发的回调，会传入响应结果result，包含{ errorMsg, loading, data, paramObj }
+*/
+const resultHandler = function (resultString, fn) {
+    return function (result) {
+        if (!this[resultString]) {
+            return
         }
-        if (paramObj.isFirst) {
-            this.transferCustomers.data = customers;
-        } else {
-            this.transferCustomers.data = this.transferCustomers.data.concat(customers);
+        const { loading, errorMsg } = result;
+        if (loading) {
+            this[resultString].loading = true;
+            this[resultString].errorMsg = "";
         }
-        //总数等于前端数组长度时，不监听下拉加载
-        if (data.total == this.transferCustomers.data.length) {
-            this.transferCustomers.listenScrollBottom = false;
+        else if (errorMsg) {
+            this[resultString].loading = false;
+            this[resultString].errorMsg = errorMsg;
+            this[resultString].data = [];
         }
-    }
-};
-
-//获取客户阶段变更数据
-OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = function ({ loading, errorMsg, data }) {
-    if (loading) {
-        this.customerStage.loading = true;
-        this.customerStage.errorMsg = '';
-        this.customerStage.data = [];
-    } else if (errorMsg) {
-        this.customerStage.loading = false;
-        this.customerStage.errorMsg = errorMsg;
-        this.customerStage.data = [];       
-        
-    } else {
-        this.customerStage.loading = false;
-        this.customerStage.errorMsg = '';
-        if (data && data.length) {
-            this.customerStage.data = data.map(x => {
-                x.date = x.date?moment(x.date).format(oplateConsts.DATE_FORMAT):"";
-                return x;
-            });
+        else {
+            this[resultString].loading = false;
+            this[resultString].errorMsg = "";
+            fn.call(this, result);
         }
     }
 }
+
+//查询迁出客户
+OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("transferCustomers", function ({ loading, errorMsg, data, paramObj }) {
+    let customers = [];
+    if (data.result && data.result.length > 0) {
+        customers = data.result.map(item => {
+            return {
+                ...item,
+                time: item.time ? moment(item.time).format(oplateConsts.DATE_FORMAT) : ""
+            }
+        })
+        this.transferCustomers.lastId = customers[customers.length - 1].id;
+    }
+    if (paramObj.isFirst) {
+        this.transferCustomers.data = customers;
+    } else {
+        this.transferCustomers.data = this.transferCustomers.data.concat(customers);
+    }
+    //总数等于前端数组长度时，不监听下拉加载
+    if (data.total == this.transferCustomers.data.length) {
+        this.transferCustomers.listenScrollBottom = false;
+    }
+});
+
+//获取客户阶段变更数据
+OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("customerStage", function ({ loading, errorMsg, data }) {
+    if (data && data.length) {
+        this.customerStage.data = data.map(x => {
+            x.date = x.date ? moment(x.date).format(oplateConsts.DATE_FORMAT) : "";
+            return x;
+        });
+    }    
+});
+
+//获取客户阶段变更对应的客户列表数据
+OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler("stageChangedCustomerList", function ({ loading, errorMsg, data, paramObj }) {
+    if (paramObj.isFirst) {
+        this.stageChangedCustomerList.data = data.list;
+    } else {
+        this.stageChangedCustomerList.data = this.stageChangedCustomerList.data.concat(data.list);
+    }
+    if (data.list && data.list.length > 0) {
+        this.stageChangedCustomerList.lastId = data.list[data.list.length - 1].id;
+    }
+    //总数等于前端数组长度时，不监听下拉加载
+    if (data.total == this.stageChangedCustomerList.data.length) {
+        this.stageChangedCustomerList.listenScrollBottom = false;
+    }
+});
+
+//显示隐藏客户阶段的客户列表面板
+OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
+    this.isShowCustomerStageTable = !this.isShowCustomerStageTable;
+};
 
 //导出 客户分析-客户构成 的store
 module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');

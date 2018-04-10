@@ -834,6 +834,7 @@ var en_US = {
     "sales.stage.signed": "signed",//签约
     "sales.stage.intention": "intention",//意向
     "sales.stage.message": "message",//信息
+    "sales.stage.lost": "lost",//"流失"
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "There is no team, please add!",//暂无团队，请先添加：
