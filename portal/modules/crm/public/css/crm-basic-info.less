@@ -89,48 +89,43 @@
   }
   //客户名的编辑表单
   .name-form {
-    //客户名
-    textarea {
-      width: 100%;
+    .ant-form-item {
+      width: auto;
+      //客户名
+      textarea {
+        width: 100%;
+      }
     }
     .tip-customer-exist {
       margin-top: -13px;
       line-height: 20px;
       margin-bottom: 10px;
     }
+    //客户名的保存、取消按钮
+    .button-container {
+      height: @item_height;
+      button {
+        float: right;
+        margin-left: 10px;
+        height: @item_height;
+      }
+      .button-cancel {
+        color: @font_color;
+      }
+      //等待样式
+      .save-loading {
+        float: right;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      //错误提示样式
+      .save-error {
+        float: right;
+        line-height: 24px;
+        color: #f50;
+      }
+    }
   }
-  //form {
-  //.ant-form-item {
-  //  width: 432px;
-  //  input, textarea, .ant-select {
-  //    width: 100%;
-  //  }
-  //}
-  //客户名、基本信息的保存、取消按钮趋势
-  //  .button-container {
-  //    height: @item_height;
-  //    button {
-  //      float: right;
-  //      margin-left: 10px;
-  //      height: @item_height;
-  //    }
-  //    .button-cancel {
-  //      color: @font_color;
-  //    }
-  //    //等待样式
-  //    .save-loading {
-  //      float: right;
-  //      font-size: 16px;
-  //      line-height: 24px;
-  //    }
-  //    //错误提示样式
-  //    .save-error {
-  //      float: right;
-  //      line-height: 24px;
-  //      color: #f50;
-  //    }
-  //  }
-  //}
   //客户基本信息展示区域
   .basic-info-detail-block {
     position: relative;
@@ -176,7 +171,5 @@
         font-size: 16px;
       }
     }
-
   }
-
 }
