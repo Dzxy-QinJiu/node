@@ -106,7 +106,6 @@ class CustomerStageTable extends React.Component {
             }
         }
         const hideTable = errorMsg || loadingFirst;
-        const showNoMoreDataTip = !loading && lastId && !listenScrollBottom;
         const renderStageCustomerList = () => {
             const columns = [
                 {
@@ -131,12 +130,11 @@ class CustomerStageTable extends React.Component {
                     {renderSpiner()}
                     <div className={hideTable? "hide": ""}>
                         <AntcTable
-                            bordered={true}
                             dropLoad={{
                                 loading: loadingNotFirst,
                                 handleScrollBottom: this.handleScrollBottom.bind(this),
                                 listenScrollBottom: listenScrollBottom && !loading,
-                                showNoMoreDataTip
+                                showNoMoreDataTip: this.props.showNoMoreData
                             }}
                             rowKey={getRowKey}
                             rowClassName={handleRowClassName}
@@ -169,7 +167,7 @@ class CustomerStageTable extends React.Component {
         }
         return (
             <div>
-                <div className="customer-table-close">
+                <div className="customer-table-close topNav">
                     <RightPanelClose
                         title={Intl.get("common.app.status.close", "关闭")}
                         onClick={this.props.onClose}

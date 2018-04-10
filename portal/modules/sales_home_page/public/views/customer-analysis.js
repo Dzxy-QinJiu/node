@@ -496,6 +496,7 @@ var CustomerAnalysis = React.createClass({
                 title: Intl.get("common.unqualified", "不合格"),
                 dataIndex: "map.不合格",
                 key: "qualified",
+                width: 60,
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
@@ -508,6 +509,15 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
+                    )
+                }
+            }, {
+                title: Intl.get("sales.stage.lost", "流失"),
+                dataIndex: "map.流失",
+                key: "map.流失",
+                render: (text, item, index) => {
+                    return (
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
                     )
                 }
             }, {
@@ -575,6 +585,11 @@ var CustomerAnalysis = React.createClass({
                             result={this.state.stageChangedCustomerList}
                             onClose={this.toggleCusStageMetic}
                             handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
+                            showNoMoreData={!this.state.stageChangedCustomerList.loading && 
+                                !this.state.stageChangedCustomerList.listenScrollBottom && 
+                                this.state.stageChangedCustomerList.lastId && 
+                                !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
+                            }
                         /> : null}
                 </RightPanel>
             </div >
