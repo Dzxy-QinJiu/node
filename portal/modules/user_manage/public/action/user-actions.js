@@ -2,6 +2,7 @@ var userAjax = require("../ajax/user-ajax");
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 function UserActions() {
     this.generateActions(
+        'setInitialData',
         'getCurUserList',
         'addUser',
         'editUser',

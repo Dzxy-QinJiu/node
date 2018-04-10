@@ -24,27 +24,39 @@ var UserFormStore = require("../store/user-form-store");
 var UserStore = require("../store/user-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
+var UserFormAction = require("../action/user-form-actions");
 import Trace from "LIB_DIR/trace";
 import CommissionAndTarget from "./commission-and-target";
 const UserData = require("PUB_DIR/sources/user-data");
+var CONSTANTS = {
+    LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
+};
 var UserInfo = React.createClass({
         getInitialState: function () {
+            var userInfo = this.props.userInfo;
+            console.log("asd", userInfo);
             return {
-                userInfo: $.extend(true, {}, this.props.userInfo),
-                logList: this.props.logList,
+                userInfo: $.extend(true, {}, userInfo),
                 modalStr: "",//模态框提示内容
                 isDel: false,//是否删除
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
                 isConfirmPasswordShow: false,//确认密码的展示标识
                 saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
+                pageSize: CONSTANTS.LOG_PAGE_SIZE,
+                hasLog: true,
+                ...UserStore.getState(),
             };
         },
 
         componentWillReceiveProps: function (nextProps) {
+            if (nextProps.userInfo.id !== this.state.userInfo.id) {
+                setTimeout(()=>{
+                    this.getUserData(nextProps.userInfo);
+                });
+            }
             this.setState({
                 userInfo: $.extend(true, {}, nextProps.userInfo),
-                logList: nextProps.logList
             });
             this.layout();
         },
@@ -53,6 +65,7 @@ var UserInfo = React.createClass({
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
                 saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
+                ...UserStore.getState()
             });
         },
         componentWillUnmount: function () {
@@ -60,19 +73,44 @@ var UserInfo = React.createClass({
             UserFormStore.unlisten(this.onChange);
         },
         componentDidMount: function () {
-            var _this = this;
-            _this.layout();
-            UserFormStore.listen(_this.onChange);
+            this.layout();
+            UserFormStore.listen(this.onChange);
             UserStore.listen(this.onChange);
-            $(window).resize(function (e) {
-                e.stopPropagation();
-                _this.layout();
+            setTimeout(()=>{
+                this.getUserData(this.state.userInfo);
             });
+            $(window).resize((e) => {
+                e.stopPropagation();
+                this.layout();
+            });
+        },
+        getUserData: function (user) {
+            //todo 获取数据
+            if (user.id) {
+                //跟据用户的id获取销售提成和比例
+                UserAction.getSalesGoals({user_id: user.id});
+                UserAction.setLogLoading(true);
+                UserAction.getLogList({
+                    user_name: _.isString(user.userName) ? user.userName : user.userName.value,
+                    num: this.state.logNum,
+                    page_size: CONSTANTS.LOG_PAGE_SIZE
+                });
+
+                // //获取团队列表
+                // if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                //     UserFormAction.setTeamListLoading(true);
+                //     UserFormAction.getUserTeamList();
+                // }
+                // //获取角色列表
+                // UserFormAction.setRoleListLoading(true);
+                // UserFormAction.getRoleList();
+            }
+
         },
         layout: function () {
             var bHeight = $("body").height();
             var formHeight = bHeight - $(".head-image-container").outerHeight(true);
-            if (this.props.showAddMemberButton) {
+            if (this.state.isContinueAddButtonShow) {
                 formHeight -= 80;
             }
             $(".log-infor-scroll").height(formHeight);
@@ -85,7 +123,7 @@ var UserInfo = React.createClass({
             }
             Trace.traceEvent(e, "点击" + modalStr + "成员");
             this.setState({modalStr: modalStr, isDel: false});
-            this.props.showModalDialog();
+            this.showModalDialog();
         },
         forbidCard: function (e) {
             var modalStr = Intl.get("member.start.this", "启用此");
@@ -100,7 +138,7 @@ var UserInfo = React.createClass({
                 if (this.props.userInfo.status == 1) {
                     status = 0
                 }
-                this.props.updateStatus(this.props.userInfo.id, status);
+                this.updateUserStatus(this.props.userInfo.id, status);
             }
         },
 
@@ -259,23 +297,24 @@ var UserInfo = React.createClass({
         },
         afterModifySuccess: function (updateObj) {
             this.setState({
-                saleGoalsAndCommissionRadio:updateObj
+                saleGoalsAndCommissionRadio: updateObj
             });
         },
 
         renderUserItems: function () {
             let userInfo = this.state.userInfo;
             let roleSelectOptions = this.getRoleSelectOptions(userInfo);
-            let roleNames = "",isSales = false;
+            let roleNames = "", isSales = false;
             if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
-                if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1){
+                if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1) {
                     //是否是销售角色
                     isSales = true;
                 }
                 roleNames = userInfo.roleNames.join(',');
 
             }
-            var commissionRadio = "", goal = "", recordId = "", saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio;
+            var commissionRadio = "", goal = "", recordId = "",
+                saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio;
             if (saleGoalsAndCommissionRadio.id) {
                 //某条销售目标和提成比例的id
                 recordId = saleGoalsAndCommissionRadio.id;
@@ -455,14 +494,14 @@ var UserInfo = React.createClass({
                                 id={recordId}
                                 field={"commission_ratio"}
                                 user_id={this.state.userInfo.id}
-                                userInfo = {this.state.userInfo}
+                                userInfo={this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={commissionRadio}
                                 displayType={'text'}
                                 min={0}
                                 max={100}
                                 countTip={"%"}
-                                afterModifySuccess = {this.afterModifySuccess}
+                                afterModifySuccess={this.afterModifySuccess}
                             />
                         </dd>
                     </dl> : null}
@@ -473,13 +512,13 @@ var UserInfo = React.createClass({
                                 id={recordId}
                                 field={"goal"}
                                 user_id={this.state.userInfo.id}
-                                userInfo = {this.state.userInfo}
+                                userInfo={this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={goal}
                                 displayType={'text'}
                                 min={0}
                                 countTip={Intl.get("contract.82", "元")}
-                                afterModifySuccess = {this.afterModifySuccess}
+                                afterModifySuccess={this.afterModifySuccess}
                             />
                         </dd>
                     </dl> : null}
@@ -524,6 +563,28 @@ var UserInfo = React.createClass({
                 });
             }
         },
+        //切换日志分页时的处理
+        changeLogNum: function (num) {
+            UserAction.changeLogNum(num);
+            UserAction.getLogList({
+                user_name: this.state.currentUser.userName,
+                num: num,
+                page_size: CONSTANTS.LOG_PAGE_SIZE
+            });
+        },
+        //启用、停用
+        updateUserStatus: function (userId, status) {
+            UserAction.updateUserStatus({id: userId, status: status});
+        },
+        //展示模态框
+        showModalDialog: function () {
+            UserAction.showModalDialog();
+        },
+        //隐藏模态框
+        hideModalDialog: function () {
+            Trace.traceEvent($(".log-infor-scroll"), "关闭模态框");
+            UserAction.hideModalDialog();
+        },
         cancelEditIcon: function () {
             Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "取消头像的保存");
             this.state.userInfo.image = this.props.userInfo.image;
@@ -533,13 +594,13 @@ var UserInfo = React.createClass({
             //当前要展示的信息
             var userInfo = this.state.userInfo;
             let user_id = userInfo.id;
-            let loginUserInfo =  UserData.getUserData();
+            let loginUserInfo = UserData.getUserData();
             //个人日志
             var logItems = [];
             var logList = this.state.logList;
-            if (this.props.getLogErrorMsg) {
+            if (this.state.getLogErrorMsg) {
                 //错误提示
-                logItems = this.props.getLogErrorMsg;
+                logItems = this.state.getLogErrorMsg;
             } else if (_.isArray(logList) && logList.length > 0) {
                 for (var i = 0, iLen = logList.length; i < iLen; i++) {
                     logItems.push(<UserLog key={i} log={logList[i]}/>);
@@ -549,11 +610,11 @@ var UserInfo = React.createClass({
             }
             var modalContent = Intl.get("member.is.or.not", "是否{modalStr}{modalType}", {
                 "modalStr": this.state.modalStr,
-                "modalType": this.props.modalType
+                "modalType": Intl.get("member.member", "成员")
             });
             var className = "right-panel-content";
 
-            if (!this.props.userInfoShow && this.props.userFormShow) {
+            if (!this.state.userInfoShow && this.state.userFormShow) {
                 //展示form面板时，整体左移
                 className += " right-panel-content-slide";
             }
@@ -563,7 +624,7 @@ var UserInfo = React.createClass({
                 <div className={className} data-tracename="成员详情">
                     <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
                     {user_id !== loginUserInfo.user_id ? <div className="edit-buttons">
-                        {!this.props.showAddMemberButton ? (
+                        {!this.state.isContinueAddButtonShow ? (
                             <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
                                 <RightPanelForbid onClick={(e) => {
                                     this.showForbidModalDialog(e)
@@ -572,7 +633,7 @@ var UserInfo = React.createClass({
                                 />
                             </PrivilegeChecker>
                         ) : null}
-                    </div>: null}
+                    </div> : null}
                     <Popconfirm title="是否保存上传的头像？"
                                 visible={this.state.showSaveIconTip}
                                 onConfirm={this.saveUserIcon} onCancel={this.cancelEditIcon}>
@@ -587,39 +648,39 @@ var UserInfo = React.createClass({
                     <div className="log-infor-scroll">
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <div className="card-infor-list" id="member-infor-list">
-                                {this.props.getUserDetailError ? (<div className="card-detail-error">
-                                    <Alert message={this.props.getUserDetailError}
+                                {this.state.getUserDetailError ? (<div className="card-detail-error">
+                                    <Alert message={this.state.getUserDetailError}
                                            type="error" showIcon/>
                                 </div>) : null}
-                                {this.props.infoIsloading ? (
+                                {this.state.userIsLoading ? (
                                     <Spin size="small"/>) : this.renderUserItems(userInfo)
                                 }
                             </div>
-                            <div className="log-infor-list" style={{display: this.props.hasLog ? 'block' : 'none'}}>
+                            <div className="log-infor-list" style={{display: this.state.hasLog ? 'block' : 'none'}}>
                                 <div className="log-infor-title">
                                     <ReactIntl.FormattedMessage id="member.operation.log" defaultMessage="操作日志"/></div>
                                 <div className="log-list-content">{
-                                    this.props.logIsLoading ? (
+                                    this.state.logIsLoading ? (
                                         <Spin size="small"/>) : logItems
                                 }
                                 </div>
-                                {this.props.logTotal / this.props.pageSize > 1 ? (
-                                    <Pagination current={this.props.logNum} total={this.props.logTotal}
-                                                pageSize={this.props.pageSize} size="small"
-                                                onChange={this.props.changeLogNum}/>) : ""}
+                                {this.state.logTotal / this.state.pageSize > 1 ? (
+                                    <Pagination current={this.state.logNum} total={this.state.logTotal}
+                                                pageSize={this.state.pageSize} size="small"
+                                                onChange={this.changeLogNum}/>) : ""}
                             </div>
                         </GeminiScrollbar>
                     </div>
-                    {this.props.showAddMemberButton ? (
+                    {this.state.isContinueAddButtonShow ? (
                         <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, "add")}>
                             <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
                                                                                  defaultMessage="添加成员"/></span>
                         </div>
                     ) : null}
                     <ModalDialog modalContent={modalContent}
-                                 modalShow={this.props.modalDialogShow}
+                                 modalShow={this.state.modalDialogShow}
                                  container={this}
-                                 hideModalDialog={this.props.hideModalDialog}
+                                 hideModalDialog={this.hideModalDialog}
                                  delete={(e) => {
                                      this.forbidCard(e)
                                  }}

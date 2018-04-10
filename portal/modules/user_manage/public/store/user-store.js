@@ -74,6 +74,21 @@ function UserStore() {
     this.bindActions(UserActions);
 
 }
+//关闭右侧详情后，将数据置为
+UserStore.prototype.setInitialData = function () {
+    //加载操作日志中。。。
+    this.logIsLoading = false;
+    //获取操作日志失败的提示信息
+    this.getLogErrorMsg = "";
+    //用户的个人日志
+    this.logList = [];
+    //个人日志总数
+    this.logTotal = 0;
+    //个人日志展示第几页
+    this.logNum = 1;
+    this.currentUser = emptyUser;
+    this.getUserDetailError = "";
+};
 //过滤角色的设置
 UserStore.prototype.setSelectRole = function (role) {
     //搜索框和角色不能联合查询
