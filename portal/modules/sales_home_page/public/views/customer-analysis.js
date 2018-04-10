@@ -838,12 +838,12 @@ var CustomerAnalysis = React.createClass({
                     //    </div>
                     //</div>)
                 }
-                <div className="analysis_chart col-md-6 col-sm-12"
+                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
                     {this.renderTransferedCustomerTable()}
 
                 </div>
-                <div className="analysis_chart col-md-6 col-sm-12"
+                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
                     {this.renderCustomerStage()}
                 </div>
