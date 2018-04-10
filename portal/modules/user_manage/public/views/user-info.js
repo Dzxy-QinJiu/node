@@ -454,7 +454,6 @@ var UserInfo = React.createClass({
                             <CommissionAndTarget
                                 id={recordId}
                                 field={"commission_ratio"}
-                                user_id={this.state.userInfo.id}
                                 userInfo = {this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={commissionRadio}
@@ -472,7 +471,6 @@ var UserInfo = React.createClass({
                             <CommissionAndTarget
                                 id={recordId}
                                 field={"goal"}
-                                user_id={this.state.userInfo.id}
                                 userInfo = {this.state.userInfo}
                                 setSalesGoals={UserInfoAjax.setSalesGoals}
                                 value={goal}

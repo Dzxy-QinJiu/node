@@ -13,8 +13,8 @@ var CommissionAndTarget = React.createClass({
         return {
             //某条销售目标或者提成比例记录的id
             id : '',
-            //某个用户的id
-            user_id: '',
+            //某个用户的详情
+            userInfo: {},
             //字段
             field: "",
             //是否能修改
@@ -30,7 +30,7 @@ var CommissionAndTarget = React.createClass({
     getInitialState: function () {
         return {
             id: this.props.id,
-            user_id: this.props.user_id,
+            userInfo: $.extend(true,{},this.props.userInfo),
             loading: false,
             displayType: this.props.displayType || "text",
             initalValue: this.props.value,
@@ -39,9 +39,9 @@ var CommissionAndTarget = React.createClass({
         };
     },
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.user_id !== this.state.user_id || nextProps.value !== this.state.initalValue || nextProps.id !== this.state.id) {
+        if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.value !== this.state.initalValue || nextProps.id !== this.state.id) {
             this.setState({
-                user_id: nextProps.user_id,
+                userInfo: $.extend(true,{},nextProps.userInfo),
                 initalValue: nextProps.value,
                 id: nextProps.id
             });
@@ -65,11 +65,11 @@ var CommissionAndTarget = React.createClass({
         if (this.state.id) {
             user.id = this.state.id;
         }
-        if (this.props.user_id) {
-            user.user_id = this.props.user_id;
-            user.user_name = this.props.userInfo.userName;
-            user.sales_team = this.props.userInfo.teamName;
-            user.sales_team_id = this.props.userInfo.teamId;
+        if (this.state.userInfo.id) {
+            user.user_id = this.state.userInfo.id;
+            user.user_name = this.state.userInfo.name;
+            user.sales_team = this.state.userInfo.teamName;
+            user.sales_team_id = this.state.userInfo.teamId;
         }
         this.props.setSalesGoals(user).then((result) => {
             if (result.id) {
