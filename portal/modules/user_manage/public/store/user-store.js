@@ -208,13 +208,15 @@ UserStore.prototype.getCurUserById = function (user) {
         this.getUserDetailError = "";
         this.currentUser = user;
         let curUser = _.find(this.curUserList, curUser=>curUser.id == user.id);
-        curUser.roleIds = user.roleIds;
-        curUser.roleNames = user.roleNames;
-        curUser.teamName = user.teamName;
-        curUser.teamId = user.teamId;
-        curUser.phoneOrder = user.phoneOrder;
-        //获取成员详情中没有创建时间，所以用列表中获取的创建时间
-        user.createDate = curUser.createDate;
+        if (curUser){
+            curUser.roleIds = user.roleIds;
+            curUser.roleNames = user.roleNames;
+            curUser.teamName = user.teamName;
+            curUser.teamId = user.teamId;
+            curUser.phoneOrder = user.phoneOrder;
+            //获取成员详情中没有创建时间，所以用列表中获取的创建时间
+            user.createDate = curUser.createDate;
+        }
         this.currentUser = user;
     }
 };

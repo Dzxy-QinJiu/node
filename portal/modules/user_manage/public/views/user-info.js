@@ -43,7 +43,7 @@ var UserInfo = React.createClass({
                 roleList: UserFormStore.getState().roleList,
                 isConfirmPasswordShow: false,//确认密码的展示标识
                 saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
-                pageSize: CONSTANTS.LOG_PAGE_SIZE,
+                page_size: CONSTANTS.LOG_PAGE_SIZE,
                 hasLog: true,
                 ...UserStore.getState(),
             };
@@ -185,7 +185,12 @@ var UserInfo = React.createClass({
             }
         },
         changeUserFieldSuccess: function (user) {
-            UserAction.afterEditUser(user);
+            console.log(user);
+            if (_.isFunction(this.props.changeUserFieldSuccess)){
+                this.props.changeUserFieldSuccess();
+            }else{
+                UserAction.afterEditUser(user);
+            }
         },
         //渲染角色下拉列表
         getRoleSelectOptions: function (userInfo) {
@@ -664,9 +669,9 @@ var UserInfo = React.createClass({
                                         <Spin size="small"/>) : logItems
                                 }
                                 </div>
-                                {this.state.logTotal / this.state.pageSize > 1 ? (
+                                {this.state.logTotal / this.state.page_size > 1 ? (
                                     <Pagination current={this.state.logNum} total={this.state.logTotal}
-                                                pageSize={this.state.pageSize} size="small"
+                                                pageSize={this.state.page_size} size="small"
                                                 onChange={this.changeLogNum}/>) : ""}
                             </div>
                         </GeminiScrollbar>

@@ -15,7 +15,12 @@ var MemberListEditAction = require("../action/member-list-edit-actions");
 var MemberListEditStore = require("../store/member-list-edit-store");
 import salesTeamAjax from "../ajax/sales-team-ajax";
 import Trace from "LIB_DIR/trace";
-
+var UserInfo = require("MOD_DIR/user_manage/public/views/user-info");
+var rightPanelUtil = require("CMP_DIR/rightPanel");
+var RightPanel = rightPanelUtil.RightPanel;
+var UserStore = require("MOD_DIR/user_manage/public/store/user-store");
+var UserAction = require("MOD_DIR/user_manage/public/action/user-actions");
+var UserFormAction = require("MOD_DIR/user_manage/public/action/user-form-actions");
 //成员的类型
 const MEMBER_TYPE = {
     OWNER: "owner",//负责人
@@ -27,6 +32,7 @@ const SALES_GOALS_TYPE = {
     MEMBER: "member",//个人销售目标
     TEAM: "team"//团队销售目标
 };
+var openTimeout = null;//打开面板时的时间延迟设置
 function noop() {
 }
 var MemberList = React.createClass({
@@ -54,7 +60,8 @@ var MemberList = React.createClass({
             saveMemberListObj: {},//修改、添加时要保存的数据对象
             teamConfirmVisible: false,
             memberConfirmVisible: false,
-            memberListHeight: this.getMemberListHeight()
+            memberListHeight: this.getMemberListHeight(),
+            ...UserStore.getState(),
         };
     },
     onChange: function () {
@@ -62,7 +69,8 @@ var MemberList = React.createClass({
         this.setState({
             isMemberListSaving: savingFlags.isMemberListSaving,
             saveMemberListResult: savingFlags.saveMemberListResult,
-            saveMemberListMsg: savingFlags.saveMemberListMsg
+            saveMemberListMsg: savingFlags.saveMemberListMsg,
+            ...UserStore.getState(),
         });
     },
     getMemberListHeight: function () {
@@ -83,11 +91,23 @@ var MemberList = React.createClass({
     },
     componentDidMount: function () {
         MemberListEditStore.listen(this.onChange);
+        UserStore.listen(this.onChange);
         $(window).on("resize", this.layout);
+        setTimeout(()=>{
+            //获取团队列表
+            if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                UserFormAction.setTeamListLoading(true);
+                UserFormAction.getUserTeamList();
+            }
+            //获取角色列表
+            UserFormAction.setRoleListLoading(true);
+            UserFormAction.getRoleList();
+        })
     },
 
     componentWillUnmount: function () {
         MemberListEditStore.unlisten(this.onChange);
+        UserStore.unlisten(this.onChange);
         $(window).off("resize", this.layout);
     },
     componentWillReceiveProps: function (nextProps) {
@@ -116,6 +136,28 @@ var MemberList = React.createClass({
                 addMemberList: this.state.addMemberList
             });
         } else {
+            //展示客户的时候
+            if (!this.props.isEditMember){
+                console.log(salesTeamMember);
+                Trace.traceEvent("团队管理","点击查看成员详情");
+                UserAction.setCurUser(salesTeamMember.userId);
+                // //获取用户的详情
+                UserAction.setUserLoading(true);
+                UserAction.getCurUserById(salesTeamMember.userId);
+                if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
+                    $(".right-panel-content").removeClass("right-panel-content-slide");
+                    if (openTimeout) {
+                        clearTimeout(openTimeout);
+                    }
+                    openTimeout = setTimeout(function () {
+                        UserAction.showUserInfoPanel();
+                    }, 10);
+                } else {
+                    UserAction.showUserInfoPanel();
+                }
+            }
+
+
             //删除、编辑
             var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //负责人存在
@@ -829,6 +871,12 @@ var MemberList = React.createClass({
             this.cancelSaveSalesGoals(type);
         });
     },
+    closeRightPanel:function () {
+        //将数据清空
+        UserAction.setInitialData();
+        UserAction.closeRightPanel();
+        UserAction.hideContinueAddButton();
+    },
     //取消销售目标的保存
     cancelSaveSalesGoals: function (type) {
         if (type == SALES_GOALS_TYPE.TEAM) {
@@ -909,6 +957,12 @@ var MemberList = React.createClass({
                 {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
                     <Spinner className="isloading"/>
                 </div>) : ""}
+                <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
+                    <UserInfo
+                        userInfo={this.state.currentUser}
+                        closeRightPanel={this.closeRightPanel}
+                    />
+                </RightPanel>
             </div>
         );
     }
