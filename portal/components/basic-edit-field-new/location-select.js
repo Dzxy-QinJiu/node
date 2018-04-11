@@ -2,6 +2,7 @@ import {Icon, Button} from 'antd';
 import Trace from "LIB_DIR/trace";
 import {AntcAreaSelection} from "antc";
 import {DetailEditBtn} from "../rightPanel";
+import SaveCancelButton from "../detail-card/save-cancel-button";
 const LocationSelectField = React.createClass({
     getDefaultProps: function () {
         return {
@@ -92,6 +93,9 @@ const LocationSelectField = React.createClass({
             });
         });
     },
+    handleCancel: function () {
+        this.changeDisplayType("text");
+    },
     //更新地址
     updateLocation: function (address) {
         var location = address.split('/');
@@ -122,28 +126,17 @@ const LocationSelectField = React.createClass({
                 </div>
             );
         }
-        let buttonBlock = (
-            <div className="button-container">
-                <Button className="button-save" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("common.save", "保存")}
-                </Button>
-                <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, "text")}>
-                    {Intl.get("common.cancel", "取消")}
-                </Button>
-                {this.state.loading ? (
-                    <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
-                    <span className="save-error">{this.state.submitErrorMsg}</span>
-                ) : null}
-            </div>
-        );
         return (<div className="basic-edit-field location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24"
                                placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
                                prov={this.state.province}
                                city={this.state.city}
                                county={this.state.county} updateLocation={this.updateLocation}/>
-            {buttonBlock}
+            <SaveCancelButton loading={this.state.loading}
+                              saveErrorMsg={this.state.submitErrorMsg}
+                              handleSubmit={this.handleSubmit}
+                              handleCancel={this.handleCancel}
+            />
         </div>);
     }
 });

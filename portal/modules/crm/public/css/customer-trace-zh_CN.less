@@ -1,5 +1,55 @@
 @import '../../../../public/css/common-variables';
-#customer-container{
+//跟进记录
+@btn_color: #8ba9c3;
+@font_color: #999999;
+.customer-container {
+  .trace-top-block {
+    //共xxx条
+    .total-tip {
+      color: @font_color;
+    }
+    //添加跟进记录按钮
+    .iconfont.icon-add {
+      float: right;
+      font-size: 16px;
+      color: @btn_color;
+    }
+  }
+  //添加跟进记录面板
+  .add-customer-trace {
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 4px;
+    .add-trace-item {
+      margin-bottom: 8px;
+      .add-trace-label {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 10px;
+        color: @font_color;
+      }
+      .visit-label {
+        padding-top: 3px;
+      }
+      .ant-radio-wrapper {
+        margin-right: 30px;
+        font-size: 14px;
+        .iconfont {
+          padding-right: 4px;
+          font-size: 16px;
+        }
+        .iconfont.icon-visit-briefcase {
+          color: #9b5bf7;
+        }
+      }
+      textarea {
+        width: 350px;
+      }
+    }
+  }
+}
+
+#customer-container {
   font-size: 14px;
   //取消按钮样式
   .cancel-btn {
@@ -14,20 +64,20 @@
     border-radius: @border-radius;
     margin-right: 6px;
   }
-  #add-container{
+  #add-container {
     min-height: 60px;
     margin-bottom: 10px;
     border-radius: @border-radius;
     color: #464b4e;
-    padding:23px 36px 23px 23px;
+    padding: 23px 36px 23px 23px;
     width: 660px;
     //增加客户跟踪记录
-    .add-customer-trace{
+    .add-customer-trace {
       //texare 的样式
-      .add-content{
+      .add-content {
         position: relative;
         padding-right: 2px;
-        .add-content-input{
+        .add-content-input {
           width: 99%;
           height: 36px;
           border-color: #fff;
@@ -38,11 +88,11 @@
           background-color: #fff;
           margin-left: 0;
         }
-        .add-content-input::-webkit-input-placeholder{
-          color:#A9A9A9;
+        .add-content-input::-webkit-input-placeholder {
+          color: #A9A9A9;
         }
         //提示内容不能为空
-        .ant-alert{
+        .ant-alert {
           position: absolute;
           z-index: 100;
           width: 200px;
@@ -52,20 +102,20 @@
         }
       }
       //底部保存取消选择类型按钮
-      .add-foot{
+      .add-foot {
         overflow: hidden;
         margin: 8px 0 0 0;
-        .ant-btn,.ant-select{
+        .ant-btn, .ant-select {
           margin-right: 7px;
         }
         //按钮 确认
-        .btn-primary-sure{
+        .btn-primary-sure {
           border-color: #35A6DE !important;
-          background-color:#35A6DE !important;
+          background-color: #35A6DE !important;
         }
         //增加成功或者失败后的提示
-        .resultTip{
-          .ant-alert{
+        .resultTip {
+          .ant-alert {
             position: absolute;
             z-index: 100;
             width: 180px;
@@ -74,26 +124,26 @@
             text-align: center;
           }
           //错误提示长一些
-          .ant-alert-error{
+          .ant-alert-error {
             width: 300px;
             left: 30%;
           }
         }
-        .ant-select-selection--single{
+        .ant-select-selection--single {
           height: 32px;
         }
         //下拉框中的字体和右侧按钮保持一致
-        .ant-select-selection--single .ant-select-selection__rendered{
+        .ant-select-selection--single .ant-select-selection__rendered {
           line-height: 30px;
         }
       }
     }
   }
   //下部时间线的样式
-  #show-container{
-    padding:0 20px 20px 20px;
+  #show-container {
+    padding: 0 20px 20px 20px;
     position: relative;
-    .ant-alert-error{
+    .ant-alert-error {
       position: absolute;
       z-index: 100;
       width: 350px;
@@ -102,19 +152,19 @@
       text-align: center;
     }
     //展示客户跟踪记录
-    .show-customer-trace{
+    .show-customer-trace {
       margin-top: 8px;
       position: relative;
-      .load8{
+      .load8 {
         position: absolute;
-        top:30px;
-        left:270px;
-        transform:scale(0.5, 0.5);
-        .loader8{
-          border-left-color:#394144;
+        top: 30px;
+        left: 270px;
+        transform: scale(0.5, 0.5);
+        .loader8 {
+          border-left-color: #394144;
         }
       }
-      .ant-alert{
+      .ant-alert {
         position: absolute;
         z-index: 100;
         width: 180px;
@@ -122,26 +172,26 @@
         left: 35%;
         text-align: center;
       }
-      .show-content{
+      .show-content {
         //时间线样式
-        .time-line{
+        .time-line {
           margin-top: 14px;
-          .ant-timeline{
+          .ant-timeline {
             margin-left: 85px;
           }
-          .ant-timeline-item-content{
+          .ant-timeline-item-content {
             padding-right: 18px;
-            .group-day{
-              left:-80px;
+            .group-day {
+              left: -80px;
               font-size: 15px;
             }
-            .sale-name{
+            .sale-name {
               margin-right: 9px;
             }
           }
           dl {
             position: relative;
-            top:-14px;
+            top: -14px;
             dt {
               color: #aaafb3;
               margin-top: 10px;
@@ -151,13 +201,13 @@
             dd {
               color: #464b4e;
               white-space: normal;
-              .item-detail-tip{
+              .item-detail-tip {
                 padding: 11px 0 0px 10px;
                 font-size: 15px;
                 min-height: 44px;
                 width: 100%;
                 line-height: 1.8;
-                .icon-container{
+                .icon-container {
                   display: inline-block;
                   width: 30px;
                   height: 30px;
@@ -169,52 +219,52 @@
                   position: absolute;
                   top: 9px;
                   left: -33px;
-                  .iconfont{
+                  .iconfont {
                     font-size: 24px;
-                    color:#1854A4;
+                    color: #1854A4;
                   }
                 }
-                .ant-btn{
+                .ant-btn {
                   float: right;
                   display: none;
                   border-color: #35A6DE !important;
-                  background-color:#35A6DE !important;
+                  background-color: #35A6DE !important;
 
                 }
-                &:hover{
-                  .ant-btn{
-                    display:block;
+                &:hover {
+                  .ant-btn {
+                    display: block;
                   }
                 }
                 //播放录音图标的样式
-                .audio-container{
+                .audio-container {
                   .iconfont.icon-audio-play {
-                        margin-left: 8px;
-                        font-size: 16px;
-                        color: @blue;
-                        cursor: pointer;
-                      }
+                    margin-left: 8px;
+                    font-size: 16px;
+                    color: @blue;
+                    cursor: pointer;
+                  }
                   .iconfont.icon-audio-play.icon-selected {
                     color: #C20C0C;
                   }
                 }
               }
-              .item-detail-content{
+              .item-detail-content {
                 padding: 0 0 0 10px;
-                >span{
-                  word-wrap:break-word;
+                > span {
+                  word-wrap: break-word;
                 }
-                .add-detail-tip{
+                .add-detail-tip {
                   font-size: 14px;
-                  color:#4d96d1;
+                  color: #4d96d1;
                   cursor: pointer;
                 }
-                .add-detail-container{
+                .add-detail-container {
                   width: 480px;
                   padding: 0 18px 8px 0;
                   position: relative;
                   //输入内容不能为空的提示
-                  .ant-alert{
+                  .ant-alert {
                     position: absolute;
                     z-index: 100;
                     width: 250px;
@@ -223,8 +273,8 @@
                     text-align: center
                   }
                   //补充客户跟踪记录
-                  .add-detail-content{
-                    .ant-alert{
+                  .add-detail-content {
+                    .ant-alert {
                       position: absolute;
                       z-index: 100;
                       width: 250px;
@@ -232,7 +282,7 @@
                       left: 27%;
                       text-align: center
                     }
-                    .add-detail-content-input{
+                    .add-detail-content-input {
                       width: 100%;
                       height: 87px;
                       border-color: #fff;
@@ -242,11 +292,11 @@
                       padding: 6px 9px;
                       margin-bottom: 7px;
                     }
-                    .add-detail-content-input::-webkit-input-placeholder{
-                      color:#A9A9A9;
+                    .add-detail-content-input::-webkit-input-placeholder {
+                      color: #A9A9A9;
                     }
-                    .resultDetailTip{
-                      .ant-alert{
+                    .resultDetailTip {
+                      .ant-alert {
                         position: absolute;
                         z-index: 100;
                         width: 300px;
@@ -256,7 +306,7 @@
                       }
                     }
                   }
-                  .add-detail-foot{
+                  .add-detail-foot {
                     overflow: hidden;
                   }
                 }
@@ -266,10 +316,10 @@
         }
       }
       //底部共有多少条数据的样式
-      .show-foot{
+      .show-foot {
         height: 40px;
         padding: 10px 0 0 0;
-        >span{
+        > span {
           float: left;
         }
         //底部录音播放状态的组件展示样式
@@ -282,11 +332,11 @@
           border-radius: 4px;
           background: #FAFAFA;
           width: 322px;
-          >div{
+          > div {
             background: #FAFAFA;
           }
         }
-        .audio-play-container.is-playing-audio{
+        .audio-play-container.is-playing-audio {
           height: 36px;
         }
       }

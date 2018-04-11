@@ -34,29 +34,30 @@
     padding: 10px;
     border-radius: 3px;
   }
-  //保存、取消按钮
-  .button-container {
+}
+
+//保存、取消按钮
+.button-container {
+  height: @item_height;
+  margin-top: 10px;
+  .button-cancel, .button-save {
+    float: right;
+    margin-left: 10px;
     height: @item_height;
-    margin-top: 10px;
-    .button-cancel, .button-save {
-      float: right;
-      margin-left: 10px;
-      height: @item_height;
-    }
-    .button-cancel {
-      color: @font_color;
-    }
-    //等待样式
-    .save-loading {
-      float: right;
-      font-size: 16px;
-      line-height: 24px;
-    }
-    //错误提示样式
-    .save-error {
-      float: right;
-      line-height: 24px;
-      color: #f50;
-    }
+  }
+  .button-cancel {
+    color: @font_color;
+  }
+  //等待样式
+  .save-loading {
+    float: right;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  //错误提示样式
+  .save-error {
+    float: right;
+    line-height: 24px;
+    color: #f50;
   }
 }

@@ -15,7 +15,7 @@ let CrmAction = require("../../action/crm-actions");
 let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
 import userData from "PUB_DIR/sources/user-data";
-
+import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
     getDefaultProps: function () {
@@ -200,23 +200,6 @@ let NameTextareaField = React.createClass({
             return "";
         }
     },
-    renderButtons() {
-        return (
-            <div className="button-container">
-                <Button className="button-save" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("common.save", "保存")}
-                </Button>
-                <Button className="button-cancel" onClick={this.handleCancel.bind(this)}>
-                    {Intl.get("common.cancel", "取消")}
-                </Button>
-                {this.state.loading ? (
-                    <Icon type="loading" className="save-loading"/>) : this.state.saveErrorMsg ? (
-                    <span className="save-error">{this.state.saveErrorMsg}</span>
-                ) : null}
-            </div>
-        );
-    },
     render: function () {
         let formData = this.state.formData;
         let status = this.state.status;
@@ -240,7 +223,11 @@ let NameTextareaField = React.createClass({
                     </FormItem>
                     {this.renderCustomerNameMsg()}
                 </Validation>
-                {this.renderButtons()}
+                <SaveCancelButton loading={this.state.loading}
+                                  saveErrorMsg={this.state.saveErrorMsg}
+                                  handleSubmit={this.handleSubmit}
+                                  handleCancel={this.handleCancel}
+                />
             </Form>
         );
     }

@@ -11,6 +11,7 @@ import FieldMixin from "../antd-form-fieldmixin";
 var FormItem = Form.Item;
 import Trace from "LIB_DIR/trace";
 import {DetailEditBtn} from "../rightPanel";
+import SaveCancelButton from "../detail-card/save-cancel-button";
 
 let BasicEditSelectField = React.createClass({
     mixins: [FieldMixin],
@@ -166,21 +167,6 @@ let BasicEditSelectField = React.createClass({
                 }
             </div>
         ) : null;
-        var buttonBlock = (
-            <div className="button-container">
-                <Button className="button-save" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("common.save", "保存")}
-                </Button>
-                <Button className="button-cancel" onClick={this.handleCancel.bind(this)}>
-                    {Intl.get("common.cancel", "取消")}
-                </Button>
-                {this.state.loading ? (
-                    <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
-                    <span className="save-error">{this.state.submitErrorMsg}</span>
-                ) : null}
-            </div>);
-
         var selectBlock = this.state.displayType === 'edit' ? (
             <div className="selectWrap" ref="selectWrap" key="select-wrap">
                 <Form horizontal autoComplete="off">
@@ -211,7 +197,12 @@ let BasicEditSelectField = React.createClass({
                         </FormItem>
                     </Validation>
                     <div className="buttons">
-                        {!this.props.hideButtonBlock ? buttonBlock : null}
+                        {!this.props.hideButtonBlock ?
+                            <SaveCancelButton loading={this.state.loading}
+                                              saveErrorMsg={this.state.submitErrorMsg}
+                                              handleSubmit={this.handleSubmit}
+                                              handleCancel={this.handleCancel}
+                            /> : null}
                     </div>
                 </Form>
             </div>

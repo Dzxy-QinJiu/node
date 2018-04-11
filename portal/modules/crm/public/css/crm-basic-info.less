@@ -101,30 +101,6 @@
       line-height: 20px;
       margin-bottom: 10px;
     }
-    //客户名的保存、取消按钮
-    .button-container {
-      height: @item_height;
-      button {
-        float: right;
-        margin-left: 10px;
-        height: @item_height;
-      }
-      .button-cancel {
-        color: @font_color;
-      }
-      //等待样式
-      .save-loading {
-        float: right;
-        font-size: 16px;
-        line-height: 24px;
-      }
-      //错误提示样式
-      .save-error {
-        float: right;
-        line-height: 24px;
-        color: #f50;
-      }
-    }
   }
   //客户基本信息展示区域
   .basic-info-detail-block {
@@ -138,6 +114,7 @@
     .basic-info-item {
       float: left;
       width: 100%;
+      min-height: 24px;
       //编辑按钮hover时才展示
       .icon-edit-btn {
         display: none;

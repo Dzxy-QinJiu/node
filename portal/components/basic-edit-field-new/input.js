@@ -14,6 +14,7 @@ import FieldMixin from "../antd-form-fieldmixin/index";
 import {PassStrengthBar} from "../password-strength-bar";
 import Trace from "LIB_DIR/trace";
 import {DetailEditBtn} from "../rightPanel";
+import SaveCancelButton from "../detail-card/save-cancel-button";
 
 const BasicEditField = React.createClass({
     mixins: [FieldMixin],
@@ -224,21 +225,6 @@ const BasicEditField = React.createClass({
             </div>
         ) : null;
 
-        var buttonBlock = (
-            <div className="button-container">
-                <Button className="button-save" type="primary"
-                        onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("common.save", "保存")}
-                </Button>
-                <Button className="button-cancel" onClick={this.handleCancel.bind(this)}>
-                    {Intl.get("common.cancel", "取消")}
-                </Button>
-                {this.state.loading ? (
-                    <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
-                    <span className="save-error">{this.state.submitErrorMsg}</span>
-                ) : null}
-            </div>);
-
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <Form horizontal autoComplete="off">
@@ -254,14 +240,14 @@ const BasicEditField = React.createClass({
                             <Validator rules={this.props.validators}>
                                 {this.props.type === 'textarea' ?
                                     <Input name="input"
-                                           autosize={{minRows: 2, maxRows: 6}}
                                            type={this.props.type}
                                            placeholder={this.props.placeholder}
                                            value={formData.input}
                                            onChange={this.onInputChange}
                                            autoComplete="off"
                                            onFocus={this.onFocusInput.bind(this, this.props.type)}
-                                           onBlur={this.onBlurInput.bind(this, this.props.type)}/>
+                                           onBlur={this.onBlurInput.bind(this, this.props.type)}
+                                           autosize={{minRows: 2, maxRows: 6}}/>
                                     : <Input name="input"
                                              type={this.props.type}
                                              placeholder={this.props.placeholder}
@@ -274,7 +260,12 @@ const BasicEditField = React.createClass({
                             </Validator>
                         </FormItem>
                     </Validation>
-                    {!this.props.hideButtonBlock ? buttonBlock : null}
+                    {!this.props.hideButtonBlock ?
+                        <SaveCancelButton loading={this.state.loading}
+                                          saveErrorMsg={this.state.submitErrorMsg}
+                                          handleSubmit={this.handleSubmit}
+                                          handleCancel={this.handleCancel}
+                        /> : null}
                 </Form>
             </div>
         ) : null;
