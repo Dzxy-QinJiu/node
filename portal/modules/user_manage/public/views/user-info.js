@@ -33,7 +33,6 @@ const UserData = require("PUB_DIR/sources/user-data");
 var UserInfo = React.createClass({
         getInitialState: function () {
             var userInfo = this.props.userInfo;
-            console.log("asd", userInfo);
             return {
                 userInfo: $.extend(true, {}, userInfo),
                 modalStr: "",//模态框提示内容
@@ -81,7 +80,6 @@ var UserInfo = React.createClass({
             });
         },
         getUserData: function (user) {
-            //todo 获取数据
             if (user.id) {
                 //跟据用户的id获取销售提成和比例
                 UserInfoAction.getSalesGoals({user_id: user.id});
@@ -91,15 +89,6 @@ var UserInfo = React.createClass({
                     num: this.state.logNum,
                     page_size: this.state.page_size
                 });
-
-                // //获取团队列表
-                // if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
-                //     UserFormAction.setTeamListLoading(true);
-                //     UserFormAction.getUserTeamList();
-                // }
-                // //获取角色列表
-                // UserFormAction.setRoleListLoading(true);
-                // UserFormAction.getRoleList();
             }
 
         },

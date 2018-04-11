@@ -933,6 +933,7 @@ var MemberList = React.createClass({
     //修改团队后的处理
     afterEditTeamSuccess:function (user) {
         SalesTeamAction.updateCurShowTeamMemberObj(user);
+        SalesTeamAction.getTeamMemberCountList();
     },
     render: function () {
         var _this = this;
