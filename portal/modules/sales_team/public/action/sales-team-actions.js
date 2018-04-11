@@ -35,7 +35,10 @@ function SalesTeamAction() {
         'setSearchContent',
         'refreshTeamListAfterAdd',
         'updateTeamNameAfterEdit',
-        'updateSalesGoals'
+        'updateSalesGoals',
+        'updateCurShowTeamMemberObj',
+        'showUserInfoPanel',
+        'closeRightPanel'
     );
 
     //获取统计团队内成员个数的列表

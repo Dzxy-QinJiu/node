@@ -82,7 +82,6 @@ var UserManage = React.createClass({
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
             }
-
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
             // //获取用户的详情
@@ -184,6 +183,9 @@ var UserManage = React.createClass({
         });
 
     },
+    changeUserFieldSuccess: function (user) {
+        UserAction.afterEditUser(user);
+    },
     render: function () {
         var modalType = Intl.get("member.member", "成员");
         var firstLoading = this.state.isLoading;
@@ -232,7 +234,11 @@ var UserManage = React.createClass({
                         <UserInfo
                             userInfo={this.state.currentUser}
                             closeRightPanel={this.events.closeRightPanel}
+                            userInfoShow={this.state.userInfoShow}
+                            userFormShow={this.state.userFormShow}
                             showEditForm={this.events.showUserForm}
+                            isContinueAddButtonShow={this.state.isContinueAddButtonShow}
+                            changeUserFieldSuccess={this.changeUserFieldSuccess}
                         />
                         <AddUserForm
                             formType={this.state.formType}

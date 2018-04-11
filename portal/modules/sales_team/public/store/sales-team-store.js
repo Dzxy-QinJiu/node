@@ -25,9 +25,21 @@ function SalesTeamStore() {
     this.isAddSalesTeamRoot = false;//是否是添加根团队
     this.salesGoals = {};//销售目标
     this.teamMemberCountList = [];//统计团队内成员个数的列表
+    this.userInfoShow = false;
+    this.userFormShow = false;
+    this.rightPanelShow = false;
 
     this.bindActions(SalesTeamActions);
 }
+SalesTeamStore.prototype.showUserInfoPanel = function () {
+    this.userInfoShow = true;
+    this.userFormShow = false;
+    this.rightPanelShow = true;
+};
+SalesTeamStore.prototype.closeRightPanel = function () {
+    this.rightPanelShow = false;
+    this.userInfoShow = false;
+};
 //获取统计团队内成员个数的列表
 SalesTeamStore.prototype.getTeamMemberCountList = function (list) {
     this.teamMemberCountList = _.isArray(list) ? list : [];
@@ -710,6 +722,47 @@ SalesTeamStore.prototype.checkSelectTree = function () {
     });
     return selectObj;
 };
+//修改用户详情后，更改列表中的数据
+SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
+    var teamMemberObj = this.curShowTeamMemberObj;
+    if (user.nick_name) {
+        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.user_id) {
+            teamMemberObj.owner.nickName = user.nick_name;
+            return;
+        }
+        if (_.isArray(teamMemberObj.users)) {
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.user_id);
+            if (updateObj) {
+                updateObj.nickName = user.nick_name;
+            }
+        }
+    } else if (user.status || user.status == 0) {
+        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+            teamMemberObj.owner.status = user.status;
+            return;
+        }
+        if (_.isArray(teamMemberObj.users)) {
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.id);
+            if (updateObj) {
+                updateObj.status = user.status;
+            }
+        }
+
+    }else if(user.team){
+        if (user.team !== teamMemberObj.groupId){
+            if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+                teamMemberObj.owner = {};
+                return;
+            }
+            if (_.isArray(teamMemberObj.users)) {
+                teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId != user.id);
+            }
+        }
+
+    }
+
+
+}
 
 SalesTeamStore.prototype.salesTeamTree = function (flag) {
     var isSelectObj = this.checkSelectTree();

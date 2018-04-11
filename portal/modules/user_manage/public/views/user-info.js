@@ -21,16 +21,15 @@ import UserLog from './user-log';
 var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var ModalDialog = require("../../../../components/ModalDialog");
 var UserFormStore = require("../store/user-form-store");
-var UserStore = require("../store/user-store");
+var UserInfoStore = require("../store/user-info-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
+var UserInfoAction = require("../action/user-info-action");
 var UserFormAction = require("../action/user-form-actions");
 import Trace from "LIB_DIR/trace";
 import CommissionAndTarget from "./commission-and-target";
 const UserData = require("PUB_DIR/sources/user-data");
-var CONSTANTS = {
-    LOG_PAGE_SIZE: 11//个人操作日志一页展示的条数
-};
+
 var UserInfo = React.createClass({
         getInitialState: function () {
             var userInfo = this.props.userInfo;
@@ -42,10 +41,8 @@ var UserInfo = React.createClass({
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
                 isConfirmPasswordShow: false,//确认密码的展示标识
-                saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
-                page_size: CONSTANTS.LOG_PAGE_SIZE,
                 hasLog: true,
-                ...UserStore.getState(),
+                ...UserInfoStore.getState(),
             };
         },
 
@@ -64,18 +61,17 @@ var UserInfo = React.createClass({
             this.setState({
                 userTeamList: UserFormStore.getState().userTeamList,
                 roleList: UserFormStore.getState().roleList,
-                saleGoalsAndCommissionRadio: UserStore.getState().saleGoalsAndCommissionRadio,
-                ...UserStore.getState()
+                ...UserInfoStore.getState()
             });
         },
         componentWillUnmount: function () {
-            UserStore.unlisten(this.onChange);
+            UserInfoStore.unlisten(this.onChange);
             UserFormStore.unlisten(this.onChange);
         },
         componentDidMount: function () {
             this.layout();
             UserFormStore.listen(this.onChange);
-            UserStore.listen(this.onChange);
+            UserInfoStore.listen(this.onChange);
             setTimeout(()=>{
                 this.getUserData(this.state.userInfo);
             });
@@ -88,12 +84,12 @@ var UserInfo = React.createClass({
             //todo 获取数据
             if (user.id) {
                 //跟据用户的id获取销售提成和比例
-                UserAction.getSalesGoals({user_id: user.id});
-                UserAction.setLogLoading(true);
-                UserAction.getLogList({
+                UserInfoAction.getSalesGoals({user_id: user.id});
+                UserInfoAction.setLogLoading(true);
+                UserInfoAction.getLogList({
                     user_name: _.isString(user.userName) ? user.userName : user.userName.value,
                     num: this.state.logNum,
-                    page_size: CONSTANTS.LOG_PAGE_SIZE
+                    page_size: this.state.page_size
                 });
 
                 // //获取团队列表
@@ -110,7 +106,7 @@ var UserInfo = React.createClass({
         layout: function () {
             var bHeight = $("body").height();
             var formHeight = bHeight - $(".head-image-container").outerHeight(true);
-            if (this.state.isContinueAddButtonShow) {
+            if (this.props.isContinueAddButtonShow) {
                 formHeight -= 80;
             }
             $(".log-infor-scroll").height(formHeight);
@@ -170,6 +166,9 @@ var UserInfo = React.createClass({
             //更新详情中的所属团队
             let updateTeam = _.find(this.state.userTeamList, team => team.group_id == user.team);
             UserAction.updateUserTeam(updateTeam);
+            if (_.isFunction(this.props.afterEditTeamSuccess)){
+                this.props.afterEditTeamSuccess(user);
+            }
         },
 
         afterEditRoleSuccess: function (user) {
@@ -183,14 +182,12 @@ var UserInfo = React.createClass({
                 });
                 UserAction.updateUserRoles(roleObj);
             }
+            if (_.isFunction(this.props.afterEditRoleSuccess)){
+                this.props.afterEditRoleSuccess(user);
+            }
         },
         changeUserFieldSuccess: function (user) {
-            console.log(user);
-            if (_.isFunction(this.props.changeUserFieldSuccess)){
-                this.props.changeUserFieldSuccess();
-            }else{
-                UserAction.afterEditUser(user);
-            }
+            _.isFunction(this.props.changeUserFieldSuccess) &&  this.props.changeUserFieldSuccess(user);
         },
         //渲染角色下拉列表
         getRoleSelectOptions: function (userInfo) {
@@ -570,25 +567,27 @@ var UserInfo = React.createClass({
         },
         //切换日志分页时的处理
         changeLogNum: function (num) {
-            UserAction.changeLogNum(num);
-            UserAction.getLogList({
-                user_name: this.state.currentUser.userName,
+            UserInfoAction.changeLogNum(num);
+            UserInfoAction.getLogList({
+                user_name: this.state.userInfo.userName,
                 num: num,
-                page_size: CONSTANTS.LOG_PAGE_SIZE
+                page_size: this.state.page_size
             });
         },
         //启用、停用
         updateUserStatus: function (userId, status) {
-            UserAction.updateUserStatus({id: userId, status: status});
+            var updateObj = {id: userId, status: status};
+            _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
+            UserAction.updateUserStatus(updateObj);
         },
         //展示模态框
         showModalDialog: function () {
-            UserAction.showModalDialog();
+            UserInfoAction.showModalDialog();
         },
         //隐藏模态框
         hideModalDialog: function () {
             Trace.traceEvent($(".log-infor-scroll"), "关闭模态框");
-            UserAction.hideModalDialog();
+            UserInfoAction.hideModalDialog();
         },
         cancelEditIcon: function () {
             Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "取消头像的保存");
@@ -619,7 +618,7 @@ var UserInfo = React.createClass({
             });
             var className = "right-panel-content";
 
-            if (!this.state.userInfoShow && this.state.userFormShow) {
+            if (!this.props.userInfoShow && this.props.userFormShow) {
                 //展示form面板时，整体左移
                 className += " right-panel-content-slide";
             }
@@ -629,7 +628,7 @@ var UserInfo = React.createClass({
                 <div className={className} data-tracename="成员详情">
                     <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
                     {user_id !== loginUserInfo.user_id ? <div className="edit-buttons">
-                        {!this.state.isContinueAddButtonShow ? (
+                        {!this.props.isContinueAddButtonShow ? (
                             <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
                                 <RightPanelForbid onClick={(e) => {
                                     this.showForbidModalDialog(e)
@@ -676,7 +675,7 @@ var UserInfo = React.createClass({
                             </div>
                         </GeminiScrollbar>
                     </div>
-                    {this.state.isContinueAddButtonShow ? (
+                    {this.props.isContinueAddButtonShow ? (
                         <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, "add")}>
                             <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
                                                                                  defaultMessage="添加成员"/></span>

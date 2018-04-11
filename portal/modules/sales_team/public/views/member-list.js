@@ -2,7 +2,7 @@
  * Created by xiaojinfeng on 2016/04/13.
  */
 
-import {InputNumber, Button, Popconfirm} from "antd";
+import {InputNumber, Button, Popconfirm, message} from "antd";
 var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
 var DefaultUserLogoTitle = require("../../../../components/default-user-logo-title");
 var Spinner = require("../../../../components/spinner");
@@ -61,7 +61,7 @@ var MemberList = React.createClass({
             teamConfirmVisible: false,
             memberConfirmVisible: false,
             memberListHeight: this.getMemberListHeight(),
-            ...UserStore.getState(),
+            currentUser: UserStore.getState().currentUser,
         };
     },
     onChange: function () {
@@ -70,7 +70,7 @@ var MemberList = React.createClass({
             isMemberListSaving: savingFlags.isMemberListSaving,
             saveMemberListResult: savingFlags.saveMemberListResult,
             saveMemberListMsg: savingFlags.saveMemberListMsg,
-            ...UserStore.getState(),
+            currentUser: UserStore.getState().currentUser,
         });
     },
     getMemberListHeight: function () {
@@ -138,7 +138,6 @@ var MemberList = React.createClass({
         } else {
             //展示客户的时候
             if (!this.props.isEditMember){
-                console.log(salesTeamMember);
                 Trace.traceEvent("团队管理","点击查看成员详情");
                 UserAction.setCurUser(salesTeamMember.userId);
                 // //获取用户的详情
@@ -146,18 +145,11 @@ var MemberList = React.createClass({
                 UserAction.getCurUserById(salesTeamMember.userId);
                 if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                     $(".right-panel-content").removeClass("right-panel-content-slide");
-                    if (openTimeout) {
-                        clearTimeout(openTimeout);
-                    }
-                    openTimeout = setTimeout(function () {
-                        UserAction.showUserInfoPanel();
-                    }, 10);
+                    SalesTeamAction.showUserInfoPanel();
                 } else {
-                    UserAction.showUserInfoPanel();
+                    SalesTeamAction.showUserInfoPanel();
                 }
             }
-
-
             //删除、编辑
             var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //负责人存在
@@ -874,7 +866,7 @@ var MemberList = React.createClass({
     closeRightPanel:function () {
         //将数据清空
         UserAction.setInitialData();
-        UserAction.closeRightPanel();
+        SalesTeamAction.closeRightPanel();
         UserAction.hideContinueAddButton();
     },
     //取消销售目标的保存
@@ -933,6 +925,15 @@ var MemberList = React.createClass({
                 </div>
             </div>);
     },
+    //修改用户的基本信息或者修改用户的状态后
+    changeUserFieldSuccess:function (user) {
+        //修改用户的昵称
+        SalesTeamAction.updateCurShowTeamMemberObj(user);
+    },
+    //修改团队后的处理
+    afterEditTeamSuccess:function (user) {
+        SalesTeamAction.updateCurShowTeamMemberObj(user);
+    },
     render: function () {
         var _this = this;
         var salesTeamPersonnelWidth = this.props.salesTeamMemberWidth;
@@ -957,10 +958,15 @@ var MemberList = React.createClass({
                 {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
                     <Spinner className="isloading"/>
                 </div>) : ""}
-                <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
+                <RightPanel className="white-space-nowrap" showFlag={this.props.rightPanelShow}>
                     <UserInfo
                         userInfo={this.state.currentUser}
                         closeRightPanel={this.closeRightPanel}
+                        changeUserFieldSuccess={this.changeUserFieldSuccess}
+                        updateUserStatus={this.changeUserFieldSuccess}
+                        userInfoShow={this.props.userInfoShow}
+                        userFormShow={this.props.userFormShow}
+                        afterEditTeamSuccess={this.afterEditTeamSuccess}
                     />
                 </RightPanel>
             </div>
