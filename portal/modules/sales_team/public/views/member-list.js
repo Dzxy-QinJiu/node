@@ -32,7 +32,6 @@ const SALES_GOALS_TYPE = {
     MEMBER: "member",//个人销售目标
     TEAM: "team"//团队销售目标
 };
-var openTimeout = null;//打开面板时的时间延迟设置
 function noop() {
 }
 var MemberList = React.createClass({
@@ -140,7 +139,7 @@ var MemberList = React.createClass({
             if (!this.props.isEditMember){
                 Trace.traceEvent("团队管理","点击查看成员详情");
                 UserAction.setCurUser(salesTeamMember.userId);
-                // //获取用户的详情
+                //获取用户的详情
                 UserAction.setUserLoading(true);
                 UserAction.getCurUserById(salesTeamMember.userId);
                 if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
@@ -933,6 +932,7 @@ var MemberList = React.createClass({
     //修改团队后的处理
     afterEditTeamSuccess:function (user) {
         SalesTeamAction.updateCurShowTeamMemberObj(user);
+        //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
     },
     render: function () {

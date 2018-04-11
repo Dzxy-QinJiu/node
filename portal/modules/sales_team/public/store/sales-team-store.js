@@ -725,6 +725,7 @@ SalesTeamStore.prototype.checkSelectTree = function () {
 //修改用户详情后，更改列表中的数据
 SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
     var teamMemberObj = this.curShowTeamMemberObj;
+    //修改用户的昵称
     if (user.nick_name) {
         if (teamMemberObj.owner && teamMemberObj.owner.userId == user.user_id) {
             teamMemberObj.owner.nickName = user.nick_name;
@@ -737,6 +738,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
             }
         }
     } else if (user.status || user.status == 0) {
+        //修改用户的状态
         if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
             teamMemberObj.owner.status = user.status;
             return;
@@ -747,8 +749,8 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
                 updateObj.status = user.status;
             }
         }
-
     }else if(user.team){
+        //修改用户所在的团队
         if (user.team !== teamMemberObj.groupId){
             if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
                 teamMemberObj.owner = {};
@@ -758,10 +760,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
                 teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId != user.id);
             }
         }
-
     }
-
-
 }
 
 SalesTeamStore.prototype.salesTeamTree = function (flag) {

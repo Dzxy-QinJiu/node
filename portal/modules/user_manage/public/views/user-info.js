@@ -25,16 +25,14 @@ var UserInfoStore = require("../store/user-info-store");
 var UserInfoAjax = require("../ajax/user-ajax");
 var UserAction = require("../action/user-actions");
 var UserInfoAction = require("../action/user-info-action");
-var UserFormAction = require("../action/user-form-actions");
 import Trace from "LIB_DIR/trace";
 import CommissionAndTarget from "./commission-and-target";
 const UserData = require("PUB_DIR/sources/user-data");
 
 var UserInfo = React.createClass({
         getInitialState: function () {
-            var userInfo = this.props.userInfo;
             return {
-                userInfo: $.extend(true, {}, userInfo),
+                userInfo: $.extend(true, {}, this.props.userInfo),
                 modalStr: "",//模态框提示内容
                 isDel: false,//是否删除
                 userTeamList: UserFormStore.getState().userTeamList,

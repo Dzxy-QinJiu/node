@@ -43,16 +43,8 @@ var UserManage = React.createClass({
     events: {
         showUserForm: function (type) {
             //type：“edit”/"add"
-            //获取角色列表
-            // UserFormAction.setRoleListLoading(true);
-            // UserFormAction.getRoleList();
             if (type === "add") {
                 Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
-                //获取团队列表
-                // if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
-                //     UserFormAction.setTeamListLoading(true);
-                //     UserFormAction.getUserTeamList();
-                // }
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
