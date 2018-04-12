@@ -20,7 +20,6 @@ import CrmBasicAjax from "../ajax/index";
 import batchAjax from "../ajax/batch-change-ajax";
 import userData from "PUB_DIR/sources/user-data";
 import CustomerRecord from "./customer_record";
-
 function getStateFromStore(isMerge) {
     return {
         basicIsLoading: CRMStore.getBasicState(),
@@ -199,10 +198,11 @@ var BasicOverview = React.createClass({
                 </span>
                 <span className="iconfont icon-arrow-right"/>
             </div>);
-        return (<DetailCard content={tip}/>);
+        return (<DetailCard content={tip} className="expire-tip-contianer"/>);
     },
     renderCustomerRcord: function () {
         return <CustomerRecord
+            isOverViewPanel={true}
             curCustomer={this.state.basicData}
             refreshCustomerList={this.props.refreshCustomerList}
         />

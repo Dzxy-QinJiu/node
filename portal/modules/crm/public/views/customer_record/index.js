@@ -33,8 +33,7 @@ var LAYOUT_CONSTANTS = {
     TOP_NAV_HEIGHT: 52 + 16,//52：头部导航的高度，16：导航的下边距
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
     TOP_TOTAL_HEIGHT: 25,//共xxx条的高度
-    BOTTOM_HEIGHT: 40,
-    TOP_NAV: 92
+    OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
 
 const CustomerRecord = React.createClass({
@@ -618,6 +617,20 @@ const CustomerRecord = React.createClass({
                 divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
             } else {//减共xxx条的高度
                 divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+            }
+            //概览页的跟进记录
+            if (this.props.isOverViewPanel) {
+                //减概览页”最新跟进“的高度
+                divHeight -= LAYOUT_CONSTANTS.OVER_VIEW_TITLE_HEIGHT;
+                //减到期用户的高度
+                let expireTipHeight = $(".expire-tip-contianer") ? parseInt($(".expire-tip-contianer").outerHeight(true)) : 0;
+                divHeight -= expireTipHeight;
+                //减所属销售的高度
+                let salesTeamHeight = parseInt($(".sales-team-container").outerHeight(true));
+                divHeight -= salesTeamHeight;
+                //减标签的高度
+                let tagListHeight = parseInt($(".tag-card-container").outerHeight(true));
+                divHeight -= tagListHeight;
             }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;

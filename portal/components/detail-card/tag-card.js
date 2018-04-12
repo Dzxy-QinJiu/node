@@ -166,6 +166,7 @@ class TagCard extends React.Component {
         }
         return (
             <DetailCard title={this.renderTagTitle()}
+                        className="tag-card-container"
                         content={this.renderTagContent()}
                         isEdit={this.state.displayType === "edit"}
                         loading={this.state.loading}
