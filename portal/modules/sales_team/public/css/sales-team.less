@@ -396,9 +396,20 @@
             font-size:24px;
             line-height:40px;
           }
+          .team-sales-goal{
+            cursor: pointer;
+            margin: 8px 10px 0 0;
+          }
+          .self-sales-goal{
+            cursor: pointer;
+            margin: 8px 0 0 0;
+          }
+
           .sales-goals-item{
             display:inline-block;
             margin-right: 5px;
+            position: relative;
+            top:-7px;
             .ant-input-number-input-wrap {
                 height: 25px;
                 overflow: hidden;
@@ -410,6 +421,18 @@
               margin-right: 5px;
               .ant-input-number-input{
                 padding:0 2px 0 7px;
+              }
+            }
+            .team-icon-container,.member-icon-container{
+              position: relative;
+              top:8px;
+              .iconfont{
+                margin-right: 10px;
+                cursor: pointer;
+              }
+              .iconfont.icon-close{
+                font-size: 12px;
+                color:@icon_close_color;
               }
             }
             .sales-goals-label {

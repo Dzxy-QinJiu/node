@@ -30,6 +30,9 @@ UserInfoStore.prototype.setInitialData = function () {
     this.logNum = 1;
     this.getUserDetailError = "";
     this.page_size = CONSTANTS.LOG_PAGE_SIZE;
+    this.userIsLoading = false;//正在获取用户信息
+    this.getUserDetailError = "";//获取用户信息失败
+    this.currentShowUser={}//当前正在展示的用户详情
 }
 UserInfoStore.prototype.changeLogNum = function (num) {
     this.logNum = num;
@@ -71,6 +74,25 @@ UserInfoStore.prototype.getLogList = function (resObj) {
                 return log;
             });
         }
+    }
+};
+//获取成员详情后，重新赋值详情信息
+UserInfoStore.prototype.getCurUserById = function (resObj) {
+    var user = resObj.userObj;
+    this.userIsLoading = false;
+    if (_.isString(user)) {
+        this.getUserDetailError = user;
+    } else {
+        this.getUserDetailError = "";
+        user.createDate = resObj.createDate;
+        this.currentShowUser = user;
+    }
+};
+UserInfoStore.prototype.setUserLoading = function (flag) {
+    this.userIsLoading = flag;
+    if (flag) {
+        //重新获取详情时，清空之前的错误提示
+        this.getUserDetailError = "";
     }
 };
 module.exports = alt.createStore(UserInfoStore, 'UserInfoStore');

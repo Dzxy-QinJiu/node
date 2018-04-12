@@ -197,6 +197,8 @@ var SalesTeamPage = React.createClass({
                             userInfoShow = {this.state.userInfoShow}
                             userFormShow = {this.state.userFormShow}
                             rightPanelShow={this.state.rightPanelShow}
+                            isLoadingSalesGoal={this.state.isLoadingSalesGoal}
+                            getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
                         >
                         </MemberList>
                     </div>))

@@ -23,7 +23,8 @@ function UserActions() {
         'setSelectRole',
         'updateUserTeam',
         'setUserLoading',
-        'updateUserRoles'
+        'updateUserRoles',
+        'updateCurrentUserStatus'
     );
     this.getCurUserList = function (searchObj) {
         var _this = this;

@@ -62,8 +62,6 @@ function UserStore() {
     //获取成员详情失败的错误提示
     this.getUserDetailError = "";
     this.isContinueAddButtonShow = false;
-
-
     this.bindActions(UserActions);
 
 }
@@ -89,6 +87,12 @@ UserStore.prototype.updateUserTeam = function (team) {
         this.currentUser.teamId = team.group_id;
         this.currentUser.teamName = team.group_name;
     }
+};
+//更新成员的启用或者禁用状态
+UserStore.prototype.updateCurrentUserStatus = function (status) {
+  if(this.currentUser){
+      this.currentUser.status = status;
+  }
 };
 UserStore.prototype.updateUserRoles = function (roleObj) {
     if (this.currentUser) {

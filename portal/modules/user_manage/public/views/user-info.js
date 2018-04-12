@@ -33,6 +33,7 @@ var UserInfo = React.createClass({
         getInitialState: function () {
             return {
                 userInfo: $.extend(true, {}, this.props.userInfo),
+                userBasicDetail:{id:"",createDate:""},//要传用户的id和用户的创建时间
                 modalStr: "",//模态框提示内容
                 isDel: false,//是否删除
                 userTeamList: UserFormStore.getState().userTeamList,
@@ -76,6 +77,12 @@ var UserInfo = React.createClass({
                 e.stopPropagation();
                 this.layout();
             });
+            var userBasicDetail = this.state.userBasicDetail;
+            if (userBasicDetail.id){
+                //获取用户的详情
+                UserAction.setUserLoading(true);
+                UserInfoAction.getCurUserById(userBasicDetail);
+            }
         },
         getUserData: function (user) {
             if (user.id) {
@@ -565,7 +572,6 @@ var UserInfo = React.createClass({
         updateUserStatus: function (userId, status) {
             var updateObj = {id: userId, status: status};
             _.isFunction(this.props.updateUserStatus) && this.props.updateUserStatus(updateObj);
-            UserAction.updateUserStatus(updateObj);
         },
         //展示模态框
         showModalDialog: function () {

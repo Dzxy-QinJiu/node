@@ -27,14 +27,6 @@ var UserManage = React.createClass({
     componentDidMount: function () {
         $("body").css("overflow", "hidden");
         UserStore.listen(this.onChange);
-        //获取团队列表
-        if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
-            UserFormAction.setTeamListLoading(true);
-            UserFormAction.getUserTeamList();
-        }
-        //获取角色列表
-        UserFormAction.setRoleListLoading(true);
-        UserFormAction.getRoleList();
     },
     componentWillUnmount: function () {
         $("body").css("overflow", "auto");
@@ -45,6 +37,11 @@ var UserManage = React.createClass({
             //type：“edit”/"add"
             if (type === "add") {
                 Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
+                //获取团队列表
+                if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                    UserFormAction.setTeamListLoading(true);
+                    UserFormAction.getUserTeamList();
+                }
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
@@ -76,9 +73,6 @@ var UserManage = React.createClass({
             }
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
-            // //获取用户的详情
-            UserAction.setUserLoading(true);
-            UserAction.getCurUserById(user.id);
             if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                 $(".right-panel-content").removeClass("right-panel-content-slide");
                 if (openTimeout) {
@@ -90,6 +84,14 @@ var UserManage = React.createClass({
             } else {
                 UserAction.showUserInfoPanel();
             }
+            //获取团队列表
+            if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                UserFormAction.setTeamListLoading(true);
+                UserFormAction.getUserTeamList();
+            }
+            //获取角色列表
+            UserFormAction.setRoleListLoading(true);
+            UserFormAction.getRoleList();
         },
 
         searchEvent: function (searchContent) {
@@ -178,8 +180,11 @@ var UserManage = React.createClass({
     changeUserFieldSuccess: function (user) {
         UserAction.afterEditUser(user);
     },
+    updateUserStatus: function (updateObj) {
+        UserAction.updateUserStatus(updateObj);
+        UserAction.updateCurrentUserStatus(updateObj.status);
+    },
     render: function () {
-        var modalType = Intl.get("member.member", "成员");
         var firstLoading = this.state.isLoading;
         return (
             <div className="user_manage_style backgroundManagement_user_content" data-tracename="成员管理">
@@ -231,6 +236,7 @@ var UserManage = React.createClass({
                             showEditForm={this.events.showUserForm}
                             isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                             changeUserFieldSuccess={this.changeUserFieldSuccess}
+                            updateUserStatus={this.updateUserStatus}
                         />
                         <AddUserForm
                             formType={this.state.formType}

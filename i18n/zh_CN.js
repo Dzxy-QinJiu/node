@@ -2066,6 +2066,8 @@ var zh_CN = {
     "user.list.all.teamlist": "全部团队",
     "common.sales.frontpage.loading": "加载中",
     "common.sales.data.err": "出错啦",
-    "common.sales.data.no.data": "暂无此类信息"
+    "common.sales.data.no.data": "暂无此类信息",
+    "common.batch.sales.target": "批量变更团队销售目标",
+    "common.batch.self.sales.target": "批量变更个人销售目标"
 };
 export default zh_CN;

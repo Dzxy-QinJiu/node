@@ -61,6 +61,10 @@ var MemberList = React.createClass({
             memberConfirmVisible: false,
             memberListHeight: this.getMemberListHeight(),
             currentUser: UserStore.getState().currentUser,
+            isLoadingSalesGoal: this.props.isLoadingSalesGoal,
+            getSalesGoalErrMsg: this.props.getSalesGoalErrMsg,
+            isShowBatchChangeTeamGoal: true,//是否展示设置团队目标按钮
+            isShowBatchChangeSelfGoal: true //是否展示设置个人目标按钮
         };
     },
     onChange: function () {
@@ -92,16 +96,6 @@ var MemberList = React.createClass({
         MemberListEditStore.listen(this.onChange);
         UserStore.listen(this.onChange);
         $(window).on("resize", this.layout);
-        setTimeout(()=>{
-            //获取团队列表
-            if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
-                UserFormAction.setTeamListLoading(true);
-                UserFormAction.getUserTeamList();
-            }
-            //获取角色列表
-            UserFormAction.setRoleListLoading(true);
-            UserFormAction.getRoleList();
-        })
     },
 
     componentWillUnmount: function () {
@@ -113,7 +107,10 @@ var MemberList = React.createClass({
         this.setState(this.getInitialState());
         this.setState({
             addMemberList: $.extend(true, [], nextProps.addMemberList),
-            curShowTeamMemberObj: $.extend(true, {}, nextProps.curShowTeamMemberObj)
+            curShowTeamMemberObj: $.extend(true, {}, nextProps.curShowTeamMemberObj),
+            salesGoals: _.extend({}, nextProps.salesGoals),
+            isLoadingSalesGoal: nextProps.isLoadingSalesGoal,
+            getSalesGoalErrMsg: nextProps.getSalesGoalErrMsg
         });
     },
 
@@ -135,13 +132,23 @@ var MemberList = React.createClass({
                 addMemberList: this.state.addMemberList
             });
         } else {
-            //展示客户的时候
+            //展示用户的时候
             if (!this.props.isEditMember){
                 Trace.traceEvent("团队管理","点击查看成员详情");
                 UserAction.setCurUser(salesTeamMember.userId);
                 //获取用户的详情
                 UserAction.setUserLoading(true);
                 UserAction.getCurUserById(salesTeamMember.userId);
+                setTimeout(()=>{
+                    //获取团队列表
+                    if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
+                        UserFormAction.setTeamListLoading(true);
+                        UserFormAction.getUserTeamList();
+                    }
+                    //获取角色列表
+                    UserFormAction.setRoleListLoading(true);
+                    UserFormAction.getRoleList();
+                })
                 if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                     $(".right-panel-content").removeClass("right-panel-content-slide");
                     SalesTeamAction.showUserInfoPanel();
@@ -811,6 +818,7 @@ var MemberList = React.createClass({
         let saveParams = {};
         if (type == SALES_GOALS_TYPE.TEAM) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "保存团队销售目标");
+            var curShowTeamMemberObj = this.state.curShowTeamMemberObj;
             //团队销售目标
             saveParams = {
                 sales_team_id: curTeamObj.groupId,
@@ -820,6 +828,21 @@ var MemberList = React.createClass({
             if (salesGoals.id) {
                 //修改时加上销售目标的id
                 saveParams.id = salesGoals.id;
+            }
+            //将团队的销售目标加在团队的owner上
+            if (curTeamObj.owner && curTeamObj.owner.nickName && curTeamObj.owner.userId){
+                saveParams.users = [{
+                    goal: salesGoals.goal,
+                    user_id: curTeamObj.owner.userId,
+                    user_name: curTeamObj.owner.nickName
+                }];
+                if (_.isArray(salesGoals.users)){
+                    let ownerItem = _.find(salesGoals.users, userItem => userItem.user_id === curTeamObj.owner.userId);
+                    //修改团队目标时，如果团队owner的id存在，也要把团队owner的id加上
+                    if (ownerItem && ownerItem.id){
+                        saveParams.users[0].id = ownerItem.id;
+                    }
+                }
             }
         } else if (type == SALES_GOALS_TYPE.MEMBER) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "保存个人销售目标");
@@ -836,8 +859,8 @@ var MemberList = React.createClass({
                         goal: salesGoals.member_goal
                     };
                     //修改时id的处理
-                    if (_.isArray(salesGoals.user_sales_goals) && salesGoals.user_sales_goals.length) {
-                        let oldUserGoal = _.find(salesGoals.user_sales_goals, goal => goal.user_id == user.userId);
+                    if (_.isArray(salesGoals.users) && salesGoals.users.length) {
+                        let oldUserGoal = _.find(salesGoals.users, goal => goal.user_id == user.userId);
                         if (oldUserGoal && oldUserGoal.id) {
                             userGoal.id = oldUserGoal.id;
                         }
@@ -855,11 +878,11 @@ var MemberList = React.createClass({
             if (result) {
                 SalesTeamAction.updateSalesGoals({type: type, salesGoals: result});
             } else {
-                this.cancelSaveSalesGoals(type);
+                this.cancelSaveSalesGoals(type,false);
             }
         }, errorMsg => {
             message.error(errorMsg || Intl.get("common.edit.failed", "修改失败"));
-            this.cancelSaveSalesGoals(type);
+            this.cancelSaveSalesGoals(type,false);
         });
     },
     closeRightPanel:function () {
@@ -869,65 +892,92 @@ var MemberList = React.createClass({
         UserAction.hideContinueAddButton();
     },
     //取消销售目标的保存
-    cancelSaveSalesGoals: function (type) {
+    cancelSaveSalesGoals: function (type,flag) {
         if (type == SALES_GOALS_TYPE.TEAM) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "取消团队销售目标的保存");
             this.state.salesGoals.goal = this.props.salesGoals.goal;
             this.setState({teamConfirmVisible: false, salesGoals: this.state.salesGoals});
+            this.toggleBatchChangeTeamGoalBtn(flag);
         } else if (type == SALES_GOALS_TYPE.MEMBER) {
             Trace.traceEvent($(this.getDOMNode()).find(".member-top-operation-div"), "取消个人销售目标的保存");
             this.state.salesGoals.member_goal = this.props.salesGoals.member_goal;
             this.setState({memberConfirmVisible: false, salesGoals: this.state.salesGoals});
+            this.toggleBatchChangeSelfGoalBtn(flag);
+
         }
     },
     //将销售目标转换为界面展示所需数据：x0000=>x万
     turnGoalToShowData: function (goal) {
         return _.isNumber(goal) && !_.isNaN(goal) ? (goal / 10000) : '';
     },
+    toggleBatchChangeTeamGoalBtn:function (flag) {
+      this.setState({
+          isShowBatchChangeTeamGoal: flag
+      })
+    },
+    toggleBatchChangeSelfGoalBtn: function (flag) {
+      this.setState({
+          isShowBatchChangeSelfGoal: flag
+      })
+    },
     //渲染团队目标
     renderSalesGoals: function () {
         return (
             <div className="sales-team-goals-container">
                 <span className="iconfont icon-sales-goals" title={Intl.get("sales.team.sales.goal", "销售目标")}/>
-                <div className="sales-goals-item">
+                {this.state.isShowBatchChangeTeamGoal ? <Button className="team-sales-goal" onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)} data-tracename="批量变更团队销售目标">{Intl.get("common.batch.sales.target", "批量变更团队销售目标")}</Button> : <div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get("user.user.team", "团队")}：</span>
-                    <Popconfirm title={Intl.get("sales.team.save.team.sales.goal", "是否保存团队销售目标？")}
-                                visible={this.state.teamConfirmVisible}
-                                onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}
-                                onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}>
+                    {/*<Popconfirm title={Intl.get("sales.team.save.team.sales.goal", "是否保存团队销售目标？")}*/}
+                                {/*visible={this.state.teamConfirmVisible}*/}
+                                {/*onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}*/}
+                                {/*onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}>*/}
                         <InputNumber className="team-goals-input"
                                      value={this.turnGoalToShowData(this.state.salesGoals.goal)}
                                      onChange={this.changeTeamSalesGoals}
-                                     onBlur={(e) => {
-                                         this.showTeamConfirm(e)
-                                     }}
+                                     // onBlur={(e) => {
+                                     //     this.showTeamConfirm(e)
+                                     // }}
                         />
-                    </Popconfirm>
+                        <span className="team-icon-container">
+                          <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}></i>
+                        <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM, true)}></i>
+                        </span>
+                    {/*</Popconfirm>*/}
 
                     <span className="sales-goals-label">{Intl.get("contract.139", "万")}，</span>
-                </div>
-                <div className="sales-goals-item">
+                </div>}
+                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)} data-tracename="批量变更个人销售目标">{Intl.get("common.batch.self.sales.target", "批量变更个人销售目标")}</Button> :<div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get("sales.team.personal", "个人")}：</span>
-                    <Popconfirm title={Intl.get("sales.team.save.member.sales.goal", "是否保存个人销售目标？")}
-                                visible={this.state.memberConfirmVisible}
-                                onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}
-                                onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}>
+                    {/*<Popconfirm title={Intl.get("sales.team.save.member.sales.goal", "是否保存个人销售目标？")}*/}
+                                {/*visible={this.state.memberConfirmVisible}*/}
+                                {/*onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}*/}
+                                {/*onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}>*/}
                         <InputNumber className="member-goals-input"
                                      value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
                                      onChange={this.changeMemberSalesGoals}
-                                     onBlur={(e) => {
-                                         this.showMemberConfirm(e)
-                                     }}
+                                     // onBlur={(e) => {
+                                     //     this.showMemberConfirm(e)
+                                     // }}
                         />
-                    </Popconfirm>
+                        <span className="member-icon-container">
+                             <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}></i>
+                        <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER, true)}></i>
+                        </span>
+
+                    {/*</Popconfirm>*/}
                     <span className="sales-goals-label">{Intl.get("contract.139", "万")}</span>
-                </div>
+                </div>}
             </div>);
     },
     //修改用户的基本信息或者修改用户的状态后
     changeUserFieldSuccess:function (user) {
         //修改用户的昵称
         SalesTeamAction.updateCurShowTeamMemberObj(user);
+    },
+    updateUserStatus: function (updateObj) {
+        UserAction.updateUserStatus(updateObj);
+        UserAction.updateCurrentUserStatus(updateObj.status);
+        this.changeUserFieldSuccess(updateObj);
     },
     //修改团队后的处理
     afterEditTeamSuccess:function (user) {
@@ -936,7 +986,6 @@ var MemberList = React.createClass({
         SalesTeamAction.getTeamMemberCountList();
     },
     render: function () {
-        var _this = this;
         var salesTeamPersonnelWidth = this.props.salesTeamMemberWidth;
         var containerHeight = this.props.containerHeight;
         return (
@@ -946,14 +995,14 @@ var MemberList = React.createClass({
                     <div className="member-top-operation-div-title">
                         {this.state.curShowTeamMemberObj.groupName || ""}
                     </div>
-                    {_this.renderSalesGoals()}
-                    {_this.createOperationBtn()}
+                    {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null :this.renderSalesGoals()}
+                    {this.createOperationBtn()}
                 </div>
                 <div className="member-list-div"
                      style={{height: this.state.memberListHeight}}>
                     {
                         this.props.isLoadingTeamMember ? (
-                            <Spinner className="isloading"/>) : _this.createMemberInfoElement()
+                            <Spinner className="isloading"/>) : this.createMemberInfoElement()
                     }
                 </div>
                 {this.state.isMemberListSaving ? (<div className="member-list-edit-block">
@@ -964,7 +1013,7 @@ var MemberList = React.createClass({
                         userInfo={this.state.currentUser}
                         closeRightPanel={this.closeRightPanel}
                         changeUserFieldSuccess={this.changeUserFieldSuccess}
-                        updateUserStatus={this.changeUserFieldSuccess}
+                        updateUserStatus={this.updateUserStatus}
                         userInfoShow={this.props.userInfoShow}
                         userFormShow={this.props.userFormShow}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
