@@ -2026,8 +2026,8 @@ var en_US = {
     "common.sales.frontpage.loading": "Loading",//加载中
     "common.sales.data.err": "Error",//出错啦
     "common.sales.data.no.data": "No such information",//暂无此类信息
-    "common.batch.sales.target": "Change team sales goals in bulk",//批量变更团队销售目标
-    "common.batch.self.sales.target": "Change personal sales goals in bulk"//批量变更个人销售目标
+    "common.batch.sales.target": "Change team sales goals in bulk",//设置团队销售目标
+    "common.batch.self.sales.target": "Change personal sales goals in bulk"//批量设置个人销售目标
 
 };
 export default en_US;
