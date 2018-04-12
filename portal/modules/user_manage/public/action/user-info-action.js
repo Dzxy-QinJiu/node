@@ -43,18 +43,5 @@ function UserInfoActions() {
             this.dispatch({loading:false, error:true, errorMsg: errorMsg});
         });
     };
-    this.getCurUserById = function (reqObj) {
-        var userId = reqObj.id;
-        var createDate = reqObj.createDate;
-        userAjax.getCurUserById(userId).then((userObj) => {
-            if (_.isObject(userObj)) {
-                this.dispatch({userObj:userObj,createDate:createDate});
-            } else {
-                this.dispatch(Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
-            }
-        },(errorMsg)=> {
-            this.dispatch(errorMsg || Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
-        });
-    };
 }
 module.exports = alt.createActions(UserInfoActions);

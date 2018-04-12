@@ -2,7 +2,7 @@
  * Created by xiaojinfeng on 2016/04/13.
  */
 
-import {InputNumber, Button, Popconfirm, message} from "antd";
+import {InputNumber, Button, message, Icon} from "antd";
 var PrivilegeChecker = require("../../../../components/privilege/checker").PrivilegeChecker;
 var DefaultUserLogoTitle = require("../../../../components/default-user-logo-title");
 var Spinner = require("../../../../components/spinner");
@@ -64,7 +64,10 @@ var MemberList = React.createClass({
             isLoadingSalesGoal: this.props.isLoadingSalesGoal,
             getSalesGoalErrMsg: this.props.getSalesGoalErrMsg,
             isShowBatchChangeTeamGoal: true,//是否展示设置团队目标按钮
-            isShowBatchChangeSelfGoal: true //是否展示设置个人目标按钮
+            isShowBatchChangeSelfGoal: true, //是否展示设置个人目标按钮
+            isSavingTeamGoal: false, //正在保存团队目标
+            isSavingMemberGoal: false//正在保存个人目标
+
         };
     },
     onChange: function () {
@@ -874,13 +877,25 @@ var MemberList = React.createClass({
     //保存销售目标
     saveSalesGoals: function (type) {
         let salesGoals = this.getSaveSalesGoals(type);
+        this.setState({
+            isSavingTeamGoal: type == SALES_GOALS_TYPE.TEAM,
+            isSavingMemberGoal : type == SALES_GOALS_TYPE.MEMBER
+        });
         salesTeamAjax.saveSalesGoals(salesGoals).then(result => {
+            this.setState({
+                isSavingTeamGoal: false,
+                isSavingMemberGoal:false
+            });
             if (result) {
                 SalesTeamAction.updateSalesGoals({type: type, salesGoals: result});
             } else {
                 this.cancelSaveSalesGoals(type,false);
             }
         }, errorMsg => {
+            this.setState({
+                isSavingTeamGoal: false,
+                isSavingMemberGoal:false
+            });
             message.error(errorMsg || Intl.get("common.edit.failed", "修改失败"));
             this.cancelSaveSalesGoals(type,false);
         });
@@ -927,44 +942,29 @@ var MemberList = React.createClass({
                 <span className="iconfont icon-sales-goals" title={Intl.get("sales.team.sales.goal", "销售目标")}/>
                 {this.state.isShowBatchChangeTeamGoal ? <Button className="team-sales-goal" onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)} data-tracename="批量变更团队销售目标">{Intl.get("common.batch.sales.target", "批量变更团队销售目标")}</Button> : <div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get("user.user.team", "团队")}：</span>
-                    {/*<Popconfirm title={Intl.get("sales.team.save.team.sales.goal", "是否保存团队销售目标？")}*/}
-                                {/*visible={this.state.teamConfirmVisible}*/}
-                                {/*onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}*/}
-                                {/*onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}>*/}
                         <InputNumber className="team-goals-input"
                                      value={this.turnGoalToShowData(this.state.salesGoals.goal)}
                                      onChange={this.changeTeamSalesGoals}
-                                     // onBlur={(e) => {
-                                     //     this.showTeamConfirm(e)
-                                     // }}
                         />
-                        <span className="team-icon-container">
+                        {this.state.isSavingTeamGoal ? <Icon type="loading"/>:    <span className="team-icon-container">
                           <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}></i>
                         <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM, true)}></i>
-                        </span>
-                    {/*</Popconfirm>*/}
+                        </span>}
+
 
                     <span className="sales-goals-label">{Intl.get("contract.139", "万")}，</span>
                 </div>}
                 {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)} data-tracename="批量变更个人销售目标">{Intl.get("common.batch.self.sales.target", "批量变更个人销售目标")}</Button> :<div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get("sales.team.personal", "个人")}：</span>
-                    {/*<Popconfirm title={Intl.get("sales.team.save.member.sales.goal", "是否保存个人销售目标？")}*/}
-                                {/*visible={this.state.memberConfirmVisible}*/}
-                                {/*onConfirm={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}*/}
-                                {/*onCancel={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}>*/}
                         <InputNumber className="member-goals-input"
                                      value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
                                      onChange={this.changeMemberSalesGoals}
-                                     // onBlur={(e) => {
-                                     //     this.showMemberConfirm(e)
-                                     // }}
                         />
-                        <span className="member-icon-container">
+                    {this.state.isSavingMemberGoal ? <Icon type="loading"/> :  <span className="member-icon-container">
                              <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}></i>
                         <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER, true)}></i>
-                        </span>
+                        </span>}
 
-                    {/*</Popconfirm>*/}
                     <span className="sales-goals-label">{Intl.get("contract.139", "万")}</span>
                 </div>}
             </div>);

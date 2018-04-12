@@ -73,6 +73,9 @@ var UserManage = React.createClass({
             }
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
+            // //获取用户的详情
+            UserAction.setUserLoading(true);
+            UserAction.getCurUserById(user.id);
             if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                 $(".right-panel-content").removeClass("right-panel-content-slide");
                 if (openTimeout) {

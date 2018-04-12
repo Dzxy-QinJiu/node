@@ -61,11 +61,6 @@ SalesTeamStore.prototype.getSalesGoals = function (reqObj) {
         this.salesGoals = _.isObject(salesGoals) ? salesGoals : {};
         //将个人的销售目标默认没有值
         this.salesGoals.member_goal = "";
-        // //将第一个成员的销售目标作为个人销售目标放到外层，便于界面上的处理
-        // if (_.isArray(salesGoals.users) && salesGoals.users.length) {
-        //     let userGoal = salesGoals.users[0];
-        //     this.salesGoals.member_goal = userGoal ? userGoal.goal : '';
-        // }
     }
 
 };
