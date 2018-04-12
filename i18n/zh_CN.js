@@ -2092,6 +2092,10 @@ var zh_CN = {
     "call.record.service.phone": "客服电话",
     "call.record.service.phone.failed": "获取114占比失败！",
     "call.record.valid.phone": "有效电话",  
+    "crm.333": "请选择要变更的标签",
+    "crm.75": "点",
+    "scan.ketao.qrcode.download.tip": "扫码下载客套APP安卓端",
+    "config.manage.input.teleRepeat": "该电话号码已录入",
     //缺失补充end
 
 };
