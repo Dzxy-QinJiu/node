@@ -138,5 +138,70 @@ export const isEqualArray = function (array1, array2) {
 //将字符串首字母改为大写
 export const capitalizeFirstLetter = function (str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
+};
+
+// 地图中显示颜色的判断
+export const mapColorList = function (dataList) {
+    let valueArray = _.pluck(_.isArray(dataList) && dataList || [], 'value');
+    let uniqArray = _.uniq(valueArray);
+    let length = uniqArray.length;
+    let ret = [];
+    if (length <= 5) { // 以数据点为基准，显示地图中的颜色
+        for (let i = 0; i < length; i++) {
+            ret.push({
+                start: uniqArray[i],
+                end: uniqArray[i],
+                label: ''
+            });
+        }
+        return ret;
+    } else { // 数据超出5时，分区间段显示颜色
+        let maxVal = _.max(dataList , (obj) =>{
+            return obj.value;
+        });
+
+        if(maxVal) {
+            maxVal = maxVal.value;
+        } else {
+            maxVal = 0;
+        }
+
+        let minVal = _.min(dataList , (obj) =>{
+            return obj.value;
+        });
+
+        if(minVal) {
+            minVal = minVal.value;
+        } else {
+            minVal = 0;
+        }
+        // 间隔
+        let delta = Math.floor((maxVal - minVal) / 5) - 1;
+        let start = minVal;
+        for(let i = 1, total = 5; i <= total ; i++) {
+            let obj = {};
+            if(i === 1) {
+                obj = {
+                    start : start,
+                    end : start + delta
+                };
+                start += delta + 1;
+            } else if (i === total){
+                obj ={
+                    start : start,
+                    end : maxVal
+                };
+            } else {
+                obj ={
+                    start: start,
+                    end : start + delta
+                };
+                start += delta + 1;
+            }
+            obj.label = '';
+            ret.push(obj);
+        }
+        return ret.reverse();
+    }
+};
 

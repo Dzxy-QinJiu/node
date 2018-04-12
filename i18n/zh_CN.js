@@ -841,6 +841,7 @@ var zh_CN = {
     "sales.stage.signed": "签约",
     "sales.stage.intention": "意向",
     "sales.stage.message": "信息",
+    "sales.stage.lost": "流失",
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "暂无团队，请先添加：",
@@ -2018,7 +2019,7 @@ var zh_CN = {
     "weekly.report.active.radio": "活跃率",
     "weekly.report.district.country": "区县",
     "weekly.report.customer.stage": "客户阶段",
-    "weekly.report.customer.stage.projected": "立项阶段",
+    "weekly.report.customer.stage.projected": "立项报价阶段",
     "weekly.report.customer.stage.intentioned": "意向阶段",
     "weekly.report.customer.stage.info": "信息阶段",
     "app.user.trans.clue.customer": "生成线索",

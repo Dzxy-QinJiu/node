@@ -834,6 +834,7 @@ var en_US = {
     "sales.stage.signed": "signed",//签约
     "sales.stage.intention": "intention",//意向
     "sales.stage.message": "message",//信息
+    "sales.stage.lost": "lost",//"流失"
     //销售阶段end
     //销售团队start
     "sales.team.no.sales.team.tip": "There is no team, please add!",//暂无团队，请先添加：
@@ -1977,7 +1978,7 @@ var en_US = {
     "weekly.report.active.radio": "Active rate",//活跃率
     "weekly.report.district.country": "District",//区县
     "weekly.report.customer.stage": "Customer stage",//客户阶段
-    "weekly.report.customer.stage.projected": "Project stage",//立项阶段
+    "weekly.report.customer.stage.projected": "Project stage",//立项报价阶段
     "weekly.report.customer.stage.intentioned": "Intention stage",//意向阶段
     "weekly.report.customer.stage.info": "Information stage",//信息阶段
     "app.user.trans.clue.customer": "Generate clues",//生成线索

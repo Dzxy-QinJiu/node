@@ -42,8 +42,10 @@ weeklyReportDetailStore.prototype.setInitState = function () {
     this.customerStageData = {
         list: [],
         loading: false,
-        errMsg: ""//获取数据失败
+        errMsg: "",//获取数据失败
     };
+    //销售阶段
+    this.salesStageList = [];
     //保存员工请假信息
     this.addAskForLeave = {
         submitting: false,//正在保存
@@ -98,6 +100,16 @@ weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
     }
 };
 
+//获取销售阶段
+weeklyReportDetailStore.prototype.getSalesStageList = function (result) {
+    this.salesStageObj.loading = result.loading;
+    if (result.error){
+        this.salesStageObj.errMsg = result.errMsg;
+    }else if (_.isArray(result.resData)){
+        this.salesStageObj.list = result.resData.reverse();
+    }
+};
+
 //获取客户阶段
 weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
     this.customerStageData.loading = result.loading;
@@ -105,6 +117,7 @@ weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
         this.customerStageData.errMsg = result.errMsg;
     } else {
         this.customerStageData.list = _.isArray(result.resData) && result.resData.length ? result.resData[0].this_week_sta : [];
+        this.stageList = _.isArray(result.stageList) ? result.stageList : [];
     }
 };
 

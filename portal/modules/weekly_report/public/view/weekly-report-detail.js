@@ -305,23 +305,23 @@ const WeeklyReportDetail = React.createClass({
         let columns = [{
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'nickName',
-            className: CLASSNAMES.ALIGNLEFT,
+            align: "left",
         }, {
             title: Intl.get("weekly.report.project", "项目"),
             dataIndex: 'customerName',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.assign.time", "签约时间"),
             dataIndex: 'date',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.contract.account", "合同金额"),
             dataIndex: 'amount',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("contract.109", "毛利"),
             dataIndex: 'grossProfit',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }];
         return columns;
     },
@@ -330,23 +330,23 @@ const WeeklyReportDetail = React.createClass({
         let columns = [{
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'nickName',
-            className: CLASSNAMES.ALIGNLEFT,
+            align: "left",
         }, {
             title: Intl.get("weekly.report.project", "项目"),
             dataIndex: 'customerName',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("contract.122", "回款时间"),
             dataIndex: 'date',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.repayment.account", "回款金额"),
             dataIndex: 'amount',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("contract.109", "毛利"),
             dataIndex: 'grossProfit',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }];
         return columns;
     },
@@ -356,30 +356,31 @@ const WeeklyReportDetail = React.createClass({
         let columns = [{
             title: Intl.get("user.salesman", "销售人员"),
             dataIndex: 'name',
-            className: CLASSNAMES.ALIGNLEFT,
+            align: "left",
         }, {
             title: Intl.get("weekly.report.total.duration", "本周总时长"),
             dataIndex: 'total_time',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.total.connected", "本周总接通数"),
             dataIndex: 'total_callout_success',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             dataIndex: 'average_time',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("sales.home.average.connected", "日均接通数"),
             dataIndex: 'average_num',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.assessment.days", "考核天数",),
             dataIndex: 'real_work_day',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.attendance.remarks", "出勤备注"),
-            className: CLASSNAMES.ALIGNLEFT + " ask-leave-remark",
+            align: "left",
+            className: "ask-leave-remark",
             width: '300',
             render: function (text, record, index) {
                 var userObj = _.find(_this.props.memberList.list, (item) => {
@@ -404,47 +405,44 @@ const WeeklyReportDetail = React.createClass({
         let columns = [{
             title: Intl.get("user.salesman", "销售人员"),
             dataIndex: 'nick_name',
-            className: CLASSNAMES.ALIGNLEFT,
-        }, {
-            title: Intl.get("crm.142", "执行阶段"),
-            dataIndex: 'executed',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.141", "成交阶段"),
-            dataIndex: 'dealed',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.145", "谈判阶段"),
-            dataIndex: 'negotiated',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("weekly.report.customer.stage.projected", "立项阶段"),
-            dataIndex: 'projected',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("crm.143", "试用阶段"),
-            dataIndex: 'tried',
-            className: CLASSNAMES.ALIGNRIGHT
-        }, {
-            title: Intl.get("common.summation", "合计"),
-            dataIndex: 'total',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "left",
         }];
+        _.each(this.state.stageList, (stageItem) => {
+            columns.push({
+                title: stageItem.name,
+                align: "right",
+                render: (text) => {
+                    var data = text.statistic_list;
+                    //如果获取销售阶段完成并且没有出错时
+                    if (stageItem.id && _.isArray(data)) {
+                        var obj = _.find(data, (item) => {
+                            return item.stage_id === stageItem.id
+                        });
+                        return (<span>{obj && obj.statistic_data ? obj.statistic_data : 0}</span>)
+                    }
+                }
+            })
+        });
+        columns.push({
+                title: Intl.get("common.summation", "合计"),
+                dataIndex: 'total',
+                align: "right",
+            });
         return columns;
     },
     getRegionOverlayListColumn(){
         let columns = [{
             title: Intl.get("realm.select.address.province", "省份"),
             dataIndex: 'province_name',
-            className: CLASSNAMES.ALIGNLEFT,
+            align: "left",
         }, {
             title: Intl.get("weekly.report.city.province", "地市/省"),
             dataIndex: 'city_count',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.open.account", "开通数"),
             dataIndex: 'city_dredge_count',
-            className: CLASSNAMES.ALIGNRIGHT,
+            align: "right",
             render: function (text, record, index) {
                 return (
                     <span>
@@ -455,12 +453,12 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
             dataIndex: 'city_dredge_scale',
-            className: CLASSNAMES.ALIGNRIGHT,
+            align: "right",
             fixNum: 4
         }, {
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'city_login_count',
-            className: 'table-data-align-right',
+            align: "right",
             render: function (text, record, index) {
                 return (
                     <span>
@@ -471,19 +469,19 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.active.radio", "活跃率"),
             dataIndex: 'city_active_scale',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'city_principal',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.district.country", "区县"),
             dataIndex: 'district_count',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("weekly.report.open.account", "开通数"),
             dataIndex: 'district_dredge_count',
-            className: CLASSNAMES.ALIGNRIGHT,
+            align: "right",
             render: function (text, record, index) {
                 return (
                     <span>
@@ -494,12 +492,12 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
             dataIndex: 'district_dredge_scale',
-            className: CLASSNAMES.ALIGNRIGHT,
+            align: "right",
             fixNum: 4
         }, {
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'district_login_count',
-            className: CLASSNAMES.ALIGNRIGHT,
+            align: "right",
             render: function (text, record, index) {
                 return (
                     <span>
@@ -510,11 +508,11 @@ const WeeklyReportDetail = React.createClass({
         }, {
             title: Intl.get("weekly.report.active.radio", "活跃率"),
             dataIndex: 'district_active_scale',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         }, {
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'district_principal',
-            className: CLASSNAMES.ALIGNRIGHT
+            align: "right",
         },];
         return columns;
     },
@@ -645,7 +643,6 @@ const WeeklyReportDetail = React.createClass({
             startTime: moment(this.getBeginDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT),
             endTime: moment(this.getEndDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT)
         }
-
     },
     //获取报告区域的高度
     getReportDetailDivHeight: function () {
@@ -659,7 +656,6 @@ const WeeklyReportDetail = React.createClass({
         var divHeight = this.getReportDetailDivHeight();
         return (
             <div className="weekly-report-detail-container">
-
                 <h4 className="total-title">
                     {Intl.get("weekly.report.statics.duration", "统计周报内容，统计时间{startTime}至{endTime}", {
                         startTime: this.getStartAndEndTime().startTime,

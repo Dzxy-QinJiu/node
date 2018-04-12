@@ -840,8 +840,8 @@ var MemberList = React.createClass({
                     user_name: curTeamObj.owner.nickName
                 }];
                 if (_.isArray(salesGoals.users)){
-                    let ownerItem = _.find(salesGoals.users, userItem => userItem.user_id === curTeamObj.owner.userId);
-                    //修改团队目标时，如果团队owner的id存在，也要把团队owner的id加上
+                  let ownerItem = _.find(salesGoals.users, userItem => userItem.user_id === curTeamObj.owner.userId);
+                  //修改团队目标时，如果团队owner的id存在，也要把团队owner的id加上
                     if (ownerItem && ownerItem.id){
                         saveParams.users[0].id = ownerItem.id;
                     }
