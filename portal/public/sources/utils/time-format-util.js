@@ -40,6 +40,19 @@ exports.getFormatTime = function (time = 0) {
         second = getStringTime(timeObj.second);
     return `${hour}:${minute}:${second}`;
 };
+
+//获取02:01（2分钟1秒）格式的时间
+exports.getFormatMinuteTime = function (time = 0) {
+    let timeObj = this.secondsToHourMinuteSecond(time);
+    let minuteTime = timeObj.minutes
+    if (timeObj.hours) {
+        minuteTime += timeObj.hours * 60;
+    }
+    let minute = getStringTime(minuteTime),
+        second = getStringTime(timeObj.second);
+    return `${minute}:${second}`;
+};
+
 //计算出不同过期时间段对应的开始时间 本天 本周 本月 半年
 exports.getStartTime = function (time) {
     switch (time) {

@@ -18,7 +18,6 @@ import CustomerRecordStore from '../../store/customer-record-store';
 var crmUtil = require("./../../utils/crm-util");
 var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
 var Spinner = require("../../../../../components/spinner");
-var TimeLine = require("../../../../../components/time-line");
 import ModalDialog from "CMP_DIR/ModalDialog";
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
@@ -27,11 +26,13 @@ import ajax from "../../ajax/contact-ajax";
 import {getInvalidPhone, addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
 import AudioPlayer from "CMP_DIR/audioPlayer";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 var classNames = require("classnames");
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_HEIGHT_OPEN: 250,
-    TOP_HEIGHT_CLOSE: 178,
+    TOP_NAV_HEIGHT: 52 + 16,//52：头部导航的高度，16：导航的下边距
+    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    TOP_TOTAL_HEIGHT: 25,//共xxx条的高度
     BOTTOM_HEIGHT: 40,
     TOP_NAV: 92
 };
@@ -361,45 +362,22 @@ const CustomerRecord = React.createClass({
         CustomerRecordActions.setDetailContent(e.target.value);
     },
     renderAddDetail: function (item) {
-        //点击增加按钮 补充跟进记录
-        var hide = () => {
-            this.setState({
-                addDetailErrTip: '',
-            });
-        };
+        //补充跟进记录
         return (
-            <div className="add-detail-container">
-                <div className="add-detail-content">
-                    {this.state.addDetailErrMsg ? this.handleUpdateResult() : null}
-                    <textarea
-                        type="text"
-                        placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
-                        onChange={this.handleAddDetailChange}
-                        value={this.state.detailContent}
-                        className="add-detail-content-input"
+            <div className="add-customer-trace">
+                <div className="add-trace-item">
+                    <TextArea placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
+                              value={this.state.detailContent}
+                              onChange={this.handleAddDetailChange}
+                              autosize={{minRows: 2, maxRows: 6}}
+                    />
+                    <SaveCancelButton loading={this.state.addCustomerLoading}
+                                      saveErrorMsg={this.state.addCustomerErrMsg}
+                                      handleSubmit={this.showModalDialog.bind(this, item)}
+                                      handleCancel={this.handleCancelDetail.bind(this, item)}
                     />
                 </div>
-                {this.state.addDetailErrTip ? <AlertTimer
-                    time={2000}
-                    message={this.state.addDetailErrTip}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
-                    : null}
-                <div className="add-detail-foot">
-                    <Button className="pull-right cancel-btn btn-primary-cancel" type="ghost"
-                            onClick={this.handleCancelDetail.bind(this, item)}>
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                    </Button>
-                    <Button className="pull-right submit-btn btn-primary-sure" type="primary"
-                            onClick={this.showModalDialog.bind(this, item)}>
-                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                        {this.state.addDetailLoading ? <Icon type="loading"/> : <span></span>}
-                    </Button>
-                </div>
-            </div>
-        )
+            </div>);
     },
     //点击播放录音
     handleAudioPlay: function (item) {
@@ -450,40 +428,49 @@ const CustomerRecord = React.createClass({
             playingItemPhone: ""
         });
     },
-    renderTimeLineItem: function (item) {
+    renderTimeLineItem: function (item, hasSplitLine) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
         //playSelected表示当前正在播放的那条录音，图标显示红色
-        var cls = classNames("iconfont", "icon-audio-play", {
+        var cls = classNames("iconfont", "icon-play", {
             "icon-selected": item.playSelected
         });
         return (
-            <dl>
-                <dd>
-                    <p className="item-detail-tip">
-                        <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                        <span>{traceDsc}</span>
-                        <span className="audio-container">{
-                            /* 电话已接通并且有recording这个字段展示播放图标*/
-                            item.recording && item.billsec != 0 ?
-                                <i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                   title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i> : null
-                        }</span>
-                    </p>
-                    <div className="item-detail-content" id={item.id}>
-                        {item.remark ? item.remark : ( item.showAdd ? null :
-                            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+            <div className={classNames("trace-item-content", {"day-split-line": hasSplitLine})}>
+                <p className="item-detail-tip">
+                    <span className="icon-container" title={title}><i className={iconClass}></i></span>
+                    <span>{traceDsc}</span>
+                </p>
+                <div className="item-detail-content" id={item.id}>
+                    {item.remark ? item.remark : ( item.showAdd ? null :
+                        <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
                                 {Intl.get("click.to.add.trace.detail", "请点击此处补充跟进内容")}
                             </span>)}
-                        {item.showAdd ? this.renderAddDetail(item) : null}
-                    </div>
-                </dd>
-                <dt>
+                    {item.showAdd ? this.renderAddDetail(item) : null}
+                </div>
+                <div className="item-bottom-content">
+                    { item.billsec == 0 ? (/*未接听*/
+                        <span className="call-un-answer">
+                            {Intl.get("call.record.state.no.answer", "未接听")}
+                        </span>
+                    ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                        item.recording ? (<span className="audio-container">
+                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                          title={Intl.get("call.record.play", "播放录音")}
+                                          data-tracename="点击播放录音按钮">
+                                        <span className="call-time-descr">
+                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                        </span>
+                                    </span>
+                                </span>) : null
+                    }
                     <span className="sale-name">{item.nick_name}</span>
-                    {moment(item.time).format(oplateConsts.DATE_TIME_FORMAT)}
-                </dt>
-            </dl>
+                    <span className="trace-record-time">
+                        {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                    </span>
+                </div>
+            </div>
         );
     },
     //监听下拉加载
@@ -527,6 +514,64 @@ const CustomerRecord = React.createClass({
             addingInvalidPhoneErrMsg: ""
         })
     },
+    //获取第一次出现的年（天）
+    getFirstAppearTimeStr: function (curItemTime, prevItemTime, formatTimeStr) {
+        //该年(天)是否是第一次出现
+        let isFirstApper = false;
+        //如果没有之前项，说明该年是第一次出现
+        if (!prevItemTime) {
+            isFirstApper = true;
+        } else {
+            //如果当前项的年（天）和之前项的（天）不同，说明该年(天)是第一次出现
+            if (curItemTime !== prevItemTime) isFirstApper = true;
+        }
+        let timeStr = "";
+        if (isFirstApper && curItemTime) {
+            timeStr = moment(curItemTime).format(formatTimeStr);
+        }
+        return timeStr;
+    },
+    renderCustomerTraceList: function () {
+        //前一条记录的时间值中的年
+        let prevItemYear;
+        //当前记录的时间值中的年
+        let curItemYear;
+        //前一条记录的时间值中的天
+        let prevItemDay;
+        //当前记录的时间值中的天
+        let curItemDay;
+        //客户跟进记录
+        let customerTraceList = this.state.customerRecord;
+        if (_.isArray(customerTraceList) && customerTraceList.length) {
+            return (<div className="customer-trace-list group-by-day">
+                {customerTraceList.map((item, index) => {
+                    //处理按天分组逻辑
+                    const curItemTime = item.time;
+                    curItemYear = moment(curItemTime).startOf("year").valueOf();
+                    curItemDay = moment(curItemTime).startOf("day").valueOf();
+                    let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年"));
+                    let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
+                    //将当前项保存下来，以备下次循环中使用
+                    prevItemYear = curItemYear;
+                    prevItemDay = curItemDay;
+                    //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
+                    let hasSplitLine = dayStr && index
+                    return (
+                        <div className="customer-trace-item" key={index}>
+                            {yearStr ? (
+                                <div className="group-year">
+                                    {yearStr}<span className="year-split-line"/>
+                                </div>) : null}
+                            <div className="group-day">{dayStr}</div>
+                            {this.renderTimeLineItem(item, hasSplitLine)}
+                        </div>
+                    );
+                })}
+            </div>);
+        } else {
+            return (<div className="no-data-tip">{Intl.get("common.no.data", "暂无数据")}</div>);
+        }
+    },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
@@ -564,11 +609,15 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         } else {
-            var divHeight = '';
-            if (this.state.focus) {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_OPEN - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
-            } else {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_CLOSE - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
+            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
+            let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
+            //减头部的客户基本信息高度
+            divHeight -= basicInfoHeight;
+            //减添加跟进记录面版的高度
+            if (this.state.addRecordPanelShow) {
+                divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+            } else {//减共xxx条的高度
+                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
             }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
@@ -580,26 +629,11 @@ const CustomerRecord = React.createClass({
                             handleScrollBottom={this.handleScrollBarBottom}
                             listenScrollBottom={this.state.listenScrollBottom}
                         >
-                            <TimeLine
-                                list={this.state.customerRecord}
-                                groupByDay={true}
-                                timeField="time"
-                                render={this.renderTimeLineItem}
-                                relativeDate={true}
-                            />
+                            {this.renderCustomerTraceList()}
                         </GeminiScrollbar>
                     </div>
                     <div className="show-foot">
-                        <ReactIntl.FormattedMessage
-                            id="customer.total.record"
-                            defaultMessage={`共{num}条跟进记录`}
-                            values={{
-                                'num': this.state.total
-                            }}
-                        />
-                        {/*
-                         底部播放器
-                         */}
+                        {/* 底部播放器 */}
                         <div className={cls}>
                             {this.state.playingItemAddr ? (
                                 <AudioPlayer
