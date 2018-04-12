@@ -23,23 +23,46 @@ function SalesTeamStore() {
     this.searchContent = "";//搜索内容
     this.delTeamErrorMsg = "";//删除团队失败的错误提示
     this.isAddSalesTeamRoot = false;//是否是添加根团队
+    this.isLoadingSalesGoal = false;//正在获取销售目标
+    this.getSalesGoalErrMsg = "";//获取销售目标出错
     this.salesGoals = {};//销售目标
     this.teamMemberCountList = [];//统计团队内成员个数的列表
+    this.userInfoShow = false;
+    this.userFormShow = false;
+    this.rightPanelShow = false;
 
     this.bindActions(SalesTeamActions);
 }
+SalesTeamStore.prototype.showUserInfoPanel = function () {
+    this.userInfoShow = true;
+    this.userFormShow = false;
+    this.rightPanelShow = true;
+};
+SalesTeamStore.prototype.closeRightPanel = function () {
+    this.rightPanelShow = false;
+    this.userInfoShow = false;
+};
 //获取统计团队内成员个数的列表
 SalesTeamStore.prototype.getTeamMemberCountList = function (list) {
     this.teamMemberCountList = _.isArray(list) ? list : [];
 };
 //获取销售目标
-SalesTeamStore.prototype.getSalesGoals = function (salesGoals) {
-    this.salesGoals = _.isObject(salesGoals) ? salesGoals : {};
-    //将第一个成员的销售目标作为个人销售目标放到外层，便于界面上的处理
-    if (_.isArray(salesGoals.users) && salesGoals.users.length) {
-        let userGoal = salesGoals.users[0];
-        this.salesGoals.member_goal = userGoal ? userGoal.goal : '';
+SalesTeamStore.prototype.getSalesGoals = function (reqObj) {
+    if (reqObj.loading){
+        this.isLoadingSalesGoal = true;
+        this.getSalesGoalErrMsg = "";
+    }else if (reqObj.error){
+        this.isLoadingSalesGoal = false;
+        this.getSalesGoalErrMsg = reqObj.errorMsg;
+    }else{
+        this.isLoadingSalesGoal = false;
+        this.getSalesGoalErrMsg = "";
+        var salesGoals = reqObj.result;
+        this.salesGoals = _.isObject(salesGoals) ? salesGoals : {};
+        //将个人的销售目标默认没有值
+        this.salesGoals.member_goal = "";
     }
+
 };
 //更新销售目标
 SalesTeamStore.prototype.updateSalesGoals = function (updateObj) {
@@ -119,7 +142,9 @@ SalesTeamStore.prototype.filterByTeamName = function (teamName) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        setTimeout(()=>{
+            SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        })
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
@@ -152,7 +177,9 @@ SalesTeamStore.prototype.filterByUserName = function (filterTeamList) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        setTimeout(()=>{
+            SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
+        });
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
@@ -710,6 +737,46 @@ SalesTeamStore.prototype.checkSelectTree = function () {
     });
     return selectObj;
 };
+//修改用户详情后，更改列表中的数据
+SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
+    var teamMemberObj = this.curShowTeamMemberObj;
+    //修改用户的昵称
+    if (user.nick_name) {
+        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.user_id) {
+            teamMemberObj.owner.nickName = user.nick_name;
+            return;
+        }
+        if (_.isArray(teamMemberObj.users)) {
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.user_id);
+            if (updateObj) {
+                updateObj.nickName = user.nick_name;
+            }
+        }
+    } else if (user.status || user.status == 0) {
+        //修改用户的状态
+        if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+            teamMemberObj.owner.status = user.status;
+            return;
+        }
+        if (_.isArray(teamMemberObj.users)) {
+            var updateObj = _.find(teamMemberObj.users, userItem => userItem.userId == user.id);
+            if (updateObj) {
+                updateObj.status = user.status;
+            }
+        }
+    }else if(user.team){
+        //修改用户所在的团队
+        if (user.team !== teamMemberObj.groupId){
+            if (teamMemberObj.owner && teamMemberObj.owner.userId == user.id) {
+                teamMemberObj.owner = {};
+                return;
+            }
+            if (_.isArray(teamMemberObj.users)) {
+                teamMemberObj.users = _.filter(teamMemberObj.users, userItem => userItem.userId != user.id);
+            }
+        }
+    }
+}
 
 SalesTeamStore.prototype.salesTeamTree = function (flag) {
     var isSelectObj = this.checkSelectTree();
@@ -759,7 +826,9 @@ SalesTeamStore.prototype.salesTeamTree = function (flag) {
     if (salesTeamArray.length > 0 && !flag) {
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
+        setTimeout(()=>{
+            SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
+        });
         SalesTeamActions.getSalesTeamMemberList(salesTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: salesTeamArray[0].key,

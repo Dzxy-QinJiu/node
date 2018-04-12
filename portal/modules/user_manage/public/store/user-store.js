@@ -18,8 +18,6 @@ var emptyUser = {
 function UserStore() {
     //在 编辑/添加 状态的时候userFormShow为true
     this.userFormShow = false;
-    //是否展示确认删除的模态框
-    this.modalDialogShow = false;
     //列表
     this.userListSize = 0;
     //当前要展示的用户列表
@@ -45,10 +43,6 @@ function UserStore() {
     this.endTime = "";
     //加载数据中。。。
     this.isLoading = true;
-    //加载操作日志中。。。
-    this.logIsLoading = false;
-    //获取操作日志失败的提示信息
-    this.getLogErrorMsg = "";
     //右侧面板的开关
     this.rightPanelShow = false;
     //获取用户详情中。。。
@@ -68,12 +62,13 @@ function UserStore() {
     //获取成员详情失败的错误提示
     this.getUserDetailError = "";
     this.isContinueAddButtonShow = false;
-    //销售提成和提成比例
-    this.saleGoalsAndCommissionRadio = {};
-
     this.bindActions(UserActions);
 
 }
+//关闭右侧详情后，将数据置为
+UserStore.prototype.setInitialData = function () {
+    this.currentUser = emptyUser;
+};
 //过滤角色的设置
 UserStore.prototype.setSelectRole = function (role) {
     //搜索框和角色不能联合查询
@@ -85,28 +80,19 @@ UserStore.prototype.toggleFilterPanel = function () {
     this.isFilterPanelShow = !this.isFilterPanelShow;
 };
 
-UserStore.prototype.getLogList = function (logListObj) {
-    this.logIsLoading = false;
-    if (_.isString(logListObj)) {
-        this.getLogErrorMsg = logListObj;
-    } else {
-        this.getLogErrorMsg = "";
-        this.logTotal = logListObj.total || 0;
-        var curUserName = this.currentUser.name;
-        if (_.isArray(logListObj.list)) {
-            this.logList = logListObj.list.map(function (log) {
-                log.userName = curUserName;
-                return log;
-            });
-        }
-    }
-};
+
 //修改成员所属团队
 UserStore.prototype.updateUserTeam = function (team) {
     if (this.currentUser) {
         this.currentUser.teamId = team.group_id;
         this.currentUser.teamName = team.group_name;
     }
+};
+//更新成员的启用或者禁用状态
+UserStore.prototype.updateCurrentUserStatus = function (status) {
+  if(this.currentUser){
+      this.currentUser.status = status;
+  }
 };
 UserStore.prototype.updateUserRoles = function (roleObj) {
     if (this.currentUser) {
@@ -193,13 +179,15 @@ UserStore.prototype.getCurUserById = function (user) {
         this.getUserDetailError = "";
         this.currentUser = user;
         let curUser = _.find(this.curUserList, curUser=>curUser.id == user.id);
-        curUser.roleIds = user.roleIds;
-        curUser.roleNames = user.roleNames;
-        curUser.teamName = user.teamName;
-        curUser.teamId = user.teamId;
-        curUser.phoneOrder = user.phoneOrder;
-        //获取成员详情中没有创建时间，所以用列表中获取的创建时间
-        user.createDate = curUser.createDate;
+        if (curUser){
+            curUser.roleIds = user.roleIds;
+            curUser.roleNames = user.roleNames;
+            curUser.teamName = user.teamName;
+            curUser.teamId = user.teamId;
+            curUser.phoneOrder = user.phoneOrder;
+            //获取成员详情中没有创建时间，所以用列表中获取的创建时间
+            user.createDate = curUser.createDate;
+        }
         this.currentUser = user;
     }
 };
@@ -294,13 +282,7 @@ UserStore.prototype.showUserForm = function (type) {
     this.rightPanelShow = true;
 };
 
-UserStore.prototype.showModalDialog = function () {
-    this.modalDialogShow = true;
-};
 
-UserStore.prototype.hideModalDialog = function () {
-    this.modalDialogShow = false;
-};
 
 UserStore.prototype.updateCurPage = function (curPage) {
     this.curPage = curPage;
@@ -329,17 +311,6 @@ UserStore.prototype.updateSearchContent = function (searchContent) {
     this.selectRole = "";
 
 };
-
-UserStore.prototype.setLogLoading = function (loadingState) {
-    this.logIsLoading = loadingState;
-    if (loadingState) {
-        //重新获取日志时，清空错误提示，重置获取控制翻页的参数
-        this.getLogErrorMsg = "";
-        this.logNum = 1;
-        this.logTotal = 0;
-    }
-};
-
 UserStore.prototype.closeRightPanel = function () {
     this.rightPanelShow = false;
 };
@@ -382,14 +353,7 @@ UserStore.prototype.returnInfoPanel = function (newAddUser) {
     this.userFormShow = false;
 };
 
-UserStore.prototype.changeLogNum = function (num) {
-    this.logNum = num;
-};
-UserStore.prototype.getSalesGoals = function (result) {
-    if (!result.loading && !result.error){
-        this.saleGoalsAndCommissionRadio = result.data;
-    }
-};
+
 
 
 module.exports = alt.createStore(UserStore, 'UserStore');

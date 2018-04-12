@@ -194,6 +194,11 @@ var SalesTeamPage = React.createClass({
                             teamMemberListTipMsg={this.state.teamMemberListTipMsg}
                             addMemberListTipMsg={this.state.addMemberListTipMsg}
                             salesGoals={this.state.salesGoals}
+                            userInfoShow = {this.state.userInfoShow}
+                            userFormShow = {this.state.userFormShow}
+                            rightPanelShow={this.state.rightPanelShow}
+                            isLoadingSalesGoal={this.state.isLoadingSalesGoal}
+                            getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
                         >
                         </MemberList>
                     </div>))
