@@ -2067,6 +2067,32 @@ var zh_CN = {
     "user.list.all.teamlist": "全部团队",
     "common.sales.frontpage.loading": "加载中",
     "common.sales.data.err": "出错啦",
-    "common.sales.data.no.data": "暂无此类信息"
+    "common.sales.data.no.data": "暂无此类信息",
+    //缺失补充start
+    "user.third.thirdapp.platform.reuqired": "请选择或填写应用平台",
+    "call.record.top.failed": "获取通话时长TOP10失败",
+    "config.manage.get.realm.failed": "获取密码策略失败！",
+    "config.manage.set.realm.failed": "设置密码策略失败！",
+    "config.manage.get.tele.failed": "查询客服电话失败！",
+    "config.manage.add.tele.failed": "添加客服电话失败！",
+    "config.manage.no.tele": "暂无客服电话，请添加！",
+    "config.manage.reload.tele": "重新获取客服电话",
+    "config.manage.tele.config": "客服电话",
+    "contract.22": "个",
+    "sale.home.no.team": "暂无销售团队",
+    "coontract.114": "导入合同",
+    "item.21": "版本号",
+    "item.23": "总价",
+    "rightpanel_codetrace": "跟踪代码",
+    "operation.report.new.account.statistic": "新开通用户统计",
+    "my_app": "默认",
+    "oplate_customer_analysis.customer.stage": "客户阶段统计",
+    "user.third.thirdapp.secret.reuqired": "请填写APP Secret",
+    "call.record.trend.failed": "获取通话数量和通话时长数据失败！",
+    "call.record.service.phone": "客服电话",
+    "call.record.service.phone.failed": "获取114占比失败！",
+    "call.record.valid.phone": "有效电话",  
+    //缺失补充end
+
 };
 export default zh_CN;
