@@ -1,6 +1,6 @@
 var userData = require("../../public/sources/user-data").getUserData();
 const config = require("../../../conf/config.js");
-const storageKey = config.storageKey || "storage-key"
+const storageKey = config.storageKey || "storage-key";
 //没有userId时，key为config中的storageKey
 var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey): storageKey;
 /**
@@ -19,8 +19,6 @@ var userId = (userData && userData.user_id)?(userData.user_id + "-" + storageKey
  * get返回JSON.parse结果
  * set自动转化为字符串
  */
-
-const localStorage = window.localStorage;
 
 const getUtils = storage => {
     return {
@@ -92,9 +90,13 @@ const getUtils = storage => {
     }
 };
 
-let storageUtil = {
-    local:  getUtils(localStorage),
-    session: getUtils(sessionStorage)
+const local = getUtils(localStorage);
+
+const session = getUtils(sessionStorage);
+
+const storageUtil = {
+    local,
+    session
 };
 
 module.exports = storageUtil;
