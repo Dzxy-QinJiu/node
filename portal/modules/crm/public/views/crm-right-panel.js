@@ -40,11 +40,12 @@ var CrmRightPanel = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        this.state.applyUserShowFlag = false;
-        if (nextProps.curCustomer) {
+        if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
+            this.state.applyUserShowFlag = false;
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
-        } else if(nextProps.currentId){
+        } else if(nextProps.currentId !== this.props.currentId){
+            this.state.applyUserShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
     },
