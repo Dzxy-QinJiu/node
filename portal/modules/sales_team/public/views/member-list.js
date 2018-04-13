@@ -877,7 +877,11 @@ var MemberList = React.createClass({
     //保存销售目标
     saveSalesGoals: function (type) {
         let salesGoals = this.getSaveSalesGoals(type);
-        if (this.state.salesGoals.goal == this.props.salesGoals.goal || this.state.salesGoals.member_goal == this.props.salesGoals.member_goal){
+        //修改的团队目标并且数值未更改
+        var isTeamGoalNoChange = type == SALES_GOALS_TYPE.TEAM && this.state.salesGoals.goal == this.props.salesGoals.goal;
+        //修改的个人目标并且数值未更改
+        var isMemberGoalNoChange = type == SALES_GOALS_TYPE.MEMBER && this.state.salesGoals.member_goal == this.props.salesGoals.member_goal;
+        if (isTeamGoalNoChange || isMemberGoalNoChange){
             this.cancelSaveSalesGoals(type,true);
             return;
         }
