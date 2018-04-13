@@ -274,7 +274,7 @@ let CustomerRepeat = React.createClass({
             return null;
         }
     },
-    getCustomerRow: function (customer,index) {
+    getCustomerRow: function (customer) {
         let customerNameCls = classNames("repeat-customer-col customer-name-click",
             {"customer-name-active": this.state.curCustomer.id === customer.id});
         return (
@@ -324,8 +324,8 @@ let CustomerRepeat = React.createClass({
                     <Row className="customer-repeat-row">
                         {isPhoneRepeat ? <span className="phone-repeat-tag">{Intl.get("crm.repeat.phone","电话重复")}</span> : null}
                         <Col span={23}>
-                            {repeatObj.repeatList.map((customer, index) => {
-                                return this.getCustomerRow(customer,index);
+                            {repeatObj.repeatList.map(customer => {
+                                return this.getCustomerRow(customer);
                             })}
                         </Col>
                         <Col span={1}>
