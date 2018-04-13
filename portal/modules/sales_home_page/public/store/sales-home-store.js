@@ -4,6 +4,7 @@ var showTypeConstant = require("../util/constant").SHOW_TYPE_CONSTANT;
 var DateSelectorUtils = require("../../../../components/datepicker/utils");
 var TimeUtil = require("../../../../public/sources/utils/time-format-util");
 let userData = require("../../../../public/sources/user-data");
+import {formatRoundingPercentData} from "PUB_DIR/sources/utils/common-method-util";
 function SalesHomeStore() {
     this.setInitState();
     this.bindActions(SalesHomeActions);
@@ -469,19 +470,6 @@ SalesHomeStore.prototype.getSalesCustomerList = function (data) {
         this.salesCustomerList = [];
     }
 };
-//呼入呼出数据格式化
-function formatData(data) {
-    if (isNaN(data)) {
-        console.log(" - : " + data);
-        return "-";
-    } else {
-        //小数格式转化为百分比
-        data = data * 100;
-        //均保留两位小数
-        return data.toFixed(2);
-    }
-}
-
 //数据判断
 function getData(data) {
     if (isNaN(data)) {
@@ -516,10 +504,10 @@ SalesHomeStore.prototype.getSalesPhoneList = function (result) {
                 totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
                 callinCount: getData(salesPhone.callinCount),//呼入次数
                 callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
-                callinRate: formatData(salesPhone.callinRate),//呼入接通率
+                callinRate: formatRoundingPercentData(salesPhone.callinRate),//呼入接通率
                 calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
-                calloutRate: formatData(salesPhone.calloutRate),//呼出接通率
+                calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
                 billingTime: getBillingTime(salesPhone.totalTime)//计费时长
             };
         });
