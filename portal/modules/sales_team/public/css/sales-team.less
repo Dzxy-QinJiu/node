@@ -359,6 +359,19 @@
       border-left:1px solid @border-color;
       padding:20px;
       padding-bottom:0px;
+      //右侧用户详情面板
+      .right-pannel-default{
+        width: 420px;
+        transform: translate(420px, 0);
+        padding: 0;
+        .no-user-logo-div{
+          width: 70px;
+          height: 70px;
+          line-height: 65px;
+          font-size: 30px;
+        }
+      }
+
 
       .member-top-operation-div{
         float: left;
@@ -383,9 +396,20 @@
             font-size:24px;
             line-height:40px;
           }
+          .team-sales-goal{
+            cursor: pointer;
+            margin: 8px 10px 0 0;
+          }
+          .self-sales-goal{
+            cursor: pointer;
+            margin: 8px 0 0 0;
+          }
+
           .sales-goals-item{
             display:inline-block;
             margin-right: 5px;
+            position: relative;
+            top:-7px;
             .ant-input-number-input-wrap {
                 height: 25px;
                 overflow: hidden;
@@ -397,6 +421,26 @@
               margin-right: 5px;
               .ant-input-number-input{
                 padding:0 2px 0 7px;
+              }
+            }
+            .anticon-loading{
+              position: relative;
+              top:10px;
+            }
+            .team-icon-container,.member-icon-container{
+              position: relative;
+              top:12px;
+              .iconfont{
+                margin: 0px 5px;
+                font-size: 12px;
+                cursor: pointer;
+              }
+              .iconfont.icon-choose{
+                color:@icon_choose_color;
+              }
+              .iconfont.icon-close{
+                margin-right: 10px;
+                color:@icon_close_color;
               }
             }
             .sales-goals-label {
@@ -652,116 +696,6 @@
   }
   .member-owner-disabled{
     background-color:#aeb3b9;
-  }
-
-  //添加销售团队面板的样式设置
-  .right-pannel-default{
-    width:700px;
-    transform:translateX(700px);
-    transition:transform 0.6s;
-    padding-top:20px;
-
-    .right-panel-top-title{
-      height:40px;
-      border-bottom:2px solid #dcdcdc;
-      width:660px;
-      margin-left:20px;
-      font-size:14px;
-      padding-left:15px;
-      padding-top:5px;
-    }
-
-    .close-pannel{
-      margin-top:0px;
-    }
-
-    .add-sales-team-form{
-      padding:20px;
-
-      .ant-form-item{
-        width:auto;
-        height:45px;
-        margin-bottom:5px;
-
-        & > label{
-          text-align:center;
-        }
-      }
-
-      .add-sales-team-btn-item{
-        border-top:1px solid #dcdcdc;
-        position:absolute;
-        width:660px;
-        bottom:0px;
-
-        .form-submit-btn{
-          margin-top:10px;
-        }
-
-        .form-cancel-btn{
-          margin-top:10px;
-        }
-      }
-
-      //添加成员选择区及展示区基本样式
-      .add-memeber-container-basic{
-        float:left;
-        padding:10px 5px;
-        border-radius:5px;
-        background:#DEE6E8;
-      }
-      //选择成员圆圈样式
-      .select-icon-div{
-        background-color:#D6DCDB;
-        color:#f5f6f6;
-      }
-
-      //成员选择列表没有成员时的提示
-      .memeber-list-null-tip{
-        position:absolute;
-        height:20px;
-        margin:auto;
-        left:0;
-        top:0;
-        right:0;
-        bottom:0;
-        text-align:center;
-        color:#7f9e9b;
-      }
-      //团队添加成员选择列表区域
-      .select-members-list-container{
-        width:370px;
-        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form  .add-memeber-container-basic);
-      }
-      //销售团队添加成员后的展示区域
-      .sales-team-show-member-list{
-        width:280px;
-        margin-left:10px;
-        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form  .add-memeber-container-basic);
-        .sales-team-member-list-div{
-          margin-bottom:2px;
-        }
-        .del-member-btn{
-          width:100px;
-          float:right;
-          margin-right:80px;
-          &:extend(.sales-team-manage-container .sales-team-item);
-        }
-      }
-
-      .select-member-label{
-        float:left;
-        width:100%;
-        margin-bottom:0;
-      }
-
-      .select-sub-group-label{
-        height:auto;
-        &:extend(.sales-team-manage-container .right-pannel-default .add-sales-team-form .select-member-label);
-      }
-
-    }
-
   }
   //无团队时，添加团队的样式设置、
   .sales-team-null-add-container{

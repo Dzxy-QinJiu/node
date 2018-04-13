@@ -1,3 +1,4 @@
+import { mapColorList } from "LIB_DIR/func";
 
 function MapChart(opts) {
     this.domWrap = opts.domWrap;
@@ -79,55 +80,7 @@ MapChart.prototype.getSeries = function() {
 
 //获取echart的splitList
 MapChart.prototype.getSplitList = function() {
-
-    var maxVal = _.max(this.dataList , function(obj) {
-        return obj.value;
-    });
-
-    if(maxVal) {
-        maxVal = maxVal.value;
-    } else {
-        maxVal = 0;
-    }
-
-    var minVal = _.min(this.dataList , function(obj) {
-        return obj.value;
-    });
-
-    if(minVal) {
-        minVal = minVal.value;
-    } else {
-        minVal = 0;
-    }
-
-    var delta = Math.floor((maxVal - minVal) / 5) - 1;
-
-    var ret = [], start = minVal;
-    for(var i = 1, total = 5; i <= total ; i++) {
-        var obj = {};
-        if(i === 1) {
-            obj = {
-                start : start,
-                end : start + delta
-            };
-            start += delta + 1;
-        } else if (i === total){
-            obj ={
-                start : start,
-                end : maxVal
-            };
-        } else {
-            obj ={
-                start: start,
-                end : start + delta
-            };
-            start += delta + 1;
-        }
-        obj.label = '';
-        ret.push(obj);
-    }
-
-    return ret.reverse();
+    return mapColorList(this.dataList);
 };
 
 //获取echart的地图配置
@@ -143,7 +96,7 @@ MapChart.prototype.getEchartOptions = function() {
             itemWidth:22,
             itemHeight:19,
             splitList: _this.getSplitList(),
-            color: ['#385993', '#8da2c8', '#8fa8ca', '#cad8ed','#cddaef'],
+            color: oplateConsts.MAP_COLOR,
             text : ['多','少'],
             textStyle : {
                 color:'#80949d'

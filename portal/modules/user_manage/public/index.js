@@ -35,9 +35,6 @@ var UserManage = React.createClass({
     events: {
         showUserForm: function (type) {
             //type：“edit”/"add"
-            //获取角色列表
-            UserFormAction.setRoleListLoading(true);
-            UserFormAction.getRoleList();
             if (type === "add") {
                 Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
                 //获取团队列表
@@ -55,10 +52,7 @@ var UserManage = React.createClass({
             UserAction.showUserForm(type);
         },
 
-        //启用、停用
-        updateUserStatus: function (userId, status) {
-            UserAction.updateUserStatus({id: userId, status: status});
-        },
+
         //切换页数时，当前页展示数据的修改
         onChangePage: function (count, curPage) {
             UserAction.updateCurPage(curPage);
@@ -70,31 +64,16 @@ var UserManage = React.createClass({
             };
             UserAction.getCurUserList(searchObj);
         },
-        //展示模态框
-        showModalDialog: function () {
-            UserAction.showModalDialog();
-        },
-        //隐藏模态框
-        hideModalDialog: function () {
-            Trace.traceEvent($(".log-infor-scroll"),"关闭模态框");
-            UserAction.hideModalDialog();
-        },
+
+
         showUserInfo: function (user) {
             //如果正在展示其他详情，则先不展示当前点击的成员详情
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
             }
-            //跟据用户的id获取销售提成和比例
-            UserAction.getSalesGoals({user_id: user.id});
             Trace.traceEvent("成员管理","点击查看成员详情");
             UserAction.setCurUser(user.id);
-            UserAction.setLogLoading(true);
-            UserAction.getLogList({
-                user_name: _.isString(user.userName) ? user.userName : user.userName.value,
-                num: this.state.logNum,
-                page_size: CONSTANTS.LOG_PAGE_SIZE
-            });
-            //获取用户的详情
+            // //获取用户的详情
             UserAction.setUserLoading(true);
             UserAction.getCurUserById(user.id);
             if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
@@ -136,6 +115,8 @@ var UserManage = React.createClass({
         },
         //右侧面板的关闭
         closeRightPanel: function () {
+            //将数据清空
+            UserAction.setInitialData();
             UserAction.closeRightPanel();
             UserAction.hideContinueAddButton();
         },
@@ -147,15 +128,7 @@ var UserManage = React.createClass({
         returnInfoPanel: function (newAddUser) {
             UserAction.returnInfoPanel(newAddUser);
         },
-        //切换日志分页时的处理
-        changeLogNum: function (num) {
-            UserAction.changeLogNum(num);
-            UserAction.getLogList({
-                user_name: this.state.currentUser.userName,
-                num: num,
-                page_size: CONSTANTS.LOG_PAGE_SIZE
-            });
-        },
+
         //一页展示多少安全域的修改
         updatePageSize: function (count) {
             UserAction.updatePageSize(count);
@@ -207,8 +180,14 @@ var UserManage = React.createClass({
         });
 
     },
+    changeUserFieldSuccess: function (user) {
+        UserAction.afterEditUser(user);
+    },
+    updateUserStatus: function (updateObj) {
+        UserAction.updateUserStatus(updateObj);
+        UserAction.updateCurrentUserStatus(updateObj.status);
+    },
     render: function () {
-        var modalType = Intl.get("member.member", "成员");
         var firstLoading = this.state.isLoading;
         return (
             <div className="user_manage_style backgroundManagement_user_content" data-tracename="成员管理">
@@ -254,26 +233,13 @@ var UserManage = React.createClass({
                     <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
                         <UserInfo
                             userInfo={this.state.currentUser}
-                            getLogErrorMsg={this.state.getLogErrorMsg}
-                            getUserDetailError={this.state.getUserDetailError}
+                            closeRightPanel={this.events.closeRightPanel}
                             userInfoShow={this.state.userInfoShow}
                             userFormShow={this.state.userFormShow}
-                            logIsLoading={this.state.logIsLoading}
-                            infoIsloading={this.state.userIsLoading}
-                            modalDialogShow={this.state.modalDialogShow}
-                            modalType={modalType}
-                            updateStatus={this.events.updateUserStatus}
-                            showModalDialog={this.events.showModalDialog.bind(this)}
-                            hideModalDialog={this.events.hideModalDialog}
-                            closeRightPanel={this.events.closeRightPanel}
-                            changeLogNum={this.events.changeLogNum.bind(this)}
-                            logList={this.state.logList}
-                            hasLog={true}
-                            logNum={this.state.logNum}
-                            logTotal={this.state.logTotal}
-                            pageSize={CONSTANTS.LOG_PAGE_SIZE}
-                            showAddMemberButton={this.state.isContinueAddButtonShow}
                             showEditForm={this.events.showUserForm}
+                            isContinueAddButtonShow={this.state.isContinueAddButtonShow}
+                            changeUserFieldSuccess={this.changeUserFieldSuccess}
+                            updateUserStatus={this.updateUserStatus}
                         />
                         <AddUserForm
                             formType={this.state.formType}

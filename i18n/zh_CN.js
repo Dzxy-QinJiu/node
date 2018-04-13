@@ -2068,6 +2068,7 @@ var zh_CN = {
     "common.sales.frontpage.loading": "加载中",
     "common.sales.data.err": "出错啦",
     "common.sales.data.no.data": "暂无此类信息",
+
     //缺失补充start
     "user.third.thirdapp.platform.reuqired": "请选择或填写应用平台",
     "call.record.top.failed": "获取通话时长TOP10失败",
@@ -2097,6 +2098,8 @@ var zh_CN = {
     "scan.ketao.qrcode.download.tip": "扫码下载客套APP安卓端",
     "config.manage.input.teleRepeat": "该电话号码已录入",
     //缺失补充end
-
+    "common.batch.sales.target": "设置团队销售目标",
+    "common.batch.self.sales.target": "批量设置个人销售目标"
+ 
 };
 export default zh_CN;
