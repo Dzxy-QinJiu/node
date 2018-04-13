@@ -54,7 +54,7 @@ var ForgotPassword = React.createClass({
         };
     },
     componentDidMount: function () {
-        var userName = window.Oplate.initialProps.username || storageUtil.local.get("last_login_name") || '';
+        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
 
         this.setState({
             username: userName,
