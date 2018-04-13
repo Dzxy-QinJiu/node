@@ -2031,13 +2031,13 @@ var en_US = {
     "common.batch.self.sales.target": "Change personal sales goals in bulk",//批量设置个人销售目标
 
     "user.third.thirdapp.platform.reuqired": "Please select or fill in the application platform",//请选择或填写应用平台
-    "call.record.top.failed": "Failed to get call duration TOP10",//获取通话时长TOP10失败
+    "call.record.top.failed": "Failed to get TOP10 call duration",//获取通话时长TOP10失败
     "config.manage.get.realm.failed": "Failed to get password policy",//获取密码策略失败
     "config.manage.set.realm.failed": "Failed to set password policy",//设置密码策略失败
     "config.manage.get.tele.failed": "Failed to get customer service phone",//查询客服电话失败
     "config.manage.add.tele.failed": "Failed to add customer service phone",//添加客服电话失败
     "config.manage.no.tele": "No customer service phone, please add",//暂无客服电话，请添加
-    "config.manage.reload.tele": "Retry get customer service phone",//重新获取客服电话
+    "config.manage.reload.tele": "Retry to get customer service phone",//重新获取客服电话
     "config.manage.tele.config": "Customer service phone",//客服电话
     "contract.22": "Unit",//个
     "sale.home.no.team": "No sales team",//暂无销售团队
@@ -2072,17 +2072,17 @@ var en_US = {
     "contract.129": "Cost information",//费用信息
     "crm.214": "Add contact plan",//添加联系计划
     "customer.trace.content": "Customer follow up records can not be empty",//客户跟进记录内容不能为空
-    "add.customer.trace.detail": "Please fill in the details of the follow-up record, and save it after it cannot be modified.",//请补充跟进记录详情，保存后不可修改
+    "add.customer.trace.detail": "Please fill in follow-up record, and cannot be modified after saving!",//请补充跟进记录详情，保存后不可修改
     "click.to.add.trace.detail": "Please click here to supplement the follow-up content",//请点击此处补充跟进内容
     "common.visit": "Visit",//拜访
     "common.others": "Other",//其他
-    "app_operation.33": "Start and stop user distribution",//启停用户分布
+    "app_operation.33": "Distribution of able and disabled users",//启停用户分布
     "app_operation.34": "Distribution of various types of users",//各类型用户分布
     "app_operation.35": "Average value",//平均值
     "sales.team.add.child.team": "Add subteam",//添加子团队
     "sales.team.edit.team": "Edit team",//编辑团队
     "sales.team.del.team": "Delete team",//删除团队
     "role.no.set.auth.add": "No authority, please {add} first",//暂无权限,请先{add}
-    "customer.total.record": "Common {num} track record",//共{num}条跟进记录
+    "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
 };
 export default en_US;
