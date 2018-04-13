@@ -480,7 +480,7 @@ var en_US = {
     "user.status.stopped": "Deactivated",//"已停用",
     "user.status.expired": "Expired",//已到期
     "user.no.login.system": "This user has not logged in to the system", // 该用户还没有登录过系统
-    "user.stop.login": "Disable logon",//停用登录
+    "user.disable.logon": "Disable logon",//停用登录
     "user.frequent.logon": "Frequent logon",//频繁登录
     //第三方应用
     "third.party.app": "Open Application Platform",//开放应用平台",
@@ -2028,7 +2028,61 @@ var en_US = {
     "common.sales.data.err": "Error",//出错啦
     "common.sales.data.no.data": "No such information",//暂无此类信息
     "common.batch.sales.target": "Change team sales goals in bulk",//设置团队销售目标
-    "common.batch.self.sales.target": "Change personal sales goals in bulk"//批量设置个人销售目标
+    "common.batch.self.sales.target": "Change personal sales goals in bulk",//批量设置个人销售目标
 
+    "user.third.thirdapp.platform.reuqired": "Please select or fill in the application platform",//请选择或填写应用平台
+    "call.record.top.failed": "Failed to get TOP10 call duration",//获取通话时长TOP10失败
+    "config.manage.get.realm.failed": "Failed to get password policy",//获取密码策略失败
+    "config.manage.set.realm.failed": "Failed to set password policy",//设置密码策略失败
+    "config.manage.get.tele.failed": "Failed to get customer service phone",//查询客服电话失败
+    "config.manage.add.tele.failed": "Failed to add customer service phone",//添加客服电话失败
+    "config.manage.no.tele": "No customer service phone, please add",//暂无客服电话，请添加
+    "config.manage.reload.tele": "Retry to get customer service phone",//重新获取客服电话
+    "config.manage.tele.config": "Customer service phone",//客服电话
+    "contract.22": "Unit",//个
+    "sale.home.no.team": "No sales team",//暂无销售团队
+    "coontract.114": "Import contract",//导入合同
+    "item.21": "Version number",//版本号
+    "item.23": "Total",//总价
+    "rightpanel_codetrace": "Trace code",//跟踪代码
+    "operation.report.new.account.statistic": "New user statistics",//新开通用户统计
+    "my_app": "Default",//默认
+    "oplate_customer_analysis.customer.stage": "Customer phase statistics",//客户阶段统计
+    "user.third.thirdapp.secret.reuqired": "Please fill in APP secret",//请填写APP Secret
+    "call.record.trend.failed": "Failed to get call count and call duration",//获取通话数量和通话时长数据失败
+    "call.record.service.phone": "Customer service phone",//客服电话
+    "call.record.service.phone.failed": "Failed to get call 114 ratio",//获取114占比失败
+    "call.record.valid.phone": "Valid phone",//有效电话
+    "crm.333": "Please select the label to change",//请选择要变更的标签
+    "crm.75": "",//点
+    "scan.ketao.qrcode.download.tip": "Scan to download KETAO APP Android",//扫码下载客套APP安卓端
+    "config.manage.input.teleRepeat": "The phone number has been recorded in",//该电话号码已录入
+    "common.ketao.app": "Ketao APP",//客套APP
+    "contract.130": "Social expenses",//交际费
+    "contract.131": "Local Transportation",//市内交通费
+    "contract.132": "Pre sales technical support expenses",//售前技术支持费
+    "contract.133": "Cost",//费用
+    "contract.135": "Cost type",//费用类型
+    "contract.134": "Please fill in cost",//请填写费用
+    "contract.136": "Please Select cost type",//请选择费用类型
+    "contract.137": "No cost type",//暂无费用类型
+    "contract.138": "Click to retry",//点击重新获取
+    "contract.128": "Selling expenses",//销售费用
+    "contract.127": "Add cost",//添加费用
+    "contract.129": "Cost information",//费用信息
+    "crm.214": "Add contact plan",//添加联系计划
+    "customer.trace.content": "Customer follow up records can not be empty",//客户跟进记录内容不能为空
+    "add.customer.trace.detail": "Please fill in follow-up record, and cannot be modified after saving!",//请补充跟进记录详情，保存后不可修改
+    "click.to.add.trace.detail": "Please click here to supplement the follow-up content",//请点击此处补充跟进内容
+    "common.visit": "Visit",//拜访
+    "common.others": "Other",//其他
+    "app_operation.33": "Distribution of able and disabled users",//启停用户分布
+    "app_operation.34": "Distribution of various types of users",//各类型用户分布
+    "app_operation.35": "Average value",//平均值
+    "sales.team.add.child.team": "Add subteam",//添加子团队
+    "sales.team.edit.team": "Edit team",//编辑团队
+    "sales.team.del.team": "Delete team",//删除团队
+    "role.no.set.auth.add": "No authority, please {add} first",//暂无权限,请先{add}
+    "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
 };
 export default en_US;
