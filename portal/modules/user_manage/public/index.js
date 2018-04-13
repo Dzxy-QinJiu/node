@@ -42,6 +42,9 @@ var UserManage = React.createClass({
                     UserFormAction.setTeamListLoading(true);
                     UserFormAction.getUserTeamList();
                 }
+                //获取角色列表
+                UserFormAction.setRoleListLoading(true);
+                UserFormAction.getRoleList();
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
