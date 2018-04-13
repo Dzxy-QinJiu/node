@@ -162,27 +162,27 @@ var ContactForm = React.createClass({
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
-            // if (this.phoneInputRefs.length) {
-            //     //存在电话输入框时，验证一下填写的电话是否符合要求
-            //     let phoneFormValArray = [];
-            //     _.each(this.phoneInputRefs, item => {
-            //         phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
-            //     });
-            //     Promise.all(phoneFormValArray).then(result => {
-            //         let firstErrorItem = _.find(result, item => item.errs);
-            //         if (firstErrorItem || !valid) {
-            //             return;
-            //         } else {
-            //             this.doSubmit();
-            //         }
-            //     });
-            // } else {
+            if (this.phoneInputRefs.length) {
+                //存在电话输入框时，验证一下填写的电话是否符合要求
+                let phoneFormValArray = [];
+                _.each(this.phoneInputRefs, item => {
+                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+                });
+                Promise.all(phoneFormValArray).then(result => {
+                    let firstErrorItem = _.find(result, item => item.errs);
+                    if (firstErrorItem || !valid) {
+                        return;
+                    } else {
+                        this.doSubmit();
+                    }
+                });
+            } else {
                 if (!valid) {
                     return;
                 } else {
                     this.doSubmit();
                 }
-            // }
+            }
         });
 
     },
