@@ -22,17 +22,6 @@ function getBillingTime(seconds) {
         return Math.ceil(seconds / 60);
     }
 }
-//呼入呼出数据格式化
-function formatData(data) {
-    if (isNaN(data)) {
-        return "-";
-    } else {
-        //小数格式转化为百分比
-        data = data * 100;
-        //均保留两位小数
-        return data.toFixed(2);
-    }
-}
 //设置初始化数据
 SalesHomeStore.prototype.setInitState = function () {
     //电话统计数据

@@ -134,3 +134,15 @@ exports.formatRoundingData = function (data, n) {
         return data.toFixed(n);
     }
 };
+//把数字转化成百分数，并进行四舍五入保留n位小数的方法
+exports.formatRoundingPercentData = function (data, n) {
+    if (isNaN(data)) {
+        return "-";
+    } else {
+        //小数格式转化为百分比
+        data = data * 100;
+        var nData = n ? n : 2;
+        //均保留两位小数
+        return data.toFixed(nData);
+    }
+};
