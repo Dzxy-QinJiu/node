@@ -159,18 +159,4 @@ UserAuditLogStore.prototype.handleFilterLogType = function () {
     this.firstLoading = true;
 };
 
-// 设置过滤字段的值
-UserAuditLogStore.prototype.setTypeFilterValue = function (value) {
-    if (value == AUDIT_LOG) {
-        this.typeFilter = ['心跳服务', '角色权限'];
-        this.selectLogType = '';
-    } else if (value == ALL_LOG_INFO) {
-        this.typeFilter = '';
-        this.selectLogType = '';
-    } else {
-        this.typeFilter = '';
-        this.selectLogType = value;
-    }
-};
-
 module.exports = alt.createStore(UserAuditLogStore);

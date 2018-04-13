@@ -15,7 +15,7 @@ var TopNav = require("../../../../components/top-nav");
 var classnames = require("classnames");
 var AppUserUtil = require("../util/app-user-util");
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { userTypeList, logTypeList, ALL_LOG_INFO , AUDIT_LOG, HEARTBEAT_LOG, ROLE_AUTH_LOG} from "PUB_DIR/sources/utils/consts";
+import { userTypeList } from "PUB_DIR/sources/utils/consts";
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 import RefreshButton from 'CMP_DIR/refresh-button';
 var websiteConfig = require("../../../../lib/utils/websiteConfig");
@@ -42,7 +42,6 @@ var LogView = React.createClass({
     getInitialState: function () {
         return {
             userType: USER_TYPE_OPTION.ALL, // 用户类型类型
-            logType: AUDIT_LOG, // 默认显示审计日志类型(全部日志、审计日志、认证授权、心跳服务)
             selectedRowIndex: null, // 点击的行索引
             isShowRightPanel: this.props.isShowRightPanel,
             ...UserAuditLogStore.getState()
@@ -86,7 +85,8 @@ var LogView = React.createClass({
             load_size: this.state.loadSize,  // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
             sort_field: queryParams.sort_field || this.state.sortField,
-            sort_order: queryParams.sort_order || this.state.sortOrder
+            sort_order: queryParams.sort_order || this.state.sortOrder,
+            type_filter: this.state.typeFilter.join()
         };
         // 用户类型
         var userType = queryParams.user_type || this.state.userType;
@@ -110,16 +110,6 @@ var LogView = React.createClass({
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
         if (endtime) {
             searchObj.endtime = endtime
-        }
-        // 审计日志、全部日志
-        var type_filter = queryParams && 'type_filter' in queryParams ? queryParams.type_filter : this.state.typeFilter;
-        if (type_filter) {
-            searchObj.type_filter = type_filter.join();
-        }
-        // 心跳服务、认证授权
-        let log_type = queryParams && 'log_type' in queryParams ? queryParams.log_type : this.state.selectLogType;
-        if (log_type) {
-            searchObj.log_type = log_type;
         }
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
     },
@@ -427,44 +417,6 @@ var LogView = React.createClass({
             </Select>
         );
     },
-   
-    onSelectLogType(value) {
-        this.state.logType = value;
-        UserAuditLogAction.handleFilterLogType();
-        UserAuditLogAction.setTypeFilterValue(value);
-        if (value == HEARTBEAT_LOG || value == ROLE_AUTH_LOG) {
-            this.setState({
-                logType: value
-            }, () => {
-                this.getAuditLog({
-                    log_type: this.state.logType
-                });
-            });
-        } else if (value == AUDIT_LOG || value == ALL_LOG_INFO) {
-            setTimeout(() => {
-                this.getAuditLog({
-                    type_filter: this.state.typeFilter,
-                });
-            });
-        }
-    },
-    
-    // 渲染日志的类型（全部日志、审计日志、认证授权、心跳服务）
-    renderAuditLogType() {
-        return (
-            <SelectFullWidth
-                value={this.state.logType}
-                onChange={this.onSelectLogType}
-            >
-                {
-                    logTypeList.map((logType, idx) => {
-                        return (<Option key={idx} value={logType.value} title={logType.name}> {logType.name} </Option>);
-                    })
-                }
-            </SelectFullWidth>
-        );
-    },
-    
     renderLogHeader: function () {
         var appOptions = this.getAppOptions();
         return (
@@ -504,9 +456,6 @@ var LogView = React.createClass({
                             </SelectFullWidth>
                         </div>
                         {Oplate.hideSomeItem ? null : this.renderFilterUserType()} {/**委内维拉项目隐藏*/}
-                        <div className="user-audit-log-select">
-                            {this.renderAuditLogType()}
-                        </div>
                         <div className="user_audit_log_search_content">
                             <SearchInput
                                 type="input"
