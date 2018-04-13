@@ -14,7 +14,6 @@ var SingleUserLogStore = require('../store/single_user_log_store');
 var SearchInput = require("../../../../components/searchInput");
 // 没有数据的提示信息
 var NoMoreDataTip = require("../../../../components/no_more_data_tip");
-import { logTypeList , ALL_LOG_INFO, AUDIT_LOG, HEARTBEAT_LOG, ROLE_AUTH_LOG} from "PUB_DIR/sources/utils/consts";
 const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
 
@@ -26,7 +25,6 @@ var SingleUserLog = React.createClass({
     },
     getInitialState: function () {
         return {
-            logType: AUDIT_LOG, // 默认显示审计日志类型(全部日志、审计日志、认证授权、心跳服务)
             messageTips: '',
             ...this.getStateData()
         };
@@ -42,13 +40,11 @@ var SingleUserLog = React.createClass({
             user_id: userId,
             starttime: this.state.startTime,
             endtime: this.state.endTime,
-            page: this.state.curPage
+            page: this.state.curPage,
+            type_filter: this.state.typeFilter.join()
         };
         if (this.state.searchName) {
             queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase()
-        }
-        if (this.state.typeFilter && this.state.typeFilter!= ALL_LOG_INFO) {
-            queryObj.type_filter = this.state.typeFilter.join();
         }
         SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId);
         if(selectedAppId){
@@ -163,9 +159,6 @@ var SingleUserLog = React.createClass({
                         <DatePicker.Option value="custom">{Intl.get("user.time.custom", "自定义")}</DatePicker.Option>
                     </DatePicker>
                 </div>
-                <div className="log-type-select">
-                    {this.renderAuditLogType()}
-                </div>
                 <div className="search-content">
                     <SearchInput
                         searchPlaceHolder={Intl.get("user.search.placeholder", "请输入关键词搜索")}
@@ -269,42 +262,6 @@ var SingleUserLog = React.createClass({
                 listenScrollBottom: false
             });
         }
-    },
-    onSelectLogType(value) {
-        this.state.logType = value;
-        SingleUserLogAction.resetLogState();
-        SingleUserLogAction.setTypeFilterValue(value);
-        if (value == HEARTBEAT_LOG || value == ROLE_AUTH_LOG) {
-            this.setState({
-                logType: value
-            }, () => {
-                this.getSingleUserAuditLogList({
-                    log_type: this.state.logType
-                });
-            });
-        } else if (value == AUDIT_LOG || value == ALL_LOG_INFO) {
-            setTimeout(() => {
-                this.getSingleUserAuditLogList({
-                    type_filter: this.state.typeFilter,
-                });
-            });
-        }
-    },
-
-    // 渲染日志的类型（全部日志、审计日志、认证授权、心跳服务）
-    renderAuditLogType() {
-        return (
-            <SelectFullWidth
-                value={this.state.logType}
-                onChange={this.onSelectLogType}
-            >
-                {
-                    logTypeList.map((logType, idx) => {
-                        return (<Option key={idx} value={logType.value} title={logType.name}> {logType.name} </Option>);
-                    })
-                }
-            </SelectFullWidth>
-        );
     },
     renderLogInformation: function () {
         var scrollBarHeight = $(window).height() -

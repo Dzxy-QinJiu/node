@@ -98,19 +98,5 @@ SingleUserLogStore.prototype.changeSearchTime = function({startTime,endTime,rang
     this.defaultRange = range;
 };
 
-// 设置过滤字段的值
-SingleUserLogStore.prototype.setTypeFilterValue = function (value) {
-    if (value == AUDIT_LOG) {
-        this.typeFilter = ['心跳服务', '角色权限'];
-        this.selectLogType = '';
-    }  else if (value == ALL_LOG_INFO) {
-        this.typeFilter = '';
-        this.selectLogType = '';
-    }else {
-        this.typeFilter = '';
-        this.selectLogType = value;
-    }
-};
-
 //使用alt导出store
 module.exports = alt.createStore(SingleUserLogStore , 'SingleUserLogStore');

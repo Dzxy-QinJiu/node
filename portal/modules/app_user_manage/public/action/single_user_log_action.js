@@ -17,8 +17,7 @@ function SingleUserLogAction() {
         "handleSearchEvent",  // 处理搜索框中内容的变化
         "getLogsBySearch",  // 根据搜索内容显示日志信息
         "changUserIdKeepSearch", //  切换用户时，保持搜索框内容
-        'resetLogState',
-        'setTypeFilterValue' // 设置过滤字段的值
+        'resetLogState'
     ); 
 
     // 获取单个用户的应用列表
@@ -51,7 +50,8 @@ function SingleUserLogAction() {
             let getLogListQueryParam = {
                 appid: selectedLogAppId,
                 user_id: searchObj.user_id,
-                page: searchObj.page
+                page: searchObj.page,
+                type_filter: searchObj.type_filter
             };
             if (_.isObject(searchObj)) {
                 if (searchObj.starttime) {
@@ -62,9 +62,6 @@ function SingleUserLogAction() {
                 }
                 if (searchObj.search) {
                     getLogListQueryParam.search = searchObj.search;
-                }
-                if (searchObj.type_filter) {
-                    getLogListQueryParam.type_filter = searchObj.type_filter;
                 }
             }
             // 日志列表信息
