@@ -1233,6 +1233,8 @@ var en_US = {
     "crm.customer.transfer.sales": "Sales",//"销售代表",
     "crm.customer.transfer.manager": "Manager",//"客户经理",
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
+    "crm.repeat.phone": "Phone repeating",//电话重复
+    "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
     // 客户管理end
 
     //客户分析 start

@@ -203,7 +203,7 @@ var zh_CN = {
     "common.label.hours": "小时",
     "common.app.minute": "分钟",
     "common.load.more": "加载更多",
-    "common.request.timeout":"请求超时",
+    "common.request.timeout": "请求超时",
 
     //公共部分--end
     "login.login": "登录",
@@ -1251,6 +1251,8 @@ var zh_CN = {
     "crm.customer.transfer.sales": "销售代表",
     "crm.customer.transfer.manager": "客户经理",
     "crm.sales.customerStage": "客户阶段变更统计",
+    "crm.repeat.phone": "电话重复",
+    "crm.repeat.phone.unhandle": "您还有未处理的重复电话：",
     // 客户管理end
 
     // 客户分析start
@@ -2054,8 +2056,8 @@ var zh_CN = {
     "sales.fromtpage.set.contact.time": "原定于{initialtime}联系",
     "sales.frontpage.fail.new.distribute.customer": "获取新分配的客户失败",
     "sales.frontpage.new.distribute.customer": "新分配但未联系的客户",
-    "sales.frontpage.tomorrow":"明天",
-    "sales.frontpage.after.tomorrow":"后天",
+    "sales.frontpage.tomorrow": "明天",
+    "sales.frontpage.after.tomorrow": "后天",
     "sales.frontpage.try.expired": "试用到期停用",
     "sales.frontpage.assigned.expired": "签约到期停用",
     "sales.frontpage.set.time": "定时",
@@ -2063,7 +2065,7 @@ var zh_CN = {
     "common.sales.frontpage.click.phone": "点击即可拨打。",
     "common.sales.fronpage.user.login": "{relativedata}有应用到期",
     "clue.customer.associate.customer": "关联客户",
-    "common.sales.fronpage.has.expired":"近{X}天过期未处理客户",
+    "common.sales.fronpage.has.expired": "近{X}天过期未处理客户",
     "user.list.all.teamlist": "全部团队",
     "common.sales.frontpage.loading": "加载中",
     "common.sales.data.err": "出错啦",
@@ -2092,7 +2094,7 @@ var zh_CN = {
     "call.record.trend.failed": "获取通话数量和通话时长数据失败！",
     "call.record.service.phone": "客服电话",
     "call.record.service.phone.failed": "获取114占比失败！",
-    "call.record.valid.phone": "有效电话",  
+    "call.record.valid.phone": "有效电话",
     "crm.333": "请选择要变更的标签",
     "crm.75": "点",
     "scan.ketao.qrcode.download.tip": "扫码下载客套APP安卓端",
@@ -2100,6 +2102,6 @@ var zh_CN = {
     //缺失补充end
     "common.batch.sales.target": "设置团队销售目标",
     "common.batch.self.sales.target": "批量设置个人销售目标"
- 
+
 };
 export default zh_CN;
