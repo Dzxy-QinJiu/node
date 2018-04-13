@@ -1233,6 +1233,7 @@ var en_US = {
     "crm.customer.transfer.sales": "Sales",//"销售代表",
     "crm.customer.transfer.manager": "Manager",//"客户经理",
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
+    "crm.repeat.phone": "Phone repeating",//重复电话
     // 客户管理end
 
     //客户分析 start

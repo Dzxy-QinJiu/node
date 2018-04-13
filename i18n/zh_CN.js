@@ -1251,6 +1251,7 @@ var zh_CN = {
     "crm.customer.transfer.sales": "销售代表",
     "crm.customer.transfer.manager": "客户经理",
     "crm.sales.customerStage": "客户阶段变更统计",
+    "crm.repeat.phone":"电话重复",
     // 客户管理end
 
     // 客户分析start
