@@ -23,7 +23,10 @@ var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
-
+//顶部tab标题的高度
+const LAY_CONSTS = {
+    TAB_TITLE_HEIGHT : 80
+}
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
@@ -340,7 +343,7 @@ const ApplyUserForm = React.createClass({
 
     render: function () {
         const appFormData = this.state.appFormData;
-        const fixedHeight = $(window).height() - 80;
+        const fixedHeight = $(window).height() - LAY_CONSTS.TAB_TITLE_HEIGHT;
         const formData = this.state.formData;
         //用于布局的常量 左侧app名称的margin-left和margin-top
         const appMarginLeft = 18, appMarginTop = 15;
