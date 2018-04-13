@@ -15,7 +15,7 @@ var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 var SearchInput = require("../../../../components/searchInput");
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import Trace from "LIB_DIR/trace";
-
+const { session } = require("LIB_DIR/utils/storage-util.js");
 
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -83,7 +83,7 @@ var ApplyTabContent = React.createClass({
         const APPLY_UNREAD_REPLY = "apply_unread_reply";
         let userId = UserData.getUserData().user_id;
         //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-        let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+        let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
         if (applyUnreadReply) {
             let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
             let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];

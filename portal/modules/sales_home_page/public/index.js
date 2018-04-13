@@ -37,9 +37,9 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
-        var flag = storageUtil.get(key, pageId);
+        var flag = storageUtil.local.get(key, pageId);
         if (flag == null) {
-            storageUtil.set(key, true, pageId);
+            storageUtil.local.set(key, true, pageId);
             isSaleTeamShow = true;
         } else {
             isSaleTeamShow = flag;
@@ -618,7 +618,7 @@ var SalesHomePage = React.createClass({
             updateScrollBar: true
         }, () => {
             var flag = this.state.isSaleTeamShow;
-            storageUtil.set(key, flag, pageId);
+            storageUtil.local.set(key, flag, pageId);
             //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
             setTimeout(() => {
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();

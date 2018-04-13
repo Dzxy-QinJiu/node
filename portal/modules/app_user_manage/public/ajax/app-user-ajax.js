@@ -36,7 +36,7 @@ exports.getAppUserList = function (obj) {
     if(appUserAjax) {
         appUserAjax.abort();
     }
-    var pageSize = parseInt(storageUtil.get(AppUserUtil.localStorageUserViewPageSizeKey));
+    var pageSize = parseInt(storageUtil.local.get(AppUserUtil.localStorageUserViewPageSizeKey));
     if(!pageSize || !_.isNumber(pageSize) || isNaN(pageSize)) {
         pageSize = 20;
     }
@@ -341,7 +341,7 @@ exports.batchUpdate = function (field, submitData,selectedAppId) {
 exports.getCustomerUserList = function (obj) {
     var Deferred = $.Deferred();
     //首先获取localStorage中保存的页数
-    var pageSize = parseInt(storageUtil.get(AppUserUtil.localStorageCustomerViewPageSizeKey));
+    var pageSize = parseInt(storageUtil.local.get(AppUserUtil.localStorageCustomerViewPageSizeKey));
     if(!pageSize || !_.isNumber(pageSize) || isNaN(pageSize)) {
         pageSize = 20;
     }

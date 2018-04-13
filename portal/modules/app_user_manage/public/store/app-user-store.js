@@ -224,7 +224,7 @@ AppUserStore.prototype.setSelectedAppId = function(appId) {
     // this.selectedAppId 为空时，对应的是全部应用
     if(this.selectedAppId){
         let obj =  AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
-        storageUtil.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+        storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
     }
     this.appUserPage = 1;
     //切换应用的时候，清除刚才选中的行

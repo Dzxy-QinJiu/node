@@ -79,7 +79,7 @@ let OperationReport = React.createClass({
     getLastSelectAppIds(){
         let user = userData.getUserData();
         //应用id列表的存储格式：LAST_SELECT_APPS_KEY:{userId:[appId1,appId2...]}
-        let selectAppObj = storageUtil.get(LAST_SELECT_APPS_KEY);
+        let selectAppObj = storageUtil.local.get(LAST_SELECT_APPS_KEY);
         selectAppObj = selectAppObj ? JSON.parse(selectAppObj) : {};
         return selectAppObj[user.user_id];
     },
@@ -229,10 +229,10 @@ let OperationReport = React.createClass({
     saveSelectAppId(appIdList){
         let user = userData.getUserData();
         //应用id列表的存储格式：LAST_SELECT_APPS_KEY:{userId:[appId1,appId2...]}
-        let selectAppObj = storageUtil.get(LAST_SELECT_APPS_KEY);
+        let selectAppObj = storageUtil.local.get(LAST_SELECT_APPS_KEY);
         selectAppObj = selectAppObj ? JSON.parse(selectAppObj) : {};
         selectAppObj[user.user_id] = appIdList;
-        storageUtil.set(LAST_SELECT_APPS_KEY, JSON.stringify(selectAppObj));
+        storageUtil.local.set(LAST_SELECT_APPS_KEY, JSON.stringify(selectAppObj));
     },
     //渲染应用下拉列表的选项
     renderSelectOptions(){

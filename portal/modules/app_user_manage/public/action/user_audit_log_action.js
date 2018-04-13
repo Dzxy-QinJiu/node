@@ -23,7 +23,7 @@ function UserAuditLogAction() {
     this.getUserApp = function (callback) {
         var _this = this;
         userAuditLogAjax.getUserApp().then(function (data) {
-            var storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
+            var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
             var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
             var app_id = '';
             if (lastSelectAppId) {   //缓存中存在最后一次选择的应用，直接查看该应用的审计日志

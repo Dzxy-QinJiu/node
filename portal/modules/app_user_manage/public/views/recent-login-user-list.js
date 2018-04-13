@@ -92,7 +92,7 @@ class RecentLoginUsers extends React.Component {
     getSelectedAppId(props){
         var selectedAppId = "";
         //上次手动选中的appid
-        var localSelectedAppId = JSON.parse(storageUtil.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG))[CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID];
+        var localSelectedAppId = JSON.parse(storageUtil.local.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG))[CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID];
         if (props.selectedAppId){
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;

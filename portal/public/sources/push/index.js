@@ -19,6 +19,7 @@ import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from '../utils/consts';
 import logoSrc from "./notification.png";
 import userData from "../user-data";
 import Trace from "LIB_DIR/trace";
+const { session } = require("LIB_DIR/utils/storage-util.js");
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -489,7 +490,7 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //将未读回复列表分用户存入sessionStorage（session失效时会自动清空数据）
-    let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+    let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
     let applyUnreadReplyObj = {};//{userId1:unreadList1,userId2:unreadList2}
     if (applyUnreadReply) {
         applyUnreadReplyObj = JSON.parse(applyUnreadReply);
@@ -511,7 +512,7 @@ function applyUnreadReplyListener(applyUnreadReplyList) {
     } else {
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
     }
-    sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
+    session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
     notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyObj[userId]);
 }
 // 判断是否已启用桌面通知

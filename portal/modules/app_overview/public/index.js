@@ -64,7 +64,7 @@ const AppOverView = React.createClass({
         $(window).on('resize', this.windowResize);
         AppOverViewAjax.getAppList().then( (result) => {
             let appList = _.isArray(result) ? result : [];
-            let storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
+            let storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
             let app_id = storageValue && storageValue[LAST_SELECT_APPS_KEY] ? storageValue[LAST_SELECT_APPS_KEY ]: '';
             if (!app_id) {
                 app_id = appList[0] ? appList[0].app_id : '';
@@ -420,7 +420,7 @@ const AppOverView = React.createClass({
         AppOverViewActions.resetData();
         if (app_id) {
             let obj =  AppUserUtil.getLocalStorageObj(LAST_SELECT_APPS_KEY,app_id );
-            storageUtil.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+            storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
         }
         //设置当前选中应用
         this.setState({

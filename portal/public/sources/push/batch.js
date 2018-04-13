@@ -13,6 +13,7 @@ var notyCloseTimeoutMap = {};
 var batchPushEmitter = require("../utils/emitters").batchPushEmitter;
 //批量操作完成后，自动关闭的延迟时间（ms）
 const BATCH_FINISH_AUTOCLOSE_TIMEOUT = 4000;
+const { session } = require("LIB_DIR/utils/storage-util.js");
 //批量操作监听器
 /**
  * @param data
@@ -175,12 +176,12 @@ function saveTaskParamByTaskId(taskId , params , taskConfig) {
     taskConfig = taskConfig || {};
     cloneParams.taskConfig = taskConfig;
     var jsonStr = JSON.stringify(cloneParams);
-    sessionStorage.setItem(sessionStorageKey , jsonStr);
+    session.set(sessionStorageKey , jsonStr);
 }
 //按照taskid获取任务参数
 function getTaskParamByTaskId(taskId) {
     var sessionStorageKey = TASK_PARAMS_PRE + taskId;
-    var sessionItem = sessionStorage.getItem(sessionStorageKey);
+    var sessionItem = session.get(sessionStorageKey);
     if(!sessionItem) {
         return null;
     }
@@ -193,7 +194,7 @@ function getTaskParamByTaskId(taskId) {
 
 //检测taskId是否存在(sessionStorage)
 function getTaskIdExist(taskId) {
-    var taskIdList = sessionStorage.getItem(SESSION_STORAGE_TASKID);
+    var taskIdList = session.get(SESSION_STORAGE_TASKID);
     if(!taskIdList) {
         return false;
     }
@@ -206,7 +207,7 @@ function getTaskIdExist(taskId) {
 }
 //从taskId列表中移除taskId(sessionStorage)
 function removeTaskIdFromList(taskId) {
-    var taskIdList = sessionStorage.getItem(SESSION_STORAGE_TASKID);
+    var taskIdList = session.get(SESSION_STORAGE_TASKID);
     if(!taskIdList) {
         return false;
     }
@@ -217,12 +218,12 @@ function removeTaskIdFromList(taskId) {
     }
     taskIdList = _.filter(taskIdList , (id) => id !== taskId);
     var jsonStr = JSON.stringify(taskIdList);
-    sessionStorage.setItem(SESSION_STORAGE_TASKID,jsonStr);
+    session.set(SESSION_STORAGE_TASKID,jsonStr);
     return true;
 }
 //向任务列表中添加taskId(sessionStorage)
 function addTaskIdToList(taskId) {
-    var taskIdList = sessionStorage.getItem(SESSION_STORAGE_TASKID);
+    var taskIdList = session.get(SESSION_STORAGE_TASKID);
     if(!taskIdList) {
         taskIdList = [];
     } else {
@@ -238,7 +239,7 @@ function addTaskIdToList(taskId) {
         taskIdList.push(taskId);
     }
     var jsonStr = JSON.stringify(taskIdList);
-    sessionStorage.setItem(SESSION_STORAGE_TASKID,jsonStr);
+    session.set(SESSION_STORAGE_TASKID,jsonStr);
     return true;
 }
 //向任务列表中添加taskId

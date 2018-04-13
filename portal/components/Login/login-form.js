@@ -17,6 +17,9 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
 };
 var base64_prefix = "data:image/png;base64,";
+if (!(typeof window === "undefined")) {
+    var storageUtil = require("../../lib/utils/storage-util.js");
+}
 
 var LoginForm = React.createClass({
     getInitialState: function () {
@@ -42,9 +45,9 @@ var LoginForm = React.createClass({
             return false;
         }
         //记住登录名
-        localStorage.setItem("last_login_name", userName);
+        storageUtil.local.set("last_login_name", userName);
         //客户分析,第一次登录的时候，默认展示全部应用
-        localStorage.setItem("customer_analysis_stored_app_id", "all");
+        storageUtil.local.set("customer_analysis_stored_app_id", "all");
         //获取输入的密码
         var value = this.refs.password_input.value;
         if (!value) {
@@ -101,7 +104,7 @@ var LoginForm = React.createClass({
     },
     //展示记录过的用户名，登录按钮变为可用
     showUserName: function () {
-        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
+        var userName = window.Oplate.initialProps.username || storageUtil.local.get("last_login_name") || '';
         this.setState({
             username: userName,
             loginButtonDisabled: false
