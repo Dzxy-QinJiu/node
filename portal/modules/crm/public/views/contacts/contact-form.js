@@ -162,27 +162,27 @@ var ContactForm = React.createClass({
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
-            if (this.phoneInputRefs.length) {
-                //存在电话输入框时，验证一下填写的电话是否符合要求
-                let phoneFormValArray = [];
-                _.each(this.phoneInputRefs, item => {
-                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
-                });
-                Promise.all(phoneFormValArray).then(result => {
-                    let firstErrorItem = _.find(result, item => item.errs);
-                    if (firstErrorItem || !valid) {
-                        return;
-                    } else {
-                        this.doSubmit();
-                    }
-                });
-            } else {
+            // if (this.phoneInputRefs.length) {
+            //     //存在电话输入框时，验证一下填写的电话是否符合要求
+            //     let phoneFormValArray = [];
+            //     _.each(this.phoneInputRefs, item => {
+            //         phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+            //     });
+            //     Promise.all(phoneFormValArray).then(result => {
+            //         let firstErrorItem = _.find(result, item => item.errs);
+            //         if (firstErrorItem || !valid) {
+            //             return;
+            //         } else {
+            //             this.doSubmit();
+            //         }
+            //     });
+            // } else {
                 if (!valid) {
                     return;
                 } else {
                     this.doSubmit();
                 }
-            }
+            // }
         });
 
     },
@@ -345,19 +345,19 @@ var ContactForm = React.createClass({
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
                         //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get("crm.82", "电话唯一性验证出错了"));
-                            } else {
-                                if (_.isObject(data) && data.result === "true") {
+                        // CrmAction.checkOnlyContactPhone(phone, data => {
+                        //     if (_.isString(data)) {
+                        //         //唯一性验证出错了
+                        //         callback(Intl.get("crm.82", "电话唯一性验证出错了"));
+                        //     } else {
+                        //         if (_.isObject(data) && data.result === "true") {
                                     callback();
-                                } else {
-                                    //已存在
-                                    callback(Intl.get("crm.83", "该电话已存在"));
-                                }
-                            }
-                        });
+                        //         } else {
+                        //             //已存在
+                        //             callback(Intl.get("crm.83", "该电话已存在"));
+                        //         }
+                        //     }
+                        // });
                     } else {//该联系人员电话列表中已存在该电话
                         //获取当前已添加的电话列表
                         let curPhoneArray = this.getCurPhoneArray();

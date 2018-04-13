@@ -254,7 +254,7 @@ var CrmRightMergePanel = React.createClass({
     },
     //合并客户
     mergeRepeatCustomer: function () {
-        if(this.state.isMergingCustomer) return;
+        if (this.state.isMergingCustomer) return;
         let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList,
             selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id
@@ -266,13 +266,30 @@ var CrmRightMergePanel = React.createClass({
             });
         }
         //联系人的处理
+        let contactPhone = [];//联系电话
         if (_.isArray(selectedCustomer.contacts) && selectedCustomer.contacts.length) {
             selectedCustomer.contacts.forEach(contact => {
                 if (contact.customer_id != selectedCustomer.id) {
                     //将联系方式对应的客户id改为要保存客户的id
                     contact.customer_id = selectedCustomer.id;
                 }
+                if (_.isArray(contact.phone) && contact.phone.length) {
+                    contactPhone = contactPhone.concat(contact.phone);
+                }
             });
+            //重复电话的验证
+            let noRepeatContacts = [], repeatContacts = [];
+            _.each(contactPhone, phone => {
+                if (noRepeatContacts.indexOf(phone) == -1) {
+                    noRepeatContacts.push(phone);
+                } else {
+                    repeatContacts.push(phone);
+                }
+            });
+            if (_.isArray(repeatContacts) && repeatContacts.length) {
+                message.warn(Intl.get("crm.repeat.phone.unhandle", "您还有未处理的重复电话：") + repeatContacts.join(","), 10);
+                return;
+            }
         }
         //订单的处理
         if (_.isArray(selectedCustomer.sales_opportunities) && selectedCustomer.sales_opportunities.length > 0) {
