@@ -1,6 +1,7 @@
 var UserApplyActions = require("../action/user-apply-actions");
 var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
 import userData from "PUB_DIR/sources/user-data";
+const { session } = require("LIB_DIR/utils/storage-util.js");
 
 //用户审批界面使用的store
 function UserApplyStore() {
@@ -68,7 +69,7 @@ UserApplyStore.prototype.clearUnreadReply = function (applyId) {
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //获取sessionStorage中该用户的未读回复列表
-    let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+    let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
     if (applyUnreadReply) {
         let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
         let applyUnreadReplyList = [];//获取未读回复申请列表为空时，会清空所有未读回复的申请列表
@@ -78,7 +79,7 @@ UserApplyStore.prototype.clearUnreadReply = function (applyId) {
             applyUnreadReplyList = _.filter(applyUnreadReplyList, reply => reply.apply_id != applyId);
         }
         applyUnreadReplyObj[userId] = applyUnreadReplyList;
-        sessionStorage.setItem(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
+        session.set(APPLY_UNREAD_REPLY, JSON.stringify(applyUnreadReplyObj));
         //加延时是为了，避免循环dispatch报错：Cannot dispatch in the middle of a dispatch
         setTimeout(() => {
             notificationEmitter.emit(notificationEmitter.APPLY_UNREAD_REPLY, applyUnreadReplyList);

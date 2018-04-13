@@ -22,6 +22,7 @@ let history = require("../../public/sources/history");
 import ModalIntro from "../modal-intro";
 import CONSTS from  "LIB_DIR/consts";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
+const { session } = require("LIB_DIR/utils/storage-util.js");
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 /**
@@ -280,7 +281,7 @@ var NavSidebar = React.createClass({
         const APPLY_UNREAD_REPLY = "apply_unread_reply";
         let userId = userData.getUserData().user_id;
         //获取sessionStore中已存的未读回复列表
-        let applyUnreadReply = sessionStorage.getItem(APPLY_UNREAD_REPLY);
+        let applyUnreadReply = session.get(APPLY_UNREAD_REPLY);
         if (applyUnreadReply) {
             let applyUnreadReplyObj = JSON.parse(applyUnreadReply);
             let applyUnreadReplyList = _.isArray(applyUnreadReplyObj[userId]) ? applyUnreadReplyObj[userId] : [];
