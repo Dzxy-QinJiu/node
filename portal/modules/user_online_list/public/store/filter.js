@@ -15,7 +15,7 @@ function OnlineUserFilterStore() {
 OnlineUserFilterStore.prototype.setCondition = function(condition) {
     if('client_id' in condition){
         let obj = AppUserUtil.getLocalStorageObj('onlineAppId', condition.client_id);
-        storageUtil.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
+        storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
     }
     $.extend(this.condition, condition);
 };

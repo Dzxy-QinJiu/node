@@ -117,13 +117,13 @@ const ClueCustomer = React.createClass({
     showClueAddForm: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".handle-btn-container"), "点击添加销售线索按钮");
         var pageId = CONSTS.PAGE_ID.CLUE_CUSTOMER;
-        var clickCount = storageUtil.get("click_add_cluecustomer_count", pageId);
+        var clickCount = storageUtil.local.get("click_add_cluecustomer_count", pageId);
         if (!clickCount) {
             clickCount = 1;
         }
         //点击一次页面加一
         clickCount++;
-        storageUtil.set("click_add_cluecustomer_count", clickCount, pageId);
+        storageUtil.local.set("click_add_cluecustomer_count", clickCount, pageId);
         this.setState({
             clueAddFormShow: true
         });
@@ -148,7 +148,7 @@ const ClueCustomer = React.createClass({
         let btnClass = "block ";
         btnClass += isWebMini ? "handle-btn-mini" : "handle-btn-container";
         var pageId = CONSTS.PAGE_ID.CLUE_CUSTOMER;
-        var clickCount = storageUtil.get("click_add_cluecustomer_count", pageId);
+        var clickCount = storageUtil.local.get("click_add_cluecustomer_count", pageId);
         var containerCls = classNames("add-clue-customer-container", {
             "hide-des": clickCount > 2
         });

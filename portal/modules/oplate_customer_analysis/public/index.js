@@ -358,7 +358,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         var rightSpace = AnalysisLayout.LAYOUTS.RIGHT_PADDING + AnalysisLayout.LAYOUTS.TIME_RANGE_WIDTH;
 
         var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
-        const storedAppId = storageUtil.get(localStorageAppIdKey);
+        const storedAppId = storageUtil.local.get(localStorageAppIdKey);
 
         const charts = this.getCharts();
 

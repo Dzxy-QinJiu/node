@@ -43,7 +43,7 @@ const OnlineUserList = React.createClass({
         Utils.emitter.removeListener(Utils.EMITTER_CONSTANTS.APP_LIST_LOADED, this.appListLoaded);
     },
     appListLoaded: function (list) {
-        var storageValue = JSON.parse(storageUtil.get(AppUserUtil.saveSelectAppKeyUserId));
+        var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
         var lastSelectAppId = storageValue && storageValue.onlineAppId ? storageValue.onlineAppId : '';
         if (lastSelectAppId) {
             OnlineUserFilterAction.setCondition({ client_id: lastSelectAppId });

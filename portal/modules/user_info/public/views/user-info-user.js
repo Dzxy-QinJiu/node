@@ -293,7 +293,7 @@ var UserInfo = React.createClass({
         this.setState({lang: Oplate.lang || "zh_CN"});
     },
     afterEditLangSuccess: function (user) {
-        storageUtil.set("userLang",user["language"]);
+        storageUtil.local.set("userLang",user["language"]);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
     },

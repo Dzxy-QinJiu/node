@@ -9,13 +9,13 @@ const storageUtil = require("LIB_DIR/utils/storage-util.js");
 
 const ReportLayout = React.createClass({
     render() {
-        let storedAppId = storageUtil.get(this.props.localStorageAppIdKey);
+        let storedAppId = storageUtil.local.get(this.props.localStorageAppIdKey);
 
         //将原来在localStorage中存储的appId为用逗号分隔的综合的值改为"all"
         //以修复初次加载时app选择器只显示id，不显示应用名称的问题
         if (storedAppId && storedAppId.indexOf(",") > -1) {
             storedAppId = "all";
-            storageUtil.set(this.props.localStorageAppIdKey, "all");
+            storageUtil.local.set(this.props.localStorageAppIdKey, "all");
         }
 
         return (

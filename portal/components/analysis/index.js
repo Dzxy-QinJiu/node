@@ -105,7 +105,7 @@ const Analysis = React.createClass({
 
         if (app_id.indexOf(",") > -1) app_id = "all";
 
-        storageUtil.set(this.props.localStorageAppIdKey, app_id);
+        storageUtil.local.set(this.props.localStorageAppIdKey, app_id);
     },
     onDateChange(starttime, endtime) {
         this.setState({starttime, endtime}, () => {
@@ -156,7 +156,7 @@ const Analysis = React.createClass({
             },
         };
 
-        const storedAppId = storageUtil.get(props.localStorageAppIdKey);
+        const storedAppId = storageUtil.local.get(props.localStorageAppIdKey);
         const appId = this.props.appId || this.state.app_id || storedAppId;
         
         if (appId) {

@@ -158,7 +158,7 @@ var AppUserCustomerSwitch = React.createClass({
         TableUtil.updatePaginationJumpNewPage(this.refs.tableWrap , this.state.customerUserPage);
     },
     onShowSizeChange : function(current , pageSize) {
-        storageUtil.set(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
+        storageUtil.local.set(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
         //改变界面上看到的页数
         AppUserCustomerSwitchActions.setCustomerPageSize(pageSize);
         //计算是否能显示当前页
@@ -303,7 +303,7 @@ var AppUserCustomerSwitch = React.createClass({
                 <RightPanel className="app_user_manage_rightpanel" showFlag={this.state.isShowRightPanel}>
                     <RightPanelClose onClick={this.hideRightPanel}/>
                     <ApplyUser
-                       appList={JSON.parse(storageUtil.get("oplateCrmAppList"))}
+                       appList={JSON.parse(storageUtil.local.get("oplateCrmAppList"))}
                        users={this.state.selectedCustomerUserRows}
                        customerId={this.props.params.customerId}
                        cancelApply={this.hideRightPanel}

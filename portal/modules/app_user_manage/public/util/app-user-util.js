@@ -15,7 +15,7 @@ exports.saveSelectAppKeyUserId = UserData ? UserData.user_id : "";
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
 exports.getLocalStorageObj = function (property ,selectApp){
     let localObj = {};
-    let localValue = storageUtil.get(JSON.stringify(UserData ? UserData.user_id : ""));
+    let localValue = storageUtil.local.get(JSON.stringify(UserData ? UserData.user_id : ""));
     if(localValue){
         localObj =  JSON.parse(localValue);
     }
