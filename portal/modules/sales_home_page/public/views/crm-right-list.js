@@ -97,6 +97,12 @@ let CrmRightList = React.createClass({
         setTimeout(() => this.props.refreshDataByChangeSales());
         this.hideSearchInput();
         Trace.traceEvent(e, "返回'" + team.group_name + "'团队的数据");
+
+        let team_id = team.group_id;
+        if (team_id === "sales-team-list-parent-group-id") {
+            team_id = "";
+        }
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id);
     },
     //通过面包屑返回到销售成员列表
     returnSalesMemberList: function (e) {
