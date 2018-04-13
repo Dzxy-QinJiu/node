@@ -21,6 +21,9 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
 };
 var base64_prefix = "data:image/png;base64,";
+if (!(typeof window === "undefined")) {
+    var storageUtil = require("../../lib/utils/storage-util.js");
+}
 
 var ForgotPassword = React.createClass({
     getInitialState: function () {
@@ -54,7 +57,7 @@ var ForgotPassword = React.createClass({
         };
     },
     componentDidMount: function () {
-        var userName = window.Oplate.initialProps.username || localStorage.getItem("last_login_name") || '';
+        var userName = window.Oplate.initialProps.username || storageUtil.local.get("last_login_name") || '';
 
         this.setState({
             username: userName,
