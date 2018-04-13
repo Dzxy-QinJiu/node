@@ -43,7 +43,7 @@ export const formatAmount = function (amount) {
 
 //处理金额，未定义时赋空值及转成千分位格式等
 export const parseAmount = function (amount) {
-    if (!amount) amount = "";
+    if (isNaN(amount)) amount = "";
 
     //每3位数字间用逗号分隔
     amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
