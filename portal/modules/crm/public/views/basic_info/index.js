@@ -67,7 +67,7 @@ var BasicData = React.createClass({
     },
     componentWillReceiveProps: function (nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
-        if (this.state.basicData.id !== nextProps.curCustomer.id) {
+        if (nextProps.curCustomer && this.state.basicData.id !== nextProps.curCustomer.id) {
             this.setState({
                 showDetailFlag: false,
                 editNameFlag: false
@@ -222,6 +222,12 @@ var BasicData = React.createClass({
             });
         }
     },
+    //关注客户的处理
+    handleFocusCustomer: function (basicData) {
+        if (_.isFunction(this.props.handleFocusCustomer)) {
+            this.props.handleFocusCustomer.bind(this, basicData);
+        }
+    },
     //渲染客户的基本信息
     renderBasicBlock: function (basicData) {
         let level = crmUtil.filterAdministrativeLevel(basicData.administrative_level);
@@ -349,7 +355,7 @@ var BasicData = React.createClass({
                                 })}
                                 title={interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
                                     Intl.get("crm.customer.interested", "添加关注")}
-                                onClick={this.props.handleFocusCustomer.bind(this, basicData)}
+                                onClick={this.handleFocusCustomer.bind(this, basicData)}
                             />
                         </div>
                     </div>
