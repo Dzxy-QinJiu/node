@@ -1819,7 +1819,7 @@ var en_US = {
     "contract.add.invoice.info": "Invoice basic information has not been added, you can click on the edit button to add",//发票基本信息尚未添加，可点击后面的编辑按钮进行添加
     "user.set.single.app": "Note: If you want to set single application, please cancel this check",//注：若想设置单个应用，请取消此项的勾选
     "authority.search.by.server.address": "Please search by the service address ",//请输入服务地址搜索
-    "user.username.length.tip": "User name length should be greater than 3 characters and less than 30 characters",//用户名长度应大于3位小于30位
+    "user.username.length.tip": "User name length should be greater than 3 characters and less than 50 characters",//用户名长度应大于3位小于50位
     "user.manage.phone.order": "Seat number",//座席号
     "user.manage.phone.order.rule": "Please enter a number less than 7 digits",//请输入小于7位的数字
     "common.phone.order.is.unique": "Failed to check this seat number!",//座席号唯一性校验出错！

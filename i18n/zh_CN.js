@@ -1860,7 +1860,7 @@ var zh_CN = {
     "user.customer.suggest.create.customer": "创建客户",
     "contract.add.invoice.info": "发票基本信息尚未添加，可点击后面的编辑按钮进行添加",
     "user.set.single.app": "注：若想设置单个应用，请取消此项的勾选",
-    "user.username.length.tip": "用户名长度应大于3位小于30位",
+    "user.username.length.tip": "用户名长度应大于3位小于50位",
     //座席号
     "user.manage.phone.order": "座席号",
     "user.manage.phone.order.rule": "请输入小于7位的数字",

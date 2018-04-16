@@ -1396,7 +1396,7 @@ var en_VE = {
     "user.customer.suggest.create.customer": "Crear cliente",//创建客户
     "user.set.single.app": "Nota: Si desea configurar una única aplicación, por favor seleccione este elemento Cancelar",//注：若想设置单个应用，请取消此项的勾选
     "authority.search.by.server.address": "Entrar en el servicio de búsqueda de direcciones",//请输入服务地址搜索
-    "user.username.length.tip": "Longitud nombre de usuario debe ser mayor de 3 y menos de 30 caracteres caracteres",//用户名长度应大于3位小于30位
+    "user.username.length.tip": "Longitud nombre de usuario debe ser mayor de 3 y menos de 50 caracteres caracteres",//用户名长度应大于3位小于50位
 
     //重新登录
     "retry.no.login.for.longtime": "Usted ha estado mucho tiempo sin realizar las operaciones, por la seguridad de cuenta", // 您已长时间没有进行操作，为了您的帐号安全

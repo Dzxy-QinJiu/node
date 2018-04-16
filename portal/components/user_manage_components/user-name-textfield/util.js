@@ -102,8 +102,8 @@ exports.validatorMessageTips = function (value, callback) {
         callback(Intl.get("user.username.write.tip", "请填写用户名"));
         return;
     }
-    if (value.length < 3 || value.length > 30) {
-        callback(Intl.get("user.username.length.tip", "用户名长度应大于3位小于30位"));
+    if (value.length < 3 || value.length > 50) {
+        callback(Intl.get("user.username.length.tip", "用户名长度应大于3位小于50位"));
         return;
     }
     if (!userNameRegex.test(value)) {
