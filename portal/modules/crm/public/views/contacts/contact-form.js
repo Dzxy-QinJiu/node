@@ -200,18 +200,21 @@ var ContactForm = React.createClass({
         var formData = _.extend({}, this.state.formData);
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
-            if (key.indexOf("phone") != -1) {
-                phoneArray.push($.trim(formData[key]));
-                delete formData[key];
-            } else if (key.indexOf("qq") != -1) {
-                qqArray.push($.trim(formData[key]));
-                delete formData[key];
-            } else if (key.indexOf("weChat") != -1) {
-                weChatArray.push($.trim(formData[key]));
-                delete formData[key];
-            } else if (key.indexOf("email") != -1) {
-                emailArray.push($.trim(formData[key]));
-                delete formData[key];
+            let contactVal = $.trim(formData[key]);
+            if(contactVal){
+                if (key.indexOf("phone") != -1) {
+                    phoneArray.push(contactVal);
+                    delete formData[key];
+                } else if (key.indexOf("qq") != -1) {
+                    qqArray.push(contactVal);
+                    delete formData[key];
+                } else if (key.indexOf("weChat") != -1) {
+                    weChatArray.push(contactVal);
+                    delete formData[key];
+                } else if (key.indexOf("email") != -1) {
+                    emailArray.push(contactVal);
+                    delete formData[key];
+                }
             }
         }
         //联系人姓名和部门必填一项的验证
@@ -379,15 +382,16 @@ var ContactForm = React.createClass({
     //联系人名和部门必填一项的验证
     validateContactNameDepartment: function () {
         //是否通过联系人名和部门必填一项的验证
-        let isValid = validateRequiredOne(this.state.formData.name,this.state.formData.department);
+        let isValid = validateRequiredOne(this.state.formData.name, this.state.formData.department);
         this.setState({isValidNameDepartment: isValid});
     },
     //渲染联系人名和部门必填一项的提示
-    renderValidNameDepartmentTip:function () {
-        if(this.state.isValidNameDepartment){
+    renderValidNameDepartmentTip: function () {
+        if (this.state.isValidNameDepartment) {
             return null;
-        }else{
-            return <div className="name-department-required">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
+        } else {
+            return <div
+                className="name-department-required">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
         }
     },
     render: function () {
