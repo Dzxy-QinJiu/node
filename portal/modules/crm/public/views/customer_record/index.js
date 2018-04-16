@@ -550,8 +550,8 @@ const CustomerRecord = React.createClass({
                     //将当前项保存下来，以备下次循环中使用
                     prevItemYear = curItemYear;
                     prevItemDay = curItemDay;
-                    //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
-                    let hasSplitLine = dayStr && index
+                    //每天第一次出现的跟进记录，并且不是每年的第一条时，展示分割线
+                    let hasSplitLine = dayStr && index && !yearStr;
                     return (
                         <div className="customer-trace-item" key={index}>
                             {yearStr ? (
