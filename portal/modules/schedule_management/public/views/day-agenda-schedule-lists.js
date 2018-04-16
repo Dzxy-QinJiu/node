@@ -21,6 +21,7 @@ var scheduleManagementEmitter = require("PUB_DIR/sources/utils/emitters").schedu
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 import Trace from "LIB_DIR/trace";
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
+import {isEqualArray} from "LIB_DIR/func";
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -58,7 +59,7 @@ class DayAgendaScheduleLists extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.scheduleList !== this.state.scheduleList) {
+        if (nextProps.scheduleList && !isEqualArray(nextProps.scheduleList, this.state.scheduleList)) {
             this.setState({
                 scheduleList: nextProps.scheduleList
             });
