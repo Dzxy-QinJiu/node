@@ -155,7 +155,6 @@ const ScheduleManagement = React.createClass({
             curSchedule.title = curSchedule.topic;
             //之前新建日程的时候，把全天的结束时间设置为23:59:59,所以比0点少1s
             if (curSchedule.end_time - curSchedule.start_time == LESSONESECOND) {
-                curSchedule.end_time = curSchedule.end_time + 1000;
                 curSchedule.allDay = true;
             };
             //The start date/time of the event. Must resolve to a JavaScript Date object.
@@ -251,10 +250,15 @@ const ScheduleManagement = React.createClass({
     },
     //切换不同的视图
     changeView: function (viewName) {
+        var preViewName = this.state.curViewName;
         this.state.curViewName = viewName;
         this.setState({
             curViewName:this.state.curViewName
         });
+        //如果从月视图点击日期跳转到日视图，也会触发handleNavigateChange，先走changeView方法，这时候取到的日期是上一次的日期，取到的数据是上次的数据，走handleNavigateChange会取到正确的数据，但是不知道两次谁先返回，故会出现错误数据，所以在月视图跳转到日视图的时候，限制值发一次请求就可以了
+        if (preViewName === "month" && viewName === "day"){
+            return;
+        }
         var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
         //获取日程数据
         this.getAgendaData(dateObj, viewName);
@@ -281,7 +285,7 @@ const ScheduleManagement = React.createClass({
         }
         return dateObj;
     },
-    //点击 前，后翻页，或者返回今天的按钮
+    //点击 前，后翻页，点击月视图的日期跳转到日视图,或者返回今天的按钮
     handleNavigateChange: function (date) {
         var view = this.state.curViewName;
         //把当前展示视图的时间记录一下
