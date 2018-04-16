@@ -1253,6 +1253,12 @@ var zh_CN = {
     "crm.sales.customerStage": "客户阶段变更统计",
     "crm.repeat.phone": "电话重复",
     "crm.repeat.phone.unhandle": "您还有未处理的重复电话：",
+    "crm.basic.detail.show": "展开详情",
+    "crm.basic.detail.hide": "收起详情",
+    "crm.basic.overview": "概览",
+    "crm.overview.expire.tip": "有应用{days}天后签约到期",
+    "crm.input.new.tag": "请输入新标签",
+    "crm.detail.no.tag": "暂无标签",
     // 客户管理end
 
     // 客户分析start
@@ -2050,6 +2056,14 @@ var zh_CN = {
     "sales.frontpage.login.after.stop": "停用后登录",
     "sales.frontpage.login.recently": "近{X}日登录的客户",
     "sales.frontpage.has.repeat.customer": "您有重复的客户",
+    "sales.frontpage.contact.customers": "建议您联系以下客户",
+    "sales.frontpage.open.app": "已开通应用",
+    "sales.frontpage.expired.date": "到期情况",
+    "sales.frontpage.total.list": "共{n}条",
+    "sales.frontpage.recent.record": "最新跟进",
+    "sales.frontpage.add.customer": "添加跟进记录",
+    "sales.frontpage.trace.type": "跟进类型",
+    "sales.frontpage.trace.time": "跟进时间",
     "sales.frontpage.schedule.has.finished": "完成了",
     "sales.frontpage.appilleage.login": "停用期间用户登录情况",
     "sales.frontpage.concerned.login": "近{X}天登录情况",

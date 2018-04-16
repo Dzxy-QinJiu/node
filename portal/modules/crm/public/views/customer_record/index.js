@@ -9,15 +9,15 @@ if (language.lan() == "es" || language.lan() == "en") {
 } else if (language.lan() == "zh") {
     require("../../css/customer-trace-zh_CN.less");
 }
-import {Icon, Select, Alert, Button, message} from 'antd';
-var Option = Select.Option;
+import {Icon, Select, Alert, Button, message, Radio, Input} from 'antd';
+const RadioGroup = Radio.Group;
+const {TextArea} = Input;
 var AlertTimer = require("../../../../../components/alert-timer");
 import CustomerRecordActions from '../../action/customer-record-action';
 import CustomerRecordStore from '../../store/customer-record-store';
 var crmUtil = require("./../../utils/crm-util");
 var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
 var Spinner = require("../../../../../components/spinner");
-var TimeLine = require("../../../../../components/time-line");
 import ModalDialog from "CMP_DIR/ModalDialog";
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
@@ -25,13 +25,15 @@ import ajax from "../../ajax/contact-ajax";
 //获取无效电话的列表  设置某个电话为无效电话
 import {getInvalidPhone, addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
 import AudioPlayer from "CMP_DIR/audioPlayer";
+import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 var classNames = require("classnames");
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_HEIGHT_OPEN: 250,
-    TOP_HEIGHT_CLOSE: 178,
-    BOTTOM_HEIGHT: 40,
-    TOP_NAV: 92
+    TOP_NAV_HEIGHT: 52 + 16,//52：头部导航的高度，16：导航的下边距
+    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    TOP_TOTAL_HEIGHT: 25,//共xxx条的高度
+    OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
 
 const CustomerRecord = React.createClass({
@@ -45,6 +47,7 @@ const CustomerRecord = React.createClass({
             playingItemPhone: "",//正在听的录音所属的电话号码
             isAddingInvalidPhone: false,//正在添加无效电话
             addingInvalidPhoneErrMsg: "",//添加无效电话出错的情况
+            addRecordPanelShow: false,//是否展示添加跟进记录面板
             ...CustomerRecordStore.getState()
         };
     },
@@ -71,8 +74,8 @@ const CustomerRecord = React.createClass({
             })
         }, (err) => {
             this.setState({
-                invalidPhoneLists:[],
-                getInvalidPhoneErrMsg:err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
+                invalidPhoneLists: [],
+                getInvalidPhoneErrMsg: err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
             })
         });
     },
@@ -137,8 +140,8 @@ const CustomerRecord = React.createClass({
                 CustomerRecordActions.dismiss();
                 //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
                 this.getContactPhoneNum(nextCustomerId, () => {
-                   //获取客户跟踪记录列表
-                   this.getCustomerTraceList();
+                    //获取客户跟踪记录列表
+                    this.getCustomerTraceList();
                 });
             })
         }
@@ -149,9 +152,9 @@ const CustomerRecord = React.createClass({
             CustomerRecordActions.dismiss();
         });
     },
-    handleChange: function (item) {
+    handleChange: function (event) {
         Trace.traceEvent($(this.getDOMNode()).find("#add-container .ant-select-selection"), "选择跟进记录的类型");
-        CustomerRecordActions.setType(item);
+        CustomerRecordActions.setType(event.target.value);
     },
     //获取列表失败后重试
     retryChangeRecord: function () {
@@ -171,8 +174,9 @@ const CustomerRecord = React.createClass({
             };
             CustomerRecordActions.addCustomerTrace(queryObj, () => {
                 this.props.refreshCustomerList(customerId);
+                this.toggleAddRecordPanel();
             });
-            $('.add-content-input').focus();
+            // $('.add-content-input').focus();
         } else {
             //补充跟进记录的内容
             var detail = $.trim(this.state.detailContent);
@@ -200,10 +204,8 @@ const CustomerRecord = React.createClass({
         //下拉框的默认选项为拜访
         CustomerRecordActions.setType(this.state.initialType);
         CustomerRecordActions.setContent(this.state.initialContent);
-        $('.add-content-input').animate({height: '36px'});
-        this.setState({
-            focus: false
-        });
+        this.toggleAddRecordPanel();
+        // $('.add-content-input').animate({height: '36px'});
     },
     //提交输入客户跟踪记录成功或者失败后的提示信息
     handleSubmitResult: function () {
@@ -262,13 +264,6 @@ const CustomerRecord = React.createClass({
     handleInputChange: function (e) {
         CustomerRecordActions.setContent(e.target.value);
     },
-    //获取焦点后输入框高度增大
-    inputOnFocus: function () {
-        $('.add-content-input').animate({height: '70px'});
-        this.setState({
-            focus: true
-        });
-    },
     //点击保存按钮，展示模态框
     showModalDialog: function (item) {
         if (item.id) {
@@ -307,65 +302,35 @@ const CustomerRecord = React.createClass({
         }
     },
     //渲染顶部增加记录的teaxare框
-    addTrace: function () {
-        var hide = () => {
-            this.setState({
-                addErrTip: '',
-            });
-        };
-        //增加跟进记录
+    renderAddRecordPanel: function () {
         return (
             <div className="add-customer-trace">
-                <div className="add-content">
-                    <textarea className="add-content-input" id="add-content-input" type="text"
-                              placeholder={Intl.get("customer.input.customer.trace.content", "请填写跟进内容，保存后不可修改")}
-                              onFocus={this.inputOnFocus}
-                              onChange={this.handleInputChange} value={this.state.inputContent}/>
-                    {this.state.addErrTip ?
-                        <AlertTimer
-                            time={2000}
-                            message={this.state.addErrTip}
-                            type="error"
-                            showIcon
-                            onHide={hide}
-                        />
-                        : null
-                    }
+                <div className="add-trace-item">
+                    <span
+                        className="add-trace-label visit-label">{Intl.get("sales.frontpage.trace.type", "跟进类型")}</span>
+                    <RadioGroup onChange={this.handleChange} value={this.state.selectedtracetype}>
+                        <Radio value="visit">
+                            <span className="iconfont icon-visit-briefcase"/>{Intl.get("common.visit", "拜访")}
+                        </Radio>
+                        <Radio value="other">
+                            <span className="iconfont icon-trace-other"/>{Intl.get("common.others", "其他")}
+                        </Radio>
+                    </RadioGroup>
                 </div>
-                {this.state.focus ? (<div className="add-foot">
-                    <Button
-                        type="ghost"
-                        onClick={this.handleCancel}
-                        className="pull-right btn-primary-cancel cancel-btn"
-                    >
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                    </Button>
-                    <Button
-                        type="primary"
-                        onClick={this.showModalDialog}
-                        className="pull-right btn-primary-sure submit-btn"
-                    >
-                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                        {this.state.addCustomerLoading ?
-                            <Icon type="loading"/> : <span></span>}
-                    </Button>
-                    {this.state.addCustomerErrMsg || this.state.addCustomerSuccMsg ? this.handleSubmitResult() : null}
-                    <Select
-                        style={{width: 90}}
-                        onChange={this.handleChange}
-                        className="pull-left"
-                        value={this.state.selectedtracetype}
-                    >
-                        <Option value="visit">
-                            <ReactIntl.FormattedMessage id="common.visit" defaultMessage="拜访"/>
-                        </Option>
-                        <Option value="other">
-                            <ReactIntl.FormattedMessage id="common.others" defaultMessage="其他"/>
-                        </Option>
-                    </Select>
-                </div>) : null}
-            </div>
-        )
+                <div className="add-trace-item">
+                    <span className="add-trace-label">{Intl.get("call.record.follow.content", "跟进内容")}</span>
+                    <TextArea placeholder={Intl.get("customer.input.customer.trace.content", "请填写跟进内容，保存后不可修改")}
+                              value={this.state.inputContent}
+                              onChange={this.handleInputChange}
+                              autosize={{minRows: 2, maxRows: 6}}
+                    />
+                    <SaveCancelButton loading={this.state.addCustomerLoading}
+                                      saveErrorMsg={this.state.addCustomerErrMsg}
+                                      handleSubmit={this.showModalDialog}
+                                      handleCancel={this.handleCancel}
+                    />
+                </div>
+            </div>);
     },
     addDetailContent: function (item) {
         if (this.state.isEdit) {
@@ -396,45 +361,22 @@ const CustomerRecord = React.createClass({
         CustomerRecordActions.setDetailContent(e.target.value);
     },
     renderAddDetail: function (item) {
-        //点击增加按钮 补充跟进记录
-        var hide = () => {
-            this.setState({
-                addDetailErrTip: '',
-            });
-        };
+        //补充跟进记录
         return (
-            <div className="add-detail-container">
-                <div className="add-detail-content">
-                    {this.state.addDetailErrMsg ? this.handleUpdateResult() : null}
-                    <textarea
-                        type="text"
-                        placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
-                        onChange={this.handleAddDetailChange}
-                        value={this.state.detailContent}
-                        className="add-detail-content-input"
+            <div className="add-customer-trace">
+                <div className="add-trace-item">
+                    <TextArea placeholder={Intl.get("add.customer.trace.detail", "请补充跟进记录详情，保存后不可修改")}
+                              value={this.state.detailContent}
+                              onChange={this.handleAddDetailChange}
+                              autosize={{minRows: 2, maxRows: 6}}
+                    />
+                    <SaveCancelButton loading={this.state.addCustomerLoading}
+                                      saveErrorMsg={this.state.addCustomerErrMsg}
+                                      handleSubmit={this.showModalDialog.bind(this, item)}
+                                      handleCancel={this.handleCancelDetail.bind(this, item)}
                     />
                 </div>
-                {this.state.addDetailErrTip ? <AlertTimer
-                    time={2000}
-                    message={this.state.addDetailErrTip}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
-                    : null}
-                <div className="add-detail-foot">
-                    <Button className="pull-right cancel-btn btn-primary-cancel" type="ghost"
-                            onClick={this.handleCancelDetail.bind(this, item)}>
-                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                    </Button>
-                    <Button className="pull-right submit-btn btn-primary-sure" type="primary"
-                            onClick={this.showModalDialog.bind(this, item)}>
-                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                        {this.state.addDetailLoading ? <Icon type="loading"/> : <span></span>}
-                    </Button>
-                </div>
-            </div>
-        )
+            </div>);
     },
     //点击播放录音
     handleAudioPlay: function (item) {
@@ -482,40 +424,49 @@ const CustomerRecord = React.createClass({
             playingItemPhone: ""
         });
     },
-    renderTimeLineItem: function (item) {
+    renderTimeLineItem: function (item, hasSplitLine) {
         var traceObj = crmUtil.processForTrace(item);
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
         //playSelected表示当前正在播放的那条录音，图标显示红色
-        var cls = classNames("iconfont", "icon-audio-play", {
+        var cls = classNames("iconfont", "icon-play", {
             "icon-selected": item.playSelected
         });
         return (
-            <dl>
-                <dd>
-                    <p className="item-detail-tip">
-                        <span className="icon-container" title={title}><i className={iconClass}></i></span>
-                        <span>{traceDsc}</span>
-                        <span className="audio-container">{
-                            /* 电话已接通并且有recording这个字段展示播放图标*/
-                            item.recording && item.billsec != 0 ?
-                                <i className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                   title={Intl.get("call.record.play", "播放录音")} data-tracename="点击播放录音按钮"></i> : null
-                        }</span>
-                    </p>
-                    <div className="item-detail-content" id={item.id}>
-                        {item.remark ? item.remark : ( item.showAdd ? null :
-                            <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
+            <div className={classNames("trace-item-content", {"day-split-line": hasSplitLine})}>
+                <p className="item-detail-tip">
+                    <span className="icon-container" title={title}><i className={iconClass}></i></span>
+                    <span>{traceDsc}</span>
+                </p>
+                <div className="item-detail-content" id={item.id}>
+                    {item.remark ? item.remark : ( item.showAdd ? null :
+                        <span className="add-detail-tip" onClick={this.addDetailContent.bind(this, item)}>
                                 {Intl.get("click.to.add.trace.detail", "请点击此处补充跟进内容")}
                             </span>)}
-                        {item.showAdd ? this.renderAddDetail(item) : null}
-                    </div>
-                </dd>
-                <dt>
+                    {item.showAdd ? this.renderAddDetail(item) : null}
+                </div>
+                <div className="item-bottom-content">
+                    { item.billsec == 0 ? (/*未接听*/
+                        <span className="call-un-answer">
+                            {Intl.get("call.record.state.no.answer", "未接听")}
+                        </span>
+                    ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                        item.recording ? (<span className="audio-container">
+                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                          title={Intl.get("call.record.play", "播放录音")}
+                                          data-tracename="点击播放录音按钮">
+                                        <span className="call-time-descr">
+                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                        </span>
+                                    </span>
+                                </span>) : null
+                    }
                     <span className="sale-name">{item.nick_name}</span>
-                    {moment(item.time).format(oplateConsts.DATE_TIME_FORMAT)}
-                </dt>
-            </dl>
+                    <span className="trace-record-time">
+                        {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                    </span>
+                </div>
+            </div>
         );
     },
     //监听下拉加载
@@ -548,8 +499,8 @@ const CustomerRecord = React.createClass({
             });
         }, (err) => {
             this.setState({
-                isAddingInvalidPhone:false,
-                addingInvalidPhoneErrMsg:err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
+                isAddingInvalidPhone: false,
+                addingInvalidPhoneErrMsg: err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
             });
         })
     },
@@ -558,6 +509,64 @@ const CustomerRecord = React.createClass({
         this.setState({
             addingInvalidPhoneErrMsg: ""
         })
+    },
+    //获取第一次出现的年（天）
+    getFirstAppearTimeStr: function (curItemTime, prevItemTime, formatTimeStr) {
+        //该年(天)是否是第一次出现
+        let isFirstApper = false;
+        //如果没有之前项，说明该年是第一次出现
+        if (!prevItemTime) {
+            isFirstApper = true;
+        } else {
+            //如果当前项的年（天）和之前项的（天）不同，说明该年(天)是第一次出现
+            if (curItemTime !== prevItemTime) isFirstApper = true;
+        }
+        let timeStr = "";
+        if (isFirstApper && curItemTime) {
+            timeStr = moment(curItemTime).format(formatTimeStr);
+        }
+        return timeStr;
+    },
+    renderCustomerTraceList: function () {
+        //前一条记录的时间值中的年
+        let prevItemYear;
+        //当前记录的时间值中的年
+        let curItemYear;
+        //前一条记录的时间值中的天
+        let prevItemDay;
+        //当前记录的时间值中的天
+        let curItemDay;
+        //客户跟进记录
+        let customerTraceList = this.state.customerRecord;
+        if (_.isArray(customerTraceList) && customerTraceList.length) {
+            return (<div className="customer-trace-list group-by-day">
+                {customerTraceList.map((item, index) => {
+                    //处理按天分组逻辑
+                    const curItemTime = item.time;
+                    curItemYear = moment(curItemTime).startOf("year").valueOf();
+                    curItemDay = moment(curItemTime).startOf("day").valueOf();
+                    let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年"));
+                    let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
+                    //将当前项保存下来，以备下次循环中使用
+                    prevItemYear = curItemYear;
+                    prevItemDay = curItemDay;
+                    //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
+                    let hasSplitLine = dayStr && index
+                    return (
+                        <div className="customer-trace-item" key={index}>
+                            {yearStr ? (
+                                <div className="group-year">
+                                    {yearStr}<span className="year-split-line"/>
+                                </div>) : null}
+                            <div className="group-day">{dayStr}</div>
+                            {this.renderTimeLineItem(item, hasSplitLine)}
+                        </div>
+                    );
+                })}
+            </div>);
+        } else {
+            return (<div className="no-data-tip">{Intl.get("common.no.data", "暂无数据")}</div>);
+        }
     },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
@@ -596,11 +605,29 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         } else {
-            var divHeight = '';
-            if (this.state.focus) {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_OPEN - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
-            } else {
-                divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_HEIGHT_CLOSE - LAYOUT_CONSTANTS.BOTTOM_HEIGHT;
+            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
+            let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
+            //减头部的客户基本信息高度
+            divHeight -= basicInfoHeight;
+            //减添加跟进记录面版的高度
+            if (this.state.addRecordPanelShow) {
+                divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+            } else {//减共xxx条的高度
+                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+            }
+            //概览页的跟进记录
+            if (this.props.isOverViewPanel) {
+                //减概览页”最新跟进“的高度
+                divHeight -= LAYOUT_CONSTANTS.OVER_VIEW_TITLE_HEIGHT;
+                //减到期用户的高度
+                let expireTipHeight = $(".expire-tip-contianer") ? parseInt($(".expire-tip-contianer").outerHeight(true)) : 0;
+                divHeight -= expireTipHeight;
+                //减所属销售的高度
+                let salesTeamHeight = parseInt($(".sales-team-container").outerHeight(true));
+                divHeight -= salesTeamHeight;
+                //减标签的高度
+                let tagListHeight = parseInt($(".tag-card-container").outerHeight(true));
+                divHeight -= tagListHeight;
             }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
@@ -612,26 +639,11 @@ const CustomerRecord = React.createClass({
                             handleScrollBottom={this.handleScrollBarBottom}
                             listenScrollBottom={this.state.listenScrollBottom}
                         >
-                            <TimeLine
-                                list={this.state.customerRecord}
-                                groupByDay={true}
-                                timeField="time"
-                                render={this.renderTimeLineItem}
-                                relativeDate={true}
-                            />
+                            {this.renderCustomerTraceList()}
                         </GeminiScrollbar>
                     </div>
                     <div className="show-foot">
-                        <ReactIntl.FormattedMessage
-                            id="customer.total.record"
-                            defaultMessage={`共{num}条跟进记录`}
-                            values={{
-                                'num': this.state.total
-                            }}
-                        />
-                        {/*
-                         底部播放器
-                         */}
+                        {/* 底部播放器 */}
                         <div className={cls}>
                             {this.state.playingItemAddr ? (
                                 <AudioPlayer
@@ -655,6 +667,10 @@ const CustomerRecord = React.createClass({
     hideModalDialog: function () {
         CustomerRecordActions.setModalDialogFlag(false);
     },
+    //添加跟进记录面板的展示与隐藏
+    toggleAddRecordPanel: function () {
+        this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
+    },
     render: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
@@ -663,9 +679,16 @@ const CustomerRecord = React.createClass({
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
-                <div className="add-container" id="add-container">
-                    {this.addTrace()}
-                </div>
+                {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
+                    <div className="trace-top-block">
+                        <span className="total-tip">
+                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
+                                                    values={{"n": this.state.total + ""}}/>
+                        </span>
+                        <span className="iconfont icon-add" title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}
+                              onClick={this.toggleAddRecordPanel.bind(this)}/>
+                    </div>)
+                }
                 <div className="show-container" id="show-container">
                     {this.renderCustomerRecordLists()}
                 </div>
@@ -675,7 +698,6 @@ const CustomerRecord = React.createClass({
                              hideModalDialog={this.hideModalDialog}
                              delete={this.saveAddTraceContent}
                              closedModalTip={closedModalTip}
-
                 />
             </div>
         )

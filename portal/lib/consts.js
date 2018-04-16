@@ -9,6 +9,8 @@ module.exports = {
     DATE_TIME_FORMAT: "YYYY-MM-DD HH:mm:ss",
     //不带秒的日期时间格式
     DATE_TIME_WITHOUT_SECOND_FORMAT: "YYYY-MM-DD HH:mm",
+    //只有年的日期格式
+    DATE_TIME_YEAR_FORMAT: "YYYY",
     //只包含年和月的日期格式
     DATE_YEAR_MONTH_FORMAT: "YYYY-MM",
     //只包含月和日的日期格式

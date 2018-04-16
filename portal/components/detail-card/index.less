@@ -1,0 +1,63 @@
+//详情中信息展示的卡片
+@card_margin: 8px;
+@card_width: 100%;
+@btn_color: #8da8c5;
+@font_color: #8da8c5;
+@box_shadow_color: #cac8c8;
+@item_height: 24px;
+//展示状态下的卡片
+.detail-card-container {
+  width: @card_width;
+  padding: 12px;
+  margin-top: @card_margin;
+  border-radius: 3px;
+  background-color: #ffffff;
+  .detail-card-title {
+    width: @card_width;
+    border-bottom: 1px solid #f5f5f5;
+    margin-bottom: @card_margin;
+    padding-bottom: @card_margin;
+    color: #999999;
+    font-size: 14px;
+  }
+}
+
+//编辑状态下的卡片,有阴影
+.detail-card-edit-status {
+  box-shadow: 0 8px 10px @box_shadow_color;
+  .detail-card-title {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  .card-content-edit-status {
+    border: 1px solid #d3eafc;
+    padding: 10px;
+    border-radius: 3px;
+  }
+}
+
+//保存、取消按钮
+.button-container {
+  height: @item_height;
+  margin-top: 10px;
+  .button-cancel, .button-save {
+    float: right;
+    margin-left: 10px;
+    height: @item_height;
+  }
+  .button-cancel {
+    color: @font_color;
+  }
+  //等待样式
+  .save-loading {
+    float: right;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  //错误提示样式
+  .save-error {
+    float: right;
+    line-height: 24px;
+    color: #f50;
+  }
+}

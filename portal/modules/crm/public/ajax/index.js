@@ -40,22 +40,12 @@ exports.deleteCustomer = function (ids) {
     return Deferred.promise();
 };
 
-//更新客户
+//更新客户（单项修改）
 exports.updateCustomer = function (newCus) {
     if (hasPrivilege(AUTHS.UPDATE_ALL)) {
         newCus.urlType = "manager";
     } else {
         newCus.urlType = "user";
-    }
-    if (!newCus.type) {
-        let keys = _.keys(newCus);
-        if (keys.indexOf("administrative_level") != -1) {
-            newCus.type = "administrative_level";
-        } else if (keys.indexOf("address") != -1) {
-            newCus.id = newCus.user_id;
-            delete newCus.user_id;
-            newCus.type = "detail_address";
-        }
     }
     var Deferred = $.Deferred();
     $.ajax({
@@ -72,6 +62,7 @@ exports.updateCustomer = function (newCus) {
     });
     return Deferred.promise();
 };
+
 //转出客户
 exports.transferCustomer = function (customer) {
     let urlType = "user";// CRM_USER_TRANSFER

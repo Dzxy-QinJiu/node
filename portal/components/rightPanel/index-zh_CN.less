@@ -5,6 +5,7 @@
 @icon-color: #fff;
 @icon-background-color: #b5c2ca;
 @button-hover-color: #4d96d1;
+@btn_color: #8da8c5;
 @import "../../public/css/common-variables";
 @import "./tabs.less";
 
@@ -29,7 +30,12 @@
     background-color: #e6edef;
     transform: translateX(@right-pannel-width);
     transition: transform @right-pannel-animationTime;
-
+    //新版详情中的编辑按钮
+    .icon-edit-btn {
+      float: right;
+      font-size: 16px;
+      color: @btn_color;
+    }
     .close-pannel {
       .right-panel-button-size;
       position: relative;

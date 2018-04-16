@@ -312,6 +312,7 @@ exports.updateCustomer = function (req, res, newCustomer) {
             res: res
         }, newCustomer);
 };
+
 //转出客户的处理
 exports.transferCustomer = function (req, res, newCustomer) {
     return restUtil.authRest.put(
