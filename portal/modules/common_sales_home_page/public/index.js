@@ -682,7 +682,6 @@ var SalesHomePage = React.createClass({
     },
     render: function () {
         var phoneData = this.state.phoneTotalObj.data;
-        let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
         var cls = classNames("customer-content-right", {
             "has-repeat-customer": this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
@@ -700,9 +699,7 @@ var SalesHomePage = React.createClass({
                                             </span>
                                         <span className="data-container">
                                                 <span className="phone-total-time phone-total-data">
-                                                    {time.hours > 0 ? <span>{time.hours < 10 ? "0" + time.hours : time.hours}:</span> : "00:"}
-                                                    {time.minutes > 0 ?<span>{time.minutes < 10 ? "0" + time.minutes : time.minutes}:</span>: "00:"}
-                                                    {time.second > 0 ? <span>{time.second < 10 ? "0" + time.second : time.second}</span> : "00"}
+                                                    {TimeUtil.getFormatTime(phoneData.totalTime || 0)}
                                         </span>
                                             </span>
                                     </div>
