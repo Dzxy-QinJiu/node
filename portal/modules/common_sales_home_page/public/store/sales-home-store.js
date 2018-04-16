@@ -14,14 +14,6 @@ function getData(data) {
         return data;
     }
 }
-//获取计费时长
-function getBillingTime(seconds) {
-    if (isNaN(seconds)) {
-        return "-";
-    } else {
-        return Math.ceil(seconds / 60);
-    }
-}
 //设置初始化数据
 SalesHomeStore.prototype.setInitState = function () {
     //电话统计数据

@@ -64,8 +64,8 @@
     }
     //左侧客户列表
     .customer-list-left {
-      //float: left;
-      //width: 250px;
+      float: left;
+      width: 250px;
       border: 1px solid #f3f5f7;
       ul li {
         height: 48px;
@@ -84,7 +84,7 @@
     }
     //右侧客户详情
     .customer-content-right {
-      //margin-left: 250px;
+      margin-left: 250px;
       background: @BACKGROUND_COLOR;
       padding: 16px 4px 16px 16px;
       //客户名称
@@ -147,6 +147,21 @@
       .customer-repeat-container .customer-repeat-table {
         background: @BACKGROUND_WHITE;
         padding: 0 10px 20px 10px;
+        .repeat-customer-table-thead{
+          overflow: hidden;
+        }
+      }
+    }
+    //当浏览器的宽度小于960px时
+    @media (max-width: 960px) {
+      .customer-list-left {
+        width: 100%;
+        float: left;
+      }
+      .customer-content-right{
+        width: 100%;
+        float: left;
+        margin-left: 0;
       }
     }
     //包含重复客户时的右侧客户详情

@@ -684,7 +684,7 @@ var SalesHomePage = React.createClass({
         var phoneData = this.state.phoneTotalObj.data;
         let time = TimeUtil.secondsToHourMinuteSecond(phoneData.totalTime || 0);
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
-        var cls = classNames("col-md-10 customer-content-right", {
+        var cls = classNames("customer-content-right", {
             "has-repeat-customer": this.state.showCustomerPanel === ALL_LISTS_TYPE.REPEAT_CUSTOMER
         });
         return (
@@ -702,7 +702,7 @@ var SalesHomePage = React.createClass({
                                                 <span className="phone-total-time phone-total-data">
                                                     {time.hours > 0 ? <span>{time.hours < 10 ? "0" + time.hours : time.hours}:</span> : "00:"}
                                                     {time.minutes > 0 ?<span>{time.minutes < 10 ? "0" + time.minutes : time.minutes}:</span>: "00:"}
-                                                    {time.second > 0 ? <span>{time.second < 10 ? "0" + time.second : time.second}:</span> : "00"}
+                                                    {time.second > 0 ? <span>{time.second < 10 ? "0" + time.second : time.second}</span> : "00"}
                                         </span>
                                             </span>
                                     </div>
@@ -750,12 +750,14 @@ var SalesHomePage = React.createClass({
                         </ul>
                     </div>
                     <div className="main-content-container" style={{height: rightContentHeight}}>
-                        <div className="col-md-2 customer-list-left" data-tracename="客户分类">
-                            {this.renderDiffCustomerPanel()}
-                        </div>
-                        <div className={cls} data-tracename="客户详情">
-                            {this.renderCustomerContent()}
-                        </div>
+                        <GeminiScrollbar>
+                            <div className="customer-list-left" data-tracename="客户分类">
+                                {this.renderDiffCustomerPanel()}
+                            </div>
+                            <div className={cls} data-tracename="客户详情">
+                                {this.renderCustomerContent()}
+                            </div>
+                        </GeminiScrollbar>
                     </div>
                     {
                         this.state.curShowCustomerId ? <CrmRightPanel
