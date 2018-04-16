@@ -11,8 +11,8 @@ exports.toFrontSalesPhone = function (data) {
         if (_.isArray(data.list) && data.list.length > 0) {
             salesPhone.salesPhoneList = data.list.map(function (salesObj) {
                 return {
-                    totalTime: salesObj.total_time,//总时长
-                    calloutSuccess: salesObj.total_callout_success,//成功呼出
+                    totalTime: salesObj.total_time || 0,//总时长
+                    calloutSuccess: salesObj.total_callout_success || 0,//成功呼出
                 }
             });
         }
