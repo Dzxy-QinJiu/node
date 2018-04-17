@@ -268,9 +268,9 @@ var CallRecordAnalyis = React.createClass({
         let columns = [{
             title: this.getSalesColumnTitle(),
             width: 114,
-            dataIndex: 'salesName',
+            dataIndex: 'name',
             className: 'table-data-align-left',
-            key: 'sales_Name'
+            key: 'name'
         }, {
             title: Intl.get("sales.home.total.duration", "总时长"),
             width: 114,

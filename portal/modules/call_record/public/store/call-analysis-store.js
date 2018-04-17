@@ -180,7 +180,7 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
                 averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
+                name: salesPhone.name || "",//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
                 totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
