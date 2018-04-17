@@ -1,5 +1,5 @@
 var UserData;
-
+import Intl from "../intl/intl";
 //通过ajax获取
 exports.getUserDataByAjax = function () {
     var deferred = $.Deferred();
