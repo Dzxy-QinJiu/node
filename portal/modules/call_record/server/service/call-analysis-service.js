@@ -30,8 +30,8 @@ const restApis = {
     getCallIntervalData: '/rest/callrecord/v2/callrecord/query/:authType/call_record/statistic',
     //获取通话总次数、总时长Top10
     getCallTotalList: '/rest/callrecord/v2/callrecord/query/:authType/call_record/top',
-    //获取团队中在职人员的数量
-    getExactMemberInTeam: '/rest/base/v1/group/team/available/statistic',
+    //获取销售团队列表及团队中在职销售的数量
+    getSalesTeamListsAndAvailableUser: '/rest/base/v1/group/team/available/statistic',
 };
 
 // 获取单次通话时长为top10的数据
@@ -85,11 +85,11 @@ function batchGetCallInfo(req, res, params, reqData) {
         });
     });
 }
-//获取所有团队的信息
-function getExactMemberInTeam(req, res) {
+//获取所有团队的信息及团队中在职销售的数量
+function getSalesTeamListsAndAvailableUser(req, res) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
-            url: restApis.getExactMemberInTeam,
+            url: restApis.getSalesTeamListsAndAvailableUser,
             req: req,
             res: res
         }, null, {
@@ -133,7 +133,7 @@ exports.getCallInfo = function (req, res, params, reqData) {
             emitter.emit("error", errorMsg);
         });
     } else {
-        let promiseList = [batchGetCallInfo(req, res, params, reqData), getExactMemberInTeam(req, res)];
+        let promiseList = [batchGetCallInfo(req, res, params, reqData), getSalesTeamListsAndAvailableUser(req, res)];
         Promise.all(promiseList).then((dataList)=>{
             var result = dataList[0] ? dataList[0] : [];
             //所有团队列表
