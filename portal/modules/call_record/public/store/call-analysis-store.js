@@ -175,21 +175,25 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
     if (data && _.isObject(data)) {
         let salesPhoneList = _.isArray(data.salesPhoneList) ? data.salesPhoneList : [];
         salesPhoneList = salesPhoneList.map((salesPhone) => {
+            var memberTotal = salesPhone.memberTotal;
             return {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
-                averageTimeDescr: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
+                averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
+                name: salesPhone.name || "",//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
-                totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
+                totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
                 callinCount: getData(salesPhone.callinCount),//呼入次数
                 callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
                 callinRate: formatRoundingPercentData(salesPhone.callinRate),//呼入接通率
                 calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
-                billingTime: getBillingTime(salesPhone.totalTime)//计费时长
+                billingTime: getBillingTime(salesPhone.totalTime),//计费时长
+                personAverageAnswer: (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
+                personAverageTime: (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
+                personAverageTimeFormated: TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
             };
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];

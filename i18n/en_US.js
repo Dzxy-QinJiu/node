@@ -2086,5 +2086,7 @@ var en_US = {
     "sales.team.del.team": "Delete team",//删除团队
     "role.no.set.auth.add": "No authority, please {add} first",//暂无权限,请先{add}
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
+    "call.record.average.call.duration": "Call length of person average",//人均时长
+    "call.record.average.connected": "Connetion number of person average"//人均接通数
 };
 export default en_US;

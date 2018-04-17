@@ -2101,7 +2101,9 @@ var zh_CN = {
     "config.manage.input.teleRepeat": "该电话号码已录入",
     //缺失补充end
     "common.batch.sales.target": "设置团队销售目标",
-    "common.batch.self.sales.target": "批量设置个人销售目标"
+    "common.batch.self.sales.target": "批量设置个人销售目标",
+    "call.record.average.call.duration": "人均时长",
+    "call.record.average.connected": "人均接通数"
 
 };
 export default zh_CN;
