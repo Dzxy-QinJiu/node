@@ -287,9 +287,7 @@ CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
             this.teamList.list = _.map(resData, (item) => {
                 return {
                     name: item.group_name,
-                    id: item.group_id,
-                    //团队下成员的数量
-                    memberTotal: _.isArray(item.user_ids) ? item.user_ids.length : 0
+                    id: item.group_id
                 }
             });
         }
