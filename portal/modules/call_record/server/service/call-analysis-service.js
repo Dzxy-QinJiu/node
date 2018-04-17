@@ -29,7 +29,9 @@ const restApis = {
     //获取通话时间段(数量\时长)的统计数据, authType = manager管理员（可以查看所有团队的数据），user:销售（只能看我的及我的下级团队的数据）
     getCallIntervalData: '/rest/callrecord/v2/callrecord/query/:authType/call_record/statistic',
     //获取通话总次数、总时长Top10
-    getCallTotalList: '/rest/callrecord/v2/callrecord/query/:authType/call_record/top'
+    getCallTotalList: '/rest/callrecord/v2/callrecord/query/:authType/call_record/top',
+    //获取团队中在职人员的数量
+    getExactMemberInTeam: '/rest/base/v1/group/team/available/statistic',
 };
 
 // 获取单次通话时长为top10的数据
@@ -83,6 +85,23 @@ function batchGetCallInfo(req, res, params, reqData) {
         });
     });
 }
+//先要获取团队的信息
+function getExactMemberInTeam(req, res) {
+    return new Promise((resolve, reject)=>{
+        return restUtil.authRest.get({
+            url: restApis.getExactMemberInTeam,
+            req: req,
+            res: res
+            },null, {
+            success: function (eventEmitter, data) {
+                resolve(data);
+            },
+            error: function (eventEmitter, errorDesc) {
+                reject(errorDesc.message);
+            }
+        })
+    })
+}
 
 // 获取电话的接通情况
 exports.getCallInfo = function (req, res, params, reqData) {
@@ -114,7 +133,19 @@ exports.getCallInfo = function (req, res, params, reqData) {
             emitter.emit("error", errorMsg);
         });
     } else {
-        batchGetCallInfo(req, res, params, reqData).then((result) => {
+        //先获取团队信息
+        let promiseList = [batchGetCallInfo(req, res, params, reqData), getExactMemberInTeam(req, res)];
+        Promise.all(promiseList).then((dataList)=>{
+            var result = dataList[0] ? dataList[0] : [];
+            //获取团队中人员个数
+            var teamList = dataList[1];
+            _.map(result.salesPhoneList, (data)=>{
+                var team = _.find(teamList,teamItem => {return teamItem.team_name == data.salesName});
+                if (team && team.available){
+                    //某个团队中在职人员的个数
+                    data.memberTotal = team.available.user;
+                }
+            });
             emitter.emit("success", result);
         }).catch((errorMsg) => {
             emitter.emit("error", errorMsg);
@@ -160,7 +191,6 @@ exports.getCallIntervalData = function (req, res, reqQuery) {
 
 // 获取通话总次数、总时长为top10的数据
 exports.getCallTotalList = function (req, res, reqQuery) {
-    console.log(reqQuery);
     return restUtil.authRest.get(
         {
             url: restApis.getCallTotalList.replace(":authType", req.params.authType),

@@ -290,6 +290,24 @@ var CallRecordAnalyis = React.createClass({
             },
             className: 'has-filter table-data-align-right'
         }, {
+            title: Intl.get("call.record.average.call.duration", "人均时长"),
+            width: 114,
+            align: "right",
+            dataIndex: 'personAverageTimeDesc',
+            key: "person_average_time",
+            sorter: function (a, b) {
+                return a.personAverageTime - b.personAverageTime;
+            },
+        }, {
+            title: Intl.get("call.record.average.connected", "人均接通数"),
+            width: 114,
+            align: "right",
+            dataIndex: 'personAverageAnswer',
+            key: "person_average_answer",
+            sorter: function (a, b) {
+                return a.personAverageAnswer - b.personAverageAnswer;
+            },
+        }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             width: 114,
             dataIndex: 'averageTimeDescr',
@@ -601,6 +619,7 @@ var CallRecordAnalyis = React.createClass({
                 </div>
             );
         }
+        // console.log(this.state.salesPhoneList);
         return (
             <AntcTable dataSource={this.state.salesPhoneList}
                        columns={this.getPhoneListColumn()}

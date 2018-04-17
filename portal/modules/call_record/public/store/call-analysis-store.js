@@ -175,6 +175,7 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
     if (data && _.isObject(data)) {
         let salesPhoneList = _.isArray(data.salesPhoneList) ? data.salesPhoneList : [];
         salesPhoneList = salesPhoneList.map((salesPhone) => {
+            var memberTotal = salesPhone.memberTotal;
             return {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
@@ -189,7 +190,10 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
                 calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
-                billingTime: getBillingTime(salesPhone.totalTime)//计费时长
+                billingTime: getBillingTime(salesPhone.totalTime),//计费时长
+                personAverageAnswer: (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(0), //人均接通数
+                personAverageTime: (getData(salesPhone.totalTime)/memberTotal).toFixed(0),//人均通话时长
+                personAverageTimeDesc: TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed(0))//人均通话时长
             };
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];
@@ -283,7 +287,9 @@ CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
             this.teamList.list = _.map(resData, (item) => {
                 return {
                     name: item.group_name,
-                    id: item.group_id
+                    id: item.group_id,
+                    //团队下成员的数量
+                    memberTotal: _.isArray(item.user_ids) ? item.user_ids.length : 0
                 }
             });
         }
