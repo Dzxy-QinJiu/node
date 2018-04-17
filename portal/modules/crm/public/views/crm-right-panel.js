@@ -171,10 +171,32 @@ var CrmRightPanel = React.createClass({
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    tab={Intl.get("menu.trace", "跟进记录")}
                                     key="3"
                                 >
                                     {this.state.activeKey == "3" ? (
+                                        <CustomerRecord
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.detail.user", "用户")}
+                                    key="4"
+                                >
+                                    {this.state.activeKey == "4" ? (
+                                        <CustomerRecord
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    key="5"
+                                >
+                                    {this.state.activeKey == "5" ? (
                                         <Order
                                             closeRightPanel={this.props.hideRightPanel}
                                             curCustomer={this.state.curCustomer}
@@ -185,10 +207,10 @@ var CrmRightPanel = React.createClass({
                                 </TabPane>
                                 <TabPane
                                     tab={Intl.get("crm.39", "动态")}
-                                    key="4"
+                                    key="6"
 
                                 >
-                                    {this.state.activeKey == "4" ? (
+                                    {this.state.activeKey == "6" ? (
                                         <Dynamic
                                             currentId={this.state.curCustomer.id}
                                         />
@@ -196,22 +218,11 @@ var CrmRightPanel = React.createClass({
                                 </TabPane>
                                 <TabPane
                                     tab={Intl.get("crm.right.schedule", "联系计划")}
-                                    key="5"
+                                    key="7"
                                 >
-                                    {this.state.activeKey == "5" ? (
+                                    {this.state.activeKey == "7" ? (
                                         <CrmSchedule
                                             curCustomer={this.state.curCustomer}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get("menu.trace", "跟进记录")}
-                                    key="6"
-                                >
-                                    {this.state.activeKey == "6" ? (
-                                        <CustomerRecord
-                                            curCustomer={this.state.curCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
                                         />
                                     ) : null}
                                 </TabPane>

@@ -1240,7 +1240,9 @@ var en_US = {
     "crm.basic.overview": "Overview",//概览
     "crm.overview.expire.tip": "The signing of {days} days is due to expire",//有应用{days}天后签约到期
     "crm.input.new.tag": "Please enter a new label",//请输入新标签
-    "crm.detail.no.tag": "No label",//暂无标签    // 客户管理end
+    "crm.detail.no.tag": "No label",//暂无标签
+    "crm.detail.user": "Users",//用户
+    // 客户管理end
 
     //客户分析 start
     "oplate_customer_analysis.0": "day", // 日
