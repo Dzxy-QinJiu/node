@@ -1663,6 +1663,7 @@ var zh_CN = {
     "errorcode.9": "该邮箱已激活，无需重复激活",
     "errorcode.10": "已发送过激活邮件了，无需重复发送",
     "errorcode.11": "登录失败,请刷新后重试",
+    "errorcode.12": "您的邮箱未激活，请先激活邮箱",
     "errorcode.13": "成员授权失败",
     "errorcode.14": "密码验证错误",
     "errorcode.15": "添加用户失败",
