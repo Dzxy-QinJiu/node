@@ -25,7 +25,7 @@ function getConfigJson(req) {
         "10110": {"httpCode": 500, "message": backendIntl.get("errorcode.4", "获取成员失败")},
         "10111": {"httpCode": 500, "message": backendIntl.get("errorcode.9", "该邮箱已激活，无需重复激活")},
         "10113": {"httpCode": 500, "message": backendIntl.get("errorcode.10", "已发送过激活邮件了，无需重复发送")},
-        "10120": {"httpCode": 500, "message": backendIntl.get("errorcode.12", "您的邮箱未激活，申请用户需要先激活邮箱")},
+        "10120": {"httpCode": 500, "message": backendIntl.get("errorcode.12", "您的邮箱未激活，请先激活邮箱")},
         "10122": {"httpCode": 500, "message": backendIntl.get("errorcode.13", "成员授权失败")},
         "10123": {"httpCode": 500, "message": backendIntl.get("errorcode.14", "密码验证错误")},
         "10124": {"httpCode": 500, "message": backendIntl.get("errorcode.138", "座席号已存在！")},
