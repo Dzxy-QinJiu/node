@@ -6,7 +6,6 @@ var rightPanelUtil = require("../../../../components/rightPanel/index");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var BasicData = require("./basic_data");
 var Contacts = require("./contacts");
 var Dynamic = require("./dynamic");
 var CrmSchedule = require("./schedule");
@@ -18,6 +17,7 @@ import Trace from "LIB_DIR/trace";
 import {tabNameList} from "../utils/crm-util";
 import BasicInfo from "./basic_info";
 import BasicOverview from "./basic-overview";
+import CustomerUsers from "./users";
 var CrmRightPanel = React.createClass({
     getInitialState: function () {
         return {
@@ -53,7 +53,7 @@ var CrmRightPanel = React.createClass({
             this.state.applyUserShowFlag = false;
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
-        } else if(nextProps.currentId !== this.props.currentId){
+        } else if (nextProps.currentId !== this.props.currentId) {
             this.state.applyUserShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
@@ -186,7 +186,7 @@ var CrmRightPanel = React.createClass({
                                     key="4"
                                 >
                                     {this.state.activeKey == "4" ? (
-                                        <CustomerRecord
+                                        <CustomerUsers
                                             curCustomer={this.state.curCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
                                         />

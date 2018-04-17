@@ -30,7 +30,7 @@ import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 var classNames = require("classnames");
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_NAV_HEIGHT: 52 + 16,//52：头部导航的高度，16：导航的下边距
+    TOP_NAV_HEIGHT: 52 + 8,//52：头部导航的高度，8：导航的下边距
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
     TOP_TOTAL_HEIGHT: 25,//共xxx条的高度
     OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度

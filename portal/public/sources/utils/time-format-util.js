@@ -109,4 +109,26 @@ exports.getCurrentWeek = function (time) {
             break;
     }
     return Week;
-}
+};
+
+//获取所传时间是xx:xx:xx(今天)、昨天、前天还是xx天（月、年）前
+exports.getTimeStrFromNow = function (time) {
+    let timeStr = "";
+    if (time) {
+        //今天
+        let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf()}
+        if (time >= today.start_time && time <= today.end_time) {
+            //今天显示具体时间
+            timeStr = moment(time).format(oplateConsts.TIME_FORMAT);
+        } else if (time >= today.start_time - oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - oplateConsts.ONE_DAY_TIME_RANGE) {
+            //昨天
+            timeStr = Intl.get("user.time.yesterday", "昨天");
+        } else if (time >= today.start_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+            //前天
+            timeStr = Intl.get("sales.frontpage.before.yesterday", "前天");
+        } else {
+            timeStr = moment(time).fromNow();
+        }
+    }
+    return timeStr;
+};
