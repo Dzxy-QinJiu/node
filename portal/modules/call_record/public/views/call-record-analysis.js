@@ -274,7 +274,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.total.duration", "总时长"),
             width: 114,
-            dataIndex: 'totalTimeDescr',
+            dataIndex: 'totalTimeFormat',
             key: 'total_time',
             sorter: function (a, b) {
                 return a.totalTime - b.totalTime;
@@ -293,7 +293,7 @@ var CallRecordAnalyis = React.createClass({
             title: Intl.get("call.record.average.call.duration", "人均时长"),
             width: 114,
             align: "right",
-            dataIndex: 'personAverageTimeDesc',
+            dataIndex: 'personAverageTimeFormat',
             key: "person_average_time",
             sorter: function (a, b) {
                 return a.personAverageTime - b.personAverageTime;
@@ -310,7 +310,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             width: 114,
-            dataIndex: 'averageTimeDescr',
+            dataIndex: 'averageTimeFormat',
             key: 'average_time',
             sorter: function (a, b) {
                 return a.averageTime - b.averageTime;

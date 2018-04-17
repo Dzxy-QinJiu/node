@@ -85,14 +85,14 @@ function batchGetCallInfo(req, res, params, reqData) {
         });
     });
 }
-//先要获取团队的信息
+//获取所有团队的信息
 function getExactMemberInTeam(req, res) {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
             url: restApis.getExactMemberInTeam,
             req: req,
             res: res
-            },null, {
+        }, null, {
             success: function (eventEmitter, data) {
                 resolve(data);
             },
@@ -133,14 +133,13 @@ exports.getCallInfo = function (req, res, params, reqData) {
             emitter.emit("error", errorMsg);
         });
     } else {
-        //先获取团队信息
         let promiseList = [batchGetCallInfo(req, res, params, reqData), getExactMemberInTeam(req, res)];
         Promise.all(promiseList).then((dataList)=>{
             var result = dataList[0] ? dataList[0] : [];
-            //获取团队中人员个数
+            //所有团队列表
             var teamList = dataList[1];
-            _.map(result.salesPhoneList, (data)=>{
-                var team = _.find(teamList,teamItem => {return teamItem.team_name == data.salesName});
+            _.each(result.salesPhoneList, (data)=>{
+                var team = _.find(teamList,teamItem => teamItem.team_name == data.salesName);
                 if (team && team.available){
                     //某个团队中在职人员的个数
                     data.memberTotal = team.available.user;
