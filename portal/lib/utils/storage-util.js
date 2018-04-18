@@ -18,21 +18,29 @@ const storageKey = config.storageKey || "storage-key";
  * set自动转化为字符串
  */
 
-const getUserKey = () => {
-    const userData = require("../../public/sources/user-data").getUserData();
-    //没有userId时，key为config中的storageKey
-    const userKey = (userData && userData.user_id) ? (userData.user_id + "-" + storageKey) : storageKey;
-    return userKey;
+const getUserId = () => {
+    const userData = require("../../public/sources/user-data").getUserData(); 
+    return userData && userData.user_id;
 }
 
 const getUtils = storage => {
+    let userId = "";
+    //没有userId时，key为config中的storageKey
+    let userKey = storageKey;    
+    const setUserKey = () => {
+        userKey = userId? (userId + "-" + storageKey): storageKey;       
+    }
     return {
         get: (key, pageId) => {
+            if (!userId) {
+                userId = getUserId();
+                setUserKey();
+            }
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
             }
-            const obj = JSON.parse(storage.getItem(getUserKey()));
+            const obj = JSON.parse(storage.getItem(userKey));
             if (obj) {
                 if (hasPageId) {
                     if (obj[pageId]) {
@@ -48,11 +56,15 @@ const getUtils = storage => {
             }
         },
         set: (key, data, pageId) => {
+            if (!userId) {
+                userId = getUserId();
+                setUserKey();
+            }
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
             }
-            const preStorage = JSON.parse(storage.getItem(getUserKey()));
+            const preStorage = JSON.parse(storage.getItem(userKey));
             let newProps = null;
             if (hasPageId) {
                 newProps = {
@@ -66,30 +78,38 @@ const getUtils = storage => {
                 }
             }
             const curStorage = $.extend(true, {}, preStorage, newProps);
-            return storage.setItem(getUserKey(), JSON.stringify(curStorage));
+            return storage.setItem(userKey, JSON.stringify(curStorage));
         },
         removeItem: (key, pageId) => {
+            if (!userId) {
+                userId = getUserId();
+                setUserKey();
+            }
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
             }
-            const curStorage = JSON.parse(storage.getItem(getUserKey()));
+            const curStorage = JSON.parse(storage.getItem(userKey));
             if (hasPageId) {
                 delete curStorage[pageId][key];
             } else {
                 delete curStorage[key];
             }
-            return storage.setItem(getUserKey(), JSON.stringify(curStorage));
+            return storage.setItem(userKey, JSON.stringify(curStorage));
         },
         clear: (pageId) => {
+            if (!userId) {
+                userId = getUserId();
+                setUserKey();
+            }
             const hasPageId = pageId && typeof pageId == "string";
             if (hasPageId) {
                 const curStorage = {
                     [pageId]: {}
                 }
-                return storage.setItem(getUserKey(), JSON.stringify(curStorage));
+                return storage.setItem(userKey, JSON.stringify(curStorage));
             } else {
-                return storage.removeItem(getUserKey());
+                return storage.removeItem(userKey);
             }
         }
     }
