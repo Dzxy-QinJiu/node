@@ -29,10 +29,11 @@ import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 var classNames = require("classnames");
 //用于布局的高度
-var LAYOUT_CONSTANTS = {
-    TOP_NAV_HEIGHT: 52 + 8,//52：头部导航的高度，8：导航的下边距
+const LAYOUT_CONSTANTS = {
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //跟进记录页的下边距
     ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
-    TOP_TOTAL_HEIGHT: 25,//共xxx条的高度
+    TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
     OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
 
@@ -538,6 +539,7 @@ const CustomerRecord = React.createClass({
         let curItemDay;
         //客户跟进记录
         let customerTraceList = this.state.customerRecord;
+        const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年");
         if (_.isArray(customerTraceList) && customerTraceList.length) {
             return (<div className="customer-trace-list group-by-day">
                 {customerTraceList.map((item, index) => {
@@ -545,18 +547,20 @@ const CustomerRecord = React.createClass({
                     const curItemTime = item.time;
                     curItemYear = moment(curItemTime).startOf("year").valueOf();
                     curItemDay = moment(curItemTime).startOf("day").valueOf();
-                    let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年"));
+                    let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, YEAR_TIME_FORMAT);
                     let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
                     //将当前项保存下来，以备下次循环中使用
                     prevItemYear = curItemYear;
                     prevItemDay = curItemDay;
-                    //每天第一次出现的跟进记录，并且不是每年的第一条时，展示分割线
-                    let hasSplitLine = dayStr && index && !yearStr;
+                    //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
+                    let hasSplitLine = dayStr && index;
+                    //今年的跟进记录的年不展示
+                    let thisYear = moment().format(YEAR_TIME_FORMAT);
                     return (
                         <div className="customer-trace-item" key={index}>
-                            {yearStr ? (
+                            {yearStr && yearStr !== thisYear ? (
                                 <div className="group-year">
-                                    {yearStr}<span className="year-split-line"/>
+                                    {yearStr}
                                 </div>) : null}
                             <div className="group-day">{dayStr}</div>
                             {this.renderTimeLineItem(item, hasSplitLine)}
@@ -605,7 +609,7 @@ const CustomerRecord = React.createClass({
                 </div>
             );
         } else {
-            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT;
+            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
             let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
             //减头部的客户基本信息高度
             divHeight -= basicInfoHeight;
