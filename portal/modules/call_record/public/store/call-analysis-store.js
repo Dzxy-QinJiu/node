@@ -176,7 +176,7 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
         let salesPhoneList = _.isArray(data.salesPhoneList) ? data.salesPhoneList : [];
         salesPhoneList = salesPhoneList.map((salesPhone) => {
             var memberTotal = salesPhone.memberTotal;
-            return {
+            var returnObj = {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
                 averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
@@ -191,10 +191,15 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
                 billingTime: getBillingTime(salesPhone.totalTime),//计费时长
-                personAverageAnswer: (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
-                personAverageTime: (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
-                personAverageTimeFormated: TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
             };
+
+            if (memberTotal){
+                returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
+                returnObj.personAverageTime = (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
+                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+            }
+
+            return returnObj;
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];
     } else {
