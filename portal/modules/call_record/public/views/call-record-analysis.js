@@ -290,24 +290,6 @@ var CallRecordAnalyis = React.createClass({
             },
             className: 'has-filter table-data-align-right'
         }, {
-            title: Intl.get("call.record.average.call.duration", "人均时长"),
-            width: 114,
-            align: "right",
-            dataIndex: 'personAverageTimeFormated',
-            key: "person_average_time",
-            sorter: function (a, b) {
-                return a.personAverageTime - b.personAverageTime;
-            },
-        }, {
-            title: Intl.get("call.record.average.connected", "人均接通数"),
-            width: 114,
-            align: "right",
-            dataIndex: 'personAverageAnswer',
-            key: "person_average_answer",
-            sorter: function (a, b) {
-                return a.personAverageAnswer - b.personAverageAnswer;
-            },
-        }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             width: 114,
             dataIndex: 'averageTimeFormated',
@@ -383,6 +365,28 @@ var CallRecordAnalyis = React.createClass({
                 },
                 className: 'has-filter table-data-align-right'
             });
+        }
+        //如果选中的是列表中展示的是团队名称时，才展示人均通话时长和通话数
+        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.secondSelectValue == LITERAL_CONSTANT.ALL){
+            columns.splice(3,0,{
+                title: Intl.get("call.record.average.call.duration", "人均时长"),
+                width: 114,
+                align: "right",
+                dataIndex: 'personAverageTimeFormated',
+                key: "person_average_time",
+                sorter: function (a, b) {
+                    return a.personAverageTime - b.personAverageTime;
+                },
+            }, {
+                title: Intl.get("call.record.average.connected", "人均接通数"),
+                width: 114,
+                align: "right",
+                dataIndex: 'personAverageAnswer',
+                key: "person_average_answer",
+                sorter: function (a, b) {
+                    return a.personAverageAnswer - b.personAverageAnswer;
+                },
+            },)
         }
         return columns;
     },
@@ -619,7 +623,6 @@ var CallRecordAnalyis = React.createClass({
                 </div>
             );
         }
-        // console.log(this.state.salesPhoneList);
         return (
             <AntcTable dataSource={this.state.salesPhoneList}
                        columns={this.getPhoneListColumn()}
