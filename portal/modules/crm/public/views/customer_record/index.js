@@ -624,7 +624,7 @@ const CustomerRecord = React.createClass({
                 //减概览页”最新跟进“的高度
                 divHeight -= LAYOUT_CONSTANTS.OVER_VIEW_TITLE_HEIGHT;
                 //减到期用户的高度
-                let expireTipHeight = $(".expire-tip-contianer") ? parseInt($(".expire-tip-contianer").outerHeight(true)) : 0;
+                let expireTipHeight = $(".expire-tip-contianer").size() ? parseInt($(".expire-tip-contianer").outerHeight(true)) : 0;
                 divHeight -= expireTipHeight;
                 //减所属销售的高度
                 let salesTeamHeight = parseInt($(".sales-team-container").outerHeight(true));

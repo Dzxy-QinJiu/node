@@ -1238,7 +1238,7 @@ var en_US = {
     "crm.basic.detail.show": "Show detail",//展开详情
     "crm.basic.detail.hide": "Hide detail",//收起详情
     "crm.basic.overview": "Overview",//概览
-    "crm.overview.expire.tip": "The signing of {days} days is due to expire",//有应用{days}天后签约到期
+    "crm.overview.expire.tip": "{days}, have applications to trail expires",//有应用{days}试用到期
     "crm.input.new.tag": "Please enter a new label",//请输入新标签
     "crm.detail.no.tag": "No label",//暂无标签
     "crm.detail.user": "Users",//用户

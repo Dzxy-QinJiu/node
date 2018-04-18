@@ -5,8 +5,8 @@ import TagCard from "CMP_DIR/detail-card/tag-card";
 import SalesTeamCard from "./basic_info/sales-team-card"
 import {isClueTag, isTurnOutTag} from "../utils/crm-util";
 import classNames from 'classnames';
-var CRMStore = require("../store/basic-store");
-var CRMAction = require("../action/basic-actions");
+var basicOverviewStore = require("../store/basic-overview-store");
+var basicOverviewAction = require("../action/basic-overview-actions");
 var SalesTeamStore = require("../../../sales_team/public/store/sales-team-store");
 var PrivilegeChecker = require("CMP_DIR/privilege/checker").PrivilegeChecker;
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
@@ -16,15 +16,14 @@ var FilterAction = require("../action/filter-actions");
 let CrmAction = require("../action/crm-actions");
 let CrmRepeatAction = require("../action/customer-repeat-action");
 import crmUtil from "../utils/crm-util";
-import CrmBasicAjax from "../ajax/index";
+import crmAjax from "../ajax";
 import batchAjax from "../ajax/batch-change-ajax";
 import userData from "PUB_DIR/sources/user-data";
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import CustomerRecord from "./customer_record";
 function getStateFromStore(isMerge) {
     return {
-        basicIsLoading: CRMStore.getBasicState(),
-        basicData: _.extend({}, CRMStore.getBasicInfo()),
-        editShowFlag: false,
+        ...basicOverviewStore.getState(),
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         basicPanelH: getBasicPanelH(isMerge),
         showDetailFlag: false,//控制客户详情展示隐藏的标识
@@ -45,13 +44,16 @@ var BasicOverview = React.createClass({
         return getStateFromStore(this.props.isMerge);
     },
     onChange: function () {
-        this.setState({basicIsLoading: CRMStore.getBasicState(), basicData: _.extend({}, CRMStore.getBasicInfo()),});
+        this.setState({...basicOverviewStore.getState()});
     },
     componentDidMount: function () {
         this.autoLayout();
-        CRMStore.listen(this.onChange);
-        CRMAction.getBasicData(this.props.curCustomer);
+        basicOverviewStore.listen(this.onChange);
+        basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
+        setTimeout(() => {
+            this.getCrmUserList(this.props.curCustomer);
+        });
     },
     //获取推荐标签列表
     getRecommendTags: function () {
@@ -63,6 +65,18 @@ var BasicOverview = React.createClass({
             }
         });
     },
+    //获取客户开通的用户列表
+    getCrmUserList: function (curCustomer) {
+        if (!curCustomer.id) return;
+        //该客户开通的用户个数
+        let appUserLength = curCustomer && _.isArray(curCustomer.app_user_ids) ? curCustomer.app_user_ids.length : 0;
+        if (!appUserLength) return;
+        basicOverviewAction.getCrmUserList({
+            customer_id: curCustomer.id,
+            page_num: 1,
+            page_size: appUserLength
+        });
+    },
     autoLayout: function () {
         var _this = this;
         $(window).resize(function () {
@@ -72,20 +86,15 @@ var BasicOverview = React.createClass({
         });
     },
     componentWillReceiveProps: function (nextProps) {
-        CRMAction.getBasicData(nextProps.curCustomer);
+        basicOverviewAction.getBasicData(nextProps.curCustomer);
+        if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
+            setTimeout(() => {
+                this.getCrmUserList(nextProps.curCustomer);
+            });
+        }
     },
     componentWillUnmount: function () {
-        CRMStore.unlisten(this.onChange);
-    },
-
-    //展示编辑基本资料页面
-    showEditForm: function () {
-        this.setState({editShowFlag: true});
-    },
-
-    //返回基本资料展示页面
-    returnInfoPanel: function () {
-        this.setState({editShowFlag: false});
+        basicOverviewStore.unlisten(this.onChange);
     },
 
     //提交修改
@@ -94,7 +103,7 @@ var BasicOverview = React.createClass({
             //合并面板的修改保存
             this.props.updateMergeCustomer(newBasicData);
         } else {
-            CRMAction.submitBaiscForm(newBasicData, changedData, () => {
+            basicOverviewAction.submitBaiscForm(newBasicData, changedData, () => {
                 this.props.refreshCustomerList(newBasicData.id);
                 FilterAction.getTagList();
             });
@@ -139,10 +148,6 @@ var BasicOverview = React.createClass({
             this.setState({basicData: this.state.basicData});
         }
     },
-    cancelAdministrativeLevel: function () {
-        this.state.basicData.administrative_level = CRMStore.getBasicInfo().administrative_level;
-        this.setState({basicData: this.state.basicData});
-    },
     getAdministrativeLevel: function (levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
@@ -156,7 +161,7 @@ var BasicOverview = React.createClass({
             type: "label",
             labels: tags
         };
-        CrmBasicAjax.updateCustomer(submitData).then(result => {
+        crmAjax.updateCustomer(submitData).then(result => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 //更新列表中的标签
@@ -188,17 +193,41 @@ var BasicOverview = React.createClass({
             showDetailFlag: !this.state.showDetailFlag
         });
     },
-    //渲染有应用签约到期的提示
+    //渲染有应用到期的提示
     renderExpireTip: function () {
-        let tip = (
-            <div className="app-expire-tip">
-                <span className="iconfont icon-warn-icon"/>
-                <span className="expire-tip-content">
-                    {Intl.get("crm.overview.expire.tip", "有应用{days}天后签约到期", {days: "xxx"})}
+        let crmUserList = this.state.crmUserList;
+        const TRIAL_TYPE = "试用用户";
+        let expireTrialUsers = [];//3天内到期的试用用户列表
+        _.each(crmUserList, userObj => {
+            let appList = userObj.apps;
+            _.each(appList, app => {
+                let end_time = app.end_time;
+                //启用状态下，有到期时间的试用用户
+                if (app.is_disabled !== "true" && app.end_time && app.user_type === TRIAL_TYPE) {
+                    let duration = moment.duration(end_time - moment().valueOf());
+                    let over_draft_days = duration.days();
+                    if (over_draft_days < 3) {//概览页只提示3天内到期的试用用户
+                        let overDraftTime = TimeUtil.getFutureTimeStr(end_time);
+                        expireTrialUsers.push({overDraftDays: over_draft_days, overDraftTimeStr: overDraftTime});
+                    }
+                }
+            });
+        });
+        if (expireTrialUsers.length) {
+            //排序，优先展示短时间到期的
+            expireTrialUsers.sort((obj1, obj2) => obj1.overDraftDays - obj2.overDraftDays);
+            let tip = (
+                <div className="app-expire-tip">
+                    <span className="iconfont icon-warn-icon"/>
+                    <span className="expire-tip-content">
+                    {Intl.get("crm.overview.expire.tip", "有应用{days}试用到期", {days: expireTrialUsers[0].overDraftTimeStr})}
                 </span>
-                <span className="iconfont icon-arrow-right"/>
-            </div>);
-        return (<DetailCard content={tip} className="expire-tip-contianer"/>);
+                    <span className="iconfont icon-arrow-right"/>
+                </div>);
+            return (<DetailCard content={tip} className="expire-tip-contianer"/>);
+        } else {
+            return null;
+        }
     },
     renderCustomerRcord: function () {
         return <CustomerRecord

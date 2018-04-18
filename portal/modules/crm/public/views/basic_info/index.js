@@ -1,7 +1,7 @@
 import '../../css/crm-basic-info.less';
 import classNames from 'classnames';
-var CRMStore = require("../../store/basic-store");
-var CRMAction = require("../../action/basic-actions");
+var CRMStore = require("../../store/basic-overview-store");
+var CRMAction = require("../../action/basic-overview-actions");
 var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");
 var PrivilegeChecker = require("../../../../../components/privilege/checker").PrivilegeChecker;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
@@ -21,8 +21,7 @@ import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 function getStateFromStore(isMerge) {
     return {
-        basicIsLoading: CRMStore.getBasicState(),
-        basicData: _.extend({}, CRMStore.getBasicInfo()),
+        ...CRMStore.getState(),
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         basicPanelH: getBasicPanelH(isMerge),
         showDetailFlag: false,//控制客户详情展示隐藏的标识
@@ -46,10 +45,7 @@ var BasicData = React.createClass({
         return getStateFromStore(this.props.isMerge);
     },
     onChange: function () {
-        this.setState({
-            basicIsLoading: CRMStore.getBasicState(),
-            basicData: _.extend({}, CRMStore.getBasicInfo()),
-        });
+        this.setState({...CRMStore.getState()});
     },
     componentDidMount: function () {
         this.autoLayout();
@@ -138,7 +134,7 @@ var BasicData = React.createClass({
         }
     },
     cancelAdministrativeLevel: function () {
-        this.state.basicData.administrative_level = CRMStore.getBasicInfo().administrative_level;
+        this.state.basicData.administrative_level = CRMStore.getState().basicData.administrative_level;
         this.setState({basicData: this.state.basicData});
     },
     getAdministrativeLevel: function (levelId) {
@@ -189,10 +185,6 @@ var BasicData = React.createClass({
             this.setState({basicData: this.state.basicData});
         }
     },
-    cancelAdministrativeLevel: function () {
-        this.state.basicData.administrative_level = CRMStore.getBasicInfo().administrative_level;
-        this.setState({basicData: this.state.basicData});
-    },
     onSelectIndustry: function (industry) {
         if (industry) {
             this.state.basicData.industry = industry;
@@ -200,7 +192,7 @@ var BasicData = React.createClass({
         }
     },
     cancelEditIndustry: function () {
-        this.state.basicData.industry = CRMStore.getBasicInfo().industry;
+        this.state.basicData.industry = CRMStore.getState().basicData.industry;
         this.setState({basicData: this.state.basicData});
     },
     //保存修改的基本信息

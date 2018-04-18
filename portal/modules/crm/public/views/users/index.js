@@ -353,9 +353,16 @@ class CustomerUsers extends React.Component {
                     if (over_draft_days > 0) {
                         return `${Intl.get("oplate.user.analysis.25", "{count}天后", {count: over_draft_days})}${over_draft_status}`;
                     } else {
-                        //x时x分x秒
                         let timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(duration / 1000));
-                        return `${Intl.get("oplate.user.analysis.40", "{time}后", {time: timeObj.timeDescr})}${over_draft_status}`;
+                        let timeDescr = "";
+                        if (timeObj.hours) {//xx小时
+                            timeDescr = timeObj.hours + Intl.get("user.time.hour", "小时");
+                        } else if (timeObj.minutes) {//xx分
+                            timeDescr = timeObj.minutes + Intl.get("common.app.minute", "分钟");
+                        } else if (timeObj.second) {//xx秒
+                            timeDescr = timeObj.minutes + Intl.get("user.time.second", "秒");
+                        }
+                        return `${Intl.get("oplate.user.analysis.40", "{time}后", {time: timeDescr})}${over_draft_status}`;
                     }
                 } else {
                     return Intl.get("user.status.expired", "已到期");
