@@ -29,13 +29,16 @@ const getUtils = storage => {
     let userKey = storageKey;    
     const setUserKey = () => {
         userKey = userId? (userId + "-" + storageKey): storageKey;       
-    }
+    };
+    const handleUserId = () => {
+        if (!userId) {
+            userId = getUserId();
+            setUserKey();
+        }
+    };
     return {
         get: (key, pageId) => {
-            if (!userId) {
-                userId = getUserId();
-                setUserKey();
-            }
+            handleUserId();
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
@@ -56,10 +59,7 @@ const getUtils = storage => {
             }
         },
         set: (key, data, pageId) => {
-            if (!userId) {
-                userId = getUserId();
-                setUserKey();
-            }
+            handleUserId();
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
@@ -81,10 +81,7 @@ const getUtils = storage => {
             return storage.setItem(userKey, JSON.stringify(curStorage));
         },
         removeItem: (key, pageId) => {
-            if (!userId) {
-                userId = getUserId();
-                setUserKey();
-            }
+            handleUserId();
             const hasPageId = pageId && typeof pageId == "string";
             if (typeof key != 'string') {
                 return null
@@ -98,10 +95,7 @@ const getUtils = storage => {
             return storage.setItem(userKey, JSON.stringify(curStorage));
         },
         clear: (pageId) => {
-            if (!userId) {
-                userId = getUserId();
-                setUserKey();
-            }
+            handleUserId();
             const hasPageId = pageId && typeof pageId == "string";
             if (hasPageId) {
                 const curStorage = {
