@@ -167,6 +167,7 @@ var en_US = {
     "common.unqualified": "Unqualified",//不合格
     "common.official.qualified": "Signed and qualified ",//签约合格
     "common.trial.qualified": "Trial and qualified",//试用合格
+    "common.trial.unqualified": "Trial and unqualified",// "试用不合格",
     "common.history.qualified": "Once qualified",//曾经合格
     "common.delay.time": "Delay range",//延期时间
     "common.time.unit.day": "Day",//天
