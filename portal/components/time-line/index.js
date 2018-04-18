@@ -8,7 +8,6 @@
 require("./style.less");
 
 import { Timeline } from "antd";
-
 const PropTypes = React.PropTypes;
 
 const TimeLine = React.createClass({
@@ -55,7 +54,7 @@ const TimeLine = React.createClass({
                             let isDayFirstApper = false;
                             const curItemTime = item[timeField];
                             curItemDay = moment(curItemTime).startOf("day").valueOf();
-    
+
                             //如果没有之前项，说明该天是第一次出现
                             if (!prevItemDay) {
                                 isDayFirstApper = true;
@@ -63,7 +62,7 @@ const TimeLine = React.createClass({
                                 //如果当前项的天和之前项的天不同，说明该天是第一次出现
                                 if (curItemDay !== prevItemDay) isDayFirstApper = true;
                             }
-    
+
                             //如果该天是第一次出现且当前项时间有值，则显示该天
                             if (isDayFirstApper && curItemTime) {
                                 let dayStr = '';
@@ -75,13 +74,13 @@ const TimeLine = React.createClass({
 
                                 dayJsx = (<div className="group-day">{dayStr}</div>);
                             }
-    
+
                             //将当前项保存下来，以备下次循环中使用
                             prevItemDay = curItemDay;
                         }
 
                         return (
-                            <Timeline.Item key={index}>
+                            <Timeline.Item key={index} className={dayJsx ? "day-first-item":""}>
                                 {dayJsx}
                                 {this.props.render(item)}
                             </Timeline.Item>

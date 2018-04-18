@@ -1,14 +1,55 @@
-
+@time_line_color: #8da8c5;
 .dynamicList {
+  padding-top: 10px;
+  border-radius: 4px;
+  background: #ffffff;
+  //时间线的样式
+  .time-line.group-by-day {
+    .group-day {
+      left: -78px;
+    }
+    .ant-timeline {
+      margin-left: 92px;
+      //一天中第一个各点的样式
+      .day-first-item.ant-timeline-item {
+        padding-top: 10px;
+        .ant-timeline-item-head {
+          width: 12px;
+          height: 12px;
+          margin-left: -2px;
+        }
+      }
+      .ant-timeline-item {
+        //时间点的样式
+        .ant-timeline-item-head-blue {
+          border-color: @time_line_color;
+          color: @time_line_color;
+          background-color: @time_line_color;
+        }
+        .ant-timeline-item-head {
+          width: 8px;
+          height: 8px;
+        }
+        //时间线
+        .ant-timeline-item-tail {
+          border-left: 1px solid @time_line_color;
+          left: 4px;
+          top: 16px;
+        }
+        .ant-timeline-item-content {
+          padding: 0 8px 0 20px;
+        }
+      }
+    }
+  }
+  //时间线的内容样式
   ul {
     margin-left: 7px;
     li {
-      padding-top: 5px;
-
       dl {
         dt {
           color: #aaafb3;
-          margin-top: 10px;
+          margin-top: 4px;
           font-weight: normal;
         }
 
