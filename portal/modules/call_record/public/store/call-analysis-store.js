@@ -192,11 +192,13 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
                 billingTime: getBillingTime(salesPhone.totalTime),//计费时长
             };
+
             if (memberTotal){
                 returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
                 returnObj.personAverageTime = (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
                 returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
             }
+
             return returnObj;
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];

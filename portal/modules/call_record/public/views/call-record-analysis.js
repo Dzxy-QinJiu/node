@@ -366,9 +366,10 @@ var CallRecordAnalyis = React.createClass({
                 className: 'has-filter table-data-align-right'
             });
         }
+
         //如果选中的是列表中展示的是团队名称时，才展示人均通话时长和通话数
-        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.secondSelectValue == LITERAL_CONSTANT.ALL){
-            columns.splice(3,0,{
+        if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.secondSelectValue == LITERAL_CONSTANT.ALL) {
+            columns.splice(3, 0, {
                 title: Intl.get("call.record.average.call.duration", "人均时长"),
                 width: 114,
                 align: "right",
@@ -388,6 +389,7 @@ var CallRecordAnalyis = React.createClass({
                 },
             },)
         }
+
         return columns;
     },
 
