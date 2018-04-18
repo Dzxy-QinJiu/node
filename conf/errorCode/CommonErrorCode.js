@@ -312,7 +312,10 @@ function getConfigJson(req) {
         "17410": {"httpCode": 500, "message": backendIntl.get("errorcode.68", "没有权限")},
         //根据成员名查询成员操作日志失败
         "17411": {"httpCode": 500, "message": backendIntl.get("errorcode.123", "获取成员操作日志失败")},
-
+        //试用用户覆盖率
+        "17240": {"httpCode": 500, "message": backendIntl.get("errorcode.150", "获取客户区域覆盖情况统计数据失败")},	
+        //销售新开客户数
+        "17242": {"httpCode": 500, "message": backendIntl.get("errorcode.151", "获取销售新开客户数和新开帐号数失败")},	
         /*************************** 申请消息 *****************************/
         /*申请消息*/
         "18201": {"httpCode": 500, "message": backendIntl.get("errorcode.124", "修改申请失败")},
@@ -342,8 +345,7 @@ function getConfigJson(req) {
         "11058": {"httpCode": 500, "message": ""},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         "11059": {"httpCode": 500, "message": backendIntl.get("errorcode.147", "二维码已失效")},
         /*周报统计*/
-        "90008": {"httpCode": 500, "message": backendIntl.get("errorcode.148", "电话时长统计视图获取失败")},
-
+        "90008": {"httpCode": 500, "message": backendIntl.get("errorcode.148", "电话时长统计视图获取失败")},        
         /*其他*/
         "error-code-not-found": {"httpCode": 500, "message": backendIntl.get("errorcode.132", "未知错误")},
         "request-timeout": {"httpCode": 500, "message": backendIntl.get("errorcode.133", "服务器繁忙或网络不正常，请稍后再试")},

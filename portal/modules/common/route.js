@@ -266,4 +266,20 @@ module.exports = [{
     "passport": {
         "needLogin": true
     }
+}, {     
+    //获取各行业试用客户覆盖率
+    "method": "get",
+    "path": "/rest/analysis/customer/v2/statistic/:type/industry/stage/region/overlay",
+    "handler": "getIndustryCustomerOverlay",
+    "passport": {
+        "needLogin": true
+    }
+}, {
+    //获取销售新开客户数
+    "method": "get",
+    "path": "/rest/analysis/customer/v2/statistic/:type/customer/user/new",
+    "handler": "getNewCustomerCount",
+    "passport": {
+        "needLogin": true
+    }
 }];

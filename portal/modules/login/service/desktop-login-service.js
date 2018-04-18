@@ -124,6 +124,7 @@ function getLoginResult(data) {
         //realm_id
         if (userData.managed_realms && userData.managed_realms.length > 0) {
             loginResult.auth.realm_id = userData.managed_realms[0];
+            console.log("11111111111111111111111111", loginResult.auth.access_token, loginResult.auth.realm_id)
         }
         var userClients = userData.user_client;
         if (userClients && userClients.length > 0) {

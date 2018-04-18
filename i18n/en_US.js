@@ -1258,6 +1258,12 @@ var en_US = {
     "oplate_customer_analysis.projected": "Quotation stage Customer",//立项报价阶段客户
     "oplate_customer_analysis.negotiated": "Negotiation stage customer",//谈判阶段客户
     "oplate_customer_analysis.customer_stage": "Customer stage analysis",//客户阶段统计
+    "oplate_customer_analysis.industryCustomerOverlay": "Trial customer overlay from all industries", //"各行业试用客户覆盖率",
+    "oplate_customer_analysis.countryCount": "country count", //"区县总数",
+    "oplate_customer_analysis.cityCount": "city count", //"地市总数",
+    "oplate_customer_analysis.allLabel": "all label",//"全部标签",
+    "oplate_customer_analysis.allIndustries": "all industries",//"全部行业",
+    "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"销售新开客户数",
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@

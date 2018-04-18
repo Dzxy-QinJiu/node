@@ -73,6 +73,18 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
             order: "descend"
         },
         listenScrollBottom: true
+    };
+    //各行业试用客户覆盖率
+    this.industryCustomerOverlay = {
+        data: [],
+        errorMsg: "",
+        loading: false        
+    };
+    //获取销售新开客户数
+    this.newCustomerCount = {
+        data: [],
+        errorMsg: "",
+        loading: false
     }
 };
 //重置图表数据
@@ -299,6 +311,17 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler
 OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
     this.isShowCustomerStageTable = !this.isShowCustomerStageTable;
 };
+
+//获取各行业试用客户覆盖率
+OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
+    this.industryCustomerOverlay.data = data.result && data.result.res_list;
+});
+
+//获取各行业试用客户覆盖率
+OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
+    this.newCustomerCount.data = data.result;
+});
+
 
 //导出 客户分析-客户构成 的store
 module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
