@@ -167,6 +167,7 @@ var zh_CN = {
     "common.unqualified": "不合格",
     "common.official.qualified": "签约合格",
     "common.trial.qualified": "试用合格",
+    "common.trial.unqualified": "试用不合格",
     "common.history.qualified": "曾经合格",
     "common.delay.time": "延期时间",
     "common.time.unit.day": "天",

@@ -493,13 +493,22 @@ var CustomerAnalysis = React.createClass({
                     )
                 }
             }, {
-                title: Intl.get("common.unqualified", "不合格"),
-                dataIndex: "map.不合格",
-                key: "qualified",
-                width: 60,
+                title: Intl.get("common.trial.qualified", "试用合格"),
+                dataIndex: "map.试用合格",
+                key: "trial.qualified",
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
+                    )
+                }
+            }, {
+                title: Intl.get("common.trial.unqualified", "试用不合格"),
+                dataIndex: "map.试用不合格",
+                key: "unqualified",
+                width: 100,
+                render: (text, item, index) => {
+                    return (
+                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用不合格")}>{handleNum(text)}</span>
                     )
                 }
             }, {
