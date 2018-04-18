@@ -162,7 +162,7 @@ class TagCard extends React.Component {
     render() {
         //没有标签数据时，只展示标题、无数据的提示和编辑按钮
         if (this.props.title && this.props.noDataTip && this.state.displayType === "text") {
-            return (<DetailCard content={this.renderTagTitle()}/>);
+            return (<DetailCard className="tag-card-container" content={this.renderTagTitle()}/>);
         }
         return (
             <DetailCard title={this.renderTagTitle()}
