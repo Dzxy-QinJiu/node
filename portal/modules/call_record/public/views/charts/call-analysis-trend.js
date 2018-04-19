@@ -19,7 +19,7 @@ var TimeSeriesLinechart = React.createClass({
             this.props.dataList &&
             prevProps.dataList &&
             immutable.is(this.props.dataList , prevProps.dataList) &&
-            this.props.width === prevProps.width && this.props.lineType === prevProps.lineType
+            this.props.width === prevProps.width && this.props.lineType === prevProps.lineType && this.props.height === prevProps.height
         ) {
             return;
         }
@@ -58,7 +58,7 @@ var TimeSeriesLinechart = React.createClass({
                 data.push(new Date(item.timestamp));
             });
         } else {
-            this.props.dataList.map((item) => {
+            this.props.dataList.forEach((item) => {
                 data.push(new Date(item.timestamp));
             });
         }
@@ -86,7 +86,7 @@ var TimeSeriesLinechart = React.createClass({
                     type: 'line',
                     symbolSize: 6
                 };
-                _.map(dataItem[lineType], (item) => {
+                _.each(dataItem[lineType], (item) => {
                     seriseItem.data.push(item.count);
                 });
                 serise.push(seriseItem);
@@ -104,7 +104,7 @@ var TimeSeriesLinechart = React.createClass({
                 },
                 data: []
             }];
-            this.props.dataList.map((item) => {
+            this.props.dataList.forEach((item) => {
                 serise[0].data.push(item.count);
             });
         }
@@ -202,7 +202,7 @@ var TimeSeriesLinechart = React.createClass({
     },
     render : function() {
         return (
-            <div className="echart_wrap" ref="chart" style={{width:this.props.width, height:'100%'}}></div>
+            <div className="echart_wrap" ref="chart" style={{width:this.props.width, height:this.props.height}}></div>
         );
     }
 });

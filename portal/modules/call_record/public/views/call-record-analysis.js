@@ -37,6 +37,11 @@ const LAYOUT_WIDTH = {
     ORIGIN_WIDTH: 135,
     RESIZE_WIDTH: 60
 };
+//用于布局趋势图的高度
+const LAYOUT_HEIGHT = {
+    ORIGIN_HEIGHT: 100,
+    RESIZE_HEIGHT: 300
+};
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -72,6 +77,7 @@ var CallRecordAnalyis = React.createClass({
             selectRadioValue: CALL_RADIO_VALUES.COUNT, // 通话趋势图中，时长和数量切换的Radio
             selectedCallInterval: CALL_RADIO_VALUES.COUNT,//通话时段点图中，时长和数量切换的Radio
             trendWidth: trendWidth, // 趋势图的宽度
+            trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT,
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false//是否查看各团队通话趋势图
@@ -154,14 +160,33 @@ var CallRecordAnalyis = React.createClass({
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDur(trendParams, reqBody);
     },
+    setChartContainerHeight:function () {
+        //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
+        if (this.state.secondSelectValue == LITERAL_CONSTANT.ALL|| (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)){
+            this.setState({
+                trendHeight: LAYOUT_HEIGHT.RESIZE_HEIGHT
+            });
+        }else{
+            this.setState({
+                trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
+            });
+        }
+    },
     //点击切换查看各团队通话趋势图
     handleSwitchChange(checked){
         this.setState({
             switchStatus: checked
         });
         if (checked){
+            this.setChartContainerHeight();
             var reqBody = this.getCallAnalysisBodyParamSeparately();
             this.getCallAnalysisTrendDataSeparately(reqBody)
+        }else{
+            this.setState({
+                trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
+            });
+            let reqBody = this.getCallAnalysisBodyParam();
+            this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
         }
     },
     // 获取团队参数
@@ -248,8 +273,8 @@ var CallRecordAnalyis = React.createClass({
     // 获取趋势图、接通率、TOP10和114占比的数据
     refreshCallAnalysisData(params) {
         let reqBody = this.getCallAnalysisBodyParam(params);
-        //如果展示的是每个团队的趋势图，要获取单个团队的通话时长和数量
-        if (!(this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM)) {
+        //如果展示的是每个团队的趋势图，则不需要所有团队的通话时长和数量
+        if (!(this.state.switchStatus)) {
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
         }
         this.getCallInfoData(params); // 接通率
@@ -618,6 +643,7 @@ var CallRecordAnalyis = React.createClass({
                 dataList={data}
                 tooltip={charTips}
                 width={this.state.trendWidth}
+                height={this.state.trendHeight}
             />
         );
     },
@@ -1005,6 +1031,7 @@ var CallRecordAnalyis = React.createClass({
         this.setState({
             secondSelectValue: value,
         }, () => {
+            this.setChartContainerHeight();
             this.refreshCallAnalysisData();
             if (this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM){
                 var reqBody = this.getCallAnalysisBodyParamSeparately();
