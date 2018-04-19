@@ -228,7 +228,7 @@ const CallRecord = React.createClass({
     onSelectFilterObj(filterKey, value) {
         this.state.filterObj[filterKey] = value;
         if (value == CALL_TYPE_OPTION.PHONE) {
-            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
+            this.state.callType = <i className="iconfont icon-phone-busy" title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
         } else if (value == CALL_TYPE_OPTION.APP) {
             this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
         } else if (value == CALL_TYPE_OPTION.ALL) {
@@ -320,7 +320,7 @@ const CallRecord = React.createClass({
                         <span>{Intl.get("user.online.all.type", "全部类型")}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.PHONE}>
-                        <i className="iconfont icon-call-back"></i>
+                        <i className="iconfont  icon-phone-busy"></i>
                         <span>{Intl.get("call.record.call.center", "呼叫中心")}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.APP}>
@@ -533,11 +533,15 @@ const CallRecord = React.createClass({
                 dataIndex: 'type',
                 key: 'type',
                 width: this.getCallTypeColumnWidth(),
-                render: (type) => {
+                render: (type, column) => {
+                    var cls = classNames("iconfont",{
+                        "icon-callrecord-out": column.call_type == "OU",//呼出的电话
+                        "icon-callrecord-in": column.call_type == "IN",//呼出的电话
+                    });
                     return (
                         <div>
                             {type == 'phone' ? (
-                                <i className="iconfont icon-call-back" title={Intl.get("call.record.call.center", "呼叫中心")}></i>
+                                <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>
                             ) : (
                                     <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>
                                 )}
