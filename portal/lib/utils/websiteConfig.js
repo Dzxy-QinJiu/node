@@ -1,7 +1,7 @@
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 import CONSTS from  "LIB_DIR/consts";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //设置网站个性化配置
 var websiteConfig = {

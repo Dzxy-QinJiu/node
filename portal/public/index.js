@@ -17,6 +17,7 @@ var PrivilegeGetReact = null;
 var appDom = $('#app')[0];
 var websiteConfig = require("../lib/utils/websiteConfig");
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
+import { storageUtil } from "ant-utils";
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -72,6 +73,7 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         getWebsiteConfig();
+        storageUtil.setUserId(userData.getUserData().user_id)
         AppStarter.init({
             goIndex: false
         });

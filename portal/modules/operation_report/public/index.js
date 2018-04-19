@@ -17,7 +17,7 @@ import html2canvasExport from "html2canvas";
 import jsPDF from "jspdf";
 import Trace from "LIB_DIR/trace";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 let Option = Select.Option;
 const chartWidth = '100%', chartHeight = 214, rowHeight = 35;

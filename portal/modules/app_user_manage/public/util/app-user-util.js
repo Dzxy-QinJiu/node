@@ -3,7 +3,7 @@ var CryptoJS = require("crypto-js");
 var classNames = require("classnames");
 var UserData = require('../../../../public/sources/user-data').getUserData();
 import { ALL_LOG_INFO } from "PUB_DIR/sources/utils/consts";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
 //缓存在localStorage中的客户对应的用户列表每页多少条的key

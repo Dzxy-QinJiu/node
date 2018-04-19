@@ -1,7 +1,8 @@
 var UserApplyActions = require("../action/user-apply-actions");
 var notificationEmitter = require("../../../../public/sources/utils/emitters").notificationEmitter;
 import userData from "PUB_DIR/sources/user-data";
-const { session } = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
+const session = storageUtil.session;
 
 //用户审批界面使用的store
 function UserApplyStore() {

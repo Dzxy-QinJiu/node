@@ -21,7 +21,7 @@ const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT=240;
 const BOX_CHARTTYPE = 86;//头部数字区域的高度
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange : function() {

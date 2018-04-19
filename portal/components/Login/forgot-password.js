@@ -21,9 +21,7 @@ const ERROR_MSGS = {
     ERROR_CAPTCHA: "error-captcha"//刷新验证码失败
 };
 var base64_prefix = "data:image/png;base64,";
-if (!(typeof window === "undefined")) {
-    var storageUtil = require("../../lib/utils/storage-util.js");
-}
+import storageUtil from "../../lib/utils/storage-util";
 
 var ForgotPassword = React.createClass({
     getInitialState: function () {

@@ -5,7 +5,7 @@
 import "./style.less";
 import TopNav from "../../components/top-nav";
 import AnalysisFilter from "../../components/analysis/filter";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 const ReportLayout = React.createClass({
     render() {

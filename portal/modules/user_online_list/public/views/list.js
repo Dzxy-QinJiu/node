@@ -9,7 +9,7 @@ import Utils from '../utils';
 import insertStyle from "../../../../components/insert-style";
 import Spinner from '../../../../components/spinner';
 import AppUserUtil from '../../../app_user_manage/public/util/app-user-util';
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var BootstrapButton = require('react-bootstrap').Button;
 var Modal = require('react-bootstrap').Modal;
