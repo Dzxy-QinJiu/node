@@ -25,8 +25,6 @@ var classnames = require("classnames");
 const CHART_HEIGHT = 240;
 const BOX_CHARTTYPE = 86;//头部数字区域的高度
 const storageUtil = require("LIB_DIR/utils/storage-util.js");
-import IndustrySelector from "./views/component/industry-seletor";
-import StageSelector from "./views/component/stage-selector";
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange: function () {
@@ -475,8 +473,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         )
     },
     getCharts: function () {
-        return [
-            {
+        return [{
                 title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
                 content: this.getCustomerChart(),
             }, {
