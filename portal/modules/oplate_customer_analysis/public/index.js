@@ -52,12 +52,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         OplateCustomerAnalysisStore.listen(this.onStateChange);
         OplateCustomerAnalysisAction.getUserType();
         OplateCustomerAnalysisAction.getSalesStageList();
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: this.state.startTime,
-                end_time: this.state.endTime
-            }
-        });
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 start_time: this.state.startTime,
@@ -79,7 +73,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         $(window).off('resize', this.windowResize);
     },
     onAppChange(app_id) {
+        //传空查询全部应用下数据
         if (app_id.includes(",")) app_id = "";
+        //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 app_ids: app_id,
@@ -89,13 +85,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });        
     },
     onDateChange(starttime, endtime) {
-        //获取各行业试用客户覆盖率
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: starttime,
-                end_time: endtime
-            }
-        });
+        //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 start_time: starttime,
@@ -324,76 +314,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     />}
             </div>
         )
-    },
-    //获取各行业试用客户覆盖率
-    getIndustryCustomerOverlayTable() {
-        const { loading, errorMsg } = this.state.industryCustomerOverlay;
-        const columns = [
-            {
-                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
-                dataIndex: "province_name",
-                key: "province_name",
-                width: 70
-            }, {
-                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
-                dataIndex: "city_count",
-                key: "city_count",
-                align: "right",
-                width: 50
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "city_dredge_count",
-                key: "city_dredge_count",
-                align: "right",
-                width: 50
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "city_dredge_scale",
-                key: "city_dredge_scale",
-                align: "right",
-                width: 70,
-                render: text => `${Number(text * 100).toFixed(2)}%`
-            }, {
-                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
-                dataIndex: "district_count",
-                key: "district_count",
-                align: "right",
-                width: 50,
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "district_dredge_count",
-                key: "district_dredge_count",
-                align: "right",
-                width: 50,
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "district_dredge_scale",
-                key: "district_dredge_scale",
-                align: "right",
-                width: 70,
-                render: text => `${Number(text * 100).toFixed(2)}%`
-            },
-        ];
-
-        const Table = () => (
-            <div style={{ minHeight: "200px" }}>
-                <AntcTable
-                    columns={columns}
-                    scroll={{ x: true, y: 200 }}
-                    pagination={false}
-                    dataSource={this.state.industryCustomerOverlay.data}
-                />
-            </div>
-        );
-        return (
-            this.handleTableComponent(Table, {
-                loading: this.state.industryCustomerOverlay.loading,
-                errorMsg: this.state.industryCustomerOverlay.errorMsg,
-                height: BOX_CHARTTYPE,
-                refName: "shiyong_yonghu_fugailv"
-            })
-        );
-    },
+    },    
     // 获取销售新开客户数
     getNewCustomerCountTable() {
         const columns = [
@@ -454,7 +375,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 loading: this.state.newCustomerCount.loading,
                 errorMsg: this.state.newCustomerCount.errorMsg,
                 height: BOX_CHARTTYPE,
-                refName: "xiaoshou_xinkai_kehushu"
+                refName: "xiaoshou_xinkai_kehushu",
+                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.newCustomerCount.data),
             })
         );
     },
@@ -481,39 +403,15 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             }
         });
     },
-    //处理行业试用客户覆盖率导出
-    handleIndustryTrialOverlayExportData: (data) => {
-        let exportArr = [];
-        const columns = [
-            {
-                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
-                dataIndex: "province_name",
-            }, {
-                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
-                dataIndex: "city_count",
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "city_dredge_count",
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "city_dredge_scale",
-            }, {
-                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
-                dataIndex: "district_count",
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "district_dredge_count",
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "district_dredge_scale",
-            },
-        ];
+    //处理销售新开客户数导出
+    handleNewCustomerCountExportData: (columns, data) => {
+        let exportArr = [];        
         if (_.isArray(data) && data.length) {
             exportArr.push(columns.map(x => x.title));
             exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
         }
         return exportArr;
-    },
+    },   
     renderSummaryCountBoxContent: function () {
         return (
             <Row>
@@ -598,26 +496,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
                 content: this.getOrderStageChart(),
                 hide: this.state.currentTab !== "total",
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
-                content: this.getIndustryCustomerOverlayTable(),
-                hide: this.state.currentTab !== "total",
-                exportData: this.handleIndustryTrialOverlayExportData.bind(this, this.state.industryCustomerOverlay.data),
-                subTitle: <div>
-                    <IndustrySelector
-                        onChange={this.handleSelectChange.bind(this, "industry")}
-                    />
-                    <StageSelector
-                        onChange={this.handleSelectChange.bind(this, "sale_stage")}
-                    />
-                </div>
-            },
-            {
+            }, {
                 title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
                 content: this.getNewCustomerCountTable(),
-                hide: this.state.currentTab !== "total",
-                // exportData: this.handleNewCustomerCountExportData.bind(this, this.state.newCustomerCount.data),
+                hide: this.state.currentTab !== "total",                
             }
         ];
     },
@@ -675,8 +557,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 const refName = props.refName;
                                 const ref = this.refs[refName];
                                 const exportData = () => {
-                                    if (!ref && !chart.exportData) return;
-                                    const exportFunc = (ref && ref.getProcessedData) || chart.exportData;
+                                    if (!ref && !props.exportData) return;
+                                    const exportFunc = (ref && ref.getProcessedData) || props.exportData;
                                     return exportFunc();
                                 }
                                 return chart.hide ? null : (
