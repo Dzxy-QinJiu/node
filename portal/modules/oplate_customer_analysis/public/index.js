@@ -390,17 +390,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         this.state.summaryNumbers.data = data;
         this.state.summaryNumbers.resultType = resultType;
         return data;
-    },
-    //处理 行业试用客户覆盖率 切换筛选条件
-    handleSelectChange: function (key, value) {
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: this.state.startTime,
-                end_time: this.state.endTime,
-                [key]: value
-            }
-        });
-    },
+    },    
     //处理销售新开客户数导出
     handleNewCustomerCountExportData: (columns, data) => {
         let exportArr = [];        
