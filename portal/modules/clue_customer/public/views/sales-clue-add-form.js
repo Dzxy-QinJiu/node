@@ -144,7 +144,7 @@ const SalesClueAddForm = React.createClass({
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
-            this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
+            this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {force: true}, (errors, values) => {
                 if (!valid || errors) {
                     return;
                 } else {
@@ -238,6 +238,19 @@ const SalesClueAddForm = React.createClass({
             }
         }];
     },
+    // 设置邮箱或者qq的值并触发手机，邮箱，qq必填一个的验证
+    setEmailOrQqValue (field, e) {
+        const newFormData = {}
+        newFormData[field] = e.target.value
+        for(let key in newFormData) {
+            this.state.formData[key] = newFormData[key]
+        }
+        this.setState({
+            formData: this.state.formData
+        }, () => {
+            this.phoneInputRef.props.form.validateFields({force: true})
+        })
+    },
     renderAssignAndRelate(){
         return (
             <div className="assign-and-relate-wrap">
@@ -304,7 +317,7 @@ const SalesClueAddForm = React.createClass({
                                 <Validator rules={[{validator: checkEmail}]}>
                                     <Input name="email" value={formData.email}
                                            placeholder={Intl.get("member.input.email", "请输入邮箱")}
-                                           onChange={this.setField.bind(this, 'email')}
+                                           onChange={this.setEmailOrQqValue.bind(this, 'email')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -316,7 +329,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Input name="qq" id="qq" type="text" value={formData.qq}
                                        placeholder={Intl.get("member.input.qq", "请输入QQ号")}
-                                       onChange={this.setField.bind(this, 'qq')}
+                                       onChange={this.setEmailOrQqValue.bind(this, 'qq')}
                                 />
                             </FormItem>
 
