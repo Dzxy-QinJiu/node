@@ -266,4 +266,12 @@ module.exports = [{
     "passport": {
         "needLogin": true
     }
+}, {
+    //获取销售新开客户数
+    "method": "get",
+    "path": "/rest/analysis/customer/v2/statistic/:type/customer/user/new",
+    "handler": "getNewCustomerCount",
+    "passport": {
+        "needLogin": true
+    }
 }];

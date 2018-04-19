@@ -92,6 +92,9 @@ function OplateCustomerAnalysisActions() {
 
     //获取客户阶段变更的客户列表
     this.getStageChangeCustomerList = asyncDispatcher(OplateCustomerAnalysisAjax.getStageChangeCustomerList);
+
+    // 获取销售新开客户数
+    this.getNewCustomerCount = asyncDispatcher(OplateCustomerAnalysisAjax.getNewCustomerCount);
 };
 
 //使用alt导出一个action
