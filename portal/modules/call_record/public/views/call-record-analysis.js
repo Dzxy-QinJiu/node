@@ -247,21 +247,19 @@ var CallRecordAnalyis = React.createClass({
 
     // 获取趋势图、接通率、TOP10和114占比的数据
     refreshCallAnalysisData(params) {
+        let reqBody = this.getCallAnalysisBodyParam(params);
         //如果展示的是每个团队的趋势图，要获取单个团队的通话时长和数量
-        if (this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM){
-            var reqBody = this.getCallAnalysisBodyParamSeparately();
-            this.getCallAnalysisTrendDataSeparately(reqBody)//每个团队分别的趋势图
-        }else{
-            let reqBody = this.getCallAnalysisBodyParam(params);
+        if (!(this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM)) {
             this.getCallAnalysisTrendData(reqBody); // 所有团队总趋势图
-            this.getCallInfoData(params); // 接通率
-            //获取单次通话时长TOP10的统计数据
-            this.getCallDurTopTen(reqBody);
-            this.getCallRate(reqBody); // 114占比
-            this.getCallRate({...reqBody, filter_invalid_phone: "false"}); //客服电话统计
-            //获取通话时段（数量和时长）、总次数、总时长的统计数据
-            this.getCallIntervalTotalData(reqBody);
         }
+        this.getCallInfoData(params); // 接通率
+        //获取单次通话时长TOP10的统计数据
+        this.getCallDurTopTen(reqBody);
+        this.getCallRate(reqBody); // 114占比
+        this.getCallRate({...reqBody, filter_invalid_phone: "false"}); //客服电话统计
+        //获取通话时段（数量和时长）、总次数、总时长的统计数据
+        this.getCallIntervalTotalData(reqBody);
+
     },
     //获取通话时段（数量和时长）的参数
     getCallIntervalParams: function (params) {
@@ -625,9 +623,17 @@ var CallRecordAnalyis = React.createClass({
     },
 
     // 通话时长统计图的提示信息
-    durationTooltip: function (time, sum, multiline) {
-        if (_.isArray(multiline)){
-
+    durationTooltip: function (time, sum, teamArr) {
+        if (_.isArray(teamArr)){
+            var returnObj = _.map(time, (item, index)=>{
+                let timeObj = TimeUtil.secondsToHourMinuteSecond(sum[index] || 0);
+                return [
+                    Intl.get('common.login.time', '时间') + ' : ' + `${item}`,
+                    Intl.get('call.record.call.duration', '通话时长') + ' : ' + `${timeObj.timeDescr}`,
+                    Intl.get("sales.team.team.name", "团队名称") + ' :' + `${teamArr[index]}`
+                ].join(",")
+            });
+            return returnObj.join('<br />')
         }else{
             let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
             return [
@@ -639,15 +645,16 @@ var CallRecordAnalyis = React.createClass({
     },
 
     // 通话数量统计图的提示信息
-    countTooltip: function (time, sum, multiline) {
-        if (_.isArray(multiline)){
-            return _.map(time, (item,index)=>{
+    countTooltip: function (time, sum, teamArr) {
+        if (_.isArray(teamArr)){
+            var returnObj = _.map(time, (item,index)=>{
                 return [
                     Intl.get('common.login.time', '时间') + ' : ' + `${item}`,
                     Intl.get('sales.home.call.cout', '通话数量') + ' : ' + `${sum[index]}`,
-                    Intl.get("sales.team.team.name", "团队名称") + ':' + `${multiline[index]}`
+                    Intl.get("sales.team.team.name", "团队名称") + ' : ' + `${teamArr[index]}`
                 ].join(",")
-            })
+            });
+            return returnObj.join('<br />')
 
         }else{
             return [
@@ -999,6 +1006,10 @@ var CallRecordAnalyis = React.createClass({
             secondSelectValue: value,
         }, () => {
             this.refreshCallAnalysisData();
+            if (this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM){
+                var reqBody = this.getCallAnalysisBodyParamSeparately();
+                this.getCallAnalysisTrendDataSeparately(reqBody)//每个团队分别的趋势图
+            }
         });
     },
 

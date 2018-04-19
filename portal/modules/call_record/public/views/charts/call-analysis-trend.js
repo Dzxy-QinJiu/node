@@ -19,7 +19,7 @@ var TimeSeriesLinechart = React.createClass({
             this.props.dataList &&
             prevProps.dataList &&
             immutable.is(this.props.dataList , prevProps.dataList) &&
-            this.props.width === prevProps.width
+            this.props.width === prevProps.width && this.props.lineType === prevProps.lineType
         ) {
             return;
         }
@@ -88,6 +88,12 @@ var TimeSeriesLinechart = React.createClass({
         var data = [];
         if (this.props.isMutileLine) {
             var dataType = this.props.lineType;
+            //有时返回的数据长度不一样，选择最长的数据
+            var dataLength = [];
+            _.each(this.props.dataList,(dataItem)=>{
+                dataLength.push(dataItem[dataType].length);
+            });
+console.log(dataLength);
             var dataList = this.props.dataList[0];
             _.each(dataList[dataType], (item) => {
                 data.push(new Date(item.timestamp));
@@ -143,7 +149,6 @@ var TimeSeriesLinechart = React.createClass({
                 serise[0].data.push(item.count);
             });
         }
-        // console.log(serise);
         return serise;
     },
     getEchartOptions: function () {
@@ -165,7 +170,7 @@ var TimeSeriesLinechart = React.createClass({
                         var timeTextArr = [], countArr = [], teamArr = [];
                         _.each(params, (paramsItem) => {
                             timeTextArr.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
-                            countArr.push(paramsItem.data);
+                            countArr.push(paramsItem.data || 0);
                             teamArr.push(paramsItem.seriesName)
                         });
                         return this.props.tooltip(timeTextArr, countArr, teamArr);
