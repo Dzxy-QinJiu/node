@@ -49,51 +49,10 @@ var TimeSeriesLinechart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    getSeries : function () {
-        if (this.props.isMutileLine) {
-            var lineType = this.props.lineType;
-            var dataList = this.props.dataList;
-            var serise = [];
-            _.each(dataList, (dataItem) => {
-                var item = {
-                    name: dataItem.teamName
-                };
-                item.data = _.map(dataItem[lineType], (item) => {
-                    return [
-                        new Date(item.timestamp),
-                        item.count
-                    ]
-                });
-                serise.push(item);
-            });
-            // console.log(serise);
-            return serise;
-        } else {
-            // var Data = this.props.dataList.map((item) =>{
-            //     return [
-            //         new Date(item.timestamp),
-            //         item.count
-            //     ];
-            // });
-            // console.log(Data)
-            return this.props.dataList.map((item) => {
-                return [
-                    new Date(item.timestamp),
-                    item.count
-                ];
-            });
-        }
-    },
     getCategorys: function () {
         var data = [];
         if (this.props.isMutileLine) {
             var dataType = this.props.lineType;
-            //有时返回的数据长度不一样，选择最长的数据
-            var dataLength = [];
-            _.each(this.props.dataList,(dataItem)=>{
-                dataLength.push(dataItem[dataType].length);
-            });
-console.log(dataLength);
             var dataList = this.props.dataList[0];
             _.each(dataList[dataType], (item) => {
                 data.push(new Date(item.timestamp));
@@ -239,19 +198,6 @@ console.log(dataLength);
                 }
             ],
             series: this.getDataSerise()
-            // series : [
-            //     {
-            //         name: '',
-            //         type: 'line',
-            //         symbolSize: 6,
-            //         itemStyle : {
-            //             normal : {
-            //                 color : '#4d96d1'
-            //             }
-            //         },
-            //         data:  this.getSeries()
-            //     }
-            // ]
         };
     },
     render : function() {
