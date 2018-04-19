@@ -73,13 +73,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
             order: "descend"
         },
         listenScrollBottom: true
-    };
-    //各行业试用客户覆盖率
-    this.industryCustomerOverlay = {
-        data: [],
-        errorMsg: "",
-        loading: false        
-    };
+    };   
     //获取销售新开客户数
     this.newCustomerCount = {
         data: [],
