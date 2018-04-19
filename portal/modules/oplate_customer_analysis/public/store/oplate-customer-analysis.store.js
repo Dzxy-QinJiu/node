@@ -318,8 +318,23 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
 });
 
 //获取各行业试用客户覆盖率
-OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
-    this.newCustomerCount.data = data.result;
+OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({loading, errorMsg, data, paramObj}) {
+    let list = [];
+    if (data.result && data.result.length > 0) {
+        data.result.forEach(teamItem => {
+            teamItem.team_result.forEach(sale => {
+                if (list.find(item => item.team_name == teamItem.team_name)) {
+                    sale.team_name = "";
+                    sale.rowSpan = 0;
+                } else {
+                    sale.team_name = teamItem.team_name;
+                    sale.rowSpan = teamItem.team_result.length;
+                }
+                list.push(sale);
+            })
+        })
+    }
+    this.newCustomerCount.data = list;
 });
 
 

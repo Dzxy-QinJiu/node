@@ -1282,8 +1282,10 @@ var zh_CN = {
     "oplate_customer_analysis.cityCount": "地市总数",
     "oplate_customer_analysis.allLabel": "全部标签",
     "oplate_customer_analysis.allIndustries": "全部行业",
-    "oplate_customer_analysis.newCustomerCount": "销售新开客户数统计",
-
+    "oplate_customer_analysis.salesNewCustomerCount": "销售新开客户数统计",
+    "oplate_customer_analysis.newCustomerCount": "新开客户数",
+    "oplate_customer_analysis.tatolNewCustomerCount": "新开账号数总数",
+    "oplate_customer_analysis.customerLoginCount": "客户登录数",
     // 客户分析end
     "contract.4": "甲方",
     "contract.5": "更新",

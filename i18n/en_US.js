@@ -1263,7 +1263,10 @@ var en_US = {
     "oplate_customer_analysis.cityCount": "city count", //"地市总数",
     "oplate_customer_analysis.allLabel": "all label",//"全部标签",
     "oplate_customer_analysis.allIndustries": "all industries",//"全部行业",
-    "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"销售新开客户数",
+    "oplate_customer_analysis.salesNewCustomerCount": "Statistic of new customers created by sales", //"销售新开客户数统计",
+    "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"新开客户数",
+    "oplate_customer_analysis.tatolNewCustomerCount": "Total count of new customer", //"新开账号数总数",
+    "oplate_customer_analysis.customerLoginCount": "Login customer count", //"客户登录数",
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@
