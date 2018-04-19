@@ -22,7 +22,7 @@ const VIEWS = {
     FORGOT_PASSWORD: "forgot_password",
 };
 const USER_LANG_KEY = "userLang";//存储用户语言环境的key
-import storageUtil from "../../lib/utils/storage-util";
+import { storageUtil } from "ant-utils";
 
 class LoginMain extends React.Component {
     constructor(props) {
