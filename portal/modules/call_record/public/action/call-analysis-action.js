@@ -38,7 +38,16 @@ function CallAnalysisActions() {
             }
         );
     };
-
+    //分别获取单个团队的通话数量和通话时长趋势图数据
+    this.getCallCountAndDurSeparately = function (reqData, reqBody) {
+        this.dispatch({loading: true, error: false});
+        callAnalysisAjax.getCallCountAndDurSeparately(reqData, reqBody).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            }, (errMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errMsg});
+            }
+        );
+    };
     // 获取电话的接通情况
     this.getCallInfo = function (pathParam, reqData, type) {
         this.dispatch({loading: true, error: false});

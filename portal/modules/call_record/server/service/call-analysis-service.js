@@ -67,6 +67,50 @@ exports.getCallCountAndDur = function (req, res, params, reqBody) {
         }, reqBody);
 };
 
+//获取单个团队的数据
+function getEachTeamCallCountAndDur(req, res, params, reqData){
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
+            url: restApis.getCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
+            req: req,
+            res: res
+        }, reqData, {
+            success: function (eventEmitter, data) {
+                resolve(data);
+            },
+            error: function (eventEmitter, errorDesc) {
+                reject(errorDesc.message);
+            }
+        });
+    });
+}
+
+//分别获取单个团队的通话数量和接通数据
+exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
+    var emitter = new EventEmitter();
+    var teamList = reqBody.sales_team_id.split(",");
+    var promiseList = [];
+    var cloneReqBody = _.clone(reqBody);
+    for (var i = 0; i < teamList.length; i++) {
+        cloneReqBody.sales_team_id = teamList[i];
+        promiseList.push(getEachTeamCallCountAndDur(req, res, params, cloneReqBody));
+    }
+    Promise.all(promiseList).then((result) => {
+        var allData = [];
+        _.each(result,(item,index)=>{
+            var teamObj = {
+                teamId: teamList[index],
+                teamData: item.result,
+            };
+            allData.push(teamObj);
+        });
+        emitter.emit("success", allData);
+    }).catch((errorMsg) => {
+        emitter.emit("error", errorMsg);
+    });
+    return emitter;
+};
+
 function batchGetCallInfo(req, res, params, reqData) {
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({

@@ -20,7 +20,15 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
-        }, { // 获取电话的接通情况
+        }, { // 分别获取各团队通话数量和通话时长趋势图统计
+            "method": "post",
+            "path": "/rest/call/duration/count/seperately/:start_time/:end_time",
+            "handler": "getCallCountAndDurSeperately",
+            "passport": {
+                "needLogin": true
+            }
+        },
+        { // 获取电话的接通情况
             "method": "post",
             "path": "/rest/call/info/:type",
             "handler": "getCallInfo",

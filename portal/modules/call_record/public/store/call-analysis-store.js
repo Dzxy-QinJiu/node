@@ -43,6 +43,12 @@ CallAnalysisStore.prototype.setInitState = function () {
         duration: [],  // 通话时长
         errMsg: ''   // 获取失败的提示
     };
+    //单独获取每个团队的通话数量和通话时长趋势图统计数据
+    this.eachTeamCallList = {
+       loading: false,//loading
+       list: [],
+       errMsg: '' //获取失败的提示
+    };
     // 通话信息
     this.salesPhoneList = [];
 
@@ -152,6 +158,41 @@ CallAnalysisStore.prototype.getCallCountAndDur = function (result) {
         }
     }
 };
+//分别获取不同团队的通话数量
+CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
+    var eachTeamCallList = this.eachTeamCallList;
+    eachTeamCallList.loading = result.loading;
+    if (result.error) {
+        eachTeamCallList.errMsg = result.errMsg || Intl.get("call.record.trend.failed", '获取通话数量和通话时长数据失败！');
+    } else {
+        eachTeamCallList.errMsg = '';
+        if (result.resData) {
+            let resData = result.resData;
+            if (_.isArray(resData) && resData.length > 0) {
+                var callListData = [];
+                _.each(resData, (item) => {
+                    let durationArray = [];
+                    let countArray = [];
+                    var teamObj = _.find(this.teamList.list, (team)=> team.id == item.teamId);
+                    if (teamObj && teamObj.name){
+                        item.teamName = teamObj.name;
+                    }
+                    _.each(item.teamData,(dataItem)=>{
+                        durationArray.push({timestamp: dataItem.date, count: dataItem.sum});
+                        countArray.push({timestamp: dataItem.date, count: dataItem.docments});
+                    });
+                    item.duration = durationArray;
+                    item.count = countArray;
+                    var cloneItem = _.clone(item);
+                    delete cloneItem.teamData
+                    callListData.push(cloneItem)
+                });
+            }
+            eachTeamCallList.list = callListData;
+        }
+    }
+};
+
 //数据判断
 function getData(data) {
     if (isNaN(data)) {

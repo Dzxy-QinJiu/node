@@ -30,7 +30,14 @@ exports.getCallCountAndDur = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
+//分别获取每个团队的通话数量和通话时长
+exports.getCallCountAndDurSeperately = function (req, res) {
+    callAnalysisService.getCallCountAndDurSeperately(req, res, req.params, req.body).on("success", (data) => {
+        res.status(200).json(data);
+    }).on("error", (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
 // 获取电话的接通情况
 exports.getCallInfo = function (req, res) {
     callAnalysisService.getCallInfo(req, res, req.params, req.body).on("success", function (data) {

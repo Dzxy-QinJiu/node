@@ -49,15 +49,104 @@ var TimeSeriesLinechart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    getSeries : function() {
-        return  this.props.dataList.map((item) =>{
-            return [
-                new Date(item.timestamp),
-                item.count
-            ];
-        });
+    getSeries : function () {
+        if (this.props.isMutileLine) {
+            var lineType = this.props.lineType;
+            var dataList = this.props.dataList;
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var item = {
+                    name: dataItem.teamName
+                };
+                item.data = _.map(dataItem[lineType], (item) => {
+                    return [
+                        new Date(item.timestamp),
+                        item.count
+                    ]
+                });
+                serise.push(item);
+            });
+            // console.log(serise);
+            return serise;
+        } else {
+            // var Data = this.props.dataList.map((item) =>{
+            //     return [
+            //         new Date(item.timestamp),
+            //         item.count
+            //     ];
+            // });
+            // console.log(Data)
+            return this.props.dataList.map((item) => {
+                return [
+                    new Date(item.timestamp),
+                    item.count
+                ];
+            });
+        }
     },
-    getEchartOptions : function() {
+    getCategorys: function () {
+        var data = [];
+        if (this.props.isMutileLine) {
+            var dataType = this.props.lineType;
+            var dataList = this.props.dataList[0];
+            _.each(dataList[dataType], (item) => {
+                data.push(new Date(item.timestamp));
+            });
+        } else {
+            this.props.dataList.map((item) => {
+                data.push(new Date(item.timestamp));
+            });
+        }
+        return data;
+    },
+    getLegendData: function () {
+        var data = [];
+        if (this.props.isMutileLine) {
+            var dataList = this.props.dataList;
+            _.each(dataList, (dataItem) => {
+                data.push(dataItem.teamName);
+            })
+        }
+        return data;
+    },
+    getDataSerise: function () {
+        if (this.props.isMutileLine) {
+            var lineType = this.props.lineType;
+            var dataList = this.props.dataList;
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var seriseItem = {
+                    name: dataItem.teamName,
+                    data: [],
+                    type: 'line',
+                    symbolSize: 6
+                };
+                _.map(dataItem[lineType], (item) => {
+                    seriseItem.data.push(item.count);
+                });
+                serise.push(seriseItem);
+            });
+            return serise;
+        } else {
+            var serise = [{
+                name: '',
+                type: 'line',
+                symbolSize: 6,
+                itemStyle: {
+                    normal: {
+                        color: '#4d96d1'
+                    }
+                },
+                data: []
+            }];
+            this.props.dataList.map((item) => {
+                serise[0].data.push(item.count);
+            });
+        }
+        // console.log(serise);
+        return serise;
+    },
+    getEchartOptions: function () {
         return {
             title : null,
             toolbox: {
@@ -67,14 +156,24 @@ var TimeSeriesLinechart = React.createClass({
             tooltip : { // 图表中的提示数据信息
                 trigger: 'axis',
                 formatter : (params) =>{
-                    var params = params[0];
-                    var timeText = moment(params && params.data && params.data[0] || Date.now()).format(oplateConsts.DATE_FORMAT);
-                    var count = params && params.data && params.data[1] || '0';
-                    return this.props.tooltip(timeText , count);
+                    if (_.isArray(params) && params.length == 1) {
+                        var params = params[0];
+                        var timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                        var count = params.data;
+                        return this.props.tooltip(timeText, count);
+                    } else if (_.isArray(params) && params.length > 1) {
+                        var timeTextArr = [], countArr = [], teamArr = [];
+                        _.each(params, (paramsItem) => {
+                            timeTextArr.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                            countArr.push(paramsItem.data);
+                            teamArr.push(paramsItem.seriesName)
+                        });
+                        return this.props.tooltip(timeTextArr, countArr, teamArr);
+                    }
                 }
             },
             legend : {
-                data : ['']
+                data: this.getLegendData()
             },
             grid: {
                 x : 50,
@@ -85,13 +184,13 @@ var TimeSeriesLinechart = React.createClass({
             },
             xAxis : [
                 {
-                    type : 'time',  // 类型为time，时间轴
-                    splitLine : false,
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',  // 类型为time，时间轴
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
                     axisTick : {
@@ -105,7 +204,8 @@ var TimeSeriesLinechart = React.createClass({
                         formatter: () => { // 不显示x轴数值
                             return "";
                         }
-                    }
+                    },
+                    data: this.getCategorys(),
                 }
             ],
             yAxis : [
@@ -133,19 +233,20 @@ var TimeSeriesLinechart = React.createClass({
                     }
                 }
             ],
-            series : [
-                {
-                    name: '',
-                    type: 'line',
-                    symbolSize: 6,
-                    itemStyle : {
-                        normal : {
-                            color : '#4d96d1'
-                        }
-                    },
-                    data:  this.getSeries()
-                }
-            ]
+            series: this.getDataSerise()
+            // series : [
+            //     {
+            //         name: '',
+            //         type: 'line',
+            //         symbolSize: 6,
+            //         itemStyle : {
+            //             normal : {
+            //                 color : '#4d96d1'
+            //             }
+            //         },
+            //         data:  this.getSeries()
+            //     }
+            // ]
         };
     },
     render : function() {
