@@ -255,7 +255,7 @@ exports.handleScheduleStatus = function (reqData) {
  * {
  *  total_size: this.state.page_size,//这个接口是设计成翻页的，
  *  cursor: true,//前翻页还是后翻页
- *  allot_no_contact: 0 //分配后未联系
+ *  allot_no_contact: "0" //分配后未联系
  *  }
  */
 let getNewDistributeCustomerAjax;

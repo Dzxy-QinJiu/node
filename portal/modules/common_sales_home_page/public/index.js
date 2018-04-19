@@ -172,11 +172,11 @@ var SalesHomePage = React.createClass({
     },
     //获取新分配但未联系的客户
     getNewDistributeCustomer: function (lastId) {
-        //客户被分配后是否已联系 allot_no_contact  未联系 : 0 ，已联系 :1
+        //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         var queryObj = {
             total_size: this.state.page_size,
             cursor: true,
-            allot_no_contact: 0
+            allot_no_contact: "0"
         };
         if (lastId) {
             queryObj.id = lastId;
