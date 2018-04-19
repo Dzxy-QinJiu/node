@@ -955,7 +955,7 @@ var en_US = {
     "user.apply.presenter": "presenter",  // 申请人
     "user.apply.id": "Account apply",  // 账号申请
     "user.apply.no.match.retry": "no match apply list",  // 暂无符合查询条件的用户申请
-    "user.apply.show.update.tip": "The data has been updated, Whether to",  // 数据已更新\,是否
+    "user.apply.show.update.tip": "The data has been updated, Whether to",  // 数据已更新,是否
     "user.apply.no.apply": "no apply list", // 还没有用户审批诶...
     "user.apply.total.apply": "{number} applies {apply_type}", // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
     "user.apply.detail.order": "Order", // 订单
@@ -985,7 +985,7 @@ var en_US = {
     "user.apply.detail.backout.error": "revoke error", // 撤销申请失败
     "user.apply.detail.backout.person": "revoker", // 撤销人
     "user.apply.detail.approval.person": "approver", // 审批人
-    "user.apply.detail.role.modal.content": "no role\, whether to continue", // 中\,没有为用户分配角色\,是否继续
+    "user.apply.detail.role.modal.content": "no role, whether to continue", // 中,没有为用户分配角色,是否继续
     "user.apply.detail.role.modal.continue": "continue", // 继续
     "user.apply.detail.role.modal.cancel": "modify", // 我再改改
     "user.apply.detail.submit.sending": "Reviewing", // 审批中...
@@ -1100,7 +1100,7 @@ var en_US = {
     "crm.96": "Area", // 地域
     "crm.97": "Import complete", // 导入完成
     "crm.98": "Import customer success", // 导入客户成功
-    "crm.99": "Import customer error\, please retry", // 导入客户失败，请重试!
+    "crm.99": "Import customer error, please retry", // 导入客户失败，请重试!
     "crm.100": "Existing users applied for trail users", // 老用户申请试用用户
     "crm.101": "Existing users applied for official users", // 老用户转签约用户
     "crm.102": "The username must be a combination of letters, numbers, underlines, or a valid email", // 用户名必须为字母、数字、下划线的组合或合法格式的邮箱
