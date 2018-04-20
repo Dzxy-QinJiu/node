@@ -1948,7 +1948,7 @@ const ApplyViewDetail = React.createClass({
                     <div className="approval_loading">
                         <p>
                             {this.state.rolesNotSettingModalDialog.appNames.join('、')}
-                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.cancel"
+                            <ReactIntl.FormattedMessage id="user.apply.detail.role.modal.content"
                                                         defaultMessage="中，没有为用户分配角色，是否继续"/>
                         </p>
                     </div>

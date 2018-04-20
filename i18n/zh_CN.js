@@ -968,7 +968,7 @@ var zh_CN = {
     "user.apply.presenter": "申请人",
     "user.apply.id": "账号申请",
     "user.apply.no.match.retry": "暂无符合查询条件的用户申请",
-    "user.apply.show.update.tip": "数据已更新\,是否",
+    "user.apply.show.update.tip": "数据已更新,是否",
     "user.apply.no.apply": "还没有用户审批诶...",
     "user.apply.total.apply": "共{number}条申请{apply_type}", // apply_type: null=>全部 已通过 已驳回 待审批 已撤销
     "user.apply.detail.order": "订单",
@@ -998,7 +998,7 @@ var zh_CN = {
     "user.apply.detail.backout.error": "撤销申请失败",
     "user.apply.detail.backout.person": "撤销人",
     "user.apply.detail.approval.person": "审批人",
-    "user.apply.detail.role.modal.content": "中\，没有为用户分配角色\，是否继续",
+    "user.apply.detail.role.modal.content": "中，没有为用户分配角色，是否继续",
     "user.apply.detail.role.modal.continue": "继续",
     "user.apply.detail.role.modal.cancel": "我再改改",
     "user.apply.detail.submit.sending": "审批中...",
