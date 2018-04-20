@@ -72,6 +72,7 @@ const UserTimeRangeField = {
                     wrapperCol={{span: 24}}
                 >
                     <DateSelector
+                        disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
                         getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点过期",{'date':date});}}
                         onSelect={onSelectDate}
@@ -80,13 +81,13 @@ const UserTimeRangeField = {
                         end_time={currentEndTime}
                         expiredRecalculate={config.expiredRecalculate}
                     >
-                        <DateSelector.Option value="1w"><ReactIntl.FormattedMessage id="user.time.one.week" defaultMessage="1周" /></DateSelector.Option>
-                        <DateSelector.Option value="0.5m"><ReactIntl.FormattedMessage id="user.time.half.month" defaultMessage="半个月" /></DateSelector.Option>
-                        <DateSelector.Option value="1m"><ReactIntl.FormattedMessage id="user.time.one.month" defaultMessage="1个月" /></DateSelector.Option>
-                        <DateSelector.Option value="6m"><ReactIntl.FormattedMessage id="user.time.six.month" defaultMessage="6个月" /></DateSelector.Option>
-                        <DateSelector.Option value="12m"><ReactIntl.FormattedMessage id="user.time.twelve.month" defaultMessage="12个月" /></DateSelector.Option>
-                        <DateSelector.Option value="forever"><ReactIntl.FormattedMessage id="common.time.forever" defaultMessage="永久" /></DateSelector.Option>
-                        <DateSelector.Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom" defaultMessage="自定义" /></DateSelector.Option>
+                        <DateSelector.Option value="1w">{Intl.get("user.time.one.week","1周")}</DateSelector.Option>
+                        <DateSelector.Option value="0.5m">{Intl.get("user.time.half.month","半个月")}</DateSelector.Option>
+                        <DateSelector.Option value="1m">{Intl.get("user.time.one.month","1个月")}</DateSelector.Option>
+                        <DateSelector.Option value="6m">{Intl.get("user.time.six.month","6个月")}</DateSelector.Option>
+                        <DateSelector.Option value="12m">{Intl.get("user.time.twelve.month","12个月")}</DateSelector.Option>
+                        <DateSelector.Option value="forever">{Intl.get("common.time.forever","永久")}</DateSelector.Option>
+                        <DateSelector.Option value="custom">{Intl.get("user.time.custom","自定义")}</DateSelector.Option>
                     </DateSelector>
                 </FormItem>
             </div>

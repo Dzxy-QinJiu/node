@@ -62,7 +62,12 @@
                      false 时表示结束时间是00:00:00
                      默认值是 true
 
-     disableDateAfterToday   表示是否能够选择今天之后的时间
+     disableDateBeforeToday   表示是否能够选择今天之前的时间
+         true 时表示不能选今天之前的时间
+         false 时表示能选择今天之前的时间
+         默认值是 false
+
+    disableDateAfterToday   表示是否能够选择今天之后的时间
                     true 时表示不能选今天之后的时间
                     false 时表示能选择今天之后的时间
                     默认值是 false
@@ -644,6 +649,7 @@ class DateSelector extends React.Component{
             arrow_start_time : this.state.calendarArrow === 'start_time',
             arrow_end_time : this.state.calendarArrow === 'end_time'
         });
+        var disableDateBeforeToday = this.props.disableDateBeforeToday;
         var disableDateAfterToday = this.props.disableDateAfterToday;
         return (
             <div ref="datepicker_wrap">
@@ -652,12 +658,14 @@ class DateSelector extends React.Component{
                         className="single_datepicker"
                         value={moment(this.state.start_time , DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this , 'start_time')}
+                        disableDateBeforeToday={disableDateBeforeToday}
                         disableDateAfterToday={disableDateAfterToday}
                     />
                     <BootstrapDatepicker
                         className="single_datepicker"
                         value={moment(this.state.end_time , DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this , 'end_time')}
+                        disableDateBeforeToday={disableDateBeforeToday}
                         disableDateAfterToday={disableDateAfterToday}
                     />
                 </div>
@@ -667,6 +675,7 @@ class DateSelector extends React.Component{
                         onlyYear={true}
                         value={moment(this.state.start_time , DATE_FORMAT).toDate()}
                         onChange={this.onCalendarYearOK.bind(this)}
+                        disableDateBeforeToday={disableDateBeforeToday}
                         disableDateAfterToday={disableDateAfterToday}
                     />
                 </div>
@@ -818,7 +827,7 @@ class DateSelector extends React.Component{
     }
     render (){
         const props = this.props;
-        const {start_time,end_time,range,onSelect,children,className,endTimeEndOfDay,getEndTimeTip,disableDateAfterToday,...restProps} = props;
+        const {start_time,end_time,range,onSelect,children,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateAfterToday,...restProps} = props;
         const cls = classNames(CLASS_PREFIX , className , CLASS_PREFIX + '_' + this.state.range);
         const menu = this.renderMenus();
         var timeObj = this.getDisplayDateText();
@@ -881,9 +890,11 @@ function getDefaultProps(){
     const endTimeEndOfDay = true;
     //获取结束时间提示语
     const getEndTimeTip = null;
+    //禁止选择今天之前的时间
+    const disableDateBeforeToday = false;
     //禁止选择今天之后的时间
     const disableDateAfterToday = false;
-    return {start_time,end_time,range,onSelect,className,endTimeEndOfDay,getEndTimeTip,disableDateAfterToday};
+    return {start_time,end_time,range,onSelect,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateAfterToday};
 }
 
 //默认属性
@@ -904,6 +915,8 @@ DateSelector.propTypes = {
     endTimeEndOfDay : PropTypes.bool,
     //获取结束时间提示信息
     getEndTimeTip : PropTypes.func,
+    //禁止选择今天之前的时间
+    disableDateBeforeToday : PropTypes.bool,
     //禁止选择今天之后的时间
     disableDateAfterToday : PropTypes.bool
 };
