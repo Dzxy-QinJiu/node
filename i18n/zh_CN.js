@@ -1278,6 +1278,7 @@ var zh_CN = {
     "oplate_customer_analysis.negotiated": "谈判阶段客户",
     "oplate_customer_analysis.customer_stage": "客户阶段统计",
     "oplate_customer_analysis.industryCustomerOverlay": "各行业试用客户覆盖率",
+    "oplate_customer_analysis.overlay": "覆盖率",
     "oplate_customer_analysis.countryCount": "区县总数",
     "oplate_customer_analysis.cityCount": "地市总数",
     "oplate_customer_analysis.allLabel": "全部标签",
