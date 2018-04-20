@@ -43,9 +43,9 @@ CallAnalysisStore.prototype.setInitState = function () {
         duration: [],  // 通话时长
         errMsg: ''   // 获取失败的提示
     };
-    //单独获取每个团队的通话数量和通话时长趋势图统计数据
+    //每个团队的通话数量和通话时长趋势图统计数据
     this.eachTeamCallList = {
-       loading: false,//loading
+       loading: false,
        list: [],
        errMsg: '' //获取失败的提示
     };
@@ -171,7 +171,9 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
             if (_.isArray(resData) && resData.length > 0) {
                 var callListData = [];
                 _.each(resData, (item) => {
+                    //通话时长
                     let durationArray = [];
+                    //通话数量
                     let countArray = [];
                     var teamObj = _.find(this.teamList.list, (team)=> team.id == item.teamId);
                     if (teamObj && teamObj.name){
@@ -181,13 +183,16 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
                         durationArray.push({timestamp: dataItem.date, count: dataItem.sum});
                         countArray.push({timestamp: dataItem.date, count: dataItem.docments});
                     });
+                    //每个团队的通话时长
                     item.duration = durationArray;
+                    //每个团队的通话数量
                     item.count = countArray;
                     var cloneItem = _.clone(item);
-                    delete cloneItem.teamData
+                    delete cloneItem.teamData;
                     callListData.push(cloneItem)
                 });
             }
+            //所有团队的通话时长和通话数量
             eachTeamCallList.list = callListData;
         }
     }

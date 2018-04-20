@@ -7,7 +7,7 @@ var TimeSeriesLinechart = React.createClass({
     getDefaultProps : function() {
         return {
             dataList : [],
-            tooltip : function() {}
+            getToolTip : function() {}
         };
     },
     componentDidMount : function() {
@@ -68,24 +68,23 @@ var TimeSeriesLinechart = React.createClass({
         var data = [];
         if (this.props.isMutileLine) {
             var dataList = this.props.dataList;
-            _.each(dataList, (dataItem) => {
-                data.push(dataItem.teamName);
-            })
+            data = _.pluck(dataList,"teamName");
         }
         return data;
     },
     getDataSerise: function () {
+       //共同的属性
+        var commonObj = {
+            data: [],
+            type: 'line',
+            symbolSize: 6
+        };
         if (this.props.isMutileLine) {
             var lineType = this.props.lineType;
             var dataList = this.props.dataList;
             var serise = [];
             _.each(dataList, (dataItem) => {
-                var seriseItem = {
-                    name: dataItem.teamName,
-                    data: [],
-                    type: 'line',
-                    symbolSize: 6
-                };
+                var seriseItem = $.extend(true, {},{name: dataItem.teamName}, commonObj);
                 _.each(dataItem[lineType], (item) => {
                     seriseItem.data.push(item.count);
                 });
@@ -93,17 +92,11 @@ var TimeSeriesLinechart = React.createClass({
             });
             return serise;
         } else {
-            var serise = [{
-                name: '',
-                type: 'line',
-                symbolSize: 6,
-                itemStyle: {
-                    normal: {
-                        color: '#4d96d1'
-                    }
-                },
-                data: []
-            }];
+            var serise = [$.extend(true, {},{itemStyle: {
+                normal: {
+                    color: '#4d96d1'
+                }
+            }},commonObj)];
             this.props.dataList.forEach((item) => {
                 serise[0].data.push(item.count);
             });
@@ -120,19 +113,22 @@ var TimeSeriesLinechart = React.createClass({
             tooltip : { // 图表中的提示数据信息
                 trigger: 'axis',
                 formatter : (params) =>{
-                    if (_.isArray(params) && params.length == 1) {
-                        var params = params[0];
-                        var timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
-                        var count = params.data;
-                        return this.props.tooltip(timeText, count);
-                    } else if (_.isArray(params) && params.length > 1) {
-                        var timeTextArr = [], countArr = [], teamArr = [];
-                        _.each(params, (paramsItem) => {
-                            timeTextArr.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
-                            countArr.push(paramsItem.data || 0);
-                            teamArr.push(paramsItem.seriesName)
-                        });
-                        return this.props.tooltip(timeTextArr, countArr, teamArr);
+                    var timeText, count, teamArr;
+                    if(_.isArray(params)){
+                        if (params.length == 1) {
+                            var params = params[0];
+                            timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                            count = params.data;
+
+                        } else if (params.length > 1) {
+                            timeText = [], count = [], teamArr = [];
+                            _.each(params, (paramsItem) => {
+                                timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                                count.push(paramsItem.data || 0);
+                                teamArr.push(paramsItem.seriesName)
+                            });
+                        }
+                        return this.props.getToolTip(timeText, count, teamArr);
                     }
                 }
             },
@@ -148,7 +144,7 @@ var TimeSeriesLinechart = React.createClass({
             },
             xAxis : [
                 {
-                    type: 'category',  // 类型为time，时间轴
+                    type: 'category',
                     splitLine: false,
                     splitArea: false,
                     axisLine: {

@@ -91,10 +91,14 @@ exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
     var teamList = reqBody.sales_team_id.split(",");
     var promiseList = [];
     var cloneReqBody = _.clone(reqBody);
-    for (var i = 0; i < teamList.length; i++) {
-        cloneReqBody.sales_team_id = teamList[i];
+    //todo 现在接口如果传一批团队的id，返回的是所有团队通话时长和通话数量的总和，所以要想获得
+    //todo 单个团队的数据，要分别发请求
+    //todo 后端后期会加新接口，加完会替换掉
+    _.each(teamList,(teamItem, index)=>{
+        cloneReqBody.sales_team_id = teamList[index];
         promiseList.push(getEachTeamCallCountAndDur(req, res, params, cloneReqBody));
-    }
+    });
+
     Promise.all(promiseList).then((result) => {
         var allData = [];
         _.each(result,(item,index)=>{
