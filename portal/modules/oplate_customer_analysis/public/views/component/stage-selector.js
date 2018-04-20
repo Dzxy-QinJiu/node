@@ -17,10 +17,13 @@ class StageSelector extends React.Component {
             selectedStage: Intl.get("oplate_customer_analysis.allLabel", "全部标签")
         };
     }
-    handleSelect = value => {
+    handleSelect = value => {        
         this.setState({
             selectedStage: value
         }, () => {
+            if (value == Intl.get("oplate_customer_analysis.allLabel", "全部标签")) {
+                value = "";
+            }
             this.props.onChange(value);
         })
     }
