@@ -398,7 +398,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 errorMsg: this.state.industryCustomerOverlay.errorMsg,
                 height: BOX_CHARTTYPE,
                 refName: "shiyong_yonghu_fugailv",
-                exportData: this.handleTableExport.bind(this, columns, this.state.industryCustomerOverlay.data),
+                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.industryCustomerOverlay.data),
             })
         );
     },
@@ -463,7 +463,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 errorMsg: this.state.newCustomerCount.errorMsg,
                 height: BOX_CHARTTYPE,
                 refName: "xiaoshou_xinkai_kehushu",
-                exportData: this.handleTableExport.bind(this, columns, this.state.newCustomerCount.data),
+                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.newCustomerCount.data),
             })
         );
     },
@@ -481,7 +481,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return data;
     },    
     //处理销售新开客户数导出
-    handleTableExport: (columns, data) => {
+    handleNewCustomerCountExportData: (columns, data) => {
         let exportArr = [];        
         if (_.isArray(data) && data.length) {
             exportArr.push(columns.map(x => x.title));
