@@ -43,6 +43,10 @@ var BootstrapDatepicker = React.createClass({
             options.startDate = new Date(Date.now() - props.dateSelectRange) ;
         }
 
+        if (props.disableDateBeforeToday) {
+            options.startDate = new Date();
+        }
+
         if (_.isObject(props.options)) {
             _.extend(options, props.options);
         }
@@ -120,6 +124,8 @@ var BootstrapDatepicker = React.createClass({
             multidate: false,
             onChange: function () {
             },
+            //不让选择今天之前的时间(默认：false)
+            disableDateBeforeToday: false,
             //不让选择今天之后的时间(默认：false)
             disableDateAfterToday: false,
             // 选择查看的时间范围（默认： 0）
