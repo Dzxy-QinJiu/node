@@ -228,7 +228,7 @@ const CallRecord = React.createClass({
     onSelectFilterObj(filterKey, value) {
         this.state.filterObj[filterKey] = value;
         if (value == CALL_TYPE_OPTION.PHONE) {
-            this.state.callType = <i className="iconfont icon-phone-busy" title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
+            this.state.callType = <i className="iconfont icon-call-back" title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
         } else if (value == CALL_TYPE_OPTION.APP) {
             this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
         } else if (value == CALL_TYPE_OPTION.ALL) {
@@ -320,7 +320,7 @@ const CallRecord = React.createClass({
                         <span>{Intl.get("user.online.all.type", "全部类型")}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.PHONE}>
-                        <i className="iconfont  icon-phone-busy"></i>
+                        <i className="iconfont  icon-call-back"></i>
                         <span>{Intl.get("call.record.call.center", "呼叫中心")}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.APP}>
