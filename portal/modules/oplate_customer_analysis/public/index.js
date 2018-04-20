@@ -102,6 +102,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 end_time: endtime
             }
         });
+        //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 start_time: starttime,
@@ -396,7 +397,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 loading: this.state.industryCustomerOverlay.loading,
                 errorMsg: this.state.industryCustomerOverlay.errorMsg,
                 height: BOX_CHARTTYPE,
-                refName: "shiyong_yonghu_fugailv"
+                refName: "shiyong_yonghu_fugailv",
+                exportData: this.handleTableExport.bind(this, columns, this.state.industryCustomerOverlay.data),
             })
         );
     },
@@ -461,7 +463,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 errorMsg: this.state.newCustomerCount.errorMsg,
                 height: BOX_CHARTTYPE,
                 refName: "xiaoshou_xinkai_kehushu",
-                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.newCustomerCount.data),
+                exportData: this.handleTableExport.bind(this, columns, this.state.newCustomerCount.data),
             })
         );
     },
@@ -479,9 +481,14 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return data;
     },    
     //处理销售新开客户数导出
-    handleNewCustomerCountExportData: (columns, data) => {
+    handleTableExport: (columns, data) => {
         let exportArr = [];        
-    },
+        if (_.isArray(data) && data.length) {
+            exportArr.push(columns.map(x => x.title));
+            exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
+        }
+        return exportArr;
+    },   
     //处理 行业试用客户覆盖率 切换筛选条件
     handleSelectChange: function (key, value) {
         this.state.industryCustomerOverlay.paramObj[key] = value;
@@ -625,7 +632,6 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
                 content: this.getIndustryCustomerOverlayTable(),
                 hide: this.state.currentTab !== "total",
-                exportData: this.handleIndustryTrialOverlayExportData.bind(this, this.state.industryCustomerOverlay.data),
                 subTitle: <div>
                     <IndustrySelector
                         onChange={this.handleSelectChange.bind(this, "industry")}
