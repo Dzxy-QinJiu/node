@@ -144,7 +144,7 @@ const SalesClueAddForm = React.createClass({
         var validation = this.refs.validation;
         validation.validate(valid => {
             //验证电话是否通过验证
-            this.phoneInputRef.props.form.validateFields([PHONE_INPUT_ID], {}, (errors, values) => {
+            this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
                 if (!valid || errors) {
                     return;
                 } else {
@@ -238,6 +238,16 @@ const SalesClueAddForm = React.createClass({
             }
         }];
     },
+    // 设置传入的值并触发手机验证
+    setNeedPhoneValidateValue (field, e) {
+        const newFormData = _.clone(this.state.formData)
+        newFormData[field] = $.trim(e.target.value)
+        this.setState({
+            formData: newFormData
+        }, () => {
+            this.phoneInputRef.props.form.validateFields({force: true})
+        })
+    },
     renderAssignAndRelate(){
         return (
             <div className="assign-and-relate-wrap">
@@ -304,7 +314,7 @@ const SalesClueAddForm = React.createClass({
                                 <Validator rules={[{validator: checkEmail}]}>
                                     <Input name="email" value={formData.email}
                                            placeholder={Intl.get("member.input.email", "请输入邮箱")}
-                                           onChange={this.setField.bind(this, 'email')}
+                                           onChange={this.setNeedPhoneValidateValue.bind(this, 'email')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -316,7 +326,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Input name="qq" id="qq" type="text" value={formData.qq}
                                        placeholder={Intl.get("member.input.qq", "请输入QQ号")}
-                                       onChange={this.setField.bind(this, 'qq')}
+                                       onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
                                 />
                             </FormItem>
 
