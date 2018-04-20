@@ -71,8 +71,6 @@ const TOOLTIPDESCRIPTION = {
 const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
 
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
-var nowTime  = new Date().getTime();
-
 var CallRecordAnalyis = React.createClass({
     //获取初始状态
     getInitialState: function () {
@@ -160,6 +158,7 @@ var CallRecordAnalyis = React.createClass({
 
     // 通话分析的趋势图
     getCallAnalysisTrendData(reqBody){
+        var nowTime  = new Date().getTime();
         // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
         let trendParams = {
             start_time: (nowTime - TREND_TIME),
@@ -229,6 +228,7 @@ var CallRecordAnalyis = React.createClass({
     },
     //分别获取每个团队的趋势图
     getCallAnalysisTrendDataSeparately(reqBody){
+        var nowTime  = new Date().getTime();
         // 通话数量和通话时长的时间参数，统计近一个月(今天往前推30天)的统计
         let trendParams = {
             start_time: (nowTime - TREND_TIME),
