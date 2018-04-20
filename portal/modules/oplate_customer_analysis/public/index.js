@@ -493,11 +493,12 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     handleSelectChange: function (key, value) {
         this.state.industryCustomerOverlay.paramObj[key] = value;
         if (key == "customer_label") {
+            //"试用合格"标签需要特殊处理
             if(value == Intl.get("common.trial.qualified", "试用合格")) {
                 this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
                 this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
             } else {
-                delete this.state.industryCustomerOverlay.paramObj.qualify_label;
+                this.state.industryCustomerOverlay.paramObj.qualify_label = "";
             }
         }
         this.setState({
