@@ -878,7 +878,7 @@ var CallRecordAnalyis = React.createClass({
             </div>
             <div style={{height: tableHeight}}>
                 {this.state.salesPhoneList.length ? (
-                    <div className="export-file" onClick={this.exportPhoneTable.bind(this)}>
+                    <div className="export-file" style={{top: this.state.trendHeight + 60}} onClick={this.exportPhoneTable.bind(this)}>
                         <i className="iconfont icon-export"
                            title={Intl.get("call.time.export.statistic", "点击导出通话时长统计")}>
                             {Intl.get("common.export", "导出")}
