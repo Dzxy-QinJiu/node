@@ -167,6 +167,7 @@ var en_US = {
     "common.unqualified": "Unqualified",//不合格
     "common.official.qualified": "Signed and qualified ",//签约合格
     "common.trial.qualified": "Trial and qualified",//试用合格
+    "common.trial.unqualified": "Trial and unqualified",// "试用不合格",
     "common.history.qualified": "Once qualified",//曾经合格
     "common.delay.time": "Delay range",//延期时间
     "common.time.unit.day": "Day",//天
@@ -1642,6 +1643,7 @@ var en_US = {
     "errorcode.9": "The mailbox has been activated and does not need to be activated repeatedly",//该邮箱已激活，无需重复激活
     "errorcode.10": "You have sent an activation message without sending it repeatedly",//已发送过激活邮件了，无需重复发送
     "errorcode.11": "Failed to login,please refresh page and login again",// 登录失败,请刷新后重试
+    "errorcode.12": "Your mailbox is not activated. Please activate the mailbox first",//您的邮箱未激活，请先激活邮箱
     "errorcode.13": "Failed to warrant the user",//成员授权失败
     "errorcode.14": "Failed to verify password",//密码验证错误
     "errorcode.15": "Failed to add user",//添加用户失败
@@ -2096,5 +2098,8 @@ var en_US = {
     "sales.team.del.team": "Delete team",//删除团队
     "role.no.set.auth.add": "No authority, please {add} first",//暂无权限,请先{add}
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
+    "call.record.average.call.duration": "Call length of person average",//人均时长
+    "call.record.average.connected": "Connetion number of person average",//人均接通数
+    "call.record.all.teams.trend": "show call trend of each team"//查看各团队通话趋势图
 };
 export default en_US;

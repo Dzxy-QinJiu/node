@@ -2,7 +2,7 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 var ShareObj = require("../util/app-id-share-util");
 var AppUserUtil = require("../util/app-user-util");
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 function UserAuditLogAction() {
     this.generateActions(

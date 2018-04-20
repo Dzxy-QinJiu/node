@@ -43,6 +43,12 @@ CallAnalysisStore.prototype.setInitState = function () {
         duration: [],  // 通话时长
         errMsg: ''   // 获取失败的提示
     };
+    //每个团队的通话数量和通话时长趋势图统计数据
+    this.eachTeamCallList = {
+       loading: false,
+       list: [],
+       errMsg: '' //获取失败的提示
+    };
     // 通话信息
     this.salesPhoneList = [];
 
@@ -152,6 +158,46 @@ CallAnalysisStore.prototype.getCallCountAndDur = function (result) {
         }
     }
 };
+//分别获取不同团队的通话数量
+CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
+    var eachTeamCallList = this.eachTeamCallList;
+    eachTeamCallList.loading = result.loading;
+    if (result.error) {
+        eachTeamCallList.errMsg = result.errMsg || Intl.get("call.record.trend.failed", '获取通话数量和通话时长数据失败！');
+    } else {
+        eachTeamCallList.errMsg = '';
+        if (result.resData) {
+            let resData = result.resData;
+            if (_.isArray(resData) && resData.length > 0) {
+                var callListData = [];
+                _.each(resData, (item) => {
+                    //通话时长
+                    let durationArray = [];
+                    //通话数量
+                    let countArray = [];
+                    var teamObj = _.find(this.teamList.list, (team)=> team.id == item.teamId);
+                    if (teamObj && teamObj.name){
+                        item.teamName = teamObj.name;
+                    }
+                    _.each(item.teamData,(dataItem)=>{
+                        durationArray.push({timestamp: dataItem.date, count: dataItem.sum});
+                        countArray.push({timestamp: dataItem.date, count: dataItem.docments});
+                    });
+                    //每个团队的通话时长
+                    item.duration = durationArray;
+                    //每个团队的通话数量
+                    item.count = countArray;
+                    var cloneItem = _.clone(item);
+                    delete cloneItem.teamData;
+                    callListData.push(cloneItem)
+                });
+            }
+            //所有团队的通话时长和通话数量
+            eachTeamCallList.list = callListData;
+        }
+    }
+};
+
 //数据判断
 function getData(data) {
     if (isNaN(data)) {
@@ -175,22 +221,31 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
     if (data && _.isObject(data)) {
         let salesPhoneList = _.isArray(data.salesPhoneList) ? data.salesPhoneList : [];
         salesPhoneList = salesPhoneList.map((salesPhone) => {
-            return {
+            var memberTotal = salesPhone.memberTotal;
+            var returnObj = {
                 averageAnswer: getData(salesPhone.averageAnswer),//日均接通数
                 averageTime: getData(salesPhone.averageTime),//日均时长
-                averageTimeDescr: TimeUtil.getFormatTime(salesPhone.averageTime),
-                salesName: salesPhone.salesName || "",//销售名称
+                averageTimeFormated: TimeUtil.getFormatTime(salesPhone.averageTime),
+                name: salesPhone.name || "",//销售或者团队的名称
                 totalAnswer: getData(salesPhone.totalAnswer),//总接通数
                 totalTime: getData(salesPhone.totalTime),//总时长
-                totalTimeDescr: TimeUtil.getFormatTime(salesPhone.totalTime),
+                totalTimeFormated: TimeUtil.getFormatTime(salesPhone.totalTime),
                 callinCount: getData(salesPhone.callinCount),//呼入次数
                 callinSuccess: getData(salesPhone.callinSuccess),//成功呼入
                 callinRate: formatRoundingPercentData(salesPhone.callinRate),//呼入接通率
                 calloutCount: getData(salesPhone.calloutCount),//呼出次数
                 calloutSuccess: getData(salesPhone.calloutSuccess),//成功呼出
                 calloutRate: formatRoundingPercentData(salesPhone.calloutRate),//呼出接通率
-                billingTime: getBillingTime(salesPhone.totalTime)//计费时长
+                billingTime: getBillingTime(salesPhone.totalTime),//计费时长
             };
+
+            if (memberTotal){
+                returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
+                returnObj.personAverageTime = (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
+                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+            }
+
+            return returnObj;
         });
         this.salesPhoneList = _.isArray(salesPhoneList) ? salesPhoneList : [];
     } else {

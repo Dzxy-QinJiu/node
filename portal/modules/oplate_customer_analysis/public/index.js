@@ -24,9 +24,9 @@ const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT = 240;
 const BOX_CHARTTYPE = 86;//头部数字区域的高度
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
 import IndustrySelector from "./views/component/industry-seletor";
 import StageSelector from "./views/component/stage-selector";
+import { storageUtil } from "ant-utils";
 const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
     PASS: 1,
     HISTORY_PASS: 2
@@ -83,7 +83,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         $(window).off('resize', this.windowResize);
     },
     onAppChange(app_id) {
+        //传空查询全部应用下数据
         if (app_id.includes(",")) app_id = "";
+        //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 app_ids: app_id,
@@ -458,7 +460,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 loading: this.state.newCustomerCount.loading,
                 errorMsg: this.state.newCustomerCount.errorMsg,
                 height: BOX_CHARTTYPE,
-                refName: "xiaoshou_xinkai_kehushu"
+                refName: "xiaoshou_xinkai_kehushu",
+                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.newCustomerCount.data),
             })
         );
     },
@@ -474,6 +477,10 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         this.state.summaryNumbers.data = data;
         this.state.summaryNumbers.resultType = resultType;
         return data;
+    },    
+    //处理销售新开客户数导出
+    handleNewCustomerCountExportData: (columns, data) => {
+        let exportArr = [];        
     },
     //处理 行业试用客户覆盖率 切换筛选条件
     handleSelectChange: function (key, value) {
@@ -529,7 +536,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
         }
         return exportArr;
-    },
+    },   
     renderSummaryCountBoxContent: function () {
         return (
             <Row>
@@ -593,8 +600,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         )
     },
     getCharts: function () {
-        return [
-            {
+        return [{
                 title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
                 content: this.getCustomerChart(),
             }, {
@@ -632,8 +638,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             {
                 title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
                 content: this.getNewCustomerCountTable(),
-                hide: this.state.currentTab !== "total",
-                // exportData: this.handleNewCustomerCountExportData.bind(this, this.state.newCustomerCount.data),
+                hide: this.state.currentTab !== "total",                
             }
         ];
     },
@@ -691,8 +696,8 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                 const refName = props.refName;
                                 const ref = this.refs[refName];
                                 const exportData = () => {
-                                    if (!ref && !chart.exportData) return;
-                                    const exportFunc = (ref && ref.getProcessedData) || chart.exportData;
+                                    if (!ref && !props.exportData) return;
+                                    const exportFunc = (ref && ref.getProcessedData) || props.exportData;
                                     return exportFunc();
                                 }
                                 return chart.hide ? null : (

@@ -14,7 +14,7 @@ import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 const messages = defineMessages({
     common_email: {id: 'common.email'},//邮箱

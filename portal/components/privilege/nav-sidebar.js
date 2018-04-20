@@ -22,7 +22,8 @@ let history = require("../../public/sources/history");
 import ModalIntro from "../modal-intro";
 import CONSTS from  "LIB_DIR/consts";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
-const { session } = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
+const session = storageUtil.session;
 //需要加引导的模块
 const menu = CONSTS.STORE_NEW_FUNCTION.SCHEDULE_MANAGEMENT;
 /**

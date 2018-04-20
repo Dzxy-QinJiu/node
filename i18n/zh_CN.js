@@ -167,6 +167,7 @@ var zh_CN = {
     "common.unqualified": "不合格",
     "common.official.qualified": "签约合格",
     "common.trial.qualified": "试用合格",
+    "common.trial.unqualified": "试用不合格",
     "common.history.qualified": "曾经合格",
     "common.delay.time": "延期时间",
     "common.time.unit.day": "天",
@@ -1277,7 +1278,6 @@ var zh_CN = {
     "oplate_customer_analysis.negotiated": "谈判阶段客户",
     "oplate_customer_analysis.customer_stage": "客户阶段统计",
     "oplate_customer_analysis.industryCustomerOverlay": "各行业试用客户覆盖率",
-    "oplate_customer_analysis.overlay": "覆盖率",
     "oplate_customer_analysis.countryCount": "区县总数",
     "oplate_customer_analysis.cityCount": "地市总数",
     "oplate_customer_analysis.allLabel": "全部标签",
@@ -1673,6 +1673,7 @@ var zh_CN = {
     "errorcode.9": "该邮箱已激活，无需重复激活",
     "errorcode.10": "已发送过激活邮件了，无需重复发送",
     "errorcode.11": "登录失败,请刷新后重试",
+    "errorcode.12": "您的邮箱未激活，请先激活邮箱",
     "errorcode.13": "成员授权失败",
     "errorcode.14": "密码验证错误",
     "errorcode.15": "添加用户失败",
@@ -2111,7 +2112,10 @@ var zh_CN = {
     "config.manage.input.teleRepeat": "该电话号码已录入",
     //缺失补充end
     "common.batch.sales.target": "设置团队销售目标",
-    "common.batch.self.sales.target": "批量设置个人销售目标"
+    "common.batch.self.sales.target": "批量设置个人销售目标",
+    "call.record.average.call.duration": "人均时长",
+    "call.record.average.connected": "人均接通数",
+    "call.record.all.teams.trend": "查看各团队通话趋势图"
 
 };
 export default zh_CN;

@@ -20,6 +20,7 @@
   "dependencies": {
     "alt": "0.17.9",
     "ant-auth-request": "^1.0.7",
+    "ant-utils": "^1.0.1",
     "antc": "~1.0.39",
     "antd": "^2.13.0",
     "app-root-path": "1.0.0",

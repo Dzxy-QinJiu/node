@@ -7,9 +7,7 @@ import zh_CN from '../../../i18n/zh_CN';
 import en_US from '../../../i18n/en_US';
 import es_VE from '../../../i18n/es_VE';
 const defaultLanguage = 'zh_CN'; // 缺省语言
-if (!(typeof window === "undefined")) {
-    var storageUtil = require("./storage-util.js");
-}
+import { storageUtil } from "ant-utils";
 const Local = {
     getNavigatorLanguage(){
         //获取浏览器语言

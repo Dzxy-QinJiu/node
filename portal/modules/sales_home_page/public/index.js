@@ -22,7 +22,7 @@ var layoutConstant = constantUtil.LAYOUTS;//布局常量
 var Spinner = require("CMP_DIR/spinner");
 import classNames from "classnames";
 var scrollTimeout = null;
-var storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 var pageId = oplateConsts.PAGE_ID.SALES_HOME;
 var key = "hamburger-button-flag";//用于记录展开或者关闭销售团队列表的状态
 import history from 'PUB_DIR/sources/history';

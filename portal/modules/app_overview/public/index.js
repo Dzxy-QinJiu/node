@@ -20,7 +20,7 @@ const Spinner = require('CMP_DIR/spinner');
 const TimeStampUtil = require('PUB_DIR/sources/utils/time-stamp-util');
 const AppUserUtil = require('../../app_user_manage/public/util/app-user-util');
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {

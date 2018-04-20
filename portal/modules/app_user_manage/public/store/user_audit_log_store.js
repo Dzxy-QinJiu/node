@@ -3,7 +3,7 @@ var ShareObj = require("../util/app-id-share-util");
 var DateSelectorUtils = require("../../../../components/datepicker/utils");
 var AppUserUtil = require("../util/app-user-util");
 import { ALL_LOG_INFO, AUDIT_LOG} from "PUB_DIR/sources/utils/consts";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 // 用户审计日志的store
 function UserAuditLogStore(){
     this.resetState();

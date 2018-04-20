@@ -13,7 +13,7 @@ import ApplyUser from "./v2/apply-user";
 var history = require("../../../../public/sources/history");
 var Table = require("antd").Table;
 var classNames = require("classnames");
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 var dynamicStyle;
 //用于布局的高度
 var LAYOUT_CONSTANTS = {

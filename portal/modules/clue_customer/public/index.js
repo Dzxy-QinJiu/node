@@ -26,7 +26,7 @@ var rightPanelShow = false;
 var classNames = require("classnames");
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import AntcDropdown from "CMP_DIR/antc-dropdown";
-var storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 import AlertTimer from "CMP_DIR/alert-timer";
 import {SELECT_TYPE} from "./utils/clue-customer-utils";
 import CONSTS from  "LIB_DIR/consts";
