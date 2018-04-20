@@ -137,7 +137,7 @@ var TimeSeriesLinechart = React.createClass({
             },
             grid: {
                 x : 50,
-                y : 20,
+                y : 40,
                 x2 : 30,
                 y2 : 30,
                 borderWidth : 0
