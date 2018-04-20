@@ -18,13 +18,13 @@ exports.getUserInfo = function (req, res) {
 
 //获取登录日志
 exports.getLogList = function (req, res) {
-
-    userInfoManageServic.getLogList(req, res, req.query).on("success", function (data) {
+    userInfoManageServic.getLogList(req, res).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
 //激活邮箱
 exports.activeUserEmail = function (req, res) {
     userInfoManageServic.activeUserEmail(req, res).on("success", function (data) {

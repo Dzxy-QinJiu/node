@@ -12,7 +12,7 @@ var auth = require("../../../../lib/utils/auth");
 
 var userInfoRestApis = {
     getUserInfo: "/rest/base/v1/user/id",
-    getLogList: "/rest/analysis/auditlog/v1/login",
+    getLogList: "/rest/analysis/auditlog/v1/login/:user_name/drop_down_load",
     editUserInfo: "/rest/base/v1/user/baseinfo",
     setUserLanguage: "/rest/base/v1/user/member/language/setting",
     checkUserInfoPwd: "/rest/base/checkUserInfoPwd",
@@ -60,15 +60,17 @@ exports.getUserInfo = function (req, res, userId) {
         });
 };
 
-exports.getLogList = function (req, res, condition) {
-    var userName = auth.getUser(req).user_name;
+exports.getLogList = function (req, res) {
+    let userName = auth.getUser(req).user_name;
+    let url = userInfoRestApis.getLogList.replace(":user_name", userName);
     return restUtil.authRest.get(
         {
-            url: userInfoRestApis.getLogList + "/" + userName + "/" + condition.page_size + "/" + condition.num,
+            url: url,
             req: req,
             res: res
-        }, null);
+        }, req.query);
 };
+
 //激活邮箱
 exports.activeUserEmail = function (req, res) {
     return restUtil.authRest.post(
