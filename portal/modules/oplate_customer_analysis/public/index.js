@@ -492,9 +492,13 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     //处理 行业试用客户覆盖率 切换筛选条件
     handleSelectChange: function (key, value) {
         this.state.industryCustomerOverlay.paramObj[key] = value;
-        if (key == "customer_label" && value == Intl.get("common.trial.qualified", "试用合格")) {
-            this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
-            this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
+        if (key == "customer_label") {
+            if(value == Intl.get("common.trial.qualified", "试用合格")) {
+                this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
+                this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
+            } else {
+                delete this.state.industryCustomerOverlay.paramObj.qualify_label;
+            }
         }
         this.setState({
             industryCustomerOverlay: this.state.industryCustomerOverlay
