@@ -76,7 +76,9 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
     };
     //各行业试用客户覆盖率
     this.industryCustomerOverlay = {
-        paramObj: {},
+        paramObj: {
+            industry: ""
+        },
         data: [],
         errorMsg: "",
         loading: false        
