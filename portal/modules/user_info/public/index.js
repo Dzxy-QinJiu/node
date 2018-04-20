@@ -17,6 +17,7 @@ var UserInfoLog = require("./views/user-info-log");
 var Link = require("react-router").Link;
 var topHeight = 65;//顶部导航的高度
 var logTitleHeight = 40;//登录日志顶部title高度
+const logBottomHeight = 40; // 登录日志距离底部高度
 var paddingBotton = 50;//距离底部高度
 var minUserInfoContainerWidth = 1035;//个人资料界面可并排展示时的最小宽度 低于此宽度时个人资料与登录日志上下展示
 var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志高度默认值
@@ -49,8 +50,7 @@ var UserInfoPage = React.createClass({
         }
 
         UserInfoAction.getLogList({
-            num: this.state.logNum,
-            page_size: this.state.logPageSize
+            load_size: this.state.loadSize
         });
     },
     componentWillUnmount: function () {
@@ -60,11 +60,7 @@ var UserInfoPage = React.createClass({
     },
 
     resizeWindow: function () {
-        var footPaginationHeight = 60;//底部分页栏高度
-        var tableTrHeight = 51;//表格内每行高度
         var height = this.userInfoContainerHeightFnc();
-        var tbodyHeight = height - tableTrHeight - footPaginationHeight;
-        UserInfoAction.setLogPageSize(Math.floor(tbodyHeight / tableTrHeight));
         this.setState({
             userInfoContainerHeight: height
         });
@@ -82,12 +78,10 @@ var UserInfoPage = React.createClass({
         }
         return height < minUserInfoHeight ? minUserInfoHeight : height;
     },
-
-    changeLogNum: function (currPage) {
-        UserInfoAction.setLogNum(currPage);
+    handleScrollBottom() {
         UserInfoAction.getLogList({
-            num: currPage,
-            page_size: this.state.logPageSize
+            sort_id: this.state.sortId,
+            load_size: this.state.loadSize
         });
     },
 
@@ -134,10 +128,11 @@ var UserInfoPage = React.createClass({
                                 logErrorMsg={this.state.logErrorMsg}
                                 logList={this.state.logList}
                                 logTotal={this.state.logTotal}
-                                logNum={this.state.logNum}
-                                pageSize={this.state.logPageSize}
-                                height={height - logTitleHeight }
-                                changeLogNum={this.changeLogNum}
+                                sortId={this.state.sortId}
+                                loadSize={this.state.loadSize}
+                                listenScrollBottom={this.state.listenScrollBottom}
+                                height={height - logTitleHeight - logBottomHeight}
+                                handleScrollBottom={this.handleScrollBottom}
                             >
                             </UserInfoLog>
                         </div>

@@ -6,8 +6,6 @@ function UserInfoActions() {
         'hideUserInfoForm',//隐藏修改用户面板
         'hideSubmitTip',//隐藏保存提示
         'setLogNum',//设置当前操作记录的展示页
-        'setLogPageSize',//设置一页展示多少条操作记录
-        'setSubscribeEmail'//设置是否订阅邮箱提醒
     );
 
     //获取用户信息
