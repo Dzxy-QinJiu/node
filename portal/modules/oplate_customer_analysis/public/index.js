@@ -498,7 +498,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
                 this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
             } else {
-                this.state.industryCustomerOverlay.paramObj.qualify_label = "";
+                delete this.state.industryCustomerOverlay.paramObj.qualify_label;
             }
         }
         this.setState({
