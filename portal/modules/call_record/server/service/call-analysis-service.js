@@ -14,6 +14,8 @@ const restApis = {
     getSingleUserCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取通话数量和通话时长趋势图统计(团队)
     getCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/:start_time/:end_time/:interval',
+    //分别返回团队的通话数量和通话时长
+    getTeamCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/team/:start_time/:end_time/:interval',
     //  获取通话数量和通话时长趋势图统计(销售个人)
     getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
@@ -66,53 +68,24 @@ exports.getCallCountAndDur = function (req, res, params, reqBody) {
             res: res
         }, reqBody);
 };
-
-//获取单个团队的数据
-function getEachTeamCallCountAndDur(req, res, params, reqData){
-    return new Promise((resolve, reject) => {
-        return restUtil.authRest.post({
-            url: restApis.getCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
+exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getTeamCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
             req: req,
             res: res
-        }, reqData, {
-            success: function (eventEmitter, data) {
-                resolve(data);
-            },
-            error: function (eventEmitter, errorDesc) {
-                reject(errorDesc.message);
+        }, reqBody, {
+            success: function (emitter, teamCallData) {
+                var list = [];
+                _.each(teamCallData.result, (value, key) => {
+                    list.push({
+                        teamId: key,
+                        teamData: value
+                    })
+                });
+                emitter.emit("success", list);
             }
-        });
-    });
-}
-
-//分别获取单个团队的通话数量和接通数据
-exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
-    var emitter = new EventEmitter();
-    var teamList = reqBody.sales_team_id.split(",");
-    var promiseList = [];
-    var cloneReqBody = _.clone(reqBody);
-    //todo 现在接口如果传一批团队的id，返回的是所有团队通话时长和通话数量的总和，所以要想获得
-    //todo 单个团队的数据，要分别发请求
-    //todo 后端后期会加新接口，加完会替换掉
-    _.each(teamList,(teamItem, index)=>{
-        cloneReqBody.sales_team_id = teamList[index];
-        promiseList.push(getEachTeamCallCountAndDur(req, res, params, cloneReqBody));
-    });
-
-    Promise.all(promiseList).then((result) => {
-        var allData = [];
-        _.each(result,(item,index)=>{
-            var teamObj = {
-                teamId: teamList[index],
-                teamData: item.result,
-            };
-            allData.push(teamObj);
-        });
-        emitter.emit("success", allData);
-    }).catch((errorMsg) => {
-        emitter.emit("error", errorMsg);
-    });
-    return emitter;
+        })
 };
 
 function batchGetCallInfo(req, res, params, reqData) {
