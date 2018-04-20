@@ -737,6 +737,7 @@ var UserDetailAddApp = React.createClass({
                     wrapperCol={{span:20}}
                 >
                     <DateSelector
+                        disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
                         getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点到期",{'date':date});}}
                         range={formData.range}
