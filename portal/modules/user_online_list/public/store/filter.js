@@ -1,6 +1,6 @@
 import OnlineUserFilterAction from "../action/filter";
 import AppUserUtil from '../../../app_user_manage/public/util/app-user-util';
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 function OnlineUserFilterStore() {
     this.condition = {

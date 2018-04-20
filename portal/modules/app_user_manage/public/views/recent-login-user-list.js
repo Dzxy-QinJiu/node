@@ -22,7 +22,7 @@ const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
 import CONSTS from  "LIB_DIR/consts";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {

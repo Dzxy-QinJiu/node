@@ -1,6 +1,6 @@
 var AppUserCustomerSwitchActions = require("../action/app-user-customer-switch-actions");
 var AppUserUtil = require("../util/app-user-util");
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //客户对应的用户的store
 function AppUserCustomerSwitchStore() {

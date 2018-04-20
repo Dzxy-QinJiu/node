@@ -1,6 +1,6 @@
 var AppUserUtil = require("../util/app-user-util");
 var appAjaxTrans = require("../../../common/public/ajax/app");
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;

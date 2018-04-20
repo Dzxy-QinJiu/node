@@ -13,7 +13,8 @@ var notyCloseTimeoutMap = {};
 var batchPushEmitter = require("../utils/emitters").batchPushEmitter;
 //批量操作完成后，自动关闭的延迟时间（ms）
 const BATCH_FINISH_AUTOCLOSE_TIMEOUT = 4000;
-const { session } = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
+const session = storageUtil.session;
 //批量操作监听器
 /**
  * @param data

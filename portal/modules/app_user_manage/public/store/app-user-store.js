@@ -3,7 +3,7 @@ var ShareObj = require("../util/app-id-share-util");
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 var AppUserUtil = require("../util/app-user-util");
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //app用户的store
 function AppUserStore() {

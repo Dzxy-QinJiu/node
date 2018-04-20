@@ -15,7 +15,8 @@ var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 var SearchInput = require("../../../../components/searchInput");
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
 import Trace from "LIB_DIR/trace";
-const { session } = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
+const session = storageUtil.session;
 
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数

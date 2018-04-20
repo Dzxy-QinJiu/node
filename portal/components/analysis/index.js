@@ -22,7 +22,7 @@ import { TIME_RANGE, USER_TYPE_LEGEND } from "./consts";
 var Spinner = require("../spinner");
 import * as exportUtil from "./export-data-util";
 import { capitalizeFirstLetter } from "LIB_DIR/func";
-const storageUtil = require("LIB_DIR/utils/storage-util.js");
+import { storageUtil } from "ant-utils";
 
 //图表类型映射关系
 const CHART_TYPE_MAP = {
