@@ -24,7 +24,13 @@ const localStorageAppIdKey = "customer_analysis_stored_app_id";
 var classnames = require("classnames");
 const CHART_HEIGHT = 240;
 const BOX_CHARTTYPE = 86;//头部数字区域的高度
+import IndustrySelector from "./views/component/industry-seletor";
+import StageSelector from "./views/component/stage-selector";
 import { storageUtil } from "ant-utils";
+const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
+    PASS: 1,
+    HISTORY_PASS: 2
+}
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange: function () {
@@ -50,6 +56,12 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         OplateCustomerAnalysisStore.listen(this.onStateChange);
         OplateCustomerAnalysisAction.getUserType();
         OplateCustomerAnalysisAction.getSalesStageList();
+        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
+            queryObj: {
+                start_time: 0,//覆盖率接口规定start_time 固定为0
+                end_time: this.state.endTime
+            }
+        });
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
                 start_time: this.state.startTime,
@@ -83,6 +95,13 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });        
     },
     onDateChange(starttime, endtime) {
+        //获取各行业试用客户覆盖率
+        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
+            queryObj: {
+                start_time: 0,
+                end_time: endtime
+            }
+        });
         //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {
@@ -312,7 +331,77 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     />}
             </div>
         )
-    },    
+    },
+    //获取各行业试用客户覆盖率
+    getIndustryCustomerOverlayTable() {
+        const { loading, errorMsg } = this.state.industryCustomerOverlay;
+        const columns = [
+            {
+                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
+                dataIndex: "province_name",
+                key: "province_name",
+                width: 70
+            }, {
+                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
+                dataIndex: "city_count",
+                key: "city_count",
+                align: "right",
+                width: 50
+            }, {
+                title: Intl.get("weekly.report.open.account", "开通数"),
+                dataIndex: "city_dredge_count",
+                key: "city_dredge_count",
+                align: "right",
+                width: 50
+            }, {
+                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                dataIndex: "city_dredge_scale",
+                key: "city_dredge_scale",
+                align: "right",
+                width: 70,
+                render: text => `${Number(text * 100).toFixed(2)}%`
+            }, {
+                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
+                dataIndex: "district_count",
+                key: "district_count",
+                align: "right",
+                width: 50,
+            }, {
+                title: Intl.get("weekly.report.open.account", "开通数"),
+                dataIndex: "district_dredge_count",
+                key: "district_dredge_count",
+                align: "right",
+                width: 50,
+            }, {
+                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                dataIndex: "district_dredge_scale",
+                key: "district_dredge_scale",
+                align: "right",
+                width: 70,
+                render: text => `${Number(text * 100).toFixed(2)}%`
+            },
+        ];
+
+        const Table = () => (
+            <div style={{ minHeight: "200px" }}>
+                <AntcTable
+                    columns={columns}
+                    scroll={{ x: true, y: 200 }}
+                    pagination={false}
+                    dataSource={this.state.industryCustomerOverlay.data}
+                />
+            </div>
+        );
+        return (
+            this.handleTableComponent(Table, {
+                loading: this.state.industryCustomerOverlay.loading,
+                errorMsg: this.state.industryCustomerOverlay.errorMsg,
+                height: BOX_CHARTTYPE,
+                refName: "shiyong_yonghu_fugailv",
+                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.industryCustomerOverlay.data),
+            })
+        );
+    },
     // 获取销售新开客户数
     getNewCustomerCountTable() {
         const columns = [
@@ -394,6 +483,66 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     //处理销售新开客户数导出
     handleNewCustomerCountExportData: (columns, data) => {
         let exportArr = [];        
+        if (_.isArray(data) && data.length) {
+            exportArr.push(columns.map(x => x.title));
+            exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
+        }
+        return exportArr;
+    },   
+    //处理 行业试用客户覆盖率 切换筛选条件
+    handleSelectChange: function (key, value) {
+        this.state.industryCustomerOverlay.paramObj[key] = value;
+        if (key == "customer_label") {
+            //"试用合格"标签需要特殊处理
+            if(value == Intl.get("common.trial.qualified", "试用合格")) {
+                this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
+                this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
+            } else {
+                delete this.state.industryCustomerOverlay.paramObj.qualify_label;
+            }
+        }
+        this.setState({
+            industryCustomerOverlay: this.state.industryCustomerOverlay
+        }, () => {
+            const paramObj = {
+                queryObj: {
+                    ...this.state.industryCustomerOverlay.paramObj,
+                    start_time: 0,
+                    end_time: this.state.endTime
+                }
+            };
+            
+            OplateCustomerAnalysisAction.getIndustryCustomerOverlay(paramObj);
+        })
+       
+    },
+    //处理行业试用客户覆盖率导出
+    handleIndustryTrialOverlayExportData: (data) => {
+        let exportArr = [];
+        const columns = [
+            {
+                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
+                dataIndex: "province_name",
+            }, {
+                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
+                dataIndex: "city_count",
+            }, {
+                title: Intl.get("weekly.report.open.account", "开通数"),
+                dataIndex: "city_dredge_count",
+            }, {
+                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                dataIndex: "city_dredge_scale",
+            }, {
+                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
+                dataIndex: "district_count",
+            }, {
+                title: Intl.get("weekly.report.open.account", "开通数"),
+                dataIndex: "district_dredge_count",
+            }, {
+                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                dataIndex: "district_dredge_scale",
+            },
+        ];
         if (_.isArray(data) && data.length) {
             exportArr.push(columns.map(x => x.title));
             exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
@@ -483,7 +632,21 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
                 content: this.getOrderStageChart(),
                 hide: this.state.currentTab !== "total",
-            }, {
+            },
+            {
+                title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
+                content: this.getIndustryCustomerOverlayTable(),
+                hide: this.state.currentTab !== "total",
+                subTitle: <div>
+                    <IndustrySelector
+                        onChange={this.handleSelectChange.bind(this, "industry")}
+                    />
+                    <StageSelector
+                        onChange={this.handleSelectChange.bind(this, "customer_label")}
+                    />
+                </div>
+            },
+            {
                 title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
                 content: this.getNewCustomerCountTable(),
                 hide: this.state.currentTab !== "total",                
@@ -571,4 +734,4 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     }
 });
 //返回react对象
-module.exports = OPLATE_CUSTOMER_ANALYSIS;
+module.exports = OPLATE_CUSTOMER_ANALYSIS;

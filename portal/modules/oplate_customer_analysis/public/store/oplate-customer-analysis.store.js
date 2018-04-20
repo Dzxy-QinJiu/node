@@ -73,7 +73,16 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
             order: "descend"
         },
         listenScrollBottom: true
-    };   
+    };
+    //各行业试用客户覆盖率
+    this.industryCustomerOverlay = {
+        paramObj: {
+            industry: ""
+        },
+        data: [],
+        errorMsg: "",
+        loading: false        
+    };
     //获取销售新开客户数
     this.newCustomerCount = {
         data: [],
@@ -305,6 +314,17 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler
 OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
     this.isShowCustomerStageTable = !this.isShowCustomerStageTable;
 };
+
+//获取各行业试用客户覆盖率
+OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
+    let list = [];
+    if (data.result) {
+        _.each(data.result, (value, key) => {
+            list = list.concat(value);
+        })
+    }
+    this.industryCustomerOverlay.data = list;
+});
 
 //销售新开客户数
 OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({loading, errorMsg, data, paramObj}) {

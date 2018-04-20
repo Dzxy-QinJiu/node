@@ -95,6 +95,9 @@ function OplateCustomerAnalysisActions() {
 
     // 获取销售新开客户数
     this.getNewCustomerCount = asyncDispatcher(OplateCustomerAnalysisAjax.getNewCustomerCount);
+
+    //获取试用用户覆盖率
+    this.getIndustryCustomerOverlay = asyncDispatcher(OplateCustomerAnalysisAjax.getIndustryCustomerOverlay);
 };
 
 //使用alt导出一个action
