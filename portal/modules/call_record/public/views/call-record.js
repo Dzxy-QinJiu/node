@@ -537,9 +537,10 @@ const CallRecord = React.createClass({
                     var cls = classNames("iconfont",{
                         "icon-callrecord-out": column.call_type == "OU",//呼出的电话
                         "icon-callrecord-in": column.call_type == "IN",//呼出的电话
+                        "icon-phone-call-out": !column.call_type
                     });
                     return (
-                        <div>
+                        <div className="icon-column">
                             {type == 'phone' ? (
                                 <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>
                             ) : (
