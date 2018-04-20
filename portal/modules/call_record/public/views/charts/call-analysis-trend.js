@@ -7,7 +7,7 @@ var TimeSeriesLinechart = React.createClass({
     getDefaultProps : function() {
         return {
             dataList : [],
-            tooltip : function() {}
+            getToolTip : function() {}
         };
     },
     componentDidMount : function() {
@@ -19,7 +19,7 @@ var TimeSeriesLinechart = React.createClass({
             this.props.dataList &&
             prevProps.dataList &&
             immutable.is(this.props.dataList , prevProps.dataList) &&
-            this.props.width === prevProps.width
+            this.props.width === prevProps.width && this.props.lineType === prevProps.lineType && this.props.height === prevProps.height
         ) {
             return;
         }
@@ -49,15 +49,61 @@ var TimeSeriesLinechart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    getSeries : function() {
-        return  this.props.dataList.map((item) =>{
-            return [
-                new Date(item.timestamp),
-                item.count
-            ];
-        });
+    getCategorys: function () {
+        var data = [];
+        if (this.props.isMutileLine) {
+            var dataType = this.props.lineType;
+            var dataList = this.props.dataList[0];
+            _.each(dataList[dataType], (item) => {
+                data.push(new Date(item.timestamp));
+            });
+        } else {
+            this.props.dataList.forEach((item) => {
+                data.push(new Date(item.timestamp));
+            });
+        }
+        return data;
     },
-    getEchartOptions : function() {
+    getLegendData: function () {
+        var data = [];
+        if (this.props.isMutileLine) {
+            var dataList = this.props.dataList;
+            data = _.pluck(dataList,"teamName");
+        }
+        return data;
+    },
+    getDataSerise: function () {
+       //共同的属性
+        var commonObj = {
+            data: [],
+            type: 'line',
+            symbolSize: 6
+        };
+        if (this.props.isMutileLine) {
+            var lineType = this.props.lineType;
+            var dataList = this.props.dataList;
+            var serise = [];
+            _.each(dataList, (dataItem) => {
+                var seriseItem = $.extend(true, {},{name: dataItem.teamName}, commonObj);
+                _.each(dataItem[lineType], (item) => {
+                    seriseItem.data.push(item.count);
+                });
+                serise.push(seriseItem);
+            });
+            return serise;
+        } else {
+            var serise = [$.extend(true, {},{itemStyle: {
+                normal: {
+                    color: '#4d96d1'
+                }
+            }},commonObj)];
+            this.props.dataList.forEach((item) => {
+                serise[0].data.push(item.count);
+            });
+        }
+        return serise;
+    },
+    getEchartOptions: function () {
         return {
             title : null,
             toolbox: {
@@ -67,14 +113,27 @@ var TimeSeriesLinechart = React.createClass({
             tooltip : { // 图表中的提示数据信息
                 trigger: 'axis',
                 formatter : (params) =>{
-                    var params = params[0];
-                    var timeText = moment(params && params.data && params.data[0] || Date.now()).format(oplateConsts.DATE_FORMAT);
-                    var count = params && params.data && params.data[1] || '0';
-                    return this.props.tooltip(timeText , count);
+                    var timeText, count, teamArr;
+                    if(_.isArray(params)){
+                        if (params.length == 1) {
+                            var params = params[0];
+                            timeText = moment(params.name || Date.now()).format(oplateConsts.DATE_FORMAT);
+                            count = params.data;
+
+                        } else if (params.length > 1) {
+                            timeText = [], count = [], teamArr = [];
+                            _.each(params, (paramsItem) => {
+                                timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
+                                count.push(paramsItem.data || 0);
+                                teamArr.push(paramsItem.seriesName)
+                            });
+                        }
+                        return this.props.getToolTip(timeText, count, teamArr);
+                    }
                 }
             },
             legend : {
-                data : ['']
+                data: this.getLegendData()
             },
             grid: {
                 x : 50,
@@ -85,13 +144,13 @@ var TimeSeriesLinechart = React.createClass({
             },
             xAxis : [
                 {
-                    type : 'time',  // 类型为time，时间轴
-                    splitLine : false,
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
                     axisTick : {
@@ -105,7 +164,8 @@ var TimeSeriesLinechart = React.createClass({
                         formatter: () => { // 不显示x轴数值
                             return "";
                         }
-                    }
+                    },
+                    data: this.getCategorys(),
                 }
             ],
             yAxis : [
@@ -133,24 +193,12 @@ var TimeSeriesLinechart = React.createClass({
                     }
                 }
             ],
-            series : [
-                {
-                    name: '',
-                    type: 'line',
-                    symbolSize: 6,
-                    itemStyle : {
-                        normal : {
-                            color : '#4d96d1'
-                        }
-                    },
-                    data:  this.getSeries()
-                }
-            ]
+            series: this.getDataSerise()
         };
     },
     render : function() {
         return (
-            <div className="echart_wrap" ref="chart" style={{width:this.props.width, height:'100%'}}></div>
+            <div className="echart_wrap" ref="chart" style={{width:this.props.width, height:this.props.height}}></div>
         );
     }
 });

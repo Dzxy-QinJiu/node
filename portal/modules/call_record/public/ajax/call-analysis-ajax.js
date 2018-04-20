@@ -42,6 +42,27 @@ exports.getCallCountAndDur = function (reqData, reqBody) {
     });
     return Deferred.promise();
 };
+//分别获取单个团队的通话趋势和通话时长
+let callCountAndDurSeparatelyAjax = null;
+exports.getCallCountAndDurSeparately = function (reqData, reqBody) {
+    callCountAndDurSeparatelyAjax && callCountAndDurSeparatelyAjax.abort();
+    let url = '/rest/call/duration/count/seperately/' + reqData.start_time + '/' + reqData.end_time;
+    var Deferred = $.Deferred();
+    callCountAndDurSeparatelyAjax = $.ajax({
+        url: url,
+        dataType: 'json',
+        type: 'post',
+        data: reqBody,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 
 // 获取电话的接通情况
 exports.getCallInfo = function (pathParam, reqData, type) {

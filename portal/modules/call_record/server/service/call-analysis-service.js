@@ -14,6 +14,8 @@ const restApis = {
     getSingleUserCallDurTopTen: '/rest/callrecord/v2/callrecord/query/trace/user/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取通话数量和通话时长趋势图统计(团队)
     getCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/:start_time/:end_time/:interval',
+    //分别返回团队的通话数量和通话时长
+    getTeamCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/team/:start_time/:end_time/:interval',
     //  获取通话数量和通话时长趋势图统计(销售个人)
     getSingleUserCallCountAndDur: '/rest/callrecord/v2/callrecord/histogram/user/:start_time/:end_time/:interval',
     // 获取电话的接通情况
@@ -65,6 +67,25 @@ exports.getCallCountAndDur = function (req, res, params, reqBody) {
             req: req,
             res: res
         }, reqBody);
+};
+exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getTeamCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
+            req: req,
+            res: res
+        }, reqBody, {
+            success: function (emitter, teamCallData) {
+                var list = [];
+                _.each(teamCallData.result, (value, key) => {
+                    list.push({
+                        teamId: key,
+                        teamData: value
+                    })
+                });
+                emitter.emit("success", list);
+            }
+        })
 };
 
 function batchGetCallInfo(req, res, params, reqData) {
