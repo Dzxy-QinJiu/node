@@ -27,6 +27,10 @@ const BOX_CHARTTYPE = 86;//头部数字区域的高度
 const storageUtil = require("LIB_DIR/utils/storage-util.js");
 import IndustrySelector from "./views/component/industry-seletor";
 import StageSelector from "./views/component/stage-selector";
+const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
+    PASS: 1,
+    HISTORY_PASS: 2
+}
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange: function () {
@@ -54,7 +58,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         OplateCustomerAnalysisAction.getSalesStageList();
         OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
             queryObj: {
-                start_time: this.state.startTime,
+                start_time: 0,//覆盖率接口规定start_time 固定为0
                 end_time: this.state.endTime
             }
         });
@@ -92,7 +96,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         //获取各行业试用客户覆盖率
         OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
             queryObj: {
-                start_time: starttime,
+                start_time: 0,
                 end_time: endtime
             }
         });
@@ -473,13 +477,25 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     },
     //处理 行业试用客户覆盖率 切换筛选条件
     handleSelectChange: function (key, value) {
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: this.state.startTime,
-                end_time: this.state.endTime,
-                [key]: value
-            }
-        });
+        this.state.industryCustomerOverlay.paramObj[key] = value;
+        if (key == "customer_label" && value == Intl.get("common.trial.qualified", "试用合格")) {
+            this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
+            this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
+        }
+        this.setState({
+            industryCustomerOverlay: this.state.industryCustomerOverlay
+        }, () => {
+            const paramObj = {
+                queryObj: {
+                    ...this.state.industryCustomerOverlay.paramObj,
+                    start_time: 0,
+                    end_time: this.state.endTime
+                }
+            };
+            
+            OplateCustomerAnalysisAction.getIndustryCustomerOverlay(paramObj);
+        })
+       
     },
     //处理行业试用客户覆盖率导出
     handleIndustryTrialOverlayExportData: (data) => {
@@ -609,7 +625,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                         onChange={this.handleSelectChange.bind(this, "industry")}
                     />
                     <StageSelector
-                        onChange={this.handleSelectChange.bind(this, "sale_stage")}
+                        onChange={this.handleSelectChange.bind(this, "customer_label")}
                     />
                 </div>
             },

@@ -76,6 +76,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
     };
     //各行业试用客户覆盖率
     this.industryCustomerOverlay = {
+        paramObj: {},
         data: [],
         errorMsg: "",
         loading: false        
@@ -314,7 +315,13 @@ OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
 
 //获取各行业试用客户覆盖率
 OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
-    this.industryCustomerOverlay.data = data.result && data.result.res_list;
+    let list = [];
+    if (data.result) {
+        _.each(data.result, (value, key) => {
+            list = list.concat(value);
+        })
+    }
+    this.industryCustomerOverlay.data = list;
 });
 
 //获取各行业试用客户覆盖率
