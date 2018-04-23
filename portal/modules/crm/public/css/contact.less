@@ -12,6 +12,7 @@
 @btn_color: #8ba9c3;
 @title_color: #333333;
 @hover_bg_color: #f6fbff;
+@delete_confirm_color: #ec5f56;
 .text-ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -32,14 +33,28 @@
     }
   }
   //联系人展示区
+  .contact-item-container.contact-delete-border {
+    border: 1px solid @delete_confirm_color;
+    .contact-item-title {
+      .contact-name {
+        max-width: 115px;
+      }
+      .contact-info {
+        //联系人角色、职位等
+        .contact-info-content {
+          max-width: 115px;
+        }
+      }
+    }
+  }
   .contact-item-container {
     .contact-item-title {
       //设为默认联系人的图标
       .icon-contact-default {
+        display: inline-block;
         font-size: 16px;
         color: #8ea7c5;
-        color: #2096f0;
-        cursor: default;
+        cursor: pointer;
       }
       //默认联系人的图标
       .is-default-contact {
@@ -48,17 +63,27 @@
       }
       //联系人
       .contact-name {
-        max-width: 150px;
+        display: inline-block;
+        height: 24px;
+        line-height: 24px;
+        max-width: 148px;
         padding: 0 4px;
         color: @title_color;
         &:extend(.text-ellipsis);
         cursor: default;
       }
       .contact-info {
+        vertical-align: top;
         cursor: default;
+        span {
+          display: inline-block;
+          height: 24px;
+          line-height: 24px;
+          vertical-align: top;
+        }
         //联系人角色、职位等
         .contact-info-content {
-          max-width: 150px;
+          max-width: 148px;
           &:extend(.text-ellipsis);
         }
       }
@@ -70,6 +95,32 @@
           font-size: 16px;
           color: #8da8c5;
           margin-left: 4px;
+        }
+      }
+      .contact-delete-buttons {
+        float: right;
+        .delete-button-style {
+          width: 72px;
+          height: 24px;
+          line-height: 24px;
+          padding: 0;
+          border-radius: 4px;
+          text-align: center;
+          font-size: 12px;
+        }
+        //确认删除
+        .contact-delete-confirm {
+          color: #ffffff;
+          border: 1px solid @delete_confirm_color;
+          background-color: @delete_confirm_color;
+          &:hover {
+            background-color: #f04134;
+            border: 1px solid #f04134;
+          }
+        }
+        .contact-delete-cancel {
+          color: #8da8c5;
+          margin-right: 6px;
         }
       }
     }

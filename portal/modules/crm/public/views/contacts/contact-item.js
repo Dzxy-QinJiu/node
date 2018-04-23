@@ -270,17 +270,27 @@ var ContactItem = React.createClass({
                         </span>
                         )
                     </span>) : null}
-                <span className="contact-item-buttons">
-                    <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
-                          data-tracename="点击删除联系人按钮"
-                          onClick={this.showDeleteContactConfirm}/>
-                    <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={this.showEditContactForm}
-                                   data-tracename="点击编辑联系人按钮"/>
-                    <span className={contactWayClassName}
-                          data-tracename={isExpanded ? "收起联系方式" : "展开联系方式"}
-                          title={isExpanded ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("crm.basic.detail.show", "展开详情")}
-                          onClick={this.toggleContactWay}/>
-                </span>
+                {this.props.contact.isShowDeleteContactConfirm ? (
+                    <span className="contact-delete-buttons">
+                        <Button className="contact-delete-cancel delete-button-style"
+                                onClick={this.hideDeleteContactModal}>
+                            {Intl.get("common.cancel", "取消")}
+                        </Button>
+                        <Button className="contact-delete-confirm delete-button-style" onClick={this.deleteContact}>
+                            {Intl.get("crm.contact.delete.confirm", "确认删除")}
+                        </Button>
+                    </span>) : (
+                    <span className="contact-item-buttons">
+                        <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
+                              data-tracename="点击删除联系人按钮"
+                              onClick={this.showDeleteContactConfirm}/>
+                        <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={this.showEditContactForm}
+                                       data-tracename="点击编辑联系人按钮"/>
+                        <span className={contactWayClassName}
+                              data-tracename={isExpanded ? "收起联系方式" : "展开其他联系方式"}
+                              title={isExpanded ? Intl.get("crm.contact.way.hide", "收起") : Intl.get("crm.contact.way.show", "展开其他联系方式")}
+                              onClick={this.toggleContactWay}/>
+                    </span>)}
             </span>);
     },
     //是否有某种联系方式（电话、qq、微信、邮箱）
@@ -288,64 +298,58 @@ var ContactItem = React.createClass({
         return contact[type] && _.isArray(contact[type]) && contact[type].length;
     },
 
+    renderContactWayContent (contact, type) {
+        return this.hasContactWay(contact, type) ? _.map(contact[type], item => {
+            return ( <div className="contact-way-item">
+                <span className="contact-way-text">{addHyphenToPhoneNumber(item)}</span>
+                {type === "phone" && this.props.callNumber ? (
+                    <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, item)}>
+                                    {Intl.get("schedule.call.out", "拨打")}
+                                </span>) : null}
+            </div>);
+        }) : null
+    },
 
     //渲染联系方式展示区
     renderContactWay(){
         let contact = this.props.contact.contact;
         return (<div className="contact-way-container">
-            <div className="contact-way-phone contact-way-type">
+            <div className="contact-way-type">
                 <div className="iconfont icon-phone-call-out contact-way-icon" title={Intl.get("common.phone", "电话")}/>
                 <div className="contact-phone-content contact-way-content">
-                    {this.hasContactWay(contact, "phone") ? _.map(contact.phone, phone => {
-                        return ( <div className="contact-phone-item contact-way-item">
-                            <span className="contact-phone contact-way-text">{addHyphenToPhoneNumber(phone)}</span>
-                            {this.props.callNumber ? (
-                                <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, phone)}>
-                                    {Intl.get("schedule.call.out", "拨打")}
-                                </span>) : null}
-                        </div>);
-                    }) : null}
+                    {this.renderContactWayContent(contact, "phone")}
                 </div>
             </div>
             {this.props.contact.isExpanded ? ( <div className="contact-way-other">
-                <div className="contact-way-qq contact-way-type">
+                <div className="contact-way-type">
                     <div className="iconfont icon-qq contact-way-icon" title="QQ"/>
-                    <div className="contact-qq-content contact-way-content">
-                        {this.hasContactWay(contact, "qq") ? _.map(contact.qq, qq => {
-                            return ( <div className="contact-qq-item contact-way-item">
-                                <span className="contact-qq contact-way-text">{qq}</span>
-                            </div>);
-                        }) : null}
+                    <div className="contact-way-content">
+                        {this.renderContactWayContent(contact, "qq")}
                     </div>
                 </div>
-                <div className="contact-way-weChat contact-way-type">
+                <div className="contact-way-type">
                     <div className="iconfont icon-weChat contact-way-icon" title={Intl.get("crm.58", "微信")}/>
-                    <div className="contact-weChat-content contact-way-content">
-                        {this.hasContactWay(contact, "weChat") ? _.map(contact.weChat, weChat => {
-                            return ( <div className="contact-weChat-item contact-way-item">
-                                <span className="contact-weChat contact-way-text">{weChat}</span>
-                            </div>);
-                        }) : null}
+                    <div className="contact-way-content">
+                        {this.renderContactWayContent(contact, "weChat")}
                     </div>
                 </div>
-                <div className="contact-way-email contact-way-type">
+                <div className="contact-way-type">
                     <div className="iconfont icon-email contact-way-icon"
                          title={Intl.get("common.email", "邮箱")}/>
-                    <div className="contact-email-content contact-way-content">
-                        {this.hasContactWay(contact, "email") ? _.map(contact.email, email => {
-                            return ( <div className="contact-email-item contact-way-item">
-                                <span className="contact-email contact-way-text">{email}</span>
-                            </div>);
-                        }) : null}
+                    <div className="contact-way-content">
+                        {this.renderContactWayContent(contact, "email")}
                     </div>
                 </div>
             </div>) : null}
         </div>);
     },
     render(){
+        let containerClassName = classNames("contact-item-container", {
+            "contact-delete-border": this.props.contact.isShowDeleteContactConfirm
+        });
         return (<DetailCard title={this.renderContactTitle()}
                             content={this.renderContactWay()}
-                            className="contact-item-container"/>);
+                            className={containerClassName}/>);
     }
 });
 

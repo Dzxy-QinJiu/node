@@ -1262,6 +1262,9 @@ var zh_CN = {
     "crm.detail.user": "用户",
     "crm.detail.contact.add": "添加联系人",
     "crm.detail.contact.default.set": "设为默认联系人",
+    "crm.contact.way.show": "展开其他联系方式",
+    "crm.contact.way.hide": "收起",
+    "crm.contact.delete.confirm": "确认删除",
     // 客户管理end
 
     // 客户分析start

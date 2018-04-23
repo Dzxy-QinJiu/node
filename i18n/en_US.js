@@ -1244,6 +1244,9 @@ var en_US = {
     "crm.detail.user": "Users",//用户
     "crm.detail.contact.add": "Add a Contact",//添加联系人
     "crm.detail.contact.default.set": "Set as a default contact",//设为默认联系人
+    "crm.contact.way.show": "Expand other ways of contact",//展开其他联系方式
+    "crm.contact.way.hide": "Take up",//收起
+    "crm.contact.delete.confirm": "Confirm deletion",//确认删除
     // 客户管理end
 
     //客户分析 start
