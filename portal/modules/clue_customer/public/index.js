@@ -46,6 +46,7 @@ const ClueCustomer = React.createClass({
             tableHeight: 630,
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            clueImportTemplateFormShow: false,//线索导入面板是否展示
             ...clueCustomerStore.getState()
         };
     },
@@ -128,6 +129,13 @@ const ClueCustomer = React.createClass({
             clueAddFormShow: true
         });
     },
+    //点击导入线索按钮
+    showImportClueTemplate: function () {
+        Trace.traceEvent($(this.getDOMNode()).find(".handle-btn-container"), "点击添加销售线索按钮");
+        this.setState({
+            clueAddFormShow: true
+        });
+    },
     //获取用户的坐席号
     getUserPhoneNumber: function () {
         let member_id = userData.getUserData().user_id;
@@ -163,6 +171,24 @@ const ClueCustomer = React.createClass({
                 }
             </div>
         )
+    },
+    //渲染导入线索的按钮
+    renderImportClue: function () {
+        var containerCls = classNames("import-clue-customer-container", {
+
+        });
+        return (
+            <div className={containerCls}>
+                {hasPrivilege("CUSTOMER_ADD_CLUE") ?
+                    <Button type="primary" icon="plus" onClick={this.showImportClueTemplate}>
+                        <span className="clue-container">
+                            {Intl.get("clue.manage.import.clue", "导入线索")}
+                        </span>
+                    </Button>
+                    :null}
+            </div>
+        )
+
     },
     changeTableHeight: function (filterPanelHeight = 0) {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -640,6 +666,7 @@ const ClueCustomer = React.createClass({
                             onTypeChange={this.onTypeChange}
                         />
                         {this.renderHandleBtn()}
+                        {this.renderImportClue()}
                         <div className="filter-block-line"></div>
                     </FilterBlock>
                     {this.state.clueAddFormShow ? (

@@ -2116,7 +2116,8 @@ var zh_CN = {
     "common.batch.self.sales.target": "批量设置个人销售目标",
     "call.record.average.call.duration": "人均时长",
     "call.record.average.connected": "人均接通数",
-    "call.record.all.teams.trend": "查看各团队通话趋势图"
+    "call.record.all.teams.trend": "查看各团队通话趋势图",
+    "clue.manage.import.clue": "导入线索"
 
 };
 export default zh_CN;
