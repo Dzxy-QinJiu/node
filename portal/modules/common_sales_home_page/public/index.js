@@ -176,13 +176,13 @@ var SalesHomePage = React.createClass({
         var queryObj = {
             total_size: this.state.page_size,
             cursor: true,
-            allot_no_contact: "0"
+
         };
         if (lastId) {
             queryObj.id = lastId;
         }
         //获取新分配的客户
-        SalesHomeAction.getNewDistributeCustomer({}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
+        SalesHomeAction.getNewDistributeCustomer({allot_no_contact: "0"}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
     },
     //获取今日的日程列表
     getScheduleListToday: function () {
