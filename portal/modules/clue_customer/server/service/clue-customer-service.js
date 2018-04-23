@@ -4,6 +4,8 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 "use strict";
+//上传超时时长
+var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("ant-auth-request").restUtil(restLogger);
 const restApis = {
@@ -24,7 +26,9 @@ const restApis = {
     //线索名、电话唯一性验证
     checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search",
     //将线索和客户进行关联
-    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation"
+    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation",
+    //导入线索
+    upload:"/rest/customer/v2/customer/upload/preview"
 
 };
 //查询客户
@@ -118,4 +122,14 @@ exports.relateClueAndCustomer = function (req, res) {
             req: req,
             res: res
         }, req.body)
-}
+};
+//上传线索
+exports.uploadClues = function (req, res) {
+    return restUtil.authRest.post({
+        url: restApis.upload,
+        req: req,
+        res: res,
+        'pipe-upload-file': true,
+        timeout: uploadTimeOut
+    }, null);
+};

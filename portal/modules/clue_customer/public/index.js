@@ -33,6 +33,7 @@ import CONSTS from  "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
 import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
+import ClueImportTemplate from "./views/clue-import-template";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -131,9 +132,9 @@ const ClueCustomer = React.createClass({
     },
     //点击导入线索按钮
     showImportClueTemplate: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".handle-btn-container"), "点击添加销售线索按钮");
+        Trace.traceEvent($(this.getDOMNode()).find(".import-clue-customer-container"), "点击导入线索按钮");
         this.setState({
-            clueAddFormShow: true
+            clueImportTemplateFormShow: true
         });
     },
     //获取用户的坐席号
@@ -654,6 +655,15 @@ const ClueCustomer = React.createClass({
             accessChannelArray:this.state.accessChannelArray
         })
     },
+    //关闭导入线索模板
+    closeClueTemplatePanel:function () {
+        this.setState({
+            clueImportTemplateFormShow: false
+        })
+    },
+    refreshClueList: function () {
+
+    },
     render: function () {
         return (
             <RightContent>
@@ -669,7 +679,7 @@ const ClueCustomer = React.createClass({
                         {this.renderImportClue()}
                         <div className="filter-block-line"></div>
                     </FilterBlock>
-                    {this.state.clueAddFormShow ? (
+                    {this.state.clueAddFormShow? (
                         <SalesClueAddForm
                             hideAddForm={this.hideClueAddForm}
                             accessChannelArray={this.state.accessChannelArray}
@@ -678,6 +688,11 @@ const ClueCustomer = React.createClass({
                             updateClueChannel={this.updateClueChannel}
                         />
                     ) : null}
+                   <ClueImportTemplate
+                       showFlag={this.state.clueImportTemplateFormShow}
+                       closeClueTemplatePanel={this.closeClueTemplatePanel}
+                       refreshClueList={this.refreshClueList}
+                   />
                     {this.state.isLoading ? (
                         <div className="table-loading-wrap">
                             <Spinner />

@@ -2117,7 +2117,8 @@ var zh_CN = {
     "call.record.average.call.duration": "人均时长",
     "call.record.average.connected": "人均接通数",
     "call.record.all.teams.trend": "查看各团队通话趋势图",
-    "clue.manage.import.clue": "导入线索"
-
+    "clue.manage.import.clue": "导入线索",
+    "clue.manage.import.clue.template": "导入线索模板",
+    "clue.manage.failed.import.clue": "导入线索失败，请重试!"
 };
 export default zh_CN;
