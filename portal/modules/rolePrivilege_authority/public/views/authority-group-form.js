@@ -97,7 +97,7 @@ var AuthorityGroupForm = React.createClass({
             if (flag) {
                 Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-div"),"选中全部的权限");
             } else {
-                Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-div"),"取消选中的权限")
+                Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-div"),"取消选中的权限");
             }
             if (_.isArray(this.state.formData.permissionList) && this.state.formData.permissionList.length > 0) {
                 this.state.formData.permissionList.forEach(function (permission) {
@@ -235,7 +235,7 @@ var AuthorityGroupForm = React.createClass({
                     _this.setState({
                         saveGroupNameMsg: "",//保存组名的提示信息
                         saveGroupNameResult: ""//修改组名时的保存结果
-                    })
+                    });
                 }, 3000);
             }
         },
@@ -433,7 +433,7 @@ var AuthorityGroupForm = React.createClass({
                                                 });
                                                 return (<div className={classes} title={permission.permissionApiUrl}
                                                              key={index}>{permission.permissionApiMethod}
-                                                    — {permission.permissionApiUrl}</div>)
+                                                    — {permission.permissionApiUrl}</div>);
                                             })}
                                         </div>
                                     </div>
@@ -446,7 +446,7 @@ var AuthorityGroupForm = React.createClass({
                                         <div className="authority-info-item-right">
                                             {authority.permissionDatas.map(function (permissionData, index) {
                                                 return (<div className="authority-api" title={permissionData}
-                                                             key={index}>{permissionData}</div>)
+                                                             key={index}>{permissionData}</div>);
                                             })}
                                         </div>
                                     </div>
@@ -478,7 +478,7 @@ var AuthorityGroupForm = React.createClass({
                         />) : ""
                     }
 
-                </li>)
+                </li>);
             } else {
                 return null;
             }

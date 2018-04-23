@@ -27,7 +27,7 @@ let stepMap = {
     "1":"基本信息",
     "2":"产品信息",
     "3":"回款计划"
-}
+};
 
 const ContractRightPanel = React.createClass({
     getInitialState: function () {

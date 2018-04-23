@@ -24,7 +24,7 @@ var UserApply = React.createClass({
                 </div>
 
             </div>
-        )
+        );
     }
 });
 module.exports = UserApply;

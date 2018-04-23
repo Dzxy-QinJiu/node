@@ -55,5 +55,5 @@ exports.getPlatforms = function(req, res){
         url: ThirdAppDetailUrls.getPlatforms,
         req: req,
         res: res
-    }, {})
+    }, {});
 };

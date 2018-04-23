@@ -26,4 +26,4 @@ module.exports = {
             "CREATE_CUSTOMER_APP_FEEDBACK"
         ]
     }]
-}
+};

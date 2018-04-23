@@ -204,7 +204,7 @@ var SalesTeamPage = React.createClass({
                     </div>))
                 }
             </div>
-        )
+        );
     }
 });
 

@@ -62,7 +62,7 @@ var UserInfo = React.createClass({
                 roles: "",
                 reject: "",
             }
-        }
+        };
     },
     getInitialState: function () {
         return {
@@ -202,7 +202,7 @@ var UserInfo = React.createClass({
             }
             this.setState({
                 formData: formData
-            })
+            });
         }
 
     },
@@ -211,10 +211,10 @@ var UserInfo = React.createClass({
         var formData = this.state.formData;
         var configObj = {"config": true};
         if (formData.reject < 1) {
-            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback)
+            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
         } else {
             configObj.config = false;
-            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback)
+            UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
         }
     },
     retryRealm: function () {
@@ -223,7 +223,7 @@ var UserInfo = React.createClass({
     renderRealm: function () {
 
         if (this.props.realmLoading) {
-            return (<Icon type="loading"/>)
+            return (<Icon type="loading"/>);
         } else if (this.props.realmErrorMsg) {
             var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm}
                                                             style={{marginLeft: "20px", marginTop: "20px"}}>
@@ -235,7 +235,7 @@ var UserInfo = React.createClass({
                     type="error"
                     showIcon
                 />
-            )
+            );
 
         } else {
             return (<span>{this.props.managedRealm.realm_name}</span>);
@@ -259,7 +259,7 @@ var UserInfo = React.createClass({
                         }}
                     />
                 </div>
-            )
+            );
         } else {
             return (
                 <div>
@@ -274,7 +274,7 @@ var UserInfo = React.createClass({
                     />
 
                 </div>
-            )
+            );
         }
     },
     getLangOptions: function () {
@@ -321,7 +321,7 @@ var UserInfo = React.createClass({
                         showIcon
                     />
                 </div>
-            )
+            );
 
         } else {
             return (
@@ -402,7 +402,7 @@ var UserInfo = React.createClass({
                         </div>
                     </PrivilegeChecker>
                 </div>
-            )
+            );
         }
     },
     render: function () {

@@ -49,7 +49,7 @@ function start() {
         .socketDelay(10000)
         .reply(function (uri, requestBody, cb) {
             setTimeout(function () {
-                cb(null, [200, 'THIS IS THE REPLY BODY'])
+                cb(null, [200, 'THIS IS THE REPLY BODY']);
             }, 10);
         });
     nock('http://172.19.100.17:80')

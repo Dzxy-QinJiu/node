@@ -115,7 +115,7 @@ var BarChart = React.createClass({
                     serie.data = _.pluck(chartData.slice().reverse(), this.props.valueField);
                 }else{
                     serie.data = _.pluck(chartData, this.props.valueField);
-                };
+                }
                 serie.itemStyle = {
                     normal: {
                         color: COLORSINGLE,
@@ -353,7 +353,7 @@ var BarChart = React.createClass({
                 if(!name) {
                     name = 'null';
                 } else if(name === 'unknown') {
-                    name = Intl.get("common.unknown", "未知"); ;
+                    name = Intl.get("common.unknown", "未知"); 
                 }
                 var seriesName = obj.seriesName;
                 let timeDesc =  Intl.get("oplate_customer_analysis.12", "至{time}为止", {time: _this.props.endDate});
@@ -380,7 +380,7 @@ var BarChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose()} catch(e){};
+            try {this.echartInstance.dispose();} catch(e){}
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = "";

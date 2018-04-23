@@ -80,7 +80,7 @@ var AppCodeTrace = React.createClass({
                 </div>
 
             </div>
-        )
+        );
     },
     retryGetAppKey:function () {
         var appId = this.props.appId;
@@ -115,7 +115,7 @@ var AppCodeTrace = React.createClass({
             <div className="code-container">
                 {this.renderCodeContent()}
             </div>
-        )
+        );
     }
 });
 module.exports = AppCodeTrace;

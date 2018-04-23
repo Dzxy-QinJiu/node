@@ -215,7 +215,7 @@ var NavSidebar = React.createClass({
                 userInfoLogo: userLogoInfo.userLogo
             });
             //修改缓存中对应的图片信息
-            userData.updateUserLogo(userLogoInfo)
+            userData.updateUserLogo(userLogoInfo);
         }
     },
     resizeFunction: function () {
@@ -242,7 +242,7 @@ var NavSidebar = React.createClass({
                 tipMessage: Intl.get("schedule.tip.intro.message", "日程功能上线了，赶快点开看看吧！"),
                 $introElement: $introElement,
                 introModalLayout: introModalLayout
-            })
+            });
         }
     },
 
@@ -478,7 +478,7 @@ var NavSidebar = React.createClass({
                     </Link>
                 </Popover>
             </div>
-        )
+        );
     },
 
     //侧边导航左下个人信息
@@ -499,7 +499,7 @@ var NavSidebar = React.createClass({
                     </div>
                 </Popover>
             </div>
-        )
+        );
     },
     getNavbarLists: function () {
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
@@ -562,7 +562,7 @@ var NavSidebar = React.createClass({
                                         var extraClass = currentPageCategory === category && pathName !== "contract/dashboard" ? 'active' : '';
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
                                         if (!(_.contains(NavSidebarLists, menu))) {
-                                            NavSidebarLists.push(menu)
+                                            NavSidebarLists.push(menu);
                                         }
                                         return (
                                             <li key={i} className={`ico ${menu.routePath.replace(/\//g, '_')}_ico`}>

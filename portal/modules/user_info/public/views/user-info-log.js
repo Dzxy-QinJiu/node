@@ -15,7 +15,7 @@ var UserInfoLog = React.createClass({
     },
     renderLoading() {
         if (this.props.logLoading && this.props.sortId === "") {
-            return <Spinner className="isloading"/>
+            return <Spinner className="isloading"/>;
         }
         return null;
     },

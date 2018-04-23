@@ -64,7 +64,7 @@ exports.toRestObject = function (frontObj) {
         restObject.nick_name = frontObj.name;
     }
     if (frontObj.phone || frontObj.phone === "") {
-        restObject.phone = frontObj.phone
+        restObject.phone = frontObj.phone;
     }
     if (frontObj.email || frontObj.email === "") {
         restObject.email = frontObj.email;

@@ -53,7 +53,7 @@ exports.addAuthority = function (req, res) {
             fact_class: authority.permissionType,
             permission_datas: authority.permissionDatas,
             realm_id: authority.realmId
-        }
+        };
     });
     authorityManageServic.addAuthority(req, res, authoritys)
         .on("success", function (data) {
@@ -114,5 +114,5 @@ exports.deleteAuthority = function (req, res) {
     }, function (errorMsg) {
         res.status(500).json(errorMsg);
     });
-}
+};
 

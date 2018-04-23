@@ -90,7 +90,7 @@ var AppInfo = React.createClass({
             } else {
                 var status = 1;
                 if (this.props.appInfo.status == 1) {
-                    status = 0
+                    status = 0;
                 }
                 this.props.updateStatus(this.props.appInfo.id, status);
                 Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击确认按钮");
@@ -152,7 +152,7 @@ var AppInfo = React.createClass({
                         _this.setState({
                             saveMsg: "",//保存组名的提示信息
                             saveResult: ""//修改组名时的保存结果
-                        })
+                        });
                     }, 3000);
                 }
             });

@@ -32,7 +32,7 @@ function mapFormatter(obj) {
     return [
         Intl.get("oplate_bd_analysis_realm_zone.1","省份")+'：' + obj.name ,
         Intl.get("oplate_bd_analysis_realm_industry.6","个数")+'：' + (isNaN(obj.value) ? 0 : obj.value)
-    ].join('<br/>')
+    ].join('<br/>');
 }
 
 const LAST_SELECT_APPS_KEY = 'app_over_view_app_id';
@@ -124,7 +124,7 @@ const AppOverView = React.createClass({
             page_num: 1,
             page_size: 1,
             logins_min: 1
-        }
+        };
     },
     // 获取数据所需参数
     getQueryParams(timeStamp) {
@@ -244,7 +244,7 @@ const AppOverView = React.createClass({
         let activeRateObj = {active: 0, percent: 0};
         if (activeRate) {
             activeRateObj.active = activeRate.active || 0;
-            activeRateObj.percent = activeRate.percent || 0
+            activeRateObj.percent = activeRate.percent || 0;
         }
         return activeRateObj;
     },
@@ -281,7 +281,7 @@ const AppOverView = React.createClass({
                     {appUserRate.map( (userRate) => {
                         return <div>
                             <AppUserRate appUserRate={userRate}/>
-                        </div>
+                        </div>;
                     } )}
                 </div>
             </CardContainer>
@@ -436,7 +436,7 @@ const AppOverView = React.createClass({
             appList = [];
         }
         return appList.map( (item) => {
-            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>
+            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
     },
     render() {

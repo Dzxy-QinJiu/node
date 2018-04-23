@@ -24,7 +24,7 @@ const PositionInfo = React.createClass({
                 realm_id: ''
             },
             editOrgFlag: false // 修改组织的标志，默认是false
-        }
+        };
     },
     componentWillReceiveProps(nextProps) {
         let selectRowObj = _.find( this.props.positionList, (item) => {

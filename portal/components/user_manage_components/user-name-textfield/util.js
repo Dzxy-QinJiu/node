@@ -96,7 +96,7 @@ exports.validatorMessageTips = function (value, callback) {
     let userNameRegex = /^[0-9a-zA-Z_@.-]{1,50}$/;
     if (language.lan() == "es") {
         // 西班牙语中用户名的验证规则（Ññ Áá Éé Óó Úú Íí）
-        userNameRegex = /^[0-9a-zA-ZñáçéíóúüÑÁÇÉÍÓÚÜ_@.-]{1,50}$/
+        userNameRegex = /^[0-9a-zA-ZñáçéíóúüÑÁÇÉÍÓÚÜ_@.-]{1,50}$/;
     }
     if (!value) {
         callback(Intl.get("user.username.write.tip", "请填写用户名"));

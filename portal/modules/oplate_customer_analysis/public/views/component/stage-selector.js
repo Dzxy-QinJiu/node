@@ -25,12 +25,12 @@ class StageSelector extends React.Component {
                 value = "";
             }
             this.props.onChange(value);
-        })
+        });
     }
     render() {
         const options = STAGES.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
-        ))
+        ));
         return (
             <Select
                 value={this.state.selectedStage}
@@ -39,7 +39,7 @@ class StageSelector extends React.Component {
             >
                 {options}
             </Select>
-        )
+        );
     }
 }
 export default StageSelector;

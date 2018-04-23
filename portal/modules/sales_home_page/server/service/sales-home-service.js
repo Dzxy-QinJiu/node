@@ -52,7 +52,7 @@ function getGrantApplications(req, res, status) {
         });
     });
 
-};
+}
 //获取当前销售所在销售团队的团队树
 exports.getSalesTeamTree = function (req, res, type) {
     return restUtil.authRest.get(

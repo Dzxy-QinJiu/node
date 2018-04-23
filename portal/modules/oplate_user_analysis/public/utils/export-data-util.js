@@ -40,7 +40,7 @@ function handleUserType(userTypeData) {
         totalArray.unshift(Intl.get('operation.report.total.num', '总数'));
         userTypeArrayData.push(totalArray);
     }
-    return userTypeArrayData
+    return userTypeArrayData;
 }
 // 用户统计数据的处理
 export function handleUserStatis (userAnalysisData) {
@@ -165,7 +165,7 @@ export function handleActiveTimesData(processData) {
     } );
     titleNameArray.unshift(Intl.get('common.login.time', '时间'));
     let exportData = [];
-    let  groupBy = _.groupBy(processData, (active) => {return active.week} );
+    let  groupBy = _.groupBy(processData, (active) => {return active.week;} );
     _.each(groupBy, (group) => {
         let week = group[0].week;
         let countArray = _.pluck(group, 'count');

@@ -49,5 +49,5 @@ exports.getExpireCustomer = function (req, res) {
         url: url.replace(":type", req.params.type),
         req: req,
         res: res
-    }, req.body)
+    }, req.body);
 };

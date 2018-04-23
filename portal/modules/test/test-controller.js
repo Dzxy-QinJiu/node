@@ -108,7 +108,7 @@ var RestTest = {
             res.status(500).json(codeMessage && codeMessage.message);
         });
     }
-}
+};
 
 exports.getData = RestTest.getData;
 exports.getToken = RestTest.getToken;

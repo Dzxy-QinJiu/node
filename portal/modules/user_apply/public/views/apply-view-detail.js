@@ -91,7 +91,7 @@ function getApplyDetailUrl(detailInfo) {
     var basePath = window.location.origin + window.location.pathname;
     //跳转到具体申请详情的链接url
     return basePath + (applyId ? "?id=" + applyId : "");
-};
+}
 //获取延期时间
 function getDelayDisplayTime(delay) {
     //年毫秒数
@@ -291,7 +291,7 @@ const ApplyViewDetail = React.createClass({
         }
         if (replyListInfo.result === 'error') {
             var message = <span>{replyListInfo.errorMsg}，<Icon type="reload" onClick={this.refreshReplyList}
-                                                               title={Intl.get("common.get.again", "重新获取")}/></span>
+                                                               title={Intl.get("common.get.again", "重新获取")}/></span>;
             return <div>
                 <Alert
                     message={message}
@@ -323,7 +323,7 @@ const ApplyViewDetail = React.createClass({
                                         <p>{replyItem.message}</p>
                                     </dd>
                                 </dl>
-                            </li>)
+                            </li>);
                     })}
                 </ul>
             </div>);
@@ -454,7 +454,7 @@ const ApplyViewDetail = React.createClass({
         setTimeout(() => {
             this.refs.validation.validate(function () {
             });
-        })
+        });
     },
     renderEditUserName(){
         ApplyViewDetailActions.setUserNameEdit(true);
@@ -541,12 +541,12 @@ const ApplyViewDetail = React.createClass({
                                                     onClick={this.showUserDetail.bind(this, id)}
                                                     data-tracename="查看用户详情"> {info.user_names[idx]}</a>
                                     </li>
-                                )
+                                );
 
                             })
                         }
                     </ul>
-                )
+                );
             } else {
                 if (info.user_names && info.user_names.length === 1) {
                     return (
@@ -853,7 +853,7 @@ const ApplyViewDetail = React.createClass({
                                         rolesNames.map((item) => {
                                             return (
                                                 <div>{item}</div>
-                                            )
+                                            );
                                         })
                                     )}
                                 </td>
@@ -863,7 +863,7 @@ const ApplyViewDetail = React.createClass({
                                             permissionsNames.map((item) => {
                                                 return (
                                                     <div>{item}</div>
-                                                )
+                                                );
                                             })
                                         }
                                     </td>) : null
@@ -943,7 +943,7 @@ const ApplyViewDetail = React.createClass({
         const selectedApps = this.state.detailInfoObj.info.apps;
         let height = this.getApplyDetailHeight();
         if (height != 'auto') {
-            height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT
+            height = height - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.ORDER_DIV_HEIGHT - AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.OPERATION_BTN_HEIGHT;
         }
         if (this.state.selectedDetailItem.isConsumed == 'true') {
             return null;
@@ -1283,7 +1283,7 @@ const ApplyViewDetail = React.createClass({
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split("、").map((app_name) => {
-                            return <p>{app_name}</p>
+                            return <p>{app_name}</p>;
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
@@ -1383,7 +1383,7 @@ const ApplyViewDetail = React.createClass({
                            onClick={this.showCustomerDetail.bind(this, detailInfo.customer_id)}
                            data-tracename="查看客户详情">{detailInfo.customer_name}</a>
                     </dd>
-                </dl>
+                </dl>;
             }
         }
         return null;
@@ -1432,7 +1432,7 @@ const ApplyViewDetail = React.createClass({
                     <dl className="dl-horizontal detail_item">
                         <dt><ReactIntl.FormattedMessage id="common.app.name" defaultMessage="应用名称"/></dt>
                         <dd>{(detailInfo.app_name || '').split("、").map((app_name) => {
-                            return <p>{app_name}</p>
+                            return <p>{app_name}</p>;
                         })}</dd>
                     </dl>
                     <dl className="dl-horizontal detail_item">
@@ -1509,7 +1509,7 @@ const ApplyViewDetail = React.createClass({
                 message={replyFormInfo.errorMsg}
                 type="error"
                 showIcon={true}
-            />
+            />;
         }
         if (replyFormInfo.result === 'success') {
             return <AlertTimer
@@ -1517,7 +1517,7 @@ const ApplyViewDetail = React.createClass({
                 type="success"
                 showIcon={true}
                 onHide={ApplyViewDetailActions.resetReplyFormResult}
-            />
+            />;
         }
         return null;
     },
@@ -2054,7 +2054,7 @@ const ApplyViewDetail = React.createClass({
     closeCustomerUserListPanel() {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     // 获取更改或是没有更改的用户数最大值
     getChangeMaxUserNumber(){

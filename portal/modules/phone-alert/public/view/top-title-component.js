@@ -7,13 +7,13 @@ require("../css/top-title-cmp.less");
 class TopTitle extends React.Component{
     constructor(props) {
         super(props);
-    };
+    }
     render(){
         return (
             <div className="top-title-container">
                 <span className="topic-title">{this.props.titleText}</span>
             </div>
-        )
+        );
     }
 
 }

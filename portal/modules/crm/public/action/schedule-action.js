@@ -29,7 +29,7 @@ function ScheduleAction() {
         scheduleAjax.addSchedule(reqData).then((resData) => {
             cb(resData);
         },(errMsg)=>{
-            cb(errMsg)
+            cb(errMsg);
         });
     };
     //编辑日程管理
@@ -43,7 +43,7 @@ function ScheduleAction() {
         scheduleAjax.deleteSchedule(reqData).then((resData)=> {
             cb(resData);
         },(errMsg)=>{
-            cb(errMsg)
+            cb(errMsg);
         });
     };
     //修改某条日程管理的状态
@@ -51,9 +51,9 @@ function ScheduleAction() {
         scheduleAjax.handleScheduleStatus(reqData).then(function (resData) {
             cb(resData);
         },(errMsg)=>{
-            cb(errMsg)
+            cb(errMsg);
         });
-    }
+    };
 }
 
 module.exports = alt.createActions(ScheduleAction);

@@ -166,13 +166,13 @@ function showDesktopNotification(title, tipContent, isClosedByClick) {
                     notification.close();
                 }, TIMEOUTDELAY.closeTimeDelay);
             }
-        }
+        };
 }
 // 标签页是否可见（各种浏览器兼容）
 function documentIsHidden() {
     return document.hidden || document.mozHidden || document.msHidden
         || document.webkitHidden;
-};
+}
 
 //获取申请用户的名称
 function getUserNames(message) {
@@ -315,7 +315,7 @@ function notifyReplyInfo(data) {
                     notificationUtil.updateText(notify, {
                         content: tipContent,
                     });
-                }, TIMEOUTDELAY.renderTimeDelay)
+                }, TIMEOUTDELAY.renderTimeDelay);
             }
         }
     }

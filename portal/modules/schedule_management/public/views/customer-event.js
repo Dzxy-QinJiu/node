@@ -11,7 +11,7 @@ class CustomEvent extends React.Component {
         this.state = {
             visible: false,
             curCustomerId:"",
-        }
+        };
     }
 
     handleVisibleChange = (visible) => {
@@ -36,10 +36,10 @@ class CustomEvent extends React.Component {
                             <p className={listCls} onClick={this.handleClickEvent.bind(this, item.customer_id)}>
                                 {item.customer_name}
                             </p>
-                        )
+                        );
                     })}
             </div>
-        )
+        );
     };
 
     render() {

@@ -45,7 +45,7 @@ var LogView = React.createClass({
             selectedRowIndex: null, // 点击的行索引
             isShowRightPanel: this.props.isShowRightPanel,
             ...UserAuditLogStore.getState()
-        }
+        };
 
     },
 
@@ -99,17 +99,17 @@ var LogView = React.createClass({
         // 日志信息的id
         var sort_id = queryParams && 'sort_id' in queryParams ? queryParams.sort_id : this.state.sortId;
         if (sort_id) {
-            searchObj.sort_id = sort_id
+            searchObj.sort_id = sort_id;
         }
         // 开始时间
         var starttime = queryParams && 'starttime' in queryParams ? queryParams.starttime : this.state.startTime;
         if (starttime) {
-            searchObj.starttime = starttime
+            searchObj.starttime = starttime;
         }
         // 结束时间
         var endtime = queryParams && 'endtime' in queryParams ? queryParams.endtime : this.state.endTime;
         if (endtime) {
-            searchObj.endtime = endtime
+            searchObj.endtime = endtime;
         }
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
     },
@@ -125,7 +125,7 @@ var LogView = React.createClass({
                 title={item.app_name}
             >
                 {item.app_name}
-            </Option>
+            </Option>;
         });
         return list;
     },
@@ -192,7 +192,7 @@ var LogView = React.createClass({
                             {row.user_name}
                             <input type="hidden" value={row.user_id} className={userInputClass} />
                         </div>
-                    )
+                    );
                 }
             },
             {
@@ -542,7 +542,7 @@ var LogView = React.createClass({
             handleScrollBottom: this.handleScrollBottom,
             loading: this.state.appUserListResult === "loading",
             showNoMoreDataTip: this.showNoMoreDataTip(),
-        }
+        };
         return (
             <div
                 className="user-list-table-wrap scroll-load"

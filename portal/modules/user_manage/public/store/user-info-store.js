@@ -30,10 +30,10 @@ UserInfoStore.prototype.setInitialData = function () {
     this.logNum = 1;
     this.getUserDetailError = "";
     this.page_size = CONSTANTS.LOG_PAGE_SIZE;
-}
+};
 UserInfoStore.prototype.changeLogNum = function (num) {
     this.logNum = num;
-}
+};
 UserInfoStore.prototype.getSalesGoals = function (result) {
     if (!result.loading && !result.error){
         this.saleGoalsAndCommissionRadio = result.data;

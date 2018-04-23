@@ -126,7 +126,7 @@ function modifySessionData(req, data) {
     req.session["_USER_TOKEN_"] = userData["_USER_TOKEN_"];
     req.session.clientInfo = userData.clientInfo;
     req.session.user = userData.user;
-};
+}
 
 //登录成功处理
 function loginSuccess(req, res) {
@@ -145,7 +145,7 @@ function loginSuccess(req, res) {
                 res.redirect("/");
             }
         });
-    }
+    };
 }
 //登录失败处理
 function loginError(req, res) {
@@ -167,7 +167,7 @@ function loginError(req, res) {
                 res.redirect("/login?lang=" + lang);
             }
         });
-    }
+    };
 }
 
 //获取验证码
@@ -232,7 +232,7 @@ function getOperateCode(req, res) {
             reject(errorObj);
         });
     });
-};
+}
 
 //发送重置密码时的身份验证信息
 exports.sendResetPasswordMsg = function (req, res) {

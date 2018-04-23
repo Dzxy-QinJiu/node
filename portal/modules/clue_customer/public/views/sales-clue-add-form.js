@@ -139,7 +139,7 @@ const SalesClueAddForm = React.createClass({
     },
     handleSubmit () {
         if (this.state.isSaving) {
-            return
+            return;
         }
         var validation = this.refs.validation;
         validation.validate(valid => {
@@ -196,7 +196,7 @@ const SalesClueAddForm = React.createClass({
         if (this.state.saveResult == "success") {
             this.setState({
                 isShowAssignAndRelate: true
-            })
+            });
         } else {
             this.setState({
                 saveMsg: "",
@@ -240,13 +240,13 @@ const SalesClueAddForm = React.createClass({
     },
     // 设置传入的值并触发手机验证
     setNeedPhoneValidateValue (field, e) {
-        const newFormData = _.clone(this.state.formData)
-        newFormData[field] = $.trim(e.target.value)
+        const newFormData = _.clone(this.state.formData);
+        newFormData[field] = $.trim(e.target.value);
         this.setState({
             formData: newFormData
         }, () => {
-            this.phoneInputRef.props.form.validateFields({force: true})
-        })
+            this.phoneInputRef.props.form.validateFields({force: true});
+        });
     },
     renderAssignAndRelate(){
         return (
@@ -255,7 +255,7 @@ const SalesClueAddForm = React.createClass({
                     curClueDetail={this.state.newAddClue}
                 />
             </div>
-        )
+        );
     },
     renderAddForm(){
         let formData = this.state.formData;
@@ -346,7 +346,7 @@ const SalesClueAddForm = React.createClass({
                                     {
                                         _.isArray(this.props.clueSourceArray) ?
                                             this.props.clueSourceArray.map((source, idx) => {
-                                                return (<Option key={idx} value={source}>{source}</Option>)
+                                                return (<Option key={idx} value={source}>{source}</Option>);
                                             }) : null
                                     }
                                 </Select>
@@ -367,7 +367,7 @@ const SalesClueAddForm = React.createClass({
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
-                                            return (<Option key={idx} value={source}>{source}</Option>)
+                                            return (<Option key={idx} value={source}>{source}</Option>);
                                         }) : null
                                     }
                                 </Select>
@@ -419,7 +419,7 @@ const SalesClueAddForm = React.createClass({
                     <Spinner className="right-panel-saving"/>
                 </div>) : ""}
             </div>
-        )
+        );
     },
 
     render() {

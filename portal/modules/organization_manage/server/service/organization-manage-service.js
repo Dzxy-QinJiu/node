@@ -40,7 +40,7 @@ function turnToFrontMember(data) {
                 status: member.status,
                 userName: member.user_name,
                 userLogo: member.user_logo
-            }
+            };
         });
 
     }
@@ -73,7 +73,7 @@ function turnToFrontUser(data) {
                     nickName: userObj.user.nick_name,
                     userName: userObj.user.user_name,
                     description: userObj.user.description
-                }
+                };
             }
         });
     }

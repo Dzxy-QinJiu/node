@@ -30,8 +30,8 @@ function OnlineUserListAction() {
            }
         }, (errMsg) => {
             message.error(errMsg || Intl.get("user.online.kick.error", "踢出失败"));
-        })
-    }
+        });
+    };
 }
 
 module.exports = alt.createActions(OnlineUserListAction);

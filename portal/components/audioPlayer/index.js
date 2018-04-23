@@ -13,7 +13,7 @@ class AudioPlayer extends React.Component {
             isShowReportButton: this.props.isShowReportButton,//是否展示上报按钮
             playingItemAddr: this.props.playingItemAddr//当前正在播放的录音的地址
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.isShowReportButton !== this.props.isShowReportButton) {
@@ -26,7 +26,7 @@ class AudioPlayer extends React.Component {
                 playingItemAddr: nextProps.playingItemAddr
             });
         }
-    };
+    }
     render() {
         return (
             <div className="audio-player-wrap" data-tracename="播放录音界面">
@@ -57,7 +57,7 @@ class AudioPlayer extends React.Component {
                     </div>}
 
             </div>
-        )
+        );
     }
 }
 AudioPlayer.defaultProps = {

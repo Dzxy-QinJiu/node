@@ -85,7 +85,7 @@ var Crm = React.createClass({
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
             ...this.getStateData()
-        }
+        };
     },
     getSelectedCustomer: function (curCustomerList) {
         let selectedCustomer = [];
@@ -171,7 +171,7 @@ var Crm = React.createClass({
             this.setState({
                 errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
             });
-        })
+        });
     },
 
     componentDidMount: function () {
@@ -222,7 +222,7 @@ var Crm = React.createClass({
                 if (filterField == 'trend') {
                     startTime = currentTime - 8 * 60 * 60 * 1000;
                     endTime = currentTime + 16 * 60 * 60 * 1000 - 1;
-                    this.setRange({startTime, endTime})
+                    this.setRange({startTime, endTime});
                 }
             } else {
                 //其他三种情况都是累积数据
@@ -503,7 +503,7 @@ var Crm = React.createClass({
                 unexist.push("industry");
                 delete condition.industry;
             } else {//需精确匹配
-                term_fields.push("industry")
+                term_fields.push("industry");
             }
         }
         var saleStage = '';
@@ -659,7 +659,7 @@ var Crm = React.createClass({
     onTableChange: function (pagination, filters, sorter) {
         this.setState({
             isScrollTop: true
-        })
+        });
         let sorterChanged = false;
         let filterChanged = this.state.filterChanged;
 
@@ -926,7 +926,7 @@ var Crm = React.createClass({
     closeCustomerUserListPanel: function () {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     onPageChange: function (page) {
         Trace.traceEvent($(this.getDOMNode()).find(".antc-table .ant-table-wrapper"), "翻页至第" + page + "页");
@@ -947,7 +947,7 @@ var Crm = React.createClass({
             if (page > currPageNum) {
                 //向后翻页
                 pageValue = page - currPageNum;
-                customerId = _.last(curCustomerList).id
+                customerId = _.last(curCustomerList).id;
             } else {
                 //向前翻页
                 if (page != "1") {
@@ -984,7 +984,7 @@ var Crm = React.createClass({
         if (customerArr) {
             customerArr.interest = interestObj.interest;
         }
-        ;
+        
         this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
@@ -1078,7 +1078,7 @@ var Crm = React.createClass({
 
         function rowKey(record, index) {
             return record.id;
-        };
+        }
 
         const column_width = "90px";
         var columns = [
@@ -1393,7 +1393,7 @@ var Crm = React.createClass({
                     ) : null}
                 </Modal>
             </div>
-        </RightContent>)
+        </RightContent>);
     }
 });
 

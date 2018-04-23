@@ -9,7 +9,7 @@ function CustomerRecordStore() {
     //初始化state数据
     this.resetState();
     this.bindActions(CustomerRecordActions);
-};
+}
 CustomerRecordStore.prototype.resetState = function () {
     this.customerRecord = [];//客户跟踪记录列表
     this.customerRecordLoading = false;//正在加载客户跟踪记录信息

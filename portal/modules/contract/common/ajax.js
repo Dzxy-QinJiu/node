@@ -31,4 +31,4 @@ export default function (arg) {
         }
     });
     return Deferred.promise();
-};
+}

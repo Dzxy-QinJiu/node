@@ -74,7 +74,7 @@ class Realm {
             restObject.status = frontObj.status;
         }
         if (frontObj.phone || frontObj.phone === "") {
-            restObject.phone = frontObj.phone
+            restObject.phone = frontObj.phone;
         }
         if (frontObj.email || frontObj.email === "") {
             restObject.email = frontObj.email;

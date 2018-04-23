@@ -53,7 +53,7 @@ var SummaryNumber = React.createClass({
             activeClass += ' active';
         }
         return (
-            <div className={activeClass} onClick={e => {Trace.traceEvent(e,"点击查询" + this.props.desp + "统计");return this.props.onClick()}}>
+            <div className={activeClass} onClick={e => {Trace.traceEvent(e,"点击查询" + this.props.desp + "统计");return this.props.onClick();}}>
                 {
                     this.props.resultType === 'loading' ?
                         this.renderLoading():

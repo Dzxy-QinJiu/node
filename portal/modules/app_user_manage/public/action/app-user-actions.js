@@ -181,7 +181,7 @@ function AppUserAction() {
         },()=>{
             this.dispatch({error: true});
         });
-    }
+    };
 }
 
 module.exports = alt.createActions(AppUserAction);

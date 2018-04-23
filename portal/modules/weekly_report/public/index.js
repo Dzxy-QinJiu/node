@@ -68,7 +68,7 @@ const WeeklyReport = React.createClass({
         if (this.state.teamList.loading) {
             return (
                 <Spinner/>
-            )
+            );
         } else if (this.state.teamList.errMsg) {
             return this.handleErrResult();
         } else {
@@ -84,10 +84,10 @@ const WeeklyReport = React.createClass({
                                     onClick={this.handleClickReportTitle.bind(this, teamItem, i)}>
                                     {teamItem.teamDsc}
                                 </li>
-                            )
+                            );
                         })}
                     </ul>
-                )
+                );
             } else {
                 var noDataMsg = <span>{Intl.get("weekly.report.no.report", "暂无符合条件的周报")}</span>;
                 return <Alert
@@ -116,7 +116,7 @@ const WeeklyReport = React.createClass({
                     searchEvent={this.onSearchInputChange}
                 />
             </div>
-        )
+        );
     },
     render: function () {
         //列表高度
@@ -169,7 +169,7 @@ const WeeklyReport = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 });
 module.exports = WeeklyReport;

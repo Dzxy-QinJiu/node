@@ -78,4 +78,4 @@ exports.addAppFeedback = function (sumbitObj) {
         }
     });
     return Deferred.promise();
-}
+};

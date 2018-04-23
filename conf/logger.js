@@ -130,7 +130,7 @@ var esType = {
         }
     },
     logLevel: DEFAULT_LOG_LEVEL
-}
+};
 //远程日志appender
 var remoteAppenders = _.map(localAppenders, function (item) {
     if (item.type == "file") {
@@ -139,7 +139,7 @@ var remoteAppenders = _.map(localAppenders, function (item) {
         appender.typeName = appender.category = item.category;
         return appender;
     } else {
-        return item
+        return item;
     }
 });
 

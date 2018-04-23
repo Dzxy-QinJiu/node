@@ -31,7 +31,7 @@ function noop() {
 const FORM_CONST = {
     LABEL_COL: 5,
     WRAPPER_COL: 18
-}
+};
 var UserForm = React.createClass({
         mixins: [Validation.FieldMixin],
         getDefaultProps: function () {
@@ -353,7 +353,7 @@ var UserForm = React.createClass({
                 roleOptions =
                     <Option value=""><ReactIntl.FormattedMessage id="member.no.role" defaultMessage="暂无角色"/></Option>;
             }
-            return roleOptions
+            return roleOptions;
         },
         //渲染所属团队下拉列表
         renderTeamOptions: function () {
@@ -376,7 +376,7 @@ var UserForm = React.createClass({
                 teamOptions =
                     <Option value=""><ReactIntl.FormattedMessage id="member.no.groups" defaultMessage="暂无团队"/></Option>;
             }
-            return teamOptions
+            return teamOptions;
         },
         handleSelect: function () {
             Trace.traceEvent($(this.getDOMNode()).find("form ul li"),"选择角色");
@@ -430,7 +430,7 @@ var UserForm = React.createClass({
                                             <Input name="name" id="nickName" value={formData.name}
                                                    placeholder={Intl.get("common.required.tip","必填项*")}
                                                    onChange={this.setField.bind(this, 'name')}
-                                                   onBlur={(e)=>{this.traceNickName(e)}}
+                                                   onBlur={(e)=>{this.traceNickName(e);}}
                                             />
                                         </Validator>
                                     </FormItem>
@@ -446,7 +446,7 @@ var UserForm = React.createClass({
                                             <Input name="phone" id="phone" value={formData.phone}
                                                    className={this.state.phoneExist||this.state.phoneError?"input-red-border":""}
                                                    onChange={this.setField.bind(this, 'phone')}
-                                                   onBlur={(e)=>{this.checkOnlyPhone(e)}}
+                                                   onBlur={(e)=>{this.checkOnlyPhone(e);}}
 
                                             />
                                         </Validator>
@@ -464,7 +464,7 @@ var UserForm = React.createClass({
                                             <Input name="email" id="email" type="text" value={formData.email}
                                                    placeholder={Intl.get("common.required.tip","必填项*")}
                                                    className={this.state.emailExist||this.state.emailError?"input-red-border":""}
-                                                   onBlur={(e)=>{this.checkOnlyEmail(e)}}
+                                                   onBlur={(e)=>{this.checkOnlyEmail(e);}}
                                                    onChange={this.setField.bind(this, 'email')}
                                             />
                                         </Validator>

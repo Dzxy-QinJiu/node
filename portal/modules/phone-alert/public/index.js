@@ -79,7 +79,7 @@ class PhoneAlert extends React.Component {
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
         };
-    };
+    }
 
     onStoreChange = () => {
         this.setState(phoneAlertStore.getState());
@@ -105,9 +105,9 @@ class PhoneAlert extends React.Component {
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
-            })
+            });
         }
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
         var phoneObj = nextProps.phoneObj;
@@ -160,7 +160,7 @@ class PhoneAlert extends React.Component {
         if (phonemsgObj.type === PHONERINGSTATUS.record || phonemsgObj.type === PHONERINGSTATUS.BYE || phonemsgObj.type === PHONERINGSTATUS.phone) {
             this.setState({
                 isInitialHeight: false
-            })
+            });
         }
 
         //页面上如果存在模态框，并且用座机打电话时
@@ -190,19 +190,19 @@ class PhoneAlert extends React.Component {
             phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
             this.setState({
                 phoneNum: phonemsgObj.to
-            })
+            });
         }
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             this.setState({
                 isConnected: true
-            })
+            });
         }
-    };
+    }
 
     componentWillUnmount() {
         phoneAlertStore.unlisten(this.onStoreChange);
-    };
+    }
 
     //获取页面上的描述
     getPhoneTipMsg(phonemsgObj) {
@@ -226,7 +226,7 @@ class PhoneAlert extends React.Component {
             desTipObj.tip = `${Intl.get("call.record.phone.unknown", "结束通话")}`;
         }
         return desTipObj;
-    };
+    }
 
     closeModal = () => {
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
@@ -245,7 +245,7 @@ class PhoneAlert extends React.Component {
                     rightPanelIsShow: false,
                     isConnected: false,
                     addTraceItemId: ""
-                })
+                });
             }
         }
     };
@@ -276,34 +276,34 @@ class PhoneAlert extends React.Component {
                         {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
                     </Button>
                 </div>
-            )
+            );
         } else {
             return (
                 <div className="trace-content">
                     <span>{this.state.inputContent}</span>
                     <i className="iconfont icon-update" onClick={this.handleEditContent}></i>
                 </div>
-            )
+            );
         }
-    };
+    }
 
     showAddCustomerForm = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".handle-btn-container"), "点击添加客户按钮");
         this.setState({
             isAddFlag: true
-        })
+        });
     };
     hideAddForm = () => {
         this.setState({
             isAddFlag: false
-        })
+        });
     };
     updateCustomer = (addCustomerInfo) => {
         this.setState({
             isAddFlag: false
         });
         phoneAlertAction.setAddCustomer(false);
-        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""})
+        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
         phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     retryGetCustomer = () => {
@@ -325,7 +325,7 @@ class PhoneAlert extends React.Component {
         this.setState({
             rightPanelIsShow: true,
             curCustomerId: id
-        })
+        });
     };
     //关闭已有客户的右侧面板
     hideRightPanel = () => {
@@ -337,7 +337,7 @@ class PhoneAlert extends React.Component {
     getAdministrativeLevel(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
-    };
+    }
 
     //渲染客户的基本信息
     renderCustomerInfor(phonemsgObj) {
@@ -350,7 +350,7 @@ class PhoneAlert extends React.Component {
                         {Intl.get("user.info.retry", "请重试")}
                     </a>
                 </span>
-            )
+            );
         } else if (this.state.customerUnknown) {
             return null;
         } else if (this.state.addCustomer) {
@@ -359,7 +359,7 @@ class PhoneAlert extends React.Component {
                 <span className="handle-btn-container" onClick={this.showAddCustomerForm}>
                     {Intl.get("crm.3", "添加客户")}
                 </span>
-            )
+            );
         } else if (!this.state.addCustomer) {
             //客户存在时，展示详情
             var divHeight = "";
@@ -384,10 +384,10 @@ class PhoneAlert extends React.Component {
                                     location.push(item.province);
                                 }
                                 if (item.city) {
-                                    location.push(item.city)
+                                    location.push(item.city);
                                 }
                                 if (item.county) {
-                                    location.push(item.county)
+                                    location.push(item.county);
                                 }
                                 return (
                                     <div className="customer-name">
@@ -435,7 +435,7 @@ class PhoneAlert extends React.Component {
                                             <dd className="tag">
                                                 {_.map((item.labels), (label) => {
                                                     return (
-                                                        <Tag>{label}</Tag>)
+                                                        <Tag>{label}</Tag>);
                                                 })}
                                             </dd>
                                         </dl>
@@ -454,14 +454,14 @@ class PhoneAlert extends React.Component {
                                             </Button>
                                         </p>
                                     </div>
-                                )
+                                );
                             })
                         }
                     </GeminiScrollbar>
                 </div>
             );
         }
-    };
+    }
 
     //提交跟进记录
     handleTraceSubmit = () => {
@@ -490,7 +490,7 @@ class PhoneAlert extends React.Component {
             this.setState({
                 showAddFeedback: true,
                 customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
-            })
+            });
         });
     };
     //将输入框中的文字放在state上
@@ -499,7 +499,7 @@ class PhoneAlert extends React.Component {
     };
     handleEditContent = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
-        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""})
+        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
     };
     //修改客户的基本信息
     editCustomerBasic = (newBasic) => {
@@ -517,7 +517,7 @@ class PhoneAlert extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".add-more-info-container"), '点击添加反馈按钮');
         this.setState({
             isAddingMoreProdctInfo: true,
-        })
+        });
     };
     //点击取消按钮
     handleCancel = () => {
@@ -525,7 +525,7 @@ class PhoneAlert extends React.Component {
             isAddingMoreProdctInfo: false,
             isAddingAppFeedback: "",
             addAppFeedbackErrMsg: ""
-        })
+        });
     };
     //点击提交按钮
     handleSubmit = (submitObj) => {
@@ -551,8 +551,8 @@ class PhoneAlert extends React.Component {
                     addAppFeedbackErrMsg: result
                 });
             }
-        })
-    };
+        });
+    }
 
     renderMainContent() {
         var phonemsgObj = this.state.phonemsgObj;
@@ -568,7 +568,7 @@ class PhoneAlert extends React.Component {
                     isAddingAppFeedback={this.state.isAddingAppFeedback}
                     addAppFeedbackErrMsg={this.state.addAppFeedbackErrMsg}
                 />
-            )
+            );
         } else if (this.state.isAddFlag) {
             var phoneNum = this.state.phoneNum || this.state.phonemsgObj.to;
             //添加客户表单
@@ -580,7 +580,7 @@ class PhoneAlert extends React.Component {
                     showRightPanel={this.showRightPanel}
                     scrollLayOut={this.state.scrollLayOut}
                 />
-            )
+            );
         } else {
             //客户信息展示或者添加客户按钮
             return (
@@ -598,9 +598,9 @@ class PhoneAlert extends React.Component {
                         <div className="customer-detail">{this.renderCustomerInfor(phonemsgObj)}</div>
                     </div>
                 </div>
-            )
+            );
         }
-    };
+    }
 
     ShowCustomerUserListPanel = (data) => {
         this.setState({
@@ -613,7 +613,7 @@ class PhoneAlert extends React.Component {
     closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     };
 
     render() {
@@ -714,7 +714,7 @@ class PhoneAlert extends React.Component {
         );
     }
 }
-;
+
 PhoneAlert.defaultProps = {
     phonemsgObj: {},
     phoneObj: {},

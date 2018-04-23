@@ -1,4 +1,4 @@
-import {hasPrivilege} from "CMP_DIR/privilege/checker"
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
 var Router = require("react-router").Router;
 var userData = require("./user-data");
 var history = require("./history");
@@ -111,7 +111,7 @@ function getUserType(callback) {
                 callback.call(this, "");
         }
     });
-};
+}
 
 //获取权限之后,系统入口
 function init(options) {
@@ -127,7 +127,7 @@ function init(options) {
                     childRoutes.push(require("../../modules/common_sales_home_page"));
                 } else {
                     childRoutes.push(require("../../modules/sales_home_page"));
-                };
+                }
                 break;
             //域管理
             case 'realm_manage':
@@ -241,7 +241,7 @@ function init(options) {
                     } else {
                         callback(null, {
                             component: HomeIndexRoute
-                        })
+                        });
                     }
                 }
             },

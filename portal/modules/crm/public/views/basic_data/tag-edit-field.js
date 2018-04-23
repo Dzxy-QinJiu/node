@@ -175,7 +175,7 @@ let TagEditField = React.createClass({
                     !this.state.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get("crm.165", "设置标签")}
                            onClick={(e) => {
-                               this.setEditable(e)
+                               this.setEditable(e);
                            }}/>
                     ) : null
                 }
@@ -192,11 +192,11 @@ let TagEditField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e) => {
-                    this.handleSubmit(e)
+                    this.handleSubmit(e);
                 }}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
                    onClick={(e) => {
-                       this.handleCancel(e)
+                       this.handleCancel(e);
                    }}/>
             </div>
         );

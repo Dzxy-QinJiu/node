@@ -149,7 +149,7 @@ var ContactForm = React.createClass({
                 if (nextItem === undefined) {
                     delete _this.state.formData[propName];
                 }
-            })
+            });
             _this.setState({
                 formData: _this.state.formData,
                 contact: _this.state.contact,
@@ -190,9 +190,9 @@ var ContactForm = React.createClass({
     getPhoneFormValue: function (form) {
         return new Promise(resolve => {
             form.validateFields((errs, fields) => {
-                resolve({errs, fields})
-            })
-        })
+                resolve({errs, fields});
+            });
+        });
     },
 
 
@@ -291,7 +291,7 @@ var ContactForm = React.createClass({
         } else if (isEditPhone) {
             return "phone";//只修改了电话
         } else if (isEditOtherInfo) {
-            return "no_phone"//只修改了除电话以外的信息
+            return "no_phone";//只修改了除电话以外的信息
         } else {//没有修改
             return "";
         }
@@ -642,7 +642,7 @@ var ContactForm = React.createClass({
                         (null)
                 }
             </div>
-        )
+        );
     }
 });
 

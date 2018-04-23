@@ -50,7 +50,7 @@ const UserTypeRadioField = {
             const formData = this.state.formData;
             formData.user_type = value;
             this.setState({formData});
-        }
+        };
 
         let currentValue;
         if(config.isCustomSetting) {

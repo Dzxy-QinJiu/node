@@ -21,13 +21,13 @@ ThirdAppDetailStore.prototype.resetState = function () {
         editApp: "",
         getAppDetail: "",
         changeAppStatus: "",
-    }
+    };
     this.errMsg = {
         addApp: "",
         editApp: "",
         getAppDetail: "",
         changeAppStatus: "",
-    }
+    };
     this.app = {
         "id": "",
         "name": "",
@@ -41,7 +41,7 @@ ThirdAppDetailStore.prototype.resetState = function () {
         "create_time": null,
         "app_key": "",
         "app_secret": ""
-    }
+    };
 };
 
 ThirdAppDetailStore.prototype.changePanelStatus = function (status) {
@@ -68,8 +68,8 @@ const resultHandler = function (status, errMsg, fn) {
             this[errMsg] = "";
             fn.call(this, result);
         }
-    }
-}
+    };
+};
 
 //get app detail
 ThirdAppDetailStore.prototype.getAppDetail = resultHandler("result.getAppDetail", "errMsg.getAppDetail", function (result) {
@@ -92,7 +92,7 @@ ThirdAppDetailStore.prototype.addApp = function (result) {
         ThirdPartyAppConfigAction.getAppConfigList(result.data.user_id);
         setTimeout(() => {
             ThirdAppDetailActions.getPlatforms();
-            AppUserPanelSwitchAction.resetState()
+            AppUserPanelSwitchAction.resetState();
         });
         //面板向右滑
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
@@ -109,7 +109,7 @@ ThirdAppDetailStore.prototype.editApp = resultHandler("result.editApp", "result.
     ThirdPartyAppConfigAction.getAppConfigList(this.app.user_id);
     setTimeout(() => {
         ThirdAppDetailActions.getPlatforms();
-        ThirdAppDetailActions.changePanelStatus("display")
+        ThirdAppDetailActions.changePanelStatus("display");
     });
 });
 

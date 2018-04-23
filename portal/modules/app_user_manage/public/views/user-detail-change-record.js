@@ -81,7 +81,7 @@ var UserDetailChangeRecord = React.createClass({
                 UserDetailChangeRecordAction.getUserApp(userId, (queryObj)=> {
                     this.showSelectedApp(nextProps, queryObj);
                 });
-            })
+            });
         }
     },
     componentWillUnmount: function () {
@@ -112,7 +112,7 @@ var UserDetailChangeRecord = React.createClass({
                         tagName = '';
                         break;
                 }
-            };
+            }
             if (item.operate =='GrantCreate' && item.detail){
                 //授权的创建
                 desc+=Intl.get("user.create.this.user", "创建了该用户");
@@ -132,7 +132,7 @@ var UserDetailChangeRecord = React.createClass({
                 //授权时间
                 if (item.detail.begin){
                     begin = moment(parseFloat(item.detail.begin)).format(oplateConsts.DATE_FORMAT);
-                };
+                }
                 if (item.detail.end){
                     end = moment(parseFloat(item.detail.end)).format(oplateConsts.DATE_FORMAT);
                 }
@@ -244,7 +244,7 @@ var UserDetailChangeRecord = React.createClass({
                     </Select>
                     <Spinner />
                 </div>
-            )
+            );
         }else if(recordLength == 0 && !this.state.changeRecordLoading){
             //加载完成，没有数据的情况
             return (
@@ -309,7 +309,7 @@ var UserDetailChangeRecord = React.createClass({
              <div style={{height: divHeight}} className="recordList">
                  {this.renderTraceRecord()}
              </div>
-             )
+             );
 
     }
 });

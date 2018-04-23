@@ -12,7 +12,7 @@ class PositionActions {
             'search', // 搜索
             'resetState' // 重置
         );
-    };
+    }
     // 获取电话座席号列表
     getPhoneOrderList(reqParam) {
         this.dispatch({ loading: true ,error: false});

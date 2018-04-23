@@ -15,7 +15,7 @@ const IpConfig = React.createClass({
             deleteErrMsg: '',  // 删除IP失败信息
             isLoading: false,
             deleteIpId: 0 // 删除IP配置
-        }
+        };
     },
 
     onStoreChange(){
@@ -123,7 +123,7 @@ const IpConfig = React.createClass({
                     type="error"
                     showIcon={true}
                 />
-            </div>
+            </div>;
         }
 
         var ipList = this.state.IpConfigList;
@@ -155,7 +155,7 @@ const IpConfig = React.createClass({
                                             }
                                     </div>
                             </li>
-                        )
+                        );
                         }
                     )}
                 </ul>
@@ -212,7 +212,7 @@ const IpConfig = React.createClass({
         this.setState({
             deleteIpId: 0
         });
-        this.getIpConfigList()
+        this.getIpConfigList();
     },
 
     // 选择是否过滤内网ip
@@ -256,7 +256,7 @@ const IpConfig = React.createClass({
                     {this.renderIpForm()}
                 </div>
             </div>
-        )
+        );
     }
 });
 

@@ -28,7 +28,7 @@ var StackLineChart = React.createClass({
         } else {
             return {
                 data:_.pluck(this.props.legend , 'version')
-            }
+            };
         }
     },
     getCategorys : function() {
@@ -127,7 +127,7 @@ var StackLineChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose()} catch(e){};
+            try {_this.echartInstance.dispose();} catch(e){}
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -138,7 +138,7 @@ var StackLineChart = React.createClass({
         this.echartInstance.setOption(options,true);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose()} catch(e){};
+                try {_this.echartInstance.dispose();} catch(e){}
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {

@@ -24,7 +24,7 @@ var AppNoticeForm = React.createClass({
             },
             errMsg: '',
             isLoading: false
-        }
+        };
     },
 
     handleSubmit : function(e){

@@ -105,6 +105,7 @@ var UserDetail = React.createClass({
     render : function() {
         var moveView = null;
         if(this.state.panel_switch_currentView) {
+            let {thirdApp} = this.state;
             switch(this.state.panel_switch_currentView) {
                 case 'app':
                     var initialUser = AppUserDetailStore.getState().initialUser;
@@ -120,10 +121,9 @@ var UserDetail = React.createClass({
                     );
                     break;
                 case 'thirdapp':
-                    let {thirdApp} = this.state;
                     moveView = (
                         <ThirdAppDetail {...thirdApp}/>
-                    )
+                    );
             }
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）

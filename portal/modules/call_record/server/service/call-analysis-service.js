@@ -81,11 +81,11 @@ exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
                     list.push({
                         teamId: key,
                         teamData: value
-                    })
+                    });
                 });
                 emitter.emit("success", list);
             }
-        })
+        });
 };
 
 function batchGetCallInfo(req, res, params, reqData) {
@@ -120,8 +120,8 @@ function getActiveSalesInTeams(req, res) {
             error: function (eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
-        })
-    })
+        });
+    });
 }
 
 // 获取电话的接通情况
@@ -146,7 +146,7 @@ exports.getCallInfo = function (req, res, params, reqData) {
             let allData = [];
             _.map(result, (item) => {
                 _.map(item.salesPhoneList, (item) => {
-                    allData.push(item)
+                    allData.push(item);
                 });
             });
             emitter.emit("success", {salesPhoneList: allData});
@@ -184,12 +184,12 @@ exports.getCallRate = function (req, res, params, reqBody) {
     }
     const typeHandler = () => {
         if (req.body && req.body.filter_invalid_phone) {
-            return "?filter_invalid_phone=" + req.body.filter_invalid_phone
+            return "?filter_invalid_phone=" + req.body.filter_invalid_phone;
         }
         else {
-            return ""
+            return "";
         }
-    }
+    };
     return restUtil.authRest.post(
         {
             url: url.replace(":start_time", params.start_time)

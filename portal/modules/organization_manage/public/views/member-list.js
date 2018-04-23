@@ -49,7 +49,7 @@ if (language.lan() == "es") {
         next_page: 'Siguiente página',//下一页
         prev_5: '5 Páginas adelante',//向前 5 页
         next_5: '5 Páginas atrás'//向后 5 页
-    }
+    };
 } else if (language.lan() == "en") {
     paginationintl = {
         // Options.jsx
@@ -66,7 +66,7 @@ if (language.lan() == "es") {
         next_page: 'Next Page',
         prev_5: 'Previsous 5 Pages',
         next_5: 'Next 5 Pages'
-    }
+    };
 } else if (language.lan() == "zh") {
     paginationintl = {
         // Options.jsx
@@ -83,7 +83,7 @@ if (language.lan() == "es") {
         next_page: '下一页',
         prev_5: '向前 5 页',
         next_5: '向后 5 页'
-    }
+    };
 }
 
 
@@ -107,7 +107,7 @@ var MemberList = React.createClass({
             addMember: noop,
             saveAddMember: noop,
             cancelAddMember: noop
-        }
+        };
     },
 
     getInitialState: function () {
@@ -344,7 +344,7 @@ var MemberList = React.createClass({
                         </div>
                     </PrivilegeChecker>
                 </div>)
-        )
+        );
     },
 
     //渲染成员头像及名称，memeber:成员信息，type:负责人/管理员/成员，hasSelectBtn:是否需要选择按钮
@@ -384,7 +384,7 @@ var MemberList = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
     },
     //渲染当前正在展示的组织成员列表
     renderCurTeamMemberList: function (hasSelectBtn) {
@@ -635,7 +635,7 @@ var MemberList = React.createClass({
                  onClick={this.handleCancel}><ReactIntl.FormattedMessage id="common.cancel"
                                                                          defaultMessage="取消"/>
             </div>
-        </div>)
+        </div>);
     },
     getTableColumns: function () {
         return [
@@ -715,7 +715,7 @@ var MemberList = React.createClass({
                             message={this.state.saveMemberListMsg}
                             type={saveResult} showIcon
                             onHide={this.hideSaveTooltip}/>
-            </div>) : null
+            </div>) : null;
 
     },
     renderAddBtns: function () {
@@ -796,7 +796,7 @@ var MemberList = React.createClass({
                     {_this.renderCurTeamMemberList()}
                 </GeminiScrollbar>)
                 }
-            </div>)
+            </div>);
     },
     onSearchInputChange: function (keyword) {
         let searchValue = keyword ? keyword.trim() : '';

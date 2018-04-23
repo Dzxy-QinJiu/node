@@ -21,7 +21,7 @@ const TeleConfig = React.createClass({
             isLoading: false,
             isAdding: false,
             deleteTele: ""
-        }
+        };
     },
 
     onStoreChange() {
@@ -109,7 +109,7 @@ const TeleConfig = React.createClass({
             this.setState({
                 deleteTele: "",
                 telesList: this.state.telesList.filter(x => x != phone)
-            })
+            });
         }, (errMsg) => {
             this.setState({
                 deleteErrMsg: errMsg,
@@ -150,7 +150,7 @@ const TeleConfig = React.createClass({
                     type="error"
                     showIcon={true}
                 />
-            </div>
+            </div>;
         }
 
         var teleList = this.state.telesList;
@@ -182,7 +182,7 @@ const TeleConfig = React.createClass({
                                     }
                                 </div>
                             </li>
-                        )
+                        );
                     }
                     )}
                 </ul>
@@ -244,7 +244,7 @@ const TeleConfig = React.createClass({
         this.setState({
             deleteTele: ""
         });
-        this.getTeleList()
+        this.getTeleList();
     },
 
     render() {
@@ -275,7 +275,7 @@ const TeleConfig = React.createClass({
                     {this.renderTeleForm()}
                 </div>
             </div>
-        )
+        );
     }
 });
 

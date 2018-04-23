@@ -103,4 +103,4 @@ exports.delDefaultRole = function (req,res) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
     );
-}
+};

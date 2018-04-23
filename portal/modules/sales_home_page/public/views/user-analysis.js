@@ -59,9 +59,9 @@ var UserAnlyis = React.createClass({
                 setTimeout(()=>{
                     this.setState({
                         updateScrollBar:false
-                    })
-                },delayConstant)
-            })
+                    });
+                },delayConstant);
+            });
         }
     },
     getDataType: function () {
@@ -284,7 +284,7 @@ var UserAnlyis = React.createClass({
                         </div>
                     </div>)}
             </div>
-        )
+        );
     },
     renderContent:function () {
         if(this.state.updateScrollBar){
@@ -295,7 +295,7 @@ var UserAnlyis = React.createClass({
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
                     {this.renderChartContent()}
                 </GeminiScrollbar>
-            )
+            );
         }
     },
 

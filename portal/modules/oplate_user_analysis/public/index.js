@@ -37,7 +37,7 @@ import {
     handleActiveTimesData, handleRetentionData, handleAppDownLoadData,
     handleZoneExportData, handleDeviceExport, handleBrowserExport, handleAveTimesExport,
     handleLoginCountsExport, handleLoginDaysExport, handleLoginTimesExport
-} from './utils/export-data-util'
+} from './utils/export-data-util';
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
 import {AntcTable} from "antc";
 var SelectFullWidth = require("../../../components/select-fullwidth");
@@ -81,7 +81,7 @@ function mapFormatter(obj) {
     return [
         Intl.get("oplate_bd_analysis_realm_zone.1", "省份") + '：' + obj.name,
         Intl.get("oplate_bd_analysis_realm_industry.6", "个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
-    ].join('<br/>')
+    ].join('<br/>');
 }
 
 //登录次数参数
@@ -169,14 +169,14 @@ const rangeParamsProcessor = data => {
             rangeParams.push(...x.map(item => ({
                 "from": item,
                 "to": item
-            })))
+            })));
         }
         else {
             rangeParams.push(x);
         }
     });
     return rangeParams;
-}
+};
 const onlineTimeRange = [
     {name: "小时", value: "hourly"},
     {name: "天", value: "daily"},
@@ -297,7 +297,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             "added": "add",
             "expired": "expired",
             "delay": "delay"
-        }
+        };
         data.analysis_type = newTypeMap[this.state.currentTab];
         const params = $.extend(true, {}, data, obj);
         return params;
@@ -317,7 +317,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             appId: obj && obj.selectedApp || this.state.selectedApp,
             page: 1,
             pageSize: 1
-        }
+        };
     },
     getSalesOpenUserAnalysisData(){
         let authType = "self";//CRM_USER_APP_USER_COUNT
@@ -683,7 +683,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 errorMsg: result.message
                             }
                         });
-                        return
+                        return;
                     }
                     else {
                         let data = result;
@@ -696,7 +696,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 resultType: "",
                                 errorMsg: ""
                             }
-                        })
+                        });
                     }
                 }
             }, err => {
@@ -708,14 +708,14 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     }
                 });
             }
-        ]
+        ];
     },
     // 设备类型统计
     getDeviceTypeData: function (obj) {
         //不传参数则重新获取
         const queryData = this.getQueryDatas(obj);
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getDeviceTypeBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -725,19 +725,19 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
             data: queryData,
-        }).then(...this.resultHandler("deviceType"))
+        }).then(...this.resultHandler("deviceType"));
     },
     //浏览器分布统计
     getBrowserData: function (obj) {
         //不传参数则重新获取
         const queryData = this.getQueryDatas(obj);
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getBrowserBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -747,19 +747,19 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
             data: queryData,
-        }).then(...this.resultHandler("browser"))
+        }).then(...this.resultHandler("browser"));
     },
     //获取活跃用户地域统计
     getActiveZoneData: function (obj) {
         //不传参数则重新获取
         const queryData = this.getQueryDatas(obj);
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getActiveZoneBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -769,7 +769,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
@@ -781,7 +781,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     name: x.name
                 }));
             }
-        }))
+        }));
     },
     //获取用户登录次数
     getUserLoginCountsData: function (obj) {
@@ -789,7 +789,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         const queryData = this.getQueryDatas(obj);
 
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getUserLoginCountsDataBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -799,7 +799,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
@@ -812,7 +812,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     let key = "";
                     if (x.from != x.to) {
                         if (x.to == 10000) {
-                            key = x.from + Intl.get("common.label.times", "次") + "+"
+                            key = x.from + Intl.get("common.label.times", "次") + "+";
                         }
                         else {
                             key = x.from + Intl.get("common.label.times", "次") + "-" + x.to + Intl.get("common.label.times", "次") + "";
@@ -823,15 +823,15 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     }
                     return [
                         key, x.count + 1
-                    ]
+                    ];
                 });
             } else {
                 loginCountsData = [
                     [Intl.get("common.no.data", "暂无数据"), 5]
-                ]
+                ];
             }
             return loginCountsData;
-        }))
+        }));
     },
     //获取用户登录天数
     getUserLoginDaysData: function (obj) {
@@ -839,7 +839,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         const queryData = this.getQueryDatas(obj);
 
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getUserLoginDaysDataBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -849,7 +849,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
@@ -862,7 +862,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     let key = "";
                     if (x.from != x.to) {
                         if (x.to == 10000) {
-                            key = x.from + Intl.get("common.label.days", "天") + "+"
+                            key = x.from + Intl.get("common.label.days", "天") + "+";
                         }
                         else {
                             key = x.from + Intl.get("common.label.days", "天") + "-" + x.to + Intl.get("common.label.days", "天") + "";
@@ -873,15 +873,15 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     }
                     return [
                         key, x.count + 1
-                    ]
+                    ];
                 });
             } else {
                 loginDaysData = [
                     [Intl.get("common.no.data", "暂无数据"), 5]
-                ]
+                ];
             }
             return loginDaysData;
-        }))
+        }));
     },
     //获取用户登录时间
     getUserLoginTimesData: function (obj) {
@@ -889,7 +889,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         const queryData = this.getQueryDatas(obj);
 
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const handler = "getUserLoginTimesDataBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
@@ -899,7 +899,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
@@ -916,7 +916,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         let key = "";
                         if (x.from != x.to) {
                             if (x.to == 10000 * 60) {
-                                key = x.from / 60 + Intl.get("common.label.hours", "小时") + "+"
+                                key = x.from / 60 + Intl.get("common.label.hours", "小时") + "+";
                             }
                             else {
                                 key = x.from / 60 + Intl.get("common.label.hours", "小时") + "-" + x.to / 60 + Intl.get("common.label.hours", "小时") + "";
@@ -927,16 +927,16 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         }
                         return [
                             key, x.count / 60 + 1
-                        ]
+                        ];
                     });
             }
             else {
                 loginDaysData = [
                     [Intl.get("common.no.data", "暂无数据"), 5]
-                ]
+                ];
             }
             return loginDaysData;
-        }))
+        }));
     },
 
     getUserOnlineTimeData: function (obj) {
@@ -945,7 +945,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             interval: this.state.selectedOnlineTimeRange
         });
         if (!queryData || !queryData.authType) {
-            return
+            return;
         }
         const dateFormatMap = {
             "hourly": "YYYY-MM-DD HH:mm",
@@ -954,7 +954,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             "monthly": "YYYY-MM",
             "quarterly": "YYYY-MM",
             "yearly": "YYYY"
-        }
+        };
         const handler = "getUserOnlineTimeDataBy" + queryData.authType;
         const route = _.find(routeList, route => route.handler === handler);
         this.setState({
@@ -963,7 +963,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 resultType: "loading",
                 errorMsg: ""
             }
-        })
+        });
         ajax({
             url: route.path,
             type: route.method,
@@ -972,8 +972,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             return result.map(x => ({
                 name: moment(x.timestamp).format(dateFormatMap[this.state.selectedOnlineTimeRange]),
                 count: parseInt(x.count / 1000 / 60) //毫秒数转换为分钟
-            }))
-        }))
+            }));
+        }));
     },
     //地域统计
     getZoneChart: function () {
@@ -1407,7 +1407,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
     // 应用下载app获取失败，重新获取数据
     retryAppDownload() {
         let queryParams = this.getAppsDownloadParams();
-        OplateUserAnalysisAction.getAppsDownloadStatistics(queryParams)
+        OplateUserAnalysisAction.getAppsDownloadStatistics(queryParams);
     },
     // 折线图需要的数据格式
     getAppDownloadData(downloadData) {
@@ -1471,7 +1471,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 xAxisRotate={rotate}
                 resultType={this.state.deviceType.resultType}
             />
-        )
+        );
     },
     //浏览器分布统计
     getBrowserChart() {
@@ -1494,7 +1494,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 xAxisRotate={rotate}
                 resultType={this.state.browser.resultType}
             />
-        )
+        );
     },
     //活跃用户设备统计
     getActiveZoneChart() {
@@ -1504,7 +1504,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         const columns = [
             {title: '地域', dataIndex: 'name', key: 'name'},
             {title: '用户数', dataIndex: 'value', key: 'value', className: 'text-align-right'}
-        ]
+        ];
         return (
             <div className="user-map-distribute cleardfix" ref="chartmap">
                 <div className="map-distribute">
@@ -1519,7 +1519,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     <AntcTable columns={columns} dataSource={this.state.activeZone.data} pagination={{pageSize: 12}}/>
                 </div>
             </div>
-        )
+        );
     },
     //登录次数
     getUserLoginCounts() {
@@ -1528,7 +1528,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }
         return (
             <CloudChart resultType={this.state.userLoginCounts.resultType} data={this.state.userLoginCounts.data}/>
-        )
+        );
     },
     //登录天数
     getUserLoginDays() {
@@ -1537,7 +1537,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }
         return (
             <CloudChart resultType={this.state.userLoginDays.resultType} data={this.state.userLoginDays.data}/>
-        )
+        );
     },
     //登录时间
     getUserLoginTimes() {
@@ -1546,7 +1546,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }
         return (
             <CloudChart resultType={this.state.userLoginTimes.resultType} data={this.state.userLoginTimes.data}/>
-        )
+        );
     },
     //用户在线时长
     getOnlineTimeChart() {
@@ -1569,7 +1569,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 xAxisRotate={rotate}
                 resultType={this.state.onlineTime.resultType}
             />
-        )
+        );
     },
     //渲染剩余图表
     renderExtraCharts: function () {
@@ -1829,7 +1829,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         </AntcCardContainer>
                     </div>
                 </div>
-            ))
+            ));
         }
         return (
             <div>

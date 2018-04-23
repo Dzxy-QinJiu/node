@@ -11,7 +11,7 @@ var _ = require("underscore");
 var urls = {
     getAppLists:"/rest/base/v1/application/grant_applications",
     addAppFeedback:"/rest/base/v1/notice/customer/application/feedback",
-}
+};
 // 获取应用列表
 exports.getAppLists = function(req, res) {
     return restUtil.authRest.get(
@@ -65,4 +65,4 @@ function addFeedbackPromise(req, res, reqBody) {
                 }
             });
     });
-};
+}

@@ -135,7 +135,7 @@ exports.upload = function (req, res) {
             res.json({path: '/' + relativePath});
         });
     });
-}
+};
 
 /**
  * 显示测试结果
@@ -163,4 +163,4 @@ exports.activeEmail = function (req, res) {
 exports.recordLog = function (req, res) {
     DesktopIndexService.recordLog(req, res, req.query.message);
     res.send("");
-}
+};

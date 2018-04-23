@@ -69,5 +69,5 @@ var websiteConfig = {
     getLocalWebsiteConfig: () => {
         return JSON.parse(storageUtil.local.get("websiteConfig"));
     }
-}
+};
 module.exports = websiteConfig;

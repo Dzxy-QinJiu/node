@@ -239,10 +239,10 @@
             var scrollLeft = $(_elementScrollView).scrollLeft();
             if (_this.checkVerticalFlag(e, _elementScrollView)) {
                 if (delta > 0) {
-                    $(_elementScrollView).scrollLeft(scrollLeft - 100)
+                    $(_elementScrollView).scrollLeft(scrollLeft - 100);
 
                 } else {
-                    $(_elementScrollView).scrollLeft(scrollLeft + 100)
+                    $(_elementScrollView).scrollLeft(scrollLeft + 100);
                 }
             }
 

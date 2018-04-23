@@ -282,13 +282,13 @@ const CrmFilterPanel = React.createClass({
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id == this.state.condition.sales_opportunities[0].apps[0] ? "selected" : "";
             return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
-                       className={className}>{app.client_name}</li>
+                       className={className}>{app.client_name}</li>;
         });
         const teams = this.state.condition.sales_team_id.split(",");
         const teamListJsx = this.state.teamList.map((team, idx) => {
             let className = teams.indexOf(team.group_id) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.teamSelected.bind(this, team.group_id)}
-                       className={className}>{team.group_name}</li>
+                       className={className}>{team.group_name}</li>;
         });
         //用Store.getState()方法获取存在store里的state时，若state下的某个属性所在层次较深且其值为空时，该属性会被丢掉
         //所以这个地方需要判断一下sale_stages属性是否存在，若不存在则用空值替代
@@ -301,45 +301,45 @@ const CrmFilterPanel = React.createClass({
         const stageListJsx = stageArray.map((stage, idx) => {
             let className = selectedStages.indexOf(stage.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.stageSelected.bind(this, stage.name)}
-                       className={className}>{stage.show_name}</li>
+                       className={className}>{stage.show_name}</li>;
         });
         const tagListJsx = this.state.tagList.map((tag, idx) => {
             let className = this.state.condition.labels.indexOf(tag.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.tagSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>
+                       className={className}>{tag.show_name}</li>;
         });
         const stageTagListJsx = this.state.stageTagList.map((tag, idx) => {
             let className = this.state.condition.customer_label === tag.name ? "selected" : "";
             return <li key={idx} onClick={this.stageTagSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>
+                       className={className}>{tag.show_name}</li>;
         });
         const competitorListJsx = this.state.competitorList.map((tag, idx) => {
             let className = this.state.condition.competing_products.indexOf(tag.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.competitorSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>
+                       className={className}>{tag.show_name}</li>;
         });
         const industryArray = ["", Intl.get("user.unknown", "未知")].concat(this.state.industryList);
         const industryListJsx = industryArray.map((item, idx) => {
             let className = this.state.condition.industry.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.industrySelected.bind(this, item)}
-                       className={className}>{item || Intl.get("common.all", "全部")}</li>
+                       className={className}>{item || Intl.get("common.all", "全部")}</li>;
         });
         //行政级别
         const levelListJsx = filterLevelArray.map((item, idx) => {
             let className = this.state.condition.administrative_level.split(",").indexOf(item.id) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.levelSelected.bind(this, item.id)}
-                       className={className}>{item.level}</li>
+                       className={className}>{item.level}</li>;
         });
         const provinceListJsx = ["", Intl.get("user.unknown", "未知")].concat(this.state.provinceList).map((item, idx) => {
             let className = this.state.condition.province.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
-                       className={className}>{item || Intl.get("common.all", "全部")}</li>
+                       className={className}>{item || Intl.get("common.all", "全部")}</li>;
         });
         //销售角色
         const salesRoleListJsx = this.state.salesRoleList.map((role, idx) => {
             let className = this.state.condition.member_role === role.name ? "selected" : "";
             return <li key={idx} onClick={this.salesRoleSelected.bind(this, role.name)}
-                       className={className}>{role.show_name}</li>
+                       className={className}>{role.show_name}</li>;
         });
         return (
             <div data-tracename="筛选">

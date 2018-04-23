@@ -48,7 +48,7 @@ AppFormStore.prototype.getAllAppList = function (appList) {
     this.isLoadingAllAppList = false;
     if (_.isArray(appList) && appList.length > 0) {
         this.allAppList = appList.map(function (app) {
-            return {id: app.app_id, name: app.app_name}
+            return {id: app.app_id, name: app.app_name};
         });
     } else {
         this.allAppList = [];

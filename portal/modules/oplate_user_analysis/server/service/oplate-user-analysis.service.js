@@ -487,7 +487,7 @@ function getMembers(req, res) {
                         return {
                             id: team.group_id,
                             name: team.group_name
-                        }
+                        };
                     });
                     resolve({
                         type: 'teams',

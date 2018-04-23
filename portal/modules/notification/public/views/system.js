@@ -7,7 +7,7 @@ import notificationAjax from "../ajax/notification-ajax";
 // 没有消息的提醒
 import NoMoreDataTip from "CMP_DIR/no_more_data_tip";
 //系统消息对应的几种类型
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts"
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts";
 import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel}  from "CMP_DIR/rightPanel";
@@ -45,7 +45,7 @@ let SystemNotification = React.createClass({
             showUpdateTip: false, //是否展示有新数据刷新的提示
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
-        }
+        };
     },
     componentDidMount: function () {
         this.getSystemNotices();
@@ -204,7 +204,7 @@ let SystemNotification = React.createClass({
         if (_.isArray(notice.detail) && notice.detail.length > 3 && !notice.showMore) {//超过三条时，只展示前三条
             showList = notice.detail.slice(0, 3);
         } else {
-            showList = notice.detail
+            showList = notice.detail;
         }
         return showList.map((item) => {
             //是否是异地登录的类型
@@ -216,8 +216,8 @@ let SystemNotification = React.createClass({
                     <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
                 <span
                     className="system-notice-time">{moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</span>
-            </div>
-        })
+            </div>;
+        });
     },
     checkMore: function (notice) {
         _.some(this.state.systemNotices, item => {
@@ -321,7 +321,7 @@ let SystemNotification = React.createClass({
     closeCustomerUserListPanel: function () {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     render: function () {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;

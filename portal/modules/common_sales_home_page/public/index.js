@@ -36,7 +36,7 @@ var SalesHomePage = React.createClass({
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             ...SalesHomeStore.getState()
-        }
+        };
     },
     componentDidMount: function () {
         SalesHomeStore.listen(this.onChange);
@@ -71,7 +71,7 @@ var SalesHomePage = React.createClass({
     closeCustomerUserListPanel: function () {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     closeRightCustomerPanel: function () {
         $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
@@ -313,7 +313,7 @@ var SalesHomePage = React.createClass({
                                 <span className="data-total">{this.switchDiffCustomerTotalCount(item.value)}</span>
                             </div>
                         </li>
-                    )
+                    );
                 })}
             </ul>
         );
@@ -381,12 +381,12 @@ var SalesHomePage = React.createClass({
                                 openCustomerDetail={this.openCustomerDetail}
                             />
 
-                        )
+                        );
                     })}
                 </GeminiScrollbar>
 
             </div>
-        )
+        );
     },
     // 获取拨打电话的座机号
     getUserPhoneNumber: function () {
@@ -401,7 +401,7 @@ var SalesHomePage = React.createClass({
             this.setState({
                 errMsg: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
             });
-        })
+        });
     },
     //点击左侧不同客户类别的标题
     handleClickDiffCustomerType: function (customerType) {
@@ -410,7 +410,7 @@ var SalesHomePage = React.createClass({
         this.setState({
             listenScrollBottom: true,
             showCustomerPanel: customerType,
-        })
+        });
     },
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function (dataObj) {
@@ -421,7 +421,7 @@ var SalesHomePage = React.createClass({
                    <Spinner />
                    <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
                 </div>
-            )
+            );
         }else if (dataObj.errMsg){
             //加载完出错的样式
             return (
@@ -429,7 +429,7 @@ var SalesHomePage = React.createClass({
                     <i className="iconfont icon-data-error"></i>
                     <p className="abnornal-status-tip">{dataObj.errMsg}</p>
                 </div>
-            )
+            );
         }else if(!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length){
             //数据为空的样式
             return (
@@ -473,7 +473,7 @@ var SalesHomePage = React.createClass({
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
                                 />
-                            )
+                            );
                         })
                         }
                         {Fulldaylist.length ?
@@ -489,7 +489,7 @@ var SalesHomePage = React.createClass({
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
                                 />
-                            )
+                            );
                         })
                         }
                     </GeminiScrollbar>
@@ -515,11 +515,11 @@ var SalesHomePage = React.createClass({
                                     callNumber={this.state.callNumber}
                                     errMsg={this.state.errMsg}
                                 />
-                            )
+                            );
                         })}
                     </GeminiScrollbar>
                 </div>
-            )
+            );
         }
     },
     afterHandleMessage: function (messageObj) {
@@ -542,17 +542,17 @@ var SalesHomePage = React.createClass({
                                                     errMsg={this.state.errMsg}
                                                     willExpiredTime={getRelativeTime(item.date)}
                                                 />
-                                            )
+                                            );
                                         })}
                                     </div>
                                 </div>
-                            )
+                            );
                         } else {
                             return null;
                         }
                     })}
                 </GeminiScrollbar>
-        )
+        );
 
     },
     //渲染即将到期的试用客户和签约客户
@@ -566,7 +566,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.willExpiredTryCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
-            )
+            );
         } else if (type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
             //半年内即将到期的签约客户
             data = this.state.willExpiredAssignCustomer.data.list;
@@ -575,7 +575,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.willExpiredAssignCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
-            )
+            );
         }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
             //近10天过期未处理试用客户
             data = this.state.hasExpiredTryCustomer.data.list;
@@ -584,7 +584,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.hasExpiredTryCustomer)}
                     {this.renderExpiredCustomerContent(data)}
                 </div>
-            )
+            );
         }
 
     },
@@ -606,10 +606,10 @@ var SalesHomePage = React.createClass({
                             afterHandleMessage={this.afterHandleMessage}
                             isRecentLoginCustomer={isRecentLoginCustomer}
                         />
-                    )
+                    );
                 })}
             </GeminiScrollbar>
-        )
+        );
     },
     //渲染关注客户，停用客户和最近登录的客户情况
     renderAPPIlleageAndConcernedAndRecentContent: function (type) {
@@ -622,7 +622,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.concernCustomerObj)}
                     {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data,false)}
                 </div>
-            )
+            );
         } else if (type === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
             //停用后登录
             data = this.state.appIllegalObj.data.list;
@@ -631,7 +631,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.appIllegalObj)}
                     {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data,false)}
                 </div>
-            )
+            );
         } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
             //最近X日登录的客户
             data = this.state.recentLoginCustomerObj.data.list;
@@ -640,7 +640,7 @@ var SalesHomePage = React.createClass({
                     {this.renderLoadingAndErrAndNodataContent(this.state.recentLoginCustomerObj)}
                     {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER, data, true)}
                 </div>
-            )
+            );
         }
     },
     //不同类型的客户所对应的数据
@@ -790,7 +790,7 @@ var SalesHomePage = React.createClass({
                     }
                 </div>
             </RightContent>
-        )
+        );
     }
 });
 module.exports = SalesHomePage;

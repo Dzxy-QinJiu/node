@@ -10,16 +10,16 @@ class WillExpireItem extends React.Component {
         super(props);
         this.state = {
             expireItem: this.props.expireItem,
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.expireItem.customer_id && nextProps.expireItem.customer_id !== this.state.expireItem.customer_id) {
             this.setState({
                 expireItem: nextProps.expireItem
-            })
+            });
         }
-    };
+    }
 
     openCustomerDetail = (customer_id) => {
         this.props.openCustomerDetail(customer_id);
@@ -46,7 +46,7 @@ class WillExpireItem extends React.Component {
                     errMsg={this.props.errMsg}
                 /> :null}
             </div>
-        )
+        );
     }
 }
 WillExpireItem.defaultProps = {

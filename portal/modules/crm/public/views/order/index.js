@@ -185,7 +185,7 @@ const OrderIndex = React.createClass({
         },
         renderCrmUserList: function () {
             if (this.state.isLoadingCrmUsers) {
-                return <Spinner />
+                return <Spinner />;
             }
             if (this.state.crmUsersErrorMsg) {
                 return (
@@ -225,7 +225,7 @@ const OrderIndex = React.createClass({
             } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
                 traceDescr = "打开申请修改密码面板";
             } else if (applyType === APPLY_TYPES.DELAY) {
-                traceDescr = "打开申请延期面板"
+                traceDescr = "打开申请延期面板";
             } else if (applyType === APPLY_TYPES.OTHER) {
                 traceDescr = "打开申请其他类型面板";
             } else if (applyType === APPLY_TYPES.OPEN_APP) {

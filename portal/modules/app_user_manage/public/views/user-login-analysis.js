@@ -95,7 +95,7 @@ const UserLoginAnalysis = React.createClass({
                                 <Option value={item.app_id} key={item.app_id}>
                                     {item.app_name}
                                 </Option>
-                            )
+                            );
                         }) : null}
                     </SelectFullWidth>
                 </div>}
@@ -166,7 +166,7 @@ const UserLoginAnalysis = React.createClass({
                     )}
                     { this.renderLoginFirstLastTime(this.state.loginInfo.last, this.state.loginInfo.first)}
                 </div>
-            )
+            );
         } else {
             return null;
         }

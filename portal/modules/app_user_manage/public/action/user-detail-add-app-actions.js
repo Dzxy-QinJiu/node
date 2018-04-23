@@ -188,7 +188,7 @@ function UserDetailAddAppActions() {
                 _this.dispatch({error: false, app: newAppObj});
             }, function (errorMsg) {
                 _this.dispatch({error: true, errorMsg: errorMsg});
-            })
+            });
         } else {
             AppUserAjax.batchUpdate(field , obj.data, selectedAppId).then(function(taskId) {
                 //保存提交参数，以便推送批量操作进度时使用更新界面

@@ -17,12 +17,12 @@ var RoleList = React.createClass({
             editRole: noop,
             deleteRole: noop,
             setDefaultRole: noop
-        }
+        };
     },
     getInitialState: function () {
         return {
             setDefaulting: false
-        }
+        };
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState(nextProps);
@@ -112,7 +112,7 @@ var RoleList = React.createClass({
                                        >{Intl.get("role.set.auth", "设置权限")}</a>
                                     }}
                         />
-                    </div>)
+                    </div>);
             }
         } else {
             return (<div className="no-permissions-msg">
@@ -128,7 +128,7 @@ var RoleList = React.createClass({
                                  ))
                                   }}
                 />
-            </div>)
+            </div>);
         }
     },
 

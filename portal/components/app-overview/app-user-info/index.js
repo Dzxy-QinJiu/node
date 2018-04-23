@@ -31,11 +31,11 @@ class AppUserInfo extends React.Component {
                         return <div className="app-content">
                             <span className="app-number">{this.handleNumberShow(item.count)}</span>
                             <span className="app-type">{item.name}</span>
-                        </div>
+                        </div>;
                     })}
                 </div>
             </div>
-        )
+        );
     }
 }
 

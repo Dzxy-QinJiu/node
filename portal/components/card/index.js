@@ -17,7 +17,7 @@ var Card = React.createClass({
     getDefaultProps : function(){
         return {
             cardWidth: "auto"
-        }
+        };
     },
     selectCardEvent: function () {
         var cardId = this.props.curCard.id;
@@ -73,7 +73,7 @@ var Card = React.createClass({
             //右上角通知3s后关闭，在通知关闭后再在页面上移除创建失败的安全域card
             setTimeout(()=>{
                 this.props.removeFailRealm(card.taskId);
-            }, DELETE_CREATEREALM_DELAYTIME)
+            }, DELETE_CREATEREALM_DELAYTIME);
         }
         var userName = card.userName ? card.userName.value : "";
         return (
@@ -117,7 +117,7 @@ var Card = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 });
 

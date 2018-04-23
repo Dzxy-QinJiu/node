@@ -7,13 +7,13 @@ const asyncDispatcher = function (ajax) {
             ajax(paramObj)
                 .then(function (data) {
                     _this.dispatch({ loading: false, data, paramObj, errorMsg: "" });
-                    resolve({ data })
+                    resolve({ data });
                 })
                 .fail(function (errorMsg) {
                     _this.dispatch({ loading: false, data: null, errorMsg, paramObj });
                 });
-        })
-    }
+        });
+    };
 };
 
 //客户分析的action
@@ -98,7 +98,7 @@ function OplateCustomerAnalysisActions() {
 
     //获取试用用户覆盖率
     this.getIndustryCustomerOverlay = asyncDispatcher(OplateCustomerAnalysisAjax.getIndustryCustomerOverlay);
-};
+}
 
 //使用alt导出一个action
 module.exports = alt.createActions(OplateCustomerAnalysisActions);

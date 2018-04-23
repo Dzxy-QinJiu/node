@@ -85,7 +85,7 @@ function loginTimeout(emitter, data) {
     if (emitter) {
         emitter.emit("error", data);
     }
-};
+}
 /*
  登录成功处理
  */

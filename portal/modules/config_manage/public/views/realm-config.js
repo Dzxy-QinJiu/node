@@ -17,7 +17,7 @@ const realmOptions = [
         label: Intl.get("config.manage.realm.modifiedMD5", "删除前4位的MD5"),
         value: "2"
     }
-]
+];
 const RealmConfig = React.createClass({
     getInitialState() {
         return {
@@ -27,7 +27,7 @@ const RealmConfig = React.createClass({
             isLoading: false,
             strategy: "1",
             showConfirm: false
-        }
+        };
     },
 
     onStoreChange() {
@@ -51,7 +51,7 @@ const RealmConfig = React.createClass({
                     showIcon
                 />
             </div>
-        )
+        );
     },
     getRealmConfig() {
         return (
@@ -62,7 +62,7 @@ const RealmConfig = React.createClass({
                     showIcon
                 />
             </div>
-        )
+        );
     },
     onChange(e) {
         let value = e.target.value;
@@ -116,7 +116,7 @@ const RealmConfig = React.createClass({
                     {this.state.getRealmConfigErrMsg != '' ? this.getRealmConfig() : null}
                 </div>
             </div>
-        )
+        );
     }
 });
 

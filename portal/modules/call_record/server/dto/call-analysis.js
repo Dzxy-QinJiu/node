@@ -19,7 +19,7 @@ exports.toFrontCallAnalysis = function (data) {
                     calloutCount: salesObj.total_callout || 0,//呼出次数
                     calloutSuccess: salesObj.total_callout_success || 0,//成功呼出
                     calloutRate:salesObj.callout_rate || 0//呼出接通率
-                }
+                };
             });
         }
     }

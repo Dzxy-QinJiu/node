@@ -60,7 +60,7 @@ var RateBarChart = React.createClass({
     renderChart: function () {
         var _this = this;
         if (this.echartInstance) {
-            try { _this.echartInstance.clear() } catch (e) { };
+            try { _this.echartInstance.clear(); } catch (e) { }
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = this.getEchartOptions();
@@ -135,7 +135,7 @@ var RateBarChart = React.createClass({
                     barMaxWidth: 40,
                     barMinWidth: 4,
                     data: this.props.dataList.map(x => {
-                        return [x.name,x.num,x.rate]
+                        return [x.name,x.num,x.rate];
                     })
                 }
             ]

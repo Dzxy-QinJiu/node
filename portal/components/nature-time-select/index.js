@@ -4,7 +4,7 @@ var RadioButton = Radio.Button;
 var RadioGroup = Radio.Group;
 function noop() {
 
-};
+}
 let DATE_FORMAT = oplateConsts.DATE_FORMAT;
 var TimeSelect = React.createClass({
     getDefaultProps: function () {
@@ -48,7 +48,7 @@ var TimeSelect = React.createClass({
         return {
             weekStartTime: weekStartTime,
             weekEndTime: weekEndTime
-        }
+        };
     },
 
     //年选项的渲染

@@ -51,7 +51,7 @@ const UserTypeRadioField = {
             const formData = this.state.formData;
             formData.multilogin = value;
             this.setState({formData});
-        }
+        };
 
         let currentValue;
         if(config.isCustomSetting) {

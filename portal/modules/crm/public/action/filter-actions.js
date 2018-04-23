@@ -60,7 +60,7 @@ function FilterAction() {
         FilterAjax.getTagList().then(function (list) {
             list = _.isArray(list) ? list : [];
             list = list.map(tag => {
-                return {name: tag, show_name: tag}
+                return {name: tag, show_name: tag};
             });
             list.unshift({
                 name: Intl.get("crm.tag.unknown", "未打标签的客户"),
@@ -93,7 +93,7 @@ function FilterAction() {
         FilterAjax.getCompetitorList().then((list) => {
             let competitorList = _.isArray(list) ? list : [];
             competitorList = competitorList.map(tag => {
-                return {name: tag, show_name: tag}
+                return {name: tag, show_name: tag};
             });
             competitorList.unshift({name: "", show_name: Intl.get("common.all", "全部")});
             this.dispatch(competitorList);
@@ -118,7 +118,7 @@ function FilterAction() {
         }, (errorMsg) => {
             console.log(errorMsg);
         });
-    }
+    };
 }
 
 module.exports = alt.createActions(FilterAction);

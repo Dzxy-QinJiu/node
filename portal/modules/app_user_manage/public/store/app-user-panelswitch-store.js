@@ -36,7 +36,7 @@ AppUserPanelSwitchStore.prototype.cancelAddAppPanel = function() {
 //切换到第三方应用面板
 AppUserPanelSwitchStore.prototype.switchToThirdAppPanel = function(thirdObj) {
     this.panel_switch_currentView = 'thirdapp';
-    this.thirdApp = thirdObj
+    this.thirdApp = thirdObj;
 };
 //提交添加应用
 AppUserPanelSwitchStore.prototype.submitAddAppPanel = function(appInfo) {

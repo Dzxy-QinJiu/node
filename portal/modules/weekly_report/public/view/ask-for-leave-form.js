@@ -14,7 +14,7 @@ const leaveOptions = LEALVE_OPTION.map(x => (
     <Option value={x.value}>{x.label}</Option>
 ));
 const leaveDurationOptions = LEALVE_DURATION_OPTION.map(x => {
-    return <Option value={x.value}>{x.label}</Option>
+    return <Option value={x.value}>{x.label}</Option>;
 });
 class AskForLeaveForm extends React.Component {
     constructor(props) {
@@ -39,8 +39,8 @@ class AskForLeaveForm extends React.Component {
             ...WeeklyReportDetailStore.getState(),
             userId: this.props.userId,
             submitObj: submitObj
-        }
-    };
+        };
+    }
 
     onStoreChange = () => {
         this.setState(WeeklyReportDetailStore.getState());
@@ -56,21 +56,21 @@ class AskForLeaveForm extends React.Component {
         this.state.submitObj.leave_detail = value;
         this.setState({
             submitObj: this.state.submitObj
-        })
+        });
     };
     //选择请假的时间
     selectLeaveDayOptions = (value) => {
         this.state.submitObj.leave_time = value;
         this.setState({
             submitObj: this.state.submitObj
-        })
+        });
     };
     //选择请假的天数
     selectLeaveDurationOptions = (value) => {
         this.state.submitObj.leave_days = value;
         this.setState({
             submitObj: this.state.submitObj
-        })
+        });
     };
     //保存数据
     handleSaveLeaveData = () => {
@@ -118,7 +118,7 @@ class AskForLeaveForm extends React.Component {
         }
         timeRangeArr.push(endTime);
         var timeRangeOptions = timeRangeArr.map(x => {
-            return <Option value={moment(x).valueOf()}>{x}</Option>
+            return <Option value={moment(x).valueOf()}>{x}</Option>;
         });
         return (
             <div>
@@ -147,7 +147,7 @@ class AskForLeaveForm extends React.Component {
                     </span>}
                 </span>
             </div>
-        )
+        );
     }
 }
 AskForLeaveForm.defaultProps = {

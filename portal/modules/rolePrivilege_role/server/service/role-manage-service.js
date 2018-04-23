@@ -50,7 +50,7 @@ exports.getRoleList = function (req, res, clientID) {
                                 roleId: role.role_id,
                                 roleName: role.role_name,
                                 permissionIds: role.permission_ids
-                            }
+                            };
                         });
                     }
                 }

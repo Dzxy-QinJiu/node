@@ -81,7 +81,7 @@ var Organization = React.createClass({
     },
     getSelectedText : function() {
         var target = _.find(this.state.list , (item) => {
-            return item.group_id == this.state.organization_id
+            return item.group_id == this.state.organization_id;
         });
         return target ? target.group_name : <span>&nbsp;</span>;
     },

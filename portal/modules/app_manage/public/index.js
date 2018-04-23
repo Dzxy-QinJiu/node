@@ -198,7 +198,7 @@ var AppManage = React.createClass({
                     appFormShow={this.state.appFormShow}
                     appTagList={this.state.appTagList}
                 />
-            )
+            );
         } else if (this.state.isAppNoticePanelShow) {
             return (
                 <AppNotice
@@ -207,7 +207,7 @@ var AppManage = React.createClass({
                     appNoticePanelShow={this.state.appNoticePanelShow}
                     appId={this.state.currentApp.id}
                 />
-            )
+            );
         } else if (this.state.versionUpgradeShow) {
             return (
                 <VersionUpgradeLog
@@ -216,7 +216,7 @@ var AppManage = React.createClass({
                     versionUpgradeShow={this.state.versionUpgradeShow}
                     appId={this.state.currentApp.id}
                 />
-            )
+            );
         }else if (this.state.userTypeConfigShow){
             return (
                 <UserTypeConfig
@@ -227,7 +227,7 @@ var AppManage = React.createClass({
                     appName={this.state.currentApp.name}
                 />
 
-            )
+            );
 
         }
     },
@@ -265,7 +265,7 @@ var AppManage = React.createClass({
                     label: createDate + Intl.get("common.time.connector", " 至 -"),
                     value: "",
                     showOnCard: true
-                }
+                };
             }
             return pageApp;
         });

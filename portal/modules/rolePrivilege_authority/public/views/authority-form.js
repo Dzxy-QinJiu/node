@@ -518,7 +518,7 @@ var AuthorityForm = React.createClass({
                                     id="authority.need.write.one.data"
                                     defaultMessage="必填一项数据权限"/>
                                 </div>) : null}
-                        </div>
+                        </div>;
                     })
                 }
             </div>
@@ -665,7 +665,7 @@ var AuthorityForm = React.createClass({
                               onClick={_this.deleteFormDiv.bind(_this, index)}/>
                     </div>)}
                 </div>
-            )
+            );
         });
 
         return (

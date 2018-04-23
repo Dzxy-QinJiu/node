@@ -6,7 +6,7 @@ import { Select, Spin, Alert } from "antd";
 const Option = Select.Option;
 const defualtValueObj = {
     industry: Intl.get("oplate_customer_analysis.allIndustries", "全部行业")
-}
+};
 class IndustrySelector extends React.Component {
     constructor(props) {
         super();
@@ -15,7 +15,7 @@ class IndustrySelector extends React.Component {
             data: [],
             errorMsg: '',
             selectedValue: defualtValueObj.industry
-        }
+        };
     }
     componentDidMount() {
         this.getIndustry();
@@ -28,7 +28,7 @@ class IndustrySelector extends React.Component {
                 value = null;
             }
             this.props.onChange(value);
-        })
+        });
     }
     getIndustry=()=> {
         this.setState({
@@ -39,12 +39,12 @@ class IndustrySelector extends React.Component {
                     this.setState({
                         loading: false,
                         data: data,
-                    })
+                    });
                 }).fail(err => {
                     this.setState({
                         loading: false,
                         errorMsg: Intl.get("errorcode.118", "获取数据失败")
-                    })
+                    });
                 });
         });
     }
@@ -54,11 +54,11 @@ class IndustrySelector extends React.Component {
         data.unshift(defualtValueObj);
         const list = data.map((x, idx) => (
             <Option key={idx} value={x.industry}>{x.industry}</Option>
-        ))
+        ));
         if (loading) {
             return (
                 <Spin size="small"/>
-            )
+            );
         }
         if (!loading && !errorMsg) {
             return (
@@ -69,12 +69,12 @@ class IndustrySelector extends React.Component {
                 >
                     {list}
                 </Select>
-            )
+            );
         }
         if (errorMsg) {
             return (
                 <Alert message={errorMsg} type="error" showIcon />
-            )
+            );
         }
     }
 }

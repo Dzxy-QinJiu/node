@@ -26,7 +26,7 @@ const SalesRoleManage = React.createClass({
             addErrMsg: '',
             // 删除角色失败
             deleteErrMsg: '',
-        })
+        });
     },
     //获取销售角色列表
     getSalesRoleList: function () {
@@ -227,7 +227,7 @@ const SalesRoleManage = React.createClass({
                                         <Icon type="loading"/>
                                     ) : null}
                                 </div>
-                            </li>)
+                            </li>);
                     }
                 )}
             </ul>);

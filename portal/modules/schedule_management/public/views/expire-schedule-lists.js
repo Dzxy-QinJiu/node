@@ -34,7 +34,7 @@ class ExpireScheduleLists extends React.Component {
             ...scheduleManagementStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
-    };
+    }
 
     componentDidMount() {
         scheduleManagementStore.listen(this.onStoreChange);
@@ -46,7 +46,7 @@ class ExpireScheduleLists extends React.Component {
         }, () => {
             this.getExpiredScheduleList();
         });
-    };
+    }
 
     onStoreChange = () => {
         this.setState(scheduleManagementStore.getState());
@@ -58,11 +58,11 @@ class ExpireScheduleLists extends React.Component {
                 isShowExpiredPanel: nextProps.isShowExpiredPanel
             });
         }
-    };
+    }
 
     componentWillUnmount() {
         scheduleManagementStore.unlisten(this.onStoreChange);
-    };
+    }
 
     //展示没有数据的提示
     showNoMoreDataTip = () => {
@@ -84,7 +84,7 @@ class ExpireScheduleLists extends React.Component {
             constObj.id = this.state.lastScheduleExpiredId;
         }
         scheduleManagementAction.getScheduleList(constObj);
-    };
+    }
 
     //获取过期日程列表(不包含今天)
     getExpiredScheduleList = () => {
@@ -176,7 +176,7 @@ class ExpireScheduleLists extends React.Component {
                                     <span>{Intl.get("schedule.create.person", "创建人")}: {item.member_nick}</span>}
                             </p>
                         </div>
-                    )
+                    );
 
                 })
                 }
@@ -184,8 +184,8 @@ class ExpireScheduleLists extends React.Component {
                     show={this.showNoMoreDataTip}
                 />
             </div>
-        )
-    };
+        );
+    }
 
     handleScrollBarBottom = () => {
         var currListLength = _.isArray(this.state.scheduleExpiredList) ? this.state.scheduleExpiredList.length : 0;
@@ -215,7 +215,7 @@ class ExpireScheduleLists extends React.Component {
                         showIcon={true}
                     />
                 </div>
-            )
+            );
         } else if (!this.state.scheduleExpiredList.length && !this.state.isLoadingScheduleExpired) {
             return (
                 <div className="schedule-list-no-data">
@@ -236,7 +236,7 @@ class ExpireScheduleLists extends React.Component {
                     <div className={cls} style={{height: divHeight}}>
                         {this.renderExpiredScheduleList()}
                     </div>
-                )
+                );
             } else {
                 return (
                     <div className={cls} style={{height: divHeight}}>
@@ -248,10 +248,10 @@ class ExpireScheduleLists extends React.Component {
                             {this.renderExpiredScheduleList()}
                         </GeminiScrollbar>
                     </div>
-                )
+                );
             }
         }
-    };
+    }
 
     handleScrollExpiredPanel = () => {
         scheduleManagementEmitter.emit(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE);
@@ -266,8 +266,8 @@ class ExpireScheduleLists extends React.Component {
                     updateScrollBar: false,
                 }, () => {
                     scheduleManagementEmitter.emit(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE);
-                })
-            }, DELAY_RANGE.ANIMATION)
+                });
+            }, DELAY_RANGE.ANIMATION);
         });
     };
     //点击添加待办按钮
@@ -311,7 +311,7 @@ class ExpireScheduleLists extends React.Component {
                     <Button type="primary" onClick={this.handleAddTodo}>+ {Intl.get("shedule.list.add.todo", "待办")}</Button>
                 </div>
             </div>
-        )
+        );
     }
 }
 ExpireScheduleLists.defaultProps = {

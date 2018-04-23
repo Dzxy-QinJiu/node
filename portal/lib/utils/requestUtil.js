@@ -2,4 +2,4 @@
 exports.isAjax = function(req) {
     var XRequestedWith = req.header('X-Requested-With');
     return XRequestedWith === 'XMLHttpRequest';
-}
+};

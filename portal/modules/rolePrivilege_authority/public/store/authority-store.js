@@ -148,7 +148,7 @@ AuthorityStore.prototype.afterEditAuthority = function (authorityModified) {
             //将权限服务地址的url和method对象存入数组中
             _this.handlePermissionApis(permissionApiArray, key, value);
         });
-        authorityModified.permissionApiArray = _.sortBy(permissionApiArray, 'permissionApiUrl');;
+        authorityModified.permissionApiArray = _.sortBy(permissionApiArray, 'permissionApiUrl');
     }
     var editAuthorityGroup = this.editAuthorityGroup;
     //刷新编辑的权限组

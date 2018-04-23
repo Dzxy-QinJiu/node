@@ -29,7 +29,7 @@ const LIST_CONST = {
     PADDING_BOTTOM: 20,
     //确定按钮留白
     BUTTON_PADDING: 20
-}
+};
 class AntcTable extends React.Component {
     constructor(props) {
         super(props);
@@ -41,7 +41,7 @@ class AntcTable extends React.Component {
             tableKey,
             checkAll: rawColumns.length == finalColumns.length,
             errorMsg: ""
-        }
+        };
         this.customizeEventHandler = this.customizeEventHandler.bind(this);
     }
     componentDidMount() {
@@ -83,8 +83,8 @@ class AntcTable extends React.Component {
             } else {                
                 style.left = $ele.offset().left;
             }
-            $list.css(style)
-        })
+            $list.css(style);
+        });
         e.preventDefault();
     }
 
@@ -122,7 +122,7 @@ class AntcTable extends React.Component {
     handleColumnChange(value) {
         //最后一项不能取消选中
         if (value.length == 0) {
-            return
+            return;
         }
         //按照原有columns的顺序处理
         const sortedValues = _.intersection(this.state.rawColumns.map(x => x.dataIndex), value);
@@ -134,7 +134,7 @@ class AntcTable extends React.Component {
                 x.show = false;
             }
             return x;
-        })
+        });
         this.setState({
             finalColumns,
             rawColumns,
@@ -146,7 +146,7 @@ class AntcTable extends React.Component {
     onCheckAllChange = (e) => {
         //不能全不选
         if (!e.target.checked) {
-            return
+            return;
         }
         this.setState({
             finalColumns: this.state.rawColumns,
@@ -169,12 +169,12 @@ class AntcTable extends React.Component {
                 } else {
                     this.setState({
                         errorMsg: result.message || Intl.get("common.save.failed", "保存失败")
-                    })
+                    });
                 }
             }, err => {
                 this.setState({
                     errorMsg: err.message || Intl.get("common.save.failed", "保存失败")
-                })
+                });
             });
         }
         
@@ -183,7 +183,7 @@ class AntcTable extends React.Component {
     handleBackClick() {
         this.setState({
             showColumnList: false
-        })
+        });
     }
     columnsProcessor(props) {
         const tableKey = location.pathname + "?id=" + props.buttonIdRef;
@@ -193,20 +193,20 @@ class AntcTable extends React.Component {
         if (websiteConfig && websiteConfig[tableKey] && websiteConfig[tableKey].length > 0) {
             finalColumns = websiteConfig[tableKey].map(x => props.columns.find(item => item.dataIndex == x));
         } else {
-            finalColumns = props.columns
+            finalColumns = props.columns;
         }
         const rawColumns = props.columns.map(x => {
             x.show = true;
             if (websiteConfig && websiteConfig[tableKey] && websiteConfig[tableKey].indexOf(x.dataIndex) == -1) {
                 x.show = false;
             }
-            return x
-        })
+            return x;
+        });
         return {
             rawColumns,
             finalColumns,
             tableKey
-        }
+        };
         
     }
     componentWillReceiveProps(newProps) {
@@ -226,7 +226,7 @@ class AntcTable extends React.Component {
             if (x.sorter) {
                 x.className = x.className + " has-sorter";
             }
-        })
+        });
         const parseNum = num => {
             if (num) {
                 if (typeof num == "string") {
@@ -239,7 +239,7 @@ class AntcTable extends React.Component {
             }
         };
         const width = tableProps.columns.map(x => x.width || 0).reduce((preVal, nextVal) => {
-            return parseNum(preVal) + parseNum(nextVal)
+            return parseNum(preVal) + parseNum(nextVal);
         });
         if (tableProps.scroll) {
             tableProps.scroll.x = width;
@@ -256,16 +256,16 @@ class AntcTable extends React.Component {
                             {...tableProps}
                         />
                     </ScrollLoad>
-                )
+                );
             } else {
                 return (
                     <Table
                         ref={table => this.table = table}
                         {...tableProps}
                     />
-                )
+                );
             }
-        }
+        };
         const columnsOptions = this.state.rawColumns.map(x => (
             {
                 label: x.title,
@@ -300,7 +300,7 @@ class AntcTable extends React.Component {
                     </div> : null}
                 {renderTable()}
             </div>
-        )
+        );
     }
 }
 

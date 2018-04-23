@@ -13,7 +13,7 @@ exports.toFrontSalesPhone = function (data) {
                 return {
                     totalTime: salesObj.total_time || 0,//总时长
                     calloutSuccess: salesObj.total_callout_success || 0,//成功呼出
-                }
+                };
             });
         }
     }

@@ -28,7 +28,7 @@ let CrmRightList = React.createClass({
             updateScrollBar: false,
             salesTeamMembersObj: $.extend(true, {}, this.props.salesTeamMembersObj),//销售团队下的成员列表
             salesRoleList: []//销售角色列表
-        }
+        };
     },
     componentDidMount: function () {
         this.getSalesRoleList();
@@ -42,9 +42,9 @@ let CrmRightList = React.createClass({
                 setTimeout(() => {
                     this.setState({
                         updateScrollBar: false
-                    })
-                }, delayConstant)
-            })
+                    });
+                }, delayConstant);
+            });
         }
     },
     //获取销售角色列表
@@ -64,7 +64,7 @@ let CrmRightList = React.createClass({
         if (resultType == "loading") {
             return (<Icon type="loading"/>);
         } else if (resultType == "error" || resultType == "noData") {
-            return (<div className="no-data-tip">{errorMsg || Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>)
+            return (<div className="no-data-tip">{errorMsg || Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>);
         }
     },
     //点击查看当前团队的数据
@@ -110,7 +110,7 @@ let CrmRightList = React.createClass({
         SalesHomeAction.returnSalesMemberList();
         //刷新左侧的统计、分析数据
         setTimeout(() => this.props.refreshDataByChangeSales());
-        Trace.traceEvent(e, "返回销售成员列表")
+        Trace.traceEvent(e, "返回销售成员列表");
     },
     //获取销售的标题
     getSalesmanTitle: function () {
@@ -140,7 +140,7 @@ let CrmRightList = React.createClass({
         } else {
             salesTitle = userData.getUserData().nick_name;
         }
-        return salesTitle
+        return salesTitle;
     },
     //加入其上级团队
     addTitleItem: function (team, titleItem) {
@@ -199,7 +199,7 @@ let CrmRightList = React.createClass({
         if (sales.teamRoleId === options.key) {
             return;
         }
-        let selectRole = _.find(this.state.salesRoleList, role => role.id === options.key)
+        let selectRole = _.find(this.state.salesRoleList, role => role.id === options.key);
         this.updateTeamMemberRole(sales, selectRole);
         $.ajax({
             url: '/rest/sales/role/change',
@@ -236,7 +236,7 @@ let CrmRightList = React.createClass({
             return (<span className="sales-item-icon"/>);
         } else if (salesman.teamRoleName) {//有销售角色时，展示不同颜色的角色图标
             return (<span className="iconfont icon-team-role sales-role-icon" style={{color: color}}
-                          title={salesman.teamRoleName}/>)
+                          title={salesman.teamRoleName}/>);
         } else {//无销售角色时，展示“未设置角色”的图标
             return <span className="iconfont icon-role-set sales-role-icon"
                          title={Intl.get("sales.home.role.null", "未设置角色")}/>;
@@ -378,13 +378,13 @@ let CrmRightList = React.createClass({
                 <div>
                     {salesListLi}
                 </div>
-            )
+            );
         } else {
             return (
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
                     {salesListLi}
                 </GeminiScrollbar>
-            )
+            );
         }
     },
     //获取颜色（从echart的颜色列表中循环获取）

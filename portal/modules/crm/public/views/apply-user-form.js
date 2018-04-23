@@ -26,7 +26,7 @@ const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请�
 //顶部tab标题的高度
 const LAY_CONSTS = {
     TAB_TITLE_HEIGHT : 80
-}
+};
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
@@ -471,7 +471,7 @@ const ApplyUserForm = React.createClass({
                                                             </RadioGroup>
                                                         </FormItem>
                                                     </div>
-                                                </TabPane>)
+                                                </TabPane>);
                                             })}
                                         </Tabs>
                                         {

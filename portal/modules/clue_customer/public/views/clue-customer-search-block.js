@@ -19,24 +19,24 @@ class ClueCustomerSearchBlock extends React.Component {
             ...clueCustomerStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
-    };
+    }
     componentDidMount(){
         clueCustomerStore.listen(this.onStoreChange);
-    };
+    }
     //是否是普通销售(多角色时：非销售领导、域管理员)的判断
     isSales() {
-        return userData.hasRole("sales") && !userData.isSalesManager()
-    };
+        return userData.hasRole("sales") && !userData.isSalesManager();
+    }
     //是否是运营人员
     isOperation(){
         return userData.hasRole("operations");
-    };
+    }
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
     };
     componentWillUnmount(){
         clueCustomerStore.unlisten(this.onStoreChange);
-    };
+    }
     onSelectDate = (start_time, end_time) => {
         if (!start_time) {
             start_time = moment('2010-01-01 00:00:00').valueOf();

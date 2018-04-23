@@ -13,7 +13,7 @@ let StatisticTotal = React.createClass({
         if (totalObj.resultType == "loading") {
             return (<Icon type="loading"/>);
         } else if (totalObj.resultType == "error") {
-            return (<div className="no-total-data">{Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>)
+            return (<div className="no-total-data">{Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>);
         }
     },
     renderCustomerContent: function () {

@@ -158,7 +158,7 @@ var PieChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose()} catch(e){};
+            try {_this.echartInstance.dispose();} catch(e){}
         }
         if(this.props.resultType === 'loading') {
             return;

@@ -26,7 +26,7 @@ var AppFilterAdv = React.createClass({
                             className={className}>
                     <span className="tag-name">{tag}</span>
                     <span className="tag-count">{tagObj[tag]}</span>
-                </li>)
+                </li>);
             });
         },
         getStatusListJsx: function () {
@@ -49,7 +49,7 @@ var AppFilterAdv = React.createClass({
                             className={className}>
                     <span className="tag-name">{status}</span>
                     <span className="tag-count">{statusCount}</span>
-                </li>)
+                </li>);
             });
         },
         render: function () {
@@ -61,7 +61,7 @@ var AppFilterAdv = React.createClass({
                             className={className}>
                     <span className="tag-name">{tag}</span>
                     <span className="tag-count">{tagObj[tag]}</span>
-                </li>)
+                </li>);
             });
 
             return (

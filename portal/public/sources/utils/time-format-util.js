@@ -96,4 +96,4 @@ exports.getCurrentWeek = function (time) {
             break;
     }
     return Week;
-}
+};

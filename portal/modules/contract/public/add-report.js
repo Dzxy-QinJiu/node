@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * 服务信息添加表单
  */
 
-import { Form, Input, Select, Button } from "antd"
+import { Form, Input, Select, Button } from "antd";
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from "../../../mixins/ValidateMixin";
@@ -147,7 +147,7 @@ const AddReport = React.createClass({
                                 &nbsp;%
                             </FormItem>
                         </Form>
-                    )
+                    );
                 })}
                 </Validation>
                 </div>

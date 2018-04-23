@@ -70,7 +70,7 @@ function OrganizationMemberActions() {
             //OrganizationActions.getMemberList();
         }
         this.dispatch();
-    }
+    };
 }
 
 module.exports = alt.createActions(OrganizationMemberActions);

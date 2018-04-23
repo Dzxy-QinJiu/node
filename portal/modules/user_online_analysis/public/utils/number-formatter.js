@@ -4,7 +4,7 @@ exports.numberAddComma = function(number) {
     number = Math.round(number);
     number += '';
     number = number.split("").reverse().join("")
-        .replace(/\d{3}/g , function($0) {return $0 + ','}).replace(/\,$/,'')
+        .replace(/\d{3}/g , function($0) {return $0 + ',';}).replace(/\,$/,'')
         .split("").reverse().join('');
     return number;
 };

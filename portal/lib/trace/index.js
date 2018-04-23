@@ -22,7 +22,7 @@ function getParentsTraceLines(target) {
         if (parents && parents.length > 0) {
             parentNames = parents.get().reverse().map(function (p) {
                 return $(p).attr("data-tracename");
-            })
+            });
         }
     }
     return parentNames;
@@ -94,4 +94,4 @@ module.exports = {
             _paq.push(['trackEvent', traceObj.root || traceName, 'clicked', traceObj.traceLine || traceName]);
         }
     }
-}
+};

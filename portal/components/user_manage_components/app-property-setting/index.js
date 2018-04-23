@@ -140,7 +140,7 @@ const AppPropertySetting = React.createClass({
                     if(!originAppSetting.time) {
                         originAppSetting.time = {
                             setted : false
-                        }
+                        };
                     }
                     if(!originAppSetting.time.setted) {
                         originAppSetting.time.start_time = defaultSettings.time.start_time;
@@ -173,7 +173,7 @@ const AppPropertySetting = React.createClass({
                 //添加到map中
                 finalResult[appId] = originAppSetting;
             });
-        }
+        };
         //根据传入的配置生成配置(修改单个应用，修改申请单-审批)
         const createPropertySettingByAppsSetting = ()=> {
             _.each(selectedApps , (currentApp) => {
@@ -212,7 +212,7 @@ const AppPropertySetting = React.createClass({
                     if(!originAppSetting.time) {
                         originAppSetting.time = {
                             setted : false
-                        }
+                        };
                     }
                     if(!originAppSetting.time.setted) {
                         originAppSetting.time.start_time = appSettingConfig.time.start_time;
@@ -242,7 +242,7 @@ const AppPropertySetting = React.createClass({
                 checkTime();
                 finalResult[appId] = originAppSetting;
             });
-        }
+        };
 
         //如果有默认配置，用默认配置
         if(!_.isEmpty(defaultSettings)) {

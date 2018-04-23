@@ -8,7 +8,7 @@ exports.getOnlineAnalysisSummary = function(req,res){
         res.json(data);
     }).on("error", function (ret) {
         res.status(500).json(ret);
-    })
+    });
 };
 
 //获取某个应用的在线用户浏览器信息

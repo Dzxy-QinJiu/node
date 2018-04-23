@@ -75,7 +75,7 @@ class RecentLoginUsers extends React.Component {
         }
         $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date})? true: false;
+        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date;})? true: false;
         this.setState({
             isShowUserDetail: true,
             userId: user_id,
@@ -101,7 +101,7 @@ class RecentLoginUsers extends React.Component {
             selectedAppId = localSelectedAppId;
         }else{
             //如果上面两种情况都没有，就用应用列表中第一个
-            selectedAppId = props.appList[0] ? props.appList[0].app_id : ""
+            selectedAppId = props.appList[0] ? props.appList[0].app_id : "";
         }
         return selectedAppId;
     }
@@ -135,7 +135,7 @@ class RecentLoginUsers extends React.Component {
             paramObj.user_type = this.state.user_type;
         }
         if (this.state.team_ids) {
-            paramObj.team_ids = this.state.team_ids
+            paramObj.team_ids = this.state.team_ids;
         }
         if (this.state.filter_type) {
             paramObj.outdate = this.state.filter_type;
@@ -200,7 +200,7 @@ class RecentLoginUsers extends React.Component {
             }
         }
         return appList.map(function (item) {
-            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>
+            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
     }
 
@@ -214,7 +214,7 @@ class RecentLoginUsers extends React.Component {
             pageNum: 1,
         }, () => {
             setWebsiteConfig(obj);
-            this.getRecentLoginUsers()});
+            this.getRecentLoginUsers();});
         //当应用列表重新布局的时候，让顶部导航重新渲染
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     }
@@ -237,7 +237,7 @@ class RecentLoginUsers extends React.Component {
                     var user_name = rowData.user && rowData.user.user_name || '';
                     var user_id = rowData.user && rowData.user.user_id || '';
                     const isShown = _.find(rowData.apps, app => {
-                        return app.user_exception
+                        return app.user_exception;
                     });
 
                     return (
@@ -459,7 +459,7 @@ class RecentLoginUsers extends React.Component {
                         >
                             {
                                 _.map(userTypeList, (userType, idx) => {
-                                    return <Option key={idx} value={userType.value}>{userType.name}</Option>
+                                    return <Option key={idx} value={userType.value}>{userType.name}</Option>;
                                 })
                             }
                         </Select>
@@ -471,7 +471,7 @@ class RecentLoginUsers extends React.Component {
                         >
                             {
                                 _.map(this.state.teamlists, (teamItem, index) => {
-                                    return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>
+                                    return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
                                 })
                             }
                         </SelectFullWidth>
@@ -484,7 +484,7 @@ class RecentLoginUsers extends React.Component {
 
                             {
                                 _.map(filterTypeList, (filterType, index) => {
-                                    return <Option key={index} value={filterType.value}>{filterType.name}</Option>
+                                    return <Option key={index} value={filterType.value}>{filterType.name}</Option>;
                                 })
                             }
                         </SelectFullWidth>

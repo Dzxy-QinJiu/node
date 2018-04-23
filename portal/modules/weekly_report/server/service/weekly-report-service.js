@@ -142,7 +142,7 @@ function getCustomerStageInfo(req, res, params, reqData) {
                 }
             });
     });
-};
+}
 
 //获取客户阶段情况
 exports.getCustomerStageInfo = function (req, res, params, reqData) {

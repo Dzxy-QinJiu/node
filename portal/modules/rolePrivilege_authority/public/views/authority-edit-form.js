@@ -352,7 +352,7 @@ var AuthorityEditForm = React.createClass({
                                         id="authority.need.write.one.data"
                                         defaultMessage="必填一项数据权限"/>
                                     </div>) : null}
-                            </div>
+                            </div>;
                         })
                     }
                 </div>
@@ -387,7 +387,7 @@ var AuthorityEditForm = React.createClass({
                     return item.permissionName === value;
                 });
                 if (isExist) {
-                    callback(new Error(Intl.get("authority.permission.exist", "该权限名已存在")))
+                    callback(new Error(Intl.get("authority.permission.exist", "该权限名已存在")));
                 } else {
                     callback();
                 }
@@ -517,7 +517,7 @@ var AuthorityEditForm = React.createClass({
                     </Form>
                 </div>
                 </div>
-            )
+            );
 
         }
     })

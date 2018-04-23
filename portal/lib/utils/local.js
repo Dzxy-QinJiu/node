@@ -29,17 +29,13 @@ const Local = {
         switch (lan) {
             case 'en':
                 return en_US;
-                break;
             case 'zh':
                 return zh_CN;
-                break;
             case 'es':
                 return es_VE;
-                break;
             default:
                 return zh_CN;
-                break;
         }
     }
-}
+};
 export default Local;

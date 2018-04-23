@@ -200,7 +200,7 @@ function getSalesCallStatusFunc(team) {
             SalesHomeActions.getSalesCallStatus(userIds.join(","));
         });
     }
-};
+}
 
 //点击销售成员列表中的某个成员进入该成员的待办事宜展示页
 SalesHomeStore.prototype.selectSalesman = function (user) {

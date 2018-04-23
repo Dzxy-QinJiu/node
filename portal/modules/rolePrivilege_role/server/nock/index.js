@@ -164,7 +164,7 @@ exports.init = function () {
             return [200, {
                 roleList: roleList,
                 authorityList: authorityList
-            }]
+            }];
         });
 
     nock(config.nockUrl)

@@ -32,7 +32,7 @@ function ClueCustomerActions() {
         }
         clueCustomerAjax.getClueCustomerList(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result})
+            this.dispatch({error: false, loading: false, clueCustomerObj: result});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -70,8 +70,8 @@ function ClueCustomerActions() {
             this.dispatch({error: false, loading: false, submitTip: result});
             _.isFunction(callback) && callback();
         },(errorMsg)=>{
-            this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("failed.submit.trace.content","添加跟进内容失败")})
-        })
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("failed.submit.trace.content","添加跟进内容失败")});
+        });
     };
     //把线索客户分配给对应的销售
     this.distributeCluecustomerToSale = function (submitObj,callback) {
@@ -82,7 +82,7 @@ function ClueCustomerActions() {
         },(errorMsg)=>{
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
-        })
+        });
     };
 }
 module.exports = alt.createActions(ClueCustomerActions);

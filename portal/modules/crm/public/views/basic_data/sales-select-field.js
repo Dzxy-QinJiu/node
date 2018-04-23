@@ -169,7 +169,7 @@ var SalesSelectField = React.createClass({
                     return {
                         group_id: team.group_id,
                         group_name: team.group_name
-                    }
+                    };
                 });
                 this.state.salesTeamList = teamList;
                 if (teamList[0]) {

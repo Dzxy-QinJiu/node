@@ -84,7 +84,7 @@ OrganizationStore.prototype.filterByOrganizationName = function (groupName) {
         this.curShowTeamMemberObj = {
             groupId: filterGroupArray[0].key,
             groupName: filterGroupArray[0].title
-        }
+        };
     }
     this.searchOrganizationTree = filterGroupArray;
 };
@@ -613,7 +613,7 @@ OrganizationStore.prototype.organizationTree = function (flag) {
         this.curShowTeamMemberObj = {
             groupId: organizationArray[0].key,
             groupName: organizationArray[0].title
-        }
+        };
     }
     this.setSearchOrganizationTree();
 };

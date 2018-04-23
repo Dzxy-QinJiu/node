@@ -108,7 +108,7 @@ var RealmInfo = React.createClass({
             } else {
                 var status = 1;
                 if (this.props.realmInfo.status == 1) {
-                    status = 0
+                    status = 0;
                 }
                 this.props.updateStatus(this.props.realmInfo.id, status);
                 Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击确认按钮");
@@ -167,7 +167,7 @@ var RealmInfo = React.createClass({
                         </span>
                     </div>
                 </div>
-            )
+            );
         },
         closeRightPanel(e) {
             Trace.traceEvent(e,"关闭安全域详情");

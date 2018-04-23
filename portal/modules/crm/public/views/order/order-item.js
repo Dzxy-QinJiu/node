@@ -25,7 +25,7 @@ const OrderItem = React.createClass({
             apps: this.props.order.apps,
             stage: this.props.order.sale_stages,
             formData: JSON.parse(JSON.stringify(this.props.order)),
-        }
+        };
     },
 
     componentWillReceiveProps: function (nextProps) {
@@ -377,7 +377,7 @@ const OrderItem = React.createClass({
                                     <div className="app-item" key={i}>
                                         {app.client_name}
                                     </div>
-                                )
+                                );
                             })}
                         </div>
                         {this.state.isAppPanelShow ? (

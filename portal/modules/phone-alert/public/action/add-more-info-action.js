@@ -14,14 +14,14 @@ function AddMoreInfoAction() {
             this.dispatch({ loading: false, error: false, lists: data});
         }, (errMsg) => {
             this.dispatch({loading: false, error: true, errMsg: errMsg});
-        })
+        });
     };
     this.addAppFeedback = function (submitObj, cb) {
         phoneAlertAjax.addAppFeedback(submitObj).then((data)=>{
             cb(data);
         },(errorMsg)=>{
             cb( errorMsg || Intl.get("call.record.failed.add.app.feedback","添加产品反馈内容失败"));
-        })
-    }
+        });
+    };
 }
 module.exports = alt.createActions(AddMoreInfoAction);

@@ -14,7 +14,7 @@ function ScheduleManagementStore() {
     this.exportPublicMethods({
         setViewDate: this.setViewDate,
         getViewDate: this.getViewDate
-    })
+    });
 }
 ScheduleManagementStore.prototype.setInitState = function () {
     this.scheduleExpiredList = [];//过期日程列表

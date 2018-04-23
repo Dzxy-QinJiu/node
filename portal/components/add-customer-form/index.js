@@ -55,7 +55,7 @@ class AddCustomerForm extends React.Component {
             isLoadingTagLists: false,//是否正在加载
             formLayout: 'horizontal',//表单的布局方式
         };
-    };
+    }
     componentDidMount = () => {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true, isLoadingTagLists: true});
@@ -92,8 +92,8 @@ class AddCustomerForm extends React.Component {
             list = _.filter(list, (item) => {
                 return item !== Intl.get("crm.sales.clue", "线索") && item != Intl.get("crm.qualified.roll.out", "转出");
             });
-            this.setState({isLoadingTagLists: false, tagList: list})
-        })
+            this.setState({isLoadingTagLists: false, tagList: list});
+        });
     };
 
     //客户名格式验证
@@ -213,7 +213,7 @@ class AddCustomerForm extends React.Component {
                 }
                 //拨打电话时，若客户列表中没有此号码，需添加客户
                 if (_.isFunction(this.props.updateCustomer)) {
-                    this.props.updateCustomer(result.result)
+                    this.props.updateCustomer(result.result);
                 }
                 this.constructor();
             } else {
@@ -319,7 +319,7 @@ class AddCustomerForm extends React.Component {
         this.state.formData.contacts0_phone = obj.target.value;
         this.setState({
             formData: this.state.formData
-        })
+        });
     };
     handleChangeSeletedTag = (tag, isAdd) => {
         //不可以操作'线索'、'转出'标签
@@ -339,7 +339,7 @@ class AddCustomerForm extends React.Component {
         this.setState({
             formData: this.state.formData,
             tagList: this.state.tagList
-        })
+        });
     };
     //按enter键添加标签
     addTag = (e) => {
@@ -364,11 +364,11 @@ class AddCustomerForm extends React.Component {
                         if (obj.id == this.state.formData.administrative_level) {
                             return (
                                 <button className="selected-adm" key={obj.id} value={obj.id}
-                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>)
+                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
                         } else {
                             return (
                                 <button key={obj.id} value={obj.id}
-                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>)
+                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
                         }
 
                     })
@@ -437,7 +437,7 @@ class AddCustomerForm extends React.Component {
                                             <Input
                                                 name="name"
                                                 id="name"
-                                                onBlur={() => {this.checkOnlyCustomerName()}}
+                                                onBlur={() => {this.checkOnlyCustomerName();}}
                                             />
                                         )}
                                     </FormItem>
@@ -518,7 +518,7 @@ class AddCustomerForm extends React.Component {
                                                 >
                                                     {tag}
                                                 </CheckableTag>
-                                            )
+                                            );
                                         })}
                                     </div>)}
                                     <FormItem
@@ -623,9 +623,9 @@ class AddCustomerForm extends React.Component {
                     </div>
                 </GeminiScrollbar>
             </div>
-        )
+        );
     }
-};
+}
 AddCustomerForm.defaultProps = {
     phoneNum:"",
     hideAddForm:noop,

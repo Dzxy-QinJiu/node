@@ -19,7 +19,7 @@ var UserFilterAdv = React.createClass({
                 >
                     <span className="tag-name">{role.role_name}</span>
                     <span className="tag-count">{role.num}</span>
-                </li>)
+                </li>);
             });
         },
         render: function () {

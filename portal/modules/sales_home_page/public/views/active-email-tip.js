@@ -13,25 +13,25 @@ class ActiveEmailTip extends React.Component {
            isAnimateShow : this.props.isAnimateShow,
            isAnimateHide : this.props.isAnimateHide,
            setWebConfigStatus : this.props.setWebConfigStatus
-       }
+       };
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.isAnimateShow != this.props.isAnimateShow ) {
             this.setState({
                 isAnimateShow:nextProps.isAnimateShow
-            })
+            });
         }
         if (nextProps.isAnimateHide != this.props.isAnimateHide ) {
             this.setState({
                 isAnimateHide:nextProps.isAnimateHide
-            })
+            });
         }
         if (nextProps.setWebConfigStatus !== this.props.setWebConfigStatus){
             this.setState({
                 setWebConfigStatus:nextProps.setWebConfigStatus
-            })
+            });
         }
-    };
+    }
     render(){
         //外层父组件加载完成后再由上到下推出提示框
         var cls = classNames('active-email-tip-container',{
@@ -64,9 +64,9 @@ class ActiveEmailTip extends React.Component {
         return (
             <div className={cls}>
                 <Alert message={warningText} type="warning" showIcon />
-            </div>)
+            </div>);
     }
-};
+}
 ActiveEmailTip.defaultProps ={
     isAnimateShow : false,
     isAnimateHide : false,
@@ -74,5 +74,5 @@ ActiveEmailTip.defaultProps ={
     handleClickNoTip:noop,
     activeUserEmail:noop,
     jumpToUserInfo:noop
-}
+};
 export default ActiveEmailTip;

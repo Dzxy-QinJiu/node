@@ -57,14 +57,6 @@ var UserTabContent = React.createClass({
             ...AppUserStore.getState()
         };
     },
-    componentDidMount: function () {
-        if (hasPrivilege("CUSTOMER_ADD_CLUE")){
-            //获取线索来源
-            this.getClueSource();
-            //获取线索渠道
-            this.getClueChannel();
-        }
-    },
     getClueSource: function () {
         clueCustomerAjax.getClueSource().then(data => {
             if (data && _.isArray(data.result) && data.result.length) {
@@ -331,11 +323,16 @@ var UserTabContent = React.createClass({
         if (!Oplate.hideSomeItem) {
             AppUserAction.getRealmList(); // 获取安全域列表
         }
-
         $(this.refs.userListTable).on("click", "tr", this.onRowClick);
         $(window).on("resize", this.changeScrollBarHeight);
         this.bindEventEmitter();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
+        if (hasPrivilege("CUSTOMER_ADD_CLUE")){
+            //获取线索来源
+            this.getClueSource();
+            //获取线索渠道
+            this.getClueChannel();
+        }
     },
     componentWillUnmount: function () {
         $("body").css("overflow", "auto");
@@ -563,7 +560,7 @@ var UserTabContent = React.createClass({
             ||
             hotlinePhoneRegex.test(defaultName)) {
             //是用电话号码进行注册的
-            defaultData.phone = defaultName
+            defaultData.phone = defaultName;
         } else if (_.indexOf(defaultName, "@") > -1) {
             //是用邮箱进行注册的
             defaultData.email = defaultName;
@@ -583,7 +580,7 @@ var UserTabContent = React.createClass({
     getRowSelection: function () {
         var justSelected = _.chain(this.state.selectedUserRows)
             .map(function (obj) {
-                return obj.user.user_id
+                return obj.user.user_id;
             }).value();
         return {
             type: 'checkbox',
@@ -671,7 +668,7 @@ var UserTabContent = React.createClass({
                                     var value = AppUserUtil.USER_TYPE_VALUE_MAP[KEY];
                                     var text = AppUserUtil.USER_TYPE_TEXT_MAP[KEY];
                                     return <li onClick={this.toggleSearchField.bind(this, "user_type", value)}
-                                               className={this.getFilterFieldClass("user_type", value)}>{text}</li>
+                                               className={this.getFilterFieldClass("user_type", value)}>{text}</li>;
                                 })
                             }
                             <li onClick={this.toggleSearchField.bind(this, "user_type", "unknown")}
@@ -768,14 +765,14 @@ var UserTabContent = React.createClass({
                                             <li onClick={this.toggleSearchField.bind(this, "exception_type", exceptionObj.value)}
                                                 className={this.getFilterFieldClass("exception_type", exceptionObj.value)}>
                                                 {exceptionObj.name}
-                                            </li>)
+                                            </li>);
                                     })}
                                 </ul>
                             </dd>
                         </dl>)
                         : null}
                 </div>)}
-        </div>
+        </div>;
     },
     //针对一个角色id进行过滤
     filterUserByRole: function (role_id) {
@@ -851,7 +848,7 @@ var UserTabContent = React.createClass({
                                 selected: role.role_id === selectedRole
                             });
                             return <li className={cls}
-                                       onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>
+                                       onClick={this.filterUserByRole.bind(this, role.role_id)}>{role.role_name}</li>;
                         })
                     }
                 </ul>
@@ -921,7 +918,7 @@ var UserTabContent = React.createClass({
                                 selected: team_ids.indexOf(team.group_id) >= 0
                             });
                             return <li className={cls}
-                                       onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>
+                                       onClick={this.toggleSearchField.bind(this, 'team_ids', team.group_id)}>{team.group_name}</li>;
                         })
                     }
                 </ul>
@@ -1001,7 +998,7 @@ var UserTabContent = React.createClass({
             handleScrollBottom: this.handleScrollBottom,
             loading: this.state.appUserListResult == "loading",
             showNoMoreDataTip: this.showNoMoreDataTip(),
-        }
+        };
         return (
             <div className="user-list-table-wrap scroll-load userlist-fix" id="new-table"
                  style={{display: doNotShow ? 'none' : 'block'}}>
@@ -1073,28 +1070,28 @@ var UserTabContent = React.createClass({
     hideClueAddForm: function () {
         this.setState({
             clueAddFormShow: false
-        })
+        });
     },
     //更新线索来源列表
     updateClueSource: function (newSource) {
         this.state.clueSourceArray.push(newSource);
         this.setState({
             clueSourceArray: this.state.clueSourceArray
-        })
+        });
     },
     //更新线索渠道列表
     updateClueChannel: function (newChannel) {
         this.state.accessChannelArray.push(newChannel);
         this.setState({
             accessChannelArray: this.state.accessChannelArray
-        })
+        });
     },
     //线索客户添加完毕后
     afterAddSalesClue: function () {
         AppUserAction.updateUserAppsInfo(this.state.producingClueCustomerItem);
         this.setState({
             producingClueCustomerItem: {}//正在生成线索客户的用户
-        })
+        });
     },
     render: function () {
         var appUserId = this.state.producingClueCustomerItem.user ? this.state.producingClueCustomerItem.user.user_id : "";

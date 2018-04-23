@@ -80,7 +80,7 @@ exports.distributeCluecustomerToSale = function (req, res) {
     var queryObj = req.body;
     var type = "user";
     if (queryObj.hasDistributeAuth){
-        type = "manager"
+        type = "manager";
     }
     delete queryObj.hasDistributeAuth;
     return restUtil.authRest.post(
@@ -117,5 +117,5 @@ exports.relateClueAndCustomer = function (req, res) {
             url: restApis.RelateClueAndCustomer.replace(":type",req.params.type),
             req: req,
             res: res
-        }, req.body)
-}
+        }, req.body);
+};

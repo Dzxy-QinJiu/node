@@ -5,7 +5,7 @@
 var language = require("../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("./css/role-es_VE.less");
-}else if (language.lan() == "zh"){
+} else if (language.lan() == "zh") {
     require("./css/role-zh_CN.less");
 }
 var Button = require("antd").Button;
@@ -128,7 +128,7 @@ var RolePage = React.createClass({
                         />
                     </div>
                 );
-            })
+            });
         }
         return (
             <div className="backgroundManagement_role_content">
@@ -137,7 +137,8 @@ var RolePage = React.createClass({
                         <TopNav.MenuList/>
                         <PrivilegeChecker check="ROLEP_RIVILEGE_ROLE_ADD" className="role-add-div">
                             <Button type="ghost" className="role-add-btn"
-                                    onClick={this.events.addRole.bind(this)}><ReactIntl.FormattedMessage id="role.add.role" defaultMessage="添加角色" /></Button>
+                                    onClick={this.events.addRole.bind(this)}><ReactIntl.FormattedMessage
+                                id="role.add.role" defaultMessage="添加角色"/></Button>
                         </PrivilegeChecker>
                     </TopNav>
                     <RoleForm
@@ -146,7 +147,7 @@ var RolePage = React.createClass({
                         permissionGroups={this.state.permissionGroups}
                         formType={this.state.formType}
                         roleFormShow={this.state.roleFormShow}>
-                        ></RoleForm>
+                    </RoleForm>
                     {this.state.roleListIsLoading ? (<Spinner className="isloading"/>) : (
                         <div className="role-table-block">
                             {

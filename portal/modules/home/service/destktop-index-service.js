@@ -85,7 +85,7 @@ function _getMenuChained(req) {
                     }
 
                 }
-            }
+            };
             unshiftName();
             _.each(privileges, function (privilege) {
                 resultMap[privilege] = list;
@@ -105,7 +105,7 @@ function getSidebarMenus(req) {
     });
     var values = _.values(menus);
     values = _.map(values, function (item) {
-        return item[0]
+        return item[0];
     });
     var groups = _.indexBy(values, 'routePath');
     values = _.values(groups);

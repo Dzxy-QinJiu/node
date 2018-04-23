@@ -8,12 +8,12 @@ const immutable = require("immutable");
 const CONSTS = {
     FONT_COLOR: "#2b4352",//字体颜色
     FONT_FAMILY: "SimHei"
-}
+};
 let options = {
     minSize: 8,
     gridSize: 12,
     weightFactor: function (size) {
-        return Math.ceil(size / 2) + 15
+        return Math.ceil(size / 2) + 15;
     },
     fontFamily: CONSTS.FONT_FAMILY,
     color: function (text, level) {
@@ -21,12 +21,12 @@ let options = {
     },
     rotateRatio: 0,
     rotationSteps: 0
-}
+};
 class CloudChart extends React.Component {
     //根据配置渲染标签云dom
     renderChart(props) {
         const $dom = $(ReactDOM.findDOMNode(this.chart));
-        const config = $.extend({}, options, { list: props.data })
+        const config = $.extend({}, options, { list: props.data });
         cloud($dom[0], config);
     }
     componentDidMount() {
@@ -66,7 +66,7 @@ class CloudChart extends React.Component {
             </div>
         );
     }
-};
+}
 CloudChart.defaultProps = {
     data: [],
     title: '',

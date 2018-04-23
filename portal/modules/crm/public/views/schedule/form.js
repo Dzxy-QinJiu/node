@@ -14,7 +14,7 @@ import { DateFormatSpinnerInput } from "react-date-picker";
 import BootstrapDatepicker from "../../../../../components/bootstrap-datepicker";
 import ValidateMixin from "../../../../../mixins/ValidateMixin";
 import Trace from "LIB_DIR/trace";
-import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from "PUB_DIR/sources/utils/consts"
+import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from "PUB_DIR/sources/utils/consts";
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -53,7 +53,7 @@ const TIME_TYPE_CONSTS = {
     "AHEAD_2DAY_10":"ahead_2day_10",
     "AHEAD_3DAY_10":"ahead_3day_10",
 
-}
+};
 
 var CrmAlertForm = React.createClass({
     mixins: [ValidateMixin],
@@ -89,13 +89,13 @@ var CrmAlertForm = React.createClass({
     isToday:function(date){
         const newTime = moment(date).format(DATE_FORMAT);
         const today = moment().format(DATE_FORMAT);
-        return (newTime == today)
+        return (newTime == today);
     },
     //是否是N天后
     isNDayLater:function (date,n) {
         const newTime = moment(date).format(DATE_FORMAT);
         const isNDayLater = moment().add(n,"day").format(DATE_FORMAT);
-        return (newTime == isNDayLater)
+        return (newTime == isNDayLater);
     },
     //更改开始日期
     onScheduleDateChange:function (date) {
@@ -198,7 +198,7 @@ var CrmAlertForm = React.createClass({
                     }else{
                         message.error(Intl.get("batch.failed.add.schedule","{customerName}添加联系计划失败",{customerName: submitObj.customer_name}),60);
                     }
-                })
+                });
             });
         }else{
             //单独添加一个联系计划
@@ -322,7 +322,7 @@ var CrmAlertForm = React.createClass({
                     formData.end_time = moment().add((TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN + TIME_CONSTS.ZERO_POINT_FIVE),"h").valueOf();
                     break;
             }
-        };
+        }
         this.switchDiffSelectOptions(this.state.formData);
         Trace.traceEvent($(this.getDOMNode()).find(".alert-btn-block .btn-primary-sure"),"保存联系计划");
     },
@@ -332,7 +332,7 @@ var CrmAlertForm = React.createClass({
         if (_.isArray(this.props.selectedCustomer)){
            this.setState({
                formData:this.getInitialFormData()
-           })
+           });
         }else {
             ScheduleAction.cancelEdit();
         }
@@ -344,7 +344,7 @@ var CrmAlertForm = React.createClass({
         this.state.formData.scheduleType = value;
         this.setState({
             formData: this.state.formData
-        })
+        });
     },
     //修改选择的时间
     handleTimeRangeChange:function (e) {
@@ -362,7 +362,7 @@ var CrmAlertForm = React.createClass({
             selectedAlertTimeRange:"not_remind",//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
             formData:this.state.formData,
             isSelectFullday:this.state.isSelectFullday
-        })
+        });
     },
     renderSelectFulldayOptions: function () {
         if (this.state.selectedTimeRange == "1d"){
@@ -372,14 +372,14 @@ var CrmAlertForm = React.createClass({
                 _.map(SELECT_FULL_OPTIONS_SPLICE, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
-            )
+            );
         }else if(this.state.selectedTimeRange == "1w"){
             //一周后的提醒时间的下拉框选项
             return (
                 _.map(SELECT_FULL_OPTIONS, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
-            )
+            );
 
         } else if (this.state.isSelectFullday){
             var start_time = this.state.formData.start_time;
@@ -399,7 +399,7 @@ var CrmAlertForm = React.createClass({
                 _.map(CLONE_SELECT_FULL_OPTIONS, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
-            )
+            );
         }
     },
     renderNotSelectFulldayOptions: function () {
@@ -425,13 +425,13 @@ var CrmAlertForm = React.createClass({
                 _.map(CLONE_NO_SELECT_FULL_OPTIONS, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
-            )
+            );
         }else{
             return (
                 _.map(NO_SELECT_FULL_OPTIONS, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
                 })
-            )
+            );
         }
 
     },
@@ -451,7 +451,7 @@ var CrmAlertForm = React.createClass({
             this.state.formData.socketio_notice = true;
             this.setState({
                 formData:this.state.formData
-            })
+            });
         }
     },
     renderRadioButtonGroup:function(){
@@ -476,7 +476,7 @@ var CrmAlertForm = React.createClass({
                     {Intl.get("user.time.custom", "自定义")}
                 </Radio.Button>
             </Radio.Group>
-        )
+        );
     },
     render: function () {
         const formItemLayout = {

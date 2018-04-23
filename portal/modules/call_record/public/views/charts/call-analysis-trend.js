@@ -43,7 +43,7 @@ var TimeSeriesLinechart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.clear()} catch(e){}
+            try {_this.echartInstance.clear();} catch(e){}
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();
@@ -125,7 +125,7 @@ var TimeSeriesLinechart = React.createClass({
                             _.each(params, (paramsItem) => {
                                 timeText.push(moment(paramsItem.name || Date.now()).format(oplateConsts.DATE_FORMAT));
                                 count.push(paramsItem.data || 0);
-                                teamArr.push(paramsItem.seriesName)
+                                teamArr.push(paramsItem.seriesName);
                             });
                         }
                         return this.props.getToolTip(timeText, count, teamArr);

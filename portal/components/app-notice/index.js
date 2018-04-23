@@ -23,7 +23,7 @@ var AppNoticeList = React.createClass({
                     type="error"
                     showIcon={true}
                 />
-            </div>
+            </div>;
         }
     },
     

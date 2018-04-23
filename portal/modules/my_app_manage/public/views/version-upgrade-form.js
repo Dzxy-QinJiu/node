@@ -31,7 +31,7 @@ var VersionUpgradeForm = React.createClass({
             isPreview: false,
             errorMessage: "",
             isLoading: false
-        }
+        };
     },
     componentDidMount: function () {
         $(":file").filestyle({icon: false,buttonText: "上传应用"});
@@ -136,7 +136,7 @@ var VersionUpgradeForm = React.createClass({
         formData.apk = event.target.value;
         this.setState({
             formData:formData
-        })
+        });
     },
 
     togglePreview : function(){

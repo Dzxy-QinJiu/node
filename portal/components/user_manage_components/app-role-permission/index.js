@@ -222,7 +222,7 @@ var AppRolePermission = React.createClass({
             return <div className="no-data">
                 <Alert message={CONSTANTS.ROLE_PERMISSION_ERROR_MSG} showIcon type="error"/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesPermissionsByAjax.bind(this , this.props.app_id)}/>
-            </div>
+            </div>;
         }
         //权限角色，都没数据，提示
         if(state.ajaxRolesResult === CONSTANTS.SUCCESS &&
@@ -306,7 +306,7 @@ var AppRolePermission = React.createClass({
             return <div className="no-data">
                 <Alert message={this.state.ajaxRolesErrorMsg} showIcon type={CONSTANTS.ERROR}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesByAjax.bind(this , this.props.app_id)}/>
-            </div>
+            </div>;
         }
         if(state.ajaxRolesResult === CONSTANTS.SUCCESS && state.ajaxRolesList.length === 0) {
             var noDataTip = this.isMyApp() ?
@@ -315,7 +315,7 @@ var AppRolePermission = React.createClass({
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getRolesByAjax.bind(this , this.props.app_id)}/>
-            </div>
+            </div>;
         }
         //选中的角色
         var selectedRolesList = state.selectedRolesList;
@@ -366,7 +366,7 @@ var AppRolePermission = React.createClass({
             return <div className="no-data">
                 <Alert message={this.state.ajaxPermissionErrorMsg} showIcon type={CONSTANTS.ERROR}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getPermissionsByAjax.bind(this , this.props.app_id)}/>
-            </div>
+            </div>;
         }
         if(state.ajaxPermissionResult === CONSTANTS.SUCCESS && state.ajaxPermissionList.length === 0) {
             var noDataTip = this.isMyApp() ?
@@ -375,7 +375,7 @@ var AppRolePermission = React.createClass({
             return <div className="no-data">
                 <Alert message={noDataTip} showIcon type={CONSTANTS.INFO}/>
                 <Icon type={CONSTANTS.RELOAD} title={CONSTANTS.RELOAD_TITLE} onClick={this.getPermissionsByAjax.bind(this , this.props.app_id)}/>
-            </div>
+            </div>;
         }
         var selectedPermissionList = state.selectedPermissionList;
         var selectedRolesAlreadyContainedPermissionIds = state.selectedRolesAlreadyContainedPermissionIds;

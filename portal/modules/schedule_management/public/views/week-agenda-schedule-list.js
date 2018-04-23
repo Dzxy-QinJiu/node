@@ -26,7 +26,7 @@ class WeekAgendaScheduleLists extends React.Component {
             containToday: containToday.flag,// 今天所在的周  和today这两个状态共同判断给哪一天是今天，给今天加背景颜色
             today: this.switchToday(moment().format("dddd"))//今天是星期几
         };
-    };
+    }
 
     switchToday(Week) {
         switch (Week) {
@@ -55,12 +55,12 @@ class WeekAgendaScheduleLists extends React.Component {
                 break;
         }
         return Week;
-    };
+    }
 
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.weekLists !== this.state.weekLists) {
@@ -71,25 +71,25 @@ class WeekAgendaScheduleLists extends React.Component {
         if (nextProps.curCustomerId !== this.state.curCustomerId){
             this.setState({
                 curCustomerId:nextProps.curCustomerId
-            })
+            });
         }
-    };
+    }
 
     setUpdateScrollBarTrue = () => {
         this.setState({
             updateScrollBar: true
-        })
+        });
     };
     setUpdateScrollBarFalse = () => {
         this.setState({
             updateScrollBar: false
-        })
+        });
     };
 
     componentWillUnmount() {
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
-    };
+    }
 
     //动画执行过程中渲染日程列表
     renderUpdateWeekSchedule() {
@@ -99,8 +99,8 @@ class WeekAgendaScheduleLists extends React.Component {
                 {this.renderScheduleTitle()}
                 {this.renderWeekScheduleList()}
             </div>
-        )
-    };
+        );
+    }
 
     //动画执行完毕后渲染日程列表
     renderWeekSchedule() {
@@ -112,8 +112,8 @@ class WeekAgendaScheduleLists extends React.Component {
                     {this.renderWeekScheduleList()}
                 </GeminiScrollBar>
             </div>
-        )
-    };
+        );
+    }
 
     renderScheduleTitle(){
         return (
@@ -123,11 +123,11 @@ class WeekAgendaScheduleLists extends React.Component {
                         {"rbc-today": containToday.flag && key == this.state.today});
                     return (
                         <div className={cls}></div>
-                    )
+                    );
                 })}
             </div>
-        )
-    };
+        );
+    }
     renderWeekScheduleList() {
         return (
             _.map(this.state.weekLists, (list, key) => {
@@ -159,7 +159,7 @@ class WeekAgendaScheduleLists extends React.Component {
                                             </Col>
                                         </Row>
                                     </div>
-                                )
+                                );
                             }) : <div className="no-data-container">
                                 <i className="iconfont icon-no-schedule-list"></i>
                                 <div>
@@ -169,10 +169,10 @@ class WeekAgendaScheduleLists extends React.Component {
 
                         </div>
                     </div>
-                )
+                );
             })
-        )
-    };
+        );
+    }
 
     render() {
         return (
@@ -181,21 +181,21 @@ class WeekAgendaScheduleLists extends React.Component {
                     <div className="title-wrap">
                         {_.map(startDate, (item, key) => {
                             var cls = classNames("even-title",
-                                {"rbc-today": containToday.flag && key == this.state.today})
+                                {"rbc-today": containToday.flag && key == this.state.today});
                             return (
                                 <div className={cls}>
                                     {item}
                                 </div>
-                            )
+                            );
                         })}
                     </div>
                     {this.state.updateScrollBar ? this.renderUpdateWeekSchedule() : this.renderWeekSchedule()}
                 </div>
             </div>
-        )
+        );
     }
 }
-;
+
 WeekAgendaScheduleLists.navigate = (date, action) => {
     //前一周，或者后一周
     switch (action) {

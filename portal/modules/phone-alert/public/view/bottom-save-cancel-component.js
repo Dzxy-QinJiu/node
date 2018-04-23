@@ -13,7 +13,7 @@ class BottomSaveCancel extends React.Component{
             submitResult: "",//保存数据后的状态，共三种,loading success error
             saveErrMsg:""//保存失败后的提示信息
         };
-    };
+    }
     componentWillReceiveProps(nextProps) {
         this.setState({
             submitResult: nextProps.isAddingAppFeedback,
@@ -35,7 +35,7 @@ class BottomSaveCancel extends React.Component{
                     <Alert message={this.state.saveErrMsg} type="error" showIcon />
                 </div>) : null}
             </div>
-        )
+        );
     }
 
 }

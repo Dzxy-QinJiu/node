@@ -23,7 +23,7 @@ var AppNotice = React.createClass({
     getDefaultProps: function () {
         return {
             appId: ""
-        }
+        };
     },
 
     getInitialState: function () {

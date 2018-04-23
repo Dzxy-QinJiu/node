@@ -118,7 +118,7 @@ const AddBasic = React.createClass({
                     >
                         {copyNumArray.map(copyNum => { return (
                             <Option key={copyNum} value={copyNum}>{copyNum}</Option>
-                        )})}
+                        );})}
                     </Select>
                 </FormItem>
                 <FormItem 

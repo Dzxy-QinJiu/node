@@ -34,7 +34,7 @@ const processForTrace = function (item) {
                     des = Intl.get("customer.follow.customer", "跟进客户");
                     break;
             }
-        };
+        }
         des && tip.push(des);
         iconClass += ' iconfont';
         contact = (item.contact_name || item.dst) ? Intl.get('customer.contact.somebody', '联系') : '';

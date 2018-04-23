@@ -59,7 +59,7 @@ class CardContainer extends React.Component {
                             <span className="type-switch">
                                 <RadioGroup value={this.props.dateRange} onChange={this.onDateRangeChange}>
                                     {radioValue.map( (radioItem) => {
-                                        return <RadioButton value={radioItem.value} key={radioItem.value}>{radioItem.name}</RadioButton>
+                                        return <RadioButton value={radioItem.value} key={radioItem.value}>{radioItem.name}</RadioButton>;
                                     } )}
                                 </RadioGroup>
                             </span>

@@ -1,7 +1,7 @@
 import CallRecord from "./views/call-record";
 import CrmRightPanel  from '../../crm/public/views/crm-right-panel';
 import {RightPanel} from "../../../components/rightPanel";
-import crmAjax from '../../crm/public/ajax'
+import crmAjax from '../../crm/public/ajax';
 var callReordEmitter = require("../../../public/sources/utils/emitters").callReordEmitter;
 import { message } from 'antd';
 import Trace from "LIB_DIR/trace";
@@ -86,7 +86,7 @@ const CallRecordList = React.createClass({
     closeCustomerUserListPanel:function() {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     render: function () {
         return (

@@ -120,7 +120,7 @@ var UserInfoAuthority = React.createClass({
                         editAuthorityStr="USER_INFO_MYAPP_AUTHORITY_EDIT"
                     />
                 );
-            })
+            });
         }
 
         return (

@@ -126,7 +126,7 @@ var AuthRoleView = React.createClass({
 
     showUploadFile : function(e){
         {this.props.showRoleAuthType == "role" ? Trace.traceEvent($(this.getDOMNode()).find(".upload-role"),"导入角色") :
-            Trace.traceEvent($(this.getDOMNode()).find(".upload-authority"),"导入权限")}
+            Trace.traceEvent($(this.getDOMNode()).find(".upload-authority"),"导入权限");}
         this.setState({
             uploadFileRightPanelShow : true
         });

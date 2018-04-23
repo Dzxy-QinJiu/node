@@ -5,7 +5,7 @@ class ThreePartyAppConfigActions {
         this.generateActions(
             'dismiss', // 重置应用配置
         );
-    };
+    }
 
     // 获取应用配置信息
     getAppConfigList(userId) {

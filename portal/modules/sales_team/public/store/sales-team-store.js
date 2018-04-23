@@ -144,12 +144,12 @@ SalesTeamStore.prototype.filterByTeamName = function (teamName) {
         //第一个团队的销售目标
         setTimeout(()=>{
             SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
-        })
+        });
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
             groupName: filterTeamArray[0].title
-        }
+        };
     }
     this.searchSalesTeamTree = filterTeamArray;
 };
@@ -184,7 +184,7 @@ SalesTeamStore.prototype.filterByUserName = function (filterTeamList) {
         this.curShowTeamMemberObj = {
             groupId: filterTeamArray[0].key,
             groupName: filterTeamArray[0].title
-        }
+        };
     } else {
         this.curShowTeamMemberObj = {};
         this.salesTeamLisTipMsg = Intl.get("sales.team.no.filtered.sale.team", "暂无符合条件销售团队");
@@ -776,7 +776,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
             }
         }
     }
-}
+};
 
 SalesTeamStore.prototype.salesTeamTree = function (flag) {
     var isSelectObj = this.checkSelectTree();
@@ -833,7 +833,7 @@ SalesTeamStore.prototype.salesTeamTree = function (flag) {
         this.curShowTeamMemberObj = {
             groupId: salesTeamArray[0].key,
             groupName: salesTeamArray[0].title
-        }
+        };
     }
     this.setSearchSalesTeamTree();
 };

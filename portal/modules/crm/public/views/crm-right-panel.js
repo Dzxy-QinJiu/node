@@ -109,7 +109,7 @@ var CrmRightPanel = React.createClass({
         return (
             <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap table-btn-fix" data-tracename="客户详情">
                 <div className={className}>
-                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e)}}/>
+                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e);}}/>
                     <div className="crm-right-panel-content">
                         {this.state.curCustomer? (
                         <Tabs

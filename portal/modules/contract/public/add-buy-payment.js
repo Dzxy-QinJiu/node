@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * 应付款信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon } from "antd"
+import { Form, Input, Select, Button, Icon } from "antd";
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from "../../../mixins/ValidateMixin";
@@ -133,7 +133,7 @@ const AddBuyPayment = React.createClass({
                                  values={{'num':payment.amount}}
                              />
                         </li>
-                        )})}
+                        );})}
                     </ul>
                 </div>
                 ) : null}

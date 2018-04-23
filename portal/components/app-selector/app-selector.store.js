@@ -75,7 +75,7 @@ function createStoreWithUniqueId(uniqueId) {
                     _this.selectedApps.splice(i , 1 , _this.selectedApp);
                     return true;
                 }
-            })
+            });
         }
     };
 

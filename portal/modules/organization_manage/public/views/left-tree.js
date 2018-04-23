@@ -30,7 +30,7 @@ var LeftTree = React.createClass({
     getDefaultProps: function () {
         return {
             getOrganizationMemberList: noop
-        }
+        };
     },
 
     showOperationArea: function (item) {
@@ -156,14 +156,14 @@ var LeftTree = React.createClass({
                     </div>
                 </PrivilegeChecker>
             </div>
-        )
+        );
     },
     element: function (item, type) {
         let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get("user.organization","组织")}></i>;
         if (item.category == CATEGORY_TYPE.DEPARTMENT) {
-            iconflag = <i className="iconfont icon-bumen" title={Intl.get("crm.113","部门")}></i>
+            iconflag = <i className="iconfont icon-bumen" title={Intl.get("crm.113","部门")}></i>;
         } else if (item.category == CATEGORY_TYPE.TEAM){
-            iconflag = <i className="iconfont icon-team" title={Intl.get("call.record.team","团队")}></i>
+            iconflag = <i className="iconfont icon-team" title={Intl.get("call.record.team","团队")}></i>;
         }
 
         //组织人数的统计,递归遍历组织，加上所有子组织的人数
@@ -209,7 +209,7 @@ var LeftTree = React.createClass({
                     </div>
                 </div>
 
-            </div>)
+            </div>);
     },
 
     treeElement: function (btnClass, item, type) {
@@ -250,7 +250,7 @@ var LeftTree = React.createClass({
                 <div className="item-border-style"></div>
                 { this.element(item, type) }
             </div>)
-        )
+        );
     },
     //隐藏搜索框
     clearSearchInput: function () {

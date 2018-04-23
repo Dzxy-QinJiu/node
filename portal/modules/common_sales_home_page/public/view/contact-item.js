@@ -18,26 +18,26 @@ class ContactItem extends React.Component {
             customerData: this.props.customerData,//客户详情
             callNumber: this.props.callNumber,//座机号
             errMsg: this.props.errMsg//获取座机号失败的提示
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.contacts && !isEqualArray(nextProps.contacts, this.state.contacts)) {
             this.setState({
                 contacts: nextProps.contacts
-            })
+            });
         }
         if (nextProps.customerData.id && nextProps.customerData.id !== this.state.customerData.id) {
             this.setState({
                 customerData: nextProps.customerData
-            })
+            });
         }
         if (nextProps.callNumber !== this.state.callNumber) {
             this.setState({
                 callNumber: nextProps.callNumber
-            })
+            });
         }
-    };
+    }
 
     // 自动拨号
     handleClickCallOut(phoneNumber, contactName, customerId) {
@@ -68,7 +68,7 @@ class ContactItem extends React.Component {
                 message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
             }
         }
-    };
+    }
 
     renderContactsContent(contactDetail) {
         var customerId = "";
@@ -103,16 +103,16 @@ class ContactItem extends React.Component {
                                                 {phoneItem}
                                             </span>
                                         </span>
-                                    )
+                                    );
                                 })}
                             </span> : null}
                         </div>
-                    )
+                    );
                 })}
             </div>
-        )
+        );
 
-    };
+    }
 
     render() {
         var contactDetail = this.state.contacts;
@@ -120,7 +120,7 @@ class ContactItem extends React.Component {
             <div className="recent-contacter-detail">
                 {_.isArray(contactDetail) && contactDetail.length ? this.renderContactsContent(contactDetail) : null}
             </div>
-        )
+        );
     }
 
 }

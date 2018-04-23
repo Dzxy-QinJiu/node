@@ -16,16 +16,16 @@ class ScheduleItem extends React.Component {
             scheduleItemDetail: this.props.scheduleItemDetail,
             handleStatusLoading: false,//正在提交修改日程的状态
             isEdittingItemId: "",//正在修改状态的那条日程的id
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.scheduleItemDetail.id && nextProps.scheduleItemDetail.id !== this.state.scheduleItemDetail.id) {
             this.setState({
                 scheduleItemDetail: nextProps.scheduleItemDetail
-            })
+            });
         }
-    };
+    }
 
     openCustomerDetail = (customer_id) => {
         this.props.openCustomerDetail(customer_id);
@@ -56,7 +56,7 @@ class ScheduleItem extends React.Component {
                 message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
             }
         });
-    };
+    }
 
     render() {
         var schedule = this.state.scheduleItemDetail;
@@ -97,10 +97,10 @@ class ScheduleItem extends React.Component {
                     />: null}
                 </div>
             </div>
-        )
+        );
     }
 }
-;
+
 ScheduleItem.defaultProps = {
     scheduleItemDetail: {},//日程详细信息
     isShowTopTitle: true, //是否展示顶部时间样式

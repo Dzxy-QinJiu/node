@@ -214,7 +214,7 @@ var OrganizationPage = React.createClass({
                     </div>))
                 }
             </div>
-        )
+        );
     }
 });
 

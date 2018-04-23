@@ -2,7 +2,7 @@
  * Created by wangliping on 2017/9/20.
  */
 import {Form, Icon, Input, Button, Checkbox, DatePicker, InputNumber, Select, Radio} from 'antd';
-import {RightPanelCancel, RightPanelSubmit} from "CMP_DIR/rightPanel"
+import {RightPanelCancel, RightPanelSubmit} from "CMP_DIR/rightPanel";
 import language from "PUB_DIR/language/getLanguage";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
 import AlertTimer from "CMP_DIR/alert-timer";
@@ -415,7 +415,7 @@ class CrmUserApplyForm extends React.Component {
                         {this.renderIndicator()}
                     </div>
                 </div>
-            </div>)
+            </div>);
     }
 }
 

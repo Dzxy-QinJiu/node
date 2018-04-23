@@ -133,7 +133,7 @@ var CommissionAndTarget = React.createClass({
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={this.props.title}
                            onClick={(e) => {
-                               this.setEditable(e)
+                               this.setEditable(e);
                            }}></i>
                     ) : null
                 }
@@ -151,11 +151,11 @@ var CommissionAndTarget = React.createClass({
             <div>
                 <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
                    onClick={(e) => {
-                       this.handleSubmit(e)
+                       this.handleSubmit(e);
                    }}></i>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
                    onClick={(e) => {
-                       this.handleCancel(e)
+                       this.handleCancel(e);
                    }}></i>
             </div>
         );

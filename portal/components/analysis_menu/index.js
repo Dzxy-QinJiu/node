@@ -24,7 +24,7 @@ var moduleUrlMap = {
 var AnalysisMenu = React.createClass({
     getCurrentPath : function() {
         var pathname = window.location.pathname;
-        return pathname;;
+        return pathname;
     },
     getCurrentLinkText : function() {
         var category = this.getCurrentPath();

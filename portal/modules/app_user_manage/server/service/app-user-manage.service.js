@@ -498,7 +498,7 @@ function getApplyBasicDetail(req, res, apply_id) {
                         }).catch((errorMsg) => {
                             resolve(detailObj);
                             restLogger.error("根据客户的id查询客户最后联系时间失败：" + errorMsg);
-                        })
+                        });
                     } else {
                         resolve(detailObj);
                     }
@@ -564,7 +564,7 @@ function getQueryCustomerById(req, res, id) {
                     reject(errorDesc.message);
                 }
             });
-    })
+    });
 }
 // 获取应用的权限名称（已通过）
 function getAppPermissionNames(req, res, obj) {

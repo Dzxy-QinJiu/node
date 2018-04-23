@@ -60,7 +60,7 @@ const CustomerRecord = React.createClass({
             //获取客户跟踪记录列表
             setTimeout(() => {
                 this.getCustomerTraceList();
-            }, 10)
+            }, 10);
 
         });
         //获取无效电话号码列表
@@ -68,12 +68,12 @@ const CustomerRecord = React.createClass({
             this.setState({
                 invalidPhoneLists: data.result,
                 getInvalidPhoneErrMsg: ""
-            })
+            });
         }, (err) => {
             this.setState({
                 invalidPhoneLists:[],
                 getInvalidPhoneErrMsg:err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
-            })
+            });
         });
     },
     //获取所有联系人的联系电话
@@ -89,7 +89,7 @@ const CustomerRecord = React.createClass({
                         if (_.isArray(item.phone) && item.phone.length) {
                             item.phone.forEach((phoneItem) => {
                                 phoneNumArray.push(phoneItem);
-                            })
+                            });
                         }
                     });
                 }
@@ -107,7 +107,7 @@ const CustomerRecord = React.createClass({
                     });
                 }
             });
-        })
+        });
 
     },
     //获取客户跟踪列表
@@ -140,7 +140,7 @@ const CustomerRecord = React.createClass({
                    //获取客户跟踪记录列表
                    this.getCustomerTraceList();
                 });
-            })
+            });
         }
     },
     componentWillUnmount: function () {
@@ -365,7 +365,7 @@ const CustomerRecord = React.createClass({
                     </Select>
                 </div>) : null}
             </div>
-        )
+        );
     },
     addDetailContent: function (item) {
         if (this.state.isEdit) {
@@ -434,7 +434,7 @@ const CustomerRecord = React.createClass({
                     </Button>
                 </div>
             </div>
-        )
+        );
     },
     //点击播放录音
     handleAudioPlay: function (item) {
@@ -551,13 +551,13 @@ const CustomerRecord = React.createClass({
                 isAddingInvalidPhone:false,
                 addingInvalidPhoneErrMsg:err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
             });
-        })
+        });
     },
     //提示框隐藏后的处理
     hideErrTooltip: function () {
         this.setState({
             addingInvalidPhoneErrMsg: ""
-        })
+        });
     },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
@@ -567,7 +567,7 @@ const CustomerRecord = React.createClass({
                 <div className="show-customer-trace">
                     <Spinner />
                 </div>
-            )
+            );
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
             var errMsg = <span>{this.state.customerRecordErrMsg}
@@ -678,7 +678,7 @@ const CustomerRecord = React.createClass({
 
                 />
             </div>
-        )
+        );
     }
 });
 module.exports = CustomerRecord;

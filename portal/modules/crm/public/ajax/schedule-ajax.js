@@ -87,4 +87,4 @@ exports.handleScheduleStatus = function (reqData) {
         }
     });
     return Deferred.promise();
-}
+};

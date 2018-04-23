@@ -65,7 +65,7 @@ ClueCustomerStore.prototype.getClueCustomerList = function (clueCustomers) {
         this.isLoading = false;
         //跟据线索客户不同的状态进行排序
         this.curCustomers = _.sortBy(this.curCustomers, (item) => {
-            return item.status
+            return item.status;
         });
         //刷新当前右侧面板中打开的客户的数据
         if (this.currentId) {

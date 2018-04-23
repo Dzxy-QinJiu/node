@@ -28,17 +28,17 @@ function PhoneAlertAction() {
         };
         this.dispatch({loading:true,error:false});
         phoneAlertAjax.getCustomerByPhone(data).then((data) => {
-            this.dispatch({loading:false,error:false,data:data})
+            this.dispatch({loading:false,error:false,data:data});
         }, (errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg})
+            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
         });
     };
     this.getCustomerById = function (customerId) {
         this.dispatch({loading:true,error:false});
         phoneAlertAjax.getCustomerById(customerId).then((data) => {
-            this.dispatch({loading:false,error:false,data:data})
+            this.dispatch({loading:false,error:false,data:data});
         }, (errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg})
+            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
         });
     };
     //更新客户跟踪记录

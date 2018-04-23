@@ -75,7 +75,7 @@ const OnlineUserList = React.createClass({
         const _this = this;
         setTimeout(function () {
             _this.search();
-        })
+        });
     },
     //用户状态列的渲染处理，将true或false转换成过期或未过期
     renderStatusColumn(text, record) {
@@ -143,7 +143,7 @@ const OnlineUserList = React.createClass({
             {
                 title: Intl.get("common.username", "用户名"), dataIndex: "user_name", className: 'show-user-detail', key: "user_name",
                 width: 120, render: function ($1, row) {
-                    return <div>{row.user_name}<input type="hidden" value={row.user_id} className="user_id_hidden" /></div>
+                    return <div>{row.user_name}<input type="hidden" value={row.user_id} className="user_id_hidden" /></div>;
                 }
             },
             {
@@ -165,7 +165,7 @@ const OnlineUserList = React.createClass({
                         return obj.value === row.tags;
                     });
                     var displayText = targetItem ? (targetItem.name == Intl.get("user.online.all.type", "全部类型") ? "" : targetItem.name) : row.tags;
-                    return <div>{displayText}</div>
+                    return <div>{displayText}</div>;
                 }
             },
             {
