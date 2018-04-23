@@ -719,7 +719,11 @@ var CustomerAnalysis = React.createClass({
             }
         }
         const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
-        const showNoMoreDataTip = !this.state.transferCustomers.loading && this.state.transferCustomers.lastId && !this.state.transferCustomers.listenScrollBottom;
+        const showNoMoreDataTip = !this.state.transferCustomers.loading &&
+            this.state.transferCustomers.lastId &&
+            !this.state.transferCustomers.listenScrollBottom &&
+            this.state.transferCustomers.data.length >= DEFAULT_TABLE_PAGESIZE;
+        const showLoadingMore = !loadingFirst && this.state.transferCustomers.listenScrollBottom;
         return (
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
@@ -744,7 +748,7 @@ var CustomerAnalysis = React.createClass({
                             loading={loadingFirst}
                         />
                         <div className="load-more-container">
-                            {!showNoMoreDataTip ? renderLoadMore() : null}
+                            {showLoadingMore ? renderLoadMore() : null}
                             {<NoMoreDataTip
                                 fontSize="12"
                                 show={() => showNoMoreDataTip}
