@@ -7,6 +7,118 @@
 @block-line-color: #D1DADE;
 @block-line-color-edit: #C6CEDA;
 @font-color: #464b4e;
+
+@font_color: #999999;
+@btn_color: #8ba9c3;
+@title_color: #333333;
+@hover_bg_color: #f6fbff;
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.crm-pannel-contacts {
+  .contact-top-block {
+    //共xxx条
+    .total-tip {
+      color: @font_color;
+    }
+    //添加跟进记录按钮
+    .iconfont.icon-add {
+      float: right;
+      font-size: 16px;
+      color: @btn_color;
+    }
+  }
+  //联系人展示区
+  .contact-item-container {
+    .contact-item-title {
+      //设为默认联系人的图标
+      .icon-contact-default {
+        font-size: 16px;
+        color: #8ea7c5;
+        color: #2096f0;
+        cursor: default;
+      }
+      //默认联系人的图标
+      .is-default-contact {
+        color: #2096f0;
+        cursor: default;
+      }
+      //联系人
+      .contact-name {
+        max-width: 150px;
+        padding: 0 4px;
+        color: @title_color;
+        &:extend(.text-ellipsis);
+        cursor: default;
+      }
+      .contact-info {
+        cursor: default;
+        //联系人角色、职位等
+        .contact-info-content {
+          max-width: 150px;
+          &:extend(.text-ellipsis);
+        }
+      }
+      //操作按钮区
+      .contact-item-buttons {
+        float: right;
+        .iconfont {
+          float: right;
+          font-size: 16px;
+          color: #8da8c5;
+          margin-left: 4px;
+        }
+      }
+    }
+    //联系方式展示区
+    .contact-way-container {
+      float: left;
+      width: 100%;
+      .contact-way-type {
+        float: left;
+        width: 100%;
+        .iconfont.contact-way-icon {
+          float: left;
+          font-size: 16px;
+          color: #d7d7d7;
+          margin-right: 6px;
+        }
+        .contact-way-content {
+          float: left;
+          .contact-way-item {
+            cursor: default;
+            .contact-way-text {
+              line-height: 24px;
+            }
+            //拨打按钮
+            .phone-call-button {
+              display: none;
+              width: 70px;
+              height: 24px;
+              line-height: 24px;
+              margin-left: 20px;
+              border-radius: 4px;
+              text-align: center;
+              background-color: #f7a340;
+              color: #ffffff;
+              cursor: pointer;
+            }
+            &:hover {
+              background-color: @hover_bg_color;
+              .phone-call-button {
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 /*联系人所在区域*/
 .crm-contacts-list li {
   margin-bottom: 10px;
@@ -99,6 +211,7 @@
     width: 1px;
     background: @block-line-color-edit;
   }
+
   .crm-contact-form .crm-contact-line {
     transform: translateX(16px);
   }
@@ -152,7 +265,7 @@
     .ant-select {
       width: 180px;
     }
-    input{
+    input {
       width: 180px;
     }
   }
@@ -160,7 +273,9 @@
   .crm-contact-form-left {
     padding-right: 5px;
     padding-left: 43px;
-    .ant-select-arrow { display: none; }
+    .ant-select-arrow {
+      display: none;
+    }
     //必填一项的验证样式
     .name-department-required {
       color: @error_tips_color;

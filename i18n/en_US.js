@@ -1242,6 +1242,8 @@ var en_US = {
     "crm.input.new.tag": "Please enter a new label",//请输入新标签
     "crm.detail.no.tag": "No label",//暂无标签
     "crm.detail.user": "Users",//用户
+    "crm.detail.contact.add": "Add a Contact",//添加联系人
+    "crm.detail.contact.default.set": "Set as a default contact",//设为默认联系人
     // 客户管理end
 
     //客户分析 start

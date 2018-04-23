@@ -33,7 +33,8 @@ var Contacts = React.createClass({
             getCallNumberError: '', // 获取座机号失败的信息
             curCustomer: this.props.curCustomer,//当前查看详情的客户
             windowHeight: $(window).height(),
-            ...ContactStore.getState()};
+            ...ContactStore.getState()
+        };
     },
     onStoreChange: function () {
         this.setState(ContactStore.getState());
@@ -50,7 +51,7 @@ var Contacts = React.createClass({
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
-                curCustomer:nextProps.curCustomer
+                curCustomer: nextProps.curCustomer
             });
             setTimeout(() => {
                 ContactAction.setInitData();
@@ -60,18 +61,18 @@ var Contacts = React.createClass({
     },
     componentWillUnmount: function () {
         ContactStore.unlisten(this.onStoreChange);
-        setTimeout(()=>{
+        setTimeout(() => {
             ContactAction.setInitData();
         });
         $(window).off("resize", this.onStoreChange);
     },
     showAddContactForm: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn .anticon-plus"),"添加联系人");
+        Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn .anticon-plus"), "添加联系人");
         ContactAction.showAddContactForm();
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber:function() {
+    getUserPhoneNumber: function () {
         let member_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
@@ -101,6 +102,22 @@ var Contacts = React.createClass({
         let contactListLength = _.isArray(this.state.contactList) ? this.state.contactList.length : 0;
         return (
             <div className="crm-pannel-contacts" data-tracename="联系人页面">
+                {this.state.isShowAddContactForm ? (
+                    <ContactForm type="add" customer_id={this.state.curCustomer.id}
+                                 customer_name={this.state.curCustomer ? this.state.curCustomer.name : ""}
+                                 contactListLength={contactListLength}
+                                 refreshCustomerList={this.props.refreshCustomerList}/>) : (
+                    <div className="contact-top-block">
+                        <span className="total-tip">
+                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
+                                                    values={{"n": contactListLength + ""}}/>
+                        </span>
+                        {this.props.isMerge ? null : (
+                            <span className="iconfont icon-add" title={Intl.get("crm.detail.contact.add", "添加联系人")}
+                                  onClick={this.showAddContactForm.bind(this)}/>
+                        )}
+                    </div>
+                )}
                 <div style={{height: divHeight}} ref="scrollList">
                     <GeminiScrollbar>
                         <ul className="crm-contacts-list list-unstyled">
@@ -108,7 +125,7 @@ var Contacts = React.createClass({
                                 this.state.isShowAddContactForm ? (
                                     <li>
                                         <ContactForm type="add" customer_id={this.state.curCustomer.id}
-                                                     customer_name = {this.state.curCustomer ? this.state.curCustomer.name : ""}
+                                                     customer_name={this.state.curCustomer ? this.state.curCustomer.name : ""}
                                                      contactListLength={contactListLength}
                                                      refreshCustomerList={this.props.refreshCustomerList}/>
                                     </li>
