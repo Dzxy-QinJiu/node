@@ -719,7 +719,13 @@ var CustomerAnalysis = React.createClass({
             }
         }
         const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
-        const showNoMoreDataTip = !this.state.transferCustomers.loading && this.state.transferCustomers.lastId && !this.state.transferCustomers.listenScrollBottom;
+        //是否展示没有更多数据:加载完毕&&存在数据(lastId)&&监听下拉加载&&数据长度大于一页
+        const showNoMoreDataTip = !this.state.transferCustomers.loading &&
+            this.state.transferCustomers.lastId &&
+            !this.state.transferCustomers.listenScrollBottom &&
+            this.state.transferCustomers.data.length >= DEFAULT_TABLE_PAGESIZE;
+        //展示加载更多:不是首次加载&&监听下拉加载
+        const showLoadingMore = !loadingFirst && this.state.transferCustomers.listenScrollBottom;
         return (
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
@@ -744,7 +750,7 @@ var CustomerAnalysis = React.createClass({
                             loading={loadingFirst}
                         />
                         <div className="load-more-container">
-                            {!showNoMoreDataTip ? renderLoadMore() : null}
+                            {showLoadingMore ? renderLoadMore() : null}
                             {<NoMoreDataTip
                                 fontSize="12"
                                 show={() => showNoMoreDataTip}
