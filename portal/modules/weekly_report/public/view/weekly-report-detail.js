@@ -52,7 +52,7 @@ const WeeklyReportDetail = React.createClass({
                 isAddingLeaveUserId: ""
             }, () => {
                 this.getWeeklyReportData();
-            })
+            });
         }
     },
     componentWillUnmount() {
@@ -83,14 +83,14 @@ const WeeklyReportDetail = React.createClass({
         this.setState({
             formType: "add",
             isAddingLeaveUserId: userId
-        })
+        });
     },
     //更新请假信息
     handleUpdateAskForLeave: function (item) {
         this.setState({
             formType: "edit",
             isEdittingItem: item
-        })
+        });
 
     },
     getWeeklyReportData: function () {
@@ -101,14 +101,14 @@ const WeeklyReportDetail = React.createClass({
             this.getRepaymentData();//获取回款信息
             this.getRegionOverlayData();//获取区域分布信息
             this.getCustomerStageData();//获取客户阶段信息
-        })
+        });
     },
 
     //添加请假信息之后
     afterAddLeave: function (resData) {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
-            message.warning(resData.msg)
+            message.warning(resData.msg);
         } else {
             var addLeaveItem = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
@@ -135,20 +135,20 @@ const WeeklyReportDetail = React.createClass({
             this.setState({
                 salesPhone: this.state.salesPhone,
                 isAddingLeaveUserId: "",
-            })
+            });
         }
     },
     //取消添加请假信息
     cancelAddLeave: function () {
         this.setState({
             isAddingLeaveUserId: ""
-        })
+        });
     },
     //更新请假信息之后
     afterUpdateLeave: function (resData) {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
-            message.warning(resData.msg)
+            message.warning(resData.msg);
         } else {
             var updateObj = resData.result;
             var salesPhoneList = this.state.salesPhone.list;
@@ -180,7 +180,7 @@ const WeeklyReportDetail = React.createClass({
                 salesPhone: this.state.salesPhone,
                 formType: "add",
                 isEdittingItem: {}
-            })
+            });
         }
     },
     //取消更新请假信息之后
@@ -188,7 +188,7 @@ const WeeklyReportDetail = React.createClass({
         this.setState({
             formType: "add",
             isEdittingItem: {}
-        })
+        });
     },
     //删除某条请假信息
     handleRemoveAskForLeave: function (deleteItem) {
@@ -240,7 +240,7 @@ const WeeklyReportDetail = React.createClass({
                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
                 </div>}
             </div>
-        )
+        );
     },
     //有请假信息的时候 展示请假信息列表
     renderAskForLeave: function (record, userId) {
@@ -261,7 +261,7 @@ const WeeklyReportDetail = React.createClass({
                                     startAndEndTimeRange={this.getStartAndEndTime()}
                                     afterUpdateLeave={this.afterUpdateLeave}
                                     cancelUpdateLeave={this.cancelUpdateLeave}
-                                />)
+                                />);
                         } else {
                             //展示请假信息
                             return (
@@ -293,12 +293,12 @@ const WeeklyReportDetail = React.createClass({
                                         />
                                         : null}
                                 </div>
-                            )
+                            );
                         }
                     })
                 }
             </div>
-        )
+        );
     },
     //合同数据
     getContractListColumn: function () {
@@ -416,12 +416,12 @@ const WeeklyReportDetail = React.createClass({
                     //如果获取销售阶段完成并且没有出错时
                     if (stageItem.id && _.isArray(data)) {
                         var obj = _.find(data, (item) => {
-                            return item.stage_id === stageItem.id
+                            return item.stage_id === stageItem.id;
                         });
-                        return (<span>{obj && obj.statistic_data ? obj.statistic_data : 0}</span>)
+                        return (<span>{obj && obj.statistic_data ? obj.statistic_data : 0}</span>);
                     }
                 }
-            })
+            });
         });
         columns.push({
                 title: Intl.get("common.summation", "合计"),
@@ -448,7 +448,7 @@ const WeeklyReportDetail = React.createClass({
                     <span>
                         {text ? text : 0}
                     </span>
-                )
+                );
             }
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
@@ -464,7 +464,7 @@ const WeeklyReportDetail = React.createClass({
                     <span>
                         {text ? text : 0}
                     </span>
-                )
+                );
             }
         }, {
             title: Intl.get("weekly.report.active.radio", "活跃率"),
@@ -487,7 +487,7 @@ const WeeklyReportDetail = React.createClass({
                     <span>
                         {text ? text : 0}
                     </span>
-                )
+                );
             }
         }, {
             title: Intl.get("weekly.report.overlay.radio", "覆盖比例"),
@@ -503,7 +503,7 @@ const WeeklyReportDetail = React.createClass({
                     <span>
                         {text ? text : 0}
                     </span>
-                )
+                );
             }
         }, {
             title: Intl.get("weekly.report.active.radio", "活跃率"),
@@ -642,7 +642,7 @@ const WeeklyReportDetail = React.createClass({
         return {
             startTime: moment(this.getBeginDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT),
             endTime: moment(this.getEndDateOfWeek(this.state.selectedItem.nWeek)).format(oplateConsts.DATE_FORMAT)
-        }
+        };
     },
     //获取报告区域的高度
     getReportDetailDivHeight: function () {
@@ -705,7 +705,7 @@ const WeeklyReportDetail = React.createClass({
                     </GeminiScrollbar>
                 </div>
             </div>
-        )
+        );
     }
 });
 export default WeeklyReportDetail;

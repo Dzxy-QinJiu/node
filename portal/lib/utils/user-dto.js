@@ -15,7 +15,7 @@ var UserDto = {
                 "realm_id": userData.auth ? userData.auth.realm_id : null,
                 "client_id": userData.auth ? userData.auth.client_id : null,
                 "refresh_token": userData.auth ? userData.auth.refresh_token : null
-            }
+            };
             //重新组织用户信息
             sessionData.user = {
                 "userid": userData.user_id,
@@ -24,7 +24,7 @@ var UserDto = {
                 "privileges": userData.privileges,
                 "email": userData.email ? userData.email : "",
                 "phone": userData.phone ? userData.phone : "",
-            }
+            };
             //获取客户端信息
             sessionData.clientInfo = {
                 ip: CommonUtil.ip.getClientIp(req),
@@ -58,5 +58,5 @@ var UserDto = {
             return null;
         }
     }
-}
+};
 module.exports = UserDto;

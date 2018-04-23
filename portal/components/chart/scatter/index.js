@@ -32,7 +32,7 @@ var ScatterChart = React.createClass({
         var _this = this;
         if (this.echartInstance) {
             try {
-                _this.echartInstance.dispose()
+                _this.echartInstance.dispose();
             } catch (e) {
             }
         }
@@ -128,10 +128,10 @@ var ScatterChart = React.createClass({
         if (!data.length) {
             if (this.echartInstance) {
                 try {
-                    _this.echartInstance.dispose()
+                    _this.echartInstance.dispose();
                 } catch (e) {
                 }
-                ;
+                
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data", "暂无数据")}</div>`);
         } else {

@@ -315,7 +315,7 @@ class DatePicker extends React.Component {
     //获取开始时间展示文本
     getStartTimeDisplayText() {
         if (this.state.start_time_record === '0') {
-            return '无'
+            return '无';
         }
         return this.state.start_time_record;
     }
@@ -795,7 +795,7 @@ class DatePicker extends React.Component {
 
         return (this.state.showYear ? <Dropdown
             getPopupContainer={() => {
-                return document.getElementById(this.componentId + "_quarter")
+                return document.getElementById(this.componentId + "_quarter");
             }}
             overlay={menu}
             prefixCls="ant-dropdown">

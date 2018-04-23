@@ -37,7 +37,7 @@ var UserTypeConfigForm = React.createClass({
 			handleCancel: function(){},
 			handleSaveAppConfig: function(){},
 			appName:""
-		}
+		};
 	},
 	getInitialState: function () {
 		return {
@@ -64,7 +64,7 @@ var UserTypeConfigForm = React.createClass({
 			successMessage: "",
 			//点击提交按钮时的loading效果
 			isLoading: false
-		}
+		};
 	},
 
 	componentWillReceiveProps: function (nextProps) {
@@ -115,7 +115,7 @@ var UserTypeConfigForm = React.createClass({
 					//2s以后，跳转页面
 					timer = setTimeout(function () {
 						_this.props.togglePageChange(false);
-					}, 2000)
+					}, 2000);
 				},
 				error: function (errorInfo) {
 					_this.setState({
@@ -124,7 +124,7 @@ var UserTypeConfigForm = React.createClass({
 					});
 					$("#usertypeconfigsave").removeAttr("disabled");
 				}
-			})
+			});
 		} else {
 			//添加类型
 			$.ajax({
@@ -141,7 +141,7 @@ var UserTypeConfigForm = React.createClass({
 					$("#usertypeconfigsave").removeAttr("disabled");
 					setTimeout(function () {
 						_this.props.togglePageChange(false);
-					}, 2000)
+					}, 2000);
 				},
 				error: function (errorInfo) {
 					_this.setState({
@@ -220,7 +220,7 @@ var UserTypeConfigForm = React.createClass({
 					<Option value="forever">永久</Option>
 				</Select>
 			</div>
-		)
+		);
 	},
 	updateScrollBar: function () {
 		this.refs.scrollbar.update();

@@ -117,4 +117,4 @@ export default {
     getNumberValidateRule() {
         return {pattern: /^(\d|,)+(\.\d+)?$/, message: Intl.get("contract.45", "请填写数字")};
     },
-}
+};

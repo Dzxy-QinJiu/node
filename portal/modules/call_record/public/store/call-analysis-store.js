@@ -189,7 +189,7 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
                     item.count = countArray;
                     var cloneItem = _.clone(item);
                     delete cloneItem.teamData;
-                    callListData.push(cloneItem)
+                    callListData.push(cloneItem);
                 });
             }
             //所有团队的通话时长和通话数量
@@ -242,7 +242,7 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
             if (memberTotal){
                 returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
                 returnObj.personAverageTime = (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
-                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed())//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed());//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
             }
 
             return returnObj;
@@ -265,7 +265,7 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
     const nameMap = {
         "service": Intl.get("call.record.service.phone", '客服电话'),
         "114": Intl.get("call.record.service.phone", '114电话')
-    }
+    };
     // 根据返回的字段，判断是团队还是成员
     this.callRateList[result.type].loading = result.loading;
     if (result.error) {
@@ -286,7 +286,7 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
                             name: nameMap[result.type],
                             count: resData[0].invalid_docs
                         }
-                    ]
+                    ];
                     this.callRateList[result.type].list = list;
                 }
                 else {
@@ -297,7 +297,7 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
                             name: item.nick_name || item.sales_team,
                             rate: (item.docs_rate * 100),
                             num: item.invalid_docs
-                        }
+                        };
                     });
                     this.callRateList[result.type].list = list;
                 }
@@ -339,7 +339,7 @@ CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
                 return {
                     name: item.group_name,
                     id: item.group_id
-                }
+                };
             });
         }
     }

@@ -36,7 +36,7 @@ var CardList = React.createClass({
         return {
             editCard: noop,
             deleteCard: noop
-        }
+        };
     },
 
     getInitialState: function () {
@@ -44,7 +44,7 @@ var CardList = React.createClass({
             listenScrollBottom: true,
             cardWidth: "auto",
             loadedCardCount: 0
-        }
+        };
     },
     componentDidMount: function () {
         $("body").css("overflow", "hidden");

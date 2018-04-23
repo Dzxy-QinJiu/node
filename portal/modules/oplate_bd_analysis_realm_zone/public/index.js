@@ -39,7 +39,7 @@ function mapFormatter(obj) {
         Intl.get("oplate_bd_analysis_realm_zone.1","省份")+'：' + obj.name ,
         Intl.get("oplate_bd_analysis_realm_industry.6","个数")+'：' + (isNaN(obj.value) ? 0 : obj.value),
         Intl.get("oplate_bd_analysis_realm_industry.7","占比")+'：' + (isNaN(obj.value) ? '0%' : percent + '%')
-    ].join('<br/>')
+    ].join('<br/>');
 }
 
 //进行布局计算使用的常量

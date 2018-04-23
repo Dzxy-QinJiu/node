@@ -6,7 +6,7 @@ function CRMStore() {
     //加载数据中。。。
     this.basicIsLoading = true;
     //是否展示编辑基本资料页面的标志
-    this.editShowFlag = false
+    this.editShowFlag = false;
     //销售团队、销售人员列表对象
     this.salesObj = {};
 

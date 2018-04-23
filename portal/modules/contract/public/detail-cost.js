@@ -6,7 +6,7 @@ const Validator = Validation.Validator;
 
 import routeList from "../common/route";
 import ajax from "../common/ajax";
-import { Form, Input, Icon, DatePicker, Button, Select, message, Row, Col } from "antd"
+import { Form, Input, Icon, DatePicker, Button, Select, message, Row, Col } from "antd";
 const FormItem = Form.Item;
 import ValidateMixin from "../../../mixins/ValidateMixin";
 import rightPanelUtil from "../../../components/rightPanel";

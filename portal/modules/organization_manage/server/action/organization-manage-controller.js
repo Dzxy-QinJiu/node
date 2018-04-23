@@ -92,7 +92,7 @@ exports.addOrganization = function (req, res) {
     const organization = {
         group_name: req.body.groupName,
         parent_group: req.body.parentGroup
-    }
+    };
     const category = req.body.category;
     OrganizationManageService.addGroup(req, res, organization, category)
         .on("success", function (data) {

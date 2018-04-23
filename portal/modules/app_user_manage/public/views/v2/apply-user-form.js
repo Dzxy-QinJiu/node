@@ -318,7 +318,7 @@ const ApplyUserForm = React.createClass({
                                                 </RadioGroup>
                                             </FormItem>
                                         </div>
-                                    </TabPane>)
+                                    </TabPane>);
                                 })}
                             </Tabs>
                             {

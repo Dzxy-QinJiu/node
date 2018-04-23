@@ -411,5 +411,5 @@ function sessionExpired(expiredObj) {
             }
         }
     }
-};
+}
 

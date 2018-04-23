@@ -56,6 +56,6 @@ exports.init = function () {
         .get(SalesStageManageServic.urls.getSalesStageList)
         .query(true)
         .reply(function () {
-            return [200, SalesStageList]
+            return [200, SalesStageList];
         });
 };

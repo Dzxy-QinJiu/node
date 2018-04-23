@@ -152,7 +152,7 @@ exports.getCustomTime = function (start_time, end_time) {
         start_time: start_time_moment,
         end_time: end_time_moment
     };
-}
+};
 
 //获取最近时间
 exports.getLastTime = function (word) {
@@ -296,7 +296,7 @@ exports.getEchartTooltipDate = function (list, idx, unit) {
             return startMoment.format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
         }
     }
-}
+};
 /**
  * 根据时间及范围类型自动获取时间范围
  * @param time_moment  时间

@@ -83,7 +83,7 @@ var Contacts = React.createClass({
             this.setState({
                 getCallNumberError: errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!")
             });
-        })
+        });
     },
     render: function () {
         var divHeight = this.state.windowHeight -

@@ -10,7 +10,7 @@ var AppUserManage = require("MOD_DIR/app_user_manage/public");
 //计算距离所需布局距离
 const LAYOUT = {
     TOP: 150//顶部留白
-}
+};
 
 class CustomerStageTable extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class CustomerStageTable extends React.Component {
             isShowCustomerUserListPanel: false,
             CustomerInfoOfCurrUser: {},
             tableHeight: 0,
-        }
+        };
     }
     componentDidMount() {
         this.changeTableHeight();
@@ -68,11 +68,11 @@ class CustomerStageTable extends React.Component {
                 showRightPanel: true,
                 selectedCustomerId: item.customer_id,
                 selectedCustomerIndex: index
-            })
-        }
+            });
+        };
         const getRowKey = function (record, index) {
             return index;
-        }
+        };
         //处理选中行的样式
         const handleRowClassName = (record, index) => {
             if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
@@ -81,7 +81,7 @@ class CustomerStageTable extends React.Component {
             else {
                 return "";
             }
-        }
+        };
         const { data, loading, errorMsg, lastId, listenScrollBottom } = this.props.result;
         const loadingFirst = loading && !lastId;
         const loadingNotFirst = loading && lastId;
@@ -95,16 +95,16 @@ class CustomerStageTable extends React.Component {
                             showIcon
                         />
                     </div>
-                )
+                );
             }
-        }
+        };
         const renderSpiner = () => {
             if (loadingFirst && !errorMsg) {
                 return (
                     <Spinner />
-                )
+                );
             }
-        }
+        };
         const hideTable = errorMsg || loadingFirst;
         const renderStageCustomerList = () => {
             const columns = [
@@ -113,7 +113,7 @@ class CustomerStageTable extends React.Component {
                     key: "customer_name",
                     title: Intl.get("crm.4", "客户名称"),
                     render: (text, item, index) => {
-                        return (<span className="click-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>)
+                        return (<span className="click-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
                     },
                     width: 100
                 },
@@ -163,8 +163,8 @@ class CustomerStageTable extends React.Component {
                         }
                     </RightPanel>
                 </div>
-            )
-        }
+            );
+        };
         return (
             <div>
                 <div className="customer-table-close topNav">
@@ -175,7 +175,7 @@ class CustomerStageTable extends React.Component {
                 </div>
                 {renderStageCustomerList()}
             </div>
-        )
+        );
     }
 }
 export default CustomerStageTable;

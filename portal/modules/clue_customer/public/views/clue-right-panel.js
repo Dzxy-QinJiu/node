@@ -24,27 +24,27 @@ class ClueRightPanel extends React.Component {
             ...clueCustomerStore.getState()
         };
         this.onStoreChange = this.onStoreChange.bind(this);
-    };
+    }
 
     componentDidMount() {
         clueCustomerStore.listen(this.onStoreChange);
-    };
+    }
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
     };
     //是否是销售领导 或者是域管理员
     isSalesManager() {
-        return userData.isSalesManager()
-    };
+        return userData.isSalesManager();
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             // this.queryCustomerByClueId(nextProps.curCustomer.id)
             this.setState({
                 curCustomer: nextProps.curCustomer
-            })
+            });
         }
-    };
+    }
 
     //电话格式，必填一项，唯一性的验证
     getPhoneInputValidateRules(rule, value, callback) {
@@ -77,23 +77,23 @@ class ClueRightPanel extends React.Component {
                 }
             }
         }
-    };
+    }
 
     getClueSourceOptions() {
         return (
             this.props.clueSourceArray.map((source, idx) => {
-                return (<Option key={idx} value={source}>{source}</Option>)
+                return (<Option key={idx} value={source}>{source}</Option>);
             })
-        )
-    };
+        );
+    }
 
     getAccessChannelOptions() {
         return (
             this.props.accessChannelArray.map((source, idx) => {
-                return (<Option key={idx} value={source}>{source}</Option>)
+                return (<Option key={idx} value={source}>{source}</Option>);
             })
-        )
-    };
+        );
+    }
 
     onSelectCluesource = (updateSource) => {
         this.state.curCustomer.clue_source = updateSource;
@@ -277,10 +277,10 @@ class ClueRightPanel extends React.Component {
                     />
                 </GeminiScrollbar>
             </RightPanel>
-        )
+        );
     }
 }
-;
+
 ClueRightPanel.defaultProps = {
     curCustomer: {},
     showFlag: noop,

@@ -22,7 +22,7 @@ const VIEWS = {
     FORGOT_PASSWORD: "forgot_password",
 };
 const USER_LANG_KEY = "userLang";//存储用户语言环境的key
-import { storageUtil } from "ant-utils";
+import {storageUtil} from "ant-utils";
 
 class LoginMain extends React.Component {
     constructor(props) {
@@ -76,6 +76,12 @@ class LoginMain extends React.Component {
 
     setErrorMsg(errorMsg) {
         this.setState({errorMsg});
+    }
+
+    getLangClassName(lang, hasWindow) {
+        const userLang = this.getLang();
+        const isSelected = hasWindow && userLang === lang || false;
+        return classnames("lang-btn", {"lang-selected": isSelected});
     }
 
     //检测是否已经sso登录
@@ -217,11 +223,6 @@ class LoginMain extends React.Component {
         } else {
             const hasWindow = !(typeof window === "undefined");
 
-            const userLang = this.getLang();
-            function getLangClassName(lang) {
-                const isSelected = hasWindow && userLang === lang || false;
-                return classnames("lang-btn", {"lang-selected": isSelected});
-            }
             return (
                 <div className="login-wrap">
                     <Logo />
@@ -232,7 +233,7 @@ class LoginMain extends React.Component {
                                 {LANGUAGES.map(lang => {
                                     return <span><a href={`/login?lang=${lang.code}`}
                                                     onClick={this.changeLang.bind(this, lang.code)}
-                                                    className={getLangClassName(lang.code)}>{lang.name}</a></span>
+                                                    className={this.getLangClassName(lang.code, hasWindow)}>{lang.name}</a></span>;
                                 })}
                             </div>
                         </div>)) : null

@@ -18,7 +18,7 @@ var VersionUpgradeList = React.createClass({
     getInitialState: function(){
         return{
             deleteAppVersionErrMsg: ''
-        }
+        };
     },
     returnMsgErrorFromServer : function(){
         if(this.props.getAppRecordErrorMsg) {
@@ -39,7 +39,7 @@ var VersionUpgradeList = React.createClass({
                     type="error"
                     showIcon={true}
                 />
-            </div>
+            </div>;
         }
     },
     
@@ -52,7 +52,7 @@ var VersionUpgradeList = React.createClass({
                 versionAjax.deleteAppVersionRecord(record_id).then((result) => {
                     // 删除版本记录成功的处理
                     if(result){
-                        this.getAfreshVersionData()
+                        this.getAfreshVersionData();
                     }
                 }, (errMessage) => {
                     // 删除版本记录失败的处理

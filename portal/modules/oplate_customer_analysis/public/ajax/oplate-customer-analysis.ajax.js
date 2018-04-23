@@ -99,7 +99,7 @@ exports.getTransferCustomers = function (paramObj) {
             order
         },
         data: paramObj
-    })
+    });
 };
 
 //获取客户阶段变更数据
@@ -119,7 +119,7 @@ exports.getStageChangeCustomers = function (paramObj) {
             type
         },
         data: paramObj
-    })
+    });
 };
 
 //获取客户阶段变动的客户列表
@@ -142,7 +142,7 @@ exports.getStageChangeCustomerList = function (paramObj) {
         },
         query: queryObj,
         data: paramObj
-    })
+    });
 };
 
 //获取客户阶段变动的客户列表
@@ -164,7 +164,7 @@ exports.getIndustryCustomerOverlay = function (paramObj) {
             type,
         },
         query: queryObj
-    })
+    });
 };
 
 //获取销售新开客户数
@@ -186,5 +186,5 @@ exports.getNewCustomerCount = function (paramObj) {
             type,
         },
         query: queryObj
-    })
-}
+    });
+};

@@ -54,7 +54,7 @@ exports.setDefaultRole = function (param) {
         error: function (result) {
             Deferred.resolve(result);
         }
-    })    
+    });    
     return Deferred.promise();
 };
 
@@ -72,7 +72,7 @@ exports.getDefaultRole = function (param) {
         error: function (result) {
             Deferred.reject(result);
         }
-    })
+    });
     return Deferred.promise();
 };
 
@@ -90,7 +90,7 @@ exports.delDefaultRole = function (param) {
         error: function (result) {
             Deferred.reject(result);
         }
-    })
+    });
     return Deferred.promise();
 };
 

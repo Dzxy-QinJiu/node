@@ -71,7 +71,7 @@ function batchOperateListener(data) {
         if (data.type == TASK_REALM_CREATE) {
             handleBatchCreateRealm(data);
         } else {
-            handleBatchOperation(data)
+            handleBatchOperation(data);
         }
     }
 }

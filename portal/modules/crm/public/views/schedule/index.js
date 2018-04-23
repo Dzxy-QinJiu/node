@@ -47,7 +47,7 @@ var CrmSchedule = React.createClass({
                     ScheduleAction.resetState();
                     this.getScheduleList();
                 });
-            })
+            });
         }
     },
     componentWillUnmount: function () {
@@ -75,7 +75,7 @@ var CrmSchedule = React.createClass({
             alert_time: "",
             topic: "",
             edit: true
-        }
+        };
         ScheduleAction.showAddForm(newSchedule);
         //滚动条滚动到顶端以显示添加表单
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
@@ -137,12 +137,12 @@ var CrmSchedule = React.createClass({
             this.state.scheduleList.unshift(newItem);
         } else if (type == "delete") {
             this.state.scheduleList = _.filter(this.state.scheduleList, (list) => {
-                return list.id !== newItem.id
+                return list.id !== newItem.id;
             });
         }
         this.setState({
             scheduleList: this.state.scheduleList
-        })
+        });
     },
     //联系计划列表区域
     renderScheduleLists: function () {
@@ -164,7 +164,7 @@ var CrmSchedule = React.createClass({
                         showIcon={true}
                     />
                 </div>
-            )
+            );
         }else if (!this.state.scheduleList.length  && !this.state.isLoadingScheduleList){
             return (
                 <div className="schedule-list-no-data">
@@ -235,7 +235,7 @@ var CrmSchedule = React.createClass({
                         );
                     }
                 })
-            )
+            );
         }
     },
     render: function () {
@@ -250,7 +250,7 @@ var CrmSchedule = React.createClass({
         ;
         var cls = classNames("is-loading-schedule-list",{
             "show-spinner":this.state.isLoadingScheduleList && !this.state.lastScheduleId
-        })
+        });
         return (
             <div ref="alertWrap" className="schedule-list" style={{height: divHeight}} data-tracename="联系计划页面">
                 <GeminiScrollbar

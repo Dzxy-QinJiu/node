@@ -119,7 +119,7 @@ var BasicData = React.createClass({
     },
     getAdministrativeLevelOptions: function () {
         let options = crmUtil.administrativeLevels.map(obj => {
-            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
+            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;

@@ -55,4 +55,4 @@ exports.sessionTimeout = function (sessionID, accessToken) {
                 Authorization: userTokenPrefix + accessToken
             }
         }, null);
-}
+};

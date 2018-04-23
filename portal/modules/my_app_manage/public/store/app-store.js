@@ -171,7 +171,7 @@ AppStore.prototype.getMyAppList = function (resultObj) {
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.appListTipMsg =Intl.get("app.app.search.no.data", "没有符合条件的应用!")
+                this.appListTipMsg =Intl.get("app.app.search.no.data", "没有符合条件的应用!");
             } else {
                 this.appListTipMsg = Intl.get("my.app.no.app", "暂无应用!");
             }

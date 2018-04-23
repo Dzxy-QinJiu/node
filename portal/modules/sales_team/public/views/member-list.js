@@ -43,7 +43,7 @@ var MemberList = React.createClass({
             cancelEditMember: noop,
             saveAddMember: noop,
             cancelAddMember: noop
-        }
+        };
     },
 
     getInitialState: function () {
@@ -151,7 +151,7 @@ var MemberList = React.createClass({
                     //获取角色列表
                     UserFormAction.setRoleListLoading(true);
                     UserFormAction.getRoleList();
-                })
+                });
                 if ($(".right-panel-content").hasClass("right-panel-content-slide")) {
                     $(".right-panel-content").removeClass("right-panel-content-slide");
                     SalesTeamAction.showUserInfoPanel();
@@ -350,7 +350,7 @@ var MemberList = React.createClass({
                         </div>
                     </PrivilegeChecker>
                 </div>)
-        )
+        );
     },
 
     //渲染成员头像及名称，memeber:成员信息，type:负责人/秘书/成员，hasSelectBtn:是否需要选择按钮
@@ -390,7 +390,7 @@ var MemberList = React.createClass({
                     </div>
                 </div>
             </div>
-        )
+        );
     },
     //渲染当前正在展示的团队成员列表
     renderCurTeamMemberList: function (hasSelectBtn) {
@@ -691,7 +691,7 @@ var MemberList = React.createClass({
                 <div id="set-user-btn" className={addUserBtnCls} onClick={this.addUser}
                      data-tracename="设为成员">{Intl.get("sales.team.add.to.member", "设为成员")}</div>
                 <div className="add-member-btn member-btn-enable" onClick={(e) => {
-                    this.handleCancel(e)
+                    this.handleCancel(e);
                 }}>
                     {Intl.get("common.cancel", "取消")}
                 </div>
@@ -707,7 +707,7 @@ var MemberList = React.createClass({
                             message={this.state.saveMemberListMsg}
                             type={saveResult} showIcon
                             onHide={this.hideSaveTooltip}/>
-            </div>) : null
+            </div>) : null;
 
     },
     renderAddBtns: function () {
@@ -784,7 +784,7 @@ var MemberList = React.createClass({
                     {_this.renderCurTeamMemberList()}
                 </GeminiScrollbar>)
                 }
-            </div>)
+            </div>);
     },
     //修改团队销售目标时的处理
     changeTeamSalesGoals: function (val) {
@@ -936,12 +936,12 @@ var MemberList = React.createClass({
     toggleBatchChangeTeamGoalBtn:function (flag) {
       this.setState({
           isShowBatchChangeTeamGoal: flag
-      })
+      });
     },
     toggleBatchChangeSelfGoalBtn: function (flag) {
       this.setState({
           isShowBatchChangeSelfGoal: flag
-      })
+      });
     },
     //渲染团队目标
     renderSalesGoals: function () {

@@ -30,7 +30,7 @@ class DayAgendaScheduleLists extends React.Component {
             scheduleList: this.props.scheduleList,
             updateScrollBar: false,
         };
-    };
+    }
 
     componentDidMount() {
         scheduleManagementEmitter.on(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
@@ -54,9 +54,9 @@ class DayAgendaScheduleLists extends React.Component {
                           $(".list-item.hover-item").removeClass("hover-item");
                       }
                   }
-              },1000)
-        })
-    };
+              },1000);
+        });
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.scheduleList && !isEqualArray(nextProps.scheduleList, this.state.scheduleList)) {
@@ -67,24 +67,24 @@ class DayAgendaScheduleLists extends React.Component {
         if (nextProps.curCustomerId !== this.state.curCustomerId){
             this.setState({
                 curCustomerId:nextProps.curCustomerId
-            })
+            });
         }
-    };
+    }
     setUpdateScrollBarTrue = () => {
         this.setState({
             updateScrollBar: true
-        })
+        });
     };
     setUpdateScrollBarFalse = () => {
         this.setState({
             updateScrollBar: false
-        })
+        });
     };
 
     componentWillUnmount() {
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE, this.setUpdateScrollBarTrue);
         scheduleManagementEmitter.removeListener(scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_FALSE, this.setUpdateScrollBarFalse);
-    };
+    }
     //动画执行过程中渲染日程列表
     renderUpdateDaySchedule() {
         var divHeight = LAY_OUT.SCHEDULE_CONTENT_HEIGHT;
@@ -92,8 +92,8 @@ class DayAgendaScheduleLists extends React.Component {
             <div className="schedule-items-content" style={{height: divHeight}}>
                 {this.renderDayScheduleList()}
             </div>
-        )
-    };
+        );
+    }
     //动画执行完毕后渲染日程列表
     renderDaySchedule() {
         var divHeight = LAY_OUT.SCHEDULE_CONTENT_HEIGHT;
@@ -103,8 +103,8 @@ class DayAgendaScheduleLists extends React.Component {
                     {this.renderDayScheduleList()}
                 </GeminiScrollbar>
             </div>
-        )
-    };
+        );
+    }
 
     //获取用户的坐席号
     getUserPhoneNumber() {
@@ -119,8 +119,8 @@ class DayAgendaScheduleLists extends React.Component {
             this.setState({
                 errMsg: errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!")
             });
-        })
-    };
+        });
+    }
 
     handleClickCallOut = (phoneNumber, contactName, item)=>{
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
@@ -174,15 +174,15 @@ class DayAgendaScheduleLists extends React.Component {
                                               {Intl.get("schedule.call.out","拨打")}
                                           </Button>
                                       </div>
-                                  )
+                                  );
                               })}
                           </div>
                       </div>
-                  )
+                  );
               })}
           </div>
       );
-    };
+    }
     //渲染日程列表样式
     renderDayScheduleList() {
         return (
@@ -240,10 +240,10 @@ class DayAgendaScheduleLists extends React.Component {
                             </Row>
                         </div>
                     </div>
-                )
+                );
             })
-        )
-    };
+        );
+    }
 
     render() {
         return (
@@ -275,7 +275,7 @@ class DayAgendaScheduleLists extends React.Component {
                     {this.state.updateScrollBar ? this.renderUpdateDaySchedule() : this.renderDaySchedule()}
                 </div>
             </div>
-        )
+        );
     }
 }
 DayAgendaScheduleLists.navigate = (date, action) => {

@@ -57,10 +57,10 @@ exports.updatePhoneOrder = function (phoneObj) {
         id: phoneObj.user_id || phoneObj.id
     };
     if (phoneObj.phone_order) {
-        queryObj.phone_order = phoneObj.phone_order
+        queryObj.phone_order = phoneObj.phone_order;
     }
     if (phoneObj.phone_order_location) {
-        queryObj.phone_order_location = phoneObj.phone_order_location
+        queryObj.phone_order_location = phoneObj.phone_order_location;
     }
     var Deferred = $.Deferred();
     $.ajax({
@@ -80,7 +80,7 @@ exports.updatePhoneOrder = function (phoneObj) {
 exports.memberBindPhoneOrder = function (reqObj) {
     var memberList = PositionStore.getState().unbindMember.data;
     let filterData = _.filter(memberList, (item) => {
-        return  item.nick_name == reqObj.user_id
+        return  item.nick_name == reqObj.user_id;
     });
     if (_.isArray(filterData) && filterData.length) {
         reqObj.user_id = filterData[0].user_id;

@@ -163,7 +163,7 @@ BarChart.prototype.getEchartOptions = function() {
                                 return [
                                     obj.value,
                                     (obj.value * 100/ _this.total).toFixed(1) + '%'
-                                ].join('   ')
+                                ].join('   ');
                             }
                         }
                     },

@@ -11,5 +11,5 @@ exports.Role = function(obj,with_permission_ids) {
 exports.Privilege = function(obj) {
     this.permission_id = obj.permission_id || '';
     this.permission_define = obj.permission_define || '';
-    this.permission_name = obj.permission_name || ''
+    this.permission_name = obj.permission_name || '';
 };

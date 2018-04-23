@@ -145,7 +145,7 @@ AppUserStore.prototype.getAppUserList = function(result) {
         if(result.data.total > 0) {
             for(var i=0, len=currentList.length;i<len;i++){
                 currentList[i].isShownExceptionTab = (
-                    _.find(currentList[i].apps, app =>{return app.exception_mark_date})? true: false
+                    _.find(currentList[i].apps, app =>{return app.exception_mark_date;})? true: false
                 );
             }
             if(this.appUserPage === 1) {
@@ -353,7 +353,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
                 filterFieldMap[field].length == 0 && (delete filterFieldMap[field]);
             }else{
                 //如果原列表中没有该团队，将其加上
-                filterFieldMap[field].push(value)
+                filterFieldMap[field].push(value);
             }
         } else if(field === "create_tag"){
             filterFieldMap.tag_all = value;
@@ -706,7 +706,7 @@ AppUserStore.prototype.batchPushChangeGrantPeriod = function(result) {
     //对应用做哈希，加快遍历速度
     var targetAppIdsMap = _.groupBy(targetAppIds);
     //没有开始时间，结束时间，肯定不对，不进行更新
-    if(!_.isObject(taskParams.data) || !'start_time' in taskParams.data || !'end_time' in taskParams.data) {
+    if(!_.isObject(taskParams.data) || !('start_time' in taskParams.data) || !('end_time' in taskParams.data)) {
         return;
     }
     //修改后的开始时间容错处理,转换成整形
@@ -1161,7 +1161,7 @@ AppUserStore.prototype.getTeamLists = function (result) {
             obj.group_name = item.group_name;
             obj.group_id = item.group_id;
             filterTeams.teamlists.push(obj);
-        })
+        });
     }
 
 };

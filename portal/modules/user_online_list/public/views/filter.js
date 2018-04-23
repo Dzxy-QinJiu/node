@@ -110,7 +110,7 @@ const OnlineUserFilter = React.createClass({
         OnlineUserListAction.handleRefresh();
         setTimeout(() => {
             this.search();
-        })
+        });
 
     },
     render: function () {

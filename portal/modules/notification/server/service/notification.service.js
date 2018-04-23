@@ -122,4 +122,4 @@ function getUnapprovedCount(req, res) {
                 }
             });
     });
-};
+}

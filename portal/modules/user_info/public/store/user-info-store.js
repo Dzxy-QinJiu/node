@@ -74,7 +74,7 @@ UserInfoStore.prototype.getLogList = function (logListObj) {
                     loginEquipment: log.device && log.device != "null" ? log.device : "",
                     loginMessage: log.operate && log.operate != "null" ? log.operate : "",
                     lastId: log.sortValuse || ""
-                }
+                };
             });
             this.logList = this.logList.concat(processedLogList);
             var length = this.logList.length;

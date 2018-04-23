@@ -168,7 +168,7 @@ var AppUserManage = React.createClass({
             AppUserAction.changeTableSort(quryObj);
             AppUserAction.getAppUserList(quryObj);
             //顶部导航输入框的值清空
-            this.refs.searchInput.refs.searchInput.value = ''
+            this.refs.searchInput.refs.searchInput.value = '';
         }
         this.prevRoutePath = AppUserUtil.getCurrentView();
     },
@@ -195,7 +195,7 @@ var AppUserManage = React.createClass({
             }
         }
         var list = appList.map(function (item) {
-            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>
+            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
         list.unshift(<Option value="" key="all" title={Intl.get("user.app.all", "全部应用")}><ReactIntl.FormattedMessage
             id="user.app.all" defaultMessage="全部应用"/></Option>);
@@ -263,7 +263,7 @@ var AppUserManage = React.createClass({
         return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击"/><i
             className="iconfont icon-radio"
             style={{fontSize:'20px',verticalAlign:'middle',position:'relative',top:'-3px'}}/><ReactIntl.FormattedMessage
-            id="user.user.list.select" defaultMessage="选择用户"/></span>
+            id="user.user.list.select" defaultMessage="选择用户"/></span>;
     },
     //发邮件使用的参数
     getEmailData: function () {
@@ -293,13 +293,13 @@ var AppUserManage = React.createClass({
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showBatchOperate}>
                     <i className="iconfont icon-piliangcaozuo"/>
-                </div>
+                </div>;
             }
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn-mini gray">
                     <i className="iconfont icon-piliangcaozuo"/>
                 </div>
-            </Popover>
+            </Popover>;
         }
         return null;
     },
@@ -325,7 +325,7 @@ var AppUserManage = React.createClass({
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn add-btn-common gray">{Intl.get("user.batch.change", "批量变更")}</div>
-            </Popover>
+            </Popover>;
         }
         return null;
     },
@@ -337,14 +337,14 @@ var AppUserManage = React.createClass({
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn add-btn-common" onClick={this.showApplyUserForm}>
                     <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用"/></span>
-                </div>
+                </div>;
             }
             //没选中用户加提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                 <div className="inline-block add-btn add-btn-common gray">
                     <span><ReactIntl.FormattedMessage id="user.app.open" defaultMessage="开通应用"/></span>
                 </div>
-            </Popover>
+            </Popover>;
         }
         return null;
     },
@@ -360,7 +360,7 @@ var AppUserManage = React.createClass({
                 <div className="inline-block add-btn-mini gray">
                     <i className="iconfont icon-shenqing"/>
                 </div>
-            </Popover>
+            </Popover>;
         }
         return null;
     },
@@ -438,7 +438,7 @@ var AppUserManage = React.createClass({
         var topNavLeftClass = classNames({
             'pull-left':true,
             'user_manage_return_block':true
-        })
+        });
 
         var showView = null;
         switch (currentView) {

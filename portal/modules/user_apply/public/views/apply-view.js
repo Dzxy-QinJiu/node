@@ -76,7 +76,7 @@ var ApplyTabContent = React.createClass({
                     //重新获取列表
                     this.retryFetchApplyList();
                 }
-            })
+            });
         }
     },
     //从sessionStorage中获取该用户未读的回复列表
@@ -211,7 +211,7 @@ var ApplyTabContent = React.createClass({
             } else {
                 Trace.traceEvent($(this.getDOMNode()).find(".app_user_manage_apply_list"), "取消有未读回复申请的查看");
             }
-            this.fetchApplyList()
+            this.fetchApplyList();
         });
     },
     //点击展示详情
@@ -424,7 +424,7 @@ var ApplyTabContent = React.createClass({
                             }
                     </span>
                 </div>
-            )
+            );
         }
     },
 

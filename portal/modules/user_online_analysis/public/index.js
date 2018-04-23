@@ -36,8 +36,8 @@ var UserOnlineAnalysis = React.createClass({
                                       }`);
     },
     componentWillUnmount : function() {
-        AnalysisStore.unlisten(this.onStoreChange)
-        $(window).off("resize",this.onStoreChange);;
+        AnalysisStore.unlisten(this.onStoreChange);
+        $(window).off("resize",this.onStoreChange);
         this.dynamicStyle.destroy();
     },
     render: function () {

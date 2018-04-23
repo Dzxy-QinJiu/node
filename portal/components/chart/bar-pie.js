@@ -277,7 +277,7 @@ class AntcBarPieChart extends React.Component {
 
     renderChart() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose()} catch(e){};
+            try {this.echartInstance.dispose();} catch(e){}
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -288,7 +288,7 @@ class AntcBarPieChart extends React.Component {
         if (this.props.dataField) chartData = chartData[this.props.dataField];
         if (_.isEmpty(chartData)) {
             if(this.echartInstance) {
-                try {this.echartInstance.dispose()} catch(e){};
+                try {this.echartInstance.dispose();} catch(e){}
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {

@@ -19,7 +19,7 @@ var AuthorityList = React.createClass({
                 permissionGroupName: "",
                 permissionList: []
             }
-        }
+        };
     },
 
     getInitialState: function () {
@@ -114,7 +114,7 @@ var AuthorityList = React.createClass({
                             authorityGroup.permissionList.map(function (authority, i) {
                                 return (<div className='authority-content-list' key={i}>
                                     <div className="authority-authorityName">{authority.permissionName}</div>
-                                </div>)
+                                </div>);
                             })
                         }
                     </GeminiScrollbar>

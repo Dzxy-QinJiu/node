@@ -206,7 +206,7 @@ const List = React.createClass({
     },
 
     onFilterSelectChange: function (column, value) {
-        let condition = this.state.condition;;
+        let condition = this.state.condition;
 
         if (value === "all") {
             delete condition[column];
@@ -324,7 +324,7 @@ const List = React.createClass({
                 column.render = function (text) {
                     let time = text? moment(text).format(DATE_FORMAT) : "";
                     return <span>{time}</span>;
-                }
+                };
             }
 
             if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
@@ -346,7 +346,7 @@ const List = React.createClass({
                     }
 
                     return <span>{text}</span>;
-                }
+                };
             }
 
             if (["gross_profit_rate"].indexOf(column.dataIndex) > -1) {
@@ -354,7 +354,7 @@ const List = React.createClass({
                 column.render = function (text) {
                     text = decimalToPercent(text);
                     return <span>{text}</span>;
-                }
+                };
             }
 
             if (column.dataIndex === "contract_amount") {
@@ -365,7 +365,7 @@ const List = React.createClass({
                 column.render = function (text) {
                     text = text? text : "";
                     return <span>{text}</span>;
-                }
+                };
             }
 
             if (column.sorter) {

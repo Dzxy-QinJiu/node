@@ -44,7 +44,7 @@ var SingleUserLog = React.createClass({
             type_filter: this.state.typeFilter.join()
         };
         if (this.state.searchName) {
-            queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase()
+            queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase();
         }
         SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId);
         if(selectedAppId){
@@ -85,7 +85,7 @@ var SingleUserLog = React.createClass({
         let queryObj = this.getQueryParams(queryParams);
         let search = queryParams && 'search' in queryParams ? queryParams.search : this.state.searchName;
         if (search) {
-            queryObj.search = (search.toString().trim()).toLowerCase()
+            queryObj.search = (search.toString().trim()).toLowerCase();
         }
         let type_filter = queryParams && 'type_filter' in queryParams ? queryParams.type_filter : this.state.typeFilter;
         if (type_filter) {
@@ -185,7 +185,7 @@ var SingleUserLog = React.createClass({
                                 >
                                     {item.app_name}
                                 </Option>
-                            )
+                            );
                         }) : null}
                     </SelectFullWidth>
                 </div>}

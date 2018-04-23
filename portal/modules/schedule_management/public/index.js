@@ -61,7 +61,7 @@ const ScheduleManagement = React.createClass({
         if (viewType == "day"){
             this.setState({
                 dayLists: events//日视图的数据
-            })
+            });
         }else if (viewType == "week") {
             var weekScheduleLists = {
                 "Mon":[],"Tus":[],"Wed":[],"Thur":[],"Fri":[],"Sat":[],"Sun":[]
@@ -90,7 +90,7 @@ const ScheduleManagement = React.createClass({
             });
             this.setState({
                 weekLists: weekScheduleLists//周视图的数据
-            })
+            });
         }else{
             var monthEvent = [];
             //以日程所在天的零点为key，对数据按天进行分组
@@ -105,11 +105,11 @@ const ScheduleManagement = React.createClass({
                         "totalCustomerObj": item,
                         "showCustomerDetail":_this.showCustomerDetail,
                     }
-                )
+                );
             }
             this.setState({
                 calendarLists: monthEvent//月视图的数据
-            })
+            });
         }
     },
 
@@ -156,7 +156,7 @@ const ScheduleManagement = React.createClass({
             //之前新建日程的时候，把全天的结束时间设置为23:59:59,所以比0点少1s
             if (curSchedule.end_time - curSchedule.start_time == LESSONESECOND) {
                 curSchedule.allDay = true;
-            };
+            }
             //The start date/time of the event. Must resolve to a JavaScript Date object.
             curSchedule.start = new Date(curSchedule.start_time);
             curSchedule.end = new Date(curSchedule.end_time);
@@ -220,7 +220,7 @@ const ScheduleManagement = React.createClass({
         this.setState({
             curCustomerId: "",
             rightPanelIsShow: false
-        })
+        });
     },
     ShowCustomerUserListPanel: function (data) {
         this.setState({
@@ -231,7 +231,7 @@ const ScheduleManagement = React.createClass({
     closeCustomerUserListPanel() {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
 
     renderModalContent: function () {
@@ -240,13 +240,13 @@ const ScheduleManagement = React.createClass({
                 <p>{Intl.get("crm.4", "客户名称")}：{this.state.isEdittingItem.customer_name}</p>
                 <p>{Intl.get("schedule.management.schedule.content", "日程内容")}：{this.state.isEdittingItem.content}</p>
             </div>
-        )
+        );
     },
     updateExpiredPanelState: function (newStates) {
         this.setState({
             isShowExpiredPanel: newStates.isShowExpiredPanel,
             isFirstLogin: false,
-        })
+        });
     },
     //切换不同的视图
     changeView: function (viewName) {
@@ -315,7 +315,7 @@ const ScheduleManagement = React.createClass({
         //月视图顶部标题的日期样式
         var formats = {
             "monthHeaderFormat": (date, culture, localizer) => {
-                return localizer.format(date, "YYYY" + Intl.get("common.time.unit.year", "年")+ "MM" + Intl.get("common.time.unit.month", "月"), culture)
+                return localizer.format(date, "YYYY" + Intl.get("common.time.unit.year", "年")+ "MM" + Intl.get("common.time.unit.month", "月"), culture);
             }
         };
         const options = [
@@ -389,7 +389,7 @@ const ScheduleManagement = React.createClass({
                     }
                 </RightPanel>
             </div>
-        )
+        );
     }
 });
 module.exports = ScheduleManagement;

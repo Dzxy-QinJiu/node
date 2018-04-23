@@ -31,7 +31,7 @@ export const decimalToPercent = function (rawValue = 0) {
     }
 
     return targetValue;
-}
+};
 
 //格式化金额，返回以万为单位的金额
 export const formatAmount = function (amount) {
@@ -39,7 +39,7 @@ export const formatAmount = function (amount) {
     amount = isNaN(amount)? "" : calc.div(amount, 10000);
 
     return amount;
-}
+};
 
 //处理金额，未定义时赋空值及转成千分位格式等
 export const parseAmount = function (amount) {
@@ -49,7 +49,7 @@ export const parseAmount = function (amount) {
     amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
     return amount;
-}
+};
 
 //在电话号码区号与号码之间加横线分隔
 export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
@@ -81,7 +81,7 @@ export const exportToCsv = function (filename, rows) {
             var innerValue = row[j] === null ? '' : row[j].toString();
             if (row[j] instanceof Date) {
                 innerValue = row[j].toLocaleString();
-            };
+            }
             var result = innerValue.replace(/"/g, '""');
             if (result.search(/("|,|\n)/g) >= 0)
                 result = '"' + result + '"';
@@ -116,17 +116,17 @@ export const exportToCsv = function (filename, rows) {
             document.body.removeChild(link);
         }
     }
-}
+};
 
 //是否是手机号
 export const isPhone = function (value) {
     return /^1[3-9]\d{9}$/.test(value);
-}
+};
 
 //是否是邮箱
 export const isEmail = function (value) {
     return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
-}
+};
 
 //两数组是否相等
 export const isEqualArray = function (array1, array2) {

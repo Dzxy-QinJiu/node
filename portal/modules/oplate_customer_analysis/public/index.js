@@ -30,7 +30,7 @@ import { storageUtil } from "ant-utils";
 const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
     PASS: 1,
     HISTORY_PASS: 2
-}
+};
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     onStateChange: function () {
@@ -115,7 +115,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         props.height = (props.height ? props.height : 214);
         props.localStorageAppIdKey = localStorageAppIdKey;
 
-        props.ref = (ref) => { this.refs[props.refName] = ref };
+        props.ref = (ref) => { this.refs[props.refName] = ref; };
 
         return React.createElement(component, props, null);
     },
@@ -129,7 +129,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         if (trendData[0] && trendData[0].data) {
             trendData = trendData[0].data;
         } else {
-            _.map(trendData, trend => trend.count = trend.total)
+            _.map(trendData, trend => trend.count = trend.total);
         }
         return trendData;
     },
@@ -309,16 +309,16 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                             <Alert message={errorMsg} type="error" showIcon />
                         </div>
                     )
-                )
+                );
             }
-        }
+        };
         const renderLoading = () => {
             if (loading && !errorMsg) {
                 return (
                     <Spinner />
-                )
+                );
             }
-        }
+        };
         return (
             <div
                 {...propsObj}
@@ -330,7 +330,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     <Table
                     />}
             </div>
-        )
+        );
     },
     //获取各行业试用客户覆盖率
     getIndustryCustomerOverlayTable() {
@@ -527,7 +527,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             };
             
             OplateCustomerAnalysisAction.getIndustryCustomerOverlay(paramObj);
-        })
+        });
        
     },
     //处理行业试用客户覆盖率导出
@@ -623,7 +623,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                         onClick={this.changeCurrentTab.bind(this, 'executed')} />
                 </Col>
             </Row>
-        )
+        );
     },
     getCharts: function () {
         return [{
@@ -724,7 +724,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                                     if (!ref && !props.exportData) return;
                                     const exportFunc = (ref && ref.getProcessedData) || props.exportData;
                                     return exportFunc();
-                                }
+                                };
                                 return chart.hide ? null : (
                                     <div className="analysis_chart col-md-6 col-sm-12 charts-select-fix" data-title={chart.title}>
                                         <div className="chart-holder" ref="chartWidthDom" data-tracename={chart.title}>

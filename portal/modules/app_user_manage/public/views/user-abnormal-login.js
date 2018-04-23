@@ -40,7 +40,7 @@ var UserAbnormalLogin = React.createClass({
             ignoreAbnormalErrorMsg: '', // 忽略异地登录信息的失败的提示信息，默认为空
             ignoreId: '', // 忽略的id
             ...this.getStateData()
-        }
+        };
     },
     onStateChange: function () {
         this.setState(this.getStateData());
@@ -62,7 +62,7 @@ var UserAbnormalLogin = React.createClass({
         var userId = this.props.userId;
         UserAbnormalLoginAction.getUserApp(userId,()=>{
             this.getAbnormalLoginLists(searchObj);
-        })
+        });
     },
     getAbnormalLoginLists: function (searchObj) {
         UserAbnormalLoginAction.getUserAbnormalLogin(searchObj);
@@ -84,7 +84,7 @@ var UserAbnormalLogin = React.createClass({
                     }
                     this.getAbnormalLoginLists(searchObj);
                 });
-            })
+            });
         }
     },
     componentWillUnmount: function () {
@@ -203,7 +203,7 @@ var UserAbnormalLogin = React.createClass({
     },
     renderTimeLineItem: function (item) {
         var des = "";
-        var appObj = _.find(this.state.appLists,(app)=>{return app.app_id == item.client_id});
+        var appObj = _.find(this.state.appLists,(app)=>{return app.app_id == item.client_id;});
         var appName = appObj? appObj.app_name : '';
         if (item.type){
             switch (item.type){
@@ -271,7 +271,7 @@ var UserAbnormalLogin = React.createClass({
                     </Select>
                     <Spinner />
                 </div>
-            )
+            );
         }else if (this.state.abnormalLoginErrMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.abnormalLoginErrMsg}
@@ -315,7 +315,7 @@ var UserAbnormalLogin = React.createClass({
                         </GeminiScrollbar>
                     </div>
                 </div>
-            )
+            );
         }else{
             return (
                 <div>
@@ -331,7 +331,7 @@ var UserAbnormalLogin = React.createClass({
                         showIcon={true}
                     />
                 </div>
-            )
+            );
         }
     },
     render: function () {
@@ -339,7 +339,7 @@ var UserAbnormalLogin = React.createClass({
             <div className="abnormalLoginList">
                 {this.renderAbnormalLogin()}
             </div>
-        )
+        );
     }
 });
 module.exports = UserAbnormalLogin;

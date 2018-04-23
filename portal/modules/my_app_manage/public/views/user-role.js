@@ -57,9 +57,9 @@ var UserRolePage = React.createClass({
 
         setDefaultRole:function (param) {
             if (this.state.setDefaulting) {
-                return
+                return;
             }
-            this.state.setDefaulting = true
+            this.state.setDefaulting = true;
             RoleAction.setDefaultRole(param);
         },
 
@@ -116,7 +116,7 @@ var UserRolePage = React.createClass({
                         delDefaultRoleStr="APPLICATION_BASE_ROLE_MANAGEMENT"
                     />
                 );
-            })
+            });
         }
         return (
             <div className="role-manage-container"  data-tracename="角色列表">

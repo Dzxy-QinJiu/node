@@ -63,7 +63,7 @@ function UserFormActions() {
             if (savedUser && savedUser.email) {
                 email = savedUser.email;
             }
-            _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email,email}), savedUser: savedUser});
+            _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email}), savedUser: savedUser});
 
         }, function (errorMsg) {
             //保存失败后的处理

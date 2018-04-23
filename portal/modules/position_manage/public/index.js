@@ -1,7 +1,7 @@
 require("./css/index.less");
 import TopNav from 'CMP_DIR/top-nav'; //顶部导航
 import { Button, Table} from 'antd';
-import { RightPanel } from 'CMP_DIR/rightPanel'
+import { RightPanel } from 'CMP_DIR/rightPanel';
 import PositionStore from './store/index';
 import PositionAction from './action/index';
 import AddPositionForm from './views/position-form';

@@ -19,7 +19,7 @@ var LeftTree = React.createClass({
     getDefaultProps: function () {
         return {
             getSalesTeamMemberList: noop
-        }
+        };
     },
 
     showOperationArea: function (item) {
@@ -144,7 +144,7 @@ var LeftTree = React.createClass({
                     </div>
                 </PrivilegeChecker>
             </div>
-        )
+        );
     },
 
     element: function (item, type) {
@@ -198,7 +198,7 @@ var LeftTree = React.createClass({
                     </div>
                 </div>
 
-            </div>)
+            </div>);
     },
 
     treeElement: function (btnClass, item, type) {
@@ -210,7 +210,7 @@ var LeftTree = React.createClass({
         var formClass = 'group-form-div';
         if (!item.superiorTeam || item.isAddGroup) {
             //没有上级团队的样式设置，高度去掉上级团队的一行
-            formClass += ' group-form-no-superior'
+            formClass += ' group-form-no-superior';
         }
         return (
             item.isEditGroup || item.isAddGroup ? (
@@ -231,7 +231,7 @@ var LeftTree = React.createClass({
                     }
                 </div>
             )
-        )
+        );
     },
     hideDelTooltip: function () {
         SalesTeamAction.clearDelTeamErrorMsg();
@@ -317,7 +317,7 @@ var LeftTree = React.createClass({
                         </div>
                         <div className="add-sales-team-root-div">
                             <Button type="ghost" className="add-root-sales-team-btn"
-                                    onClick={(e)=>{this.addSalesTeamRoot(e)}}
+                                    onClick={(e)=>{this.addSalesTeamRoot(e);}}
                             ><ReactIntl.FormattedMessage id="sales.team.add.team"
                                                                                                 defaultMessage="添加团队"/></Button>
                         </div>

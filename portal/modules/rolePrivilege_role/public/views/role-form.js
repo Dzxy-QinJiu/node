@@ -52,7 +52,7 @@ var RoleForm = React.createClass({
         if (props.formType == "add") {
             formData.permissionGroups = $.extend(true, [], props.permissionGroups);
         }
-        return formData
+        return formData;
     },
     getInitialState: function () {
         var stateData = RoleFormStore.getState();
@@ -178,7 +178,7 @@ var RoleForm = React.createClass({
         if (flag) {
             Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"选中全部的权限");
         } else {
-            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"取消选中的权限")
+            Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"取消选中的权限");
         }
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
@@ -201,7 +201,7 @@ var RoleForm = React.createClass({
 
     //反选
     reverseSelectAuthority: function (curPermissionGroupName) {
-        Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"反选权限")
+        Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"反选权限");
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
                 function (permisssionGroup) {
@@ -351,9 +351,9 @@ var RoleForm = React.createClass({
                                                                       onChange={_this.handleCheckBox}/>
                                                                     <span
                                                                         className="permission-item">{permission.permissionName}</span>
-                                                        </label> )
+                                                        </label> );
                                                     })) : null}
-                                                </div>)
+                                                </div>);
                                         })}
                                     </GeminiScrollbar>
                                 </div>

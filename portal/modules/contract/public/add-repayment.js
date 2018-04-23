@@ -142,7 +142,7 @@ const AddRepayment = React.createClass({
                             </div>
                             {Intl.get("contract.83", "至")}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get("contract.94", "应收金额")}{repayment.amount}{Intl.get("contract.155", "元")}
                         </li>
-                        )})}
+                        );})}
                     </ul>
                 </div>
                 ) : null}

@@ -65,7 +65,7 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
-                })
+                });
             }
         });
         if (nextProps.updateScrollBar) {
@@ -75,9 +75,9 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.setState({
                         updateScrollBar: false
-                    })
-                }, delayConstant)
-            })
+                    });
+                }, delayConstant);
+            });
         }
     },
     getDataType: function () {
@@ -98,7 +98,7 @@ var CustomerAnalysis = React.createClass({
                 page_size: DEFAULT_TABLE_PAGESIZE,
             },
             ...data
-        }
+        };
         const lastId = this.state.stageChangedCustomerList.lastId;
         if (lastId && !isFirst) {
             paramObj.queryObj = {
@@ -126,7 +126,7 @@ var CustomerAnalysis = React.createClass({
                     "type": "time"
                 }
             ],
-        }
+        };
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
     },
     getChartData: function () {
@@ -167,7 +167,7 @@ var CustomerAnalysis = React.createClass({
             });
             setTimeout(() => {
                 OplateCustomerAnalysisAction.getAnalysisData(reqData);
-            })
+            });
         });
     },
     //缩放延时，避免页面卡顿
@@ -185,7 +185,7 @@ var CustomerAnalysis = React.createClass({
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
-        })
+        });
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         $(".statistic-data-analysis .thumb").hide();
@@ -235,7 +235,7 @@ var CustomerAnalysis = React.createClass({
                     "type": "time"
                 }
             ],
-        }
+        };
         const lastId = this.state.transferCustomers.lastId;
         if (lastId && !isFirst) {
             params.query.id = lastId;
@@ -245,7 +245,7 @@ var CustomerAnalysis = React.createClass({
             this.state.transferCustomers.listenScrollBottom = true;
             this.setState({ transferCustomers: this.state.transferCustomers }, () => {
                 OplateCustomerAnalysisAction.getTransferCustomers(params);
-            })
+            });
         } else {
             OplateCustomerAnalysisAction.getTransferCustomers(params);
         }
@@ -434,7 +434,7 @@ var CustomerAnalysis = React.createClass({
                 time: item.time,
                 nickname: item.memberName
             }
-        })
+        });
         this.getStageChangeCustomerList({
             isFirst: true,
             query: {
@@ -456,7 +456,7 @@ var CustomerAnalysis = React.createClass({
     renderCustomerStage: function () {
         const handleNum = num => {
             if (num && num > 0) {
-                return "+" + num
+                return "+" + num;
             }
         };
         const columns = [
@@ -472,7 +472,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("sales.stage.intention", "意向"),
@@ -481,7 +481,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("common.trial", "试用"),
@@ -490,7 +490,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("common.trial.qualified", "试用合格"),
@@ -499,7 +499,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("common.trial.unqualified", "试用不合格"),
@@ -509,7 +509,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用不合格")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("sales.stage.signed", "签约"),
@@ -518,7 +518,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("sales.stage.lost", "流失"),
@@ -527,7 +527,7 @@ var CustomerAnalysis = React.createClass({
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("sales.home.sales", "销售"),
@@ -551,14 +551,14 @@ var CustomerAnalysis = React.createClass({
                             showIcon
                         />
                     </div>
-                )
+                );
             }
-        }
+        };
         const renderSpiner = () => {
             if (loading) {
                 return (
                     <Spinner />
-                )
+                );
             }
         };
         const hideTable = this.state.customerStage.errorMsg || loading;
@@ -602,7 +602,7 @@ var CustomerAnalysis = React.createClass({
                         /> : null}
                 </RightPanel>
             </div >
-        )
+        );
 
 
     },
@@ -620,7 +620,7 @@ var CustomerAnalysis = React.createClass({
     closeCustomerUserListPanel: function () {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     hideRightPanel: function () {
         this.setState({
@@ -633,11 +633,11 @@ var CustomerAnalysis = React.createClass({
                 showRightPanel: true,
                 selectedCustomerId: item.customer_id,
                 selectedCustomerIndex: index
-            })
-        }
+            });
+        };
         const getRowKey = function (record, index) {
             return index;
-        }
+        };
         //处理选中行的样式
         const handleRowClassName = (record, index) => {
             if ((index == this.state.selectedCustomerIndex) && this.state.showRightPanel) {
@@ -646,7 +646,7 @@ var CustomerAnalysis = React.createClass({
             else {
                 return "";
             }
-        }
+        };
         const columns = [
             {
                 title: Intl.get("common.login.time", "时间"),
@@ -662,7 +662,7 @@ var CustomerAnalysis = React.createClass({
                 render: function (text, item, index) {
                     return (
                         <span className="transfer-customer-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
-                    )
+                    );
                 }
             }, {
                 title: Intl.get("crm.customer.transfer.sales", "销售代表"),
@@ -685,7 +685,7 @@ var CustomerAnalysis = React.createClass({
         const loadingNotFirst = this.state.transferCustomers.loading && this.state.transferCustomers.lastId;
         const renderLoadMore = () => {
             if (loadingFirst || (!this.state.transferCustomers.data || this.state.transferCustomers.data.length == 0)) {
-                return null
+                return null;
             } else {
                 return (
                     <Button
@@ -695,9 +695,9 @@ var CustomerAnalysis = React.createClass({
                     >
                         {Intl.get("common.load.more", "加载更多")}
                     </Button>
-                )
+                );
             }
-        }
+        };
         const renderErr = () => {
             if (this.state.transferCustomers.errorMsg) {
                 return (
@@ -708,16 +708,16 @@ var CustomerAnalysis = React.createClass({
                             showIcon
                         />
                     </div>
-                )
+                );
             }
-        }
+        };
         const renderSpiner = () => {
             if (loadingFirst) {
                 return (
                     <Spinner />
-                )
+                );
             }
-        }
+        };
         const hideTable = this.state.transferCustomers.errorMsg || loadingFirst;
         //是否展示没有更多数据:加载完毕&&存在数据(lastId)&&监听下拉加载&&数据长度大于一页
         const showNoMoreDataTip = !this.state.transferCustomers.loading &&
@@ -780,7 +780,7 @@ var CustomerAnalysis = React.createClass({
             </div>
 
 
-        )
+        );
 
     },
     renderChartContent: function () {
@@ -863,7 +863,7 @@ var CustomerAnalysis = React.createClass({
                     {this.renderCustomerStage()}
                 </div>
             </div>
-        )
+        );
     },
     renderContent: function () {
 
@@ -872,13 +872,13 @@ var CustomerAnalysis = React.createClass({
                 <div>
                     {this.renderChartContent()}
                 </div>
-            )
+            );
         } else {
             return (
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
                     {this.renderChartContent()}
                 </GeminiScrollbar>
-            )
+            );
         }
     },
     render: function () {

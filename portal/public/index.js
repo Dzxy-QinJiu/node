@@ -73,7 +73,7 @@ function getUserPrivilegeAndStart() {
         unmountPrivilegeGet();
         suppressWarnings();
         getWebsiteConfig();
-        storageUtil.setUserId(userData.getUserData().user_id)
+        storageUtil.setUserId(userData.getUserData().user_id);
         AppStarter.init({
             goIndex: false
         });

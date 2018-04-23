@@ -11,16 +11,16 @@ class NewDistributeCustomer extends React.Component {
         super(props);
         this.state = {
             newDistributeCustomer: this.props.newDistributeCustomer
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.newDistributeCustomer.id && nextProps.newDistributeCustomer.id !== this.state.newDistributeCustomer.id) {
             this.setState({
                 newDistributeCustomer: nextProps.newDistributeCustomer
-            })
+            });
         }
-    };
+    }
 
     openCustomerDetail(customer_id) {
         this.props.openCustomerDetail(customer_id);
@@ -43,7 +43,7 @@ class NewDistributeCustomer extends React.Component {
                     <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, newDistributeCustomer.id)} data-tracename="打开客户详情">{newDistributeCustomer.customer_name || newDistributeCustomer.name}</span>
                 </div>
             </div>
-        )
+        );
     }
 }
 NewDistributeCustomer.defaultProps = {

@@ -119,7 +119,7 @@ var CrmBatchChange = React.createClass({
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
-                return customer.id
+                return customer.id;
             });
         }
         BatchChangeActions.doBatch(transferType, condition, (result) => {
@@ -199,7 +199,7 @@ var CrmBatchChange = React.createClass({
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
-                return customer.id
+                return customer.id;
             });
         }
         BatchChangeActions.doBatch(type, condition, (result) => {
@@ -258,7 +258,7 @@ var CrmBatchChange = React.createClass({
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
-                return customer.id
+                return customer.id;
             });
         }
         BatchChangeActions.doBatch("industry", condition, (result) => {
@@ -315,7 +315,7 @@ var CrmBatchChange = React.createClass({
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
-                return customer.id
+                return customer.id;
             });
         }
         BatchChangeActions.doBatch("address", condition, (result) => {
@@ -370,7 +370,7 @@ var CrmBatchChange = React.createClass({
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
-                return customer.id
+                return customer.id;
             });
         }
         BatchChangeActions.doBatch("administrative_level", condition, (result) => {
@@ -521,7 +521,7 @@ var CrmBatchChange = React.createClass({
                     dataList.push({
                         name: salesman.user_info.nick_name + "(" + team.group_name + ")",
                         value: salesman.user_info.user_id + "&&" + team.group_id
-                    })
+                    });
                 });
             }
         });
@@ -560,7 +560,7 @@ var CrmBatchChange = React.createClass({
                     closeContent={this.closeContent}
                 />
             </div>
-        )
+        );
     },
     renderAddressBlock: function () {
         let territoryObj = this.state.territoryObj;//地域

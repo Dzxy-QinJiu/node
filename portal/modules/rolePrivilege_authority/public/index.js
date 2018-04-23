@@ -153,7 +153,7 @@ var AuthorityPage = React.createClass({
                         />
                     </div>
                 );
-            })
+            });
         }
 
         return (

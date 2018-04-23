@@ -145,7 +145,7 @@ var CRMAddForm = React.createClass({
                 this.setState(this.getInitialState());
                 //拨打电话时，若客户列表中没有此号码，需添加客户
                 if (_.isFunction(this.props.updateCustomer)) {
-                    this.props.updateCustomer(result.result)
+                    this.props.updateCustomer(result.result);
                 }
             } else {
                 message.error(result);
@@ -321,7 +321,7 @@ var CRMAddForm = React.createClass({
     },
     getAdministrativeLevelOptions: function () {
         let options = crmUtil.administrativeLevels.map(obj => {
-            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>)
+            return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
@@ -359,7 +359,7 @@ var CRMAddForm = React.createClass({
                                     <Input name="name" id="name"
                                            value={formData.name}
                                            onBlur={(e) => {
-                                               this.checkOnlyCustomerName(e)
+                                               this.checkOnlyCustomerName(e);
                                            }}
                                            onChange={this.setField.bind(this, 'name')}
                                     />
@@ -387,7 +387,7 @@ var CRMAddForm = React.createClass({
                                                 onChange={this.setField.bind(this, 'industry')}
                                                 value={formData.industry}
                                                 onSelect={(e) => {
-                                                    this.handleSelect(e)
+                                                    this.handleSelect(e);
                                                 }}
                                         >
                                             {industryOptions}
@@ -431,7 +431,7 @@ var CRMAddForm = React.createClass({
                                 <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
                                        onChange={this.setField.bind(this, 'remarks')}
                                        onBlur={(e) => {
-                                           this.handleRemarkInput(e)
+                                           this.handleRemarkInput(e);
                                        }}
                                 />
                             </FormItem>

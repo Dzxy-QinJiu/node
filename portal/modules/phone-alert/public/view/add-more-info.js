@@ -22,29 +22,29 @@ class AddMoreInfo extends React.Component{
             isSubmitting:true,
             submittingErrMsg:""
         };
-    };
+    }
     componentDidMount(){
         addMoreInfoStore.listen(this.onStoreChange);
         //获取应用列表
         this.getAppLists();
-    };
+    }
     onStoreChange = () => {
         this.setState(addMoreInfoStore.getState());
     };
     componentWillUnmount(){
         addMoreInfoStore.unlisten(this.onStoreChange);
-    };
+    }
     //获取应用列表
     getAppLists(){
         addMoreInfoAction.getAppList();
-    };
+    }
     //点击提交按钮
     handleSubmit = () => {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err){
                 this.props.handleSubmit(values);
             }
-        })
+        });
     };
     //点击取消按钮
     handleCancel = () => {
@@ -142,7 +142,7 @@ class AddMoreInfo extends React.Component{
                     addAppFeedbackErrMsg={this.props.addAppFeedbackErrMsg}
                 />
             </div>
-        )
+        );
     }
 
 }

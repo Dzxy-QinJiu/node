@@ -75,7 +75,7 @@ function AppActions() {
                 callback({error: true, errorMsg: errorMsg || Intl.get("my.app.change.expire.time.error", "修改应用到期时间失败")});
             }
         });
-    }
+    };
     this.getCurAppKeyById = function (appId) {
         var _this = this;
         _this.dispatch({error: false, loading: true});

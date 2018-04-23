@@ -70,7 +70,7 @@ exports.getAppUserList = function (obj) {
     //异常登录
     obj.user_exception = obj.user_exception || '',
     //团队id
-    obj.team_ids = (obj.team_ids && (obj.team_ids.join(",")))|| ''
+    obj.team_ids = (obj.team_ids && (obj.team_ids.join(",")))|| '';
 
     let queryObj = obj;
 

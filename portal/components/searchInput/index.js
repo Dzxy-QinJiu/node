@@ -240,7 +240,7 @@ const SearchInput = React.createClass({
                 ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
                 )}
             </div>
-        )
+        );
     }
 });
 

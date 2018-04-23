@@ -74,7 +74,7 @@ var TimeSeriesBarchart = React.createClass({
         // 获取所有y轴的刻度值和x轴的时间值
         for (let i = 0; i < series.length; i ++) {
             yValue.push(series[i][1]);
-            xValue.push(series[i][0].getTime())
+            xValue.push(series[i][0].getTime());
         }
         // 获取最大的y轴刻度值
         var yValueMax = _.max(yValue);

@@ -9,7 +9,7 @@ var telePaths = {
     add: "/rest/customer/v2/callrecord/invalid_phone",
     del: "/rest/customer/v2/callrecord/invalid_phone/",
     get: "/rest/customer/v2/callrecord/invalid_phone"
-}
+};
 
 exports.urls = telePaths;
 

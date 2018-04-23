@@ -245,7 +245,7 @@ let CustomerRepeat = React.createClass({
     closeCustomerUserListPanel:function() {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     renderRepeatCustomerHead: function () {
         return (<Row>
@@ -335,7 +335,7 @@ let CustomerRepeat = React.createClass({
                             </PrivilegeChecker>
                         </Col>
                     </Row>);
-            })
+            });
         } else {
             return (
                 <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get("common.no.data", "暂无数据")}/>
@@ -348,7 +348,7 @@ let CustomerRepeat = React.createClass({
         return (<div className="customer-repeat-container" data-tracename="客户查重页面">
             {!this.props.noNeedClose ?   <TopNav>
                 <div className="return-btn-container" onClick={(e) => {
-                    this.returnCustomerList(e)
+                    this.returnCustomerList(e);
                 }}>
                     <span className="iconfont icon-return-btn"/>
                     <span className="return-btn-font">{Intl.get("crm.52", "返回")}</span>

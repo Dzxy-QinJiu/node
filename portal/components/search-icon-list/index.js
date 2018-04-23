@@ -95,9 +95,9 @@ class SearchIconList extends React.Component {
         let selectedList = this.state.selectedList;
         const id_field = this.props.id_field;
         const id = obj[id_field];
-        const exist = _.some(selectedList , function(item) {return item[id_field] === id});
+        const exist = _.some(selectedList , function(item) {return item[id_field] === id;});
         if(exist) {
-            selectedList = _.filter(selectedList, function(item) {return item[id_field] !== id});
+            selectedList = _.filter(selectedList, function(item) {return item[id_field] !== id;});
         } else {
             selectedList = selectedList.concat(obj);
         }

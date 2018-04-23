@@ -290,7 +290,7 @@ const Contract = React.createClass({
             "buy":"导出采购合同",
             "repayment":"导出合同回款"
         };        
-        Trace.traceEvent("合同管理",exportName[this.state.type])
+        Trace.traceEvent("合同管理",exportName[this.state.type]);
         const route = _.find(routeList, route => route.handler === "exportData");
 
         const params = {
@@ -460,7 +460,7 @@ const Contract = React.createClass({
         });
     },
     onDateTypeChange: function (type) {
-        Trace.traceEvent("合同管理","选择签订时间" + type)
+        Trace.traceEvent("合同管理","选择签订时间" + type);
         const rangeParams = this.state.rangeParams;
 
         if (rangeParams[0]) rangeParams[0].name = type;
@@ -600,7 +600,7 @@ const Contract = React.createClass({
                             className="date-type"
                         >
                             {dateTypes.map(dateType => {
-                                return <Option key="dateType.field" value={dateType.field}>{dateType.name}</Option>
+                                return <Option key="dateType.field" value={dateType.field}>{dateType.name}</Option>;
                             })}
                         </Select>
                         ) : null}

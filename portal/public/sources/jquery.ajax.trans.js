@@ -45,7 +45,7 @@
 
  *
  */
-;(function($) {
+(function($) {
     //$.ajaxTrans的默认ajax配置
     var defaultCfg = {
         type : 'GET',

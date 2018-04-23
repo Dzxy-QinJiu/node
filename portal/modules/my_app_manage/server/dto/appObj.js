@@ -35,7 +35,7 @@ exports.toFrontObject = function (restObject) {
         return {
             managerId: manager.manager_id,
             managerName: manager.manager_name
-        }
+        };
     });
     frontObj.managers = managers || [];
 

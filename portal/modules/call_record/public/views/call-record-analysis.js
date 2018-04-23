@@ -87,7 +87,7 @@ var CallRecordAnalyis = React.createClass({
             firstSelectValue: FIRSR_SELECT_DATA[0], // 第一个选择框的值
             secondSelectValue: LITERAL_CONSTANT.ALL, // 第二个选择宽的值，默认是全部的状态
             switchStatus: false//是否查看各团队通话趋势图
-        }
+        };
     },
 
     onStoreChange: function () {
@@ -190,7 +190,7 @@ var CallRecordAnalyis = React.createClass({
         });
         if (checked){
             var reqBody = this.getCallAnalysisBodyParamSeparately();
-            this.getCallAnalysisTrendDataSeparately(reqBody)
+            this.getCallAnalysisTrendDataSeparately(reqBody);
         }else{
             this.setState({
                 trendHeight: LAYOUT_HEIGHT.ORIGIN_HEIGHT
@@ -472,7 +472,7 @@ var CallRecordAnalyis = React.createClass({
                 sorter: function (a, b) {
                     return a.personAverageAnswer - b.personAverageAnswer;
                 },
-            },)
+            },);
         }
 
         return columns;
@@ -671,7 +671,7 @@ var CallRecordAnalyis = React.createClass({
             TOOLTIPDESCRIPTION.DURATION + ' : ' + `${time}`,
         ];
         if (team){
-            descriptionArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' :' + `${team}`)
+            descriptionArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' :' + `${team}`);
         }
         return descriptionArr;
     },
@@ -684,7 +684,7 @@ var CallRecordAnalyis = React.createClass({
                 var desObj = this.getDurationDescription(item, timeObj.timeDescr, teamArr[index]);
                 return desObj.join(",");
             });
-            return returnObj.join('<br />')
+            return returnObj.join('<br />');
         }else{
             let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
             let desObj = this.getDurationDescription(time, timeObj.timeDescr);
@@ -698,7 +698,7 @@ var CallRecordAnalyis = React.createClass({
             TOOLTIPDESCRIPTION.COUNT + ' : ' + `${sum}`,
         ];
         if (team){
-            countArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' : ' + `${team}`)
+            countArr.push(TOOLTIPDESCRIPTION.TEAMNAME + ' : ' + `${team}`);
         }
         return countArr;
     },
@@ -708,9 +708,9 @@ var CallRecordAnalyis = React.createClass({
         if (_.isArray(teamArr)){
             var returnObj = _.map(time, (item,index)=>{
                 var desObj = this.getCountDescription(item, sum[index], teamArr[index]);
-                return desObj.join(",")
+                return desObj.join(",");
             });
-            return returnObj.join('<br />')
+            return returnObj.join('<br />');
         }else{
             var desObj = this.getCountDescription(time, sum);
             return desObj.join('<br />');
@@ -1039,9 +1039,9 @@ var CallRecordAnalyis = React.createClass({
         }, () => {
             if (value == LITERAL_CONSTANT.MEMBER) {
                 let userIdArray = _.pluck(this.state.memberList.list, 'id');
-                this.refreshCallAnalysisData({user_id: userIdArray.join(',')})
+                this.refreshCallAnalysisData({user_id: userIdArray.join(',')});
             } else {
-                this.refreshCallAnalysisData()
+                this.refreshCallAnalysisData();
             }
         });
     },
@@ -1061,7 +1061,7 @@ var CallRecordAnalyis = React.createClass({
             this.refreshCallAnalysisData();
             if (this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM){
                 var reqBody = this.getCallAnalysisBodyParamSeparately();
-                this.getCallAnalysisTrendDataSeparately(reqBody)//每个团队分别的趋势图
+                this.getCallAnalysisTrendDataSeparately(reqBody);//每个团队分别的趋势图
             }
         });
     },

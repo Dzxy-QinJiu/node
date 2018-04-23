@@ -80,7 +80,7 @@ const ClueCustomer = React.createClass({
         $(".clue_customer_content").on("click", ".clue-customer-list div.list-item", (e) => {
             if ($(e.target).hasClass("call-out") || $(e.target).hasClass("ant-btn-primary") || $(e.target).closest('.trace-content-wrap').length) {
                 return;
-            };
+            }
             Trace.traceEvent($(_this.getDOMNode()).find(".ant-table-tbody"), "打开线索客户详情");
             var $div = $(e.target).closest('.list-item');
             var id = $div.find(".record-id")[0].innerText;
@@ -141,7 +141,7 @@ const ClueCustomer = React.createClass({
             this.setState({
                 errMsg: errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!")
             });
-        })
+        });
     },
     renderHandleBtn: function () {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
@@ -162,7 +162,7 @@ const ClueCustomer = React.createClass({
                     null
                 }
             </div>
-        )
+        );
     },
     changeTableHeight: function (filterPanelHeight = 0) {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -255,7 +255,7 @@ const ClueCustomer = React.createClass({
     },
     //是否是销售领导 或者是域管理员
     isSalesManager() {
-        return userData.isSalesManager()
+        return userData.isSalesManager();
     },
     //是否是运营人员
     isOperation(){
@@ -273,7 +273,7 @@ const ClueCustomer = React.createClass({
                         dataList.push({
                             name: salesman.user_info.nick_name + "(" + team.group_name + ")",
                             value: salesman.user_info.user_id + "&&" + team.group_id
-                        })
+                        });
                     });
                 }
             });
@@ -296,7 +296,7 @@ const ClueCustomer = React.createClass({
     },
     //获得已选销售的名字
     getSelectSalesName(salesManNames){
-        clueCustomerAction.setSalesManName({"salesManNames": salesManNames})
+        clueCustomerAction.setSalesManName({"salesManNames": salesManNames});
     },
 
     handleSubmitAssignSales: function (item) {
@@ -344,7 +344,7 @@ const ClueCustomer = React.createClass({
     },
     clearSelectSales: function () {
         clueCustomerAction.setSalesMan({"salesMan": ""});
-        clueCustomerAction.setSalesManName({"salesManNames": ""})
+        clueCustomerAction.setSalesManName({"salesManNames": ""});
     },
     //保存跟进内容
     handleSubmitTraceContent(item, e){
@@ -365,10 +365,10 @@ const ClueCustomer = React.createClass({
                     item.customer_traces[0].remark = textareVal;
                 } else {
                     item.customer_traces = [{"remark": textareVal}];
-                };
+                }
                 this.setState({
                     curCustomers: this.state.curCustomers
-                })
+                });
             });
         }
     },
@@ -377,7 +377,7 @@ const ClueCustomer = React.createClass({
         item.addTraceContent = false;
         this.setState({
             curCustomers:this.state.curCustomers
-        })
+        });
     },
     showAddTraceContent(item){
         if (this.state.isEdit) {
@@ -387,7 +387,7 @@ const ClueCustomer = React.createClass({
             item.addTraceContent = true;
             this.setState({
                 curCustomers:this.state.curCustomers
-            })
+            });
         }
     },
     updateCluecustomerContent(item, e){
@@ -395,14 +395,14 @@ const ClueCustomer = React.createClass({
         var originContent = "";
         if (_.isArray(item.customer_traces) && item.customer_traces.length) {
             originContent = item.customer_traces[0].remark;
-        };
+        }
         var $updateWrap = $(e.target).closest("div.trace-content-wrap");
         setTimeout(() => {
             $updateWrap.find("textarea").val(originContent);
         });
         this.setState({
             curCustomers:this.state.curCustomers
-        })
+        });
     },
     //线索客户列表
     renderClueCustomerList(){
@@ -531,9 +531,9 @@ const ClueCustomer = React.createClass({
                             </Row>
                         </div>
                     </div>
-                )
+                );
             })
-        )
+        );
     },
     handleScrollBarBottom: function () {
         var currListLength = _.isArray(this.state.curCustomers) ? this.state.curCustomers.length : 0;
@@ -589,7 +589,7 @@ const ClueCustomer = React.createClass({
                         showIcon={true}
                     />
                 </div>
-            )
+            );
         } else {
             return (
                 <div id="content-block" className="content-block" ref="clueCustomerList">
@@ -611,7 +611,7 @@ const ClueCustomer = React.createClass({
                         {Intl.get("crm.207", "共{count}个客户", {"count": this.state.customersSize})}
                     </div> : null}
                 </div>
-            )
+            );
         }
     },
     //更新线索来源列表
@@ -619,14 +619,14 @@ const ClueCustomer = React.createClass({
         this.state.clueSourceArray.push(newSource);
         this.setState({
             clueSourceArray:this.state.clueSourceArray
-        })
+        });
     },
     //更新线索渠道列表
     updateClueChannel:function (newChannel) {
         this.state.accessChannelArray.push(newChannel);
         this.setState({
             accessChannelArray:this.state.accessChannelArray
-        })
+        });
     },
     render: function () {
         return (
@@ -673,7 +673,7 @@ const ClueCustomer = React.createClass({
                     ) : null}
                 </div>
             </RightContent>
-        )
+        );
     }
 });
 module.exports = ClueCustomer;

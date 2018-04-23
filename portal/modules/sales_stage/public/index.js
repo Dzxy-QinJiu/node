@@ -197,7 +197,7 @@ var SalesStagePage = React.createClass({
                                         >
                                         </SalesStageInfo>
                                     </li>
-                                )
+                                );
                             })
                         }
                     </ul>

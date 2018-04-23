@@ -12,20 +12,20 @@ class ModalIntro extends React.Component {
             $introElement: this.props.$introElement,//需要加引导的元素
             introModalLayout: this.props.introModalLayout//圈住引导元素圆圈的大小和位置
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.$introElement !== this.state.$introElement) {
             this.setState({
                 $introElement: nextProps.$introElement
-            })
+            });
         }
         if (nextProps.introModalLayout !== this.props.introModalLayout) {
             this.setState({
                 introModalLayout: nextProps.introModalLayout
-            })
+            });
         }
-    };
+    }
 
     //计算小蚂蚁和提示的位置
     calculateLayout = () => {
@@ -48,11 +48,11 @@ class ModalIntro extends React.Component {
     componentDidMount() {
         this.calculateLayout();
         $(window).on('resize', this.calculateLayout);
-    };
+    }
 
     componentWillUnmount() {
         $(window).off('resize', this.calculateLayout);
-    };
+    }
 
     render() {
         var cls = classNames("modal-wrap-container", this.props.className,);
@@ -70,7 +70,7 @@ class ModalIntro extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 ModalIntro.defaultProps = {

@@ -157,8 +157,8 @@ let NameTextareaField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e)=>{this.handleSubmit(e)}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e)=>{this.handleCancel(e)}}/>
+                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e)=>{this.handleSubmit(e);}}/>
+                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e)=>{this.handleCancel(e);}}/>
             </div>
         );
 

@@ -48,7 +48,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
             field: "time",
             order: "descend"
         }
-    }
+    };
     //客户阶段变更数据
     this.customerStage = {
         loading: false,
@@ -59,7 +59,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         this.selectedCustomerStage = {
             type: "",//阶段标签 
             time: ""
-        }
+        };
     //是否展示客户阶段点击数字打开的客户列表
     this.isShowCustomerStageTable = false;
     //客户阶段变更的客户列表数据
@@ -88,7 +88,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         data: [],
         errorMsg: "",
         loading: false
-    }
+    };
 };
 //重置图表数据
 OplateCustomerAnalysisStore.prototype.resetChartData = function (type) {
@@ -241,7 +241,7 @@ OplateCustomerAnalysisStore.prototype.getSalesStageList = function (list) {
 const resultHandler = function (resultString, fn) {
     return function (result) {
         if (!this[resultString]) {
-            return
+            return;
         }
         const { loading, errorMsg } = result;
         if (loading) {
@@ -258,8 +258,8 @@ const resultHandler = function (resultString, fn) {
             this[resultString].errorMsg = "";
             fn.call(this, result);
         }
-    }
-}
+    };
+};
 
 //查询迁出客户
 OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("transferCustomers", function ({ loading, errorMsg, data, paramObj }) {
@@ -269,8 +269,8 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("tran
             return {
                 ...item,
                 time: item.time ? moment(item.time).format(oplateConsts.DATE_FORMAT) : ""
-            }
-        })
+            };
+        });
         this.transferCustomers.lastId = customers[customers.length - 1].id;
     }
     if (paramObj.isFirst) {
@@ -355,12 +355,12 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
                     sale.rowSpan = teamItem.team_result.length;
                 }
                 list.push(sale);
-            })
-        })
+            });
+        });
     }
     this.newCustomerCount.data = list;
 });
 
 
 //导出 客户分析-客户构成 的store
-module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
+module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');

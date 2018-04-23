@@ -18,14 +18,14 @@ exports.toFrontSalesCustomer = function (data) {
                         return {
                             stage: stage.sales_stage_name || "",//销售阶段
                             customerCount: stage.sales_stage_count || 0//客户数
-                        }
+                        };
                     });
                 }
                 return {
                     salesName: saleObj.name,//销售（团队）
                     saleStages: stageList,//销售阶段-客户数 列表
                     totalCount: saleObj.customer_num//各阶段客户数总计
-                }
+                };
             });
         }
     }
@@ -48,13 +48,13 @@ exports.toFrontSalesUser = function (data) {
                             newFormalUser: app.official_num || 0,//新增正式用户
                             newTryUser: app.trial_num || 0,//新增试用用户
                             newTotalUser: (app.official_num || 0) + (app.trial_num || 0)//新增用户的统计
-                        }
+                        };
                     });
                 }
                 return {
                     salesName: saleObj.name,//销售（团队）
                     appList: appList//销售阶段-客户数 列表
-                }
+                };
             });
         }
     }
@@ -81,7 +81,7 @@ exports.toFrontSalesPhone = function (data) {
                     calloutCount: salesObj.total_callout,//呼出次数
                     calloutSuccess: salesObj.total_callout_success,//成功呼出
                     calloutRate:salesObj.callout_rate//呼出接通率
-                }
+                };
             });
         }
     }

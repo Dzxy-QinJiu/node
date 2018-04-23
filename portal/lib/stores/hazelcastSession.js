@@ -97,7 +97,8 @@ module.exports = function (session) {
                     return fn && fn();
                 }
             });
-        };
+        }
+
         /**
          * Inherit from `Store`.
          */
@@ -152,7 +153,8 @@ module.exports = function (session) {
                 logger.debug("update session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
                 return fn && fn();
             });
-        };
+        }
+
         /**
          * Commit the given `sess` object associated with the given `sid`.
          *
@@ -216,7 +218,7 @@ module.exports = function (session) {
                 logger.debug("removed session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
                 return fn && fn();
             });
-        };
+        }
 
         /**
          * Destroy the session associated with the given `sid`.
@@ -232,9 +234,9 @@ module.exports = function (session) {
 
         var RequestOverride = {
             baseRequest: function (url, options, method) {
-            	var startTime = Date.now();
+                var startTime = Date.now();
                 var instance = request.rest[method](url, options, function (error, response, body) {
-                	logger.debug("baseRequest taking %ss", ( Date.now() - startTime)/ 1000);
+                    logger.debug("baseRequest taking %ss", ( Date.now() - startTime) / 1000);
                     if (!error && response) {
                         if (parseInt(response.statusCode) >= 400) {
                             instance.emit('fail', body, response);

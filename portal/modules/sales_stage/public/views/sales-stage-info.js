@@ -13,7 +13,7 @@ var SalesStageInfo = React.createClass({
             hideSalesStageModalDialog: noop,
             editSalesStage: noop,
             deleteSalesStage: noop
-        }
+        };
     },
 
     deleteSalesStage: function (salesStage) {

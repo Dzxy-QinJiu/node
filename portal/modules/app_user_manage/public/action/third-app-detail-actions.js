@@ -13,7 +13,7 @@ const asyncDispatchProcessor = function (ajax) {
         } , function(errorMsg){
             _this.dispatch({error: true,loading: false, errorMsg, paramObj});
         });
-    }
+    };
 };
 
 function ThirdAppDetailActions() {
@@ -41,6 +41,6 @@ function ThirdAppDetailActions() {
     //获取全部应用平台
     this.getPlatforms = asyncDispatchProcessor(ThirdAjax.getPlatforms);
 
-};
+}
 
 module.exports=  alt.createActions(ThirdAppDetailActions);

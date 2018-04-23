@@ -19,7 +19,7 @@ var classNames = require("classnames");
 import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
 import CallRecordAnalyis from './call-record-analysis';
-import TimeUtil from 'PUB_DIR/sources/utils/time-format-util'
+import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import Trace from "LIB_DIR/trace";
 import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import RefreshButton from 'CMP_DIR/refresh-button';
@@ -123,12 +123,12 @@ const CallRecord = React.createClass({
             this.setState({
                 invalidPhoneLists:data.result,
                 getInvalidPhoneErrMsg:""
-            })
+            });
         },(err)=>{
             this.setState({
                 invalidPhoneLists:[],
                 getInvalidPhoneErrMsg:err.message || Intl.get("call.record.get.invalid.phone.lists", "获取无效电话列表失败")
-            })
+            });
         });
         this.getCallListByAjax();
         this.getCallRecommendList();
@@ -519,7 +519,7 @@ const CallRecord = React.createClass({
         this.setState({
             selectedRecordId: record.id,
             showRightPanel: true
-        })
+        });
     },
     handleClickTextArea: function (item) {
         item.showTextEdit = !item.showTextEdit;
@@ -577,7 +577,7 @@ const CallRecord = React.createClass({
                             {column.province ? column.province + " " : ""}
                             {column.city || ""}
                         </div>
-                    )
+                    );
                 }
             }, {
                 title: this.getColumnTitle("disposition", Intl.get("call.record.call.state", "通话状态")),
@@ -645,7 +645,7 @@ const CallRecord = React.createClass({
                                     </div>
                                 )}
                         </div>
-                    )
+                    );
                 }
 
             }, {
@@ -686,7 +686,7 @@ const CallRecord = React.createClass({
                                 }
                             </Popconfirm>
                         </div>
-                    )
+                    );
                 }
             }
         ];
@@ -764,12 +764,16 @@ const CallRecord = React.createClass({
         switch (value) {
             case "114":
                 Trace.traceEvent("通话记录界面", '仅显示小于7位的号码');
+                break;
             case "customer":
                 Trace.traceEvent("通话记录界面", '仅显示客户电话');
+                break;
             case "invalid":
                 Trace.traceEvent("通话记录界面", '仅显示客服电话');
+                break;
             default:
                 Trace.traceEvent("通话记录界面", '显示全部电话');
+                break;
         }
         CallRecordActions.filterPhone(value);
         setTimeout(() => {
@@ -822,7 +826,7 @@ const CallRecord = React.createClass({
     closeCustomerUserListPanel:function() {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     },
     //上报客服电话
     handleAddInvalidPhone:function(){
@@ -845,13 +849,13 @@ const CallRecord = React.createClass({
                 isAddingInvalidPhone:false,
                 addingInvalidPhoneErrMsg:err.message || Intl.get("fail.report.phone.err.tip", "上报无效电话失败！")
             });
-        })
+        });
     },
     //提示框隐藏后的处理
     hideErrTooltip:function () {
       this.setState({
           addingInvalidPhoneErrMsg:""
-      })
+      });
     },
     render() {
         var scrollBarHeight = $(window).height() -
@@ -1100,10 +1104,10 @@ const CallRecord = React.createClass({
         //首次加载时不显示下拉加载状态
         const handleScrollLoading = () => {
             if (this.state.callRecord.page === 1) {
-                return false
+                return false;
             }
-            return this.state.callRecord.is_loading
-        }
+            return this.state.callRecord.is_loading;
+        };
 
         const tableClassnames = classNames("new-custom-tbody",{
             "hide-body": this.state.callRecord.is_loading && this.state.callRecord.page === 1 ,
@@ -1114,7 +1118,7 @@ const CallRecord = React.createClass({
             listenScrollBottom: this.state.callRecord.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
             showNoMoreDataTip: this.showNoMoreDataTip()
-        }
+        };
 
         return (
             <div style={{ position: "relative" }}>

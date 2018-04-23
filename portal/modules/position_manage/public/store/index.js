@@ -115,19 +115,19 @@ class PositionStore {
         } else {
             this.realmList = result && result.list || [];
         }
-    };
+    }
 
     // 设置排序参数
     setSort (sorter) {
         this.sortField = sorter && sorter.sortField ;
         this.sortOrder = sorter && sorter.sortOrder;
-    };
+    }
 
     // 搜索
     search (searchObj) {
         this.nick_name = searchObj && searchObj.nick_name || '';
         this.phone_order = searchObj && searchObj.phone_order || '';
-    };
+    }
 }
 
 //使用alt导出store

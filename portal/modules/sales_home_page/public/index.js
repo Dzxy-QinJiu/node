@@ -54,7 +54,7 @@ var SalesHomePage = React.createClass({
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
             phoneSorter: {}//电话的排序对象
-        }
+        };
     },
     onChange: function () {
         this.setState(SalesHomeStore.getState());
@@ -93,7 +93,7 @@ var SalesHomePage = React.createClass({
             this.setState({
                 isAnimateShow: true
             });
-        }, DELAY_TIME)
+        }, DELAY_TIME);
     },
     resizeLayout: function () {
         //宽屏不出现滚动条
@@ -125,7 +125,7 @@ var SalesHomePage = React.createClass({
             phoneListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
                 layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
         }
-        return phoneListHeight
+        return phoneListHeight;
     },
     componentWillUnmount: function () {
         SalesHomeAction.setInitState();
@@ -336,7 +336,6 @@ var SalesHomePage = React.createClass({
                 title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.billing.time", "计费时长") + "(min)", "billingTime"),
                 dataIndex: 'billingTime',
                 key: 'filling_time',
-                width: '10%',
                 sorter: function (a, b) {
                     return a.billingTime - b.billingTime;
                 },
@@ -357,7 +356,7 @@ var SalesHomePage = React.createClass({
         } else {
             chartWidth = Math.floor(chartListContainerW - layoutConstant.CHART_PADDING * 2);
         }
-        return {chartWidth: chartWidth, chartListHeight: chartListHeight}
+        return {chartWidth: chartWidth, chartListHeight: chartListHeight};
     },
     //通过销售名称获取对应的Id
     getSaleIdByName: function (name) {
@@ -623,7 +622,7 @@ var SalesHomePage = React.createClass({
             setTimeout(() => {
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
             }, 1000);
-        })
+        });
     },
     //跳转到个人信息页面
     jumpToUserInfo: function () {
@@ -639,7 +638,7 @@ var SalesHomePage = React.createClass({
                 scrollbarEnabled={this.state.scrollbarEnabled}
                 updateScrollBar={this.state.updateScrollBar}
             />
-        )
+        );
     },
     //渲染客户关系首页
     render: function () {
@@ -728,8 +727,6 @@ var SalesHomePage = React.createClass({
                             <div className="statistic-data-analysis">
                                 {this.renderAnalysisView()}
                             </div>
-
-
                         </div>
                         {/*除了销售之外*/}
                         {!(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? (

@@ -132,7 +132,7 @@ UserStore.prototype.getCurUserList = function (userListObj) {
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.userListTipMsg = Intl.get("member.no.suitable.member", "没有符合条件的成员!")
+                this.userListTipMsg = Intl.get("member.no.suitable.member", "没有符合条件的成员!");
             } else {
                 this.userListTipMsg = Intl.get("common.no.member", "暂无成员") + '!';
             }

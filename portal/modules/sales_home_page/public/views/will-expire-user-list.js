@@ -16,14 +16,14 @@ class WillExpireUserList extends React.Component {
         super(props);
         this.state = {
             ...this.getInitialState(),
-        }
-    };
+        };
+    }
 
     getInitialState() {
         return {
             updateScrollBar: false
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.updateScrollBar) {
@@ -33,17 +33,17 @@ class WillExpireUserList extends React.Component {
                 setTimeout(() => {
                     this.setState({
                         updateScrollBar: false
-                    })
-                }, delayConstant)
-            })
+                    });
+                }, delayConstant);
+            });
         }
-    };
+    }
 
     //重新获取过期用户
     retry(e) {
         Trace.traceEvent(e, "重新获取过期用户");
         SalesHomeAction.getExpireUser();
-    };
+    }
 
     gotoUserList (item, e){
         Trace.traceEvent(e, "跳转到用户列表");
@@ -55,7 +55,7 @@ class WillExpireUserList extends React.Component {
             end_date: item.end_date,
             page_size: item.total
         }, "/user/list", {});
-    };
+    }
 
     showExpireUserItem(items) {
         return items.map((item) => {
@@ -72,7 +72,7 @@ class WillExpireUserList extends React.Component {
                 />
             </div>);
         });
-    };
+    }
 
     showExpireUsers() {
         var _this = this;
@@ -86,7 +86,7 @@ class WillExpireUserList extends React.Component {
         if (_this.props.isLoadingExpireUserList) {
             return <div>
                 <Spinner />
-            </div>
+            </div>;
         } else if (_this.props.errMsg != '') {
             return <div>
                 <Alert
@@ -94,7 +94,7 @@ class WillExpireUserList extends React.Component {
                     type="error"
                     showIcon
                 />
-            </div>
+            </div>;
         } else {
             //不是错误或者加载中状态的显示
             //没有到期用户提醒
@@ -139,10 +139,10 @@ class WillExpireUserList extends React.Component {
                             </div>
                         }
                     </div>
-                )
+                );
             }
         }
-    };
+    }
 
     renderContent(salesListLi) {
         if (this.state.updateScrollBar) {
@@ -150,15 +150,15 @@ class WillExpireUserList extends React.Component {
                 <div>
                     {salesListLi}
                 </div>
-            )
+            );
         } else {
             return (
                 <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="scrollbar">
                     {salesListLi}
                 </GeminiScrollbar>
-            )
+            );
         }
-    };
+    }
 
     renderExpireUserContent() {
         let salesListHeight = this.props.getWillExpireUserListHeight();
@@ -173,8 +173,8 @@ class WillExpireUserList extends React.Component {
                     {this.renderContent(salesListLi)}
                 </ul>
             </div>
-        )
-    };
+        );
+    }
 
     render() {
         return (
@@ -184,7 +184,7 @@ class WillExpireUserList extends React.Component {
                 </div>
             </div>
 
-        )
+        );
     }
 }
 export default WillExpireUserList;

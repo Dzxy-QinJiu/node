@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * 产品信息添加表单
  */
 
-import { Form, Input, Select, Button, Icon } from "antd"
+import { Form, Input, Select, Button, Icon } from "antd";
 const FormItem = Form.Item;
 const Option = Select.Option;
 import ValidateMixin from "../../../mixins/ValidateMixin";
@@ -139,7 +139,7 @@ const AddProduct = React.createClass({
                             <Icon type="minus"/>
                         </div>
                     </Form>
-                )
+                );
             })}
             </Validation>
         );

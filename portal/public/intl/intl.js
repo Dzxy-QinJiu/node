@@ -4,7 +4,7 @@
  * Created by liwenjun on 2017/4/12.
  */
 import IntlMessageFormatWrap from './../../lib/utils/intlMessageFormatWrap';
-import Local from './../../lib/utils/local'
+import Local from './../../lib/utils/local';
 
 const Intl = {
     get(key, defaultMessage, options) {
@@ -12,5 +12,5 @@ const Intl = {
         const languageCode = Local.getLanguageCode(Local.getNavigatorLanguage());
         return IntlMessageFormatWrap.get(key, defaultMessage, options,languageCode);
     }
-}
+};
 export default Intl;

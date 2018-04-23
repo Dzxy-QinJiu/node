@@ -42,7 +42,7 @@ function BatchChangeAction() {
             if (cb) cb(data.result);
         }, function (errorMsg) {
             if (cb){
-                cb(errorMsg)
+                cb(errorMsg);
             }
             console.log(errorMsg);
         });

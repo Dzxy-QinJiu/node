@@ -39,7 +39,7 @@ var PieChart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.clear()} catch(e){};
+            try {_this.echartInstance.clear();} catch(e){}
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();

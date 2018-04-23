@@ -1,4 +1,4 @@
-var path = require("path")
+var path = require("path");
 var restLogger = require("../../../../lib/utils/logger").getLogger('nock');
 var RestUtil = require("ant-auth-request").restUtil(restLogger)(restLogger);
 var nock = require("nock");

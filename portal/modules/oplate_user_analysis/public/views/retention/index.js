@@ -35,9 +35,9 @@ var Retention = React.createClass({
                 dataIndex : item,
                 render : function(data) {
                     if(item === 'date') {
-                        return <b>{data}</b>
+                        return <b>{data}</b>;
                     } else {
-                        return <span>{data}</span>
+                        return <span>{data}</span>;
                     }
                 }
             };

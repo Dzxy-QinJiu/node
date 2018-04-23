@@ -100,7 +100,7 @@ function SalesHomeActions() {
                 loading: false,
                 errorMsg: errMsg || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败")
             });
-            cb(errMsg)
+            cb(errMsg);
         });
     };
     //获取新分配，但未联系的客户
@@ -115,7 +115,7 @@ function SalesHomeActions() {
                 loading: false,
                 errMsg: errMsg || Intl.get("sales.frontpage.fail.new.distribute.customer", "获取新分配的客户失败")
             });
-        })
+        });
     };
     //查询最近登录的客户
     this.getRecentLoginCustomers = function (condition, rangParams, pageSize, sorter, queryObj) {

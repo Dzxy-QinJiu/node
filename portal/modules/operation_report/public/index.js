@@ -12,7 +12,7 @@ import CompositeLine from "../../oplate_user_analysis/public/views/composite-lin
 import AreaLine from "./view/arealine";
 import OperationReportAction from "./action/operation-report-action";
 import OperationReportStore from "./store/operation-report-store";
-import userData from "../../../public/sources/user-data"
+import userData from "../../../public/sources/user-data";
 import html2canvasExport from "html2canvas";
 import jsPDF from "jspdf";
 import Trace from "LIB_DIR/trace";
@@ -31,7 +31,7 @@ let OperationReport = React.createClass({
             yearTime: time.year() + Intl.get("common.time.unit.year", "年"),
             weekTime: time.week(),
             hasReportData: true//是否有报告数据
-        }
+        };
     },
     onStateChange: function () {
         this.setState(OperationReportStore.getState());
@@ -72,7 +72,7 @@ let OperationReport = React.createClass({
                 selectAppList = [data[0].id];
             }
             OperationReportAction.setSelectAppList(selectAppList);
-            this.getReportData(selectAppList)
+            this.getReportData(selectAppList);
         });
     },
     //获取本地缓存中保存的上次选择的appId列表
@@ -221,7 +221,7 @@ let OperationReport = React.createClass({
         //将选择的应用列表保存根据userId保存到本地缓存中
         this.saveSelectAppId(appIdList);
         setTimeout(()=> {
-            this.getReportData()
+            this.getReportData();
         });     
         Trace.traceEvent("运营报告","选择应用");
     },
@@ -608,7 +608,7 @@ let OperationReport = React.createClass({
         if (data2) {
             percentData = (data1 / data2 * 100).toFixed(2) + "%";
         }
-        return percentData
+        return percentData;
     },
     //渲染各应用签约用户的登录数、总数和占比组成的提示信息
     renderAppSignedUserTips(){

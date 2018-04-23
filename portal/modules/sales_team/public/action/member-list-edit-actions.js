@@ -57,7 +57,7 @@ function SalesTeamMemberAction() {
             SalesTeamActions.getMemberList();
         }
         this.dispatch();
-    }
+    };
 }
 
 module.exports = alt.createActions(SalesTeamMemberAction);

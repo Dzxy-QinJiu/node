@@ -56,7 +56,7 @@ class AlwaysShowSelect extends React.Component {
             let options = dataList.map(data => {
                 let className = classNames("select-item", {"item-active": data.value === this.state.value});
                 return (<li className={className}
-                            onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>)
+                            onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
                 let className = classNames("select-item", {"item-active": !this.state.value});

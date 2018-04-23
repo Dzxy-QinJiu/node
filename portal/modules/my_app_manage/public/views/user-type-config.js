@@ -39,7 +39,7 @@ var UserTypeConfig = React.createClass({
 			appName: "",
 			//配置信息展示页面
 			userTypeConfigShow: true
-		}
+		};
 	},
 	getInitialState: function () {
 		return {
@@ -49,13 +49,13 @@ var UserTypeConfig = React.createClass({
 			appName: this.props.appName,
 			//展示表单的默认选项
 			item: initialItem
-		}
+		};
 	},
 	//list页面和form页面的切换
 	togglePageChange: function (newstate) {
 		this.setState({
 			addUserTypeConfigInfoShow: newstate
-		})
+		});
 	},
 	//点击编辑按钮 区分修改和增加两种情况
 	handleEdit: function (item) {
@@ -65,7 +65,7 @@ var UserTypeConfig = React.createClass({
 			//编辑状态
 			_this.setState({
 				item: item
-			})
+			});
 		} else {
 			//添加状态，为不同类型的用户设置对应默认的config_name
 			Trace.traceEvent($(this.getDOMNode()).find(".grantinfo-content-list"),"添加用户类型配置");
@@ -73,7 +73,7 @@ var UserTypeConfig = React.createClass({
 			initialItem.config_name = item.user_type;
 			_this.setState({
 				item: initialItem
-			})
+			});
 		}
 	},
 	//展示配置列表还是配置表单的逻辑

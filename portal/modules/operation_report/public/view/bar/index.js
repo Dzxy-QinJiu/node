@@ -193,10 +193,10 @@ var BarChart = React.createClass({
     renderChart: function () {
         if (this.echartInstance) {
             try {
-                _this.echartInstance.dispose()
+                _this.echartInstance.dispose();
             } catch (e) {
             }
-            ;
+            
         }
         if (this.props.resultType === 'loading') {
             return;
@@ -208,7 +208,7 @@ var BarChart = React.createClass({
         if (!this.props.list.length) {
             if (this.echartInstance) {
                 try {
-                    _this.echartInstance.dispose()
+                    _this.echartInstance.dispose();
                 } catch (e) {
                 }
             }

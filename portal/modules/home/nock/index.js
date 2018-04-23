@@ -21,4 +21,4 @@ exports.init = function () {
                 ]);
             } , 100);
         });
-}
+};

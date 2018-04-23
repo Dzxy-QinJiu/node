@@ -244,9 +244,9 @@ SalesHomeStore.prototype.getRecentLoginCustomers = function (result) {
                 if (_.isArray(customerItem.contacts) && customerItem.contacts.length) {
                     _.map(customerItem.contacts, (contactItem) => {
                         contactItem.customer_id = customerItem.id;
-                    })
+                    });
                 }
-            })
+            });
         }
         recentLoginCustomerObj.data.list = recentLoginCustomerObj.data.list.concat(result.resData.result);
         recentLoginCustomerObj.data.total = result.resData.total;

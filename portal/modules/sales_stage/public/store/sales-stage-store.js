@@ -59,11 +59,11 @@ SalesStageStore.prototype.isFormShowFnc = function () {
 };
 
 SalesStageStore.prototype.isEditOrderFnc = function () {
-    return this.getState().salesStageEditOrder
+    return this.getState().salesStageEditOrder;
 };
 
 SalesStageStore.prototype.getCurrentSalesStageListData = function () {
-    return this.getState().currentSalesStageList
+    return this.getState().currentSalesStageList;
 };
 
 //获取销售阶段列表

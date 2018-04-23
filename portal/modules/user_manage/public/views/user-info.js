@@ -126,7 +126,7 @@ var UserInfo = React.createClass({
             } else {
                 var status = 1;
                 if (this.props.userInfo.status == 1) {
-                    status = 0
+                    status = 0;
                 }
                 this.updateUserStatus(this.props.userInfo.id, status);
             }
@@ -139,7 +139,7 @@ var UserInfo = React.createClass({
                 return userTeamList.map(function (team) {
                     return <Option key={team.group_id} value={team.group_id}>
                         {team.group_name}
-                    </Option>
+                    </Option>;
                 });
             } else {
                 return [];
@@ -206,7 +206,7 @@ var UserInfo = React.createClass({
             } else {
                 roleOptions = [<Option value="" key="role">{Intl.get("member.no.role", "暂无角色")}</Option>];
             }
-            return roleOptions
+            return roleOptions;
         },
         selectRole: function (roleIds) {
             Trace.traceEvent(this.getDOMNode(), "选择角色");
@@ -532,7 +532,7 @@ var UserInfo = React.createClass({
                         </dd>
                     </dl>
                 </div>
-            )
+            );
         },
         uploadImg: function (src) {
             Trace.traceEvent($(this.getDOMNode()).find(".upload-img-select"), "点击上传头像");
@@ -622,7 +622,7 @@ var UserInfo = React.createClass({
                         {!this.props.isContinueAddButtonShow ? (
                             <PrivilegeChecker check={"USER_MANAGE_EDIT_USER"}>
                                 <RightPanelForbid onClick={(e) => {
-                                    this.showForbidModalDialog(e)
+                                    this.showForbidModalDialog(e);
                                 }}
                                                   isActive={this.state.userInfo.status == 0}
                                 />
@@ -677,7 +677,7 @@ var UserInfo = React.createClass({
                                  container={this}
                                  hideModalDialog={this.hideModalDialog}
                                  delete={(e) => {
-                                     this.forbidCard(e)
+                                     this.forbidCard(e);
                                  }}
                     />
                 </div>
@@ -686,4 +686,4 @@ var UserInfo = React.createClass({
     })
 ;
 
-module.exports = UserInfo;
+module.exports = UserInfo;

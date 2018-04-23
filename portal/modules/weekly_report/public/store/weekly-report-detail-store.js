@@ -50,7 +50,7 @@ weeklyReportDetailStore.prototype.setInitState = function () {
     this.addAskForLeave = {
         submitting: false,//正在保存
         errMsg: "" //保存出错
-    }
+    };
 
 };
 //获取电话统计
@@ -65,7 +65,7 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
                 item.average_time = formatRoundingData(item.average_time, 1);
                 //日接通数保留整数
                 item.average_num = formatRoundingData(item.average_num, 0);
-            })
+            });
         }
         this.salesPhone.list = _.isArray(result.resData) ? result.resData : [];
     }

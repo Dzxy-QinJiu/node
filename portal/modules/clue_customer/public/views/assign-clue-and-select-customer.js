@@ -37,12 +37,12 @@ class AssignClueAndSelectCustomer extends React.Component {
             CustomerInfoOfCurrUser: {},
             //是否显示客户名后面的对号和叉号
             ShowUpdateOrClose : true
-        }
-    };
+        };
+    }
     //是否是销售领导
     isSalesManager() {
-        return userData.isSalesManager()
-    };
+        return userData.isSalesManager();
+    }
     componentDidMount(){
       this.queryCustomerByClueId(this.state.curClueDetail.id);
     }
@@ -73,16 +73,16 @@ class AssignClueAndSelectCustomer extends React.Component {
                 });
             });
         }
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (this.state.curClueDetail.id !== nextProps.curClueDetail.id) {
             this.queryCustomerByClueId(nextProps.curClueDetail.id);
             this.setState({
                 curClueDetail: nextProps.curClueDetail
-            })
+            });
         }
-    };
+    }
 
     //把线索客户分配给销售
     distributeCustomerToSale = (submitObj) => {
@@ -119,12 +119,12 @@ class AssignClueAndSelectCustomer extends React.Component {
     isShowUpdateOrClose = (flag) =>{
         this.setState({
             ShowUpdateOrClose: flag
-        })
+        });
     };
     hideCustomerError = () => {
         this.setState({
             isShowCustomerError: false
-        })
+        });
     };
     //搜索客户的下拉框
     renderCustomerBlock() {
@@ -144,7 +144,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 </div>
             </div>
         );
-    };
+    }
 
     //提交关联数据
     submit() {
@@ -165,7 +165,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         });
         var type = "self";
         if (hasPrivilege(RELATEAUTHS.RELATEALL)) {
-            type = "all"
+            type = "all";
         }
         $.ajax({
             url: '/rest/relate_clue_and_customer/' + type,
@@ -189,7 +189,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 });
             }
         });
-    };
+    }
     //渲染提示信息
     renderIndicator() {
         //提交中的状态
@@ -209,7 +209,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (this.state.submitType === 'error') {
             return <Alert message={this.state.error_message} type="error" showIcon/>;
         }
-    };
+    }
     //修改客户是编辑还是展示的状态
     changeDisplayCustomerType(type) {
         if (this.state.submitType === 'loading') {
@@ -227,7 +227,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 customer_name: this.props.customer_name
             });
         }
-    };
+    }
     //渲染客户的编辑状态
     renderEditCustomer() {
         const showBtnBool = !/success/.test(this.state.submitType) && this.state.ShowUpdateOrClose;
@@ -243,12 +243,12 @@ class AssignClueAndSelectCustomer extends React.Component {
                 {this.renderIndicator()}
             </div>
         );
-    };
+    }
 
     clickShowCustomerDetail = (customerId) => {
         this.setState({
             curShowCustomerId: customerId
-        })
+        });
     };
 
     closeRightCustomerPanel = () => {
@@ -263,7 +263,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     closeCustomerUserListPanel = () => {
         this.setState({
             isShowCustomerUserListPanel: false
-        })
+        });
     };
     renderTextCustomer() {
         //是否有修改线索所属客户的权利
@@ -276,9 +276,9 @@ class AssignClueAndSelectCustomer extends React.Component {
                                  onClick={this.changeDisplayCustomerType.bind(this, "select")} data-tracename="点击修改/添加关联客户"></i> : null
                 }
             </div>
-        )
+        );
 
-    };
+    }
 
     render() {
         var curClueDetail = this.state.curClueDetail;
@@ -331,11 +331,11 @@ class AssignClueAndSelectCustomer extends React.Component {
                     }
                 </RightPanel>
             </div>
-        )
+        );
     }
 
 }
-;
+
 AssignClueAndSelectCustomer.defaultProps = {
     curClueDetail: {}
 };

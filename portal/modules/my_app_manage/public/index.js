@@ -231,7 +231,7 @@ var MyAppManage = React.createClass({
                     userList={this.state.userList}
                     appList={this.state.allAppList}
                 />
-            )
+            );
         } else if (this.state.isAppAuthPanelShow) {
             return (
                 <AppAuthPanel closeRightPanel={this.events.closeRightPanel}
@@ -240,7 +240,7 @@ var MyAppManage = React.createClass({
                               appAuthMap={this.state.currentApp.appAuthMap}
                               appId={this.state.currentApp.id}
                 />
-            )
+            );
         } else if (this.state.isAppNoticePanelShow) {
             return (
                 <AppNotice
@@ -249,7 +249,7 @@ var MyAppManage = React.createClass({
                     appNoticePanelShow={this.state.appNoticePanelShow}
                     appId={this.state.currentApp.id}
                 />
-            )
+            );
         } else if (this.state.versionUpgradeShow) {
             return (
                 <VersionUpgradeLog
@@ -258,7 +258,7 @@ var MyAppManage = React.createClass({
                     versionUpgradeShow={this.state.versionUpgradeShow}
                     appId={this.state.currentApp.id}
                 />
-            )
+            );
         } else if (this.state.userTypeConfigShow) {
             return (
                 <UserTypeConfig
@@ -270,7 +270,7 @@ var MyAppManage = React.createClass({
 
                 />
 
-            )
+            );
 
         }else if (this.state.appCodeTraceShow){
             return (
@@ -281,7 +281,7 @@ var MyAppManage = React.createClass({
                     appName={this.state.currentApp.name}
                     appCodeTraceShow={this.state.appCodeTraceShow}
                 />
-            )
+            );
         }
     },
     //获取卡片展示所需的应用列表
@@ -318,7 +318,7 @@ var MyAppManage = React.createClass({
                     label: createDate + Intl.get("common.time.connector", " 至 -"),
                     value: "",
                     showOnCard: true
-                }
+                };
             }
             return pageApp;
         });

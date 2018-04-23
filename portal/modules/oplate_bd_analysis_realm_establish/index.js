@@ -8,7 +8,7 @@ module.exports = {
     //实际渲染文件为public/index.js
     getComponent : function(location, cb) {
         require.ensure([], function(require){
-            cb(null, require('./public'))
-        })
+            cb(null, require('./public'));
+        });
     }
 };

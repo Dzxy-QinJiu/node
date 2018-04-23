@@ -220,7 +220,7 @@ function SalesHomeActions() {
             }
         );
 
-    }
+    };
 }
 
 module.exports = alt.createActions(SalesHomeActions);

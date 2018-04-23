@@ -24,7 +24,7 @@ var VersionUpgradeLog = React.createClass({
     getDefaultProps: function () {
             return {
                 appId: ""
-            }
+            };
         },
 
     getInitialState: function () {

@@ -308,7 +308,7 @@ var AreaLineChart = React.createClass({
         var _this = this;
         if (this.echartInstance) {
             try {
-                _this.echartInstance.dispose()
+                _this.echartInstance.dispose();
             } catch (e) {
             }
         }
@@ -324,7 +324,7 @@ var AreaLineChart = React.createClass({
         if (isNoData) {
             if (this.echartInstance) {
                 try {
-                    _this.echartInstance.dispose()
+                    _this.echartInstance.dispose();
                 } catch (e) {
                 }
             }
@@ -353,7 +353,7 @@ var AreaLineChart = React.createClass({
     componentWillUnmount: function () {
         if (this.echartInstance) {
             try {
-                this.echartInstance.dispose()
+                this.echartInstance.dispose();
             } catch (e) {
             }
             this.echartInstance = null;

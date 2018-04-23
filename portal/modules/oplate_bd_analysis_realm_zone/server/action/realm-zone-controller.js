@@ -18,5 +18,5 @@ exports.getRealmZoneAnalysisData = function(req,res) {
         res.json(data.list);
     }).on("error", function (data) {
         res.json(data);
-    });;
+    });
 };

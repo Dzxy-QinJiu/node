@@ -111,7 +111,7 @@ class ThirdAppEdit extends React.Component {
         Trace.traceEvent("第三方应用配置详情", "确认" + status[this.state.status] + "第三方应用");
         this.props.form.validateFields((err, val) => {
             if (err) {
-                return
+                return;
             }           
             let {app} = val;
             app.logo = this.state.app.logo||"";
@@ -129,7 +129,7 @@ class ThirdAppEdit extends React.Component {
         });
     }
     uploadImg(img) {
-        this.state.app.logo = img
+        this.state.app.logo = img;
         this.setState(this.state);
     }
     renderIndicator() {        
@@ -138,7 +138,7 @@ class ThirdAppEdit extends React.Component {
             if(value!="") {
                 error = value;
             }
-        })
+        });
         if(error) {
             return (
                 <div className="alert-timer">
@@ -193,7 +193,7 @@ class ThirdAppEdit extends React.Component {
                                 >
                                     {
                                         this.state.platforms.map((item, idx) => {
-                                            return (<Option key={idx} value={item}>{item}</Option>)
+                                            return (<Option key={idx} value={item}>{item}</Option>);
                                         })
                                     }
                                 </Select>
@@ -247,7 +247,7 @@ class ThirdAppEdit extends React.Component {
                 </FormItem>   
                 {this.renderIndicator()}             
             </GeminiScrollBar>
-        )
+        );
     }
     renderStatusBtn() { 
             return (
@@ -262,7 +262,7 @@ class ThirdAppEdit extends React.Component {
                     title={Intl.get("common.enabled", "启用")}
                     onClick={this.changeAppStatus.bind(this, "enable")}
                 ></div>
-            )        
+            );        
     }
     render() {        
         return (
@@ -295,7 +295,7 @@ class ThirdAppEdit extends React.Component {
                         onFinish={this.onSubmit.bind(this)}
                     ></OperationStepsFooter>}
             </div>
-        )
+        );
     }
 }
 const ThirdAppDetail = Form.create()(ThirdAppEdit);

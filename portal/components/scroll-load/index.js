@@ -28,7 +28,7 @@ const spinnerDOM = `
     >
         <i class="anticon anticon-spin anticon-loading"></i>
     </button>
-`
+`;
 const NoMoreDataWords = Intl.get("common.no.more.data", "没有更多数据了");
 const NoMoreDataDOM = `
 <div class="no-more-data-tip" id="no_more_data_tip_bottom" >
@@ -39,20 +39,20 @@ const NoMoreDataDOM = `
         <span class="ant-alert-description"></span>
     </div>
 </div>
-`
+`;
 class ScrollLoad extends React.Component {
     constructor(props) {
         super(props);
         this.scrollhandler = this.scrollhandler.bind(this);
         this.state = {
             isBottom: false
-        }
+        };
     }
     componentDidMount() {
         this.getHeights().$container.on('scroll', this.scrollhandler);
         //组件加载数据完成后判断是否需要持续加载
         if (!this.props.loading) {
-            setTimeout(() => this.loadUntilBottom())
+            setTimeout(() => this.loadUntilBottom());
         }
         $(this.props.selector).append(spinnerDOM).append(NoMoreDataDOM).append(`<span id="bottom-fix"></span>`);
         $("#bottom-fix").css("width", this.props.width + "px");
@@ -60,7 +60,7 @@ class ScrollLoad extends React.Component {
     componentWillReceiveProps(newVal) {
         let { loading, listenScrollBottom, showNoMoreDataTip, width } = newVal;
         if (!loading) {
-            setTimeout(() => this.loadUntilBottom())
+            setTimeout(() => this.loadUntilBottom());
         }
         //修正无数据提示容器宽度
         $("#bottom-fix").css("width", width + "px");
@@ -97,11 +97,11 @@ class ScrollLoad extends React.Component {
             windowHeight: $(window).height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE - LAYOUT_CONSTANTS.TOP_DISTANCE,
             tableHeight,
             $container
-        }
+        };
     }
     //屏幕过长时，持续加载直到出现滚动条
     loadUntilBottom() {
-        let tableHeight = this.getHeights().tableHeight
+        let tableHeight = this.getHeights().tableHeight;
         //高度为0无数据时不加载
         if (tableHeight) {
             let windowHeight = this.getHeights().windowHeight;
@@ -145,7 +145,7 @@ class ScrollLoad extends React.Component {
             <div id="scroll-container" style={style}>
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 

@@ -149,7 +149,7 @@ var AnalysisListView = React.createClass({
         var current = this.state.analysisSummary.currentPage;
         var loading = null;
         if(!this.state.analysisSummary.firstLoading && this.state.analysisSummary.resultType === 'loading') {
-            loading = <Icon type="loading"/>
+            loading = <Icon type="loading"/>;
         }
         return (
             <div className="ant-pagination-wrap">

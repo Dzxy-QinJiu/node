@@ -21,5 +21,5 @@ var IntlMessageFormatWrap = {
         }
         return msg;
     }
-}
+};
 export default IntlMessageFormatWrap;

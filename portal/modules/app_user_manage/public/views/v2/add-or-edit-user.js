@@ -7,7 +7,7 @@ const Validator = Validation.Validator;
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("../../../../../components/user_manage_components/css/right-panel-es_VE.less");
-}else if (language.lan() == "zh"){
+} else if (language.lan() == "zh") {
     require("../../../../../components/user_manage_components/css/right-panel-zh_CN.less");
 }
 
@@ -15,12 +15,12 @@ if (language.lan() == "es" || language.lan() == "en") {
 var language = require("../../../../../public/language/getLanguage");
 if (language.lan() == "es" || language.lan() == "en") {
     require("../../../../../components/user_manage_components/css/form-basic-es_VE.less");
-}else if (language.lan() == "zh"){
+} else if (language.lan() == "zh") {
     require("../../../../../components/user_manage_components/css/form-basic-zh_CN.less");
 }
 
 
-import {Carousel,CarouselItem} from 'react-bootstrap';
+import {Carousel, CarouselItem} from 'react-bootstrap';
 import {RightPanelClose} from '../../../../../components/rightPanel';
 import AppUserFormStore from '../../store/v2/app-user-form-store';
 import AppUserActions from '../../action/app-user-actions';
@@ -28,7 +28,7 @@ import AppUserFormActions from '../../action/v2/app-user-form-actions';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import OperationSteps from '../../../../../components/user_manage_components/operation-steps';
 import AppUserUtil from '../../util/app-user-util';
-import {Form,Icon,Input,Alert} from 'antd';
+import {Form, Icon, Input, Alert} from 'antd';
 const FormItem = Form.Item;
 import FieldMixin  from '../../../../../components/antd-form-fieldmixin';
 import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
@@ -121,11 +121,11 @@ const AddOrEditUser = React.createClass({
             user_name: formData.user_name,
             customer_id: formData.customer_id
         };
-        AppUserAjax.addOneUserSuggestName(obj).then( (result) => {
+        AppUserAjax.addOneUserSuggestName(obj).then((result) => {
             // 保存建议的用户名
             tempSuggestNames = _.clone(result);
             if (_.isArray(result)) {
-                if (result.length == 1 &&  result[0] == formData.user_name) { // 建议用户名和添加用户名一致时，则点击下一步时通过
+                if (result.length == 1 && result[0] == formData.user_name) { // 建议用户名和添加用户名一致时，则点击下一步时通过
                     AppUserFormActions.turnStep(direction);
                 } else {  // 否则，则不通过
                     this.setState({
@@ -135,10 +135,10 @@ const AddOrEditUser = React.createClass({
             }
 
         }, (errMsg) => { // 建议用户名接口，出错的情况
-            this.setState( {
+            this.setState({
                 sugNamesErrorMsg: errMsg
-            } );
-        } );
+            });
+        });
     },
 
     checkBasicInfoValidator(direction){
@@ -164,7 +164,7 @@ const AddOrEditUser = React.createClass({
             }
 
             // 选择了建议的用户名，则不用再次发送请求
-            if ( tempSuggestNames.length && _.indexOf(tempSuggestNames, formData.user_name) != -1) {
+            if (tempSuggestNames.length && _.indexOf(tempSuggestNames, formData.user_name) != -1) {
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
             } else if (formData.count_number == 1) {  // 申请一个用户名时，提示用户名
@@ -313,7 +313,7 @@ const AddOrEditUser = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
         if (noSelectRoleApps.length) {
-            AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
+            AppUserFormActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName: noSelectRoleApps.join('、')}));
             return;
         } else {
             AppUserFormActions.noSelectRoleError('');
@@ -321,11 +321,11 @@ const AddOrEditUser = React.createClass({
         //获取批量更新使用的额外数据
         const extraData = this.getExtraData();
         //添加用户
-        AppUserFormActions.addAppUser(submitData, extraData, ()=> {
+        AppUserFormActions.addAppUser(submitData, extraData, () => {
             //判断是否是添加单个用户，添加单个用户的话，打开详情
             if (+submitData.number === 1) {
                 // 添加的用户信息到入库，有个时间差，为了拿到添加用户的user_id,显示用户详情，所以加了setTimeout()
-                setTimeout( () => {
+                setTimeout(() => {
                     //通过用户名查询用户信息
                     UserExistsAjax.userExists(submitData.user_name).then((userInfo) => {
                         //关闭面板，并重置表单到默认状态
@@ -340,7 +340,7 @@ const AddOrEditUser = React.createClass({
                         //关闭面板，并重置表单到默认状态
                         this.closeAppUserForm();
                     });
-                }, 500 );
+                }, 500);
             } else {
                 //500毫秒的时间，看清楚添加成功的提示
                 setTimeout(() => {
@@ -397,13 +397,13 @@ const AddOrEditUser = React.createClass({
             }
             if (field === 'phone') {
                 if (!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(trimValue))) {
-                    callback( Intl.get("user.phone.validate.tip", "请输入正确格式的手机号"));
+                    callback(Intl.get("user.phone.validate.tip", "请输入正确格式的手机号"));
                     return;
                 }
             } else if (field === 'email') {
                 if (!/^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
                         .test(trimValue)) {
-                    callback( Intl.get("user.email.validate.tip", "请输入正确格式的邮箱"));
+                    callback(Intl.get("user.email.validate.tip", "请输入正确格式的邮箱"));
                     return;
                 }
             }
@@ -420,10 +420,10 @@ const AddOrEditUser = React.createClass({
         AppUserFormActions.setSelectedOrganization(organization);
     },
     // 校验用户名的合法性
-    checkUserValid(rule,value,callback){
+    checkUserValid(rule, value, callback){
         var trimValue = value.trim();
         // 用户名的不合法时的信息提示
-        UserNameTextFieldUtil.validatorMessageTips(trimValue,callback);
+        UserNameTextFieldUtil.validatorMessageTips(trimValue, callback);
     },
 
     // 选择建议的用户名，选择后，鼠标聚焦到输入框中
@@ -436,8 +436,14 @@ const AddOrEditUser = React.createClass({
     renderAddUserNameTips() {
         let suggestNames = this.state.suggestNames;
         let user_name = this.state.formData && this.state.formData.user_name ? this.state.formData.user_name : '';
-
-        if (suggestNames) {
+        // 建议用户名接口出错的情况
+        if (this.state.sugNamesErrorMsg) {
+            return (
+                <div className="suggest-name-tips">
+                    {Intl.get("user.check.fail", "用户名校验出错！")}
+                </div>
+            );
+        } else if (suggestNames) {
             let length = suggestNames.length;
             if (length == 2) {
                 return (
@@ -446,11 +452,13 @@ const AddOrEditUser = React.createClass({
                             id="user.suggest.name.two"
                             defaultMessage={`创建{user01}或{user02}?`}
                             values={{
-                                     'user01':<a onClick={this.selectSuggestUserName.bind(this,suggestNames[0])}>{suggestNames[0]}</a>,
-                                     'user02':<a onClick={this.selectSuggestUserName.bind(this,suggestNames[1])}>{suggestNames[1]}</a>
-                                     }}
+                                'user01': <a
+                                    onClick={this.selectSuggestUserName.bind(this, suggestNames[0])}>{suggestNames[0]}</a>,
+                                'user02': <a
+                                    onClick={this.selectSuggestUserName.bind(this, suggestNames[1])}>{suggestNames[1]}</a>
+                            }}
                         />
-                        </div>
+                    </div>
                 );
             } else if (length == 1) {
                 return (
@@ -459,30 +467,21 @@ const AddOrEditUser = React.createClass({
                             id="user.exist.suggest.name"
                             defaultMessage={`用户名{user}已存在，是否创建{user01}?`}
                             values={{
-                                     'user': user_name,
-                                     'user01':<a onClick={this.selectSuggestUserName.bind(this,suggestNames[0])}>{suggestNames[0]}</a>
-                                     }}
+                                'user': user_name,
+                                'user01': <a
+                                    onClick={this.selectSuggestUserName.bind(this, suggestNames[0])}>{suggestNames[0]}</a>
+                            }}
                         />
 
                     </div>
                 );
-            } else  {
+            } else {
                 return (
                     <div className="suggest-name-tips">
-                        {Intl.get("user.exist.name", "用户名{user}已存在，请重新命名",{user: user_name})}
+                        {Intl.get("user.exist.name", "用户名{user}已存在，请重新命名", {user: user_name})}
                     </div>
                 );
             }
-        } else {
-            return null;
-        }
-        // 建议用户名接口出错的情况
-        if(this.state.sugNamesErrorMsg) {
-            return (
-                <div className="suggest-name-tips">
-                    {Intl.get("user.check.fail", "用户名校验出错！")}
-                </div>
-            );
         } else {
             return null;
         }
@@ -507,7 +506,9 @@ const AddOrEditUser = React.createClass({
             <OperationScrollBar className="basic-data-form-wrap">
                 <div className="basic-data-form">
                     <div className="form-item">
-                        <div className="form-item-label required_label"><ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名" /></div>
+                        <div className="form-item-label required_label"><ReactIntl.FormattedMessage id="common.username"
+                                                                                                    defaultMessage="用户名"/>
+                        </div>
                         <div className="form-item-content user-name-textfield-block">
                             <FormItem
                                 label=""
@@ -516,7 +517,7 @@ const AddOrEditUser = React.createClass({
                                 validateStatus={this.renderValidateStyle('user_name')}
                                 help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
                             >
-                                <Validator  rules={{validator:this.checkUserValid}} ref="userNameValidator">
+                                <Validator rules={{validator: this.checkUserValid}} ref="userNameValidator">
                                     <Input name="user_name"
                                            id="user_name"
                                            placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
@@ -530,13 +531,14 @@ const AddOrEditUser = React.createClass({
                         </div>
                     </div>
                     <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.count" defaultMessage="数量" /></div>
+                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.count"
+                                                                                     defaultMessage="数量"/></div>
                         <div
                             className={this.isAddOnlyOneUser() ? "form-item-content only-one-user-border" : "form-item-content"}>
                             {this.renderUserCountNumberField()}
                             {this.isAddOnlyOneUser() ? <div className="only-one-user-tip">
-                                
-                                <ReactIntl.FormattedMessage id="user.add.only.one" defaultMessage="用户名是邮箱格式时，只能添加1个用户" />
+
+                                <ReactIntl.FormattedMessage id="user.add.only.one" defaultMessage="用户名是邮箱格式时，只能添加1个用户"/>
                             </div> : null}
                         </div>
                     </div>
@@ -544,7 +546,8 @@ const AddOrEditUser = React.createClass({
                         formData.count_number == 1 ? (
                             <div>
                                 <div className="form-item">
-                                    <div className="form-item-label required_label"><ReactIntl.FormattedMessage id="common.nickname" defaultMessage="昵称" /></div>
+                                    <div className="form-item-label required_label"><ReactIntl.FormattedMessage
+                                        id="common.nickname" defaultMessage="昵称"/></div>
                                     <div className="form-item-content input-item user-nickname-textfield-block">
                                         <FormItem
                                             label=""
@@ -553,7 +556,10 @@ const AddOrEditUser = React.createClass({
                                             validateStatus={this.renderValidateStyle('nick_name')}
                                             help={status.nick_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.nick_name.errors && status.nick_name.errors.join(','))}
                                         >
-                                            <Validator rules={[{required: true,message: Intl.get("user.nickname.write.tip", "请填写昵称")}]}>
+                                            <Validator rules={[{
+                                                required: true,
+                                                message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                                            }]}>
                                                 <Input name="nick_name"
                                                        placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
                                                        value={formData.nick_name}
@@ -563,7 +569,9 @@ const AddOrEditUser = React.createClass({
                                     </div>
                                 </div>
                                 <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.phone" defaultMessage="手机号" /></div>
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.phone"
+                                                                                                 defaultMessage="手机号"/>
+                                    </div>
                                     <div className="form-item-content input-item user-phone-textfield-block">
                                         <FormItem
                                             label=""
@@ -572,7 +580,7 @@ const AddOrEditUser = React.createClass({
                                             validateStatus={this.renderValidateStyle('phone')}
                                             help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
                                         >
-                                            <Validator rules={[{validator : this.getRestFieldValidator('phone')}]}>
+                                            <Validator rules={[{validator: this.getRestFieldValidator('phone')}]}>
                                                 <Input name="phone"
                                                        placeholder={Intl.get("user.phone.write.tip", "请填写手机号")}
                                                        value={formData.phone}
@@ -582,7 +590,9 @@ const AddOrEditUser = React.createClass({
                                     </div>
                                 </div>
                                 <div className="form-item">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱" /></div>
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="common.email"
+                                                                                                 defaultMessage="邮箱"/>
+                                    </div>
                                     <div className="form-item-content input-item user-email-textfield-block">
                                         <FormItem
                                             label=""
@@ -591,7 +601,7 @@ const AddOrEditUser = React.createClass({
                                             validateStatus={this.renderValidateStyle('email')}
                                             help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
                                         >
-                                            <Validator rules={[{validator : this.getRestFieldValidator('email')}]}>
+                                            <Validator rules={[{validator: this.getRestFieldValidator('email')}]}>
                                                 <Input name="email"
                                                        placeholder={Intl.get("user.email.write.tip", "请填写邮箱")}
                                                        value={formData.email}
@@ -606,7 +616,9 @@ const AddOrEditUser = React.createClass({
                     {/**委内维拉项目,不显示所属客户*/}
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
-                            <div className={customerLabelClass}><ReactIntl.FormattedMessage id="common.belong.customer" defaultMessage="所属客户" /></div>
+                            <div className={customerLabelClass}><ReactIntl.FormattedMessage id="common.belong.customer"
+                                                                                            defaultMessage="所属客户"/>
+                            </div>
                             <div className="form-item-content">
                                 {this.renderUserCustomerSuggestBlock()}
                             </div>
@@ -617,7 +629,9 @@ const AddOrEditUser = React.createClass({
                         this.state.formData.sales_team.id ?
                             (
                                 <div className="form-item form-item-text">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.sales.team" defaultMessage="销售团队" /></div>
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.sales.team"
+                                                                                                 defaultMessage="销售团队"/>
+                                    </div>
                                     <div className="form-item-content">
                                         {this.state.formData.sales_team.name}
                                     </div>
@@ -628,7 +642,9 @@ const AddOrEditUser = React.createClass({
                         this.state.formData.sales.id ?
                             (
                                 <div className="form-item form-item-text">
-                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.salesman" defaultMessage="销售人员" /></div>
+                                    <div className="form-item-label"><ReactIntl.FormattedMessage id="user.salesman"
+                                                                                                 defaultMessage="销售人员"/>
+                                    </div>
                                     <div className="form-item-content">
                                         {this.state.formData.sales.name}
                                     </div>
@@ -636,7 +652,8 @@ const AddOrEditUser = React.createClass({
                             ) : null
                     }
                     <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.organization" defaultMessage="组织" /></div>
+                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.organization"
+                                                                                     defaultMessage="组织"/></div>
                         <div className="form-item-content">
                             <Organization
                                 onChange={this.organizationSelect}
@@ -646,44 +663,50 @@ const AddOrEditUser = React.createClass({
                     {/**委内维拉项目,不显示类型*/}
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type" defaultMessage="类型" /></div>
+                            <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type"
+                                                                                         defaultMessage="类型"/></div>
                             <div className="form-item-content">
                                 {this.renderUserTypeRadioBlock()}
                             </div>
                         </div>
                     )}
                     <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
+                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle"
+                                                                                     defaultMessage="开通周期"/></div>
                         <div className="form-item-content">
                             {this.renderUserTimeRangeBlock()}
                         </div>
                     </div>
                     <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select" defaultMessage="到期可选" /></div>
+                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select"
+                                                                                     defaultMessage="到期可选"/></div>
                         <div className="form-item-content">
                             {this.renderUserOverDraftBlock()}
                         </div>
                     </div>
                     {/**委内维拉项目,不显示二步认证*/}
                     {Oplate.hideSomeItem ? null : (
-                    <div className="form-item">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
-                        <div className="form-item-content">
-                            {this.renderUserTwoFactorBlock()}
+                        <div className="form-item">
+                            <div className="form-item-label"><ReactIntl.FormattedMessage
+                                id="user.two.step.certification" defaultMessage="二步认证"/></div>
+                            <div className="form-item-content">
+                                {this.renderUserTwoFactorBlock()}
+                            </div>
                         </div>
-                    </div>
                     )}
                     {/**委内维拉项目,不显示多人登录*/}
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
-                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
+                            <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login"
+                                                                                         defaultMessage="多人登录"/></div>
                             <div className="form-item-content">
                                 {this.renderMultiLoginRadioBlock()}
                             </div>
                         </div>
                     )}
                     <div className="form-item" ref="descriptionBlock">
-                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.remark" defaultMessage="备注" /></div>
+                        <div className="form-item-label"><ReactIntl.FormattedMessage id="common.remark"
+                                                                                     defaultMessage="备注"/></div>
                         <div className="form-item-content user-description-textarea-block">
                             {this.renderUserDescriptionBlock()}
                         </div>
@@ -698,7 +721,7 @@ const AddOrEditUser = React.createClass({
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
         if (apps.length === 1) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
-            setTimeout(()=> {
+            setTimeout(() => {
                 //将应用的特殊设置同步到全局设置
                 AppUserFormActions.syncCustomAppSettingToGlobalSetting();
             });
@@ -727,11 +750,14 @@ const AddOrEditUser = React.createClass({
                             <Alert type="error" showIcon
                                    message={<span>
                                    <ReactIntl.FormattedMessage
-                                     id="user.app.list.error.tip"
-                                     defaultMessage={`应用列表获取失败，{retry}`}
-                                     values={{
-                                     'retry':<a href="javascript:void(0)" onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
-                                     />
+                                       id="user.app.list.error.tip"
+                                       defaultMessage={`应用列表获取失败，{retry}`}
+                                       values={{
+                                           'retry': <a href="javascript:void(0)"
+                                                       onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage
+                                               id="common.get.again" defaultMessage="重新获取"/></a>
+                                       }}
+                                   />
                                      </span>}/>
                         ) : (
                             <SearchIconList
@@ -745,7 +771,9 @@ const AddOrEditUser = React.createClass({
                 {
                     isSubmitError ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip" defaultMessage="至少选择一个应用" /></div>
+                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip"
+                                                                                          defaultMessage="至少选择一个应用"/>
+                            </div>
                         </div>
                     ) : null
                 }
@@ -796,7 +824,8 @@ const AddOrEditUser = React.createClass({
         };
         if (this.state.submitResult === 'success') {
             return (
-                <AlertTimer time={3000} message={Intl.get("user.user.add.success", "添加成功")} type="success" showIcon onHide={hide}/>
+                <AlertTimer time={3000} message={Intl.get("user.user.add.success", "添加成功")} type="success" showIcon
+                            onHide={hide}/>
             );
         }
         if (this.state.submitResult === 'error') {
@@ -807,7 +836,7 @@ const AddOrEditUser = React.createClass({
             );
         }
         // 添加应用时，没有选择角色的错误提示
-        if(this.state.submitResult === 'selectRoleError') {
+        if (this.state.submitResult === 'selectRoleError') {
             return (
                 <div className="apps-no-select-role">
                     <AlertTimer time={6000} message={this.state.submitErrorMsg} type="error" showIcon onHide={hide}/>
@@ -822,12 +851,12 @@ const AddOrEditUser = React.createClass({
         let selectObj = _.find(realmList, (item) => {
             return item.realm_id == value;
         });
-       this.setState({
-           selectRealmId: value,
-           selectRealmName: selectObj.realm_name
-       });
+        this.setState({
+            selectRealmId: value,
+            selectRealmName: selectObj.realm_name
+        });
     },
-    
+
     // 渲染安全域
     renderSelectRealm() {
         let realmList = AppUserStore.getState().realmList;
@@ -859,10 +888,12 @@ const AddOrEditUser = React.createClass({
                             current={this.state.step}
                         >
                             <OperationSteps.Step action={Intl.get("user.user.basic", "基本信息")}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
+                            <OperationSteps.Step
+                                action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
                             <OperationSteps.Step action={Intl.get("user.user.app.set", "应用设置")}></OperationSteps.Step>
                             {this.state.selectRealmId ?
-                                <OperationSteps.Step action={Intl.get("user.select.realm", '选择安全域')}></OperationSteps.Step> : null}
+                                <OperationSteps.Step
+                                    action={Intl.get("user.select.realm", '选择安全域')}></OperationSteps.Step> : null}
                         </OperationSteps>
                         <Carousel
                             interval={0}
@@ -888,7 +919,7 @@ const AddOrEditUser = React.createClass({
                                     </CarouselItem>
                                 ) : null
                             }
-                           
+
                         </Carousel>
                         <OperationStepsFooter
                             currentStep={this.state.step}
@@ -896,7 +927,8 @@ const AddOrEditUser = React.createClass({
                             onStepChange={this.turnStep}
                             onFinish={this.onStepFinish}
                         >
-                           <span className="operator_person">{Intl.get('user.operator','操作人')}:{this.state.operator}</span>
+                            <span
+                                className="operator_person">{Intl.get('user.operator', '操作人')}:{this.state.operator}</span>
                             {this.renderIndicator()}
                         </OperationStepsFooter>
                     </Validation>

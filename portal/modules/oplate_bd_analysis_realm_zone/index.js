@@ -8,7 +8,7 @@ module.exports = {
     //实际业务逻辑在public/index.js中
     getComponent : function(location, cb) {
         require.ensure([], function(require){
-            cb(null, require('./public'))
-        })
+            cb(null, require('./public'));
+        });
     }
 };

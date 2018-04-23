@@ -8,14 +8,14 @@ const serviceHandler = function (service) {
         }).on("error", function (codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
-    }
+    };
 };
 
 _.each(ThirdAppService, function (value, key) {
     if (key != "getAppConfigList") {
         exports[key] = serviceHandler(value);
     }
-})
+});
 
 // 获取用户绑定的第三方平台列表
 exports.getAppConfigList = (req, res) => {

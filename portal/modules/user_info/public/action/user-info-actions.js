@@ -16,7 +16,7 @@ function UserInfoActions() {
         userInfoAjax.getUserInfo(user_id).then(function (userInfo) {
             _this.dispatch({error: false,loading: false,userInfo:userInfo});
         },function (errorMsg) {
-            _this.dispatch({error: true,loading: false,errorMsg: errorMsg || Intl.get("user.info.get.user.info.failed","获取用户信息失败")})
+            _this.dispatch({error: true,loading: false,errorMsg: errorMsg || Intl.get("user.info.get.user.info.failed","获取用户信息失败")});
         });
     };
 
@@ -27,7 +27,7 @@ function UserInfoActions() {
         userInfoAjax.getManagedRealm().then(function (realmInfo) {
             _this.dispatch({error: false,loading: false,realmInfo: realmInfo});
         },function (errorMsg) {
-            _this.dispatch({error: true,loading: false,errorMsg: errorMsg || Intl.get("user.info.get.managed.realm.failed","获取安全域信息失败")})
+            _this.dispatch({error: true,loading: false,errorMsg: errorMsg || Intl.get("user.info.get.managed.realm.failed","获取安全域信息失败")});
         });
     };
     //获取登录日志
@@ -44,15 +44,15 @@ function UserInfoActions() {
         userInfoAjax.setSubscribeEmail(configObj).then(function (data) {
             if (callback){
                 if (data){
-                    callback({error: false, data:Intl.get("user.info.setting.succeess","设置成功！")})
+                    callback({error: false, data:Intl.get("user.info.setting.succeess","设置成功！")});
                 }else{
-                    callback({error: true,errorMsg: errorMsg || Intl.get("user.info.setting.failed","设置失败，请重新设置")})
+                    callback({error: true,errorMsg: errorMsg || Intl.get("user.info.setting.failed","设置失败，请重新设置")});
                 }
 
             }
         },function (errorMsg) {
             if (callback){
-                callback({error: true,errorMsg: errorMsg || Intl.get("user.info.setting.failed","设置失败，请重新设置")})
+                callback({error: true,errorMsg: errorMsg || Intl.get("user.info.setting.failed","设置失败，请重新设置")});
             }
         });
     };

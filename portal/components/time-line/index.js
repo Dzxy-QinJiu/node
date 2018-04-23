@@ -90,7 +90,7 @@ const TimeLine = React.createClass({
                 </Timeline>
                 ) : null}
             </div>
-        )
+        );
     }
 });
 

@@ -141,7 +141,7 @@ const Analysis = React.createClass({
         const minStartTime = props.minStartTime;
         //选择全部时间时，若指定了最小开始时间，则开始时间设为最新开始时间
         if (minStartTime && !startTime) {
-            startTime = minStartTime
+            startTime = minStartTime;
         }
 
         const arg = {
@@ -216,7 +216,7 @@ const Analysis = React.createClass({
         if (_.isEmpty(chartData)) {
             return <div className='nodata'>
                 {Intl.get("common.no.data", "暂无数据")}
-                </div>
+                </div>;
         } else {
             return React.createElement(chartType, props, null);
         }
@@ -231,7 +231,7 @@ const Analysis = React.createClass({
                     <div className="loading-wrap">
                         <Spinner/>
                     </div>
-                )
+                );
             }
         }else if(this.state.resultType === "error") {
             //加载完成，出错的情况
@@ -246,13 +246,13 @@ const Analysis = React.createClass({
                         {errMsg}
                         {React.createElement(chartType, props, null)}
                     </div>
-                )
+                );
             } else {
                 return (
                     <div className="err-tip-wrap">
                         {errMsg}
                     </div>
-                )
+                );
             }
         }else{
             return (
@@ -312,7 +312,7 @@ const Analysis = React.createClass({
                 <div style={{height:this.props.height}} className="analysis-container">
                     {this.renderChartContent(chartType, props)}
                 </div>
-        )
+        );
     }
 });
 

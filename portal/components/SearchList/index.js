@@ -245,7 +245,7 @@ var SearchList = React.createClass({
         return (
              <span className={cls} style={{width:this.props.width}} id={this.searchListId} ref="wrap">
                  <Dropdown
-                     getPopupContainer={function(){return document.getElementById(_this.searchListId)}}
+                     getPopupContainer={function(){return document.getElementById(_this.searchListId);}}
                      overlay={menu}
                      visible={true}
                      prefixCls="ant-dropdown">

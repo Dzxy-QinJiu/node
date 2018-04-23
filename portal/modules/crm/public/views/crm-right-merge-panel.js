@@ -66,7 +66,7 @@ var CrmRightMergePanel = React.createClass({
             if (_.isArray(mergedContact[key]) && mergedContact[key].length > 0) {
                 //过滤掉相同的联系方式
                 contact[key] = _.filter(contact[key], contactKey => mergedContact[key].indexOf(contactKey) == -1);
-                mergedContact[key] = mergedContact[key].concat(contact[key])
+                mergedContact[key] = mergedContact[key].concat(contact[key]);
             } else {
                 mergedContact[key] = contact[key];
             }
@@ -490,7 +490,7 @@ var CrmRightMergePanel = React.createClass({
                                         type="error" showIcon
                                         onHide={this.hideSaveTooltip}/></div>) : null}
                     <RightPanelClose onClick={(e) => {
-                        this.hideRightPanel(e)
+                        this.hideRightPanel(e);
                     }}/>
                     <div className="crm-right-panel-content">
                         {this.state.selectedCustomer ? (

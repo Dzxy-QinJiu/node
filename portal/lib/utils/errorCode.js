@@ -26,7 +26,7 @@ ErrorCode.getErrorCodeDesc = function (errorObj, req) {
         }
     }
     return errorCodeDesc ? errorCodeDesc : commonErrorCodeMap["default-error"];
-}
+};
 /**
  *  判断是否是某个错误码.
  * @param errorObj  后台返回错误码或错误对象
@@ -49,5 +49,5 @@ ErrorCode.compareErrorCodeNumber = function (errorObj, errorCodeNumber) {
             return false;
         }
     }
-}
+};
 module.exports = ErrorCode;

@@ -95,7 +95,7 @@ function removeEmptyArrayEle(arr){
      _.filter(arr,(item)=>{
         return !item;
     });
-};
+}
 //设置当前要查看详情的申请
 weeklyReportStore.prototype.changeSearchInputValue = function (value) {
     this.searchKeyword = value;

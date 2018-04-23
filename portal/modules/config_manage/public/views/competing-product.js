@@ -21,7 +21,7 @@ const competingProductManage = React.createClass({
             addErrMsg: '',
             // 删除竞品失败
             deleteErrMsg: '',
-        })
+        });
     },
     //获取竞品列表
     getProductList: function () {
@@ -44,7 +44,7 @@ const competingProductManage = React.createClass({
                     getErrMsg: errorMsg.responseJSON
                 });
             }
-        })
+        });
 
     },
     componentWillMount: function () {
@@ -178,7 +178,7 @@ const competingProductManage = React.createClass({
                                         <Icon type="loading"/>
                                     ) : null}
                                 </div>
-                            </li>)
+                            </li>);
                     }
                 )}
             </ul>);

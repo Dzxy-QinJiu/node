@@ -94,7 +94,7 @@ RoleStore.prototype.refactorRoleList = function (roles) {
             roleName: role.roleName,
             permissionGroups: rolePermissionGroups,
             isDefault: "0"
-        }
+        };
     });
 };
 
@@ -230,7 +230,7 @@ RoleStore.prototype.setDefaultRole = function (obj) {
             else {
                 x.isDefault = "0";
             }
-        })
+        });
     }    
 };
 

@@ -192,7 +192,7 @@ var LineChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose()} catch(e){};
+            try {this.echartInstance.dispose();} catch(e){}
         }
         this.echartInstance = echarts.init(this.refs.chart , macronsTheme);
         var options = this.getEchartOptions();

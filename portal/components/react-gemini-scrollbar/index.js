@@ -74,7 +74,7 @@ var ReactScrollBar = React.createClass({
             scrollBottomLoading: false
         }, function () {
             this.scrollbar.scrollBottomUnlock();
-        })
+        });
     },
 
     /**

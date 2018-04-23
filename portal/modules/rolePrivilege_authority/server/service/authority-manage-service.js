@@ -106,7 +106,7 @@ exports.addAuthority = function (req, res, authoritys) {
                             permissionType: authority.fact_class,
                             permissionDatas: authority.permission_datas || [],
                             realmId: authority.realm_id
-                        }
+                        };
                     });
                 }
                 eventEmitter.emit("success", data);

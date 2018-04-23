@@ -57,7 +57,7 @@ CrmStore.prototype.setInitialState = function () {
 };
 CrmStore.prototype.updateCurrentCustomerRemark = function (submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
-        return customer.id == submitObj.customer_id
+        return customer.id == submitObj.customer_id;
     });
     if (customer && _.isArray(customer.customer_traces) && customer.customer_traces.length) {
         customer.customer_traces[0].remark = submitObj.remark;
@@ -217,7 +217,7 @@ function getOrderListSortByStage(orderList) {
         }
     }
     return orderList;
-};
+}
 //对客户字段进行处理，以便在客户列表上显示
 CrmStore.prototype.processForList = function (curCustomers) {
     if (!_.isArray(curCustomers)) return [];

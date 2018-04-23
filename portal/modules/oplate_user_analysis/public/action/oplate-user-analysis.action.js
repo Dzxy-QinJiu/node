@@ -400,7 +400,7 @@ function OplateUserAnalysisActions() {
         });
     };
 
-};
+}
 
 //使用alt导出一个action
 module.exports = alt.createActions(OplateUserAnalysisActions);

@@ -11,7 +11,7 @@ const ajaxPro = function(config) {
         } 
         _.extend(config,{
             success: function(result) {
-                Deferred.resolve(result)
+                Deferred.resolve(result);
             },
             error: function (xhr, status) {
                 if (status !== 'abort') {
@@ -22,7 +22,7 @@ const ajaxPro = function(config) {
         jqXHR && jqXHR.abort();
         jqXHR = $.ajax(config);
         return Deferred.promise();
-    }
+    };
 };
 
 // 添加app

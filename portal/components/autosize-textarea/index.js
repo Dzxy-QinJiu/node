@@ -14,7 +14,7 @@ const AutosizeTextarea = React.createClass({
         autosize($(this.getDOMNode()).find("textarea"));
     },
     render: function () {
-        return <TextArea {...this.props} />
+        return <TextArea {...this.props} />;
     }
 });
 

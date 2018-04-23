@@ -74,7 +74,7 @@ exports.getInvalidCallRecordList = function (req, res, params, filterObj, queryO
             req: req,
             res: res
         }, filterObj);
-}
+};
 
 // 编辑通话记录中跟进内容
 exports.editCallTraceContent = function (req, res, queryObj) {

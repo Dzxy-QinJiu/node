@@ -16,24 +16,24 @@ class CustomerNoticeMessage extends React.Component {
         super(props);
         this.state = {
             customerNoticeMessage: this.props.customerNoticeMessage,
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.customerNoticeMessage.id && nextProps.customerNoticeMessage.id !== this.state.customerNoticeMessage.id) {
             this.setState({
                 customerNoticeMessage: nextProps.customerNoticeMessage
-            })
+            });
         }
-    };
+    }
 
     openUserDetail(userId) {
         this.props.openUserDetail(userId);
-    };
+    }
 
     openCustomerDetail(customer_id) {
         this.props.openCustomerDetail(customer_id);
-    };
+    }
 
     renderTagsContent(customerMessage) {
         return (
@@ -48,8 +48,8 @@ class CustomerNoticeMessage extends React.Component {
                         {customerMessage.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
                             customerMessage.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ""}</Tag>) : null}
             </span>
-        )
-    };
+        );
+    }
 
     renderMessageContent(customerMessage) {
         let showList = [];
@@ -57,7 +57,7 @@ class CustomerNoticeMessage extends React.Component {
             showList = customerMessage.detail.slice(0, 3);
         } else {
             showList = customerMessage.detail;
-        };
+        }
         return showList.map((item) => {
             return <div className="system-notice-item">
                 <span className="system-notice-time">
@@ -68,14 +68,14 @@ class CustomerNoticeMessage extends React.Component {
                       onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
                 {item.app_name ?
                     <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
-            </div>
-        })
-    };
+            </div>;
+        });
+    }
 
     setHandlingFlag(notice, flag) {
         notice.isHandling = flag;
         this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
-    };
+    }
 
     //处理系统消息
     handleSystemNotice(notice, e) {
@@ -97,12 +97,12 @@ class CustomerNoticeMessage extends React.Component {
             this.setHandlingFlag(notice, false);
             message.error(errorMsg || Intl.get("notification.system.handle.failed", "将系统消息设为已处理失败"));
         });
-    };
+    }
 
     checkMore(notice) {
         notice.showMore = !notice.showMore;
         this.setState({customerNoticeMessage: this.state.customerNoticeMessage});
-    };
+    }
     render() {
         var customerMessage = this.state.customerNoticeMessage;
         var customer_name = customerMessage.customer_name ? customerMessage.customer_name : customerMessage.name;
@@ -142,7 +142,7 @@ class CustomerNoticeMessage extends React.Component {
                     <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
                                  errMsg={this.props.errMsg}/> : null}
             </div>
-        )
+        );
     }
 }
 

@@ -47,7 +47,7 @@ var FunnelChart = React.createClass({
         let series2 = JSON.parse(JSON.stringify(series1));
 
         series2.itemStyle.normal.label = {
-            formatter: function (params) { return params.data.total },
+            formatter: function (params) { return params.data.total; },
             position: "inside",
             textStyle: {
                 color: "#506470"
@@ -55,7 +55,7 @@ var FunnelChart = React.createClass({
         };
 
         series2.itemStyle.emphasis.label = {
-            formatter: function (params) { return params.data.total }
+            formatter: function (params) { return params.data.total; }
         };
 
         return [series1, series2];

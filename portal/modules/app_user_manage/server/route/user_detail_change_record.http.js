@@ -16,4 +16,4 @@ module.exports = {
             "USER_TIME_LINE"
         ]
     },]
-}
+};

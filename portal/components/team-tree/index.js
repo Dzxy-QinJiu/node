@@ -135,7 +135,7 @@ const TeamTree = React.createClass({
                 this.state.breadcrumb.unshift(team);
                 loop(list, team.parent_group);
             }
-        }
+        };
 
         loop(this.state.teamList, teamId);
 

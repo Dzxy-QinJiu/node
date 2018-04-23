@@ -188,7 +188,7 @@ class DateSelector extends React.Component{
         } else {
         //如果是定位到天的时间
             if(props.start_time || props.start_time === 0) {
-                start_time = Utils.getDateStr(props.start_time)
+                start_time = Utils.getDateStr(props.start_time);
             } else {
                 start_time = Utils.getDateStr(new Date().getTime());
             }
@@ -383,7 +383,7 @@ class DateSelector extends React.Component{
             }
         } else if(range === 'forever') {
             var end_time = '0';
-            this.transportOuter(this.state.start_time , end_time , range)
+            this.transportOuter(this.state.start_time , end_time , range);
             return this.setState({end_time,range});
         } else if(lastRangeRegex.test(range)) {
             var timeObj = Utils.getLastTime(range);
@@ -815,7 +815,7 @@ class DateSelector extends React.Component{
             </Menu>);
 
         return (<Dropdown
-            getPopupContainer={()=>{return document.getElementById(this.componentId + "_quarter")}}
+            getPopupContainer={()=>{return document.getElementById(this.componentId + "_quarter");}}
             overlay={menu}
             prefixCls="ant-dropdown">
             <div className="quarter_wrap" id={this.componentId + "_quarter"}>
@@ -848,7 +848,7 @@ class DateSelector extends React.Component{
             <div className={cls} {...restProps}>
                 <div className="border_wrap">
                     <Dropdown
-                        getPopupContainer={()=>{return document.getElementById(this.componentId + "_range")}}
+                        getPopupContainer={()=>{return document.getElementById(this.componentId + "_range");}}
                         overlay={menu}
                         prefixCls="ant-dropdown">
                         <div className="range_wrap" id={this.componentId + "_range"}>

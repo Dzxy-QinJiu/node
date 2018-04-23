@@ -62,7 +62,7 @@ function OrderActions() {
         }, (errorMsg) => {
             this.dispatch({errorMsg: errorMsg});
         });
-    }
+    };
 }
 
 module.exports = alt.createActions(OrderActions);

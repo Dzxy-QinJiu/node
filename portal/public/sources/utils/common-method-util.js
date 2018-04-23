@@ -14,7 +14,7 @@ exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCou
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == curTeamId);
     //该团队启用状态下的人数
-    let availableObj = teamMemberCountObj && teamMemberCountObj.available ? teamMemberCountObj.available : {}
+    let availableObj = teamMemberCountObj && teamMemberCountObj.available ? teamMemberCountObj.available : {};
     if (availableObj.owner) {
         teamMemberCount += availableObj.owner;
     }
@@ -64,7 +64,7 @@ exports.getAudioRecordUrl = function(itemLocal,itemRecord,phoneType){
     if (phoneType === "app"){
         return "/record/app/" + itemRecord + audioType;
     }else{
-        return "/record/" + local + itemRecord + audioType
+        return "/record/" + local + itemRecord + audioType;
     }
 };
 //去除json对象中的空白项

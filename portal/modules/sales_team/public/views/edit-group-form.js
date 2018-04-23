@@ -273,12 +273,12 @@ var SalesTeamForm = React.createClass({
                                 </div>) : null)
                             }
                             <Button type="primary" className="btn-primary-sure member-form-btn"
-                                    onClick={(e)=>{_this.handleSubmit(e)}}
+                                    onClick={(e)=>{_this.handleSubmit(e);}}
                             >
                                 <ReactIntl.FormattedMessage id="common.confirm" defaultMessage="确认"/>
                             </Button>
                             <Button type="ghost" className="btn-primary-cancel member-form-btn"
-                                    onClick={(e)=>{_this.handleCancel(e)}}
+                                    onClick={(e)=>{_this.handleCancel(e);}}
 
                             >
                                 <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>

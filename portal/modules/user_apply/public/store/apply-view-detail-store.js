@@ -145,7 +145,7 @@ class ApplyViewDetailStore {
             this.formData.delayTimeUnit = "years";
         }else if(years == 0 && months != 0 && weeks == 0 && days == 0){
             this.formData.delayTimeNumber = months;
-            this.formData.delayTimeUnit = "months"
+            this.formData.delayTimeUnit = "months";
         }else if(years == 0 && months == 0 && weeks != 0 && days == 0){
             this.formData.delayTimeNumber = weeks;
             this.formData.delayTimeUnit = "weeks";
@@ -153,7 +153,7 @@ class ApplyViewDetailStore {
             this.formData.delayTimeNumber = days;
             this.formData.delayTimeUnit = "days";
         }else{
-            this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;;
+            this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = "days";
         }
     }
@@ -422,16 +422,16 @@ class ApplyViewDetailStore {
     //延期时间数字
     delayTimeNumberModify(val) {
         this.formData.delayTimeNumber = val;
-    };
+    }
     //延期时间单位
     delayTimeUnitModify(unit) {
         this.formData.delayTimeUnit = unit;
-    };
+    }
 
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(val) {
         this.formData.end_date = val;
-    };
+    }
     
     //获取回复列表
     getReplyList(resultObj) {
@@ -454,7 +454,7 @@ class ApplyViewDetailStore {
             replyListInfo.list = resultObj.list;
             replyListInfo.errorMsg = '';
         }
-    };
+    }
     //显示回复输入框为空的错误
     showReplyCommentEmptyError() {
         if(this.replyFormInfo.result === 'success') {
@@ -462,7 +462,7 @@ class ApplyViewDetailStore {
         }
         this.replyFormInfo.result = 'error';
         this.replyFormInfo.errorMsg = Intl.get("user.apply.reply.no.content", "请填写回复内容");
-    };
+    }
     //隐藏回复输入框为空的错误
     hideReplyCommentEmptyError() {
         this.replyFormInfo.result = '';

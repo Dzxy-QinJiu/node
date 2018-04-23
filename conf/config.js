@@ -75,7 +75,7 @@ function getGateway() {
     if (!gateway) {
         //配置了主机和端口
         if (gatewayHost && gatewayPort) {
-            gateway = "http://" + gatewayHost + ":" + gatewayPort
+            gateway = "http://" + gatewayHost + ":" + gatewayPort;
         }
     }
     return gateway;

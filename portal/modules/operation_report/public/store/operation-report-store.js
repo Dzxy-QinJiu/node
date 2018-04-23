@@ -253,7 +253,7 @@ OperationReportStore.prototype.getExpiredUserExceedLoginTime = function (result)
                     appId: appData.app_id,
                     appName: app ? app.name : "",
                     count: appData.count
-                }
+                };
             });
             this.expiredUserExceedLoginTime.total = total;
         } else {
@@ -462,7 +462,7 @@ OperationReportStore.prototype.getTeamTableData = function (resultData) {
                 if (_.isArray(resultData) && resultData.length) {
                     let appTeamObj = _.find(resultData, appTeam=>appTeam.app_id == appId);
                     if (appTeamObj && _.isArray(appTeamObj.data)) {
-                        teamLoginList = appTeamObj.data
+                        teamLoginList = appTeamObj.data;
                     }
                 }
                 //遍历该应用所有团队的登录次数列表，通过teamId找该应用对应该团队的登录数据
@@ -535,7 +535,7 @@ OperationReportStore.prototype.getAppLoginUser = function (result) {
                 return {
                     appName: app ? app.name : "",
                     count: appLoginCount
-                }
+                };
             });
             this.appLoginUserObj.total = total;
         } else {
@@ -590,7 +590,7 @@ OperationReportStore.prototype.getAppNewTrialUser = function (result) {
                 return {
                     appName: app ? app.name : "",
                     count: appNewTrialUserCount
-                }
+                };
             });
             this.appNewTrialUser.total = total;
         } else {
@@ -645,7 +645,7 @@ OperationReportStore.prototype.getAppNewDelayUser = function (result) {
                 return {
                     appName: app ? app.name : "",
                     count: appNewDelayUserCount
-                }
+                };
             });
             this.appNewDelayUser.total = total;
         } else {
@@ -702,7 +702,7 @@ OperationReportStore.prototype.getAppLoginComparison = function (result) {
                 //格式化数据，以适应chart的渲染
                 if (_.isArray(activeObj.actives) && activeObj.actives.length) {
                     data = activeObj.actives.map(active=> {
-                        return {count: active.active, timestamp: active.timestamp}
+                        return {count: active.active, timestamp: active.timestamp};
                     });
                 }
                 return {
@@ -789,7 +789,7 @@ OperationReportStore.prototype.getAppExpiredLoginComparison = function (result) 
                 //格式化数据，以适应chart的渲染
                 if (_.isArray(activeObj.actives) && activeObj.actives.length) {
                     data = activeObj.actives.map(active=> {
-                        return {count: active.active, timestamp: active.timestamp}
+                        return {count: active.active, timestamp: active.timestamp};
                     });
                 }
                 return {
@@ -829,7 +829,7 @@ OperationReportStore.prototype.getAppFormalUserLoginComparison = function (resul
                         } else if (index == activeObj.actives.length - 2) {
                             lastWeekTotal += active.active;//倒数第二个点的数据为上周周的登录数据
                         }
-                        return {count: active.active, timestamp: active.timestamp}
+                        return {count: active.active, timestamp: active.timestamp};
                     });
                 }
                 return {

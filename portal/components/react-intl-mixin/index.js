@@ -18,5 +18,5 @@ const reactIntlMixin = {
     formatMessage(defineMessageKey, messageObj){
         return this.props.intl['formatMessage'](defineMessageKey, messageObj);
     }
-}
+};
 export default reactIntlMixin;

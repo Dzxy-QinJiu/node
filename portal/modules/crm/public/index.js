@@ -33,12 +33,12 @@ var CrmIndex = React.createClass({
             return (
                 <div data-tracename="客户管理">
                     <CustomerRepeat closeRepeatCustomer={this.closeRepeatCustomer}/>
-                </div>    )
+                </div>    );
         } else {
             return (
                 <div data-tracename="客户管理">
                     <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}/>
-                </div>    )
+                </div>    );
         }
 
     }

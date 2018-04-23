@@ -14,14 +14,14 @@ class EmailServerForm extends React.Component {
         this.state = {
             realmConfigInfo: this.props.realmConfigInfo,
             errMsg: ''
-        }
+        };
     }
     handleSubmit = (e) => {
         e.preventDefault();
         Trace.traceEvent(e,"点击保存");
         this.props.form.validateFields((err, values) => {
             if (err) {
-                return
+                return;
             } else {
                 let realmId = this.props.realmId;
                 let realmConfigInfo = this.state.realmConfigInfo;

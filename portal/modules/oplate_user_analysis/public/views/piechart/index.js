@@ -75,7 +75,7 @@ var PieChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose()} catch(e){};
+            try {_this.echartInstance.dispose();} catch(e){}
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -84,7 +84,7 @@ var PieChart = React.createClass({
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         if(!this.props.data || !this.props.data.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose()} catch(e){};
+                try {_this.echartInstance.dispose();} catch(e){}
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {

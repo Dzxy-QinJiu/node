@@ -40,5 +40,5 @@ exports.addInvalidPhone = function (data, onSuccess, onError) {
             onError(err);
         }
     });
-}
+};
 

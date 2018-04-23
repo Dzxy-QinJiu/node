@@ -29,7 +29,7 @@ var UserTypeConfigList = React.createClass({
             appId: "",
             showData: [],
             appName: ""
-        }
+        };
     },
     getInitialState: function () {
         return {
@@ -46,7 +46,7 @@ var UserTypeConfigList = React.createClass({
                 {user_type: 'training', id: ''},
                 {user_type: 'internal', id: ''}
             ]
-        }
+        };
     },
     componentWillReceiveProps: function (nextProps) {
         var _this = this;
@@ -65,7 +65,7 @@ var UserTypeConfigList = React.createClass({
                 firstloading: true
             }, ()=> {
                 _this.getRoleList();
-            })
+            });
         }
     },
     componentWillMount: function () {
@@ -84,7 +84,7 @@ var UserTypeConfigList = React.createClass({
                 //权限的map数据类型，为获取权限的名字做准备
                 permissionMap = _.chain(permissionList).pluck('permission_list').flatten().indexBy('permission_id').value();
                 _this.getInitialData(roleMap, permissionMap);
-            })
+            });
         });
     },
     //获取初始数据
@@ -109,7 +109,7 @@ var UserTypeConfigList = React.createClass({
                     errMsg: errorMsg.responseText
                 });
             }
-        })
+        });
     },
     //msg对初始数据进行处理，合并加入真实数据，真实数据有id
     handlegetData: function (Msg, roleMap, permissionMap) {
@@ -138,7 +138,7 @@ var UserTypeConfigList = React.createClass({
             }
         });
         dataLists.forEach(function (item) {
-            showDataByUserType[item.config_name] = item
+            showDataByUserType[item.config_name] = item;
         });
         _this.setState({
             showData: _.values(showDataByUserType),
@@ -197,7 +197,7 @@ var UserTypeConfigList = React.createClass({
                 range = 'forever';
                 break;
             default:
-                range = mills / (1000 * 60 * 60 * 24) + '天'
+                range = mills / (1000 * 60 * 60 * 24) + '天';
         }
         return range;
 
@@ -278,7 +278,7 @@ var UserTypeConfigList = React.createClass({
                                 </div>
                             </div>
                         </div>
-                    )
+                    );
                 } else {
                     //还没配置的信息的类型
                     return (
@@ -300,10 +300,10 @@ var UserTypeConfigList = React.createClass({
                                 </div>
                             </div>
                         </div>
-                    )
+                    );
                 }
             })
-        )
+        );
     },
     closeRightPanel(e) {
         Trace.traceEvent(e,"关闭用户类型界面");

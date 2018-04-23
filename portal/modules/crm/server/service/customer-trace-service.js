@@ -60,4 +60,4 @@ exports.getPhoneRecordAudio = function (req, res) {
             res: res,
             'pipe-download-file':true
         },null);
-}
+};
