@@ -316,11 +316,27 @@ OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
 };
 
 //获取各行业试用客户覆盖率
-OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({loading, errorMsg, data, paramObj}) {
+OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function ({ loading, errorMsg, data, paramObj }) {
+    let tempData = [];
     let list = [];
     if (data.result) {
         _.each(data.result, (value, key) => {
-            list = list.concat(value);
+            tempData.push({
+                team_name: key, team_result: value
+            })
+        });
+        tempData.forEach(teamItem => {
+            teamItem.team_result.forEach(sale => {
+                sale.team_name = teamItem.team_name;
+                //list中已有当前数据的团队名，不展示对应单元格(rowSpan==0)
+                if (list.find(item => item.team_name == teamItem.team_name)) {
+                    sale.rowSpan = 0;
+                } else {
+                    //为第一条存在团队名的数据设置列合并(rowSpan)
+                    sale.rowSpan = teamItem.team_result.length;
+                }
+                list.push(sale);
+            })
         })
     }
     this.industryCustomerOverlay.data = list;
