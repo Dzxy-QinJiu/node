@@ -12,7 +12,7 @@ class ClueImportTemplate extends React.Component {
     constructor(props){
         super(props);
     };
-    handleCancel(e){
+    handleCancel= (e) =>{
         e.preventDefault();
         this.props.closeClueTemplatePanel();
     };

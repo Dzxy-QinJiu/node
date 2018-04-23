@@ -2100,6 +2100,9 @@ var en_US = {
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
-    "call.record.all.teams.trend": "show call trend of each team"//查看各团队通话趋势图
+    "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "clue.manage.import.clue": "Import clues",//导入线索
+    "clue.manage.import.clue.template": "Import clues template",//导入线索模板
+    "clue.manage.failed.import.clue": "Failed to import clues.Please try again!"//导入线索失败，请重试!
 };
 export default en_US;
