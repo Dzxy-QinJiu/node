@@ -337,6 +337,20 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         const { loading, errorMsg } = this.state.industryCustomerOverlay;
         const columns = [
             {
+                title: Intl.get("user.sales.team", "销售团队"),
+                dataIndex: "team_name",
+                key: "team_name",
+                render: (text, item, index) => {
+                    return {
+                        children: text,
+                        props: {
+                            rowSpan: item.rowSpan
+                        },
+                    };
+                },
+                width: 100
+            },
+            {
                 title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
                 dataIndex: "province_name",
                 key: "province_name",
