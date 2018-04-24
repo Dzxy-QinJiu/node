@@ -162,7 +162,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={phone}
@@ -180,7 +180,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={email}
@@ -198,7 +198,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={qq}
@@ -215,7 +215,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         id={curCustomer.id}
                                         combobox={true}
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -234,7 +234,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         id={curCustomer.id}
                                         combobox={true}
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -253,7 +253,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") && canUpdate?false:true}
+                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
                                         user_id={curCustomer.id}
                                         modifySuccess={this.changeUserFieldSuccess}
                                         saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
