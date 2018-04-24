@@ -323,7 +323,7 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
         _.each(data.result, (value, key) => {
             tempData.push({
                 team_name: key, team_result: value
-            })
+            });
         });
         tempData.forEach(teamItem => {
             teamItem.team_result.forEach(sale => {
@@ -336,8 +336,8 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
                     sale.rowSpan = teamItem.team_result.length;
                 }
                 list.push(sale);
-            })
-        })
+            });
+        });
     }
     this.industryCustomerOverlay.data = list;
 });
