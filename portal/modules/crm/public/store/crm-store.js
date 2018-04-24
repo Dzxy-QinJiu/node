@@ -123,8 +123,8 @@ CrmStore.prototype.queryCustomer = function (data) {
     } else {
         this.getErrMsg = "";
         this.isLoading = false;
-        data = data.result;
-        let list = data.result;
+        data = data && data.result;
+        let list = data && data.result;
         if (list && _.isArray(list) && list.length) {
             this.customersBack = list;
             this.curCustomers = list;

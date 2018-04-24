@@ -72,9 +72,9 @@ function ContactAction() {
     //添加联系人提交
     this.submitAddContact = function (contact, cb) {
         var _this = this;
-        contactAjax.addContact(contact).then(function (contact) {
-            _this.dispatch(contact.result[0]);
-            if (_.isFunction(cb)) cb({contact: contact.result[0]});
+        contactAjax.addContact(contact).then(function (data) {
+            _this.dispatch(data && data.result[0]);
+            if (_.isFunction(cb)) cb({contact: data && data.result[0]});
         }, function (errorMsg) {
             _this.dispatch(errorMsg);
             if (_.isFunction(cb)) cb({errorMsg: errorMsg});
