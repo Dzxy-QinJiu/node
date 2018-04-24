@@ -102,7 +102,7 @@ var ContactItem = React.createClass({
             }
         }
     },
-    
+
     //展开、收起联系方式的处理
     toggleContactWay(){
         ContactAction.toggleContactWay(this.props.contact);

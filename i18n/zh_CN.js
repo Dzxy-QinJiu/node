@@ -1265,6 +1265,7 @@ var zh_CN = {
     "crm.contact.way.show": "展开其他联系方式",
     "crm.contact.way.hide": "收起",
     "crm.contact.delete.confirm": "确认删除",
+    "crm.contact.deparment.input": "请输入部门",
     // 客户管理end
 
     // 客户分析start

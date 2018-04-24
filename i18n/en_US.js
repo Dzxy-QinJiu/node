@@ -1247,6 +1247,7 @@ var en_US = {
     "crm.contact.way.show": "Expand other ways of contact",//展开其他联系方式
     "crm.contact.way.hide": "Take up",//收起
     "crm.contact.delete.confirm": "Confirm deletion",//确认删除
+    "crm.contact.deparment.input": "Please enter the Department",//请输入部门
     // 客户管理end
 
     //客户分析 start
