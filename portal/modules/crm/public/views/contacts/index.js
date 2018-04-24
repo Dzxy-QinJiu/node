@@ -17,12 +17,10 @@ import userData from 'PUB_DIR/sources/user-data';
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
-    RIGHT_PANEL_PADDING_BOTTOM: 20,//右侧面板底部padding
-    CONTACT_LIST_MARGIN_BOTTOM: 20,//联系人列表距离底部margin
-    RIGHT_PANEL_TAB_HEIGHT: 36,//右侧面板tab高度
-    RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
-    CONTACT_ADD_BUTTON_HEIGHT: 34  //添加联系人按钮高度
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //跟进记录页的下边距
+    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
 
 import Trace from "LIB_DIR/trace";
@@ -87,17 +85,19 @@ var Contacts = React.createClass({
         })
     },
     render: function () {
-        var divHeight = this.state.windowHeight -
-            LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP - //右侧面板顶部padding
-            LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM - //右侧面板底部padding
-            LAYOUT_CONSTANTS.CONTACT_LIST_MARGIN_BOTTOM -//联系人列表距离底部margin
-            LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT -//右侧面板tab高度
-            LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM;//右侧面板tab的margin
-        //合并面板，去掉客户选择框的高度,加上添加按钮的高度
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
+        //减头部的客户基本信息高度
+        divHeight -= basicInfoHeight;
+        //减添加联系人面版的高度
+        if (this.state.isShowAddContactForm) {
+            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+        } else {//减共xxx条的高度
+            divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        }
+        //合并面板，去掉客户选择框的高度,添加按钮的高度
         if (this.props.isMerge) {
             divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
-        } else {
-            divHeight = divHeight - LAYOUT_CONSTANTS.CONTACT_ADD_BUTTON_HEIGHT;//添加联系人按钮高度
         }
         let contactListLength = _.isArray(this.state.contactList) ? this.state.contactList.length : 0;
         return (
@@ -149,11 +149,6 @@ var Contacts = React.createClass({
                         </div>
                     </GeminiScrollbar>
                 </div>
-                {this.props.isMerge ? null : (
-                    <div className="crm-right-panel-addbtn" onClick={this.showAddContactForm}>
-                        <Icon type="plus"/><span><ReactIntl.FormattedMessage id="crm.121"
-                                                                             defaultMessage="添加一个联系人"/></span>
-                    </div>)}
             </div>
         );
     }
