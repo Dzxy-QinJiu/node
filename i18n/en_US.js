@@ -1268,7 +1268,7 @@ var en_US = {
     "oplate_customer_analysis.salesNewCustomerCount": "Statistic of new customers created by sales", //"销售新开客户数统计",
     "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"新开客户数",
     "oplate_customer_analysis.tatolNewCustomerCount": "Total count of new customer", //"新开账号数总数",
-    "oplate_customer_analysis.customerLoginCount": "Login customer count", //"客户登录数",
+    "oplate_customer_analysis.customerLoginCount": "New login customer count", //"新开客户登录数",
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@

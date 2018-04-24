@@ -1286,7 +1286,7 @@ var zh_CN = {
     "oplate_customer_analysis.salesNewCustomerCount": "销售新开客户数统计",
     "oplate_customer_analysis.newCustomerCount": "新开客户数",
     "oplate_customer_analysis.tatolNewCustomerCount": "新开账号数总数",
-    "oplate_customer_analysis.customerLoginCount": "客户登录数",
+    "oplate_customer_analysis.customerLoginCount": "新开通客户登录数",
     // 客户分析end
     "contract.4": "甲方",
     "contract.5": "更新",
