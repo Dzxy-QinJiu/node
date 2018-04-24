@@ -223,7 +223,7 @@ CrmStore.prototype.processForList = function (curCustomers) {
     if (!_.isArray(curCustomers)) return [];
     let list = _.clone(curCustomers);
     for (let i = 0, len = list.length; i < len; i++) {
-        let curCustomer = list[i];
+        let curCustomer = list[i]||{};
         curCustomer.dynamic = curCustomer.customer_dynamic_dto ? curCustomer.customer_dynamic_dto.message : "";
         curCustomer.start_time = curCustomer.start_time ? moment(curCustomer.start_time).format(oplateConsts.DATE_FORMAT) : "";
         curCustomer.last_contact_time = curCustomer.last_contact_time ? moment(curCustomer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
