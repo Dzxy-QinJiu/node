@@ -1248,6 +1248,9 @@ var en_US = {
     "crm.contact.way.hide": "Take up",//收起
     "crm.contact.delete.confirm": "Confirm deletion",//确认删除
     "crm.contact.deparment.input": "Please enter the Department",//请输入部门
+    "crm.order.budget.input": "Please enter the budget amount",//请输入预算金额
+    "crm.order.id": "Order Num",//订单编号
+    "crm.order.remarks": "Order Remarks",//订单备注
     // 客户管理end
 
     //客户分析 start

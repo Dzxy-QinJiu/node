@@ -1266,6 +1266,9 @@ var zh_CN = {
     "crm.contact.way.hide": "收起",
     "crm.contact.delete.confirm": "确认删除",
     "crm.contact.deparment.input": "请输入部门",
+    "crm.order.budget.input": "请输入预算金额",
+    "crm.order.id": "订单编号",
+    "crm.order.remarks": "订单备注",
     // 客户管理end
 
     // 客户分析start

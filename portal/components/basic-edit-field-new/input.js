@@ -21,7 +21,7 @@ const BasicEditField = React.createClass({
     getDefaultProps: function () {
         return {
             id: '1',
-            //类型 input、textarea或password
+            //类型 input、textarea或password、number
             type: 'input',
             //字段
             field: "email",

@@ -4,249 +4,346 @@
 @block-line-color-edit: #C6CEDA;
 @font-color: #464b4e;
 @padding: 15px;
-//每一模块的背景及公共样式类
-.item-block-style {
-  float: left;
-  width: 660px;
-  border-radius: 3px;
-  color: @font-color;
-  background-color: @block-bgColor;
-}
 
-.crm-right-panel-content {
-  .ant-tabs {
-    overflow: visible
-  }
+@font_color: #999999;
+@btn_color: #8ba9c3;
+@title_color: #333333;
+//换行的样式控制
+.break_line {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .order-container {
-  float: left;
-  position: relative;
-  word-break: break-all;
-  white-space: normal;
-
-  label {
-    font-size: 14px;
-    font-weight: normal;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-  }
-
-  label.color-gray {
-    color: #7a8589;
-  }
-
-  //滚动区域样式 及列表样式
-  .order-container-scroll {
-    width: 660px;
-  }
-  .crm-right-panel-addbtn.go-top {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-  }
-  //申请用户模态框大小的调整
-  .apply-user-modal {
-    .modal-dialog {
-      width: 320px;
-      height: 150px;
-      .modal-body {
-        color: #123;
-        text-align: left;
-        padding-left: 30px;
-        line-height: 30px;
-        .ant-radio-group {
-          white-space: normal;
-        }
-      }
+  .order-top-block {
+    //共xxx条
+    .total-tip {
+      color: @font_color;
     }
-  }
-
-  .load8 {
-    position: relative;
-    margin: 0 auto;
-  }
-
-  .order-view .load8 {
-    position: absolute;
-    width: 72px;
-    height: 72px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-  }
-
-  .order-form .anticon-loading {
-    float: right;
-    margin-top: 25px;
-    margin-right: 20px;
-    font-size: 20px;
-  }
-
-  .order-form .ant-form-item-label {
-    text-align: left;
-  }
-
-  //单个订单样式
-  .order-item {
-    &:extend(.item-block-style);
-    margin-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 40px;
-
-    //顶部区域样式 时间及单号
-    .order-title {
-      overflow: hidden;
-      padding-left: @padding;
-
-      .order-title-left {
-        width: 450px;
-        float: left;
-        margin: 10px 0;
-      }
-
-      .order-title-right-btn {
-        width: 100px;
-        float: right;
-        height: 40px;
-        padding-top: 8px;
-      }
-    }
-
-    .order-btn-class {
-      border: 0px;
-      width: 25px;
+    //添加订单按钮
+    .iconfont.icon-add {
       float: right;
-      background-color: #b6c2c9;
-      margin-right: 12px;
-      text-align: center;
-      padding: 0px;
-      color: #fff;
       font-size: 16px;
-      border-radius: 50%;
-      &:hover {
-        color: #fff;
-        background-color: #4d96d1;
-      }
-    }
-
-    .btn-save {
-      margin-right: 5px;
-    }
-    .ant-alert {
-      top: 120px;
-      left: 230px;
-      text-align: left;
-    }
-
-    //应用列表样式
-    .order-application-list {
-      overflow: hidden;
-      label {
-        float: left;
-      }
-      .order-application-div {
-        float: left;
-        width: 500px;
-        .app-item {
-          display: inline-block;
-          background-color: #4c8ec4;
-          border-radius: 4px;
-          color: #fff;
-          padding: 2px 9px;
-          margin: 0 8px 8px 0;
-        }
-      }
-
-      .btn-save {
-        margin-right: 5px;
-      }
-    }
-
-    //销售阶段区域样式
-    .order-introduce {
-      padding-left: @padding;
-      border-top: 1px solid @block-line-color-edit;
-      .order-introduce-div {
-        line-height: 35px;
-      }
-
-      .order-introduce-btn {
-        color: #fff;
-        background-color: #2ea3e6;
-        border-color: #2ea3e6;
-        height: 25px;
-        line-height: 23px;
-        padding: 0px;
-        width: 80px;
-        margin-left: 20px;
-        margin-bottom: 5px;
-      }
-
-    }
-
-    //订单内容部分样式
-    .order-content {
-      padding-left: @padding;
-      line-height: 35px;
-
-      .order-content-div {
-        width: 100%;
-        float: left;
-        div {
-          float: left;
-          width: 44%;
-          padding-right: 20px
-        }
-
-        .order-label-salesRemarks {
-          float: left;
-        }
-
-        .order-div-salesRemarks {
-          width: 88%;
-          padding-left: 10px;
-          font-size: 14px;
-        }
-      }
+      color: @btn_color;
     }
   }
-
-  form {
-    position: relative;
-    .order-application-div {
-      padding-bottom: 0;
-    }
-    .order-introduce {
-      padding-top: 20px;
-      border-top: 1px solid @block-line-color-edit;
-      .ant-form-item {
-        width: 100%;
-        label {
-          text-align: left;
-        }
-        .remarks-wrapper {
-          width: 400px;
+  //每个订单展示的卡片样式
+  .order-item-container {
+    .order-item-title {
+      //时间
+      .order-time {
+        color: @title_color;
+      }
+      //操作按钮区
+      .order-item-buttons {
+        float: right;
+        .iconfont {
+          float: right;
+          font-size: 16px;
+          color: #8da8c5;
+          margin-left: 4px;
         }
       }
     }
-  }
+    .order-item {
+      width: 100%;
+      font-size: 14px;
+      .order-item-content {
+        //编辑按钮hover时才展示
+        .icon-edit-btn {
+          display: none;
+        }
+        &:hover {
+          background-color: #f6fbff;
+          .icon-edit-btn {
+            display: block;
+          }
+        }
+        //描述与值
+        .order-key {
+          float: left;
+          line-height: 24px;
+          color: @font_color;
+        }
+        .order-value {
+          line-height: 24px;
+          padding-left: 8px;
+        }
 
-  .search-icon-list {
-    width: 615px;
-    border-radius: 4px;
-    background: #e6edef;
-    margin-top: 8px;
-    .search-icon-list-header {
-      display: none;
+      }
+
+      //应用列表样式
+      .order-application-list {
+        overflow: hidden;
+        .order-application-div {
+          float: left;
+          padding-left: 8px;
+          width: 356px;
+          &:extend(.break_line);
+          .app-item {
+            display: inline-block;
+            background-color: #d7e6f7;
+            border-radius: 4px;
+            color: #4c8ec4;
+            padding: 2px 9px;
+            margin: 0 8px 8px 0;
+            font-size: 12px;
+          }
+        }
+
+        .btn-save {
+          margin-right: 5px;
+        }
+      }
     }
-    .search-icon-list-content {
-      background: #e6edef;
-      margin: 0;
-    }
+
   }
 }
+
+//每一模块的背景及公共样式类
+//.item-block-style {
+//  float: left;
+//  width: 660px;
+//  border-radius: 3px;
+//  color: @font-color;
+//  background-color: @block-bgColor;
+//}
+//
+//.crm-right-panel-content {
+//  .ant-tabs {
+//    overflow: visible
+//  }
+//}
+//
+//.order-container {
+//  float: left;
+//  position: relative;
+//  word-break: break-all;
+//  white-space: normal;
+//
+//  label {
+//    font-size: 14px;
+//    font-weight: normal;
+//    margin-bottom: 0px;
+//    padding-top: 0px;
+//    padding-bottom: 0px;
+//  }
+//
+//  label.color-gray {
+//    color: #7a8589;
+//  }
+//
+//  //滚动区域样式 及列表样式
+//  .order-container-scroll {
+//    width: 660px;
+//  }
+//  .crm-right-panel-addbtn.go-top {
+//    position: absolute;
+//    top: 20px;
+//    width: 100%;
+//  }
+//  //申请用户模态框大小的调整
+//  .apply-user-modal {
+//    .modal-dialog {
+//      width: 320px;
+//      height: 150px;
+//      .modal-body {
+//        color: #123;
+//        text-align: left;
+//        padding-left: 30px;
+//        line-height: 30px;
+//        .ant-radio-group {
+//          white-space: normal;
+//        }
+//      }
+//    }
+//  }
+//
+//  .load8 {
+//    position: relative;
+//    margin: 0 auto;
+//  }
+//
+//  .order-view .load8 {
+//    position: absolute;
+//    width: 72px;
+//    height: 72px;
+//    top: 0;
+//    bottom: 0;
+//    left: 0;
+//    right: 0;
+//    margin: auto;
+//  }
+//
+//  .order-form .anticon-loading {
+//    float: right;
+//    margin-top: 25px;
+//    margin-right: 20px;
+//    font-size: 20px;
+//  }
+//
+//  .order-form .ant-form-item-label {
+//    text-align: left;
+//  }
+//
+//  //单个订单样式
+//  .order-item {
+//    &:extend(.item-block-style);
+//    margin-bottom: 10px;
+//    padding-left: 10px;
+//    padding-right: 10px;
+//    padding-bottom: 40px;
+//
+//    //顶部区域样式 时间及单号
+//    .order-title {
+//      overflow: hidden;
+//      padding-left: @padding;
+//
+//      .order-title-left {
+//        width: 450px;
+//        float: left;
+//        margin: 10px 0;
+//      }
+//
+//      .order-title-right-btn {
+//        width: 100px;
+//        float: right;
+//        height: 40px;
+//        padding-top: 8px;
+//      }
+//    }
+//
+//    .order-btn-class {
+//      border: 0px;
+//      width: 25px;
+//      float: right;
+//      background-color: #b6c2c9;
+//      margin-right: 12px;
+//      text-align: center;
+//      padding: 0px;
+//      color: #fff;
+//      font-size: 16px;
+//      border-radius: 50%;
+//      &:hover {
+//        color: #fff;
+//        background-color: #4d96d1;
+//      }
+//    }
+//
+//    .btn-save {
+//      margin-right: 5px;
+//    }
+//    .ant-alert {
+//      top: 120px;
+//      left: 230px;
+//      text-align: left;
+//    }
+//
+//    //应用列表样式
+//    .order-application-list {
+//      overflow: hidden;
+//      label {
+//        float: left;
+//      }
+//      .order-application-div {
+//        float: left;
+//        width: 500px;
+//        .app-item {
+//          display: inline-block;
+//          background-color: #4c8ec4;
+//          border-radius: 4px;
+//          color: #fff;
+//          padding: 2px 9px;
+//          margin: 0 8px 8px 0;
+//        }
+//      }
+//
+//      .btn-save {
+//        margin-right: 5px;
+//      }
+//    }
+//
+//    //销售阶段区域样式
+//    .order-introduce {
+//      padding-left: @padding;
+//      border-top: 1px solid @block-line-color-edit;
+//      .order-introduce-div {
+//        line-height: 35px;
+//      }
+//
+//      .order-introduce-btn {
+//        color: #fff;
+//        background-color: #2ea3e6;
+//        border-color: #2ea3e6;
+//        height: 25px;
+//        line-height: 23px;
+//        padding: 0px;
+//        width: 80px;
+//        margin-left: 20px;
+//        margin-bottom: 5px;
+//      }
+//
+//    }
+//
+//    //订单内容部分样式
+//    .order-content {
+//      padding-left: @padding;
+//      line-height: 35px;
+//
+//      .order-content-div {
+//        width: 100%;
+//        float: left;
+//        div {
+//          float: left;
+//          width: 44%;
+//          padding-right: 20px
+//        }
+//
+//        .order-label-salesRemarks {
+//          float: left;
+//        }
+//
+//        .order-div-salesRemarks {
+//          width: 88%;
+//          padding-left: 10px;
+//          font-size: 14px;
+//        }
+//      }
+//    }
+//  }
+//
+//  form {
+//    position: relative;
+//    .order-application-div {
+//      padding-bottom: 0;
+//    }
+//    .order-introduce {
+//      padding-top: 20px;
+//      border-top: 1px solid @block-line-color-edit;
+//      .ant-form-item {
+//        width: 100%;
+//        label {
+//          text-align: left;
+//        }
+//        .remarks-wrapper {
+//          width: 400px;
+//        }
+//      }
+//    }
+//  }
+//
+//  .search-icon-list {
+//    width: 615px;
+//    border-radius: 4px;
+//    background: #e6edef;
+//    margin-top: 8px;
+//    .search-icon-list-header {
+//      display: none;
+//    }
+//    .search-icon-list-content {
+//      background: #e6edef;
+//      margin: 0;
+//    }
+//  }
+//}

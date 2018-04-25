@@ -295,6 +295,7 @@ var BasicData = React.createClass({
                             field="remarks"
                             value={basicData.remarks}
                             editBtnTip={Intl.get("user.remark.set.tip", "设置备注")}
+                            placeholder={Intl.get("user.input.remark", "请输入备注")}
                             hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_REMARK")}
                             saveEditInput={this.saveEditBasicInfo.bind(this, "remarks")}
                         />
