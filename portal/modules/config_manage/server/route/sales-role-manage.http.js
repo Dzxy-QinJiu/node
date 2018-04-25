@@ -60,6 +60,16 @@ module.exports = {
         "privileges": [
             "MEMBER_TEAM_ROLE_MANAGE"
         ]
+    },{//设置某个角色的客户容量
+        method: 'put',
+        path: '/rest/sales/setting/customer',
+        handler: 'setSalesRoleGoal',
+        passport: {
+            'needLogin': true
+        },
+        privileges: [
+            'TEAM_ROLE_MANAGE'
+        ]
     }
     ]
 };
