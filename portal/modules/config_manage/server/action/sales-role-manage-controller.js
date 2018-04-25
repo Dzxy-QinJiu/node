@@ -50,3 +50,11 @@ exports.getSalesRoleByMemberId = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//设置某个角色的客户容量
+exports.setSalesRoleGoal = function (req, res) {
+    salesRoleManageService.setSalesRoleGoal(req, res).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

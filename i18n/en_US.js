@@ -2100,6 +2100,8 @@ var en_US = {
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
-    "call.record.all.teams.trend": "show call trend of each team"//查看各团队通话趋势图
+    "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
+    "sales.role.setting.name":"Sales role name"//销售角色名称
 };
 export default en_US;
