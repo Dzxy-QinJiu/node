@@ -355,3 +355,24 @@ exports.getMyTeamWithSubteams = function () {
     });
     return Deferred.promise();
 };
+//获取是否能添加客户
+let getCustomerLimitAjax;
+exports.getCustomerLimit = function (reqData) {
+    getCustomerLimitAjax && getCustomerLimitAjax.abort();
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: "/rest/crm/limit",
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

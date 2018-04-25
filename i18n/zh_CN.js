@@ -2116,7 +2116,11 @@ var zh_CN = {
     "common.batch.self.sales.target": "批量设置个人销售目标",
     "call.record.average.call.duration": "人均时长",
     "call.record.average.connected": "人均接通数",
-    "call.record.all.teams.trend": "查看各团队通话趋势图"
+    "call.record.all.teams.trend": "查看各团队通话趋势图",
+    "crm.import.over.limit":"导入客户后会超过您拥有客户的上限，请您减少导入{num}个客户",
+    "crm.transfer.over.limit": "转入客户后会超过该销售拥有客户的上限，请减少转入{num}个客户",
+    "crm.change.over.limit": "变更客户后会超过该销售拥有客户的上限，请减少变更{num}个客户",
+    "crm.should.reduce.customer":"该销售拥有客户数量已达到上限！"
 
 };
 export default zh_CN;

@@ -147,6 +147,10 @@ var CRMAddForm = React.createClass({
                 if (_.isFunction(this.props.updateCustomer)) {
                     this.props.updateCustomer(result.result);
                 }
+                //添加客户成功后的处理
+                if (_.isFunction(this.props.afterAddCustomerSuccess)){
+                    this.props.afterAddCustomerSuccess()
+                }
             } else {
                 message.error(result);
                 this.setState(this.state);

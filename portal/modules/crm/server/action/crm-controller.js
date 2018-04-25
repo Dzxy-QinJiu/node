@@ -319,3 +319,11 @@ exports.getUserPhoneNumber = function (req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//标识能否继续添加客户
+exports.getCustomerLimit = function (req, res) {
+    crmService.getCustomerLimit(req, res).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

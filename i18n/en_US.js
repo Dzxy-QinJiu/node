@@ -2100,6 +2100,10 @@ var en_US = {
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
-    "call.record.all.teams.trend": "show call trend of each team"//查看各团队通话趋势图
+    "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "crm.import.over.limit":"After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少导入{num}个客户
+    "crm.transfer.over.limit": "Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers",//转入客户后会超过该销售拥有客户的上限，请减少转入{num}个客户
+    "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更客户后会超过该销售拥有客户的上限，请减少变更{num}个客户
+    "crm.should.reduce.customer":"The number of customers has reached the limit!"//该销售拥有客户数量已达到上限！
 };
 export default en_US;

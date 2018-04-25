@@ -228,6 +228,14 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
+        },
+        {
+            method: 'get',
+            path: '/rest/crm/limit',
+            handler: 'getCustomerLimit',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };
