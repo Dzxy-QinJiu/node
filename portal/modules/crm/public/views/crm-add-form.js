@@ -125,11 +125,11 @@ var CRMAddForm = React.createClass({
                     CrmAction.getCustomerLimit({member_id:member_id,num: 1}, (result)=>{
                         if (_.isNumber(result)){
                             if (result == 0){
-                                //可以转入
+                                //可以添加
                                 this.addCustomer();
                             }else if(result > 0){
-                                //不可以转入
-                                message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));
+                                //不可以添加
+                                message.warn(Intl.get("crm.should.add.customer", "您拥有的客户已达到上限，请不要再添加客户了"));
                             }
                         }
                     });

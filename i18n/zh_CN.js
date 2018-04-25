@@ -2120,7 +2120,7 @@ var zh_CN = {
     "crm.import.over.limit":"导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",
     "crm.transfer.over.limit": "转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出",
     "crm.change.over.limit": "变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售",
-    "crm.should.reduce.customer":"该销售拥有客户数量已达到上限！"
-
+    "crm.should.reduce.customer":"该销售拥有客户数量已达到上限！",
+    "crm.should.add.customer":"您拥有的客户已达到上限，请不要再添加客户了"
 };
 export default zh_CN;
