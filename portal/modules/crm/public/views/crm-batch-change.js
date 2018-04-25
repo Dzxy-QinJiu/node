@@ -112,7 +112,7 @@ var CrmBatchChange = React.createClass({
             CrmAction.getCustomerLimit({member_id: member_id, num: this.props.selectedCustomer.length}, (result)=>{
                 if (_.isNumber(result) && result > 0){
                     //超过销售拥有客户的上限
-                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get("crm.change.over.limit", "变更客户后会超过该销售拥有客户的上限，请减少变更{num}个客户",{num:result}) : Intl.get("crm.transfer.over.limit", "转入客户后会超过该销售拥有客户的上限，请减少转入{num}个客户",{num:result});
+                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get("crm.change.over.limit", "变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售",{num:result}) : Intl.get("crm.transfer.over.limit", "转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出",{num:result});
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{

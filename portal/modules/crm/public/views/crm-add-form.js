@@ -120,7 +120,19 @@ var CRMAddForm = React.createClass({
                 } else {
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
                     this.state.formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, "");
-                    this.addCustomer();
+                    //导入客户前先校验，是不是超过了本人的客户上限
+                    let member_id = userData.getUserData().user_id;
+                    CrmAction.getCustomerLimit({member_id:member_id,num: 1}, (result)=>{
+                        if (_.isNumber(result)){
+                            if (result == 0){
+                                //可以转入
+                                this.addCustomer();
+                            }else if(result > 0){
+                                //不可以转入
+                                message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));
+                            }
+                        }
+                    });
                 }
             });
         });
@@ -146,10 +158,6 @@ var CRMAddForm = React.createClass({
                 //拨打电话时，若客户列表中没有此号码，需添加客户
                 if (_.isFunction(this.props.updateCustomer)) {
                     this.props.updateCustomer(result.result);
-                }
-                //添加客户成功后的处理
-                if (_.isFunction(this.props.afterAddCustomerSuccess)){
-                    this.props.afterAddCustomerSuccess()
                 }
             } else {
                 message.error(result);

@@ -86,7 +86,6 @@ var Crm = React.createClass({
         return {
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
-            isShowAddCustomerBtn: true,//是否展示添加客户按钮
             ...this.getStateData()
         };
     },
@@ -198,11 +197,8 @@ var Crm = React.createClass({
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
-        //是否还可以继续添加客户,是否展示添加客户/导入客户 按钮
-        this.getCustomerLimit({member_id:member_id,num:1});
         const query = _.clone(this.props.location.query);
         if (query.analysis_filter_field) {
-
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
             filterValue = (filterValue == 'unknown' ? '未知' : filterValue);
@@ -272,21 +268,6 @@ var Crm = React.createClass({
         if (this.props.location.query.add === 'true') {
             this.showAddForm();
         }
-    },
-    //是否可以再添加客户,result是0的话，可以添加，result大于0，不可以添加
-    getCustomerLimit: function (reqObj) {
-        CrmAction.getCustomerLimit(reqObj, (result)=>{
-            if (_.isNumber(result)){
-                var isShowAddCustomerBtn = (result == 0 ? true : false);
-                this.setState({
-                    isShowAddCustomerBtn:isShowAddCustomerBtn
-                })
-            }
-        });
-    },
-    //添加客户成功后，
-    afterAddCustomerSuccess:function () {
-        this.getCustomerLimit({member_id:member_id,num:1});
     },
     setFilterField: function ({filterField, filterValue}) {
         //展示的团队列表
@@ -788,21 +769,21 @@ var Crm = React.createClass({
                 >
                     {isWebMini ? <i className="iconfont icon-search-repeat"/> : Intl.get("crm.1", "客户查重")}
                 </PrivilegeChecker>
-                {this.state.isShowAddCustomerBtn ? <PrivilegeChecker
+                <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
                     title={isWebMini ? Intl.get("crm.2", "导入客户") : ""}
                     onClick={this.showCrmTemplateRightPanel}
                 >
                     {isWebMini ? <i className="iconfont icon-import-btn"/> : Intl.get("crm.2", "导入客户")}
-                </PrivilegeChecker>: null}
-                {this.state.isShowAddCustomerBtn ? <PrivilegeChecker
+                </PrivilegeChecker>
+                <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
                     title={isWebMini ? Intl.get("crm.3", "添加客户") : ""}
                     onClick={this.showAddForm}>
                     {isWebMini ? <Icon type="plus"/> : Intl.get("crm.3", "添加客户")}
-                </PrivilegeChecker> : null}
+                </PrivilegeChecker>
             </div>);
         }
     },
@@ -810,6 +791,7 @@ var Crm = React.createClass({
         return this.state.isNoMoreTipShow;
     },
     onCustomerImport(list) {
+        let member_id = userData.getUserData().user_id;
         //导入客户前先校验，是不是超过了本人的客户上限
         CrmAction.getCustomerLimit({member_id:member_id,num: list.length}, (result)=>{
             if (_.isNumber(result)){
@@ -821,7 +803,7 @@ var Crm = React.createClass({
                     })
                 }else if(result > 0){
                     //不可以转入
-                    message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少导入{num}个客户",{num: result}));
+                    message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));
                 }
             }
         });
@@ -856,8 +838,6 @@ var Crm = React.createClass({
             this.setState({
                 isPreviewShow: false,
             });
-            //导入成功后,看是否需要展示 添加客户及导入客户按钮
-            this.getCustomerLimit({member_id:member_id,num:1});
             message.success(Intl.get("crm.98", "导入客户成功"));
             //刷新客户列表
             this.search();
@@ -1296,7 +1276,6 @@ var Crm = React.createClass({
                         hideAddForm={this.hideAddForm}
                         addOne={this.addOne}
                         showRightPanel={this.showRightPanel}
-                        afterAddCustomerSuccess={this.afterAddCustomerSuccess}
                     />
                 ) : null}
                 {FilterStore.getState().isPanelShow ? (
