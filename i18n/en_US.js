@@ -1100,7 +1100,7 @@ var en_US = {
     "crm.96": "Area", // 地域
     "crm.97": "Import complete", // 导入完成
     "crm.98": "Import customer success", // 导入客户成功
-    "crm.99": "Import customer error, please retry", // 导入客户失败，请重试!
+    "crm.99": "Import customer error, please retry", // 导入客户失败
     "crm.100": "Existing users applied for trail users", // 老用户申请试用用户
     "crm.101": "Existing users applied for official users", // 老用户转签约用户
     "crm.102": "The username must be a combination of letters, numbers, underlines, or a valid email", // 用户名必须为字母、数字、下划线的组合或合法格式的邮箱
