@@ -32,138 +32,142 @@
       color: @btn_color;
     }
   }
-  //联系人展示区
-  .contact-item-container.contact-delete-border {
-    border: 1px solid @delete_confirm_color;
-    .contact-item-title {
-      .contact-name {
-        max-width: 115px;
-      }
-      .contact-info {
-        //联系人角色、职位等
-        .contact-info-content {
+  .contact-list-container{
+    float: left;
+    width: 100%;
+    //联系人展示区
+    .contact-item-container.contact-delete-border {
+      border: 1px solid @delete_confirm_color;
+      .contact-item-title {
+        .contact-name {
           max-width: 115px;
+        }
+        .contact-info {
+          //联系人角色、职位等
+          .contact-info-content {
+            max-width: 115px;
+          }
         }
       }
     }
-  }
-  .contact-item-container {
-    .detail-card-title {
-      padding-bottom: 0;
-    }
-    .contact-item-title {
-      //设为默认联系人的图标
-      .icon-contact-default {
-        display: inline-block;
-        font-size: 16px;
-        color: #8ea7c5;
-        cursor: pointer;
+    .contact-item-container {
+      .detail-card-title {
+        padding-bottom: 0;
       }
-      //默认联系人的图标
-      .is-default-contact {
-        color: #2096f0;
-        cursor: default;
-      }
-      //联系人
-      .contact-name {
-        display: inline-block;
-        height: 24px;
-        line-height: 24px;
-        max-width: 148px;
-        padding: 0 4px;
-        color: @title_color;
-        &:extend(.text-ellipsis);
-        cursor: default;
-      }
-      .contact-info {
-        vertical-align: top;
-        cursor: default;
-        span {
+      .contact-item-title {
+        //设为默认联系人的图标
+        .icon-contact-default {
+          display: inline-block;
+          font-size: 16px;
+          color: #8ea7c5;
+          cursor: pointer;
+        }
+        //默认联系人的图标
+        .is-default-contact {
+          color: #2096f0;
+          cursor: default;
+        }
+        //联系人
+        .contact-name {
           display: inline-block;
           height: 24px;
           line-height: 24px;
-          vertical-align: top;
-        }
-        //联系人角色、职位等
-        .contact-info-content {
           max-width: 148px;
+          padding: 0 4px;
+          color: @title_color;
           &:extend(.text-ellipsis);
+          cursor: default;
         }
-      }
-      //操作按钮区
-      .contact-item-buttons {
-        float: right;
-        .iconfont {
-          float: right;
-          font-size: 16px;
-          color: #8da8c5;
-          margin-left: 4px;
-        }
-      }
-      .contact-delete-buttons {
-        float: right;
-        .delete-button-style {
-          width: 72px;
-          height: 24px;
-          line-height: 24px;
-          padding: 0;
-          border-radius: 4px;
-          text-align: center;
-          font-size: 12px;
-        }
-        //确认删除
-        .contact-delete-confirm {
-          color: #ffffff;
-          border: 1px solid @delete_confirm_color;
-          background-color: @delete_confirm_color;
-          &:hover {
-            background-color: #f04134;
-            border: 1px solid #f04134;
+        .contact-info {
+          vertical-align: top;
+          cursor: default;
+          span {
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            vertical-align: top;
+          }
+          //联系人角色、职位等
+          .contact-info-content {
+            max-width: 148px;
+            &:extend(.text-ellipsis);
           }
         }
-        .contact-delete-cancel {
-          color: #8da8c5;
-          margin-right: 6px;
+        //操作按钮区
+        .contact-item-buttons {
+          float: right;
+          .iconfont {
+            float: right;
+            font-size: 16px;
+            color: #8da8c5;
+            margin-left: 4px;
+          }
+        }
+        .contact-delete-buttons {
+          float: right;
+          .delete-button-style {
+            width: 72px;
+            height: 24px;
+            line-height: 24px;
+            padding: 0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+          }
+          //确认删除
+          .contact-delete-confirm {
+            color: #ffffff;
+            border: 1px solid @delete_confirm_color;
+            background-color: @delete_confirm_color;
+            &:hover {
+              background-color: #f04134;
+              border: 1px solid #f04134;
+            }
+          }
+          .contact-delete-cancel {
+            color: #8da8c5;
+            margin-right: 6px;
+          }
         }
       }
-    }
-    //联系方式展示区
-    .contact-way-container {
-      float: left;
-      width: 100%;
-      .contact-way-type {
+      //联系方式展示区
+      .contact-way-container {
         float: left;
         width: 100%;
-        .iconfont.contact-way-icon {
+        .contact-way-type {
           float: left;
-          font-size: 16px;
-          color: #d7d7d7;
-          margin-right: 6px;
-        }
-        .contact-way-content {
-          float: left;
-          .contact-way-item {
-            cursor: default;
-            .contact-way-text {
-              line-height: 24px;
-            }
-            //拨打按钮
-            .phone-call-button {
-              display: none;
-              width: 70px;
-              height: 24px;
-              line-height: 24px;
-              margin-left: 20px;
-              border-radius: 4px;
-              text-align: center;
-              background-color: #f7a340;
-              color: #ffffff;
-              cursor: pointer;
-            }
-            &:hover {
-              background-color: @hover_bg_color;
+          width: 100%;
+          .iconfont.contact-way-icon {
+            float: left;
+            font-size: 16px;
+            color: #d7d7d7;
+            margin-right: 6px;
+          }
+          .contact-way-content {
+            float: left;
+            .contact-way-item {
+              cursor: default;
+              .contact-way-text {
+                line-height: 24px;
+              }
+              //拨打按钮
               .phone-call-button {
-                display: inline-block;
+                display: none;
+                width: 70px;
+                height: 24px;
+                line-height: 24px;
+                margin-left: 20px;
+                border-radius: 4px;
+                text-align: center;
+                background-color: #f7a340;
+                color: #ffffff;
+                cursor: pointer;
+              }
+              &:hover {
+                background-color: @hover_bg_color;
+                .phone-call-button {
+                  display: inline-block;
+                }
               }
             }
           }

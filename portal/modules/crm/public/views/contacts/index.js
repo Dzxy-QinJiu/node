@@ -19,7 +19,7 @@ var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
     TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
     MARGIN_BOTTOM: 8, //跟进记录页的下边距
-    ADD_TRACE_HEIGHHT: 155,//添加跟进记录面板的高度
+    ADD_CONTACT_HEIGHHT: 324,//添加联系人面板的高度
     TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
 
@@ -91,7 +91,7 @@ var Contacts = React.createClass({
         divHeight -= basicInfoHeight;
         //减添加联系人面版的高度
         if (this.state.isShowAddContactForm) {
-            divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
+            divHeight -= LAYOUT_CONSTANTS.ADD_CONTACT_HEIGHHT;
         } else {//减共xxx条的高度
             divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
         }
@@ -118,35 +118,33 @@ var Contacts = React.createClass({
                         )}
                     </div>
                 )}
-                <div style={{height: divHeight}} ref="scrollList">
+                <div className="contact-list-container" style={{height: divHeight}} ref="scrollList">
                     <GeminiScrollbar>
-                        <div className="crm-contacts-list list-unstyled">
-                            {this.state.contactListLoading ? (<Spinner/>) : this.state.contactList.map((contact, i) => {
-                                if (contact) {
-                                    return contact.isShowEditContactForm ?
-                                        (<ContactForm contact={contact}
-                                                      key={i}
-                                                      isMerge={this.props.isMerge}
-                                                      updateMergeCustomerContact={this.props.updateMergeCustomerContact}
-                                                      refreshCustomerList={this.props.refreshCustomerList}
-                                                      updateCustomerDefContact={this.props.updateCustomerDefContact}
-                                                      type="edit"/>) :
-                                        (<ContactItem isMerge={this.props.isMerge} contact={contact}
-                                                      key={i}
-                                                      setMergeCustomerDefaultContact={this.props.setMergeCustomerDefaultContact}
-                                                      delMergeCustomerContact={this.props.delMergeCustomerContact}
-                                                      updateMergeCustomerContact={this.props.updateMergeCustomerContact}
-                                                      updateCustomerDefContact={this.props.updateCustomerDefContact}
-                                                      refreshCustomerList={this.props.refreshCustomerList}
-                                                      callNumber={this.state.callNumber}
-                                                      getCallNumberError={this.state.getCallNumberError}
-                                                      curCustomer={this.state.curCustomer}
-                                        />)
-                                } else {
-                                    return "";
-                                }
-                            })}
-                        </div>
+                        {this.state.contactListLoading ? (<Spinner/>) : this.state.contactList.map((contact, i) => {
+                            if (contact) {
+                                return contact.isShowEditContactForm ?
+                                    (<ContactForm contact={contact}
+                                                  key={i}
+                                                  isMerge={this.props.isMerge}
+                                                  updateMergeCustomerContact={this.props.updateMergeCustomerContact}
+                                                  refreshCustomerList={this.props.refreshCustomerList}
+                                                  updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                                  type="edit"/>) :
+                                    (<ContactItem isMerge={this.props.isMerge} contact={contact}
+                                                  key={i}
+                                                  setMergeCustomerDefaultContact={this.props.setMergeCustomerDefaultContact}
+                                                  delMergeCustomerContact={this.props.delMergeCustomerContact}
+                                                  updateMergeCustomerContact={this.props.updateMergeCustomerContact}
+                                                  updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                                  refreshCustomerList={this.props.refreshCustomerList}
+                                                  callNumber={this.state.callNumber}
+                                                  getCallNumberError={this.state.getCallNumberError}
+                                                  curCustomer={this.state.curCustomer}
+                                    />)
+                            } else {
+                                return "";
+                            }
+                        })}
                     </GeminiScrollbar>
                 </div>
             </div>
