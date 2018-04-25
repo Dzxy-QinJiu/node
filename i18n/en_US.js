@@ -1236,6 +1236,7 @@ var en_US = {
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
+    "crm.order.stage":"Order stage",//订单阶段
     // 客户管理end
 
     //客户分析 start

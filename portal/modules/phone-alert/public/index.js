@@ -478,12 +478,12 @@ class PhoneAlert extends React.Component {
             remark: this.state.inputContent
         };
         phoneAlertAction.updateCustomerTrace(submitObj, () => {
-            var submitObj = {customer_id: customer_id, remark: this.state.inputContent};
+            let updateData = {customer_id: customer_id, remark: this.state.inputContent};
             if (this.state.isConnected) {
                 //如果电话已经接通
-                submitObj.last_contact_time = new Date().getTime();
+                updateData.last_contact_time = new Date().getTime();
             }
-            CrmAction.updateCurrentCustomerRemark(submitObj);
+            CrmAction.updateCurrentCustomerRemark(updateData);
             var height = $(".trace-content").outerHeight(true);
             $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
             $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});

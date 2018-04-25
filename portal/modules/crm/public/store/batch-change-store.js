@@ -62,7 +62,7 @@ BatchChangeStore.prototype.setCurrentTab = function (value) {
 };
 
 BatchChangeStore.prototype.getRecommendTags = function (list) {
-    this.recommendTags = list;
+    this.recommendTags = _.isArray(list) ? list : [];
 };
 
 BatchChangeStore.prototype.setLoadingState = function (state) {

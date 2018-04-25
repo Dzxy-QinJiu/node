@@ -575,13 +575,13 @@ var Crm = React.createClass({
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
                     }
                     term_fields.push("immutable_labels");//精确匹配
-               }
-               //剩下普通标签的筛选
-               if (condition.labels.length == 0) {
-                   delete condition.labels;
-               } else {
-                   term_fields.push("labels");
-               }
+                }
+                //剩下普通标签的筛选
+                if (condition.labels.length == 0) {
+                    delete condition.labels;
+                } else {
+                    term_fields.push("labels");
+                }
             }
         }
         //竞品,精确匹配
@@ -984,7 +984,7 @@ var Crm = React.createClass({
         if (customerArr) {
             customerArr.interest = interestObj.interest;
         }
-        
+
         this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
@@ -1039,7 +1039,7 @@ var Crm = React.createClass({
         };
 
         ajax(arg).then(result => {
-            if (result.result === "success") {
+            if (result && result.result === "success") {
                 this.state.previewList.splice(index, 1);
                 this.setState(this.state);
             } else {
