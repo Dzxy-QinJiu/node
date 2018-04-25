@@ -38,6 +38,7 @@ function BatchChangeAction() {
     this.getRecommendTags = function (cb) {
         var _this = this;
         batchChangeAjax.getRecommendTags().then(function (data) {
+            data = undefined;
             _this.dispatch(data && data.result);
             if (cb) cb(data && data.result);
         }, function (errorMsg) {

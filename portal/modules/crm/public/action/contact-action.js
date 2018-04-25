@@ -71,13 +71,19 @@ function ContactAction() {
     };
     //添加联系人提交
     this.submitAddContact = function (contact, cb) {
-        var _this = this;
-        contactAjax.addContact(contact).then(function (data) {
-            _this.dispatch(data && data.result[0]);
-            if (_.isFunction(cb)) cb({contact: data && data.result[0]});
-        }, function (errorMsg) {
-            _this.dispatch(errorMsg);
-            if (_.isFunction(cb)) cb({errorMsg: errorMsg});
+        contactAjax.addContact(contact).then(data => {
+            let result = {};
+            if (data && _.isArray(data.result) && data.result[0]) {
+                result = {contact: data && data.result[0]};
+            } else {
+                result = {errorMsg: Intl.get("crm.180", "添加联系人失败")};
+            }
+            this.dispatch(result);
+            if (_.isFunction(cb)) cb(result);
+        }, errorMsg => {
+            let errorObj = {errorMsg: errorMsg};
+            this.dispatch(errorObj);
+            if (_.isFunction(cb)) cb(errorObj);
         });
     };
     //展示修改联系人表单
