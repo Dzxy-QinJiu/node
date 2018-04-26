@@ -409,7 +409,7 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
     if (data.total) {
         list.push($.extend({}, data.total, {
             team_name: Intl.get("sales.home.total.compute", "总计")
-        }))
+        }));
     }
     this.newCustomerCount.data = list;
 });

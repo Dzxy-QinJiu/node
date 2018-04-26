@@ -2,10 +2,9 @@
  * 单个用户日志的action
  */
 var AppUserStore = require('../store/app-user-store');
-var UserAuditLogStore = require('../store/user_audit_log_store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
-var ShareObj = require("../util/app-id-share-util");
+const LogAnalysisUtil = require("./log-analysis-util");
 
 function SingleUserLogAction() {
     this.generateActions(
@@ -18,75 +17,86 @@ function SingleUserLogAction() {
         "getLogsBySearch",  // 根据搜索内容显示日志信息
         "changUserIdKeepSearch", //  切换用户时，保持搜索框内容
         'resetLogState'
-    ); 
-
+    );
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function (searchObj, selectedAppId) {
-        userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-            let userOwnAppArray = result.apps;
-            // 存储应用id的变量
-            let userOwnAppArrayAppIdList = [];
-            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1) {
-                userOwnAppArrayAppIdList = _.pluck(userOwnAppArray, 'app_id');
+        let getLogParam = {
+            user_id: searchObj.user_id,
+            page: searchObj.page,
+            type_filter: searchObj.type_filter
+        };
+        if (_.isObject(searchObj)) {
+            if (searchObj.starttime) {
+                getLogParam.starttime = searchObj.starttime;
             }
-            // 上一个用户选择应用id
-            let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
-            let index = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
-            // 获取UI界面上的app
-            var selectApp =  selectedAppId||AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
-                UserAuditLogStore.getState().selectAppId;
-            var selectedLogAppId = '';
-            // selectAPP == ''是针对全部应用
-            if (selectApp == '') {
-                if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index == -1) {
-                    selectedLogAppId = userOwnAppArray[0].app_id;
-                }else {
-                    selectedLogAppId = lastSelectAppId;
-                }
+            if (searchObj.endtime) {
+                getLogParam.endtime = searchObj.endtime;
+            }
+            if (searchObj.search) {
+                getLogParam.search = searchObj.search;
+            }
+        }
+        let userOwnAppList = [];
+        if (selectedAppId) { // 已选中应用
+            getLogParam.appid = selectedAppId;
+        } else { // 全部应用条件下查看
+            let appUserList = AppUserStore.getState().appUserList;
+            if (appUserList.length) {
+                let selectUserInfo =  _.find(appUserList,  item => item.user.user_id === searchObj.user_id);
+                userOwnAppList = selectUserInfo && selectUserInfo.apps || [];
+                getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
             } else {
-                selectedLogAppId = selectApp;
+                userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+                    if (_.isObject(result) && result.apps) {
+                        userOwnAppList = result.apps;
+                        getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
+                        // 日志列表信息
+                        this.actions.getSingleAuditLogList(getLogParam);
+                        this.dispatch(
+                            {
+                                appId:  getLogParam.appid,
+                                appList: userOwnAppList
+                            }
+                        );
+                    }
+                }, () => {
+                    // 日志列表信息
+                    this.actions.getSingleAuditLogList();
+                    this.dispatch(
+                        {
+                            appId:  '',
+                            appList: userOwnAppList
+                        }
+                    );
+                } );
             }
-
-            let getLogListQueryParam = {
-                appid: selectedLogAppId,
-                user_id: searchObj.user_id,
-                page: searchObj.page,
-                type_filter: searchObj.type_filter
-            };
-            if (_.isObject(searchObj)) {
-                if (searchObj.starttime) {
-                    getLogListQueryParam.starttime = searchObj.starttime;
-                }
-                if (searchObj.endtime) {
-                    getLogListQueryParam.endtime = searchObj.endtime;
-                }
-                if (searchObj.search) {
-                    getLogListQueryParam.search = searchObj.search;
-                }
+            return;
+        }
+        // 日志列表信息
+        this.actions.getSingleAuditLogList(getLogParam);
+        this.dispatch(
+            {
+                appId:  getLogParam.appid,
+                appList: userOwnAppList
             }
-            // 日志列表信息
-            this.actions.getSingleAuditLogList(getLogListQueryParam);
-            this.dispatch(
-                {
-                    appId: selectedLogAppId,
-                    appList: userOwnAppArray
-                }
-            );
-        },  (errorMsg) =>{
-            this.dispatch({error: true, errorMsg: errorMsg});
-        });
+        );
     };
 
 
     // 获取单个用户的审计日志信息
     this.getSingleAuditLogList = function (searchObj) {
-        this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({loading: false, error: false, data: data});
-        },  (errorMsg) =>{
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        if (searchObj && searchObj.appid) {
+            this.dispatch({loading: true, error: false});
+            userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+                this.dispatch({loading: false, error: false, data: data});
+            },  (errorMsg) =>{
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        } else {
+            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
+        }
+
     };
 }
 
