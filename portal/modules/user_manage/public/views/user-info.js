@@ -28,6 +28,7 @@ var UserInfoAction = require("../action/user-info-action");
 import Trace from "LIB_DIR/trace";
 import CommissionAndTarget from "./commission-and-target";
 const UserData = require("PUB_DIR/sources/user-data");
+import RadioCard from "../views/radio-card";
 
 var UserInfo = React.createClass({
         getInitialState: function () {
@@ -315,10 +316,7 @@ var UserInfo = React.createClass({
                 //某条销售目标和提成比例的id
                 recordId = saleGoalsAndCommissionRadio.id;
             }
-            if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
-                //提成比例
-                commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
-            }
+
             if (saleGoalsAndCommissionRadio.goal || saleGoalsAndCommissionRadio.goal === 0) {
                 //销售目标
                 goal = saleGoalsAndCommissionRadio.goal;
@@ -484,23 +482,6 @@ var UserInfo = React.createClass({
                         </dd>
                     </dl> }
                     {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
-                        <dt>{Intl.get("contract.141", "提成比例")}</dt>
-                        <dd>
-                            <CommissionAndTarget
-                                id={recordId}
-                                field={"commission_ratio"}
-                                userInfo = {this.state.userInfo}
-                                setSalesGoals={UserInfoAjax.setSalesGoals}
-                                value={commissionRadio}
-                                displayType={'text'}
-                                min={0}
-                                max={100}
-                                countTip={"%"}
-                                afterModifySuccess={this.afterModifySuccess}
-                            />
-                        </dd>
-                    </dl> : null}
-                    {isSales ? <dl className="dl-horizontal detail_item member-detail-item">
                         <dt>{Intl.get("sales.team.sales.goal", "销售目标")}</dt>
                         <dd>
                             <CommissionAndTarget
@@ -615,6 +596,31 @@ var UserInfo = React.createClass({
             }
 
             var userName = this.state.userInfo.userName ? this.state.userInfo.userName : "";
+            let isSales = false;
+            if (_.isArray(userInfo.roleNames) && userInfo.roleNames.length) {
+                if (_.indexOf(userInfo.roleNames, Intl.get("sales.home.sales", "销售")) > -1) {
+                    //是否是销售角色
+                    isSales = true;
+                }
+            }
+            var commissionRadio = "", goal = "", recordId = "",
+                saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = "", renewalCommissionRatio = "";
+            if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
+                //提成比例
+                commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
+            }
+            if ((saleGoalsAndCommissionRadio.new_commission_ratio && saleGoalsAndCommissionRadio.new_commission_ratio > -1) || saleGoalsAndCommissionRadio.new_commission_ratio === 0) {
+                //新签提成比例,该字段存在，并且不为-1的时候，才进行赋值
+                newCommissionRatio = saleGoalsAndCommissionRadio.new_commission_ratio;
+            }
+            if ((saleGoalsAndCommissionRadio.renewal_commission_ratio && saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) || saleGoalsAndCommissionRadio.renewal_commission_ratio === 0) {
+                //续约提成比例，该字段存在，并且不为-1的时候，才进行赋值
+                renewalCommissionRatio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
+            }
+            if (saleGoalsAndCommissionRadio.id) {
+                //某条销售目标和提成比例的id
+                recordId = saleGoalsAndCommissionRadio.id;
+            }
             return (
                 <div className={className} data-tracename="成员详情">
                     <RightPanelClose onClick={this.props.closeRightPanel} data-tracename="点击关闭成员详情"/>
@@ -650,6 +656,17 @@ var UserInfo = React.createClass({
                                 {this.state.userIsLoading ? (
                                     <Spin size="small"/>) : this.renderUserItems(userInfo)
                                 }
+                            </div>
+                            <div className="radio-container-wrap">
+                                {isSales ?
+                                    <RadioCard
+                                        id={recordId}
+                                        commissionRadio={commissionRadio}
+                                        newCommissionRatio= {newCommissionRatio}
+                                        renewalCommissionRatio= {renewalCommissionRatio}
+                                        userInfo={this.state.userInfo}
+                                        setSalesGoals={UserInfoAjax.setSalesGoals}
+                                    /> : null}
                             </div>
                             <div className="log-infor-list" style={{display: this.state.hasLog ? 'block' : 'none'}}>
                                 <div className="log-infor-title">

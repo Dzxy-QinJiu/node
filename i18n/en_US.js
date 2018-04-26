@@ -2107,7 +2107,9 @@ var en_US = {
     "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
     "crm.should.reduce.customer":"The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
     "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
-    "sales.role.setting.name":"Sales role name"//销售角色名称
-
+    "sales.role.setting.name":"Sales role name",//销售角色名称
+    "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
+    "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
+    "sales.rewrite.contract.radio":"Renewed signing ratio"//续约提成比例
 };
-export default en_US;
+export default en_US;

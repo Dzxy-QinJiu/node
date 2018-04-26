@@ -2124,6 +2124,10 @@ var zh_CN = {
     "crm.should.reduce.customer":"该销售拥有客户数量已达到上限！",
     "crm.should.add.customer":"您拥有的客户已达到上限，请不要再添加客户了",
     "sales.role.config.customer.num":"最大客户数",
-    "sales.role.setting.name":"销售角色名称"
+    "sales.role.setting.name":"销售角色名称",
+    "sales.if.switch.type": "是否区分新签和续约类型",
+    "sales.new.write.contract.radio":"新签提成比例",
+    "sales.rewrite.contract.radio":"续约提成比例"
+
 };
 export default zh_CN;
