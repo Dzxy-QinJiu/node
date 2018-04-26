@@ -343,6 +343,23 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
 });
 
 //销售新开客户数
+/**
+ * 接口返回数据
+ * {
+ *      list: [],
+ *      total: [],
+ *      code: 0,
+ *      msg: "获取成功"
+ * }
+ * view层使用的数据结构
+ * [
+ *  {
+ *      team_name: "",
+ *      user_name: "",
+ *      rowSpan: 0//控制是否合并行的属性
+ *  }
+ * ]
+ */
 OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({loading, errorMsg, data, paramObj}) {
     let list = [];
     if (data.list && data.list.length > 0) {
