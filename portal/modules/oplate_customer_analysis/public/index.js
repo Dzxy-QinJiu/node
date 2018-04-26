@@ -454,7 +454,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 width: 80
             },
             {
-                title: Intl.get("oplate_customer_analysis.customerLoginCount", "客户登录数"),
+                title: Intl.get("oplate_customer_analysis.customerLoginCount", "新开通客户登录数"),
                 dataIndex: "customer_login",
                 key: "customer_login",
                 align: "right",
