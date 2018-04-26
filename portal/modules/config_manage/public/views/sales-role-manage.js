@@ -209,13 +209,13 @@ const SalesRoleManage = React.createClass({
        this.setState({
            isEdittingItem:item.id,
            updateErrMsg:''
-       })
+       });
     },
     cancelEditCustomerNum: function () {
        this.setState({
            isEdittingItem: '',
            updateErrMsg: ''
-       })
+       });
     },
     submitUpdateCustomerNum: function (item) {
         var updateObj = {
@@ -313,12 +313,12 @@ const SalesRoleManage = React.createClass({
     onChange: function (value) {
        this.setState({
            addRoleCustomerNum: value
-       })
+       });
     },
     onUpdateCustomerNumChange: function (value) {
         this.setState({
             updateRoleCustomerNum: value
-        })
+        });
     },
     render: function () {
         return (
