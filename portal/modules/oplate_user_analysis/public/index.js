@@ -2126,8 +2126,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             <Col xs={24} sm={12} md={4}>
                                 <SummaryNumber
                                     resultType={this.state.summaryNumbers.resultType}
-                                    desp="延期用户"
-                                    num={DELAYED_USERS_SYMBOL}
+                                    desp={Intl.get("operation.report.app.delay.user", "延期用户")}
+                                    num={this.state.summaryNumbers.data.delayed}
                                     active={this.state.currentTab === 'delay'}
                                     onClick={this.changeCurrentTab.bind(this, 'delay')}/>
                             </Col> : null}
