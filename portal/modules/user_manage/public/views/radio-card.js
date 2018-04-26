@@ -9,11 +9,11 @@ class RadioCard extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            radioCount: this.props.radioCount,//提成比例
+            commissionRadio: this.props.commissionRadio,//提成比例
             submitRadioCount: "",//要提交的提成比例
-            newCommissionRatio: this.props.new_commission_ratio,//新签提成比例
+            newCommissionRatio: this.props.newCommissionRatio,//新签提成比例
             submitNewCommissionRadio: '',//要提交的新签提成比例
-            renewalCommissionRatio: this.props.renewal_commission_ratio,//续约提成比例
+            renewalCommissionRatio: this.props.renewalCommissionRatio,//续约提成比例
             submitRenewalCommissionRadio: '',//要提交的续约提成比例
             userInfo: $.extend(true,{},this.props.userInfo),
             isEdittingRadio: false,//是否是编辑状态
@@ -26,9 +26,9 @@ class RadioCard extends React.Component {
         if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.id !== this.state.id) {
             this.setState({
                 userInfo: $.extend(true, {}, nextProps.userInfo),
-                radioCount: nextProps.radioCount,
-                newCommissionRatio: nextProps.new_commission_ratio,
-                renewalCommissionRatio: nextProps.renewal_commission_ratio,
+                commissionRadio: nextProps.commissionRadio,
+                newCommissionRatio: nextProps.newCommissionRatio,
+                renewalCommissionRatio: nextProps.renewalCommissionRatio,
                 id: nextProps.id
             });
         }
@@ -45,36 +45,42 @@ class RadioCard extends React.Component {
             isCheckBoxChecked: e.target.checked
         })
     };
-    //保存修改的数据
-    handleSubmit(){
-        this.setState({
-            loading: true
-        });
+    getQueryParams (){
         var user = {};
         //如果提成或者目标的id存在，就更新那条记录
         if (this.state.id) {
             user.id = this.state.id;
         }
-        if (this.state.userInfo.id) {
-            user.user_id = this.state.userInfo.id;
-            user.user_name = this.state.userInfo.name;
-            user.sales_team = this.state.userInfo.teamName;
-            user.sales_team_id = this.state.userInfo.teamId;
+        var userInfo = this.state.userInfo;
+        if (userInfo.id) {
+            user.user_id = userInfo.id;
+            user.user_name = userInfo.name;
+            user.sales_team = userInfo.teamName;
+            user.sales_team_id = userInfo.teamId;
         }
         var submitNewCommissionRadio = this.state.submitNewCommissionRadio;
         var submitRenewalCommissionRadio = this.state.submitRenewalCommissionRadio;
-        //提交新增或者续约提成比例的时候，把提成比例这个字段设置为负值
+        //提交新签或者续约提成比例的时候，把提成比例这个字段设置为负值
         if (this.state.isCheckBoxChecked){
             //新签比例如果没修改，就用原来的props传过来的值
             user.new_commission_ratio = submitNewCommissionRadio ||submitNewCommissionRadio === 0 ? submitNewCommissionRadio :this.state.newCommissionRatio;
             user.renewal_commission_ratio = submitRenewalCommissionRadio || submitRenewalCommissionRadio ===0 ? submitRenewalCommissionRadio : this.state.renewalCommissionRatio;
             user.commission_ratio = -1;
         }else{
-            //设置提成比例这个字段时，把新增或者续约提成比例设置成负值
+            //设置提成比例这个字段时，把新签或者续约提成比例设置成负值
             user.new_commission_ratio = -1;
             user.renewal_commission_ratio = -1;
             user.commission_ratio = this.state.submitRadioCount;
         }
+        return user;
+
+    };
+    //保存修改的数据
+    handleSubmit(){
+        this.setState({
+            loading: true
+        });
+        var user = this.getQueryParams();
         this.props.setSalesGoals(user).then((result) => {
             if (result.id) {
                 this.setState({
@@ -85,11 +91,11 @@ class RadioCard extends React.Component {
                     this.setState({
                         newCommissionRatio: user.new_commission_ratio,
                         renewalCommissionRatio : user.renewal_commission_ratio,
-                        radioCount: ''
+                        commissionRadio: ''
                     })
                 }else{
                     this.setState({
-                        radioCount: user.commission_ratio,
+                        commissionRadio: user.commission_ratio,
                         newCommissionRatio: '',
                         renewalCommissionRatio: ''
                     })
@@ -157,7 +163,7 @@ class RadioCard extends React.Component {
                     </div>
                 </div>: <div>
                     {Intl.get("contract.141", "提成比例")}:
-                    <InputNumber min={0} max={100} defaultValue={this.state.radioCount} onChange={this.handleRadioCount}/>%
+                    <InputNumber min={0} max={100} defaultValue={this.state.commissionRadio} onChange={this.handleRadioCount}/>%
                     {this.state.loading ? <Icon type="loading"/>: <span>
                              <i title={Intl.get("common.update", "修改")} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="保存修改提成比例"></i>
                         <i title={Intl.get("common.cancel", "取消")} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="取消修改提成比例"></i>
@@ -182,7 +188,7 @@ class RadioCard extends React.Component {
                             <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="点击修改新签或续约提成比例"></i>
                         </p>
                     </div> : <div>
-                        {Intl.get("contract.141", "提成比例")}: {this.state.radioCount}%
+                        {Intl.get("contract.141", "提成比例")}: {this.state.commissionRadio}%
                         <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="点击修改提成比例"></i>
                     </div>}
                 </div>}

@@ -604,18 +604,18 @@ var UserInfo = React.createClass({
                 }
             }
             var commissionRadio = "", goal = "", recordId = "",
-                saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, new_commission_ratio = "", renewal_commission_ratio = "";
+                saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = "", renewalCommissionRatio = "";
             if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
                 //提成比例
                 commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
             }
             if ((saleGoalsAndCommissionRadio.new_commission_ratio && saleGoalsAndCommissionRadio.new_commission_ratio > -1) || saleGoalsAndCommissionRadio.new_commission_ratio === 0) {
-                //新签提成比例
-                new_commission_ratio = saleGoalsAndCommissionRadio.new_commission_ratio;
+                //新签提成比例,该字段存在，并且不为-1的时候，才进行赋值
+                newCommissionRatio = saleGoalsAndCommissionRadio.new_commission_ratio;
             }
             if ((saleGoalsAndCommissionRadio.renewal_commission_ratio && saleGoalsAndCommissionRadio.renewal_commission_ratio > -1) || saleGoalsAndCommissionRadio.renewal_commission_ratio === 0) {
-                //续约提成比例
-                renewal_commission_ratio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
+                //续约提成比例，该字段存在，并且不为-1的时候，才进行赋值
+                renewalCommissionRatio = saleGoalsAndCommissionRadio.renewal_commission_ratio;
             }
             if (saleGoalsAndCommissionRadio.id) {
                 //某条销售目标和提成比例的id
@@ -661,9 +661,9 @@ var UserInfo = React.createClass({
                                 {isSales ?
                                     <RadioCard
                                         id={recordId}
-                                        radioCount={commissionRadio}
-                                        new_commission_ratio= {new_commission_ratio}
-                                        renewal_commission_ratio= {renewal_commission_ratio}
+                                        commissionRadio={commissionRadio}
+                                        newCommissionRatio= {newCommissionRatio}
+                                        renewalCommissionRatio= {renewalCommissionRatio}
                                         userInfo={this.state.userInfo}
                                         setSalesGoals={UserInfoAjax.setSalesGoals}
                                     /> : null}
