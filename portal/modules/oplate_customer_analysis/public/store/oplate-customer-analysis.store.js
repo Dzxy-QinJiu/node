@@ -345,9 +345,9 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
 //销售新开客户数
 OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({loading, errorMsg, data, paramObj}) {
     let list = [];
-    if (data.result && data.result.length > 0) {
-        data.result.forEach(teamItem => {
-            teamItem.team_result.forEach(sale => {
+    if (data.list && data.list.length > 0) {
+        data.list.forEach(teamItem => {
+            teamItem.team_result.forEach((sale, index) => {
                 sale.team_name = teamItem.team_name;
                 if (list.find(item => item.team_name == teamItem.team_name)) {                    
                     sale.rowSpan = 0;
@@ -355,12 +355,25 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
                     sale.rowSpan = teamItem.team_result.length;
                 }
                 list.push(sale);
+                //在每个团队最后一个销售的数据后加上合计
+                if (index == teamItem.team_result.length - 1) {
+                    list.push($.extend({}, teamItem.team_total, {
+                        user_name: Intl.get("sales.home.total.compute", "总计")
+                    }));
+                }                
             });
         });
+    }
+    //在数据最后添加总的合计
+    if (data.total) {
+        list.push($.extend({}, data.total, {
+            team_name: Intl.get("sales.home.total.compute", "总计"),
+            user_name: ""
+        }))
     }
     this.newCustomerCount.data = list;
 });
 
 
 //导出 客户分析-客户构成 的store
-module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
+module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
