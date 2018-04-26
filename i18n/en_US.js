@@ -1100,7 +1100,7 @@ var en_US = {
     "crm.96": "Area", // 地域
     "crm.97": "Import complete", // 导入完成
     "crm.98": "Import customer success", // 导入客户成功
-    "crm.99": "Import customer error, please retry", // 导入客户失败，请重试!
+    "crm.99": "Import customer error, please retry", // 导入客户失败
     "crm.100": "Existing users applied for trail users", // 老用户申请试用用户
     "crm.101": "Existing users applied for official users", // 老用户转签约用户
     "crm.102": "The username must be a combination of letters, numbers, underlines, or a valid email", // 用户名必须为字母、数字、下划线的组合或合法格式的邮箱
@@ -1269,7 +1269,7 @@ var en_US = {
     "oplate_customer_analysis.salesNewCustomerCount": "Statistic of new customers created by sales", //"销售新开客户数统计",
     "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"新开客户数",
     "oplate_customer_analysis.tatolNewCustomerCount": "Total count of new customer", //"新开账号数总数",
-    "oplate_customer_analysis.customerLoginCount": "Login customer count", //"客户登录数",
+    "oplate_customer_analysis.customerLoginCount": "New login customer count", //"新开客户登录数",
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@
@@ -2102,10 +2102,14 @@ var en_US = {
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
     "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "crm.import.over.limit":"After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
+    "crm.transfer.over.limit": "Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers",//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
+    "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
+    "crm.should.reduce.customer":"The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
     "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
     "sales.role.setting.name":"Sales role name",//销售角色名称
     "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
     "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
     "sales.rewrite.contract.radio":"Renewed signing ratio"//续约提成比例
 };
-export default en_US;
+export default en_US;
