@@ -346,8 +346,29 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
 /**
  * 接口返回数据
  * {
- *      list: [],
- *      total: [],
+ *      list: [
+ *          {
+ *              team_name: "",
+ *              team_result: [
+ *                  {
+ *                      user_name,
+ *                      customer_login,
+ *                      tatol_newly_users,
+ *                      newly_customer                    
+ *                  }
+ *              ],
+ *              team_total: {
+ *                      customer_login,
+ *                      tatol_newly_users,
+ *                      newly_customer   
+ *              }
+ *          }
+ *      ],
+ *      total: {
+ *           customer_login,
+ *           tatol_newly_users,
+ *           newly_customer      
+ *      },
  *      code: 0,
  *      msg: "获取成功"
  * }
@@ -357,6 +378,9 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
  *      team_name: "",
  *      user_name: "",
  *      rowSpan: 0//控制是否合并行的属性
+ *      customer_login,
+ *      tatol_newly_users,
+ *      newly_customer  
  *  }
  * ]
  */
