@@ -2103,6 +2103,9 @@ var en_US = {
     "call.record.average.connected": "Connetion number of person average",//人均接通数
     "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
     "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
-    "sales.role.setting.name":"Sales role name"//销售角色名称
+    "sales.role.setting.name":"Sales role name",//销售角色名称
+    "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
+    "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
+    "sales.rewrite.contract.radio":"Renewed signing ratio"//续约提成比例
 };
 export default en_US;

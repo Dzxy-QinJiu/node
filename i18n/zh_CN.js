@@ -2119,6 +2119,10 @@ var zh_CN = {
     "call.record.average.connected": "人均接通数",
     "call.record.all.teams.trend": "查看各团队通话趋势图",
     "sales.role.config.customer.num":"最大客户数",
-    "sales.role.setting.name":"销售角色名称"
+    "sales.role.setting.name":"销售角色名称",
+    "sales.if.switch.type": "是否区分新签和续约类型",
+    "sales.new.write.contract.radio":"新签提成比例",
+    "sales.rewrite.contract.radio":"续约提成比例"
+
 };
 export default zh_CN;
