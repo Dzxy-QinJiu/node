@@ -2,7 +2,7 @@ require("../css/index.less");
 const Spinner = require("CMP_DIR/spinner");
 const AlertTimer = require("CMP_DIR/alert-timer");
 import Trace from "LIB_DIR/trace";
-import {Icon, Alert} from "antd";
+import {Icon, Alert, InputNumber} from "antd";
 import classNames from "classnames";
 import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
@@ -26,6 +26,12 @@ const SalesRoleManage = React.createClass({
             addErrMsg: '',
             // 删除角色失败
             deleteErrMsg: '',
+            //正在编辑客户容量的角色
+            isEdittingItem: '',
+            updateRoleCustomerNum:'',//要更新某个销售角色的客户容量
+            addRoleCustomerNum:'',//某个添加角色的客户容量
+            isUpdateloading: false,
+            updateErrMsg:'',//修改客户容量失败后的错误信息
         });
     },
     //获取销售角色列表
@@ -120,7 +126,12 @@ const SalesRoleManage = React.createClass({
         if (!role) {
             return;
         }
-        let addRole = {name: role, color: this.getRoleColor()};
+        //输入的客户容量
+        let customer_num = this.state.addRoleCustomerNum;
+        if (!customer_num){
+            return;
+        }
+        let addRole = {name: role, color: this.getRoleColor(),customer_num: customer_num};
         //显示添加的loading效果
         this.setState({
             isAddloading: true
@@ -141,7 +152,8 @@ const SalesRoleManage = React.createClass({
                     }
                     this.setState({
                         salesRoleList: salesRoleList,
-                        isAddloading: false
+                        isAddloading: false,
+                        addRoleCustomerNum: ''
                     });
                     this.refs.addSalesRole.value = '';
                 }
@@ -193,6 +205,54 @@ const SalesRoleManage = React.createClass({
         let roleColor = _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
         return roleColor;
     },
+    handleEditItem: function (item) {
+       this.setState({
+           isEdittingItem:item.id,
+           updateErrMsg:''
+       });
+    },
+    cancelEditCustomerNum: function () {
+       this.setState({
+           isEdittingItem: '',
+           updateErrMsg: ''
+       });
+    },
+    submitUpdateCustomerNum: function (item) {
+        var updateObj = {
+            id: item.id,
+            customer_num: this.state.updateRoleCustomerNum
+        };
+        this.setState({
+            isUpdateloading: true
+        });
+
+        $.ajax({
+            url: '/rest/sales/setting/customer',
+            type: 'put',
+            dateType: 'json',
+            data: updateObj,
+            success: (result) => {
+                if (result) {
+                    let salesRoleList = this.state.salesRoleList;
+                    var updateRoleItem = _.find(salesRoleList, saleRole => saleRole.id === item.id);
+                    updateRoleItem.customer_num = this.state.updateRoleCustomerNum;
+                    this.setState({
+                        salesRoleList: this.state.salesRoleList,
+                        isUpdateloading: false,
+                        updateErrMsg:'',
+                        isEdittingItem: ''
+                    });
+                }
+            },
+            error: (errorInfo) => {
+                this.setState({
+                    isUpdateloading: false,
+                    updateErrMsg: errorInfo.responseJSON
+                });
+            }
+        });
+
+    },
     renderSalesRoleList: function () {
         let salesRoleList = this.state.salesRoleList;
         //正在获取数据的状态渲染
@@ -202,30 +262,44 @@ const SalesRoleManage = React.createClass({
             //错误提示
             return <Alert type="error" showIcon message={this.state.getErrMsg}/>;
         } else if (_.isArray(salesRoleList) && salesRoleList.length) {
+            var hide = () => {
+                this.setState({
+                    updateErrMsg: ''
+                });
+            };
             //销售角色列表
             return (<ul className="mb-taglist" data-tracename="销售角色管理">
                 {salesRoleList.map((item, index) => {
                         let defaultCls = classNames("default-role-descr", {"default-role-checked": item.is_default});
                         let title_tip = item.is_default ? "" : Intl.get("role.set.default", "设为默认角色");
                         return (
-                            <li className="mb-tag">
-                                <div className="mb-tag-content">
+                            <li className="sales-tag">
+                                <div className="sales-tag-content">
                                     <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
-                                    <span className="mb-tag-text">{item.name}</span>
+                                    <span className="sales-tag-text">{item.name}</span>
                                     <span className={defaultCls} title={title_tip}
                                           onClick={this.setDefautRole.bind(this, item)}
                                           data-tracename="点击设为默认角色按钮">
                                         {Intl.get("role.default.set", "默认")}
                                         {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
                                     </span>
+                                    <div className="customer-container">
+                                        {Intl.get("sales.role.config.customer.num","最大客户数")}:
+                                        {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange}/>
+                                        {this.state.isUpdateloading ?<Icon type="loading"/> : <span>
+                                                       <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
+                                        </span>}
+                                  </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
+                                    </div>
                                     {item.is_default || this.state.settingDefaultRole == item.id ? null :
-                                        <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                        <span className="anticon anticon-delete"
                                               onClick={this.handleDeleteItem.bind(this, item.id)}
                                               data-tracename="点击删除某个销售角色按钮"
                                         />}
                                     { this.state.DeletingItem === item.id ? (
                                         <Icon type="loading"/>
                                     ) : null}
+                                    {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide): null}
                                 </div>
                             </li>);
                     }
@@ -235,6 +309,16 @@ const SalesRoleManage = React.createClass({
             return <Alert type="info" showIcon
                           message={Intl.get("config.manage.no.role", "暂无销售角色，请添加！")}/>;
         }
+    },
+    onChange: function (value) {
+       this.setState({
+           addRoleCustomerNum: value
+       });
+    },
+    onUpdateCustomerNumChange: function (value) {
+        this.setState({
+            updateRoleCustomerNum: value
+        });
     },
     render: function () {
         return (
@@ -255,8 +339,15 @@ const SalesRoleManage = React.createClass({
                 </div>
                 <div className="box-footer">
                     <form onSubmit={this.handleSubmit}>
-                        <div>
+                        <div className="role-submit-container">
+                            <span className="name-label">
+                                {Intl.get("sales.role.setting.name", "销售角色名称")}:
+                            </span>
                             <input className="mb-input" ref="addSalesRole"/>
+                            <span className="name-label">
+                               {Intl.get("sales.role.config.customer.num", "最大客户数")}:
+                            </span>
+                            <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum}/>
                             <button className="btn mb-add-button" type="submit"
                                     disabled={this.state.isAddloading ? "disabled" : ""}>
                                 {Intl.get("common.add", "添加")}

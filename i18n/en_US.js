@@ -1236,6 +1236,7 @@ var en_US = {
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
+    "crm.order.stage":"Order stage",//订单阶段
     // 客户管理end
 
     //客户分析 start
@@ -1268,7 +1269,7 @@ var en_US = {
     "oplate_customer_analysis.salesNewCustomerCount": "Statistic of new customers created by sales", //"销售新开客户数统计",
     "oplate_customer_analysis.newCustomerCount": "Count of new customers created by sales", //"新开客户数",
     "oplate_customer_analysis.tatolNewCustomerCount": "Total count of new customer", //"新开账号数总数",
-    "oplate_customer_analysis.customerLoginCount": "Login customer count", //"客户登录数",
+    "oplate_customer_analysis.customerLoginCount": "New login customer count", //"新开客户登录数",
     //客户分析 end
     //合同管理 start
     "contract.4": "Party A",//甲方@
@@ -2104,6 +2105,9 @@ var en_US = {
     "crm.import.over.limit":"After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
     "crm.transfer.over.limit": "Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers",//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
     "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
-    "crm.should.reduce.customer":"The number of customers has reached the limit!"//该销售拥有客户数量已达到上限！
+    "crm.should.reduce.customer":"The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
+    "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
+    "sales.role.setting.name":"Sales role name"//销售角色名称
+
 };
 export default en_US;

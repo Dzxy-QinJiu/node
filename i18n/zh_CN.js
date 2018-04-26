@@ -1254,6 +1254,7 @@ var zh_CN = {
     "crm.sales.customerStage": "客户阶段变更统计",
     "crm.repeat.phone": "电话重复",
     "crm.repeat.phone.unhandle": "您还有未处理的重复电话：",
+    "crm.order.stage":"订单阶段",
     // 客户管理end
 
     // 客户分析start
@@ -1286,7 +1287,7 @@ var zh_CN = {
     "oplate_customer_analysis.salesNewCustomerCount": "销售新开客户数统计",
     "oplate_customer_analysis.newCustomerCount": "新开客户数",
     "oplate_customer_analysis.tatolNewCustomerCount": "新开账号数总数",
-    "oplate_customer_analysis.customerLoginCount": "客户登录数",
+    "oplate_customer_analysis.customerLoginCount": "新开通客户登录数",
     // 客户分析end
     "contract.4": "甲方",
     "contract.5": "更新",
@@ -2121,6 +2122,8 @@ var zh_CN = {
     "crm.transfer.over.limit": "转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出",
     "crm.change.over.limit": "变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售",
     "crm.should.reduce.customer":"该销售拥有客户数量已达到上限！",
-    "crm.should.add.customer":"您拥有的客户已达到上限，请不要再添加客户了"
+    "crm.should.add.customer":"您拥有的客户已达到上限，请不要再添加客户了",
+    "sales.role.config.customer.num":"最大客户数",
+    "sales.role.setting.name":"销售角色名称"
 };
 export default zh_CN;

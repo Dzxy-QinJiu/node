@@ -78,13 +78,13 @@ ContactStore.prototype.hideAddContactForm = function () {
 };
 
 //FromAction-提交添加联系人表单
-ContactStore.prototype.submitAddContact = function (contact) {
-    if (typeof contact === 'string') {
-        this.submitAddContactErrorMsg = contact;
-    } else {
+ContactStore.prototype.submitAddContact = function (result) {
+    if (result.errorMsg) {
+        this.submitAddContactErrorMsg = result.errorMsg;
+    } else if (result.contact) {
         this.hideAddContactForm();
         this.submitAddContactErrorMsg = '';
-        var newContact = ContactUtils.newViewContactObject(contact);
+        var newContact = ContactUtils.newViewContactObject(result.contact);
         this.contactList.unshift(newContact);
     }
 };

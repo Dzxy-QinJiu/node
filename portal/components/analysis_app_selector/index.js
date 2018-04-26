@@ -41,7 +41,7 @@ var AnalysisAppSelector = React.createClass({
         var isChoosenAll = appId === 'all';
         //针对选中“全部应用”进行特殊处理
         if(isChoosenAll && this.state.hasAll && this.props.type === 'user') {
-            appId = _.pluck(this.state.appList , 'id').join(',');
+            appId = 'all';
         }
         this.props.onSelectApp(appId,isChoosenAll,hasAll,apps);
     },

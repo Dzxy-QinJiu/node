@@ -58,7 +58,7 @@ var CrmRightPanel = React.createClass({
     getCurCustomer: function (id) {
         let condition = {id: id};
         crmAjax.queryCustomer(condition).then(resData => {
-            if (_.isArray(resData.result) && resData.result.length) {
+            if (resData && _.isArray(resData.result) && resData.result.length) {
                 this.state.curCustomer = resData.result[0];
                 this.setState(this.state);
             }

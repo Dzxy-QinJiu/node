@@ -367,13 +367,13 @@ const CrmFilterPanel = React.createClass({
                         </dd>
                     </dl>
                     <dl>
-                        <dt><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段"/> :</dt>
+                        <dt>{Intl.get("crm.order.stage","订单阶段")} :</dt>
                         <dd>
                             <ul>{stageListJsx}</ul>
                         </dd>
                     </dl>
                     <dl>
-                        <dt>{Intl.get("crm.stage.tag", "阶段标签")} :</dt>
+                        <dt>{Intl.get("weekly.report.customer.stage", "客户阶段")} :</dt>
                         <dd>
                             <ul>{stageTagListJsx}</ul>
                         </dd>

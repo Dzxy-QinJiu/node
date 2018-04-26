@@ -38,10 +38,10 @@ function BatchChangeAction() {
     this.getRecommendTags = function (cb) {
         var _this = this;
         batchChangeAjax.getRecommendTags().then(function (data) {
-            _this.dispatch(data.result);
-            if (cb) cb(data.result);
+            _this.dispatch(data && data.result);
+            if (cb) cb(data && data.result);
         }, function (errorMsg) {
-            if (cb){
+            if (cb) {
                 cb(errorMsg);
             }
             console.log(errorMsg);
