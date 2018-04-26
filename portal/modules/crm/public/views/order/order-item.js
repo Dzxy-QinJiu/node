@@ -16,6 +16,7 @@ import BasicEditInputField from "CMP_DIR/basic-edit-field-new/input";
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+import classNames from "classnames";
 
 const OrderItem = React.createClass({
     getInitialState: function () {
@@ -60,7 +61,7 @@ const OrderItem = React.createClass({
     },
 
     //模态提示框确定后的处理
-    handleModalOK: function (order, apps) {
+    handleModalOK: function (order) {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除订单");
         switch (this.state.modalDialogType) {
             case 1:
@@ -408,15 +409,6 @@ const OrderItem = React.createClass({
                         </Button>
                     ) : null}
                 </div>
-
-                <ModalDialog modalContent={_this.state.modalContent}
-                             modalShow={_this.state.modalDialogFlag}
-                             container={_this}
-                             hideModalDialog={_this.hideModalDialog.bind(_this, order)}
-                             delete={_this.handleModalOK.bind(_this, order, apps)}
-                             closedModalTip="取消删除订单"
-                />
-
                 {this.state.isAlertShow ? (
                     <Alert
                         message={Intl.get("crm.153", "请先添加应用")}
@@ -473,11 +465,6 @@ const OrderItem = React.createClass({
 
         return (
             <div className={className}>
-                {
-                    this.state.isLoading ?
-                        (<Spinner className="isloading"/>) :
-                        (null)
-                }
                 <div className="order-title">
                     <div className="order-title-left">
                         <label><ReactIntl.FormattedMessage id="crm.146"
@@ -662,20 +649,31 @@ const OrderItem = React.createClass({
                     {order.time ? moment(order.time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ""}
                 </span>
                 <span className="order-item-buttons">
-                    <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
-                          data-tracename="点击删除订单按钮"
-                          onClick={this.showDelModalDialog}/>
-                    <DetailEditBtn title={Intl.get("common.edit", "编辑")}
-                                   onClick={this.props.showForm.bind(null, order.id)}
-                                   data-tracename="点击编辑订单按钮"/>
+                    {this.state.modalDialogFlag ? (
+                        <span className="item-delete-buttons">
+                            <Button className="item-delete-cancel delete-button-style"
+                                    onClick={this.hideModalDialog.bind(this, order)}>
+                                {Intl.get("common.cancel", "取消")}
+                            </Button>
+                            <Button className="item-delete-confirm delete-button-style"
+                                    onClick={this.handleModalOK.bind(this, order)}>
+                                {Intl.get("crm.contact.delete.confirm", "确认删除")}
+                            </Button>
+                        </span>) : (
+                        <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
+                              data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
+                    }
                 </span>
             </span>
         );
     },
     render(){
+        let containerClassName = classNames("order-item-container", {
+            "item-delete-border": this.state.modalDialogFlag
+        });
         return (<DetailCard title={this.renderOrderTitle()}
                             content={this.renderOrderContent()}
-                            className="order-item-container"/>);
+                            className={containerClassName}/>);
     }
 });
 
