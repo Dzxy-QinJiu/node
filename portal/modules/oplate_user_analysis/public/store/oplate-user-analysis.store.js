@@ -94,7 +94,8 @@ OplateUserAnalysisStore.prototype.resetChartData = function (type) {
             'added': 0,
             'added_expired': 0,
             'expired': 0,
-            'total': 0
+            'total': 0,
+            'delayed': 0
         }
     };
     //用户统计
@@ -208,7 +209,8 @@ OplateUserAnalysisStore.prototype.getSummaryNumbers = function (result) {
                 'added': 0,
                 'added_expired': 0,
                 'expired': 0,
-                'total': 0
+                'total': 0,
+                'delayed': 0
             };
         }
     }
