@@ -15,6 +15,7 @@ import BasicEditSelectField from "CMP_DIR/basic-edit-field-new/select";
 import BasicEditInputField from "CMP_DIR/basic-edit-field-new/input";
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
+import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 
 const OrderItem = React.createClass({
     getInitialState: function () {
@@ -24,8 +25,8 @@ const OrderItem = React.createClass({
             modalDialogType: 0,//1：删除
             isLoading: false,
             isAlertShow: false,
-            isStageSelectShow: false,
             isAppPanelShow: false,
+            submitErrorMsg: "",//修改应用时的错误提示
             apps: this.props.order.apps,
             stage: this.props.order.sale_stages,
             formData: JSON.parse(JSON.stringify(this.props.order)),
@@ -142,74 +143,80 @@ const OrderItem = React.createClass({
         this.setState(this.state);
     },
 
-    handleSubmit: function (updateTarget) {
-        let reqData = JSON.parse(JSON.stringify(this.props.order));
-        if (updateTarget === "stage") reqData.sale_stages = this.state.stage;
-        if (updateTarget === "app") reqData.apps = this.state.apps;
+    //修改订单的预算、备注
+    saveOrderBasicInfo: function (saveObj, successFunc, errorFunc) {
+        saveObj.customer_id = this.props.order.customer_id;
+        if (this.props.isMerge) {
+            this.props.updateMergeCustomerOrder(saveObj);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            OrderAction.editOrder(saveObj, {}, (result) => {
+                if (result && result.code === 0) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    OrderAction.afterEditOrder(saveObj);
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(saveObj.customer_id);
+                    }, 200);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc(result || Intl.get("common.save.failed", "保存失败"));
+                }
+            });
+        }
+    },
+
+    //修改订单的销售阶段
+    editOrderStage: function (saveObj, successFunc, errorFunc) {
+        let {customer_id, id, sale_stages} = {...saveObj, customer_id: this.props.order.customer_id};
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
         if (this.props.isMerge) {
             //合并客户时，修改订单的销售阶段或应用
             this.props.updateMergeCustomerOrder(reqData);
-            if (updateTarget === "stage") {
-                this.state.isStageSelectShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
-            }
-            if (updateTarget === "app") {
-                this.state.isAppPanelShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
-            }
         } else {
-            //客户详情中修改订单的销售阶段或应用
-            this.setState({isLoading: true});
-            if (updateTarget === "stage") {
-                //修改订单的销售阶段
-                this.editOrderStage(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
-            } else if (updateTarget === "app") {
-                //修改订单的应用
-                this.editOrderApp(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
-            }
+            OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
+                if (result && result.code === 0) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.state.formData.sale_stages = reqData.sale_stages;
+                    this.setState(this.state);
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(reqData.customer_id);
+                    }, 1000);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc(result || Intl.get("common.save.failed", "保存失败"));
+                }
+            });
         }
     },
-    //修改订单的销售阶段
-    editOrderStage: function (reqData) {
-        let {customer_id, id, sale_stages} = reqData;
-        OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
-            this.state.isLoading = false;
-            if (result.code === 0) {
-                message.success(Intl.get("common.save.success", "保存成功"));
-                this.state.formData.sale_stages = reqData.sale_stages;
-                //关闭编辑状态，返回展示状态
-                this.state.isStageSelectShow = false;
-                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                setTimeout(() => {
-                    this.props.refreshCustomerList(reqData.customer_id);
-                }, 1000);
-            } else {
-                message.error(Intl.get("common.save.failed", "保存失败"));
-            }
-            this.setState(this.state);
-        });
-    },
     //修改订单的应用
-    editOrderApp: function (reqData) {
-        //修改订单的应用
-        let {customer_id, id, apps} = reqData;
-        OrderAction.editOrder({customer_id, id, apps}, {}, (result) => {
-            this.state.isLoading = false;
-            if (result.code === 0) {
-                message.success(Intl.get("common.save.success", "保存成功"));
-                this.state.formData.apps = reqData.apps;
-                this.state.isAppPanelShow = false;
-                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                setTimeout(() => {
-                    this.props.refreshCustomerList(reqData.customer_id);
-                }, 1000);
-            } else {
-                message.error(Intl.get("common.save.failed", "保存失败"));
-            }
-            this.setState(this.state);
-        });
+    editOrderApp: function () {
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
+        let reqData = JSON.parse(JSON.stringify(this.props.order));
+        reqData.apps = this.state.apps;
+        if (this.props.isMerge) {
+            //合并客户时，修改订单的销售阶段或应用
+            this.props.updateMergeCustomerOrder(reqData);
+            this.state.isAppPanelShow = false;
+        } else {
+            //客户详情中修改订单的应用
+            let {customer_id, id, apps} = reqData;
+            this.setState({isLoading: true});
+            OrderAction.editOrder({customer_id, id, apps}, {}, (result) => {
+                this.state.isLoading = false;
+                if (result.code === 0) {
+                    this.state.formData.apps = reqData.apps;
+                    this.state.isAppPanelShow = false;
+                    this.state.submitErrorMsg = "";
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(reqData.customer_id);
+                    }, 1000);
+                } else {
+                    this.state.submitErrorMsg = result || Intl.get("common.save.failed", "保存失败");
+                }
+                this.setState(this.state);
+            });
+        }
     },
 
     //生成合同
@@ -252,9 +259,6 @@ const OrderItem = React.createClass({
         }, "/contract/list", {});
     },
 
-    saveOrderBasicInfo(){
-
-    },
     renderOrderContent () {
         const _this = this;
         const order = this.state.formData;
@@ -316,7 +320,6 @@ const OrderItem = React.createClass({
                 </div>
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get("sales.stage.sales.stage", "销售阶段")}:</span>
-                    {/*<span className="order-value">{order.sale_stages}</span>*/}
                     <BasicEditSelectField
                         id={order.id}
                         displayText={order.sale_stages}
@@ -327,38 +330,41 @@ const OrderItem = React.createClass({
                         placeholder={Intl.get("crm.155", "请选择销售阶段")}
                         onSelectChange={this.onStageChange}
                         cancelEditField={this.closeStageSelect}
-                        saveEditSelect={this.handleSubmit.bind(this, "stage")}
+                        saveEditSelect={this.editOrderStage}
                     />
                 </div>
                 <div className="order-item-content order-application-list">
                     <span className="order-key">{Intl.get("call.record.application.product", "应用产品")}:</span>
-                    <div className="order-application-div">
-                        {this.state.isAppPanelShow ? (
-                            <div className="order-app-edit-block">
-                                <SearchIconList
-                                    totalList={this.props.appList}
-                                    selectedList={selectedAppList}
-                                    selectedListId={selectedAppListId}
-                                    id_field="client_id"
-                                    name_field="client_name"
-                                    image_field="client_image"
-                                    search_fields={["client_name"]}
-                                    onItemsChange={this.onAppsChange}
-                                />
-                            </div>
-                        ) : (
-                            <div className="order-app-list">
-                                {apps.map(function (app, i) {
-                                    return (
-                                        <div className="app-item" key={i}>
-                                            {app.client_name}
-                                        </div>
-                                    )
-                                })}
-                                <DetailEditBtn onClick={this.showAppPanel}/>
-                            </div>
-                        )}
-                    </div>
+                    {this.state.isAppPanelShow ? (
+                        <div className="order-app-edit-block">
+                            <SearchIconList
+                                totalList={this.props.appList}
+                                selectedList={selectedAppList}
+                                selectedListId={selectedAppListId}
+                                id_field="client_id"
+                                name_field="client_name"
+                                image_field="client_image"
+                                search_fields={["client_name"]}
+                                onItemsChange={this.onAppsChange}
+                            />
+                            <SaveCancelButton loading={this.state.isLoading}
+                                              saveErrorMsg={this.state.submitErrorMsg}
+                                              handleSubmit={this.editOrderApp}
+                                              handleCancel={this.closeAppPanel}
+                            />
+                        </div>
+                    ) : (
+                        <div className="order-application-div">
+                            {apps.map(function (app, i) {
+                                return (
+                                    <div className="app-item" key={i}>
+                                        {app.client_name}
+                                    </div>
+                                )
+                            })}
+                            <DetailEditBtn onClick={this.showAppPanel}/>
+                        </div>
+                    )}
                 </div>
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get("crm.148", "预算金额")}:</span>
@@ -370,7 +376,7 @@ const OrderItem = React.createClass({
                         afterValTip={Intl.get("contract.139", "万")}
                         placeholder={Intl.get("crm.order.budget.input", "请输入预算金额")}
                         hasEditPrivilege={true}
-                        saveEditInput={this.saveOrderBasicInfo.bind(this, "budget")}
+                        saveEditInput={this.saveOrderBasicInfo}
                     />
                 </div>
                 <div className="order-item-content">
@@ -383,64 +389,10 @@ const OrderItem = React.createClass({
                         editBtnTip={Intl.get("user.remark.set.tip", "设置备注")}
                         placeholder={Intl.get("user.input.remark", "请输入备注")}
                         hasEditPrivilege={true}
-                        saveEditInput={this.saveOrderBasicInfo.bind(this, "remarks")}
+                        saveEditInput={this.saveOrderBasicInfo}
                     />
                 </div>
                 <div className="order-introduce">
-                    {/*<div className="order-application-list">*/}
-                    {/*<label className={(apps ? "" : "color-gray")}><ReactIntl.FormattedMessage id="common.app"*/}
-                    {/*defaultMessage="应用"/>：</label>*/}
-                    {/*<div className="order-application-div">*/}
-                    {/*{apps.map(function (app, i) {*/}
-                    {/*return (*/}
-                    {/*<div className="app-item" key={i}>*/}
-                    {/*{app.client_name}*/}
-                    {/*</div>*/}
-                    {/*)*/}
-                    {/*})}*/}
-                    {/*</div>*/}
-                    {/*{this.state.isAppPanelShow ? (*/}
-                    {/*<Button*/}
-                    {/*shape="circle"*/}
-                    {/*title={Intl.get("common.save", "保存")}*/}
-                    {/*className="btn-save"*/}
-                    {/*onClick={this.handleSubmit.bind(this, "app")}*/}
-                    {/*>*/}
-                    {/*<Icon type="save"/>*/}
-                    {/*</Button>*/}
-                    {/*) : null}*/}
-                    {/*{this.state.isAppPanelShow ? (*/}
-                    {/*<Button*/}
-                    {/*shape="circle"*/}
-                    {/*title={Intl.get("common.cancel", "取消")}*/}
-                    {/*onClick={this.closeAppPanel}*/}
-                    {/*>*/}
-                    {/*<Icon type="cross"/>*/}
-                    {/*</Button>*/}
-                    {/*) : null}*/}
-                    {/*{!this.state.isAppPanelShow ? (*/}
-                    {/*<Button*/}
-                    {/*shape="circle"*/}
-                    {/*title={Intl.get("common.edit", "编辑")}*/}
-                    {/*onClick={this.showAppPanel}*/}
-                    {/*>*/}
-                    {/*<Icon type="edit"/>*/}
-                    {/*</Button>*/}
-                    {/*) : null}*/}
-                    {/*</div>*/}
-                    {/*{this.state.isAppPanelShow ? (*/}
-                    {/*<SearchIconList*/}
-                    {/*totalList={this.props.appList}*/}
-                    {/*selectedList={selectedAppList}*/}
-                    {/*selectedListId={selectedAppListId}*/}
-                    {/*id_field="client_id"*/}
-                    {/*name_field="client_name"*/}
-                    {/*image_field="client_image"*/}
-                    {/*search_fields={["client_name"]}*/}
-                    {/*onItemsChange={this.onAppsChange}*/}
-                    {/*/>*/}
-                    {/*) : null}*/}
-
                     {this.props.order.contract_id ? (
                         <Button type="ghost" className="order-introduce-btn pull-right"
                                 onClick={this.gotoContract}

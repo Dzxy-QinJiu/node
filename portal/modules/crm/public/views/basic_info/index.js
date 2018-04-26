@@ -199,7 +199,7 @@ var BasicData = React.createClass({
     saveEditBasicInfo: function (type, saveObj, successFunc, errorFunc) {
         saveObj.type = type;
         if (this.props.isMerge) {
-            this.props.updateMergeCustomer(submitData);
+            this.props.updateMergeCustomer(saveObj);
             if (_.isFunction(successFunc)) successFunc();
         } else {
             CrmBasicAjax.updateCustomer(saveObj).then((result) => {

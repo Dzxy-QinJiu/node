@@ -50,6 +50,7 @@
       width: 100%;
       font-size: 14px;
       .order-item-content {
+        margin-bottom: 4px;
         //编辑按钮hover时才展示
         .icon-edit-btn {
           display: none;
@@ -70,15 +71,18 @@
           line-height: 24px;
           padding-left: 8px;
         }
+        .basic-edit-field form .ant-form-item .ant-input, .basic-edit-field form .ant-form-item .ant-select {
+          width: 350px;
+        }
 
       }
 
       //应用列表样式
       .order-application-list {
         overflow: hidden;
+        margin-bottom: 0;
         .order-application-div {
           float: left;
-          padding-left: 8px;
           width: 356px;
           &:extend(.break_line);
           .app-item {
@@ -87,13 +91,33 @@
             border-radius: 4px;
             color: #4c8ec4;
             padding: 2px 9px;
-            margin: 0 8px 8px 0;
+            margin: 0 0 8px 8px;
             font-size: 12px;
           }
         }
-
-        .btn-save {
-          margin-right: 5px;
+        //应用列表编辑面板
+        .order-app-edit-block {
+          float: left;
+          width: 100%;
+          &:extend(.break_line);
+          .search-icon-list {
+            margin-top: 4px;
+            .icon-item {
+              font-size: 12px;
+              border: 1px solid #e8edf3;
+            }
+            .icon-item.selected {
+              background-color: #d7e6f7;
+              border-color: #d7e6f7;
+              color: #4c8ec4;
+            }
+            .search-icon-list-content {
+              background: transparent;
+              border: 1px solid #d3eafc;
+              border-radius: 4px;
+              padding: 8px 0 10px 10px;
+            }
+          }
         }
       }
     }
