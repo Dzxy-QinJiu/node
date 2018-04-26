@@ -364,4 +364,9 @@ CallAnalysisStore.prototype.getSaleMemberList = function (result) {
     }
 };
 
+// 获取通话客户的地域和阶段分布
+CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
+    console.log(result);
+};
+
 module.exports = alt.createStore(CallAnalysisStore, 'CallAnalysisStore');

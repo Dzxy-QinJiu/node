@@ -108,6 +108,17 @@ function CallAnalysisActions() {
         );
     };
 
+    // 获取通话客户的地域和阶段分布
+    this.getCallCustomerZoneStage = function (reqData, reqBody) {
+        this.dispatch({loading: true, error: false});
+        callAnalysisAjax.getCallCustomerZoneStage(reqData, reqBody).then((resData) => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            }, (errMsg) => {
+                this.dispatch({loading: false, error: true, errMsg: errMsg});
+            }
+        );
+    };
+
 }
 
 module.exports = alt.createActions(CallAnalysisActions);

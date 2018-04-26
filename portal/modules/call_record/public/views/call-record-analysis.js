@@ -6,7 +6,7 @@
  *  this.state.teamList.length > 1 时， 有两个以上的团队，显示团队和成员的筛选框，114柱状图
  * */
 
-import {Table, Icon, Select, Radio, Alert, Switch} from "antd";
+import {Select, Radio, Alert, Switch} from "antd";
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var RightContent = require("CMP_DIR/privilege/right-content");
@@ -295,7 +295,8 @@ var CallRecordAnalyis = React.createClass({
         this.getCallRate({...reqBody, filter_invalid_phone: "false"}); //客服电话统计
         //获取通话时段（数量和时长）、总次数、总时长的统计数据
         this.getCallIntervalTotalData(reqBody);
-
+        // 获取通话客户的地域和阶段分布
+        this.getCallCustomerZoneStage(reqBody);
     },
     //获取通话时段（数量和时长）的参数
     getCallIntervalParams: function (params) {
@@ -335,6 +336,36 @@ var CallRecordAnalyis = React.createClass({
         CallAnalysisAction.getCallIntervalData(authType, queryParams);
         let callTotalAuth = this.getCallTotalAuth();
         CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
+    },
+    // 通话客户的地域和阶段分布参数
+    getZoneStageParams(params) {
+        let queryParams = {
+            start_time: this.state.start_time || 0,
+            end_time: this.state.end_time || moment().toDate().getTime(),
+            device_type: params && params.type || this.state.callType,
+            filter_phone: false,// 是否过滤114电话号码
+            filter_invalid_phone: false//是否过滤客服电话号码
+        };
+        if (params.sales_team_id) {
+            queryParams.team_ids = params.sales_team_id;
+        } else if (params.user_id) {
+            queryParams.member_ids = params.user_id;
+        }
+        return queryParams;
+    },
+    // 获取通话客户的地域和阶段分布权限
+    getCallCustomerZoneStageAuth() {
+        let authType = "self";// CALL_RECORD_VIEW_USER
+        if (hasPrivilege("CALL_RECORD_VIEW_MANAGER")) {
+            authType = "all";
+        }
+        return authType;
+    },
+    // 获取通话客户的地域和阶段分布
+    getCallCustomerZoneStage(params) {
+        let queryParams = this.getZoneStageParams(params);
+        let authType = this.getCallCustomerZoneStageAuth();
+        CallAnalysisAction.getCallCustomerZoneStage(authType, queryParams);
     },
     componentWillUnmount: function () {
         CallAnalysisStore.unlisten(this.onStoreChange);
@@ -607,7 +638,6 @@ var CallRecordAnalyis = React.createClass({
         }
     },
 
-
     // 渲染通话时段(时长/数量)的统计
     renderCallIntervalChart() {
         if (this.state.callIntervalData.loading) {
@@ -858,6 +888,20 @@ var CallRecordAnalyis = React.createClass({
         let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn());
         exportToCsv("sales_phone_table.csv",exportData);
     },
+    renderCustomerZoneDistribute() {
+        return (
+            <div>
+                客户的地域分布
+            </div>
+        );
+    },
+    renderCustomerStageDistribute() {
+        return (
+            <div>
+                客户的阶段分布
+            </div>
+        );
+    },
     renderCallAnalysisView: function () {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         return (<div className="call-table-container" ref="phoneList">
@@ -941,6 +985,24 @@ var CallRecordAnalyis = React.createClass({
                                     </RadioGroup>
                                 </div>
                                 {this.renderCallIntervalChart()}
+                            </div>
+                        </div>
+                        <div className="col-xs-12">
+                            <div className="call-zone-distribute col-xs-6">
+                                <div className="call-zone">
+                                    <div className="call-zone-title">
+                                        客户的地域分布:
+                                    </div>
+                                    {this.renderCustomerZoneDistribute()}
+                                </div>
+                            </div>
+                            <div className="call-stage-distribute col-xs-6">
+                                <div className="call-stage">
+                                    <div className="call-stage-title">
+                                        客户的阶段分布:
+                                    </div>
+                                    {this.renderCustomerStageDistribute()}
+                                </div>
                             </div>
                         </div>
                     </div>
