@@ -61,9 +61,9 @@ const ClueCustomer = React.createClass({
             //获取线索渠道
             this.getClueChannel();
         }
+        clueCustomerAction.getSalesManList();
         //管理员、销售领导默认展示待分配的线索客户 0
         if (this.isSalesManager()){
-            clueCustomerAction.getSalesManList();
             //管理员、销售领导 默认展示待分配的线索客户 status对应0
             clueCustomerAction.setFilterType(SELECT_TYPE.WILL_DISTRIBUTE);
         }else if (this.isOperation()){
@@ -510,7 +510,7 @@ const ClueCustomer = React.createClass({
                                         </p> : null}
                                     </div>
                                 </Col>: null}
-                                {(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER")) && this.isSalesManager() ?
+                                {(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER")) ?
                                     <Col sm={6} lg={2}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown

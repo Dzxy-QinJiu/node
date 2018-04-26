@@ -200,6 +200,7 @@ let CrmRightList = React.createClass({
             return;
         }
         let selectRole = _.find(this.state.salesRoleList, role => role.id === options.key);
+        if(!selectRole) return;
         this.updateTeamMemberRole(sales, selectRole);
         $.ajax({
             url: '/rest/sales/role/change',

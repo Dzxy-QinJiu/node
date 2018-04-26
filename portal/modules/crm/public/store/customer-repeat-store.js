@@ -116,7 +116,7 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function (data) {
         this.errorMsg = "";
         this.repeatCustomersSize = data.total || 0;
         if (data.code === 0) {
-            var data_list = data.result;
+            var data_list = data && data.result;
             if (!_.isArray(data_list)) {
                 data_list = [];
             }

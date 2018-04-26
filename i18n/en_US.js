@@ -1236,6 +1236,7 @@ var en_US = {
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
+    "crm.order.stage":"Order stage",//订单阶段
     // 客户管理end
 
     //客户分析 start
@@ -2100,6 +2101,8 @@ var en_US = {
     "customer.total.record": "A total of {num} track record",//共{num}条跟进记录
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
-    "call.record.all.teams.trend": "show call trend of each team"//查看各团队通话趋势图
+    "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
+    "sales.role.setting.name":"Sales role name"//销售角色名称
 };
 export default en_US;

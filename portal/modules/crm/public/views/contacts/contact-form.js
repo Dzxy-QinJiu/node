@@ -304,7 +304,7 @@ var ContactForm = React.createClass({
             Message.error(result.errorMsg);
         } else if (result.contact && result.contact.def_contancts === "true") {
             //只有在客户列表中才有更新列表中联系人的方法
-            if (this.props.updateCustomerDefContact) {
+            if (_.isFunction(this.props.updateCustomerDefContact)) {
                 //修改默认联系人的信息时，更新列表中的联系人数据
                 this.props.updateCustomerDefContact(result.contact);
             }

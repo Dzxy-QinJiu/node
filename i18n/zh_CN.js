@@ -1254,6 +1254,7 @@ var zh_CN = {
     "crm.sales.customerStage": "客户阶段变更统计",
     "crm.repeat.phone": "电话重复",
     "crm.repeat.phone.unhandle": "您还有未处理的重复电话：",
+    "crm.order.stage":"订单阶段",
     // 客户管理end
 
     // 客户分析start
@@ -2116,7 +2117,8 @@ var zh_CN = {
     "common.batch.self.sales.target": "批量设置个人销售目标",
     "call.record.average.call.duration": "人均时长",
     "call.record.average.connected": "人均接通数",
-    "call.record.all.teams.trend": "查看各团队通话趋势图"
-
+    "call.record.all.teams.trend": "查看各团队通话趋势图",
+    "sales.role.config.customer.num":"最大客户数",
+    "sales.role.setting.name":"销售角色名称"
 };
 export default zh_CN;
