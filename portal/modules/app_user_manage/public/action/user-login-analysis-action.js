@@ -58,29 +58,44 @@ function UserLoginAnalysisAction() {
                     appList: userOwnAppArray
                 }
             );
-        },  (errorMsg) => {
-            this.dispatch({error: true, errorMsg: errorMsg});
+        },  () => {
+            // 用户登录统计图中登录时长、登录频次
+            this.actions.getUserLoginChartInfo();
+            this.dispatch(
+                {
+                    appId: '',
+                    appList: []
+                }
+            );
         });
     };
 
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.getUserLoginInfo =  function(loginParam){
-        this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getUserLoginInfo(loginParam).then( (data) => {
-            this.dispatch({loading: false, error: false, data:data});
-        },(errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        if (loginParam && loginParam.appid) {
+            this.dispatch({loading: true, error: false});
+            userAuditLogAjax.getUserLoginInfo(loginParam).then( (data) => {
+                this.dispatch({loading: false, error: false, data:data});
+            },(errorMsg) => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        } else {
+            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+        }
     };
 
     // 用户登录统计图中登录时长、登录频次
     this.getUserLoginChartInfo =  function(loginParam){
-        this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getUserLoginChartInfo(loginParam).then((data) => {
-            this.dispatch({loading: false, error: false, data:data});
-        },(errorMsg) => {
-            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
-        });
+        if (loginParam && loginParam.appid) {
+            this.dispatch({loading: true, error: false});
+            userAuditLogAjax.getUserLoginChartInfo(loginParam).then((data) => {
+                this.dispatch({loading: false, error: false, data:data});
+            },(errorMsg) => {
+                this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+            });
+        } else {
+            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.login.fail', '获取登录信息失败！')});
+        }
     };
 }
 

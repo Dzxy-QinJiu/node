@@ -69,8 +69,8 @@ function SingleUserLogAction() {
                         }
                     );
                 } );
+                return;
             }
-            return;
         }
         // 日志列表信息
         this.actions.getSingleAuditLogList(getLogParam);
@@ -81,7 +81,6 @@ function SingleUserLogAction() {
             }
         );
     };
-
 
     // 获取单个用户的审计日志信息
     this.getSingleAuditLogList = function (searchObj) {
@@ -96,7 +95,6 @@ function SingleUserLogAction() {
         } else {
             this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
         }
-
     };
 }
 
