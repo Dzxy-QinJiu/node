@@ -17,7 +17,7 @@ var CrmImport = React.createClass({
                 crmEmitter.emit(crmEmitter.IMPORT_CUSTOMER, response);
                 this.props.closeCrmTemplatePanel();
             } else {
-                message.error(Intl.get("crm.99", "导入客户失败，请重试!"));
+                message.error(Intl.get("crm.99", "导入客户失败"));
             }
 
             this.setState({isLoading: false});

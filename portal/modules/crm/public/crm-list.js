@@ -79,6 +79,8 @@ const DEFAULT_RANGE_PARAM = {
     type: "time",
     name: "start_time"
 };
+//查看是否可以继续添加客户
+let member_id = userData.getUserData().user_id;
 var Crm = React.createClass({
     getInitialState: function () {
         return {
@@ -196,9 +198,7 @@ var Crm = React.createClass({
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
         const query = _.clone(this.props.location.query);
-
         if (query.analysis_filter_field) {
-
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
             filterValue = (filterValue == 'unknown' ? '未知' : filterValue);
@@ -791,9 +791,21 @@ var Crm = React.createClass({
         return this.state.isNoMoreTipShow;
     },
     onCustomerImport(list) {
-        this.setState({
-            isPreviewShow: true,
-            previewList: CrmStore.processForList(list),
+        let member_id = userData.getUserData().user_id;
+        //导入客户前先校验，是不是超过了本人的客户上限
+        CrmAction.getCustomerLimit({member_id:member_id,num: list.length}, (result)=>{
+            if (_.isNumber(result)){
+                if (result == 0){
+                    //可以转入
+                    this.setState({
+                        isPreviewShow: true,
+                        previewList: CrmStore.processForList(list),
+                    })
+                }else if(result > 0){
+                    //不可以转入
+                    message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));
+                }
+            }
         });
     },
     confirmImport(flag, cb) {
@@ -826,9 +838,7 @@ var Crm = React.createClass({
             this.setState({
                 isPreviewShow: false,
             });
-
             message.success(Intl.get("crm.98", "导入客户成功"));
-
             //刷新客户列表
             this.search();
         });
