@@ -408,8 +408,7 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
     //在数据最后添加总的合计
     if (data.total) {
         list.push($.extend({}, data.total, {
-            team_name: Intl.get("sales.home.total.compute", "总计"),
-            user_name: ""
+            team_name: Intl.get("sales.home.total.compute", "总计")
         }))
     }
     this.newCustomerCount.data = list;
