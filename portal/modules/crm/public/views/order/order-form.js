@@ -1,12 +1,8 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
-import {Form, Input, Select, message, Col} from "antd";
+import {Form, Input, Select} from "antd";
 const FormItem = Form.Item;
 const classnames = require("classnames");
-const Spinner = require('../../../../../components/spinner');
-const rightPanelUtil = require("../../../../../components/rightPanel/index");
-const RightPanelSubmit = rightPanelUtil.RightPanelSubmit;
-const RightPanelCancel = rightPanelUtil.RightPanelCancel;
 const OrderAction = require("../../action/order-actions");
 import SearchIconList from '../../../../../components/search-icon-list';
 import ValidateMixin from "../../../../../mixins/ValidateMixin";
@@ -42,49 +38,25 @@ const OrderForm = React.createClass({
             } else {
                 let reqData = JSON.parse(JSON.stringify(this.state.formData));
                 delete reqData.isEdit;
-                //修改
-                if (reqData.id) {
-                    if (this.props.isMerge) {
-                        //合并客户时的修改
-                        this.props.updateMergeCustomerOrder(reqData);
-                    } else {
-                        this.setState({isLoading: true});
-                        OrderAction.editOrder(reqData, {}, (result) => {
-                            this.setState({isLoading: false});
-                            if (result.code === 0) {
-                                message.success(Intl.get("common.save.success", "保存成功"));
-                                OrderAction.afterEditOrder(reqData);
-                                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                                setTimeout(() => {
-                                    this.props.refreshCustomerList(reqData.customer_id);
-                                }, 200);
-                            }
-                            else {
-                                message.error(Intl.get("common.save.failed", "保存失败"));
-                            }
-                        });
+                //保存
+                reqData.customer_id = this.props.customerId;
+                this.setState({isLoading: true});
+                OrderAction.addOrder(reqData, {}, (data) => {
+                    this.setState({isLoading: false});
+                    this.state.isLoading = false;
+                    if (data && data.code === 0) {
+                        this.state.errorMsg = "";
+                        OrderAction.afterAddOrder(data.result);
+                        //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                        setTimeout(() => {
+                            this.props.refreshCustomerList(reqData.customer_id);
+                        }, 200);
                     }
-                } else {
-                    //保存
-                    reqData.customer_id = this.props.customerId;
-                    this.setState({isLoading: true});
-                    OrderAction.addOrder(reqData, {}, (data) => {
-                        this.setState({isLoading: false});
-                        this.state.isLoading = false;
-                        if (data && data.code === 0) {
-                            this.state.errorMsg = "";
-                            OrderAction.afterAddOrder(data.result);
-                            //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                            setTimeout(() => {
-                                this.props.refreshCustomerList(reqData.customer_id);
-                            }, 200);
-                        }
-                        else {
-                            this.state.errorMsg = data || Intl.get("crm.154", "添加失败");
-                        }
-                        this.setState(this.state);
-                    });
-                }
+                    else {
+                        this.state.errorMsg = data || Intl.get("crm.154", "添加失败");
+                    }
+                    this.setState(this.state);
+                });
             }
         });
     },
