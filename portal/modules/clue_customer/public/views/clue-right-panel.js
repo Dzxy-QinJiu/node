@@ -91,16 +91,31 @@ class ClueRightPanel extends React.Component {
     }
 
     onSelectCluesource = (updateSource) => {
-        this.state.curCustomer.clue_source = updateSource;
+        var cloneCurCustomer = $.extend(true, {}, this.state.curCustomer);
+        cloneCurCustomer.clue_source = updateSource;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: cloneCurCustomer
         });
     };
     onSelectAccessChannel = (updateChannel) => {
-        this.state.curCustomer.access_channel = updateChannel;
+        //引用类型的数据，不要直接修改，在点击取消按钮的时候会用到原来的数据
+        var cloneCurCustomer = $.extend(true, {}, this.state.curCustomer);
+        cloneCurCustomer.access_channel = updateChannel;
         this.setState({
-            curCustomer: this.state.curCustomer
+            curCustomer: cloneCurCustomer
         });
+    };
+    cancelEditClueChannel = () =>{
+         this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
+         this.setState({
+             curCustomer:this.state.curCustomer
+         })
+    };
+    cancelEditClueSource = () =>{
+        this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
+        this.setState({
+            curCustomer:this.state.curCustomer
+        })
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
@@ -130,6 +145,8 @@ class ClueRightPanel extends React.Component {
             id = curCustomer.contacts[0].id ? curCustomer.contacts[0].id : "";
         }
         var extraParameter = {"contact_id":id};
+        //是否没有权限修改线索详情
+        var hasNoPrivilegeEdit =  hasPrivilege("CLUECUSTOMER_UPDATE_MANAGER") ? false : true;
         return (
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
@@ -148,7 +165,7 @@ class ClueRightPanel extends React.Component {
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={curCustomer.contact}
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER") ? false : true}
+                                        disabled={hasNoPrivilegeEdit}
                                         placeholder={Intl.get("crm.90", "请输入姓名")}
                                         field="contact_name"
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -162,7 +179,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={phone}
@@ -180,7 +197,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={email}
@@ -198,7 +215,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         extraParameter={extraParameter}
                                         user_id={curCustomer.id}
                                         value={qq}
@@ -215,16 +232,17 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         id={curCustomer.id}
-                                        combobox={true}
                                         modifySuccess={this.changeUserFieldSuccess}
                                         saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                        cancelEditField={this.cancelEditClueSource}
                                         value={curCustomer.clue_source}
                                         field="clue_source"
                                         selectOptions={this.getClueSourceOptions()}
                                         displayText={curCustomer.clue_source || ''}
                                         onSelectChange={this.onSelectCluesource}
+                                        placeholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
                                     />
                                 </dd>
                             </dl>
@@ -234,16 +252,17 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         id={curCustomer.id}
-                                        combobox={true}
                                         modifySuccess={this.changeUserFieldSuccess}
                                         saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                        cancelEditField={this.cancelEditClueChannel}
                                         value={curCustomer.access_channel}
                                         field="access_channel"
                                         displayText={curCustomer.access_channel || ''}
                                         selectOptions={this.getAccessChannelOptions()}
                                         onSelectChange={this.onSelectAccessChannel}
+                                        placeholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
                                     />
                                 </dd>
                             </dl>
@@ -253,7 +272,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <UserDetailEditField
-                                        disabled={hasPrivilege("CLUECUSTOMER_UPDATE_USER")?false:true}
+                                        disabled={hasNoPrivilegeEdit}
                                         user_id={curCustomer.id}
                                         modifySuccess={this.changeUserFieldSuccess}
                                         saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
