@@ -9,7 +9,7 @@ if (language.lan() == "es" || language.lan() == "en") {
 } else if (language.lan() == "zh") {
     require("../../css/customer-trace-zh_CN.less");
 }
-import {Icon, Select, Alert, Button, message, Radio, Input} from 'antd';
+import {Icon, Select, Alert, Button, message, Radio, Input, Menu, Dropdown} from 'antd';
 const RadioGroup = Radio.Group;
 const {TextArea} = Input;
 var AlertTimer = require("../../../../../components/alert-timer");
@@ -37,6 +37,23 @@ const LAYOUT_CONSTANTS = {
     OVER_VIEW_TITLE_HEIGHT: 15//概览页”最新跟进“的高度
 };
 
+// 通话状态
+const CALL_STATUS_MAP = {
+    'ALL': Intl.get("common.all", "全部"),
+    'ANSWERED': Intl.get("call.record.state.answer", "已接听"),
+    'NO ANSWER': Intl.get("call.record.state.no.answer", "未接听"),
+    'BUSY': Intl.get("call.record.state.busy", "用户忙")
+};
+
+// 通话类型
+const CALL_TYPE_MAP = {
+    'all': Intl.get("common.all", "全部"),
+    'phone': Intl.get("customer.phone.system", "电话系统"),
+    'app': Intl.get("customer.ketao.app", "客套app"),
+    'visit': Intl.get("customer.visit", "拜访"),
+    'other': Intl.get("customer.other", "其他")
+};
+
 const CustomerRecord = React.createClass({
     getInitialState: function () {
         return {
@@ -49,6 +66,8 @@ const CustomerRecord = React.createClass({
             isAddingInvalidPhone: false,//正在添加无效电话
             addingInvalidPhoneErrMsg: "",//添加无效电话出错的情况
             addRecordPanelShow: false,//是否展示添加跟进记录面板
+            filterType: "",//跟进类型的过滤
+            filterStatus: "",//通话状态的过滤
             ...CustomerRecordStore.getState()
         };
     },
@@ -125,6 +144,14 @@ const CustomerRecord = React.createClass({
         }
         if (lastId) {
             queryObj.id = lastId;
+        }
+        //跟进类型的过滤
+        if (this.state.filterType && this.state.filterType !== "all") {
+            queryObj.type = this.state.filterType;
+        }
+        //通话状态的过滤
+        if (this.state.filterStatus && this.state.filterStatus !== "ALL") {
+            queryObj.disposition = this.state.filterStatus;
         }
         CustomerRecordActions.getCustomerTraceList(queryObj);
     },
@@ -675,12 +702,51 @@ const CustomerRecord = React.createClass({
     toggleAddRecordPanel: function () {
         this.setState({addRecordPanelShow: !this.state.addRecordPanelShow});
     },
+    onSelectFilterType({item, key, selectedKeys}){
+        this.setState({filterType: key});
+        CustomerRecordActions.dismiss();
+        CustomerRecordActions.setLoading();
+        setTimeout(() => {
+            this.getCustomerTraceList();
+        });
+    },
+    onSelectFilterStatus({item, key, selectedKeys}){
+        this.setState({filterStatus: key});
+        CustomerRecordActions.dismiss();
+        CustomerRecordActions.setLoading();
+        setTimeout(() => {
+            this.getCustomerTraceList();
+        });
+    },
+    getTypeMenu(){
+        return (
+            <Menu selectedKeys={[this.state.filterType]} onClick={this.onSelectFilterType}>
+                {_.map(CALL_TYPE_MAP, (value, key) => {
+                    return (<Menu.Item key={key}>
+                        {value}
+                    </Menu.Item>);
+                })}
+            </Menu>
+        );
+    },
+    getStatusMenu(){
+        return (
+            <Menu selectedKeys={[this.state.filterStatus]} onClick={this.onSelectFilterStatus}>
+                {_.map(CALL_STATUS_MAP, (value, key) => {
+                    return (<Menu.Item key={key}>
+                        {value}
+                    </Menu.Item>);
+                })}
+            </Menu>
+        );
+    },
     render: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get("customer.confirm.trace", "是否添加此跟进内容？");
         var detail = $.trim(this.state.detailContent);
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
+
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
@@ -689,8 +755,22 @@ const CustomerRecord = React.createClass({
                         <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
                                                     values={{"n": this.state.total + ""}}/>
                         </span>
+
                         <span className="iconfont icon-add" title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}
                               onClick={this.toggleAddRecordPanel.bind(this)}/>
+                        <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
+                            <a className="ant-dropdown-link trace-filter-item">
+                                {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get("call.record.call.state", "通话状态")}
+                                <Icon type="down"/>
+                            </a>
+                        </Dropdown>
+                        <Dropdown overlay={this.getTypeMenu()} trigger={['click']}>
+                            <a className="ant-dropdown-link trace-filter-item">
+                                {this.state.filterType ? CALL_TYPE_MAP[this.state.filterType] : Intl.get("sales.frontpage.trace.type", "跟进类型")}
+                                <Icon type="down"/>
+                            </a>
+                        </Dropdown>
+
                     </div>)
                 }
                 <div className="show-container" id="show-container">

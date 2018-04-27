@@ -7,6 +7,7 @@
 @icon_visit_color: #9b5bf7;
 @other_icon_color: #8da8c5;
 @split_line_color: #f5f5f5;
+@hover_color: #2196f3;
 .customer-container {
   .trace-top-block {
     //共xxx条
@@ -16,8 +17,22 @@
     //添加跟进记录按钮
     .iconfont.icon-add {
       float: right;
+      margin-left: 6px;
+      margin-top: -4px;
       font-size: 16px;
       color: @btn_color;
+      &:hover {
+        color: @hover_color;
+      }
+    }
+    .trace-filter-item {
+      float: right;
+      margin-left: 14px;
+      font-weight: bold;
+      color: @btn_color;
+      &:hover {
+        color: @hover_color;
+      }
     }
   }
   //添加跟进记录面板
