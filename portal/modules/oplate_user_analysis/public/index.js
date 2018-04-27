@@ -1775,19 +1775,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 </div>
             ), (
                 <div className="analysis_chart col-md-6 col-sm-12"
-                     data-title="活跃用户地域统计">
-                    <div className="chart-holder zone-fix">
-                        <CardContainer
-                            title="活跃用户地域统计"
-                            exportData={handleZoneExportData(this.state.activeZone.data)}
-                            csvFileName="actively_zone_statis.csv"
-                        >
-                            {this.getActiveZoneChart()}
-                        </CardContainer>
-                    </div>
-                </div>
-            ), (
-                <div className="analysis_chart col-md-6 col-sm-12"
                      data-title={Intl.get("oplate.user.analysis.loginDays", "用户访问天数")}>
                     <div className="chart-holder">
                         <CardContainer
@@ -1796,6 +1783,19 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             csvFileName="login_days_statis.csv"
                         >
                             {this.getUserLoginDays()}
+                        </CardContainer>
+                    </div>
+                </div>
+            ), (
+                <div className="analysis_chart col-md-6 col-sm-12"
+                     data-title="活跃用户地域统计">
+                    <div className="chart-holder zone-fix">
+                        <CardContainer
+                            title="活跃用户地域统计"
+                            exportData={handleZoneExportData(this.state.activeZone.data)}
+                            csvFileName="actively_zone_statis.csv"
+                        >
+                            {this.getActiveZoneChart()}
                         </CardContainer>
                     </div>
                 </div>
