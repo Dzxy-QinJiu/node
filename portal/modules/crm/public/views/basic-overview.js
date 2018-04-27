@@ -220,14 +220,18 @@ var BasicOverview = React.createClass({
                 <div className="app-expire-tip">
                     <span className="iconfont icon-warn-icon"/>
                     <span className="expire-tip-content">
-                    {Intl.get("crm.overview.expire.tip", "有应用{days}试用到期", {days: expireTrialUsers[0].overDraftTimeStr})}
-                </span>
-                    <span className="iconfont icon-arrow-right"/>
+                        {Intl.get("crm.overview.expire.tip", "有应用{days}试用到期", {days: expireTrialUsers[0].overDraftTimeStr})}
+                    </span>
+                    <span className="iconfont icon-arrow-right" onClick={this.turnToUserList}
+                          title={Intl.get("call.record.show.customer.detail", "查看详情")}/>
                 </div>);
             return (<DetailCard content={tip} className="expire-tip-contianer"/>);
         } else {
             return null;
         }
+    },
+    turnToUserList(){
+        if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey("4");
     },
     renderCustomerRcord: function () {
         return <CustomerRecord
