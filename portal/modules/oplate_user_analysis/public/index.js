@@ -2119,7 +2119,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 active={this.state.currentTab === 'added'}
                                 onClick={this.changeCurrentTab.bind(this, 'added')}/>
                         </Col>
-                        {this.state.selectedApp && !this.state.selectedApp.includes(",") ?
+                        {this.state.selectedApp && this.state.selectedApp != "all" ?
                             <Col xs={24} sm={12} md={4}>
                                 <SummaryNumber
                                     resultType={this.state.summaryNumbers.resultType}
