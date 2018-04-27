@@ -84,6 +84,14 @@ CallAnalysisStore.prototype.setInitState = function () {
         list: [],
         errMsg: '' // 获取失败的提示
     };
+    // 通话客户的地域和阶段分布
+    this.customerData = {
+        loading: false, // loading
+        zoneList: [], // 客户地域数据
+        customerPhase : [{name: "信息", num: "1212"},{name: "意向", num: "12706"},{name: "试用", num: "8514"},{name: "合格", num: "568"},{name: "签约", num: "89"}], // 客户阶段
+        OrderPhase: [{name: "试用阶段", num: "333"},{name: "立项报价阶段", num: "12706"},{name: "谈判阶段", num: "55"},{name: "成交阶段", num: "21"},{name: "执行阶段", num: "89"}], // 订单阶段
+        errMsg: ''  // 获取失败的提示
+    };
 };
 
 //  获取通话时长为TOP10的列表
@@ -280,11 +288,11 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
                     const list = [
                         {
                             name: Intl.get("call.record.valid.phone", '有效电话'),
-                            count: resData[0].valid_docs
+                            num: resData[0].valid_docs
                         },
                         {
                             name: nameMap[result.type],
-                            count: resData[0].invalid_docs
+                            num: resData[0].invalid_docs
                         }
                     ];
                     this.callRateList[result.type].list = list;

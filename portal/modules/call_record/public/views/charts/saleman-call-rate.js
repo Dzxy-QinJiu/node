@@ -51,7 +51,7 @@ var PieChart = React.createClass({
         return legend.map((legendName,idx) => {
             return {
                 name : legendName,
-                value : list[idx].count  // 注意：饼图中，value是key
+                value : list[idx].num  // 注意：饼图中，value是key
             };
         });
     },

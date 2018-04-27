@@ -891,16 +891,95 @@ var CallRecordAnalyis = React.createClass({
     renderCustomerZoneDistribute() {
         return (
             <div>
-                客户的地域分布
+                客户地域分布
             </div>
         );
     },
-    renderCustomerStageDistribute() {
-        return (
-            <div>
-                客户的阶段分布
-            </div>
-        );
+    renderCustomerPhase() {
+        if (this.state.customerData.loading) {
+            return (
+                <div className="call-rate">
+                    <Spinner />
+                </div>
+            );
+        }
+        else {
+            // 没有数据的提示
+            if (!this.state.customerData.customerPhase.length) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={Intl.get("common.no.data", "暂无数据")}
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else if (this.state.customerData.errMsg) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={this.state.customerData.errMsg}
+                            type="error"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div>
+                        <PieChart
+                            dataList={this.state.customerData.customerPhase}
+                        />
+                    </div>
+                );
+            }
+        }
+    },
+    renderOrderPhase() {
+        if (this.state.customerData.loading) {
+            return (
+                <div className="call-rate">
+                    <Spinner />
+                </div>
+            );
+        }
+        else {
+            // 没有数据的提示
+            if (!this.state.customerData.customerPhase.length) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={Intl.get("common.no.data", "暂无数据")}
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else if (this.state.customerData.errMsg) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={this.state.customerData.errMsg}
+                            type="error"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div>
+                        <PieChart
+                            dataList={this.state.customerData.OrderPhase}
+                        />
+                    </div>
+                );
+            }
+        }
     },
     renderCallAnalysisView: function () {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -988,20 +1067,30 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
+                            <div className="call-stage-distribute col-xs-6">
+                                <div className="call-stage">
+                                    <div className="call-stage-title">
+                                        客户阶段统计:
+                                    </div>
+                                    {this.renderCustomerPhase()}
+                                </div>
+                            </div>
+                            <div className="call-stage-distribute col-xs-6">
+                                <div className="call-sale">
+                                    <div className="call-sale-title">
+                                        订单阶段统计:
+                                    </div>
+                                    {this.renderOrderPhase()}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-12">
                             <div className="call-zone-distribute col-xs-6">
                                 <div className="call-zone">
                                     <div className="call-zone-title">
                                         客户的地域分布:
                                     </div>
                                     {this.renderCustomerZoneDistribute()}
-                                </div>
-                            </div>
-                            <div className="call-stage-distribute col-xs-6">
-                                <div className="call-stage">
-                                    <div className="call-stage-title">
-                                        客户的阶段分布:
-                                    </div>
-                                    {this.renderCustomerStageDistribute()}
                                 </div>
                             </div>
                         </div>
