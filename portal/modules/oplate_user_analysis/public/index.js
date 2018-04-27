@@ -2057,8 +2057,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         var rightSpace = AnalysisLayout.LAYOUTS.RIGHT_PADDING + AnalysisLayout.LAYOUTS.TIME_RANGE_WIDTH;
 
         var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
-        //tab列宽 应用选择“综合”时，selectedApp是所有appId用","拼合的 selectedApp不含","时,则只选择了一个app
-        const tabCols = this.state.selectedApp && this.state.selectedApp.includes(",") ? 6 : 5;
+        //tab列宽 应用选择“综合”时，selectedApp是all
+        const tabCols = this.state.selectedApp && this.state.selectedApp == "all" ? 6 : 5;
         return (
             <div className="oplate_user_analysis"
                  data-tracename="用户分析"
