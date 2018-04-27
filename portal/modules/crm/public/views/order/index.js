@@ -227,27 +227,27 @@ const OrderIndex = React.createClass({
             let orderListLength = _.isArray(this.state.orderList) ? this.state.orderList.length : 0;
             return (
                 <div className="order-container" data-tracename="订单页面">
-                    {this.state.isAddFormShow ? (
-                        <OrderForm order={{}}
-                                   stageList={_this.state.stageList}
-                                   appList={appList}
-                                   isMerge={_this.props.isMerge}
-                                   customerId={_this.props.curCustomer.id}
-                                   refreshCustomerList={_this.props.refreshCustomerList}
-                                   updateMergeCustomerOrder={_this.props.updateMergeCustomerOrder}/>) : (
-                        <div className="order-top-block">
+                    {this.state.isAddFormShow ? null : (<div className="order-top-block">
                             <span className="total-tip">
                                 <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
                                                             values={{"n": orderListLength + ""}}/>
                             </span>
-                            {this.props.isMerge ? null : (
-                                <span className="iconfont icon-add" title={Intl.get("crm.161", "添加订单")}
-                                      onClick={this.showForm.bind(this, "")}/>
-                            )}
-                        </div>
-                    )}
+                        {this.props.isMerge ? null : (
+                            <span className="iconfont icon-add" title={Intl.get("crm.161", "添加订单")}
+                                  onClick={this.showForm.bind(this, "")}/>
+                        )}
+                    </div>)
+                    }
                     <div className="order-container-scroll" style={{height: divHeight}} ref="scrollOrderList">
                         <GeminiScrollbar>
+                            {this.state.isAddFormShow ? (
+                                <OrderForm order={{}}
+                                           stageList={_this.state.stageList}
+                                           appList={appList}
+                                           isMerge={_this.props.isMerge}
+                                           customerId={_this.props.curCustomer.id}
+                                           refreshCustomerList={_this.props.refreshCustomerList}
+                                           updateMergeCustomerOrder={_this.props.updateMergeCustomerOrder}/>) : null}
                             {this.state.orderListLoading ? (<Spinner />) : (this.state.orderList.map(function (order, i) {
                                 return (
                                     order.isEdit ?

@@ -127,33 +127,35 @@
             font-size: 12px;
           }
         }
-        //应用列表编辑面板
-        .order-app-edit-block {
-          float: left;
-          width: 100%;
-          &:extend(.break_line);
-          .search-icon-list {
-            margin-top: 4px;
-            .icon-item {
-              font-size: 12px;
-              border: 1px solid #e8edf3;
-            }
-            .icon-item.selected {
-              background-color: #d7e6f7;
-              border-color: #d7e6f7;
-              color: #4c8ec4;
-            }
-            .search-icon-list-content {
-              background: transparent;
-              border: 1px solid #d3eafc;
-              border-radius: 4px;
-              padding: 8px 0 10px 10px;
-            }
-          }
-        }
       }
     }
 
+  }
+}
+
+//应用列表编辑面板
+.order-app-edit-block {
+  float: left;
+  width: 100%;
+  &:extend(.break_line);
+  .search-icon-list {
+    margin-top: 4px;
+    .icon-item {
+      font-size: 12px;
+      border: 1px solid #e8edf3;
+    }
+    .icon-item.selected {
+      background-color: #d7e6f7;
+      border-color: #d7e6f7;
+      color: #4c8ec4;
+    }
+    .search-icon-list-content {
+      background: transparent;
+      border: 1px solid #d3eafc;
+      border-radius: 4px;
+      padding: 8px 0 10px 10px;
+      margin: 0;
+    }
   }
 }
 
@@ -230,17 +232,6 @@
 //    left: 0;
 //    right: 0;
 //    margin: auto;
-//  }
-//
-//  .order-form .anticon-loading {
-//    float: right;
-//    margin-top: 25px;
-//    margin-right: 20px;
-//    font-size: 20px;
-//  }
-//
-//  .order-form .ant-form-item-label {
-//    text-align: left;
 //  }
 //
 //  //单个订单样式
@@ -369,25 +360,32 @@
 //    }
 //  }
 //
-//  form {
-//    position: relative;
-//    .order-application-div {
-//      padding-bottom: 0;
-//    }
-//    .order-introduce {
-//      padding-top: 20px;
-//      border-top: 1px solid @block-line-color-edit;
-//      .ant-form-item {
-//        width: 100%;
-//        label {
-//          text-align: left;
-//        }
-//        .remarks-wrapper {
-//          width: 400px;
-//        }
-//      }
-//    }
-//  }
+form.order-form {
+  position: relative;
+  .ant-form-item {
+    width: 100%;
+    margin-bottom: 6px;
+    label {
+      text-align: left;
+    }
+    input, textarea {
+      width: 100%;
+    }
+  }
+  .ant-form-item-label {
+    text-align: right;
+    label {
+      color: @font_color;
+    }
+  }
+  .order-app-edit-block {
+    z-index: 1;
+    .ant-form-item-label {
+      line-height: 20px;
+    }
+  }
+}
+
 //
 //  .search-icon-list {
 //    width: 615px;

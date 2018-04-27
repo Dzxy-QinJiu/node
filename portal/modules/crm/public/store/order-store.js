@@ -156,7 +156,7 @@ OrderStore.prototype.hideForm = function (id) {
         });
     }
     else {
-        this.orderList.shift();
+        this.isAddFormShow = false;
     }
 };
 
