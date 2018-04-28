@@ -2127,7 +2127,10 @@ var zh_CN = {
     "sales.role.setting.name":"销售角色名称",
     "sales.if.switch.type": "是否区分新签和续约类型",
     "sales.new.write.contract.radio":"新签提成比例",
-    "sales.rewrite.contract.radio":"续约提成比例"
+    "sales.rewrite.contract.radio":"续约提成比例",
+    "clue.customer.check.only.exist": "线索名称唯一性校验失败",
+    "clue.customer.check.repeat": "该线索名称已存在"
+
 
 };
 export default zh_CN;
