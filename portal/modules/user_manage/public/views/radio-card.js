@@ -10,7 +10,7 @@ class RadioCard extends React.Component {
         this.state = {
             id: this.props.id,
             commissionRadio: this.props.commissionRadio,//提成比例
-            submitRadioCount: "",//要提交的提成比例
+            submitCommissionRadio: "",//要提交的提成比例
             newCommissionRatio: this.props.newCommissionRatio,//新签提成比例
             submitNewCommissionRadio: '',//要提交的新签提成比例
             renewalCommissionRatio: this.props.renewalCommissionRatio,//续约提成比例
@@ -70,7 +70,7 @@ class RadioCard extends React.Component {
             //设置提成比例这个字段时，把新签或者续约提成比例设置成负值
             user.new_commission_ratio = -1;
             user.renewal_commission_ratio = -1;
-            user.commission_ratio = this.state.submitRadioCount;
+            user.commission_ratio = this.state.submitCommissionRadio;
         }
         return user;
 
@@ -119,7 +119,7 @@ class RadioCard extends React.Component {
         this.setState({
             isEdittingRadio: false,
             isCheckBoxChecked: false,
-            submitRadioCount:'',
+            submitCommissionRadio:'',
             submitNewCommissionRadio:'',
             submitRenewalCommissionRadio:''
         })
@@ -136,7 +136,7 @@ class RadioCard extends React.Component {
     };
     handleRadioCount = (value) => {
         this.setState({
-            submitRadioCount:value
+            submitCommissionRadio:value
         })
     };
     renderEditRadioCount(){

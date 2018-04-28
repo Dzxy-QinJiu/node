@@ -19,7 +19,7 @@ class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            curCustomer: this.props.curCustomer,
+            curCustomer: $.extend(true, {}, this.props.curCustomer),
             relatedCustomer: {},//与线索相关联的客户
             ...clueCustomerStore.getState()
         };
@@ -36,7 +36,7 @@ class ClueRightPanel extends React.Component {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             // this.queryCustomerByClueId(nextProps.curCustomer.id)
             this.setState({
-                curCustomer: nextProps.curCustomer
+                curCustomer: $.extend(true, {}, nextProps.curCustomer)
             });
         }
     }
@@ -91,18 +91,15 @@ class ClueRightPanel extends React.Component {
     }
 
     onSelectCluesource = (updateSource) => {
-        var cloneCurCustomer = $.extend(true, {}, this.state.curCustomer);
-        cloneCurCustomer.clue_source = updateSource;
+        this.state.curCustomer.clue_source = updateSource;
         this.setState({
-            curCustomer: cloneCurCustomer
+            curCustomer: this.state.curCustomer
         });
     };
     onSelectAccessChannel = (updateChannel) => {
-        //引用类型的数据，不要直接修改，在点击取消按钮的时候会用到原来的数据
-        var cloneCurCustomer = $.extend(true, {}, this.state.curCustomer);
-        cloneCurCustomer.access_channel = updateChannel;
+        this.state.curCustomer.access_channel = updateChannel;
         this.setState({
-            curCustomer: cloneCurCustomer
+            curCustomer: this.state.curCustomer
         });
     };
     cancelEditClueChannel = () =>{
