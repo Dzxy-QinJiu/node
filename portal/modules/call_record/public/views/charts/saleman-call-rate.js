@@ -74,6 +74,11 @@ var PieChart = React.createClass({
                     radius : '55%',
                     center: ['50%', '60%'],
                     data: this.getSeries(),
+                    label : {
+                        normal : {
+                            formatter : "{c}"
+                        }
+                    },
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
