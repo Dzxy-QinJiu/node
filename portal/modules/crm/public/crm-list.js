@@ -800,7 +800,7 @@ var Crm = React.createClass({
                     this.setState({
                         isPreviewShow: true,
                         previewList: CrmStore.processForList(list),
-                    })
+                    });
                 }else if(result > 0){
                     //不可以转入
                     message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));

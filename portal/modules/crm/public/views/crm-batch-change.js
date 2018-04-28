@@ -121,11 +121,11 @@ var CrmBatchChange = React.createClass({
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
-                    this.batchSubmitData(transferType, title)
+                    this.batchSubmitData(transferType, title);
                 }
             });
         }else{
-            this.batchSubmitData(transferType, title)
+            this.batchSubmitData(transferType, title);
         }
     },
     batchSubmitData: function (transferType, title) {
