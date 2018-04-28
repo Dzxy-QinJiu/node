@@ -27,6 +27,7 @@ import {getInvalidPhone, addInvalidPhone} from "LIB_DIR/utils/invalidPhone";
 import AudioPlayer from "CMP_DIR/audioPlayer";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
+import TimeLine from "CMP_DIR/time-line-new";
 var classNames = require("classnames");
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -538,67 +539,51 @@ const CustomerRecord = React.createClass({
             addingInvalidPhoneErrMsg: ""
         })
     },
-    //获取第一次出现的年（天）
-    getFirstAppearTimeStr: function (curItemTime, prevItemTime, formatTimeStr) {
-        //该年(天)是否是第一次出现
-        let isFirstApper = false;
-        //如果没有之前项，说明该年是第一次出现
-        if (!prevItemTime) {
-            isFirstApper = true;
-        } else {
-            //如果当前项的年（天）和之前项的（天）不同，说明该年(天)是第一次出现
-            if (curItemTime !== prevItemTime) isFirstApper = true;
-        }
-        let timeStr = "";
-        if (isFirstApper && curItemTime) {
-            timeStr = moment(curItemTime).format(formatTimeStr);
-        }
-        return timeStr;
-    },
-    renderCustomerTraceList: function () {
-        //前一条记录的时间值中的年
-        let prevItemYear;
-        //当前记录的时间值中的年
-        let curItemYear;
-        //前一条记录的时间值中的天
-        let prevItemDay;
-        //当前记录的时间值中的天
-        let curItemDay;
-        //客户跟进记录
-        let customerTraceList = this.state.customerRecord;
-        const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年");
-        if (_.isArray(customerTraceList) && customerTraceList.length) {
-            return (<div className="customer-trace-list group-by-day">
-                {customerTraceList.map((item, index) => {
-                    //处理按天分组逻辑
-                    const curItemTime = item.time;
-                    curItemYear = moment(curItemTime).startOf("year").valueOf();
-                    curItemDay = moment(curItemTime).startOf("day").valueOf();
-                    let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, YEAR_TIME_FORMAT);
-                    let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
-                    //将当前项保存下来，以备下次循环中使用
-                    prevItemYear = curItemYear;
-                    prevItemDay = curItemDay;
-                    //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
-                    let hasSplitLine = dayStr && index;
-                    //今年的跟进记录的年不展示
-                    let thisYear = moment().format(YEAR_TIME_FORMAT);
-                    return (
-                        <div className="customer-trace-item" key={index}>
-                            {yearStr && yearStr !== thisYear ? (
-                                <div className="group-year">
-                                    {yearStr}
-                                </div>) : null}
-                            <div className="group-day">{dayStr}</div>
-                            {this.renderTimeLineItem(item, hasSplitLine)}
-                        </div>
-                    );
-                })}
-            </div>);
-        } else {
-            return (<div className="no-data-tip">{Intl.get("common.no.data", "暂无数据")}</div>);
-        }
-    },
+
+    // renderCustomerTraceList: function () {
+    //     //前一条记录的时间值中的年
+    //     let prevItemYear;
+    //     //当前记录的时间值中的年
+    //     let curItemYear;
+    //     //前一条记录的时间值中的天
+    //     let prevItemDay;
+    //     //当前记录的时间值中的天
+    //     let curItemDay;
+    //     //客户跟进记录
+    //     let customerTraceList = this.state.customerRecord;
+    //     const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年");
+    //     if (_.isArray(customerTraceList) && customerTraceList.length) {
+    //         return (<div className="customer-trace-list group-by-day">
+    //             {customerTraceList.map((item, index) => {
+    //                 //处理按天分组逻辑
+    //                 const curItemTime = item.time;
+    //                 curItemYear = moment(curItemTime).startOf("year").valueOf();
+    //                 curItemDay = moment(curItemTime).startOf("day").valueOf();
+    //                 let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, YEAR_TIME_FORMAT);
+    //                 let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
+    //                 //将当前项保存下来，以备下次循环中使用
+    //                 prevItemYear = curItemYear;
+    //                 prevItemDay = curItemDay;
+    //                 //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
+    //                 let hasSplitLine = dayStr && index;
+    //                 //今年的跟进记录的年不展示
+    //                 let thisYear = moment().format(YEAR_TIME_FORMAT);
+    //                 return (
+    //                     <div className="customer-trace-item" key={index}>
+    //                         {yearStr && yearStr !== thisYear ? (
+    //                             <div className="group-year">
+    //                                 {yearStr}
+    //                             </div>) : null}
+    //                         <div className="group-day">{dayStr}</div>
+    //                         {this.renderTimeLineItem(item, hasSplitLine)}
+    //                     </div>
+    //                 );
+    //             })}
+    //         </div>);
+    //     } else {
+    //         return (<div className="no-data-tip">{Intl.get("common.no.data", "暂无数据")}</div>);
+    //     }
+    // },
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
@@ -670,7 +655,14 @@ const CustomerRecord = React.createClass({
                             handleScrollBottom={this.handleScrollBarBottom}
                             listenScrollBottom={this.state.listenScrollBottom}
                         >
-                            {this.renderCustomerTraceList()}
+                            <TimeLine
+                                list={this.state.customerRecord}
+                                groupByDay={true}
+                                groupByYear={true}
+                                timeField="time"
+                                renderTimeLineItem={this.renderTimeLineItem}
+                                relativeDate={false}
+                            />
                         </GeminiScrollbar>
                     </div>
                     <div className="show-foot">

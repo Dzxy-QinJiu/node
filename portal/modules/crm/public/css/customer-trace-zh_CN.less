@@ -74,107 +74,76 @@
     margin-top: 12px;
     border-radius: 4px;
     background-color: #fff;
-    .customer-trace-list.group-by-day {
-      .customer-trace-item {
-        float: left;
-        //年的时间样式
-        .group-year {
-          padding: 12px 0 0 12px;
-          color: @font_color;
-          //年分割线
-          .year-split-line {
+    .trace-item-content {
+      float: right;
+      width: 350px;
+      padding: @padding;
+      font-size: 14px;
+      //跟进记录类型图标
+      .iconfont {
+        padding-right: @padding;
+        font-size: 16px;
+        color: @other_icon_color;
+      }
+      .icon-visit-briefcase {
+        color: @icon_visit_color;
+      }
+      .item-detail-tip {
+        color: @title_color;
+      }
+      //跟进内容
+      .item-detail-content {
+        white-space: normal;
+        word-wrap: break-word;
+        color: @font_color;
+        //点此补充跟进记录
+        .add-detail-tip {
+          font-size: 14px;
+          color: #4a8ec4;
+          cursor: pointer;
+        }
+      }
+      .item-bottom-content {
+        margin-top: 4px;
+        color: #b0b6ba;
+        //未接听
+        .call-un-answer {
+          line-height: 24px;
+          margin-right: 4px;
+        }
+        //播放录音区的样式
+        .audio-container {
+          float: left;
+          border: 1px solid #e2e2e2;
+          border-radius: 4px;
+          padding-left: 4px;
+          margin-right: 4px;
+          //录音图标
+          .iconfont.icon-play {
+            font-size: 16px;
+            //color: @blue;
+            cursor: pointer;
+          }
+          .iconfont.icon-play.icon-selected {
+            color: #C20C0C;
+          }
+          //通话时长
+          .call-time-descr {
             display: inline-block;
             vertical-align: middle;
-            width: 90%;
-            height: 1px;
-            margin-left: 8px;
-            background-color: @split_line_color;
+            font-size: 12px;
+            padding-left: 4px;
           }
         }
-        //天的时间样式
-        .group-day {
-          float: left;
-          height: 30px;
-          width: 64px;
-          padding: 10px 16px 0 12px;
-          font-size: 14px;
+        //打电话的人
+        .sale-name {
+          display: inline-block;
+          line-height: 24px;
         }
-        //天分隔线
-        .day-split-line {
-          border-top: 1px solid @split_line_color;
-        }
-        .trace-item-content {
-          float: left;
-          width: 356px;
-          padding: @padding;
-          font-size: 14px;
-          //跟进记录类型图标
-          .iconfont {
-            padding-right: @padding;
-            font-size: 16px;
-            color: @other_icon_color;
-          }
-          .icon-visit-briefcase {
-            color: @icon_visit_color;
-          }
-          .item-detail-tip {
-            color: @title_color;
-          }
-          //跟进内容
-          .item-detail-content {
-            white-space: normal;
-            word-wrap: break-word;
-            color: @font_color;
-            //点此补充跟进记录
-            .add-detail-tip {
-              font-size: 14px;
-              color: #4a8ec4;
-              cursor: pointer;
-            }
-          }
-          .item-bottom-content {
-            margin-top: 4px;
-            color: #b0b6ba;
-            //未接听
-            .call-un-answer {
-              line-height: 24px;
-              margin-right: 4px;
-            }
-            //播放录音区的样式
-            .audio-container {
-              float: left;
-              border: 1px solid #e2e2e2;
-              border-radius: 4px;
-              padding-left: 4px;
-              margin-right: 4px;
-              //录音图标
-              .iconfont.icon-play {
-                font-size: 16px;
-                //color: @blue;
-                cursor: pointer;
-              }
-              .iconfont.icon-play.icon-selected {
-                color: #C20C0C;
-              }
-              //通话时长
-              .call-time-descr {
-                display: inline-block;
-                vertical-align: middle;
-                font-size: 12px;
-                padding-left: 4px;
-              }
-            }
-            //打电话的人
-            .sale-name {
-              display: inline-block;
-              line-height: 24px;
-            }
-            .trace-record-time {
-              display: inline-block;
-              float: right;
-              line-height: 24px;
-            }
-          }
+        .trace-record-time {
+          display: inline-block;
+          float: right;
+          line-height: 24px;
         }
       }
     }
