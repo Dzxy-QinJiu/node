@@ -2110,6 +2110,10 @@ var en_US = {
     "sales.role.setting.name":"Sales role name",//销售角色名称
     "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
     "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
-    "sales.rewrite.contract.radio":"Renewed signing ratio"//续约提成比例
+    "sales.rewrite.contract.radio":"Renewed signing ratio",//续约提成比例
+    "sales.remark.clue.enable":"Mark this clue effective",//标记该线索有效
+    "sales.remark.clue.able":"Mark this clue invalid",//标记该线索无效
+    "sales.clue.is.enable":"Invalid",//无效
+    "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue"//标记该线索有效性失败
 };
-export default en_US;
+export default en_US;

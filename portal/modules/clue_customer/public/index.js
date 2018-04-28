@@ -10,7 +10,7 @@ import ClueCustomerFilterBlock from './views/clue-customer-search-block';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import SalesClueAddForm from './views/sales-clue-add-form';
 import Trace from "LIB_DIR/trace";
-import {message, Icon, Row, Col, Button, Alert, Input} from "antd";
+import {message, Icon, Row, Col, Button, Alert, Input, Tag} from "antd";
 import AlwaysShowSelect from "CMP_DIR/always-show-select";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 var clueCustomerStore = require("./store/clue-customer-store");
@@ -46,6 +46,7 @@ const ClueCustomer = React.createClass({
             tableHeight: 630,
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            isRemarkingItem:'',//正在标记的那条线索
             ...clueCustomerStore.getState()
         };
     },
@@ -404,6 +405,32 @@ const ClueCustomer = React.createClass({
             curCustomers:this.state.curCustomers
         });
     },
+    handleClickRemarkBtn: function (item){
+        var updateValue = "1";
+        if (item.availability == "1"){
+            updateValue = "0";
+        }
+        var submitObj = {
+            id: item.id,
+            availability:updateValue
+        };
+        this.setState({
+            isRemarkingItem: item.id,
+        });
+        clueCustomerAction.updateCluecustomerDetail(submitObj,(result)=>{
+            if (_.isString(result)){
+                this.setState({
+                    isRemarkingItem: '',
+                });
+                message.error(Intl.get("failed.sales.remark.clue.valid","标记该线索有效性失败"))
+            }else{
+                clueCustomerAction.updateClueProperty({id:item.id,availability:updateValue});
+                this.setState({
+                    isRemarkingItem: ''
+                });
+            }
+        });
+    },
     //线索客户列表
     renderClueCustomerList(){
         var customerList = this.state.curCustomers;
@@ -448,9 +475,11 @@ const ClueCustomer = React.createClass({
                         <div className={itemCls}>
                             <Row>
                                 <i></i>
-                                <Col sm={12} lg={6}>
+                                <Col sm={12} lg={4}>
                                     <div className="customer-info-wrap">
-                                        <h4>{item.name}</h4>
+                                        <h4>{item.name}
+                                            {item.availability == 1 ? <Tag className="inavailable-tag">{Intl.get("sales.clue.is.enable","无效")}</Tag> : null}
+                                        </h4>
                                         <p>{item.source}</p>
                                         <span className="hidden record-id">{item.id}</span>
                                     </div>
@@ -471,7 +500,7 @@ const ClueCustomer = React.createClass({
                                     <div>{item.access_channel}</div>
                                     <p>{item.clue_source}</p>
                                 </Col>
-                                {item.user_name ? <Col sm={18} lg={6}>
+                                {item.user_name ? <Col sm={18} lg={4}>
                                     <div className="trace-record-wrap">
                                         <p>
                                             {Intl.get("cluecustomer.trace.person", "跟进人")}:{item.user_name}
@@ -511,7 +540,7 @@ const ClueCustomer = React.createClass({
                                     </div>
                                 </Col>: null}
                                 {(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER")) ?
-                                    <Col sm={6} lg={2}>
+                                    <Col sm={3} lg={3}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown
                                                 ref={"changesale" + item.id}
@@ -528,6 +557,15 @@ const ClueCustomer = React.createClass({
                                         </div>
                                     </Col> : null
                                 }
+                                <Col sm={3} lg={3}>
+                                    <div className="remark-clue-container">
+                                        <Button disabled={this.state.isRemarkingItem == item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
+                                            {/*没有该字段，或该字段为0，表示该线索有效，为1表示无效*/}
+                                            {!item.availability || item.availability == "0" ? Intl.get("sales.remark.clue.able","标记该线索无效") : Intl.get("sales.remark.clue.enable", "标记该线索有效")}
+                                            {this.state.isRemarkingItem == item.id ? <Icon type="loading"/> : null}
+                                        </Button>
+                                    </div>
+                                </Col>
                             </Row>
                         </div>
                     </div>

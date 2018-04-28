@@ -13,7 +13,7 @@ var clueCustomerStore = require("../store/clue-customer-store");
 var clueCustomerAjax = require("../ajax/clue-customer-ajax");
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
-var userData = require("../../../../public/sources/user-data");
+import classNames from "classnames";
 const noop = function () {};
 class ClueRightPanel extends React.Component {
     constructor(props) {

@@ -73,6 +73,13 @@ ClueCustomerStore.prototype.getClueCustomerList = function (clueCustomers) {
         }
     }
 };
+//更新线索客户的一些属性
+ClueCustomerStore.prototype.updateClueProperty = function (updateObj) {
+    var updateClue = _.find(this.curCustomers, clue=> updateObj.id == clue.id);
+    if (updateClue){
+        updateClue.availability = updateObj.availability;
+    }
+};
 //添加或更新跟进内容
 ClueCustomerStore.prototype.addCluecustomerTrace = function (result) {
     if (result.loading) {
@@ -186,7 +193,7 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function (tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function (newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ["access_channel", "clue_source", "source", "user_id", "user_name", "sales_team", "sales_team_id"];
+    var customerProperty = ["access_channel", "clue_source", "source", "user_id", "user_name", "sales_team", "sales_team_id",'availability'];
     for (var key in newCustomerDetail) {
         if (_.indexOf(customerProperty, key) > -1) {
             //修改客户的相关属性

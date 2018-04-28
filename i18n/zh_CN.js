@@ -2127,7 +2127,11 @@ var zh_CN = {
     "sales.role.setting.name":"销售角色名称",
     "sales.if.switch.type": "是否区分新签和续约类型",
     "sales.new.write.contract.radio":"新签提成比例",
-    "sales.rewrite.contract.radio":"续约提成比例"
+    "sales.rewrite.contract.radio":"续约提成比例",
+    "sales.remark.clue.enable":"标记该线索有效",
+    "sales.remark.clue.able":"标记该线索无效",
+    "sales.clue.is.enable":"无效",
+    "failed.sales.remark.clue.valid":"标记该线索有效性失败"
 
 };
 export default zh_CN;
