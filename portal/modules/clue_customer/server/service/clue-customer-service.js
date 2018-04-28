@@ -20,7 +20,7 @@ const restApis = {
     //把线索客户分配给对应的销售
     distributeCluecustomerToSale:"/rest/customer/v2/clue/distribute/:type",
     //对线索客户的详情进行更新
-    updateCluecustomerDetail:"/rest/customer/v2/clue/update/user/:updateItem",
+    updateCluecustomerDetail:"/rest/customer/v2/clue/update/manager/:updateItem",
     //线索名、电话唯一性验证
     checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search",
     //将线索和客户进行关联
