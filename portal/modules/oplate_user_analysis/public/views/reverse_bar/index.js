@@ -48,7 +48,7 @@ var BarChart = React.createClass({
             text = text === 'unknown' ? Intl.get("user.unknown", "未知"):text;
             return textWidth.measureTextWidth(text , 12);
         });
-        var maxMargin = _.max(marginList) + 10;
+        var maxMargin = _.max(marginList) + 20;
         return maxMargin;
     },
     getCategorys : function() {

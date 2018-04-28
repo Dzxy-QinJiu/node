@@ -116,11 +116,11 @@ function CrmActions() {
     //是否能继续添加客户,如果是0 是可以转入的，如果大于0，代表超出客户的数量
     this.getCustomerLimit = function (reqObj,callback) {
         crmAjax.getCustomerLimit(reqObj).then((data)=>{
-            _.isFunction(callback) && callback(data)
+            _.isFunction(callback) && callback(data);
         },(errorMsg)=>{
-            _.isFunction(callback) && callback(errorMsg)
-        })
-    }
+            _.isFunction(callback) && callback(errorMsg);
+        });
+    };
 }
 
 module.exports = alt.createActions(CrmActions);
