@@ -59,7 +59,6 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(data);
         }, function (errorMsg) {
             _.isFunction(callback) && callback(errorMsg || Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
-
         });
     };
     //获取销售列表

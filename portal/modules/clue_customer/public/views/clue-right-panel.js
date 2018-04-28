@@ -135,7 +135,6 @@ class ClueRightPanel extends React.Component {
                         callback(Intl.get("clue.customer.check.repeat", "该线索名称已存在"));
                     }
                 }
-
             });
         }else{
             callback(Intl.get("clue.customer.fillin.clue.name", "请填写线索名称"));
@@ -167,7 +166,6 @@ class ClueRightPanel extends React.Component {
                                 saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
                                 validators={[{validator: this.validatorClueNameBeforSubmit}]}
                             />
-
                             </h5>
                         <div className="clue_detail_content">
                             <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">

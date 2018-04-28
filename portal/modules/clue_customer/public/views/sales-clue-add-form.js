@@ -65,35 +65,6 @@ const SalesClueAddForm = React.createClass({
             clueCustomerCheckErrMsg:""//线索名称校验失败
         };
     },
-
-    //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
-    autoFillGeoInfo (customerName) {
-        const route = _.find(routeList, route => route.handler === "getGeoInfo");
-
-        const arg = {
-            url: route.path,
-            query: {keywords: customerName}
-        };
-
-        commonAjax(arg).then(result => {
-            if (_.isEmpty(result)) return;
-            this.state.formData.address = result.address;
-            this.state.formData.location = result.location;
-            this.state.formData.province = result.pname;
-            this.state.formData.city = result.cityname;
-            this.state.formData.county = result.adname;
-            this.state.formData.phone = result.tel;
-            this.setState(this.state);
-        });
-    },
-    //根据客户名获取客户的行政级别并填充到对应字段上
-    autoFillAdministrativeLevel (customerName) {
-        clueCustomerAjax.getAdministrativeLevel({name: customerName}).then(result => {
-            if (_.isEmpty(result)) return;
-            this.state.formData.administrative_level = result.level > 0 ? result.level + '' : '';
-            this.setState({formData: this.state.formData});
-        });
-    },
     //验证客户名是否重复
     checkOnlyClueCustomerName(){
         let customerName = $.trim(this.state.formData.name);
@@ -122,8 +93,6 @@ const SalesClueAddForm = React.createClass({
                 }
 
             });
-            // this.autoFillGeoInfo(customerName);
-            // this.autoFillAdministrativeLevel(customerName);
         }
     },
     renderCheckClueNameMsg: function () {
