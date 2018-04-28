@@ -60,7 +60,9 @@ const SalesClueAddForm = React.createClass({
             saveMsg: "",
             saveResult: "",
             isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
-            newAddClue: {}//新增加的线索
+            newAddClue: {},//新增加的线索
+            clueNameExist: false,//线索名称是否存在
+            clueCustomerCheckErrMsg:""//线索名称校验失败
         };
     },
 
@@ -92,13 +94,45 @@ const SalesClueAddForm = React.createClass({
             this.setState({formData: this.state.formData});
         });
     },
-    //通过客户名自动填充的内容
-    autoFillContentByName(){
+    //验证客户名是否重复
+    checkOnlyClueCustomerName(){
         let customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
-            this.autoFillGeoInfo(customerName);
-            this.autoFillAdministrativeLevel(customerName);
+            clueCustomerAction.checkOnlyClueName(customerName, (data)=>{
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    this.setState({
+                        clueNameExist: false,
+                        clueCustomerCheckErrMsg: data
+                    });
+                } else {
+                    if (_.isObject(data) && data.result == "true") {
+                        this.setState({
+                            clueNameExist: false,
+                            clueCustomerCheckErrMsg: ''
+                        });
+                    } else {
+                        //已存在
+                        this.setState({
+                            clueNameExist: true,
+                            clueCustomerCheckErrMsg: ''
+                        });
+                    }
+                }
+
+            });
+            // this.autoFillGeoInfo(customerName);
+            // this.autoFillAdministrativeLevel(customerName);
+        }
+    },
+    renderCheckClueNameMsg: function () {
+        if (this.state.clueNameExist) {
+            return (<div className="clue-name-repeat">{Intl.get("clue.customer.check.repeat", "该线索名称已存在")}</div>);
+        } else if (this.state.clueCustomerCheckErrMsg) {
+            return (<div className="clue-name-errmsg">{Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败")}</div>);
+        } else {
+            return "";
         }
     },
     getSubmitObj(){
@@ -145,6 +179,9 @@ const SalesClueAddForm = React.createClass({
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
+                if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
+                    valid = false;
+                };
                 if (!valid || errors) {
                     return;
                 } else {
@@ -275,14 +312,15 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
+                                           className={this.state.clueNameExist||this.state.clueCustomerCheckErrMsg?"input-red-border":""}
                                            placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
                                            value={formData.name}
-                                           onBlur={this.autoFillContentByName}
+                                           onBlur={this.checkOnlyClueCustomerName}
                                            onChange={this.setField.bind(this, 'name')}
                                     />
                                 </Validator>
                             </FormItem>
-
+                            {this.renderCheckClueNameMsg()}
                             <FormItem
                                 label={Intl.get("call.record.contacts", "联系人")}
                                 labelCol={{span: 6}}
@@ -424,7 +462,7 @@ const SalesClueAddForm = React.createClass({
 
     render() {
         return (
-            <RightPanel showFlag={true} data-tracename="添加线索客户">
+            <RightPanel showFlag={true} data-tracename="添加线索客户" className="sales-clue-add-container">
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加销售线索面板"/>
                 {this.state.isShowAssignAndRelate ? this.renderAssignAndRelate() : this.renderAddForm()}
             </RightPanel>
