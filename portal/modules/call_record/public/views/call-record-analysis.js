@@ -32,6 +32,14 @@ import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import {handleTableData} from "CMP_DIR/analysis/export-data-util";
 import {exportToCsv} from "LIB_DIR/func";
+const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
+//地图的formatter
+function mapFormatter(obj) {
+    return [
+        Intl.get("oplate_bd_analysis_realm_zone.1", "省份") + '：' + obj.name,
+        Intl.get("oplate_bd_analysis_realm_industry.6", "个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
+    ].join('<br/>');
+}
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
     ORIGIN_WIDTH: 135,
@@ -888,10 +896,20 @@ var CallRecordAnalyis = React.createClass({
         let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn());
         exportToCsv("sales_phone_table.csv",exportData);
     },
+    getClickMap(zone) {
+        console.log('zone:', zone);
+        this.state.customerData.zoneList = [{name: 'aa', value: '12'},{name: 'bb', value: '12'}];
+    },
     renderCustomerZoneDistribute() {
         return (
-            <div>
-                客户地域分布
+            <div className="map-distribute">
+                <ChinaMap
+                    width="900"
+                    height="600"
+                    dataList={this.state.customerData.zoneList}
+                    formatter={mapFormatter}
+                    getClickEvent={this.getClickMap}
+                />
             </div>
         );
     },
@@ -1085,13 +1103,11 @@ var CallRecordAnalyis = React.createClass({
                             </div>
                         </div>
                         <div className="col-xs-12">
-                            <div className="call-zone-distribute col-xs-6">
-                                <div className="call-zone">
-                                    <div className="call-zone-title">
-                                        客户的地域分布:
-                                    </div>
-                                    {this.renderCustomerZoneDistribute()}
+                            <div className="call-zone-distribute">
+                                <div className="call-zone-title">
+                                    客户的地域分布:
                                 </div>
+                                {this.renderCustomerZoneDistribute()}
                             </div>
                         </div>
                     </div>

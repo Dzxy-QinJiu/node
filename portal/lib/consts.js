@@ -40,5 +40,13 @@ module.exports = {
         RECENT_LOGIN_USER_SELECTED_APP_ID:"recent-login-user-selected-app-id"
     },
     MAP_COLOR: ['rgba(56, 89, 147, 1)','rgba(56, 89, 147, 0.8)','rgba(56, 89, 147, 0.6)','rgba(56, 89, 147, 0.4)','rgba(56, 89, 147, 0.2)'],
-
+    MAP_PROVINCE: [
+        {'anhui': '安徽'}, {'aomen': '澳门'}, {'beijing': '北京'}, {'chongqing': '重庆'}, {'fujian': '福建'},
+        {'gansu': '甘肃'}, {'guangdong': '广东'}, {'guangxi': '广西'}, {'guizhou': '贵州'}, {'hainan': '海南'},
+        {'hebei': '河北'}, {'heilongjiang': '黑龙江'}, {'henan': '河南'}, {'hubei': '湖北'}, {'hunan': '湖南'},
+        {'jiangsu': '江苏'}, {'jiangxi': '江西'}, {'jilin': '吉林'}, {'liaoning': '辽宁'}, {'neimenggu': '内蒙古'},
+        {'ningxia': '宁夏'}, {'qinghai': '青海'}, {'shandong': '山东'}, {'shanghai': '上海'}, {'shanxi': '陕西'},
+        {'shanxi1': '山西'}, {'sichuan': '四川'}, {'taiwan': '台湾'}, {'tianjin': '天津'}, {'xianggang': '香港'},
+        {'xinjiang': '新疆'}, {'xizang': '西藏'}, {'yunnan': '云南'}, {'zhejiang': '浙江'}
+    ]
 };

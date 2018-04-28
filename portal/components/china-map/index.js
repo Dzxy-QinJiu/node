@@ -2,8 +2,21 @@ require("./index.less");
 var echarts = require("echarts-eefung");
 require("echarts-eefung/map/js/china");
 var MapChart = require("./mapchart");
+import { MAP_PROVINCE } from "LIB_DIR/consts";
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var ChinaMap = React.createClass({
+
+    provinceName(name) {
+        let transName = '';
+        _.find(MAP_PROVINCE, (item) => {
+            for(var key in item) {
+                if (item[key] == name) {
+                    transName = key;
+                }
+            }
+        });
+        return transName;
+    },
     echartInstance : null,
     renderMap : function() {
         if(this.props.height > 0 && this.props.width > 0) {
@@ -21,6 +34,14 @@ var ChinaMap = React.createClass({
             var options = mapUtil.getEchartOptions();
             this.echartInstance = echarts.init(chartWrap,macronsTheme);
             this.echartInstance.setOption(options);
+            this.echartInstance.on("click", params => {
+                let transName = this.provinceName(params.name);
+                const provinceName = require("echarts-eefung/map/json/province/" + transName);
+                echarts.registerMap(params.name, provinceName);
+                options.series[0].mapType = params.name;
+                this.echartInstance.setOption(options);
+                //this.props.getClickEvent(params.name);
+            });
         }
     },
     componentDidMount : function() {
