@@ -2111,7 +2111,12 @@ var en_US = {
     "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
     "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
     "sales.rewrite.contract.radio":"Renewed signing ratio",//续约提成比例
+    "sales.remark.clue.enable":"Mark this clue effective",//标记该线索有效
+    "sales.remark.clue.able":"Mark this clue invalid",//标记该线索无效
+    "sales.clue.is.enable":"Invalid",//无效
+    "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue",//标记该线索有效性失败
     "clue.customer.check.only.exist": "Failed to verify the only clue names",//线索名称唯一性校验失败
     "clue.customer.check.repeat": "The clue name is already existed"//该线索名称已存在
+
 };
 export default en_US;

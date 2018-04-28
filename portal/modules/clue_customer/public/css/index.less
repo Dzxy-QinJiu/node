@@ -97,6 +97,13 @@
                 font-size: 15px;
                 line-height: 22px;
                 font-weight: bold;
+                .ant-tag.inavailable-tag{
+                  margin-left: 5px;
+                  font-weight: normal;
+                  color:#fff;
+                  background-color: @qualified-tag-color;
+                }
+
               }
             }
             .trace-record-wrap{
@@ -164,9 +171,9 @@
               }
 
             }
-            .action-button-wrap{
+            .action-button-wrap,.remark-clue-container{
               margin-top: 10px;
-              .ant-dropdown-trigger.ant-btn-primary{
+              .ant-dropdown-trigger.ant-btn-primary, .ant-btn.ant-btn-primary{
                 border-color: #49a9ee;
                 background-color: #49a9ee;
                 &:active{
@@ -294,7 +301,14 @@
   .clue_customer_rightpanel.right-pannel-default{
     //详情展示区域
     overflow: visible;
-
+    .availability-remark{
+      position: absolute;
+      border: 26px solid @qualified-tag-color;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      left: 0;
+      top: 0;
+    }
     .clue_customer_content_wrap{
       //顶部线索详情展示
       h5{

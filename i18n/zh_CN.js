@@ -2128,9 +2128,12 @@ var zh_CN = {
     "sales.if.switch.type": "是否区分新签和续约类型",
     "sales.new.write.contract.radio":"新签提成比例",
     "sales.rewrite.contract.radio":"续约提成比例",
+    "sales.remark.clue.enable":"标记该线索有效",
+    "sales.remark.clue.able":"标记该线索无效",
+    "sales.clue.is.enable":"无效",
+    "failed.sales.remark.clue.valid":"标记该线索有效性失败",
     "clue.customer.check.only.exist": "线索名称唯一性校验失败",
     "clue.customer.check.repeat": "该线索名称已存在"
-
 
 };
 export default zh_CN;

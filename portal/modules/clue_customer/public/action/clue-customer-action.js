@@ -23,7 +23,8 @@ function ClueCustomerActions() {
         "setSalesMan",//获取销售人员及团队的id
         "setSalesManName",//获取销售人员及团队的名字
         "setUnSelectDataTip",//未选择销售人员的提醒信息
-        "afterEditCustomerDetail"//修改线索客户完成后更新列表中的信息
+        "afterEditCustomerDetail",//修改线索客户完成后更新列表中的信息
+        "updateClueProperty"//修改线索是否有效属性
     );
     //获取线索客户列表
     this.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
@@ -91,6 +92,14 @@ function ClueCustomerActions() {
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
         });
+    };
+    //标记线索是否有效
+    this.updateCluecustomerDetail = function (submitObj,callback) {
+        clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result)=>{
+            _.isFunction(callback) && callback();
+        },(errorMsg)=>{
+            _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
+        })
     };
 }
 module.exports = alt.createActions(ClueCustomerActions);

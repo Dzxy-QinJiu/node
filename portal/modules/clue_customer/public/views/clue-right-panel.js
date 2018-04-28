@@ -13,6 +13,7 @@ var clueCustomerStore = require("../store/clue-customer-store");
 var clueCustomerAjax = require("../ajax/clue-customer-ajax");
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
+import classNames from "classnames";
 var userData = require("../../../../public/sources/user-data");
 import {nameRegex} from "PUB_DIR/sources/utils/consts";
 const noop = function () {};
