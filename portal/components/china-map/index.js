@@ -4,8 +4,14 @@ require("echarts-eefung/map/js/china");
 var MapChart = require("./mapchart");
 import { MAP_PROVINCE } from "LIB_DIR/consts";
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { Button } from 'antd';
+var immutable = require("immutable");
 var ChinaMap = React.createClass({
-
+    getInitialState() {
+        return {
+            showReturnBtn: false
+        };
+    },
     provinceName(name) {
         let transName = '';
         _.find(MAP_PROVINCE, (item) => {
@@ -18,7 +24,7 @@ var ChinaMap = React.createClass({
         return transName;
     },
     echartInstance : null,
-    renderMap : function() {
+    renderMap() {
         if(this.props.height > 0 && this.props.width > 0) {
             if(this.echartInstance) {
                 this.echartInstance.dispose();
@@ -35,27 +41,41 @@ var ChinaMap = React.createClass({
             this.echartInstance = echarts.init(chartWrap,macronsTheme);
             this.echartInstance.setOption(options);
             this.echartInstance.on("click", params => {
+               this.setState({
+                   showReturnBtn: true
+               });
                 let transName = this.provinceName(params.name);
-                const provinceName = require("echarts-eefung/map/json/province/" + transName);
-                echarts.registerMap(params.name, provinceName);
-                options.series[0].mapType = params.name;
-                this.echartInstance.setOption(options);
-                //this.props.getClickEvent(params.name);
+                if (transName) {
+                    const provinceName = require("echarts-eefung/map/json/province/" + transName);
+                    echarts.registerMap(params.name, provinceName);
+                    options.series[0].mapType = params.name;
+                    this.echartInstance.setOption(options);
+                    //this.props.getClickEvent(params.name);
+                }
+
             });
         }
     },
     componentDidMount : function() {
         this.renderMap();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount() {
         if(this.echartInstance) {
             this.echartInstance.dispose();
         }
     },
-    componentDidUpdate : function() {
+    componentDidUpdate(prevProps) {
+        if(
+            this.props.dataList &&
+            prevProps.dataList &&
+            immutable.is(this.props.dataList , prevProps.dataList) &&
+            this.props.width === prevProps.width
+        ) {
+            return;
+        }
         this.renderMap();
     },
-    getDefaultProps : function() {
+    getDefaultProps() {
         return {
             width : 500,
             height : 500,
@@ -65,9 +85,16 @@ var ChinaMap = React.createClass({
             formatter : function(){}
         };
     },
-    render : function() {
+    returnChinaMap() {
+        this.setState({
+            showReturnBtn: false
+        });
+        this.renderMap();
+    },
+    render() {
         return (
             <div>
+                {this.state.showReturnBtn ? (<Button type="primary" onClick={this.returnChinaMap}>返回上一级</Button>) : null}
                 <div ref="chartWrap" style={{width:this.props.width,height:this.props.height,borderBottom:'1px solid transparent',...this.props.style}} className={this.props.className}></div>
             </div>
         );
