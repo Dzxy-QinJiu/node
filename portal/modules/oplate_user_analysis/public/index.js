@@ -1774,9 +1774,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     </div>
                 </div>
             ), (
-                <div className="analysis_chart col-md-6 col-sm-12"
+                <div className="analysis_chart zone-fix col-md-6 col-sm-12"
                      data-title="活跃用户地域统计">
-                    <div className="chart-holder zone-fix">
+                    <div className="chart-holder">
                         <CardContainer
                             title="活跃用户地域统计"
                             exportData={handleZoneExportData(this.state.activeZone.data)}

@@ -53,6 +53,14 @@ function ClueCustomerActions() {
             }
         });
     };
+    //线索名称唯一性校验
+    this.checkOnlyClueName = function (clueName, callback) {
+        clueCustomerAjax.checkOnlyCustomer({name: clueName}).then(function (data) {
+            _.isFunction(callback) && callback(data);
+        }, function (errorMsg) {
+            _.isFunction(callback) && callback(errorMsg || Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
+        });
+    };
     //获取销售列表
     this.getSalesManList = function (cb) {
         //客户所属销售（团队）下拉列表的数据获取

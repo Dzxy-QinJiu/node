@@ -14,6 +14,7 @@ var clueCustomerAjax = require("../ajax/clue-customer-ajax");
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 var userData = require("../../../../public/sources/user-data");
+import {nameRegex} from "PUB_DIR/sources/utils/consts";
 const noop = function () {};
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -42,7 +43,7 @@ class ClueRightPanel extends React.Component {
     }
 
     //电话格式，必填一项，唯一性的验证
-    getPhoneInputValidateRules(rule, value, callback) {
+    getPhoneInputValidateRules = (rule, value, callback) => {
         value = $.trim(value);
         if (value) {
             if (/^1[34578]\d{9}$/.test(value) || /^(\d{3,4}-?)?\d{7,8}$/.test(value) || /^400-?\d{3}-?\d{4}$/.test(value)) {
@@ -72,7 +73,7 @@ class ClueRightPanel extends React.Component {
                 }
             }
         }
-    }
+    };
 
     getClueSourceOptions() {
         return (
@@ -132,6 +133,25 @@ class ClueRightPanel extends React.Component {
         });
         this.props.hideRightPanel();
     };
+    validatorClueNameBeforSubmit = (rule, value, callback) =>{
+        //先验证该线索名称是否存在
+        if (value && nameRegex.test(value)) {
+            clueCustomerAction.checkOnlyClueName(value, (data)=>{
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    callback(Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
+                } else {
+                    if (_.isObject(data) && data.result == "true") {
+                        callback();
+                    } else {
+                        callback(Intl.get("clue.customer.check.repeat", "该线索名称已存在"));
+                    }
+                }
+            });
+        }else{
+            callback(Intl.get("clue.customer.fillin.clue.name", "请填写线索名称"));
+        }
+    };
     render() {
         var curCustomer = this.state.curCustomer || {};
         var phone = "", qq = "", email = "", id = "";
@@ -151,7 +171,16 @@ class ClueRightPanel extends React.Component {
                 <RightPanelClose onClick={this.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
                 <GeminiScrollbar>
                     <div className="clue_customer_content_wrap">
-                        <h5>{curCustomer.name}</h5>
+                        <h5>
+                            <UserDetailEditField
+                                user_id={curCustomer.id}
+                                field="name"
+                                value={curCustomer.name}
+                                modifySuccess={this.changeUserFieldSuccess}
+                                saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                validators={[{validator: this.validatorClueNameBeforSubmit}]}
+                            />
+                            </h5>
                         <div className="clue_detail_content">
                             <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
                                 <dt>
