@@ -636,6 +636,7 @@ const CallRecord = React.createClass({
                                     onClick={this.handleClickCustomer.bind(this, record)}
                                 >
                                     {record.customer_name}
+                                    <input type="hidden" value={record.customer_id} className="customer_id_hidden"/>
                                     <input type="hidden" value={record.dst} className="phone_hidden" />
                                     <input type="hidden" value={record.customer_name} className="customer_name_hidden" />
                                 </div>
