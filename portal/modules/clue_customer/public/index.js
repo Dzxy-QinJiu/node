@@ -422,7 +422,7 @@ const ClueCustomer = React.createClass({
                 this.setState({
                     isRemarkingItem: '',
                 });
-                message.error(Intl.get("failed.sales.remark.clue.valid","标记该线索有效性失败"))
+                message.error(Intl.get("failed.sales.remark.clue.valid","标记该线索有效性失败"));
             }else{
                 clueCustomerAction.updateClueProperty({id:item.id,availability:updateValue});
                 this.setState({
