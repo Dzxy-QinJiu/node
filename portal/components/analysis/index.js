@@ -125,6 +125,13 @@ const Analysis = React.createClass({
     retryGetData(){
        this.getData();
     },
+    // 处理请求返回错误或请求成功但是返回错误的数据（{httpCode: 500, message: '获取数据错误'}）的情况
+    handleErrorCase (props, errorMsg) {
+        if (_.isFunction(props.processData)){
+            props.processData([], "error");
+        }
+        this.setState({chartData: [], resultType: "error",resultErrorMsg: errorMsg || Intl.get("contract.111", "获取数据失败")});
+    },
     getData(props = this.props) {
 
         this.setState({resultType: "loading"});
@@ -195,15 +202,16 @@ const Analysis = React.createClass({
         }
 
         ajax(arg).then(result => {
-            if (_.isFunction(props.processData)){
-                result = props.processData(result,"");
+            if (result.httpCode) {
+                this.handleErrorCase(props, result.message);
+            } else {
+                if (_.isFunction(props.processData)){
+                    result = props.processData(result,"");
+                }
+                this.setState({ chartData: result, resultType: "",resultErrorMsg:""});
             }
-            this.setState({ chartData: result, resultType: "",resultErrorMsg:""});
         }, errorMsg => {
-            if (_.isFunction(props.processData)){
-                props.processData([], "error");
-            }
-            this.setState({chartData: [], resultType: "error",resultErrorMsg: errorMsg || Intl.get("contract.111", "获取数据失败")});
+            this.handleErrorCase(props, errorMsg);
         });
     },
     //加载完毕后，并且没有出错时

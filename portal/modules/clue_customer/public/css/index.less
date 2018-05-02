@@ -17,7 +17,6 @@
         background-color: #49a9ee;
       }
     }
-
   }
   .add-clue-customer-container.hide-des{
     margin: 17px 85px 0 0;
@@ -28,6 +27,7 @@
       display: none;
     }
   }
+
   .filter-block{
     overflow: visible;
   }
@@ -97,12 +97,27 @@
                 font-size: 15px;
                 line-height: 22px;
                 font-weight: bold;
+                .ant-tag.inavailable-tag{
+                  margin-left: 5px;
+                  font-weight: normal;
+                  color:#fff;
+                  background-color: @qualified-tag-color;
+                }
+              }
+            }
+            .contact-container{
+              overflow: hidden;
+              &>div{
+                float: left;
+              }
+              .contact-way{
+                margin-left: 10px;
               }
             }
             .trace-record-wrap{
 
               .trace-content-wrap{
-                width: 260px;
+                width: 280px;
                 .trace-content-flag{
                   color:#49a9ee;
                 }
@@ -164,9 +179,9 @@
               }
 
             }
-            .action-button-wrap{
+            .action-button-wrap,.remark-clue-container{
               margin-top: 10px;
-              .ant-dropdown-trigger.ant-btn-primary{
+              .ant-dropdown-trigger.ant-btn-primary, .ant-btn.ant-btn-primary{
                 border-color: #49a9ee;
                 background-color: #49a9ee;
                 &:active{
@@ -294,7 +309,14 @@
   .clue_customer_rightpanel.right-pannel-default{
     //详情展示区域
     overflow: visible;
-
+    .availability-remark{
+      position: absolute;
+      border: 26px solid @qualified-tag-color;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      left: 0;
+      top: 0;
+    }
     .clue_customer_content_wrap{
       //顶部线索详情展示
       h5{
@@ -399,5 +421,24 @@
       top:80px;
       left:30px;
     }
+  }
+}
+.sales-clue-add-container{
+  .input-red-border{
+    position:relative;
+    display:inline-block;
+    padding:6px 7px;
+    border:1px solid @error_tips_color;
+    line-height:1.5;
+    color:#666;
+    background-color:#fff;
+    background-image:none;
+    box-shadow:0 0 0 2px #ffddcc;
+    cursor:text;
+  }
+  .clue-name-repeat,.clue-name-errmsg{
+    margin-left: 25%;
+    color:@error_tips_color;
+    margin-top: -5px;
   }
 }

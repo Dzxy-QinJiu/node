@@ -19,8 +19,8 @@ class RadioCard extends React.Component {
             isEdittingRadio: false,//是否是编辑状态
             isCheckBoxChecked: false,//是否选中checkBox
             submitErrorMsg:''//保存出错后的修改
-        }
-    };
+        };
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.id !== this.state.id) {
@@ -32,18 +32,18 @@ class RadioCard extends React.Component {
                 id: nextProps.id
             });
         }
-    };
+    }
     //点击编辑按钮
     handleClickEditRadio = () =>{
         this.setState({
             isEdittingRadio: true
-        })
+        });
     };
     //点击选中或者取消选中的checkbox
     handleCheckChange = (e) =>{
         this.setState({
             isCheckBoxChecked: e.target.checked
-        })
+        });
     };
     getQueryParams (){
         var user = {};
@@ -74,7 +74,7 @@ class RadioCard extends React.Component {
         }
         return user;
 
-    };
+    }
     //保存修改的数据
     handleSubmit(){
         this.setState({
@@ -92,13 +92,13 @@ class RadioCard extends React.Component {
                         newCommissionRatio: user.new_commission_ratio,
                         renewalCommissionRatio : user.renewal_commission_ratio,
                         commissionRadio: ''
-                    })
+                    });
                 }else{
                     this.setState({
                         commissionRadio: user.commission_ratio,
                         newCommissionRatio: '',
                         renewalCommissionRatio: ''
-                    })
+                    });
                 }
                 this.handleCancel();
             } else {
@@ -113,7 +113,7 @@ class RadioCard extends React.Component {
                 submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
             });
         });
-    };
+    }
     //点击取消按钮
     handleCancel(){
         this.setState({
@@ -122,22 +122,22 @@ class RadioCard extends React.Component {
             submitCommissionRadio:'',
             submitNewCommissionRadio:'',
             submitRenewalCommissionRadio:''
-        })
-    };
+        });
+    }
     handleChangeNewCommissionRadio = (value) =>{
         this.setState({
             submitNewCommissionRadio: value
-        })
+        });
     };
     handleChangeRenewalCommissionRadio = (value) =>{
        this.setState({
            submitRenewalCommissionRadio: value
-       })
+       });
     };
     handleRadioCount = (value) => {
         this.setState({
             submitCommissionRadio:value
-        })
+        });
     };
     renderEditRadioCount(){
         var errorBlock = this.state.submitErrorMsg ? (
@@ -171,8 +171,8 @@ class RadioCard extends React.Component {
                 </div>}
                 {errorBlock}
             </div>
-        )
-    };
+        );
+    }
     render(){
         var newCommissionRatio = this.state.newCommissionRatio;
         var renewalCommissionRatio = this.state.renewalCommissionRatio;
@@ -193,7 +193,7 @@ class RadioCard extends React.Component {
                     </div>}
                 </div>}
             </div>
-        )
+        );
     }
-};
+}
 export default RadioCard;
