@@ -137,7 +137,7 @@ class RadioCard extends React.Component {
     handleRadioCount = (value) => {
         this.setState({
             submitCommissionRadio:value
-        })
+        });
     };
     renderEditRadioCount(){
         var errorBlock = this.state.submitErrorMsg ? (

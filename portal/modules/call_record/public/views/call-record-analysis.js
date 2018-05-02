@@ -348,8 +348,11 @@ var CallRecordAnalyis = React.createClass({
         }
         return label;
     },
-    // 电话接通率的数据
-    getPhoneListColumn: function () {
+    /**
+     * 电话接通率的数据
+     * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
+     */
+    getPhoneListColumn: function (isExport) {
         let columns = [{
             title: this.getSalesColumnTitle(),
             width: 114,
@@ -359,7 +362,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.total.duration", "总时长"),
             width: 114,
-            dataIndex: 'totalTimeFormated',
+            dataIndex: isExport ? 'totalTime' : 'totalTimeFormated',
             key: 'total_time',
             sorter: function (a, b) {
                 return a.totalTime - b.totalTime;
@@ -377,7 +380,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             width: 114,
-            dataIndex: 'averageTimeFormated',
+            dataIndex: isExport ? 'averageTime' : 'averageTimeFormated',
             key: 'average_time',
             sorter: function (a, b) {
                 return a.averageTime - b.averageTime;
@@ -458,7 +461,7 @@ var CallRecordAnalyis = React.createClass({
                 title: Intl.get("call.record.average.call.duration", "人均时长"),
                 width: 114,
                 align: "right",
-                dataIndex: 'personAverageTimeFormated',
+                dataIndex: isExport ? 'personAverageTime' : 'personAverageTimeFormated',
                 key: "person_average_time",
                 sorter: function (a, b) {
                     return a.personAverageTime - b.personAverageTime;
@@ -855,7 +858,7 @@ var CallRecordAnalyis = React.createClass({
         }
     },
     exportPhoneTable:function () {
-        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn());
+        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
         exportToCsv("sales_phone_table.csv",exportData);
     },
     renderCallAnalysisView: function () {

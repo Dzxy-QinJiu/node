@@ -100,7 +100,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg)=>{
             _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
-        })
+        });
     };
 }
 module.exports = alt.createActions(ClueCustomerActions);
