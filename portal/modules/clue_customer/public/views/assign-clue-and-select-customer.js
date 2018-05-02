@@ -36,7 +36,9 @@ class AssignClueAndSelectCustomer extends React.Component {
             isShowCustomerUserListPanel: false,
             CustomerInfoOfCurrUser: {},
             //是否显示客户名后面的对号和叉号
-            ShowUpdateOrClose : true
+            ShowUpdateOrClose : true,
+            //关联客户所的推荐的客户列表
+            recommendCustomerLists: [],
         };
     }
     //是否是销售领导
@@ -45,6 +47,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     }
     componentDidMount(){
       this.queryCustomerByClueId(this.state.curClueDetail.id);
+      this.getRecommendAssociatedCustomer();
     }
     //根据线索的id查询该线索关联的客户
     queryCustomerByClueId(currentId) {
@@ -74,12 +77,53 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         }
     }
+    //跟据客户名或者客户的电话，推荐关联客户
+    getRecommendAssociatedCustomer(){
+        var curClueDetail = this.state.curClueDetail;
+        var phone = "", clueName = "";
+        if (_.isArray(curClueDetail.contacts) && curClueDetail.contacts.length && _.isArray(curClueDetail.contacts[0].phone) && curClueDetail.contacts[0].phone.length){
+            phone = curClueDetail.contacts[0].phone[0];
+        }else{
+            clueName = curClueDetail.name;
+        }
+        let condition = {};
+        if (phone){
+            condition.contacts = [{phone: [phone]}];
+            condition.call_phone = true;
+            crmAjax.queryCustomer(condition, 1, 20).then((data)=>{
+                if (data && _.isArray(data.result)){
+                    if (data.result.length){
+                        this.state.recommendCustomerLists = data.result;
+                    }else{
+                        this.state.recommendCustomerLists = [];
+                    }
+                }
+            },()=>{
+
+            })
+        }else if (clueName){
+            condition.name = clueName;
+            crmAjax.queryCustomer(condition, [{"from":"","to":"","type":"time","name":"start_time"}], 20,{field: "id", order: "ascend"},{"total_size":0, "cursor":true,"id":""}).then((data)=>{
+                if (data && _.isArray(data.result)){
+                    if (data.result.length){
+                        this.state.recommendCustomerLists = data.result;
+                    }else{
+                        this.state.recommendCustomerLists = [];
+                    }
+                }
+            },()=>{
+
+            })
+        }
+    }
 
     componentWillReceiveProps(nextProps) {
         if (this.state.curClueDetail.id !== nextProps.curClueDetail.id) {
             this.queryCustomerByClueId(nextProps.curClueDetail.id);
             this.setState({
                 curClueDetail: nextProps.curClueDetail
+            },()=>{
+                this.getRecommendAssociatedCustomer();
             });
         }
     }
