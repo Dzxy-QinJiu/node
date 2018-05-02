@@ -75,7 +75,7 @@ var BarChart = React.createClass({
             calculable : false,
             grid : {
                 x : 50,
-                y : 20,
+                y : 50,
                 x2 : 30,
                 y2 : 30,
                 borderWidth : 0
