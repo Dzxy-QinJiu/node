@@ -41,7 +41,8 @@ var LineChart = React.createClass({
             height:214,
             resultType : 'loading',
             isShowSplitLine: false,
-            isShowSplitArea: false
+            isShowSplitArea: false,
+            legendTopSize: '10px',
         };
     },
     getLegend : function() {
@@ -326,7 +327,7 @@ var LineChart = React.createClass({
             return null;
         }
         return (
-            <div ref="legend" className="legend">
+            <div ref="legend" className="legend" style={{top: this.props.legendTopSize}}>
                 <Icon type="caret-up" style={{visibility:this.state.topIconEnable ? 'visible' : 'hidden'}} onClick={this.handleScrollUp}/>
                 <ul className="list-unstyled" ref="legendWrap" onWheel={this.onMouseWheel}>
                     {

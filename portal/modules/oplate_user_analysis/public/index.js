@@ -576,6 +576,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     title={Intl.get("user.analysis.total", "用户统计")}
                     height={234}
                     resultType={this.state.userAnalysis.resultType}
+                    legendTopSize='35px'
                 />
             );
         } else {
