@@ -3,6 +3,8 @@ module.exports = {
     DATE_FORMAT: "YYYY-MM-DD",
     //时间格式
     TIME_FORMAT: "HH:mm:ss",
+    //小时:分钟的时间格式
+    HOUR_MUNITE_FORMAT: "HH:mm",
     //不带秒的时间格式
     TIME_FORMAT_WITHOUT_SECOND_FORMAT:"HH:mm",
     //日期时间格式

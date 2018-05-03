@@ -1251,6 +1251,8 @@ var en_US = {
     "crm.order.budget.input": "Please enter the budget amount",//请输入预算金额
     "crm.order.id": "Order Num",//订单编号
     "crm.order.remarks": "Order Remarks",//订单备注
+    "crm.schedule.begin.time": "Begin time",//开始
+    "crm.schedule.end.time": "End time",//结束
     // 客户管理end
 
     //客户分析 start

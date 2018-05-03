@@ -1269,6 +1269,8 @@ var zh_CN = {
     "crm.order.budget.input": "请输入预算金额",
     "crm.order.id": "订单编号",
     "crm.order.remarks": "订单备注",
+    "crm.schedule.begin.time": "开始",
+    "crm.schedule.end.time": "结束",
     // 客户管理end
 
     // 客户分析start

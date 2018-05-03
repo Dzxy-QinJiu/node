@@ -2,23 +2,23 @@ require("../../css/schedule.less");
 var ScheduleStore = require("../../store/schedule-store");
 var ScheduleAction = require("../../action/schedule-action");
 var CrmScheduleForm = require("./form");
-import {Icon, message, Button, Alert} from "antd";
+import {Icon, message, Button, Alert, Popover} from "antd";
 var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
-var TimeLine = require("../../../../../components/time-line");
+var TimeLine = require("CMP_DIR/time-line-new");
 import Trace from "LIB_DIR/trace";
 const DATE_TIME_WITHOUT_SECOND_FORMAT = oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT;
 import userData from "PUB_DIR/sources/user-data";
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
 import classNames from 'classnames';
+import DetailCard from "CMP_DIR/detail-card";
+import {DetailEditBtn} from "CMP_DIR/rightPanel";
 //高度常量
-var LAYOUT_CONSTANTS = {
+const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
-    RIGHT_PANEL_PADDING_BOTTOM: 40,//右侧面板底部padding
-    DYNAMIC_LIST_MARGIN_BOTTOM: 30,//动态列表距离底部margin
-    RIGHT_PANEL_TAB_HEIGHT: 36,//右侧面板tab高度
-    RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //日程的下边距
+    TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
 };
 
 var CrmSchedule = React.createClass({
@@ -87,24 +87,24 @@ var CrmSchedule = React.createClass({
     //修改状态
     handleItemStatus: function (item) {
         //只能修改自己创建的日程的状态
-        if (user_id != item.member_id){
+        if (user_id != item.member_id) {
             return;
         }
         const reqData = {
             id: item.id,
             status: item.status == "false" ? "handle" : "false",
         };
-        var status = item.status == "false" ? "完成" :"未完成";
+        var status = item.status == "false" ? "完成" : "未完成";
         Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .ant-btn"), "修改联系计划的状态为" + status);
         ScheduleAction.handleScheduleStatus(reqData, (resData) => {
             if (_.isBoolean(resData) && resData) {
                 var newStatusObj = {
-                    "id":item.id,
-                    "status":reqData.status
+                    "id": item.id,
+                    "status": reqData.status
                 };
                 ScheduleAction.afterHandleStatus(newStatusObj);
             } else {
-                message.error(resData || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败"));
+                message.error(resData || Intl.get("crm.failed.alert.todo.list", "修改待办事项状态失败"));
             }
         });
     },
@@ -115,7 +115,7 @@ var CrmSchedule = React.createClass({
             if (_.isBoolean(resData) && resData) {
                 ScheduleAction.afterDelSchedule(id);
                 this.setState({
-                    scheduleList:this.state.scheduleList
+                    scheduleList: this.state.scheduleList
                 });
             } else {
                 message.error(Intl.get("crm.139", "删除失败"));
@@ -123,7 +123,7 @@ var CrmSchedule = React.createClass({
         });
     },
     //下拉加载
-    handleScrollBarBottom:function () {
+    handleScrollBarBottom: function () {
         var currListLength = _.isArray(this.state.scheduleList) ? this.state.scheduleList.length : 0;
         // 判断加载的条件
         if (currListLength < this.state.total) {
@@ -144,28 +144,143 @@ var CrmSchedule = React.createClass({
             scheduleList: this.state.scheduleList
         })
     },
-    //联系计划列表区域
-    renderScheduleLists: function () {
-        //加载出错或者没有数据时
-        if (this.state.getScheduleListErrmsg && !this.state.isLoadingScheduleList){
-            var retry = (
-                <span>
-                    {this.state.getScheduleListErrmsg}，<a href="javascript:void(0)"
-                                                           onClick={this.getScheduleList()}>
-                    {Intl.get("common.retry","重试")}
-                </a>
-                </span>
-            );
+
+    getScheduleShowObj(item){
+        let scheduleShowOb = {
+            iconClass: "",
+            title: "",
+            // content: item.content,
+            startTime: item.start_time ? moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : "",
+            endTime: item.end_time ? moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : ""
+        };
+        switch (item.type) {
+            case 'visit':
+                scheduleShowOb.iconClass = 'icon-visit-briefcase';
+                scheduleShowOb.title = Intl.get("customer.visit", "拜访");
+                break;
+            case 'calls':
+                scheduleShowOb.iconClass = 'icon-phone-call-out';
+                scheduleShowOb.title = Intl.get("schedule.phone.connect", "电联");
+                break;
+            case 'other':
+                scheduleShowOb.iconClass = 'icon-trace-other';
+                scheduleShowOb.title = Intl.get("customer.other", "其他");
+                break;
+        }
+        return scheduleShowOb;
+    },
+
+    renderTimeLineItem(item, hasSplitLine){
+        if (item.edit) {
             return (
-                <div className="schedule-list-error">
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
+                <div className="form-wrapper">
+                    <CrmScheduleForm
+                        getScheduleList={this.getScheduleList}
+                        currentSchedule={item}
+                        curCustomer={this.props.curCustomer}
                     />
                 </div>
-            )
-        }else if (!this.state.scheduleList.length  && !this.state.isLoadingScheduleList){
+            );
+        } else {
+            let scheduleShowObj = this.getScheduleShowObj(item);
+            return (
+                <div className={classNames("schedule-item", {"day-split-line": hasSplitLine})}>
+                    <div className="schedule-item-title">
+                        <span className={`iconfont ${scheduleShowObj.iconClass}`}/>
+                        <span className="schedule-time-stage">{scheduleShowObj.startTime}</span>
+                        {scheduleShowObj.startTime && scheduleShowObj.endTime ? "-" : null}
+                        <span className="schedule-time-stage">{scheduleShowObj.endTime}</span>
+                        <span className="schedule-type-text">{scheduleShowObj.title}</span>
+                    </div>
+                    <div className="schedule-item-content">
+                        {item.content}
+                    </div>
+                    {this.props.isMerge ? null : (
+                        <div className="schedule-item-buttons">
+                            {item.type === "calls" ?
+                                <Button className="schedule-contact-btn"
+                                        size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button> : null}
+                            <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
+                                    size="small">
+                                {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
+                            </Button>
+                            <span className="right-handle-buttons">
+                                {item.socketio_notice && item.alert_time ? (<Popover
+                                    content={moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
+                                    trigger="hover" placement="bottom"
+                                    overlayClassName="schedule-alert-time">
+                                    <span className="iconfont icon-alarm-clock"/>
+                                </Popover>) : null}
+                                {/*<DetailEditBtn  onClick={this.editSchedule.bind(this, item)}/>*/}
+                                {/*只能删除自己创建的日程*/}
+                                {user_id == item.member_id ?
+                                    <Popover content={Intl.get("common.delete", "删除")}
+                                             trigger="hover" placement="bottom" overlayClassName="schedule-alert-time">
+                                        <span className="iconfont icon-delete" data-tracename="点击删除日程按钮"
+                                              onClick={this.deleteSchedule.bind(this, item.id)}/>
+                                    </Popover> : null}
+                            </span>
+                        </div>)}
+                </div>);
+            return (
+                <div className="item-wrapper">
+                    <dl>
+                        <dt>
+                            <p>
+                            <span className="schedule-content-label">
+                                {Intl.get("crm.177", "内容")}
+                            </span>
+                                <span className="schedule-content">
+                             {item.content}
+                            </span>
+                            </p>
+                            <p>
+                                        <span className="schedule-content-label">
+                                            {Intl.get("crm.146", "日期")}
+                                        </span>
+                                <span className="schedule-content">
+                                 {moment(item.start_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)} {Intl.get("contract.83", "至")} {moment(item.end_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
+                            </span>
+                            </p>
+                            <p>
+                                        <span className="schedule-content-label">
+                                            {Intl.get("crm.40", "提醒")}
+                                        </span>
+                                <span className="schedule-content">
+                               {!item.socketio_notice ? Intl.get("crm.not.alert", "不提醒") : moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
+                            </span>
+                            </p>
+                            {this.props.isMerge ? null : (
+                                <p className="icon-content">
+                                    {/*<Icon type="edit" onClick={this.editSchedule.bind(this, item)} />*/}
+                                    {/*只能删除自己创建的日程*/}
+                                    {user_id == item.member_id ? <Icon type="delete"
+                                                                       onClick={this.deleteSchedule.bind(this, item.id)}/> : null}
+
+                                    <Button onClick={this.handleItemStatus.bind(this, item)} size="small">
+                                        {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
+                                    </Button>
+                                </p>)
+                            }
+                        </dt>
+                    </dl>
+                </div>
+            );
+        }
+    },
+    //联系计划列表区域
+    renderScheduleLists: function () {
+        if (this.state.scheduleList.length) {
+            return (
+                <TimeLine
+                    list={this.state.scheduleList}
+                    groupByDay={true}
+                    groupByYear={true}
+                    timeField="start_time"
+                    renderTimeLineItem={this.renderTimeLineItem}
+                    relativeDate={false}
+                />);
+        } else {
             return (
                 <div className="schedule-list-no-data">
                     <Alert
@@ -175,70 +290,9 @@ var CrmSchedule = React.createClass({
                     />
                 </div>
             );
-        }else{
-            return (
-                _.map(this.state.scheduleList, (item) => {
-                    if (item.edit) {
-                        return (
-                            <div className="form-wrapper">
-                                <CrmScheduleForm
-                                    getScheduleList={this.getScheduleList}
-                                    currentSchedule={item}
-                                    curCustomer={this.props.curCustomer}
-                                />
-                            </div>
-                        );
-                    } else {
-                        return (
-                            <div className="item-wrapper">
-                                <dl>
-                                    <dt>
-                                        <p>
-                            <span className="schedule-content-label">
-                                {Intl.get("crm.177", "内容")}
-                            </span>
-                                            <span className="schedule-content">
-                             {item.content}
-                            </span>
-                                        </p>
-                                        <p>
-                                        <span className="schedule-content-label">
-                                            {Intl.get("crm.146", "日期")}
-                                        </span>
-                                            <span className="schedule-content">
-                                 {moment(item.start_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)} {Intl.get("contract.83", "至")} {moment(item.end_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
-                            </span>
-                                        </p>
-                                        <p>
-                                        <span className="schedule-content-label">
-                                            {Intl.get("crm.40", "提醒")}
-                                        </span>
-                                            <span className="schedule-content">
-                               {!item.socketio_notice ? Intl.get("crm.not.alert", "不提醒") : moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
-                            </span>
-                                        </p>
-                                        {this.props.isMerge ? null : (
-                                            <p className="icon-content">
-                                                {/*<Icon type="edit" onClick={this.editSchedule.bind(this, item)} />*/}
-                                                {/*只能删除自己创建的日程*/}
-                                                {user_id == item.member_id ? <Icon type="delete" onClick={this.deleteSchedule.bind(this, item.id)}/>:null}
-
-                                                <Button onClick={this.handleItemStatus.bind(this, item)} size="small">
-                                                    {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
-                                                </Button>
-                                            </p>)
-                                        }
-                                    </dt>
-                                </dl>
-                            </div>
-
-                        );
-                    }
-                })
-            )
         }
     },
-    render: function () {
+    renderContent: function () {
         const _this = this;
 
         var divHeight = $(window).height()
@@ -248,8 +302,8 @@ var CrmSchedule = React.createClass({
             - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT //右侧面板tab高度
             - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM //右侧面板tab的margin
         ;
-        var cls = classNames("is-loading-schedule-list",{
-            "show-spinner":this.state.isLoadingScheduleList && !this.state.lastScheduleId
+        var cls = classNames("is-loading-schedule-list", {
+            "show-spinner": this.state.isLoadingScheduleList && !this.state.lastScheduleId
         })
         return (
             <div ref="alertWrap" className="schedule-list" style={{height: divHeight}} data-tracename="联系计划页面">
@@ -260,17 +314,66 @@ var CrmSchedule = React.createClass({
                 >
                     <div className="render-schedule-content">
                         <div className={cls}>
-                            {(this.state.isLoadingScheduleList && !this.state.lastScheduleId)? <Spinner />:null}
+                            {(this.state.isLoadingScheduleList && !this.state.lastScheduleId) ? <Spinner /> : null}
                         </div>
                         {this.renderScheduleLists()}
                     </div>
                 </GeminiScrollbar>
-                {this.props.isMerge ? null : (<div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加联系计划">
-                    <Icon type="plus"/><span>
+                {this.props.isMerge ? null : (
+                    <div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加联系计划">
+                        <Icon type="plus"/><span>
                     <ReactIntl.FormattedMessage id="crm.178" defaultMessage="添加一个联系计划"/></span>
-                </div>)}
+                    </div>)}
             </div>
         );
+    },
+    renderScheduleContent(){
+        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+        let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
+        //减头部的客户基本信息高度
+        divHeight -= basicInfoHeight;
+        //减添加按钮区的高度
+        divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+        const retry = (
+            <span>
+                {this.state.getScheduleListErrmsg}，
+                <a href="javascript:void(0)" onClick={this.getScheduleList}>
+                    {Intl.get("common.retry", "重试")}
+                </a>
+            </span>
+        );
+        return (
+            <div className="schedule-list" style={{height: divHeight}} data-tracename="联系计划页面">
+                <GeminiScrollbar
+                    handleScrollBottom={this.handleScrollBarBottom}
+                    listenScrollBottom={this.state.listenScrollBottom}
+                >
+                    {this.state.isLoadingScheduleList && !this.state.lastScheduleId ? <Spinner />
+                        : this.state.getScheduleListErrmsg ? (
+                            <div className="schedule-list-error">
+                                <Alert message={retry} type="error" showIcon={true}/>
+                            </div>)
+                            : this.renderScheduleLists()
+                    }
+                </GeminiScrollbar>
+            </div>);
+    },
+    renderScheduleTitle(){
+        return (
+            <div className="schedule-title">
+                <span>{Intl.get("crm.right.schedule", "联系计划")}:</span>
+                <span className="iconfont icon-add schedule-add-btn"
+                      title={Intl.get("crm.214", "添加联系计划")}
+                      onClick={this.addSchedule}/>
+            </div>);
+    },
+    render(){
+        // let containerClassName = classNames("contact-item-container", {
+        //     "contact-delete-border": this.props.contact.isShowDeleteContactConfirm
+        // });
+        return (<DetailCard title={this.renderScheduleTitle()}
+                            content={this.renderScheduleContent()}
+                            className="schedule-contianer"/>);
     }
 });
 
