@@ -2,7 +2,7 @@ require("../../css/schedule.less");
 var ScheduleStore = require("../../store/schedule-store");
 var ScheduleAction = require("../../action/schedule-action");
 var CrmScheduleForm = require("./form");
-import {Icon, message, Button, Alert, Popover} from "antd";
+import {Icon, message, Button, Alert, Popover, Tag} from "antd";
 var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
 var TimeLine = require("CMP_DIR/time-line-new");
 import Trace from "LIB_DIR/trace";
@@ -169,7 +169,23 @@ var CrmSchedule = React.createClass({
         }
         return scheduleShowOb;
     },
-
+    toggleScheduleContact(item, flag){
+        let curSchedule = _.find(this.state.scheduleList, schedule => schedule.id == item.id);
+        curSchedule.isShowContactPhone = flag;
+        this.setState({scheduleList: this.state.scheduleList});
+    },
+    getContactPhoneArray(item){
+        let phoneArray = [];
+        _.each(item.contacts, contact => {
+            let contactName = contact.name || "";
+            _.each(contact.phone, phone => {
+                if (phone) {
+                    phoneArray.push({name: contactName, phone: phone});
+                }
+            });
+        });
+        return phoneArray;
+    },
     renderTimeLineItem(item, hasSplitLine){
         if (item.edit) {
             return (
@@ -183,6 +199,7 @@ var CrmSchedule = React.createClass({
             );
         } else {
             let scheduleShowObj = this.getScheduleShowObj(item);
+            let phoneArray = this.getContactPhoneArray(item);
             return (
                 <div className={classNames("schedule-item", {"day-split-line": hasSplitLine})}>
                     <div className="schedule-item-title">
@@ -197,9 +214,24 @@ var CrmSchedule = React.createClass({
                     </div>
                     {this.props.isMerge ? null : (
                         <div className="schedule-item-buttons">
-                            {item.type === "calls" ?
+                            {item.type === "calls" && _.isArray(phoneArray) && phoneArray.length ? item.isShowContactPhone ? (
+                                <div className="schedule-contact-phone-block">
+                                    {_.map(phoneArray, obj => {
+                                        return (
+                                            <Button>
+                                                {obj.name || ""}
+                                                <span className="contact-phone">{obj.phone}</span>
+                                                <span className="iconfont icon-phone-call-out"/>
+                                            </Button>);
+                                    })}
+                                    <span className="iconfont icon-close"
+                                          title={Intl.get("common.app.status.close", "关闭")}
+                                          onClick={this.toggleScheduleContact.bind(this, item, false)}/>
+                                </div>) : (
                                 <Button className="schedule-contact-btn"
-                                        size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button> : null}
+                                        onClick={this.toggleScheduleContact.bind(this, item, true)}
+                                        size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button>)
+                                : null}
                             <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
                                     size="small">
                                 {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
@@ -222,50 +254,6 @@ var CrmSchedule = React.createClass({
                             </span>
                         </div>)}
                 </div>);
-            return (
-                <div className="item-wrapper">
-                    <dl>
-                        <dt>
-                            <p>
-                            <span className="schedule-content-label">
-                                {Intl.get("crm.177", "内容")}
-                            </span>
-                                <span className="schedule-content">
-                             {item.content}
-                            </span>
-                            </p>
-                            <p>
-                                        <span className="schedule-content-label">
-                                            {Intl.get("crm.146", "日期")}
-                                        </span>
-                                <span className="schedule-content">
-                                 {moment(item.start_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)} {Intl.get("contract.83", "至")} {moment(item.end_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
-                            </span>
-                            </p>
-                            <p>
-                                        <span className="schedule-content-label">
-                                            {Intl.get("crm.40", "提醒")}
-                                        </span>
-                                <span className="schedule-content">
-                               {!item.socketio_notice ? Intl.get("crm.not.alert", "不提醒") : moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
-                            </span>
-                            </p>
-                            {this.props.isMerge ? null : (
-                                <p className="icon-content">
-                                    {/*<Icon type="edit" onClick={this.editSchedule.bind(this, item)} />*/}
-                                    {/*只能删除自己创建的日程*/}
-                                    {user_id == item.member_id ? <Icon type="delete"
-                                                                       onClick={this.deleteSchedule.bind(this, item.id)}/> : null}
-
-                                    <Button onClick={this.handleItemStatus.bind(this, item)} size="small">
-                                        {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
-                                    </Button>
-                                </p>)
-                            }
-                        </dt>
-                    </dl>
-                </div>
-            );
         }
     },
     //联系计划列表区域
