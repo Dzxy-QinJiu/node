@@ -184,7 +184,7 @@ exports.deleteRepeatCustomer = function (req, res) {
 
 //合并重复的客户
 exports.mergeRepeatCustomer = function (req, res) {
-    let mergeObj = {customer: JSON.parse(req.body.customer), delete_ids: JSON.parse(req.body.delete_ids)};
+    let mergeObj = {customer: JSON.parse(req.body.customer), delete_customers: JSON.parse(req.body.delete_customers)};
     crmService.mergeRepeatCustomer(req, res, mergeObj)
         .on("success", function (data) {
             res.status(200).json(data);
