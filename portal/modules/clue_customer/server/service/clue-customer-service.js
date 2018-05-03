@@ -11,6 +11,8 @@ const restApis = {
     getClueSource: "/rest/customer/v2/clue/clue_source/100/1",
     //获取线索渠道
     getClueChannel: "/rest/customer/v2/clue/access_channel/100/1",
+    //获取线索分类
+    getClueClassify: "/rest/customer/v2/clue/clue_classify/100/1",
     //查询线索客户用户查询
     queryCluecustomer: "/rest/customer/v2/clue/query/user",
     //查询线索客户 管理员查询
@@ -61,6 +63,15 @@ exports.getClueChannel = function (req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getClueChannel,
+            req: req,
+            res: res
+        }, null);
+};
+//获取线索分类
+exports.getClueClassify = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueClassify,
             req: req,
             res: res
         }, null);

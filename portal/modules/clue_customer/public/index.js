@@ -61,6 +61,8 @@ const ClueCustomer = React.createClass({
             this.getClueSource();
             //获取线索渠道
             this.getClueChannel();
+            //获取线索分类
+            this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
         //管理员、销售领导默认展示待分配的线索客户 0
@@ -113,6 +115,17 @@ const ClueCustomer = React.createClass({
             }
         }, errorMsg => {
             console.log("获取线索渠道出错了 " + errorMsg);
+        });
+    },
+    getClueClassify: function () {
+        clueCustomerAjax.getClueClassify().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueClassifyArray: _.union(this.state.clueClassifyArray, data.result)
+                });
+            }
+        }, errorMsg => {
+            console.log("获取线索分类出错了 " + errorMsg);
         });
     },
     showClueAddForm: function () {

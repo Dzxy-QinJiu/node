@@ -34,6 +34,16 @@ exports.getClueChannel = function (req, res) {
         res.status(500).json(err.message);
     });
 };
+//获取线索分类
+exports.getClueClassify = function (req, res) {
+    clueCustomerService.getClueClassify(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+
 //添加或者更新跟进内容
 exports.addCluecustomerTrace = function (req, res) {
     clueCustomerService.addCluecustomerTrace(req, res)

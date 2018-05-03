@@ -2134,7 +2134,8 @@ var zh_CN = {
     "failed.sales.remark.clue.valid":"标记该线索有效性失败",
     "clue.customer.check.only.exist": "线索名称唯一性校验失败",
     "clue.customer.check.repeat": "该线索名称已存在",
-    "clue.customer.clue.time": "咨询于{relative}"
+    "clue.customer.clue.time": "咨询于{relative}",
+    "failed.to.get.clue.classify":"获取线索分类出错了"
 
 };
 export default zh_CN;
