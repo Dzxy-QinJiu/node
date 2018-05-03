@@ -38,7 +38,7 @@ const CallRecordList = React.createClass({
                 _this.setState({
                     rightPanelCustomerId: $customer_id_hidden.val(),
                     showRightPanel : true
-                })
+                });
             }
         });
     },
