@@ -348,7 +348,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     renderTextCustomer() {
         //是否有修改线索所属客户的权利
         var canEdit = hasPrivilege(RELATEAUTHS.RELATEALL) || hasPrivilege(RELATEAUTHS.RELATESELF);
-        var relatedCustomerName = this.state.relatedCustomerName ? this.state.relatedCustomerName : Intl.get("clue.customer.selected.customer", "请搜索客户进行关联");
+        var relatedCustomerName = this.state.relatedCustomerName ? this.state.relatedCustomerName : (this.state.recommendCustomerLists.length ? Intl.get("clue.customer.no.related.customer", "上述客户都不是相关联的客户，搜索客户"): Intl.get("clue.customer.selected.customer", "请搜索客户进行关联"));
         return (
             <div className="user-basic-edit-field">
                 <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)} data-tracename="点击查看客户详情">{relatedCustomerName}</span>

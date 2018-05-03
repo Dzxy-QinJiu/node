@@ -2138,7 +2138,8 @@ var zh_CN = {
     "clue.customer.phone.same":"电话一致",
     "clue.customer.customer.name.similar":"客户名相似",
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
-    "clue.customer.selected.customer":"请搜索客户进行关联"
+    "clue.customer.selected.customer":"请搜索客户进行关联",
+    "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户"
 
 };
 export default zh_CN;
