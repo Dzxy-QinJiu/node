@@ -22,7 +22,6 @@ import {checkCustomerName,checkEmail} from "../utils/clue-customer-utils";
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var clueCustomerAction = require("../action/clue-customer-action");
 const PHONE_INPUT_ID = "phoneInput";
-var crmAjax = require("MOD_DIR/crm/public/ajax");
 const SalesClueAddForm = React.createClass({
     mixins: [FieldMixin],
     getInitialState: function () {
