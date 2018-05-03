@@ -537,7 +537,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         return (
             <div className='error-tips-message'>
                 {errMessage}
-                <a onClick={retryHandler}>{Intl.get("common.retry", "重试")}</a>
+                <a onClick={() => retryHandler()}>{Intl.get("common.retry", "重试")}</a>
             </div>
         );
     },
