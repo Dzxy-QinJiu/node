@@ -40,20 +40,22 @@ var ChinaMap = React.createClass({
             var options = mapUtil.getEchartOptions();
             this.echartInstance = echarts.init(chartWrap,macronsTheme);
             this.echartInstance.setOption(options);
-            this.echartInstance.on("click", params => {
-               this.setState({
-                   showReturnBtn: true
-               });
-                let transName = this.provinceName(params.name);
-                if (transName) {
-                    const provinceName = require("echarts-eefung/map/json/province/" + transName);
-                    echarts.registerMap(params.name, provinceName);
-                    options.series[0].mapType = params.name;
-                    this.echartInstance.setOption(options);
-                    //this.props.getClickEvent(params.name);
-                }
+            if (this.props.getClickEvent) {
+                this.echartInstance.on("click", params => {
+                    this.props.getClickEvent(params.name);
+                    this.setState({
+                        showReturnBtn: true
+                    });
+                    let transName = this.provinceName(params.name);
+                    if (transName) {
+                        const provinceName = require("echarts-eefung/map/json/province/" + transName);
+                        echarts.registerMap(params.name, provinceName);
+                        options.series[0].mapType = params.name;
+                        this.echartInstance.setOption(options);
+                    }
 
-            });
+                });
+            }
         }
     },
     componentDidMount : function() {
@@ -86,6 +88,8 @@ var ChinaMap = React.createClass({
         };
     },
     returnChinaMap() {
+        // 点击返回按钮时，返回“”,判断是点击的省份还是返回上一级，显示全国
+        this.props.getClickEvent("");
         this.setState({
             showReturnBtn: false
         });

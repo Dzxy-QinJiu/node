@@ -897,8 +897,7 @@ var CallRecordAnalyis = React.createClass({
         exportToCsv("sales_phone_table.csv",exportData);
     },
     getClickMap(zone) {
-        console.log('zone:', zone);
-        this.state.customerData.zoneList = [{name: 'aa', value: '12'},{name: 'bb', value: '12'}];
+        CallAnalysisAction.showZoneDistribute(zone);
     },
     renderCustomerZoneDistribute() {
         return (

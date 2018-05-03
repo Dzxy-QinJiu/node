@@ -5,7 +5,8 @@ var _ = require("underscore");
 function CallAnalysisActions() {
     this.generateActions(
         'resetState',//初始化数据的设置
-        'changeSearchTime' //搜索时间的切换
+        'changeSearchTime', //搜索时间的切换
+        'showZoneDistribute', // 显示地域分布 
     );
     // 获取通话时长为TOP10的列表
     this.getCallDurTopTen = function (reqData, reqBody) {

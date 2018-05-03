@@ -87,11 +87,13 @@ CallAnalysisStore.prototype.setInitState = function () {
     // 通话客户的地域和阶段分布
     this.customerData = {
         loading: false, // loading
-        zoneList: [{value: "114", name: "新疆"},{value: "95", name: "西藏"}], // 客户地域数据
+        zoneList: [], // 客户地域数据
         customerPhase : [{name: "信息", num: "1212"},{name: "意向", num: "12706"},{name: "试用", num: "8514"},{name: "合格", num: "568"},{name: "签约", num: "89"}], // 客户阶段
         OrderPhase: [{name: "试用阶段", num: "333"},{name: "立项报价阶段", num: "12706"},{name: "谈判阶段", num: "55"},{name: "成交阶段", num: "21"},{name: "执行阶段", num: "89"}], // 订单阶段
         errMsg: ''  // 获取失败的提示
     };
+    // 通话客户的地域和阶段分布返回的原始数据
+    this.callZoneStageOriginalData = {};
 };
 
 //  获取通话时长为TOP10的列表
@@ -374,7 +376,52 @@ CallAnalysisStore.prototype.getSaleMemberList = function (result) {
 
 // 获取通话客户的地域和阶段分布
 CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
-    console.log(result);
+    this.customerData.loading = result.loading;
+    if (result.error) {
+        this.customerData.errMsg = result.errMsg;
+    } else {
+        this.customerData.errMsg = "";
+        let resData = result.resData;
+        this.callZoneStageOriginalData = resData;
+        if (_.isObject(resData) && resData.code === 0) {
+            let zoneList = [];
+            if (resData.sum && _.isArray(resData.sum) && resData.sum.length) {
+                _.each(resData.sum, (item) => {
+                    zoneList.push({name: item.name, value: item.count});
+                });
+                this.customerData.zoneList = zoneList;
+            }
+        }
+    }
+};
+
+CallAnalysisStore.prototype.showZoneDistribute = function (zone) {
+    let OriginalData = this.callZoneStageOriginalData;
+    if (_.isObject(OriginalData) && OriginalData.code === 0) {
+        let sumData = OriginalData.sum;
+        if (sumData && _.isArray(sumData) && sumData.length) {
+            let zoneList = [];
+            if (zone === "") { // 全国范围
+                _.each(OriginalData.sum, (item) => {
+                    zoneList.push({name: item.name, value: item.count});
+                });
+                this.customerData.zoneList = zoneList;
+            } else { // 对应的省份
+                let provinceObj = _.find(sumData, item => item.name === zone);
+                if (provinceObj) {
+                    // 地域分布
+                    let subRegion = provinceObj.sub_region || [];
+                    if (subRegion.length) {
+                        _.each(subRegion, (item) => {
+                            zoneList.push({name: item.name, value: item.count});
+                        });
+                        this.customerData.zoneList = zoneList;
+                    }
+                }
+            }
+
+        }
+    }
 };
 
 module.exports = alt.createStore(CallAnalysisStore, 'CallAnalysisStore');
