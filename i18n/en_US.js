@@ -2116,7 +2116,12 @@ var en_US = {
     "sales.clue.is.enable":"Invalid",//无效
     "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue",//标记该线索有效性失败
     "clue.customer.check.only.exist": "Failed to verify the only clue names",//线索名称唯一性校验失败
-    "clue.customer.check.repeat": "The clue name is already existed"//该线索名称已存在
+    "clue.customer.check.repeat": "The clue name is already existed",//该线索名称已存在
+    "clue.customer.may.associate.customer": "The customer may be associated with the clue",//该线索可能关联的客户
+    "clue.customer.phone.same":"The phone is the same",//电话一致
+    "clue.customer.customer.name.similar":"The customer is similar",//客户名相似
+    "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
+    "clue.customer.selected.customer":"Please search customers to associate"//请搜索客户进行关联
 
 };
 export default en_US;
