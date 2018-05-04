@@ -175,22 +175,24 @@ class ClueRightPanel extends React.Component {
         var extraParameter = {"contact_id":id};
         //是否没有权限修改线索详情
         var hasNoPrivilegeEdit =  hasPrivilege("CLUECUSTOMER_UPDATE_MANAGER") ? false : true;
+        var divHeight = $(window).height() - 60;
         return (
             <RightPanel
                 className="clue_customer_rightpanel white-space-nowrap"
                 showFlag={this.props.showFlag} data-tracename="展示销售线索客户">
                 <RightPanelClose onClick={this.hideRightPanel} data-tracename="点击关闭展示销售线索客户面板"/>
-                <GeminiScrollbar>
-                    <div className="clue_customer_content_wrap">
-                        <h5>
-                            <UserDetailEditField
-                                user_id={curCustomer.id}
-                                field="name"
-                                value={curCustomer.name}
-                                modifySuccess={this.changeUserFieldSuccess}
-                                saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                validators={[{validator: this.validatorClueNameBeforSubmit}]}
-                            />
+                <div style={{height: divHeight}}>
+                    <GeminiScrollbar>
+                        <div className="clue_customer_content_wrap">
+                            <h5>
+                                <UserDetailEditField
+                                    user_id={curCustomer.id}
+                                    field="name"
+                                    value={curCustomer.name}
+                                    modifySuccess={this.changeUserFieldSuccess}
+                                    saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                    validators={[{validator: this.validatorClueNameBeforSubmit}]}
+                                />
                             </h5>
                         <div className="clue_detail_content">
                             <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
@@ -344,11 +346,11 @@ class ClueRightPanel extends React.Component {
                                 </dd>
                             </dl>
                         </div>
-                    </div>
-                    <AssignClueAndSelectCustomer
-                        curClueDetail={curCustomer}
-                    />
-                </GeminiScrollbar>
+                        <AssignClueAndSelectCustomer
+                            curClueDetail={curCustomer}
+                        />
+                    </GeminiScrollbar>
+                </div>
             </RightPanel>
         );
     }

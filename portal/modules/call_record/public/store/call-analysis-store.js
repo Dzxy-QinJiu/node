@@ -84,6 +84,18 @@ CallAnalysisStore.prototype.setInitState = function () {
         list: [],
         errMsg: '' // 获取失败的提示
     };
+    // 通话客户的地域和阶段分布
+    this.customerData = {
+        loading: false, // loading
+        zoneList: [], // 客户地域数据
+        customerPhase : [], // 客户阶段
+        OrderPhase: [], // 订单阶段
+        errMsg: ''  // 获取失败的提示
+    };
+    // 通话客户的地域和阶段分布返回的原始数据
+    this.callZoneStageOriginalData = {};
+    // 订单阶段
+    this.salesStageList = [];
 };
 
 //  获取通话时长为TOP10的列表
@@ -280,11 +292,11 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
                     const list = [
                         {
                             name: Intl.get("call.record.valid.phone", '有效电话'),
-                            count: resData[0].valid_docs
+                            num: resData[0].valid_docs
                         },
                         {
                             name: nameMap[result.type],
-                            count: resData[0].invalid_docs
+                            num: resData[0].invalid_docs
                         }
                     ];
                     this.callRateList[result.type].list = list;
@@ -361,6 +373,87 @@ CallAnalysisStore.prototype.getSaleMemberList = function (result) {
             });
         }
         this.memberList.list = memberList;
+    }
+};
+
+// 获取通话客户的地域和阶段分布
+CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
+    this.customerData.loading = result.loading;
+    if (result.error) {
+        this.customerData.errMsg = result.errMsg;
+    } else {
+        this.customerData.errMsg = "";
+        let resData = result.resData;
+        this.callZoneStageOriginalData = resData;
+        if (_.isObject(resData) && resData.code === 0) {
+            // 地域分布
+            let zoneList = [];
+            let sum = resData.sum || [];
+            if (_.isArray(sum) && sum.length) {
+                _.each(sum, (item) => {
+                    zoneList.push({name: item.name, value: item.count});
+                });
+                this.customerData.zoneList = zoneList;
+            }
+            // 客户阶段
+            let customerPhase = [];
+            let customerSum = resData.customer_label_sum || [];
+            if (_.isArray(customerSum) && customerSum.length) {
+                _.each(customerSum, (item) => {
+                    customerPhase.push({name: item.name, num: item.count});
+                });
+                this.customerData.customerPhase = customerPhase;
+            }
+            // 订单阶段
+            let salesStageList = this.salesStageList;
+            let salesPhase = [];
+            let salesSum = resData.opp_stage_sum || [];
+            if (_.isArray(salesSum) && salesSum.length) {
+                _.each(salesSum, (item) => {
+                    _.find(salesStageList, (saleItem) => {
+                        if (saleItem.index === item.name) {
+                            salesPhase.push({name: saleItem.name, num: item.count});
+                        }
+                    });
+                });
+                this.customerData.OrderPhase = salesPhase;
+            }
+        }
+    }
+};
+
+CallAnalysisStore.prototype.showZoneDistribute = function (zone) {
+    let OriginalData = this.callZoneStageOriginalData;
+    if (_.isObject(OriginalData) && OriginalData.code === 0) {
+        let sumData = OriginalData.sum;
+        if (sumData && _.isArray(sumData) && sumData.length) {
+            let zoneList = [];
+            if (zone === "") { // 全国范围
+                _.each(OriginalData.sum, (item) => {
+                    zoneList.push({name: item.name, value: item.count});
+                });
+                this.customerData.zoneList = zoneList;
+            } else { // 对应的省份
+                let provinceObj = _.find(sumData, item => item.name === zone);
+                if (provinceObj) {
+                    // 地域分布
+                    let subRegion = provinceObj.sub_region || [];
+                    if (subRegion.length) {
+                        _.each(subRegion, (item) => {
+                            zoneList.push({name: item.name, value: item.count});
+                        });
+                        this.customerData.zoneList = zoneList;
+                    }
+                }
+            }
+
+        }
+    }
+};
+// 获取订单阶段
+CallAnalysisStore.prototype.getSalesStageList = function (result) {
+    if (_.isArray(result) && result.length) {
+        this.salesStageList = result;
     }
 };
 

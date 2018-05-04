@@ -936,6 +936,8 @@ var en_US = {
     "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
     "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
     "call.record.service.phone.rate": "Statistics of the ratio of 114",//114占比统计
+    "call.analysis.zone.distrute": "Zone distribution of customers", // 客户的地域分布
+    "call.analysis.map.return": "Back to previous", // 返回上一级
     //通话分析-end
 
 
@@ -1623,6 +1625,7 @@ var en_US = {
     "oplate_bd_analysis_realm_industry.7": "Proportion",//占比@
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "Province",//省份@
+    "oplate_bd_analysis_realm_zone.2": "City", // 市区
     //右侧面板
     "rightpanel_upgrade": "upgrade record",//升级记录
     "rightpanel_app_auth": "application privilege",//应用权限
@@ -2123,6 +2126,12 @@ var en_US = {
     "crm.clue.classify.placeholder": "Please select or enter the clue classify",//请选择或输入线索分类
     "clue.customer.classify.agend":"Agents",//代理商
     "clue.customer.classify.search":"Academic research",//学术研究
+    "clue.customer.may.associate.customer": "The customer may be associated with the clue",//该线索可能关联的客户
+    "clue.customer.phone.same":"The phone is the same",//电话一致
+    "clue.customer.customer.name.similar":"The customer is similar",//客户名相似
+    "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
+    "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
+    "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
 
 };
 export default en_US;

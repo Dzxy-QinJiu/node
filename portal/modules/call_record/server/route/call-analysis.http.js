@@ -71,6 +71,13 @@ module.exports = {
             "passport": {
                 "needLogin": true
             }
+        }, { // 获取通话客户的地域和阶段分布
+            "method": "get",
+            "path": "/rest/call/zone/stage/:authType",
+            "handler": "getCallCustomerZoneStage",
+            "passport": {
+                "needLogin": true
+            }
         }
     ]
 };

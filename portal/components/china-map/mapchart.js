@@ -85,9 +85,8 @@ MapChart.prototype.getSplitList = function() {
 
 //获取echart的地图配置
 MapChart.prototype.getEchartOptions = function() {
-    var _this = this;
     var option = {
-        tooltip : _this.getTooltipOptions(),
+        tooltip : this.getTooltipOptions(),
         dataRange: {
             x: 'left',
             y: 'bottom',
@@ -95,7 +94,7 @@ MapChart.prototype.getEchartOptions = function() {
             itemGap : 1,
             itemWidth:22,
             itemHeight:19,
-            splitList: _this.getSplitList(),
+            splitList: this.getSplitList(),
             color: oplateConsts.MAP_COLOR,
             text : ['多','少'],
             textStyle : {
@@ -115,7 +114,7 @@ MapChart.prototype.getEchartOptions = function() {
                     normal:{label:{show:true}},
                     emphasis:{label:{show:true}}
                 },
-                data:_this.getSeries()
+                data: this.getSeries()
             }
         ]
     };
