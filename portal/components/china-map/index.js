@@ -66,6 +66,9 @@ var ChinaMap = React.createClass({
         }
     },
     componentDidUpdate(prevProps) {
+        if (this.state.showReturnBtn) {
+            return;
+        }
         if(
             this.props.dataList &&
             prevProps.dataList &&
@@ -87,11 +90,11 @@ var ChinaMap = React.createClass({
         };
     },
     returnChinaMap() {
-        // 点击返回按钮时，返回“”,判断是点击的省份还是返回上一级，显示全国
-        this.props.getClickEvent("");
         this.setState({
             showReturnBtn: false
         });
+        // 点击返回按钮时，返回“”,判断是点击的省份还是返回上一级，显示全国
+        this.props.getClickEvent("");
         this.renderMap();
     },
     render() {
