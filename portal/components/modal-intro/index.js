@@ -20,7 +20,7 @@ class ModalIntro extends React.Component {
                 $introElement: nextProps.$introElement
             });
         }
-        if (nextProps.introModalLayout !== this.props.introModalLayout) {
+        if (JSON.stringify(nextProps.introModalLayout) !== JSON.stringify(this.props.introModalLayout)) {
             this.setState({
                 introModalLayout: nextProps.introModalLayout
             });
