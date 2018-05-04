@@ -16,7 +16,8 @@ var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 import classNames from "classnames";
 var userData = require("../../../../public/sources/user-data");
 import {nameRegex} from "PUB_DIR/sources/utils/consts";
-const noop = function () {};
+const noop = function () {
+};
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +26,7 @@ class ClueRightPanel extends React.Component {
             relatedCustomer: {},//与线索相关联的客户
         };
     }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
@@ -81,10 +83,11 @@ class ClueRightPanel extends React.Component {
             })
         );
     }
-    getClueClassifyOptions(){
+
+    getClueClassifyOptions() {
         return this.props.clueClassifyArray.map((source, idx) => {
-                return (<Option key={idx} value={source}>{source}</Option>);
-            });
+            return (<Option key={idx} value={source}>{source}</Option>);
+        });
     }
 
     onSelectCluesource = (updateSource) => {
@@ -105,49 +108,49 @@ class ClueRightPanel extends React.Component {
             curCustomer: this.state.curCustomer
         });
     };
-    cancelEditClueChannel = () =>{
-         this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
-         this.setState({
-             curCustomer:this.state.curCustomer
-         });
-    };
-    cancelEditClueSource = () =>{
-        this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
+    cancelEditClueChannel = () => {
+        this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
         this.setState({
-            curCustomer:this.state.curCustomer
+            curCustomer: this.state.curCustomer
         });
     };
-    cancelEditClueClassify = () =>{
+    cancelEditClueSource = () => {
+        this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
+        this.setState({
+            curCustomer: this.state.curCustomer
+        });
+    };
+    cancelEditClueClassify = () => {
         this.state.curCustomer.clue_classify = this.props.curCustomer.clue_classify;
         this.setState({
-            curCustomer:this.state.curCustomer
+            curCustomer: this.state.curCustomer
         });
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
-        for(var key in newCustomerDetail){
-            if (key == "clue_source" && !_.contains(this.props.clueSourceArray,newCustomerDetail[key])){
+        for (var key in newCustomerDetail) {
+            if (key == "clue_source" && !_.contains(this.props.clueSourceArray, newCustomerDetail[key])) {
                 this.props.updateClueSource(newCustomerDetail[key]);
             }
-            if (key == "access_channel" && !_.contains(this.props.accessChannelArray,newCustomerDetail[key])){
+            if (key == "access_channel" && !_.contains(this.props.accessChannelArray, newCustomerDetail[key])) {
                 this.props.updateClueChannel(newCustomerDetail[key]);
             }
-            if (key == "clue_classify" && !_.contains(this.props.clueClassifyArray,newCustomerDetail[key])){
+            if (key == "clue_classify" && !_.contains(this.props.clueClassifyArray, newCustomerDetail[key])) {
                 this.props.updateClueClassify(newCustomerDetail[key]);
             }
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
     };
-    hideRightPanel =() =>{
+    hideRightPanel = () => {
         this.setState({
-            relatedCustomer:{}
+            relatedCustomer: {}
         });
         this.props.hideRightPanel();
     };
-    validatorClueNameBeforSubmit = (rule, value, callback) =>{
+    validatorClueNameBeforSubmit = (rule, value, callback) => {
         //先验证该线索名称是否存在
         if (value && nameRegex.test(value)) {
-            clueCustomerAction.checkOnlyClueName(value, (data)=>{
+            clueCustomerAction.checkOnlyClueName(value, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     callback(Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
@@ -159,10 +162,11 @@ class ClueRightPanel extends React.Component {
                     }
                 }
             });
-        }else{
+        } else {
             callback(Intl.get("clue.customer.fillin.clue.name", "请填写线索名称"));
         }
     };
+
     render() {
         var curCustomer = this.state.curCustomer || {};
         var phone = "", qq = "", email = "", id = "";
@@ -172,9 +176,9 @@ class ClueRightPanel extends React.Component {
             email = _.isArray(curCustomer.contacts[0].email) && curCustomer.contacts[0].email.length ? curCustomer.contacts[0].email[0] : "";
             id = curCustomer.contacts[0].id ? curCustomer.contacts[0].id : "";
         }
-        var extraParameter = {"contact_id":id};
+        var extraParameter = {"contact_id": id};
         //是否没有权限修改线索详情
-        var hasNoPrivilegeEdit =  hasPrivilege("CLUECUSTOMER_UPDATE_MANAGER") ? false : true;
+        var hasNoPrivilegeEdit = hasPrivilege("CLUECUSTOMER_UPDATE_MANAGER") ? false : true;
         var divHeight = $(window).height() - 60;
         return (
             <RightPanel
@@ -194,157 +198,158 @@ class ClueRightPanel extends React.Component {
                                     validators={[{validator: this.validatorClueNameBeforSubmit}]}
                                 />
                             </h5>
-                        <div className="clue_detail_content">
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("call.record.contacts", "联系人")}：
-                                </dt>
-                                <dd>
-                                    <UserDetailEditField
-                                        extraParameter={extraParameter}
-                                        user_id={curCustomer.id}
-                                        value={curCustomer.contact}
-                                        disabled={hasNoPrivilegeEdit}
-                                        placeholder={Intl.get("crm.90", "请输入姓名")}
-                                        field="contact_name"
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("common.phone", "电话")}：
-                                </dt>
-                                <dd>
-                                    <UserDetailEditField
-                                        disabled={hasNoPrivilegeEdit}
-                                        extraParameter={extraParameter}
-                                        user_id={curCustomer.id}
-                                        value={phone}
-                                        placeholder={Intl.get("crm.95", "请输入联系人电话")}
-                                        field="phone"
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                        validators={[{validator: this.getPhoneInputValidateRules}]}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("common.email", "邮箱")}：
-                                </dt>
-                                <dd>
-                                    <UserDetailEditField
-                                        disabled={hasNoPrivilegeEdit}
-                                        extraParameter={extraParameter}
-                                        user_id={curCustomer.id}
-                                        value={email}
-                                        field="email"
-                                        placeholder={Intl.get("member.input.email", "请输入邮箱")}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                        validators={[{validator: checkEmail}]}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    QQ：
-                                </dt>
-                                <dd>
-                                    <UserDetailEditField
-                                        disabled={hasNoPrivilegeEdit}
-                                        extraParameter={extraParameter}
-                                        user_id={curCustomer.id}
-                                        value={qq}
-                                        field="qq"
-                                        placeholder={Intl.get("member.input.qq", "请输入QQ号")}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("crm.sales.clue.source", "线索来源")}：
-                                </dt>
-                                <dd>
-                                    <BasicEditSelectField
-                                        combobox={true}
-                                        disabled={hasNoPrivilegeEdit}
-                                        id={curCustomer.id}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
-                                        cancelEditField={this.cancelEditClueSource}
-                                        value={curCustomer.clue_source}
-                                        field="clue_source"
-                                        selectOptions={this.getClueSourceOptions()}
-                                        displayText={curCustomer.clue_source || ''}
-                                        onSelectChange={this.onSelectCluesource}
-                                        placeholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("crm.sales.clue.access.channel", "接入渠道")}：
-                                </dt>
-                                <dd>
-                                    <BasicEditSelectField
-                                        combobox={true}
-                                        disabled={hasNoPrivilegeEdit}
-                                        id={curCustomer.id}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
-                                        cancelEditField={this.cancelEditClueChannel}
-                                        value={curCustomer.access_channel}
-                                        field="access_channel"
-                                        displayText={curCustomer.access_channel || ''}
-                                        selectOptions={this.getAccessChannelOptions()}
-                                        onSelectChange={this.onSelectAccessChannel}
-                                        placeholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("clue.customer.classify", "线索分类")}：
-                                </dt>
-                                <dd>
-                                    <BasicEditSelectField
-                                        combobox={true}
-                                        disabled={hasNoPrivilegeEdit}
-                                        id={curCustomer.id}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
-                                        cancelEditField={this.cancelEditClueClassify}
-                                        value={curCustomer.clue_classify}
-                                        field="clue_classify"
-                                        displayText={curCustomer.clue_classify || ''}
-                                        selectOptions={this.getClueClassifyOptions()}
-                                        onSelectChange={this.onSelectClueClassify}
-                                        placeholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
-                                    />
-                                </dd>
-                            </dl>
-                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
-                                <dt>
-                                    {Intl.get("crm.sales.clue.descr", "线索描述")}：
-                                </dt>
-                                <dd>
-                                    <UserDetailEditField
-                                        disabled={hasNoPrivilegeEdit}
-                                        user_id={curCustomer.id}
-                                        modifySuccess={this.changeUserFieldSuccess}
-                                        saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
-                                        value={curCustomer.source}
-                                        field="source"
-                                        type="textarea"
-                                        row={3}
-                                    />
-                                </dd>
-                            </dl>
+                            <div className="clue_detail_content">
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("call.record.contacts", "联系人")}：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            extraParameter={extraParameter}
+                                            user_id={curCustomer.id}
+                                            value={curCustomer.contact}
+                                            disabled={hasNoPrivilegeEdit}
+                                            placeholder={Intl.get("crm.90", "请输入姓名")}
+                                            field="contact_name"
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("common.phone", "电话")}：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            disabled={hasNoPrivilegeEdit}
+                                            extraParameter={extraParameter}
+                                            user_id={curCustomer.id}
+                                            value={phone}
+                                            placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                                            field="phone"
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                            validators={[{validator: this.getPhoneInputValidateRules}]}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("common.email", "邮箱")}：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            disabled={hasNoPrivilegeEdit}
+                                            extraParameter={extraParameter}
+                                            user_id={curCustomer.id}
+                                            value={email}
+                                            field="email"
+                                            placeholder={Intl.get("member.input.email", "请输入邮箱")}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                            validators={[{validator: checkEmail}]}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        QQ：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            disabled={hasNoPrivilegeEdit}
+                                            extraParameter={extraParameter}
+                                            user_id={curCustomer.id}
+                                            value={qq}
+                                            field="qq"
+                                            placeholder={Intl.get("member.input.qq", "请输入QQ号")}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("crm.sales.clue.source", "线索来源")}：
+                                    </dt>
+                                    <dd>
+                                        <BasicEditSelectField
+                                            combobox={true}
+                                            disabled={hasNoPrivilegeEdit}
+                                            id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                            cancelEditField={this.cancelEditClueSource}
+                                            value={curCustomer.clue_source}
+                                            field="clue_source"
+                                            selectOptions={this.getClueSourceOptions()}
+                                            displayText={curCustomer.clue_source || ''}
+                                            onSelectChange={this.onSelectCluesource}
+                                            placeholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("crm.sales.clue.access.channel", "接入渠道")}：
+                                    </dt>
+                                    <dd>
+                                        <BasicEditSelectField
+                                            combobox={true}
+                                            disabled={hasNoPrivilegeEdit}
+                                            id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                            cancelEditField={this.cancelEditClueChannel}
+                                            value={curCustomer.access_channel}
+                                            field="access_channel"
+                                            displayText={curCustomer.access_channel || ''}
+                                            selectOptions={this.getAccessChannelOptions()}
+                                            onSelectChange={this.onSelectAccessChannel}
+                                            placeholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("clue.customer.classify", "线索分类")}：
+                                    </dt>
+                                    <dd>
+                                        <BasicEditSelectField
+                                            combobox={true}
+                                            disabled={hasNoPrivilegeEdit}
+                                            id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                            cancelEditField={this.cancelEditClueClassify}
+                                            value={curCustomer.clue_classify}
+                                            field="clue_classify"
+                                            displayText={curCustomer.clue_classify || ''}
+                                            selectOptions={this.getClueClassifyOptions()}
+                                            onSelectChange={this.onSelectClueClassify}
+                                            placeholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("crm.sales.clue.descr", "线索描述")}：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            disabled={hasNoPrivilegeEdit}
+                                            user_id={curCustomer.id}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                            value={curCustomer.source}
+                                            field="source"
+                                            type="textarea"
+                                            row={3}
+                                        />
+                                    </dd>
+                                </dl>
+                            </div>
                         </div>
                         <AssignClueAndSelectCustomer
                             curClueDetail={curCustomer}

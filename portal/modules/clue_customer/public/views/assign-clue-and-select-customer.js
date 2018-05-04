@@ -112,7 +112,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 recommendByPhone: false,
                 recommendByName: false
             });
-        })
+        });
     }
 
     //跟据客户名或者客户的电话，推荐关联客户
@@ -273,7 +273,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (this.state.submitType === 'error') {
             //如果是在推荐客户的地方进行保存，用message进行提示，在搜索客户失败后，用alerttimer进行提示
             if (this.state.displayType === "text"){
-                message.error(this.state.error_message)
+                message.error(this.state.error_message);
             }else{
                 return <Alert message={this.state.error_message} type="error" showIcon/>;
             }
@@ -288,7 +288,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (this.state.checkedCustomerItem){
             this.setState({
                 checkedCustomerItem:""
-            })
+            });
         }
         this.setState({
             displayType: type
@@ -305,7 +305,7 @@ class AssignClueAndSelectCustomer extends React.Component {
            //避免添加成功后，立刻点击编辑按钮时有保存成功的提示
             this.setState({
                 submitType: '',
-            })
+            });
         }
     }
     //渲染客户的编辑状态
@@ -395,11 +395,11 @@ class AssignClueAndSelectCustomer extends React.Component {
                     <i className="iconfont icon-close"
                           onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></i></span> : null}
                             </p>
-                        )
+                        );
                     })
                 }
             </div>
-            )
+            );
     }
 
     render() {
