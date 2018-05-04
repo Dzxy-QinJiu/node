@@ -37,13 +37,9 @@ import { MAP_PROVINCE } from "LIB_DIR/consts";
 //地图的formatter
 function mapFormatter(obj) {
     let name = Intl.get("oplate_bd_analysis_realm_zone.2", "市区");
-    _.find(MAP_PROVINCE, (item) => {
-        for(var key in item) {
-            if (item[key] == obj.name) {
-              name = Intl.get("oplate_bd_analysis_realm_zone.1", "省份");
-            }
-        }
-    });
+    if ( MAP_PROVINCE[obj.name]) {
+        name = Intl.get("oplate_bd_analysis_realm_zone.1", "省份");
+    }
     return [
         name + '：' + obj.name,
         Intl.get("oplate_bd_analysis_realm_industry.6", "个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)

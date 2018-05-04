@@ -13,15 +13,7 @@ var ChinaMap = React.createClass({
         };
     },
     provinceName(name) {
-        let transName = '';
-        _.find(MAP_PROVINCE, (item) => {
-            for(var key in item) {
-                if (item[key] == name) {
-                    transName = key;
-                }
-            }
-        });
-        return transName;
+        return MAP_PROVINCE[name];
     },
     echartInstance : null,
     renderMap() {
@@ -101,7 +93,7 @@ var ChinaMap = React.createClass({
     render() {
         return (
             <div>
-                {this.state.showReturnBtn ? (<Button type="primary" onClick={this.returnChinaMap}>返回上一级</Button>) : null}
+                {this.state.showReturnBtn ? (<Button type="primary" onClick={this.returnChinaMap}>{Intl.get("call.analysis.map.return", "返回上一级")}</Button>) : null}
                 <div ref="chartWrap" style={{width:this.props.width,height:this.props.height,borderBottom:'1px solid transparent',...this.props.style}} className={this.props.className}></div>
             </div>
         );

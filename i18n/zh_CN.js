@@ -951,6 +951,7 @@ var zh_CN = {
     "call.analysis.total.time.failed": "获取通话总时长TOP10失败",
     "call.record.service.phone.rate": "114占比统计",
     "call.analysis.zone.distrute": "客户的地域分布",
+    "call.analysis.map.return": "返回上一级",
     //通话分析-end
 
     // 用户审批start
