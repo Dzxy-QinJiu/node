@@ -26,10 +26,10 @@ routes.forEach(route => {
             data
         )
         .on("success", result => {
-            res.json(result);
+            res.status(200).json(result);
         })
         .on("error", codeMessage => {
-            res.json(codeMessage && codeMessage.message);
+            res.status(500).json(codeMessage && codeMessage.message);
         });
     };
 });

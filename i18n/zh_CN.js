@@ -2137,7 +2137,12 @@ var zh_CN = {
     "failed.sales.remark.clue.valid":"标记该线索有效性失败",
     "clue.customer.check.only.exist": "线索名称唯一性校验失败",
     "clue.customer.check.repeat": "该线索名称已存在",
+    "clue.customer.may.associate.customer": "该线索可能关联的客户",
+    "clue.customer.phone.same":"电话一致",
+    "clue.customer.customer.name.similar":"客户名相似",
+    "clue.customer.close.customer.search":"请先关闭客户搜索框",
+    "clue.customer.selected.customer":"请搜索客户进行关联",
+    "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
     "clue.customer.clue.time": "咨询于{relative}"
-
 };
 export default zh_CN;
