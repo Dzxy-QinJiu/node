@@ -89,11 +89,13 @@ CallAnalysisStore.prototype.setInitState = function () {
         loading: false, // loading
         zoneList: [], // 客户地域数据
         customerPhase : [], // 客户阶段
-        OrderPhase: [{name: "试用阶段", num: "333"},{name: "立项报价阶段", num: "12706"},{name: "谈判阶段", num: "55"},{name: "成交阶段", num: "21"},{name: "执行阶段", num: "89"}], // 订单阶段
+        OrderPhase: [], // 订单阶段
         errMsg: ''  // 获取失败的提示
     };
     // 通话客户的地域和阶段分布返回的原始数据
     this.callZoneStageOriginalData = {};
+    // 订单阶段
+    this.salesStageList = [];
 };
 
 //  获取通话时长为TOP10的列表
@@ -403,7 +405,19 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
                 this.customerData.customerPhase = customerPhase;
             }
             // 订单阶段
-
+            let salesStageList = this.salesStageList;
+            let salesPhase = [];
+            let salesSum = resData.opp_stage_sum || [];
+            if (_.isArray(salesSum) && salesSum.length) {
+                _.each(salesSum, (item) => {
+                    _.find(salesStageList, (saleItem) => {
+                        if (saleItem.index === item.name) {
+                            salesPhase.push({name: saleItem.name, num: item.count});
+                        }
+                    });
+                });
+                this.customerData.OrderPhase = salesPhase;
+            }
         }
     }
 };
@@ -434,6 +448,12 @@ CallAnalysisStore.prototype.showZoneDistribute = function (zone) {
             }
 
         }
+    }
+};
+// 获取订单阶段
+CallAnalysisStore.prototype.getSalesStageList = function (result) {
+    if (_.isArray(result) && result.length) {
+        this.salesStageList = result;
     }
 };
 

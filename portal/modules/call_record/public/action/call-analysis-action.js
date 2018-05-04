@@ -120,6 +120,15 @@ function CallAnalysisActions() {
         );
     };
 
+    // 获取订单阶段
+    this.getSalesStageList = function() {
+        callAnalysisAjax.getSalesStageList().then( (salesStageList) => {
+            this.dispatch(salesStageList.result);
+        }, (errMsg) => {
+            this.dispatch(errMsg);
+        });
+    };
+
 }
 
 module.exports = alt.createActions(CallAnalysisActions);

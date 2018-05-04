@@ -204,3 +204,20 @@ exports.getCallCustomerZoneStage = function (authType, reqData) {
     });
     return Deferred.promise();
 };
+
+// 获取订单阶段
+exports.getSalesStageList = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales_stage_list',
+        dataType: 'json',
+        type: 'get',
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (errorMsg) => {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

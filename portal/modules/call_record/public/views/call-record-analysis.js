@@ -108,9 +108,13 @@ var CallRecordAnalyis = React.createClass({
         CallAnalysisAction.getSaleGroupTeams(reqData);
         CallAnalysisAction.getSaleMemberList(reqData);
     },
-
+    // 获取订单阶段
+    getSalesStageList() {
+        CallAnalysisAction.getSalesStageList();
+    },
     componentDidMount: function () {
         CallAnalysisStore.listen(this.onStoreChange);
+        this.getSalesStageList();  // 获取订单阶段
         this.getTeamMemberData(); //获取销售团队和成员数据
         this.refreshCallAnalysisData(); // 获取趋势图、接通率、TOP10和114占比的数据
         $(window).resize(() => {
