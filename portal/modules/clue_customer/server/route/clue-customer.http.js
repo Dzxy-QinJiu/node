@@ -45,7 +45,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                'CUSTOMER_ACCESS_CLASSIFY_GET'
+                'CLUECUSTOMER_CLUE_CLASSIFY_GET'
             ]
         }
         ,{
