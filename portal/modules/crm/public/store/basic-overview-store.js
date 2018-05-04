@@ -11,6 +11,9 @@ function CRMStore() {
     this.isUserLoading = false;//是否正在获取客户开通的用户列表
     this.userErrorMsg = "";//获取客户开通的用户列表的错误提示
     this.userTotal = 0;//客户开通的用户的总数
+    this.isLoadingScheduleList = false;//是否正在获取未完成的日程列表
+    this.getScheduleListErrmsg = "";//获取未完成日程列表失败的提示
+    this.scheduleList = [];//未完成的日程列表
     this.bindActions(CRMActions);
 }
 //获取客户开通的用户列表
@@ -30,6 +33,24 @@ CRMStore.prototype.getCrmUserList = function (resultObj) {
             this.userTotal = resultData.total;
         }
     }
+};
+CRMStore.prototype.getNotCompletedScheduleList = function (result) {
+    if (result.loading) {
+        this.isLoadingScheduleList = true;
+        this.getScheduleListErrmsg = "";
+    } else if (result.error) {
+        this.isLoadingScheduleList = false;
+        this.getScheduleListErrmsg = result.errorMsg;
+        this.scheduleList = [];
+    } else {
+        this.isLoadingScheduleList = false;
+        this.getScheduleListErrmsg = "";
+        this.scheduleList = _.isArray(result.data.list) ? result.data.list : [];
+    }
+};
+CRMStore.prototype.afterHandleStatus = function (newStatusObj) {
+    var curSchedule = _.filter(this.scheduleList, (schedule)=>{return schedule.id == newStatusObj.id;});
+    curSchedule[0].status = newStatusObj.status;
 };
 
 CRMStore.prototype.getEditShowFlag = function () {

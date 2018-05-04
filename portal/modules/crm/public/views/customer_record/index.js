@@ -154,7 +154,13 @@ const CustomerRecord = React.createClass({
         if (this.state.filterStatus && this.state.filterStatus !== "ALL") {
             queryObj.disposition = this.state.filterStatus;
         }
-        CustomerRecordActions.getCustomerTraceList(queryObj);
+        CustomerRecordActions.getCustomerTraceList(queryObj, () => {
+            if (_.isFunction(this.props.refreshSrollbar())) {
+                setTimeout(() => {
+                    this.props.refreshSrollbar();
+                });
+            }
+        });
     },
     componentWillReceiveProps: function (nextProps) {
         var nextCustomerId = nextProps.curCustomer.customer_id || nextProps.curCustomer.id || '';
@@ -540,50 +546,18 @@ const CustomerRecord = React.createClass({
         })
     },
 
-    // renderCustomerTraceList: function () {
-    //     //前一条记录的时间值中的年
-    //     let prevItemYear;
-    //     //当前记录的时间值中的年
-    //     let curItemYear;
-    //     //前一条记录的时间值中的天
-    //     let prevItemDay;
-    //     //当前记录的时间值中的天
-    //     let curItemDay;
-    //     //客户跟进记录
-    //     let customerTraceList = this.state.customerRecord;
-    //     const YEAR_TIME_FORMAT = oplateConsts.DATE_TIME_YEAR_FORMAT + Intl.get("common.time.unit.year", "年");
-    //     if (_.isArray(customerTraceList) && customerTraceList.length) {
-    //         return (<div className="customer-trace-list group-by-day">
-    //             {customerTraceList.map((item, index) => {
-    //                 //处理按天分组逻辑
-    //                 const curItemTime = item.time;
-    //                 curItemYear = moment(curItemTime).startOf("year").valueOf();
-    //                 curItemDay = moment(curItemTime).startOf("day").valueOf();
-    //                 let yearStr = this.getFirstAppearTimeStr(curItemYear, prevItemYear, YEAR_TIME_FORMAT);
-    //                 let dayStr = this.getFirstAppearTimeStr(curItemDay, prevItemDay, oplateConsts.DATE_MONTH_DAY_FORMAT);
-    //                 //将当前项保存下来，以备下次循环中使用
-    //                 prevItemYear = curItemYear;
-    //                 prevItemDay = curItemDay;
-    //                 //每天第一次出现的跟进记录，并且不是第一条时，展示分割线
-    //                 let hasSplitLine = dayStr && index;
-    //                 //今年的跟进记录的年不展示
-    //                 let thisYear = moment().format(YEAR_TIME_FORMAT);
-    //                 return (
-    //                     <div className="customer-trace-item" key={index}>
-    //                         {yearStr && yearStr !== thisYear ? (
-    //                             <div className="group-year">
-    //                                 {yearStr}
-    //                             </div>) : null}
-    //                         <div className="group-day">{dayStr}</div>
-    //                         {this.renderTimeLineItem(item, hasSplitLine)}
-    //                     </div>
-    //                 );
-    //             })}
-    //         </div>);
-    //     } else {
-    //         return (<div className="no-data-tip">{Intl.get("common.no.data", "暂无数据")}</div>);
-    //     }
-    // },
+    renderTimeLine(){
+        return (
+            <TimeLine
+                list={this.state.customerRecord}
+                groupByDay={true}
+                groupByYear={true}
+                timeField="time"
+                renderTimeLineItem={this.renderTimeLineItem}
+                relativeDate={false}
+            />);
+    },
+
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
@@ -631,40 +605,21 @@ const CustomerRecord = React.createClass({
             } else {//减共xxx条的高度
                 divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
             }
-            //概览页的跟进记录
-            if (this.props.isOverViewPanel) {
-                //减概览页”最新跟进“的高度
-                divHeight -= LAYOUT_CONSTANTS.OVER_VIEW_TITLE_HEIGHT;
-                //减到期用户的高度
-                let expireTipHeight = $(".expire-tip-contianer").size() ? parseInt($(".expire-tip-contianer").outerHeight(true)) : 0;
-                divHeight -= expireTipHeight;
-                //减所属销售的高度
-                let salesTeamHeight = parseInt($(".sales-team-container").outerHeight(true));
-                divHeight -= salesTeamHeight;
-                //减标签的高度
-                let tagListHeight = parseInt($(".tag-card-container").outerHeight(true));
-                divHeight -= tagListHeight;
-            }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
-                    <div className="show-content" style={{'height': divHeight}}>
-                        <GeminiScrollbar
-                            handleScrollBottom={this.handleScrollBarBottom}
-                            listenScrollBottom={this.state.listenScrollBottom}
-                        >
-                            <TimeLine
-                                list={this.state.customerRecord}
-                                groupByDay={true}
-                                groupByYear={true}
-                                timeField="time"
-                                renderTimeLineItem={this.renderTimeLineItem}
-                                relativeDate={false}
-                            />
-                        </GeminiScrollbar>
-                    </div>
+                    {this.props.isOverViewPanel ? this.renderTimeLine() : (
+                        <div className="show-content" style={{'height': divHeight}}>
+                            <GeminiScrollbar
+                                handleScrollBottom={this.handleScrollBarBottom}
+                                listenScrollBottom={this.state.listenScrollBottom}
+                            >
+                                {this.renderTimeLine()}
+                            </GeminiScrollbar>
+                        </div>)
+                    }
                     <div className="show-foot">
                         {/* 底部播放器 */}
                         <div className={cls}>

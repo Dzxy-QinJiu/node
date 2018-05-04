@@ -7,23 +7,12 @@ var restApis = {
 exports.restUrls = restApis;
 //获取日程管理列表
 exports.getScheduleList = function (req, res) {
-    var url = restApis.scheduleApis;
-    if (req.query && req.query.page_size){
-        url = url + "list" + "?page_size="  + req.query.page_size;
-        if (req.query && req.query.customer_id){
-            url = url + "&customer_id=" + req.query.customer_id;
-        }
-        if (req.query && req.query.id){
-            url = url + "&id=" + req.query.id;
-        }
-    }
-
     return restUtil.authRest.get(
         {
-            url: url,
+            url: `${restApis.scheduleApis}list`,
             req: req,
             res: res
-        }, null);
+        }, req.query);
 };
 
 //增加日程管理
