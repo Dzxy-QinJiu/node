@@ -1654,6 +1654,7 @@ var zh_CN = {
     "oplate_bd_analysis_realm_industry.7": "占比",
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "省份",
+    "oplate_bd_analysis_realm_zone.2": "市区",
     //右侧面板
     "rightpanel_upgrade": "升级记录",
     "rightpanel_app_auth": "应用权限",

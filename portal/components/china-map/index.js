@@ -51,6 +51,7 @@ var ChinaMap = React.createClass({
                         const provinceName = require("echarts-eefung/map/json/province/" + transName);
                         echarts.registerMap(params.name, provinceName);
                         options.series[0].mapType = params.name;
+                        options.series[0].data = this.props.dataList;
                         this.echartInstance.setOption(options);
                     }
                 });

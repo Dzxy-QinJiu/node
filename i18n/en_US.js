@@ -1623,6 +1623,7 @@ var en_US = {
     "oplate_bd_analysis_realm_industry.7": "Proportion",//占比@
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "Province",//省份@
+    "oplate_bd_analysis_realm_zone.2": "City", // 市区
     //右侧面板
     "rightpanel_upgrade": "upgrade record",//升级记录
     "rightpanel_app_auth": "application privilege",//应用权限

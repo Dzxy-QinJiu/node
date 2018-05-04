@@ -33,10 +33,19 @@ import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import {handleTableData} from "CMP_DIR/analysis/export-data-util";
 import {exportToCsv} from "LIB_DIR/func";
 const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
+import { MAP_PROVINCE } from "LIB_DIR/consts";
 //地图的formatter
 function mapFormatter(obj) {
+    let name = Intl.get("oplate_bd_analysis_realm_zone.2", "市区");
+    _.find(MAP_PROVINCE, (item) => {
+        for(var key in item) {
+            if (item[key] == obj.name) {
+              name = Intl.get("oplate_bd_analysis_realm_zone.1", "省份");
+            }
+        }
+    });
     return [
-        Intl.get("oplate_bd_analysis_realm_zone.1", "省份") + '：' + obj.name,
+        name + '：' + obj.name,
         Intl.get("oplate_bd_analysis_realm_industry.6", "个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
     ].join('<br/>');
 }
