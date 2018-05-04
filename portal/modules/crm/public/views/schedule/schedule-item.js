@@ -17,9 +17,9 @@ class ScheduleItem extends React.Component {
         let scheduleShowOb = {
             iconClass: "",
             title: "",
-            // content: item.content,
             startTime: item.start_time ? moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : "",
-            endTime: item.end_time ? moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : ""
+            endTime: item.end_time ? moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : "",
+            timeClass: ""
         };
         switch (item.type) {
             case 'visit':
@@ -34,6 +34,18 @@ class ScheduleItem extends React.Component {
                 scheduleShowOb.iconClass = 'icon-trace-other';
                 scheduleShowOb.title = Intl.get("customer.other", "其他");
                 break;
+        }
+        //未完成的日程样式
+        if (item.status == "false") {
+            //今天的起始、结束时间(23:59:59+1)
+            let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf() + 1};
+            //超期（今天之前的日程）
+            if (item.end_time < today.start_time) {
+                scheduleShowOb.timeClass = "overdue-schedule-item";
+            } else if (item.start_time < item.end_time) {
+                //今天的日程
+                scheduleShowOb.timeClass = "today-schedule-item";
+            }
         }
         return scheduleShowOb;
     }
@@ -75,7 +87,8 @@ class ScheduleItem extends React.Component {
         const scheduleShowObj = this.getScheduleShowObj(item);
         const phoneArray = this.getContactPhoneArray(item);
         return (
-            <div className={classNames("schedule-item", {"day-split-line": this.props.hasSplitLine})}>
+            <div
+                className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {"day-split-line": this.props.hasSplitLine})}>
                 <div className="schedule-item-title">
                     <span className={`iconfont ${scheduleShowObj.iconClass}`}/>
                     <span className="schedule-time-stage">{scheduleShowObj.startTime}</span>

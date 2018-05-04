@@ -83,6 +83,8 @@
     }
     //联系电话展示区域
     .schedule-contact-phone-block {
+      position: relative;
+      &:extend(.break_line);
       button {
         margin-right: 4px;
         margin-bottom: 8px;
@@ -95,7 +97,9 @@
         padding-right: 0;
       }
       .icon-close {
+        position: absolute;
         float: right;
+        top: 0;
         font-size: 14px;
       }
     }
@@ -128,6 +132,37 @@
   .icon-alarm-clock {
     &:hover {
       color: @hover_color;
+    }
+  }
+}
+
+//超期的日程
+.overdue-schedule-item {
+  .schedule-item-title {
+    .iconfont {
+      color: @overdue_color;
+    }
+  }
+  .schedule-item-buttons {
+    .schedule-contact-btn {
+      border-color: @overdue_color;
+      background-color: @overdue_color;
+    }
+  }
+}
+
+//今天的日程
+.today-schedule-item {
+  @today_color: #34ca71;
+  .schedule-item-title {
+    .iconfont {
+      color: @today_color;
+    }
+  }
+  .schedule-item-buttons {
+    .schedule-contact-btn {
+      border-color: @today_color;
+      background-color: @today_color;
     }
   }
 }
