@@ -969,7 +969,7 @@ var CallRecordAnalyis = React.createClass({
         }
         else {
             // 没有数据的提示
-            if (!this.state.customerData.customerPhase.length) {
+            if (!this.state.customerData.OrderPhase.length) {
                 return (
                     <div className="alert-wrap">
                         <Alert
