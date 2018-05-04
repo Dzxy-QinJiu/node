@@ -53,7 +53,6 @@ var ChinaMap = React.createClass({
                         options.series[0].mapType = params.name;
                         this.echartInstance.setOption(options);
                     }
-
                 });
             }
         }

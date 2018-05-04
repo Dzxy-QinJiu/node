@@ -88,7 +88,7 @@ CallAnalysisStore.prototype.setInitState = function () {
     this.customerData = {
         loading: false, // loading
         zoneList: [], // 客户地域数据
-        customerPhase : [{name: "信息", num: "1212"},{name: "意向", num: "12706"},{name: "试用", num: "8514"},{name: "合格", num: "568"},{name: "签约", num: "89"}], // 客户阶段
+        customerPhase : [], // 客户阶段
         OrderPhase: [{name: "试用阶段", num: "333"},{name: "立项报价阶段", num: "12706"},{name: "谈判阶段", num: "55"},{name: "成交阶段", num: "21"},{name: "执行阶段", num: "89"}], // 订单阶段
         errMsg: ''  // 获取失败的提示
     };
@@ -384,13 +384,26 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
         let resData = result.resData;
         this.callZoneStageOriginalData = resData;
         if (_.isObject(resData) && resData.code === 0) {
+            // 地域分布
             let zoneList = [];
-            if (resData.sum && _.isArray(resData.sum) && resData.sum.length) {
-                _.each(resData.sum, (item) => {
+            let sum = resData.sum || [];
+            if (_.isArray(sum) && sum.length) {
+                _.each(sum, (item) => {
                     zoneList.push({name: item.name, value: item.count});
                 });
                 this.customerData.zoneList = zoneList;
             }
+            // 客户阶段
+            let customerPhase = [];
+            let customerSum = resData.customer_label_sum || [];
+            if (_.isArray(customerSum) && customerSum.length) {
+                _.each(customerSum, (item) => {
+                    customerPhase.push({name: item.name, num: item.count});
+                });
+                this.customerData.customerPhase = customerPhase;
+            }
+            // 订单阶段
+
         }
     }
 };
