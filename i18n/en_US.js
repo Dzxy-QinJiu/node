@@ -2117,7 +2117,12 @@ var en_US = {
     "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue",//标记该线索有效性失败
     "clue.customer.check.only.exist": "Failed to verify the only clue names",//线索名称唯一性校验失败
     "clue.customer.check.repeat": "The clue name is already existed",//该线索名称已存在
-    "clue.customer.clue.time": "Consult on {relative}"//咨询于{relative}
+    "clue.customer.clue.time": "Consult on {relative}",//咨询于{relative}
+    "failed.to.get.clue.classify":"Failed to get clue classify",//获取线索分类出错了
+    "clue.customer.classify":"clue  classification",//线索分类
+    "crm.clue.classify.placeholder": "Please select or enter the clue classify",//请选择或输入线索分类
+    "clue.customer.classify.agend":"Agents",//代理商
+    "clue.customer.classify.search":"Academic research",//学术研究
 
 };
 export default en_US;

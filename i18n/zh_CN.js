@@ -2135,7 +2135,12 @@ var zh_CN = {
     "clue.customer.check.only.exist": "线索名称唯一性校验失败",
     "clue.customer.check.repeat": "该线索名称已存在",
     "clue.customer.clue.time": "咨询于{relative}",
-    "failed.to.get.clue.classify":"获取线索分类出错了"
+    "failed.to.get.clue.classify":"获取线索分类出错了",
+    "clue.customer.classify":"线索分类",
+    "crm.clue.classify.placeholder": "请选择或输入线索分类",
+    "clue.customer.classify.agend":"代理商",
+    "clue.customer.classify.search":"学术研究",
+
 
 };
 export default zh_CN;

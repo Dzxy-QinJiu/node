@@ -31,7 +31,7 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import {SELECT_TYPE} from "./utils/clue-customer-utils";
 import CONSTS from  "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
-import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
+import {clueSourceArray, accessChannelArray, clueClassifyArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -46,6 +46,7 @@ const ClueCustomer = React.createClass({
             tableHeight: 630,
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            clueClassifyArray: clueClassifyArray,//线索分类
             isRemarkingItem:'',//正在标记的那条线索
             ...clueCustomerStore.getState()
         };
@@ -688,6 +689,13 @@ const ClueCustomer = React.createClass({
             accessChannelArray:this.state.accessChannelArray
         });
     },
+    //更新线索分类
+    updateClueClassify:function (newClue) {
+        this.state.clueClassifyArray.push(newClue);
+        this.setState({
+            clueClassifyArray:this.state.clueClassifyArray
+        });
+    },
     render: function () {
         return (
             <RightContent>
@@ -707,6 +715,7 @@ const ClueCustomer = React.createClass({
                             hideAddForm={this.hideClueAddForm}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
+                            clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
                         />
@@ -727,8 +736,10 @@ const ClueCustomer = React.createClass({
                             curCustomer={this.state.curCustomer}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
+                            clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
+                            updateClueClassify={this.updateClueClassify}
                         />
                     ) : null}
                 </div>

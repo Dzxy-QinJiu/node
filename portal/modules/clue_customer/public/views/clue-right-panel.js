@@ -23,20 +23,10 @@ class ClueRightPanel extends React.Component {
         this.state = {
             curCustomer: $.extend(true, {}, this.props.curCustomer),
             relatedCustomer: {},//与线索相关联的客户
-            ...clueCustomerStore.getState()
         };
-        this.onStoreChange = this.onStoreChange.bind(this);
     }
-
-    componentDidMount() {
-        clueCustomerStore.listen(this.onStoreChange);
-    }
-    onStoreChange = () => {
-        this.setState(clueCustomerStore.getState());
-    };
     componentWillReceiveProps(nextProps) {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
-            // this.queryCustomerByClueId(nextProps.curCustomer.id)
             this.setState({
                 curCustomer: $.extend(true, {}, nextProps.curCustomer)
             });
@@ -91,6 +81,13 @@ class ClueRightPanel extends React.Component {
             })
         );
     }
+    getClueClassifyOptions(){
+        return (
+            this.props.clueClassifyArray.map((source, idx) => {
+                return (<Option key={idx} value={source}>{source}</Option>);
+            })
+        );
+    }
 
     onSelectCluesource = (updateSource) => {
         this.state.curCustomer.clue_source = updateSource;
@@ -100,6 +97,12 @@ class ClueRightPanel extends React.Component {
     };
     onSelectAccessChannel = (updateChannel) => {
         this.state.curCustomer.access_channel = updateChannel;
+        this.setState({
+            curCustomer: this.state.curCustomer
+        });
+    };
+    onSelectClueClassify = (updateClassify) => {
+        this.state.curCustomer.clue_classify = updateClassify;
         this.setState({
             curCustomer: this.state.curCustomer
         });
@@ -116,6 +119,12 @@ class ClueRightPanel extends React.Component {
             curCustomer:this.state.curCustomer
         });
     };
+    cancelEditClueClassify = () =>{
+        this.state.curCustomer.clue_classify = this.props.curCustomer.clue_classify;
+        this.setState({
+            curCustomer:this.state.curCustomer
+        })
+    };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
         for(var key in newCustomerDetail){
@@ -124,6 +133,9 @@ class ClueRightPanel extends React.Component {
             }
             if (key == "access_channel" && !_.contains(this.props.accessChannelArray,newCustomerDetail[key])){
                 this.props.updateClueChannel(newCustomerDetail[key]);
+            }
+            if (key == "clue_classify" && !_.contains(this.props.clueClassifyArray,newCustomerDetail[key])){
+                this.props.updateClueClassify(newCustomerDetail[key]);
             }
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
@@ -259,6 +271,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
+                                        combobox={true}
                                         disabled={hasNoPrivilegeEdit}
                                         id={curCustomer.id}
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -279,6 +292,7 @@ class ClueRightPanel extends React.Component {
                                 </dt>
                                 <dd>
                                     <BasicEditSelectField
+                                        combobox={true}
                                         disabled={hasNoPrivilegeEdit}
                                         id={curCustomer.id}
                                         modifySuccess={this.changeUserFieldSuccess}
@@ -290,6 +304,27 @@ class ClueRightPanel extends React.Component {
                                         selectOptions={this.getAccessChannelOptions()}
                                         onSelectChange={this.onSelectAccessChannel}
                                         placeholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
+                                    />
+                                </dd>
+                            </dl>
+                            <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                <dt>
+                                    {Intl.get("clue.customer.classify", "线索分类")}：
+                                </dt>
+                                <dd>
+                                    <BasicEditSelectField
+                                        combobox={true}
+                                        disabled={hasNoPrivilegeEdit}
+                                        id={curCustomer.id}
+                                        modifySuccess={this.changeUserFieldSuccess}
+                                        saveEditSelect={clueCustomerAjax.updateCluecustomerDetail}
+                                        cancelEditField={this.cancelEditClueClassify}
+                                        value={curCustomer.clue_classify}
+                                        field="clue_classify"
+                                        displayText={curCustomer.clue_classify || ''}
+                                        selectOptions={this.getClueClassifyOptions()}
+                                        onSelectChange={this.onSelectClueClassify}
+                                        placeholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
                                     />
                                 </dd>
                             </dl>

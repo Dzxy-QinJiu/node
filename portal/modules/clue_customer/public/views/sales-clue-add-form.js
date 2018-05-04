@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * Created by wangliping on 2017/8/23.
  * 添加销售线索面板
  */
-import {Icon, Form, Input, Select, message, DatePicker} from "antd";
+import { Form, Input, Select, message, DatePicker} from "antd";
 const FormItem = Form.Item;
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from "CMP_DIR/rightPanel";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
@@ -13,11 +13,8 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import Spinner from "CMP_DIR/spinner";
 import PhoneInput from "CMP_DIR/phone-input";
 import {nameRegex} from "PUB_DIR/sources/utils/consts";
-import clueCustomerAjax from "../ajax/clue-customer-ajax";
 import ajax from "../../../crm/common/ajax";
 const routes = require("../../../crm/common/route");
-import routeList from "../../../common/route";
-import commonAjax from "../../../common/ajax";
 import {checkCustomerName,checkEmail} from "../utils/clue-customer-utils";
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var clueCustomerAction = require("../action/clue-customer-action");
@@ -169,12 +166,15 @@ const SalesClueAddForm = React.createClass({
                                 newAddClue: data.result
                             });
                             clueCustomerAction.afterAddSalesClue(data.result);
-                            //如果线索来源或者接入渠道加入新的类型
+                            //如果线索来源或者接入渠道,线索类型加入新的类型
                             if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
                                 _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
                             }
                             if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
                                 _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
+                            }
+                            if (submitObj.clue_classify && !_.contains(this.props.clueClassifyArray,submitObj.clue_classify)){
+                                _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
                             }
                             //线索客户添加成功后的回调
                             _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
@@ -367,13 +367,33 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Select combobox
                                         filterOption={false}
-                                        searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入线索接入渠道")}
+                                        searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
                                         name="access_channel"
                                         onChange={this.setField.bind(this, 'access_channel')}
                                         value={formData.access_channel}
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
+                                            return (<Option key={idx} value={source}>{source}</Option>);
+                                        }) : null
+                                    }
+                                </Select>
+                            </FormItem>
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get("clue.customer.classify","线索分类")}
+                                labelCol={{span: 6}}
+                                wrapperCol={{span: 18}}
+                            >
+                                <Select combobox
+                                        filterOption={false}
+                                        searchPlaceholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
+                                        name="access_channel"
+                                        onChange={this.setField.bind(this, 'clue_classify')}
+                                        value={formData.clue_classify}
+                                >
+                                    {_.isArray(this.props.clueClassifyArray) ?
+                                        this.props.clueClassifyArray.map((source, idx) => {
                                             return (<Option key={idx} value={source}>{source}</Option>);
                                         }) : null
                                     }
