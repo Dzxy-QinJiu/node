@@ -1100,7 +1100,7 @@ var CallRecordAnalyis = React.createClass({
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-stage">
                                     <div className="call-stage-title">
-                                        客户阶段统计:
+                                        {Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计')}: 
                                     </div>
                                     {this.renderCustomerPhase()}
                                 </div>
@@ -1108,7 +1108,7 @@ var CallRecordAnalyis = React.createClass({
                             <div className="call-stage-distribute col-xs-6">
                                 <div className="call-sale">
                                     <div className="call-sale-title">
-                                        订单阶段统计:
+                                        {Intl.get('oplate_customer_analysis.11', '订单阶段统计')}:
                                     </div>
                                     {this.renderOrderPhase()}
                                 </div>
@@ -1117,7 +1117,7 @@ var CallRecordAnalyis = React.createClass({
                         <div className="col-xs-12">
                             <div className="call-zone-distribute">
                                 <div className="call-zone-title">
-                                    客户的地域分布:
+                                    {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}:
                                 </div>
                                 {this.renderCustomerZoneDistribute()}
                             </div>
