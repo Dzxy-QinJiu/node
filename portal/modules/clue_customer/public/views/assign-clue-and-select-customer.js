@@ -81,6 +81,40 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         }
     }
+    getCustomerByPhoneOrName(queryType,condition, rangParams, pageSize, sorter, queryObj){
+        crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((data)=>{
+            if (data && _.isArray(data.result)){
+                if (data.result.length){
+                    if (queryType === "phone"){
+                        this.setState({
+                            recommendCustomerLists: data.result,
+                            recommendByPhone: true,
+                            recommendByName: false
+                        });
+                    }else if(queryType === "name") {
+                        this.setState({
+                            recommendCustomerLists: data.result,
+                            recommendByPhone: false,
+                            recommendByName: true
+                        });
+                    }
+                }else{
+                    this.setState({
+                        recommendCustomerLists: [],
+                        recommendByPhone: false,
+                        recommendByName: false
+                    });
+                }
+            }
+        },()=>{
+            this.setState({
+                recommendCustomerLists: [],
+                recommendByPhone: false,
+                recommendByName: false
+            });
+        })
+    }
+
     //跟据客户名或者客户的电话，推荐关联客户
     getRecommendAssociatedCustomer(){
         var curClueDetail = this.state.curClueDetail;
@@ -94,44 +128,10 @@ class AssignClueAndSelectCustomer extends React.Component {
         if (phone){
             condition.contacts = [{phone: [phone]}];
             condition.call_phone = true;
-            crmAjax.queryCustomer(condition, 1, 20).then((data)=>{
-                if (data && _.isArray(data.result)){
-                    if (data.result.length){
-                        this.setState({
-                            recommendCustomerLists: data.result,
-                            recommendByPhone: true,
-                            recommendByName: false
-                        });
-                    }else{
-                        this.setState({
-                            recommendCustomerLists: [],
-                            recommendByPhone: false,
-                            recommendByName: false
-                        });
-                    }
-                }
-            },()=>{
-
-            })
+            this.getCustomerByPhoneOrName("phone", condition, 1, 20);
         }else if (clueName){
             condition.name = clueName;
-            crmAjax.queryCustomer(condition, [{"from":"","to":"","type":"time","name":"start_time"}], 20,{field: "id", order: "ascend"},{"total_size":0, "cursor":true,"id":""}).then((data)=>{
-                if (data && _.isArray(data.result)){
-                    if (data.result.length){
-                        this.setState({
-                            recommendCustomerLists: data.result,
-                            recommendByPhone: false,
-                            recommendByName: true
-                        })
-                    }else{
-                        this.setState({
-                            recommendCustomerLists: [],
-                            recommendByPhone: false,
-                            recommendByName: false
-                        })
-                    }
-                }
-            })
+            this.getCustomerByPhoneOrName("name", condition, [{"type":"time","name":"start_time"}], 20,{field: "id", order: "ascend"},{"total_size":0, "cursor":true,"id":""});
         }
     }
 
