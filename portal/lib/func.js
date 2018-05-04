@@ -142,7 +142,9 @@ export const capitalizeFirstLetter = function (str) {
 
 // 地图中显示颜色的判断
 export const mapColorList = function (dataList) {
+    // 返回的是字符串
     let valueArray = _.pluck(_.isArray(dataList) && dataList || [], 'value');
+    valueArray = _.map(valueArray, item => parseInt(item));
     let uniqArray = _.uniq(valueArray);
     let length = uniqArray.length;
     let ret = [];
@@ -156,25 +158,8 @@ export const mapColorList = function (dataList) {
         }
         return ret;
     } else { // 数据超出5时，分区间段显示颜色
-        let maxVal = _.max(dataList , (obj) =>{
-            return obj.value;
-        });
-
-        if(maxVal) {
-            maxVal = maxVal.value;
-        } else {
-            maxVal = 0;
-        }
-
-        let minVal = _.min(dataList , (obj) =>{
-            return obj.value;
-        });
-
-        if(minVal) {
-            minVal = minVal.value;
-        } else {
-            minVal = 0;
-        }
+        let maxVal = _.max(uniqArray);
+        let minVal = _.min(uniqArray);
         // 间隔
         let delta = Math.floor((maxVal - minVal) / 5) - 1;
         let start = minVal;

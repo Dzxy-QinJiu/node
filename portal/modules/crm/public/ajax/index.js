@@ -214,7 +214,7 @@ exports.mergeRepeatCustomer = function (mergeObj) {
         url: '/rest/crm/repeat_customer/merge',
         dataType: 'json',
         type: 'put',
-        data: {customer: JSON.stringify(mergeObj.customer), delete_ids: JSON.stringify(mergeObj.delete_ids)},
+        data: {customer: JSON.stringify(mergeObj.customer), delete_customers: JSON.stringify(mergeObj.delete_customers)},
         success: function (data) {
             Deferred.resolve(data);
         },

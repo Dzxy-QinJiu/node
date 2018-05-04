@@ -150,7 +150,7 @@ const SalesClueAddForm = React.createClass({
             this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
                 if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
                     valid = false;
-                };
+                }
                 if (!valid || errors) {
                     return;
                 } else {

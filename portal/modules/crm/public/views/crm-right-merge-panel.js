@@ -255,13 +255,13 @@ var CrmRightMergePanel = React.createClass({
     //合并客户
     mergeRepeatCustomer: function () {
         if (this.state.isMergingCustomer) return;
-        let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList,
+        let delete_customers = [], mergeCustomerList = this.props.mergeCustomerList,
             selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id
         if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
             mergeCustomerList.forEach((customer) => {
                 if (customer.id != selectedCustomer.id) {
-                    deleteIds.push(customer.id);
+                    delete_customers.push({id: customer.id, name: customer.name});
                 }
             });
         }
@@ -303,7 +303,7 @@ var CrmRightMergePanel = React.createClass({
         this.setState({isMergingCustomer: true});
         let mergeObj = {
             customer: selectedCustomer,
-            delete_ids: deleteIds
+            delete_customers: delete_customers
         };
         CustomerRepeatAction.mergeRepeatCustomer(mergeObj, resultObj => {
             if (resultObj.error) {

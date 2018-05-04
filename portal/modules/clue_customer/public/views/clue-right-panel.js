@@ -108,13 +108,13 @@ class ClueRightPanel extends React.Component {
          this.state.curCustomer.access_channel = this.props.curCustomer.access_channel;
          this.setState({
              curCustomer:this.state.curCustomer
-         })
+         });
     };
     cancelEditClueSource = () =>{
         this.state.curCustomer.clue_source = this.props.curCustomer.clue_source;
         this.setState({
             curCustomer:this.state.curCustomer
-        })
+        });
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的

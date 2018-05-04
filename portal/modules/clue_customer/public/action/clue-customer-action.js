@@ -24,7 +24,8 @@ function ClueCustomerActions() {
         "setSalesManName",//获取销售人员及团队的名字
         "setUnSelectDataTip",//未选择销售人员的提醒信息
         "afterEditCustomerDetail",//修改线索客户完成后更新列表中的信息
-        "updateClueProperty"//修改线索是否有效属性
+        "updateClueProperty",//修改线索是否有效属性
+        'removeClueItem'//删除某条线索
     );
     //获取线索客户列表
     this.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
@@ -99,7 +100,7 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback();
         },(errorMsg)=>{
             _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
-        })
+        });
     };
 }
 module.exports = alt.createActions(ClueCustomerActions);

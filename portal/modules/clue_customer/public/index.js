@@ -422,8 +422,12 @@ const ClueCustomer = React.createClass({
                 this.setState({
                     isRemarkingItem: '',
                 });
-                message.error(Intl.get("failed.sales.remark.clue.valid","标记该线索有效性失败"))
+                message.error(Intl.get("failed.sales.remark.clue.valid","标记该线索有效性失败"));
             }else{
+                //如果线索标记为有效后，将状态改为已跟进状态
+                if (updateValue == "1"){
+                    clueCustomerAction.removeClueItem({id:item.id});
+                }
                 clueCustomerAction.updateClueProperty({id:item.id,availability:updateValue});
                 this.setState({
                     isRemarkingItem: ''
@@ -485,8 +489,13 @@ const ClueCustomer = React.createClass({
                                     </div>
                                 </Col>
                                 <Col sm={6} lg={4}>
-                                    <div>{item.contact}</div>
-                                    <p>{this.getContactList(item.contact_way, item)}</p>
+                                    <div className="contact-container">
+                                        <div>{item.contact}</div>
+                                        <div className="contact-way">{this.getContactList(item.contact_way, item)}</div>
+                                    </div>
+                                    <p>
+                                        {Intl.get("clue.customer.clue.time", "咨询于{relative}",{"relative": moment(item.source_time).fromNow()})}
+                                    </p>
                                 </Col>
                                 <Col sm={6} lg={3}>
                                     <div>
@@ -500,7 +509,7 @@ const ClueCustomer = React.createClass({
                                     <div>{item.access_channel}</div>
                                     <p>{item.clue_source}</p>
                                 </Col>
-                                {item.user_name ? <Col sm={18} lg={4}>
+                                {item.user_name ? <Col sm={18} lg={5}>
                                     <div className="trace-record-wrap">
                                         <p>
                                             {Intl.get("cluecustomer.trace.person", "跟进人")}:{item.user_name}
@@ -540,7 +549,7 @@ const ClueCustomer = React.createClass({
                                     </div>
                                 </Col>: null}
                                 {(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER")) ?
-                                    <Col sm={3} lg={3}>
+                                    <Col sm={3} lg={2}>
                                         <div className="action-button-wrap">
                                             <AntcDropdown
                                                 ref={"changesale" + item.id}
@@ -561,7 +570,7 @@ const ClueCustomer = React.createClass({
                                     <div className="remark-clue-container">
                                         <Button disabled={this.state.isRemarkingItem == item.id ? true : false} type="primary" onClick={this.handleClickRemarkBtn.bind(this, item)} data-tracename="点击标记线索是否有效">
                                             {/*没有该字段，或该字段为0，表示该线索有效，为1表示无效*/}
-                                            {!item.availability || item.availability == "0" ? Intl.get("sales.remark.clue.able","标记该线索无效") : Intl.get("sales.remark.clue.enable", "标记该线索有效")}
+                                            {!item.availability || item.availability == "0" ? Intl.get("sales.remark.clue.able","线索无效") : Intl.get("sales.remark.clue.enable", "线索有效")}
                                             {this.state.isRemarkingItem == item.id ? <Icon type="loading"/> : null}
                                         </Button>
                                     </div>

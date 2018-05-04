@@ -950,6 +950,8 @@ var zh_CN = {
     "call.analysis.total.count.failed": "获取通话总次数TOP10失败",
     "call.analysis.total.time.failed": "获取通话总时长TOP10失败",
     "call.record.service.phone.rate": "114占比统计",
+    "call.analysis.zone.distrute": "客户的地域分布",
+    "call.analysis.map.return": "返回上一级",
     //通话分析-end
 
     // 用户审批start
@@ -1654,6 +1656,7 @@ var zh_CN = {
     "oplate_bd_analysis_realm_industry.7": "占比",
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "省份",
+    "oplate_bd_analysis_realm_zone.2": "市区",
     //右侧面板
     "rightpanel_upgrade": "升级记录",
     "rightpanel_app_auth": "应用权限",
@@ -2128,8 +2131,8 @@ var zh_CN = {
     "sales.if.switch.type": "是否区分新签和续约类型",
     "sales.new.write.contract.radio":"新签提成比例",
     "sales.rewrite.contract.radio":"续约提成比例",
-    "sales.remark.clue.enable":"标记该线索有效",
-    "sales.remark.clue.able":"标记该线索无效",
+    "sales.remark.clue.enable":"线索有效",
+    "sales.remark.clue.able":"线索无效",
     "sales.clue.is.enable":"无效",
     "failed.sales.remark.clue.valid":"标记该线索有效性失败",
     "clue.customer.check.only.exist": "线索名称唯一性校验失败",
@@ -2139,7 +2142,7 @@ var zh_CN = {
     "clue.customer.customer.name.similar":"客户名相似",
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
     "clue.customer.selected.customer":"请搜索客户进行关联",
-    "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户"
-
+    "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
+    "clue.customer.clue.time": "咨询于{relative}"
 };
 export default zh_CN;
