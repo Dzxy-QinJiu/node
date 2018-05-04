@@ -82,11 +82,9 @@ class ClueRightPanel extends React.Component {
         );
     }
     getClueClassifyOptions(){
-        return (
-            this.props.clueClassifyArray.map((source, idx) => {
+        return this.props.clueClassifyArray.map((source, idx) => {
                 return (<Option key={idx} value={source}>{source}</Option>);
-            })
-        );
+            });
     }
 
     onSelectCluesource = (updateSource) => {
@@ -123,7 +121,7 @@ class ClueRightPanel extends React.Component {
         this.state.curCustomer.clue_classify = this.props.curCustomer.clue_classify;
         this.setState({
             curCustomer:this.state.curCustomer
-        })
+        });
     };
     changeUserFieldSuccess = (newCustomerDetail) => {
         //如果是修改的线索来源和接入渠道，要看是不是重新添加的
