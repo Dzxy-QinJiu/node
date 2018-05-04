@@ -31,7 +31,7 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import {SELECT_TYPE} from "./utils/clue-customer-utils";
 import CONSTS from  "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
-import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
+import {clueSourceArray, accessChannelArray, clueClassifyArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -46,6 +46,7 @@ const ClueCustomer = React.createClass({
             tableHeight: 630,
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
+            clueClassifyArray: clueClassifyArray,//线索分类
             isRemarkingItem:'',//正在标记的那条线索
             ...clueCustomerStore.getState()
         };
@@ -61,6 +62,8 @@ const ClueCustomer = React.createClass({
             this.getClueSource();
             //获取线索渠道
             this.getClueChannel();
+            //获取线索分类
+            this.getClueClassify();
         }
         clueCustomerAction.getSalesManList();
         //管理员、销售领导默认展示待分配的线索客户 0
@@ -113,6 +116,17 @@ const ClueCustomer = React.createClass({
             }
         }, errorMsg => {
             console.log("获取线索渠道出错了 " + errorMsg);
+        });
+    },
+    getClueClassify: function () {
+        clueCustomerAjax.getClueClassify().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueClassifyArray: _.union(this.state.clueClassifyArray, data.result)
+                });
+            }
+        }, errorMsg => {
+            console.log("获取线索分类出错了 " + errorMsg);
         });
     },
     showClueAddForm: function () {
@@ -675,6 +689,13 @@ const ClueCustomer = React.createClass({
             accessChannelArray:this.state.accessChannelArray
         });
     },
+    //更新线索分类
+    updateClueClassify:function (newClue) {
+        this.state.clueClassifyArray.push(newClue);
+        this.setState({
+            clueClassifyArray:this.state.clueClassifyArray
+        });
+    },
     render: function () {
         return (
             <RightContent>
@@ -694,6 +715,7 @@ const ClueCustomer = React.createClass({
                             hideAddForm={this.hideClueAddForm}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
+                            clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
                         />
@@ -714,8 +736,10 @@ const ClueCustomer = React.createClass({
                             curCustomer={this.state.curCustomer}
                             accessChannelArray={this.state.accessChannelArray}
                             clueSourceArray={this.state.clueSourceArray}
+                            clueClassifyArray={this.state.clueClassifyArray}
                             updateClueSource={this.updateClueSource}
                             updateClueChannel={this.updateClueChannel}
+                            updateClueClassify={this.updateClueClassify}
                         />
                     ) : null}
                 </div>
