@@ -182,3 +182,42 @@ exports.getSaleMemberList = function (reqData) {
     });
     return Deferred.promise();
 };
+
+// 获取通话客户的地域和阶段分布
+let callZoneStageAjax = null;
+exports.getCallCustomerZoneStage = function (authType, reqData) {
+    callZoneStageAjax && callZoneStageAjax.abort();
+    var Deferred = $.Deferred();
+    callZoneStageAjax = $.ajax({
+        url: `/rest/call/zone/stage/${authType}`,
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success:  (data) => {
+            Deferred.resolve(data);
+        },
+        error:  (xhr, textStatus) => {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取订单阶段
+exports.getSalesStageList = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales_stage_list',
+        dataType: 'json',
+        type: 'get',
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (errorMsg) => {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

@@ -51,7 +51,7 @@ var PieChart = React.createClass({
         return legend.map((legendName,idx) => {
             return {
                 name : legendName,
-                value : list[idx].count  // 注意：饼图中，value是key
+                value : list[idx].num  // 注意：饼图中，value是key
             };
         });
     },
@@ -74,6 +74,11 @@ var PieChart = React.createClass({
                     radius : '55%',
                     center: ['50%', '60%'],
                     data: this.getSeries(),
+                    label : {
+                        normal : {
+                            formatter : "{c}"
+                        }
+                    },
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,

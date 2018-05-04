@@ -936,6 +936,8 @@ var en_US = {
     "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
     "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
     "call.record.service.phone.rate": "Statistics of the ratio of 114",//114占比统计
+    "call.analysis.zone.distrute": "Zone distribution of customers", // 客户的地域分布
+    "call.analysis.map.return": "Back to previous", // 返回上一级
     //通话分析-end
 
 
@@ -1623,6 +1625,7 @@ var en_US = {
     "oplate_bd_analysis_realm_industry.7": "Proportion",//占比@
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "Province",//省份@
+    "oplate_bd_analysis_realm_zone.2": "City", // 市区
     //右侧面板
     "rightpanel_upgrade": "upgrade record",//升级记录
     "rightpanel_app_auth": "application privilege",//应用权限
