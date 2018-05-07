@@ -30,6 +30,7 @@ import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 import TimeLine from "CMP_DIR/time-line-new";
 import NoDataTip from "../components/no-data-tip";
 import ErrorDataTip from "../components/error-data-tip";
+import RightPanelScrollBar from "../components/rightPanelScrollBar";
 var classNames = require("classnames");
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -497,18 +498,6 @@ const CustomerRecord = React.createClass({
         })
     },
 
-    renderTimeLine(){
-        return (
-            <TimeLine
-                list={this.state.customerRecord}
-                groupByDay={true}
-                groupByYear={true}
-                timeField="time"
-                renderTimeLineItem={this.renderTimeLineItem}
-                relativeDate={false}
-            />);
-    },
-
     renderCustomerRecordLists: function () {
         var recordLength = this.state.customerRecord.length;
         if (this.state.customerRecordLoading && this.state.curPage == 1) {
@@ -528,31 +517,19 @@ const CustomerRecord = React.createClass({
             //加载完成，没有数据的情况
             return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
         } else {
-            var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-            let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
-            //减头部的客户基本信息高度
-            divHeight -= basicInfoHeight;
-            //减添加跟进记录面版的高度
-            if (this.state.addRecordPanelShow) {
-                divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;
-            } else {//减共xxx条的高度
-                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-            }
             var cls = classNames("audio-play-container", {"is-playing-audio": this.state.playingItemAddr});
             var isShowReportButton = _.indexOf(this.state.invalidPhoneLists, this.state.playingItemPhone) > -1;
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
-                    {this.props.isOverViewPanel ? this.renderTimeLine() : (
-                        <div className="show-content" style={{'height': divHeight}}>
-                            <GeminiScrollbar
-                                handleScrollBottom={this.handleScrollBarBottom}
-                                listenScrollBottom={this.state.listenScrollBottom}
-                            >
-                                {this.renderTimeLine()}
-                            </GeminiScrollbar>
-                        </div>)
-                    }
+                    <TimeLine
+                        list={this.state.customerRecord}
+                        groupByDay={true}
+                        groupByYear={true}
+                        timeField="time"
+                        renderTimeLineItem={this.renderTimeLineItem}
+                        relativeDate={false}
+                    />
                     <div className="show-foot">
                         {/* 底部播放器 */}
                         <div className={cls}>
@@ -620,13 +597,12 @@ const CustomerRecord = React.createClass({
             </Menu>
         );
     },
-    render: function () {
+    renderContent: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
         var modalContent = Intl.get("customer.confirm.trace", "是否添加此跟进内容？");
         var detail = $.trim(this.state.detailContent);
         var closedModalTip = $.trim(this.state.detailContent) ? "取消补充跟进内容" : "取消添加跟进内容";
-
         return (
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
@@ -665,6 +641,13 @@ const CustomerRecord = React.createClass({
                 />
             </div>
         )
+    },
+    render(){
+        return this.props.isOverViewPanel ? this.renderContent() : (
+            <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
+                                 listenScrollBottom={this.state.listenScrollBottom}>
+                {this.renderContent()}
+            </RightPanelScrollBar>);
     }
 });
 module.exports = CustomerRecord;
