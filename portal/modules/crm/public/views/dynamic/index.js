@@ -1,37 +1,28 @@
-
 require('../../css/dynamic.less');
 //动态store
 var DynamicStore = require("../../store/dynamic-store");
 //动态action
 var DynamicAction = require("../../action/dynamic-action");
-//滚动条
-var GeminiScrollbar = require("../../../../../components/react-gemini-scrollbar");
 var TimeLine = require("../../../../../components/time-line");
-
-//高度常量
-var LAYOUT_CONSTANTS = {
-    MERGE_SELECT_HEIGHT:30,//合并面板下拉框的高度
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8 //动态面板的下边距
-};
+import RightPanelScrollBar from "../components/rightPanelScrollBar";
 
 var Dynamic = React.createClass({
-    getInitialState : function() {
+    getInitialState: function () {
         return this.getStateFromStore();
     },
-    getStateFromStore : function() {
+    getStateFromStore: function () {
         return {
-            dynamicList : DynamicStore.getDynamicListFromView(),
-            windowHeight : $(window).height()
+            dynamicList: DynamicStore.getDynamicListFromView(),
+            windowHeight: $(window).height()
         };
     },
-    onStoreChange : function() {
+    onStoreChange: function () {
         this.setState(this.getStateFromStore());
     },
-    componentDidMount : function() {
+    componentDidMount: function () {
         DynamicStore.listen(this.onStoreChange);
         DynamicAction.getDynamicList(this.props.currentId);
-        $(window).on("resize" , this.onStoreChange);
+        $(window).on("resize", this.onStoreChange);
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
@@ -40,9 +31,9 @@ var Dynamic = React.createClass({
             });
         }
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function () {
         DynamicStore.unlisten(this.onStoreChange);
-        $(window).off("resize" , this.onStoreChange);
+        $(window).off("resize", this.onStoreChange);
     },
     timeLineItemRender: function (item) {
         const call_time = Intl.get("crm.199",
@@ -57,33 +48,26 @@ var Dynamic = React.createClass({
             <dl>
                 <dd>
                     {item.message}
-                    {item.call_date?
+                    {item.call_date ?
                         <p>{call_time}</p>
-                    : null}
+                        : null}
                 </dd>
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
     },
     render: function () {
-        let divHeight = this.state.windowHeight - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        //减头部的客户基本信息高度
-        divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
-        //合并面板，去掉客户选择框的高度
-        if(this.props.isMerge){
-            divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
-        }
         return (
-            <div style={{height: divHeight}} className="dynamicList">
-                <GeminiScrollbar>
+            <RightPanelScrollBar>
+                <div className="dynamicList">
                     <TimeLine
                         list={this.state.dynamicList}
                         groupByDay={true}
                         timeField="date"
                         render={this.timeLineItemRender}
                     />
-                </GeminiScrollbar>
-            </div>
+                </div>
+            </RightPanelScrollBar>
         );
     }
 });
