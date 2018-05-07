@@ -2149,6 +2149,10 @@ var zh_CN = {
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
     "clue.customer.selected.customer":"请搜索客户进行关联",
     "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
+    "call.record.all.teams.trend": "查看各团队通话趋势图",
+    "clue.manage.import.clue": "导入线索",
+    "clue.manage.import.clue.template": "导入线索模板",
+    "clue.manage.failed.import.clue": "导入线索失败，请重试!"
 
 };
 export default zh_CN;

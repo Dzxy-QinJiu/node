@@ -83,6 +83,21 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },{
+            method: "get",
+            path: "/rest/clue/download_template",
+            handler: "getClueTemplate",
+            passport: {
+                "needLogin": true
+            }
+        },
+        {
+            method: "post",
+            path: "/rest/clue/upload",
+            handler: "uploadClues",
+            passport: {
+                "needLogin": true
+            }
         }
     ]
 };
