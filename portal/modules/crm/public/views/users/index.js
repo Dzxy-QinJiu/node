@@ -17,6 +17,8 @@ import CrmUserApplyForm from "./crm-user-apply-form";
 import crmAjax from "../../ajax";
 import appAjaxTrans from "MOD_DIR/common/public/ajax/app";
 import classNames from "classnames";
+import NoDataTip from "../components/no-data-tip";
+import ErrorDataTip from "../components/error-data-tip";
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
     STOP_USE: "stopUse",//停用
@@ -378,14 +380,8 @@ class CustomerUsers extends React.Component {
             return <Spinner />
         }
         if (this.state.errorMsg) {
-            return (
-                <div className="get-crm-users-error-tip">
-                    <Alert
-                        message={this.state.errorMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>);
+            return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
+                                 retryFunc={this.getCrmUserList.bind(this)}/>
         }
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
@@ -418,8 +414,10 @@ class CustomerUsers extends React.Component {
                     </div>
                 );
             });
+        } else {
+            //加载完成，没有数据的情况
+            return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
         }
-        return null;
     }
 
     render() {
