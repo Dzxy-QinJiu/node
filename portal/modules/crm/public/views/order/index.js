@@ -15,7 +15,7 @@ import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-use
 import CrmUserApplyForm from "../users/crm-user-apply-form";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import classNames from "classnames";
-
+import NoDataTip from "../components/no-data-tip";
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -248,7 +248,8 @@ const OrderIndex = React.createClass({
                                            customerId={_this.props.curCustomer.id}
                                            refreshCustomerList={_this.props.refreshCustomerList}
                                            updateMergeCustomerOrder={_this.props.updateMergeCustomerOrder}/>) : null}
-                            {this.state.orderListLoading ? (<Spinner />) : (this.state.orderList.map(function (order, i) {
+                            {this.state.orderListLoading ? (
+                                <Spinner />) : _.isArray(this.state.orderList) && this.state.orderList.length ? (this.state.orderList.map(function (order, i) {
                                 return (
                                     order.isEdit ?
                                         (<OrderForm key={i}
@@ -275,7 +276,8 @@ const OrderIndex = React.createClass({
                                                     onChange={_this.onChange}
                                                     order={order}/>)
                                 );
-                            }))}
+                            })) : <NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>
+                            }
                         </GeminiScrollbar>
                     </div>
                 </div>
