@@ -14,14 +14,9 @@ import classNames from 'classnames';
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 import ScheduleItem from "./schedule-item";
-//高度常量
-const LAYOUT_CONSTANTS = {
-    MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
-    MARGIN_BOTTOM: 8, //日程的下边距
-    TOP_TOTAL_HEIGHT: 30,//共xxx条的高度
-};
-
+import RightPanelScrollBar from "../components/rightPanelScrollBar";
+import NoDataTip from "../components/no-data-tip";
+import ErrorDataTip from "../components/error-data-tip";
 var CrmSchedule = React.createClass({
     getInitialState: function () {
         return {
@@ -175,9 +170,21 @@ var CrmSchedule = React.createClass({
                 />);
         }
     },
+
+    renderScheduleContent(){
+        return (
+            <div className="schedule-list" data-tracename="联系计划页面">
+                {this.state.isLoadingScheduleList && !this.state.lastScheduleId ? <Spinner />
+                    : this.state.getScheduleListErrmsg ? (
+                        <ErrorDataTip errorMsg={this.state.getScheduleListErrmsg} isRetry={true}
+                                      retryFunc={this.getScheduleList}/>)
+                        : this.renderScheduleLists()
+                }
+            </div>);
+    },
     //联系计划列表区域
     renderScheduleLists: function () {
-        if (this.state.scheduleList.length) {
+        if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return (
                 <TimeLine
                     list={this.state.scheduleList}
@@ -188,82 +195,9 @@ var CrmSchedule = React.createClass({
                     relativeDate={false}
                 />);
         } else {
-            return (
-                <div className="schedule-list-no-data">
-                    <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
+            //加载完成，没有数据的情况
+            return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
         }
-    },
-    renderContent: function () {
-        const _this = this;
-
-        var divHeight = $(window).height()
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP //右侧面板顶部padding
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM //右侧面板底部padding
-            - LAYOUT_CONSTANTS.DYNAMIC_LIST_MARGIN_BOTTOM //动态列表距离底部margin
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT //右侧面板tab高度
-            - LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM //右侧面板tab的margin
-        ;
-        var cls = classNames("is-loading-schedule-list", {
-            "show-spinner": this.state.isLoadingScheduleList && !this.state.lastScheduleId
-        })
-        return (
-            <div ref="alertWrap" className="schedule-list" style={{height: divHeight}} data-tracename="联系计划页面">
-                <GeminiScrollbar
-                    className="scrollbar-container"
-                    handleScrollBottom={this.handleScrollBarBottom}
-                    listenScrollBottom={this.state.listenScrollBottom}
-                >
-                    <div className="render-schedule-content">
-                        <div className={cls}>
-                            {(this.state.isLoadingScheduleList && !this.state.lastScheduleId) ? <Spinner /> : null}
-                        </div>
-                        {this.renderScheduleLists()}
-                    </div>
-                </GeminiScrollbar>
-                {this.props.isMerge ? null : (
-                    <div className="crm-right-panel-addbtn" onClick={this.addSchedule} data-tracename="添加联系计划">
-                        <Icon type="plus"/><span>
-                    <ReactIntl.FormattedMessage id="crm.178" defaultMessage="添加一个联系计划"/></span>
-                    </div>)}
-            </div>
-        );
-    },
-    renderScheduleContent(){
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
-        let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
-        //减头部的客户基本信息高度
-        divHeight -= basicInfoHeight;
-        //减添加按钮区的高度
-        divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
-        const retry = (
-            <span>
-                {this.state.getScheduleListErrmsg}，
-                <a href="javascript:void(0)" onClick={this.getScheduleList}>
-                    {Intl.get("common.retry", "重试")}
-                </a>
-            </span>
-        );
-        return (
-            <div className="schedule-list" style={{height: divHeight}} data-tracename="联系计划页面">
-                <GeminiScrollbar
-                    handleScrollBottom={this.handleScrollBarBottom}
-                    listenScrollBottom={this.state.listenScrollBottom}
-                >
-                    {this.state.isLoadingScheduleList && !this.state.lastScheduleId ? <Spinner />
-                        : this.state.getScheduleListErrmsg ? (
-                            <div className="schedule-list-error">
-                                <Alert message={retry} type="error" showIcon={true}/>
-                            </div>)
-                            : this.renderScheduleLists()
-                    }
-                </GeminiScrollbar>
-            </div>);
     },
     renderScheduleTitle(){
         return (
@@ -275,12 +209,14 @@ var CrmSchedule = React.createClass({
             </div>);
     },
     render(){
-        // let containerClassName = classNames("contact-item-container", {
-        //     "contact-delete-border": this.props.contact.isShowDeleteContactConfirm
-        // });
-        return (<DetailCard title={this.renderScheduleTitle()}
+        return (
+            <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
+                                 listenScrollBottom={this.state.listenScrollBottom}>
+                <DetailCard title={this.renderScheduleTitle()}
                             content={this.renderScheduleContent()}
-                            className="schedule-contianer"/>);
+                            className="schedule-contianer"/>
+            </RightPanelScrollBar>
+        );
     }
 });
 

@@ -18,8 +18,8 @@ class RightPanelScrollBar extends React.Component {
     }
 
     handleScrollBarBottom() {
-        if (_.isArray(this.props.handleScrollBarBottom)) {
-            this.props.handleScrollBarBottom();
+        if (_.isFunction(this.props.handleScrollBottom)) {
+            this.props.handleScrollBottom();
         }
     }
 
@@ -33,7 +33,7 @@ class RightPanelScrollBar extends React.Component {
         }
         return (
             <div style={{height: divHeight}} className="right-pannel-scrollbar">
-                <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
+                <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom.bind(this)}
                                  listenScrollBottom={this.props.listenScrollBottom}>
                     {this.props.children}
                 </GeminiScrollbar>
