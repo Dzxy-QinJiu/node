@@ -28,6 +28,8 @@ import AudioPlayer from "CMP_DIR/audioPlayer";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 import TimeUtil from "PUB_DIR/sources/utils/time-format-util";
 import TimeLine from "CMP_DIR/time-line-new";
+import NoDataTip from "../components/no-data-tip";
+import ErrorDataTip from "../components/error-data-tip";
 var classNames = require("classnames");
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -155,7 +157,7 @@ const CustomerRecord = React.createClass({
             queryObj.disposition = this.state.filterStatus;
         }
         CustomerRecordActions.getCustomerTraceList(queryObj, () => {
-            if (_.isFunction(this.props.refreshSrollbar())) {
+            if (_.isFunction(this.props.refreshSrollbar)) {
                 setTimeout(() => {
                     this.props.refreshSrollbar();
                 });
@@ -193,6 +195,7 @@ const CustomerRecord = React.createClass({
     },
     //获取列表失败后重试
     retryChangeRecord: function () {
+        CustomerRecordActions.setLoading();
         this.getCustomerTraceList();
     },
     saveAddTraceContent: function () {
@@ -242,59 +245,7 @@ const CustomerRecord = React.createClass({
         this.toggleAddRecordPanel();
         // $('.add-content-input').animate({height: '36px'});
     },
-    //提交输入客户跟踪记录成功或者失败后的提示信息
-    handleSubmitResult: function () {
-        var hide = () => {
-            this.setState({
-                addCustomerErrMsg: '',
-                addCustomerSuccMsg: ''
-            });
-        };
-        if (this.state.addCustomerErrMsg) {
-            return (
-                <div className="resultTip">
-                    <AlertTimer
-                        time={2000}
-                        message={this.state.addCustomerErrMsg}
-                        type="error"
-                        showIcon
-                        onHide={hide}
-                    />
-                </div>
-            );
-        } else {
-            return (
-                <div className="resultTip">
-                    <AlertTimer
-                        time={2000}
-                        message={this.state.addCustomerSuccMsg}
-                        type="info"
-                        showIcon
-                        onHide={hide}
-                    />
-                </div>
-            );
-        }
-    },
-    //更新失败后的提示信息
-    handleUpdateResult: function () {
-        var hide = () => {
-            this.setState({
-                addDetailErrMsg: '',
-            });
-        };
-        return (
-            <div className="resultDetailTip">
-                <AlertTimer
-                    time={2000}
-                    message={this.state.addDetailErrMsg}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
-            </div>
-        );
-    },
+
     //顶部增加客户跟进记录输入时的处理
     handleInputChange: function (e) {
         CustomerRecordActions.setContent(e.target.value);
@@ -569,31 +520,13 @@ const CustomerRecord = React.createClass({
             )
         } else if (this.state.customerRecordErrMsg && !this.state.customerRecordLoading) {
             //加载完成，出错的情况
-            var errMsg = <span>{this.state.customerRecordErrMsg}
-                <a onClick={this.retryChangeRecord} style={{marginLeft: "20px", marginTop: "20px"}}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
             return (
-                <div className="alert-wrap">
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
+                <ErrorDataTip errorMsg={this.state.customerRecordErrMsg} isRetry={true}
+                              retryFunc={this.retryChangeRecord}/>
             );
         } else if (recordLength == 0 && !this.state.customerRecordLoading) {
             //加载完成，没有数据的情况
-            return (
-                <div className="show-customer-trace">
-                    <Alert
-                        message={Intl.get("common.no.data", "暂无数据")}
-                        type="info"
-                        showIcon={true}
-                    />
-                </div>
-            );
+            return (<NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>);
         } else {
             var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
             let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));

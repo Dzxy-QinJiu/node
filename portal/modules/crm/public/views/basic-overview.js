@@ -23,7 +23,7 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import CustomerRecord from "./customer_record";
 import ScheduleItem from "./schedule/schedule-item";
 import Trace from "LIB_DIR/trace";
-import RightPanelScrollBar from "./rightPanelScrollBar";
+import RightPanelScrollBar from "./components/rightPanelScrollBar";
 function getStateFromStore(isMerge) {
     return {
         ...basicOverviewStore.getState(),
