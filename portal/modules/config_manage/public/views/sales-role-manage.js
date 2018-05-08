@@ -128,7 +128,7 @@ const SalesRoleManage = React.createClass({
           var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
           if (targetItem){
               this.setState({
-                  addErrMsg: Intl.get("config.sales.role.has.repeat", "销售角色名称有重复")
+                  addErrMsg: Intl.get("config.sales.role.has.repeat", "该销售角色名称已存在")
               });
               return;
           }
