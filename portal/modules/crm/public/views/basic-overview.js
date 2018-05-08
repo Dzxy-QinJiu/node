@@ -322,7 +322,7 @@ var BasicOverview = React.createClass({
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         return (
-            <RightPanelScrollBar>
+            <RightPanelScrollBar isMerge={true}>
                 <div className="basic-overview-contianer">
                     {this.renderExpireTip()}
                     <SalesTeamCard

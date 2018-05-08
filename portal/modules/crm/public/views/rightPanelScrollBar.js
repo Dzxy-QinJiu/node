@@ -29,7 +29,7 @@ class RightPanelScrollBar extends React.Component {
         divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
         //合并面板，去掉客户选择框的高度
         if (this.props.isMerge) {
-            divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
+            divHeight = divHeight - $(".select-customer-container").height();
         }
         return (
             <div style={{height: divHeight}} className="right-pannel-scrollbar">
