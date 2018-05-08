@@ -2149,6 +2149,7 @@ var zh_CN = {
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
     "clue.customer.selected.customer":"请搜索客户进行关联",
     "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
+    "config.sales.role.has.repeat":"销售角色名称有重复"
 
 };
 export default zh_CN;

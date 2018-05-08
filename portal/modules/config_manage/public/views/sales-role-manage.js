@@ -123,7 +123,16 @@ const SalesRoleManage = React.createClass({
         e.preventDefault();
         //输入的销售角色名称去左右空格
         let role = $.trim(this.refs.addSalesRole.value);
-        if (!role) {
+        if (role) {
+          //看列表中是否有和输入的名称一样的名字
+          var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
+          if (targetItem){
+              this.setState({
+                  addErrMsg: Intl.get("config.sales.role.has.repeat", "销售角色名称有重复")
+              });
+              return;
+          }
+        }else{
             return;
         }
         //输入的客户容量
@@ -214,10 +223,17 @@ const SalesRoleManage = React.createClass({
     cancelEditCustomerNum: function () {
        this.setState({
            isEdittingItem: '',
-           updateErrMsg: ''
+           updateErrMsg: '',
+           updateRoleCustomerNum:""
        });
     },
     submitUpdateCustomerNum: function (item) {
+        if (!this.state.updateRoleCustomerNum){
+            this.setState({
+                isEdittingItem: ''
+            });
+            return;
+        };
         var updateObj = {
             id: item.id,
             customer_num: this.state.updateRoleCustomerNum
@@ -347,7 +363,7 @@ const SalesRoleManage = React.createClass({
                             <span className="name-label">
                                {Intl.get("sales.role.config.customer.num", "最大客户数")}:
                             </span>
-                            <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum}/>
+                            <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum} min={1}/>
                             <button className="btn mb-add-button" type="submit"
                                     disabled={this.state.isAddloading ? "disabled" : ""}>
                                 {Intl.get("common.add", "添加")}

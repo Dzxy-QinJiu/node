@@ -2132,6 +2132,7 @@ var en_US = {
     "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
     "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
     "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
+    "config.sales.role.has.repeat":"There is the same sales role name in the list"//销售角色名称有重复
 
 };
 export default en_US;
