@@ -270,28 +270,28 @@ window.handleClickPhone = function (phoneObj) {
     if (getCallNumErrMsg) {
         message.error(getCallNumErrMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!"));
     } else {
-    if (callNumber) {
-        phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-            {
-                phoneNum: phoneNumber,
-                contact: contactName,
-                customerId: customerId,//客户基本信息
-            }
-        );
-        let reqData = {
-            from: callNumber,
-            to: phoneNumber.replace('-', '')
-        };
-        crmAjax.callOut(reqData).then((result) => {
-            if (result.code == 0) {
-                message.success(Intl.get("crm.call.phone.success", "拨打成功"));
-            }
-        }, (errMsg) => {
-            message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
-        });
-    } else {
-        message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
-    }
+        if (callNumber) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                {
+                    phoneNum: phoneNumber,
+                    contact: contactName,
+                    customerId: customerId,//客户基本信息
+                }
+            );
+            let reqData = {
+                from: callNumber,
+                to: phoneNumber.replace('-', '')
+            };
+            crmAjax.callOut(reqData).then((result) => {
+                if (result.code == 0) {
+                    message.success(Intl.get("crm.call.phone.success", "拨打成功"));
+                }
+            }, (errMsg) => {
+                message.error(errMsg || Intl.get("crm.call.phone.failed", "拨打失败"));
+            });
+        } else {
+            message.error(Intl.get("crm.bind.phone", "请先绑定分机号！"));
+        }
     }
 };
 
@@ -305,23 +305,23 @@ function getUserPhoneNumber() {
     },(errMsg)=>{
         getCallNumErrMsg = errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!");
     });
-};
+}
 function scheduleAlertListener(scheduleAlertMsg) {
     var phoneArr = [];
     if (_.isArray(scheduleAlertMsg.contacts)) {
         _.each(scheduleAlertMsg.contacts, (item) => {
             if (_.isArray(item.phone) && item.phone.length) {
                 _.each(item.phone, (phone) => {
-                    phoneArr.push({customer_name:item.name,phone:phone,customer_id:item.customer_id});
-                })
+                    phoneArr.push({customer_name: item.name, phone: phone, customer_id: item.customer_id});
+                });
             }
-        })
+        });
     }
     var title = Intl.get("customer.contact.somebody", "联系") + scheduleAlertMsg.customer_name;
     var tipContent = scheduleAlertMsg.content || "";
     if (canPopDesktop()) {
         tipContent = tipContent + `\n`;
-        _.each(phoneArr,(phoneItem)=>{
+        _.each(phoneArr, (phoneItem) => {
             tipContent += phoneItem.customer_name + " " + phoneItem.phone;
         });
         //桌面通知的展示
@@ -336,7 +336,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += "<p class='phone-item'>" + "<i class='iconfont icon-phone-call-out' title='点击拨打电话' onclick='handleClickPhone(" + JSON.stringify(phoneObj) + ")'></i>" + "<span class='customer-name' title='"+ phoneItem.customer_name +"'>" + phoneItem.customer_name +"</span>" + " " + phoneItem.phone + "</p>";
+            phoneHtml += "<p class='phone-item'>" + "<i class='iconfont icon-phone-call-out' title='"+ Intl.get("crm.click.call.phone", "点击拨打电话") + "' onclick='handleClickPhone(" + JSON.stringify(phoneObj) + ")'></i>" + "<span class='customer-name' title='" + phoneItem.customer_name + "'>" + phoneItem.customer_name + "</span>" + " " + phoneItem.phone + "</p>";
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({
