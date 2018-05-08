@@ -750,13 +750,13 @@ var CustomerAnalysis = React.createClass({
                         </div>
                     </div>
                 </GeminiScrollbar>
-                <CrmRightPanel
+                {this.state.selectedCustomerId ? <CrmRightPanel
                     showFlag={this.state.showRightPanel}
                     currentId={this.state.selectedCustomerId}
                     hideRightPanel={this.hideRightPanel}
                     ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                     updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                />
+                /> : null}
             </div>
 
 
