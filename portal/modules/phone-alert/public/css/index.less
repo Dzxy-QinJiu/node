@@ -97,7 +97,8 @@
         margin:auto;
         background-color:#fff;
         font-size:14px;
-        z-index:101;
+        //设置这个z-index是为了比系统内消息提示的z-index大1，这样就不会被系统消息盖住打电话的弹窗了
+        z-index:10000001;
         overflow: hidden;
         //关闭按钮
         .modal-close{
