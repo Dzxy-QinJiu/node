@@ -228,6 +228,7 @@ var webpackConfig = {
             path.join(__dirname, "portal"),
             "node_modules"
         ],
+        symlinks: false,
         extensions: ['.js', '.jsx', '.json'],
         alias: {
             //加$是为了避免require("moment/locale/xx")的时候报找不到模块的错误的问题
