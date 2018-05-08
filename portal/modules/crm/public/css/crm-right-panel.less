@@ -5,32 +5,30 @@
 @right_panel_bgcolor: #f5f5f5;
 @box_shadow_color: #cac8c8;
 @tab_active_color: #2196f3;
+@font-color: #5D5D5D;
 //新版客户详情的样式
-.crm_content {
-  //TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
-  .crm-right-panel {
-    width: @right_panel_width !important;
-    transform: translate(@right_panel_width, 0);
-    background-color: transparent !important;
-    .right-panel-content {
-      width: @right_panel_content_width;
-      box-shadow: -4px 0 20px @box_shadow_color;
-      background-color: @right_panel_bgcolor !important;
-    }
-    > .icon-close {
-      color: #fff;
-      background-color: #8ea9c4;
-      border-radius: 0 !important;
-      width: 24px;
-      height: 24px;
-      float: left;
-      font-size: 14px;
-      z-index: 1010;
-    }
+//TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
+.crm-right-panel {
+  width: @right_panel_width !important;
+  transform: translate(@right_panel_width, 0);
+  background-color: transparent !important;
+  .right-panel-content {
+    width: @right_panel_content_width !important;
+    box-shadow: -4px 0 20px @box_shadow_color;
+    background-color: @right_panel_bgcolor !important;
+  }
+  > .icon-close {
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
+    z-index: 1010;
   }
 }
 
-@font-color: #5D5D5D;
 //合并客户时，下拉列表的样式设置
 .merge-customer-select.ant-select-dropdown {
   background-color: #e6edef;
