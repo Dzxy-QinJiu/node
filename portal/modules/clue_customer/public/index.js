@@ -550,7 +550,7 @@ const ClueCustomer = React.createClass({
                                                     {errorBlock}
                                                 </div>
                                                 : (addContent ?
-                                                    <span>{addContent} {hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <i className="iconfont icon-update"
+                                                    <span className="trace-content">{addContent} {hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <i className="iconfont icon-update"
                                                                           title={Intl.get("clue.customer.update.content", "编辑跟进内容按钮")}
                                                                           onClick={this.updateCluecustomerContent.bind(this, item)} data-tracename="点击编辑跟进内容"/> : null} </span> :( hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <span className="trace-content-flag"
                                                                                                                                                           onClick={this.showAddTraceContent.bind(this, item)} data-tracename="点击填写跟进内容按钮">+ {Intl.get("call.record.follow.content", "跟进内容")}</span>: null)
