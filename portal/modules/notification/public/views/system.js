@@ -371,19 +371,6 @@ let SystemNotification = React.createClass({
                         }}
                     /> : null
                 }
-                {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    { this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
                 {
                     this.state.curShowUserId ?
                         <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"

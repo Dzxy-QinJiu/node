@@ -40,6 +40,19 @@ exports.getFormatTime = function (time = 0) {
         second = getStringTime(timeObj.second);
     return `${hour}:${minute}:${second}`;
 };
+
+//获取02:01（2分钟1秒）格式的时间
+exports.getFormatMinuteTime = function (time = 0) {
+    let timeObj = this.secondsToHourMinuteSecond(time);
+    let minuteTime = timeObj.minutes;
+    if (timeObj.hours) {
+        minuteTime += timeObj.hours * 60;
+    }
+    let minute = getStringTime(minuteTime),
+        second = getStringTime(timeObj.second);
+    return `${minute}:${second}`;
+};
+
 //计算出不同过期时间段对应的开始时间 本天 本周 本月 半年
 exports.getStartTime = function (time) {
     switch (time) {
@@ -96,4 +109,60 @@ exports.getCurrentWeek = function (time) {
             break;
     }
     return Week;
+};
+
+//获取所传时间是xx:xx:xx(今天)、昨天、前天还是xx天（月、年）前
+exports.getTimeStrFromNow = function (time) {
+    let timeStr = "";
+    if (time) {
+        //今天
+        let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf()};
+        if (time >= today.start_time && time <= today.end_time) {
+            //今天显示具体时间
+            timeStr = moment(time).format(oplateConsts.TIME_FORMAT);
+        } else if (time >= today.start_time - oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - oplateConsts.ONE_DAY_TIME_RANGE) {
+            //昨天
+            timeStr = Intl.get("user.time.yesterday", "昨天");
+        } else if (time >= today.start_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time - 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+            //前天
+            timeStr = Intl.get("sales.frontpage.before.yesterday", "前天");
+        } else {
+            timeStr = moment(time).fromNow();
+        }
+    }
+    return timeStr;
+};
+
+//获取所传时间是今天、明天、后天还是xxx天后
+exports.getFutureTimeStr = function (time) {
+    let timeStr = "";
+    if (time) {
+        //今天的起始、结束时间(23:59:59+1)
+        let today = {start_time: moment().startOf('day').valueOf(), end_time: moment().endOf('day').valueOf() + 1};
+        if (time > today.start_time && time <= today.end_time) {
+            //今天
+            timeStr = Intl.get("user.time.today", "今天");
+        } else if (time > today.start_time + oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time + oplateConsts.ONE_DAY_TIME_RANGE) {
+            //明天
+            timeStr = Intl.get("sales.frontpage.tomorrow", "明天");
+        } else if (time > today.start_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE && time <= today.end_time + 2 * oplateConsts.ONE_DAY_TIME_RANGE) {
+            //后天
+            timeStr = Intl.get("sales.frontpage.after.tomorrow", "后天");
+        } else {
+            let duration = moment.duration(time - moment().valueOf());
+            if (duration > 0) {
+                let over_draft_days = duration.days();  //天
+                if (duration.months() > 0) {//月
+                    over_draft_days += duration.months() * 30;
+                }
+                if (duration.years() > 0) {//年
+                    over_draft_days += duration.years() * 365;
+                }
+                if (over_draft_days > 0) {
+                    timeStr = Intl.get("oplate.user.analysis.25", "{count}天后", {count: over_draft_days});
+                }
+            }
+        }
+    }
+    return timeStr;
 };

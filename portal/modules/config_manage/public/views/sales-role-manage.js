@@ -233,7 +233,7 @@ const SalesRoleManage = React.createClass({
                 isEdittingItem: ''
             });
             return;
-        };
+        }
         var updateObj = {
             id: item.id,
             customer_num: this.state.updateRoleCustomerNum

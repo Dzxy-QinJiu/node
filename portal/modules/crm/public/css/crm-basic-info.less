@@ -1,0 +1,178 @@
+@import "../../../../public/css/common-variables";
+//客户基本信息
+@right_panel_padding: 24px;
+@white_color: #ffffff;
+@right_panel_margin: 8px;
+@btn_color: #8da8c5;
+@btn_active_color: #2196f3;
+@split_line_color: #e2e2e2;
+@border_style: 1px solid #f5f5f5;
+@icon_color: #c2c2c2;
+@font_color: #333333;
+@interested_color: #F9B706;
+@item_height: 24px;
+
+//换行
+.overflow-break {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.basic-info-contianer {
+  float: left;
+  width: 100%;
+  background-color: @white_color;
+  padding: @right_panel_padding @right_panel_padding 12px @right_panel_padding;
+
+  //客户名和按钮展示区域
+  .basic-info-title-block {
+    .basic-info-name {
+      position: relative;
+      float: left;
+      width: 368px;
+      padding-right: 26px;
+      border-right: 1px solid @split_line_color;
+      &:extend(.overflow-break);
+      //客户名的编辑
+      .icon-edit-btn {
+        display: none;
+      }
+      &:hover {
+        .icon-edit-btn {
+          display: block;
+          position: absolute;
+          float: right;
+          right: 0;
+          top: 0;
+          padding-right: 8px;
+          font-size: 14px;
+        }
+      }
+      //客户标签
+      .customer-label {
+        display: inline-block;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 3px;
+        margin-left: 0;
+        margin-right: 4px;
+        font-size: 12px;
+        color: @white_color;
+      }
+      .customer-label.info-tag-style{
+        background-color: @info-tag-color;
+      }
+      .customer-label.intent-tag-style{
+        background-color: @intent-tag-color;
+      }
+      .customer-label.trial-tag-style{
+        background-color: @trial-tag-color;
+      }
+      .customer-label.sign-tag-style{
+        background-color: @sign-tag-color;
+      }
+      .customer-label.qualified-tag-style{
+        background-color: @qualified-tag-color;
+      }
+      .customer-label.history-qualified-tag-style{
+        background-color: @history-qualified-tag-color;
+      }
+      .customer-label.loss-tag-style{
+        background-color:@loss-tag-color;
+      }
+
+
+
+
+      //客户名
+      span.basic-name-text {
+        display: inline;
+        line-height: 18px;
+        font-size: 14px;
+        font-weight: bold;
+        color: @font_color;
+      }
+    }
+    //查看详情、关注按钮区域的样式
+    .basic-info-btns {
+      float: left;
+      span.iconfont {
+        float: left;
+        width: 24px;
+        margin-left: @right_panel_margin;
+        font-size: 14px;
+        color: @btn_color;
+        cursor: pointer;
+      }
+      .icon-detail-list.btn-active {
+        color: @btn_active_color;
+      }
+      .iconfont.icon-interested {
+        color: @interested_color;
+      }
+    }
+  }
+  //客户名的编辑表单
+  .name-form {
+    .ant-form-item {
+      width: auto;
+      //客户名
+      textarea {
+        width: 100%;
+      }
+    }
+    .tip-customer-exist {
+      margin-top: -13px;
+      line-height: 20px;
+      margin-bottom: 10px;
+    }
+  }
+  //客户基本信息展示区域
+  .basic-info-detail-block {
+    position: relative;
+    float: left;
+    width: 100%;
+    border-top: @border_style;
+    margin-top: 10px;
+    padding-top: 10px;
+    //基本信息
+    .basic-info-item {
+      float: left;
+      width: 100%;
+      min-height: 24px;
+      //编辑按钮hover时才展示
+      .icon-edit-btn {
+        display: none;
+      }
+      &:hover {
+        background-color: #f6fbff;
+        .icon-edit-btn {
+          display: block;
+        }
+      }
+      //代表基本信息的图标
+      .basic-info-icon {
+        float: left;
+        color: @icon_color;
+        cursor: default;
+      }
+      .icon-administrative {
+        padding-left: 3px;
+        font-size: 14px;
+      }
+      .icon-industry {
+        padding-left: 3px;
+        font-size: 16px;
+      }
+      .icon-address {
+        padding-left: 2px;
+        font-size: 16px;
+      }
+      .icon-remark, .icon-detail-address {
+        padding-left: 4px;
+        font-size: 16px;
+      }
+    }
+  }
+}

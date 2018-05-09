@@ -15,14 +15,14 @@ var FunnelChart = require("../../../oplate_customer_analysis/public/views/funnel
 var emitter = require("../../../oplate_customer_analysis/public/utils/emitter");
 let userData = require("../../../../public/sources/user-data");
 var DATE_FORMAT = oplateConsts.DATE_FORMAT;
-var legend = [{ name: Intl.get("sales.home.new.add", "新增"), key: "total" }];
+var legend = [{name: Intl.get("sales.home.new.add", "新增"), key: "total"}];
 var constantUtil = require("../util/constant");
 //这个时间是比动画执行时间稍长一点的时间，在动画执行完成后再渲染滚动条组件
 var delayConstant = constantUtil.DELAY.TIMERANG;
 import Analysis from "CMP_DIR/analysis";
-import { processCustomerStageChartData, processOrderStageChartData } from "CMP_DIR/analysis/utils";
-import { AntcHorizontalStageChart, AntcTable } from "antc";
-import { Button, Spin, Alert } from "antd";
+import {processCustomerStageChartData, processOrderStageChartData} from "CMP_DIR/analysis/utils";
+import {AntcHorizontalStageChart, AntcTable} from "antc";
+import {Button, Spin, Alert} from "antd";
 const Spinner = require("CMP_DIR/spinner");
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
 import CustomerStageTable from "./customer-stage-table";
@@ -63,7 +63,7 @@ var CustomerAnalysis = React.createClass({
         this.setState(timeObj, () => {
             if (timeChanged) {
                 setTimeout(() => {
-                    this.getTransferCustomers({ isFirst: true });
+                    this.getTransferCustomers({isFirst: true});
                     this.getStageChangeCustomers();
                 });
             }
@@ -90,7 +90,7 @@ var CustomerAnalysis = React.createClass({
         }
     },
     getStageChangeCustomerList: function (data) {
-        const { isFirst } = data;
+        const {isFirst} = data;
         const paramObj = {
             params: {
                 sort_field: this.state.stageChangedCustomerList.sorter.field,
@@ -108,7 +108,7 @@ var CustomerAnalysis = React.createClass({
         if (isFirst) {
             this.state.stageChangedCustomerList.lastId = "";
             this.state.stageChangedCustomerList.listenScrollBottom = true;
-            this.setState({ stageChangedCustomerList: this.state.stageChangedCustomerList }, () => {
+            this.setState({stageChangedCustomerList: this.state.stageChangedCustomerList}, () => {
                 OplateCustomerAnalysisAction.getStageChangeCustomerList(paramObj);
             });
         } else {
@@ -184,7 +184,7 @@ var CustomerAnalysis = React.createClass({
         this.getChartData();
         setTimeout(() => {
             this.getStageChangeCustomers();
-            this.getTransferCustomers({ isFirst: true });
+            this.getTransferCustomers({isFirst: true});
         });
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
@@ -193,7 +193,7 @@ var CustomerAnalysis = React.createClass({
     //切换展示客户阶段统计
     toggleCusStageMetic: function () {
         OplateCustomerAnalysisAction.toggleStageCustomerList();
-    },    
+    },
     componentWillUnmount: function () {
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
@@ -215,12 +215,12 @@ var CustomerAnalysis = React.createClass({
         this.setState({
             transferCustomers: this.state.transferCustomers
         }, () => {
-            this.getTransferCustomers({ isFirst: true });
+            this.getTransferCustomers({isFirst: true});
         });
 
     },
     //获取转出客户统计数据
-    getTransferCustomers: function ({ isFirst = false }) {
+    getTransferCustomers: function ({isFirst = false}) {
         let params = {
             isFirst,
             sort_field: this.state.transferCustomers.sorter.field,
@@ -243,7 +243,7 @@ var CustomerAnalysis = React.createClass({
         if (isFirst) {
             this.state.transferCustomers.lastId = "";
             this.state.transferCustomers.listenScrollBottom = true;
-            this.setState({ transferCustomers: this.state.transferCustomers }, () => {
+            this.setState({transferCustomers: this.state.transferCustomers}, () => {
                 OplateCustomerAnalysisAction.getTransferCustomers(params);
             });
         } else {
@@ -275,7 +275,7 @@ var CustomerAnalysis = React.createClass({
                     legend={[{
                         name: Intl.get("user.analysis.formal", "正式"),
                         key: "formal"
-                    }, { name: Intl.get("common.trial", "试用"), key: "trial" }]}
+                    }, {name: Intl.get("common.trial", "试用"), key: "trial"}]}
                     resultType={this.state.trendAnalysis.resultType}
                 />
             );
@@ -361,7 +361,7 @@ var CustomerAnalysis = React.createClass({
     getActiveCustomerChart: function () {
         var startDate = this.getStartDateText();
         var endDate = this.getEndDateText();
-        var legend = [{ name: Intl.get("sales.home.new.add", "新增"), key: "count" }];
+        var legend = [{name: Intl.get("sales.home.new.add", "新增"), key: "count"}];
         return (
             <BarChart
                 width={this.chartWidth}
@@ -441,7 +441,7 @@ var CustomerAnalysis = React.createClass({
                 label: type,
                 nickname: item.memberName
             },
-            rang_params:[{
+            rang_params: [{
                 "from": moment(item.time).startOf('day').valueOf(),
                 "to": moment(item.time).endOf('day').valueOf(),
                 "name": "time",
@@ -471,7 +471,8 @@ var CustomerAnalysis = React.createClass({
                 key: "info",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -480,7 +481,8 @@ var CustomerAnalysis = React.createClass({
                 key: "intention",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -489,7 +491,8 @@ var CustomerAnalysis = React.createClass({
                 key: "trial",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -498,7 +501,8 @@ var CustomerAnalysis = React.createClass({
                 key: "trial.qualified",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -517,7 +521,8 @@ var CustomerAnalysis = React.createClass({
                 key: "signed",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -526,7 +531,8 @@ var CustomerAnalysis = React.createClass({
                 key: "map.流失",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -566,7 +572,7 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder stage-change-customer-container scrollbar-container"
                 data-tracename="客户阶段变更统计"
-                style={{ maxHeight: (this.state.customerStage.data.length == 0) ? "initial" : "540px" }}
+                style={{maxHeight: (this.state.customerStage.data.length == 0) ? "initial" : "540px"}}
             >
                 <GeminiScrollbar>
                     <div className="title">
@@ -576,7 +582,7 @@ var CustomerAnalysis = React.createClass({
                     {renderSpiner()}
                     <div className={hideTable ? "hide" : ""}>
                         <AntcTable
-                            util={{ zoomInSortArea: true }}
+                            util={{zoomInSortArea: true}}
                             dataSource={this.state.customerStage.data}
                             pagination={false}
                             columns={columns}
@@ -594,10 +600,10 @@ var CustomerAnalysis = React.createClass({
                             result={this.state.stageChangedCustomerList}
                             onClose={this.toggleCusStageMetic}
                             handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
-                            showNoMoreData={!this.state.stageChangedCustomerList.loading && 
-                                !this.state.stageChangedCustomerList.listenScrollBottom && 
-                                this.state.stageChangedCustomerList.lastId && 
-                                !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
+                            showNoMoreData={!this.state.stageChangedCustomerList.loading &&
+                            !this.state.stageChangedCustomerList.listenScrollBottom &&
+                            this.state.stageChangedCustomerList.lastId &&
+                            !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
                             }
                         /> : null}
                 </RightPanel>
@@ -661,7 +667,8 @@ var CustomerAnalysis = React.createClass({
                 sorter: true,
                 render: function (text, item, index) {
                     return (
-                        <span className="transfer-customer-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
+                        <span className="transfer-customer-cell"
+                              onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
                     );
                 }
             }, {
@@ -730,7 +737,7 @@ var CustomerAnalysis = React.createClass({
             <div
                 className="chart-holder transfer-customer-container scrollbar-container"
                 data-tracename="转出客户统计"
-                style={{ maxHeight: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "initial" : "540px" }}
+                style={{maxHeight: (loadingFirst || this.state.transferCustomers.data.length == 0) ? "initial" : "540px"}}
             >
                 <GeminiScrollbar>
                     <div className="title">
@@ -742,7 +749,7 @@ var CustomerAnalysis = React.createClass({
                         <AntcTable
                             rowKey={getRowKey}
                             rowClassName={handleRowClassName}
-                            util={{ zoomInSortArea: true }}
+                            util={{zoomInSortArea: true}}
                             columns={columns}
                             pagination={false}
                             onChange={this.onTransferSortChange.bind(this)}
@@ -758,25 +765,13 @@ var CustomerAnalysis = React.createClass({
                         </div>
                     </div>
                 </GeminiScrollbar>
-                <CrmRightPanel
+                {this.state.selectedCustomerId ? <CrmRightPanel
                     showFlag={this.state.showRightPanel}
                     currentId={this.state.selectedCustomerId}
                     hideRightPanel={this.hideRightPanel}
                     ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                     updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                />
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+                /> : null}
             </div>
 
 
@@ -790,53 +785,54 @@ var CustomerAnalysis = React.createClass({
             <div className="chart_list">
                 {this.state.timeType != "day" ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
+                         data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
                         <div className="chart-holder" ref="chartWidthDom" data-tracename="新增趋势统计">
                             <div className="title"><ReactIntl.FormattedMessage
-                                id="customer.analysis.add.trend" defaultMessage="新增趋势" /></div>
+                                id="customer.analysis.add.trend" defaultMessage="新增趋势"/></div>
                             {this.getCustomerChart()}
                         </div>
                     </div>) : null}
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
+                     data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
                     <div className="chart-holder" data-tracename="客户阶段统计">
                         <div className="title">
-                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage" defaultMessage="客户阶段统计" />
+                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage"
+                                                        defaultMessage="客户阶段统计"/>
                         </div>
                         {this.getCustomerStageChart()}
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
+                     data-title={Intl.get("oplate_customer_analysis.11", "订单阶段统计")}>
                     <div className="chart-holder" data-tracename="订单阶段统计">
                         <div className="title">
-                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计" />
+                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.11" defaultMessage="订单阶段统计"/>
                         </div>
                         {this.getStageChart()}
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                     data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
                     <div className="chart-holder">
                         <div className="title"><ReactIntl.FormattedMessage id="user.analysis.location.add"
-                            defaultMessage="地域-新增" /></div>
+                                                                           defaultMessage="地域-新增"/></div>
                         {this.getZoneChart()}
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                     data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
                     <div className="chart-holder" data-tracename="行业-新增统计">
                         <div className="title"><ReactIntl.FormattedMessage id="user.analysis.industry.add"
-                            defaultMessage="行业-新增" /></div>
+                                                                           defaultMessage="行业-新增"/></div>
                         {this.getIndustryChart()}
                     </div>
                 </div>
                 {hideTeamChart ? null : (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                        data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                         data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
                         <div className="chart-holder" data-tracename="团队-新增统计">
                             <div className="title"><ReactIntl.FormattedMessage id="user.analysis.team.add"
-                                defaultMessage="团队-新增" />
+                                                                               defaultMessage="团队-新增"/>
                             </div>
                             {this.getTeamChart()}
                         </div>
@@ -854,12 +850,12 @@ var CustomerAnalysis = React.createClass({
                     //</div>)
                 }
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
+                     data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
                     {this.renderTransferedCustomerTable()}
 
                 </div>
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
+                     data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
                     {this.renderCustomerStage()}
                 </div>
             </div>
@@ -888,7 +884,7 @@ var CustomerAnalysis = React.createClass({
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="oplate_customer_analysis">
-                <div ref="chart_list" style={{ height: layoutParams.chartListHeight }}>
+                <div ref="chart_list" style={{height: layoutParams.chartListHeight}}>
                     {this.renderContent()}
                 </div>
             </div>

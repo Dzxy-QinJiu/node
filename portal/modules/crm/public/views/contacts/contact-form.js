@@ -1,21 +1,18 @@
 const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
-var Form = require("antd").Form;
-var FormItem = Form.Item;
-var Input = require("antd").Input;
-var Button = require("antd").Button;
-var Icon = require("antd").Icon;
-var Select = require("antd").Select;
-var Option = Select.Option;
+import {Col, Form, Input, Icon, Radio} from "antd";
+const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 var ContactUtil = require("../../utils/contact-util");
 var ContactAction = require("../../action/contact-action");
-var Spinner = require('../../../../../components/spinner');
-var Message = require("antd").message;
 import PhoneInput from "CMP_DIR/phone-input";
 import Trace from "LIB_DIR/trace";
 import {isEqualArray} from "LIB_DIR/func";
 import CrmAction from "../../action/crm-actions";
 import {validateRequiredOne} from "PUB_DIR/sources/utils/common-method-util";
+
+import DetailCard from "CMP_DIR/detail-card";
+import {DetailEditBtn} from "CMP_DIR/rightPanel";
 var uuid = require("uuid/v4");
 
 function cx(classNames) {
@@ -46,9 +43,9 @@ var ContactForm = React.createClass({
     },
     getInitialState: function () {
         var contact = this.props.contact.contact;
-        var phoneInputIds = _.map(contact.phone, item => {
+        var phoneInputIds = _.isArray(contact.phone) && contact.phone.length ? _.map(contact.phone, item => {
             return uuid();
-        });
+        }) : [uuid()];
         var formData = {
             id: contact.id,
             customer_id: contact.customer_id,
@@ -300,9 +297,7 @@ var ContactForm = React.createClass({
     afterSubmit: function (result) {
         this.state.errorMsg = result.errorMsg || '';
         this.state.isLoading = false;
-        if (result.errorMsg) {
-            Message.error(result.errorMsg);
-        } else if (result.contact && result.contact.def_contancts === "true") {
+       if (result.contact && result.contact.def_contancts === "true") {
             //只有在客户列表中才有更新列表中联系人的方法
             if (_.isFunction(this.props.updateCustomerDefContact)) {
                 //修改默认联系人的信息时，更新列表中的联系人数据
@@ -391,258 +386,180 @@ var ContactForm = React.createClass({
             return null;
         } else {
             return <div
-                className="name-department-required">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
+                className="validate-error-tip">{Intl.get("crm.contact.name.department", "联系人姓名和部门必填一项")}</div>;
         }
     },
-    render: function () {
+    //添加、删除联系方式的按钮
+    renderContactWayBtns(index, size, type){
+        return (<div className="contact-way-buttons">
+            {index === size - 1 ? ( <div className="circle-empty-button" onClick={this.addContactWay(type)}>
+                <Icon type="plus"/>
+            </div>) : null}
+            {index == 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
+                                                            onClick={this.removeContactWay(type, index)}>
+                <Icon type="minus"/>
+            </div>}
+        </div>);
+    },
+    /**
+     * 电话输入框
+     * @param inex: 电话的第几个输入框的索引（从0开始计算）
+     * @param size: 共有几个电话
+     * @param formData: 联系人的表单数据
+     * @param status: 联系人表单数据的验证状态
+     */
+    renderPhoneInput (index, size, formData, status) {
+        const phoneKey = "phone" + index;
+        if (!status[phoneKey]) {
+            formData[phoneKey] = "";
+            status[phoneKey] = {};
+        }
+        return (
+            <PhoneInput
+                id={this.state.phoneInputIds[index]}
+                colon={false}
+                label={index ? " " : Intl.get("common.phone", "电话")}
+                wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)}
+                placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                initialValue={formData[phoneKey]}
+                labelCol={{span: 2}}
+                wrapperCol={{span: 12}}
+                key={index}
+                validateRules={this.getPhoneInputValidateRules()}
+                onChange={this.setField.bind(this, phoneKey)}
+                suffix={this.renderContactWayBtns(index, size, "phone")}
+            />
+        );
+    },
+    /**
+     * 联系方式输入框
+     * @param label:联系方式的描述（QQ、微信、邮箱）
+     * @param type:联系方式的类型（qq、weChat、email）
+     * @param index: 该类型联系方式的第几个输入框的索引（从0开始计算）
+     * @param size: 该类型联系方式共有几个
+     * @param formData: 联系人的表单数据
+     * @param status: 联系人表单数据的验证状态
+     */
+    renderContactWayInput(label, type, index, size, formData, status){
+        const typeKey = type + index;
+        status[typeKey] = {};
+        return (
+            <FormItem
+                colon={false}
+                label={index ? " " : label}
+                labelCol={{span: 2}}
+                wrapperCol={{span: 12}}
+                key={index}
+            >
+                <Input name={typeKey} value={formData[typeKey]}
+                       onChange={this.setField.bind(this, typeKey)}
+                />
+                {this.renderContactWayBtns(index, size, type)}
+            </FormItem>
+        );
+    },
+    renderContactForm: function () {
         var formData = this.state.formData;
         var status = this.state.status;
         var contact = this.state.contact;
         this.phoneInputRefs = [];
-        var _this = this;
-        //联系方式的填充及展示
-        var contactWayPhone = contact.contactWayAddObj.phone ? contact.contactWayAddObj.phone.map(function (phone, index) {
-            var phoneKey = "phone" + index;
-
-            if (!status[phoneKey]) {
-                formData[phoneKey] = "";
-                status[phoneKey] = {};
-            }
-
-            return (
-                <PhoneInput
-                    id={_this.state.phoneInputIds[index]}
-                    wrappedComponentRef={(inst) => _this.phoneInputRefs.push(inst)}
-                    placeholder={Intl.get("crm.95", "请输入联系人电话")}
-                    initialValue={formData[phoneKey]}
-                    labelCol={{span: 5}}
-                    wrapperCol={{span: 19}}
-                    key={index}
-                    validateRules={_this.getPhoneInputValidateRules()}
-                    onChange={_this.setField.bind(_this, phoneKey)}
-                    suffix={(
-                        <div className="circle-button crm-contact-contactway-minus"
-                             onClick={_this.removeContactWay("phone", index)}>
-                            <Icon type="minus"/>
-                        </div>
-                    )}
-                />
-            );
-        }) : "";
-        var contactWayQq = contact.contactWayAddObj.qq ? contact.contactWayAddObj.qq.map(function (qq, index) {
-            var qqKey = "qq" + index;
-            status[qqKey] = {};
-            return (
-                <FormItem
-                    label="QQ"
-                    labelCol={{span: 5}}
-                    wrapperCol={{span: 19}}
-                    key={index}
-                >
-                    <Input name={qqKey} value={formData[qqKey]}
-                           onChange={_this.setField.bind(_this, qqKey)}
-                    />
-                    <div className="circle-button crm-contact-contactway-minus"
-                         onClick={_this.removeContactWay("qq", index)}>
-                        <Icon type="minus"/>
-                    </div>
-                </FormItem>
-            );
-        }) : "";
-        var contactWayWechat = contact.contactWayAddObj.weChat ? contact.contactWayAddObj.weChat.map(function (weChat, index) {
-            var weChatKey = "weChat" + index;
-            status[weChatKey] = {};
-            return (
-                <FormItem
-                    label={Intl.get("crm.58", "微信")}
-                    labelCol={{span: 5}}
-                    wrapperCol={{span: 19}}
-                >
-                    <Input name={weChatKey} value={formData[weChatKey]}
-                           onChange={_this.setField.bind(_this, weChatKey)}
-                    />
-                    <div className="circle-button crm-contact-contactway-minus"
-                         onClick={_this.removeContactWay("weChat", index)}>
-                        <Icon type="minus"/>
-                    </div>
-                </FormItem>
-            );
-        }) : "";
-        var contactWayEmail = contact.contactWayAddObj.email ? contact.contactWayAddObj.email.map(function (email, index) {
-            var emailKey = "email" + index;
-            status[emailKey] = {};
-            return (
-                <FormItem
-                    label={Intl.get("common.email", "邮箱")}
-                    labelCol={{span: 5}}
-                    wrapperCol={{span: 19}}
-                    key={index}
-                >
-                    <Input name={emailKey} value={formData[emailKey]}
-                           onChange={_this.setField.bind(_this, emailKey)}
-                    />
-                    <div className="circle-button crm-contact-contactway-minus"
-                         onClick={_this.removeContactWay("email", index)}>
-                        <Icon type="minus"/>
-                    </div>
-                </FormItem>
-            );
-        }) : "";
-        //联系方式添加按钮
-        var contactPhonePlus = (
-            <div className="crm-contact-contactway-plus" onClick={this.addContactWay("phone")}>
-                <div className="circle-button">
-                    <Icon type="plus"/>
-                </div>
-                <span className="crm-contact-contactway-label">
-                    <ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话"/>
-                </span>
-            </div>
-        );
-        var contactQqPlus = (
-            <div className="crm-contact-contactway-plus" onClick={this.addContactWay("qq")}>
-                <div className="circle-button">
-                    <Icon type="plus"/>
-                </div>
-                <span className="crm-contact-contactway-label">QQ</span>
-            </div>
-        );
-        var contactWeChatPlus = (
-            <div className="crm-contact-contactway-plus" onClick={this.addContactWay("weChat")}>
-                <div className="circle-button">
-                    <Icon type="plus"/>
-                </div>
-                <span className="crm-contact-contactway-label">
-                    <ReactIntl.FormattedMessage id="crm.58" defaultMessage="微信"/>
-                </span>
-            </div>
-        );
-        var contactEmailPlus = (
-            <div className="crm-contact-contactway-plus" onClick={this.addContactWay("email")}>
-                <div className="circle-button">
-                    <Icon type="plus"/>
-                </div>
-                <span className="crm-contact-contactway-label">
-                    <ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱"/>
-                </span>
-            </div>
-        );
-        var addContactWayBtns = (
-            <div className="crm-contact-contactway-btns">
-                <div className="ant-form-item">
-                    <label className="ant-col-5">&nbsp;</label>
-                    <div className="ant-col-19">
-                        {contactPhonePlus}
-                        {contactQqPlus}
-                        {contactWeChatPlus}
-                        {contactEmailPlus}
-                    </div>
-                </div>
-            </div>
-        );
-
-        //角色下拉列表
-        var roleOptions = ContactUtil.roleArray.map(function (role, index) {
-            return (<Option value={role} key={index}>{role}</Option>);
-        });
-
+        let contactWayAddObj = contact.contactWayAddObj || {};
         return (
-            <div className="crm-contact-form">
-                <Form horizontal>
-                    <Validation ref="validation" onValidate={this.handleValidate}>
-                        <div className="crm-contact-input-list clearfix">
-                            <div className="crm-contact-line"></div>
-                            <div className="pull-left crm-contact-form-left col-md-5">
-                                <FormItem
-                                    label={Intl.get("realm.change.owner.name", "姓名")}
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 19}}
-                                    validateStatus={this.renderValidateStyle('name')}
-                                    help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
-                                >
-                                    <Validator rules={[{
-                                        max: 50,
-                                        message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
-                                    }]}>
-                                        <Input name="name" value={formData.name}
-                                               onBlur={this.validateContactNameDepartment.bind(this)}
-                                               onChange={this.setField.bind(this, 'name')}
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                {this.renderValidNameDepartmentTip()}
-                                <FormItem
-                                    label={Intl.get("crm.113", "部门")}
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 19}}
-                                >
-                                    <Input name="department" value={formData.department}
+            <Form horizontal className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    <FormItem
+                        colon={false}
+                        label={Intl.get("realm.change.owner.name", "姓名")}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <Col span={12} className="form-col-padding">
+                            <FormItem validateStatus={this.renderValidateStyle('name')}
+                                      help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
+                                <Validator rules={[{
+                                    max: 50,
+                                    message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
+                                }]}>
+                                    <Input name="name" value={formData.name}
+                                           autocomplete="off"
+                                           placeholder={Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}
                                            onBlur={this.validateContactNameDepartment.bind(this)}
-                                           onChange={this.setField.bind(this, 'department')}
+                                           onChange={this.setField.bind(this, 'name')}
                                     />
-                                </FormItem>
-                                <FormItem
-                                    label={Intl.get("crm.91", "职位")}
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 19}}
-                                    validateStatus={this.renderValidateStyle('position')}
-                                    help={status.position.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.position.errors && status.position.errors.join(','))}
-                                >
-                                    <Validator
-                                        rules={[{required: false, min: 1, message: Intl.get("crm.114", "请输入职位")}]}>
-                                        <Input name="position" value={formData.position}
-                                               onChange={this.setField.bind(this, 'position')}
-                                        />
-                                    </Validator>
-                                </FormItem>
-                                <FormItem
-                                    label={Intl.get("user.apply.detail.table.role", "角色")}
-                                    labelCol={{span: 5}}
-                                    wrapperCol={{span: 19}}
-                                    validateStatus={this.renderValidateStyle('role')}
-                                    help={status.role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.role.errors && status.role.errors.join(','))}
-                                >
-                                    <Validator rules={[{required: true, min: 1, message: Intl.get("crm.94", "请输入角色")}]}>
-                                        <Select name="role"
-                                                value={formData.role ? formData.role : Intl.get("crm.115", "经办人")}
-                                                onChange={this.setField.bind(this, 'role')}
-                                                onSelect={this.handleSelect}
-                                        >
-                                            {roleOptions}
-                                        </Select>
-                                    </Validator>
-                                </FormItem>
-                            </div>
-                            <div className="pull-right crm-contact-form-right col-md-7">
-                                {contactWayPhone}
-                                {contactWayQq}
-                                {contactWayWechat}
-                                {contactWayEmail}
-                                {addContactWayBtns}
-                                {this.state.showNeedContact ?
-                                    <div className="need-contact"><ReactIntl.FormattedMessage id="crm.116"
-                                                                                              defaultMessage="请至少添加一种联系方式"/>
-                                    </div> : null}
-                            </div>
-                        </div>
-                        <div className="clearfix crm-contact-form-btns">
-                            <Button type="ghost" className="form-cancel-btn btn-primary-cancel"
-                                    onClick={this.cancel}
-                            ><ReactIntl.FormattedMessage id="common.cancel"
-                                                         defaultMessage="取消"/></Button>
-                            <Button type="primary" className="form-submit-btn btn-primary-sure"
-                                    onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.save"
-                                                                                            defaultMessage="保存"/></Button>
-                        </div>
-                    </Validation>
-                </Form>
-                {
-                    this.state.isLoading ?
-                        (<Spinner className="isloading"/>) :
-                        (null)
-                }
-            </div>
+                                </Validator>
+                            </FormItem>
+                        </Col>
+                        <Col span={6} className="form-col-padding">
+                            <FormItem>
+                                <Input name="department" value={formData.department}
+                                       autocomplete="off"
+                                       placeholder={Intl.get("crm.contact.deparment.input", "请输入部门")}
+                                       onBlur={this.validateContactNameDepartment.bind(this)}
+                                       onChange={this.setField.bind(this, 'department')}
+                                />
+                            </FormItem>
+                        </Col>
+                        <Col span={6}>
+                            <FormItem>
+                                <Input name="position" value={formData.position}
+                                       autocomplete="off"
+                                       placeholder={Intl.get("crm.114", "请输入职位")}
+                                       onChange={this.setField.bind(this, 'position')}
+                                />
+                            </FormItem>
+                        </Col>
+                    </FormItem>
+                    {this.renderValidNameDepartmentTip()}
+                    <FormItem
+                        className="contact-role-item"
+                        colon={false}
+                        label={Intl.get("user.apply.detail.table.role", "角色")}
+                        labelCol={{span: 2}}
+                        wrapperCol={{span: 22}}
+                    >
+                        <RadioGroup onChange={this.setField.bind(this, 'role')}
+                                    value={formData.role ? formData.role : Intl.get("crm.115", "经办人")}>
+                            {ContactUtil.roleArray.map(function (role, index) {
+                                return (<Radio value={role} key={index}>{role}</Radio>);
+                            })}
+                        </RadioGroup>
+                    </FormItem>
+                    {//电话
+                        _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
+                            return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData, status);
+                        }) : [this.renderPhoneInput(0, 1, formData, status)]
+                    }
+                    {//qq
+                        _.isArray(contactWayAddObj.qq) && contactWayAddObj.qq.length ? contactWayAddObj.qq.map((qq, index) => {
+                            return this.renderContactWayInput("QQ", "qq", index, contactWayAddObj.qq.length, formData, status);
+                        }) : [this.renderContactWayInput("QQ", "qq", 0, 1, formData, status)]
+                    }
+                    {//微信
+                        _.isArray(contactWayAddObj.weChat) && contactWayAddObj.weChat.length ? contactWayAddObj.weChat.map((weChat, index) => {
+                            return this.renderContactWayInput(Intl.get("crm.58", "微信"), "weChat", index, contactWayAddObj.weChat.length, formData, status);
+                        }) : [this.renderContactWayInput(Intl.get("crm.58", "微信"), "weChat", 0, 1, formData, status)]
+                    }
+                    {//邮箱
+                        _.isArray(contactWayAddObj.email) && contactWayAddObj.email.length ? contactWayAddObj.email.map((email, index) => {
+                            return this.renderContactWayInput(Intl.get("common.email", "邮箱"), "email", index, contactWayAddObj.email.length, formData, status);
+                        }) : [this.renderContactWayInput(Intl.get("common.email", "邮箱"), "email", 0, 1, formData, status)]
+                    }
+                    {this.state.showNeedContact ?
+                        <div className="validate-error-tip">{Intl.get("crm.116", "请至少添加一种联系方式")} </div> : null}
+                </Validation>
+            </Form>
         );
+    },
+
+    render: function () {
+        return (<DetailCard content={this.renderContactForm()}
+                            isEdit={true}
+                            className="contact-form-container"
+                            loading={this.state.loading}
+                            saveErrorMsg={this.state.errorMsg}
+                            handleSubmit={this.handleSubmit}
+                            handleCancel={this.cancel}
+        />);
     }
 });
 

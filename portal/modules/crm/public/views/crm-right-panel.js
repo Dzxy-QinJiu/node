@@ -6,7 +6,6 @@ var rightPanelUtil = require("../../../../components/rightPanel/index");
 var RightPanel = rightPanelUtil.RightPanel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var BasicData = require("./basic_data");
 var Contacts = require("./contacts");
 var Dynamic = require("./dynamic");
 var CrmSchedule = require("./schedule");
@@ -16,7 +15,9 @@ var CustomerRecord = require("./customer_record");
 var crmAjax = require("../ajax");
 import Trace from "LIB_DIR/trace";
 import {tabNameList} from "../utils/crm-util";
-
+import BasicInfo from "./basic_info";
+import BasicOverview from "./basic-overview";
+import CustomerUsers from "./users";
 var CrmRightPanel = React.createClass({
     getInitialState: function () {
         return {
@@ -26,17 +27,25 @@ var CrmRightPanel = React.createClass({
             apps: [],
             curOrder: {},
             curCustomer: this.props.curCustomer,
+            tabsContainerHeight: "auto"
         };
     },
 
     componentWillMount: function () {
         if (!this.state.curCustomer) {
-            if(this.props.currentId){
+            if (this.props.currentId) {
                 this.getCurCustomer(this.props.currentId);
-            }else if(this.props.phoneNum){
+            } else if (this.props.phoneNum) {
                 this.getCurCustomerDetailByPhone(this.props.phoneNum);
             }
         }
+    },
+    componentDidMount: function () {
+        this.setTabsContainerHeight();
+        $(window).resize(e => {
+            e.stopPropagation();
+            this.setTabsContainerHeight();
+        });
     },
 
     componentWillReceiveProps: function (nextProps) {
@@ -44,13 +53,17 @@ var CrmRightPanel = React.createClass({
             this.state.applyUserShowFlag = false;
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
-        } else if(nextProps.currentId !== this.props.currentId){
+        } else if (nextProps.currentId !== this.props.currentId) {
             this.state.applyUserShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
     },
 
-    getCurCustomerDetailByPhone: function(phoneNum){
+    setTabsContainerHeight: function () {
+        let tabsContainerHeight = $("body").height() - $(".basic-info-contianer").outerHeight(true);
+        this.setState({tabsContainerHeight: tabsContainerHeight});
+    },
+    getCurCustomerDetailByPhone: function (phoneNum) {
         this.state.curCustomer = this.props.clickCustomerData;
         this.setState(this.state);
     },
@@ -86,7 +99,7 @@ var CrmRightPanel = React.createClass({
     },
 
     hideRightPanel: function (e) {
-        Trace.traceEvent(e,"关闭客户详情");
+        Trace.traceEvent(e, "关闭客户详情");
         this.props.hideRightPanel();
         this.setState({
             applyUserShowFlag: false,
@@ -95,7 +108,7 @@ var CrmRightPanel = React.createClass({
     },
     //切换tab时的处理
     changeActiveKey: function (key) {
-        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"),"查看" + tabNameList[key]);
+        Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "查看" + tabNameList[key]);
         this.setState({
             activeKey: key
         });
@@ -107,106 +120,132 @@ var CrmRightPanel = React.createClass({
             className += " crm-right-panel-content-slide";
         }
         return (
-            <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap table-btn-fix" data-tracename="客户详情">
+            <RightPanel showFlag={this.props.showFlag}
+                        className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
+                        data-tracename="客户详情">
+                <span className="iconfont icon-close" onClick={(e) => {
+                    this.hideRightPanel(e);
+                }}/>
                 <div className={className}>
-                    <RightPanelClose onClick={(e)=>{this.hideRightPanel(e);}}/>
-                    <div className="crm-right-panel-content">
-                        {this.state.curCustomer? (
-                        <Tabs
-                            defaultActiveKey="1"
-                            activeKey={this.state.activeKey}
-                            onChange={this.changeActiveKey}
-                        >
-                            <TabPane
-                                tab={Intl.get("user.basic.info", "基本资料")}
-                                key="1"
+                    <BasicInfo isRepeat={this.props.isRepeat}
+                               curCustomer={this.state.curCustomer}
+                               refreshCustomerList={this.props.refreshCustomerList}
+                               editCustomerBasic={this.props.editCustomerBasic}
+                               ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                               userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                               handleFocusCustomer={this.props.handleFocusCustomer}
+                               setTabsContainerHeight={this.setTabsContainerHeight}
+                               showRightPanel={this.props.showRightPanel}
+                    />
+                    <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
+                        {this.state.curCustomer ? (
+                            <Tabs
+                                defaultActiveKey="1"
+                                activeKey={this.state.activeKey}
+                                onChange={this.changeActiveKey}
                             >
-                            {this.state.activeKey=="1"? (
-                                <BasicData
-                                    isRepeat={this.props.isRepeat}
-                                    curCustomer={this.state.curCustomer}
-                                    refreshCustomerList={this.props.refreshCustomerList}
-                                    editCustomerBasic={this.props.editCustomerBasic}
-                                    ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
-                                    userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
-                                />
-                            ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("call.record.contacts", "联系人")}
-                                key="2"
-                            >
-                            {this.state.activeKey=="2"? (
-                                <Contacts
-                                    updateCustomerDefContact={this.props.updateCustomerDefContact}
-                                    refreshCustomerList={this.props.refreshCustomerList}
-                                    curCustomer={this.state.curCustomer}
-                                />
-                            ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("user.apply.detail.order", "订单")}
-                                key="3"
-                            >
-                            {this.state.activeKey=="3"? (
-                                <Order
-                                    closeRightPanel={this.props.hideRightPanel}
-                                    curCustomer={this.state.curCustomer}
-                                    refreshCustomerList={this.props.refreshCustomerList}
-                                    showApplyUserForm={this.showApplyUserForm}
-                                />
-                            ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("crm.39", "动态")}
-                                key="4"
+                                <TabPane
+                                    tab={Intl.get("crm.basic.overview", "概览")}
+                                    key="1"
+                                >
+                                    {this.state.activeKey == "1" ? (
+                                        <BasicOverview
+                                            isRepeat={this.props.isRepeat}
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                            editCustomerBasic={this.props.editCustomerBasic}
+                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                            userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                                            changeActiveKey={this.changeActiveKey}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("call.record.contacts", "联系人")}
+                                    key="2"
+                                >
+                                    {this.state.activeKey == "2" ? (
+                                        <Contacts
+                                            updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                            curCustomer={this.state.curCustomer}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("menu.trace", "跟进记录")}
+                                    key="3"
+                                >
+                                    {this.state.activeKey == "3" ? (
+                                        <CustomerRecord
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.detail.user", "用户")}
+                                    key="4"
+                                >
+                                    {this.state.activeKey == "4" ? (
+                                        <CustomerUsers
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    key="5"
+                                >
+                                    {this.state.activeKey == "5" ? (
+                                        <Order
+                                            closeRightPanel={this.props.hideRightPanel}
+                                            curCustomer={this.state.curCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                            showApplyUserForm={this.showApplyUserForm}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.39", "动态")}
+                                    key="6"
 
-                            >
-                            {this.state.activeKey=="4"? (
-                                <Dynamic
-                                    currentId={this.state.curCustomer.id}
-                                />
-                            ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("crm.right.schedule","联系计划")}
-                                key="5"
-                            >
-                            {this.state.activeKey=="5"? (
-                                <CrmSchedule
-                                    curCustomer={this.state.curCustomer}
-                                />
-                            ) : null}
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get("menu.trace", "跟进记录")}
-                                key="6"
-                            >
-                                {this.state.activeKey=="6"? (
-                                    <CustomerRecord
-                                        curCustomer={this.state.curCustomer}
-                                        refreshCustomerList={this.props.refreshCustomerList}
-                                    />
-                                ) : null}
-                            </TabPane>
-                        </Tabs>
+                                >
+                                    {this.state.activeKey == "6" ? (
+                                        <Dynamic
+                                            currentId={this.state.curCustomer.id}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.right.schedule", "联系计划")}
+                                    key="7"
+                                >
+                                    {this.state.activeKey == "7" ? (
+                                        <CrmSchedule
+                                            curCustomer={this.state.curCustomer}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                            </Tabs>
                         ) : null}
                     </div>
                 </div>
-                {this.state.curOrder.id? (
-                <div className={className}>
-                    <RightPanelReturn onClick={this.returnInfoPanel}/>
-                    <RightPanelClose onClick={this.hideRightPanel}/>
-                    <div className="crm-right-panel-content">
-                        <ApplyUserForm
-                            applyType={this.state.applyType}
-                            apps={this.state.apps}
-                            order={this.state.curOrder}
-                            customerName={this.state.curCustomer.name}
-                            cancelApply={this.returnInfoPanel}
-                        />
+                {this.state.curOrder.id ? (
+                    <div className={className}>
+                        <RightPanelReturn onClick={this.returnInfoPanel}/>
+                        <RightPanelClose onClick={this.hideRightPanel}/>
+                        <div className="crm-right-panel-content">
+                            <ApplyUserForm
+                                applyType={this.state.applyType}
+                                apps={this.state.apps}
+                                order={this.state.curOrder}
+                                customerName={this.state.curCustomer.name}
+                                cancelApply={this.returnInfoPanel}
+                            />
+                        </div>
                     </div>
-                </div>
                 ) : null}
             </RightPanel>
         );

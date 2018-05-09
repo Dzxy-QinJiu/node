@@ -1238,7 +1238,27 @@ var en_US = {
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
-    "crm.order.stage":"Order stage",//订单阶段
+	"crm.order.stage":"Order stage",//订单阶段
+    "crm.basic.detail.show": "Show detail",//展开详情
+    "crm.basic.detail.hide": "Hide detail",//收起详情
+    "crm.basic.overview": "Overview",//概览
+    "crm.overview.expire.tip": "{days}, have applications to trail expires",//有应用{days}试用到期
+    "crm.input.new.tag": "Please enter a new label",//请输入新标签
+    "crm.detail.no.tag": "No label",//暂无标签
+    "crm.detail.user": "Users",//用户
+    "crm.detail.contact.add": "Add a Contact",//添加联系人
+    "crm.detail.contact.default.set": "Set as a default contact",//设为默认联系人
+    "crm.contact.way.show": "Expand other ways of contact",//展开其他联系方式
+    "crm.contact.way.hide": "Take up",//收起
+    "crm.contact.delete.confirm": "Confirm deletion",//确认删除
+    "crm.contact.deparment.input": "Please enter the Department",//请输入部门
+    "crm.order.budget.input": "Please enter the budget amount",//请输入预算金额
+    "crm.order.id": "Order Num",//订单编号
+    "crm.order.remarks": "Order Remarks",//订单备注
+    "crm.schedule.begin.time": "Begin time",//开始
+    "crm.schedule.end.time": "End time",//结束
+    "crm.basic.concerned": "Concerned",//已关注
+    "crm.basic.unconcerned": "Unconcerned",//未关注
     // 客户管理end
 
     //客户分析 start

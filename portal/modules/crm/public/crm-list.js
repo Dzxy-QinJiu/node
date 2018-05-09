@@ -993,9 +993,7 @@ var Crm = React.createClass({
         });
         if (customerArr) {
             customerArr.interest = interestObj.interest;
-        }
-
-        this.setState(
+        }        this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
@@ -1347,6 +1345,8 @@ var Crm = React.createClass({
                         curCustomer={this.state.curCustomer}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                        handleFocusCustomer={this.handleFocusCustomer}
+                        showRightPanel={this.showRightPanel}
                     />
                 ) : null}
                 {/*该客户下的用户列表*/}

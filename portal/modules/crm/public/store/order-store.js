@@ -16,6 +16,7 @@ function OrderStore() {
     this.pageNum = 1;//当前是第几页
     this.pageSize = 20;//一页展示的条数
     this.total = 0;//一共开通了多少用户
+    this.isAddFormShow = false;//是否展示添加订单面板
     this.bindActions(OrderActions);
 }
 
@@ -126,7 +127,7 @@ OrderStore.prototype.afterEditOrder = function (order) {
 };
 //添加订单后的处理
 OrderStore.prototype.afterAddOrder = function (order) {
-    this.orderList.shift();//去掉添加面板
+    this.isAddFormShow = false;
     this.orderList.unshift(order);//将新加的订单加入订单列表的头部
 };
 
@@ -143,9 +144,8 @@ OrderStore.prototype.showForm = function (id) {
         this.orderList.forEach(order => {
             if (order.id === id) order.isEdit = true;
         });
-    }
-    else {
-        this.orderList.unshift({isEdit: true});
+    } else {
+        this.isAddFormShow = true;
     }
 };
 
@@ -156,7 +156,7 @@ OrderStore.prototype.hideForm = function (id) {
         });
     }
     else {
-        this.orderList.shift();
+        this.isAddFormShow = false;
     }
 };
 

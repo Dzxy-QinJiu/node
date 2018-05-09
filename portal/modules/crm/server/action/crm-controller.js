@@ -5,7 +5,7 @@
 
 "use strict";
 var crmService = require("../service/crm-manage-service");
-
+var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(example)]);
     res.setHeader("Content-disposition", "attachement; filename=" + filename);
@@ -232,6 +232,7 @@ exports.updateCustomer = function (req, res) {
         res.status(500).json(err && err.message);
     });
 };
+
 //转出客户的处理
 exports.transferCustomer = function (req, res) {
     crmService.transferCustomer(req, res, req.body)

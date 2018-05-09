@@ -304,7 +304,7 @@ const ApplyViewDetail = React.createClass({
         if (_.isArray(replyList) && replyList.length) {
             return (<div>
                 {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/}
-                      {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
+                {/*title={Intl.get("common.get.again", "重新获取")}/>*/}
                 <ul>
                     {replyList.map(replyItem => {
                         return (
@@ -1602,7 +1602,7 @@ const ApplyViewDetail = React.createClass({
                         placeholder={Intl.get("user.apply.reply.placeholder", "请填写内容")}
                         type="textarea"
                         onChange={this.commentInputChange}
-                        autosize={{minRows:2}}
+                        autosize={{minRows: 2}}
                     />
                 </FormItem>
             </Form>
@@ -1617,10 +1617,11 @@ const ApplyViewDetail = React.createClass({
         if (selectedDetailItem.isConsumed == 'true') {
             return (
                 <div className="approval_block">
-                        <GeminiScrollbar>
-                            <div className="approval_inner_block">
+                    <GeminiScrollbar>
+                        <div className="approval_inner_block">
                             <dl className="dl-horizontal detail_item">
-                                <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/></dt>
+                                <dt><ReactIntl.FormattedMessage id="user.apply.detail.suggest" defaultMessage="意见"/>
+                                </dt>
                                 <dd>
                                     {detailInfoObj.approval_state == '0' && ''}
                                     {detailInfoObj.approval_state == '1' && Intl.get("user.apply.pass", "已通过")}
@@ -1630,7 +1631,8 @@ const ApplyViewDetail = React.createClass({
                             </dl>
                             {detailInfoObj.approval_comment ? (
                                 <dl className="dl-horizontal detail_item">
-                                    <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/></dt>
+                                    <dt><ReactIntl.FormattedMessage id="user.apply.detail.remark" defaultMessage="批注"/>
+                                    </dt>
                                     <dd>
                                 <span>
                                     {detailInfoObj.approval_comment}
@@ -1671,8 +1673,8 @@ const ApplyViewDetail = React.createClass({
                                     </div>
                                 </div>
                             </div>
-                          </div>
-                        </GeminiScrollbar>
+                        </div>
+                    </GeminiScrollbar>
                 </div>
             );
         } else {
@@ -1683,8 +1685,8 @@ const ApplyViewDetail = React.createClass({
                 userData.hasRole(userData.ROLE_CONSTANS.OPLATE_REALM_OWNER);
             return (
                 <div className="approval_block approval_block_form">
-                        <GeminiScrollbar>
-                            <div className="approval_inner_block">
+                    <GeminiScrollbar>
+                        <div className="approval_inner_block">
                             {this.renderReplyContent()}
                             <div className="approval_person clearfix">
                                 <div className="col-6">
@@ -1716,7 +1718,8 @@ const ApplyViewDetail = React.createClass({
                                             hasPrivilege("APPLY_CANCEL") && showBackoutApply ?
                                                 <Button type="primary" className="btn-primary-sure"
                                                         onClick={this.saleConfirmBackoutApply}><ReactIntl.FormattedMessage
-                                                    id="user.apply.detail.backout" defaultMessage="撤销申请"/></Button> : null
+                                                    id="user.apply.detail.backout"
+                                                    defaultMessage="撤销申请"/></Button> : null
                                         }
 
                                         {
@@ -1732,8 +1735,8 @@ const ApplyViewDetail = React.createClass({
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                        </GeminiScrollbar>
+                        </div>
+                    </GeminiScrollbar>
                 </div>
             );
         }
@@ -2089,48 +2092,35 @@ const ApplyViewDetail = React.createClass({
                 {this.renderApplyDetailInfo()}
                 {this.renderApplyFormResult()}
                 {this.renderBackoutApply()}
-                <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
-                            showFlag={this.state.showRightPanel}>
-                    {
-                        this.state.rightPanelUserId ? <UserDetail
-                            userId={this.state.rightPanelUserId}
-                        /> : null
-                    }
-                    {
-                        this.state.rightPanelCustomerId ? <CrmRightPanel
-                            currentId={this.state.rightPanelCustomerId}
-                            showFlag={true}
-                            hideRightPanel={this.closeRightPanel}
-                            refreshCustomerList={function () {
-                            }}
-                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        /> : null
-                    }
-                    {
-                        this.state.rightPanelAppConfig ? <UserTypeConfigForm
-                            togglePageChange={this.showAppConfigRightPanle}
-                            addUserTypeConfigInfoShow={true}
-                            appId={this.state.rightPanelAppConfig.app_id}
-                            appName={this.state.rightPanelAppConfig.app_name}
-                            item={this.state.appConfig}
-                            handleCancel={this.handleCancel}
-                            handleSaveAppConfig={this.handleSaveAppConfig}
-                        /> : null
-                    }
-                </RightPanel>
-                {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+                {
+                    this.state.rightPanelCustomerId ? <CrmRightPanel
+                        currentId={this.state.rightPanelCustomerId}
+                        showFlag={true}
+                        hideRightPanel={this.closeRightPanel}
+                        refreshCustomerList={function () {
+                        }}
+                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                    /> : (
+                        <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
+                                    showFlag={this.state.showRightPanel}>
+                            {
+                                this.state.rightPanelUserId ? <UserDetail
+                                    userId={this.state.rightPanelUserId}
+                                /> : null
+                            }
+                            {
+                                this.state.rightPanelAppConfig ? <UserTypeConfigForm
+                                    togglePageChange={this.showAppConfigRightPanle}
+                                    addUserTypeConfigInfoShow={true}
+                                    appId={this.state.rightPanelAppConfig.app_id}
+                                    appName={this.state.rightPanelAppConfig.app_name}
+                                    item={this.state.appConfig}
+                                    handleCancel={this.handleCancel}
+                                    handleSaveAppConfig={this.handleSaveAppConfig}
+                                /> : null
+                            }
+                        </RightPanel>)
+                }
             </div>
 
         );

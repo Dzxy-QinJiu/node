@@ -2,221 +2,223 @@
 @import '../../../../components/ModalDialog/modalDialog-zh_CN.less';
 @import '../../../../public/css/common-variables';
 
-@block-bgColor: #dde6ed;
-@block-bgColor-edit: #d3dbe8;
-@block-line-color: #D1DADE;
-@block-line-color-edit: #C6CEDA;
-@font-color: #464b4e;
-/*联系人所在区域*/
-.crm-contacts-list li {
-  margin-bottom: 10px;
-  position: relative;
+@font_color: #999999;
+@btn_color: #8ba9c3;
+@title_color: #333333;
+@hover_bg_color: #f6fbff;
+@delete_confirm_color: #ec5f56;
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/*默认联系人*/
-.crm-contact-default {
-  z-index: 1;
-  @width: 58px;
-  @height: 48px;
-  @triangle-color: #31a4dd;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-width: @height/2 @width/2;
-  border-color: @triangle-color rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) @triangle-color;
-  border-style: solid;
-  border-top-left-radius: 4px;
-  color: #fff;
-  span {
-    display: block;
-    width: @width;
-    height: @height;
-    padding: 5px 0 0 6px;
-    margin-left: -18px;
-    margin-top: -14px;
-  }
-}
-
-/*联系人条目基本样式*/
-.crm-contact-item {
-  position: relative;
-  background-color: @block-bgColor;
-  border-radius: 4px;
-
-  dl {
-    margin-bottom: 10px;
-    color: @font-color;
-    width: 100%;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 14px;
-  }
-
-  dl:last-child {
-    margin-bottom: 0;
-  }
-
-  dt, dd {
-    display: inline;
-  }
-
-  dt {
-    font-weight: normal;
-  }
-
-  .contact-left {
-    padding: 28px 0 27px 55px;
-  }
-
-  .contact-right {
-    padding: 28px 0 27px 45px;
-  }
-}
-
-/*联系人操作区域*/
-.crm-contact-operate {
-  display: none;
-  padding: 8px 10px 0 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
-  .ant-btn {
-    margin: 1px 0 0 10px;
-  }
-}
-
-@media (min-width: @screen-md) {
-  .crm-contact-line {
-    position: absolute;
-    top: 0;
-    left: @col5;
-    height: 100%;
-    width: 1px;
-    background: @block-line-color-edit;
-  }
-  .crm-contact-form .crm-contact-line {
-    transform: translateX(16px);
-  }
-}
-
-.crm-contact-item:hover {
-  .crm-contact-operate {
-    display: block;
-  }
-}
-
-.contact-modal-container {
-  position: relative;
-
-  .modal-dialog .modal-header {
-    padding-top: 5px;
-  }
-
-  .modal-dialog {
-    height: 93px;
-  }
-
-  .modal, .modal-backdrop {
-    position: absolute;
-  }
-
-  .modal-dialog .modal-content .modal-footer {
-    padding: 10px;
-  }
-
-}
-
-.crm-contact-input-list {
-  position: relative;
-  margin-top: 20px;
-}
-
-.crm-contact-form {
-  padding: 20px 0 27px 0;
-  border-radius: 4px;
-  background-color: @block-bgColor-edit;
-  .return-btn {
-    top: 10px;
-    right: 10px;
-  }
-
-  form .ant-form-item {
-    width: auto;
-    margin-bottom: 10px;
-    color: #4c4c4c;
-    .ant-select {
-      width: 180px;
+.crm-pannel-contacts {
+  .contact-top-block {
+    //共xxx条
+    .total-tip {
+      color: @font_color;
     }
-    input{
-      width: 180px;
+    //添加跟进记录按钮
+    .iconfont.icon-add {
+      float: right;
+      font-size: 16px;
+      color: @btn_color;
     }
   }
-
-  .crm-contact-form-left {
-    padding-right: 5px;
-    padding-left: 43px;
-    .ant-select-arrow { display: none; }
-    //必填一项的验证样式
-    .name-department-required {
-      color: @error_tips_color;
-      margin-left: 50px;
-      margin-top: -10px;
-    }
-  }
-  .ant-form-item > label {
-    padding-right: 12px;
-  }
-  .crm-contact-form-right {
-    padding: 0 40px 0 13px;
-  }
-  .crm-contact-contactway-plus {
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-  }
-  .crm-contact-contactway-plus:first-child {
-    .circle-button {
-      margin-left: 0;
-    }
-  }
-  .crm-contact-contactway-plus i {
-    font-size: 13px;
-    vertical-align: middle;
-    font-weight: bold;
-    position: relative;
-    top: -2px;
-  }
-  .crm-contact-contactway-label {
-    margin: 0 0 0 4px;
-    line-height: 22px;
-  }
-  .crm-contact-contactway-minus {
-    position: absolute;
-    top: 3px;
-    right: 32px;
-    font-weight: bold;
-    font-size: 13px;
-    @btn-color: #f05150;
-    background-color: @btn-color;
-    &:hover {
-      background-color: darken(@btn-color, 20%);
-    }
-  }
-  .need-contact {
+  .contact-list-container{
     float: left;
-    color: @error_tips_color;
+    width: 100%;
+    //联系人展示区
+    .contact-item-container.contact-delete-border {
+      border: 1px solid @delete_confirm_color;
+      .contact-item-title {
+        .contact-name {
+          max-width: 115px;
+        }
+        .contact-info {
+          //联系人角色、职位等
+          .contact-info-content {
+            max-width: 115px;
+          }
+        }
+      }
+    }
+    .contact-item-container {
+      .detail-card-title {
+        padding-bottom: 0;
+      }
+      .contact-item-title {
+        //设为默认联系人的图标
+        .icon-contact-default {
+          display: inline-block;
+          font-size: 16px;
+          color: #8ea7c5;
+          cursor: pointer;
+        }
+        //默认联系人的图标
+        .is-default-contact {
+          color: #2096f0;
+          cursor: default;
+        }
+        //联系人
+        .contact-name {
+          display: inline-block;
+          height: 24px;
+          line-height: 24px;
+          max-width: 148px;
+          padding: 0 4px;
+          color: @title_color;
+          &:extend(.text-ellipsis);
+          cursor: default;
+        }
+        .contact-info {
+          vertical-align: top;
+          cursor: default;
+          span {
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            vertical-align: top;
+          }
+          //联系人角色、职位等
+          .contact-info-content {
+            max-width: 148px;
+            &:extend(.text-ellipsis);
+          }
+        }
+        //操作按钮区
+        .contact-item-buttons {
+          float: right;
+          .iconfont {
+            float: right;
+            font-size: 16px;
+            color: #8da8c5;
+            margin-left: 4px;
+          }
+        }
+        .contact-delete-buttons {
+          float: right;
+          .delete-button-style {
+            width: 72px;
+            height: 24px;
+            line-height: 24px;
+            padding: 0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+          }
+          //确认删除
+          .contact-delete-confirm {
+            color: #ffffff;
+            border: 1px solid @delete_confirm_color;
+            background-color: @delete_confirm_color;
+            &:hover {
+              background-color: #f04134;
+              border: 1px solid #f04134;
+            }
+          }
+          .contact-delete-cancel {
+            color: #8da8c5;
+            margin-right: 6px;
+          }
+        }
+      }
+      //联系方式展示区
+      .contact-way-container {
+        float: left;
+        width: 100%;
+        .contact-way-type {
+          float: left;
+          width: 100%;
+          .iconfont.contact-way-icon {
+            float: left;
+            font-size: 16px;
+            color: #d7d7d7;
+            margin-right: 6px;
+          }
+          .contact-way-content {
+            float: left;
+            .contact-way-item {
+              cursor: default;
+              .contact-way-text {
+                line-height: 24px;
+              }
+              //拨打按钮
+              .phone-call-button {
+                display: none;
+                width: 70px;
+                height: 24px;
+                line-height: 24px;
+                margin-left: 20px;
+                border-radius: 4px;
+                text-align: center;
+                background-color: #f7a340;
+                color: #ffffff;
+                cursor: pointer;
+              }
+              &:hover {
+                background-color: @hover_bg_color;
+                .phone-call-button {
+                  display: inline-block;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //添加、编辑面板样式
+  .contact-form-container {
+    .crm-contact-form {
+      .validate-error-tip {
+        margin-left: 38px;
+        margin-top: -10px;
+        color: @error_tips_color;
+      }
+      .contact-role-item {
+        .ant-form-item-label, .ant-form-item-control {
+          line-height: 24px;
+        }
+      }
+      .ant-row.ant-form-item {
+        width: 100%;
+        .ant-form-item-label {
+          label {
+            font-size: 12px;
+            color: @font_color;
+          }
+        }
+        .form-col-padding {
+          padding-right: 4px;
+        }
+        input {
+          width: 100%;
+        }
+        .ant-radio-group {
+          padding-left: 6px;
+          label {
+            margin-right: 20px;
+            margin-bottom: 0;
+            .ant-radio + span {
+              margin-left: 4px;
+            }
+          }
+        }
+        .contact-way-buttons {
+          position: absolute;
+          width: 50px;
+          top: 6px;
+          right: -50px;
+        }
+        .ant-form-explain {
+          white-space: normal;
+          word-wrap: break-word;
+          word-break: break-all;
+        }
+      }
+    }
   }
 }
-
-.crm-contact-form-btns {
-  padding: 0 15px 0 20px;
-  .form-cancel-btn, .form-submit-btn {
-    margin-top: 10px;
-  }
-}
-

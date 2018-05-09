@@ -35,7 +35,9 @@ function ContactAction() {
         //设置为默认联系人
         , 'toggleDefaultContact',
         //设置初始化数据
-        'setInitData'
+        'setInitData',
+        //展开、关闭联系方式
+        'toggleContactWay'
     );
     //获取联系人列表
     this.getContactList = function (curCustomer, isMerge) {

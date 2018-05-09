@@ -20,10 +20,11 @@ function CustomerRecordAction() {
         'setLoading'
     );
     //获取客户跟踪列表
-    this.getCustomerTraceList = function (queryObj) {
+    this.getCustomerTraceList = function (queryObj,callback) {
         customerRecordAjax.getCustomerTraceRecordList(queryObj).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading:false,error:false,data:data});
+            if(_.isFunction(callback)) callback();
         },(errorMsg)=>{
             this.dispatch({loading:false,error:true,errorMsg:errorMsg});
         });
