@@ -171,7 +171,6 @@ let BasicEditSelectField = React.createClass({
                 <Form horizontal autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label=""
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('select')}

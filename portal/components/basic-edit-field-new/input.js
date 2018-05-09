@@ -231,7 +231,6 @@ const BasicEditField = React.createClass({
                     <input type="password" style={{display: "none"}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
-                            label=""
                             labelCol={{span: 0}}
                             wrapperCol={{span: 24}}
                             validateStatus={this.renderValidateStyle('input')}
