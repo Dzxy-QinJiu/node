@@ -265,6 +265,11 @@ function canPopDesktop() {
 }
 //点击拨打电话
 window.handleClickPhone = function (phoneObj) {
+    //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
+    var $modal = $("body >#phone-alert-modal #phone-alert-container");
+    if ($modal && $modal.length > 0){
+        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
+    }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".noty-container .noty-content .phone-item .icon-phone-call-out"), "拨打电话");
     if (getCallNumErrMsg) {

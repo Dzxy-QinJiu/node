@@ -56,6 +56,7 @@ const PHONERINGSTATUS = {
     record: "record",
     phone: "phone",//通话结束后，后端推送过来的状态
 };
+var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
 class PhoneAlert extends React.Component {
     constructor(props) {
         super(props);
@@ -87,6 +88,7 @@ class PhoneAlert extends React.Component {
 
     componentDidMount() {
         Trace.traceEvent("电话弹屏", '弹出电话弹屏');
+        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_MODAL, this.closeModal);
         phoneAlertStore.listen(this.onStoreChange);
         //通过系统拨打电话，就直接把客户信息通过emitter发送出来的
         if (this.props.phoneObj && this.props.phoneObj.customerDetail) {
@@ -201,6 +203,7 @@ class PhoneAlert extends React.Component {
     }
 
     componentWillUnmount() {
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_PHONE_MODAL, this.closeModal);
         phoneAlertStore.unlisten(this.onStoreChange);
     }
 
