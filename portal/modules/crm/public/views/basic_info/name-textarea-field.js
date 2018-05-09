@@ -73,7 +73,7 @@ let NameTextareaField = React.createClass({
                 name: $.trim(this.state.formData.name)
             };
             if (this.props.isMerge) {
-                this.props.updateMergeCustomer(submitData);
+                if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
                 this.props.setEditNameFlag(false);
             } else {
                 this.setState({loading: true});

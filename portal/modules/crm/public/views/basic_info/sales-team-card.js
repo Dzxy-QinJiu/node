@@ -234,7 +234,7 @@ var SalesTeamCard = React.createClass({
         };
         Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
         if (this.props.isMerge) {
-            this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
         } else if (this.state.displayType === "edit") {
             this.setState({loading: true});

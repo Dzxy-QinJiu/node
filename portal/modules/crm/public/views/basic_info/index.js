@@ -68,7 +68,7 @@ var BasicData = React.createClass({
     editBasicSuccess: function (newBasic) {
         if (this.props.isMerge) {
             //合并面板的修改保存
-            this.props.updateMergeCustomer(newBasic);
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(newBasic);
         } else if (this.props.isRepeat) {
             //重客户的修改
             CrmRepeatAction.editBasicSuccess(newBasic);
@@ -130,7 +130,7 @@ var BasicData = React.createClass({
         saveObj.type = type;
         Trace.traceEvent(this.getDOMNode(), `保存客户${type}的修改`);
         if (this.props.isMerge) {
-            this.props.updateMergeCustomer(saveObj);
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveObj);
             if (_.isFunction(successFunc)) successFunc();
         } else {
             CrmBasicAjax.updateCustomer(saveObj).then((result) => {

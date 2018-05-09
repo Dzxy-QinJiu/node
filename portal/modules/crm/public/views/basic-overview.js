@@ -24,33 +24,20 @@ import CustomerRecord from "./customer_record";
 import ScheduleItem from "./schedule/schedule-item";
 import Trace from "LIB_DIR/trace";
 import RightPanelScrollBar from "./components/rightPanelScrollBar";
-function getStateFromStore(isMerge) {
-    return {
-        ...basicOverviewStore.getState(),
-        salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
-        basicPanelH: getBasicPanelH(isMerge),
-        showDetailFlag: false,//控制客户详情展示隐藏的标识
-        recommendTags: []//推荐标签
-    };
-}
-function getBasicPanelH(isMerge) {
-    if (isMerge) {
-        //合并面板，去掉客户选择框和合并按钮所占高度
-        return $(window).height() - 103;//103:顶部导航 + 顶部间距高度 53 + 50
-    } else {
-        return $(window).height() - 73;//73:顶部导航 + 顶部间距高度 53 + 20
-    }
-}
 
 var BasicOverview = React.createClass({
     getInitialState: function () {
-        return getStateFromStore(this.props.isMerge);
+        return {
+            ...basicOverviewStore.getState(),
+            salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
+            showDetailFlag: false,//控制客户详情展示隐藏的标识
+            recommendTags: []//推荐标签
+        };
     },
     onChange: function () {
         this.setState({...basicOverviewStore.getState()});
     },
     componentDidMount: function () {
-        this.autoLayout();
         basicOverviewStore.listen(this.onChange);
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
@@ -95,14 +82,7 @@ var BasicOverview = React.createClass({
             });
         }
     },
-    autoLayout: function () {
-        var _this = this;
-        $(window).resize(function () {
-            _this.setState({
-                basicPanelH: getBasicPanelH(_this.props.isMerge)
-            });
-        });
-    },
+
     componentWillReceiveProps: function (nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
@@ -116,18 +96,6 @@ var BasicOverview = React.createClass({
         basicOverviewStore.unlisten(this.onChange);
     },
 
-    //提交修改
-    submitBaiscForm: function (newBasicData, changedData) {
-        if (this.props.isMerge) {
-            //合并面板的修改保存
-            this.props.updateMergeCustomer(newBasicData);
-        } else {
-            basicOverviewAction.submitBaiscForm(newBasicData, changedData, () => {
-                this.props.refreshCustomerList(newBasicData.id);
-                FilterAction.getTagList();
-            });
-        }
-    },
     //展示按客户搜索到的用户列表
     triggerUserList: function () {
         //获取客户基本信息
@@ -138,7 +106,7 @@ var BasicOverview = React.createClass({
     editBasicSuccess: function (newBasic) {
         if (this.props.isMerge) {
             //合并面板的修改保存
-            this.props.updateMergeCustomer(newBasic);
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(newBasic);
         } else if (this.props.isRepeat) {
             //重客户的修改
             CrmRepeatAction.editBasicSuccess(newBasic);
@@ -180,17 +148,22 @@ var BasicOverview = React.createClass({
             type: "label",
             labels: tags
         };
-        crmAjax.updateCustomer(submitData).then(result => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                //更新列表中的标签
-                this.editBasicSuccess(submitData);
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, errorMsg => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });
+        if (this.props.isMerge) {
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            crmAjax.updateCustomer(submitData).then(result => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    //更新列表中的标签
+                    this.editBasicSuccess(submitData);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, errorMsg => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
     },
 
     //是否有转出客户的权限
@@ -322,10 +295,12 @@ var BasicOverview = React.createClass({
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         return (
-            <RightPanelScrollBar isMerge={true}>
+            <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {this.renderExpireTip()}
                     <SalesTeamCard
+                        isMerge={this.props.isMerge}
+                        updateMergeCustomer={this.props.updateMergeCustomer}
                         enableEdit={hasPrivilege("CUSTOMER_UPDATE_SALES")}
                         enableTransfer={this.enableTransferCustomer()}
                         customerId={basicData.id}

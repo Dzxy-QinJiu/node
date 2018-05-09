@@ -1,7 +1,7 @@
 import {Icon, Alert} from 'antd';
 let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
-import { AntcAreaSelection } from "antc";
+import {AntcAreaSelection} from "antc";
 
 var LocationSelectField = React.createClass({
     getDefaultProps: function () {
@@ -43,7 +43,7 @@ var LocationSelectField = React.createClass({
     },
     changeDisplayType: function (type) {
         if (type === 'text') {
-            Trace.traceEvent(this.getDOMNode(),"取消对地域的修改");
+            Trace.traceEvent(this.getDOMNode(), "取消对地域的修改");
             this.setState({
                 province: this.props.province,
                 city: this.props.city,
@@ -52,7 +52,7 @@ var LocationSelectField = React.createClass({
                 submitErrorMsg: ''
             });
         } else {
-            Trace.traceEvent(this.getDOMNode(),"点击设置地域按钮");
+            Trace.traceEvent(this.getDOMNode(), "点击设置地域按钮");
             this.setState({
                 loading: false,
                 displayType: type,
@@ -70,9 +70,9 @@ var LocationSelectField = React.createClass({
     },
     handleSubmit: function () {
         if (this.state.loading) return;
-        if(this.state.province == this.props.province
+        if (this.state.province == this.props.province
             && this.state.city == this.props.city
-            && this.state.county == this.props.county){
+            && this.state.county == this.props.county) {
             this.backToDisplay();
             return;
         }
@@ -83,19 +83,19 @@ var LocationSelectField = React.createClass({
             city: this.state.city,
             county: this.state.county
         };
-        Trace.traceEvent(this.getDOMNode(),"保存对地域的修改");
+        Trace.traceEvent(this.getDOMNode(), "保存对地域的修改");
         if (this.props.isMerge) {
-            this.props.updateMergeCustomer(submitData);
+            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
         } else {
             this.setState({loading: true});
-            CrmBasicAjax.updateCustomer(submitData).then(result=> {
+            CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
                     //更新列表中的客户地域
                     this.props.modifySuccess(submitData);
                 }
-            }, errorMsg=> {
+            }, errorMsg => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: errorMsg || Intl.get("crm.174", "修改客户地域失败")
@@ -109,7 +109,7 @@ var LocationSelectField = React.createClass({
         this.state.province = location[0] || "";
         this.state.city = location[1] || "";
         this.state.county = location[2] || "";
-        Trace.traceEvent(this.getDOMNode(),"修改地域");
+        Trace.traceEvent(this.getDOMNode(), "修改地域");
     },
     render: function () {
         var location = [];
@@ -127,7 +127,7 @@ var LocationSelectField = React.createClass({
                 <div className="basic-location-field">
                     <span>{location.join('/')}</span>
                     <i className="iconfont icon-update" title={Intl.get("crm.175", "设置地域")}
-                       onClick={this.changeDisplayType.bind(this , "edit")}/>
+                       onClick={this.changeDisplayType.bind(this, "edit")}/>
                 </div>
             );
         }
@@ -138,15 +138,15 @@ var LocationSelectField = React.createClass({
                 <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose"
                    onClick={this.handleSubmit}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={this.changeDisplayType.bind(this,"text")}/>
+                   onClick={this.changeDisplayType.bind(this, "text")}/>
             </div>
         );
         return (<div className="location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24" width="260"
-                           placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
-                           prov={this.state.province}
-                           city={this.state.city}
-                           county={this.state.county} updateLocation={this.updateLocation}/>
+                               placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                               prov={this.state.province}
+                               city={this.state.city}
+                               county={this.state.county} updateLocation={this.updateLocation}/>
             <div className="buttons">
                 {buttonBlock}
             </div>

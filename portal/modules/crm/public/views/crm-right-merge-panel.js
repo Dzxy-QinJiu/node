@@ -527,7 +527,7 @@ var CrmRightMergePanel = React.createClass({
                                             isMerge={true}
                                             curCustomer={this.state.selectedCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
-                                            updateMergeCustomer={this.props.updateMergeCustomer}
+                                            updateMergeCustomer={this.updateMergeCustomer}
                                             changeActiveKey={this.changeActiveKey}
                                         />
                                     ) : null}
@@ -541,7 +541,7 @@ var CrmRightMergePanel = React.createClass({
                                             isMerge={true}
                                             setMergeCustomerDefaultContact={this.setMergeCustomerDefaultContact}
                                             delMergeCustomerContact={this.delMergeCustomerContact}
-                                            updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                            updateMergeCustomerContact={this.updateMergeCustomerContact}
                                             refreshCustomerList={this.props.refreshCustomerList}
                                             curCustomer={this.state.selectedCustomer}
                                         />
