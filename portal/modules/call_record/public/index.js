@@ -3,7 +3,7 @@ import CrmRightPanel  from '../../crm/public/views/crm-right-panel';
 import {RightPanel} from "../../../components/rightPanel";
 import crmAjax from '../../crm/public/ajax';
 var callReordEmitter = require("../../../public/sources/utils/emitters").callReordEmitter;
-import { message } from 'antd';
+import {message} from 'antd';
 import Trace from "LIB_DIR/trace";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 
@@ -12,32 +12,32 @@ const CallRecordList = React.createClass({
         return {
             rightPanelCustomerId: '',//通话记录，通过客户id查看客户详情
             showRightPanel: false,// 标记显示右侧客户详情面板 false不显示 true显示
-            clickCustomerData: '' ,// 点击客户的数据
+            clickCustomerData: '',// 点击客户的数据
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
         };
     },
     // 关闭客户详情面板
-    closeRightPanel : function() {
+    closeRightPanel: function () {
         this.setState({
-            rightPanelCustomerId : '',
-            showRightPanel : false
+            rightPanelCustomerId: '',
+            showRightPanel: false
         });
     },
     componentWillMount: function () {
-        callReordEmitter.on(callReordEmitter.CLOSE_RIGHT_PANEL , this.closeRightPanel);
+        callReordEmitter.on(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
     },
 
-    componentDidMount : function() {
+    componentDidMount: function () {
         var $wrap = $(this.refs.wrap);
         var _this = this;
-        $wrap.on("click" , ".customer_column" , function() {            
+        $wrap.on("click", ".customer_column", function () {
             var $customer_id_hidden = $(this).find(".customer_id_hidden");
-            if($customer_id_hidden[0]) {
-                Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"),"打开客户详情");
+            if ($customer_id_hidden[0]) {
+                Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"), "打开客户详情");
                 _this.setState({
                     rightPanelCustomerId: $customer_id_hidden.val(),
-                    showRightPanel : true
+                    showRightPanel: true
                 });
             }
         });
@@ -46,18 +46,18 @@ const CallRecordList = React.createClass({
 
     componentWillUnmount: function () {
         this.setState({
-            rightPanelCustomerId : '',
-            showRightPanel : false,
+            rightPanelCustomerId: '',
+            showRightPanel: false,
         });
-        callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL , this.closeRightPanel);
+        callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
     },
-    ShowCustomerUserListPanel:function(data) {
+    ShowCustomerUserListPanel: function (data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
     },
-    closeCustomerUserListPanel:function() {
+    closeCustomerUserListPanel: function () {
         this.setState({
             isShowCustomerUserListPanel: false
         });
@@ -65,11 +65,10 @@ const CallRecordList = React.createClass({
     render: function () {
         return (
             <div>
-            <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
-                <div ref="wrap">
-                    <CallRecord showRightPanel={this.state.showRightPanel}/>
-                </div>
-                <RightPanel showFlag={this.state.showRightPanel} className="call-record-crm-detail">
+                <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">
+                    <div ref="wrap">
+                        <CallRecord showRightPanel={this.state.showRightPanel}/>
+                    </div>
                     {this.state.showRightPanel ? <CrmRightPanel
                         currentId={this.state.rightPanelCustomerId}
                         showFlag={this.state.showRightPanel}
@@ -77,24 +76,10 @@ const CallRecordList = React.createClass({
                         refreshCustomerList={function () {
                         }}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    />: null}
-                </RightPanel>
-            </div>
-            {/*该客户下的用户列表*/}
-            <RightPanel
-                className="customer-user-list-panel"
-                showFlag={this.state.isShowCustomerUserListPanel}
-            >
-                {this.state.isShowCustomerUserListPanel?
-                    <AppUserManage
-                        customer_id={this.state.CustomerInfoOfCurrUser.id}
-                        hideCustomerUserList={this.closeCustomerUserListPanel}
-                        customer_name={this.state.CustomerInfoOfCurrUser.name}
-                    />:null
-                }
-            </RightPanel>
+                    /> : null}
+                </div>
             </div>
         );
     }
 });
-module.exports =  CallRecordList;
+module.exports = CallRecordList;

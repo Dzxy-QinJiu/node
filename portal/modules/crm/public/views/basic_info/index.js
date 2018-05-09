@@ -142,7 +142,7 @@ var BasicData = React.createClass({
     handleFocusCustomer: function (basicData) {
         Trace.traceEvent(this.getDOMNode(), basicData.interest === "true" ? "取消关注客户" : "关注客户");
         if (_.isFunction(this.props.handleFocusCustomer)) {
-            this.props.handleFocusCustomer.bind(this, basicData);
+            this.props.handleFocusCustomer(basicData);
         }
     },
     //渲染客户的基本信息

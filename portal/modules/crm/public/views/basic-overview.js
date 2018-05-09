@@ -157,6 +157,8 @@ var BasicOverview = React.createClass({
                     if (_.isFunction(successFunc)) successFunc();
                     //更新列表中的标签
                     this.editBasicSuccess(submitData);
+                    this.state.basicData.labels = tags;
+                    this.setState({basicData: this.state.basicData});
                 } else {
                     if (_.isFunction(errorFunc)) errorFunc();
                 }

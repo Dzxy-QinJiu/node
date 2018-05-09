@@ -76,8 +76,8 @@ class ScheduleItem extends React.Component {
     }
 
     deleteSchedule(itemId) {
-        if (_.isFunction(this.props.handleItemStatus)) {
-            this.props.handleItemStatus(itemId);
+        if (_.isFunction(this.props.deleteSchedule)) {
+            this.props.deleteSchedule(itemId);
         }
     }
 
@@ -119,10 +119,11 @@ class ScheduleItem extends React.Component {
                                     onClick={this.toggleScheduleContact.bind(this, item, true)}
                                     size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button>)
                             : null}
-                        <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
-                                size="small">
-                            {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
-                        </Button>
+                        {user_id === item.member_id ?
+                            <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
+                                    size="small">
+                                {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
+                            </Button> : null}
                         <span className="right-handle-buttons">
                                 {item.socketio_notice && item.alert_time ? (<Popover
                                     content={moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
