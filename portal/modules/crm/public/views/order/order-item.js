@@ -172,7 +172,11 @@ const OrderItem = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
         if (this.props.isMerge) {
             //合并客户时，修改订单的销售阶段或应用
-            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder({customer_id, id, sale_stages});
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder({
+                customer_id,
+                id,
+                sale_stages
+            });
             if (_.isFunction(successFunc)) successFunc();
         } else {
             OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
@@ -376,6 +380,14 @@ const OrderItem = React.createClass({
                         >
                             {applyBtnText}
                         </Button>
+                        {this.state.isAlertShow ? (
+                            <Alert
+                                className="add-app-tip"
+                                message={Intl.get("crm.153", "请先添加应用")}
+                                type="error"
+                                showIcon
+                            />
+                        ) : null}
                     </div>
                 ) : null}
                 <div className="order-item-content">
@@ -404,29 +416,22 @@ const OrderItem = React.createClass({
                         saveEditInput={this.saveOrderBasicInfo}
                     />
                 </div>
-                <div className="order-introduce">
-                    {this.props.order.contract_id ? (
-                        <Button type="ghost" className="order-introduce-btn pull-right"
-                                onClick={this.gotoContract}
-                        >
-                            {Intl.get("crm.151", "查看合同")}
-                        </Button>
-                    ) : null}
+                {/*<div className="order-introduce">*/}
+                {/*{this.props.order.contract_id ? (*/}
+                {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
+                {/*onClick={this.gotoContract}*/}
+                {/*>*/}
+                {/*{Intl.get("crm.151", "查看合同")}*/}
+                {/*</Button>*/}
+                {/*) : null}*/}
 
-                    {showGenerateContractBtn ? (
-                        <Button type="ghost" className="order-introduce-btn pull-right"
-                                onClick={this.generateContract}>
-                            {Intl.get("crm.152", "生成合同")}
-                        </Button>
-                    ) : null}
-                </div>
-                {this.state.isAlertShow ? (
-                    <Alert
-                        message={Intl.get("crm.153", "请先添加应用")}
-                        type="error"
-                        showIcon
-                    />
-                ) : null}
+                {/*{showGenerateContractBtn ? (*/}
+                {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
+                {/*onClick={this.generateContract}>*/}
+                {/*{Intl.get("crm.152", "生成合同")}*/}
+                {/*</Button>*/}
+                {/*) : null}*/}
+                {/*</div>*/}
             </div>
         );
     },
