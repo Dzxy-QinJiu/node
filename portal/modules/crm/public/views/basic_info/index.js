@@ -5,10 +5,8 @@ var CRMAction = require("../../action/basic-overview-actions");
 var SalesTeamStore = require("../../../../sales_team/public/store/sales-team-store");
 var PrivilegeChecker = require("../../../../../components/privilege/checker").PrivilegeChecker;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
-var GeminiScrollbar = require('../../../../../components/react-gemini-scrollbar');
-import {Tag, Spin} from "antd";
+import {Tag} from "antd";
 var history = require("../../../../../public/sources/history");
-var FilterAction = require("../../action/filter-actions");
 let NameTextareaField = require("./name-textarea-field");
 let CrmAction = require("../../action/crm-actions");
 let CrmRepeatAction = require("../../action/customer-repeat-action");
@@ -19,48 +17,28 @@ import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
-function getStateFromStore(isMerge) {
-    return {
-        ...CRMStore.getState(),
-        salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
-        basicPanelH: getBasicPanelH(isMerge),
-        showDetailFlag: false,//控制客户详情展示隐藏的标识
-        editNameFlag: false,//编辑客户名的标识
-        editBasicFlag: false,//编辑客户基本信息的标识
-        isLoadingIndustryList: false,
-        industryList: []
-    };
-}
-function getBasicPanelH(isMerge) {
-    if (isMerge) {
-        //合并面板，去掉客户选择框和合并按钮所占高度
-        return $(window).height() - 103;//103:顶部导航 + 顶部间距高度 53 + 50
-    } else {
-        return $(window).height() - 73;//73:顶部导航 + 顶部间距高度 53 + 20
-    }
-}
 
 var BasicData = React.createClass({
     getInitialState: function () {
-        return getStateFromStore(this.props.isMerge);
+        return {
+            ...CRMStore.getState(),
+            salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
+            showDetailFlag: false,//控制客户详情展示隐藏的标识
+            editNameFlag: false,//编辑客户名的标识
+            editBasicFlag: false,//编辑客户基本信息的标识
+            isLoadingIndustryList: false,
+            industryList: []
+        };
     },
     onChange: function () {
         this.setState({...CRMStore.getState()});
     },
     componentDidMount: function () {
-        this.autoLayout();
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
         this.getIndustryList();
     },
-    autoLayout: function () {
-        var _this = this;
-        $(window).resize(function () {
-            _this.setState({
-                basicPanelH: getBasicPanelH(_this.props.isMerge)
-            });
-        });
-    },
+
     componentWillReceiveProps: function (nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && this.state.basicData.id !== nextProps.curCustomer.id) {
@@ -86,18 +64,6 @@ var BasicData = React.createClass({
         });
     },
 
-    //提交修改
-    submitBaiscForm: function (newBasicData, changedData) {
-        if (this.props.isMerge) {
-            //合并面板的修改保存
-            this.props.updateMergeCustomer(newBasicData);
-        } else {
-            CRMAction.submitBaiscForm(newBasicData, changedData, () => {
-                this.props.refreshCustomerList(newBasicData.id);
-                FilterAction.getTagList();
-            });
-        }
-    },
     //展示按客户搜索到的用户列表
     triggerUserList: function () {
         //获取客户基本信息
@@ -232,7 +198,6 @@ var BasicData = React.createClass({
                     <div className="basic-info-administrative basic-info-item">
                         <span className="iconfont icon-administrative basic-info-icon"/>
                         <BasicEditSelectField
-                            isMerge={this.props.isMerge}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={this.getAdministrativeLevel(level)}
@@ -249,7 +214,6 @@ var BasicData = React.createClass({
                     <div className="basic-info-indestry basic-info-item">
                         <span className="iconfont icon-industry basic-info-icon"/>
                         <BasicEditSelectField
-                            isMerge={this.props.isMerge}
                             updateMergeCustomer={this.props.updateMergeCustomer}
                             id={basicData.id}
                             displayText={basicData.industry}

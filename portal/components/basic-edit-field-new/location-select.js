@@ -1,4 +1,3 @@
-import {Icon, Button} from 'antd';
 import Trace from "LIB_DIR/trace";
 import {AntcAreaSelection} from "antc";
 import {DetailEditBtn} from "../rightPanel";
@@ -34,7 +33,6 @@ const LocationSelectField = React.createClass({
         if (nextProps.id != this.state.id) {
             //切换客户时,重新设置state数据
             let stateData = this.getInitialState();
-            stateData.isMerge = nextProps.isMerge;
             stateData.id = nextProps.id;
             stateData.province = nextProps.province;
             stateData.city = nextProps.city;

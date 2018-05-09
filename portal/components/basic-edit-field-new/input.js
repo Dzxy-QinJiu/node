@@ -5,7 +5,7 @@ const Validator = Validation.Validator;
  * 可切换状态
  */
 require("./css/basic-edit-field.less");
-import {Form, Input, Icon, Button} from "antd";
+import {Form, Input} from "antd";
 var crypto = require("crypto");
 var classNames = require("classnames");
 var secretPassword = "";

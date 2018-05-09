@@ -358,7 +358,7 @@ var CrmRightMergePanel = React.createClass({
             updateCustomer.industry = newBasic.industry;
         }
         //客户的行政级别
-        if (newBasic.administrative_level) {
+        if (newBasic.administrative_level || newBasic.administrative_level === "") {
             updateCustomer.administrative_level = newBasic.administrative_level;
         }
         //客户地域的修改
@@ -372,11 +372,11 @@ var CrmRightMergePanel = React.createClass({
             updateCustomer.county = newBasic.county;
         }
         //地址
-        if (newBasic.address || newBasic.address == "") {
+        if (newBasic.address || newBasic.address === "") {
             updateCustomer.address = newBasic.address;
         }
         //客户备注的修改
-        if (newBasic.remarks || newBasic.remarks == "") {
+        if (newBasic.remarks || newBasic.remarks === "") {
             updateCustomer.remarks = newBasic.remarks;
         }
         //客户所属销售的修改

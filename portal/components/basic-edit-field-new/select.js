@@ -5,7 +5,7 @@ const Validator = Validation.Validator;
  * 可切换状态
  */
 require("./css/basic-edit-field.less");
-import {Form, Icon, Select, Button} from "antd";
+import {Form, Select} from "antd";
 var classNames = require("classnames");
 import FieldMixin from "../antd-form-fieldmixin";
 var FormItem = Form.Item;
