@@ -108,20 +108,6 @@ const OrderItem = React.createClass({
         this.setState({isStageSelectShow: true});
     },
 
-    closeStageSelect: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "取消修改销售阶段");
-        this.setState({
-            isStageSelectShow: false,
-            stage: this.state.formData.sale_stages
-        });
-    },
-
-    onStageChange: function (stage) {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "修改销售阶段为" + stage);
-        this.state.stage = stage;
-        this.setState(this.state);
-    },
-
     showAppPanel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "修改应用");
         this.setState({isAppPanelShow: true});
@@ -182,7 +168,7 @@ const OrderItem = React.createClass({
             OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
                 if (result && result.code === 0) {
                     if (_.isFunction(successFunc)) successFunc();
-                    this.state.formData.sale_stages = reqData.sale_stages;
+                    this.state.formData.sale_stages = sale_stages;
                     this.setState(this.state);
                     //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
                     setTimeout(() => {
@@ -329,7 +315,7 @@ const OrderItem = React.createClass({
                     <BasicEditSelectField
                         id={order.id}
                         displayText={order.sale_stages}
-                        value={this.state.stage}
+                        value={order.sale_stages}
                         field="sale_stages"
                         selectOptions={stageOptions}
                         hasEditPrivilege={true}
