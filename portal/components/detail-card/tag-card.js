@@ -9,6 +9,7 @@ import {Button, Icon, Input, message} from "antd";
 import {DetailEditBtn} from "../rightPanel";
 import {isClueTag, isTurnOutTag} from "MOD_DIR/crm/public/utils/crm-util";
 import Trace from "LIB_DIR/trace";
+import {isDiffOfTwoArray} from "PUB_DIR/sources/utils/common-method-util";
 class TagCard extends React.Component {
     constructor(props) {
         super(props);
@@ -23,10 +24,8 @@ class TagCard extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        let diff1 = _.difference(this.state.tags, nextProps.tags);
-        let diff2 = _.difference(nextProps.tags, this.state.tags);
         //标签有变化
-        if (diff1.length || diff2.length) {
+        if (isDiffOfTwoArray(this.state.tags, nextProps.tags)) {
             this.setState({tags: $.extend(true, [], nextProps.tags)});
         }
         this.setState({recommendTags: $.extend(true, [], nextProps.recommendTags)});

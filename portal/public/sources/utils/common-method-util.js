@@ -19,7 +19,7 @@ exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCou
         teamMemberCount += availableObj.owner;
     }
     //加上舆情秘书的个数统计（销售首页的团队人数统计中不计算舆情秘书）
-    if(!filterManager && availableObj.manager){
+    if (!filterManager && availableObj.manager) {
         teamMemberCount += availableObj.manager;
     }
     if (availableObj.user) {
@@ -36,34 +36,34 @@ exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCou
     return teamMemberCount;
 };
 //判断录音文件是否以.WAV结尾
-exports.checkWav = function(str){
+exports.checkWav = function (str) {
     var index = str.lastIndexOf('.WAV');
-    if (index === -1){
+    if (index === -1) {
         return false;
-    }else{
+    } else {
         return index + 4 === str.length;
     }
 };
 //返回录音url
-exports.getAudioRecordUrl = function(itemLocal,itemRecord,phoneType){
+exports.getAudioRecordUrl = function (itemLocal, itemRecord, phoneType) {
     //播放长沙，济南和北京的录音
     var local = "changsha", audioType = "";
-    if (itemLocal == "jinan"){
+    if (itemLocal == "jinan") {
         local = "jinan";
-    }else if (itemLocal == "beijing"){
+    } else if (itemLocal == "beijing") {
         local = "beijing";
     }
     //是否是wav格式的文件
-    if (this.checkWav(itemRecord)){
+    if (this.checkWav(itemRecord)) {
         audioType = "";
-    }else{
+    } else {
         audioType = ".mp3";
     }
     local = local ? local + "/" : "";
     //如果是录音类型是app类型的
-    if (phoneType === "app"){
+    if (phoneType === "app") {
         return "/record/app/" + itemRecord + audioType;
-    }else{
+    } else {
         return "/record/" + local + itemRecord + audioType
     }
 };
@@ -86,7 +86,7 @@ exports.removeEmptyItem = removeEmptyItem;
 
 // 根据权限，判断获取团队和成员时所传字段的值
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-exports.getParamByPrivilege = function(){
+exports.getParamByPrivilege = function () {
     let reqData = {};
     if (hasPrivilege("GET_TEAM_LIST_ALL") || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
         reqData.type = 'all';
@@ -103,7 +103,7 @@ exports.validateRequiredOne = function (item1, item2) {
         //通过必填一项的验证
         return true;
     } else {//联系人姓名和部门都为空
-       return false;
+        return false;
     }
 };
 exports.getRelativeTime = function (time) {
@@ -146,3 +146,12 @@ exports.formatRoundingPercentData = function (data, n) {
         return data.toFixed(nData);
     }
 };
+//比较两个数组中元素是否有不同的
+exports.isDiffOfTwoArray = function (array1, array2) {
+    // 返回来自array1，并且不存在于array2的数组
+    let diff1 = _.difference(array1, array2);
+    // 返回来自array2，并且不存在于array1的数组
+    let diff2 = _.difference(array2, array1);
+    //俩数组任何一个有不同，都说明俩数组中有不同的值存在
+    return diff1.length || diff2.length;
+}
