@@ -635,9 +635,10 @@ const CustomerRecord = React.createClass({
                         <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
                                                     values={{"n": this.state.total + ""}}/>
                         </span>
-
-                        <span className="iconfont icon-add" title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}
-                              onClick={this.toggleAddRecordPanel.bind(this)}/>
+                        {this.props.isMerge ? null : (
+                            <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+                                  title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}/>)
+                        }
                         <Dropdown overlay={this.getStatusMenu()} trigger={['click']}>
                             <a className="ant-dropdown-link trace-filter-item">
                                 {this.state.filterStatus ? CALL_STATUS_MAP[this.state.filterStatus] : Intl.get("call.record.call.state", "通话状态")}

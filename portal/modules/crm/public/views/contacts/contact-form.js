@@ -465,7 +465,7 @@ var ContactForm = React.createClass({
         this.phoneInputRefs = [];
         let contactWayAddObj = contact.contactWayAddObj || {};
         return (
-            <Form horizontal className="crm-contact-form" autocomplete="off">
+            <Form horizontal className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <FormItem
                         colon={false}

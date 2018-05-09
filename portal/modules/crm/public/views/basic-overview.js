@@ -232,6 +232,7 @@ var BasicOverview = React.createClass({
     renderCustomerRcord: function () {
         return <CustomerRecord
             isOverViewPanel={true}
+            isMerge={this.props.isMerge}
             curCustomer={this.state.basicData}
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
