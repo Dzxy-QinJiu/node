@@ -441,7 +441,7 @@ class CustomerUsers extends React.Component {
                     defaultMessage={`共{count}个`}
                     values={{"count": userNum || "0"}}
                 />
-                {isApplyButtonShow ? this.renderApplyBtns()
+                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>
             {this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP ? (

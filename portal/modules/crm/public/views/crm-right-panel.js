@@ -120,7 +120,8 @@ var CrmRightPanel = React.createClass({
             className += " crm-right-panel-content-slide";
         }
         return (
-            <RightPanel showFlag={this.props.showFlag} className="crm-right-panel white-space-nowrap table-btn-fix"
+            <RightPanel showFlag={this.props.showFlag}
+                        className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
                         data-tracename="客户详情">
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hideRightPanel(e)

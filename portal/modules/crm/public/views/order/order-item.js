@@ -368,6 +368,16 @@ const OrderItem = React.createClass({
                         </div>
                     )}
                 </div>
+                {applyBtnText && this.props.isApplyButtonShow ? (
+                    <div className="order-item-content">
+                        <span className="order-key">{Intl.get("crm.150", "用户申请")}:</span>
+                        <Button type="ghost" className="order-introduce-btn"
+                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
+                        >
+                            {applyBtnText}
+                        </Button>
+                    </div>
+                ) : null}
                 <div className="order-item-content">
                     <span className="order-key">{Intl.get("crm.148", "预算金额")}:</span>
                     <BasicEditInputField

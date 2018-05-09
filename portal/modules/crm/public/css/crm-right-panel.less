@@ -78,7 +78,23 @@
   }
 }
 
-//修改客户
+//申请用户面板
+.apply-user-form-panel {
+  width: 700px !important;
+  transform: translate(700px, 0);
+  > .icon-close {
+    display: none;
+  }
+  .crm-right-panel-content-slide {
+    -webkit-transform: translateX(-700px);
+    transform: translateX(-700px);
+  }
+  .crm-right-panel-content {
+    width: 100%;
+    padding: 0 20px 20px;
+  }
+}
+
 .crm-right-panel {
   .crm-right-panel-content-slide {
     -webkit-transform: translateX(-700px);
