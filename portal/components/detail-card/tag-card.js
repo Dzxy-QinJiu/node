@@ -32,7 +32,7 @@ class TagCard extends React.Component {
         this.setState({recommendTags: $.extend(true, [], nextProps.recommendTags)});
     }
 
-    addTag(e) {
+    addTag() {
         const tag = this.refs.newTag.refs.input.value.trim();
         if (!tag) return;
         //”线索“、”转出“标签“不可以添加
