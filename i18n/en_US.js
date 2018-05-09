@@ -1253,6 +1253,8 @@ var en_US = {
     "crm.order.remarks": "Order Remarks",//订单备注
     "crm.schedule.begin.time": "Begin time",//开始
     "crm.schedule.end.time": "End time",//结束
+    "crm.basic.concerned": "Concerned",//已关注
+    "crm.basic.unconcerned": "Unconcerned",//未关注
     // 客户管理end
 
     //客户分析 start

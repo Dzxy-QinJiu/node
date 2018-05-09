@@ -91,7 +91,8 @@ const LocationSelectField = React.createClass({
             });
         });
     },
-    handleCancel: function () {
+    handleCancel: function (e) {
+        Trace.traceEvent(e, "取消对地域的修改");
         this.changeDisplayType("text");
     },
     //更新地址

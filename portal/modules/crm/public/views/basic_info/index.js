@@ -17,7 +17,7 @@ import crmUtil from "../../utils/crm-util";
 import CrmBasicAjax from "../../ajax/index";
 import userData from "PUB_DIR/sources/user-data";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
-
+import Trace from "LIB_DIR/trace";
 var BasicData = React.createClass({
     getInitialState: function () {
         return {
@@ -64,12 +64,6 @@ var BasicData = React.createClass({
         });
     },
 
-    //展示按客户搜索到的用户列表
-    triggerUserList: function () {
-        //获取客户基本信息
-        var basicData = this.state.basicData || {};
-        this.props.ShowCustomerUserListPanel({customerObj: basicData || {}});
-    },
     //修改客户基本资料成功后的处理
     editBasicSuccess: function (newBasic) {
         if (this.props.isMerge) {
@@ -91,17 +85,6 @@ var BasicData = React.createClass({
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
-    },
-    onSelectAdministrativeLevel: function (administrative_level) {
-        administrative_level = parseInt(administrative_level);
-        if (!_.isNaN(administrative_level)) {
-            this.state.basicData.administrative_level = parseInt(administrative_level);
-            this.setState({basicData: this.state.basicData});
-        }
-    },
-    cancelAdministrativeLevel: function () {
-        this.state.basicData.administrative_level = CRMStore.getState().basicData.administrative_level;
-        this.setState({basicData: this.state.basicData});
     },
     getAdministrativeLevel: function (levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
@@ -131,11 +114,8 @@ var BasicData = React.createClass({
     },
     //设置编辑客户名的标识
     setEditNameFlag: function (flag) {
+        Trace.traceEvent(this.getDOMNode(), flag ? "修改客户名" : "取消客户名的修改");
         this.setState({editNameFlag: flag});
-    },
-    //设置编辑基本资料的标识
-    setEditBasicFlag: function (flag) {
-        this.setState({editBasicFlag: flag});
     },
     getAdministrativeLevelOptions: function () {
         let options = crmUtil.administrativeLevels.map(obj => {
@@ -144,26 +124,11 @@ var BasicData = React.createClass({
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
     },
-    onSelectAdministrativeLevel: function (administrative_level) {
-        administrative_level = parseInt(administrative_level);
-        if (!_.isNaN(administrative_level)) {
-            this.state.basicData.administrative_level = parseInt(administrative_level);
-            this.setState({basicData: this.state.basicData});
-        }
-    },
-    onSelectIndustry: function (industry) {
-        if (industry) {
-            this.state.basicData.industry = industry;
-            this.setState({basicData: this.state.basicData});
-        }
-    },
-    cancelEditIndustry: function () {
-        this.state.basicData.industry = CRMStore.getState().basicData.industry;
-        this.setState({basicData: this.state.basicData});
-    },
+
     //保存修改的基本信息
     saveEditBasicInfo: function (type, saveObj, successFunc, errorFunc) {
         saveObj.type = type;
+        Trace.traceEvent(this.getDOMNode(), `保存客户${type}的修改`);
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(saveObj);
             if (_.isFunction(successFunc)) successFunc();
@@ -182,6 +147,7 @@ var BasicData = React.createClass({
     },
     //关注客户的处理
     handleFocusCustomer: function (basicData) {
+        Trace.traceEvent(this.getDOMNode(), basicData.interest === "true" ? "取消关注客户" : "关注客户");
         if (_.isFunction(this.props.handleFocusCustomer)) {
             this.props.handleFocusCustomer.bind(this, basicData);
         }
@@ -206,8 +172,6 @@ var BasicData = React.createClass({
                             selectOptions={this.getAdministrativeLevelOptions()}
                             hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
                             placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
-                            onSelectChange={this.onSelectAdministrativeLevel}
-                            cancelEditField={this.cancelAdministrativeLevel}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, "administrative_level")}
                         />
                     </div>
@@ -223,8 +187,6 @@ var BasicData = React.createClass({
                             hasEditPrivilege={hasPrivilege("CUSTOMER_UPDATE_INDUSTRY")}
                             placeholder={Intl.get("crm.22", "请选择行业")}
                             editBtnTip={Intl.get("crm.163", "设置行业")}
-                            onSelectChange={this.onSelectIndustry}
-                            cancelEditField={this.cancelEditIndustry}
                             saveEditSelect={this.saveEditBasicInfo.bind(this, "industry")}
                         />
                     </div>
@@ -271,8 +233,18 @@ var BasicData = React.createClass({
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
         let interestFlag = basicData.interest === "true";
+        const interestClass = classNames("iconfont", {
+            "icon-interested": interestFlag,
+            "icon-uninterested": !interestFlag
+        });
+        let interestTitle = interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
+            Intl.get("crm.customer.interested", "添加关注");
+        if (this.props.isMerge) {
+            interestTitle = interestFlag ? Intl.get("crm.basic.concerned", "已关注") :
+                Intl.get("crm.basic.unconcerned", "未关注");
+        }
         return (
-            <div className="basic-info-contianer">
+            <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
                     <NameTextareaField
                         isMerge={this.props.isMerge}
@@ -305,15 +277,11 @@ var BasicData = React.createClass({
                             title={this.state.showDetailFlag ? Intl.get("crm.basic.detail.hide", "收起详情") :
                                 Intl.get("crm.basic.detail.show", "展开详情")}
                             onClick={this.toggleBasicDetail}/>
-                            <span
-                                className={classNames("iconfont", {
-                                    "icon-interested": interestFlag,
-                                    "icon-uninterested": !interestFlag
-                                })}
-                                title={interestFlag ? Intl.get("crm.customer.uninterested", "取消关注") :
-                                    Intl.get("crm.customer.interested", "添加关注")}
-                                onClick={this.handleFocusCustomer.bind(this, basicData)}
-                            />
+                            {this.props.isMerge ? (<span className={interestClass} title={interestTitle}/> ) : (
+                                <span className={interestClass}
+                                      title={interestTitle}
+                                      onClick={this.handleFocusCustomer.bind(this, basicData)}
+                                />)}
                         </div>
                     </div>
                 )}

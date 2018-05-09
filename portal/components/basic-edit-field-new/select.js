@@ -42,10 +42,6 @@ let BasicEditSelectField = React.createClass({
             editBtnTip: Intl.get("common.update", "修改"),
             onDisplayTypeChange: function (type) {
             },
-            onSelectChange: function () {
-            },
-            cancelEditField: function () {
-            },
             saveEditSelect: function () {
             },
             hideButtonBlock: false
@@ -143,10 +139,13 @@ let BasicEditSelectField = React.createClass({
             displayType: "text",
             submitErrorMsg: ''
         });
-        this.props.cancelEditField();
     },
     onSelectChange: function (selectVal) {
-        this.props.onSelectChange(selectVal);
+        var formData = this.state.formData;
+        formData.select = selectVal;
+        this.setState({
+            formData: formData
+        });
     },
     render: function () {
         var formData = this.state.formData;

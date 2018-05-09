@@ -984,7 +984,6 @@ var Crm = React.createClass({
         if (customerArr) {
             customerArr.interest = interestObj.interest;
         }
-        ;
         this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );

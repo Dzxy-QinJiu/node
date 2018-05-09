@@ -129,7 +129,7 @@ let NameTextareaField = React.createClass({
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && customerName != this.props.name && nameRegex.test(customerName)) {
-            Trace.traceEvent(e, "添加客户名称");
+            Trace.traceEvent(e, "修改客户名");
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
