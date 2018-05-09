@@ -320,8 +320,6 @@ const OrderItem = React.createClass({
                         selectOptions={stageOptions}
                         hasEditPrivilege={true}
                         placeholder={Intl.get("crm.155", "请选择销售阶段")}
-                        onSelectChange={this.onStageChange}
-                        cancelEditField={this.closeStageSelect}
                         saveEditSelect={this.editOrderStage}
                     />
                 </div>
