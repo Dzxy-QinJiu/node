@@ -148,7 +148,7 @@ const OrderItem = React.createClass({
     saveOrderBasicInfo: function (saveObj, successFunc, errorFunc) {
         saveObj.customer_id = this.props.order.customer_id;
         if (this.props.isMerge) {
-            this.props.updateMergeCustomerOrder(saveObj);
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
             if (_.isFunction(successFunc)) successFunc();
         } else {
             OrderAction.editOrder(saveObj, {}, (result) => {
@@ -172,7 +172,8 @@ const OrderItem = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
         if (this.props.isMerge) {
             //合并客户时，修改订单的销售阶段或应用
-            this.props.updateMergeCustomerOrder(reqData);
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder({customer_id, id, sale_stages});
+            if (_.isFunction(successFunc)) successFunc();
         } else {
             OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
                 if (result && result.code === 0) {
@@ -196,7 +197,7 @@ const OrderItem = React.createClass({
         reqData.apps = this.state.apps;
         if (this.props.isMerge) {
             //合并客户时，修改订单的销售阶段或应用
-            this.props.updateMergeCustomerOrder(reqData);
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(reqData);
             this.state.isAppPanelShow = false;
         } else {
             //客户详情中修改订单的应用

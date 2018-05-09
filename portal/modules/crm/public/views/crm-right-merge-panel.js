@@ -445,7 +445,7 @@ var CrmRightMergePanel = React.createClass({
                 //找到要修改的订单并更新
                 _.some(mergedCustomer.sales_opportunities, (order, index) => {
                     if (order.id == newOrder.id) {
-                        mergedCustomer.sales_opportunities[index] = newOrder;
+                        mergedCustomer.sales_opportunities[index] = $.extend(mergedCustomer.sales_opportunities[index], newOrder);
                         return true;
                     }
                 });
