@@ -168,7 +168,8 @@ class PhoneAlert extends React.Component {
         //页面上如果存在模态框，并且用座机打电话时
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
         //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态,第一个状态是alert
-        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
+        //如果外界打入电话，第一个状态是ring
+        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT || phonemsgObj.type == PHONERINGSTATUS.RING) && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
             //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
             this.state.phoneNum = phonemsgObj.to;
             this.state.phoneObj = {};
@@ -222,7 +223,9 @@ class PhoneAlert extends React.Component {
         if (phonemsgObj.type == PHONERINGSTATUS.RING) {
             desTipObj.tip = `${Intl.get("call.record.pick.phone", "请拿起话机")}`;
         } else if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
+            if (phonemsgObj.call_type == "OU"){
+                desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
+            }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             desTipObj.tip = `${Intl.get("call.record.phone.answered", "正在通话中")}`;
         } else if (phonemsgObj.type == PHONERINGSTATUS.BYE || phonemsgObj.type == PHONERINGSTATUS.record || phonemsgObj.type == PHONERINGSTATUS.phone) {
@@ -559,9 +562,6 @@ class PhoneAlert extends React.Component {
 
     renderMainContent() {
         var phonemsgObj = this.state.phonemsgObj;
-        //获取页面描述
-        var phoneMsgObj = this.getPhoneTipMsg(phonemsgObj);
-
         if (this.state.isAddingMoreProdctInfo) {
             //添加产品反馈，竞品信息
             return (
@@ -630,12 +630,12 @@ class PhoneAlert extends React.Component {
         }
         //获取页面描述
         var phoneMsgObj = this.getPhoneTipMsg(phonemsgObj);
-        if (phonemsgObj.type == PHONERINGSTATUS.BUSY) {
-            iconFontCls += " icon-phone-busy";
-        } else if (phonemsgObj.type == PHONERINGSTATUS.RING) {
-            iconFontCls += " icon-call-out";
-        } else if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            iconFontCls += " icon-phone-waiting";
+        if (phonemsgObj.type == PHONERINGSTATUS.RING || phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+            if (phonemsgObj.call_type == "OU"){
+                iconFontCls += " icon-callrecord-out";
+            }else if (phonemsgObj.call_type == "IN"){
+                iconFontCls += " icon-callrecord-in";
+            }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             iconFontCls += " icon-phone-answering";
         } else if (phonemsgObj.type == PHONERINGSTATUS.BYE || phonemsgObj.type == PHONERINGSTATUS.record || phonemsgObj.type == PHONERINGSTATUS.phone) {

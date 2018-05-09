@@ -248,6 +248,7 @@ function setInitialPhoneObj() {
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
+    console.log(phonemsgObj);
     if (hasPrivilege("CRM_LIST_CUSTOMERS") && phonemsgObj.type !== "BUSY") {
         ReactDOM.render(
             <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
