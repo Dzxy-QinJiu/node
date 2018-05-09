@@ -203,9 +203,11 @@ var CrmSchedule = React.createClass({
         return (
             <div className="schedule-title">
                 <span>{Intl.get("crm.right.schedule", "联系计划")}:</span>
-                <span className="iconfont icon-add schedule-add-btn"
-                      title={Intl.get("crm.214", "添加联系计划")}
-                      onClick={this.addSchedule}/>
+                {this.props.isMerge ? null : (
+                    <span className="iconfont icon-add schedule-add-btn"
+                          title={Intl.get("crm.214", "添加联系计划")}
+                          onClick={this.addSchedule}/>)
+                }
             </div>);
     },
     render(){

@@ -132,7 +132,7 @@ class ScheduleItem extends React.Component {
                                 </Popover>) : null}
                             {/*<DetailEditBtn  onClick={this.editSchedule.bind(this, item)}/>*/}
                             {/*只能删除自己创建的日程*/}
-                            {user_id == item.member_id && !this.props.hideDelete ?
+                            {user_id == item.member_id && !this.props.hideDelete && !this.props.isMerge ?
                                 <Popover content={Intl.get("common.delete", "删除")}
                                          trigger="hover" placement="bottom" overlayClassName="schedule-alert-time">
                                         <span className="iconfont icon-delete" data-tracename="点击删除日程按钮"
