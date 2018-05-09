@@ -993,9 +993,7 @@ var Crm = React.createClass({
         });
         if (customerArr) {
             customerArr.interest = interestObj.interest;
-        }
-
-        this.setState(
+        }        this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
@@ -1347,21 +1345,10 @@ var Crm = React.createClass({
                         curCustomer={this.state.curCustomer}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                        handleFocusCustomer={this.handleFocusCustomer}
+                        showRightPanel={this.showRightPanel}
                     />
                 ) : null}
-                {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
                 <BootstrapModal
                     show={this.state.showDeleteConfirm}
                     onHide={this.hideDeleteModal}

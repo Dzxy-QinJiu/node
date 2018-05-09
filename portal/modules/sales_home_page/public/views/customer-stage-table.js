@@ -1,6 +1,6 @@
-import { RightPanelClose } from "CMP_DIR/rightPanel/index";
-import { AntcTable } from "antc";
-import { Alert } from "antd";
+import {RightPanelClose} from "CMP_DIR/rightPanel/index";
+import {AntcTable} from "antc";
+import {Alert} from "antd";
 import Spinner from 'CMP_DIR/spinner';
 var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
 import rightPanelUtil from "CMP_DIR/rightPanel";
@@ -24,23 +24,28 @@ class CustomerStageTable extends React.Component {
             tableHeight: 0,
         };
     }
+
     componentDidMount() {
         this.changeTableHeight();
         $(window).on("resize", this.changeTableHeight);
     }
+
     //计算表格高度
     changeTableHeight = () => {
         var tableHeight = $(window).height() - LAYOUT.TOP;
-        this.setState({ tableHeight });
+        this.setState({tableHeight});
     }
+
     componentWillUnmount() {
         $(window).off("resize", this.changeTableHeight);
     }
+
     hideRightPanel() {
         this.setState({
             showRightPanel: false
         });
     }
+
     //客户详情面板相关方法
     ShowCustomerUserListPanel(data) {
         this.setState({
@@ -48,6 +53,7 @@ class CustomerStageTable extends React.Component {
             CustomerInfoOfCurrUser: data.customerObj
         });
     }
+
     handleScrollBottom() {
         this.props.handleScrollBottom({
             query: {
@@ -62,6 +68,7 @@ class CustomerStageTable extends React.Component {
             }]
         });
     }
+
     render() {
         const handleCustomerClick = (item, index) => {
             this.setState({
@@ -82,7 +89,7 @@ class CustomerStageTable extends React.Component {
                 return "";
             }
         };
-        const { data, loading, errorMsg, lastId, listenScrollBottom } = this.props.result;
+        const {data, loading, errorMsg, lastId, listenScrollBottom} = this.props.result;
         const loadingFirst = loading && !lastId;
         const loadingNotFirst = loading && lastId;
         const renderErr = () => {
@@ -113,7 +120,8 @@ class CustomerStageTable extends React.Component {
                     key: "customer_name",
                     title: Intl.get("crm.4", "客户名称"),
                     render: (text, item, index) => {
-                        return (<span className="click-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
+                        return (<span className="click-cell"
+                                      onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
                     },
                     width: 100
                 },
@@ -128,7 +136,7 @@ class CustomerStageTable extends React.Component {
                 <div className="stage-changed-customer-list-wrapper">
                     {renderErr()}
                     {renderSpiner()}
-                    <div className={hideTable? "hide": ""}>
+                    <div className={hideTable ? "hide" : ""}>
                         <AntcTable
                             dropLoad={{
                                 loading: loadingNotFirst,
@@ -141,27 +149,16 @@ class CustomerStageTable extends React.Component {
                             columns={columns}
                             dataSource={data}
                             pagination={false}
-                            scroll={{ y: this.state.tableHeight }}
+                            scroll={{y: this.state.tableHeight}}
                         />
                     </div>
-                    <CrmRightPanel
+                    {this.state.showRightPanel ? (<CrmRightPanel
                         showFlag={this.state.showRightPanel}
                         currentId={this.state.selectedCustomerId}
                         hideRightPanel={this.hideRightPanel.bind(this)}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                    />
-                    <RightPanel
-                        className="customer-user-list-panel"
-                    >
-                        {this.state.isShowCustomerUserListPanel ?
-                            <AppUserManage
-                                customer_id={this.state.CustomerInfoOfCurrUser.id}
-                                hideCustomerUserList={this.props.onClose}
-                                customer_name={this.state.CustomerInfoOfCurrUser.name}
-                            /> : null
-                        }
-                    </RightPanel>
+                    />) : null}
                 </div>
             );
         };

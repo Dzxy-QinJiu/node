@@ -1,0 +1,45 @@
+@import "../../../public/css/common-variables";
+
+@font_color: #8da8c5;
+@item_height: 24px;
+.basic-edit-field {
+  //展示信息的样式
+  .basic-info-text {
+    max-width: 375px;
+    line-height: 24px;
+    margin-left: 6px;
+    color: #333333;;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+  .inline-block {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  //编辑信息时的样式
+  form {
+    position: relative;
+    display: table;
+    .ant-form-item {
+      .ant-input, .ant-select {
+        width: 400px;
+        margin-left: 6px;
+      }
+      .ant-input {
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+    }
+  }
+  .ant-form-item {
+    width: auto !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+//地域编辑框的处理
+.location-edit-field {
+  float: left;
+  padding-left: 6px;
+}

@@ -1,7 +1,7 @@
 /**
  * Created by wangliping on 2017/9/20.
  */
-import {Form, Icon, Input, Button, Checkbox, DatePicker, InputNumber, Select, Radio} from 'antd';
+import {Form, Icon, DatePicker, InputNumber, Select, Radio} from 'antd';
 import {RightPanelCancel, RightPanelSubmit} from "CMP_DIR/rightPanel";
 import language from "PUB_DIR/language/getLanguage";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
@@ -9,7 +9,6 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import AppUserAjax from "MOD_DIR/app_user_manage/public/ajax/app-user-ajax";
 import Trace from "LIB_DIR/trace";
 const FormItem = Form.Item;
-const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const labelCol = {span: 4};
 const wrapperCol = {span: 11};

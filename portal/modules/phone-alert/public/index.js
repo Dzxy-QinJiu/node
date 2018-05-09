@@ -688,7 +688,7 @@ class PhoneAlert extends React.Component {
                         </div>
                     </div>
                 </div>) : null}
-                {/*添加客户时，如果该客户存在，需要展示该已有用户的详情*/}
+                {/*添加客户时，如果该客户存在，需要展示该已有客户的详情*/}
                 {this.state.rightPanelIsShow ? (
                     <CrmRightPanel
                         showFlag={this.state.rightPanelIsShow}
@@ -699,20 +699,6 @@ class PhoneAlert extends React.Component {
                         editCustomerBasic={this.editCustomerBasic}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                     />) : null}
-                {/*该客户下的用户列表*/}
-                {this.state.isShowCustomerUserListPanel ? <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    { this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel> : null}
-
             </div>
         );
     }
