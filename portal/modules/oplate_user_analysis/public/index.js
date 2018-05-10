@@ -107,13 +107,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         return tabs;
     },
 
-    //获取统计数图表定义
-    getSummaryCharts: function () {
-        return [{
-            url: `/rest/analysis/user/v1/${authType}/summary`,
-        }];
-    },
-
     //获取普通图表定义
     getCharts: function () {
         return [{
@@ -650,7 +643,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
     },
 
     render: function () {
-        const summaryCharts = this.getSummaryCharts();
         const tabs = this.getTabs();
         const charts = this.getCharts();
 
@@ -666,7 +658,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 <AntcAnalysis
                     isTabSelector={true}
                     tabs={tabs}
-                    charts={summaryCharts}
+                    charts={[{
+                        url: `/rest/analysis/user/v1/${authType}/summary`,
+                    }]}
                     emitters={emitters}
                 />
 
