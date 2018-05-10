@@ -605,7 +605,7 @@ var UserInfo = React.createClass({
             }
             var commissionRadio = "", goal = "", recordId = "",
                 saleGoalsAndCommissionRadio = this.state.saleGoalsAndCommissionRadio, newCommissionRatio = "", renewalCommissionRatio = "";
-            if (saleGoalsAndCommissionRadio.commission_ratio || saleGoalsAndCommissionRadio.commission_ratio === 0) {
+            if ((saleGoalsAndCommissionRadio.commission_ratio && saleGoalsAndCommissionRadio.commission_ratio > -1) || saleGoalsAndCommissionRadio.commission_ratio === 0) {
                 //提成比例
                 commissionRadio = saleGoalsAndCommissionRadio.commission_ratio;
             }

@@ -23,18 +23,22 @@ class RadioCard extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.id !== this.state.id) {
-            this.setState({
-                userInfo: $.extend(true, {}, nextProps.userInfo),
-                commissionRadio: nextProps.commissionRadio,
-                newCommissionRatio: nextProps.newCommissionRatio,
-                renewalCommissionRatio: nextProps.renewalCommissionRatio,
-                id: nextProps.id
-            });
-        }
+        this.setState({
+            userInfo: $.extend(true, {}, nextProps.userInfo),
+            commissionRadio: nextProps.commissionRadio,
+            newCommissionRatio: nextProps.newCommissionRatio,
+            renewalCommissionRatio: nextProps.renewalCommissionRatio,
+            id: nextProps.id
+        });
     }
     //点击编辑按钮
     handleClickEditRadio = () =>{
+        //如果原来的新签或者续约提成比例有一个有有效数字
+        if ((_.isNumber(this.state.newCommissionRatio) && this.state.newCommissionRatio > -1 ) || (_.isNumber(this.state.renewalCommissionRatio) && this.state.renewalCommissionRatio > -1)){
+            this.setState({
+                isCheckBoxChecked: true
+            });
+        }
         this.setState({
             isEdittingRadio: true
         });
@@ -145,7 +149,7 @@ class RadioCard extends React.Component {
         ) : null;
         return (
             <div>
-                <Checkbox onChange={this.handleCheckChange}>
+                <Checkbox onChange={this.handleCheckChange} checked={this.state.isCheckBoxChecked}>
                     {Intl.get("sales.if.switch.type", "是否区分新签和续约类型")}
                 </Checkbox>
                 {this.state.isCheckBoxChecked ? <div>
