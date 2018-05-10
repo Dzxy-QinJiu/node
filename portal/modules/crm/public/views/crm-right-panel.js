@@ -131,8 +131,6 @@ var CrmRightPanel = React.createClass({
                                curCustomer={this.state.curCustomer}
                                refreshCustomerList={this.props.refreshCustomerList}
                                editCustomerBasic={this.props.editCustomerBasic}
-                               ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
-                               userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                handleFocusCustomer={this.props.handleFocusCustomer}
                                setTabsContainerHeight={this.setTabsContainerHeight}
                                showRightPanel={this.props.showRightPanel}
@@ -154,8 +152,6 @@ var CrmRightPanel = React.createClass({
                                             curCustomer={this.state.curCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
                                             editCustomerBasic={this.props.editCustomerBasic}
-                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
-                                            userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                             changeActiveKey={this.changeActiveKey}
                                         />
                                     ) : null}
@@ -191,6 +187,8 @@ var CrmRightPanel = React.createClass({
                                         <CustomerUsers
                                             curCustomer={this.state.curCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
+                                            ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                            userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
                                         />
                                     ) : null}
                                 </TabPane>

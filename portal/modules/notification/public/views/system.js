@@ -21,7 +21,7 @@ import AppUserManage from "MOD_DIR/app_user_manage/public";
 import Trace from "LIB_DIR/trace";
 const Option = Select.Option;
 const PAGE_SIZE = 20;
-import {STATUS } from "PUB_DIR/sources/utils/consts";
+import {STATUS} from "PUB_DIR/sources/utils/consts";
 const STATUS_ARRAY = [{
     name: Intl.get("notification.system.untreated", "未处理"),
     value: STATUS.UNHANDLED
@@ -154,7 +154,8 @@ let SystemNotification = React.createClass({
                     {notice.app_name ?
                         <span>{Intl.get("notification.system.login", "登录了") + notice.app_name}</span> : ""}
                 </div>
-                <div className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
+                <div
+                    className="system-notice-time">{moment(notice.create_time).format(oplateConsts.DATE_TIME_FORMAT)}</div>
             </li>
         );
     },
@@ -371,6 +372,19 @@ let SystemNotification = React.createClass({
                         }}
                     /> : null
                 }
+                {/*该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    { this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
                 {
                     this.state.curShowUserId ?
                         <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"

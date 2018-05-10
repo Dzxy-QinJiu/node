@@ -8,7 +8,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
-import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE,CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
+import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE, CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import Trace from "LIB_DIR/trace";
 import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
@@ -142,7 +142,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time - 10 * oplateConsts.ONE_DAY_TIME_RANGE,
-            end_time: todayTimeRange.end_time -  oplateConsts.ONE_DAY_TIME_RANGE,
+            end_time: todayTimeRange.end_time - oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER
         });
         //获取新分配的客户
@@ -415,14 +415,14 @@ var SalesHomePage = React.createClass({
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function (dataObj) {
         //加载中的样式
-        if (dataObj.loading && dataObj.curPage === 1){
+        if (dataObj.loading && dataObj.curPage === 1) {
             return (
                 <div className="load-content">
-                   <Spinner />
-                   <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
+                    <Spinner />
+                    <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
                 </div>
             );
-        }else if (dataObj.errMsg){
+        } else if (dataObj.errMsg) {
             //加载完出错的样式
             return (
                 <div className="err-content">
@@ -430,7 +430,7 @@ var SalesHomePage = React.createClass({
                     <p className="abnornal-status-tip">{dataObj.errMsg}</p>
                 </div>
             );
-        }else if(!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length){
+        } else if (!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length) {
             //数据为空的样式
             return (
                 <div className="no-data">
@@ -438,7 +438,7 @@ var SalesHomePage = React.createClass({
                     <p className="abnornal-status-tip">{Intl.get("common.sales.data.no.data", "暂无此类信息")}</p>
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
     },
@@ -527,31 +527,31 @@ var SalesHomePage = React.createClass({
     },
     renderExpiredCustomerContent: function (data) {
         return (
-                <GeminiScrollbar>
-                    {_.map(data, (item, index) => {
-                        if (_.isArray(item.customer_list) && item.customer_list.length) {
-                            return (
-                                <div className="expire-customer-item">
-                                    <div>
-                                        {_.map(item.customer_list, (willExpiredCustomer) => {
-                                            return (
-                                                <WillExpireItem
-                                                    expireItem={willExpiredCustomer}
-                                                    openCustomerDetail={this.openCustomerDetail}
-                                                    callNumber={this.state.callNumber}
-                                                    errMsg={this.state.errMsg}
-                                                    willExpiredTime={getRelativeTime(item.date)}
-                                                />
-                                            );
-                                        })}
-                                    </div>
+            <GeminiScrollbar>
+                {_.map(data, (item, index) => {
+                    if (_.isArray(item.customer_list) && item.customer_list.length) {
+                        return (
+                            <div className="expire-customer-item">
+                                <div>
+                                    {_.map(item.customer_list, (willExpiredCustomer) => {
+                                        return (
+                                            <WillExpireItem
+                                                expireItem={willExpiredCustomer}
+                                                openCustomerDetail={this.openCustomerDetail}
+                                                callNumber={this.state.callNumber}
+                                                errMsg={this.state.errMsg}
+                                                willExpiredTime={getRelativeTime(item.date)}
+                                            />
+                                        );
+                                    })}
                                 </div>
-                            );
-                        } else {
-                            return null;
-                        }
-                    })}
-                </GeminiScrollbar>
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })}
+            </GeminiScrollbar>
         );
 
     },
@@ -576,7 +576,7 @@ var SalesHomePage = React.createClass({
                     {this.renderExpiredCustomerContent(data)}
                 </div>
             );
-        }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
+        } else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER) {
             //近10天过期未处理试用客户
             data = this.state.hasExpiredTryCustomer.data.list;
             return (
@@ -620,7 +620,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="concerned-customer-container" ref="tableWrap">
                     {this.renderLoadingAndErrAndNodataContent(this.state.concernCustomerObj)}
-                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data,false)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data, false)}
                 </div>
             );
         } else if (type === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
@@ -629,7 +629,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="app-illeage-container" ref="tableWrap">
                     {this.renderLoadingAndErrAndNodataContent(this.state.appIllegalObj)}
-                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data,false)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data, false)}
                 </div>
             );
         } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
@@ -766,6 +766,19 @@ var SalesHomePage = React.createClass({
                             }}
                         /> : null
                     }
+                    {/*该客户下的用户列表*/}
+                    <RightPanel
+                        className="customer-user-list-panel"
+                        showFlag={this.state.isShowCustomerUserListPanel}
+                    >
+                        { this.state.isShowCustomerUserListPanel ?
+                            <AppUserManage
+                                customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                hideCustomerUserList={this.closeCustomerUserListPanel}
+                                customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            /> : null
+                        }
+                    </RightPanel>
                     {
                         this.state.curShowUserId ?
                             <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"
