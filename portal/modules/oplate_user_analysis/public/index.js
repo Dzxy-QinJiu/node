@@ -9,14 +9,7 @@ import { AntcAnalysis } from "antc";
 import AnalysisFilter from "CMP_DIR/analysis/filter";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 const userData = require("PUB_DIR/sources/user-data");
-
-const Emitters = require("PUB_DIR/sources/utils/emitters");
-const emitters = {
-    dateSelectorEmitter: Emitters.dateSelectorEmitter,
-    appSelectorEmitter: Emitters.appSelectorEmitter,
-    analysisTabEmitter: Emitters.analysisTabEmitter,
-    chartClickEmitter: Emitters.chartClickEmitter,
-};
+const emitters = require("PUB_DIR/sources/utils/emitters");
 
 const unknownObj = {name: Intl.get("user.unknown", "未知"), key: "unknown"};
 
