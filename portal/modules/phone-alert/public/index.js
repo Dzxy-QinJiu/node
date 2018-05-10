@@ -104,9 +104,16 @@ class PhoneAlert extends React.Component {
         if (_.isEmpty(this.props.phoneObj) && phonemsgObj.to) {
             phoneAlertAction.setCustomerUnknown(true);
             sendMessage && sendMessage("座机拨打电话，首次弹屏" + phonemsgObj.to);
-            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
+            //如果是打入的电话，要查来电的号码，如果是拨出的电话，要查所拨打的电话
+            var phoneNum = "";
+            if (phonemsgObj.call_type == "IN"){
+                phoneNum = phonemsgObj.extId;
+            }else{
+                phoneNum = phonemsgObj.to;
+            }
+            phoneAlertAction.getCustomerByPhone(phoneNum);
             this.setState({
-                phoneNum: phonemsgObj.to
+                phoneNum: phoneNum
             });
         }
     }
@@ -171,7 +178,13 @@ class PhoneAlert extends React.Component {
         //如果外界打入电话，第一个状态是ring
         if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT || phonemsgObj.type == PHONERINGSTATUS.RING) && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
             //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
-            this.state.phoneNum = phonemsgObj.to;
+            var phoneNum = "";
+            if (phonemsgObj.call_type == "IN"){
+                phoneNum = phonemsgObj.extId;
+            }else{
+                phoneNum = phonemsgObj.to;
+            }
+            this.state.phoneNum = phoneNum;
             this.state.phoneObj = {};
             this.state.phonemsgObj = phonemsgObj;
             this.state.isAddFlag = false;
@@ -182,17 +195,17 @@ class PhoneAlert extends React.Component {
             this.setState(this.state);
             //恢复初始数据
             phoneAlertAction.setInitialState();
-            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
-            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phonemsgObj.to);
+            phoneAlertAction.getCustomerByPhone(phoneNum);
+            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
             this.props.setInitialPhoneObj();
         }
         //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
         //.to是所拨打的电话
-        if (phonemsgObj.to && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
-            sendMessage && sendMessage("座机拨打电话，弹屏已打开过" + phonemsgObj.to);
-            phoneAlertAction.getCustomerByPhone(phonemsgObj.to);
+        if (phoneNum && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
+            sendMessage && sendMessage("座机拨打电话，弹屏已打开过" + phoneNum);
+            phoneAlertAction.getCustomerByPhone(phoneNum);
             this.setState({
-                phoneNum: phonemsgObj.to
+                phoneNum: phoneNum
             });
         }
         //如果接听后，把状态isConnected 改为true
@@ -221,9 +234,15 @@ class PhoneAlert extends React.Component {
             tip: ""
         };
         if (phonemsgObj.type == PHONERINGSTATUS.RING) {
-            desTipObj.tip = `${Intl.get("call.record.pick.phone", "请拿起话机")}`;
+            if (phonemsgObj.call_type == "IN"){
+                desTipObj.tip = `${Intl.get("call.record.call.in.pick.phone", "有电话打入，请拿起话机")}`;
+            }else{
+                desTipObj.tip = `${Intl.get("call.record.pick.phone", "请拿起话机")}`;
+            }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == "OU"){
+            if (phonemsgObj.call_type == "IN"){
+                desTipObj.tip = `${Intl.get("call.record.call.in.pick.phone", "有电话打入，请拿起话机")}`;
+            }else{
                 desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
             }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
@@ -316,11 +335,15 @@ class PhoneAlert extends React.Component {
         if (this.props.phoneObj && this.props.phoneObj.customerId) {
             phoneAlertAction.getCustomerById(this.props.phoneObj.customerId);
         } else {
-            var phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
+            var phoneNum = "";
+            if (this.state.phonemsgObj.call_type == "IN"){
+                phoneNum = this.state.phonemsgObj.extId;
+            }else{
+                phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
+            }
             sendMessage && sendMessage("座机拨打电话，重新获取客户" + phoneNum);
             phoneAlertAction.getCustomerByPhone(phoneNum);
         }
-
     };
     //展示已有客户的右侧面板
     showRightPanel = (id) => {
