@@ -658,21 +658,18 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     />
                 </TopNav>
 
-                <div className="summary-numbers">
-                    <AntcAnalysis
-                        isTabSelector={true}
-                        tabs={tabs}
-                        charts={summaryCharts}
-                        emitters={emitters}
-                    />
-                </div>
+                <AntcAnalysis
+                    isTabSelector={true}
+                    tabs={tabs}
+                    charts={summaryCharts}
+                    emitters={emitters}
+                />
 
                 <AntcAnalysis
                     charts={charts}
                     emitters={emitters}
                     tabs={tabs}
                     useScrollBar={true}
-                    style={{padding: "0 24px"}}
                 />
             </div>
         );
