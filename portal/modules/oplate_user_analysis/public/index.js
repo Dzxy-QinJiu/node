@@ -660,8 +660,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             >
                 <TopNav>
                     <AnalysisMenu />
-                    <AnalysisFilter
-                    />
+                    <AnalysisFilter />
                 </TopNav>
 
                 <AntcAnalysis
