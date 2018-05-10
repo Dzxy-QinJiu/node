@@ -69,7 +69,7 @@ var initController = function (app) {
         }
     });
 
-    //处理rest请求
+    //处理通用rest请求
     app.all("/rest/*", require("./lib/middlewares/rest"));
 
     // 处理所有前面未拦截的请求处理

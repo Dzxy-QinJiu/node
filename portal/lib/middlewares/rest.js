@@ -30,14 +30,14 @@ module.exports = function (req, res) {
     if (req.query.timeout) options.timeout = req.query.timeout;
 
     restUtil.authRest[method](
-        options,
-        data
-    )
+            options,
+            data
+        )
         .on("success", result => {
-            res.json(result);
+            res.status(200).json(result);
         })
         .on("error", codeMessage => {
-            res.json(codeMessage);
+            res.status(500).json(codeMessage);
         });
 };
 
