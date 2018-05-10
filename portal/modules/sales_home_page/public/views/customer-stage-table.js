@@ -159,6 +159,17 @@ class CustomerStageTable extends React.Component {
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
                     />) : null}
+                    <RightPanel
+                        className="customer-user-list-panel"
+                    >
+                        {this.state.isShowCustomerUserListPanel ?
+                            <AppUserManage
+                                customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                hideCustomerUserList={this.props.onClose}
+                                customer_name={this.state.CustomerInfoOfCurrUser.name}
+                            /> : null
+                        }
+                    </RightPanel>
                 </div>
             );
         };

@@ -420,9 +420,16 @@ class CustomerUsers extends React.Component {
         }
     }
 
+    //展示按客户搜索到的用户列表
+    triggerUserList(userNum) {
+        if (this.props.isMerge || !userNum) return;
+        if (_.isFunction(this.props.ShowCustomerUserListPanel)) {
+            this.props.ShowCustomerUserListPanel({customerObj: this.state.curCustomer || {}});
+        }
+    }
+
     render() {
-        const curCustomer = this.state.curCustomer;
-        const userNum = curCustomer && _.isArray(curCustomer.app_user_ids) && curCustomer.app_user_ids.length;
+        const userNum = _.isArray(this.state.crmUserList) ? this.state.crmUserList.length : 0;
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
@@ -434,13 +441,16 @@ class CustomerUsers extends React.Component {
         if (this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP) {
             divHeight -= LAYOUT.APPLY_FORM_HEIGHT;
         }
+        let userNumClass = classNames("user-total-tip", {"user-total-active": !this.props.isMerge && userNum});
         return (<div className="crm-user-list-container" data-tracename="通用户页面">
             <div className="user-number">
-                <ReactIntl.FormattedMessage
-                    id="sales.home.total.count"
-                    defaultMessage={`共{count}个`}
-                    values={{"count": userNum || "0"}}
-                />
+                <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
+                     <ReactIntl.FormattedMessage
+                         id="sales.home.total.count"
+                         defaultMessage={`共{count}个`}
+                         values={{"count": userNum || "0"}}
+                     />
+                </span>
                 {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
                     : null}
             </div>

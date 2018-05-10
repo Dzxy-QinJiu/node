@@ -238,6 +238,7 @@ var BasicOverview = React.createClass({
             curCustomer={this.state.basicData}
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
+            changeActiveKey={this.props.changeActiveKey}
         />;
     },
     toggleScheduleContact(item, flag){
@@ -313,6 +314,14 @@ var BasicOverview = React.createClass({
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
+                    { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
+                        <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
+                            <TagCard title={`${Intl.get("crm.competing.products", "竞品")}:`}
+                                     tags={basicData.competing_products}
+                                     enableEdit={false}
+                            />
+                        </dl>
+                    ) : null}
                     <TagCard title={`${Intl.get("common.tag", "标签")}:`}
                              placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
                              data={basicData}

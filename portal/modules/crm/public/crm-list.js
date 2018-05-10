@@ -793,17 +793,17 @@ var Crm = React.createClass({
     onCustomerImport(list) {
         let member_id = userData.getUserData().user_id;
         //导入客户前先校验，是不是超过了本人的客户上限
-        CrmAction.getCustomerLimit({member_id:member_id,num: list.length}, (result)=>{
-            if (_.isNumber(result)){
-                if (result == 0){
+        CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
+            if (_.isNumber(result)) {
+                if (result == 0) {
                     //可以转入
                     this.setState({
                         isPreviewShow: true,
                         previewList: CrmStore.processForList(list),
                     });
-                }else if(result > 0){
+                } else if (result > 0) {
                     //不可以转入
-                    message.warn(Intl.get("crm.import.over.limit","导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入",{num: result}));
+                    message.warn(Intl.get("crm.import.over.limit", "导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入", {num: result}));
                 }
             }
         });
@@ -993,7 +993,8 @@ var Crm = React.createClass({
         });
         if (customerArr) {
             customerArr.interest = interestObj.interest;
-        }        this.setState(
+        }
+        this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
@@ -1349,6 +1350,19 @@ var Crm = React.createClass({
                         showRightPanel={this.showRightPanel}
                     />
                 ) : null}
+                {/*该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    {this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
                 <BootstrapModal
                     show={this.state.showDeleteConfirm}
                     onHide={this.hideDeleteModal}

@@ -7,7 +7,7 @@ var customerTraceService = require("../service/customer-trace-service");
 /*
 * 获取客户跟踪记录列表 */
 exports.getCustomerTraceList = function (req, res) {
-    customerTraceService.getCustomerTraceList(req, res,req.query)
+    customerTraceService.getCustomerTraceList(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (err) {
