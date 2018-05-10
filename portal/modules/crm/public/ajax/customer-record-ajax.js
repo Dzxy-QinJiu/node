@@ -6,13 +6,8 @@
 //获取客户跟踪记录列表
 exports.getCustomerTraceRecordList = function (queryObj) {
     var Deferred = $.Deferred();
-    var id = '';
-    if (queryObj.id){
-        id = queryObj.id;
-        delete queryObj.id;
-    }
     $.ajax({
-        url : '/rest/customer/get_customer_trace_list'+'?id='+id,
+        url : '/rest/customer/get_customer_trace_list',
         dataType : 'json',
         type : 'post',
         data : queryObj,
