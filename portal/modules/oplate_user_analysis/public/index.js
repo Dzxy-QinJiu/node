@@ -8,7 +8,6 @@ const AnalysisMenu = require("CMP_DIR/analysis_menu");
 import { AntcDatePicker, AntcAnalysis } from "antc";
 import AnalysisFilter from "CMP_DIR/analysis/filter";
 const GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
-const AnalysisLayout = require("./utils/analysis-layout");
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 const userData = require("PUB_DIR/sources/user-data");
 
@@ -70,19 +69,6 @@ const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
 var OPLATE_USER_ANALYSIS = React.createClass({
-    getInitialState: function () {
-        return {};
-    },
-    componentDidMount: function () {
-        $(window).on('resize', this.windowResize);
-    },
-    componentWillUnmount: function () {
-        $(window).off('resize', this.windowResize);
-    },
-    windowResize: function () {
-        this.setState(this.state);
-    },
-
     getTabs: function () {
         const tabs = [
             {
@@ -658,10 +644,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
     },
 
     render: function () {
-        const chartListHeight = $(window).height() -
-            AnalysisLayout.LAYOUTS.TOP -
-            AnalysisLayout.LAYOUTS.BOTTOM - 20;
-
         const summaryCharts = this.getSummaryCharts();
         const tabs = this.getTabs();
         const charts = this.getCharts();
@@ -690,7 +672,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     emitters={emitters}
                     tabs={tabs}
                     useScrollBar={true}
-                    height={chartListHeight}
                     style={{padding: "0 24px"}}
                 />
             </div>
