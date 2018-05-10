@@ -78,7 +78,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             {
                 key: "total",
                 title: Intl.get("oplate.user.analysis.11", "总用户"),
-                isSelected: true,
+                active: true,
             },
             {
                 key: "added",
