@@ -7,7 +7,6 @@ const TopNav = require("CMP_DIR/top-nav");
 const AnalysisMenu = require("CMP_DIR/analysis_menu");
 import { AntcAnalysis } from "antc";
 import AnalysisFilter from "CMP_DIR/analysis/filter";
-const GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 const userData = require("PUB_DIR/sources/user-data");
 
