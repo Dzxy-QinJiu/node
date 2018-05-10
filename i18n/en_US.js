@@ -1259,6 +1259,7 @@ var en_US = {
     "crm.schedule.end.time": "End time",//结束
     "crm.basic.concerned": "Concerned",//已关注
     "crm.basic.unconcerned": "Unconcerned",//未关注
+    "crm.basic.more": "More",//更多
     // 客户管理end
 
     //客户分析 start

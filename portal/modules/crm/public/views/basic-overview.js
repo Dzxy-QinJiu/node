@@ -238,6 +238,7 @@ var BasicOverview = React.createClass({
             curCustomer={this.state.basicData}
             refreshCustomerList={this.props.refreshCustomerList}
             refreshSrollbar={this.refreshSrollbar}
+            changeActiveKey={this.props.changeActiveKey}
         />;
     },
     toggleScheduleContact(item, flag){

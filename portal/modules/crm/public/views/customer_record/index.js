@@ -57,6 +57,8 @@ const CALL_TYPE_MAP = {
     'other': Intl.get("customer.other", "其他")
 };
 
+const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
+
 const CustomerRecord = React.createClass({
     getInitialState: function () {
         return {
@@ -141,6 +143,7 @@ const CustomerRecord = React.createClass({
         let phoneNum = this.state.phoneNumArray.join(',');
         let queryObj = {
             customer_id: this.state.customerId || '',
+            page_size: 10
         };
         if (phoneNum) {
             queryObj.dst = phoneNum;
@@ -155,6 +158,10 @@ const CustomerRecord = React.createClass({
         //通话状态的过滤
         if (this.state.filterStatus && this.state.filterStatus !== "ALL") {
             queryObj.disposition = this.state.filterStatus;
+        }
+        //概览页只获取最近五条的跟进记录
+        if (this.props.isOverViewPanel) {
+            queryObj.page_size = OVERVIEW_SHOW_COUNT;
         }
         CustomerRecordActions.getCustomerTraceList(queryObj, () => {
             if (_.isFunction(this.props.refreshSrollbar)) {
@@ -620,6 +627,22 @@ const CustomerRecord = React.createClass({
             </Menu>
         );
     },
+    turnToTraceRecordList(){
+        if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey("3");
+    },
+    renderTraceRecordBottom(){
+        //概览页只展示最近的五条跟进记录，如果总数大于5条时，可以点击更多转到跟进记录列表进行查看
+        if (this.props.isOverViewPanel && this.state.total > OVERVIEW_SHOW_COUNT) {
+            return (
+                <div className="trace-record-bottom">
+                    <span className="more-customer-record"
+                          onClick={this.turnToTraceRecordList}>
+                    {Intl.get("crm.basic.more", "更多")}
+                    </span>
+                </div>);
+        }
+
+    },
     render: function () {
         //addTrace 顶部增加记录的teaxare框
         //下部时间线列表
@@ -656,6 +679,7 @@ const CustomerRecord = React.createClass({
                 }
                 <div className="show-container" id="show-container">
                     {this.renderCustomerRecordLists()}
+                    {this.renderTraceRecordBottom()}
                 </div>
                 <ModalDialog modalContent={modalContent}
                              modalShow={this.state.modalDialogFlag}

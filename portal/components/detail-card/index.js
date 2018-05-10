@@ -22,6 +22,7 @@ class DetailCard extends React.Component {
                         {this.props.content}
                         {this.props.isEdit ? <SaveCancelButton {...this.props}/> : null}
                     </div>) : null}
+                {this.props.bottom ? (<div className="detail-card-bottom">{this.props.bottom}</div>) : null}
             </div>
         );
     }
@@ -29,6 +30,7 @@ class DetailCard extends React.Component {
 DetailCard.defaultProps = {
     title: null,//卡片的标题(string|ReactNode)
     content: null,//卡片张展示的内容(string|ReactNode)
+    bottom: null,//卡片底部的信息(string|ReactNode)
     className: "",//自定义类
     isEdit: false,//是否是编辑状态,编辑状态会展示阴影
     loading: false,//是否正在保存
