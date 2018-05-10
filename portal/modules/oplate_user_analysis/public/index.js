@@ -11,11 +11,15 @@ import { hasPrivilege } from "CMP_DIR/privilege/checker";
 const userData = require("PUB_DIR/sources/user-data");
 const emitters = require("PUB_DIR/sources/utils/emitters");
 
+//从 unknown 到 未知 的对应关系对象
 const unknownObj = {name: Intl.get("user.unknown", "未知"), key: "unknown"};
 
+//从 unknown 到 未知 的映射
 let unknownDataMap = {};
 unknownDataMap[unknownObj.key] = unknownObj.name;
 
+//用户类型
+//Todo: 移到公共常量文件中
 const USER_TYPES = [
         {name: Intl.get("common.official", "签约"), key: "formal", dataName: "正式用户"},
         {name: Intl.get("common.trial", "试用"), key: "trial", dataName: "试用用户"},
@@ -25,6 +29,7 @@ const USER_TYPES = [
         unknownObj,
     ];
 
+//用户类型名到中文的映射
 let userTypeDataMap = {};
 
 _.each(USER_TYPES, userType => {
@@ -32,6 +37,7 @@ _.each(USER_TYPES, userType => {
     userTypeDataMap[mapKey] = userType.name;
 });
 
+//带标题的用户类型名数组
 const USER_TYPES_WITH_TITLE = [{
         name: Intl.get("oplate.user.analysis.user.type", "用户类型"),
         key: "name"
@@ -42,8 +48,11 @@ const USER_TYPES_WITH_TITLE = [{
         key: "total"
     }]);
 
+//权限类型
 const authType = hasPrivilege("USER_ANALYSIS_MANAGER")? "manager" : "common";
 
+//一周7天的中文名
+//Todo: 移到公共常量文件中
 const WEEKDAY = [
         Intl.get("user.time.sunday", "周日"),
         Intl.get("user.time.monday", "周一"),
@@ -54,13 +63,16 @@ const WEEKDAY = [
         Intl.get("user.time.saturday", "周六")
     ];
 
+//范围类型
 const rangeType = hasPrivilege("CRM_MANAGER_APP_USER_COUNT")? "all" : "self";
 
+//是否是销售
 const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
 var OPLATE_USER_ANALYSIS = React.createClass({
+    //获取Tab定义
     getTabs: function () {
         const tabs = [
             {
@@ -95,12 +107,14 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         return tabs;
     },
 
+    //获取统计数图表定义
     getSummaryCharts: function () {
         return [{
             url: `/rest/analysis/user/v1/${authType}/summary`,
         }];
     },
 
+    //获取普通图表定义
     getCharts: function () {
         return [{
             title: Intl.get("oplate.user.analysis.user.type", "用户类型"),
