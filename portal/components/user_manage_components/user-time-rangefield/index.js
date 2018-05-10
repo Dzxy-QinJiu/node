@@ -72,6 +72,7 @@ const UserTimeRangeField = {
                     wrapperCol={{span: 24}}
                 >
                     <DateSelector
+                        disableDateBeforeRange={true}
                         disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
                         getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点过期",{'date':date});}}

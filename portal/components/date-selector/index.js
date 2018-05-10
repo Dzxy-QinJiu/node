@@ -67,6 +67,13 @@
          false 时表示能选择今天之前的时间
          默认值是 false
 
+     disableDateBeforeRange   表示是否能够选择范围之前的时间
+         true 时表示不能选范围之前的时间
+         false 时表示能选择范围之前的时间
+         默认值是 false
+
+     selectRange    选择时间范围：一周、半个月、1个月。。。。
+
     disableDateAfterToday   表示是否能够选择今天之后的时间
                     true 时表示不能选今天之后的时间
                     false 时表示能选择今天之后的时间
@@ -651,6 +658,7 @@ class DateSelector extends React.Component{
         });
         var disableDateBeforeToday = this.props.disableDateBeforeToday;
         var disableDateAfterToday = this.props.disableDateAfterToday;
+        let disableDateBeforeRange = this.props.disableDateBeforeRange;
         return (
             <div ref="datepicker_wrap">
                 <div className={cls} style={{display:this.state.showCalendar ? 'block' : 'none'}}>
@@ -665,8 +673,9 @@ class DateSelector extends React.Component{
                         className="single_datepicker"
                         value={moment(this.state.end_time , DATE_FORMAT).toDate()}
                         onChange={this.onCalendarOK.bind(this , 'end_time')}
-                        disableDateBeforeToday={disableDateBeforeToday}
+                        disableDateBeforeRange={disableDateBeforeRange}
                         disableDateAfterToday={disableDateAfterToday}
+                        selectRange={this.state.range}
                     />
                 </div>
                 <div style={{display:this.state.showQuarterCalendar ? 'block' : 'none'}}>
@@ -827,7 +836,7 @@ class DateSelector extends React.Component{
     }
     render (){
         const props = this.props;
-        const {start_time,end_time,range,onSelect,children,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateAfterToday,...restProps} = props;
+        const {start_time,end_time,range,onSelect,children,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateBeforeRange,disableDateAfterToday,...restProps} = props;
         const cls = classNames(CLASS_PREFIX , className , CLASS_PREFIX + '_' + this.state.range);
         const menu = this.renderMenus();
         var timeObj = this.getDisplayDateText();
@@ -892,9 +901,11 @@ function getDefaultProps(){
     const getEndTimeTip = null;
     //禁止选择今天之前的时间
     const disableDateBeforeToday = false;
+    //禁止选择范围之前的时间
+    const disableDateBeforeRange = false;
     //禁止选择今天之后的时间
     const disableDateAfterToday = false;
-    return {start_time,end_time,range,onSelect,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateAfterToday};
+    return {start_time,end_time,range,onSelect,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateBeforeRange,disableDateAfterToday};
 }
 
 //默认属性
@@ -917,6 +928,8 @@ DateSelector.propTypes = {
     getEndTimeTip : PropTypes.func,
     //禁止选择今天之前的时间
     disableDateBeforeToday : PropTypes.bool,
+    //禁止选择范围之前的时间
+    disableDateBeforeRange: PropTypes.bool,
     //禁止选择今天之后的时间
     disableDateAfterToday : PropTypes.bool
 };
