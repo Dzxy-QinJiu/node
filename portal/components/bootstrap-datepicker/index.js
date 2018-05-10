@@ -54,7 +54,7 @@ var BootstrapDatepicker = React.createClass({
                 options.startDate = moment().add(15 , "days").toDate();
             } else if (/^\d+m$/.test(props.selectRange)) {
                 let num = props.selectRange.replace(/m$/,''); // 其他月份
-                options.startDate = moment().add(num , "month").toDate();
+                options.startDate = moment().add(num , "months").toDate();
             } else { // 自定义、永久
                 options.startDate = new Date();
             }
