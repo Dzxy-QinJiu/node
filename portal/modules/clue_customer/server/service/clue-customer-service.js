@@ -30,7 +30,9 @@ const restApis = {
     //将线索和客户进行关联
     RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation",
     //导入线索
-    upload:"/rest/customer/v2/customer/upload/preview"
+    upload:"/rest/customer/v2/clue/upload/preview",
+    //确认导入线索预览
+    uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag"
 
 };
 //查询客户
@@ -143,4 +145,13 @@ exports.uploadClues = function (req, res) {
         'pipe-upload-file': true,
         timeout: uploadTimeOut
     }, null);
+};
+//上传线索预览
+exports.confirmUploadClues = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.uploadClueConfirm.replace(":flag",req.params.flag),
+            req: req,
+            res: res
+        }, null);
 };

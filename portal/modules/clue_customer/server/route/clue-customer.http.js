@@ -98,6 +98,14 @@ module.exports = {
             passport: {
                 "needLogin": true
             }
+        },
+        {
+            method: "get",
+            path: "/rest/clue/confirm/upload/:flag",
+            handler: "confirmUploadClues",
+            passport: {
+                "needLogin": true
+            }
         }
     ]
 };

@@ -2182,6 +2182,8 @@ var zh_CN = {
     "clue.manage.import.clue": "导入线索",
     "clue.manage.import.clue.template": "导入线索模板",
     "clue.manage.failed.import.clue": "导入线索失败，请重试!",
-    "config.sales.role.has.repeat":"该销售角色名称已存在"
+    "config.sales.role.has.repeat":"该销售角色名称已存在",
+    "clue.customer.import.clue.suceess": "导入线索成功",
+    "clue.customer.import.clue.failed": "导入线索失败"
 };
 export default zh_CN;
