@@ -205,7 +205,7 @@ class CustomerUsers extends React.Component {
     }
 
     renderUserAppItem(app) {
-        let appName = app ? app.app_name || "" : "";
+        let appName = app && app.app_name || "";
         let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
         let lastLoginTime = TimeUtil.getTimeStrFromNow(app.last_login_time);
         return (
