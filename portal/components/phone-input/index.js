@@ -35,6 +35,8 @@ class PhoneInput extends React.Component {
                 /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(value)
                 ||
                 /^400-?\d{3}-?\d{4}$/.test(value)
+                ||
+                /^1010\d+$/.test(value)
             ) {
                 callback();
             } else {
