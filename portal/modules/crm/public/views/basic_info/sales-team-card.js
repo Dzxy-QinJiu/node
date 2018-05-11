@@ -1,4 +1,4 @@
-import {Icon, Alert, Select} from 'antd';
+import {message, Select} from 'antd';
 let Option = Select.Option;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
 let userData = require("../../../../../public/sources/user-data");
@@ -7,6 +7,7 @@ import batchChangeAjax from '../../ajax/batch-change-ajax';
 import Trace from "LIB_DIR/trace";
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
+import CrmAction from "../../action/crm-actions";
 
 var SalesTeamCard = React.createClass({
     getDefaultProps: function () {
@@ -271,47 +272,20 @@ var SalesTeamCard = React.createClass({
             this.backToDisplay();
             return;
         }
-        let submitData = {
-            id: this.state.customerId,
-            type: "sales",
-            user_id: this.state.userId,
-            user_name: this.state.userName,
-            sales_team_id: this.state.salesTeamId,
-            sales_team: this.state.salesTeam
-        };
-        Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
-        if (this.props.isMerge) {
-            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
-            this.backToDisplay();
-        } else if (this.state.displayType === "edit") {
+        //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
+        if (this.state.displayType === "edit" || this.state.displayType === "transfer"){
             this.setState({loading: true});
-            CrmBasicAjax.updateCustomer(submitData).then(result => {
-                if (result) {
-                    this.backToDisplay();
-                    //更新列表中的销售人员
-                    this.props.modifySuccess(submitData);
+            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result)=>{
+                //result>0 ，不可转入或变更客户
+                if (_.isNumber(result) && result > 0){
+                    message.warn(Intl.get("crm.should.reduce.customer","该销售拥有客户数量已达到上限！"));
+                    this.setState({loading: false});
+                }else{
+                    this.submitData();
                 }
-            }, errorMsg => {
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("crm.172", "修改客户所属销售失败")
-                });
             });
-        } else if (this.state.displayType === "transfer") {
-            this.setState({loading: true});
-            submitData.member_role = this.state.salesRole;
-            CrmBasicAjax.transferCustomer(submitData).then(result => {
-                if (result) {
-                    this.backToDisplay();
-                    //更新列表中的销售人员
-                    this.props.modifySuccess(submitData);
-                }
-            }, errorMsg => {
-                this.setState({
-                    loading: false,
-                    submitErrorMsg: errorMsg || Intl.get("crm.customer.transfer.failed", "转出客户失败")
-                });
-            });
+        }else{
+            this.submitData();
         }
     },
     //更新团队
