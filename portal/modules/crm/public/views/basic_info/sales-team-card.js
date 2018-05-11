@@ -1,4 +1,4 @@
-import {Icon, Alert, Select} from 'antd';
+import {message, Select} from 'antd';
 let Option = Select.Option;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
 let userData = require("../../../../../public/sources/user-data");
@@ -7,6 +7,7 @@ import batchChangeAjax from '../../ajax/batch-change-ajax';
 import Trace from "LIB_DIR/trace";
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
+import CrmAction from "../../action/crm-actions";
 
 var SalesTeamCard = React.createClass({
     getDefaultProps: function () {
@@ -45,8 +46,10 @@ var SalesTeamCard = React.createClass({
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
             this.getSalesManList();
         }
-        //获取销售对应的角色
-        this.getSalesRoleByMemberId(this.state.userId);
+        if (!this.props.hideSalesRole) {
+            //获取销售对应的角色
+            this.getSalesRoleByMemberId(this.state.userId);
+        }
     },
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.customerId != this.state.customerId) {
@@ -68,8 +71,10 @@ var SalesTeamCard = React.createClass({
                 submitErrorMsg: '',
                 salesRole: ""
             });
-            //获取销售对应的角色
-            this.getSalesRoleByMemberId(nextProps.userId);
+            if (!nextProps.hideSalesRole) {
+                //获取销售对应的角色
+                this.getSalesRoleByMemberId(nextProps.userId);
+            }
         }
         //由于是否能转出客户的标识需要通过接口获取团队数据后来判断重现赋值，所以如果变了需要重新赋值
         if (this.state.enableTransfer != nextProps.enableTransfer) {
@@ -181,7 +186,7 @@ var SalesTeamCard = React.createClass({
         Trace.traceEvent(this.getDOMNode(), "修改销售人员及其团队");
         let params = this.getSalesTeamParams(idStr);
         this.setState(params);
-        if (params.userId) {
+        if (params.userId && !this.props.hideSalesRole) {
             this.getSalesRoleByMemberId(params.userId);
         }
     },
@@ -189,7 +194,9 @@ var SalesTeamCard = React.createClass({
     changeDisplayType: function (type) {
         if (type === 'text') {
             Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
-            this.getSalesRoleByMemberId(this.props.userId);
+            if (!this.props.hideSalesRole) {
+                this.getSalesRoleByMemberId(this.props.userId);
+            }
             this.setState({
                 loading: false,
                 displayType: type,
@@ -216,14 +223,7 @@ var SalesTeamCard = React.createClass({
             submitErrorMsg: ''
         });
     },
-
-    handleSubmit: function () {
-        if (this.state.loading) return;
-        if (this.state.userId == this.props.userId) {
-            //没做修改时，直接回到展示状态
-            this.backToDisplay();
-            return;
-        }
+    submitData: function () {
         let submitData = {
             id: this.state.customerId,
             type: "sales",
@@ -234,10 +234,9 @@ var SalesTeamCard = React.createClass({
         };
         Trace.traceEvent(this.getDOMNode(), "保存对销售人员/团队的修改");
         if (this.props.isMerge) {
-            if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(submitData);
+            this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
         } else if (this.state.displayType === "edit") {
-            this.setState({loading: true});
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
@@ -251,7 +250,6 @@ var SalesTeamCard = React.createClass({
                 });
             });
         } else if (this.state.displayType === "transfer") {
-            this.setState({loading: true});
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
@@ -267,6 +265,29 @@ var SalesTeamCard = React.createClass({
             });
         }
     },
+    handleSubmit: function () {
+        if (this.state.loading) return;
+        if (this.state.userId == this.props.userId) {
+            //没做修改时，直接回到展示状态
+            this.backToDisplay();
+            return;
+        }
+        //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
+        if (this.state.displayType === "edit" || this.state.displayType === "transfer"){
+            this.setState({loading: true});
+            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result)=>{
+                //result>0 ，不可转入或变更客户
+                if (_.isNumber(result) && result > 0){
+                    message.warn(Intl.get("crm.should.reduce.customer","该销售拥有客户数量已达到上限！"));
+                    this.setState({loading: false});
+                }else{
+                    this.submitData();
+                }
+            });
+        }else{
+            this.submitData();
+        }
+    },
     //更新团队
     handleTeamChange: function (value) {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
@@ -277,16 +298,25 @@ var SalesTeamCard = React.createClass({
     renderTitle: function () {
         return (
             <div className="sales-team-show-block">
-                <span className="sales-team-label">{Intl.get("common.belong.sales", "所属销售")}:</span>
-                <span className="sales-team-text">
+                <div className="sales-team">
+                    <span className="sales-team-label">{Intl.get("common.belong.sales", "所属销售")}:</span>
+                    <span className="sales-team-text">
                     {this.state.userName} {this.state.salesTeam ? ` - ${this.state.salesTeam}` : ""}
                 </span>
-                {this.state.enableTransfer && !this.state.isMerge ? (
-                    <span className="iconfont icon-transfer"
-                          title={Intl.get("crm.qualified.roll.out", "转出")}
-                          onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
-                {this.state.enableEdit ? (<DetailEditBtn title={Intl.get("crm.sales.change", "变更销售")}
-                                                         onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                    {this.state.enableTransfer && !this.state.isMerge ? (
+                        <span className="iconfont icon-transfer"
+                              title={Intl.get("crm.qualified.roll.out", "转出")}
+                              onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
+                    {this.state.enableEdit ? (<DetailEditBtn title={Intl.get("crm.sales.change", "变更销售")}
+                                                             onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                </div>
+                {this.props.hideSalesRole ? null :
+                    <div className="sales-role">
+                        <span className="sales-team-label">{Intl.get("crm.detail.sales.role", "销售角色")}:</span>
+                        <span className="sales-team-text">
+                            {this.state.salesRole}
+                        </span>
+                    </div>}
             </div>
         );
     },
