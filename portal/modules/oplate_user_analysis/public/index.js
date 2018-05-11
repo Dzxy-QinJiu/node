@@ -288,7 +288,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 app: "all",
                 tab: ["total"],
             },
-            tableOption: {
+            option: {
                 pagination: false,
                 bordered: true,
                 columns: [
@@ -300,16 +300,16 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         dataIndex: 'sales_team_name',
                     },
                 ],
-                subDataProps: {
-                    fieldName: "app_map",
-                    fieldType: "object",
-                    needExtractColumns: true,
-                    needSummaryColumn: true,
-                    summaryColumnTitle: Intl.get("sales.home.total.compute", "总计"),
-                    summaryColumnKey: "total",
-                    needSummaryRow: true,
-                    summaryRowTitle: Intl.get("sales.home.total.compute", "总计"),
-                },
+            },
+            customOption: {
+                fieldName: "app_map",
+                fieldType: "object",
+                needExtractColumns: true,
+                needSummaryColumn: true,
+                summaryColumnTitle: Intl.get("sales.home.total.compute", "总计"),
+                summaryColumnKey: "total",
+                needSummaryRow: true,
+                summaryRowTitle: Intl.get("sales.home.total.compute", "总计"),
             },
         }, {
             title: Intl.get("operation.report.activity", "活跃度"),
@@ -434,7 +434,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 timeRange: ">7d",
                 isTrue: isSales,
             },
-            tableOption: {
+            option: {
                 pagination: false,
                 columns: (() => {
                     let columns = [
@@ -488,18 +488,18 @@ var OPLATE_USER_ANALYSIS = React.createClass({
 
                     return columns;
                 })(),
-                subDataProps: {
-                    fieldName: "actives",
-                    fieldType: "array",
-                    needExtractColumns: true,
-                    callback: dataItem => {
-                        const actives = dataItem.actives;
+            },
+            customOption: {
+                fieldName: "actives",
+                fieldType: "array",
+                needExtractColumns: true,
+                callback: dataItem => {
+                    const actives = dataItem.actives;
 
-                        _.each(actives, activeItem => {
-                            const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, "day");
-                            dataItem["day" + diffDay] = activeItem.active;
-                        });
-                    },
+                    _.each(actives, activeItem => {
+                        const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, "day");
+                        dataItem["day" + diffDay] = activeItem.active;
+                    });
                 },
             },
         }, {
@@ -559,7 +559,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             subChart: {
                 chartType: "table",
-                tableOption: {
+                option: {
                     columns: [
                         {title: Intl.get("crm.96", "地域"), dataIndex: 'name', key: 'name'},
                         {title: Intl.get("operation.report.user.count", "用户数"), dataIndex: 'value', key: 'value', className: 'text-align-right'}
