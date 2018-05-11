@@ -202,7 +202,7 @@ let BasicEditSelectField = React.createClass({
         );
 
         var selectBlock = this.state.displayType === 'edit' ? (
-            <div className="selectWrap" ref="selectWrap" key="select-wrap">
+            <div className="selectWrap" ref="selectWrap" key="select-wrap" id="area">
                 <Form horizontal autoComplete="off">
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
@@ -224,7 +224,9 @@ let BasicEditSelectField = React.createClass({
                                         placeholder={this.props.placeholder}
                                         notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
                                         value={formData.select}
-                                        onChange={this.onSelectChange}>
+                                        onChange={this.onSelectChange}
+                                        getPopupContainer={() => document.getElementById('area')}
+                                >
                                     {this.state.selectOptions}
                                 </Select>
                             </Validator>
