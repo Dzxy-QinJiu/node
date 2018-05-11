@@ -125,3 +125,8 @@ const crmEmitter = new EventEmitter();
 crmEmitter.IMPORT_CUSTOMER = "import_customer";
 export {crmEmitter};
 
+//线索客户相关事件
+const clueEmitter = new EventEmitter();
+clueEmitter.IMPORT_CLUE = "import_clue";
+export {clueEmitter};
+

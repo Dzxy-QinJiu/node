@@ -33,6 +33,7 @@ import CONSTS from  "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
+import ClueImportTemplate from "./views/clue-import-template";
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -48,6 +49,7 @@ const ClueCustomer = React.createClass({
             clueSourceArray: clueSourceArray,//线索来源
             clueClassifyArray: clueClassifyArray,//线索分类
             isRemarkingItem:'',//正在标记的那条线索
+            clueImportTemplateFormShow: false,//线索导入面板是否展示
             ...clueCustomerStore.getState()
         };
     },
@@ -143,6 +145,13 @@ const ClueCustomer = React.createClass({
             clueAddFormShow: true
         });
     },
+    //点击导入线索按钮
+    showImportClueTemplate: function () {
+        Trace.traceEvent($(this.getDOMNode()).find(".import-clue-customer-container"), "点击导入线索按钮");
+        this.setState({
+            clueImportTemplateFormShow: true
+        });
+    },
     //获取用户的坐席号
     getUserPhoneNumber: function () {
         let member_id = userData.getUserData().user_id;
@@ -178,6 +187,24 @@ const ClueCustomer = React.createClass({
                 }
             </div>
         );
+    },
+    //渲染导入线索的按钮
+    renderImportClue: function () {
+        var containerCls = classNames("import-clue-customer-container", {
+
+        });
+        return (
+            <div className={containerCls}>
+                {hasPrivilege("CUSTOMER_ADD_CLUE") ?
+                    <Button type="primary" icon="plus" onClick={this.showImportClueTemplate}>
+                        <span className="clue-container">
+                            {Intl.get("clue.manage.import.clue", "导入线索")}
+                        </span>
+                    </Button>
+                    :null}
+            </div>
+        );
+
     },
     changeTableHeight: function (filterPanelHeight = 0) {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -696,6 +723,15 @@ const ClueCustomer = React.createClass({
             clueClassifyArray:this.state.clueClassifyArray
         });
     },
+        //关闭导入线索模板
+    closeClueTemplatePanel:function () {
+        this.setState({
+            clueImportTemplateFormShow: false
+        });
+    },
+    refreshClueList: function () {
+
+    },
     render: function () {
         return (
             <RightContent>
@@ -708,9 +744,10 @@ const ClueCustomer = React.createClass({
                             onTypeChange={this.onTypeChange}
                         />
                         {this.renderHandleBtn()}
+                        {this.renderImportClue()}
                         <div className="filter-block-line"></div>
                     </FilterBlock>
-                    {this.state.clueAddFormShow ? (
+                    {this.state.clueAddFormShow? (
                         <SalesClueAddForm
                             hideAddForm={this.hideClueAddForm}
                             accessChannelArray={this.state.accessChannelArray}
@@ -720,6 +757,11 @@ const ClueCustomer = React.createClass({
                             updateClueChannel={this.updateClueChannel}
                         />
                     ) : null}
+                   <ClueImportTemplate
+                       showFlag={this.state.clueImportTemplateFormShow}
+                       closeClueTemplatePanel={this.closeClueTemplatePanel}
+                       refreshClueList={this.refreshClueList}
+                   />
                     {this.state.isLoading ? (
                         <div className="table-loading-wrap">
                             <Spinner />

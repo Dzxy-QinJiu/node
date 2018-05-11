@@ -2154,7 +2154,9 @@ var en_US = {
     "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
     "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
     "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
+    "clue.manage.import.clue": "Import clues",//导入线索
+    "clue.manage.import.clue.template": "Import clues template",//导入线索模板
+    "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!
     "config.sales.role.has.repeat":"This sales role name is existed"//该销售角色名称已存在
-
 };
 export default en_US;
