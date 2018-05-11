@@ -740,7 +740,7 @@ const ClueCustomer = React.createClass({
         });
     },
     refreshClueList: function () {
-
+        this.getClueCustomerList();
     },
     confirmImport(flag, cb) {
         this.setState({isImporting: true});
@@ -773,7 +773,7 @@ const ClueCustomer = React.createClass({
             });
             message.success(Intl.get("clue.customer.import.clue.suceess", "导入线索成功"));
             //刷新线索列表
-            // this.search();
+            this.getClueCustomerList();
         });
     },
     renderImportModalFooter:function () {
