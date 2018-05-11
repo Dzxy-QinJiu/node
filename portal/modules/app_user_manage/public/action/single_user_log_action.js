@@ -19,7 +19,7 @@ function SingleUserLogAction() {
         'resetLogState'
     );
     // 获取单个用户的应用列表
-    this.getSingleUserAppList = function (searchObj, selectedAppId) {
+    this.getSingleUserAppList = function (searchObj, selectedAppId, appLists) {
         let getLogParam = {
             user_id: searchObj.user_id,
             page: searchObj.page,
@@ -40,11 +40,15 @@ function SingleUserLogAction() {
         if (selectedAppId) { // 已选中应用
             getLogParam.appid = selectedAppId;
         } else { // 全部应用条件下查看
-            let appUserList = AppUserStore.getState().appUserList;
-            if (appUserList.length) {
-                let selectUserInfo =  _.find(appUserList,  item => item.user.user_id === searchObj.user_id);
-                userOwnAppList = selectUserInfo && selectUserInfo.apps || [];
+            if (appLists.length) {
+                userOwnAppList = appLists;
                 getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
+                this.dispatch(
+                    {
+                        appId:  getLogParam.appid,
+                        appList: userOwnAppList
+                    }
+                );
             } else {
                 userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
                     if (_.isObject(result) && result.apps) {
@@ -62,24 +66,12 @@ function SingleUserLogAction() {
                 }, () => {
                     // 日志列表信息
                     this.actions.getSingleAuditLogList();
-                    this.dispatch(
-                        {
-                            appId:  '',
-                            appList: userOwnAppList
-                        }
-                    );
                 } );
                 return;
             }
         }
         // 日志列表信息
         this.actions.getSingleAuditLogList(getLogParam);
-        this.dispatch(
-            {
-                appId:  getLogParam.appid,
-                appList: userOwnAppList
-            }
-        );
     };
 
     // 获取单个用户的审计日志信息

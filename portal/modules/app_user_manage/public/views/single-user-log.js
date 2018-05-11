@@ -35,7 +35,7 @@ var SingleUserLog = React.createClass({
     getStateData: function () {
         return SingleUserLogStore.getState();
     },
-    getSingleUserLogInfoByApp(userId, selectedAppId) {
+    getSingleUserLogInfoByApp(userId, selectedAppId, appLists) {
         let queryObj = {
             user_id: userId,
             starttime: this.state.startTime,
@@ -46,7 +46,7 @@ var SingleUserLog = React.createClass({
         if (this.state.searchName) {
             queryObj.search = ((this.state.searchName).toString().trim()).toLowerCase();
         }
-        SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId);
+        SingleUserLogAction.getSingleUserAppList(queryObj, selectedAppId, appLists);
         if(selectedAppId){
             SingleUserLogAction.setSelectedAppId(selectedAppId);
         }
@@ -55,14 +55,14 @@ var SingleUserLog = React.createClass({
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
-        this.getSingleUserLogInfoByApp(userId,this.props.selectedAppId);
+        this.getSingleUserLogInfoByApp(userId,this.props.selectedAppId, this.props.appLists);
     },
     componentWillReceiveProps: function (nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId != newUserId) {
             setTimeout(() => {
                 SingleUserLogAction.changUserIdKeepSearch();
-                this.getSingleUserLogInfoByApp(newUserId,nextProps.selectedAppId);
+                this.getSingleUserLogInfoByApp(newUserId,nextProps.selectedAppId, nextProps.appLists);
             }, 0);
         }
     },
