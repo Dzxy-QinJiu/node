@@ -1934,6 +1934,7 @@ var zh_CN = {
 
     "call.record.play": "播放录音",
     "call.record.pick.phone": "请拿起话机",
+    "call.record.call.in.pick.phone":"有电话打入，请拿起话机",
     "call.record.phone.alerting": "已振铃，等待对方接听",
     "call.record.phone.answered": "正在通话中",
     "call.record.phone.unknown": "结束通话",
