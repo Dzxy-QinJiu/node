@@ -228,6 +228,9 @@ var webpackConfig = {
             path.join(__dirname, "portal"),
             "node_modules"
         ],
+        //使用符号链接所在位置而非其链接的目录的真实位置，方便本地模块调试
+        //参考：https://doc.webpack-china.org/configuration/resolve/#resolve-symlinks
+        symlinks: false,
         extensions: ['.js', '.jsx', '.json'],
         alias: {
             //加$是为了避免require("moment/locale/xx")的时候报找不到模块的错误的问题
