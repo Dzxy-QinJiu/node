@@ -90,7 +90,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 layout: {
                     sm: 4,
                 },
-                notShowWhen: {
+                noShowCondition: {
                     app: "all",
                 },
             },
@@ -121,7 +121,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
             },
             //什么情况下不显示
-            notShowWhen: {
+            noShowCondition: {
                 //综合应用下
                 app: "all",
                 //延期Tab下
@@ -134,7 +134,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: `/rest/analysis/user/v1/${authType}/:tab/status`,
             chartType: "pie",
             useChartFilter: true,
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["delayed"],
             },
@@ -145,7 +145,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get("user.analysis.total", "用户统计"),
             url: `/rest/analysis/user/v1/${authType}/:tab/summary`,
-            notShowWhen: {
+            noShowCondition: {
                 tab: ["delayed"],
             },
             chartType: "bar",
@@ -201,7 +201,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: `/rest/analysis/user/v1/${authType}/:tab/team`,
             chartType: "bar",
             useChartFilter: true,
-            notShowWhen: {
+            noShowCondition: {
                 tab: ["delayed"],
             },
             nameValueMap: unknownDataMap,
@@ -228,7 +228,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: `/rest/analysis/user/v1/${authType}/:tab/zone`,
             chartType: "bar",
             useChartFilter: true,
-            notShowWhen: {
+            noShowCondition: {
                 tab: ["delayed", "added", "expired"],
             },
             nameValueMap: unknownDataMap,
@@ -255,7 +255,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: `/rest/analysis/user/v1/${authType}/:tab/industry`,
             chartType: "bar",
             useChartFilter: true,
-            notShowWhen: {
+            noShowCondition: {
                 tab: ["delayed"],
             },
             nameValueMap: unknownDataMap,
@@ -284,7 +284,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             layout: {
                 sm: 24,
             },
-            showWhen: {
+            showCondition: {
                 app: "all",
                 tab: ["total"],
             },
@@ -358,7 +358,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     },
                 ],
             },
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["delayed", "added_expired"],
             },
@@ -403,7 +403,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             xAxisLabels: _.range(24),
             yAxisLabels: WEEKDAY,
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["delayed", "added", "expired", "added_expired"],
                 isTrue: isSales,
@@ -428,7 +428,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.9", "用户留存"),
             url: `/rest/analysis/user/v1/retention`,
             chartType: "table",
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["delayed", "total", "expired", "added_expired"],
                 timeRange: ">7d",
@@ -509,7 +509,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 ranges: 1,
             },
             chartType: "pie",
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["delayed", "added", "added_expired"],
                 isTrue: isSales,
@@ -522,7 +522,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.device", "设备统计"),
             url: `/rest/analysis/user/v3/${authType}/device`,
             chartType: "bar",
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -530,7 +530,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.browser", "浏览器统计"),
             url: `/rest/analysis/user/v3/${authType}/browser`,
             chartType: "bar",
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -541,7 +541,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             reqDataGenerator: "loginNum",
             chartType: "wordcloud",
             unit: Intl.get("common.label.times", "次"),
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -553,7 +553,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: `/rest/analysis/user/v3/${authType}/zone/province`,
             chartType: "map",
             height: 546,
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -576,7 +576,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             reqDataGenerator: "loginDayNum",
             chartType: "wordcloud",
             unit: Intl.get("common.time.unit.day", "天"),
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -591,7 +591,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "wordcloud",
             unit: Intl.get("common.label.hours", "小时"),
             multiple: 60,
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
@@ -640,7 +640,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 activeOption: "hourly",
                 selectQueryField: "interval",
             },
-            notShowWhen: {
+            noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
             },
