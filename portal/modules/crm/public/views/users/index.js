@@ -204,26 +204,38 @@ class CustomerUsers extends React.Component {
         }
     }
 
+    renderUserAppItem(app) {
+        let appName = app && app.app_name || "";
+        let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
+        let lastLoginTime = TimeUtil.getTimeStrFromNow(app.last_login_time);
+        return (
+            <span>
+                {app.app_logo ?
+                    (<img className="crm-user-app-logo" src={app.app_logo || ""} alt={appName}/>)
+                    : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
+                }
+                <span className="user-app-name">{appName || ""}</span>
+                {/*<span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ""}</span>*/}
+                <span className="user-last-login">{lastLoginTime}</span>
+                <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
+            </span>);
+    }
+
     //用户的应用
-    getUserAppOptions(userObj) {
+    getUserAppOptions(userObj, isShowCheckbox) {
         let appList = userObj.apps;
         let userId = userObj.user ? userObj.user.user_id : "";
         if (_.isArray(appList) && appList.length) {
             return appList.map((app) => {
-                let appName = app ? app.app_name || "" : "";
-                let overDraftCls = classNames("user-app-over-draft", {"user-app-stopped-status": app.is_disabled === "true"});
-                let lastLoginTime = TimeUtil.getTimeStrFromNow(app.last_login_time);
-                return (
-                    <Checkbox checked={app.checked} onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
-                        {app.app_logo ?
-                            (<img className="crm-user-app-logo" src={app.app_logo || ""} alt={appName}/>)
-                            : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
-                        }
-                        <span className="user-app-name">{appName || ""}</span>
-                        {/*<span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ""}</span>*/}
-                        <span className="user-last-login">{lastLoginTime}</span>
-                        <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
-                    </Checkbox>);
+                if (isShowCheckbox) {
+                    return (
+                        <Checkbox checked={app.checked}
+                                  onChange={this.onChangeAppCheckBox.bind(this, userId, app.app_id)}>
+                            {this.renderUserAppItem(app)}
+                        </Checkbox>);
+                } else {
+                    return (<label>{this.renderUserAppItem(app)}</label>);
+                }
             });
         }
         return [];
@@ -375,7 +387,18 @@ class CustomerUsers extends React.Component {
         }
     }
 
-    renderCrmUserList() {
+    renderUserAppTitle() {
+        return (
+            <span>
+                <span className="user-app-name">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
+                {/*<span className="user-app-type">{Intl.get("user.user.type", "用户类型")}</span>*/}
+                <span className="user-last-login">{Intl.get("user.last.login", "最近登录")}</span>
+                <span className="user-app-over-draft">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
+            </span>
+        );
+    }
+
+    renderCrmUserList(isApplyButtonShow) {
         if (this.state.isLoading) {
             return <Spinner />;
         }
@@ -383,6 +406,7 @@ class CustomerUsers extends React.Component {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
                                  retryFunc={this.getCrmUserList.bind(this)}/>;
         }
+        let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
         if (_.isArray(crmUserList) && crmUserList.length) {
             return crmUserList.map((userObj) => {
@@ -390,25 +414,26 @@ class CustomerUsers extends React.Component {
                 return (
                     <div className="crm-user-item">
                         <div className="crm-user-name">
-                            <Checkbox checked={user.checked}
-                                      onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                {user.user_name}({user.nick_name})
-                            </Checkbox>
+                            {isShowCheckbox ? (
+                                <Checkbox checked={user.checked}
+                                          onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                    {user.user_name}({user.nick_name})
+                                </Checkbox>) :
+                                <span className="no-checkbox-text">{user.user_name}({user.nick_name})</span>
+                            }
                         </div>
-                        <div className="crm-user-apps-container">
+                        <div
+                            className={classNames("crm-user-apps-container", {"no-checkbox-apps-container": !isShowCheckbox})}>
                             <div className="crm-user-apps">
                                 <div className="apps-top-title">
-                                    <Checkbox checked={user.checked}
-                                              onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                        <span
-                                            className="user-app-name">{Intl.get("sales.frontpage.open.app", "已开通应用")}</span>
-                                        {/*<span className="user-app-type">{Intl.get("user.user.type", "用户类型")}</span>*/}
-                                        <span className="user-last-login">{Intl.get("user.last.login", "最近登录")}</span>
-                                        <span
-                                            className="user-app-over-draft">{Intl.get("sales.frontpage.expired.date", "到期情况")}</span>
-                                    </Checkbox>
+                                    {isShowCheckbox ? (
+                                        <Checkbox checked={user.checked}
+                                                  onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
+                                            {this.renderUserAppTitle()}
+                                        </Checkbox>
+                                    ) : (<label>{this.renderUserAppTitle()}</label>)}
                                 </div>
-                                {this.getUserAppOptions(userObj)}
+                                {this.getUserAppOptions(userObj, isShowCheckbox)}
                             </div>
                         </div>
                     </div>
@@ -460,7 +485,7 @@ class CustomerUsers extends React.Component {
                                   crmUserList={this.state.crmUserList}/>) : null}
             <ul className="crm-user-list" style={{height: divHeight}}>
                 <GeminiScrollbar>
-                    {this.renderCrmUserList()}
+                    {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
             </ul>
             <RightPanel className="crm_user_apply_panel white-space-nowrap"
