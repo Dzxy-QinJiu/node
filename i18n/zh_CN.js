@@ -1554,6 +1554,7 @@ var zh_CN = {
     "user.analysis.active.customer": "活跃客户",
     "user.analysis.moveoutCustomer": "转出客户统计",
     "user.analysis.sales.users": "销售开通用户统计",
+    "user.analysis.active.user.area.statistics": "活跃用户地域统计",
 
     //销售首页-新增客户分析
     "customer.analysis": "客户分析",

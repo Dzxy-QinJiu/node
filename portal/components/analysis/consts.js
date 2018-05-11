@@ -4,6 +4,9 @@ export const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 //默认时间区间
 export const TIME_RANGE = "ThisWeek";
 
+//用于获取存储的app_id的键值
+export const STORED_APP_ID_KEY = location.pathname.replace(/\//g, "_") + "_selected_app_id";
+
 //用户类型legend
 export const USER_TYPE_LEGEND = [
     {name: Intl.get("common.official", "签约"), key: "formal"},

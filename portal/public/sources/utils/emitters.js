@@ -102,6 +102,20 @@ exports.appSelectorEmitter = appSelectorEmitter;
 // 应用选择组件--选中应用
 exports.appSelectorEmitter.SELECTE_APP = 'appselector.select_app';
 
+// 分析tab选择组件的emitter
+const analysisTabEmitter = new EventEmitter();
+analysisTabEmitter.setMaxListeners(0);
+exports.analysisTabEmitter = analysisTabEmitter;
+// 分析tab选择组件--选中分析tab
+exports.analysisTabEmitter.SELECTE_TAB = 'analysis_tab.select_tab';
+
+// 图表点击事件的emitter
+const chartClickEmitter = new EventEmitter();
+chartClickEmitter.setMaxListeners(0);
+exports.chartClickEmitter = chartClickEmitter;
+// 图表点击事件--触发点击
+exports.chartClickEmitter.CLICK_CHART = 'chartClick.click_chart';
+
 // 团队树组件的emitter
 const teamTreeEmitter = new EventEmitter();
 teamTreeEmitter.setMaxListeners(0);

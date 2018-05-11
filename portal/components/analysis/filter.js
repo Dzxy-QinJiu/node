@@ -9,7 +9,7 @@ const Emitters = require("../../public/sources/utils/emitters");
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const appSelectorEmitter = Emitters.appSelectorEmitter;
 const DateSelectorUtils = require("../datepicker/utils");
-import { TIME_RANGE } from "./consts";
+import { TIME_RANGE, STORED_APP_ID_KEY } from "./consts";
 import Trace from "LIB_DIR/trace";
 
 const timeRange = "week";
@@ -18,6 +18,7 @@ const AnalysisFilter = React.createClass({
     getDefaultProps() {
          return {
             isAppSelectorShow: true,
+            selectedApp: localStorage[STORED_APP_ID_KEY],
         };
     },
     componentDidMount() {
