@@ -160,7 +160,10 @@ function formatTaskParams(batch_data , app_id , extranInfo) {
             if(/^\[.*\]$/.test(app_id)) {
                 try {
                     app_ids = JSON.parse(app_id);
-                }catch(e){}
+                }catch (e) {
+                    // eslint-disable-next-line no-console
+                    console.log(JSON.stringify(e));
+                }
             } else {
                 app_ids = [app_id];
             }

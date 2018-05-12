@@ -45,7 +45,12 @@ var BarChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            try {
+                _this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
             this.echartInstance = null;
         }
     },
@@ -380,7 +385,12 @@ var BarChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose();} catch(e){}
+            try {
+                this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = "";

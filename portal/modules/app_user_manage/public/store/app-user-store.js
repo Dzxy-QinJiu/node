@@ -1053,7 +1053,9 @@ AppUserStore.prototype.batchPushChangeUserCreate = function (result) {
         //解析json出错，就不更新了
         try {
             userApps = JSON.parse(taskParamsData.products);
-        } catch(e){
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(JSON.stringify(e));
         }
         //针对每个应用处理
         _.each(userApps , (app) => {

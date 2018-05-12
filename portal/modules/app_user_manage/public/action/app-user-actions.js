@@ -148,7 +148,10 @@ function AppUserAction() {
             if(typeof data === 'string' && data.indexOf('{') === 0) {
                 try {
                     data = JSON.parse(data);
-                } catch(e){}
+                } catch (e) {
+                    // eslint-disable-next-line no-console
+                    console.log(JSON.stringify(e));
+                }
             }
             //----------
             if (UserItem && ('stopScroll' in UserItem)){

@@ -75,7 +75,12 @@ var PieChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose();} catch(e){}
+            try {
+                _this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -84,7 +89,12 @@ var PieChart = React.createClass({
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         if(!this.props.data || !this.props.data.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                try {
+                    _this.echartInstance.dispose();
+                } catch (e) {
+                    // eslint-disable-next-line no-console
+                    console.log(JSON.stringify(e));
+                }
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -114,7 +124,12 @@ var PieChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            try {
+                _this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
             this.echartInstance = null;
         }
     },

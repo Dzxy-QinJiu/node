@@ -158,7 +158,12 @@ var PieChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose();} catch(e){}
+            try {
+                this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -186,7 +191,12 @@ var PieChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            try {
+                _this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
             this.echartInstance = null;
         }
     },

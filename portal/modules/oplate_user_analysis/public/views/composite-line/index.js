@@ -214,7 +214,12 @@ var LineChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose();} catch(e){}
+            try {
+                _this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -225,7 +230,12 @@ var LineChart = React.createClass({
         this.echartInstance.setOption(options,true);
         if(!options.series.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                try {
+                    _this.echartInstance.dispose();
+                } catch (e) {
+                    // eslint-disable-next-line no-console
+                    console.log(JSON.stringify(e));
+                }
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -271,7 +281,12 @@ var LineChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose();} catch(e){}
+            try {
+                this.echartInstance.dispose();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
+            }
             this.echartInstance = null;
         }
     },

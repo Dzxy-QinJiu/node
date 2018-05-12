@@ -34,6 +34,8 @@ var ScatterChart = React.createClass({
             try {
                 _this.echartInstance.dispose();
             } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
             }
         }
         if (this.props.resultType === 'loading') {
@@ -130,6 +132,8 @@ var ScatterChart = React.createClass({
                 try {
                     _this.echartInstance.dispose();
                 } catch (e) {
+                    // eslint-disable-next-line no-console
+                    console.log(JSON.stringify(e));
                 }
                 
             }
