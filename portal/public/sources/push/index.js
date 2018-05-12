@@ -465,6 +465,7 @@ function handleSessionExpired() {
 }
 //断开连接时，移出Emitter监听器
 function socketEmitterListener() {
+    // eslint-disable-next-line no-console
     console.log('socketEmitter removeListener ');
     if (socketIo) {
         socketIo.disconnect();
@@ -472,6 +473,7 @@ function socketEmitterListener() {
 }
 //socketio断开连接处理器
 function disconnectListener() {
+    // eslint-disable-next-line no-console
     console.log('user disconnected');
     if (socketIo) {
         //取消监听

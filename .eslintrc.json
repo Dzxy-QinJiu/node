@@ -129,7 +129,7 @@
     //禁用不必要的转义字符
     "no-useless-escape": 0,
     // 禁用 console
-    "no-console": 0,
+    "no-console": 1,
     //禁用 alert、confirm 和 prompt
     "no-alert": 2,
     //禁止不必要的分号

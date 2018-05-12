@@ -59,6 +59,7 @@ var RestTest = {
                 req: req,
                 res: res
             }).on("success", function (data) {
+                // eslint-disable-next-line no-console
                 console.log("/test/test1  sucess " + data ? data.message ? data.message : data : "null");
                 res.status(200).json(data);
             }).on("error", function (data) {

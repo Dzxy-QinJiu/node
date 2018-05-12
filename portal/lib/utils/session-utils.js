@@ -50,6 +50,7 @@ module.exports = {
                     try{
                         logoutService.sessionTimeout(key,value.data._USER_TOKEN_.access_token);
                     }catch (e){
+                        // eslint-disable-next-line no-console
                         console.log("sessionTimeout error");
                     }
                     //触发session过期的监听事件

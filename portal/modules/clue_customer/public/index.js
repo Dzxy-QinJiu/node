@@ -104,6 +104,7 @@ const ClueCustomer = React.createClass({
                 });
             }
         }, errorMsg => {
+            // eslint-disable-next-line no-console
             console.log("获取线索来源出错了 " + errorMsg);
         });
     },
@@ -115,6 +116,7 @@ const ClueCustomer = React.createClass({
                 });
             }
         }, errorMsg => {
+            // eslint-disable-next-line no-console
             console.log("获取线索渠道出错了 " + errorMsg);
         });
     },
@@ -126,6 +128,7 @@ const ClueCustomer = React.createClass({
                 });
             }
         }, errorMsg => {
+            // eslint-disable-next-line no-console
             console.log("获取线索分类出错了 " + errorMsg);
         });
     },

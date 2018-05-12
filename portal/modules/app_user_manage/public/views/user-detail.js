@@ -57,6 +57,7 @@ var UserDetail = React.createClass({
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
                 $(this.refs.wrap).addClass("move_left");
+                // eslint-disable-next-line no-console
                 console.log('move');
             },timeout);
         }
@@ -68,6 +69,7 @@ var UserDetail = React.createClass({
             $(this.refs.wrap).removeClass("move_left");
         } else {
             this.panelSwitchTimeout = setTimeout(() => {
+                // eslint-disable-next-line no-console
                 console.log('move');
                 $(this.refs.wrap).removeClass("move_left");
             } , timeout);
