@@ -10,6 +10,7 @@ var COLORSINGLE = '#1790cf';
 const querystring = require("querystring");
 import { XAXIS_COLOR } from "./consts";
 import Trace from "LIB_DIR/trace";
+import { packageTry } from 'LIB_DIR/func';
 
 var LineChart = React.createClass({
     echartInstance : null,
@@ -192,12 +193,9 @@ var LineChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         this.echartInstance = echarts.init(this.refs.chart , macronsTheme);
         var options = this.getEchartOptions();
@@ -243,12 +241,9 @@ var LineChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

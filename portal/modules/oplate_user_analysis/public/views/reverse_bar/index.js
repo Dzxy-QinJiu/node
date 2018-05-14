@@ -12,6 +12,7 @@ var minHeight = 214;
 var textWidth = require("../../../../../public/sources/utils/measure-text");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
+import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
     echartInstance : null,
@@ -171,12 +172,9 @@ var BarChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -185,12 +183,9 @@ var BarChart = React.createClass({
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {
+                packageTry(() => {
                     _this.echartInstance.dispose();
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -216,12 +211,9 @@ var BarChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

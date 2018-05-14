@@ -29,8 +29,9 @@ var TimeSeriesLinechart = React.createClass({
     componentWillUnmount : function() {
         $(window).off('resize', this.windowResize);
         if(this.echartInstance) {
-            let cb = () => this.echartInstance.clear();
-            packageTry(cb);
+            packageTry(() => {
+                this.echartInstance.clear();
+            });
             this.echartInstance = null;
         }
     },
@@ -44,8 +45,9 @@ var TimeSeriesLinechart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            let cb = () => _this.echartInstance.clear();
-            packageTry(cb);
+            packageTry(() => {
+                _this.echartInstance.clear();
+            });
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();

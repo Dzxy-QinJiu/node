@@ -13,6 +13,7 @@ var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-cs
 var RadioGroup = Radio.Group;
 //macrons主题
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 
 //时间格式化格式1
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
@@ -307,12 +308,9 @@ var AreaLineChart = React.createClass({
     renderChart: function () {
         var _this = this;
         if (this.echartInstance) {
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if (this.props.resultType === 'loading') {
             return;
@@ -325,12 +323,9 @@ var AreaLineChart = React.createClass({
         }
         if (isNoData) {
             if (this.echartInstance) {
-                try {
+                packageTry(() => {
                     _this.echartInstance.dispose();
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data", "暂无数据")}</div>`);
         } else {
@@ -356,12 +351,9 @@ var AreaLineChart = React.createClass({
     },
     componentWillUnmount: function () {
         if (this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

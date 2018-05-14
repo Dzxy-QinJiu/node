@@ -7,6 +7,7 @@ var AppUserUtil = require("../util/app-user-util");
 var UserData = require("../../../../public/sources/user-data");
 var ShareObj = require("../util/app-id-share-util");
 var rolesAjax = require("../../../common/public/ajax/role");
+import { packageTry } from 'LIB_DIR/func';
 
 function AppUserAction() {
 
@@ -146,12 +147,9 @@ function AppUserAction() {
         AppUserAjax.getAppUserList(UserItem).then(function(data) {
             //-----java端偶尔传过来的是一个json字符串-----
             if(typeof data === 'string' && data.indexOf('{') === 0) {
-                try {
+                packageTry(() => {
                     data = JSON.parse(data);
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
             }
             //----------
             if (UserItem && ('stopScroll' in UserItem)){

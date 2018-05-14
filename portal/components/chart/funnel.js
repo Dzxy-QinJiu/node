@@ -7,6 +7,7 @@ var macronsTheme = require("./theme-macrons");
 var immutable = require("immutable");
 const querystring = require("querystring");
 import Trace from "LIB_DIR/trace";
+import { packageTry } from 'LIB_DIR/func';
 
 var FunnelChart = React.createClass({
     echartInstance : null,
@@ -90,12 +91,9 @@ var FunnelChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = this.getEchartOptions();
@@ -134,12 +132,9 @@ var FunnelChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

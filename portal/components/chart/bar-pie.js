@@ -9,6 +9,7 @@ require("./style.less");
 import Spinner from "../spinner";
 import macronsTheme from "./theme-macrons";
 var immutable = require("immutable");
+import { packageTry } from 'LIB_DIR/func';
 
 class AntcBarPieChart extends React.Component {
     static defaultProps = {
@@ -47,12 +48,9 @@ class AntcBarPieChart extends React.Component {
 
     componentWillUnmount() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     }
@@ -282,12 +280,9 @@ class AntcBarPieChart extends React.Component {
 
     renderChart() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -298,12 +293,9 @@ class AntcBarPieChart extends React.Component {
         if (this.props.dataField) chartData = chartData[this.props.dataField];
         if (_.isEmpty(chartData)) {
             if(this.echartInstance) {
-                try {
+                packageTry(() => {
                     this.echartInstance.dispose();
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {

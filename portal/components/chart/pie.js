@@ -6,6 +6,7 @@ require("./style.less");
 var macronsTheme = require("./theme-macrons");
 var echartsTooltipCssText = require("../../lib/utils/echarts-tooltip-csstext");
 var immutable = require("immutable");
+import { packageTry } from 'LIB_DIR/func';
 
 var PieChart = React.createClass({
     echartInstance : null,
@@ -158,12 +159,9 @@ var PieChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -191,12 +189,9 @@ var PieChart = React.createClass({
     componentWillUnmount : function() {
         if(this.echartInstance) {
             var _this = this;
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

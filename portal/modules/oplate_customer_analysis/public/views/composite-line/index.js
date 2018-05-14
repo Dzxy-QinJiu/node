@@ -12,6 +12,7 @@ var immutable = require("immutable");
 var Icon = require("antd").Icon;
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 
 //布局使用的常量
 var LAYOUT = {
@@ -201,12 +202,9 @@ var LineChart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 _this.echartInstance.clear();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -216,12 +214,9 @@ var LineChart = React.createClass({
         this.echartInstance.setOption(options,true);
         if(!options.series.length) {
             if(this.echartInstance) {
-                try {
+                packageTry(() => {
                     _this.echartInstance.dispose();
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
                 this.echartInstance = null;
             }
             $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
@@ -267,12 +262,9 @@ var LineChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

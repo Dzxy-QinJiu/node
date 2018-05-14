@@ -13,6 +13,7 @@ import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 //时间格式化格式2
 const DATE_FORMAT_WITHOUT_DAY = oplateConsts.DATE_YEAR_MONTH_FORMAT;
+import { packageTry } from 'LIB_DIR/func';
 
 var AreaLine = React.createClass({
     echartInstance : null,
@@ -282,12 +283,9 @@ var AreaLine = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 _this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -302,12 +300,9 @@ var AreaLine = React.createClass({
         }
         if(isNoData) {
             if (this.echartInstance) {
-                try {
+                packageTry(() => {
                     _this.echartInstance.dispose();
-                } catch (e) {
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(e));
-                }
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -343,12 +338,9 @@ var AreaLine = React.createClass({
     componentWillUnmount : function() {
         $(window).off('resize', this.windowResize);
         if(this.echartInstance) {
-            try {
+            packageTry(() => {
                 this.echartInstance.dispose();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            });
             this.echartInstance = null;
         }
     },

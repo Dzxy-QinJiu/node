@@ -4,6 +4,7 @@ var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scro
 var AppUserUtil = require("../util/app-user-util");
 var hasPrivilege = require("../../../../components/privilege/checker").hasPrivilege;
 import { storageUtil } from "ant-utils";
+import { packageTry } from 'LIB_DIR/func';
 
 //app用户的store
 function AppUserStore() {
@@ -1051,12 +1052,9 @@ AppUserStore.prototype.batchPushChangeUserCreate = function (result) {
         };
         var userApps = [];
         //解析json出错，就不更新了
-        try {
+        packageTry(() => {
             userApps = JSON.parse(taskParamsData.products);
-        } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log(JSON.stringify(e));
-        }
+        });
         //针对每个应用处理
         _.each(userApps , (app) => {
             var appName = '';

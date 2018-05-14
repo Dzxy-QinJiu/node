@@ -6,6 +6,7 @@ var measureText = require("../../../../public/sources/utils/measure-text");
 var Spinner = require("../../../../components/spinner");
 var immutable = require("immutable");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 
 //布局相关
 var LAYOUT = {
@@ -188,12 +189,9 @@ var PieChart = React.createClass({
     //渲染图表
     renderChart : function() {
         var _this = this;
-        try {
+        packageTry(() => {
             _this.echartInstance && _this.echartInstance.dispose();
-        } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log(JSON.stringify(e));
-        }
+        });
         if(this.props.resultType === 'loading') {
             return;
         }
