@@ -28,6 +28,7 @@ function FilterAction() {
             list.unshift({client_id: "", client_name: Intl.get("common.all", "全部")});
             _this.dispatch(list);
         }, function (errorMsg) {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -40,6 +41,7 @@ function FilterAction() {
             _this.dispatch(list);
             if (_.isFunction(cb)) cb(list);
         }, function (errorMsg) {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -51,6 +53,7 @@ function FilterAction() {
             list.map(stage => stage.show_name = stage.name);
             _this.dispatch(list);
         }, function (errorMsg) {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -107,6 +110,7 @@ function FilterAction() {
             const list = data && _.isArray(data.result) ? data.result : [];
             this.dispatch(list);
         }, (errorMsg) => {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -116,6 +120,7 @@ function FilterAction() {
             const list = data && _.isArray(data.result) ? data.result : [];
             this.dispatch(list);
         }, (errorMsg) => {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };

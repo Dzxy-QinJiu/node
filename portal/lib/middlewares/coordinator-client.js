@@ -14,6 +14,7 @@ module.exports = function initCoordinator(callback) {
     client.logger.level('info');
     client.start(function (error) {
         //error存在的时候启动失败，不存在的时候启动成功
+        // eslint-disable-next-line no-console
         console.log(error || 'Coordinator启动成功!');
         //启动推送
         if (callback instanceof Function) {

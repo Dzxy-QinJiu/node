@@ -89,6 +89,7 @@
         }
 
         if (this._created === true) {
+            // eslint-disable-next-line no-console
             console.warn('calling on a already-created object');
             return this;
         }
@@ -158,6 +159,7 @@
         }
 
         if (this._created === false) {
+            // eslint-disable-next-line no-console
             console.warn('calling on a not-yet-created object');
             return this;
         }
@@ -184,6 +186,7 @@
         }
 
         if (this._created === false) {
+            // eslint-disable-next-line no-console
             console.warn('calling on a not-yet-created object');
             return this;
         }

@@ -31,11 +31,13 @@ function start() {
         .reply(function () {
             authRestIndex++;
             if (authRestIndex % 2 === 1) {
+                // eslint-disable-next-line no-console
                 console.log("authRestIndex=" + authRestIndex + ",code=400");
                 return [400, {
                     error_code: 11012
                 }];
             } else {
+                // eslint-disable-next-line no-console
                 console.log("authRestIndex=" + authRestIndex + ",code=200");
                 return [200, {
                     data: 'testData'
