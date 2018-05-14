@@ -190,3 +190,14 @@ export const mapColorList = function (dataList) {
     }
 };
 
+// 销毁或清空echart实例(销毁后无法使用，清空后可继续重新使用)
+export const disposeEchartInstance = function (_this, isDispose = true) {
+    if (_this.echartInstance) {
+        try {
+            isDispose ? _this.echartInstance.dispose() : _this.echartInstance.clear();
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(JSON.stringify(e));
+        }
+    }
+};
