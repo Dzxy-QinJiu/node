@@ -2128,7 +2128,6 @@ var zh_CN = {
     "config.manage.no.tele": "暂无客服电话，请添加！",
     "config.manage.reload.tele": "重新获取客服电话",
     "config.manage.tele.config": "客服电话",
-    'config.manage.input.tele': '请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
     "contract.22": "个",
     "sale.home.no.team": "暂无销售团队",
     "coontract.114": "导入合同",

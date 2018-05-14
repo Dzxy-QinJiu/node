@@ -2080,7 +2080,6 @@ var en_US = {
     "config.manage.no.tele": "No customer service phone, please add",//暂无客服电话，请添加
     "config.manage.reload.tele": "Retry to get customer service phone",//重新获取客服电话
     "config.manage.tele.config": "Customer service phone",//客服电话
-    'config.manage.input.tele': '请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
     "contract.22": "Unit",//个
     "sale.home.no.team": "No sales team",//暂无销售团队
     "coontract.114": "Import contract",//导入合同
