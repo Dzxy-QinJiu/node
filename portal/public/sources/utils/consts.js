@@ -118,7 +118,8 @@ export const ALL_LISTS_TYPE = {
     CONCERNED_CUSTOMER_LOGIN: "concerCustomerLogin",//关注客户登录
     RECENT_LOGIN_CUSTOMER: "recent_login_customer",//最近登录的客户
     REPEAT_CUSTOMER: "repeat_customer",//重复客户
-    NEW_DISTRIBUTE_CUSTOMER: "new_distribute_customer"//新分配的客户
+    NEW_DISTRIBUTE_CUSTOMER: "new_distribute_customer",//新分配的客户
+    HAS_NO_CONNECTED_PHONE: "has_no_connected_phone",//你有未接听的来电
 };
 export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.SCHEDULE_TODAY, name: Intl.get("sales.frontpage.will.contact.today", "今日待联系")},//今日计划联系日程列表
@@ -145,7 +146,12 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     {
         value: ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER,
         name: Intl.get("sales.frontpage.new.distribute.customer", "新分配但未联系的客户")
-    }
+    },
+    {
+        value: ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE,
+        name: Intl.get("sales.frontpage.has.no.conneted", "你有电话未接听")
+    },
+
 ];
 
 //处理 或者未处理
