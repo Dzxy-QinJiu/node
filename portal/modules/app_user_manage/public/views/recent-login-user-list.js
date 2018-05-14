@@ -15,14 +15,20 @@ import {RightPanel} from "CMP_DIR/rightPanel";
 import {topNavEmitter} from "PUB_DIR/sources/utils/emitters";
 import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
 import {userTypeList, filterTypeList} from "PUB_DIR/sources/utils/consts";
-import {getUserByFromUserList, getAppNameList, getAppStatusList, getAccountTypeList, getTimeList } from "../util/app-user-util";
+import {
+    getUserByFromUserList,
+    getAppNameList,
+    getAppStatusList,
+    getAccountTypeList,
+    getTimeList
+} from "../util/app-user-util";
 import userAjax from "../ajax/app-user-ajax";
 import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
 import CONSTS from  "LIB_DIR/consts";
-import { storageUtil } from "ant-utils";
+import {storageUtil} from "ant-utils";
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -75,7 +81,9 @@ class RecentLoginUsers extends React.Component {
         }
         $(event.currentTarget).addClass("current_row").siblings().removeClass("current_row");
         let userObj = getUserByFromUserList(this.state.recentLoginUsers, user_id);
-        userObj.isShownExceptionTab = _.find(userObj.apps, app =>{return app.exception_mark_date;})? true: false;
+        userObj.isShownExceptionTab = _.find(userObj.apps, app => {
+            return app.exception_mark_date;
+        }) ? true : false;
         this.setState({
             isShowUserDetail: true,
             userId: user_id,
@@ -89,22 +97,24 @@ class RecentLoginUsers extends React.Component {
         });
         $(".recent-login-users-table-wrap .current_row").removeClass("current_row");
     }
-    getSelectedAppId(props){
+
+    getSelectedAppId(props) {
         var selectedAppId = "";
         //上次手动选中的appid
         var localSelectedAppId = JSON.parse(storageUtil.local.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG))[CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID];
-        if (props.selectedAppId){
+        if (props.selectedAppId) {
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;
-        }else if(localSelectedAppId){
+        } else if (localSelectedAppId) {
             //如果外面没有选中应用，但上次在最近登录的用户的应用列表中选中过一个应用，就用上一次选中的应用
             selectedAppId = localSelectedAppId;
-        }else{
+        } else {
             //如果上面两种情况都没有，就用应用列表中第一个
             selectedAppId = props.appList[0] ? props.appList[0].app_id : "";
         }
         return selectedAppId;
     }
+
     componentWillReceiveProps(nextProps) {
         let oldAppId = this.state.selectedAppId;
         let newAppId = this.getSelectedAppId(nextProps);
@@ -214,7 +224,8 @@ class RecentLoginUsers extends React.Component {
             pageNum: 1,
         }, () => {
             setWebsiteConfig(obj);
-            this.getRecentLoginUsers();});
+            this.getRecentLoginUsers();
+        });
         //当应用列表重新布局的时候，让顶部导航重新渲染
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     }
@@ -242,8 +253,9 @@ class RecentLoginUsers extends React.Component {
 
                     return (
                         <div title={user_name}>
-                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ? <i className="iconfont icon-warn-icon unnormal-login"
-                                          title={Intl.get("user.login.abnormal", "异常登录")}/> : null}
+                            {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
+                                <i className="iconfont icon-warn-icon unnormal-login"
+                                   title={Intl.get("user.login.abnormal", "异常登录")}/> : null}
                             {user_name}
                             <input type="hidden" className="hidden_user_id" value={user_id}/>
                         </div>
@@ -405,6 +417,7 @@ class RecentLoginUsers extends React.Component {
         this.setState({user_type: type, pageNum: 1});
         setTimeout(() => this.getRecentLoginUsers());
     }
+
     // 是否过期类型的选择
     onFilterTypeChange(type) {
         this.setState({filter_type: type, pageNum: 1});
@@ -532,12 +545,12 @@ class RecentLoginUsers extends React.Component {
                     className="app_user_manage_rightpanel"
                     showFlag={this.state.isShowUserDetail}
                 >
-                    <UserDetail userId={this.state.userId}
-                                appLists={this.state.curUserDetail.apps}
-                                isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
-                                selectedAppId={this.state.selectedAppId}
-                                closeRightPanel={this.closeRightPanel.bind(this)}
-                    />
+                    {this.state.isShowUserDetail ? ( <UserDetail userId={this.state.userId}
+                                                                 appLists={this.state.curUserDetail.apps}
+                                                                 isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
+                                                                 selectedAppId={this.state.selectedAppId}
+                                                                 closeRightPanel={this.closeRightPanel.bind(this)}
+                    />) : null}
                 </RightPanel>
             </div>
         );
