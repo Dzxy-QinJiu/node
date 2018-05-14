@@ -190,14 +190,12 @@ export const mapColorList = function (dataList) {
     }
 };
 
-// 销毁或清空echart实例(销毁后无法使用，清空后可继续重新使用)
-export const disposeEchartInstance = function (_this, isDispose = true) {
-    if (_this.echartInstance) {
-        try {
-            isDispose ? _this.echartInstance.dispose() : _this.echartInstance.clear();
-        } catch (e) {
-            // eslint-disable-next-line no-console
-            console.log(JSON.stringify(e));
-        }
+// 封装原生try结构，统一catch处理(cb：写在try中的回调函数)
+export const packageTry = function (cb) {
+    try {
+        if (_.isFunction(cb)) cb();
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
 };

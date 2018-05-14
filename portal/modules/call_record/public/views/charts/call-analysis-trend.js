@@ -2,6 +2,7 @@ var echarts = require("echarts-eefung");
 var immutable = require("immutable");
 //macrons主题
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 var TimeSeriesLinechart = React.createClass({
     echartInstance : null,
     getDefaultProps : function() {
@@ -28,13 +29,8 @@ var TimeSeriesLinechart = React.createClass({
     componentWillUnmount : function() {
         $(window).off('resize', this.windowResize);
         if(this.echartInstance) {
-            var _this = this;
-            try {
-                _this.echartInstance.clear();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            let cb = () => this.echartInstance.clear();
+            packageTry(cb);
             this.echartInstance = null;
         }
     },
@@ -48,12 +44,8 @@ var TimeSeriesLinechart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            try {
-                _this.echartInstance.clear();
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(e));
-            }
+            let cb = () => _this.echartInstance.clear();
+            packageTry(cb);
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();
