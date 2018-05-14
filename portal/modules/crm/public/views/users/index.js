@@ -454,7 +454,7 @@ class CustomerUsers extends React.Component {
     }
 
     render() {
-        const userNum = _.isArray(this.state.crmUserList) ? this.state.crmUserList.length : 0;
+        const userNum = this.state.total||0;
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
