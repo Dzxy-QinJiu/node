@@ -44,12 +44,12 @@ var UserDetailBasic = React.createClass({
     },
     componentDidMount: function () {
         AppUserDetailStore.listen(this.onStateChange);
+        if (!this.props.userId) return;
         AppUserDetailAction.getUserDetail(this.props.userId);
-
     },
     componentDidUpdate: function (prevProps, prevState) {
         var newUserId = this.props.userId;
-        if (prevProps.userId != newUserId) {
+        if (prevProps.userId != newUserId && newUserId) {
             setTimeout(function () {
                 AppUserDetailAction.dismiss();
                 AppUserDetailAction.getUserDetail(newUserId);
@@ -58,6 +58,7 @@ var UserDetailBasic = React.createClass({
     },
     retryGetDetail: function () {
         var userId = this.props.userId;
+        if (!userId) return;
         setTimeout(function () {
             AppUserDetailAction.dismiss();
             AppUserDetailAction.getUserDetail(userId);
