@@ -1,4 +1,4 @@
-import {message, Select} from 'antd';
+import {message, Select, Button, Icon} from 'antd';
 let Option = Select.Option;
 let hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
 let userData = require("../../../../../public/sources/user-data");
@@ -113,7 +113,7 @@ var SalesTeamCard = React.createClass({
         });
     },
     getSalesRoleByMemberId: function (memberId) {
-        if(!memberId) return;
+        if (!memberId) return;
         $.ajax({
             url: '/rest/sales/role',
             type: 'get',
@@ -274,18 +274,18 @@ var SalesTeamCard = React.createClass({
             return;
         }
         //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
-        if (this.state.displayType === "edit" || this.state.displayType === "transfer"){
+        if (this.state.displayType === "edit" || this.state.displayType === "transfer") {
             this.setState({loading: true});
-            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result)=>{
+            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
                 //result>0 ，不可转入或变更客户
-                if (_.isNumber(result) && result > 0){
-                    message.warn(Intl.get("crm.should.reduce.customer","该销售拥有客户数量已达到上限！"));
+                if (_.isNumber(result) && result > 0) {
+                    message.warn(Intl.get("crm.should.reduce.customer", "该销售拥有客户数量已达到上限！"));
                     this.setState({loading: false});
-                }else{
+                } else {
                     this.submitData();
                 }
             });
-        }else{
+        } else {
             this.submitData();
         }
     },
@@ -360,15 +360,28 @@ var SalesTeamCard = React.createClass({
             </div>
         );
     },
+    renderHandleSaveBtns: function () {
+        return (<div className="button-container">
+            <Button className="button-save" type="primary"
+                    onClick={this.handleSubmit.bind(this)}>
+                {Intl.get("common.save", "保存")}
+            </Button>
+            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, "text")}>
+                {Intl.get("common.cancel", "取消")}
+            </Button>
+            {this.state.loading ? (
+                <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
+                <span className="save-error">{this.state.submitErrorMsg}</span>
+            ) : null}
+        </div>);
+    },
     render: function () {
         return (<DetailCard title={this.renderTitle()}
                             content={this.renderContent()}
                             className="sales-team-container"
                             isEdit={this.state.displayType !== "text"}
-                            loading={this.state.loading}
-                            saveErrorMsg={this.state.submitErrorMsg}
-                            handleSubmit={this.handleSubmit.bind(this)}
-                            handleCancel={this.changeDisplayType.bind(this, "text")}/>);
+                            renderHandleSaveBtns={this.renderHandleSaveBtns}
+        />);
     }
 });
 
