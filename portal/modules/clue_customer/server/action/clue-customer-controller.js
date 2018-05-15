@@ -5,6 +5,7 @@
  */
 "use strict";
 var clueCustomerService = require("../service/clue-customer-service");
+var path = require("path");
 //获取线索客户列表
 exports.getClueCustomerList = function (req, res) {
     clueCustomerService.getClueCustomerList(req, res)
@@ -88,4 +89,38 @@ exports.relateClueAndCustomer = function (req, res) {
         }).on("error", function (err) {
         res.status(500).json(err.message);
     });
+};
+// 处理导入线索模板文件
+exports.getClueTemplate = function (req, res) {
+    var filePath = path.resolve(__dirname, "../../tpl/clue_temp.xls");
+    res.download(filePath);
+};
+
+exports.uploadClues = function (req, res) {
+    //调用上传请求服务
+    clueCustomerService.uploadClues(req, res)
+        .on("success", function (data) {
+            res.json(data.result);
+        })
+        .on("error", function (err) {
+            res.json(err.message);
+        });
+};
+exports.confirmUploadClues = function (req, res) {
+    clueCustomerService.confirmUploadClues(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        })
+        .on("error", function (err) {
+            res.status(500).json(err.message);
+        });
+};
+exports.deleteRepeatClue = function (req, res) {
+    clueCustomerService.deleteRepeatClue(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        })
+        .on("error", function (err) {
+            res.status(500).json(err.message);
+        });
 };

@@ -2185,7 +2185,13 @@ var zh_CN = {
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
     "clue.customer.selected.customer":"请搜索客户进行关联",
     "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
-    "config.sales.role.has.repeat":"该销售角色名称已存在"
-
+    "clue.manage.import.clue": "导入线索",
+    "clue.manage.import.clue.template": "导入线索模板",
+    "clue.manage.failed.import.clue": "导入线索失败，请重试!",
+    "config.sales.role.has.repeat":"该销售角色名称已存在",
+    "clue.customer.import.clue.suceess": "导入线索成功",
+    "clue.customer.import.clue.failed": "导入线索失败",
+    "clue.delete.duplicate.failed": "删除重复线索失败",
+    "clue.repeat.delete": "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入"
 };
 export default zh_CN;

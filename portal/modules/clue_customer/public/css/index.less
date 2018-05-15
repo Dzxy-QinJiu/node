@@ -3,7 +3,7 @@
 @import "../../../../public/css/iconfont";
 .clue_customer_content{
 
-  .add-clue-customer-container{
+  .add-clue-customer-container,.import-clue-customer-container{
     float: right;
     margin: 17px 70px 0 0;
     .ant-btn{
@@ -357,6 +357,45 @@
     }
 
   }
+  //线索导入
+  .import-clue-template-panel.right-pannel-default{
+    width:420px;
+    transform:translateX(100%);
+    font-size:14px;
+    .import-tips{
+      margin-top:60px;
+      margin-left:20px;
+      a{
+        text-decoration:none;
+      }
+      p{
+        padding-bottom:20px;
+      }
+    }
+    .import-file{
+      float:right;
+      margin-right:20px;
+      .ant-btn{
+        margin-bottom:3px;
+      }
+      .import-clue, .ant-btn .ant-btn-ghost{
+        border:1px solid #4d96d1;
+        border-radius:5px;
+        padding:4px 11px;
+        font-size:12px;
+        cursor:pointer;
+      }
+      .import-clue{
+        margin-right:12px;
+        color:#fff;
+        background-color:#4d96d1;
+        border-color:#4d96d1;
+        .icon-loading{
+          margin-left: 8px;
+        }
+      }
+    }
+  }
   .alert-wrap .ant-alert.ant-alert-error{
     width: 350px;
     top: 350px;
@@ -449,4 +488,13 @@
     color:@error_tips_color;
     margin-top: -5px;
   }
+}
+.clue-import-modal{
+  .import-warning{
+    color: @error_tips_color;
+    margin-right: 10px;
+  }
+}
+.repeat-clue-name{
+  color:@error_tips_color;
 }
