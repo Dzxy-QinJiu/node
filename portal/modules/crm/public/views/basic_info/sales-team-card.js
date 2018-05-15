@@ -310,7 +310,7 @@ var SalesTeamCard = React.createClass({
                     {this.state.userName} {this.state.salesTeam ? ` - ${this.state.salesTeam}` : ""}
                 </span>
                     {this.state.enableEdit ? (
-                        <DetailEditBtn onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
+                        <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
                 </div>
                 {this.props.hideSalesRole ? null :
                     <div className="sales-role">
