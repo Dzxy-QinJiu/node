@@ -113,6 +113,7 @@ var SalesTeamCard = React.createClass({
         });
     },
     getSalesRoleByMemberId: function (memberId) {
+        if(!memberId) return;
         $.ajax({
             url: '/rest/sales/role',
             type: 'get',
