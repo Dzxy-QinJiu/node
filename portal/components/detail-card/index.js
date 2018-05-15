@@ -10,6 +10,17 @@ class DetailCard extends React.Component {
         super(props);
     }
 
+    renderButtonsBlock() {
+        if (this.props.isEdit) {
+            if (_.isFunction(this.props.renderHandleSaveBtns)) {
+                return this.props.renderHandleSaveBtns();
+            } else {
+                return (<SaveCancelButton {...this.props}/>);
+            }
+        }
+        return null;
+    }
+
     render() {
         let className = classNames(this.props.className, "detail-card-container", {"detail-card-edit-status": this.props.isEdit});
         //若果没有标题时，编辑状态的内容不显示border
@@ -20,7 +31,7 @@ class DetailCard extends React.Component {
                 {this.props.content ? (
                     <div className={contentCl}>
                         {this.props.content}
-                        {this.props.isEdit ? <SaveCancelButton {...this.props}/> : null}
+                        {this.renderButtonsBlock()}
                     </div>) : null}
                 {this.props.bottom ? (<div className="detail-card-bottom">{this.props.bottom}</div>) : null}
             </div>
@@ -38,6 +49,8 @@ DetailCard.defaultProps = {
     },//保存的处理
     handleCancel: function () {
     },//取消的处理
+    renderHandleSaveBtns: function () {
+    },//渲染自定义的处理保存的按钮
     saveErrorMsg: ""//保存的错误提示
 };
 export default DetailCard;
