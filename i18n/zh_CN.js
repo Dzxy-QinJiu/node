@@ -2184,6 +2184,7 @@ var zh_CN = {
     "clue.manage.failed.import.clue": "导入线索失败，请重试!",
     "config.sales.role.has.repeat":"该销售角色名称已存在",
     "clue.customer.import.clue.suceess": "导入线索成功",
-    "clue.customer.import.clue.failed": "导入线索失败"
+    "clue.customer.import.clue.failed": "导入线索失败",
+    "clue.delete.duplicate.failed": "删除重复线索失败",
 };
 export default zh_CN;

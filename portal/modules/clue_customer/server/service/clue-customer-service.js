@@ -32,7 +32,9 @@ const restApis = {
     //导入线索
     upload:"/rest/customer/v2/clue/upload/preview",
     //确认导入线索预览
-    uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag"
+    uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag",
+    //删除某条线索
+    deleteRepeatClue: "rest/customer/v2/clue/upload/preview/:index",
 
 };
 //查询客户
@@ -142,6 +144,7 @@ exports.uploadClues = function (req, res) {
         url: restApis.upload,
         req: req,
         res: res,
+        gzip: true,
         'pipe-upload-file': true,
         timeout: uploadTimeOut
     }, null);
@@ -151,6 +154,15 @@ exports.confirmUploadClues = function (req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.uploadClueConfirm.replace(":flag",req.params.flag),
+            req: req,
+            res: res
+        }, null);
+};
+//删除某个重复线索
+exports.deleteRepeatClue = function (req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.deleteRepeatClue.replace(":index",req.params.index),
             req: req,
             res: res
         }, null);

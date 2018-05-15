@@ -106,6 +106,13 @@ module.exports = {
             passport: {
                 "needLogin": true
             }
+        },{
+            method: "delete",
+            path: "/rest/clue/repeat/delete/:index",
+            handler: "deleteRepeatClue",
+            passport: {
+                "needLogin": true
+            }
         }
     ]
 };

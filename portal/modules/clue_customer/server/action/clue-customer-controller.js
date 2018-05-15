@@ -5,6 +5,7 @@
  */
 "use strict";
 var clueCustomerService = require("../service/clue-customer-service");
+var path = require("path");
 //获取线索客户列表
 exports.getClueCustomerList = function (req, res) {
     clueCustomerService.getClueCustomerList(req, res)
@@ -89,19 +90,10 @@ exports.relateClueAndCustomer = function (req, res) {
         res.status(500).json(err.message);
     });
 };
-function templateFile(res, example, filename) {
-    var example = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(example)]);
-    res.setHeader("Content-disposition", "attachement; filename=" + filename);
-    res.setHeader("Content-Type", "application/csv");
-    res.write(example);
-    res.end();
-}
 // 处理导入线索模板文件
 exports.getClueTemplate = function (req, res) {
-    var example = "日期,地区,线索名称,联系人,电话,QQ号码,线索来源,线索描述,接入渠道,跟进人,跟进内容\n" +
-        "1.2,江苏,苏州科沃斯机器人有限公司,庾先生,13955558888,,百度,营销QQ咨询，想要试用系统。,识微营销QQ,王先生,已加微信，保护联系";
-    var filename = "clue_tmpl.xls";
-    templateFile(res, example, filename);
+    var filePath = path.resolve(__dirname, "../../tpl/clue_temp.xls");
+    res.download(filePath);
 };
 
 exports.uploadClues = function (req, res) {
@@ -116,6 +108,15 @@ exports.uploadClues = function (req, res) {
 };
 exports.confirmUploadClues = function (req, res) {
     clueCustomerService.confirmUploadClues(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        })
+        .on("error", function (err) {
+            res.status(500).json(err.message);
+        });
+};
+exports.deleteRepeatClue = function (req, res) {
+    clueCustomerService.deleteRepeatClue(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         })

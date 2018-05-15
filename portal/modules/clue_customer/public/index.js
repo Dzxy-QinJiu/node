@@ -52,6 +52,7 @@ const ClueCustomer = React.createClass({
             clueClassifyArray: clueClassifyArray,//线索分类
             isRemarkingItem:'',//正在标记的那条线索
             clueImportTemplateFormShow: false,//线索导入面板是否展示
+            previewList:[],//预览列表
             ...clueCustomerStore.getState()
         };
     },
@@ -280,7 +281,7 @@ const ClueCustomer = React.createClass({
     getContactList(text, record, index) {
         let phoneArray = text && text.split('\n') || [];
         var contactWay = "";
-        let className = record.phone_repeat ? "customer-repeat" : "";
+        let className = record.repeat ? "clue-repeat" : "";
         if (_.isArray(phoneArray) && phoneArray.length) {
             contactWay = phoneArray.map((item) => {
                 if (item) {
@@ -798,11 +799,42 @@ const ClueCustomer = React.createClass({
             </div>
         );
     },
+    //删除重复的线索
+    deleteDuplicatImportClue:function (index) {
+        var _this = this;
+        $.ajax({
+            url: '/rest/clue/repeat/delete/' + index,
+            dataType: 'json',
+            type: 'delete',
+            success: function (result) {
+                if (result && result.result === "success") {
+                    _this.state.previewList.splice(index, 1);
+                    _this.setState({
+                        previewList: _this.state.previewList
+                    });
+                } else {
+                    message.error(Intl.get("clue.delete.duplicate.failed", "删除重复线索失败"));
+                }
+            },
+            error: function (errorMsg) {
+                message.error(Intl.get("clue.delete.duplicate.failed", "删除重复线索失败") || errorMsg);
+            }
+        });
+    },
     render: function () {
+        var _this = this;
         let previewColumns =[
             {
                 title: Intl.get("clue.customer.clue.name", "线索名称"),
                 dataIndex: 'name',
+                render: function (text, record, index) {
+                    var cls = record.repeat ? "repeat-clue-name": "";
+                    return (
+                        <span className={cls}>
+                            {record.name}
+                        </span>
+                    );
+                }
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
@@ -846,6 +878,22 @@ const ClueCustomer = React.createClass({
             }, {
                 title: Intl.get("crm.sales.clue.descr", "线索描述"),
                 dataIndex: 'source',
+            }, {
+                title: Intl.get("common.operate", "操作"),
+                width: '60px',
+                render: (text, record, index) => {
+                    //是否在导入预览列表上可以删除
+                    const isDeleteBtnShow = this.state.isPreviewShow && record.repeat;
+                    return (
+                        <span className="cus-op">
+                            {isDeleteBtnShow ? (
+                                <Button className="order-btn-class" icon="delete"
+                                        onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
+                                        title={Intl.get("common.delete", "删除")}/>
+                            ) : null}
+                        </span>
+                    );
+                }
             }
         ];
         return (
@@ -880,7 +928,7 @@ const ClueCustomer = React.createClass({
                     <Modal
                         visible={this.state.isPreviewShow}
                         width="90%"
-                        prefixCls="customer-import-modal ant-modal"
+                        prefixCls="clue-import-modal ant-modal"
                         title={Intl.get("clue.manage.import.clue", "导入线索") + Intl.get("common.preview", "预览")}
                         footer={this.renderImportModalFooter()}
                         onCancel={this.cancelImport}

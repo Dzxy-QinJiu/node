@@ -2159,6 +2159,7 @@ var en_US = {
     "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!
     "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
     "clue.customer.import.clue.suceess": "Import clues successfully",//导入线索成功
-    "clue.customer.import.clue.failed": "Failed to import clues"//导入线索失败
+    "clue.customer.import.clue.failed": "Failed to import clues",//导入线索失败
+    "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
 };
 export default en_US;
