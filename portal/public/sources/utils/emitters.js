@@ -94,20 +94,20 @@ const dateSelectorEmitter = new EventEmitter();
 dateSelectorEmitter.setMaxListeners(0);
 exports.dateSelectorEmitter = dateSelectorEmitter;
 // 日期选择组件--选中日期
-exports.dateSelectorEmitter.SELECTE_DATE = 'dateselector.select_date';
+exports.dateSelectorEmitter.SELECT_DATE = 'dateselector.select_date';
 // 应用选择组件的emitter
 const appSelectorEmitter = new EventEmitter();
 appSelectorEmitter.setMaxListeners(0);
 exports.appSelectorEmitter = appSelectorEmitter;
 // 应用选择组件--选中应用
-exports.appSelectorEmitter.SELECTE_APP = 'appselector.select_app';
+exports.appSelectorEmitter.SELECT_APP = 'appselector.select_app';
 
 // 分析tab选择组件的emitter
 const analysisTabEmitter = new EventEmitter();
 analysisTabEmitter.setMaxListeners(0);
 exports.analysisTabEmitter = analysisTabEmitter;
 // 分析tab选择组件--选中分析tab
-exports.analysisTabEmitter.SELECTE_TAB = 'analysis_tab.select_tab';
+exports.analysisTabEmitter.SELECT_TAB = 'analysis_tab.select_tab';
 
 // 图表点击事件的emitter
 const chartClickEmitter = new EventEmitter();
