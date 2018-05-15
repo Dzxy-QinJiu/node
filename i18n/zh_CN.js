@@ -1278,6 +1278,10 @@ var zh_CN = {
     "crm.basic.concerned": "已关注",
     "crm.basic.unconcerned": "未关注",
     "crm.basic.more": "更多",
+    "crm.sales.update": "修改为",
+    "crm.sales.redistribution": "重新分配",
+    "crm.sales.transfer": "转交",
+    "crm.sales.transfer.confirm": "确认转交",
     // 客户管理end
 
     // 客户分析start

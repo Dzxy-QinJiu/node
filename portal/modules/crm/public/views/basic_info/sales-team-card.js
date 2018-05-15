@@ -8,7 +8,12 @@ import Trace from "LIB_DIR/trace";
 import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 import CrmAction from "../../action/crm-actions";
-
+//展示的类型
+const DISPLAY_TYPES = {
+    TRANSFER: "transfer",
+    EDIT: "edit",
+    TEXT: "text"
+};
 var SalesTeamCard = React.createClass({
     getDefaultProps: function () {
         return {
@@ -23,7 +28,7 @@ var SalesTeamCard = React.createClass({
     getInitialState: function () {
         return {
             list: [],//下拉列表中的数据
-            displayType: "text",
+            displayType: DISPLAY_TYPES.TEXT,
             isLoadingList: true,//正在获取下拉列表中的数据
             enableEdit: this.props.enableEdit,
             enableTransfer: this.props.enableTransfer,
@@ -65,7 +70,7 @@ var SalesTeamCard = React.createClass({
                 enableEdit: nextProps.enableEdit,
                 enableTransfer: nextProps.enableTransfer,
                 list: [],//下拉列表中的数据
-                displayType: "text",
+                displayType: DISPLAY_TYPES.TEXT,
                 isLoadingList: true,//正在获取下拉列表中的数据
                 loading: false,
                 submitErrorMsg: '',
@@ -193,7 +198,7 @@ var SalesTeamCard = React.createClass({
     },
 
     changeDisplayType: function (type) {
-        if (type === 'text') {
+        if (type === DISPLAY_TYPES.TEXT) {
             Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
             if (!this.props.hideSalesRole) {
                 this.getSalesRoleByMemberId(this.props.userId);
@@ -220,7 +225,7 @@ var SalesTeamCard = React.createClass({
     backToDisplay: function () {
         this.setState({
             loading: false,
-            displayType: 'text',
+            displayType: DISPLAY_TYPES.TEXT,
             submitErrorMsg: ''
         });
     },
@@ -237,7 +242,7 @@ var SalesTeamCard = React.createClass({
         if (this.props.isMerge) {
             this.props.updateMergeCustomer(submitData);
             this.backToDisplay();
-        } else if (this.state.displayType === "edit") {
+        } else if (this.state.displayType === DISPLAY_TYPES.EDIT) {
             CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.backToDisplay();
@@ -250,7 +255,7 @@ var SalesTeamCard = React.createClass({
                     submitErrorMsg: errorMsg || Intl.get("crm.172", "修改客户所属销售失败")
                 });
             });
-        } else if (this.state.displayType === "transfer") {
+        } else if (this.state.displayType === DISPLAY_TYPES.TRANSFER) {
             submitData.member_role = this.state.salesRole;
             CrmBasicAjax.transferCustomer(submitData).then(result => {
                 if (result) {
@@ -274,7 +279,7 @@ var SalesTeamCard = React.createClass({
             return;
         }
         //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
-        if (this.state.displayType === "edit" || this.state.displayType === "transfer") {
+        if (this.state.displayType === DISPLAY_TYPES.EDIT || this.state.displayType === DISPLAY_TYPES.TRANSFER) {
             this.setState({loading: true});
             CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
                 //result>0 ，不可转入或变更客户
@@ -304,12 +309,8 @@ var SalesTeamCard = React.createClass({
                     <span className="sales-team-text">
                     {this.state.userName} {this.state.salesTeam ? ` - ${this.state.salesTeam}` : ""}
                 </span>
-                    {this.state.enableTransfer && !this.state.isMerge ? (
-                        <span className="iconfont icon-transfer"
-                              title={Intl.get("crm.qualified.roll.out", "转出")}
-                              onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
-                    {this.state.enableEdit ? (<DetailEditBtn title={Intl.get("crm.sales.change", "变更销售")}
-                                                             onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                    {this.state.enableEdit ? (
+                        <DetailEditBtn onClick={this.changeDisplayType.bind(this, DISPLAY_TYPES.EDIT)}/>) : null}
                 </div>
                 {this.props.hideSalesRole ? null :
                     <div className="sales-role">
@@ -322,7 +323,7 @@ var SalesTeamCard = React.createClass({
         );
     },
     renderContent: function () {
-        if (this.state.displayType === "text") return null;
+        if (this.state.displayType === DISPLAY_TYPES.TEXT) return null;
         let dataList = [];
         //展示其所在团队的成员列表
         this.state.salesManList.forEach(function (salesman) {
@@ -344,9 +345,7 @@ var SalesTeamCard = React.createClass({
         });
         return (
             <div className="sales-team-edit-block">
-                    <span className="edit-label">
-                        {this.state.displayType === "edit" ? Intl.get("crm.32", "变更") : Intl.get("crm.qualified.roll.out", "转出")}
-                    </span>
+                <span className="edit-label">{Intl.get("crm.sales.update", "修改为")}</span>
                 <Select
                     placeholder={Intl.get("crm.17", "请选择销售人员")}
                     showSearch
@@ -360,15 +359,32 @@ var SalesTeamCard = React.createClass({
             </div>
         );
     },
+    transferSales: function () {
+        this.setState({displayType: DISPLAY_TYPES.TRANSFER});
+    },
     renderHandleSaveBtns: function () {
+        let isTransfer = this.state.displayType === DISPLAY_TYPES.TRANSFER;
         return (<div className="button-container">
-            <Button className="button-save" type="primary"
-                    onClick={this.handleSubmit.bind(this)}>
-                {Intl.get("common.save", "保存")}
-            </Button>
-            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, "text")}>
+            <Button className="button-cancel" onClick={this.changeDisplayType.bind(this, isTransfer ? DISPLAY_TYPES.EDIT : DISPLAY_TYPES.TEXT)}>
                 {Intl.get("common.cancel", "取消")}
             </Button>
+            {isTransfer ? (
+                <Button className="button-transfer-confirm" type="primary"
+                        onClick={this.handleSubmit.bind(this)}>
+                    {Intl.get("crm.sales.transfer.confirm", "确认转交")}
+                </Button>) : (
+                <span>
+                     {this.state.enableTransfer && !this.state.isMerge ? (
+                         <Button className="button-transfer" type="primary"
+                                 onClick={this.transferSales.bind(this)}>
+                             {Intl.get("crm.sales.transfer", "转交")}
+                         </Button>) : null}
+                    <Button className="button-redistribution" type="primary"
+                            onClick={this.handleSubmit.bind(this)}>
+                        {Intl.get("crm.sales.redistribution", "重新分配")}
+                    </Button>
+                </span>)
+            }
             {this.state.loading ? (
                 <Icon type="loading" className="save-loading"/>) : this.state.submitErrorMsg ? (
                 <span className="save-error">{this.state.submitErrorMsg}</span>
@@ -379,7 +395,7 @@ var SalesTeamCard = React.createClass({
         return (<DetailCard title={this.renderTitle()}
                             content={this.renderContent()}
                             className="sales-team-container"
-                            isEdit={this.state.displayType !== "text"}
+                            isEdit={this.state.displayType !== DISPLAY_TYPES.TEXT}
                             renderHandleSaveBtns={this.renderHandleSaveBtns}
         />);
     }

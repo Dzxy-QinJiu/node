@@ -1260,6 +1260,10 @@ var en_US = {
     "crm.basic.concerned": "Concerned",//已关注
     "crm.basic.unconcerned": "Unconcerned",//未关注
     "crm.basic.more": "More",//更多
+    "crm.sales.update": "Modify it to",//修改为
+    "crm.sales.redistribution": "Redistribution",//重新分配
+    "crm.sales.transfer": "Transfer",//转交
+    "crm.sales.transfer.confirm": "Transfer confirm",//确认转交
     // 客户管理end
 
     //客户分析 start
