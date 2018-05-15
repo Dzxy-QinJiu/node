@@ -2186,5 +2186,6 @@ var zh_CN = {
     "clue.customer.import.clue.suceess": "导入线索成功",
     "clue.customer.import.clue.failed": "导入线索失败",
     "clue.delete.duplicate.failed": "删除重复线索失败",
+    "clue.repeat.delete": "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入"
 };
 export default zh_CN;

@@ -201,11 +201,8 @@ const ClueCustomer = React.createClass({
     },
     //渲染导入线索的按钮
     renderImportClue: function () {
-        var containerCls = classNames("import-clue-customer-container", {
-
-        });
         return (
-            <div className={containerCls}>
+            <div className="import-clue-customer-container">
                 {hasPrivilege("CUSTOMER_ADD_CLUE") ?
                     <Button type="primary" icon="plus" onClick={this.showImportClueTemplate}>
                         <span className="clue-container">
@@ -785,7 +782,7 @@ const ClueCustomer = React.createClass({
             <div>
                 {repeatCustomer ? (
                     <span className="import-warning">
-                        {Intl.get("crm.210", "存在和系统中重复的客户名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入")}
+                        {Intl.get("clue.repeat.delete", "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入")}
                     </span>
                 ) : null}
                 <Button type="ghost" onClick={this.cancelImport}>
@@ -839,34 +836,43 @@ const ClueCustomer = React.createClass({
             {
                 title: Intl.get("call.record.contacts", "联系人"),
                 render:function (text, record, index) {
-                    return (
-                        <span>{record.contacts[0] ? record.contacts[0].name: null}</span>
-                    );
+                    if (_.isArray(record.contacts)){
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].name: null}</span>
+                        );
+                    }
+
                 }
 
             },
             {
                 title: Intl.get("common.phone", "电话"),
                 render:function (text, record, index) {
-                    return (
-                        <span>{record.contacts[0] ? record.contacts[0].phone: null}</span>
-                    );
+                    if (_.isArray(record.contacts)){
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].phone: null}</span>
+                        );
+                    }
                 }
             },
             {
                 title: Intl.get("common.email", "邮箱"),
                 render:function (text, record, index) {
-                    return (
-                        <span>{record.contacts[0] ? record.contacts[0].email: null}</span>
-                    );
+                    if (_.isArray(record.contacts)){
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].email: null}</span>
+                        );
+                    }
                 }
             },
             {
                 title: "QQ",
                 render:function (text, record, index) {
-                    return (
-                        <span>{record.contacts[0] ? record.contacts[0].qq[0]: null}</span>
-                    );
+                    if (_.isArray(record.contacts) && _.isArray(record.contacts[0].qq)){
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].qq[0]: null}</span>
+                        );
+                    }
                 }
             },
             {
