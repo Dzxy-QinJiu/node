@@ -85,6 +85,13 @@ module.exports = {
         "privileges": [
             "MEMBER_WEBSITE_CONFIG"
         ]
-    },
+    }, {
+        "method": "get",
+        "path": "/rest/show/activeemail/flag/:userId",
+        "handler": "getShowActiveEmailFlag",
+        "passport": {
+            "needLogin": true
+        },
+    }
     ]
 };

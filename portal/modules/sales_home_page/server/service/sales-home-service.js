@@ -26,7 +26,9 @@ var restApis = {
     //获取网站个性化配置 或对网站进行个性化设置
     websiteConfig:"/rest/base/v1/user/website/config",
     //获取各销售对应的通话状态
-    getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids"
+    getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids",
+    //获取个人资料中邮箱是否激活
+    getUserInfo: "/rest/base/v1/user/id",
 };
 exports.restUrls = restApis;
 
@@ -155,22 +157,66 @@ exports.getExpireUser = function (req, res) {
         });
 };
 //获取网站个性化设置
-exports.getWebsiteConfig = function (req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.websiteConfig,
-            req: req,
-            res: res
-        }, null,{
-            success:function (eventEmitter, data) {
-              //空值的处理
-                if (!data){
-                    data = {};
+function getWebsiteConfig(req, res) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: restApis.websiteConfig,
+                req: req,
+                res: res
+            }, null, {
+                success: function (eventEmitter, data) {
+                    if (!data){
+                        data = {};
+                    }
+                    resolve(data);
+                },
+                error: function (eventEmitter, errorObj) {
+                    reject(errorObj.message);
                 }
-                eventEmitter.emit("success", data);
-            }
-        });
+            });
+    });
+}
+
+//获取邮箱是否激活
+function getIsEmailActive(req, res, userId) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: restApis.getUserInfo + "/" + userId,
+                req: req,
+                res: res
+            }, null, {
+                success: function (eventEmitter, data) {
+                    //处理数据
+                    if (data) {
+                        data.emailActive =  data.email_enable;
+                    }
+                    resolve(data);
+                },
+                error: function (eventEmitter, errorObj) {
+                    reject(errorObj.message);
+                }
+            });
+    });
+}
+
+
+//获取是否需要展示激活邮箱提示
+exports.getShowActiveEmailFlag = function (req, res) {
+    var userId = req.param.userId;
+    var emitter = new EventEmitter();
+    let promiseList = [getWebsiteConfig(req, res), getIsEmailActive(req, res, userId)];
+    Promise.all(promiseList).then((result) => {
+        var isShowActiveEmail = false;
+        //
+        emitter.emit("success", isShowActiveEmail);
+    }, function (errorMsg) {
+        emitter.emit("error", errorMsg);
+    });
+    return emitter;
 };
+
 //对网站进行个性化设置
 exports.setWebsiteConfig = function (req, res ,reqObj) {
     return restUtil.authRest.post(

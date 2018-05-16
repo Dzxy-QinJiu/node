@@ -77,7 +77,7 @@ var SalesHomePage = React.createClass({
         this.refreshSalesListData();
         this.resizeLayout();
         //获取个人配置信息
-        this.getWebConfig();
+        // this.getWebConfig();
         $(window).resize(() => this.resizeLayout());
         $(".statistic-data-analysis").mousewheel(function () {
             $(".statistic-data-analysis .thumb").show();
@@ -86,14 +86,15 @@ var SalesHomePage = React.createClass({
             }
             scrollTimeout = setTimeout(() => $(".statistic-data-analysis .thumb").hide(), 300);
         });
-        //获取用户的个人信息
-        SalesHomeAction.getUserInfo();
+        //获取是否能展示邮箱激活提示
+        SalesHomeAction.getShowActiveEmailFlag();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
                 isAnimateShow: true
             });
         }, DELAY_TIME);
+        //获取是否能展示激活邮箱的提示
     },
     resizeLayout: function () {
         //宽屏不出现滚动条

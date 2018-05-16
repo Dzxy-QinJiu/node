@@ -172,10 +172,17 @@ function SalesHomeActions() {
             }
         );
     };
-    //获取用户信息
-    this.getUserInfo = function () {
+    // //获取用户信息
+    // this.getUserInfo = function () {
+    //     var user_id = userData.getUserData().user_id;
+    //     salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
+    //         this.dispatch(userInfo);
+    //     });
+    // };
+    //获取是否展示邮件激活提示
+    this.getShowActiveEmailFlag = function () {
         var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
+        salesHomeAjax.getShowActiveEmailFlag(user_id).then((userInfo) => {
             this.dispatch(userInfo);
         });
     };

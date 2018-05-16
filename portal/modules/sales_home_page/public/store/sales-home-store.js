@@ -61,6 +61,8 @@ SalesHomeStore.prototype.setInitState = function () {
     };
     //统计团队内成员个数的列表
     this.teamMemberCountList = [];
+    //是否展示邮箱激活提示
+    this.isShowActiveEmail = false;
 };
 // 获取通话总次数、总时长TOP10的数据
 SalesHomeStore.prototype.getCallTotalList = function (dataObj) {
@@ -601,21 +603,9 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
         this.expireUserLists = {};
     }
 };
-//获取用户的个人信息
-SalesHomeStore.prototype.getUserInfo = function (userInfo) {
-    if (userInfo) {
-        this.email = userInfo.email || "";
-        if (!this.email) {
-            this.hasNoEmail = true;
-        }
-        if (userInfo.emailEnable) {
-            //邮箱已激活
-            this.emailEnable = true;
-        } else {
-            //邮箱未激活
-            this.emailEnable = false;
-        }
-    }
+//是否展示邮箱激活的提示
+SalesHomeStore.prototype.getShowActiveEmailFlag = function (flag) {
+    this.isShowActiveEmail = flag;
 };
 //获取个人信息配置
 SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
