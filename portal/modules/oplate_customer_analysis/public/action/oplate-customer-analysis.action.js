@@ -35,36 +35,36 @@ function OplateCustomerAnalysisActions() {
     );
 
     //获取统计总数
-    this.getSummaryNumbers = function(reqData) {
+    this.getSummaryNumbers = function (reqData) {
         var _this = this;
-        _this.dispatch({loading:true,error:false});
-        OplateCustomerAnalysisAjax.getSummaryNumbers(reqData).then(function(resData) {
-            _this.dispatch({loading:false,error:false,resData:resData});
-        } , function(errorMsg) {
-            _this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        _this.dispatch({ loading: true, error: false });
+        OplateCustomerAnalysisAjax.getSummaryNumbers(reqData).then(function (resData) {
+            _this.dispatch({ loading: false, error: false, resData: resData });
+        }, function (errorMsg) {
+            _this.dispatch({ loading: false, error: true, errorMsg: errorMsg });
         });
     };
 
     //获取具体统计数据
-    this.getAnalysisData = function(reqData) {
+    this.getAnalysisData = function (reqData) {
         var _this = this;
-        _this.dispatch({loading:true,error:false,reqData:reqData});
-        OplateCustomerAnalysisAjax.getAnalysisData(reqData).then(function(resData) {
-            _this.dispatch({loading:false,error:false,resData:resData,reqData:reqData});
-        } , function(errorMsg) {
-            _this.dispatch({loading:false,error:true,errorMsg:errorMsg,reqData:reqData});
+        _this.dispatch({ loading: true, error: false, reqData: reqData });
+        OplateCustomerAnalysisAjax.getAnalysisData(reqData).then(function (resData) {
+            _this.dispatch({ loading: false, error: false, resData: resData, reqData: reqData });
+        }, function (errorMsg) {
+            _this.dispatch({ loading: false, error: true, errorMsg: errorMsg, reqData: reqData });
         });
     };
 
     //获取用户类型
-    this.getUserType = function() {
+    this.getUserType = function () {
         var _this = this;
 
-        OplateCustomerAnalysisAjax.getUserType().then(function(resData) {
+        OplateCustomerAnalysisAjax.getUserType().then(function (resData) {
             if (_.isArray(resData)) {
                 _this.dispatch(resData);
             }
-        } , function(errorMsg) {
+        }, function (errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
@@ -79,7 +79,7 @@ function OplateCustomerAnalysisActions() {
                 list = _.sortBy(list, item => item.index);
                 _this.dispatch(list);
             }
-        } , function(errorMsg) {
+        }, function (errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
@@ -98,6 +98,9 @@ function OplateCustomerAnalysisActions() {
 
     //获取试用用户覆盖率
     this.getIndustryCustomerOverlay = asyncDispatcher(OplateCustomerAnalysisAjax.getIndustryCustomerOverlay);
+
+    //获取不同阶段客户数
+    this.getCustomerStageAnalysis = asyncDispatcher(OplateCustomerAnalysisAjax.getCustomerStageAnalysis);
 }
 
 //使用alt导出一个action

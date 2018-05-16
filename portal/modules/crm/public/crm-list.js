@@ -86,7 +86,7 @@ var Crm = React.createClass({
         return {
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
-            ...$.extend(true, {}, this.getStateData(), this.props.params),
+            ...this.getStateData()
         };
     },
     getSelectedCustomer: function (curCustomerList) {
@@ -647,7 +647,7 @@ var Crm = React.createClass({
             condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
-        CrmAction.queryCustomer(condition, this.state.rangParams, this.state.pageSize, this.state.sorter, queryObj);
+        CrmAction.queryCustomer((this.props.params.condition || condition), (this.props.params.rangParams || this.state.rangParams), this.state.pageSize, this.state.sorter, queryObj);
         this.setState({rangeParams: this.state.rangParams});
     },
     //清除客户的选择
