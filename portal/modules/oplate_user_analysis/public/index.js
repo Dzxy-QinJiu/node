@@ -647,6 +647,16 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }];
     },
 
+    getEmitters: function () {
+        return [{
+            instance: emitters.appSelectorEmitter,
+            event: emitters.appSelectorEmitter.SELECT_APP,
+            args: [{
+                name: "app",
+            }],
+        }];
+    },
+
     render: function () {
         const tabs = this.getTabs();
         const charts = this.getCharts();
@@ -666,12 +676,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     charts={[{
                         url: `/rest/analysis/user/v1/${authType}/summary`,
                     }]}
-                    emitters={emitters}
+                    emitters={this.getEmitters()}
                 />
 
                 <AntcAnalysis
                     charts={charts}
-                    emitters={emitters}
+                    emitters={this.getEmitters()}
                     tabs={tabs}
                     useScrollBar={true}
                 />
