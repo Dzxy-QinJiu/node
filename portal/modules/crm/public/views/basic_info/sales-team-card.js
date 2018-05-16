@@ -371,13 +371,13 @@ var SalesTeamCard = React.createClass({
             {isTransfer ? (
                 <Button className="button-transfer-confirm" type="primary"
                         onClick={this.handleSubmit.bind(this)}>
-                    {Intl.get("crm.sales.transfer.confirm", "确认转交")}
+                    {Intl.get("crm.sales.transfer.confirm", "确认转出")}
                 </Button>) : (
                 <span>
                      {this.state.enableTransfer && !this.state.isMerge ? (
                          <Button className="button-transfer" type="primary"
                                  onClick={this.transferSales.bind(this)}>
-                             {Intl.get("crm.sales.transfer", "转交")}
+                             {Intl.get("crm.qualified.roll.out", "转出")}
                          </Button>) : null}
                     <Button className="button-redistribution" type="primary"
                             onClick={this.handleSubmit.bind(this)}>

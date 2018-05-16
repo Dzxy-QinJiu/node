@@ -1225,7 +1225,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.call.no.remark.over30": "No follow-up records over 30 days",//超30天未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
-    "crm.qualified.roll.out": "Roll out",//转出
+    "crm.qualified.roll.out": "Transfer out",//转出
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     "crm.detail.sales.role": "Sales role",//销售角色
@@ -1262,8 +1262,7 @@ var en_US = {
     "crm.basic.more": "More",//更多
     "crm.sales.update": "Modify it to",//修改为
     "crm.sales.redistribution": "Redistribution",//重新分配
-    "crm.sales.transfer": "Transfer",//转交
-    "crm.sales.transfer.confirm": "Transfer confirm",//确认转交
+    "crm.sales.transfer.confirm": "Transfer confirm",//确认转出
     // 客户管理end
 
     //客户分析 start
