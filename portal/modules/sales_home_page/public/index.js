@@ -345,6 +345,35 @@ var SalesHomePage = React.createClass({
         }
         return columns;
     },
+    getRevisitListColumn () {
+        let columns = [
+            {
+                title: Intl.get("common.revisit.time", "回访时间"),
+                dataIndex: 'calloutRate',
+                key: 'callout_rate',
+                className: 'has-filter table-data-align-right',
+            },
+            {
+                title: Intl.get("crm.41", "客户名"),
+                dataIndex: 'calloutCount',
+                key: 'callout_count',
+                className: 'has-filter table-data-align-right',
+            },
+            {
+                title: Intl.get("menu.trace", "跟进记录"),
+                dataIndex: 'callinSuccess',
+                key: 'callin_success',
+                className: 'has-filter table-data-align-right',
+            },
+            {
+                title: Intl.get("common.revisit.person", "回访人"),
+                dataIndex: 'callinSuccesss',
+                key: 'callin_successs',
+                className: 'has-filter table-data-align-right',
+            }
+        ];
+        return columns;
+    },
     //获取分析图表展示区所需的布局参数
     getChartLayoutParams: function () {
         let chartWidth = 0;
@@ -473,6 +502,22 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             </div>);
+        } else if (this.state.activeView === viewConstant.REVISIT) {
+            return (
+                <div className='sales-table-container'>
+                    <div className='phone-table-block'>
+                        <AntcTable
+                            dataSource={this.state.salesPhoneList}
+                            columns={this.getRevisitListColumn()}
+                            loading={this.state.isLoadingPhoneList}
+                            pagination={false}
+                            bordered
+                            util={{zoomInSortArea: true}}
+                            onChange={this.onTableChange}
+                        />
+                    </div>
+                </div>
+            );
         }
     },
     /* 渲染总时长、总次数为top10的列表

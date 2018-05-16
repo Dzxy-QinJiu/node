@@ -94,6 +94,18 @@ let StatisticTotal = React.createClass({
             <span className="contract-total-data total-data-style">共6909个</span>
         </div>);
     },
+    renderRevisitContent () {
+        const testTotalCount = 3;
+        return (
+            <div className={'statistic-total-content'}>
+                <span className='add-data-style'>
+                    <span className='total-data-desc'>{Intl.get('common.total', '共')}</span>
+                    {testTotalCount || '0'}
+                    <span className='total-data-desc'>{Intl.get('common.one.unit', '个')}</span>
+                </span>
+            </div>
+        );
+    },
     //设置当前要展示的视图
     setActiveView: function (view) {
         SalesHomeAction.setActiveView(view);
@@ -101,7 +113,7 @@ let StatisticTotal = React.createClass({
 
     render: function () {
         //响应式样式 col-xs-12 col-sm-6 col-md-6 col-lg-3（四个框时的样式）
-        const autoResizeCls = "total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-4";
+        const autoResizeCls = "total-data-item col-xs-12 col-sm-6 col-md-6 col-lg-3";
         let activeView = this.props.activeView;
         return (
             <div className="statistic-total-data">
@@ -127,6 +139,14 @@ let StatisticTotal = React.createClass({
                          className={classNames("total-data-container", {"total-data-item-active":activeView==viewConstant.PHONE})}>
                         <p>{Intl.get("common.phone", "电话")}</p>
                         {this.renderPhoneContent()}
+                    </div>
+                </div>  
+                <div className={autoResizeCls}>
+                    <div onClick={this.setActiveView.bind(this,viewConstant.REVISIT)}
+                         data-tracename='查看回访统计'
+                         className={classNames('total-data-container', {'total-data-item-active': activeView===viewConstant.REVISIT})}>
+                        <p>{Intl.get('common.revisit', '回访')}</p>
+                        {this.renderRevisitContent()}
                     </div>
                 </div>
             </div>);
