@@ -150,7 +150,7 @@ var SalesHomePage = React.createClass({
         //获取新分配的客户
         this.getNewDistributeCustomer();
     },
-    //获取拨入未接通的电话
+    //获取呼入未接通的电话
     getMissCallTypeList: function(lastId){
         var constObj = {
             page_size: this.state.page_size,
@@ -294,7 +294,7 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
                 this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
                 break;
-            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://拨入未接通的电话
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
                 this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
                 break;
         }
@@ -544,7 +544,7 @@ var SalesHomePage = React.createClass({
                 </div>
             );
         }else if (scheduleType === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE){
-            //拨入未接通电话
+            //呼入未接通电话
             var data =  this.state.missCallObj.data.list;
             return (
                 <div className="today-expired-schedule" ref="tableWrap">
