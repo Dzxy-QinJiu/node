@@ -30,7 +30,7 @@ class PhoneInput extends React.Component {
             }
 
             if (
-                /^1[345678]\d{9}$/.test(value)
+                /^1[3456789]\d{9}$/.test(value)
                 ||
                 /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(value)
                 ||
