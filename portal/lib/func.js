@@ -190,3 +190,12 @@ export const mapColorList = function (dataList) {
     }
 };
 
+// 封装原生try结构，统一catch处理(cb：写在try中的回调函数)
+export const packageTry = function (cb) {
+    try {
+        if (_.isFunction(cb)) cb();
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
+    }
+};

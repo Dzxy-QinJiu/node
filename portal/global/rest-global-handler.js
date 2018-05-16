@@ -19,6 +19,8 @@ function cleanAuthAndSendData(req, res, data) {
     try {
         res.status(403).json(data);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
 }
 //添加全局请求头
