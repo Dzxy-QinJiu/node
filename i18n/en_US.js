@@ -2159,10 +2159,11 @@ var en_US = {
     "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
     "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
     "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
+    "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
+    "sales.frontpage.has.no.conneted":"You have missed the call",//您有电话未接听
     "clue.manage.import.clue": "Import clues",//导入线索
     "clue.manage.import.clue.template": "Import clues template",//导入线索模板
     "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!
-    "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
     "clue.customer.import.clue.suceess": "Import clues successfully",//导入线索成功
     "clue.customer.import.clue.failed": "Failed to import clues",//导入线索失败
     "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
