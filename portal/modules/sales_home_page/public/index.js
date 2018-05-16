@@ -32,6 +32,7 @@ import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
+const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 var SalesHomePage = React.createClass({
     getInitialState: function () {
         SalesHomeAction.setInitState();
@@ -53,7 +54,8 @@ var SalesHomePage = React.createClass({
             isSaleTeamShow: isSaleTeamShow,//右侧销售团队列表是否展示
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
-            phoneSorter: {}//电话的排序对象
+            phoneSorter: {},//电话的排序对象
+            revisitSorter: {}, // 回访的排序对象
         };
     },
     onChange: function () {
@@ -184,6 +186,8 @@ var SalesHomePage = React.createClass({
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
+        SalesHomeAction.setListIsLoading(viewConstant.REVISIT);
+        SalesHomeAction.getRevisitList(queryParams);
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
@@ -224,6 +228,18 @@ var SalesHomePage = React.createClass({
     },
     getPhoneColumnTitle: function (label, key) {
         let sorter = this.state.phoneSorter;
+        let sortIcon = null;
+        if (sorter.field === key) {
+            if (sorter.order === "descend") {
+                sortIcon = <span className='iconfont icon-xiajiantou phone-sort-icon'/>;
+            } else if (sorter.order === "ascend") {
+                sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
+            }
+        }
+        return <span>{label}{sortIcon}</span>;
+    },
+    getRevisitColumnTitle (label, key) {
+        let sorter = this.state.revisitSorter;
         let sortIcon = null;
         if (sorter.field === key) {
             if (sorter.order === "descend") {
@@ -348,28 +364,39 @@ var SalesHomePage = React.createClass({
     getRevisitListColumn () {
         let columns = [
             {
-                title: Intl.get("common.revisit.time", "回访时间"),
-                dataIndex: 'calloutRate',
-                key: 'callout_rate',
+                title: this.getRevisitColumnTitle(Intl.get("common.revisit.time", "回访时间"), 'revisitTime'),
+                dataIndex: 'revisitTime',
+                key: 'revisit_time',
+                sorter: function (a, b) {
+                    return a.revisitTime - b.revisitTime;
+                },
                 className: 'has-filter table-data-align-right',
+                render: (revisitTime) => {
+                    var displayTime = moment(new Date(+revisitTime)).format(DATE_TIME_FORMAT);
+                    return (
+                        <div title={displayTime}>
+                            {displayTime}
+                        </div>
+                    );
+                }
             },
             {
                 title: Intl.get("crm.41", "客户名"),
-                dataIndex: 'calloutCount',
-                key: 'callout_count',
-                className: 'has-filter table-data-align-right',
+                dataIndex: 'customerName',
+                key: 'customer_name',
+                className: 'table-data-align-right',
             },
             {
                 title: Intl.get("menu.trace", "跟进记录"),
-                dataIndex: 'callinSuccess',
-                key: 'callin_success',
-                className: 'has-filter table-data-align-right',
+                dataIndex: 'followRecords',
+                key: 'follow_records',
+                className: 'table-data-align-right',
             },
             {
                 title: Intl.get("common.revisit.person", "回访人"),
-                dataIndex: 'callinSuccesss',
-                key: 'callin_successs',
-                className: 'has-filter table-data-align-right',
+                dataIndex: 'revisitPerson',
+                key: 'revisit_person',
+                className: 'table-data-align-right',
             }
         ];
         return columns;
@@ -507,13 +534,13 @@ var SalesHomePage = React.createClass({
                 <div className='sales-table-container'>
                     <div className='phone-table-block'>
                         <AntcTable
-                            dataSource={this.state.salesPhoneList}
+                            dataSource={this.state.revisitList}
                             columns={this.getRevisitListColumn()}
-                            loading={this.state.isLoadingPhoneList}
+                            loading={this.state.isLoadingRevisitList}
                             pagination={false}
                             bordered
                             util={{zoomInSortArea: true}}
-                            onChange={this.onTableChange}
+                            onChange={this.onRevisitTableChange}
                         />
                     </div>
                 </div>
@@ -581,6 +608,9 @@ var SalesHomePage = React.createClass({
     },
     onTableChange: function (pagination, filters, sorter) {
         this.setState({phoneSorter: sorter});
+    },
+    onRevisitTableChange (pagination, filters, sorter) {
+        this.setState({revisitSorter: sorter});
     },
     //时间的设置
     onSelectDate: function (startTime, endTime, timeType) {

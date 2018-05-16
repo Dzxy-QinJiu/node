@@ -86,5 +86,13 @@ module.exports = {
             "MEMBER_WEBSITE_CONFIG"
         ]
     },
+    {
+        "method": "get",
+        "path": '/rest/customer/revisit',
+        "handler": "getRevisit",
+        "passport": {
+            "needLogin": true
+        }
+    },
     ]
 };

@@ -322,3 +322,20 @@ exports.setWebsiteConfig = function (queryObj) {
     return Deferred.promise();
 };
 
+//获取回访列表
+exports.getRevisitList = function (reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer/revisit',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

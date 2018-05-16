@@ -28,6 +28,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.salesPhoneList = [];//销售-电话列表
     this.salesUserList = [];//销售-用户列表
     this.salesUserData = [];//销售-用户列表数据源
+    this.revisitList = []; // 回访列表
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
     this.resetSalesTeamMembersObj();
@@ -37,6 +38,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.isLoadingCustomerList = false;//正在获取销售-客户列表
     this.isLoadingUserList = false;//正在获取销售-用户列表
     this.isLoadingPhoneList = false;//正在获取销售-电话列表
+    this.isLoadingRevisitList = false; // 正在获取回访列表
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
@@ -433,6 +435,9 @@ SalesHomeStore.prototype.setListIsLoading = function (type) {
         case "phone":
             this.isLoadingPhoneList = true;
             break;
+        case "revisit":
+            this.isLoadingRevisitList = true;
+            break;
     }
 
 };
@@ -638,4 +643,24 @@ SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
         this.setWebConfigStatus = "loading";
     }
 };
+// 获取回访列表
+SalesHomeStore.prototype.getRevisitList = function (result) {
+    this.isLoadingRevisitList = false;
+    let data = result.resData;
+    if (data && _.isObject(data)) {
+        let revisitList = _.isArray(data.revisitList) ? data.revisitList : [];
+        revisitList = revisitList.map(function (item) {
+            return {
+                revisitTime: item.revisitTime || '', // 回访时间
+                customerName: item.customerName || '', // 客户名
+                followRecords: item.followRecords || '', // 跟进记录
+                revisitPerson: item.revisitPerson || ''// 回访人
+            };
+        });
+        this.revisitList = _.isArray(revisitList) ? revisitList : [];
+    } else {
+        this.revisitList = [];
+    }
+};
+
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

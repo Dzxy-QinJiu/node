@@ -90,3 +90,11 @@ exports.setWebsiteConfig = function (req, res) {
     });
 };
 
+//获取回访列表
+exports.getRevisit = function (req, res) {
+    salesHomeService.getRevisit(req, res, req.query).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

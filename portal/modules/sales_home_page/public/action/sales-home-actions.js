@@ -221,6 +221,17 @@ function SalesHomeActions() {
         );
 
     };
+    // 获取回访列表
+    this.getRevisitList = function (reqData) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getRevisitList(reqData)
+            .then(resData => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            },
+            errorMsg => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+    };
 }
 
 module.exports = alt.createActions(SalesHomeActions);
