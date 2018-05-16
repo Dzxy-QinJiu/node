@@ -86,7 +86,7 @@ var Crm = React.createClass({
         return {
             callNumber: '', // 座机号
             errMsg: '', // 获取座机号失败的信息
-            ...this.getStateData()
+            ...$.extend(true, {}, this.getStateData(), this.props.params),
         };
     },
     getSelectedCustomer: function (curCustomerList) {
@@ -1252,24 +1252,28 @@ var Crm = React.createClass({
         let selectCustomerLength = this.state.selectedCustomer.length;
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
-                <FilterBlock>
-                    {selectCustomerLength ? (
-                        <div className="crm-list-selected-tip">
-                            <span className="iconfont icon-sys-notice"/>
-                            {this.renderSelectCustomerTips()}
-                        </div>
-                    ) : null}
-                    <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
-                        <CrmFilter
-                            ref="crmFilter"
-                            search={this.search.bind(this, true)}
-                            changeTableHeight={this.changeTableHeight}
-                            crmFilterValue={this.state.crmFilterValue}
-                        />
-                    </div>
-                    {this.renderHandleBtn()}
-                    <div className="filter-block-line"></div>
-                </FilterBlock>
+                {
+                    !this.props.fromSalesHome ?
+                        <FilterBlock>
+                            {selectCustomerLength ? (
+                                <div className="crm-list-selected-tip">
+                                    <span className="iconfont icon-sys-notice" />
+                                    {this.renderSelectCustomerTips()}
+                                </div>
+                            ) : null}
+                            <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
+                                <CrmFilter
+                                    ref="crmFilter"
+                                    search={this.search.bind(this, true)}
+                                    changeTableHeight={this.changeTableHeight}
+                                    crmFilterValue={this.state.crmFilterValue}
+                                />
+                            </div>
+                            {this.renderHandleBtn()}
+                            <div className="filter-block-line"></div>
+                        </FilterBlock> : null
+                }
+
                 {this.state.isAddFlag ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddForm}
