@@ -149,7 +149,7 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     },
     {
         value: ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE,
-        name: Intl.get("sales.frontpage.has.no.conneted", "你有电话未接听")
+        name: Intl.get("sales.frontpage.has.no.conneted", "您有电话未接听")
     },
 
 ];

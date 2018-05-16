@@ -2156,7 +2156,7 @@ var en_US = {
     "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
     "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
     "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
-    "sales.frontpage.has.no.conneted":"You have missed the call"//你有电话未接听
+    "sales.frontpage.has.no.conneted":"You have missed the call"//您有电话未接听
 
 };
 export default en_US;

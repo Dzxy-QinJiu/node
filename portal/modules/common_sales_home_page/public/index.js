@@ -121,7 +121,7 @@ var SalesHomePage = React.createClass({
         this.getAppIlleageLogin();
         //获取重复客户列表
         this.getRepeatCustomerList();
-        //获取拨入未接通的电话
+        //获取呼入未接的电话
         this.getMissCallTypeList();
         //获取十天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
