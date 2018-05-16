@@ -10,6 +10,7 @@ var immutable = require("immutable");
 var COLORMULTIPLE = ['#1790cf','#1bb2d8'];
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 
 var SingleLineChart = React.createClass({
     echartInstance : null,
@@ -166,9 +167,10 @@ var SingleLineChart = React.createClass({
         return option;
     },
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.clear();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.clear();
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -178,7 +180,9 @@ var SingleLineChart = React.createClass({
         this.echartInstance.setOption(options,true);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                packageTry(() => {
+                    this.echartInstance.dispose();
+                });
                 this.echartInstance = null;
             }
             $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
@@ -202,8 +206,9 @@ var SingleLineChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },

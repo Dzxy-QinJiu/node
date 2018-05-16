@@ -52,6 +52,7 @@ var loginTime = 0;
 function suppressWarnings() {
     var loc = window.location.href;
     if (!/localhost|127\.0\.0\.1|192\.168\./.test(loc)) {
+        // eslint-disable-next-line no-console
         console.warn = function () {
         };
     }

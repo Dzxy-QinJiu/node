@@ -50,6 +50,7 @@ var initController = function (app) {
                 app[route.method](route.path, passportChecker(route.passport), privilegesChecker(route.passport, route.privileges), require(path.resolve(__dirname , "./modules" , route.module || routeConfig.module))[route.handler]);
             } catch (error) {
                 // 加载路由错误时，显示当前的错误信息，并抛出异常。
+                // eslint-disable-next-line no-console
                 console.error("加载路由错误: \n文件路径:%s \n错误信息:%s", JSON.stringify(route , null , 4) , error.message);
                 throw error;
             }
@@ -63,6 +64,7 @@ var initController = function (app) {
                     require(nock).init();
                 } catch(error){
                     // 加载nock错误时，显示当前的错误信息，并抛出异常。
+                    // eslint-disable-next-line no-console
                     console.error("加载nock错误: \n文件路径:%s \n错误信息:%s" , nock , error.message);
                 }
             }

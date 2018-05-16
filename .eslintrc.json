@@ -129,19 +129,17 @@
     //禁用不必要的转义字符
     "no-useless-escape": 0,
     // 禁用 console
-    "no-console": 0,
+    "no-console": 1,
     //禁用 alert、confirm 和 prompt
     "no-alert": 2,
     //禁止不必要的分号
     "no-extra-semi": 1,
     //禁止出现空语句块
-    "no-empty": 0,
+    "no-empty": 1,
     //禁止出现未使用过的变量
     "no-unused-vars": 0,
     //禁用未声明的变量，除非它们在 /*global */ 注释中被提到
     "no-undef": 0,
-    //    禁用不必要的转义字符
-    "no-useless-escape": 0,
     //禁止在条件中使用常量表达式
     "no-constant-condition": 0,
     //    禁止多次声明同一变量

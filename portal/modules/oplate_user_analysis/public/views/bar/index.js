@@ -10,6 +10,7 @@ import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
 var immutable = require("immutable");
 const querystring = require("querystring");
+import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
     echartInstance : null,
@@ -172,7 +173,9 @@ var BarChart = React.createClass({
     renderChart : function() {
         var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -180,7 +183,9 @@ var BarChart = React.createClass({
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                packageTry(() => {
+                    this.echartInstance.dispose();
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -223,8 +228,9 @@ var BarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },

@@ -21,6 +21,7 @@ function BatchChangeAction() {
             this.dispatch(list);
             if (cb) cb();
         }, (errorMsg) => {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -44,6 +45,7 @@ function BatchChangeAction() {
             if (cb) {
                 cb(errorMsg);
             }
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };

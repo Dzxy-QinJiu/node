@@ -1225,7 +1225,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.call.no.remark.over30": "No follow-up records over 30 days",//超30天未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
-    "crm.qualified.roll.out": "Roll out",//转出
+    "crm.qualified.roll.out": "Transfer out",//转出
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     "crm.detail.sales.role": "Sales role",//销售角色
@@ -1260,6 +1260,9 @@ var en_US = {
     "crm.basic.concerned": "Concerned",//已关注
     "crm.basic.unconcerned": "Unconcerned",//未关注
     "crm.basic.more": "More",//更多
+    "crm.sales.update": "Modify it to",//修改为
+    "crm.sales.redistribution": "Redistribution",//重新分配
+    "crm.sales.transfer.confirm": "Transfer confirm",//确认转出
     // 客户管理end
 
     //客户分析 start
@@ -2080,6 +2083,7 @@ var en_US = {
     "config.manage.no.tele": "No customer service phone, please add",//暂无客服电话，请添加
     "config.manage.reload.tele": "Retry to get customer service phone",//重新获取客服电话
     "config.manage.tele.config": "Customer service phone",//客服电话
+    'config.manage.input.tele': "Please input the correct phone number",//'请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
     "contract.22": "Unit",//个
     "sale.home.no.team": "No sales team",//暂无销售团队
     "coontract.114": "Import contract",//导入合同
@@ -2156,7 +2160,13 @@ var en_US = {
     "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
     "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
     "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
-    "sales.frontpage.has.no.conneted":"You have missed the call"//您有电话未接听
-
+    "sales.frontpage.has.no.conneted":"You have missed the call",//您有电话未接听
+    "clue.manage.import.clue": "Import clues",//导入线索
+    "clue.manage.import.clue.template": "Import clues template",//导入线索模板
+    "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!
+    "clue.customer.import.clue.suceess": "Import clues successfully",//导入线索成功
+    "clue.customer.import.clue.failed": "Failed to import clues",//导入线索失败
+    "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
+    "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import"//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
 };
 export default en_US;

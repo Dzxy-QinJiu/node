@@ -26,7 +26,9 @@ new WebpackDevServer(webpack(config), {
     },
 }).listen(8081, function (err, result) {
     if (err) {
+        // eslint-disable-next-line no-console
         return console.log(err);
     }
+    // eslint-disable-next-line no-console
     console.log('Listening at http://localhost:8081/');
 });

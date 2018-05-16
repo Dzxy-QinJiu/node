@@ -70,6 +70,7 @@ function ClueCustomerActions() {
             this.dispatch(list);
             if (cb) cb();
         }, (errorMsg) => {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };

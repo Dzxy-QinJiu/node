@@ -132,7 +132,6 @@ class DatePicker extends React.Component {
                 return true;
         });
         if (!hasRange) {
-            console.log("Inital time timeRange error");
             timeRange = "day";
         }
         //判断初始范围（range的值）是否在时间范围选择菜单（menu_lists）中
@@ -249,7 +248,6 @@ class DatePicker extends React.Component {
             } else {
                 end_time_millis = Utils.getMilliseconds(end_time) + '';
             }
-            console.log("start_time=" + start_time + ",end_time=" + end_time);
             this.props.onSelect(start_time_millis, end_time_millis, timeRange, label);
         }
     }
