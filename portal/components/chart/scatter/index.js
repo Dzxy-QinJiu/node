@@ -33,7 +33,7 @@ var ScatterChart = React.createClass({
         var _this = this;
         if (this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
         }
         if (this.props.resultType === 'loading') {
@@ -128,7 +128,7 @@ var ScatterChart = React.createClass({
         if (!data.length) {
             if (this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
                 
             }

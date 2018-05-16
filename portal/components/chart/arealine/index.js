@@ -284,13 +284,12 @@ var AreaLine = React.createClass({
     renderChart : function() {
         if(this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
         }
         if(this.props.resultType === 'loading') {
             return;
         }
-        var _this = this;
 
         var isNoData = false;
         if(!this.props.list.length) {
@@ -301,7 +300,7 @@ var AreaLine = React.createClass({
         if(isNoData) {
             if (this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);

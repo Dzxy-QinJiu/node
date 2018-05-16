@@ -25,9 +25,8 @@ var RateBarChart = React.createClass({
     },
     componentWillUnmount: function () {
         if (this.echartInstance) {
-            var _this = this;
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }
@@ -61,10 +60,9 @@ var RateBarChart = React.createClass({
     },
 
     renderChart: function () {
-        var _this = this;
         if (this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.clear();
+                this.echartInstance.clear();
             });
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);

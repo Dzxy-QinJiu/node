@@ -200,10 +200,9 @@ var LineChart = React.createClass({
         };
     },
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.clear();
+                this.echartInstance.clear();
             });
         }
         if(this.props.resultType === 'loading') {
@@ -215,7 +214,7 @@ var LineChart = React.createClass({
         if(!options.series.length) {
             if(this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
                 this.echartInstance = null;
             }

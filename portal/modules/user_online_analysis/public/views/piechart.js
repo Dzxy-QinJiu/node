@@ -188,9 +188,8 @@ var PieChart = React.createClass({
     },
     //渲染图表
     renderChart : function() {
-        var _this = this;
         packageTry(() => {
-            _this.echartInstance && _this.echartInstance.dispose();
+            this.echartInstance && this.echartInstance.dispose();
         });
         if(this.props.resultType === 'loading') {
             return;

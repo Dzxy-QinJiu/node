@@ -201,7 +201,7 @@ var BarChart = React.createClass({
         var _this = this;
         if (this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.clear();
+                this.echartInstance.clear();
             });
         }
         if (this.props.resultType === 'loading') {
@@ -211,7 +211,7 @@ var BarChart = React.createClass({
         if (!this.props.list.length) {
             if (this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
                 this.echartInstance = null;
             }
@@ -260,9 +260,8 @@ var BarChart = React.createClass({
     },
     componentWillUnmount: function () {
         if (this.echartInstance) {
-            var _this = this;
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }

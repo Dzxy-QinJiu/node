@@ -45,9 +45,8 @@ var BarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }

@@ -148,18 +148,17 @@ var SingleAppBarChart = React.createClass({
     renderChart : function() {
         if(this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
         }
         if(this.props.resultType === 'loading') {
             return;
         }
-        var _this = this;
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         if(!this.props.list.length) {
             if(this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
@@ -188,9 +187,8 @@ var SingleAppBarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }

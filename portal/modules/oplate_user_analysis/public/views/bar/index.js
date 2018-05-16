@@ -174,7 +174,7 @@ var BarChart = React.createClass({
         var _this = this;
         if(this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
         }
         if(this.props.resultType === 'loading') {
@@ -184,7 +184,7 @@ var BarChart = React.createClass({
         if(!this.props.list.length) {
             if(this.echartInstance) {
                 packageTry(() => {
-                    _this.echartInstance.dispose();
+                    this.echartInstance.dispose();
                 });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
@@ -228,9 +228,8 @@ var BarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
             packageTry(() => {
-                _this.echartInstance.dispose();
+                this.echartInstance.dispose();
             });
             this.echartInstance = null;
         }

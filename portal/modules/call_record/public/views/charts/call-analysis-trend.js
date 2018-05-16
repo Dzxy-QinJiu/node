@@ -43,10 +43,9 @@ var TimeSeriesLinechart = React.createClass({
         }, 300);
     },
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
             packageTry(() => {
-                _this.echartInstance.clear();
+                this.echartInstance.clear();
             });
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
