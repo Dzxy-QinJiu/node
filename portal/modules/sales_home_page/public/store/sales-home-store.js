@@ -359,6 +359,14 @@ SalesHomeStore.prototype.setInitTotalData = function (type) {
             'totalCount': 0//总接通数
         }
     };
+    //回访统计数据
+    this.revisitTotalObj = {
+        resultType: type || '',
+        errorMsg: '',
+        data: type === 'loading' ? {} : {
+            'totalCount': 0 // 总回访数
+        }
+    };
 };
 
 //获取当前登录用户的角色
@@ -422,6 +430,26 @@ SalesHomeStore.prototype.getUserTotal = function (result) {
     }
 };
 
+// 获取回访统计总数
+SalesHomeStore.prototype.getRevisitTotal = function (result) {
+    let revisitTotalObj = this.revisitTotalObj;
+    if (result.loading) {
+        revisitTotalObj.resultType = 'loading';
+        revisitTotalObj.errorMsg = '';
+    } else if (result.error) {
+        revisitTotalObj.resultType = 'error';
+        revisitTotalObj.errorMsg = result.errorMsg;
+    } else {
+        revisitTotalObj.resultType = '';
+        revisitTotalObj.errorMsg = '';
+        revisitTotalObj.data = result.resData;
+        if (!_.isObject(revisitTotalObj.data)) {
+            revisitTotalObj.data = {
+                'totalCount': 0
+            };
+        }
+    }
+};
 
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function (type) {

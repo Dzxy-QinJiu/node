@@ -116,6 +116,18 @@ function SalesHomeActions() {
         });
     };
 
+    // 获取回访统计总数
+    this.getRevisitTotal = function (reqData) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getRevisitTotal(reqData)
+            .then(resData => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            },
+            errorMsg => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+    };
+
     //获取销售-客户列表
     this.getSalesCustomerList = function (timeRange) {
         var _this = this;

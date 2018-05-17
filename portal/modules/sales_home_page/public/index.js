@@ -181,6 +181,7 @@ var SalesHomePage = React.createClass({
         queryParams.dataType = dataType;
         SalesHomeAction.getCustomerTotal(queryParams);
         SalesHomeAction.getUserTotal(queryParams);
+        SalesHomeAction.getRevisitTotal(queryParams);
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
@@ -793,6 +794,7 @@ var SalesHomePage = React.createClass({
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}
                                 phoneTotalObj={this.state.phoneTotalObj}
+                                revisitTotalObj={this.state.revisitTotalObj}
                                 activeView={this.state.activeView}
                             />
                             {/*即将过期的用户列表，所有角色都会展示*/}

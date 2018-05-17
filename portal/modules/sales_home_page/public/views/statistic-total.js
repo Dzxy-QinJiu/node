@@ -95,12 +95,16 @@ let StatisticTotal = React.createClass({
         </div>);
     },
     renderRevisitContent () {
-        const testTotalCount = 3;
+        let revisitTotalObj = this.props.revisitTotalObj;
+        if (revisitTotalObj.resultType) {
+            // 渲染等待效果或暂无数据的提示
+            return this.renderTooltip(revisitTotalObj);
+        }
         return (
             <div className={'statistic-total-content'}>
                 <span className='add-data-style'>
                     <span className='total-data-desc'>{Intl.get('common.total', '共')}</span>
-                    {testTotalCount || '0'}
+                    {phoneTotalObj.data.totalCount || '0'}
                     <span className='total-data-desc'>{Intl.get('common.one.unit', '个')}</span>
                 </span>
             </div>
