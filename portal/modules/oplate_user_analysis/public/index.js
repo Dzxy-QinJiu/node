@@ -72,63 +72,41 @@ const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
 var OPLATE_USER_ANALYSIS = React.createClass({
-    //获取Tab定义
-    getTabs: function () {
-        const tabs = [
-            {
-                key: "total",
-                title: Intl.get("oplate.user.analysis.11", "总用户"),
-                active: true,
-            },
-            {
-                key: "added",
-                title: Intl.get("oplate.user.analysis.12", "新增用户"),
-            },
-            {
-                key: "delayed",
-                title: Intl.get("operation.report.app.delay.user", "延期用户"),
-                layout: {
-                    sm: 4,
-                },
-                noShowCondition: {
-                    app: "all",
-                },
-            },
-            {
-                key: "expired",
-                title: Intl.get("oplate.user.analysis.13", "过期用户"),
-            },
-            {
-                key: "added_expired",
-                title: Intl.get("oplate.user.analysis.14", "新增过期用户"),
-            },
-        ];
-
-        return tabs;
-    },
-
-    //获取普通图表定义
+    //获取图表定义
     getCharts: function () {
         return [{
-            title: Intl.get("oplate.user.analysis.user.type", "用户类型"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/type`,
-            chartType: "pie",
-            //是否支持点图筛选
-            useChartFilter: true,
-            option: {
-                legend: {
-                    data: USER_TYPES,
+            title: "Tabs",
+            url: `/rest/analysis/user/v1/${authType}/summary`,
+            chartType: "tab",
+            tabs: [
+                {
+                    key: "total",
+                    title: Intl.get("oplate.user.analysis.11", "总用户"),
+                    active: true,
                 },
-            },
-            //什么情况下不显示
-            noShowCondition: {
-                //综合应用下
-                app: "all",
-                //延期Tab下
-                tab: ["delayed"],
-            },
-            //数据值转换映射，原始数据中的值会被转换成映射后的值
-            nameValueMap: userTypeDataMap,
+                {
+                    key: "added",
+                    title: Intl.get("oplate.user.analysis.12", "新增用户"),
+                },
+                {
+                    key: "delayed",
+                    title: Intl.get("operation.report.app.delay.user", "延期用户"),
+                    layout: {
+                        sm: 4,
+                    },
+                    noShowCondition: {
+                        app: "all",
+                    },
+                },
+                {
+                    key: "expired",
+                    title: Intl.get("oplate.user.analysis.13", "过期用户"),
+                },
+                {
+                    key: "added_expired",
+                    title: Intl.get("oplate.user.analysis.14", "新增过期用户"),
+                },
+            ],
         }, {
             title: Intl.get("oplate.user.analysis.app.status", "用户状态"),
             url: `/rest/analysis/user/v1/${authType}/:tab/status`,
@@ -651,14 +629,21 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         return [{
             instance: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
-            args: [{
+            callbackArgs: [{
                 name: "app",
+            }],
+        }, {
+            instance: emitters.appSelectorEmitter,
+            event: emitters.dateSelectorEmitter.SELECT_DATE,
+            callbackArgs: [{
+                name: "starttime",
+            }, {
+                name: "endtime",
             }],
         }];
     },
 
     render: function () {
-        const tabs = this.getTabs();
         const charts = this.getCharts();
 
         return (
@@ -671,18 +656,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 </TopNav>
 
                 <AntcAnalysis
-                    isTabSelector={true}
-                    tabs={tabs}
-                    charts={[{
-                        url: `/rest/analysis/user/v1/${authType}/summary`,
-                    }]}
-                    emitters={this.getEmitters()}
-                />
-
-                <AntcAnalysis
                     charts={charts}
                     emitters={this.getEmitters()}
-                    tabs={tabs}
                     useScrollBar={true}
                 />
             </div>
