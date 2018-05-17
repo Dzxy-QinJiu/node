@@ -78,6 +78,26 @@ class NewTrailCustomerTable extends React.Component {
             }
         };
         const hideTable = result.errorMsg || loading;
+        const params = {
+            queryObj: {                
+            },
+            rangParams: [{
+                from: this.props.params.startTime,
+                to: this.props.params.endTime,
+                type: "time",
+                name: "start_time"
+            }],
+            condition: {
+                customer_label: this.state.type,
+                term_fields: ["customer_label"],                
+            }
+        };
+        if (this.props.params.teamId) {
+            params.condition.sales_team_id = this.props.params.teamId;
+        }
+        if (this.props.params.memberId) {
+            params.queryObj.user_id = this.props.params.memberId;
+        }
         return (
             <div
                 className="chart-holder new-customer-statistic stage-change-customer-container scrollbar-container"
@@ -112,18 +132,7 @@ class NewTrailCustomerTable extends React.Component {
                                 <CrmList
                                     location={{ query: "" }}
                                     fromSalesHome={true}
-                                    params={{
-                                        rangParams: [{
-                                            from: this.props.params.startTime,
-                                            to: this.props.params.endTime,
-                                            type: "time",
-                                            name: "start_time"
-                                        }],
-                                        condition: {
-                                            customer_label: this.state.type,
-                                            term_fields: ["customer_label"]
-                                        }
-                                    }}
+                                    params={params}
                                 />
                             </div> : null
                     }

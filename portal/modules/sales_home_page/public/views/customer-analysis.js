@@ -33,6 +33,10 @@ const RightPanel = rightPanelUtil.RightPanel;
 var AppUserManage = require("MOD_DIR/app_user_manage/public");
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 import NewTrailCustomerTable from './new-trail-and-aign-customer';
+const Emitters = require("PUB_DIR/sources/utils/emitters");
+const dateSelectorEmitter = Emitters.dateSelectorEmitter;
+const appSelectorEmitter = Emitters.appSelectorEmitter;
+const teamTreeEmitter = Emitters.teamTreeEmitter;
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function () {
@@ -43,7 +47,7 @@ var CustomerAnalysis = React.createClass({
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
-            updateScrollBar: false,
+            updateScrollBar: false
         };
     },
     onStateChange: function () {
@@ -53,6 +57,14 @@ var CustomerAnalysis = React.createClass({
         let stateData = this.getStateData();
         return stateData;
     },
+    componentWillMount() {
+        teamTreeEmitter.on(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
+        teamTreeEmitter.on(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
+    },
+    componentWillUnmount() {
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
+    },
     componentWillReceiveProps: function (nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
@@ -61,7 +73,6 @@ var CustomerAnalysis = React.createClass({
             originSalesTeamTree: nextProps.originSalesTeamTree
         };
         const timeChanged = (this.props.startTime != nextProps.startTime) || (this.props.endTime != nextProps.endTime);
-        const teamChanged = this.props.currShowSalesTeam.group_id !== nextProps.currShowSalesTeam.group_id;
         this.setState(timeObj, () => {
             if (timeChanged) {
                 setTimeout(() => {
@@ -69,13 +80,6 @@ var CustomerAnalysis = React.createClass({
                     this.getStageChangeCustomers();
                     this.getCustomerStageAnalysis();
                 });
-            }
-            if (teamChanged) {
-                setTimeout(() => {
-                    this.getCustomerStageAnalysis({
-                        team_id: nextProps.currShowSalesTeam.group_id
-                    });
-                })
             }
         });
         if (nextProps.updateScrollBar) {
@@ -89,6 +93,22 @@ var CustomerAnalysis = React.createClass({
                 }, delayConstant);
             });
         }
+    },
+    onTeamChange(team_id, allSubTeamIds) {
+        let teamId = team_id;
+        if (allSubTeamIds && allSubTeamIds.length > 0) {
+            teamId = allSubTeamIds.join(",");
+        }
+        OplateCustomerAnalysisAction.teamChange(teamId);
+        setTimeout(() => this.getCustomerStageAnalysis({
+            team_id
+        }))
+    },
+    onMemberChange(member_id) {
+        OplateCustomerAnalysisAction.memberChange(member_id);
+        setTimeout(() => this.getCustomerStageAnalysis({
+            member_id
+        }))
     },
     getDataType: function () {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
@@ -880,13 +900,15 @@ var CustomerAnalysis = React.createClass({
                     data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
                     {this.renderCustomerStage()}
                 </div>
-                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
+                <div className="analysis_chart  col-sm-12 col-md-6"
+                    data-title={Intl.get("crm.sales.newTrailCustomer", "新开客户数统计")}>
                     <NewTrailCustomerTable
                         result={this.state.stageCustomerNum}
                         params={{
                             startTime: this.props.startTime,
-                            endTime: this.props.endTime
+                            endTime: this.props.endTime,
+                            teamId: this.state.currentTeamId,
+                            memberId: this.state.currentMemberId
                         }}
                     />
                 </div>
