@@ -172,10 +172,10 @@ function SalesHomeActions() {
         );
     };
     //获取是否展示邮件激活提示
-    this.getShowActiveEmailFlag = function () {
+    this.getShowActiveEmailObj = function () {
         var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getShowActiveEmailFlag(user_id).then((flag) => {
-            this.dispatch(flag);
+        salesHomeAjax.getShowActiveEmailObj(user_id).then((obj) => {
+            this.dispatch(obj);
         });
     };
     //邮箱激活

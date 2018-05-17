@@ -85,7 +85,7 @@ var SalesHomePage = React.createClass({
             scrollTimeout = setTimeout(() => $(".statistic-data-analysis .thumb").hide(), 300);
         });
         //获取是否能展示邮箱激活提示
-        SalesHomeAction.getShowActiveEmailFlag();
+        SalesHomeAction.getShowActiveEmailObj();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -688,7 +688,7 @@ var SalesHomePage = React.createClass({
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
                             {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
-                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.addEmail ?
+                            {this.state.emailShowObj.isShowActiveEmail || !this.state.emailShowObj.email ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -696,7 +696,7 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    addEmail={this.state.emailShowObj.addEmail}
+                                    addEmail={!this.state.emailShowObj.email}
                                 />: null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}

@@ -88,7 +88,7 @@ module.exports = {
     }, {
         "method": "get",
         "path": "/rest/show/activeemail/flag/:userId",
-        "handler": "getShowActiveEmailFlag",
+        "handler": "getShowActiveEmailObj",
         "passport": {
             "needLogin": true
         },

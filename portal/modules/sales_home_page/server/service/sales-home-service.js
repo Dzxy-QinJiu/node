@@ -184,7 +184,6 @@ function getIsEmailActive(req, res) {
         getUserInfoEmail(req, res).then((data) => {
           var responseObj = {
               isShowActiveEmail: false,//是否展示激活邮箱的提示
-              email :""//用户的邮件地址
           };
             //有邮箱
             if (data.email){
@@ -228,7 +227,7 @@ function getIsEmailActive(req, res) {
 
 
 //获取是否需要展示激活邮箱提示
-exports.getShowActiveEmailFlag = function (req, res) {
+exports.getShowActiveEmailObj = function (req, res) {
     var userId = req.param.userId;
     var emitter = new EventEmitter();
     getIsEmailActive(req, res).then((result) => {

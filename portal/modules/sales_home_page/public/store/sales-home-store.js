@@ -600,12 +600,9 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
     }
 };
 //是否展示邮箱激活的提示
-SalesHomeStore.prototype.getShowActiveEmailFlag = function (result) {
+SalesHomeStore.prototype.getShowActiveEmailObj = function (result) {
     if (_.isObject(result)){
         this.emailShowObj = result;
-        if ((_.isString(this.emailShowObj.email) && this.emailShowObj.email == "")){
-            this.emailShowObj.addEmail = true;
-        }
     }
 };
 //设置个人信息配置
