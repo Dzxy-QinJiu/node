@@ -19,12 +19,10 @@ exports.getCustomerByPhone = function (data) {
     });
     return Deferred.promise();
 };
-var getCustomerByIdAjax;
 //根据客户id获取客户信息
 exports.getCustomerById = function (customerId) {
-    getCustomerByIdAjax && getCustomerByIdAjax.abort();
     var Deferred = $.Deferred();
-    getCustomerByIdAjax = $.ajax({
+    $.ajax({
         url: '/rest/crm/customer/' + customerId,
         dataType: 'json',
         type: 'get',

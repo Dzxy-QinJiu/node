@@ -46,13 +46,13 @@ class ContactItem extends React.Component {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
         } else {
             if (this.state.callNumber) {
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        phoneNum: phoneNumber.replace('-', ''),
-                        contact: contactName,
-                        customerId: customerId,//客户基本信息
-                    }
-                );
+                // phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                //     {
+                //         phoneNum: phoneNumber.replace('-', ''),
+                //         contact: contactName,
+                //         customerId: customerId,//客户基本信息
+                //     }
+                // );
                 let reqData = {
                     from: this.state.callNumber,
                     to: phoneNumber.replace('-', '')
