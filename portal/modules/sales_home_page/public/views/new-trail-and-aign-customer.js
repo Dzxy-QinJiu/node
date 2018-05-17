@@ -2,10 +2,11 @@ var GeminiScrollbar = require("CMP_DIR/react-gemini-scrollbar");
 import { Button, Spin, Alert } from "antd";
 import { AntcTable } from "antc";
 const Spinner = require("CMP_DIR/spinner");
-import CustomerNewList from './customer-new-list';
 const DEFAULT_TABLE_PAGESIZE = 10;
 import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
+const CrmList = require("../../../crm/public/crm-list");
+import { RightPanelClose } from "CMP_DIR/rightPanel/index";
 
 class NewTrailCustomerTable extends React.Component {
     constructor(props) {
@@ -20,7 +21,11 @@ class NewTrailCustomerTable extends React.Component {
             isShowCustomerTable: isShow
         })
     }
-    handleStageNumClick(item, type) {
+    handleStageNumClick(num, type) {
+        //客户数为0时不打开客户列表面板
+        if (!num || num === "0") {
+            return
+        }
         this.setState({
             type,
             isShowCustomerTable: true
@@ -36,7 +41,7 @@ class NewTrailCustomerTable extends React.Component {
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, "试用")}>{text}</span>
+                            onClick={this.handleStageNumClick.bind(this, text, "试用")}>{text}</span>
                     );
                 }
             }, {
@@ -46,7 +51,7 @@ class NewTrailCustomerTable extends React.Component {
                 render: (text, item, index) => {
                     return (
                         <span className="customer-stage-number"
-                            onClick={this.handleStageNumClick.bind(this, item, "签约")}>{text}</span>
+                            onClick={this.handleStageNumClick.bind(this, text, "签约")}>{text}</span>
                     );
                 }
             }
@@ -73,27 +78,25 @@ class NewTrailCustomerTable extends React.Component {
             }
         };
         const hideTable = result.errorMsg || loading;
-
         return (
             <div
                 className="chart-holder new-customer-statistic stage-change-customer-container scrollbar-container"
-                data-tracename="新开试用、签约客户数统计"
+                data-tracename="新开客户数统计"
                 style={{ maxHeight: (result.data.length == 0) ? "initial" : "540px" }}
             >
                 <GeminiScrollbar>
                     <div className="title">
-                        {Intl.get("crm.sales.newTrailCustomer", "新开试用、签约客户数统计")}
+                        {Intl.get("crm.sales.newTrailCustomer", "新开客户数统计")}
                     </div>
                     {renderErr()}
                     {renderSpiner()}
-                    <div className={hideTable ? "hide" : ""}>
+                    {hideTable ? null :
                         <AntcTable
                             util={{ zoomInSortArea: true }}
                             dataSource={result.data}
                             pagination={false}
                             columns={columns}
-                        />
-                    </div>
+                        />}
                 </GeminiScrollbar>
                 <RightPanel
                     className="customer-stage-table-wrapper"
@@ -101,15 +104,28 @@ class NewTrailCustomerTable extends React.Component {
                 >
                     {
                         this.state.isShowCustomerTable ?
-                            <CustomerNewList
-                                params={{
-                                    type: this.state.type,
-                                    startTime: this.props.params.startTime,
-                                    endTime: this.props.params.endTime
-                                }}
-                                onClose={this.showCustomerTable.bind(this, false)}
-                            />
-                            : null
+                            <div className="customer-table-close topNav">
+                                <RightPanelClose
+                                    title={Intl.get("common.app.status.close", "关闭")}
+                                    onClick={this.showCustomerTable.bind(this, false)}
+                                />
+                                <CrmList
+                                    location={{ query: "" }}
+                                    fromSalesHome={true}
+                                    params={{
+                                        rangParams: [{
+                                            from: this.props.params.startTime,
+                                            to: this.props.params.endTime,
+                                            type: "time",
+                                            name: "start_time"
+                                        }],
+                                        condition: {
+                                            customer_label: this.state.type,
+                                            term_fields: ["customer_label"]
+                                        }
+                                    }}
+                                />
+                            </div> : null
                     }
                 </RightPanel>
             </div >
