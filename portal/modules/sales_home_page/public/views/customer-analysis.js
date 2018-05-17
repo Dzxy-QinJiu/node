@@ -430,7 +430,7 @@ var CustomerAnalysis = React.createClass({
                 valueField: "showValue",
                 height: 260,
                 minSize: "5%",
-                startTime: "0",
+                startTime: "0",//接口参数变了，startTime固定为0
                 endTime: this.state.endTime,
             })
         );
