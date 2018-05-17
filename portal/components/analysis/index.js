@@ -302,7 +302,8 @@ const Analysis = React.createClass({
             endTime: this.props.endTime || this.state.endtime,
             resultType: this.state.resultType,
             reverseChart:this.props.reverseChart
-        };        
+        };
+
         if (this.props.presetLegend === "userType") {
             props.legend = USER_TYPE_LEGEND;
         }
