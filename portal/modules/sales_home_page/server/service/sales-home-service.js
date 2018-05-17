@@ -157,21 +157,18 @@ exports.getExpireUser = function (req, res) {
         });
 };
 
-
-//获取网站个性化设置
-function getWebsiteConfig(req, res) {
+//获取个人资料邮箱是否存在及激活状态
+function getUserInfoEmail(req, res) {
+    //用户的id
+    var userId = req.params.userId;
     return new Promise((resolve, reject) => {
-        return restUtil.authRest.get(
+        restUtil.authRest.get(
             {
-                url: restApis.websiteConfig,
+                url: restApis.getUserInfo + "/" + userId,
                 req: req,
                 res: res
             }, null, {
                 success: function (eventEmitter, data) {
-                    if (!data){
-                        data = {};
-                    }
-                    //获取成功后，再获取邮箱激活信息
                     resolve(data);
                 },
                 error: function (eventEmitter, errorObj) {
@@ -181,37 +178,46 @@ function getWebsiteConfig(req, res) {
     });
 }
 
-
 //获取邮箱是否激活
 function getIsEmailActive(req, res) {
-    //用户的id
-    var userId = req.params.userId;
     return new Promise((resolve, reject) => {
-        getWebsiteConfig(req, res).then((data) => {
-            //未设置过个人配置，返回状态204，不返回数据
-            if (!data) {
-                data = {};
+        getUserInfoEmail(req, res).then((data) => {
+          var responseObj = {
+              isShowActiveEmail: false,//是否展示激活邮箱的提示
+              email :""//用户的邮件地址
+          };
+            //有邮箱
+            if (data.email){
+                responseObj.email = data.email;
+                //有邮箱且邮箱未激活，获取个人配置
+                if(!data.email_enable){
+                    return restUtil.authRest.get(
+                        {
+                            url: restApis.websiteConfig,
+                            req: req,
+                            res: res
+                        }, null, {
+                            success: function (eventEmitter, data) {
+                                //有数据,并且设置了不提醒
+                                if (data && data.setting_notice_ignore === "yes"){
+                                    resolve(responseObj);
+                                }else{
+                                    responseObj.isShowActiveEmail = true;
+                                    resolve(responseObj);
+                                }
+                            },
+                            error: function (eventEmitter, errorObj) {
+                                reject(errorObj.message);
+                            }
+                        });
+                }else{
+                    //有邮箱且邮箱已经激活，不提示
+                    resolve(responseObj);
+                }
+            }else{
+                //用户没有邮箱，提示添加邮箱
+                resolve(responseObj);
             }
-            restUtil.authRest.get(
-                {
-                    url: restApis.getUserInfo + "/" + userId,
-                    req: req,
-                    res: res
-                }, null, {
-                    success: function (eventEmitter, result) {
-                        var tipFlag = {};
-                        //用户未设置不提醒并且用户的邮箱未激活才要提醒
-                        //展示邮箱激活提醒条件
-                        //未设置过不提醒并且邮箱未激活
-                        if (data.setting_notice_ignore !== "yes" && result && result.email && !result.email_enable) {
-                            tipFlag.isShowActiveEmail = true;
-                        }
-                        resolve(tipFlag);
-                    },
-                    error: function (eventEmitter, errorObj) {
-                        reject(errorObj.message);
-                    }
-                });
 
         }).catch(function (errorMsg) {
             reject(errorMsg);
@@ -226,11 +232,7 @@ exports.getShowActiveEmailFlag = function (req, res) {
     var userId = req.param.userId;
     var emitter = new EventEmitter();
     getIsEmailActive(req, res).then((result) => {
-        var isShowActiveEmail = false;
-        if (!_.isEmpty(result) && result.isShowActiveEmail){
-            isShowActiveEmail = true;
-        }
-        emitter.emit("success", isShowActiveEmail);
+        emitter.emit("success", result);
     },(errorMsg)=>{
         emitter.emit("error", errorMsg);
     });

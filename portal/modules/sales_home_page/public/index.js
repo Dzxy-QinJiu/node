@@ -591,7 +591,7 @@ var SalesHomePage = React.createClass({
     },
     //点击 激活邮箱 按钮
     activeUserEmail: function () {
-        if (this.state.emailEnable) {
+        if (!this.state.emailShowObj.email) {
             return;
         }
         SalesHomeAction.activeUserEmail((resultObj) => {
@@ -599,7 +599,7 @@ var SalesHomePage = React.createClass({
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get("user.info.active.email", "激活邮件已发送至{email}", {"email": this.state.email})
+                    Intl.get("user.info.active.email", "激活邮件已发送至{email}", {"email": this.state.emailShowObj.email})
                 );
             }
         });
@@ -687,8 +687,8 @@ var SalesHomePage = React.createClass({
                     </div>
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
-                            {/*是否展示邮箱激活提示*/}
-                            {this.state.isShowActiveEmail ?
+                            {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
+                            {this.state.emailShowObj.isShowActiveEmail || this.state.emailShowObj.addEmail ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -696,7 +696,7 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    hasNoEmail={this.state.hasNoEmail}
+                                    addEmail={this.state.emailShowObj.addEmail}
                                 />: null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}

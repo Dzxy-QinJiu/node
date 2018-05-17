@@ -1937,7 +1937,7 @@ var en_US = {
     "sales.homepage.hide.teamlist": "Hide team lists",//隐藏团队列表
     "sales.homepage.show.teamlist": "Show team lists",//展开团队列表
     "crm.save.customertrace.first": "Please save or cancel the edited customer trace record first",//请先保存或取消保存已编辑的跟进记录内容
-    "sales.add.email.info": "Please activate the mailbox on the {userinfo} page, otherwise you will be unable to receive the application email from users",//请到{userinfo}页面激活邮箱，否则将会无法接收用户申请的邮件。
+    "sales.add.email.info": "Please add the mailbox on the {userinfo} page, otherwise you will be unable to receive the application email from users",//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
     "crm.sales.add.clue": "Add clue",//添加线索
     "clue.customer.will.distribution": "To be assigned",//待分配
     "clue.customer.has.distribution": "Assigned",//已分配
