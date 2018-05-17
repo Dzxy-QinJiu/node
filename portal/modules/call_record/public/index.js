@@ -1,5 +1,5 @@
 import CallRecord from "./views/call-record";
-import CrmRightPanel  from '../../crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import {RightPanel} from "../../../components/rightPanel";
 import crmAjax from '../../crm/public/ajax';
 var callReordEmitter = require("../../../public/sources/utils/emitters").callReordEmitter;
@@ -35,21 +35,29 @@ const CallRecordList = React.createClass({
             var $customer_id_hidden = $(this).find(".customer_id_hidden");
             if ($customer_id_hidden[0]) {
                 Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"), "打开客户详情");
-                _this.setState({
-                    rightPanelCustomerId: $customer_id_hidden.val(),
-                    showRightPanel: true
-                });
+                _this.showRightPanel($customer_id_hidden.val());
             }
         });
     },
 
 
     componentWillUnmount: function () {
-        this.setState({
-            rightPanelCustomerId: '',
-            showRightPanel: false,
-        });
+        this.closeRightPanel();
         callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
+    },
+    showRightPanel:function (customerId) {
+        this.setState({
+            rightPanelCustomerId: customerId,
+            showRightPanel: true
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            type: "customer_detail", params: {
+                currentId: customerId,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel:this.closeRightPanel
+            }
+        });
     },
     ShowCustomerUserListPanel: function (data) {
         this.setState({
@@ -69,14 +77,6 @@ const CallRecordList = React.createClass({
                     <div ref="wrap">
                         <CallRecord showRightPanel={this.state.showRightPanel}/>
                     </div>
-                    {this.state.showRightPanel ? <CrmRightPanel
-                        currentId={this.state.rightPanelCustomerId}
-                        showFlag={this.state.showRightPanel}
-                        hideRightPanel={this.closeRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    /> : null}
                 </div>
                 {/*该客户下的用户列表*/}
                 <RightPanel

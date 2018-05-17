@@ -10,7 +10,7 @@ import GeminiScrollBar from '../../../../components/react-gemini-scrollbar';
 import userData from "../../../../public/sources/user-data";
 import CustomerRepeatAction from "../action/customer-repeat-action";
 import CustomerRepeatStore from "../store/customer-repeat-store";
-import CrmRightPanel from "./crm-right-panel";
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import CrmRightMergePanel from "./crm-right-merge-panel";
 import Privilege from '../../../../components/privilege/checker';
 import classNames from 'classnames';
@@ -104,6 +104,17 @@ let CustomerRepeat = React.createClass({
         }
         CustomerRepeatAction.setRightPanelShow(true);
         CustomerRepeatAction.setCurCustomer(id);
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            type: "customer_detail", params: {
+                isRepeat:true,
+                refreshCustomerList: this.refreshRepeatCustomerList,
+                curCustomer: this.state.curCustomer,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
     },
     hideRightPanel: function () {
         CustomerRepeatAction.setRightPanelShow(false);
@@ -376,17 +387,7 @@ let CustomerRepeat = React.createClass({
                 mergeCustomerList={this.state.mergeRepeatCustomers}
                 hideMergePanel={this.hideMergePanel}
                 refreshCustomerList={this.refreshRepeatCustomerList}
-            />) : this.state.rightPanelIsShow ? (
-                <CrmRightPanel
-                    isRepeat={true}
-                    showFlag={this.state.rightPanelIsShow}
-                    curCustomer={this.state.curCustomer}
-                    hideRightPanel={this.hideRightPanel}
-                    refreshCustomerList={this.refreshRepeatCustomerList}
-                    updateCustomerDefContact={CustomerRepeatAction.updateCustomerDefContact}
-                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                />
-            ) : null}
+            />) : null}
         </div>);
     }
 });

@@ -13,7 +13,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel}  from "CMP_DIR/rightPanel";
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
 import TopNav from "CMP_DIR/top-nav";
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import userData from "PUB_DIR/sources/user-data";
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
 import {notificationEmitter} from "PUB_DIR/sources/utils/emitters";
@@ -117,6 +117,14 @@ let SystemNotification = React.createClass({
             this.closeRightUserPanel();
         }
         this.setState({curShowCustomerId: customer_id});
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            type: "customer_detail", params: {
+                currentId: customer_id,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.closeRightCustomerPanel
+            }
+        });
     },
     handleTypeChange: function (val) {
         Trace.traceEvent($(this.getDOMNode()).find(".notification-type-select"), "类型筛选");
@@ -361,16 +369,6 @@ let SystemNotification = React.createClass({
                     <div className="summary_info">
                         {Intl.get("notification.total.system.notice", "共{x}条系统消息", {x: this.state.totalSize})}
                     </div> : null
-                }
-                {
-                    this.state.curShowCustomerId ? <CrmRightPanel
-                        currentId={this.state.curShowCustomerId}
-                        showFlag={true}
-                        hideRightPanel={this.closeRightCustomerPanel}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        refreshCustomerList={function () {
-                        }}
-                    /> : null
                 }
                 {/*该客户下的用户列表*/}
                 <RightPanel

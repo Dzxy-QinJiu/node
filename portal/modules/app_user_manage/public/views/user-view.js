@@ -19,7 +19,7 @@ var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 var history = require("../../../../public/sources/history");
 var batchPushEmitter = require("../../../../public/sources/utils/emitters").batchPushEmitter;
 var topNavEmitter = require("../../../../public/sources/utils/emitters").topNavEmitter;
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import language from "PUB_DIR/language/getLanguage";
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/sales-clue-add-form';
 import {clueSourceArray, accessChannelArray} from "PUB_DIR/sources/utils/consts";
@@ -168,6 +168,15 @@ var UserTabContent = React.createClass({
     showCustomerDetail: function (customer_id) {
         this.setState({
             curShowCustomerId: customer_id,
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            type: "customer_detail", params: {
+                currentId: customer_id,
+                curCustomer: this.state.curCustomer,
+                userViewShowCustomerUserListPanel: true,
+                hideRightPanel: this.hideRightPanel
+            }
         });
     },
     //更新用户基本信息
@@ -1056,16 +1065,6 @@ var UserTabContent = React.createClass({
                         />
                     </div> : null
                 }
-                {this.state.curShowCustomerId ? (
-                    <CrmRightPanel
-                        currentId={this.state.curShowCustomerId}
-                        showFlag={true}
-                        hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        userViewShowCustomerUserListPanel={true}
-                    />
-                ) : null}
             </div>
         );
     },

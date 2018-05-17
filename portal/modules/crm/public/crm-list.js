@@ -6,7 +6,6 @@ var FilterBlock = require('../../../components/filter-block');
 var PrivilegeChecker = require('../../../components/privilege/checker').PrivilegeChecker;
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 var Spinner = require("../../../components/spinner");
-var CrmRightPanel = require('./views/crm-right-panel');
 var ImportCrmTemplate = require('./views/crm-import-template');
 var BootstrapButton = require('react-bootstrap').Button;
 var BootstrapModal = require('react-bootstrap').Modal;
@@ -26,7 +25,7 @@ var batchPushEmitter = require("../../../public/sources/utils/emitters").batchPu
 // 没有消息的提醒
 var NoMoreDataTip = require("../../../components/no_more_data_tip");
 var AppUserManage = require("MOD_DIR/app_user_manage/public");
-var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import {crmEmitter} from "OPLATE_EMITTER";
 import routeList from "MOD_DIR/common/route";
 import ajax from "MOD_DIR/common/ajax";
@@ -443,6 +442,21 @@ var Crm = React.createClass({
 
         rightPanelShow = true;
         CrmAction.setCurrentCustomer(id);
+        setTimeout(() => {
+            //触发打开带拨打电话状态的客户详情面板
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                type: "customer_detail", params: {
+                    currentId: this.state.currentId,
+                    refreshCustomerList: this.refreshCustomerList,
+                    curCustomer: this.state.curCustomer,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    updateCustomerDefContact: CrmAction.updateCustomerDefContact,
+                    handleFocusCustomer: this.handleFocusCustomer,
+                    showRightPanel: this.showRightPanel,
+                    hideRightPanel: this.hideRightPanel
+                }
+            });
+        });
     }
     , hideRightPanel: function () {
         this.state.rightPanelIsShow = false;
@@ -1337,19 +1351,7 @@ var Crm = React.createClass({
                     hideMergePanel={this.hideMergePanel}
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
-                />) : this.state.rightPanelIsShow ? (
-                    <CrmRightPanel
-                        showFlag={this.state.rightPanelIsShow}
-                        currentId={this.state.currentId}
-                        hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={this.refreshCustomerList}
-                        curCustomer={this.state.curCustomer}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                        handleFocusCustomer={this.handleFocusCustomer}
-                        showRightPanel={this.showRightPanel}
-                    />
-                ) : null}
+                />) : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

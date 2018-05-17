@@ -10,7 +10,7 @@ var AlertTimer = require("CMP_DIR/alert-timer");
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 var userData = require("PUB_DIR/sources/user-data");
-var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 var classNames = require("classnames");
 import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
@@ -56,7 +56,6 @@ const PHONERINGSTATUS = {
     record: "record",
     phone: "phone",//通话结束后，后端推送过来的状态
 };
-var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
 class PhoneAlert extends React.Component {
     constructor(props) {
         super(props);
@@ -354,6 +353,15 @@ class PhoneAlert extends React.Component {
         this.setState({
             rightPanelIsShow: true,
             curCustomerId: id
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            type: "customer_detail", params: {
+                currentId: id,
+                hideRightPanel: this.hideRightPanel,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                editCustomerBasic:this.editCustomerBasic
+            }
         });
     };
     //关闭已有客户的右侧面板
@@ -711,17 +719,6 @@ class PhoneAlert extends React.Component {
                         </div>
                     </div>
                 </div>) : null}
-                {/*添加客户时，如果该客户存在，需要展示该已有客户的详情*/}
-                {this.state.rightPanelIsShow ? (
-                    <CrmRightPanel
-                        showFlag={this.state.rightPanelIsShow}
-                        currentId={this.state.curCustomerId}
-                        hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        editCustomerBasic={this.editCustomerBasic}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    />) : null}
                 {/*该客户下的用户列表*/}
                 {this.state.isShowCustomerUserListPanel ? <RightPanel
                     className="customer-user-list-panel"
