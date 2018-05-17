@@ -304,22 +304,6 @@ exports.activeUserEmail = function () {
     });
     return Deferred.promise();
 };
-//获取网站的个性化设置
-exports.getWebsiteConfig = function () {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/getWebsiteConfig',
-        dataType: 'json',
-        type: 'get',
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //对网站进行个性化设置
 var setWebSiteConfigAjax;
 exports.setWebsiteConfig = function (queryObj) {
