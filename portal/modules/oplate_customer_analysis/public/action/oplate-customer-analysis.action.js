@@ -31,7 +31,11 @@ function OplateCustomerAnalysisActions() {
         //清除chart数据
         "resetChartData",
         //切换展示客户阶段点击数字打开的客户列表
-        "toggleStageCustomerList"
+        "toggleStageCustomerList",
+        //切换销售团队
+        "teamChange",
+        //切换销售人员
+        "memberChange"
     );
 
     //获取统计总数

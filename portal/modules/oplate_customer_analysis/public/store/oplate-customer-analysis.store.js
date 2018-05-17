@@ -95,6 +95,10 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         errorMsg: "",
         loading: false
     };
+    //当前选中的团队id
+    this.currentTeamId = "";
+    //当前选中的销售人员id
+    this.currentMemberId = "";
 };
 //重置图表数据
 OplateCustomerAnalysisStore.prototype.resetChartData = function (type) {
@@ -434,6 +438,14 @@ OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("
     }
     this.stageCustomerNum.data = list;
 });
+
+OplateCustomerAnalysisStore.prototype.teamChange = function (teamId) {
+    this.currentTeamId = teamId;
+}
+OplateCustomerAnalysisStore.prototype.memberChange = function (memberId) {
+    this.currentTeamId = "";
+    this.currentMemberId = memberId;
+}
 
 //导出 客户分析-客户构成 的store
 module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
