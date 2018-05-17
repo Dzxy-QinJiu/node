@@ -172,18 +172,11 @@ function SalesHomeActions() {
             }
         );
     };
-    // //获取用户信息
-    // this.getUserInfo = function () {
-    //     var user_id = userData.getUserData().user_id;
-    //     salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
-    //         this.dispatch(userInfo);
-    //     });
-    // };
     //获取是否展示邮件激活提示
     this.getShowActiveEmailFlag = function () {
         var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getShowActiveEmailFlag(user_id).then((userInfo) => {
-            this.dispatch(userInfo);
+        salesHomeAjax.getShowActiveEmailFlag(user_id).then((flag) => {
+            this.dispatch(flag);
         });
     };
     //邮箱激活
@@ -201,17 +194,6 @@ function SalesHomeActions() {
                 callback({error: true, errorMsg: errorMsg || Intl.get("user.info.active.user.email.failed","激活失败")});
             }
         });
-    };
-    //获取是否已经设置过邮箱不再提醒
-    this.getWebsiteConfig = function () {
-        this.dispatch({loading: true, error: false});
-        salesHomeAjax.getWebsiteConfig().then((resData) => {
-                this.dispatch({loading: false, error: false, resData: resData});
-            },(errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            }
-        );
-
     };
     //设置邮箱激活不再提醒
     this.setWebsiteConfig = function (queryObj,callback) {

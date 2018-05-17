@@ -40,12 +40,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
-    this.emailEnable = true;//该用户邮箱是否已激活 默认值 true 表示邮箱已激活，
-    this.email = "";//该用户的邮箱地址
-    this.getWebConfigStatus = "";//获取个人配置的状态
-    this.getWebConfigObj = {};//个人配置信息
     this.setWebConfigStatus = "";//设置个人配置的状态
-    this.hasNoEmail = false;//此账号是否有邮箱
     this.salesCallStatus = {};//各销售对应的状态
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -606,21 +601,6 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
 //是否展示邮箱激活的提示
 SalesHomeStore.prototype.getShowActiveEmailFlag = function (flag) {
     this.isShowActiveEmail = flag;
-};
-//获取个人信息配置
-SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
-    if (userInfo.loading) {
-        this.getWebConfigStatus = "loading";
-        this.getWebConfigObj = {};
-    } else if (userInfo.error) {
-        //获取错误的情况
-        this.getWebConfigStatus = "error";
-        this.getWebConfigObj = {};
-    } else {
-        //获取正确的情况
-        this.getWebConfigObj = userInfo.resData;
-        this.getWebConfigStatus = "";
-    }
 };
 //设置个人信息配置
 SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {

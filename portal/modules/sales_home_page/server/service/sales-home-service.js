@@ -156,6 +156,8 @@ exports.getExpireUser = function (req, res) {
             }
         });
 };
+
+
 //获取网站个性化设置
 function getWebsiteConfig(req, res) {
     return new Promise((resolve, reject) => {
@@ -169,6 +171,7 @@ function getWebsiteConfig(req, res) {
                     if (!data){
                         data = {};
                     }
+                    //获取成功后，再获取邮箱激活信息
                     resolve(data);
                 },
                 error: function (eventEmitter, errorObj) {
@@ -178,26 +181,42 @@ function getWebsiteConfig(req, res) {
     });
 }
 
+
 //获取邮箱是否激活
-function getIsEmailActive(req, res, userId) {
+function getIsEmailActive(req, res) {
+    //用户的id
+    var userId = req.params.userId;
     return new Promise((resolve, reject) => {
-        return restUtil.authRest.get(
-            {
-                url: restApis.getUserInfo + "/" + userId,
-                req: req,
-                res: res
-            }, null, {
-                success: function (eventEmitter, data) {
-                    //处理数据
-                    if (data) {
-                        data.emailActive =  data.email_enable;
+        getWebsiteConfig(req, res).then((data) => {
+            //未设置过个人配置，返回状态204，不返回数据
+            if (!data) {
+                data = {};
+            }
+            restUtil.authRest.get(
+                {
+                    url: restApis.getUserInfo + "/" + userId,
+                    req: req,
+                    res: res
+                }, null, {
+                    success: function (eventEmitter, result) {
+                        var tipFlag = {};
+                        //用户未设置不提醒并且用户的邮箱未激活才要提醒
+                        //展示邮箱激活提醒条件
+                        //未设置过不提醒并且邮箱未激活
+                        if (data.setting_notice_ignore !== "yes" && result && result.email && !result.email_enable) {
+                            tipFlag.isShowActiveEmail = true;
+                        }
+                        resolve(tipFlag);
+                    },
+                    error: function (eventEmitter, errorObj) {
+                        reject(errorObj.message);
                     }
-                    resolve(data);
-                },
-                error: function (eventEmitter, errorObj) {
-                    reject(errorObj.message);
-                }
-            });
+                });
+
+        }).catch(function (errorMsg) {
+            reject(errorMsg);
+        });
+
     });
 }
 
@@ -206,15 +225,17 @@ function getIsEmailActive(req, res, userId) {
 exports.getShowActiveEmailFlag = function (req, res) {
     var userId = req.param.userId;
     var emitter = new EventEmitter();
-    let promiseList = [getWebsiteConfig(req, res), getIsEmailActive(req, res, userId)];
-    Promise.all(promiseList).then((result) => {
+    getIsEmailActive(req, res).then((result) => {
         var isShowActiveEmail = false;
-        //
+        if (!_.isEmpty(result) && result.isShowActiveEmail){
+            isShowActiveEmail = true;
+        }
         emitter.emit("success", isShowActiveEmail);
-    }, function (errorMsg) {
+    },(errorMsg)=>{
         emitter.emit("error", errorMsg);
     });
     return emitter;
+
 };
 
 //对网站进行个性化设置
