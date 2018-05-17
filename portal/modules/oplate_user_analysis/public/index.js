@@ -76,7 +76,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
     getCharts: function () {
         return [{
             title: "Tabs",
-            url: `/rest/analysis/user/v1/${authType}/summary`,
+            url: "/rest/analysis/user/v1/:auth_type/summary",
             chartType: "tab",
             tabs: [
                 {
@@ -109,7 +109,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             ],
         }, {
             title: Intl.get("oplate.user.analysis.app.status", "用户状态"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/status`,
+            url: "/rest/analysis/user/v1/:auth_type/:tab/status",
             chartType: "pie",
             useChartFilter: true,
             noShowCondition: {
@@ -122,7 +122,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.total", "用户统计"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/summary`,
+            url: "/rest/analysis/user/v1/:auth_type/:tab/summary",
             noShowCondition: {
                 tab: ["delayed"],
             },
@@ -176,7 +176,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.team", "团队统计"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/team`,
+            url: "/rest/analysis/user/v1/:auth_type/:tab/team",
             chartType: "bar",
             useChartFilter: true,
             noShowCondition: {
@@ -187,7 +187,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 when: {
                     app: "all",
                 },
-                url: `/rest/analysis/user/v1/${authType}/apps/:tab/team`,
+                url: "/rest/analysis/user/v1/:auth_type/apps/:tab/team",
                 useChartFilter: false,
                 option: {
                     legend: {
@@ -203,7 +203,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.address", "地域统计"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/zone`,
+            url: "/rest/analysis/user/v1/:auth_type/:tab/zone",
             chartType: "bar",
             useChartFilter: true,
             noShowCondition: {
@@ -214,7 +214,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 when: {
                     app: "all",
                 },
-                url: `/rest/analysis/user/v1/${authType}/apps/:tab/zone`,
+                url: "/rest/analysis/user/v1/:auth_type/apps/:tab/zone",
                 useChartFilter: false,
                 option: {
                     legend: {
@@ -230,7 +230,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.industry", "行业统计"),
-            url: `/rest/analysis/user/v1/${authType}/:tab/industry`,
+            url: "/rest/analysis/user/v1/:auth_type/:tab/industry",
             chartType: "bar",
             useChartFilter: true,
             noShowCondition: {
@@ -241,7 +241,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 when: {
                     app: "all",
                 },
-                url: `/rest/analysis/user/v1/${authType}/apps/:tab/industry`,
+                url: "/rest/analysis/user/v1/:auth_type/apps/:tab/industry",
                 useChartFilter: false,
                 option: {
                     legend: {
@@ -257,7 +257,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.sales.users", "销售开通用户统计"),
-            url: `/rest/customer/v2/customer/${rangeType}/app/user/count`,
+            url: "/rest/customer/v2/customer/:range_type/app/user/count",
             chartType: "table",
             layout: {
                 sm: 24,
@@ -266,6 +266,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 app: "all",
                 tab: ["total"],
             },
+            conditions: [{
+                name: "range_type",
+                value: rangeType,
+                type: "param",
+            }],
             option: {
                 pagination: false,
                 bordered: true,
@@ -291,7 +296,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("operation.report.activity", "活跃度"),
-            url: `/rest/analysis/user/v1/${authType}/:app_id/users/activation/:card_tab`,
+            url: "/rest/analysis/user/v1/:auth_type/:app/users/activation/:interval",
             chartType: "line",
             valueField: "active",
             cardContainer: {
@@ -299,7 +304,13 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     {value: 'weekly', name: Intl.get("operation.report.week.active", "周活")},
                     {value: 'monthly', name: Intl.get("operation.report.month.active", "月活")}],
                 activeButton: "daily",
+                conditionName: "interval",
             },
+            conditions: [{
+                name: "interval",
+                value: "daily",
+                type: "param",
+            }],
             option: {
                 tooltip: {
                     formatter: params => {
@@ -365,7 +376,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.10", "活跃时间段"),
-            url: `/rest/analysis/auditlog/v1/:app_id/operations/weekly`,
+            url: "/rest/analysis/auditlog/v1/:app/operations/weekly",
             chartType: "scatter",
             option: {
                 tooltip: {
@@ -404,7 +415,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.9", "用户留存"),
-            url: `/rest/analysis/user/v1/retention`,
+            url: "/rest/analysis/user/v1/retention",
             chartType: "table",
             noShowCondition: {
                 app: "all",
@@ -482,7 +493,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.6", "在线时长统计"),
-            url: `/rest/analysis/user/v1/:tab/login_long`,
+            url: "/rest/analysis/user/v1/:tab/login_long",
             reqQuery: {
                 ranges: 1,
             },
@@ -498,7 +509,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.device", "设备统计"),
-            url: `/rest/analysis/user/v3/${authType}/device`,
+            url: "/rest/analysis/user/v3/:auth_type/device",
             chartType: "bar",
             noShowCondition: {
                 app: "all",
@@ -506,7 +517,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.browser", "浏览器统计"),
-            url: `/rest/analysis/user/v3/${authType}/browser`,
+            url: "/rest/analysis/user/v3/:auth_type/browser",
             chartType: "bar",
             noShowCondition: {
                 app: "all",
@@ -514,7 +525,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.loginCounts", "用户访问次数"),
-            url: `/rest/analysis/user/v3/${authType}/logins/distribution/num`,
+            url: "/rest/analysis/user/v3/:auth_type/logins/distribution/num",
             reqType: "post",
             reqDataGenerator: "loginNum",
             chartType: "wordcloud",
@@ -528,7 +539,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("user.analysis.active.user.area.statistics", "活跃用户地域统计"),
-            url: `/rest/analysis/user/v3/${authType}/zone/province`,
+            url: "/rest/analysis/user/v3/:auth_type/zone/province",
             chartType: "map",
             height: 546,
             noShowCondition: {
@@ -549,7 +560,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.loginDays", "用户访问天数"),
-            url: `/rest/analysis/user/v3/${authType}/login/day/distribution/num`,
+            url: "/rest/analysis/user/v3/:auth_type/login/day/distribution/num",
             reqType: "post",
             reqDataGenerator: "loginDayNum",
             chartType: "wordcloud",
@@ -563,7 +574,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.loginTimes", "用户在线时间"),
-            url: `/rest/analysis/user/v3/${authType}/online_time/distribution/num`,
+            url: "/rest/analysis/user/v3/:auth_type/online_time/distribution/num",
             reqType: "post",
             reqDataGenerator: "onlineTime",
             chartType: "wordcloud",
@@ -578,7 +589,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.averageLoginTimes", "平均在线时长"),
-            url: `/rest/analysis/user/v3/${authType}/app/avg/online_time/trend`,
+            url: "/rest/analysis/user/v3/:auth_type/app/avg/online_time/trend",
             chartType: "bar",
             option: {
                 tooltip: {
@@ -616,8 +627,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     {name: Intl.get("common.time.unit.year", "年"), value: "yearly"}
                     ],
                 activeOption: "hourly",
-                selectQueryField: "interval",
+                conditionName: "interval",
             },
+            conditions: [{
+                name: "interval",
+                value: "hourly",
+            }],
             noShowCondition: {
                 app: "all",
                 tab: ["added_expired"],
@@ -659,6 +674,11 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     charts={charts}
                     emitters={this.getEmitters()}
                     useScrollBar={true}
+                    conditions={[{
+                        name: "auth_type",
+                        value: authType,
+                        type: "param",
+                    }]}
                 />
             </div>
         );
