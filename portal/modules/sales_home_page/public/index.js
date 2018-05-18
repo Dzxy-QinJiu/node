@@ -76,8 +76,6 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getSalesTeamList(type);
         this.refreshSalesListData();
         this.resizeLayout();
-        //获取个人配置信息
-        this.getWebConfig();
         $(window).resize(() => this.resizeLayout());
         $(".statistic-data-analysis").mousewheel(function () {
             $(".statistic-data-analysis .thumb").show();
@@ -86,8 +84,8 @@ var SalesHomePage = React.createClass({
             }
             scrollTimeout = setTimeout(() => $(".statistic-data-analysis .thumb").hide(), 300);
         });
-        //获取用户的个人信息
-        SalesHomeAction.getUserInfo();
+        //获取是否能展示邮箱激活提示
+        SalesHomeAction.getShowActiveEmailObj();
         //外层父组件加载完成后，再由上到下推出激活邮箱提示框
         setTimeout(() => {
             this.setState({
@@ -114,10 +112,6 @@ var SalesHomePage = React.createClass({
         this.setState({
             scrollbarEnabled: this.state.scrollbarEnabled
         });
-    },
-    //获取个人配置信息
-    getWebConfig: function () {
-        SalesHomeAction.getWebsiteConfig();
     },
     getPhoneListBlockHeight: function () {
         let phoneListHeight = null;
@@ -597,7 +591,7 @@ var SalesHomePage = React.createClass({
     },
     //点击 激活邮箱 按钮
     activeUserEmail: function () {
-        if (this.state.emailEnable) {
+        if (!this.state.emailShowObj.email) {
             return;
         }
         SalesHomeAction.activeUserEmail((resultObj) => {
@@ -605,7 +599,7 @@ var SalesHomePage = React.createClass({
                 message.error(resultObj.errorMsg);
             } else {
                 message.success(
-                    Intl.get("user.info.active.email", "激活邮件已发送至{email}", {"email": this.state.email})
+                    Intl.get("user.info.active.email", "激活邮件已发送至{email}", {"email": this.state.emailShowObj.email})
                 );
             }
         });
@@ -657,15 +651,6 @@ var SalesHomePage = React.createClass({
         });
         var title = (this.state.isSaleTeamShow ? Intl.get("sales.homepage.hide.teamlist", "隐藏团队列表") :
             Intl.get("sales.homepage.show.teamlist", "展开团队列表"));
-        {/*不显示激活邮箱提示的情况
-         1.正在加载个人配置信息时或者加载出错时，不展示
-         2.手动设置过不再提醒的用户，不展示
-         3.正在加载个人邮箱信息或加载出错或邮箱已经激活的用户，不展示
-         */
-        }
-        var ActiveEmailHideFlag =
-            ((this.state.getWebConfigStatus === "loading" || this.state.getWebConfigStatus === "error")
-            || (this.state.getWebConfigObj && this.state.getWebConfigObj.setting_notice_ignore == "yes") || (this.state.emailEnable));
         return (<RightContent>
             <div className="sales_home_content" data-tracename="销售首页">
                 <TopNav>
@@ -702,8 +687,8 @@ var SalesHomePage = React.createClass({
                     </div>
                     : <div className="crm-home-container">
                         <div className={crmDataZone}>
-                            {/*邮箱是否已经激活*/}
-                            {ActiveEmailHideFlag ? null :
+                            {/*是否展示邮箱激活或者添加邮箱的提示提示*/}
+                            {this.state.emailShowObj.isShowActiveEmail || !this.state.emailShowObj.email ?
                                 <ActiveEmailTip
                                     isAnimateShow={this.state.isAnimateShow}
                                     isAnimateHide={this.state.isAnimateHide}
@@ -711,9 +696,8 @@ var SalesHomePage = React.createClass({
                                     activeUserEmail={this.activeUserEmail}
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
-                                    hasNoEmail={this.state.hasNoEmail}
-                                />
-                            }
+                                    addEmail={!this.state.emailShowObj.email}
+                                />: null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}

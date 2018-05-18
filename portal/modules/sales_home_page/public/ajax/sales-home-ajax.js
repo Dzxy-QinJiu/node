@@ -271,12 +271,13 @@ exports.getUserInfo = function (userId) {
     ;
     return Deferred.promise();
 };
-exports.activeUserEmail = function () {
+//获取是否展示邮箱激活提示
+exports.getShowActiveEmailObj = function (userId) {
     var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/user_email/active',
+     $.ajax({
+        url: '/rest/show/activeemail/flag/' + userId,
         dataType: 'json',
-        type: 'post',
+        type: 'get',
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -286,13 +287,14 @@ exports.activeUserEmail = function () {
     });
     return Deferred.promise();
 };
-//获取网站的个性化设置
-exports.getWebsiteConfig = function () {
+
+
+exports.activeUserEmail = function () {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/getWebsiteConfig',
+        url: '/rest/user_email/active',
         dataType: 'json',
-        type: 'get',
+        type: 'post',
         success: function (data) {
             Deferred.resolve(data);
         },
