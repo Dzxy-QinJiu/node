@@ -95,7 +95,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         sm: 4,
                     },
                     noShowCondition: {
-                        app: "all",
+                        app_id: "all",
                     },
                 },
                 {
@@ -113,7 +113,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "pie",
             useChartFilter: true,
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["delayed"],
             },
             nameValueMap: {
@@ -140,7 +140,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             overide: {
                 when: {
-                    app: "all",
+                    app_id: "all",
                 },
                 chartType: "line",
                 option: {
@@ -185,7 +185,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             nameValueMap: unknownDataMap,
             overide: {
                 when: {
-                    app: "all",
+                    app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/team",
                 useChartFilter: false,
@@ -212,7 +212,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             nameValueMap: unknownDataMap,
             overide: {
                 when: {
-                    app: "all",
+                    app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/zone",
                 useChartFilter: false,
@@ -239,7 +239,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             nameValueMap: unknownDataMap,
             overide: {
                 when: {
-                    app: "all",
+                    app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/industry",
                 useChartFilter: false,
@@ -263,7 +263,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 sm: 24,
             },
             showCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["total"],
             },
             conditions: [{
@@ -348,7 +348,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 ],
             },
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["delayed", "added_expired"],
             },
             csvOption: {
@@ -393,7 +393,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             xAxisLabels: _.range(24),
             yAxisLabels: WEEKDAY,
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["delayed", "added", "expired", "added_expired"],
                 isTrue: isSales,
             },
@@ -418,7 +418,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v1/retention",
             chartType: "table",
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["delayed", "total", "expired", "added_expired"],
                 timeRange: ">7d",
                 isTrue: isSales,
@@ -499,7 +499,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             chartType: "pie",
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["delayed", "added", "added_expired"],
                 isTrue: isSales,
             },
@@ -512,7 +512,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v3/:auth_type/device",
             chartType: "bar",
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
         }, {
@@ -520,7 +520,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v3/:auth_type/browser",
             chartType: "bar",
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
         }, {
@@ -531,7 +531,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "wordcloud",
             unit: Intl.get("common.label.times", "次"),
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
             csvOption: {
@@ -543,7 +543,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "map",
             height: 546,
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
             subChart: {
@@ -566,7 +566,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "wordcloud",
             unit: Intl.get("common.time.unit.day", "天"),
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
             csvOption: {
@@ -581,7 +581,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             unit: Intl.get("common.label.hours", "小时"),
             multiple: 60,
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
             csvOption: {
@@ -634,7 +634,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 value: "hourly",
             }],
             noShowCondition: {
-                app: "all",
+                app_id: "all",
                 tab: ["added_expired"],
             },
         }];
@@ -645,7 +645,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             instance: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
             callbackArgs: [{
-                name: "app",
+                name: "app_id",
             }],
         }, {
             instance: emitters.appSelectorEmitter,
@@ -675,6 +675,12 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     emitters={this.getEmitters()}
                     useScrollBar={true}
                     conditions={[{
+                        name: "starttime",
+                        value: moment().startOf("isoWeek").valueOf(),
+                    }, {
+                        name: "endtime",
+                        value: moment().valueOf(),
+                    }, {
                         name: "auth_type",
                         value: authType,
                         type: "param",
