@@ -439,18 +439,18 @@ OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("
                 signed: data.signed,
                 trial: data.trial
             }
-        ]
+        ];
     }
     this.stageCustomerNum.data = list;
 });
 
 OplateCustomerAnalysisStore.prototype.teamChange = function (teamId) {
     this.currentTeamId = teamId;
-}
+};
 OplateCustomerAnalysisStore.prototype.memberChange = function (memberId) {
     this.currentTeamId = "";
     this.currentMemberId = memberId;
-}
+};
 
 //导出 客户分析-客户构成 的store
 module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');
