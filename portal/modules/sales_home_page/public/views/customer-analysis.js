@@ -891,15 +891,6 @@ var CustomerAnalysis = React.createClass({
                     //    </div>
                     //</div>)
                 }
-                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
-                    {this.renderTransferedCustomerTable()}
-
-                </div>
-                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
-                    data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
-                    {this.renderCustomerStage()}
-                </div>
                 <div className="analysis_chart  col-sm-12 col-md-6"
                     data-title={Intl.get("crm.sales.newTrailCustomer", "新开客户数统计")}>
                     <NewTrailCustomerTable
@@ -912,6 +903,15 @@ var CustomerAnalysis = React.createClass({
                         }}
                     />
                 </div>
+                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
+                    data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
+                    {this.renderTransferedCustomerTable()}
+
+                </div>
+                <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
+                    data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
+                    {this.renderCustomerStage()}
+                </div>                
             </div>
         );
     },
