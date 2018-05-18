@@ -25,16 +25,14 @@ function SingleUserLogAction() {
             page: searchObj.page,
             type_filter: searchObj.type_filter
         };
-        if (_.isObject(searchObj)) {
-            if (searchObj.starttime) {
-                getLogParam.starttime = searchObj.starttime;
-            }
-            if (searchObj.endtime) {
-                getLogParam.endtime = searchObj.endtime;
-            }
-            if (searchObj.search) {
-                getLogParam.search = searchObj.search;
-            }
+        if (searchObj.starttime) {
+            getLogParam.starttime = searchObj.starttime;
+        }
+        if (searchObj.endtime) {
+            getLogParam.endtime = searchObj.endtime;
+        }
+        if (searchObj.search) {
+            getLogParam.search = searchObj.search;
         }
         let userOwnAppList = [];
         if (selectedAppId) { // 已选中应用
