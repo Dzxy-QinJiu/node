@@ -675,6 +675,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     emitters={this.getEmitters()}
                     useScrollBar={true}
                     conditions={[{
+                        name: "app_id",
+                        value: "all",
+                    }, {
                         name: "starttime",
                         value: moment().startOf("isoWeek").valueOf(),
                     }, {
