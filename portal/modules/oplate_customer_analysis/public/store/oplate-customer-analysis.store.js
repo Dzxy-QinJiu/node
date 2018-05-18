@@ -260,7 +260,12 @@ const resultHandler = function (resultString, fn) {
         }
         else if (errorMsg) {
             this[resultString].loading = false;
-            this[resultString].errorMsg = errorMsg;
+            this[resultString].errorMsg = errorMsg && errorMsg;
+            //处理json对象错误
+            const errorObj = JSON.parse(errorMsg);
+            if (errorObj.message) {
+                this[resultString].errorMsg = errorObj.message;
+            }
             this[resultString].data = [];
         }
         else {

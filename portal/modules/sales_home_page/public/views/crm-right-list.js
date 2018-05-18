@@ -71,8 +71,12 @@ let CrmRightList = React.createClass({
     getAllSubTeamId: function (team) {
         let allChildTeamIds = [];
         const getAllSubChild = team => {
+            //是团队对象
             if (team.group_id) {
-                allChildTeamIds.push(team.group_id);
+                //不是"销售团队列表"
+                if (team.owner_id) {
+                    allChildTeamIds.push(team.group_id);
+                }
                 if (team.child_groups && team.child_groups.length > 0) {
                     team.child_groups.forEach(child => getAllSubChild(child));
                 } else {

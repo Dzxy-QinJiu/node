@@ -101,8 +101,7 @@ class NewTrailCustomerTable extends React.Component {
         return (
             <div
                 className="chart-holder new-customer-statistic stage-change-customer-container scrollbar-container"
-                data-tracename="新开客户数统计"
-                style={{ maxHeight: (result.data.length == 0) ? "initial" : "540px" }}
+                data-tracename="新开客户数统计"                
             >
                 <GeminiScrollbar>
                     <div className="title">

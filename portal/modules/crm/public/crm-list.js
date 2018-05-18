@@ -647,7 +647,7 @@ var Crm = React.createClass({
             condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
-        CrmAction.queryCustomer((this.props.params.condition || condition), (this.props.params.rangParams || this.state.rangParams), this.state.pageSize, this.state.sorter, $.extend({}, this.props.params.queryObj, queryObj));
+        CrmAction.queryCustomer(((this.props.params && this.props.params.condition) || condition), ((this.props.params && this.props.params.rangParams) || this.state.rangParams), this.state.pageSize, this.state.sorter, $.extend({}, this.props.params.queryObj, queryObj));
         this.setState({rangeParams: this.state.rangParams});
     },
     //清除客户的选择
