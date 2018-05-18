@@ -98,7 +98,7 @@ var CustomerAnalysis = React.createClass({
         let teamId = team_id;
         if (allSubTeamIds && allSubTeamIds.length > 0) {
             teamId = allSubTeamIds.join(",");
-        }
+        }        
         OplateCustomerAnalysisAction.teamChange(teamId);
         setTimeout(() => this.getCustomerStageAnalysis({
             team_id
@@ -161,11 +161,16 @@ var CustomerAnalysis = React.createClass({
     },
     //获取不同阶段客户数
     getCustomerStageAnalysis: function (params) {
+        let teamId = this.state.currentTeamId;
+        if (teamId && teamId.includes(",")) {
+            teamId = teamId.split(",")[0];//此接口需要的teamid为最上级的团队id
+        }
         let paramsObj = {
             ...params,
             starttime: this.state.startTime,
             endtime: this.state.endTime,
             app_id: "all",
+            team_id: teamId
         };
         OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
     },
@@ -906,7 +911,6 @@ var CustomerAnalysis = React.createClass({
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
                     {this.renderTransferedCustomerTable()}
-
                 </div>
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
