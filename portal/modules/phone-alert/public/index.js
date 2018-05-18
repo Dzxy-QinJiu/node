@@ -403,15 +403,31 @@ class PhoneAlert extends React.Component {
         //如果获取的客户列表数量小于后端传来的客户数量，证明此电话也属于别的销售
         var customerInfoArr = this.state.customerInfoArr;
         var totalCustomerArr = this.state.phonemsgObj.customers;
-        if (customerInfoArr.length < totalCustomerArr.length){
+        if (_.isArray(customerInfoArr) && _.isArray(totalCustomerArr) && customerInfoArr.length < totalCustomerArr.length){
           var otherCustomerArr =  [];
-              _.each(totalCustomerArr,(customerItem,index)=>{
+              _.each(totalCustomerArr,(customerItem)=>{
                 _.each(customerInfoArr,(item)=>{
-                    if (customerItem.id === item.id){
-                        totalCustomerArr.splice(index, 1);
+                    if (customerItem.id !== item.id){
+                        otherCustomerArr.push(customerItem);
                     }
                 });
             });
+        }
+        if (otherCustomerArr.length){
+            return (
+                <div>
+                    {_.map(otherCustomerArr,(item)=>{
+                        return (
+                            <span>
+                                {Intl.get("clue.customer.belong.to.other.sales", "该电话属于客户{customer}，所属销售{sales}",{"customer":item.name,"sales":item.user_name})}
+                            </span>
+                        );
+                    })}
+                </div>
+            );
+
+        }else{
+            return null;
         }
     }
     //渲染客户的基本信息
