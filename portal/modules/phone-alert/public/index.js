@@ -111,7 +111,7 @@ class PhoneAlert extends React.Component {
             }else{
                 phoneNum = phonemsgObj.to;
             }
-            phoneAlertAction.getCustomerByPhone(phoneNum);
+            this.getCustomerByPhone(phoneNum);
             this.setState({
                 phoneNum: phoneNum
             });
@@ -172,11 +172,22 @@ class PhoneAlert extends React.Component {
             });
         }
 
-        //页面上如果存在模态框，并且用座机打电话时
+        //页面上如果存在模态框，并且用系统打电话时
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
+        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.RING && phonemsgObj.call_type == "OU") && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))){
+            phoneAlertAction.setInitialState();
+            this.setState({
+                phoneNum: "",
+                rightPanelIsShow: false,
+                isConnected: false,
+                addTraceItemId: "",
+                isModalShown: false,
+                isAddFlag: false,
+            });
+        }
         //页面存在模态框，再次用座机拨打电话时，先将模态框清除,电话拨号时没有ring状态,第一个状态是alert
         //如果外界打入电话，第一个状态是ring
-        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT || phonemsgObj.type == PHONERINGSTATUS.RING) && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
+        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT || (phonemsgObj.type == PHONERINGSTATUS.RING && phonemsgObj.call_type == "IN")) && ((this.state.phonemsgObj.type == PHONERINGSTATUS.record) || (this.state.phonemsgObj.type == PHONERINGSTATUS.BYE) || (this.state.phonemsgObj.type == PHONERINGSTATUS.phone))) {
             //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
             var phoneNum = "";
             if (phonemsgObj.call_type == "IN"){
@@ -195,7 +206,7 @@ class PhoneAlert extends React.Component {
             this.setState(this.state);
             //恢复初始数据
             phoneAlertAction.setInitialState();
-            phoneAlertAction.getCustomerByPhone(phoneNum);
+            this.getCustomerByPhone(phoneNum);
             sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
             this.props.setInitialPhoneObj();
         }
@@ -203,7 +214,7 @@ class PhoneAlert extends React.Component {
         //.to是所拨打的电话
         if (phoneNum && _.isEmpty(phoneObj) && this.state.customerInfoArr.length == 0) {
             sendMessage && sendMessage("座机拨打电话，弹屏已打开过" + phoneNum);
-            phoneAlertAction.getCustomerByPhone(phoneNum);
+            this.getCustomerByPhone(phoneNum);
             this.setState({
                 phoneNum: phoneNum
             });
@@ -215,7 +226,11 @@ class PhoneAlert extends React.Component {
             });
         }
     }
-
+    getCustomerByPhone(phoneNum){
+        if (phoneNum){
+            phoneAlertAction.getCustomerByPhone(phoneNum);
+        }
+    }
     componentWillUnmount() {
         phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_PHONE_MODAL, this.closeModal);
         phoneAlertStore.unlisten(this.onStoreChange);
@@ -263,8 +278,8 @@ class PhoneAlert extends React.Component {
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone || this.state.phonemsgObj.type == PHONERINGSTATUS.BYE || this.state.phonemsgObj.type == PHONERINGSTATUS.record)) {
                 //恢复初始数据
-                phoneAlertAction.setInitialState();
                 this.props.setInitialPhoneObj();
+                phoneAlertAction.setInitialState();
                 this.setState({
                     phoneNum: "",
                     rightPanelIsShow: false,
@@ -342,7 +357,7 @@ class PhoneAlert extends React.Component {
                 phoneNum = this.state.phonemsgObj.to || this.state.phoneNum;
             }
             sendMessage && sendMessage("座机拨打电话，重新获取客户" + phoneNum);
-            phoneAlertAction.getCustomerByPhone(phoneNum);
+            this.getCustomerByPhone(phoneNum);
         }
     };
     //展示已有客户的右侧面板
