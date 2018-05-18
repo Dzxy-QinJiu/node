@@ -60,11 +60,7 @@ var CustomerAnalysis = React.createClass({
     componentWillMount() {
         teamTreeEmitter.on(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
         teamTreeEmitter.on(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
-    },
-    componentWillUnmount() {
-        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
-        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
-    },
+    },    
     componentWillReceiveProps: function (nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
@@ -102,13 +98,13 @@ var CustomerAnalysis = React.createClass({
         OplateCustomerAnalysisAction.teamChange(teamId);
         setTimeout(() => this.getCustomerStageAnalysis({
             team_id
-        }))
+        }));
     },
     onMemberChange(member_id) {
         OplateCustomerAnalysisAction.memberChange(member_id);
         setTimeout(() => this.getCustomerStageAnalysis({
             member_id
-        }))
+        }));
     },
     getDataType: function () {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
@@ -248,6 +244,8 @@ var CustomerAnalysis = React.createClass({
         clearTimeout(this.resizeTimeout);
         //解除window上绑定的resize函数
         $(window).off('resize', this.windowResize);
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
     },
     /**
      * 参数说明，ant-design的table组件

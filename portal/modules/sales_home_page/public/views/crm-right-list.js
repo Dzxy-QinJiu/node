@@ -76,7 +76,7 @@ let CrmRightList = React.createClass({
                 if (team.child_groups && team.child_groups.length > 0) {
                     team.child_groups.forEach(child => getAllSubChild(child));
                 } else {
-                    return
+                    return;
                 }
             }
         };

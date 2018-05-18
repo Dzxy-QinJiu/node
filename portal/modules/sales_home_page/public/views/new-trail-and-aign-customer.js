@@ -19,12 +19,12 @@ class NewTrailCustomerTable extends React.Component {
     showCustomerTable(isShow) {
         this.setState({
             isShowCustomerTable: isShow
-        })
+        });
     }
     handleStageNumClick(num, type) {
         //客户数为0时不打开客户列表面板
         if (!num || num === "0") {
-            return
+            return;
         }
         this.setState({
             type,

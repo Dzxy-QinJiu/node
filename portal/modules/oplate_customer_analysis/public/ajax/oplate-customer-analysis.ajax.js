@@ -208,4 +208,4 @@ exports.getCustomerStageAnalysis = paramObj => {
         },
         data: paramObj
     });
-}
+};
