@@ -648,7 +648,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 name: "app_id",
             }],
         }, {
-            instance: emitters.appSelectorEmitter,
+            instance: emitters.dateSelectorEmitter,
             event: emitters.dateSelectorEmitter.SELECT_DATE,
             callbackArgs: [{
                 name: "starttime",
