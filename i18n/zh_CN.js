@@ -211,6 +211,7 @@ var zh_CN = {
     "common.revisit.time": "回访时间",
     "common.revisit.person": "回访人",
     "common.has.revisit": "已回访",
+    "common.revisit.customer": "回访客户",
 
     //公共部分--end
     "login.login": "登录",

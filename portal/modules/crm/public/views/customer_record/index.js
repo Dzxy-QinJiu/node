@@ -654,10 +654,6 @@ const CustomerRecord = React.createClass({
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
                     <div className="trace-top-block">
-                        <span className="total-tip">
-                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
-                                                    values={{"n": this.state.total + ""}}/>
-                        </span>
                         {this.props.isMerge ? null : (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
                                   title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}/>)

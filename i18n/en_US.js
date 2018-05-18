@@ -211,6 +211,7 @@ var en_US = {
     "common.revisit.time": "Revisit time", // "回访时间"
     "common.revisit.person": "Revisit person", // "回访人",
     "common.has.revisit": "Has revisit", // "已回访",
+    "common.revisit.customer": "Revisit customer", // "回访客户",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
