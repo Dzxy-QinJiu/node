@@ -210,6 +210,7 @@ var zh_CN = {
     "common.one.unit": "个",
     "common.revisit.time": "回访时间",
     "common.revisit.person": "回访人",
+    "common.has.revisit": "已回访",
 
     //公共部分--end
     "login.login": "登录",

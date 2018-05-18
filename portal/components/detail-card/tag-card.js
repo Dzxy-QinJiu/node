@@ -7,7 +7,7 @@ import DetailCard from "./index";
 import classNames from "classnames";
 import {Button, Icon, Input, message} from "antd";
 import {DetailEditBtn} from "../rightPanel";
-import {isClueTag, isTurnOutTag} from "MOD_DIR/crm/public/utils/crm-util";
+import {isClueTag, isTurnOutTag, isHasRevisitTag} from "MOD_DIR/crm/public/utils/crm-util";
 import Trace from "LIB_DIR/trace";
 import {isDiffOfTwoArray} from "PUB_DIR/sources/utils/common-method-util";
 class TagCard extends React.Component {
@@ -34,8 +34,8 @@ class TagCard extends React.Component {
     addTag() {
         const tag = this.refs.newTag.refs.input.value.trim();
         if (!tag) return;
-        //”线索“、”转出“标签“不可以添加
-        if (isClueTag(tag) || isTurnOutTag(tag)) {
+        // ‘线索’、‘转出’、‘已回访’标签不可以添加
+        if (isClueTag(tag) || isTurnOutTag(tag) || isHasRevisitTag(tag)) {
             message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
             return;
         }
@@ -46,8 +46,8 @@ class TagCard extends React.Component {
     }
 
     toggleTag(tag, isAdd) {
-        //不可以操作'线索'和‘转出’标签
-        if (isClueTag(tag) || isTurnOutTag(tag)) {
+        // 不可以操作'线索'和‘转出’和‘已回访’标签
+        if (isClueTag(tag) || isTurnOutTag(tag) || isHasRevisitTag(tag)) {
             return;
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this.refs[tag])), `点击选中/取消选中某个${this.props.title}`);
