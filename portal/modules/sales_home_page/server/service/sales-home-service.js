@@ -178,61 +178,59 @@ function getUserInfoEmail(req, res) {
     });
 }
 
-//获取邮箱是否激活
-function getIsEmailActive(req, res) {
+//获取个人配置
+function getWebsiteConfig(req, res, responseObj) {
     return new Promise((resolve, reject) => {
-        getUserInfoEmail(req, res).then((data) => {
-          var responseObj = {
-              isShowActiveEmail: false,//是否展示激活邮箱的提示
-          };
-            //有邮箱
-            if (data.email){
-                responseObj.email = data.email;
-                //有邮箱且邮箱未激活，获取个人配置
-                if(!data.email_enable){
-                    return restUtil.authRest.get(
-                        {
-                            url: restApis.websiteConfig,
-                            req: req,
-                            res: res
-                        }, null, {
-                            success: function (eventEmitter, data) {
-                                //有数据,并且设置了不提醒
-                                if (data && data.setting_notice_ignore === "yes"){
-                                    resolve(responseObj);
-                                }else{
-                                    responseObj.isShowActiveEmail = true;
-                                    resolve(responseObj);
-                                }
-                            },
-                            error: function (eventEmitter, errorObj) {
-                                reject(errorObj.message);
-                            }
-                        });
-                }else{
-                    //有邮箱且邮箱已经激活，不提示
-                    resolve(responseObj);
+        return restUtil.authRest.get(
+            {
+                url: restApis.websiteConfig,
+                req: req,
+                res: res
+            }, null, {
+                success: function (eventEmitter, data) {
+                    //有数据,并且设置了不提醒
+                    if (data && data.setting_notice_ignore === "yes"){
+                        resolve(responseObj);
+                    }else{
+                        responseObj.isShowActiveEmail = true;
+                        resolve(responseObj);
+                    }
+                },
+                error: function (eventEmitter, errorObj) {
+                    reject(errorObj.message);
                 }
-            }else{
-                //用户没有邮箱，提示添加邮箱
-                resolve(responseObj);
-            }
-
-        }).catch(function (errorMsg) {
-            reject(errorMsg);
-        });
-
+            });
     });
 }
 
 
 //获取是否需要展示激活邮箱提示
 exports.getShowActiveEmailObj = function (req, res) {
-    var userId = req.param.userId;
     var emitter = new EventEmitter();
-    getIsEmailActive(req, res).then((result) => {
-        emitter.emit("success", result);
-    },(errorMsg)=>{
+    getUserInfoEmail(req, res).then((data) => {
+        var responseObj = {
+            isShowActiveEmail: false,//是否展示激活邮箱的提示
+        };
+        //有邮箱
+        if (data.email) {
+            responseObj.email = data.email;
+            //有邮箱且邮箱未激活
+            if (!data.email_enable) {
+                //获取个人配置
+                getWebsiteConfig(req, res, responseObj).then((responseObj) => {
+                    emitter.emit("success", responseObj);
+                }).catch((errorMsg) => {
+                    emitter.emit("error", errorMsg);
+                });
+            } else {
+                //有邮箱且邮箱已经激活，不提示
+                emitter.emit("success", responseObj);
+            }
+        } else {
+            //用户没有邮箱，提示添加邮箱
+            emitter.emit("success", responseObj);
+        }
+    }).catch(function (errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
