@@ -648,7 +648,7 @@ var Crm = React.createClass({
         }
         delete condition.otherSelectedItem;
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
-        const rangParams = ((this.props.params && this.props.params.rangParams) || this.state.rangParams);
+        const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
         const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
         CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
         this.setState({rangeParams: this.state.rangParams});
