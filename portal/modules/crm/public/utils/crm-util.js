@@ -29,7 +29,7 @@ const processForTrace = function (item) {
                     des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
                     break;
                 case 'revisit':
-                    iconClass = 'icon-trace-other';
+                    iconClass = 'icon-visit';
                     title = Intl.get("common.revisit", "回访");
                     des = Intl.get("common.revisit.customer", "回访客户");
                     break;

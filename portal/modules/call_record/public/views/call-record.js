@@ -539,13 +539,17 @@ const CallRecord = React.createClass({
                         "icon-callrecord-in": column.call_type == "IN",//呼出的电话
                         "icon-phone-call-out": !column.call_type
                     });
+                    let returnContent;
+                    if (type === 'phone') {
+                        returnContent = <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
+                    } else if (type === 'revisit') {
+                        returnContent = <i className='iconfont icon-visit' title={Intl.get('common.revisit', '回访')}></i>;
+                    } else {
+                        returnContent = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
+                    }
                     return (
                         <div className="icon-column">
-                            {type == 'phone' ? (
-                                <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>
-                            ) : (
-                                    <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>
-                                )}
+                            {returnContent}
                         </div>
                     );
                 }
