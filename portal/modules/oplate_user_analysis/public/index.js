@@ -215,6 +215,26 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
             ],
         }, {
+            title: Intl.get("oplate.user.analysis.user.type", "用户类型"),
+            url: "/rest/analysis/user/v1/:auth_type/:tab/type",
+            chartType: "pie",
+            //是否支持点图筛选
+            useChartFilter: true,
+            option: {
+                legend: {
+                    data: USER_TYPES,
+                },
+            },
+            //什么情况下不显示
+            noShowCondition: {
+                //综合应用下
+                app_id: "all",
+                //延期Tab下
+                tab: ["delayed"],
+            },
+            //数据值转换映射，原始数据中的值会被转换成映射后的值
+            nameValueMap: userTypeDataMap,
+        }, {
             title: Intl.get("oplate.user.analysis.app.status", "用户状态"),
             url: "/rest/analysis/user/v1/:auth_type/:tab/status",
             chartType: "pie",
