@@ -60,7 +60,8 @@ const CALL_STATUS_OPTION = {
 const CALL_TYPE_OPTION = {
     ALL: '',
     PHONE: 'phone',
-    APP: 'app'
+    APP: 'app',
+    REVISIT: 'revisit',
 };
 
 //通话记录过滤类型
@@ -233,6 +234,8 @@ const CallRecord = React.createClass({
             this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
         } else if (value == CALL_TYPE_OPTION.ALL) {
             this.state.callType = <i className="iconfont icon-all" title={Intl.get("user.online.all.type", "全部类型")}></i>;
+        } else if (value === CALL_TYPE_OPTION.REVISIT) {
+            this.state.callType = <i className='iconfont icon-visit' title={Intl.get('common.revisit', '回访')}></i>;
         }
         if (value == CALL_STATUS_OPTION.ALL || value == CALL_TYPE_OPTION.ALL) {
             this.filterCallRecord(filterKey);
@@ -326,6 +329,10 @@ const CallRecord = React.createClass({
                     <Option value={CALL_TYPE_OPTION.APP}>
                         <i className="iconfont icon-ketao-app"></i>
                         <span>{Intl.get("common.ketao.app", "客套APP")}</span>
+                    </Option>
+                    <Option value={CALL_TYPE_OPTION.REVISIT}>
+                        <i className='iconfont icon-visit'></i>
+                        <span>{Intl.get('common.revisit', '回访')}</span>
                     </Option>
                 </Select>
             );
