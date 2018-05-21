@@ -71,6 +71,113 @@ const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) ||
                 userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
+//获取范围请求参数
+function getRangeReqData(rangeParams, multiple) {
+    let reqData = [];
+
+    rangeParams.forEach(rangeParam => {
+        if (Array.isArray(rangeParam)) {
+            reqData.push(...rangeParam.map(value => ({
+                "from": value,
+                "to": value
+            })))
+        }
+        else {
+            if (multiple) {
+                rangeParam = _.mapObject(rangeParam, value => value * multiple);
+            }
+            reqData.push(rangeParam);
+        }
+    });
+
+    return reqData;
+}
+
+//登录次数请求参数
+const loginNumReqData = getRangeReqData(
+    [
+        [1, 2, 3, 4, 5, 6, 7, 8],
+        {
+            "from": 9,
+            "to": 14
+        },
+        {
+            "from": 15,
+            "to": 25
+        },
+        {
+            "from": 25,
+            "to": 50
+        },
+        {
+            "from": 51,
+            "to": 100
+        },
+        {
+            "from": 101,
+            "to": 200
+        },
+        {
+            "from": 200,
+            "to": 10000
+        }
+    ]
+);
+
+//登录天数请求参数
+const loginDayNumReqData = getRangeReqData(
+    [
+        [1, 2, 3, 4],
+        {
+            "from": 5,
+            "to": 10
+        },
+        {
+            "from": 11,
+            "to": 15
+        },
+        {
+            "from": 16,
+            "to": 20
+        },
+        {
+            "from": 21,
+            "to": 50
+        },
+        {
+            "from": 51,
+            "to": 100
+        },
+        {
+            "from": 100,
+            "to": 10000
+        }
+    ]
+);
+
+//在线时间请求参数
+const onlineTimeReqData = getRangeReqData(
+    [
+        {
+            "from": 0,
+            "to": 1
+        },
+        {
+            "from": 1,
+            "to": 5
+        },
+        {
+            "from": 5,
+            "to": 10
+        },
+        {
+            "from": 10,
+            "to": 10000
+        }
+    ]
+    , 60
+);
+
 var OPLATE_USER_ANALYSIS = React.createClass({
     //获取图表定义
     getCharts: function () {
@@ -269,7 +376,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             conditions: [{
                 name: "range_type",
                 value: rangeType,
-                type: "param",
+                type: "params",
             }],
             option: {
                 pagination: false,
@@ -296,7 +403,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("operation.report.activity", "活跃度"),
-            url: "/rest/analysis/user/v1/:auth_type/:app/users/activation/:interval",
+            url: "/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval",
             chartType: "line",
             valueField: "active",
             cardContainer: {
@@ -309,7 +416,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             conditions: [{
                 name: "interval",
                 value: "daily",
-                type: "param",
+                type: "params",
             }],
             option: {
                 tooltip: {
@@ -376,7 +483,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
         }, {
             title: Intl.get("oplate.user.analysis.10", "活跃时间段"),
-            url: "/rest/analysis/auditlog/v1/:app/operations/weekly",
+            url: "/rest/analysis/auditlog/v1/:app_id/operations/weekly",
             chartType: "scatter",
             option: {
                 tooltip: {
@@ -494,9 +601,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }, {
             title: Intl.get("oplate.user.analysis.6", "在线时长统计"),
             url: "/rest/analysis/user/v1/:tab/login_long",
-            reqQuery: {
-                ranges: 1,
-            },
+            conditions: [{
+                name: "ranges",
+                value: 1,
+            }],
             chartType: "pie",
             noShowCondition: {
                 app_id: "all",
@@ -527,7 +635,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.loginCounts", "用户访问次数"),
             url: "/rest/analysis/user/v3/:auth_type/logins/distribution/num",
             reqType: "post",
-            reqDataGenerator: "loginNum",
+            conditions: [{
+                value: loginNumReqData,
+                type: "data",
+            }],
             chartType: "wordcloud",
             unit: Intl.get("common.label.times", "次"),
             noShowCondition: {
@@ -562,7 +673,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.loginDays", "用户访问天数"),
             url: "/rest/analysis/user/v3/:auth_type/login/day/distribution/num",
             reqType: "post",
-            reqDataGenerator: "loginDayNum",
+            conditions: [{
+                value: loginDayNumReqData,
+                type: "data",
+            }],
             chartType: "wordcloud",
             unit: Intl.get("common.time.unit.day", "天"),
             noShowCondition: {
@@ -576,7 +690,10 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             title: Intl.get("oplate.user.analysis.loginTimes", "用户在线时间"),
             url: "/rest/analysis/user/v3/:auth_type/online_time/distribution/num",
             reqType: "post",
-            reqDataGenerator: "onlineTime",
+            conditions: [{
+                value: onlineTimeReqData,
+                type: "data",
+            }],
             chartType: "wordcloud",
             unit: Intl.get("common.label.hours", "小时"),
             multiple: 60,
@@ -677,6 +794,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     conditions={[{
                         name: "app_id",
                         value: "all",
+                        type: "query,params",
                     }, {
                         name: "starttime",
                         value: moment().startOf("isoWeek").valueOf(),
@@ -686,7 +804,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     }, {
                         name: "auth_type",
                         value: authType,
-                        type: "param",
+                        type: "params",
                     }]}
                 />
             </div>
