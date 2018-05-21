@@ -369,9 +369,9 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             layout: {
                 sm: 24,
             },
-            showCondition: {
-                app_id: "all",
-                tab: ["total"],
+            noShowCondition: {
+                app_id: "!all",
+                tab: ["!", "total"],
             },
             conditions: [{
                 name: "range_type",
@@ -502,7 +502,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             noShowCondition: {
                 app_id: "all",
                 tab: ["delayed", "added", "expired", "added_expired"],
-                isTrue: isSales,
+                callback: () => isSales,
             },
             generateCsvData: function (data) {
                 let csvData = [];
@@ -527,8 +527,18 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             noShowCondition: {
                 app_id: "all",
                 tab: ["delayed", "total", "expired", "added_expired"],
-                timeRange: ">7d",
-                isTrue: isSales,
+                callback: (conditions) => {
+                    if (isSales) return true;
+
+                    const startTimeCondition = _.find(conditions, condition => condition.name === "starttime");
+                    const startTime = startTimeCondition && startTimeCondition.value;
+                    const endTimeCondition = _.find(conditions, condition => condition.name === "endtime");
+                    const endTime = endTimeCondition && endTimeCondition.value;
+
+                    if (startTime && endTime && (moment(endTime).diff(startTime, "d") > 7)) {
+                        return true;
+                    }
+                },
             },
             option: {
                 pagination: false,
@@ -609,7 +619,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             noShowCondition: {
                 app_id: "all",
                 tab: ["delayed", "added", "added_expired"],
-                isTrue: isSales,
+                callback: () => isSales,
             },
             nameValueMap: {
                 0: Intl.get("oplate.user.analysis.7", "时长小于1小时"),
