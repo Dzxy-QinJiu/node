@@ -30,43 +30,43 @@ PhoneAlertStore.prototype.resetState = function () {
 PhoneAlertStore.prototype.setInitialState = function () {
   this.resetState();
 };
-PhoneAlertStore.prototype.getCustomerByPhone = function (result) {
-    if (result.loading){
-        this.isGettingCustomer = true;
-        this.getCustomerErrMsg = "";
-        this.customerInfoArr = [];
-    }else if (result.error){
-        this.getCustomerErrMsg = result.errorMsg;
-        this.isGettingCustomer = false;
-        this.customerInfoArr = [];
-    }else {
-        //客户存在状态已知
-        this.customerUnknown = false;
-        this.isGettingCustomer = false;
-        this.getCustomerErrMsg = "";
-        this.customerInfoArr = crmStore.processForList(result.data.result);
-        if (result.data.result.length === 0){
-            //此客户不存在，需要添加客户
-            this.addCustomer = true;
-        }
-    }
-};
+// PhoneAlertStore.prototype.getCustomerByPhone = function (result) {
+//     if (result.loading){
+//         this.isGettingCustomer = true;
+//         this.getCustomerErrMsg = "";
+//         this.customerInfoArr = [];
+//     }else if (result.error){
+//         this.getCustomerErrMsg = result.errorMsg;
+//         this.isGettingCustomer = false;
+//         this.customerInfoArr = [];
+//     }else {
+//         //客户存在状态已知
+//         this.customerUnknown = false;
+//         this.isGettingCustomer = false;
+//         this.getCustomerErrMsg = "";
+//         this.customerInfoArr = crmStore.processForList(result.data.result);
+//         if (result.data.result.length === 0){
+//             //此客户不存在，需要添加客户
+//             this.addCustomer = true;
+//         }
+//     }
+// };
 
 //跟据客户的id获取客户的详情
 PhoneAlertStore.prototype.getCustomerById = function (result) {
-
     if (result.loading){
         this.isGettingCustomer = true;
         this.getCustomerErrMsg = "";
-        this.customerInfoArr = [];
     }else if (result.error){
         this.getCustomerErrMsg = result.errorMsg;
         this.isGettingCustomer = false;
-        this.customerInfoArr = [];
     }else {
         this.isGettingCustomer = false;
         this.getCustomerErrMsg = "";
-        this.customerInfoArr = crmStore.processForList([result.data]);
+        if (_.isObject(result.data)){
+            this.customerInfoArr.push(result.data);
+            this.customerInfoArr = crmStore.processForList(this.customerInfoArr);
+        }
         //客户存在状态已知
         this.customerUnknown = false;
         this.addCustomer = false;

@@ -81,13 +81,13 @@ var ContactItem = React.createClass({
                     contact = this.props.contact.contact.name;
                 }
                 var curCustomer = this.props.curCustomer;
-                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                    {
-                        phoneNum: phone.replace('-', ''),
-                        contact: contact,
-                        customerDetail: curCustomer,//客户基本信息
-                    }
-                );
+                // phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                //     {
+                //         phoneNum: phone.replace('-', ''),
+                //         contact: contact,
+                //         customerDetail: curCustomer,//客户基本信息
+                //     }
+                // );
                 let reqData = {
                     from: this.props.callNumber,
                     to: phone

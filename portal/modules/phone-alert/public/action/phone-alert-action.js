@@ -33,6 +33,9 @@ function PhoneAlertAction() {
             this.dispatch({loading:false,error:true,errorMsg:errorMsg});
         });
     };
+
+
+
     this.getCustomerById = function (customerId) {
         this.dispatch({loading:true,error:false});
         phoneAlertAjax.getCustomerById(customerId).then((data) => {
