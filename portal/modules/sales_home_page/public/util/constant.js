@@ -6,7 +6,7 @@ exports.VIEW_CONSTANT = {
     CUSTOMER: "customer",
     USER: "user",
     PHONE: "phone",
-    REVISIT: "revisit",
+    CALL_BACK: "call_back",
 };
 //视图常量
 exports.SHOW_TYPE_CONSTANT = {

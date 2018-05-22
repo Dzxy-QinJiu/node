@@ -61,7 +61,7 @@ const CALL_TYPE_OPTION = {
     ALL: '',
     PHONE: 'phone',
     APP: 'app',
-    REVISIT: 'revisit',
+    CALL_BACK: 'call_back',
 };
 
 //通话记录过滤类型
@@ -234,8 +234,8 @@ const CallRecord = React.createClass({
             this.state.callType = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
         } else if (value == CALL_TYPE_OPTION.ALL) {
             this.state.callType = <i className="iconfont icon-all" title={Intl.get("user.online.all.type", "全部类型")}></i>;
-        } else if (value === CALL_TYPE_OPTION.REVISIT) {
-            this.state.callType = <i className='iconfont icon-visit' title={Intl.get('common.revisit', '回访')}></i>;
+        } else if (value === CALL_TYPE_OPTION.CALL_BACK) {
+            this.state.callType = <i className='iconfont icon-visit' title={Intl.get('common.callback', '回访')}></i>;
         }
         if (value == CALL_STATUS_OPTION.ALL || value == CALL_TYPE_OPTION.ALL) {
             this.filterCallRecord(filterKey);
@@ -330,9 +330,9 @@ const CallRecord = React.createClass({
                         <i className="iconfont icon-ketao-app"></i>
                         <span>{Intl.get("common.ketao.app", "客套APP")}</span>
                     </Option>
-                    <Option value={CALL_TYPE_OPTION.REVISIT}>
+                    <Option value={CALL_TYPE_OPTION.CALL_BACK}>
                         <i className='iconfont icon-visit'></i>
-                        <span>{Intl.get('common.revisit', '回访')}</span>
+                        <span>{Intl.get('common.callback', '回访')}</span>
                     </Option>
                 </Select>
             );
@@ -549,7 +549,7 @@ const CallRecord = React.createClass({
                     let returnContent;
                     if (type === 'phone') {
                         returnContent = <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
-                    } else if (type === 'revisit') {
+                    } else if (type === 'call_back') {
                         returnContent = <i className='iconfont icon-visit' title={Intl.get('common.revisit', '回访')}></i>;
                     } else {
                         returnContent = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;

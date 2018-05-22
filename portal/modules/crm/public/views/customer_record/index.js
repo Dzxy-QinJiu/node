@@ -54,7 +54,7 @@ const CALL_TYPE_MAP = {
     'phone': Intl.get("customer.phone.system", "电话系统"),
     'app': Intl.get("customer.ketao.app", "客套app"),
     'visit': Intl.get("customer.visit", "拜访"),
-    'callBack': Intl.get('common.callback', '回访'),
+    'call_back': Intl.get('common.callback', '回访'),
     'other': Intl.get("customer.other", "其他")
 };
 
@@ -655,6 +655,10 @@ const CustomerRecord = React.createClass({
             <div className="customer-container" data-tracename="跟进记录页面" id="customer-container">
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : (
                     <div className="trace-top-block">
+                        <span className="total-tip">
+                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
+                                                    values={{"n": this.state.total + ""}}/>
+                        </span>
                         {this.props.isMerge ? null : (
                             <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
                                   title={Intl.get("sales.frontpage.add.customer", "添加跟进记录")}/>)

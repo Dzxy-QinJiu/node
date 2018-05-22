@@ -115,20 +115,20 @@ exports.toFrontExpireUser = function (data) {
 
 };
 
-exports.toFrontRevisit = function (data) {
-    var revisit = {};
+exports.toFrontCallBack = function (data) {
+    var callBack = {};
     if (data && _.isObject(data)) {
-        revisit.revisitList = [];
+        callBack.callBackList = [];
         if (_.isArray(data.list) && data.list.length > 0) {
-            revisit.revisitList = data.list.map(function (item) {
+            callBack.callBackList = data.list.map(function (item) {
                 return {
-                    revisitTime: item.revisit_time, // 回访时间
+                    callBackTime: item.call_back_time, // 回访时间
                     customerName: item.customer_name, // 客户名
                     followRecords: item.follow_records, // 跟进记录
-                    revisitPerson: item.revisit_person // 回访人
+                    callBackPerson: item.call_back_person // 回访人
                 };
             });
         }
     }
-    return revisit;
+    return callBack;
 };

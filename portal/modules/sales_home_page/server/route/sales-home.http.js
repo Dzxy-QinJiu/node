@@ -88,8 +88,8 @@ module.exports = {
     },
     {
         "method": "get",
-        "path": '/rest/customer/revisit',
-        "handler": "getRevisit",
+        "path": '/rest/customer/callback',
+        "handler": "getCallBack",
         "passport": {
             "needLogin": true
         }

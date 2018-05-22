@@ -28,7 +28,7 @@ var restApis = {
     //获取各销售对应的通话状态
     getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids",
     // 获取回访列表
-    getRevisit: '/rest/customer/v2/revisit'
+    getCallBack: '/rest/customer/v2/callback'
 };
 exports.restUrls = restApis;
 
@@ -184,17 +184,17 @@ exports.setWebsiteConfig = function (req, res ,reqObj) {
 };
 
 //获取回访列表
-exports.getRevisit = function (req, res, reqData) {
+exports.getCallBack = function (req, res, reqData) {
     return restUtil.authRest.get(
         {
-            url: restApis.getRevisit,
+            url: restApis.getCallBack,
             req: req,
             res: res
         }, reqData, {
             success: function (eventEmitter, data) {
                 // 处理数据
-                var revisit = salesObj.toFrontRevisit(data);
-                eventEmitter.emit("success", revisit);
+                var callBack = salesObj.toFrontCallBack(data);
+                eventEmitter.emit("success", callBack);
             }
         });
 };

@@ -86,7 +86,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         //传空查询全部应用下数据
         if (app_id.includes(",") || app_id === "all") {
             app_id = "";
-        }
+        };
         //获取销售新开客户数
         OplateCustomerAnalysisAction.getNewCustomerCount({
             queryObj: {

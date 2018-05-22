@@ -165,13 +165,13 @@ exports.getUserTotal = function (reqData) {
 };
 
 // 获取回访统计总数
-let revisitTotalAjax;
-exports.getRevisitTotal = function (reqData) {
-    revisitTotalAjax && revisitTotalAjax.abort();
+let callBackTotalAjax;
+exports.getCallBackTotal = function (reqData) {
+    callBackTotalAjax && callBackTotalAjax.abort();
     reqData = reqData || {};
     var Deferred = $.Deferred();
-    revisitTotalAjax = $.ajax({
-        url: '/rest/analysis/revisit/summary',
+    callBackTotalAjax = $.ajax({
+        url: '/rest/analysis/callback/summary',
         dataType: 'json',
         type: 'get',
         data: reqData,
@@ -346,10 +346,10 @@ exports.setWebsiteConfig = function (queryObj) {
 };
 
 //获取回访列表
-exports.getRevisitList = function (reqData) {
+exports.getCallBackList = function (reqData) {
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/customer/revisit',
+        url: '/rest/customer/callback',
         dataType: 'json',
         type: 'get',
         data: reqData,

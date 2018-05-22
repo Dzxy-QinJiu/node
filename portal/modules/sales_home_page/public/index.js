@@ -55,7 +55,7 @@ var SalesHomePage = React.createClass({
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
             phoneSorter: {},//电话的排序对象
-            revisitSorter: {}, // 回访的排序对象
+            callBackSorter: {}, // 回访的排序对象
         };
     },
     onChange: function () {
@@ -181,14 +181,14 @@ var SalesHomePage = React.createClass({
         queryParams.dataType = dataType;
         SalesHomeAction.getCustomerTotal(queryParams);
         SalesHomeAction.getUserTotal(queryParams);
-        SalesHomeAction.getRevisitTotal(queryParams);
+        SalesHomeAction.getCallBackTotal(queryParams);
         //获取销售(团队)-电话列表
         SalesHomeAction.setListIsLoading(viewConstant.PHONE);
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
-        SalesHomeAction.setListIsLoading(viewConstant.REVISIT);
-        SalesHomeAction.getRevisitList(queryParams);
+        SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
+        SalesHomeAction.getCallBackList(queryParams);
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
@@ -239,8 +239,8 @@ var SalesHomePage = React.createClass({
         }
         return <span>{label}{sortIcon}</span>;
     },
-    getRevisitColumnTitle (label, key) {
-        let sorter = this.state.revisitSorter;
+    getCallBackColumnTitle (label, key) {
+        let sorter = this.state.callBackSorter;
         let sortIcon = null;
         if (sorter.field === key) {
             if (sorter.order === "descend") {
@@ -362,18 +362,18 @@ var SalesHomePage = React.createClass({
         }
         return columns;
     },
-    getRevisitListColumn () {
+    getCallBackListColumn () {
         let columns = [
             {
-                title: this.getRevisitColumnTitle(Intl.get("common.revisit.time", "回访时间"), 'revisitTime'),
-                dataIndex: 'revisitTime',
-                key: 'revisit_time',
+                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'callBackTime'),
+                dataIndex: 'callBackTime',
+                key: 'call_back_time',
                 sorter: function (a, b) {
-                    return a.revisitTime - b.revisitTime;
+                    return a.callBackTime - b.callBackTime;
                 },
                 className: 'has-filter table-data-align-right',
-                render: (revisitTime) => {
-                    var displayTime = moment(new Date(+revisitTime)).format(DATE_TIME_FORMAT);
+                render: (callBackTime) => {
+                    var displayTime = moment(new Date(+callBackTime)).format(DATE_TIME_FORMAT);
                     return (
                         <div title={displayTime}>
                             {displayTime}
@@ -394,9 +394,9 @@ var SalesHomePage = React.createClass({
                 className: 'table-data-align-right',
             },
             {
-                title: Intl.get("common.revisit.person", "回访人"),
-                dataIndex: 'revisitPerson',
-                key: 'revisit_person',
+                title: Intl.get("common.callback.person", "回访人"),
+                dataIndex: 'callBackPerson',
+                key: 'call_back_person',
                 className: 'table-data-align-right',
             }
         ];
@@ -530,18 +530,18 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             </div>);
-        } else if (this.state.activeView === viewConstant.REVISIT) {
+        } else if (this.state.activeView === viewConstant.CALL_BACK) {
             return (
                 <div className='sales-table-container'>
                     <div className='phone-table-block'>
                         <AntcTable
-                            dataSource={this.state.revisitList}
-                            columns={this.getRevisitListColumn()}
-                            loading={this.state.isLoadingRevisitList}
+                            dataSource={this.state.callBackList}
+                            columns={this.getCallBackListColumn()}
+                            loading={this.state.isLoadingCallBackList}
                             pagination={false}
                             bordered
                             util={{zoomInSortArea: true}}
-                            onChange={this.onRevisitTableChange}
+                            onChange={this.onCallBackTableChange}
                         />
                     </div>
                 </div>
@@ -610,8 +610,8 @@ var SalesHomePage = React.createClass({
     onTableChange: function (pagination, filters, sorter) {
         this.setState({phoneSorter: sorter});
     },
-    onRevisitTableChange (pagination, filters, sorter) {
-        this.setState({revisitSorter: sorter});
+    onCallBackTableChange (pagination, filters, sorter) {
+        this.setState({callBackSorter: sorter});
     },
     //时间的设置
     onSelectDate: function (startTime, endTime, timeType) {
@@ -794,7 +794,7 @@ var SalesHomePage = React.createClass({
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}
                                 phoneTotalObj={this.state.phoneTotalObj}
-                                revisitTotalObj={this.state.revisitTotalObj}
+                                callBackTotalObj={this.state.callBackTotalObj}
                                 activeView={this.state.activeView}
                             />
                             {/*即将过期的用户列表，所有角色都会展示*/}

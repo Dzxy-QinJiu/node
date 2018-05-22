@@ -117,9 +117,9 @@ function SalesHomeActions() {
     };
 
     // 获取回访统计总数
-    this.getRevisitTotal = function (reqData) {
+    this.getCallBackTotal = function (reqData) {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getRevisitTotal(reqData)
+        salesHomeAjax.getCallBackTotal(reqData)
             .then(resData => {
                 this.dispatch({loading: false, error: false, resData: resData});
             },
@@ -234,9 +234,9 @@ function SalesHomeActions() {
 
     };
     // 获取回访列表
-    this.getRevisitList = function (reqData) {
+    this.getCallBackList = function (reqData) {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getRevisitList(reqData)
+        salesHomeAjax.getCallBackList(reqData)
             .then(resData => {
                 this.dispatch({loading: false, error: false, resData: resData});
             },

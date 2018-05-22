@@ -28,7 +28,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.salesPhoneList = [];//销售-电话列表
     this.salesUserList = [];//销售-用户列表
     this.salesUserData = [];//销售-用户列表数据源
-    this.revisitList = []; // 回访列表
+    this.callBackList = []; // 回访列表
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
     this.resetSalesTeamMembersObj();
@@ -38,7 +38,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.isLoadingCustomerList = false;//正在获取销售-客户列表
     this.isLoadingUserList = false;//正在获取销售-用户列表
     this.isLoadingPhoneList = false;//正在获取销售-电话列表
-    this.isLoadingRevisitList = false; // 正在获取回访列表
+    this.isLoadingCallBackList = false; // 正在获取回访列表
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
@@ -360,7 +360,7 @@ SalesHomeStore.prototype.setInitTotalData = function (type) {
         }
     };
     //回访统计数据
-    this.revisitTotalObj = {
+    this.callBackTotalObj = {
         resultType: type || '',
         errorMsg: '',
         data: type === 'loading' ? {} : {
@@ -431,20 +431,20 @@ SalesHomeStore.prototype.getUserTotal = function (result) {
 };
 
 // 获取回访统计总数
-SalesHomeStore.prototype.getRevisitTotal = function (result) {
-    let revisitTotalObj = this.revisitTotalObj;
+SalesHomeStore.prototype.getCallBackTotal = function (result) {
+    let callBackTotalObj = this.callBackTotalObj;
     if (result.loading) {
-        revisitTotalObj.resultType = 'loading';
-        revisitTotalObj.errorMsg = '';
+        callBackTotalObj.resultType = 'loading';
+        callBackTotalObj.errorMsg = '';
     } else if (result.error) {
-        revisitTotalObj.resultType = 'error';
-        revisitTotalObj.errorMsg = result.errorMsg;
+        callBackTotalObj.resultType = 'error';
+        callBackTotalObj.errorMsg = result.errorMsg;
     } else {
-        revisitTotalObj.resultType = '';
-        revisitTotalObj.errorMsg = '';
-        revisitTotalObj.data = result.resData;
-        if (!_.isObject(revisitTotalObj.data)) {
-            revisitTotalObj.data = {
+        callBackTotalObj.resultType = '';
+        callBackTotalObj.errorMsg = '';
+        callBackTotalObj.data = result.resData;
+        if (!_.isObject(callBackTotalObj.data)) {
+            callBackTotalObj.data = {
                 'totalCount': 0
             };
         }
@@ -463,8 +463,8 @@ SalesHomeStore.prototype.setListIsLoading = function (type) {
         case "phone":
             this.isLoadingPhoneList = true;
             break;
-        case "revisit":
-            this.isLoadingRevisitList = true;
+        case "call_back":
+            this.isLoadingCallBackList = true;
             break;
     }
 
@@ -672,12 +672,12 @@ SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
     }
 };
 // 获取回访列表
-SalesHomeStore.prototype.getRevisitList = function (result) {
-    this.isLoadingRevisitList = false;
+SalesHomeStore.prototype.getCallBackList = function (result) {
+    this.isLoadingCallBackList = false;
     let data = result.resData;
     if (data && _.isObject(data)) {
-        let revisitList = _.isArray(data.revisitList) ? data.revisitList : [];
-        revisitList = revisitList.map(function (item) {
+        let callBackList = _.isArray(data.callBackList) ? data.callBackList : [];
+        callBackList = callBackList.map(function (item) {
             return {
                 revisitTime: item.revisitTime || '', // 回访时间
                 customerName: item.customerName || '', // 客户名
@@ -685,9 +685,9 @@ SalesHomeStore.prototype.getRevisitList = function (result) {
                 revisitPerson: item.revisitPerson || ''// 回访人
             };
         });
-        this.revisitList = _.isArray(revisitList) ? revisitList : [];
+        this.callBackList = _.isArray(callBackList) ? callBackList : [];
     } else {
-        this.revisitList = [];
+        this.callBackList = [];
     }
 };
 

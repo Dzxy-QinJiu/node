@@ -65,7 +65,7 @@ const SPECIAL_LABEL = {
     NON_TAGGED_CUSTOMER: Intl.get("crm.tag.unknown", "未打标签的客户"),
     TURN_OUT: Intl.get("crm.qualified.roll.out", "转出"),
     CLUE: Intl.get("crm.sales.clue", "线索"),
-    HAS_REVISIT: Intl.get('common.has.revisit', '已回访'),
+    HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
 };
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
@@ -561,7 +561,7 @@ var Crm = React.createClass({
                 delete condition.labels;
             } else {
                 //线索、转出不可操作标签的筛选处理
-                if (_.contains(condition.labels, SPECIAL_LABEL.CLUE) || _.contains(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.contains(condition.labels, SPECIAL_LABEL.HAS_REVISIT)) {
+                if (_.contains(condition.labels, SPECIAL_LABEL.CLUE) || _.contains(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
                     condition.immutable_labels = [];
                     //线索标签
                     if (_.contains(condition.labels, SPECIAL_LABEL.CLUE)) {
@@ -576,10 +576,10 @@ var Crm = React.createClass({
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
                     }
                     // 已回访
-                    if (_.contains(condition.labels, SPECIAL_LABEL.HAS_REVISIT)) {
-                        condition.immutable_labels.push(SPECIAL_LABEL.HAS_REVISIT);
+                    if (_.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                        condition.immutable_labels.push(SPECIAL_LABEL.HAS_CALL_BACK);
                         // 过滤掉已回访标签
-                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_REVISIT);
+                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_CALL_BACK);
                     }
                     term_fields.push("immutable_labels");//精确匹配
                 }

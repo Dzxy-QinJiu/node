@@ -28,7 +28,7 @@ const processForTrace = function (item) {
                     title = Intl.get("customer.ketao.app", "客套app");
                     des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
                     break;
-                case 'callback':
+                case 'call_back':
                     iconClass = 'icon-visit';
                     title = Intl.get("common.callback", "回访");
                     des = Intl.get("common.callback.customer", "回访客户");
@@ -63,8 +63,8 @@ exports.isTurnOutTag = function(tag){
     return tag === Intl.get("crm.qualified.roll.out","转出");
 };
 // 是否是已回访标签
-exports.isHasRevisitTag = function (tag) {
-    return tag === Intl.get("common.has.revisit", "已回访");
+exports.isHasCallBackTag = function (tag) {
+    return tag === Intl.get("common.has.callback", "已回访");
 };
 //获取客户标签背景色对应的类型
 exports.getCrmLabelCls=function (customer_label) {
