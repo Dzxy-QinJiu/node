@@ -122,10 +122,10 @@ exports.toFrontCallBack = function (data) {
         if (_.isArray(data.list) && data.list.length > 0) {
             callBack.callBackList = data.list.map(function (item) {
                 return {
-                    callBackTime: item.call_back_time, // 回访时间
-                    customerName: item.customer_name, // 客户名
-                    followRecords: item.follow_records, // 跟进记录
-                    callBackPerson: item.call_back_person // 回访人
+                    callBackTime: item.call_back_time || '', // 回访时间
+                    customerName: item.customer_name || '', // 客户名
+                    followRecords: item.follow_records || '', // 跟进记录
+                    callBackPerson: item.call_back_person || '', // 回访人
                 };
             });
         }

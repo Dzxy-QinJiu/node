@@ -550,7 +550,7 @@ const CallRecord = React.createClass({
                     if (type === 'phone') {
                         returnContent = <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
                     } else if (type === 'call_back') {
-                        returnContent = <i className='iconfont icon-visit' title={Intl.get('common.revisit', '回访')}></i>;
+                        returnContent = <i className='iconfont icon-visit' title={Intl.get('common.callback', '回访')}></i>;
                     } else {
                         returnContent = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
                     }
