@@ -54,7 +54,7 @@ const CALL_TYPE_MAP = {
     'phone': Intl.get("customer.phone.system", "电话系统"),
     'app': Intl.get("customer.ketao.app", "客套app"),
     'visit': Intl.get("customer.visit", "拜访"),
-    'revisit': Intl.get('common.revisit', '回访'),
+    'callBack': Intl.get('common.callback', '回访'),
     'other': Intl.get("customer.other", "其他")
 };
 

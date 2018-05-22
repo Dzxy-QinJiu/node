@@ -205,13 +205,13 @@ var zh_CN = {
     "common.app.minute": "分钟",
     "common.load.more": "加载更多",
     "common.request.timeout": "请求超时",
-    "common.revisit": "回访",
+    "common.callback": "回访",
     "common.total": "共",
     "common.one.unit": "个",
-    "common.revisit.time": "回访时间",
-    "common.revisit.person": "回访人",
-    "common.has.revisit": "已回访",
-    "common.revisit.customer": "回访客户",
+    "common.callback.time": "回访时间",
+    "common.callback.person": "回访人",
+    "common.has.callback": "已回访",
+    "common.callback.customer": "回访客户",
 
     //公共部分--end
     "login.login": "登录",

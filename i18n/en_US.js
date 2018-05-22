@@ -205,13 +205,13 @@ var en_US = {
     "common.app.minute": "minutes",//"分钟",
     "common.load.more": "load more",//"加载更多",
     "common.request.timeout": "Error. Request timeout",//"请求超时",
-    "common.revisit": "Revisit", //"回访",
+    "common.callback": "Callback", //"回访",
     "common.total": "total", // "共",
     "common.one.unit": "", // "个",
-    "common.revisit.time": "Revisit time", // "回访时间"
-    "common.revisit.person": "Revisit person", // "回访人",
-    "common.has.revisit": "Has revisit", // "已回访",
-    "common.revisit.customer": "Revisit customer", // "回访客户",
+    "common.callback.time": "Callback time", // "回访时间"
+    "common.callback.person": "Callback person", // "回访人",
+    "common.has.callback": "Has callback", // "已回访",
+    "common.callback.customer": "Callback customer", // "回访客户",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况

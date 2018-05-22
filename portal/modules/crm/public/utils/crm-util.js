@@ -28,10 +28,10 @@ const processForTrace = function (item) {
                     title = Intl.get("customer.ketao.app", "客套app");
                     des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
                     break;
-                case 'revisit':
+                case 'callback':
                     iconClass = 'icon-visit';
-                    title = Intl.get("common.revisit", "回访");
-                    des = Intl.get("common.revisit.customer", "回访客户");
+                    title = Intl.get("common.callback", "回访");
+                    des = Intl.get("common.callback.customer", "回访客户");
                     break;
                 case 'other':
                     iconClass = 'icon-trace-other';
