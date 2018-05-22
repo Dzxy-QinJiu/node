@@ -11,7 +11,8 @@ function PhoneAlertAction() {
         'setCustomerUnknown',
         'setAddCustomerInfo',
         'setSubmitErrMsg',
-        'setCustomerInfoArr'
+        'setCustomerInfoArr',
+        'setInitialCustomerArr'
     );
     this.getCustomerByPhone = function (phoneNum) {
         var rangParams = [{//时间范围参数

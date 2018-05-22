@@ -250,25 +250,12 @@ function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     //过滤掉其他状态 只展示alert answered  phone状态的数据
     if (hasPrivilege("CRM_LIST_CUSTOMERS") && (phonemsgObj.type === "ALERT" || phonemsgObj.type === "ANSWERED" || phonemsgObj.type === "phone")) {
+        if (phonemsgObj.type === "phone" && !phonemsgObj.customers){
+            phonemsgObj.customers = [];
+        }
         console.log(phonemsgObj);
-        // if (!phonemsgObj.customers){
-        //     phonemsgObj.customers = [
-        //         {
-        //             id: "36v8tudu9Z_cebd9fb9-780a-4637-be76-b28db1ddb688",
-        //             name: "zhshj01",
-        //             user_id: "3722pgujaa361avboms3bAITR7iq4GZb2k16dMTcDWr",
-        //             user_name: "张淑娟"
-        //         },{
-        //             id: "36v8tudu9Z_a3352b97-9fef-4415-a6dc-35d7e7f0a16f",
-        //             name: "test_phone",
-        //             user_id: "3722pgujaa3644i1ed93f71SRfCn52ybf116IvWfiKi",
-        //             user_name: "潘发光"
-        //         }
-        //     ]
-        // }
         ReactDOM.render(
-            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj}
-                                             setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
+            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj}/>}></Translate>,
             document.getElementById('phone-alert-modal')
         );
     }
