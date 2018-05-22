@@ -248,15 +248,13 @@ function setInitialPhoneObj() {
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
-    if (hasPrivilege("CRM_LIST_CUSTOMERS") && phonemsgObj.type !== "BUSY") {
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, phonemsgObj, phoneObj);
-        // ReactDOM.render(
-        //     <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
-        //                                      setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
-        //     document.getElementById('phone-alert-modal')
-        // );
+    const PHONE_STATUS = ["ALERT", "ANSWERED", "phone"];
+    //过滤掉其他状态 只展示alert answered  phone状态的数据
+    if (hasPrivilege("CRM_LIST_CUSTOMERS") && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            call_params: {phonemsgObj, phoneObj, setInitialPhoneObj}
+        });
     }
-
 }
 
 //可否弹出桌面通知

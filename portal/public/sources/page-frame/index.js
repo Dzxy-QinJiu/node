@@ -10,15 +10,16 @@ require("./oplate");
 var LeftMenu = require("../../../components/privilege/nav-sidebar");
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 import PhoneAlert from "MOD_DIR/phone-alert/public";
-import PhonePanel from "MOD_DIR/phone_panel";
+import PhonePanel from "MOD_DIR/phone_panel/public";
+const emptyParamObj = {
+    customer_params: null,//客户详情相关的参数
+    call_params: null//后端推送过来的通话状态相关的参数
+};
 var PageFrame = React.createClass({
     getInitialState: function () {
         return {
             phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
-            paramObj: {
-                type: "",//打开电话面板的类型，customer_detail、call_push、curtao_call
-                params: {}
-            },
+            paramObj: emptyParamObj
         };
     },
     componentDidMount: function () {
@@ -31,10 +32,10 @@ var PageFrame = React.createClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
     },
     openPhonePanel: function (paramObj) {
-        this.setState({phonePanelShow: true, paramObj: paramObj});
+        this.setState({phonePanelShow: true, paramObj: $.extend(true, this.state.paramObj, paramObj)});
     },
     closePhonePanel: function () {
-        this.setState({phonePanelShow: false});
+        this.setState({phonePanelShow: false, paramObj: emptyParamObj});
     },
     //TODO delete
     setInitialPhoneObj: function () {

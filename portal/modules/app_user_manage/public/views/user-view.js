@@ -171,7 +171,7 @@ var UserTabContent = React.createClass({
         });
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            type: "customer_detail", params: {
+            customer_params: {
                 currentId: customer_id,
                 curCustomer: this.state.curCustomer,
                 userViewShowCustomerUserListPanel: true,

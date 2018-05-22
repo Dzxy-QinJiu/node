@@ -106,7 +106,7 @@ let CustomerRepeat = React.createClass({
         CustomerRepeatAction.setCurCustomer(id);
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            type: "customer_detail", params: {
+            customer_params: {
                 isRepeat:true,
                 refreshCustomerList: this.refreshRepeatCustomerList,
                 curCustomer: this.state.curCustomer,

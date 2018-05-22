@@ -78,7 +78,7 @@ class CustomerStageTable extends React.Component {
             });
             //触发打开带拨打电话状态的客户详情面板
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                type: "customer_detail", params: {
+                customer_params: {
                     currentId: item.customer_id,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     hideRightPanel: this.hideRightPanel
