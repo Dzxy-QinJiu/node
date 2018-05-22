@@ -59,8 +59,8 @@ class ClueRightPanel extends React.Component {
         } else {
             var curCustomer = this.state.curCustomer || {};
             if (_.isArray(curCustomer.contacts) && curCustomer.contacts.length) {
-                if (!curCustomer.contacts[0].qq && !curCustomer.contacts[0].email) {
-                    callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ必填一项")));
+                if (!curCustomer.contacts[0].qq && !curCustomer.contacts[0].email && !curCustomer.contacts[0].weChat) {
+                    callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ、微信必填一项")));
                 } else {
                     callback();
                 }
@@ -169,10 +169,11 @@ class ClueRightPanel extends React.Component {
 
     render() {
         var curCustomer = this.state.curCustomer || {};
-        var phone = "", qq = "", email = "", id = "";
+        var phone = "", qq = "", email = "", id = "", weChat = "";
         if (_.isArray(curCustomer.contacts) && curCustomer.contacts.length) {
             phone = _.isArray(curCustomer.contacts[0].phone) && curCustomer.contacts[0].phone.length ? curCustomer.contacts[0].phone[0] : "";
             qq = _.isArray(curCustomer.contacts[0].qq) && curCustomer.contacts[0].qq.length ? curCustomer.contacts[0].qq[0] : "";
+            weChat = _.isArray(curCustomer.contacts[0].weChat) && curCustomer.contacts[0].weChat.length ? curCustomer.contacts[0].weChat[0] : "";
             email = _.isArray(curCustomer.contacts[0].email) && curCustomer.contacts[0].email.length ? curCustomer.contacts[0].email[0] : "";
             id = curCustomer.contacts[0].id ? curCustomer.contacts[0].id : "";
         }
@@ -264,6 +265,23 @@ class ClueRightPanel extends React.Component {
                                             value={qq}
                                             field="qq"
                                             placeholder={Intl.get("member.input.qq", "请输入QQ号")}
+                                            modifySuccess={this.changeUserFieldSuccess}
+                                            saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
+                                        />
+                                    </dd>
+                                </dl>
+                                <dl className="dl-horizontal user_detail_item detail_item user_detail_item_username">
+                                    <dt>
+                                        {Intl.get("crm.58", "微信")}：
+                                    </dt>
+                                    <dd>
+                                        <UserDetailEditField
+                                            disabled={hasNoPrivilegeEdit}
+                                            extraParameter={extraParameter}
+                                            user_id={curCustomer.id}
+                                            value={weChat}
+                                            field="weChat"
+                                            placeholder={Intl.get("member.input.wechat", "请输入微信号")}
                                             modifySuccess={this.changeUserFieldSuccess}
                                             saveEditInput={clueCustomerAjax.updateCluecustomerDetail}
                                         />

@@ -599,6 +599,7 @@ var en_US = {
     "member.operation.log": "Operation log",//操作日志
     "member.input.email": "Please input email",//请输入邮箱
     "member.input.qq": "Please input QQ",//请输入QQ号
+    "member.input.wechat": "Please input wechat",//请输入微信号
     "member.check.member.name": "Please enter a number, letter or underline, the first letter can not be a underline",//请输入数字、字母或下划线，首字母不能是下划线
     "member.email.is.unique": "The email is already taken",//邮箱唯一性校验出错！
     "member.no.role": "No role",//暂无角色
@@ -1210,7 +1211,7 @@ var en_US = {
     "crm.clue.source.placeholder": "Please select the source of the clues",//请选择线索来源
     "crm.sales.clue": "Clue",//线索
     "crm.sales.clue.add.disable": "'{label}' tags cannot be added manually",//不能手动添加'{label}'标签
-    "crm.clue.require.one": "Telephone, mail and QQ required one",//电话、邮箱、QQ必填一项
+    "crm.clue.require.one": "Telephone, mail, QQ and weChat required one",//电话、邮箱、QQ必填一项
     "crm.contact.list.failed": "Failed to get contact list",//获取联系人列表失败
     "crm.contact.name.length": "Please enter a name with a maximum of 50 characters",//请输入最多50个字符的姓名
     "crm.last.trace.content": "Last Trace content",//最后跟进内容

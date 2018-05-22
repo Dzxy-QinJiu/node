@@ -31,6 +31,7 @@ const SalesClueAddForm = React.createClass({
                 phone: {},//联系电话
                 email: {},//邮箱
                 qq: {},//QQ
+                weChat:{},//微信
                 clue_source: {},//线索来源
                 access_channel: {},//接入渠道
                 source: {},//线索描述
@@ -42,6 +43,7 @@ const SalesClueAddForm = React.createClass({
                 phone: defalutData.phone || "",//联系电话
                 email: defalutData.email || "",//邮箱
                 qq: defalutData.qq || "",//QQ
+                weChat:defalutData.weChat || "",//微信
                 clue_source: defalutData.clue_source || "",//线索来源
                 access_channel: defalutData.access_channel || "",//接入渠道
                 source: "",//线索描述
@@ -133,6 +135,9 @@ const SalesClueAddForm = React.createClass({
         }
         if (formData.qq) {
             contact.qq = [$.trim(formData.qq)];
+        }
+        if (formData.weChat){
+            contact.weChat = [$.trim(formData.weChat)];
         }
         submitObj.contacts = [contact];
         return submitObj;
@@ -235,8 +240,8 @@ const SalesClueAddForm = React.createClass({
                         }
                     });
                 } else {
-                    if (!this.state.formData.qq && !this.state.formData.email) {
-                        callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ必填一项")));
+                    if (!this.state.formData.qq && !this.state.formData.email && !this.state.formData.weChat) {
+                        callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ、微信必填一项")));
                     } else {
                         callback();
                     }
@@ -334,6 +339,17 @@ const SalesClueAddForm = React.createClass({
                                 <Input name="qq" id="qq" type="text" value={formData.qq}
                                        placeholder={Intl.get("member.input.qq", "请输入QQ号")}
                                        onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get("crm.58", "微信")}
+                                id="weChat"
+                                labelCol={{span: 6}}
+                                wrapperCol={{span: 18}}
+                            >
+                                <Input name="weChat" id="weChat" type="text" value={formData.weChat}
+                                       placeholder={Intl.get("member.input.wechat", "请输入微信号")}
+                                       onChange={this.setNeedPhoneValidateValue.bind(this, 'weChat')}
                                 />
                             </FormItem>
 

@@ -112,6 +112,9 @@ exports.distributeCluecustomerToSale = function (req, res) {
 //对线索客户的详情进行更新
 exports.updateCluecustomerDetail = function (req, res) {
     var updateItem = req.body.updateItem;
+    if (updateItem === "weChat"){
+        updateItem = "wechat";
+    }
     return restUtil.authRest.put(
         {
             url: restApis.updateCluecustomerDetail.replace(":updateItem", updateItem),
