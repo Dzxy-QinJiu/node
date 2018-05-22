@@ -235,7 +235,7 @@ const CallRecord = React.createClass({
         } else if (value == CALL_TYPE_OPTION.ALL) {
             this.state.callType = <i className="iconfont icon-all" title={Intl.get("user.online.all.type", "全部类型")}></i>;
         } else if (value === CALL_TYPE_OPTION.CALL_BACK) {
-            this.state.callType = <i className='iconfont icon-visit' title={Intl.get('common.callback', '回访')}></i>;
+            this.state.callType = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
         }
         if (value == CALL_STATUS_OPTION.ALL || value == CALL_TYPE_OPTION.ALL) {
             this.filterCallRecord(filterKey);
@@ -331,7 +331,7 @@ const CallRecord = React.createClass({
                         <span>{Intl.get("common.ketao.app", "客套APP")}</span>
                     </Option>
                     <Option value={CALL_TYPE_OPTION.CALL_BACK}>
-                        <i className='iconfont icon-visit'></i>
+                        <i className='iconfont icon-callback'></i>
                         <span>{Intl.get('common.callback', '回访')}</span>
                     </Option>
                 </Select>
@@ -550,7 +550,7 @@ const CallRecord = React.createClass({
                     if (type === 'phone') {
                         returnContent = <i className={cls} title={Intl.get("call.record.call.center", "呼叫中心")}></i>;
                     } else if (type === 'call_back') {
-                        returnContent = <i className='iconfont icon-visit' title={Intl.get('common.callback', '回访')}></i>;
+                        returnContent = <i className='iconfont icon-callback' title={Intl.get('common.callback', '回访')}></i>;
                     } else {
                         returnContent = <i className="iconfont icon-ketao-app" title={Intl.get("common.ketao.app", "客套APP")}></i>;
                     }
