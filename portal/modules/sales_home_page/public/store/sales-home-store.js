@@ -364,7 +364,7 @@ SalesHomeStore.prototype.setInitTotalData = function (type) {
         resultType: type || '',
         errorMsg: '',
         data: type === 'loading' ? {} : {
-            'totalCount': 0 // 总回访数
+            'total': 0 // 总回访数
         }
     };
 };
@@ -445,7 +445,7 @@ SalesHomeStore.prototype.getCallBackTotal = function (result) {
         callBackTotalObj.data = result.resData;
         if (!_.isObject(callBackTotalObj.data)) {
             callBackTotalObj.data = {
-                'totalCount': 0
+                'total': 0
             };
         }
     }

@@ -104,7 +104,7 @@ let StatisticTotal = React.createClass({
             <div className={'statistic-total-content'}>
                 <span className='add-data-style'>
                     <span className='total-data-desc'>{Intl.get('common.total', '共')}</span>
-                    {callBackTotalObj.data.totalCount || '0'}
+                    {callBackTotalObj.data.total || '0'}
                     <span className='total-data-desc'>{Intl.get('common.one.unit', '个')}</span>
                 </span>
             </div>
