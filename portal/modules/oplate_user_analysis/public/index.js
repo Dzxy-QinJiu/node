@@ -220,6 +220,8 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             chartType: "pie",
             //是否支持点图筛选
             useChartFilter: true,
+            //点图筛选时的参数名
+            chartFilterKey: "type",
             option: {
                 legend: {
                     data: USER_TYPES,
@@ -239,6 +241,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v1/:auth_type/:tab/status",
             chartType: "pie",
             useChartFilter: true,
+            chartFilterKey: "status",
             noShowCondition: {
                 app_id: "all",
                 tab: ["delayed"],
@@ -306,6 +309,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v1/:auth_type/:tab/team",
             chartType: "bar",
             useChartFilter: true,
+            chartFilterKey: "team",
             noShowCondition: {
                 tab: ["delayed"],
             },
@@ -333,6 +337,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v1/:auth_type/:tab/zone",
             chartType: "bar",
             useChartFilter: true,
+            chartFilterKey: "zone",
             noShowCondition: {
                 tab: ["delayed", "added", "expired"],
             },
@@ -360,6 +365,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             url: "/rest/analysis/user/v1/:auth_type/:tab/industry",
             chartType: "bar",
             useChartFilter: true,
+            chartFilterKey: "industry",
             noShowCondition: {
                 tab: ["delayed"],
             },
