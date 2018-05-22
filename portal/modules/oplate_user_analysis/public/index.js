@@ -820,7 +820,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 <AntcAnalysis
                     charts={charts}
                     emitters={this.getEmitters()}
-                    useScrollBar={true}
+                   isUseScrollBar={true}
                     conditions={[{
                         name: "app_id",
                         value: "all",
