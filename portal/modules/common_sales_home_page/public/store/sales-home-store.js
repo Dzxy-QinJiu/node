@@ -286,7 +286,7 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
             scheduleExpiredTodayObj.data.total = result.resData.total;
             scheduleExpiredTodayObj.curPage++;
         }
-    } if (result.type === "missed_call"){
+    }else if (result.type === "missed_call"){
         //获取拨入未接通的电话
         var missCallObj = this.missCallObj;
         missCallObj.loading = result.loading;
@@ -297,7 +297,7 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
             missCallObj.data.total = result.resData.total;
             missCallObj.curPage++;
         }
-    }else {
+    }else if (result.type === "today") {
         //获取今天的日程列表
         var scheduleTodayObj = this.scheduleTodayObj;
         scheduleTodayObj.loading = result.loading;

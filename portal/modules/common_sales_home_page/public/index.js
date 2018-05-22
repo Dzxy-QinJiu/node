@@ -209,7 +209,7 @@ var SalesHomePage = React.createClass({
             start_time: this.state.start_time,
             end_time: this.state.end_time,
         };
-        SalesHomeAction.getScheduleList(constObj);
+        SalesHomeAction.getScheduleList(constObj, "today");
     },
     //停用客户登录
     getAppIlleageLogin: function (lastId) {
