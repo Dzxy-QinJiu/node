@@ -17,7 +17,8 @@ import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 import AddMoreInfo from "./view/add-more-info";
-import {Button, Tag} from "antd";
+import {Button, Tag, Input} from "antd";
+const {TextArea} = Input;
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {isEqualArray} from "LIB_DIR/func";
 
@@ -73,7 +74,9 @@ class PhonePanel extends React.Component {
             paramObj: $.extend(true, {}, this.props.paramObj),
             // phoneNum: this.getPhoneNum(this.props.paramObj)//当前正在拨打的电话
             // phonemsgObj: this.props.phonemsgObj,//存储后端推送来的不同通话状态的信息
+            // ...phoneAlertStore.getState(),
             customerInfoArr: phoneAlertStore.getState().customerInfoArr,//通过电话号码来获取到客户的基本信息
+            isEdittingTrace: phoneAlertStore.getState().isEdittingTrace,//正在编辑跟进记录
             addTraceItemId: "",//添加某条跟进记录的id
             // isModalShown: true,//是否显示模态框
             phoneNum: "",//话机打电话时的电话号码
@@ -107,13 +110,28 @@ class PhonePanel extends React.Component {
         return paramObj.call_params && paramObj.call_params.phonemsgObj || null;
     }
 
+    getPhoneStatusCustomerIds(phonemsgObj) {
+        if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
+            return _.pluck(phonemsgObj.customers, 'id');
+        }
+        return [];
+    }
+
     componentDidMount() {
         Trace.traceEvent("电话弹屏", '弹出电话弹屏');
-        var phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
+        phoneAlertStore.listen(this.onStoreChange);
+        let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
+        let customerParams = this.props.paramObj.customer_params;
         //通话状态下的处理
         if (phonemsgObj) {
-            //根据客户的id获取客户的详情
-            this.getCustomerInfoByCustomerId();
+            let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
+            //如果是从客户详情中打的电话，则不需要再获取客户详情
+            if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
+                phoneAlertAction.setCustomerUnknown(false);
+                phoneAlertAction.setAddCustomer(false);
+            } else {//根据客户的id获取客户的详情
+                this.getCustomerInfoByCustomerId();
+            }
             //如果是打入的电话，要查来电的号码，如果是拨出的电话，要查所拨打的电话
             var phoneNum = "";
             if (phonemsgObj.call_type == "IN") {
@@ -141,68 +159,73 @@ class PhonePanel extends React.Component {
         if (nextProps.paramObj.call_params) {
             var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
             if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
-                //
+                //最新的通话状态
                 if (phonemsgObj.callid === phoneRecordObj.callid) {
                     phoneRecordObj.received_time = phonemsgObj.recevied_time;
                 } else {
                     phoneRecordObj.received_time = phonemsgObj.recevied_time;
                     phoneRecordObj.callid = phonemsgObj.callid;
-                    this.getCustomerInfoByCustomerId();
+                    let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
+                    let customerParams = nextProps.paramObj.customer_params;
+                    //如果是从客户详情中打的电话，则不需要再获取客户详情
+                    if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
+                        phoneAlertAction.setCustomerUnknown(false);
+                        phoneAlertAction.setAddCustomer(false);
+                    } else {//根据客户的id获取客户的详情
+                        this.getCustomerInfoByCustomerId();
+                    }
                 }
-                this.setState({
-                    phonemsgObj: phonemsgObj
-                });
             }
-            //如果在打电话的过程中关闭了弹屏，后来的推送状态改变后，又弹出屏幕时，记录下弹屏
-            // if (!this.state.isModalShown) {
-            //     Trace.traceEvent("电话弹屏", '弹出电话弹屏');
-            // }
-            //跟进记录的id
-            var addTraceItemId = phonemsgObj.id || "";
-            if (addTraceItemId) {
-                this.setState({
-                    addTraceItemId: addTraceItemId,
-                });
-            }
-            //通话结束后，包含输入跟进记录的容器的高度需要变大
-            if (phonemsgObj.type === PHONERINGSTATUS.phone) {
-                this.setState({
-                    isInitialHeight: false
-                });
-            }
-            var phoneNum = "";
-            if (phonemsgObj.call_type == "IN") {
-                phoneNum = phonemsgObj.extId;
-            } else {
-                phoneNum = phonemsgObj.to || phonemsgObj.dst;
-            }
+        }
+        //如果在打电话的过程中关闭了弹屏，后来的推送状态改变后，又弹出屏幕时，记录下弹屏
+        // if (!this.state.isModalShown) {
+        //     Trace.traceEvent("电话弹屏", '弹出电话弹屏');
+        // }
+        //跟进记录的id
+        var addTraceItemId = phonemsgObj.id || "";
+        if (addTraceItemId) {
+            this.setState({
+                addTraceItemId: addTraceItemId,
+            });
+        }
+        //通话结束后，包含输入跟进记录的容器的高度需要变大
+        if (phonemsgObj.type === PHONERINGSTATUS.phone) {
+            this.setState({
+                isInitialHeight: false
+            });
+        }
+        var phoneNum = "";
+        if (phonemsgObj.call_type == "IN") {
+            phoneNum = phonemsgObj.extId;
+        } else {
+            phoneNum = phonemsgObj.to || phonemsgObj.dst;
+        }
 
-            //页面上如果存在模态框，再次拨打电话的时候
-            var $modal = $("body >#phone-alert-modal #phone-alert-container");
-            if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
-                //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
+        //页面上如果存在模态框，再次拨打电话的时候
+        var $modal = $("body >#phone-alert-modal #phone-alert-container");
+        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
+            //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
 
-                this.state.phoneNum = phoneNum;
-                this.state.phonemsgObj = phonemsgObj;
-                this.state.isAddFlag = false;
-                this.state.rightPanelIsShow = false;
-                this.state.isConnected = false;
-                this.state.addTraceItemId = "";
-                this.state.isInitialHeight = true;
-                this.setState(this.state);
-                //恢复初始数据
-                phoneAlertAction.setInitialState();
-                // phoneAlertAction.getCustomerByPhone(phoneNum);
-                sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
-                this.props.setInitialPhoneObj();
-            }
-            //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
-            //如果接听后，把状态isConnected 改为true
-            if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
-                this.setState({
-                    isConnected: true
-                });
-            }
+            this.state.phoneNum = phoneNum;
+            this.state.phonemsgObj = phonemsgObj;
+            this.state.isAddFlag = false;
+            this.state.rightPanelIsShow = false;
+            this.state.isConnected = false;
+            this.state.addTraceItemId = "";
+            this.state.isInitialHeight = true;
+            this.setState(this.state);
+            //恢复初始数据
+            phoneAlertAction.setInitialState();
+            // phoneAlertAction.getCustomerByPhone(phoneNum);
+            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
+            this.props.setInitialPhoneObj();
+        }
+        //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
+        //如果接听后，把状态isConnected 改为true
+        if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+            this.setState({
+                isConnected: true
+            });
         }
     }
 
@@ -211,7 +234,7 @@ class PhonePanel extends React.Component {
         phoneAlertStore.unlisten(this.onStoreChange);
     }
 
-    //获取页面上的描述
+//获取页面上的描述
     getPhoneTipMsg(phonemsgObj) {
         var customerInfoArr = this.state.customerInfoArr;
         var customerName = customerInfoArr[0] ? customerInfoArr[0].name : "";
@@ -277,8 +300,8 @@ class PhonePanel extends React.Component {
             return (
                 <div>
                     <div className="input-item">
-                        <textarea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
-                                  value={this.state.inputContent}/>
+                        <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
+                                  value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
@@ -289,7 +312,7 @@ class PhonePanel extends React.Component {
                             />
                         ) : null}
                     </div>
-                    <Button type="primary" className="modal-submit-btn" onClick={this.handleTraceSubmit}
+                    <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
                             data-tracename="保存跟进记录">
                         {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
                     </Button>
@@ -328,7 +351,7 @@ class PhonePanel extends React.Component {
     getCustomerInfoByCustomerId() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //通过后端传过来的客户id，查询客户详情
-        if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
+        if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
             _.each(phonemsgObj.customers, (item) => {
                 phoneAlertAction.getCustomerById(item.id);
             });
@@ -368,8 +391,8 @@ class PhonePanel extends React.Component {
         var customerInfoArr = this.state.customerInfoArr;
         let phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         var totalCustomerArr = phonemsgObj.customers;
+        var otherCustomerArr = [];
         if (_.isArray(customerInfoArr) && _.isArray(totalCustomerArr) && customerInfoArr.length < totalCustomerArr.length) {
-            var otherCustomerArr = [];
             _.each(totalCustomerArr, (customerItem) => {
                 _.each(customerInfoArr, (item) => {
                     if (customerItem.id !== item.id) {
@@ -422,6 +445,12 @@ class PhonePanel extends React.Component {
                 </span>
             );
         } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length != 0) {
+            let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
+            let customerParams = this.state.paramObj.customer_params;
+            //如果是从当前展示的客户详情中打的电话，则不需要再展示通过通话状态中的客户id取的客户详情
+            if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
+                return null;
+            }
             //客户存在时，展示详情
             var divHeight = "";
             if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!this.state.customerUnknown && !this.state.addCustomer)) {
@@ -439,84 +468,84 @@ class PhonePanel extends React.Component {
                 <div style={{'height': divHeight}} className="scrollbar-container">
                     <GeminiScrollbar>
                         {
-                            _.map(this.state.customerInfoArr, (item) => {
-                                var location = [];
-                                if (item.province) {
-                                    location.push(item.province);
-                                }
-                                if (item.city) {
-                                    location.push(item.city);
-                                }
-                                if (item.county) {
-                                    location.push(item.county);
-                                }
-                                return (
-                                    <div className="customer-name">
-                                        <h3>
-                                            <i className="iconfont icon-interested"></i>
-                                            <span>{item.name}</span>
-                                        </h3>
-                                        <dl className="customer-info">
-                                            <dt>
-                                                {Intl.get("realm.industry", "行业")}:
-                                            </dt>
-                                            <dd>
-                                                {item.industry}
-                                            </dd>
-                                        </dl>
-                                        <dl className="customer-info">
-                                            <dt>
-                                                {Intl.get("realm.address", "地址")}:
-                                            </dt>
-                                            <dd>
-                                                <span>{location.join("-")}</span>
-                                                &nbsp;&nbsp;<span>{item.address}</span>
-                                            </dd>
-                                        </dl>
-                                        <dl className="customer-info">
-                                            <dt>
-                                                {Intl.get("crm.administrative.level", "行政级别")}:
-                                            </dt>
-                                            <dd>
-                                                {this.getAdministrativeLevel(item.administrative_level)}
-                                            </dd>
-                                        </dl>
-                                        <dl className="customer-info">
-                                            <dt>
-                                                {Intl.get("call.record.customer.source", "来源")}:
-                                            </dt>
-                                            <dd>
-                                                {item.source}
-                                            </dd>
-                                        </dl>
-                                        <dl className="customer-info">
-                                            <dt>
-                                                {Intl.get("common.tag", "标签")}:
-                                            </dt>
-                                            <dd className="tag">
-                                                {_.map((item.labels), (label) => {
-                                                    return (
-                                                        <Tag>{label}</Tag>);
-                                                })}
-                                            </dd>
-                                        </dl>
-                                        <dl className="customer-info remark">
-                                            <dt>
-                                                {Intl.get("common.remark", "备注")}:
-                                            </dt>
-                                            <dd>
-                                                {item.remarks}
-                                            </dd>
-                                        </dl>
-                                        <p className="show-customer-detail">
-                                            <Button type="primary" onClick={this.showRightPanel.bind(this, item.id)}
-                                                    data-tracename="点击查看客户详情">
-                                                {Intl.get("call.record.show.customer.detail", "查看详情")}
-                                            </Button>
-                                        </p>
-                                    </div>
-                                );
-                            })
+                            // _.map(this.state.customerInfoArr, (item) => {
+                            //     var location = [];
+                            //     if (item.province) {
+                            //         location.push(item.province);
+                            //     }
+                            //     if (item.city) {
+                            //         location.push(item.city);
+                            //     }
+                            //     if (item.county) {
+                            //         location.push(item.county);
+                            //     }
+                            //     return (
+                            //         <div className="customer-name">
+                            //             <h3>
+                            //                 <i className="iconfont icon-interested"></i>
+                            //                 <span>{item.name}</span>
+                            //             </h3>
+                            //             <dl className="customer-info">
+                            //                 <dt>
+                            //                     {Intl.get("realm.industry", "行业")}:
+                            //                 </dt>
+                            //                 <dd>
+                            //                     {item.industry}
+                            //                 </dd>
+                            //             </dl>
+                            //             <dl className="customer-info">
+                            //                 <dt>
+                            //                     {Intl.get("realm.address", "地址")}:
+                            //                 </dt>
+                            //                 <dd>
+                            //                     <span>{location.join("-")}</span>
+                            //                     &nbsp;&nbsp;<span>{item.address}</span>
+                            //                 </dd>
+                            //             </dl>
+                            //             <dl className="customer-info">
+                            //                 <dt>
+                            //                     {Intl.get("crm.administrative.level", "行政级别")}:
+                            //                 </dt>
+                            //                 <dd>
+                            //                     {this.getAdministrativeLevel(item.administrative_level)}
+                            //                 </dd>
+                            //             </dl>
+                            //             <dl className="customer-info">
+                            //                 <dt>
+                            //                     {Intl.get("call.record.customer.source", "来源")}:
+                            //                 </dt>
+                            //                 <dd>
+                            //                     {item.source}
+                            //                 </dd>
+                            //             </dl>
+                            //             <dl className="customer-info">
+                            //                 <dt>
+                            //                     {Intl.get("common.tag", "标签")}:
+                            //                 </dt>
+                            //                 <dd className="tag">
+                            //                     {_.map((item.labels), (label) => {
+                            //                         return (
+                            //                             <Tag>{label}</Tag>);
+                            //                     })}
+                            //                 </dd>
+                            //             </dl>
+                            //             <dl className="customer-info remark">
+                            //                 <dt>
+                            //                     {Intl.get("common.remark", "备注")}:
+                            //                 </dt>
+                            //                 <dd>
+                            //                     {item.remarks}
+                            //                 </dd>
+                            //             </dl>
+                            //             <p className="show-customer-detail">
+                            //                 <Button type="primary" onClick={this.showRightPanel.bind(this, item.id)}
+                            //                         data-tracename="点击查看客户详情">
+                            //                     {Intl.get("call.record.show.customer.detail", "查看详情")}
+                            //                 </Button>
+                            //             </p>
+                            //         </div>
+                            //     );
+                            // })
                         }
                         {this.renderNotYourCustomer()}
                     </GeminiScrollbar>
@@ -697,12 +726,15 @@ class PhonePanel extends React.Component {
         Trace.traceEvent(e, "关闭客户详情");
         this.returnInfoPanel();
         let paramObj = this.props.paramObj;
-        if (_.isFunction(paramObj.customer_params.hideRightPanel)) {
+        if (paramObj.customer_params && _.isFunction(paramObj.customer_params.hideRightPanel)) {
             paramObj.customer_params.hideRightPanel();
         }
         if (_.isFunction(this.props.closePhonePanel)) {
             this.props.closePhonePanel();
         }
+        //清空存储的通话id和时间
+        phoneRecordObj.callid = "";
+        phoneRecordObj.received_time = "";//通话时间
     }
 
     renderPhoneStatus() {
@@ -800,6 +832,7 @@ class PhonePanel extends React.Component {
     render() {
         let paramObj = this.props.paramObj;
         let className = classNames("right-panel-content", {"crm-right-panel-content-slide": this.state.applyUserShowFlag});
+        let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
         return (
             <RightPanel showFlag={this.props.showFlag}
                         className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
@@ -809,7 +842,8 @@ class PhonePanel extends React.Component {
                 }}/>
                 <div className={className}>
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
-                    {paramObj.customer_params ? (
+                    {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
+                    {paramObj.customer_params && (!paramObj.call_params || phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) ? (
                         <CustomerDetail  {...paramObj.customer_params}
                                          hideRightPanel={this.hideRightPanel.bind(this)}
                                          showApplyUserForm={this.showApplyUserForm.bind(this)}
@@ -836,11 +870,15 @@ class PhonePanel extends React.Component {
         );
     }
 }
-PhonePanel.defaultProps = {
+
+PhonePanel
+    .defaultProps = {
     showFlag: false,
     paramObj: {
         call_params: null,//后端推送过来的电话状态相关的参数
         customer_params: null//客户详情相关的参数
     }
 };
-export default  PhonePanel;
+export
+default
+PhonePanel;

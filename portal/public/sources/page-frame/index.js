@@ -19,7 +19,7 @@ var PageFrame = React.createClass({
     getInitialState: function () {
         return {
             phonePanelShow: false,//是否展示拨打电话面板（包括：客户详情）
-            paramObj: emptyParamObj
+            paramObj: $.extend(true, {}, emptyParamObj)
         };
     },
     componentDidMount: function () {
@@ -35,7 +35,7 @@ var PageFrame = React.createClass({
         this.setState({phonePanelShow: true, paramObj: $.extend(true, this.state.paramObj, paramObj)});
     },
     closePhonePanel: function () {
-        this.setState({phonePanelShow: false, paramObj: emptyParamObj});
+        this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
     },
     //TODO delete
     setInitialPhoneObj: function () {
