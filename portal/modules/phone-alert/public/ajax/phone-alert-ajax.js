@@ -19,22 +19,6 @@ exports.getCustomerById = function (data) {
     });
     return Deferred.promise();
 };
-//根据客户id获取客户信息
-// exports.getCustomerById = function (customerId) {
-//     var Deferred = $.Deferred();
-//     $.ajax({
-//         url: '/rest/crm/customer/' + customerId,
-//         dataType: 'json',
-//         type: 'get',
-//         success: function (data) {
-//             Deferred.resolve(data);
-//         },
-//         error: function (errorMsg) {
-//             Deferred.reject(errorMsg.responseJSON);
-//         }
-//     });
-//     return Deferred.promise();
-// };
 //获取应用列表
 var getAppListsAjax;
 exports.getAppLists = function () {

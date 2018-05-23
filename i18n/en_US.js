@@ -2168,6 +2168,8 @@ var en_US = {
     "clue.customer.import.clue.suceess": "Import clues successfully",//导入线索成功
     "clue.customer.import.clue.failed": "Failed to import clues",//导入线索失败
     "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
-    "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import"//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
+    "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import",//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
+    "clue.customer.belong.to.other.sales": "This phone is registered to {customer} and belongs to {sales}",//该电话属于客户{customer}，所属销售{sales}
+    "phone.alert.select.customer": "Please select the customer to follow"//请选择要跟进的客户
 };
 export default en_US;

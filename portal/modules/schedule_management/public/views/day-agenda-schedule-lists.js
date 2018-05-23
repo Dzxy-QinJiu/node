@@ -128,14 +128,12 @@ class DayAgendaScheduleLists extends React.Component {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
         } else {
             if (this.state.callNumber) {
-                //把所拨打的电话号码和联系人的姓名emitter出去
-                // phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                //     {
-                //         phoneNum: phoneNumber.replace('-', ''),
-                //         contact: contactName,
-                //         customerDetail: item,//客户基本信息
-                //     }
-                // );
+                //把所拨打的联系人的姓名emitter出去
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        contact: contactName,
+                    }
+                );
                 let reqData = {
                     from: this.state.callNumber,
                     to: phoneNumber.replace('-', '')

@@ -202,7 +202,7 @@ class phoneStatusTop extends React.Component {
     getPhoneTipMsg(phonemsgObj) {
         //拨号的描述
         //如果是系统内拨号，展示联系人和电话，如果是从座机拨号，只展示所拨打的电话
-        var phoneNum = "";
+        var phoneNum = this.props.contactNameObj.contact ? this.props.contactNameObj.contact + "-" : "";
         if (phonemsgObj.call_type === "IN"){
             phoneNum = phonemsgObj.extId;
             if (phonemsgObj.type === PHONERINGSTATUS.phone){

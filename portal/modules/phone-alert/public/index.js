@@ -54,7 +54,6 @@ class PhoneAlert extends React.Component {
         this.state = {
             phonemsgObj: this.props.phonemsgObj,//存储后端推送来的不同通话状态的信息
             customerInfoArr: phoneAlertStore.getState().customerInfoArr,//通过电话号码来获取到客户的基本信息
-            // addTraceItemId: "",//添加某条跟进记录的id
             isModalShown: true,//是否显示模态框
             phoneNum: "",//话机打电话时的电话号码
             isAddFlag: false,//是否展示添加客户的右侧面板
@@ -69,7 +68,6 @@ class PhoneAlert extends React.Component {
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
             addCustomer:false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
-            // selectedCustomerId:"",//跟进记录要绑定的客户
         };
     }
 
@@ -161,6 +159,7 @@ class PhoneAlert extends React.Component {
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
                 //恢复初始数据
+                this.props.setInitialPhoneObj();
                 phoneAlertAction.setInitialState();
                 this.setState({
                     phoneNum: "",
@@ -523,6 +522,7 @@ class PhoneAlert extends React.Component {
                                 phonemsgObj={phonemsgObj}
                                 handleAddProductFeedback={this.handleAddProductFeedback}
                                 isModalShown={this.state.isModalShown}
+                                contactNameObj={this.props.contactNameObj}
                             />
                             <div className="phone-alert-inner-content">
                                 {this.renderMainContent()}

@@ -254,13 +254,11 @@ const ClueCustomer = React.createClass({
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
         } else {
             if (this.state.callNumber) {
-                // phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                //     {
-                //         phoneNum: phoneNumber.replace('-', ''),
-                //         contact: record.contact,
-                //         customerDetail: record,//客户基本信息
-                //     }
-                // );
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        contact: record.contact,
+                    }
+                );
                 let reqData = {
                     from: this.state.callNumber,
                     to: phoneNumber.replace('-', '')

@@ -80,14 +80,11 @@ var ContactItem = React.createClass({
                 if (this.props.contact && this.props.contact.contact) {
                     contact = this.props.contact.contact.name;
                 }
-                var curCustomer = this.props.curCustomer;
-                // phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
-                //     {
-                //         phoneNum: phone.replace('-', ''),
-                //         contact: contact,
-                //         customerDetail: curCustomer,//客户基本信息
-                //     }
-                // );
+                phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
+                    {
+                        contact: contact,
+                    }
+                );
                 let reqData = {
                     from: this.props.callNumber,
                     to: phone
