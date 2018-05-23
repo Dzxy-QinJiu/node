@@ -487,6 +487,16 @@ const ClueCustomer = React.createClass({
             }
         });
     },
+    //获取相对时间
+    getRelativeTime(time){
+        var relativeTime = "";
+        if (moment(time).isSame(new Date(), 'day')){
+            relativeTime = Intl.get("user.time.today", "今天");
+        }else{
+            relativeTime = moment(time).fromNow();
+        }
+        return relativeTime;
+    },
     //线索客户列表
     renderClueCustomerList(){
         var customerList = this.state.curCustomers;
@@ -526,6 +536,8 @@ const ClueCustomer = React.createClass({
                     addContent = item.customer_traces[0].remark;
                     addTime = moment(item.customer_traces[0].time).fromNow();
                 }
+                var relativeSourceTime = this.getRelativeTime(item.source_time);
+                var relativeStartTime = this.getRelativeTime(item.start_time);
                 return (
                     <div className={listCls}>
                         <div className={itemCls}>
@@ -546,7 +558,7 @@ const ClueCustomer = React.createClass({
                                         <div className="contact-way">{this.getContactList(item.contact_way, item)}</div>
                                     </div>
                                     <p>
-                                        {Intl.get("clue.customer.clue.time", "咨询于{relative}",{"relative": moment(item.source_time).fromNow()})}
+                                        {item.source_time ? Intl.get("clue.customer.clue.time", "咨询于{relative}",{"relative": relativeSourceTime}): null}
                                     </p>
                                 </Col>
                                 <Col sm={6} lg={3}>
@@ -554,7 +566,7 @@ const ClueCustomer = React.createClass({
                                         {item.source_user_name}
                                     </div>
                                     <p>
-                                        {Intl.get("cluecustomer.create.time", "创建于{startTime}", {"startTime": moment(item.start_time).fromNow()})}
+                                        {item.start_time ? Intl.get("cluecustomer.create.time", "创建于{startTime}", {"startTime": relativeStartTime}): null}
                                     </p>
                                 </Col>
                                 <Col sm={0} lg={3}>
