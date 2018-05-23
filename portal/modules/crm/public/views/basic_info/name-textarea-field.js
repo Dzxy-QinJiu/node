@@ -61,7 +61,7 @@ let NameTextareaField = React.createClass({
             this.props.setEditNameFlag(false);
             return;
         }
-        if(this.state.customerNameExist) return;
+        if (this.state.customerNameExist) return;
         let validation = this.refs.validation;
         validation.validate(valid => {
             if (!valid) {
@@ -144,7 +144,7 @@ let NameTextareaField = React.createClass({
                         this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
                     }
                 }
-            });
+            }, this.state.customerId);
         } else {
             this.setState({customerNameExist: false, checkNameError: false});
         }

@@ -161,7 +161,7 @@ class ClueRightPanel extends React.Component {
                         callback(Intl.get("clue.customer.check.repeat", "该线索名称已存在"));
                     }
                 }
-            });
+            }, this.state.curCustomer && this.state.curCustomer.id);
         } else {
             callback(Intl.get("clue.customer.fillin.clue.name", "请填写线索名称"));
         }
