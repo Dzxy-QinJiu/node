@@ -1,7 +1,6 @@
 /**
  * 单个用户日志的action
  */
-var AppUserStore = require('../store/app-user-store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 const LogAnalysisUtil = require("./log-analysis-util");
