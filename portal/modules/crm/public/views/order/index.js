@@ -74,10 +74,6 @@ const OrderIndex = React.createClass({
                 this.setState({curCustomer: nextProps.curCustomer});
                 setTimeout(() => {
                     this.getOrderList(nextProps.curCustomer, nextProps.isMerge);
-                    if (!nextProps.isMerge) {//合并客户时，不需要获取客户的用户列表
-                        OrderAction.setPageNum(1);
-                        this.getCrmUserList();
-                    }
                 });
             }
         },
