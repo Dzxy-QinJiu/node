@@ -33,8 +33,8 @@ const TIMEOUTDELAY = {
 import PhoneAlert from "MOD_DIR/phone-alert/public";
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 let callNumber = "",getCallNumErrMsg = "";//用户的坐席号
-//当前正在拨打的电话及联系人信息，从点击事件emitter出来
-var phoneObj = {};
+//当前正在拨打的联系人信息，从点击事件emitter出来
+var contactNameObj = {};
 //socketIo对象
 var socketIo;
 //推送过来新的消息后，将未读数加/减一
@@ -237,21 +237,25 @@ function getReplyTipContent(data) {
 }
 function listPhoneNum(data) {
     if (data) {
-        phoneObj = data;
+        contactNameObj = data;
     }
 }
-// phoneObj 是包含所拨打的电话号码和客户信息的对象
+// contactNameObj 是包含所拨打的联系人的信息对象
 function setInitialPhoneObj() {
-    phoneObj = {};
+    contactNameObj = {};
 }
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
-    if (hasPrivilege("CRM_LIST_CUSTOMERS") && phonemsgObj.type !== "BUSY") {
+    //过滤掉其他状态 只展示alert answered  phone状态的数据
+    if (hasPrivilege("CRM_LIST_CUSTOMERS") && (phonemsgObj.type === "ALERT" || phonemsgObj.type === "ANSWERED" || phonemsgObj.type === "phone")) {
+        if (phonemsgObj.type === "phone" && !phonemsgObj.customers){
+            phonemsgObj.customers = [];
+        }
+        console.log(phonemsgObj);
         ReactDOM.render(
-            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} phoneObj={phoneObj}
-                                             setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
+            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} contactNameObj={contactNameObj} setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
             document.getElementById('phone-alert-modal')
         );
     }

@@ -256,9 +256,7 @@ const ClueCustomer = React.createClass({
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
-                        phoneNum: phoneNumber.replace('-', ''),
                         contact: record.contact,
-                        customerDetail: record,//客户基本信息
                     }
                 );
                 let reqData = {
