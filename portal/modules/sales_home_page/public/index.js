@@ -219,14 +219,14 @@ var SalesHomePage = React.createClass({
         return phoneParams;
     },
     // 设置获取回访列表的接口参数
-    getCallBackList () {
+    getCallBackList (queryParam) {
         let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
             endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
-        let queryObj = {
+        let params = {
             start_time: startTime,
             end_time: endTime,
             page_size: 20,
-            lastId: '',
+            lastId: queryParam ? queryParam.lastId : '',
             sort_field: 'call_date',
             sort_order: 'descend',
             //电话记录类型
@@ -235,7 +235,7 @@ var SalesHomePage = React.createClass({
         let filterObj = {
             type: 'call_back'
         };
-        SalesHomeAction.getCallBackList(queryObj, filterObj);
+        SalesHomeAction.getCallBackList(params, filterObj);
     },
     //获取销售列的标题
     getSalesColumnTitle: function () {
@@ -384,14 +384,15 @@ var SalesHomePage = React.createClass({
     getCallBackListColumn () {
         let columns = [
             {
-                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'callDate'),
-                dataIndex: 'callDate',
+                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'call_date'),
+                dataIndex: 'call_date',
+                width: 100,
                 sorter: function (a, b) {
-                    return a.callDate - b.callDate;
+                    return a.call_date - b.call_date;
                 },
-                className: 'has-filter table-data-align-right',
-                render: (callDate) => {
-                    var displayTime = moment(new Date(+callDate)).format(DATE_TIME_FORMAT);
+                className: 'has-sorter table-data-align-right',
+                render: (call_date) => {
+                    var displayTime = moment(new Date(+call_date)).format(DATE_TIME_FORMAT);
                     return (
                         <div title={displayTime}>
                             {displayTime}
@@ -401,17 +402,20 @@ var SalesHomePage = React.createClass({
             },
             {
                 title: Intl.get("crm.41", "客户名"),
-                dataIndex: 'customerName',
+                dataIndex: 'customer_name',
+                width: 100,
                 className: 'table-data-align-right',
             },
             {
                 title: Intl.get("menu.trace", "跟进记录"),
                 dataIndex: 'remark',
+                width: 100,
                 className: 'table-data-align-right',
             },
             {
                 title: Intl.get("common.callback.person", "回访人"),
-                dataIndex: 'nickName',
+                dataIndex: 'nick_name',
+                width: 100,
                 className: 'table-data-align-right',
             }
         ];
@@ -546,21 +550,55 @@ var SalesHomePage = React.createClass({
                 </div>
             </div>);
         } else if (this.state.activeView === viewConstant.CALL_BACK) {
+            // 首次加载时不显示下拉加载状态
+            const handleScrollLoading = () => {
+                if (this.state.callBackRecord.page === 1) {
+                    return false;
+                }
+                return this.state.callBackRecord.is_loading;
+            };
+            // 下拉加载数据
+            const handleScrollBottom = () => {
+                let callBackRecordList = this.state.callBackRecord.data_list, lastId;
+                if (_.isArray(callBackRecordList) && callBackRecordList.length > 0) {
+                    lastId = callBackRecordList[callBackRecordList.length - 1].id;//最后一个客户的id
+                }
+                this.getCallBackList({ lastId: lastId });
+            };
+            // 显示没有更多数据提示
+            const showNoMoreDataTip = () => {
+                return !this.state.callBackRecord.is_loading &&
+                        this.state.callBackRecord.data_list.length >= this.state.callBackRecord.page_size &&
+                        !this.state.callBackRecord.listenScrollBottom;
+            };
+            const dropLoadConfig = {
+                loading: handleScrollLoading(),
+                listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
+                handleScrollBottom,
+                showNoMoreDataTip: showNoMoreDataTip(),
+            };
             return (
                 <div className='sales-table-container'>
-                    <div className='callback-table-block' style={{height: this.getListBlockHeight()}}>
-                        <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref='callBackScrollbar'>
-                            <AntcTable
-                                dataSource={this.state.callBackList}
-                                columns={this.getCallBackListColumn()}
-                                loading={this.state.isLoadingCallBackList}
-                                pagination={false}
-                                bordered
-                                util={{zoomInSortArea: true}}
-                                onChange={this.onCallBackTableChange}
+                    {
+                        this.state.isLoadingCallBackList ? (
+                            <Spinner
+                                className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading) ? 'spin-fix' : 'hide'}
                             />
-                        </GeminiScrollbar>
-                    </div>
+                        ) : (
+                            <div className='callback-table-block' style={{height: this.getListBlockHeight()}}>
+                                <AntcTable
+                                    dropLoad={dropLoadConfig}
+                                    dataSource={this.state.callBackRecord.data_list}
+                                    columns={this.getCallBackListColumn()}
+                                    pagination={false}
+                                    bordered
+                                    util={{zoomInSortArea: true}}
+                                    onChange={this.onCallBackTableChange}
+                                    scroll={{y: 600}}
+                                />
+                            </div>
+                        )
+                    }
                 </div>
             );
         }
@@ -634,6 +672,7 @@ var SalesHomePage = React.createClass({
     onSelectDate: function (startTime, endTime, timeType) {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         SalesHomeAction.changeSearchTime(timeObj);
+        SalesHomeAction.resetCallBackRecord();
         setTimeout(() => {
             //刷新统计数据
             this.refreshSalesListData();
@@ -714,7 +753,6 @@ var SalesHomePage = React.createClass({
             //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
             setTimeout(() => {
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
-                this.refs.callBackScrollbar && this.refs.callBackScrollbar.update();
             }, 1000);
         });
     },

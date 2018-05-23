@@ -1,6 +1,7 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
 var userData = require("../../../../public/sources/user-data");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
+let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var _ = require("underscore");
 
 function SalesHomeActions() {
@@ -16,7 +17,8 @@ function SalesHomeActions() {
         'getWebsiteConfig',//获取网站个性化设置
         'setWebsiteConfig',//对网站进行个性化设置
         'setInitState',//设置初始化数据
-        'updateSalesTeamMembersObj'//修改团队成员列表中的信息（销售角色）
+        'updateSalesTeamMembersObj',//修改团队成员列表中的信息（销售角色）
+        'resetCallBackRecord', // 重置回访记录列表状态
     );
 
     //获取当前登录销售的角色（销售/经理/总监）
@@ -238,6 +240,7 @@ function SalesHomeActions() {
         this.dispatch({loading: true, error: false});
         salesHomeAjax.getCallBackList(params, filterObj)
             .then(resData => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 this.dispatch({loading: false, error: false, resData: resData});
             },
             errorMsg => {

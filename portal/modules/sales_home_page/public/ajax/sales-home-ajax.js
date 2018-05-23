@@ -376,8 +376,10 @@ exports.getCallBackList = function (params, filterObj) {
         success: function (data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+        error: function (xhr, textStatus) {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();
