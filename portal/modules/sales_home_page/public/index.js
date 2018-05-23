@@ -121,13 +121,13 @@ var SalesHomePage = React.createClass({
     getWebConfig: function () {
         SalesHomeAction.getWebsiteConfig();
     },
-    getPhoneListBlockHeight: function () {
-        let phoneListHeight = null;
+    getListBlockHeight: function () {
+        let listHeight = null;
         if (this.state.scrollbarEnabled) {
-            phoneListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
+            listHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
                 layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
         }
-        return phoneListHeight;
+        return listHeight;
     },
     componentWillUnmount: function () {
         SalesHomeAction.setInitState();
@@ -188,7 +188,7 @@ var SalesHomePage = React.createClass({
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
         SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
-        SalesHomeAction.getCallBackList(queryParams);
+        this.getCallBackList();
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
@@ -217,6 +217,25 @@ var SalesHomePage = React.createClass({
             phoneParams.team_ids = this.state.currShowSalesTeam.group_id;
         }
         return phoneParams;
+    },
+    // 设置获取回访列表的接口参数
+    getCallBackList () {
+        let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
+            endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
+        let queryObj = {
+            start_time: startTime,
+            end_time: endTime,
+            page_size: 20,
+            lastId: '',
+            sort_field: 'call_date',
+            sort_order: 'descend',
+            //电话记录类型
+            phone_type: 'all',
+        };
+        let filterObj = {
+            type: 'call_back'
+        };
+        SalesHomeAction.getCallBackList(queryObj, filterObj);
     },
     //获取销售列的标题
     getSalesColumnTitle: function () {
@@ -365,15 +384,14 @@ var SalesHomePage = React.createClass({
     getCallBackListColumn () {
         let columns = [
             {
-                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'callBackTime'),
-                dataIndex: 'callBackTime',
-                key: 'call_back_time',
+                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'callDate'),
+                dataIndex: 'callDate',
                 sorter: function (a, b) {
-                    return a.callBackTime - b.callBackTime;
+                    return a.callDate - b.callDate;
                 },
                 className: 'has-filter table-data-align-right',
-                render: (callBackTime) => {
-                    var displayTime = moment(new Date(+callBackTime)).format(DATE_TIME_FORMAT);
+                render: (callDate) => {
+                    var displayTime = moment(new Date(+callDate)).format(DATE_TIME_FORMAT);
                     return (
                         <div title={displayTime}>
                             {displayTime}
@@ -384,19 +402,16 @@ var SalesHomePage = React.createClass({
             {
                 title: Intl.get("crm.41", "客户名"),
                 dataIndex: 'customerName',
-                key: 'customer_name',
                 className: 'table-data-align-right',
             },
             {
                 title: Intl.get("menu.trace", "跟进记录"),
-                dataIndex: 'followRecords',
-                key: 'follow_records',
+                dataIndex: 'remark',
                 className: 'table-data-align-right',
             },
             {
                 title: Intl.get("common.callback.person", "回访人"),
-                dataIndex: 'callBackPerson',
-                key: 'call_back_person',
+                dataIndex: 'nickName',
                 className: 'table-data-align-right',
             }
         ];
@@ -509,7 +524,7 @@ var SalesHomePage = React.createClass({
         } else if (this.state.activeView == viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}
-                <div className="phone-table-block" style={{height: this.getPhoneListBlockHeight()}}>
+                <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
                                    loading={this.state.isLoadingPhoneList}
@@ -533,16 +548,18 @@ var SalesHomePage = React.createClass({
         } else if (this.state.activeView === viewConstant.CALL_BACK) {
             return (
                 <div className='sales-table-container'>
-                    <div className='phone-table-block'>
-                        <AntcTable
-                            dataSource={this.state.callBackList}
-                            columns={this.getCallBackListColumn()}
-                            loading={this.state.isLoadingCallBackList}
-                            pagination={false}
-                            bordered
-                            util={{zoomInSortArea: true}}
-                            onChange={this.onCallBackTableChange}
-                        />
+                    <div className='callback-table-block' style={{height: this.getListBlockHeight()}}>
+                        <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref='callBackScrollbar'>
+                            <AntcTable
+                                dataSource={this.state.callBackList}
+                                columns={this.getCallBackListColumn()}
+                                loading={this.state.isLoadingCallBackList}
+                                pagination={false}
+                                bordered
+                                util={{zoomInSortArea: true}}
+                                onChange={this.onCallBackTableChange}
+                            />
+                        </GeminiScrollbar>
                     </div>
                 </div>
             );
@@ -697,6 +714,7 @@ var SalesHomePage = React.createClass({
             //展开、关闭团队列表的时间未1s,所以需要加1s的延时后更新滚动条才起作用
             setTimeout(() => {
                 this.refs.phoneScrollbar && this.refs.phoneScrollbar.update();
+                this.refs.callBackScrollbar && this.refs.callBackScrollbar.update();
             }, 1000);
         });
     },

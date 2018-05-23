@@ -1054,7 +1054,7 @@ const CallRecord = React.createClass({
             //电话记录类型
             phone_type: this.getReqParam(queryParam, 'phone_type'),
         };
-
+        
         CallRecordActions.getCallRecordList(queryObj, this.state.filterObj);
     },
 

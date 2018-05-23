@@ -27,8 +27,10 @@ var restApis = {
     websiteConfig:"/rest/base/v1/user/website/config",
     //获取各销售对应的通话状态
     getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids",
-    // 获取回访列表
-    getCallBack: '/rest/customer/v2/callback'
+    // 获取全部和客户电话的列表（团队）
+    callRecordListUrl: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    // 获取全部和客户电话的列表（所有的，包括不在团队里的数据）
+    managerCallRcordListUrl: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
 };
 exports.restUrls = restApis;
 
@@ -184,17 +186,29 @@ exports.setWebsiteConfig = function (req, res ,reqObj) {
 };
 
 //获取回访列表
-exports.getCallBack = function (req, res, reqData) {
-    return restUtil.authRest.get(
+exports.getCallBack = function (req, res, params, filterObj, queryObj) {
+    let url = params.type === 'manager' ? restApis.managerCallRcordListUrl : restApis.callRecordListUrl;
+    url = url.replace(':start_time', params.start_time)
+    .replace(':end_time', params.end_time)
+    .replace(':page_size', params.page_size)
+    .replace(':sort_field', params.sort_field)
+    .replace(':sort_order', params.sort_order);
+    if (queryObj) {
+        if (queryObj.id) {
+            url += '?id=' + queryObj.id;
+            url += '&filter_phone=' + queryObj.filter_phone;// 是否过滤114电话号码
+            url += '&filter_invalid_phone=' + queryObj.filter_phone;//是否过滤无效的电话号码（客服电话）
+        }
+        else {
+            url += '?filter_phone=' + queryObj.filter_phone;
+            url += '&filter_invalid_phone=' + queryObj.filter_phone;//是否过滤无效的电话号码（客服电话）
+        }       
+    }
+
+    return restUtil.authRest.post(
         {
-            url: restApis.getCallBack,
+            url: url,
             req: req,
             res: res
-        }, reqData, {
-            success: function (eventEmitter, data) {
-                // 处理数据
-                var callBack = salesObj.toFrontCallBack(data);
-                eventEmitter.emit("success", callBack);
-            }
-        });
+        }, filterObj);
 };

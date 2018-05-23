@@ -87,11 +87,11 @@ module.exports = {
         ]
     },
     {
-        "method": "get",
-        "path": '/rest/customer/callback',
-        "handler": "getCallBack",
-        "passport": {
-            "needLogin": true
+        'method': 'post',
+        'path': '/rest/call_record/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+        'handler': 'getCallBack',
+        'passport': {
+            'needLogin': true
         }
     },
     ]

@@ -234,9 +234,9 @@ function SalesHomeActions() {
 
     };
     // 获取回访列表
-    this.getCallBackList = function (reqData) {
+    this.getCallBackList = function (params, filterObj) {
         this.dispatch({loading: true, error: false});
-        salesHomeAjax.getCallBackList(reqData)
+        salesHomeAjax.getCallBackList(params, filterObj)
             .then(resData => {
                 this.dispatch({loading: false, error: false, resData: resData});
             },

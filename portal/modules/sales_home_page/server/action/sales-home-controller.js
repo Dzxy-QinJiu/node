@@ -92,7 +92,7 @@ exports.setWebsiteConfig = function (req, res) {
 
 // 获取回访列表
 exports.getCallBack = function (req, res) {
-    salesHomeService.getCallBack(req, res, req.query).on("success", function (data) {
+    salesHomeService.getCallBack(req, res, req.params, req.body, req.query).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

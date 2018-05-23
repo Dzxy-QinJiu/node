@@ -676,7 +676,18 @@ SalesHomeStore.prototype.getCallBackList = function (result) {
     this.isLoadingCallBackList = false;
     let data = result.resData;
     if (data && _.isObject(data)) {
-        this.callBackList = _.isArray(data.callBackList) ? data.callBackList : [];
+        let callBackList = [];
+        if (_.isArray(data.result) && data.result.length > 0) {
+            callBackList = data.result.map(item => {
+                return {
+                    callDate: item.call_date || '', // 回访时间
+                    customerName: item.customer_name || '', // 客户名
+                    remark: item.remark || '', // 回访记录
+                    nickName: item.nick_name || '', // 回访人
+                };
+            });
+        }
+        this.callBackList = callBackList;
     } else {
         this.callBackList = [];
     }
