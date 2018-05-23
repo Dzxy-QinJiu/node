@@ -14,7 +14,7 @@ import OperationReportAction from "./action/operation-report-action";
 import OperationReportStore from "./store/operation-report-store";
 import userData from "../../../public/sources/user-data";
 import html2canvasExport from "html2canvas";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import Trace from "LIB_DIR/trace";
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 import { storageUtil } from "ant-utils";
@@ -577,9 +577,9 @@ let OperationReport = React.createClass({
             const img = canvas.toDataURL("image/png");
             const imgWidth = canvas.width;
             const imgHeight = canvas.height;
-            const doc = new jsPDF("p", "px", [imgWidth, imgHeight]);
-            doc.addImage(img, "PNG", 0, 0, imgWidth, imgHeight);
-            doc.save("operation-report.pdf");
+            // const doc = new jsPDF("p", "px", [imgWidth, imgHeight]);
+            // doc.addImage(img, "PNG", 0, 0, imgWidth, imgHeight);
+            // doc.save("operation-report.pdf");
 
             this.setState({
                 exportPercent: 100,
