@@ -138,6 +138,9 @@ class CustomerUsers extends React.Component {
 
     closeRightPanel() {
         this.setState({applyType: ""});
+        if (_.isFunction(this.props.closeOpenAppPanel)) {
+            this.props.closeOpenAppPanel();
+        }
     }
 
     getApplyFlag() {
@@ -268,6 +271,9 @@ class CustomerUsers extends React.Component {
             traceDescr = "打开申请其他类型面板";
         } else if (applyType === APPLY_TYPES.OPEN_APP) {
             traceDescr = "打开申请开通应用面板";
+            if (_.isFunction(this.props.showOpenAppForm)) {
+                this.props.showOpenAppForm(applyType);
+            }
         }
         Trace.traceEvent("客户详情", traceDescr);
         this.setState({applyType: applyType});
@@ -452,11 +458,13 @@ class CustomerUsers extends React.Component {
             this.props.ShowCustomerUserListPanel({customerObj: this.state.curCustomer || {}});
         }
     }
-    handleScrollBottom(){
+
+    handleScrollBottom() {
         this.getCrmUserList();
     }
+
     render() {
-        const userNum = this.state.total||0;
+        const userNum = this.state.total || 0;
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
@@ -486,8 +494,8 @@ class CustomerUsers extends React.Component {
                                   closeApplyPanel={this.closeRightPanel.bind(this)}
                                   crmUserList={this.state.crmUserList}/>) : null}
             <ul className="crm-user-list" style={{height: divHeight}}>
-                <GeminiScrollbar  listenScrollBottom={this.state.listenScrollBottom}
-                                  handleScrollBottom={this.handleScrollBottom.bind(this)}>
+                <GeminiScrollbar listenScrollBottom={this.state.listenScrollBottom}
+                                 handleScrollBottom={this.handleScrollBottom.bind(this)}>
                     {this.renderCrmUserList(isApplyButtonShow)}
                 </GeminiScrollbar>
             </ul>

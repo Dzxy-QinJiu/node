@@ -23,6 +23,7 @@ var CrmRightPanel = React.createClass({
         return {
             activeKey: "1",//tab激活页的key
             applyUserShowFlag: false,//申请用户界面是否展示
+            openAppShowFlag: false,//开通应用界面是否展示
             applyType: 2,//2：申请新增试用用户，3，申请新增正式用户
             apps: [],
             curOrder: {},
@@ -51,10 +52,12 @@ var CrmRightPanel = React.createClass({
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
             this.state.applyUserShowFlag = false;
+            this.state.openAppShowFlag = false;
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
         } else if (nextProps.currentId !== this.props.currentId) {
             this.state.applyUserShowFlag = false;
+            this.state.openAppShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
     },
@@ -90,11 +93,14 @@ var CrmRightPanel = React.createClass({
             this.setState({applyUserShowFlag: true});
         });
     },
-
+    showOpenAppForm: function () {
+        this.setState({openAppShowFlag: true});
+    },
     returnInfoPanel: function () {
-        //申请后返回
+        //申请、开通应用后返回
         this.setState({
-            applyUserShowFlag: false
+            applyUserShowFlag: false,
+            openAppShowFlag: false
         });
     },
 
@@ -103,6 +109,7 @@ var CrmRightPanel = React.createClass({
         this.props.hideRightPanel();
         this.setState({
             applyUserShowFlag: false,
+            openAppShowFlag: false,
             activeKey: "1"
         });
     },
@@ -121,7 +128,7 @@ var CrmRightPanel = React.createClass({
         }
         return (
             <RightPanel showFlag={this.props.showFlag}
-                        className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
+                        className={this.state.applyUserShowFlag || this.state.openAppShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
                         data-tracename="客户详情">
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hideRightPanel(e);
@@ -189,6 +196,8 @@ var CrmRightPanel = React.createClass({
                                             refreshCustomerList={this.props.refreshCustomerList}
                                             ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                             userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                                            showOpenAppForm={this.showOpenAppForm}
+                                            closeOpenAppPanel={this.returnInfoPanel}
                                         />
                                     ) : null}
                                 </TabPane>
