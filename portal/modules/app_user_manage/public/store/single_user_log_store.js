@@ -76,9 +76,15 @@ SingleUserLogStore.prototype.getSingleAuditLogList = function (result) {
 };
 
 //获取用户应用列表
-SingleUserLogStore.prototype.getSingleUserAppList = function({appId,appList}) {
-    this.selectedLogAppId = appId;
-    this.userOwnAppArray = appList;
+SingleUserLogStore.prototype.getSingleUserAppList = function(obj) {
+    if (obj.error) {
+        this.logListLoading = "";
+        this.getUserLogErrorMsg = obj.errorMsg || Intl.get('errorcode.53', '获取应用列表失败！');
+    } else {
+        this.selectedLogAppId = obj.appId;
+        this.userOwnAppArray = obj.appList;
+    }
+
 };
 
 SingleUserLogStore.prototype.setSelectedAppId = function(appId){

@@ -6,6 +6,16 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
 const LogAnalysisUtil = require("./log-analysis-util");
 
+function handleLogParams(_this, getLogParam, userOwnAppList) {
+    getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
+    _this.dispatch(
+        {
+            appId:  getLogParam.appid,
+            appList: userOwnAppList
+        }
+    );
+};
+
 function SingleUserLogAction() {
     this.generateActions(
         "dismiss", // 切换用户时，恢复到默认状态
@@ -20,56 +30,46 @@ function SingleUserLogAction() {
     );
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function (searchObj, selectedAppId, appLists) {
-        let getLogParam = {
-            user_id: searchObj.user_id,
-            page: searchObj.page,
-            type_filter: searchObj.type_filter
-        };
-        if (searchObj.starttime) {
-            getLogParam.starttime = searchObj.starttime;
-        }
-        if (searchObj.endtime) {
-            getLogParam.endtime = searchObj.endtime;
-        }
-        if (searchObj.search) {
-            getLogParam.search = searchObj.search;
-        }
-        let userOwnAppList = [];
-        if (selectedAppId) { // 已选中应用
-            getLogParam.appid = selectedAppId;
-        } else { // 全部应用条件下查看
-            if (appLists.length) {
-                userOwnAppList = appLists;
-                getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
-                this.dispatch(
-                    {
-                        appId:  getLogParam.appid,
-                        appList: userOwnAppList
-                    }
-                );
-            } else {
-                userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-                    if (_.isObject(result) && result.apps) {
-                        userOwnAppList = result.apps;
-                        getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
-                        // 日志列表信息
-                        this.actions.getSingleAuditLogList(getLogParam);
-                        this.dispatch(
-                            {
-                                appId:  getLogParam.appid,
-                                appList: userOwnAppList
-                            }
-                        );
-                    }
-                }, () => {
-                    // 日志列表信息
-                    this.actions.getSingleAuditLogList();
-                } );
-                return;
+        if (_.isObject(searchObj)) {
+            let getLogParam = {
+                user_id: searchObj.user_id,
+                page: searchObj.page,
+                type_filter: searchObj.type_filter
+            };
+            if (searchObj.starttime) {
+                getLogParam.starttime = searchObj.starttime;
             }
+            if (searchObj.endtime) {
+                getLogParam.endtime = searchObj.endtime;
+            }
+            if (searchObj.search) {
+                getLogParam.search = searchObj.search;
+            }
+            if (selectedAppId) { // 已选中应用
+                getLogParam.appid = selectedAppId;
+            } else { // 全部应用条件下查看
+                if (appLists.length) {
+                    handleLogParams(this, getLogParam, appLists);
+                } else {
+                    userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+                        if (_.isObject(result) && result.apps) {
+                            handleLogParams(this, getLogParam, result.apps);
+                            // 日志列表信息
+                            this.actions.getSingleAuditLogList(getLogParam);
+                        }
+                    }, () => {
+                        // 获取应用列表失败的处理
+                        this.dispatch({error: true, errorMsg: Intl.get('errorcode.53', '获取应用列表失败！')});
+                    } );
+                    return;
+                }
+            }
+            // 日志列表信息
+            this.actions.getSingleAuditLogList(getLogParam);
+        } else {
+            // 请求参数错误
+            this.dispatch({error: true, errorMsg: Intl.get('user.log.param.error', '请求参数错误!')});
         }
-        // 日志列表信息
-        this.actions.getSingleAuditLogList(getLogParam);
     };
 
     // 获取单个用户的审计日志信息
