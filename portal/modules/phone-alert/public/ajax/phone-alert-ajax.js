@@ -1,9 +1,9 @@
-var getCustomerByPhoneAjax;
-exports.getCustomerByPhone = function (data) {
-    getCustomerByPhoneAjax && getCustomerByPhoneAjax.abort();
+var getCustomerByIdAjax;
+exports.getCustomerById = function (data) {
+    getCustomerByIdAjax && getCustomerByIdAjax.abort();
     var Deferred = $.Deferred();
     var pageSize = 10;
-    getCustomerByPhoneAjax = $.ajax({
+    getCustomerByIdAjax = $.ajax({
         url: '/rest/customer/v2/customer/range/' + pageSize + "/" + "start_time" + "/" + "descend",
         dataType: 'json',
         type: 'post',
@@ -20,21 +20,21 @@ exports.getCustomerByPhone = function (data) {
     return Deferred.promise();
 };
 //根据客户id获取客户信息
-exports.getCustomerById = function (customerId) {
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/crm/customer/' + customerId,
-        dataType: 'json',
-        type: 'get',
-        success: function (data) {
-            Deferred.resolve(data);
-        },
-        error: function (errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
+// exports.getCustomerById = function (customerId) {
+//     var Deferred = $.Deferred();
+//     $.ajax({
+//         url: '/rest/crm/customer/' + customerId,
+//         dataType: 'json',
+//         type: 'get',
+//         success: function (data) {
+//             Deferred.resolve(data);
+//         },
+//         error: function (errorMsg) {
+//             Deferred.reject(errorMsg.responseJSON);
+//         }
+//     });
+//     return Deferred.promise();
+// };
 //获取应用列表
 var getAppListsAjax;
 exports.getAppLists = function () {

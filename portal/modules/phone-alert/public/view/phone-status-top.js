@@ -79,7 +79,7 @@ class phoneStatusTop extends React.Component {
             });
         }
         var $modal = $("body >#phone-alert-modal #phone-alert-container");
-        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
+        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (phonemsgObj.type == PHONERINGSTATUS.phone)) {
             this.setInitialData(phonemsgObj);
         }
         //如果外面通话结束后点击关闭按钮
@@ -144,7 +144,6 @@ class phoneStatusTop extends React.Component {
             selectedCustomerId: customerId
         });
     };
-
     renderTraceItem() {
         var onHide = function () {
             phoneAlertAction.setSubmitErrMsg("");

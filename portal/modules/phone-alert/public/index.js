@@ -120,15 +120,8 @@ class PhoneAlert extends React.Component {
             if (!this.state.isModalShown) {
                 Trace.traceEvent("电话弹屏", '弹出电话弹屏');
             }
-            //跟进记录的id
-            // var addTraceItemId = phonemsgObj.id || "";
-            // if (addTraceItemId) {
-            //     this.setState({
-            //         addTraceItemId: addTraceItemId,
-            //     });
-            // }
             //通话结束后，包含输入跟进记录的容器的高度需要变大
-            if (phonemsgObj.type === PHONERINGSTATUS.phone && ((_.isArray(this.state.phonemsgObj.customers) && this.state.phonemsgObj.customers.length) || this.state.customerInfoArr.length)) {
+            if (phonemsgObj.type === PHONERINGSTATUS.phone && (this.state.customerInfoArr.length)) {
                 this.setState({
                     isInitialHeight: false
                 });
@@ -138,7 +131,6 @@ class PhoneAlert extends React.Component {
             if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
                 this.setInitialData(phonemsgObj);
             }
-
     }
     setInitialData(phonemsgObj){
         var phoneNum = "";
@@ -152,13 +144,10 @@ class PhoneAlert extends React.Component {
         this.state.phonemsgObj = phonemsgObj;
         this.state.isAddFlag = false;
         this.state.rightPanelIsShow = false;
-        // this.state.addTraceItemId = "";
         this.state.isInitialHeight = true;
-        // this.state.selectedCustomerId = "";
         this.setState(this.state);
         //恢复初始数据
         phoneAlertAction.setInitialState();
-        // phoneAlertAction.getCustomerByPhone(phoneNum);
         sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
         this.props.setInitialPhoneObj();
     }
@@ -295,7 +284,7 @@ class PhoneAlert extends React.Component {
         } else if ((_.isArray(this.state.phonemsgObj.customers) && this.state.phonemsgObj.customers.length != 0) || this.state.customerInfoArr.length) {
             //客户存在时，展示详情
             var divHeight = "";
-            if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!(_.isArray(this.state.phonemsgObj.customers) && this.state.phonemsgObj.customers.length == 0) || this.state.customerInfoArr.length)) {
+            if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (this.state.customerInfoArr.length)) {
                 //顶部textare输入框展开后
                 if (!this.state.isEdittingTrace && this.state.customerLayoutHeight) {
                     divHeight = this.state.customerLayoutHeight;
@@ -508,15 +497,11 @@ class PhoneAlert extends React.Component {
     };
 
     render() {
-        var _this = this;
         var phonemsgObj = this.state.phonemsgObj;
-
         //有监听到推送消息时再渲染出页面
         if (_.isEmpty(phonemsgObj)) {
             return;
         }
-
-
         var AddMoreInfoCls = classNames({
             'phone-alert-modal-inner': true,
             'add-more-info': this.state.isAddingMoreProdctInfo
@@ -569,7 +554,6 @@ class PhoneAlert extends React.Component {
                         /> : null
                     }
                 </RightPanel> : null}
-
             </div>
         );
     }
