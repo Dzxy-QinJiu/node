@@ -1,9 +1,7 @@
-var getCustomerByIdAjax;
 exports.getCustomerById = function (data) {
-    getCustomerByIdAjax && getCustomerByIdAjax.abort();
     var Deferred = $.Deferred();
     var pageSize = 10;
-    getCustomerByIdAjax = $.ajax({
+    $.ajax({
         url: '/rest/customer/v2/customer/range/' + pageSize + "/" + "start_time" + "/" + "descend",
         dataType: 'json',
         type: 'post',
