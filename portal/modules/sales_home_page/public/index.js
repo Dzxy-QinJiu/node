@@ -550,6 +550,9 @@ var SalesHomePage = React.createClass({
                 </div>
             </div>);
         } else if (this.state.activeView === viewConstant.CALL_BACK) {
+            let tableClassnames = classNames('callback-table-block',{
+                'hide-body': this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading,
+            });
             // 首次加载时不显示下拉加载状态
             const handleScrollLoading = () => {
                 if (this.state.callBackRecord.page === 1) {
@@ -578,27 +581,24 @@ var SalesHomePage = React.createClass({
                 showNoMoreDataTip: showNoMoreDataTip(),
             };
             return (
-                <div className='sales-table-container'>
-                    {
-                        this.state.isLoadingCallBackList ? (
-                            <Spinner
-                                className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading) ? 'spin-fix' : 'hide'}
+                <div>
+                    <Spinner
+                        className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading) ? 'spin-fix' : 'hide'}
+                    />
+                    <div className='sales-table-container'>
+                        <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
+                            <AntcTable
+                                dropLoad={dropLoadConfig}
+                                dataSource={this.state.callBackRecord.data_list}
+                                columns={this.getCallBackListColumn()}
+                                pagination={false}
+                                bordered
+                                util={{zoomInSortArea: true}}
+                                onChange={this.onCallBackTableChange}
+                                scroll={{y: 400}}
                             />
-                        ) : (
-                            <div className='callback-table-block' style={{height: this.getListBlockHeight()}}>
-                                <AntcTable
-                                    dropLoad={dropLoadConfig}
-                                    dataSource={this.state.callBackRecord.data_list}
-                                    columns={this.getCallBackListColumn()}
-                                    pagination={false}
-                                    bordered
-                                    util={{zoomInSortArea: true}}
-                                    onChange={this.onCallBackTableChange}
-                                    scroll={{y: 600}}
-                                />
-                            </div>
-                        )
-                    }
+                        </div>
+                    </div>
                 </div>
             );
         }
