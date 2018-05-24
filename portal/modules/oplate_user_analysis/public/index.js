@@ -414,6 +414,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     }, {
                         title: Intl.get("user.user.team", "团队"),
                         dataIndex: 'sales_team_name',
+                        isSetCsvValueBlank: true,
                     },
                 ],
             },
