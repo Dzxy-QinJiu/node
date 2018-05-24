@@ -419,7 +419,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             customOption: {
                 fieldName: "app_map",
-                fieldType: "object",
                 needExtractColumns: true,
                 needSummaryColumn: true,
                 summaryColumnTitle: Intl.get("sales.home.total.compute", "总计"),
@@ -623,7 +622,6 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             customOption: {
                 fieldName: "actives",
-                fieldType: "array",
                 needExtractColumns: true,
                 callback: dataItem => {
                     const actives = dataItem.actives;
