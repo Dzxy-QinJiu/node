@@ -294,7 +294,9 @@ class phoneStatusTop extends React.Component {
                     </div>
                 </div>
                 <div className="trace-content-container">
-                    {(!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0)) ? this.renderTraceItem() : null}
+                    {   //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
+                        phonemsgObj.type === PHONERINGSTATUS.phone && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
+                    }
                 </div>
                 {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
                     <div className="add-more-info-container">

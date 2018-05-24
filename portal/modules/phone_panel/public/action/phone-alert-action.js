@@ -14,7 +14,8 @@ function PhoneAlertAction() {
         'setAddCustomerInfo',
         'setSubmitErrMsg',
         'setCustomerInfoArr',
-        'setInitialCustomerArr'
+        'setInitialCustomerArr',
+        'toggleCustomerDetail'
     );
     this.getCustomerById = function (customerId) {
         var rangParams = [{//时间范围参数

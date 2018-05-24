@@ -16,7 +16,7 @@ import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 import AddMoreInfo from "./view/add-more-info";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-
+import {Button} from "antd";
 import {RightPanel, RightPanelClose, RightPanelReturn} from "CMP_DIR/rightPanel";
 import CustomerDetail from "MOD_DIR/crm/public/views/customer-detail";
 import ApplyUserForm from "MOD_DIR/crm/public/views/apply-user-form";
@@ -345,51 +345,56 @@ class PhonePanel extends React.Component {
             curCustomerId: id
         });
     };
+    toggleCustomerDetail = (id) => {
+        // 舆情秘书角色不让看详情
+        if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
+            return;
+        }
+        phoneAlertAction.toggleCustomerDetail(id);
+    };
     //关闭已有客户的右侧面板
     hideRightPanel = () => {
         this.setState({
             rightPanelIsShow: false
         });
     };
-    //获取行政级别
-    getAdministrativeLevel(levelId) {
-        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
-        return levelObj ? levelObj.level : "";
-    }
 
-    renderNotYourCustomer() {
-        //如果获取的客户列表数量小于后端传来的客户数量，证明此电话也属于别的销售
-        var customerInfoArr = this.state.customerInfoArr;
-        let phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
-        var totalCustomerArr = phonemsgObj.customers;
-        var otherCustomerArr = [];
-        if (_.isArray(customerInfoArr) && _.isArray(totalCustomerArr) && customerInfoArr.length < totalCustomerArr.length) {
-            var customerIdArr = _.pluck(customerInfoArr, 'id');
-            _.each(totalCustomerArr, (customerItem) => {
-                if (_.indexOf(customerIdArr, customerItem.id) == -1) {
-                    otherCustomerArr.push(customerItem);
-                }
-            });
-        }
-        if (otherCustomerArr.length) {
-            return (
-                <div className="other-customer-container">
-                    {_.map(otherCustomerArr, (item) => {
-                        return (
-                            <span>
-                                {Intl.get("clue.customer.belong.to.other.sales", "该电话属于客户{customer}，所属销售{sales}", {
-                                    "customer": item.name,
-                                    "sales": item.user_name
-                                })}
-                            </span>
-                        );
-                    })}
+    //渲染多个客户卡片列表
+    renderCustomerList(customer, myCustomer) {
+        return (
+            <div>
+                <div className="customer-name">
+                    <h3>
+                        <i className="iconfont icon-interested"/>
+                        <span>{customer.name}</span>
+                    </h3>
+                    <dl className="customer-info">
+                        <dt>
+                            {Intl.get("common.belong.sales", "所属销售")}:
+                        </dt>
+                        <dd>
+                            {customer.user_name}
+                        </dd>
+                    </dl>
+                    { myCustomer ? (//我的客户可以查看客户详情
+                        <p className="show-customer-detail">
+                            <Button type="primary" onClick={this.toggleCustomerDetail.bind(this, customer.id)}
+                                    data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
+                                {myCustomer.isShowDetail ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("call.record.show.customer.detail", "查看详情")}
+                            </Button>
+                        </p>) : null
+                    }
                 </div>
-            );
-
-        } else {
-            return null;
-        }
+                {  //展示客户详情
+                    myCustomer && myCustomer.isShowDetail ? (
+                        <CustomerDetail currentId={customer.id}
+                                        editCustomerBasic={this.editCustomerBasic}
+                                        hideRightPanel={this.hideRightPanel.bind(this)}
+                                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                                        showApplyUserForm={this.showApplyUserForm.bind(this)}
+                        />) : null}
+            </div>
+        );
     }
 
     //渲染客户的基本信息
@@ -405,161 +410,103 @@ class PhonePanel extends React.Component {
                     </a>
                 </span>
             );
-        } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0 && _.isArray(this.state.customerInfoArr) && !this.state.customerInfoArr.length) {
+        } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {//客户存在时，展示客户的信息
+            let customerInfoArr = this.state.customerInfoArr;
+            if (phonemsgObj.customers.length === 1) {//该电话只对应一个客户时的处理
+                if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//该电话是自己客户的，展示客户详情
+                    return (
+                        <CustomerDetail currentId={customerInfoArr[0].id}
+                                        editCustomerBasic={this.editCustomerBasic}
+                                        hideRightPanel={this.hideRightPanel.bind(this)}
+                                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                                        showApplyUserForm={this.showApplyUserForm.bind(this)}
+                        />);
+                } else {//该电话不是自己客户的
+                    return this.renderCustomerList(phonemsgObj.customers[0]);
+                }
+            } else {//该电话对应多个客户时的处理
+                return (<div className="scrollbar-container">
+                    {
+                        _.map(phonemsgObj.customers, (item) => {
+                            //我的客户，可以查看客户详情
+                            let myCustomer = _.find(customerInfoArr, customer => customer.id === item.id);
+                            return this.renderCustomerList(item, myCustomer);
+                        })
+                    }
+                </div>);
+                // var divHeight = "";
+                // if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) || (_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length))) {
+                //     //顶部textare输入框展开后
+                //     if (!this.state.isEdittingTrace && this.state.customerLayoutHeight) {
+                //         divHeight = this.state.customerLayoutHeight;
+                //     } else {
+                //         divHeight = $(window).height() - DIVLAYOUT.TRACE_CONTAINER_PADDING - DIVLAYOUT.TRACE_CONTAINER_LAYOUT;
+                //     }
+                // } else {
+                //     //顶部textare输入框未显示
+                //     divHeight = $(window).height() - DIVLAYOUT.TRACE_CONTAINER_PADDING - DIVLAYOUT.TRACE_INITIAL_CONTAINER_LAYOUT;
+                // }
+                // return (
+                //     <div style={{'height': divHeight}} className="scrollbar-container">
+                //         <GeminiScrollbar>
+                //             {
+                //                 _.map(this.state.customerInfoArr, (item) => {
+                //                      })
+                //             }
+                //             {this.renderNotYourCustomer()}
+                //         </GeminiScrollbar>
+                //     </div>
+                // );
+            }
+        } else {
             //客户不存在时，展示添加客户的按钮
             return (
                 <span className="handle-btn-container" onClick={this.showAddCustomerForm}>
                     {Intl.get("crm.3", "添加客户")}
                 </span>
             );
-        } else if ((_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length != 0) || (_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length)) {
-            let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
-            let customerParams = this.state.paramObj.customer_params;
-            //如果是从当前展示的客户详情中打的电话，则不需要再展示通过通话状态中的客户id取的客户详情
-            if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
-                return null;
-            }
-            //客户存在时，展示详情
-            var divHeight = "";
-            if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) || (_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length))) {
-                //顶部textare输入框展开后
-                if (!this.state.isEdittingTrace && this.state.customerLayoutHeight) {
-                    divHeight = this.state.customerLayoutHeight;
-                } else {
-                    divHeight = $(window).height() - DIVLAYOUT.TRACE_CONTAINER_PADDING - DIVLAYOUT.TRACE_CONTAINER_LAYOUT;
-                }
-            } else {
-                //顶部textare输入框未显示
-                divHeight = $(window).height() - DIVLAYOUT.TRACE_CONTAINER_PADDING - DIVLAYOUT.TRACE_INITIAL_CONTAINER_LAYOUT;
-            }
-            return (
-                <div style={{'height': divHeight}} className="scrollbar-container">
-                    <GeminiScrollbar>
-                        {
-                            // _.map(this.state.customerInfoArr, (item) => {
-                            //     var location = [];
-                            //     if (item.province) {
-                            //         location.push(item.province);
-                            //     }
-                            //     if (item.city) {
-                            //         location.push(item.city);
-                            //     }
-                            //     if (item.county) {
-                            //         location.push(item.county);
-                            //     }
-                            //     return (
-                            //         <div className="customer-name">
-                            //             <h3>
-                            //                 <i className="iconfont icon-interested"></i>
-                            //                 <span>{item.name}</span>
-                            //             </h3>
-                            //             <dl className="customer-info">
-                            //                 <dt>
-                            //                     {Intl.get("realm.industry", "行业")}:
-                            //                 </dt>
-                            //                 <dd>
-                            //                     {item.industry}
-                            //                 </dd>
-                            //             </dl>
-                            //             <dl className="customer-info">
-                            //                 <dt>
-                            //                     {Intl.get("realm.address", "地址")}:
-                            //                 </dt>
-                            //                 <dd>
-                            //                     <span>{location.join("-")}</span>
-                            //                     &nbsp;&nbsp;<span>{item.address}</span>
-                            //                 </dd>
-                            //             </dl>
-                            //             <dl className="customer-info">
-                            //                 <dt>
-                            //                     {Intl.get("crm.administrative.level", "行政级别")}:
-                            //                 </dt>
-                            //                 <dd>
-                            //                     {this.getAdministrativeLevel(item.administrative_level)}
-                            //                 </dd>
-                            //             </dl>
-                            //             <dl className="customer-info">
-                            //                 <dt>
-                            //                     {Intl.get("call.record.customer.source", "来源")}:
-                            //                 </dt>
-                            //                 <dd>
-                            //                     {item.source}
-                            //                 </dd>
-                            //             </dl>
-                            //             <dl className="customer-info">
-                            //                 <dt>
-                            //                     {Intl.get("common.tag", "标签")}:
-                            //                 </dt>
-                            //                 <dd className="tag">
-                            //                     {_.map((item.labels), (label) => {
-                            //                         return (
-                            //                             <Tag>{label}</Tag>);
-                            //                     })}
-                            //                 </dd>
-                            //             </dl>
-                            //             <dl className="customer-info remark">
-                            //                 <dt>
-                            //                     {Intl.get("common.remark", "备注")}:
-                            //                 </dt>
-                            //                 <dd>
-                            //                     {item.remarks}
-                            //                 </dd>
-                            //             </dl>
-                            //             <p className="show-customer-detail">
-                            //                 <Button type="primary" onClick={this.showRightPanel.bind(this, item.id)}
-                            //                         data-tracename="点击查看客户详情">
-                            //                     {Intl.get("call.record.show.customer.detail", "查看详情")}
-                            //                 </Button>
-                            //             </p>
-                            //         </div>
-                            //     );
-                            // })
-                        }
-                        {this.renderNotYourCustomer()}
-                    </GeminiScrollbar>
-                </div>
-            );
         }
     }
 
-    //提交跟进记录
-    // handleTraceSubmit = () => {
-    //     var customer_id = this.state.customerInfoArr[0].id;
-    //     if (!this.state.addTraceItemId) {
-    //         phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
-    //         return;
-    //     }
-    //     const submitObj = {
-    //         id: this.state.addTraceItemId,
-    //         customer_id: customer_id,
-    //         type: "phone",
-    //         last_callrecord: "true",
-    //         remark: this.state.inputContent
-    //     };
-    //     phoneAlertAction.updateCustomerTrace(submitObj, () => {
-    //         let updateData = {customer_id: customer_id, remark: this.state.inputContent};
-    //         if (this.state.isConnected) {
-    //             //如果电话已经接通
-    //             updateData.last_contact_time = new Date().getTime();
-    //         }
-    //         CrmAction.updateCurrentCustomerRemark(updateData);
-    //         var height = $(".trace-content").outerHeight(true);
-    //         $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-    //         $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-    //         this.setState({
-    //             showAddFeedback: true,
-    //             customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
-    //         });
-    //     });
-    // };
-    // //将输入框中的文字放在state上
-    // handleInputChange = (e) => {
-    //     phoneAlertAction.setContent(e.target.value);
-    // };
-    // handleEditContent = () => {
-    //     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
-    //     phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
-    // };
+
+//提交跟进记录
+// handleTraceSubmit = () => {
+//     var customer_id = this.state.customerInfoArr[0].id;
+//     if (!this.state.addTraceItemId) {
+//         phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
+//         return;
+//     }
+//     const submitObj = {
+//         id: this.state.addTraceItemId,
+//         customer_id: customer_id,
+//         type: "phone",
+//         last_callrecord: "true",
+//         remark: this.state.inputContent
+//     };
+//     phoneAlertAction.updateCustomerTrace(submitObj, () => {
+//         let updateData = {customer_id: customer_id, remark: this.state.inputContent};
+//         if (this.state.isConnected) {
+//             //如果电话已经接通
+//             updateData.last_contact_time = new Date().getTime();
+//         }
+//         CrmAction.updateCurrentCustomerRemark(updateData);
+//         var height = $(".trace-content").outerHeight(true);
+//         $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
+//         $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
+//         this.setState({
+//             showAddFeedback: true,
+//             customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
+//         });
+//     });
+// };
+// //将输入框中的文字放在state上
+// handleInputChange = (e) => {
+//     phoneAlertAction.setContent(e.target.value);
+// };
+// handleEditContent = () => {
+//     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
+//     phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
+// };
     //修改客户的基本信息
     editCustomerBasic = (newBasic) => {
         if (newBasic && newBasic.id) {
@@ -637,24 +584,36 @@ class PhonePanel extends React.Component {
                     scrollLayOut={this.state.scrollLayOut}
                 />
             );
-        } else {
+        } else if (!this.isCustomerDetailCall(this.state.paramObj)) {//不是从客户详情中拨打的电话时
             //客户信息展示或者添加客户按钮
             return (
                 <div className="customer-info-container">
                     <div>
-                        <div className="customer-count-tip">
-                            {/*客户是否存在状态已知并且未点击添加客户按钮*/}
-                            {!this.state.isAddFlag && _.isArray(phonemsgObj.customers) ? (
-                                !phonemsgObj.customers.length && !this.state.customerInfoArr.length ? (
-                                    <span>{Intl.get("call.record.no.response.customer", "此号码无对应客户")}</span>) : (<span>
-                                        {Intl.get("call.record.some.customer", "此号码对应{num}个客户", {num: phonemsgObj.customers.length || this.state.customerInfoArr.length})}
-                                    </span>)
-                            ) : null}
-                        </div>
+                        {this.renderCustomerSizeTip(phonemsgObj)}
                         <div className="customer-detail">{this.renderCustomerInfor(phonemsgObj)}</div>
                     </div>
                 </div>
             );
+        }
+    }
+
+    renderCustomerSizeTip(phonemsgObj) {
+        let tipContent = "";
+        //未点击添加客户按钮时，展示该电话对应客户数的提示
+        if (!this.state.isAddFlag) {
+            if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
+                //只对应一个客户时不用提示
+                if (phonemsgObj.customers.length !== 1) {
+                    tipContent = Intl.get("call.record.some.customer", "此号码对应{num}个客户", {num: phonemsgObj.customers.length});
+                }
+            } else {
+                tipContent = Intl.get("call.record.no.response.customer", "此号码无对应客户");
+            }
+        }
+        if (tipContent) {
+            return (<div className="customer-count-tip">{tipContent}</div>);
+        } else {
+            return null;
         }
     }
 

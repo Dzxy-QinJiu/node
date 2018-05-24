@@ -28,7 +28,11 @@ PhoneAlertStore.prototype.resetState = function () {
 PhoneAlertStore.prototype.setInitialState = function () {
     this.resetState();
 };
-
+//查看、收起客户详情的操作
+PhoneAlertStore.prototype.toggleCustomerDetail = function (id) {
+    let curCustomer = _.find(this.customerInfoArr, item => item.id === id);
+    curCustomer.isShowDetail = !curCustomer.isShowDetail;
+};
 //跟据客户的id获取客户的详情
 PhoneAlertStore.prototype.getCustomerById = function (result) {
     if (result.loading) {
@@ -42,8 +46,8 @@ PhoneAlertStore.prototype.getCustomerById = function (result) {
     } else {
         this.isGettingCustomer = false;
         this.getCustomerErrMsg = "";
-        if (_.isObject(result.data)){
-            this.customerInfoArr.push(result.data);
+        if (_.isObject(result.data) && _.isArray(result.data.result) && result.data.result[0]) {
+            this.customerInfoArr.push(result.data.result[0]);
             this.customerInfoArr = crmStore.processForList(this.customerInfoArr);
         }
     }
