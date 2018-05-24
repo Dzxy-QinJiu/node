@@ -9,7 +9,6 @@ if (language.lan() == "es" || language.lan() == "en") {
 require("./oplate");
 var LeftMenu = require("../../../components/privilege/nav-sidebar");
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
-import PhoneAlert from "MOD_DIR/phone-alert/public";
 import PhonePanel from "MOD_DIR/phone_panel/public";
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数

@@ -7,41 +7,46 @@ var addMoreInfoAction = require("../action/add-more-info-action");
 var addMoreInfoStore = require("../store/add-more-info-store");
 import TopTitleCMP from "./top-title-component";
 import BottomSaveCancelCMP from "./bottom-save-cancel-component";
-import {Form,Select,Icon,Input} from "antd";
+import {Form, Select, Icon, Input} from "antd";
 const Option = Select.Option;
 var FormItem = Form.Item;
 const LAYOUT_CONST = {
-    LABELSM:3,//lable所占的宽度
-    WRAPPERSM:21,//输入框所占的宽度
-    LABELXS:24
+    LABELSM: 4,//lable所占的宽度
+    WRAPPERSM: 20,//输入框所占的宽度
+    LABELXS: 24
 };
-class AddMoreInfo extends React.Component{
+class AddMoreInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSubmitting:true,
-            submittingErrMsg:""
+            isSubmitting: true,
+            submittingErrMsg: ""
         };
     }
-    componentDidMount(){
+
+    componentDidMount() {
         addMoreInfoStore.listen(this.onStoreChange);
         //获取应用列表
         this.getAppLists();
     }
+
     onStoreChange = () => {
         this.setState(addMoreInfoStore.getState());
     };
-    componentWillUnmount(){
+
+    componentWillUnmount() {
         addMoreInfoStore.unlisten(this.onStoreChange);
     }
+
     //获取应用列表
-    getAppLists(){
+    getAppLists() {
         addMoreInfoAction.getAppList();
     }
+
     //点击提交按钮
     handleSubmit = () => {
         this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err){
+            if (!err) {
                 this.props.handleSubmit(values);
             }
         });
@@ -50,7 +55,8 @@ class AddMoreInfo extends React.Component{
     handleCancel = () => {
         this.props.handleCancel();
     };
-    render(){
+
+    render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -70,12 +76,12 @@ class AddMoreInfo extends React.Component{
         return (
             <div className="add-more-info-content-container" data-tracename="增加产品反馈">
                 <TopTitleCMP
-                    titleText={"+" + Intl.get("call.record.product.feedback","产品反馈")}
+                    titleText={"+" + Intl.get("call.record.product.feedback", "产品反馈")}
                 />
                 {/*添加待办事项 产品反馈 竞品信息*/}
                 <div className="product-feedback-container">
                     <FormItem
-                        label={Intl.get("call.record.application.product","应用产品")}
+                        label={Intl.get("call.record.application.product", "应用产品")}
                         id="product"
                         {...formItemLayout}
                     >
@@ -85,7 +91,10 @@ class AddMoreInfo extends React.Component{
                                 <Icon type="loading"/>
                             </div>) : (
                             getFieldDecorator('product', {
-                                rules: [{required: true, message: Intl.get("call.record.feedback.prodcut", "请选择需要反馈的应用产品")}],
+                                rules: [{
+                                    required: true,
+                                    message: Intl.get("call.record.feedback.prodcut", "请选择需要反馈的应用产品")
+                                }],
                             })(
                                 <Select
                                     size="large"
@@ -96,33 +105,33 @@ class AddMoreInfo extends React.Component{
                             ))}
                     </FormItem>
                     <FormItem
-                        label={Intl.get("call.record.feedback.topic","反馈主题")}
+                        label={Intl.get("call.record.feedback.topic", "反馈主题")}
                         id="topic"
                         {...formItemLayout}
                     >
                         {getFieldDecorator('topic', {
                             rules: [{
                                 required: true,
-                                message: Intl.get("call.record.input.feedback.topic","请输入反馈主题"),
+                                message: Intl.get("call.record.input.feedback.topic", "请输入反馈主题"),
                                 whitespace: true
                             }],
                         })(
                             <Input
                                 name="topic"
                                 id="topic"
-                                placeholder={Intl.get("call.record.input.feedback.topic","请输入反馈主题")}
+                                placeholder={Intl.get("call.record.input.feedback.topic", "请输入反馈主题")}
                             />
                         )}
                     </FormItem>
                     <FormItem
-                        label={Intl.get("call.record.feedback.content","反馈内容")}
+                        label={Intl.get("call.record.feedback.content", "反馈内容")}
                         id="content"
                         {...formItemLayout}
                     >
-                        {getFieldDecorator('content',{
-                            rules : [{
-                                required:true,
-                                message:Intl.get("call.record.input.feedback.content","请输入反馈内容"),
+                        {getFieldDecorator('content', {
+                            rules: [{
+                                required: true,
+                                message: Intl.get("call.record.input.feedback.content", "请输入反馈内容"),
                                 whitespace: true
                             }]
                         })(
@@ -130,7 +139,7 @@ class AddMoreInfo extends React.Component{
                                 type="textarea"
                                 id="content"
                                 rows="3"
-                                placeholder={Intl.get("call.record.input.feedback.content","请输入反馈内容")}
+                                placeholder={Intl.get("call.record.input.feedback.content", "请输入反馈内容")}
                             />
                         )}
                     </FormItem>
@@ -147,7 +156,7 @@ class AddMoreInfo extends React.Component{
 
 }
 AddMoreInfo.defaultProps = {
-    isAddingAppFeedback:"",
-    addAppFeedbackErrMsg:"",
+    isAddingAppFeedback: "",
+    addAppFeedbackErrMsg: "",
 };
 export default Form.create()(AddMoreInfo);

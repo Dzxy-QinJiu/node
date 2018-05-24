@@ -1,41 +1,39 @@
 var phoneAlertAjax = require("../ajax/phone-alert-ajax");
 var customerRecordAjax = require("MOD_DIR/crm/public/ajax/customer-record-ajax");
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
+const AUTHS = {
+    "GETALL": "CUSTOMER_ALL"
+};
 function PhoneAlertAction() {
-
     this.generateActions(
         "setStatus",
         "setContent",
         "setEditStatus",
         'setInitialState',
         'setAddCustomer',
-        'setCustomerUnknown',
         'setAddCustomerInfo',
         'setSubmitErrMsg',
-        'setCustomerInfoArr'
+        'setCustomerInfoArr',
+        'setInitialCustomerArr'
     );
-    this.getCustomerByPhone = function (phoneNum) {
+    this.getCustomerById = function (customerId) {
         var rangParams = [{//时间范围参数
             from: "",
             to: "",
             type: "time",
             name: "start_time"
         }];
-        var queryObj = {"total_size":0,"cursor":true,"id":""};
+        var queryObj = {"total_size":1,"cursor":true,"id":""};
         var data = {
-            data: JSON.stringify({"contacts":[{"phone":[phoneNum]}]}),
+            data: JSON.stringify({"id":customerId}),
             rangParams: JSON.stringify(rangParams),
             queryObj: JSON.stringify(queryObj)
         };
+        if (hasPrivilege(AUTHS.GETALL)) {
+            data.hasManageAuth = true;
+        }
         this.dispatch({loading:true,error:false});
-        phoneAlertAjax.getCustomerByPhone(data).then((data) => {
-            this.dispatch({loading:false,error:false,data:data});
-        }, (errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
-        });
-    };
-    this.getCustomerById = function (customerId) {
-        this.dispatch({loading:true,error:false});
-        phoneAlertAjax.getCustomerById(customerId).then((data) => {
+        phoneAlertAjax.getCustomerById(data).then((data) => {
             this.dispatch({loading:false,error:false,data:data});
         }, (errorMsg)=>{
             this.dispatch({loading:false,error:true,errorMsg:errorMsg});

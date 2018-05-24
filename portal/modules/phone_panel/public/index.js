@@ -9,25 +9,20 @@ require("./css/phone-status.less");
 var phoneAlertAction = require("./action/phone-alert-action");
 var phoneAlertStore = require("./store/phone-alert-store");
 var addMoreInfoAction = require("./action/add-more-info-action");
-var AlertTimer = require("CMP_DIR/alert-timer");
-var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 var userData = require("PUB_DIR/sources/user-data");
 var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
 import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import crmUtil from "MOD_DIR/crm/public/utils/crm-util";
 import AddMoreInfo from "./view/add-more-info";
-import {Button, Tag, Input} from "antd";
-const {TextArea} = Input;
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {isEqualArray} from "LIB_DIR/func";
 
 import {RightPanel, RightPanelClose, RightPanelReturn} from "CMP_DIR/rightPanel";
 import CustomerDetail from "MOD_DIR/crm/public/views/customer-detail";
 import ApplyUserForm from "MOD_DIR/crm/public/views/apply-user-form";
 import classNames from "classnames";
 import Trace from "LIB_DIR/trace";
-
+import PhoneStatusTop from "./view/phone-status-top";
 const DIVLAYOUT = {
     //出现跟进内容输入框后的高度
     TRACELAYOUT: 160,
@@ -44,11 +39,6 @@ const Add_CUSTOMER_LAYOUT_CONSTANTS = {
     TOP_DELTA: 140,//顶部提示框的高度
     BOTTOM_DELTA: 20//底部的padding
 };
-const RESPONSE_LAYOUT_CONSTANTS = {
-    MARGIN: 20,//跟进记录展示内容上下的margin值
-    TITLE_HEIGHT: 100//客户名称和电话展示的高度
-};
-const TAG_COLOR = "#223440";
 
 const PHONERINGSTATUS = {
     //对方已振铃
@@ -77,7 +67,6 @@ class PhonePanel extends React.Component {
             // ...phoneAlertStore.getState(),
             customerInfoArr: phoneAlertStore.getState().customerInfoArr,//通过电话号码来获取到客户的基本信息
             isEdittingTrace: phoneAlertStore.getState().isEdittingTrace,//正在编辑跟进记录
-            addTraceItemId: "",//添加某条跟进记录的id
             // isModalShown: true,//是否显示模态框
             phoneNum: "",//话机打电话时的电话号码
             isAddFlag: false,//是否展示添加客户的右侧面板
@@ -88,10 +77,10 @@ class PhonePanel extends React.Component {
             isAddingAppFeedback: "",//添加客户反馈的状态,共三种状态，loading success error
             addAppFeedbackErrMsg: "",//添加客户反馈失败后的提示
             customerLayoutHeight: 0,//跟进记录内容确定后，下面客户详情所占的大小
-            isConnected: false,//打电话的过程中是否接通了
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
+            addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
         };
     }
 
@@ -127,10 +116,10 @@ class PhonePanel extends React.Component {
             let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
             //如果是从客户详情中打的电话，则不需要再获取客户详情
             if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
-                phoneAlertAction.setCustomerUnknown(false);
-                phoneAlertAction.setAddCustomer(false);
+                // phoneAlertAction.setCustomerUnknown(false);
+                // phoneAlertAction.setAddCustomer(false);
             } else {//根据客户的id获取客户的详情
-                this.getCustomerInfoByCustomerId();
+                this.getCustomerInfoByCustomerId(phonemsgObj);
             }
             //如果是打入的电话，要查来电的号码，如果是拨出的电话，要查所拨打的电话
             var phoneNum = "";
@@ -150,9 +139,6 @@ class PhonePanel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         //获取客户详情
-        // if (phonemsgObj.customers.id !== this.state.phonemsgObj.customers.id || phonemsgObj.customers.user_id !== this.state.phonemsgObj.customers.user_id){
-        //     this.getCustomerInfoByCustomerId();
-        // }
         this.setState({
             paramObj: $.extend(true, {}, nextProps.paramObj)
         });
@@ -169,64 +155,50 @@ class PhonePanel extends React.Component {
                     let customerParams = nextProps.paramObj.customer_params;
                     //如果是从客户详情中打的电话，则不需要再获取客户详情
                     if (customerParams && phoneStatusCustomerIds.indexOf(customerParams.currentId) != -1) {
-                        phoneAlertAction.setCustomerUnknown(false);
-                        phoneAlertAction.setAddCustomer(false);
+                        // phoneAlertAction.setCustomerUnknown(false);
+                        // phoneAlertAction.setAddCustomer(false);
                     } else {//根据客户的id获取客户的详情
-                        this.getCustomerInfoByCustomerId();
+                        phoneAlertAction.setInitialCustomerArr();
+                        this.getCustomerInfoByCustomerId(phonemsgObj);
                     }
                 }
             }
+            //如果在打电话的过程中关闭了弹屏，后来的推送状态改变后，又弹出屏幕时，记录下弹屏
+            if (!this.state.isModalShown) {
+                Trace.traceEvent("电话弹屏", '弹出电话弹屏');
+            }
+            //通话结束后，包含输入跟进记录的容器的高度需要变大
+            if (phonemsgObj.type === PHONERINGSTATUS.phone && ((_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) || this.state.customerInfoArr.length)) {
+                this.setState({
+                    isInitialHeight: false
+                });
+            }
+            //页面上如果存在模态框，再次拨打电话的时候
+            var $modal = $("body >#phone-alert-modal #phone-alert-container");
+            if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (phonemsgObj.type == PHONERINGSTATUS.phone)) {
+                this.setInitialData(phonemsgObj);
+            }
         }
-        //如果在打电话的过程中关闭了弹屏，后来的推送状态改变后，又弹出屏幕时，记录下弹屏
-        // if (!this.state.isModalShown) {
-        //     Trace.traceEvent("电话弹屏", '弹出电话弹屏');
-        // }
-        //跟进记录的id
-        var addTraceItemId = phonemsgObj.id || "";
-        if (addTraceItemId) {
-            this.setState({
-                addTraceItemId: addTraceItemId,
-            });
-        }
-        //通话结束后，包含输入跟进记录的容器的高度需要变大
-        if (phonemsgObj.type === PHONERINGSTATUS.phone) {
-            this.setState({
-                isInitialHeight: false
-            });
-        }
+    }
+
+    setInitialData(phonemsgObj) {
         var phoneNum = "";
         if (phonemsgObj.call_type == "IN") {
             phoneNum = phonemsgObj.extId;
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
         }
-
-        //页面上如果存在模态框，再次拨打电话的时候
-        var $modal = $("body >#phone-alert-modal #phone-alert-container");
-        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
-            //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
-
-            this.state.phoneNum = phoneNum;
-            this.state.phonemsgObj = phonemsgObj;
-            this.state.isAddFlag = false;
-            this.state.rightPanelIsShow = false;
-            this.state.isConnected = false;
-            this.state.addTraceItemId = "";
-            this.state.isInitialHeight = true;
-            this.setState(this.state);
-            //恢复初始数据
-            phoneAlertAction.setInitialState();
-            // phoneAlertAction.getCustomerByPhone(phoneNum);
-            sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
-            this.props.setInitialPhoneObj();
-        }
-        //通过座机拨打电话，区分已有客户和要添加的客户,必须要有to这个字段的时候
-        //如果接听后，把状态isConnected 改为true
-        if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
-            this.setState({
-                isConnected: true
-            });
-        }
+        //把数据全部进行重置，不可以用this.setState.这样会有延时，界面展示的还是之前的数据
+        this.state.phoneNum = phoneNum;
+        this.state.phonemsgObj = phonemsgObj;
+        this.state.isAddFlag = false;
+        this.state.rightPanelIsShow = false;
+        this.state.isInitialHeight = true;
+        this.setState(this.state);
+        //恢复初始数据
+        phoneAlertAction.setInitialState();
+        sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
+        this.props.setInitialPhoneObj();
     }
 
     componentWillUnmount() {
@@ -235,38 +207,38 @@ class PhonePanel extends React.Component {
     }
 
 //获取页面上的描述
-    getPhoneTipMsg(phonemsgObj) {
-        var customerInfoArr = this.state.customerInfoArr;
-        var customerName = customerInfoArr[0] ? customerInfoArr[0].name : "";
-        //拨号的描述
-        //如果是系统内拨号，展示联系人和电话，如果是从座机拨号，只展示所拨打的电话
-        var phoneNum = "";
-        if (phonemsgObj.call_type === "IN") {
-            phoneNum = phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone) {
-                phoneNum = phonemsgObj.dst;
-            }
-
-        } else {
-            phoneNum = phonemsgObj.to || phonemsgObj.dst;
-        }
-        var desTipObj = {
-            phoneNum: phoneNum,
-            tip: ""
-        };
-        if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == "IN") {
-                desTipObj.tip = `${Intl.get("call.record.call.in.pick.phone", "有电话打入，请拿起话机")}`;
-            } else {
-                desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
-            }
-        } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
-            desTipObj.tip = `${Intl.get("call.record.phone.answered", "正在通话中")}`;
-        } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
-            desTipObj.tip = `${Intl.get("call.record.phone.unknown", "结束通话")}`;
-        }
-        return desTipObj;
-    }
+//     getPhoneTipMsg(phonemsgObj) {
+//         var customerInfoArr = this.state.customerInfoArr;
+//         var customerName = customerInfoArr[0] ? customerInfoArr[0].name : "";
+//         //拨号的描述
+//         //如果是系统内拨号，展示联系人和电话，如果是从座机拨号，只展示所拨打的电话
+//         var phoneNum = "";
+//         if (phonemsgObj.call_type === "IN") {
+//             phoneNum = phonemsgObj.extId;
+//             if (phonemsgObj.type === PHONERINGSTATUS.phone) {
+//                 phoneNum = phonemsgObj.dst;
+//             }
+//
+//         } else {
+//             phoneNum = phonemsgObj.to || phonemsgObj.dst;
+//         }
+//         var desTipObj = {
+//             phoneNum: phoneNum,
+//             tip: ""
+//         };
+//         if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+//             if (phonemsgObj.call_type == "IN") {
+//                 desTipObj.tip = `${Intl.get("call.record.call.in.pick.phone", "有电话打入，请拿起话机")}`;
+//             } else {
+//                 desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
+//             }
+//         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
+//             desTipObj.tip = `${Intl.get("call.record.phone.answered", "正在通话中")}`;
+//         } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
+//             desTipObj.tip = `${Intl.get("call.record.phone.unknown", "结束通话")}`;
+//         }
+//         return desTipObj;
+//     }
 
     closeModal = () => {
 
@@ -279,54 +251,53 @@ class PhonePanel extends React.Component {
             //在最后阶段，将数据清除掉
             if (this.state.phonemsgObj && (this.state.phonemsgObj.type == PHONERINGSTATUS.phone)) {
                 //恢复初始数据
-                phoneAlertAction.setInitialState();
                 this.props.setInitialPhoneObj();
+                phoneAlertAction.setInitialState();
                 this.setState({
                     phoneNum: "",
                     rightPanelIsShow: false,
-                    isConnected: false,
-                    addTraceItemId: ""
+                    isInitialHeight: true,
                 });
             }
         }
     };
 
-    renderTraceItem() {
-        var onHide = function () {
-            phoneAlertAction.setSubmitErrMsg("");
-        };
-        //通话记录的编辑状态
-        if (this.state.isEdittingTrace) {
-            return (
-                <div>
-                    <div className="input-item">
-                        <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
-                                  value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
-                    </div>
-                    <div className="modal-submit-tip">
-                        {this.state.submittingTraceMsg ? (
-                            <AlertTimer time={3000}
-                                        message={this.state.submittingTraceMsg}
-                                        type="error" showIcon
-                                        onHide={onHide}
-                            />
-                        ) : null}
-                    </div>
-                    <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
-                            data-tracename="保存跟进记录">
-                        {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
-                    </Button>
-                </div>
-            );
-        } else {
-            return (
-                <div className="trace-content">
-                    <span>{this.state.inputContent}</span>
-                    <i className="iconfont icon-update" onClick={this.handleEditContent}></i>
-                </div>
-            );
-        }
-    }
+    // renderTraceItem() {
+    //     var onHide = function () {
+    //         phoneAlertAction.setSubmitErrMsg("");
+    //     };
+    //     //通话记录的编辑状态
+    //     if (this.state.isEdittingTrace) {
+    //         return (
+    //             <div>
+    //                 <div className="input-item">
+    //                     <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
+    //                               value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
+    //                 </div>
+    //                 <div className="modal-submit-tip">
+    //                     {this.state.submittingTraceMsg ? (
+    //                         <AlertTimer time={3000}
+    //                                     message={this.state.submittingTraceMsg}
+    //                                     type="error" showIcon
+    //                                     onHide={onHide}
+    //                         />
+    //                     ) : null}
+    //                 </div>
+    //                 <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
+    //                         data-tracename="保存跟进记录">
+    //                     {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
+    //                 </Button>
+    //             </div>
+    //         );
+    //     } else {
+    //         return (
+    //             <div className="trace-content">
+    //                 <span>{this.state.inputContent}</span>
+    //                 <i className="iconfont icon-update" onClick={this.handleEditContent}></i>
+    //             </div>
+    //         );
+    //     }
+    // }
 
     showAddCustomerForm = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".handle-btn-container"), "点击添加客户按钮");
@@ -341,15 +312,14 @@ class PhonePanel extends React.Component {
     };
     updateCustomer = (addCustomerInfo) => {
         this.setState({
-            isAddFlag: false
+            isAddFlag: false,
+            addCustomer: false
         });
-        phoneAlertAction.setAddCustomer(false);
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
         phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     //根据客户的id获取客户详情
-    getCustomerInfoByCustomerId() {
-        var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
+    getCustomerInfoByCustomerId(phonemsgObj) {
         //通过后端传过来的客户id，查询客户详情
         if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
             _.each(phonemsgObj.customers, (item) => {
@@ -360,8 +330,9 @@ class PhonePanel extends React.Component {
     }
 
     retryGetCustomer = () => {
+        let phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //根据客户的id获取客户详情
-        this.getCustomerInfoByCustomerId();
+        this.getCustomerInfoByCustomerId(phonemsgObj);
     };
     //展示已有客户的右侧面板
     showRightPanel = (id) => {
@@ -393,17 +364,16 @@ class PhonePanel extends React.Component {
         var totalCustomerArr = phonemsgObj.customers;
         var otherCustomerArr = [];
         if (_.isArray(customerInfoArr) && _.isArray(totalCustomerArr) && customerInfoArr.length < totalCustomerArr.length) {
+            var customerIdArr = _.pluck(customerInfoArr, 'id');
             _.each(totalCustomerArr, (customerItem) => {
-                _.each(customerInfoArr, (item) => {
-                    if (customerItem.id !== item.id) {
-                        otherCustomerArr.push(customerItem);
-                    }
-                });
+                if (_.indexOf(customerIdArr, customerItem.id) == -1) {
+                    otherCustomerArr.push(customerItem);
+                }
             });
         }
         if (otherCustomerArr.length) {
             return (
-                <div>
+                <div className="other-customer-container">
                     {_.map(otherCustomerArr, (item) => {
                         return (
                             <span>
@@ -435,16 +405,14 @@ class PhonePanel extends React.Component {
                     </a>
                 </span>
             );
-        } else if (this.state.customerUnknown) {
-            return null;
-        } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) {
+        } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0 && _.isArray(this.state.customerInfoArr) && !this.state.customerInfoArr.length) {
             //客户不存在时，展示添加客户的按钮
             return (
                 <span className="handle-btn-container" onClick={this.showAddCustomerForm}>
                     {Intl.get("crm.3", "添加客户")}
                 </span>
             );
-        } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length != 0) {
+        } else if ((_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length != 0) || (_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length)) {
             let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
             let customerParams = this.state.paramObj.customer_params;
             //如果是从当前展示的客户详情中打的电话，则不需要再展示通过通话状态中的客户id取的客户详情
@@ -453,7 +421,7 @@ class PhonePanel extends React.Component {
             }
             //客户存在时，展示详情
             var divHeight = "";
-            if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!this.state.customerUnknown && !this.state.addCustomer)) {
+            if ((phonemsgObj.type == PHONERINGSTATUS.phone) && (!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) || (_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length))) {
                 //顶部textare输入框展开后
                 if (!this.state.isEdittingTrace && this.state.customerLayoutHeight) {
                     divHeight = this.state.customerLayoutHeight;
@@ -555,43 +523,43 @@ class PhonePanel extends React.Component {
     }
 
     //提交跟进记录
-    handleTraceSubmit = () => {
-        var customer_id = this.state.customerInfoArr[0].id;
-        if (!this.state.addTraceItemId) {
-            phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
-            return;
-        }
-        const submitObj = {
-            id: this.state.addTraceItemId,
-            customer_id: customer_id,
-            type: "phone",
-            last_callrecord: "true",
-            remark: this.state.inputContent
-        };
-        phoneAlertAction.updateCustomerTrace(submitObj, () => {
-            let updateData = {customer_id: customer_id, remark: this.state.inputContent};
-            if (this.state.isConnected) {
-                //如果电话已经接通
-                updateData.last_contact_time = new Date().getTime();
-            }
-            CrmAction.updateCurrentCustomerRemark(updateData);
-            var height = $(".trace-content").outerHeight(true);
-            $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-            $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-            this.setState({
-                showAddFeedback: true,
-                customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
-            });
-        });
-    };
-    //将输入框中的文字放在state上
-    handleInputChange = (e) => {
-        phoneAlertAction.setContent(e.target.value);
-    };
-    handleEditContent = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
-        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
-    };
+    // handleTraceSubmit = () => {
+    //     var customer_id = this.state.customerInfoArr[0].id;
+    //     if (!this.state.addTraceItemId) {
+    //         phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
+    //         return;
+    //     }
+    //     const submitObj = {
+    //         id: this.state.addTraceItemId,
+    //         customer_id: customer_id,
+    //         type: "phone",
+    //         last_callrecord: "true",
+    //         remark: this.state.inputContent
+    //     };
+    //     phoneAlertAction.updateCustomerTrace(submitObj, () => {
+    //         let updateData = {customer_id: customer_id, remark: this.state.inputContent};
+    //         if (this.state.isConnected) {
+    //             //如果电话已经接通
+    //             updateData.last_contact_time = new Date().getTime();
+    //         }
+    //         CrmAction.updateCurrentCustomerRemark(updateData);
+    //         var height = $(".trace-content").outerHeight(true);
+    //         $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
+    //         $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
+    //         this.setState({
+    //             showAddFeedback: true,
+    //             customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
+    //         });
+    //     });
+    // };
+    // //将输入框中的文字放在state上
+    // handleInputChange = (e) => {
+    //     phoneAlertAction.setContent(e.target.value);
+    // };
+    // handleEditContent = () => {
+    //     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
+    //     phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
+    // };
     //修改客户的基本信息
     editCustomerBasic = (newBasic) => {
         if (newBasic && newBasic.id) {
@@ -676,10 +644,10 @@ class PhonePanel extends React.Component {
                     <div>
                         <div className="customer-count-tip">
                             {/*客户是否存在状态已知并且未点击添加客户按钮*/}
-                            {!this.state.customerUnknown && !this.state.isAddFlag ? (
-                                !phonemsgObj.customers.length ? (
+                            {!this.state.isAddFlag && _.isArray(phonemsgObj.customers) ? (
+                                !phonemsgObj.customers.length && !this.state.customerInfoArr.length ? (
                                     <span>{Intl.get("call.record.no.response.customer", "此号码无对应客户")}</span>) : (<span>
-                                        {Intl.get("call.record.some.customer", "此号码对应{num}个客户", {num: phonemsgObj.customers.length})}
+                                        {Intl.get("call.record.some.customer", "此号码对应{num}个客户", {num: phonemsgObj.customers.length || this.state.customerInfoArr.length})}
                                     </span>)
                             ) : null}
                         </div>
@@ -737,31 +705,27 @@ class PhonePanel extends React.Component {
         phoneRecordObj.received_time = "";//通话时间
     }
 
+    //获取详情中打电话时的客户id
+    getDetailCustomerId() {
+        let paramObj = this.state.paramObj;
+        let customerId = "";
+        //客户详情的相关参数（客户id）存在,说明有打开的客户详情
+        if (paramObj.customer_params && paramObj.customer_params.currentId) {
+            let phonemsgObj = this.getPhonemsgObj(paramObj);
+            let phoneStatusCustomerIds = phonemsgObj ? this.getPhoneStatusCustomerIds(phonemsgObj) : [];
+            //当前展示的客户详情中的客户id是通话中传过来的客户ids之一(说明是从当前打开的客户详情中打的电话)
+            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) {
+                customerId = paramObj.customer_params.currentId;
+            }
+        }
+        return customerId;
+    }
+
     renderPhoneStatus() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
-        var iconFontCls = "modal-icon iconfont";
-
         //有监听到推送消息时再渲染出页面
         if (_.isEmpty(phonemsgObj)) {
-            return;
-        }
-        //获取页面描述
-        var phoneMsgObj = this.getPhoneTipMsg(phonemsgObj);
-        if (phonemsgObj.type == PHONERINGSTATUS.RING || phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == "OU") {
-                iconFontCls += " icon-callrecord-out";
-            } else if (phonemsgObj.call_type == "IN") {
-                iconFontCls += " icon-callrecord-in";
-            }
-        } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
-            iconFontCls += " icon-phone-answering";
-        } else if (phonemsgObj.type == PHONERINGSTATUS.BYE || phonemsgObj.type == PHONERINGSTATUS.record || phonemsgObj.type == PHONERINGSTATUS.phone) {
-            iconFontCls += " icon-phone-bye";
-            //打完电话后，并且不是在编辑状态下，已有客户增加跟进记录，自动将textare增大
-            if (!this.state.customerUnknown && !this.state.addCustomer && !this.state.submittingTraceMsg) {
-                $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: DIVLAYOUT.TRACELAYOUT});
-                $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: DIVLAYOUT.TRACE_CONTAINER_LAYOUT});
-            }
+            return null;
         }
         var AddMoreInfoCls = classNames({
             'phone-alert-modal-inner': true,
@@ -774,28 +738,15 @@ class PhonePanel extends React.Component {
         return (
             <div data-tracename="电话弹屏" id="phone-status-content">
                 <div className={AddMoreInfoCls}>
-                    <div className={PhoneAlertModalTitleCls}>
-                        <div id="iconfont-tip">
-                            <i className={iconFontCls}></i>
-                        </div>
-                        <div className="phone-status-tip">
-                            <div className="contact-phone-title">
-                                {phoneMsgObj.phoneNum}
-                            </div>
-                            <div className="status-tip-title">
-                                {phoneMsgObj.tip}
-                            </div>
-                        </div>
-                        <div className="trace-content-container">
-                            {(!this.state.customerUnknown && !this.state.addCustomer) ? this.renderTraceItem() : null}
-                        </div>
-                        {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
-                            <div className="add-more-info-container">
-                                <Tag color={TAG_COLOR} onClick={this.handleAddProductFeedback}>
-                                    + {Intl.get("call.record.product.feedback", "产品反馈")}</Tag>
-                            </div>
-                        ) : null}
-                    </div>
+                    <PhoneStatusTop
+                        phoneAlertModalTitleCls={PhoneAlertModalTitleCls}
+                        phonemsgObj={phonemsgObj}
+                        handleAddProductFeedback={this.handleAddProductFeedback}
+                        isModalShown={this.state.isModalShown}
+                        contactNameObj={this.state.paramObj.call_params.contactNameObj}
+                        detailCustomerId={this.getDetailCustomerId()}//客户详情中打电话时，客户的id
+                        isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
+                    />
                     <div className="phone-alert-inner-content">
                         {this.renderMainContent()}
                     </div>
@@ -829,10 +780,30 @@ class PhonePanel extends React.Component {
         );
     }
 
+    //获取是否是从客户详情中拨打的电话
+    isCustomerDetailCall(paramObj) {
+        let flag = false;
+        //客户详情的相关参数（客户id）存在,说明有打开的客户详情
+        if (paramObj.customer_params && paramObj.customer_params.currentId) {
+            let phonemsgObj = this.getPhonemsgObj(paramObj);
+            let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
+            //当前展示的客户详情中的客户id是通话中传过来的客户ids之一(说明是从当前打开的客户详情中打的电话)
+            if (_.isArray(phoneStatusCustomerIds) && phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) {
+                flag = true;
+            }
+        }
+
+        return flag;
+    }
+
+    //只打开了客户详情
+    isOnlyOpenCustomerDetail(paramObj) {
+        return paramObj.customer_params && !paramObj.call_params;
+    }
+
     render() {
-        let paramObj = this.props.paramObj;
+        let paramObj = this.state.paramObj;
         let className = classNames("right-panel-content", {"crm-right-panel-content-slide": this.state.applyUserShowFlag});
-        let phoneStatusCustomerIds = this.getPhoneStatusCustomerIds(phonemsgObj);
         return (
             <RightPanel showFlag={this.props.showFlag}
                         className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
@@ -843,14 +814,13 @@ class PhonePanel extends React.Component {
                 <div className={className}>
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
-                    {paramObj.customer_params && (!paramObj.call_params || phoneStatusCustomerIds.indexOf(paramObj.customer_params.currentId) != -1) ? (
+                    {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
                         <CustomerDetail  {...paramObj.customer_params}
                                          hideRightPanel={this.hideRightPanel.bind(this)}
                                          showApplyUserForm={this.showApplyUserForm.bind(this)}
                         />) : null
                     }
                 </div>
-
                 {this.state.curOrder.id ? (
                     <div className={className}>
                         <RightPanelReturn onClick={this.returnInfoPanel.bind(this)}/>
