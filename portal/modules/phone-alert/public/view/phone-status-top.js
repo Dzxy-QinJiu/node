@@ -204,12 +204,12 @@ class phoneStatusTop extends React.Component {
         //如果是系统内拨号，展示联系人和电话，如果是从座机拨号，只展示所拨打的电话
         var phoneNum = this.props.contactNameObj.contact ? this.props.contactNameObj.contact + "-" : "";
         if (phonemsgObj.call_type === "IN"){
-            phoneNum = phonemsgObj.extId;
+            phoneNum += phonemsgObj.extId;
             if (phonemsgObj.type === PHONERINGSTATUS.phone){
-                phoneNum = phonemsgObj.dst;
+                phoneNum += phonemsgObj.dst;
             }
         }else{
-            phoneNum = phonemsgObj.to || phonemsgObj.dst;
+            phoneNum += phonemsgObj.to || phonemsgObj.dst;
         }
         var desTipObj = {
             phoneNum: phoneNum,
