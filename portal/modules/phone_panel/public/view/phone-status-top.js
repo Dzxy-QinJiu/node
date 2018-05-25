@@ -81,27 +81,18 @@ class phoneStatusTop extends React.Component {
                 isConnected: true
             });
         }
-        // var addTraceItemId = phonemsgObj.id || "";
-        // if (addTraceItemId) {
-        //     this.setState({
-        //         addTraceItemId: addTraceItemId,
-        //     });
-        // }
-        // var $modal = $("body >#phone-alert-modal #phone-alert-container");
-        // if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (phonemsgObj.type == PHONERINGSTATUS.phone)) {
-        //     this.setInitialData(phonemsgObj);
-        // }
-        //如果外面通话结束后点击关闭按钮
-        // if (!nextProps.isModalShown && phonemsgObj && phonemsgObj.type == PHONERINGSTATUS.phone) {
-        //     this.setInitialData();
-        // }
+        var $modal = $("#phone-status-content");
+        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+            this.setInitialData(phonemsgObj);
+        }
     }
 
     setInitialData() {
         this.setState({
             isConnected: false,
-            addTraceItemId: "",
-            selectedCustomerId: ""
+            // addTraceItemId: "",
+            selectedCustomerId: "",
+            showAddFeedback: false,//是否展示反馈
         });
     }
 
@@ -147,9 +138,6 @@ class phoneStatusTop extends React.Component {
                 updateData.last_contact_time = new Date().getTime();
             }
             CrmAction.updateCurrentCustomerRemark(updateData);
-            var height = $(".trace-content").outerHeight(true);
-            $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-            $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
             this.setState({
                 selectedCustomerId: "",
                 isConnected: false,
@@ -272,11 +260,6 @@ class phoneStatusTop extends React.Component {
             iconFontCls += " icon-phone-answering";
         } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
             iconFontCls += " icon-phone-bye";
-            //打完电话后，并且不是在编辑状态下，已有客户增加跟进记录，自动将textare增大
-            if (!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) && !this.state.submittingTraceMsg) {
-                $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: DIVLAYOUT.TRACELAYOUT});
-                $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: DIVLAYOUT.TRACE_CONTAINER_LAYOUT});
-            }
         }
         //获取页面描述
         var phoneDes = this.getPhoneTipMsg(phonemsgObj);

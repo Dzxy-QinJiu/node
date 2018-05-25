@@ -5,7 +5,7 @@
  */
 "use strict";
 module.exports = {
-    module: "phone-alert/server/action/phone-alert-controller",
+    module: "phone_panel/server/action/phone-alert-controller",
     routes: [{
         // 获取应用列表
         "method": "get",

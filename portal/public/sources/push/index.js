@@ -267,7 +267,7 @@ function canPopDesktop() {
 //点击拨打电话
 window.handleClickPhone = function (phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
-    var $modal = $("body >#phone-alert-modal #phone-alert-container");
+    var $modal = $("#phone-status-content");
     if ($modal && $modal.length > 0) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
     }

@@ -1,10 +1,11 @@
 @import "../../../../public/css/common-variables";
 //session过期后，提示重输密码的样式设置
-.overflow-break{
+.overflow-break {
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
 }
+
 #phone-status-content {
   .right-pannel-default .ant-form-item-label label {
     padding-right: 20px;
@@ -246,7 +247,7 @@
       //增加产品反馈内容
       .product-feedback-container {
         padding: 10px 10px 0 10px;
-        .ant-form-item{
+        .ant-form-item {
           margin-bottom: 10px;
         }
         .ant-form-item .ant-form-item-control-wrapper .ant-select {
@@ -259,16 +260,22 @@
       //padding: 20px 18px 0 20px;
       .customer-count-tip {
         font-size: 15px;
-        padding: 4px 10px;
+        padding: 4px 10px 0 10px;
       }
       .customer-detail {
         font-size: 17px;
         border-radius: 3px;
+        .customer-card {
+          .customer-detail-content {
+            height: 600px;
+          }
+        }
         //客户基本资料
         .customer-name {
           background: #fff;
           padding: 5px 5px 5px 15px;
-          margin-bottom: 10px;
+          margin-top: 10px;
+          border-bottom: 2px solid #f5f5f5;
           h3 {
             border-bottom: 1px solid #DEDFE3;
             padding: 8px 0;
@@ -323,7 +330,7 @@
         .customer-name:not(:first-child) {
           margin-top: 10px;
         }
-        .other-customer-container{
+        .other-customer-container {
           background: #fff;
           padding: 5px 5px 5px 15px;
           margin-top: 10px;
