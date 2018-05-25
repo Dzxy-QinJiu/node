@@ -269,7 +269,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 rowNames: USER_TYPES_WITH_TITLE,
             },
             overide: {
-                when: {
+                condition: {
                     app_id: "all",
                 },
                 chartType: "line",
@@ -315,7 +315,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             nameValueMap: unknownDataMap,
             overide: {
-                when: {
+                condition: {
                     app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/team",
@@ -343,7 +343,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             nameValueMap: unknownDataMap,
             overide: {
-                when: {
+                condition: {
                     app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/zone",
@@ -371,7 +371,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
             },
             nameValueMap: unknownDataMap,
             overide: {
-                when: {
+                condition: {
                     app_id: "all",
                 },
                 url: "/rest/analysis/user/v1/:auth_type/apps/:tab/industry",
