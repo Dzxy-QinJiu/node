@@ -27,7 +27,7 @@ const Spinner = require("CMP_DIR/spinner");
 var NoMoreDataTip = require("CMP_DIR/no_more_data_tip");
 import CustomerStageTable from "./customer-stage-table";
 const DEFAULT_TABLE_PAGESIZE = 10;
-var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
 var AppUserManage = require("MOD_DIR/app_user_manage/public");
@@ -557,7 +557,8 @@ var CustomerAnalysis = React.createClass({
                 width: 100,
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用不合格")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                              onClick={this.handleStageNumClick.bind(this, item, "试用不合格")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -685,6 +686,14 @@ var CustomerAnalysis = React.createClass({
                 selectedCustomerId: item.customer_id,
                 selectedCustomerIndex: index
             });
+            //触发打开带拨打电话状态的客户详情面板
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    currentId: item.customer_id,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    hideRightPanel: this.hideRightPanel
+                }
+            });
         };
         const getRowKey = function (record, index) {
             return index;
@@ -810,13 +819,6 @@ var CustomerAnalysis = React.createClass({
                         </div>
                     </div>
                 </GeminiScrollbar>
-                {this.state.selectedCustomerId ? <CrmRightPanel
-                    showFlag={this.state.showRightPanel}
-                    currentId={this.state.selectedCustomerId}
-                    hideRightPanel={this.hideRightPanel}
-                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                /> : null}
             </div>
 
 

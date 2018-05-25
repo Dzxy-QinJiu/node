@@ -2,7 +2,7 @@ import {RightPanelClose} from "CMP_DIR/rightPanel/index";
 import {AntcTable} from "antc";
 import {Alert} from "antd";
 import Spinner from 'CMP_DIR/spinner';
-var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import rightPanelUtil from "CMP_DIR/rightPanel";
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 const RightPanel = rightPanelUtil.RightPanel;
@@ -75,6 +75,14 @@ class CustomerStageTable extends React.Component {
                 showRightPanel: true,
                 selectedCustomerId: item.customer_id,
                 selectedCustomerIndex: index
+            });
+            //触发打开带拨打电话状态的客户详情面板
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    currentId: item.customer_id,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                    hideRightPanel: this.hideRightPanel
+                }
             });
         };
         const getRowKey = function (record, index) {
@@ -152,13 +160,6 @@ class CustomerStageTable extends React.Component {
                             scroll={{y: this.state.tableHeight}}
                         />
                     </div>
-                    {this.state.showRightPanel ? (<CrmRightPanel
-                        showFlag={this.state.showRightPanel}
-                        currentId={this.state.selectedCustomerId}
-                        hideRightPanel={this.hideRightPanel.bind(this)}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                        updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                    />) : null}
                     <RightPanel
                         className="customer-user-list-panel"
                     >
