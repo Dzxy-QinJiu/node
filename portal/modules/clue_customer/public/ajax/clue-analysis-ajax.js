@@ -20,3 +20,22 @@ exports.getClueAnalysis = function (data) {
     });
     return Deferred.promise();
 };
+exports.getCustomerById = function (data) {
+    var Deferred = $.Deferred();
+    var pageSize = 10;
+    $.ajax({
+        url: '/rest/customer/v2/customer/range/' + pageSize + "/" + "start_time" + "/" + "descend",
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseText);
+            }
+        }
+    });
+    return Deferred.promise();
+};

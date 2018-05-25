@@ -5,17 +5,20 @@
  */
 var TopNav = require("CMP_DIR/top-nav");
 import rightPanelUtil from "CMP_DIR/rightPanel/index";
+const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 import ClueAnalysisStore from "../store/clue-analysis-store";
 import ClueAnalysisAction from "../action/clue-analysis-action";
 import DatePicker from "CMP_DIR/datepicker";
 import {AntcTable} from "antc";
-import { Select } from "antd";
+import { Select} from "antd";
 const Option = Select.Option;
+import CustomerStageTable from "MOD_DIR/sales_home_page/public/views/customer-stage-table";
 class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showCustomerIds:[],//所有客户的id
             ...ClueAnalysisStore.getState()
         };
     }
@@ -24,20 +27,27 @@ class ClueAnalysisPanel extends React.Component {
         this.refreshClueAnalysisData();
         ClueAnalysisStore.listen(this.onStoreChange);
     }
-
     onStoreChange = () => {
         this.setState(ClueAnalysisStore.getState());
     };
-
     componentWillUnmount() {
         ClueAnalysisStore.unlisten(this.onStoreChange);
     }
 
     getClueAnalysisList() {
         let queryParams = {
-            start_time: this.state.startTime || 0,
-            end_time: this.state.endTime || moment().toDate().getTime()
+            source_start_time: this.state.source_start_time,
+            source_end_time: this.state.source_end_time
         };
+        if (!this.state.source_start_time){
+            queryParams = {};
+        }
+        if (this.state.selectedAccess !== Intl.get("common.all", "全部")){
+            queryParams.access_channel = this.state.selectedAccess;
+        }
+        if (this.state.selectedSource !== Intl.get("common.all", "全部")){
+            queryParams.clue_source = this.state.selectedSource;
+        }
         ClueAnalysisAction.getClueAnalysis(queryParams);
     }
 
@@ -46,24 +56,35 @@ class ClueAnalysisPanel extends React.Component {
         this.getClueAnalysisList();
     }
 
-    onSelectDate = (startTime, endTime, timeType) => {
-        let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
+    onSelectDate = (startTime, endTime) => {
+        let timeObj = {sourceStartTime: startTime, sourceEndTime: endTime};
         ClueAnalysisAction.changeSearchTime(timeObj);
         setTimeout(() => {
             this.refreshClueAnalysisData();
         });
     };
-    onSelectRelationDate(){
+    handleAccessSelect = (access) =>{
+        ClueAnalysisAction.changeAccess(access);
+        setTimeout(() => {
+            this.refreshClueAnalysisData();
+        });
+    };
+    handleSourceSelect = (source) =>{
+        ClueAnalysisAction.changeSource(source);
+        setTimeout(() => {
+            this.refreshClueAnalysisData();
+        });
+    };
 
-    }
     filterClueTypeSelect(){
         var accessChannelArr = _.extend([],this.props.accessChannelArray);
         accessChannelArr.unshift(Intl.get("common.all", "全部"));
-
         const AccessOptions = accessChannelArr.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
         ));
-        const ClueOptions = this.props.clueSourceArray.map((x, idx) => (
+        var clueSourceArr = _.extend([], this.props.clueSourceArray);
+        clueSourceArr.unshift(Intl.get("common.all", "全部"));
+        const ClueOptions = clueSourceArr.map((x, idx) => (
             <Option key={idx} value={x}>{x}</Option>
         ));
         return (
@@ -72,7 +93,7 @@ class ClueAnalysisPanel extends React.Component {
                 <Select
                     value={this.state.selectedAccess}
                     dropdownMatchSelectWidth={false}
-                    onChange={this.handleSelect}
+                    onChange={this.handleAccessSelect}
                 >
                     {AccessOptions}
                 </Select>
@@ -80,7 +101,7 @@ class ClueAnalysisPanel extends React.Component {
                 <Select
                     value={this.state.selectedSource}
                     dropdownMatchSelectWidth={false}
-                    onChange={this.handleSelect}
+                    onChange={this.handleSourceSelect}
                 >
                     {ClueOptions}
                 </Select>
@@ -88,41 +109,113 @@ class ClueAnalysisPanel extends React.Component {
             </div>
         );
     }
-
+    handleShowCustomerInfo = (ids, label) =>{
+        var idsStr = ids.join(",");
+        ClueAnalysisAction.getCustomerById(idsStr,label);
+        this.setState({
+            showCustomerIds: ids,
+        });
+    };
+    closeCustomersContentPanel=()=>{
+       this.setState({
+           showCustomerIds: []
+       });
+    };
+    closeClueAnalysisPanel = () =>{
+        ClueAnalysisAction.setInitState();
+        this.props.closeClueAnalysisPanel();
+    };
+    //获取行政级别
+    getAdministrativeLevel(levelId) {
+        let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
+        return levelObj ? levelObj.level : "";
+    }
     render() {
+        const handleNum = num => {
+            if (num && num > 0) {
+                return "+" + num;
+            }
+        };
         const columns = [
             {
-                title: "",
-                dataIndex: "team_name",
-                key: "team_name",
-            },
-            {
                 title: Intl.get("sales.stage.intention", "意向"),
-                render:function () {
-                    return (
-                        <div>
-                            55
-                        </div>
-                    );
+                align: "right",
+                width: 100,
+                render: (text, record, index) =>{
+                    if (record.label === Intl.get("sales.stage.intention", "意向")){
+                        return (
+                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                                {handleNum(record.num)}
+                            </div>
+                        );
+                    }
+
                 }
             },{
                 title: Intl.get("common.trial", "试用"),
-                dataIndex: "team_name",
-                key: "team_name",
+                align: "right",
+                width: 100,
+                render:(text, record, index)  => {
+                    if (record.label === Intl.get("common.trial", "试用")){
+                        return (
+                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                                {handleNum(record.num)}
+                            </div>
+                        );
+                    }
+
+                }
             },{
                 title: Intl.get("common.trial.qualified", "试用合格"),
-                dataIndex: "team_name",
-                key: "team_name",
+                align: "right",
+                width: 100,
+                render:(text, record, index) =>{
+                    if (record.label === Intl.get("common.trial.qualified", "试用合格")){
+                        return (
+                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                                {handleNum(record.num)}
+                            </div>
+                        );
+                    }
+
+                }
             },{
                 title: Intl.get("sales.stage.signed", "签约"),
-                dataIndex: "team_name",
-                key: "team_name",
+                align: "right",
+                width: 100,
+                render:(text, record, index) => {
+                    if (record.label === Intl.get("sales.stage.signed", "签约")){
+                        return (
+                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                                {handleNum(record.num)}
+                            </div>
+                        );
+                    }
+
+                }
             },{
                 title: Intl.get("sales.stage.lost", "流失"),
-                dataIndex: "team_name",
-                key: "team_name",
+                align: "right",
+                width: 100,
+                render:(text, record, index) => {
+                    if (record.label === Intl.get("sales.stage.lost", "流失")){
+                        return (
+                            <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
+                                {handleNum(record.num)}
+                            </div>
+                        );
+                    }
+
+                }
             }
         ];
+        var stageChangedCustomerList = {
+            data: this.state.customersList,
+            errorMsg: this.state.getCustomersErrMsg,
+            loading: this.state.getCustomersLoading,
+            lastId: "",
+            listenScrollBottom: false
+        };
         return (
             <div className="clue-analysis-panel">
                 <TopNav>
@@ -148,7 +241,7 @@ class ClueAnalysisPanel extends React.Component {
                             {this.filterClueTypeSelect()}
                         </div>
                     </div>
-                    <RightPanelClose onClick={this.props.closeClueAnalysisPanel}/>
+                    <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
                 </TopNav>
                 <div className="analysis-clue-container">
                     <AntcTable
@@ -159,6 +252,16 @@ class ClueAnalysisPanel extends React.Component {
                         dataSource={this.state.clueAnalysisList}
                     />
                 </div>
+                <RightPanel
+                    className="customer-stage-table-wrapper"
+                    showFlag={this.state.showCustomerIds.length}
+                >
+                    {this.state.showCustomerIds.length ?
+                        <CustomerStageTable
+                            result={stageChangedCustomerList}
+                            onClose={this.closeCustomersContentPanel}
+                        /> : null}
+                </RightPanel>
             </div>
         );
     }

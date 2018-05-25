@@ -556,7 +556,7 @@ const ClueCustomer = React.createClass({
                 var addContent = "", addTime = "";
                 if (_.isArray(item.customer_traces) && item.customer_traces.length) {
                     addContent = item.customer_traces[0].remark;
-                    addTime = moment(item.customer_traces[0].time).fromNow();
+                    addTime = item.customer_traces[0].time ? moment(item.customer_traces[0].time).fromNow(): null;
                 }
                 var relativeSourceTime = this.getRelativeTime(item.source_time);
                 var relativeStartTime = this.getRelativeTime(item.start_time);
@@ -629,7 +629,7 @@ const ClueCustomer = React.createClass({
                                                 )}
 
                                         </div>
-                                        {addContent ? <p className="trace-time-wrap">
+                                        {addContent && addTime ? <p className="trace-time-wrap">
                                             {addTime}
                                         </p> : null}
                                     </div>

@@ -7,33 +7,35 @@ var ClueAnalysisAction = require("../action/clue-analysis-action");
 import DateSelectorUtils from "CMP_DIR/datepicker/utils";
 function ClueAnalysisStore() {
     //初始化state数据
-    this.getState();
+    this.setInitState();
     this.bindActions(ClueAnalysisAction);
 }
-ClueAnalysisStore.prototype.getState = function () {
+ClueAnalysisStore.prototype.setInitState = function () {
     this.clueAnalysisList = [];//线索分析列表
     this.getClueAnalysisLoading = false;//正在获取线索分析
     this.getClueAnalysisErrMsg = false;//获取线索分析失败
-    this.timeType = "week";//默认显示周
-    //时间对象（true:本周截止到今天为止）
-    var timeObj = DateSelectorUtils.getThisWeekTime(true);
+    this.customersList = [];//要展示的客户
+    this.getCustomersLoading = false;//正在获取客户
+    this.getCustomersErrMsg = false;//获取客户失败
     //开始时间
-    this.startTime = DateSelectorUtils.getMilliseconds(timeObj.start_time);
+    this.source_start_time = moment().startOf('year').valueOf();
     //结束时间
-    this.endTime = DateSelectorUtils.getMilliseconds(timeObj.end_time, true);
-    //关联开始时间
-    this.relation_start_time = "";
-    //关联结束时间
-    this.relation_end_time = "";
-    //
+    this.source_end_time = moment().valueOf();
     this.selectedAccess = Intl.get("common.all", "全部");
     this.selectedSource = Intl.get("common.all", "全部");
 
 };
 ClueAnalysisStore.prototype.changeSearchTime = function (timeObj) {
-    this.startTime = timeObj.startTime;
-    this.endTime = timeObj.endTime;
-    this.timeType = timeObj.timeType;
+    this.source_start_time = timeObj.sourceStartTime;
+    this.source_end_time = timeObj.sourceEndTime;
+};
+
+ClueAnalysisStore.prototype.changeAccess = function (access) {
+    this.selectedAccess = access;
+};
+
+ClueAnalysisStore.prototype.changeSource = function (source) {
+    this.selectedSource = source;
 };
 ClueAnalysisStore.prototype.getClueAnalysis = function (result) {
     if (result.loading) {
@@ -46,6 +48,28 @@ ClueAnalysisStore.prototype.getClueAnalysis = function (result) {
         this.getClueAnalysisLoading = false;
         this.getClueAnalysisErrMsg = "";
         this.clueAnalysisList = result.data;
+    }
+};
+ClueAnalysisStore.prototype.getCustomerById = function (result) {
+    if (result.loading) {
+        this.getCustomersLoading = true;
+        this.getCustomersErrMsg = "";
+    } else if (result.error) {
+        this.getCustomersLoading = false;
+        this.getCustomersErrMsg = result.errorMsg;
+    } else {
+        this.getCustomersLoading = false;
+        this.getCustomersErrMsg = "";
+        if (_.isArray(result.data.result)){
+            this.customersList = result.data.result;
+            _.each(this.customersList,(item)=>{
+                item.customer_name = item.name;
+                item.customer_id = item.id;
+                if (result.label){
+                    item.label = result.label;
+                }
+            });
+        }
     }
 };
 
