@@ -105,7 +105,6 @@ class phoneStatusTop extends React.Component {
         if (this.state.selectedCustomerId) {
             customer_id = this.state.selectedCustomerId;
         }
-
         if (!this.state.addTraceItemId) {
             phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
             return;
@@ -113,7 +112,6 @@ class phoneStatusTop extends React.Component {
         const submitObj = {
             id: this.state.addTraceItemId,
             customer_id: customer_id,
-            type: "phone",
             last_callrecord: "true",
             remark: this.state.inputContent
         };
