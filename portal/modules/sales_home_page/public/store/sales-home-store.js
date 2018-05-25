@@ -468,27 +468,6 @@ SalesHomeStore.prototype.getUserTotal = function (result) {
     }
 };
 
-// 获取回访统计总数
-SalesHomeStore.prototype.getCallBackTotal = function (result) {
-    let callBackTotalObj = this.callBackTotalObj;
-    if (result.loading) {
-        callBackTotalObj.resultType = 'loading';
-        callBackTotalObj.errorMsg = '';
-    } else if (result.error) {
-        callBackTotalObj.resultType = 'error';
-        callBackTotalObj.errorMsg = result.errorMsg;
-    } else {
-        callBackTotalObj.resultType = '';
-        callBackTotalObj.errorMsg = '';
-        callBackTotalObj.data = result.resData;
-        if (!_.isObject(callBackTotalObj.data)) {
-            callBackTotalObj.data = {
-                'total': 0
-            };
-        }
-    }
-};
-
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function (type) {
     switch (type) {

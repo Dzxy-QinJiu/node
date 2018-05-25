@@ -166,29 +166,6 @@ exports.getUserTotal = function (reqData) {
     return Deferred.promise();
 };
 
-// 获取回访统计总数
-let callBackTotalAjax;
-exports.getCallBackTotal = function (reqData) {
-    callBackTotalAjax && callBackTotalAjax.abort();
-    reqData = reqData || {};
-    var Deferred = $.Deferred();
-    callBackTotalAjax = $.ajax({
-        url: '/rest/analysis/callback/summary',
-        dataType: 'json',
-        type: 'get',
-        data: reqData,
-        success: function (resData) {
-            Deferred.resolve(resData);
-        },
-        error: function (xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
-
 //获取销售-客户列表
 exports.getSalesCustomerList = function (timeRange) {
     var Deferred = $.Deferred();

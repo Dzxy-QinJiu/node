@@ -95,16 +95,18 @@ let StatisticTotal = React.createClass({
         </div>);
     },
     renderCallBackContent () {
-        let callBackTotalObj = this.props.callBackTotalObj;
-        if (callBackTotalObj.resultType) {
-            // 渲染等待效果或暂无数据的提示
-            return this.renderTooltip(callBackTotalObj);
+        let callBackRecord = this.props.callBackRecord;
+        if (callBackRecord.is_loading) {
+            return <Icon type='loading' />;
+        }
+        if (callBackRecord.errorMsg) {
+            return <div className='no-total-data'>{Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>;
         }
         return (
             <div className={'statistic-total-content'}>
                 <span className='add-data-style'>
                     <span className='total-data-desc'>{Intl.get('common.total', '共')}</span>
-                    {callBackTotalObj.data.total || '0'}
+                    {callBackRecord.total || '0'}
                     <span className='total-data-desc'>{Intl.get('common.one.unit', '个')}</span>
                 </span>
             </div>
