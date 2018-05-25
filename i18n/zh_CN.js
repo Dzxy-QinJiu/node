@@ -206,8 +206,6 @@ var zh_CN = {
     "common.load.more": "加载更多",
     "common.request.timeout": "请求超时",
     "common.callback": "回访",
-    "common.total": "共",
-    "common.one.unit": "个",
     "common.callback.time": "回访时间",
     "common.callback.person": "回访人",
     "common.has.callback": "已回访",

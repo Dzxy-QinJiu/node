@@ -206,8 +206,6 @@ var en_US = {
     "common.load.more": "load more",//"加载更多",
     "common.request.timeout": "Error. Request timeout",//"请求超时",
     "common.callback": "Callback", //"回访",
-    "common.total": "total", // "共",
-    "common.one.unit": "", // "个",
     "common.callback.time": "Callback time", // "回访时间"
     "common.callback.person": "Callback person", // "回访人",
     "common.has.callback": "Has callback", // "已回访",

@@ -8,6 +8,7 @@ var salesObj = require("../dto/salesObj");
 var EventEmitter = require("events").EventEmitter;
 var Promise = require('bluebird');
 var _ = require("underscore");
+import querystring from 'querystring';
 var restApis = {
     //获取销售团队
     getSalesTeamTree: "/rest/base/v1/group/teams/tree/:type",
@@ -188,21 +189,18 @@ exports.setWebsiteConfig = function (req, res ,reqObj) {
 //获取回访列表
 exports.getCallBack = function (req, res, params, filterObj, queryObj) {
     let url = params.type === 'manager' ? restApis.managerCallRcordListUrl : restApis.callRecordListUrl;
-    url = url.replace(':start_time', params.start_time)
-    .replace(':end_time', params.end_time)
-    .replace(':page_size', params.page_size)
-    .replace(':sort_field', params.sort_field)
-    .replace(':sort_order', params.sort_order);
+    delete params.type;
+    let paramsKeyArray = Object.keys(params);
+    for (let i = 0; i < paramsKeyArray.length; i++) {
+        url = url.replace(':' + paramsKeyArray[i], params[paramsKeyArray]);
+    }
     if (queryObj) {
+        url += '?';
         if (queryObj.id) {
-            url += '?id=' + queryObj.id;
-            url += '&filter_phone=' + queryObj.filter_phone;// 是否过滤114电话号码
-            url += '&filter_invalid_phone=' + queryObj.filter_phone;//是否过滤无效的电话号码（客服电话）
-        }
-        else {
-            url += '?filter_phone=' + queryObj.filter_phone;
-            url += '&filter_invalid_phone=' + queryObj.filter_phone;//是否过滤无效的电话号码（客服电话）
-        }       
+            url += querystring.stringify({id: queryObj.id, filter_phone: queryObj.filter_phone, filter_invalid_phone: queryObj.filter_phone}); // 是否过滤114电话号码和无效的电话号码（客服电话）
+        } else {
+            url += querystring.stringify({filter_phone: queryObj.filter_phone, filter_invalid_phone: queryObj.filter_phone}); // 是否过滤114电话号码和无效的电话号码（客服电话）
+        }   
     }
 
     return restUtil.authRest.post(

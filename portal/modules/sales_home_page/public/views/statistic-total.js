@@ -96,18 +96,20 @@ let StatisticTotal = React.createClass({
     },
     renderCallBackContent () {
         let callBackRecord = this.props.callBackRecord;
-        if (callBackRecord.is_loading) {
+        if (callBackRecord.isLoading) {
             return <Icon type='loading' />;
         }
         if (callBackRecord.errorMsg) {
             return <div className='no-total-data'>{Intl.get('sales.home.get.data.failed', '获取数据失败')}</div>;
         }
         return (
-            <div className={'statistic-total-content'}>
-                <span className='add-data-style'>
-                    <span className='total-data-desc'>{Intl.get('common.total', '共')}</span>
-                    {callBackRecord.total || '0'}
-                    <span className='total-data-desc'>{Intl.get('common.one.unit', '个')}</span>
+            <div className='statistic-total-content'>
+                <span>
+                    <ReactIntl.FormattedMessage
+                        id='sales.home.total.count'
+                        defaultMessage={`共{template}个`}
+                        values={{'template': <span className='add-data-style'>{callBackRecord.total || '0'}</span>}}
+                    />
                 </span>
             </div>
         );

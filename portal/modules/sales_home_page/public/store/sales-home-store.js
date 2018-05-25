@@ -30,9 +30,9 @@ SalesHomeStore.prototype.setInitState = function () {
     this.salesUserData = [];//销售-用户列表数据源
     this.callBackRecord = {
         //是否加载中
-        is_loading: true,
+        isLoading: true,
         //一页多少条
-        page_size: 20,
+        pageSize: 20,
         //当前第几页
         page: 1,
         //总共多少条
@@ -40,11 +40,11 @@ SalesHomeStore.prototype.setInitState = function () {
         //是否监听下拉加载
         listenScrollBottom: true,
         //数据列表
-        data_list: [],
+        dataList: [],
         //排序字段
-        sort_field: 'call_date',
+        sortField: 'call_date',
         //排序方向
-        sort_order: 'descend'
+        sortOrder: 'descend'
     }; // 回访列表
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
@@ -84,9 +84,9 @@ SalesHomeStore.prototype.setInitState = function () {
 SalesHomeStore.prototype.resetCallBackRecord = function () {
     this.callBackRecord = {
         //是否加载中
-        is_loading: true,
+        isLoading: true,
         //一页多少条
-        page_size: 20,
+        pageSize: 20,
         //当前第几页
         page: 1,
         //总共多少条
@@ -94,11 +94,11 @@ SalesHomeStore.prototype.resetCallBackRecord = function () {
         //是否监听下拉加载
         listenScrollBottom: true,
         //数据列表
-        data_list: [],
+        dataList: [],
         //排序字段
-        sort_field: 'call_date',
+        sortField: 'call_date',
         //排序方向
-        sort_order: 'descend'
+        sortOrder: 'descend'
     };
 };
 // 获取通话总次数、总时长TOP10的数据
@@ -680,9 +680,9 @@ SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
 SalesHomeStore.prototype.getCallBackList = function (result) {
     let newData = result.resData;
     let callBackRecord = this.callBackRecord;
-    callBackRecord.is_loading = result.loading;
+    callBackRecord.isLoading = result.loading;
     if (callBackRecord.page === 1) {
-        callBackRecord.data_list = [];
+        callBackRecord.dataList = [];
     }
     if (result.loading) {
         result.errorMsg = '';
@@ -693,17 +693,17 @@ SalesHomeStore.prototype.getCallBackList = function (result) {
             callBackRecord.errorMsg = '';
             callBackRecord.total = newData.total;
             if (newData.result) {
-                let data_list = newData.result;
-                if (!_.isArray(data_list)) {
-                    data_list = [];
+                let dataList = newData.result;
+                if (!_.isArray(dataList)) {
+                    dataList = [];
                 }
                 // 累加
-                callBackRecord.data_list = callBackRecord.data_list.concat(data_list);
+                callBackRecord.dataList = callBackRecord.dataList.concat(dataList);
                 // 页数加1
                 callBackRecord.page++;
             }
             //是否监听下拉加载的处理
-            if (_.isArray(callBackRecord.data_list) && callBackRecord.data_list.length < callBackRecord.total) {
+            if (_.isArray(callBackRecord.dataList) && callBackRecord.dataList.length < callBackRecord.total) {
                 callBackRecord.listenScrollBottom = true;
             } else {
                 callBackRecord.listenScrollBottom = false;

@@ -221,20 +221,24 @@ var SalesHomePage = React.createClass({
     getCallBackList (queryParam) {
         let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
             endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
-        let params = {
-            start_time: startTime,
-            end_time: endTime,
-            page_size: 20,
-            lastId: queryParam ? queryParam.lastId : '',
-            sort_field: 'call_date',
-            sort_order: 'descend',
-            //电话记录类型
-            phone_type: 'all',
+        let paramsObj = {
+            params: {
+                start_time: startTime,
+                end_time: endTime,
+                page_size: 20,
+                sort_field: 'call_date',
+                sort_order: 'descend',
+            },
+            query: {
+                lastId: queryParam ? queryParam.lastId : '',
+                // 电话记录类型
+                phone_type: 'all',
+            }
         };
         let filterObj = {
             type: 'call_back'
         };
-        SalesHomeAction.getCallBackList(params, filterObj);
+        SalesHomeAction.getCallBackList(paramsObj, filterObj);
     },
     //获取销售列的标题
     getSalesColumnTitle: function () {
@@ -550,18 +554,18 @@ var SalesHomePage = React.createClass({
             </div>);
         } else if (this.state.activeView === viewConstant.CALL_BACK) {
             let tableClassnames = classNames('callback-table-block',{
-                'hide-body': this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading,
+                'hide-body': this.state.callBackRecord.page === 1 && this.state.callBackRecord.isLoading,
             });
             // 首次加载时不显示下拉加载状态
             const handleScrollLoading = () => {
                 if (this.state.callBackRecord.page === 1) {
                     return false;
                 }
-                return this.state.callBackRecord.is_loading;
+                return this.state.callBackRecord.isLoading;
             };
             // 下拉加载数据
             const handleScrollBottom = () => {
-                let callBackRecordList = this.state.callBackRecord.data_list, lastId;
+                let callBackRecordList = this.state.callBackRecord.dataList, lastId;
                 if (_.isArray(callBackRecordList) && callBackRecordList.length > 0) {
                     lastId = callBackRecordList[callBackRecordList.length - 1].id;//最后一个客户的id
                 }
@@ -569,8 +573,8 @@ var SalesHomePage = React.createClass({
             };
             // 显示没有更多数据提示
             const showNoMoreDataTip = () => {
-                return !this.state.callBackRecord.is_loading &&
-                        this.state.callBackRecord.data_list.length >= this.state.callBackRecord.page_size &&
+                return !this.state.callBackRecord.isLoading &&
+                        this.state.callBackRecord.dataList.length >= this.state.callBackRecord.pageSize &&
                         !this.state.callBackRecord.listenScrollBottom;
             };
             const dropLoadConfig = {
@@ -582,13 +586,13 @@ var SalesHomePage = React.createClass({
             return (
                 <div>
                     <Spinner
-                        className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.is_loading) ? 'spin-fix' : 'hide'}
+                        className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.isLoading) ? 'spin-fix' : 'hide'}
                     />
                     <div className='sales-table-container'>
                         <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
                             <AntcTable
                                 dropLoad={dropLoadConfig}
-                                dataSource={this.state.callBackRecord.data_list}
+                                dataSource={this.state.callBackRecord.dataList}
                                 columns={this.getCallBackListColumn()}
                                 pagination={false}
                                 bordered
