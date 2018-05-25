@@ -127,7 +127,6 @@ class phoneStatusTop extends React.Component {
         const submitObj = {
             id: trace_id,
             customer_id: customer_id,
-            type: "phone",
             last_callrecord: "true",
             remark: this.state.inputContent
         };
