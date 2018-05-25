@@ -58,7 +58,7 @@ function SingleUserLogAction() {
                         }
                     }, () => {
                         // 获取应用列表失败的处理
-                        this.dispatch({error: true, errorMsg: Intl.get('errorcode.53', '获取应用列表失败！')});
+                        this.dispatch({error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
                     } );
                     return;
                 }
