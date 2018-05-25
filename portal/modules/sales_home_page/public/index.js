@@ -32,6 +32,7 @@ import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 const SORT_ICON_WIDTH = 16;
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
+const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 var SalesHomePage = React.createClass({
     getInitialState: function () {
         SalesHomeAction.setInitState();
@@ -53,7 +54,8 @@ var SalesHomePage = React.createClass({
             isSaleTeamShow: isSaleTeamShow,//右侧销售团队列表是否展示
             notfirstLogin: false,//不是第一次登录，避免初次加载出现滑动的效果
             updateScrollBar: false,//更新滚动条外
-            phoneSorter: {}//电话的排序对象
+            phoneSorter: {},//电话的排序对象
+            callBackSorter: {}, // 回访的排序对象
         };
     },
     onChange: function () {
@@ -113,13 +115,18 @@ var SalesHomePage = React.createClass({
             scrollbarEnabled: this.state.scrollbarEnabled
         });
     },
-    getPhoneListBlockHeight: function () {
-        let phoneListHeight = null;
+    //获取个人配置信息
+    getWebConfig: function () {
+        SalesHomeAction.getWebsiteConfig();
+    },
+    getListBlockHeight: function () {
+        let listHeight = null;
+
         if (this.state.scrollbarEnabled) {
-            phoneListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
+            listHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.TOTAL_H -
                 layoutConstant.SELECT_TYPE_H - layoutConstant.BOTTOM;
         }
-        return phoneListHeight;
+        return listHeight;
     },
     componentWillUnmount: function () {
         SalesHomeAction.setInitState();
@@ -178,6 +185,8 @@ var SalesHomePage = React.createClass({
         //电话统计取“全部”时，开始时间传0，结束时间传当前时间
         let phoneParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(phoneParams);
+        SalesHomeAction.setListIsLoading(viewConstant.CALL_BACK);
+        this.getCallBackList();
         let callTotalAuth = this.getCallTotalAuth();
         let top10Params = this.getPhoneTop10Params();
         //通话总次数、总时长TOP10
@@ -207,6 +216,29 @@ var SalesHomePage = React.createClass({
         }
         return phoneParams;
     },
+    // 设置获取回访列表的接口参数
+    getCallBackList (queryParam) {
+        let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
+            endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
+        let paramsObj = {
+            params: {
+                start_time: startTime,
+                end_time: endTime,
+                page_size: 20,
+                sort_field: 'call_date',
+                sort_order: 'descend',
+            },
+            query: {
+                lastId: queryParam ? queryParam.lastId : '',
+                // 电话记录类型
+                phone_type: 'all',
+            }
+        };
+        let filterObj = {
+            type: 'call_back'
+        };
+        SalesHomeAction.getCallBackList(paramsObj, filterObj);
+    },
     //获取销售列的标题
     getSalesColumnTitle: function () {
         var userType = this.state.userType;
@@ -218,6 +250,18 @@ var SalesHomePage = React.createClass({
     },
     getPhoneColumnTitle: function (label, key) {
         let sorter = this.state.phoneSorter;
+        let sortIcon = null;
+        if (sorter.field === key) {
+            if (sorter.order === "descend") {
+                sortIcon = <span className='iconfont icon-xiajiantou phone-sort-icon'/>;
+            } else if (sorter.order === "ascend") {
+                sortIcon = <span className='iconfont icon-jiantou-up phone-sort-icon'/>;
+            }
+        }
+        return <span>{label}{sortIcon}</span>;
+    },
+    getCallBackColumnTitle (label, key) {
+        let sorter = this.state.callBackSorter;
         let sortIcon = null;
         if (sorter.field === key) {
             if (sorter.order === "descend") {
@@ -339,6 +383,46 @@ var SalesHomePage = React.createClass({
         }
         return columns;
     },
+    getCallBackListColumn () {
+        let columns = [
+            {
+                title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'call_date'),
+                dataIndex: 'call_date',
+                width: 100,
+                sorter: function (a, b) {
+                    return a.call_date - b.call_date;
+                },
+                className: 'has-sorter table-data-align-right',
+                render: (call_date) => {
+                    var displayTime = moment(new Date(+call_date)).format(DATE_TIME_FORMAT);
+                    return (
+                        <div title={displayTime}>
+                            {displayTime}
+                        </div>
+                    );
+                }
+            },
+            {
+                title: Intl.get("crm.41", "客户名"),
+                dataIndex: 'customer_name',
+                width: 100,
+                className: 'table-data-align-right',
+            },
+            {
+                title: Intl.get("menu.trace", "跟进记录"),
+                dataIndex: 'remark',
+                width: 100,
+                className: 'table-data-align-right',
+            },
+            {
+                title: Intl.get("common.callback.person", "回访人"),
+                dataIndex: 'nick_name',
+                width: 100,
+                className: 'table-data-align-right',
+            }
+        ];
+        return columns;
+    },
     //获取分析图表展示区所需的布局参数
     getChartLayoutParams: function () {
         let chartWidth = 0;
@@ -446,7 +530,7 @@ var SalesHomePage = React.createClass({
         } else if (this.state.activeView == viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
                 {this.filterCallTypeSelect()}
-                <div className="phone-table-block" style={{height: this.getPhoneListBlockHeight()}}>
+                <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
                                    loading={this.state.isLoadingPhoneList}
@@ -467,6 +551,58 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             </div>);
+        } else if (this.state.activeView === viewConstant.CALL_BACK) {
+            let tableClassnames = classNames('callback-table-block',{
+                'hide-body': this.state.callBackRecord.page === 1 && this.state.callBackRecord.isLoading,
+            });
+            // 首次加载时不显示下拉加载状态
+            const handleScrollLoading = () => {
+                if (this.state.callBackRecord.page === 1) {
+                    return false;
+                }
+                return this.state.callBackRecord.isLoading;
+            };
+            // 下拉加载数据
+            const handleScrollBottom = () => {
+                let callBackRecordList = this.state.callBackRecord.dataList, lastId;
+                if (_.isArray(callBackRecordList) && callBackRecordList.length > 0) {
+                    lastId = callBackRecordList[callBackRecordList.length - 1].id;//最后一个客户的id
+                }
+                this.getCallBackList({ lastId: lastId });
+            };
+            // 显示没有更多数据提示
+            const showNoMoreDataTip = () => {
+                return !this.state.callBackRecord.isLoading &&
+                        this.state.callBackRecord.dataList.length >= this.state.callBackRecord.pageSize &&
+                        !this.state.callBackRecord.listenScrollBottom;
+            };
+            const dropLoadConfig = {
+                loading: handleScrollLoading(),
+                listenScrollBottom: this.state.callBackRecord.listenScrollBottom,
+                handleScrollBottom,
+                showNoMoreDataTip: showNoMoreDataTip(),
+            };
+            return (
+                <div>
+                    <Spinner
+                        className={(this.state.callBackRecord.page === 1 && this.state.callBackRecord.isLoading) ? 'spin-fix' : 'hide'}
+                    />
+                    <div className='sales-table-container'>
+                        <div className={tableClassnames} style={{height: this.getListBlockHeight()}}>
+                            <AntcTable
+                                dropLoad={dropLoadConfig}
+                                dataSource={this.state.callBackRecord.dataList}
+                                columns={this.getCallBackListColumn()}
+                                pagination={false}
+                                bordered
+                                util={{zoomInSortArea: true}}
+                                onChange={this.onCallBackTableChange}
+                                scroll={{y: 400}}
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
         }
     },
     /* 渲染总时长、总次数为top10的列表
@@ -531,10 +667,14 @@ var SalesHomePage = React.createClass({
     onTableChange: function (pagination, filters, sorter) {
         this.setState({phoneSorter: sorter});
     },
+    onCallBackTableChange (pagination, filters, sorter) {
+        this.setState({callBackSorter: sorter});
+    },
     //时间的设置
     onSelectDate: function (startTime, endTime, timeType) {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         SalesHomeAction.changeSearchTime(timeObj);
+        SalesHomeAction.resetCallBackRecord();
         setTimeout(() => {
             //刷新统计数据
             this.refreshSalesListData();
@@ -702,6 +842,7 @@ var SalesHomePage = React.createClass({
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}
                                 phoneTotalObj={this.state.phoneTotalObj}
+                                callBackRecord={this.state.callBackRecord}
                                 activeView={this.state.activeView}
                             />
                             {/*即将过期的用户列表，所有角色都会展示*/}

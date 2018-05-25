@@ -1,3 +1,6 @@
+import {hasPrivilege} from "CMP_DIR/privilege/checker";
+import querystring from 'querystring';
+
 let teamAjax = require("../../../common/public/ajax/team");
 /**
  * 获取销售是什么角色
@@ -324,3 +327,38 @@ exports.setWebsiteConfig = function (queryObj) {
     return Deferred.promise();
 };
 
+//获取回访列表
+let getCallBackAjax = null;
+exports.getCallBackList = function (paramsObj, filterObj) {
+    let Deferred = $.Deferred();
+    let queryObj = {};
+    $.extend(queryObj, filterObj, { phone_type: paramsObj.query.phone_type });
+    getCallBackAjax && getCallBackAjax.abort();
+    const queryCustomer = paramsObj.query.phone_type === 'customer'; // 客户电话的类型过滤
+    let filter_phone = queryCustomer; // 是否过滤114和无效的电话号码
+    let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager/' : 'user/';
+    let url = '/rest/call_record/'+ auth_type;
+    let paramsArray = Object.values(paramsObj.params);
+    url += paramsArray.join('/');
+    url += '?';
+    if (paramsObj.query.lastId) {
+        url += querystring.stringify({id: paramsObj.query.lastId, filter_phone: queryCustomer}); // 是否过滤114和无效的电话号码(客户电话需要过滤)
+    } else {
+        url += querystring.stringify({filter_phone: queryCustomer}); // 是否过滤114和无效的电话号码(客户电话需要过滤)
+    }
+    getCallBackAjax = $.ajax({
+        url,
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function (data) {
+            Deferred.resolve(data);
+        },
+        error: function (xhr, textStatus) {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
