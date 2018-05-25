@@ -770,16 +770,18 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 },
             },
             cardContainer: {
-                selectOptions: [
-                    {name: Intl.get("common.label.hours", "小时"), value: "hourly"},
-                    {name: Intl.get("common.time.unit.day", "天"), value: "daily"},
-                    {name: Intl.get("common.time.unit.week", "周"), value: "weekly"},
-                    {name: Intl.get("common.time.unit.month", "月"), value: "monthly"},
-                    {name: Intl.get("common.time.unit.quarter", "季度"), value: "quarterly"},
-                    {name: Intl.get("common.time.unit.year", "年"), value: "yearly"}
-                    ],
-                activeOption: "hourly",
-                conditionName: "interval",
+                selectors: [{
+                    options: [
+                        {name: Intl.get("common.label.hours", "小时"), value: "hourly"},
+                        {name: Intl.get("common.time.unit.day", "天"), value: "daily"},
+                        {name: Intl.get("common.time.unit.week", "周"), value: "weekly"},
+                        {name: Intl.get("common.time.unit.month", "月"), value: "monthly"},
+                        {name: Intl.get("common.time.unit.quarter", "季度"), value: "quarterly"},
+                        {name: Intl.get("common.time.unit.year", "年"), value: "yearly"}
+                        ],
+                    activeOption: "hourly",
+                    conditionName: "interval",
+                }],
             },
             conditions: [{
                 name: "interval",
