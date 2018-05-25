@@ -31,14 +31,10 @@ var PageFrame = React.createClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
     },
     openPhonePanel: function (paramObj) {
-        this.setState({phonePanelShow: true, paramObj: $.extend(true, this.state.paramObj, paramObj)});
+        this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
     },
     closePhonePanel: function () {
         this.setState({phonePanelShow: false, paramObj: $.extend(true, {}, emptyParamObj)});
-    },
-    //TODO delete
-    setInitialPhoneObj: function () {
-        this.setState({phoneObj: {}});
     },
     render: function () {
         return (

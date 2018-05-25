@@ -205,6 +205,9 @@ const OrderIndex = React.createClass({
             let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
             //减头部的客户基本信息高度
             divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
+            if ($(".phone-alert-modal-title").size()) {
+                divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+            }
             //减添加订单面版的高度
             if (this.state.isShowAddContactForm) {
                 divHeight -= LAYOUT_CONSTANTS.ADD_ORDER_HEIGHHT;

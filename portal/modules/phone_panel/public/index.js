@@ -10,7 +10,6 @@ var phoneAlertAction = require("./action/phone-alert-action");
 var phoneAlertStore = require("./store/phone-alert-store");
 var addMoreInfoAction = require("./action/add-more-info-action");
 var userData = require("PUB_DIR/sources/user-data");
-var CrmRightPanel = require('MOD_DIR/crm/public/views/crm-right-panel');
 import AddCustomerForm from 'CMP_DIR/add-customer-form';
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
 import AddMoreInfo from "./view/add-more-info";
@@ -28,8 +27,8 @@ const DIVLAYOUT = {
     PHONE_STATUS_INPUT_H: 148//通话结束后，带跟进记录输入框的通话状态展示区域的高度
 };
 const Add_CUSTOMER_LAYOUT_CONSTANTS = {
-    TOP_DELTA: 140,//顶部提示框的高度
-    BOTTOM_DELTA: 20//底部的padding
+    TOP_DELTA: 62,//顶部提示框的高度
+    BOTTOM_DELTA: 10//底部的padding
 };
 
 const PHONERINGSTATUS = {
@@ -60,7 +59,6 @@ class PhonePanel extends React.Component {
             isAddFlag: false,//是否展示添加客户的右侧面板
             rightPanelIsShow: false,//是否展示右侧客户详情面板
             curCustomerId: "",//已存在客户的id
-            scrollLayOut: Add_CUSTOMER_LAYOUT_CONSTANTS.BOTTOM_DELTA + Add_CUSTOMER_LAYOUT_CONSTANTS.TOP_DELTA,
             isAddingMoreProdctInfo: false,//是否添加产品反馈，待办事项，和竞品信息
             isAddingAppFeedback: "",//添加客户反馈的状态,共三种状态，loading success error
             addAppFeedbackErrMsg: "",//添加客户反馈失败后的提示
@@ -205,7 +203,9 @@ class PhonePanel extends React.Component {
             addCustomer: false
         });
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
-        phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
+        setTimeout(() => {
+            phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
+        }, 1000);
     };
     //根据客户的id获取客户详情
     getCustomerInfoByCustomerId(phonemsgObj) {
@@ -240,6 +240,9 @@ class PhonePanel extends React.Component {
             return;
         }
         phoneAlertAction.toggleCustomerDetail(id);
+        setTimeout(() => {
+            this.refs.customerCardsScrollbar && this.refs.customerCardsScrollbar.update();
+        });
     };
     //关闭已有客户的右侧面板
     hideRightPanel = () => {
@@ -248,40 +251,30 @@ class PhonePanel extends React.Component {
         });
     };
 
-    //渲染多个客户卡片列表
-    renderCustomerList(customer, myCustomer) {
+    //渲染客户名及所属销售卡片
+    renderCustomerCard(customer, myCustomer) {
         return (
-            <div className="customer-card">
-                <div className="customer-name">
-                    <h3>
-                        <i className="iconfont icon-interested"/>
-                        <span>{customer.name}</span>
-                    </h3>
-                    <dl className="customer-info">
-                        <dt>
-                            {Intl.get("common.belong.sales", "所属销售")}:
-                        </dt>
-                        <dd>
-                            {customer.user_name}
-                        </dd>
-                    </dl>
-                    { myCustomer ? (//我的客户可以查看客户详情
-                        <p className="show-customer-detail">
-                            <Button type="primary" onClick={this.toggleCustomerDetail.bind(this, customer.id)}
-                                    data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
-                                {myCustomer.isShowDetail ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("call.record.show.customer.detail", "查看详情")}
-                            </Button>
-                        </p>) : null
-                    }
-                </div>
-                {  //展示客户详情
-                    myCustomer && myCustomer.isShowDetail ? (
-                        <CustomerDetail currentId={customer.id}
-                                        editCustomerBasic={this.editCustomerBasic}
-                                        hideRightPanel={this.hideRightPanel.bind(this)}
-                                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                                        showApplyUserForm={this.showApplyUserForm.bind(this)}
-                        />) : null}
+            <div className="customer-name">
+                <h3>
+                    <i className="iconfont icon-interested"/>
+                    <span>{customer.name}</span>
+                </h3>
+                <dl className="customer-info">
+                    <dt>
+                        {Intl.get("common.belong.sales", "所属销售")}:
+                    </dt>
+                    <dd>
+                        {customer.user_name}
+                    </dd>
+                </dl>
+                { myCustomer ? (//我的客户可以查看客户详情
+                    <p className="show-customer-detail">
+                        <Button type="primary" onClick={this.toggleCustomerDetail.bind(this, customer.id)}
+                                data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
+                            {myCustomer.isShowDetail ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("call.record.show.customer.detail", "查看详情")}
+                        </Button>
+                    </p>) : null
+                }
             </div>
         );
     }
@@ -311,27 +304,44 @@ class PhonePanel extends React.Component {
                                         showApplyUserForm={this.showApplyUserForm.bind(this)}
                         />);
                 } else {//该电话不是自己客户的
-                    return this.renderCustomerList(phonemsgObj.customers[0]);
+                    return this.renderCustomerCard(phonemsgObj.customers[0]);
                 }
             } else {//该电话对应多个客户时的处理
-                let height = $("body").height() - DIVLAYOUT.CUSTOMER_COUNT_TIP_H;//去掉有几个客户的提示的高度
-                //通话结束后，需要减去带跟进记录输入框的通话状态高度
-                if (phonemsgObj.type === PHONERINGSTATUS) {
-                    height -= DIVLAYOUT.PHONE_STATUS_INPUT_H;
+                let showDetailCustomer = _.find(customerInfoArr, customer => customer.isShowDetail);
+                if (showDetailCustomer) {//有展示的客户详情时
+                    return (
+                        <div className="show-customer-detail">
+                            <a className="return-customer-cards"
+                               onClick={this.toggleCustomerDetail.bind(this, showDetailCustomer.id)}>
+                                <span className="iconfont icon-return-btn"/> {Intl.get("crm.52", "返回")}
+                            </a>
+                            <CustomerDetail currentId={showDetailCustomer.id}
+                                            editCustomerBasic={this.editCustomerBasic}
+                                            hideRightPanel={this.hideRightPanel.bind(this)}
+                                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                                            showApplyUserForm={this.showApplyUserForm.bind(this)}
+                            />
+                        </div>);
                 } else {
-                    height -= DIVLAYOUT.PHONE_STATUS_TIP_H;
+                    let height = $("body").height() - DIVLAYOUT.CUSTOMER_COUNT_TIP_H;//去掉有几个客户的提示的高度
+                    //通话结束后，需要减去带跟进记录输入框的通话状态高度
+                    if (phonemsgObj.type === PHONERINGSTATUS) {
+                        height -= DIVLAYOUT.PHONE_STATUS_INPUT_H;
+                    } else {
+                        height -= DIVLAYOUT.PHONE_STATUS_TIP_H;
+                    }
+                    return (<div className="customer-card-list" style={{height: height}}>
+                        <GeminiScrollbar ref="customerCardsScrollbar">
+                            {
+                                _.map(phonemsgObj.customers, (item) => {
+                                    //我的客户，可以查看客户详情
+                                    let myCustomer = _.find(customerInfoArr, customer => customer.id === item.id);
+                                    return this.renderCustomerCard(item, myCustomer);
+                                })
+                            }
+                        </GeminiScrollbar>
+                    </div>);
                 }
-                return (<div className="customer-card-list" style={{height: height}}>
-                    <GeminiScrollbar>
-                        {
-                            _.map(phonemsgObj.customers, (item) => {
-                                //我的客户，可以查看客户详情
-                                let myCustomer = _.find(customerInfoArr, customer => customer.id === item.id);
-                                return this.renderCustomerList(item, myCustomer);
-                            })
-                        }
-                    </GeminiScrollbar>
-                </div>);
             }
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
             return (
@@ -425,7 +435,7 @@ class PhonePanel extends React.Component {
                     hideAddForm={this.hideAddForm}
                     updateCustomer={this.updateCustomer}
                     showRightPanel={this.showRightPanel}
-                    scrollLayOut={this.state.scrollLayOut}
+                    scrollLayOut={Add_CUSTOMER_LAYOUT_CONSTANTS.BOTTOM_DELTA + Add_CUSTOMER_LAYOUT_CONSTANTS.TOP_DELTA}
                 />
             );
         } else if (!this.isCustomerDetailCall(this.state.paramObj)) {//不是从客户详情中拨打的电话时
@@ -554,17 +564,6 @@ class PhonePanel extends React.Component {
                         {this.renderMainContent()}
                     </div>
                 </div>
-                {/*添加客户时，如果该客户存在，需要展示该已有客户的详情*/}
-                {this.state.rightPanelIsShow ? (
-                    <CrmRightPanel
-                        showFlag={this.state.rightPanelIsShow}
-                        currentId={this.state.curCustomerId}
-                        hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        editCustomerBasic={this.editCustomerBasic}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    />) : null}
                 {/*该客户下的用户列表*/}
                 {this.state.isShowCustomerUserListPanel ? <RightPanel
                     className="customer-user-list-panel"

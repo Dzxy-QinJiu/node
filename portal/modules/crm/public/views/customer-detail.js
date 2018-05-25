@@ -57,10 +57,14 @@ var CrmRightPanel = React.createClass({
             this.state.applyUserShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
+        this.setTabsContainerHeight();
     },
 
     setTabsContainerHeight: function () {
         let tabsContainerHeight = $("body").height() - $(".basic-info-contianer").outerHeight(true);
+        if ($(".phone-alert-modal-title").size()) {
+            tabsContainerHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        }
         this.setState({tabsContainerHeight: tabsContainerHeight});
     },
     getCurCustomerDetailByPhone: function (phoneNum) {
@@ -114,11 +118,6 @@ var CrmRightPanel = React.createClass({
         });
     },
     render: function () {
-        var className = "right-panel-content";
-        if (this.state.applyUserShowFlag) {
-            //展示form面板时，整体左移
-            className += " crm-right-panel-content-slide";
-        }
         return (
             <div className="customer-detail-content">
                 <BasicInfo isRepeat={this.props.isRepeat}

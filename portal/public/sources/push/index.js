@@ -199,7 +199,7 @@ function getReplyTipContent(data) {
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
         case "pass"://审批通过
-                    // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+            // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
             tipContent = Intl.get("reply.pass.tip.content",
                 "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
                     approvalPerson: approvalPerson,
@@ -250,7 +250,7 @@ function phoneEventListener(phonemsgObj) {
     const PHONE_STATUS = ["ALERT", "ANSWERED", "phone"];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
     if (hasPrivilege("CRM_LIST_CUSTOMERS") && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
-        if (phonemsgObj.type === "phone" && !phonemsgObj.customers) {
+        if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {

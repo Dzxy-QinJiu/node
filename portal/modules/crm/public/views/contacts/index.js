@@ -89,6 +89,9 @@ var Contacts = React.createClass({
         let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
         //减头部的客户基本信息高度
         divHeight -= basicInfoHeight;
+        if ($(".phone-alert-modal-title").size()) {
+            divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        }
         //减添加联系人面版的高度
         if (this.state.isShowAddContactForm) {
             divHeight -= LAYOUT_CONSTANTS.ADD_CONTACT_HEIGHHT;

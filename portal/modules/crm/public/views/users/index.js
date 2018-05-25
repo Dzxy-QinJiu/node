@@ -472,6 +472,9 @@ class CustomerUsers extends React.Component {
         let divHeight = $(window).height() - LAYOUT.TOP_NAV_HEIGHT - LAYOUT.TOTAL_HEIGHT;
         //减头部的客户基本信息高度
         divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
+        if ($(".phone-alert-modal-title").size()) {
+            divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        }
         //减去申请延期\停用等表单的高度
         if (this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP) {
             divHeight -= LAYOUT.APPLY_FORM_HEIGHT;

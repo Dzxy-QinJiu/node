@@ -204,22 +204,23 @@ class AddCustomerForm extends React.Component {
         this.setState({
             isLoading: true
         });
-        CrmAction.addCustomer(values, result => {
+        CrmAction.addCustomer(values, data => {
             this.setState({
                 isLoading: false
             });
-            if (result.code == 0) {
+            if (data.code == 0) {
                 message.success(Intl.get("user.user.add.success", "添加成功"));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne();
                 }
+                let newAddCustomer = _.isArray(data.result) && data.result[0];
                 //拨打电话时，若客户列表中没有此号码，需添加客户
-                if (_.isFunction(this.props.updateCustomer)) {
-                    this.props.updateCustomer(result.result);
+                if (_.isFunction(this.props.updateCustomer) && newAddCustomer) {
+                    this.props.updateCustomer(newAddCustomer);
                 }
                 this.constructor();
             } else {
-                message.error(result);
+                message.error(data);
             }
         });
     };
