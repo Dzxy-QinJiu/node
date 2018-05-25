@@ -4,6 +4,8 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 "use strict";
+//上传超时时长
+var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("ant-auth-request").restUtil(restLogger);
 const restApis = {
@@ -26,7 +28,13 @@ const restApis = {
     //线索名、电话唯一性验证
     checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search",
     //将线索和客户进行关联
-    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation"
+    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation",
+    //导入线索
+    upload:"/rest/customer/v2/clue/upload/preview",
+    //确认导入线索预览
+    uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag",
+    //删除某条线索
+    deleteRepeatClue: "rest/customer/v2/clue/upload/preview/:index",
 
 };
 //查询客户
@@ -104,6 +112,9 @@ exports.distributeCluecustomerToSale = function (req, res) {
 //对线索客户的详情进行更新
 exports.updateCluecustomerDetail = function (req, res) {
     var updateItem = req.body.updateItem;
+    if (updateItem === "weChat"){
+        updateItem = "wechat";
+    }
     return restUtil.authRest.put(
         {
             url: restApis.updateCluecustomerDetail.replace(":updateItem", updateItem),
@@ -129,4 +140,33 @@ exports.relateClueAndCustomer = function (req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//上传线索
+exports.uploadClues = function (req, res) {
+    return restUtil.authRest.post({
+        url: restApis.upload,
+        req: req,
+        res: res,
+        gzip: true,
+        'pipe-upload-file': true,
+        timeout: uploadTimeOut
+    }, null);
+};
+//上传线索预览
+exports.confirmUploadClues = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.uploadClueConfirm.replace(":flag",req.params.flag),
+            req: req,
+            res: res
+        }, null);
+};
+//删除某个重复线索
+exports.deleteRepeatClue = function (req, res) {
+    return restUtil.authRest.del(
+        {
+            url: restApis.deleteRepeatClue.replace(":index",req.params.index),
+            req: req,
+            res: res
+        }, null);
 };

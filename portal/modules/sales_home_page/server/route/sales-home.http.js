@@ -94,5 +94,13 @@ module.exports = {
             'needLogin': true
         }
     },
+    {
+        "method": "get",
+        "path": "/rest/show/activeemail/flag/:userId",
+        "handler": "getShowActiveEmailObj",
+        "passport": {
+            "needLogin": true
+        },
+    }
     ]
 };

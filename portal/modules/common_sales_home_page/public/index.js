@@ -121,6 +121,8 @@ var SalesHomePage = React.createClass({
         this.getAppIlleageLogin();
         //获取重复客户列表
         this.getRepeatCustomerList();
+        //获取呼入未接的电话
+        this.getMissCallTypeList();
         //获取十天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         SalesHomeAction.getExpireCustomer({
@@ -147,6 +149,21 @@ var SalesHomePage = React.createClass({
         });
         //获取新分配的客户
         this.getNewDistributeCustomer();
+    },
+    //获取呼入未接通的电话
+    getMissCallTypeList: function(lastId){
+        var constObj = {
+            page_size: this.state.page_size,
+            start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
+            //把今天0点作为判断是否过期的时间点
+            end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
+            status: false,//日程的状态，未完成的日程
+            type: "missed_call"
+        };
+        if (lastId) {
+            constObj.id = lastId;
+        }
+        SalesHomeAction.getScheduleList(constObj, "missed_call");
     },
     //获取最近登录的客户
     getRecentLoginCustomers: function (lastId) {
@@ -192,7 +209,7 @@ var SalesHomePage = React.createClass({
             start_time: this.state.start_time,
             end_time: this.state.end_time,
         };
-        SalesHomeAction.getScheduleList(constObj);
+        SalesHomeAction.getScheduleList(constObj, "today");
     },
     //停用客户登录
     getAppIlleageLogin: function (lastId) {
@@ -277,6 +294,9 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
                 this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
                 break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
+                this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
+                break;
         }
     },
     getScrollData: function (curDataObj, getDataFunction) {
@@ -360,6 +380,9 @@ var SalesHomePage = React.createClass({
             //新分配的客户
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
                 rightPanel = this.renderNewDistributeCustomer();
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
                 break;
         }
         return rightPanel;
@@ -520,6 +543,33 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             );
+        }else if (scheduleType === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE){
+            //呼入未接通电话
+            var data =  this.state.missCallObj.data.list;
+            return (
+                <div className="today-expired-schedule" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.missCallObj)}
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE)}
+                        listenScrollBottom={this.state.listenScrollBottom}>
+                        {_.map(data, (item) => {
+                            return (
+                                <ScheduleItem
+                                    scheduleType={ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE}
+                                    scheduleItemDetail={item}
+                                    isShowTopTitle={false}
+                                    isShowScheduleTimerange={false}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
+                                />
+                            );
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            );
+
+
         }
     },
     afterHandleMessage: function (messageObj) {
@@ -676,6 +726,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
                 total = this.state.newDistributeCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                total = this.state.missCallObj.data.total;
                 break;
         }
         return total;

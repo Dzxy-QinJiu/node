@@ -32,6 +32,8 @@ var restApis = {
     callRecordListUrl: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     // 获取全部和客户电话的列表（所有的，包括不在团队里的数据）
     managerCallRcordListUrl: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    //获取个人资料中邮箱是否激活
+    getUserInfo: "/rest/base/v1/user/id",
 };
 exports.restUrls = restApis;
 
@@ -159,23 +161,87 @@ exports.getExpireUser = function (req, res) {
             }
         });
 };
-//获取网站个性化设置
-exports.getWebsiteConfig = function (req, res) {
-    return restUtil.authRest.get(
-        {
-            url: restApis.websiteConfig,
-            req: req,
-            res: res
-        }, null,{
-            success:function (eventEmitter, data) {
-              //空值的处理
-                if (!data){
-                    data = {};
+
+//获取个人资料邮箱是否存在及激活状态
+function getUserInfoEmail(req, res) {
+    //用户的id
+    var userId = req.params.userId;
+    return new Promise((resolve, reject) => {
+        restUtil.authRest.get(
+            {
+                url: restApis.getUserInfo + "/" + userId,
+                req: req,
+                res: res
+            }, null, {
+                success: function (eventEmitter, data) {
+                    resolve(data);
+                },
+                error: function (eventEmitter, errorObj) {
+                    reject(errorObj.message);
                 }
-                eventEmitter.emit("success", data);
+            });
+    });
+}
+
+//获取个人配置
+function getWebsiteConfig(req, res, responseObj) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: restApis.websiteConfig,
+                req: req,
+                res: res
+            }, null, {
+                success: function (eventEmitter, data) {
+                    //有数据,并且设置了不提醒
+                    if (data && data.setting_notice_ignore === "yes"){
+                        resolve(responseObj);
+                    }else{
+                        responseObj.isShowActiveEmail = true;
+                        resolve(responseObj);
+                    }
+                },
+                error: function (eventEmitter, errorObj) {
+                    reject(errorObj.message);
+                }
+            });
+    });
+}
+
+
+//获取是否需要展示激活邮箱提示
+exports.getShowActiveEmailObj = function (req, res) {
+    var emitter = new EventEmitter();
+    getUserInfoEmail(req, res).then((data) => {
+        var responseObj = {
+            isShowActiveEmail: false,//是否展示激活邮箱的提示
+        };
+        //有邮箱
+        if (data.email) {
+            responseObj.email = data.email;
+            //有邮箱且邮箱未激活
+            if (!data.email_enable) {
+                //获取个人配置
+                getWebsiteConfig(req, res, responseObj).then((responseObj) => {
+                    emitter.emit("success", responseObj);
+                }).catch((errorMsg) => {
+                    emitter.emit("error", errorMsg);
+                });
+            } else {
+                //有邮箱且邮箱已经激活，不提示
+                emitter.emit("success", responseObj);
             }
-        });
+        } else {
+            //用户没有邮箱，提示添加邮箱
+            emitter.emit("success", responseObj);
+        }
+    }).catch(function (errorMsg) {
+        emitter.emit("error", errorMsg);
+    });
+    return emitter;
+
 };
+
 //对网站进行个性化设置
 exports.setWebsiteConfig = function (req, res ,reqObj) {
     return restUtil.authRest.post(

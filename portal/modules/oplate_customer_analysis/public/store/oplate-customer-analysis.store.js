@@ -81,7 +81,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         },
         data: [],
         errorMsg: "",
-        loading: false        
+        loading: false
     };
     //获取销售新开客户数
     this.newCustomerCount = {
@@ -89,6 +89,16 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         errorMsg: "",
         loading: false
     };
+    //不同阶段客户数
+    this.stageCustomerNum = {
+        data: [],
+        errorMsg: "",
+        loading: false
+    };
+    //当前选中的团队id
+    this.currentTeamId = "";
+    //当前选中的销售人员id
+    this.currentMemberId = "";
 };
 //重置图表数据
 OplateCustomerAnalysisStore.prototype.resetChartData = function (type) {
@@ -250,7 +260,12 @@ const resultHandler = function (resultString, fn) {
         }
         else if (errorMsg) {
             this[resultString].loading = false;
-            this[resultString].errorMsg = errorMsg;
+            this[resultString].errorMsg = errorMsg && errorMsg;
+            //处理json对象错误
+            const errorObj = JSON.parse(errorMsg);
+            if (errorObj.message) {
+                this[resultString].errorMsg = errorObj.message;
+            }
             this[resultString].data = [];
         }
         else {
@@ -291,7 +306,7 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("c
             x.date = x.date ? moment(x.date).format(oplateConsts.DATE_FORMAT) : "";
             return x;
         });
-    }    
+    }
 });
 
 //获取客户阶段变更对应的客户列表数据
@@ -384,15 +399,15 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
  *  }
  * ]
  */
-OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({loading, errorMsg, data, paramObj}) {
+OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function ({ loading, errorMsg, data, paramObj }) {
     let list = [];
     if (data.list && data.list.length > 0) {
         data.list.forEach(teamItem => {
             teamItem.team_result.forEach((sale, index) => {
                 sale.team_name = teamItem.team_name;
-                if (list.find(item => item.team_name == teamItem.team_name)) {                    
+                if (list.find(item => item.team_name == teamItem.team_name)) {
                     sale.rowSpan = 0;
-                } else {                    
+                } else {
                     sale.rowSpan = teamItem.team_result.length;
                 }
                 list.push(sale);
@@ -401,7 +416,7 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
                     list.push($.extend({}, teamItem.team_total, {
                         user_name: Intl.get("sales.home.total.compute", "总计")
                     }));
-                }                
+                }
             });
         });
         //在数据最后添加总的合计
@@ -414,6 +429,28 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
     this.newCustomerCount.data = list;
 });
 
+
+//获取不同阶段客户数
+OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("stageCustomerNum", function ({ loading, errorMsg, data, paramObj }) {
+    let list = [];
+    if (data) {
+        list = [
+            {
+                signed: data.signed,
+                trial: data.trial
+            }
+        ];
+    }
+    this.stageCustomerNum.data = list;
+});
+
+OplateCustomerAnalysisStore.prototype.teamChange = function (teamId) {
+    this.currentTeamId = teamId;
+};
+OplateCustomerAnalysisStore.prototype.memberChange = function (memberId) {
+    this.currentTeamId = "";
+    this.currentMemberId = memberId;
+};
 
 //导出 客户分析-客户构成 的store
 module.exports = alt.createStore(OplateCustomerAnalysisStore, 'OplateCustomerAnalysisStore');

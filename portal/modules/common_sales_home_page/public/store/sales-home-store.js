@@ -54,6 +54,16 @@ SalesHomeStore.prototype.setInitState = function () {
             total: ""
         }
     };
+    //拨入未接通的
+    this.missCallObj = {
+        loading: true,
+        errMsg: '',
+        curPage: 1,
+        data: {
+            list: [],
+            total: ""
+        }
+    };
     //关注客户登录
     this.concernCustomerObj = {
         loading: true,
@@ -276,7 +286,18 @@ SalesHomeStore.prototype.getScheduleList = function (result) {
             scheduleExpiredTodayObj.data.total = result.resData.total;
             scheduleExpiredTodayObj.curPage++;
         }
-    } else {
+    }else if (result.type === "missed_call"){
+        //获取拨入未接通的电话
+        var missCallObj = this.missCallObj;
+        missCallObj.loading = result.loading;
+        if (result.error){
+            missCallObj.errMsg = result.errMsg;
+        }else if (result.resData){
+            missCallObj.data.list = missCallObj.data.list.concat(result.resData.list);
+            missCallObj.data.total = result.resData.total;
+            missCallObj.curPage++;
+        }
+    }else if (result.type === "today") {
         //获取今天的日程列表
         var scheduleTodayObj = this.scheduleTodayObj;
         scheduleTodayObj.loading = result.loading;

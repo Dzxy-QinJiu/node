@@ -10,6 +10,7 @@ var immutable = require("immutable");
 const querystring = require("querystring");
 import { XAXIS_COLOR } from "./consts";
 import Trace from "LIB_DIR/trace";
+import { packageTry } from 'LIB_DIR/func';
 
 var COLORSINGLE = '#1790cf';
 var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
@@ -44,8 +45,9 @@ var BarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },
@@ -380,7 +382,9 @@ var BarChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {this.echartInstance.dispose();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
         }
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = "";

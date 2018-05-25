@@ -8,6 +8,7 @@ var immutable = require("immutable");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
 let chartUtil = require("../../utils/chart-util");
+import { packageTry } from 'LIB_DIR/func';
 var StackLineChart = React.createClass({
     echartInstance : null,
     getDefaultProps : function() {
@@ -127,18 +128,21 @@ var StackLineChart = React.createClass({
     },
     renderChart : function() {
         if(this.echartInstance) {
-            try {_this.echartInstance.dispose();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
         }
-        var _this = this;
         this.echartInstance = echarts.init(this.refs.chart, macronsTheme);
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                packageTry(() => {
+                    this.echartInstance.dispose();
+                });
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data","暂无数据")}</div>`);
         } else {
@@ -161,8 +165,9 @@ var StackLineChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },

@@ -76,10 +76,14 @@ exports.toDetailRestObject = function (obj) {
         try {
             user_names = JSON.parse(detail.user_names);
         } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(JSON.stringify(e));
         }
         try {
             user_ids = JSON.parse(detail.user_ids);
         } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(JSON.stringify(e));
         }
         result.user_names = user_names;
         result.user_ids = user_ids;
@@ -92,11 +96,15 @@ exports.toDetailRestObject = function (obj) {
             try {
                 user_ids = JSON.parse(detail.user_ids);
             } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
             }
             result.user_ids = user_ids;
             try {
                 result.user_names = JSON.parse(detail.user_names);
             } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(e));
             }
 
         }
@@ -109,6 +117,8 @@ exports.toDetailRestObject = function (obj) {
         try {
             nick_names = JSON.parse(detail.nick_name);
         } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(JSON.stringify(e));
         }
         result.nick_names = nick_names;
     } else {
@@ -120,6 +130,8 @@ exports.toDetailRestObject = function (obj) {
     try {
         products = JSON.parse(detail.products);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     result.apps = products;
     //账号类型
@@ -177,11 +189,15 @@ exports.toDetailDelayRestObject = function (obj) {
     try {
         user_names = JSON.parse(detail.user_names);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     var user_ids = [];
     try {
         user_ids = JSON.parse(detail.user_ids);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     //用户名
     result.user_names = user_names;
@@ -233,11 +249,15 @@ exports.toDetailChangePwdOtherRestObject = function (obj) {
     try {
         user_names = detail.user_name.split(/、/g);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     var user_ids = [];
     try {
         user_ids = JSON.parse(detail.user_ids);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     //用户名
     result.user_names = user_names;
@@ -280,11 +300,15 @@ exports.toDetailStatusRestObject = function (obj) {
     try {
         user_names = detail.user_name.split(/、/g);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     var user_ids = [];
     try {
         user_ids = JSON.parse(detail.user_ids);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     //账号状态
     result.status = detail.status;

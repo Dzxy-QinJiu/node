@@ -260,6 +260,9 @@ exports.queryCustomer = function (req, res, condition) {
             delete condition.term_fields;
         }
         queryObj.query = condition;
+        if (query && query.user_id) {
+            queryObj.query.user_id = query.user_id;
+        }
         queryObj.rang_params = JSON.parse(req.body.rangParams);
     }
     return restUtil.authRest.post(

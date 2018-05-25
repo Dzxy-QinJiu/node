@@ -244,6 +244,8 @@ exports.batchUpdate = function (req, res, field, data, application_ids) {
     try {
         userObj = JSON.parse(data);
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(JSON.stringify(e));
     }
     //修改权限
     if (field === 'grant_roles') {

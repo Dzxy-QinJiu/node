@@ -654,7 +654,10 @@ var Crm = React.createClass({
             condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
-        CrmAction.queryCustomer(condition, this.state.rangParams, this.state.pageSize, this.state.sorter, queryObj);
+        const conditionParams = (this.props.params && this.props.params.condition) || condition;
+        const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
+        const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
+        CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
         this.setState({rangeParams: this.state.rangParams});
     },
     //清除客户的选择
@@ -889,9 +892,7 @@ var Crm = React.createClass({
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
-                        phoneNum: phoneNumber.replace('-', ''),
                         contact: record.contact,
-                        customerDetail: record,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -1259,24 +1260,28 @@ var Crm = React.createClass({
         let selectCustomerLength = this.state.selectedCustomer.length;
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
-                <FilterBlock>
-                    {selectCustomerLength ? (
-                        <div className="crm-list-selected-tip">
-                            <span className="iconfont icon-sys-notice"/>
-                            {this.renderSelectCustomerTips()}
-                        </div>
-                    ) : null}
-                    <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
-                        <CrmFilter
-                            ref="crmFilter"
-                            search={this.search.bind(this, true)}
-                            changeTableHeight={this.changeTableHeight}
-                            crmFilterValue={this.state.crmFilterValue}
-                        />
-                    </div>
-                    {this.renderHandleBtn()}
-                    <div className="filter-block-line"></div>
-                </FilterBlock>
+                {
+                    !this.props.fromSalesHome ?
+                        <FilterBlock>
+                            {selectCustomerLength ? (
+                                <div className="crm-list-selected-tip">
+                                    <span className="iconfont icon-sys-notice" />
+                                    {this.renderSelectCustomerTips()}
+                                </div>
+                            ) : null}
+                            <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
+                                <CrmFilter
+                                    ref="crmFilter"
+                                    search={this.search.bind(this, true)}
+                                    changeTableHeight={this.changeTableHeight}
+                                    crmFilterValue={this.state.crmFilterValue}
+                                />
+                            </div>
+                            {this.renderHandleBtn()}
+                            <div className="filter-block-line"></div>
+                        </FilterBlock> : null
+                }
+
                 {this.state.isAddFlag ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddForm}

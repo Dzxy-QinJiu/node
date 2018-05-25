@@ -27,9 +27,11 @@ import UserDetail from "./user-detail";
 const Option = Select.Option;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {setWebsiteConfig} from "LIB_DIR/utils/websiteConfig";
-import CONSTS from  "LIB_DIR/consts";
 import {storageUtil} from "ant-utils";
-
+//存储个人配置的key
+const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
+//个人配置中存储的近期登录用户列表选择的应用id
+const RECENT_LOGIN_USER_SELECTED_APP_ID = oplateConsts.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID;
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 120,
@@ -101,7 +103,8 @@ class RecentLoginUsers extends React.Component {
     getSelectedAppId(props) {
         var selectedAppId = "";
         //上次手动选中的appid
-        var localSelectedAppId = JSON.parse(storageUtil.local.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG))[CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID];
+        let websitConfig = JSON.parse(storageUtil.local.get(WEBSITE_CONFIG));
+        let localSelectedAppId = websitConfig ? websitConfig[RECENT_LOGIN_USER_SELECTED_APP_ID] : "";
         if (props.selectedAppId) {
             //如果外面选中一个应用，最近登录的用户，默认用此应用
             selectedAppId = props.selectedAppId;
@@ -215,7 +218,7 @@ class RecentLoginUsers extends React.Component {
     }
 
     onSelectedAppChange(app_id) {
-        var configKey = CONSTS.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID;
+        var configKey = RECENT_LOGIN_USER_SELECTED_APP_ID;
         var obj = {};
         obj[configKey] = app_id;
         //设置当前选中应用

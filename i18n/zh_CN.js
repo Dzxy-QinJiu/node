@@ -611,6 +611,7 @@ var zh_CN = {
     "member.operation.log": "操作日志",
     "member.input.email": "请输入邮箱",
     "member.input.qq": "请输入QQ号",
+    "member.input.wechat": "请输入微信号",
     "member.check.member.name": "请输入数字、字母或下划线，首字母不能是下划线",
     "member.email.is.unique": "邮箱唯一性校验出错！",
     "member.no.role": "暂无角色",
@@ -1233,7 +1234,7 @@ var zh_CN = {
     "crm.clue.source.placeholder": "请选择或输入线索来源",
     "crm.sales.clue": "线索",
     "crm.sales.clue.add.disable": "不能手动添加'{label}'标签",
-    "crm.clue.require.one": "电话、邮箱、QQ必填一项",
+    "crm.clue.require.one": "电话、邮箱、QQ、微信必填一项",
     "crm.contact.list.failed": "获取联系人列表失败",
     "crm.contact.name.length": "请输入最多50个字符的姓名",
     "crm.last.trace.content": "最后跟进内容",
@@ -1259,6 +1260,7 @@ var zh_CN = {
     "crm.customer.transfer.sales": "销售代表",
     "crm.customer.transfer.manager": "客户经理",
     "crm.sales.customerStage": "客户阶段变更统计",
+    "crm.sales.newTrailCustomer": "新开客户数统计",
     "crm.repeat.phone": "电话重复",
     "crm.repeat.phone.unhandle": "您还有未处理的重复电话：",
 	"crm.order.stage":"订单阶段",
@@ -1283,6 +1285,9 @@ var zh_CN = {
     "crm.basic.concerned": "已关注",
     "crm.basic.unconcerned": "未关注",
     "crm.basic.more": "更多",
+    "crm.sales.update": "修改为",
+    "crm.sales.redistribution": "重新分配",
+    "crm.sales.transfer.confirm": "确认转出",
     // 客户管理end
 
     // 客户分析start
@@ -1984,7 +1989,7 @@ var zh_CN = {
     "sales.homepage.hide.teamlist": "隐藏团队列表",
     "sales.homepage.show.teamlist": "展开团队列表",
     "crm.save.customertrace.first": "请先保存或取消保存已编辑的跟进记录内容",
-    "sales.add.email.info": "请到{userinfo}页面激活邮箱，否则将会无法接收用户申请的邮件。",
+    "sales.add.email.info": "请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。",
     "cluecustomer.create.time": "创建于{startTime}",
     "cluecustomer.trace.person": "跟进人",
     "cluecustomer.content.not.empty": "跟进内容不能为空",
@@ -2186,7 +2191,16 @@ var zh_CN = {
     "clue.customer.close.customer.search":"请先关闭客户搜索框",
     "clue.customer.selected.customer":"请搜索客户进行关联",
     "clue.customer.no.related.customer":"上述客户都不是相关联的客户，搜索客户",
-    "config.sales.role.has.repeat":"该销售角色名称已存在"
-
+    "config.sales.role.has.repeat":"该销售角色名称已存在",
+    "sales.frontpage.has.no.conneted":"您有电话未接听",
+    "clue.manage.import.clue": "导入线索",
+    "clue.manage.import.clue.template": "导入线索模板",
+    "clue.manage.failed.import.clue": "导入线索失败，请重试!",
+    "clue.customer.import.clue.suceess": "导入线索成功",
+    "clue.customer.import.clue.failed": "导入线索失败",
+    "clue.delete.duplicate.failed": "删除重复线索失败",
+    "clue.repeat.delete": "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入",
+    "clue.customer.belong.to.other.sales":"该电话属于客户{customer}，所属销售{sales}",
+    "phone.alert.select.customer":"请选择要跟进的客户"
 };
 export default zh_CN;

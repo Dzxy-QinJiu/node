@@ -4,6 +4,7 @@ var classNames = require("classnames");
 var UserData = require('../../../../public/sources/user-data').getUserData();
 import { ALL_LOG_INFO } from "PUB_DIR/sources/utils/consts";
 import { storageUtil } from "ant-utils";
+import { packageTry } from 'LIB_DIR/func';
 //缓存在localStorage中的用户列表每页多少条的key
 exports.localStorageUserViewPageSizeKey = 'app_user_manage.user_view.page_size';
 //缓存在localStorage中的客户对应的用户列表每页多少条的key
@@ -158,9 +159,9 @@ function formatTaskParams(batch_data , app_id , extranInfo) {
             app_ids = app_id.slice();
         } else if(_.isString(app_id)){
             if(/^\[.*\]$/.test(app_id)) {
-                try {
+                packageTry(() => {
                     app_ids = JSON.parse(app_id);
-                }catch(e){}
+                });
             } else {
                 app_ids = [app_id];
             }
