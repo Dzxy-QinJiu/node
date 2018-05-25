@@ -34,8 +34,10 @@ const restApis = {
     getCallTotalList: '/rest/callrecord/v2/callrecord/query/:authType/call_record/top',
     //获取销售团队中启用状态成员的数量
     getActiveSalesInTeams: '/rest/base/v1/group/team/available/statistic',
+    // 获取通话客户的地域和阶段分布
+    getCallCustomerZoneStage: '/rest/callrecord/v2/callrecord/query/:authType/call_record/region/stage/statistic'
 };
-
+ 
 // 获取单次通话时长为top10的数据
 exports.getCallDurTopTen = function (req, res, params, reqBody) {
     let url = params.type === "manager" ? restApis.getManagerCallDurTopTen : restApis.getCallDurTopTen;
@@ -237,4 +239,14 @@ exports.getSaleMemberList = function (req, res, params) {
             req: req,
             res: res
         });
+};
+
+// 获取通话客户的地域和阶段分布
+exports.getCallCustomerZoneStage = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getCallCustomerZoneStage.replace(":authType", req.params.authType),
+            req: req,
+            res: res
+        }, req.query);
 };

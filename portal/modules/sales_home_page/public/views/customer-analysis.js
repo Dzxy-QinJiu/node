@@ -32,6 +32,11 @@ import rightPanelUtil from "CMP_DIR/rightPanel";
 const RightPanel = rightPanelUtil.RightPanel;
 var AppUserManage = require("MOD_DIR/app_user_manage/public");
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
+import NewTrailCustomerTable from './new-trail-and-aign-customer';
+const Emitters = require("PUB_DIR/sources/utils/emitters");
+const dateSelectorEmitter = Emitters.dateSelectorEmitter;
+const appSelectorEmitter = Emitters.appSelectorEmitter;
+const teamTreeEmitter = Emitters.teamTreeEmitter;
 //客户分析
 var CustomerAnalysis = React.createClass({
     getStateData: function () {
@@ -42,7 +47,7 @@ var CustomerAnalysis = React.createClass({
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
-            updateScrollBar: false,
+            updateScrollBar: false
         };
     },
     onStateChange: function () {
@@ -52,6 +57,10 @@ var CustomerAnalysis = React.createClass({
         let stateData = this.getStateData();
         return stateData;
     },
+    componentWillMount() {
+        teamTreeEmitter.on(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
+        teamTreeEmitter.on(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
+    },    
     componentWillReceiveProps: function (nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
@@ -65,6 +74,7 @@ var CustomerAnalysis = React.createClass({
                 setTimeout(() => {
                     this.getTransferCustomers({ isFirst: true });
                     this.getStageChangeCustomers();
+                    this.getCustomerStageAnalysis();
                 });
             }
         });
@@ -79,6 +89,22 @@ var CustomerAnalysis = React.createClass({
                 }, delayConstant);
             });
         }
+    },
+    onTeamChange(team_id, allSubTeamIds) {
+        let teamId = team_id;
+        if (allSubTeamIds && allSubTeamIds.length > 0) {
+            teamId = allSubTeamIds.join(",");
+        }        
+        OplateCustomerAnalysisAction.teamChange(teamId);
+        setTimeout(() => this.getCustomerStageAnalysis({
+            team_id
+        }));
+    },
+    onMemberChange(member_id) {
+        OplateCustomerAnalysisAction.memberChange(member_id);
+        setTimeout(() => this.getCustomerStageAnalysis({
+            member_id
+        }));
     },
     getDataType: function () {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
@@ -128,6 +154,21 @@ var CustomerAnalysis = React.createClass({
             ],
         };
         OplateCustomerAnalysisAction.getStageChangeCustomers(params);
+    },
+    //获取不同阶段客户数
+    getCustomerStageAnalysis: function (params) {
+        let teamId = this.state.currentTeamId;
+        if (teamId && teamId.includes(",")) {
+            teamId = teamId.split(",")[0];//此接口需要的teamid为最上级的团队id
+        }
+        let paramsObj = {
+            ...params,
+            starttime: this.state.startTime,
+            endtime: this.state.endTime,
+            app_id: "all",
+            team_id: teamId
+        };
+        OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
     },
     getChartData: function () {
         const queryParams = {
@@ -185,7 +226,9 @@ var CustomerAnalysis = React.createClass({
         setTimeout(() => {
             this.getStageChangeCustomers();
             this.getTransferCustomers({ isFirst: true });
+            this.getCustomerStageAnalysis();
         });
+
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
         $(".statistic-data-analysis .thumb").hide();
@@ -193,7 +236,7 @@ var CustomerAnalysis = React.createClass({
     //切换展示客户阶段统计
     toggleCusStageMetic: function () {
         OplateCustomerAnalysisAction.toggleStageCustomerList();
-    },    
+    },
     componentWillUnmount: function () {
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
@@ -201,6 +244,8 @@ var CustomerAnalysis = React.createClass({
         clearTimeout(this.resizeTimeout);
         //解除window上绑定的resize函数
         $(window).off('resize', this.windowResize);
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_TEAM, this.onTeamChange);
+        teamTreeEmitter.removeListener(teamTreeEmitter.SELECT_MEMBER, this.onMemberChange);
     },
     /**
      * 参数说明，ant-design的table组件
@@ -408,7 +453,7 @@ var CustomerAnalysis = React.createClass({
                 valueField: "showValue",
                 height: 260,
                 minSize: "5%",
-                startTime: this.state.startTime,
+                startTime: "0",//接口参数变了，startTime固定为0
                 endTime: this.state.endTime,
             })
         );
@@ -441,7 +486,7 @@ var CustomerAnalysis = React.createClass({
                 label: type,
                 nickname: item.memberName
             },
-            rang_params:[{
+            rang_params: [{
                 "from": moment(item.time).startOf('day').valueOf(),
                 "to": moment(item.time).endOf('day').valueOf(),
                 "name": "time",
@@ -471,7 +516,8 @@ var CustomerAnalysis = React.createClass({
                 key: "info",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "信息")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -480,7 +526,8 @@ var CustomerAnalysis = React.createClass({
                 key: "intention",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "意向")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -489,7 +536,8 @@ var CustomerAnalysis = React.createClass({
                 key: "trial",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "试用")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -498,7 +546,8 @@ var CustomerAnalysis = React.createClass({
                 key: "trial.qualified",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "试用合格")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -517,7 +566,8 @@ var CustomerAnalysis = React.createClass({
                 key: "signed",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "签约")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -526,7 +576,8 @@ var CustomerAnalysis = React.createClass({
                 key: "map.流失",
                 render: (text, item, index) => {
                     return (
-                        <span className="customer-stage-number" onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
+                        <span className="customer-stage-number"
+                            onClick={this.handleStageNumClick.bind(this, item, "流失")}>{handleNum(text)}</span>
                     );
                 }
             }, {
@@ -594,9 +645,9 @@ var CustomerAnalysis = React.createClass({
                             result={this.state.stageChangedCustomerList}
                             onClose={this.toggleCusStageMetic}
                             handleScrollBottom={this.getStageChangeCustomerList.bind(this)}
-                            showNoMoreData={!this.state.stageChangedCustomerList.loading && 
-                                !this.state.stageChangedCustomerList.listenScrollBottom && 
-                                this.state.stageChangedCustomerList.lastId && 
+                            showNoMoreData={!this.state.stageChangedCustomerList.loading &&
+                                !this.state.stageChangedCustomerList.listenScrollBottom &&
+                                this.state.stageChangedCustomerList.lastId &&
                                 !this.state.stageChangedCustomerList.data.length >= DEFAULT_TABLE_PAGESIZE
                             }
                         /> : null}
@@ -661,7 +712,8 @@ var CustomerAnalysis = React.createClass({
                 sorter: true,
                 render: function (text, item, index) {
                     return (
-                        <span className="transfer-customer-cell" onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
+                        <span className="transfer-customer-cell"
+                            onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>
                     );
                 }
             }, {
@@ -758,25 +810,13 @@ var CustomerAnalysis = React.createClass({
                         </div>
                     </div>
                 </GeminiScrollbar>
-                <CrmRightPanel
+                {this.state.selectedCustomerId ? <CrmRightPanel
                     showFlag={this.state.showRightPanel}
                     currentId={this.state.selectedCustomerId}
                     hideRightPanel={this.hideRightPanel}
                     ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                     updateCustomerDefContact={CrmAction.updateCustomerDefContact}
-                />
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+                /> : null}
             </div>
 
 
@@ -801,7 +841,8 @@ var CustomerAnalysis = React.createClass({
                     data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
                     <div className="chart-holder" data-tracename="客户阶段统计">
                         <div className="title">
-                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage" defaultMessage="客户阶段统计" />
+                            <ReactIntl.FormattedMessage id="oplate_customer_analysis.customer.stage"
+                                defaultMessage="客户阶段统计" />
                         </div>
                         {this.getCustomerStageChart()}
                     </div>
@@ -853,15 +894,26 @@ var CustomerAnalysis = React.createClass({
                     //    </div>
                     //</div>)
                 }
+                <div className="analysis_chart  col-sm-12 col-md-6"
+                    data-title={Intl.get("crm.sales.newTrailCustomer", "新开客户数统计")}>
+                    <NewTrailCustomerTable
+                        result={this.state.stageCustomerNum}
+                        params={{
+                            startTime: this.props.startTime,
+                            endTime: this.props.endTime,
+                            teamId: this.state.currentTeamId,
+                            memberId: this.state.currentMemberId
+                        }}
+                    />
+                </div>
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("user.analysis.moveoutCustomer", "转出客户统计")}>
                     {this.renderTransferedCustomerTable()}
-
                 </div>
                 <div className="analysis_chart col-xl-6 col-lg-12 col-md-12"
                     data-title={Intl.get("crm.sales.customerStage", "客户阶段变更统计")}>
                     {this.renderCustomerStage()}
-                </div>
+                </div>                
             </div>
         );
     },

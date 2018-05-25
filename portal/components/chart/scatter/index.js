@@ -8,6 +8,7 @@ var Spinner = require("CMP_DIR/spinner");
 var echartsTooltipCssText = require("LIB_DIR/utils/echarts-tooltip-csstext");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import timeUtil from "PUB_DIR/sources/utils/time-format-util";
+import { packageTry } from 'LIB_DIR/func';
 
 
 var ScatterChart = React.createClass({
@@ -31,10 +32,9 @@ var ScatterChart = React.createClass({
         var countMax = this.props.dataType === "time" ? dataMax.time : dataMax.count;
         var _this = this;
         if (this.echartInstance) {
-            try {
-                _this.echartInstance.dispose();
-            } catch (e) {
-            }
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
         }
         if (this.props.resultType === 'loading') {
             return;
@@ -127,10 +127,9 @@ var ScatterChart = React.createClass({
 
         if (!data.length) {
             if (this.echartInstance) {
-                try {
-                    _this.echartInstance.dispose();
-                } catch (e) {
-                }
+                packageTry(() => {
+                    this.echartInstance.dispose();
+                });
                 
             }
             $(this.refs.chart).html(`<div class='nodata'>${Intl.get("common.no.data", "暂无数据")}</div>`);

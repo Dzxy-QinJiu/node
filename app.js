@@ -98,6 +98,7 @@ process.title = config.processTitle;
 require('./portal/global/rest-global-handler');
 //启动应用
 var server = app.listen(app.get('port'), function () {
+    // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
 

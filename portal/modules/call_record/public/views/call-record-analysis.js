@@ -6,7 +6,7 @@
  *  this.state.teamList.length > 1 时， 有两个以上的团队，显示团队和成员的筛选框，114柱状图
  * */
 
-import {Table, Icon, Select, Radio, Alert, Switch} from "antd";
+import {Select, Radio, Alert, Switch} from "antd";
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 var RightContent = require("CMP_DIR/privilege/right-content");
@@ -32,6 +32,19 @@ import commonMethodUtil from "PUB_DIR/sources/utils/common-method-util";
 import {CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import {handleTableData} from "CMP_DIR/analysis/export-data-util";
 import {exportToCsv} from "LIB_DIR/func";
+const ChinaMap = require('CMP_DIR/china-map'); // 中国地图
+import { MAP_PROVINCE } from "LIB_DIR/consts";
+//地图的formatter
+function mapFormatter(obj) {
+    let name = Intl.get("oplate_bd_analysis_realm_zone.2", "市区");
+    if ( MAP_PROVINCE[obj.name]) {
+        name = Intl.get("oplate_bd_analysis_realm_zone.1", "省份");
+    }
+    return [
+        name + '：' + obj.name,
+        Intl.get("oplate_bd_analysis_realm_industry.6", "个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
+    ].join('<br/>');
+}
 // 用于布局趋势图的宽度
 const LAYOUT_WIDTH = {
     ORIGIN_WIDTH: 135,
@@ -100,9 +113,13 @@ var CallRecordAnalyis = React.createClass({
         CallAnalysisAction.getSaleGroupTeams(reqData);
         CallAnalysisAction.getSaleMemberList(reqData);
     },
-
+    // 获取订单阶段
+    getSalesStageList() {
+        CallAnalysisAction.getSalesStageList();
+    },
     componentDidMount: function () {
         CallAnalysisStore.listen(this.onStoreChange);
+        this.getSalesStageList();  // 获取订单阶段
         this.getTeamMemberData(); //获取销售团队和成员数据
         this.refreshCallAnalysisData(); // 获取趋势图、接通率、TOP10和114占比的数据
         $(window).resize(() => {
@@ -295,7 +312,8 @@ var CallRecordAnalyis = React.createClass({
         this.getCallRate({...reqBody, filter_invalid_phone: "false"}); //客服电话统计
         //获取通话时段（数量和时长）、总次数、总时长的统计数据
         this.getCallIntervalTotalData(reqBody);
-
+        // 获取通话客户的地域和阶段分布
+        this.getCallCustomerZoneStage(reqBody);
     },
     //获取通话时段（数量和时长）的参数
     getCallIntervalParams: function (params) {
@@ -336,6 +354,36 @@ var CallRecordAnalyis = React.createClass({
         let callTotalAuth = this.getCallTotalAuth();
         CallAnalysisAction.getCallTotalList(callTotalAuth, queryParams);//通话总次数、总时长TOP10
     },
+    // 通话客户的地域和阶段分布参数
+    getZoneStageParams(params) {
+        let queryParams = {
+            start_time: this.state.start_time || 0,
+            end_time: this.state.end_time || moment().toDate().getTime(),
+            device_type: params && params.type || this.state.callType,
+            filter_phone: false,// 是否过滤114电话号码
+            filter_invalid_phone: false//是否过滤客服电话号码
+        };
+        if (params.sales_team_id) {
+            queryParams.team_ids = params.sales_team_id;
+        } else if (params.user_id) {
+            queryParams.member_ids = params.user_id;
+        }
+        return queryParams;
+    },
+    // 获取通话客户的地域和阶段分布权限
+    getCallCustomerZoneStageAuth() {
+        let authType = "self";// CALL_RECORD_VIEW_USER
+        if (hasPrivilege("CALL_RECORD_VIEW_MANAGER")) {
+            authType = "all";
+        }
+        return authType;
+    },
+    // 获取通话客户的地域和阶段分布
+    getCallCustomerZoneStage(params) {
+        let queryParams = this.getZoneStageParams(params);
+        let authType = this.getCallCustomerZoneStageAuth();
+        CallAnalysisAction.getCallCustomerZoneStage(authType, queryParams);
+    },
     componentWillUnmount: function () {
         CallAnalysisStore.unlisten(this.onStoreChange);
     },
@@ -348,8 +396,11 @@ var CallRecordAnalyis = React.createClass({
         }
         return label;
     },
-    // 电话接通率的数据
-    getPhoneListColumn: function () {
+    /**
+     * 电话接通率的数据
+     * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
+     */
+    getPhoneListColumn: function (isExport) {
         let columns = [{
             title: this.getSalesColumnTitle(),
             width: 114,
@@ -359,7 +410,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.total.duration", "总时长"),
             width: 114,
-            dataIndex: 'totalTimeFormated',
+            dataIndex: isExport ? 'totalTime' : 'totalTimeFormated',
             key: 'total_time',
             sorter: function (a, b) {
                 return a.totalTime - b.totalTime;
@@ -377,7 +428,7 @@ var CallRecordAnalyis = React.createClass({
         }, {
             title: Intl.get("sales.home.average.duration", "日均时长"),
             width: 114,
-            dataIndex: 'averageTimeFormated',
+            dataIndex: isExport ? 'averageTime' : 'averageTimeFormated',
             key: 'average_time',
             sorter: function (a, b) {
                 return a.averageTime - b.averageTime;
@@ -458,7 +509,7 @@ var CallRecordAnalyis = React.createClass({
                 title: Intl.get("call.record.average.call.duration", "人均时长"),
                 width: 114,
                 align: "right",
-                dataIndex: 'personAverageTimeFormated',
+                dataIndex: isExport ? 'personAverageTime' : 'personAverageTimeFormated',
                 key: "person_average_time",
                 sorter: function (a, b) {
                     return a.personAverageTime - b.personAverageTime;
@@ -606,7 +657,6 @@ var CallRecordAnalyis = React.createClass({
             });
         }
     },
-
 
     // 渲染通话时段(时长/数量)的统计
     renderCallIntervalChart() {
@@ -855,8 +905,110 @@ var CallRecordAnalyis = React.createClass({
         }
     },
     exportPhoneTable:function () {
-        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn());
+        let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
         exportToCsv("sales_phone_table.csv",exportData);
+    },
+    getClickMap(zone) {
+        CallAnalysisAction.showZoneDistribute(zone);
+    },
+    renderCustomerZoneDistribute() {
+        return (
+            <div className="map-distribute">
+                <ChinaMap
+                    width="900"
+                    height="600"
+                    dataList={this.state.customerData.zoneList}
+                    formatter={mapFormatter}
+                    getClickEvent={this.getClickMap}
+                />
+            </div>
+        );
+    },
+    renderCustomerPhase() {
+        if (this.state.customerData.loading) {
+            return (
+                <div className="call-rate">
+                    <Spinner />
+                </div>
+            );
+        }
+        else {
+            // 没有数据的提示
+            if (!this.state.customerData.customerPhase.length) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={Intl.get("common.no.data", "暂无数据")}
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else if (this.state.customerData.errMsg) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={this.state.customerData.errMsg}
+                            type="error"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div>
+                        <PieChart
+                            dataList={this.state.customerData.customerPhase}
+                        />
+                    </div>
+                );
+            }
+        }
+    },
+    renderOrderPhase() {
+        if (this.state.customerData.loading) {
+            return (
+                <div className="call-rate">
+                    <Spinner />
+                </div>
+            );
+        }
+        else {
+            // 没有数据的提示
+            if (!this.state.customerData.OrderPhase.length) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={Intl.get("common.no.data", "暂无数据")}
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else if (this.state.customerData.errMsg) {
+                return (
+                    <div className="alert-wrap">
+                        <Alert
+                            message={this.state.customerData.errMsg}
+                            type="error"
+                            showIcon={true}
+                        />
+                    </div>
+                );
+            }
+            else {
+                return (
+                    <div>
+                        <PieChart
+                            dataList={this.state.customerData.OrderPhase}
+                        />
+                    </div>
+                );
+            }
+        }
     },
     renderCallAnalysisView: function () {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -941,6 +1093,32 @@ var CallRecordAnalyis = React.createClass({
                                     </RadioGroup>
                                 </div>
                                 {this.renderCallIntervalChart()}
+                            </div>
+                        </div>
+                        <div className="col-xs-12">
+                            <div className="call-stage-distribute col-xs-6">
+                                <div className="call-stage">
+                                    <div className="call-stage-title">
+                                        {Intl.get('oplate_customer_analysis.customer.stage', '客户阶段统计')}: 
+                                    </div>
+                                    {this.renderCustomerPhase()}
+                                </div>
+                            </div>
+                            <div className="call-stage-distribute col-xs-6">
+                                <div className="call-sale">
+                                    <div className="call-sale-title">
+                                        {Intl.get('oplate_customer_analysis.11', '订单阶段统计')}:
+                                    </div>
+                                    {this.renderOrderPhase()}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-12">
+                            <div className="call-zone-distribute">
+                                <div className="call-zone-title">
+                                    {Intl.get('call.analysis.zone.distrute', '客户的地域分布')}:
+                                </div>
+                                {this.renderCustomerZoneDistribute()}
                             </div>
                         </div>
                     </div>

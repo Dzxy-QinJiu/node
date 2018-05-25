@@ -15,15 +15,21 @@ var restApis = {
 };
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表
-exports.getCustomerTraceList = function (req, res, obj) {
-    var data = req.body;
-    var id = '';
-    if (obj && obj.id) {
-        id = "?id=" + obj.id;
+exports.getCustomerTraceList = function (req, res) {
+    let data = req.body;
+    let url = restApis.getCustomerTraceList;
+    if (data.id && data.page_size) {
+        url += `?id=${data.id}&page_size=${data.page_size}`;
+    } else if (data.id) {
+        url += `?id=${data.id}`;
+    } else if (data.page_size) {
+        url += `?page_size=${data.page_size}`;
     }
+    delete data.id;
+    delete data.page_size;
     return restUtil.authRest.post(
         {
-            url: restApis.getCustomerTraceList + id,
+            url: url,
             req: req,
             res: res
         },
@@ -58,6 +64,6 @@ exports.getPhoneRecordAudio = function (req, res) {
             url: req.url,
             req: req,
             res: res,
-            'pipe-download-file':true
-        },null);
+            'pipe-download-file': true
+        }, null);
 };

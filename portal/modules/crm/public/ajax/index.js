@@ -40,22 +40,12 @@ exports.deleteCustomer = function (ids) {
     return Deferred.promise();
 };
 
-//更新客户
+//更新客户（单项修改）
 exports.updateCustomer = function (newCus) {
     if (hasPrivilege(AUTHS.UPDATE_ALL)) {
         newCus.urlType = "manager";
     } else {
         newCus.urlType = "user";
-    }
-    if (!newCus.type) {
-        let keys = _.keys(newCus);
-        if (keys.indexOf("administrative_level") != -1) {
-            newCus.type = "administrative_level";
-        } else if (keys.indexOf("address") != -1) {
-            newCus.id = newCus.user_id;
-            delete newCus.user_id;
-            newCus.type = "detail_address";
-        }
     }
     var Deferred = $.Deferred();
     $.ajax({
@@ -72,6 +62,7 @@ exports.updateCustomer = function (newCus) {
     });
     return Deferred.promise();
 };
+
 //转出客户
 exports.transferCustomer = function (customer) {
     let urlType = "user";// CRM_USER_TRANSFER
@@ -214,7 +205,7 @@ exports.mergeRepeatCustomer = function (mergeObj) {
         url: '/rest/crm/repeat_customer/merge',
         dataType: 'json',
         type: 'put',
-        data: {customer: JSON.stringify(mergeObj.customer), delete_ids: JSON.stringify(mergeObj.delete_ids)},
+        data: {customer: JSON.stringify(mergeObj.customer), delete_customers: JSON.stringify(mergeObj.delete_customers)},
         success: function (data) {
             Deferred.resolve(data);
         },
@@ -346,6 +337,27 @@ exports.getMyTeamWithSubteams = function () {
         data: {type: type},
         success: function (treeList) {
             Deferred.resolve(treeList);
+        },
+        error: function (xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//获取是否能添加客户
+let getCustomerLimitAjax;
+exports.getCustomerLimit = function (reqData) {
+    getCustomerLimitAjax && getCustomerLimitAjax.abort();
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: "/rest/crm/limit",
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function (data) {
+            Deferred.resolve(data);
         },
         error: function (xhr, textStatus) {
             if (textStatus !== 'abort') {

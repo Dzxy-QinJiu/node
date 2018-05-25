@@ -1,10 +1,10 @@
 @right-pannel-width: 560px;
-@crm-right-panel-width: 700px;
 @right-pannel-animationTime: 0.6s;
 @button-size: 25px;
 @icon-color: #fff;
 @icon-background-color: #b5c2ca;
 @button-hover-color: #4d96d1;
+@btn_color: #8da8c5;
 @import "../../public/css/common-variables";
 @import "./tabs.less";
 
@@ -28,7 +28,12 @@
   background-color: #e6edef;
   transform: translateX(@right-pannel-width);
   transition: transform @right-pannel-animationTime;
-
+  //新版详情中的编辑按钮
+  .icon-edit-btn {
+    float: right;
+    font-size: 16px;
+    color: @btn_color;
+  }
   .close-pannel {
     .right-panel-button-size;
     position: relative;
@@ -110,12 +115,6 @@
 
 .right-pannel-show {
   transform: translate(0px) !important;
-}
-
-.crm-right-panel {
-  width: @crm-right-panel-width !important;
-  background-color: #e6edef !important;
-  transform: translate(@crm-right-panel-width, 0);
 }
 
 //右侧面板的遮罩层

@@ -36,7 +36,19 @@ module.exports = {
             privileges: [
                 'CUSTOMER_ACCESS_CHANNEL_GET'
             ]
-        },{
+        },
+        {
+            method: 'get',
+            path: '/rest/sales_clue/classify',
+            handler: 'getClueClassify',
+            passport: {
+                needLogin: true
+            },
+            privileges: [
+                'CLUECUSTOMER_CLUE_CLASSIFY_GET'
+            ]
+        }
+        ,{
             method: 'post',
             path: '/rest/cluecustomer/v2/add/trace',
             handler: 'addCluecustomerTrace',
@@ -71,6 +83,44 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },{
+            method: "get",
+            path: "/rest/clue/download_template",
+            handler: "getClueTemplate",
+            passport: {
+                "needLogin": true
+            }
+        },
+        {
+            method: "post",
+            path: "/rest/clue/upload",
+            handler: "uploadClues",
+            passport: {
+                "needLogin": true
+            }
+        },
+        {
+            method: "get",
+            path: "/rest/clue/confirm/upload/:flag",
+            handler: "confirmUploadClues",
+            passport: {
+                "needLogin": true
+            }
+        },{
+            method: "delete",
+            path: "/rest/clue/repeat/delete/:index",
+            handler: "deleteRepeatClue",
+            passport: {
+                "needLogin": true
+            }
+        },
+        {
+            method: "post",
+            path: "/rest/clue/analysis",
+            handler: "getClueAnalysis",
+            passport: {
+                "needLogin": true
+            }
         }
     ]
 };

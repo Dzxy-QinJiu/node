@@ -1,6 +1,7 @@
 var salesHomeAjax = require("../ajax/sales-home-ajax");
 var userData = require("../../../../public/sources/user-data");
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
+let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 var _ = require("underscore");
 
 function SalesHomeActions() {
@@ -13,10 +14,10 @@ function SalesHomeActions() {
         'returnSalesTeamList',//返回销售团队列表
         'returnSalesMemberList',//返回销售成员列表
         'getExpireUser',//获取过期用户列表
-        'getWebsiteConfig',//获取网站个性化设置
         'setWebsiteConfig',//对网站进行个性化设置
         'setInitState',//设置初始化数据
-        'updateSalesTeamMembersObj'//修改团队成员列表中的信息（销售角色）
+        'updateSalesTeamMembersObj',//修改团队成员列表中的信息（销售角色）
+        'resetCallBackRecord', // 重置回访记录列表状态
     );
 
     //获取当前登录销售的角色（销售/经理/总监）
@@ -116,6 +117,18 @@ function SalesHomeActions() {
         });
     };
 
+    // 获取回访统计总数
+    this.getCallBackTotal = function (reqData) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getCallBackTotal(reqData)
+            .then(resData => {
+                this.dispatch({loading: false, error: false, resData: resData});
+            },
+            errorMsg => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+    };
+
     //获取销售-客户列表
     this.getSalesCustomerList = function (timeRange) {
         var _this = this;
@@ -172,11 +185,11 @@ function SalesHomeActions() {
             }
         );
     };
-    //获取用户信息
-    this.getUserInfo = function () {
+    //获取是否展示邮件激活提示
+    this.getShowActiveEmailObj = function () {
         var user_id = userData.getUserData().user_id;
-        salesHomeAjax.getUserInfo(user_id).then((userInfo) => {
-            this.dispatch(userInfo);
+        salesHomeAjax.getShowActiveEmailObj(user_id).then((obj) => {
+            this.dispatch(obj);
         });
     };
     //邮箱激活
@@ -195,17 +208,6 @@ function SalesHomeActions() {
             }
         });
     };
-    //获取是否已经设置过邮箱不再提醒
-    this.getWebsiteConfig = function () {
-        this.dispatch({loading: true, error: false});
-        salesHomeAjax.getWebsiteConfig().then((resData) => {
-                this.dispatch({loading: false, error: false, resData: resData});
-            },(errorMsg) => {
-                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-            }
-        );
-
-    };
     //设置邮箱激活不再提醒
     this.setWebsiteConfig = function (queryObj,callback) {
         this.dispatch({loading: true, error: false});
@@ -220,6 +222,18 @@ function SalesHomeActions() {
             }
         );
 
+    };
+    // 获取回访列表
+    this.getCallBackList = function (params, filterObj) {
+        this.dispatch({loading: true, error: false});
+        salesHomeAjax.getCallBackList(params, filterObj)
+            .then(resData => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+                this.dispatch({loading: false, error: false, resData: resData});
+            },
+            errorMsg => {
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
     };
 }
 

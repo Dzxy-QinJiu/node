@@ -86,5 +86,21 @@ module.exports = {
             "MEMBER_WEBSITE_CONFIG"
         ]
     },
+    {
+        'method': 'post',
+        'path': '/rest/call_record/:type/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+        'handler': 'getCallBack',
+        'passport': {
+            'needLogin': true
+        }
+    },
+    {
+        "method": "get",
+        "path": "/rest/show/activeemail/flag/:userId",
+        "handler": "getShowActiveEmailObj",
+        "passport": {
+            "needLogin": true
+        },
+    }
     ]
 };

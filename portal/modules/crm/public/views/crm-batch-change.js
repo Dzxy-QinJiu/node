@@ -18,6 +18,7 @@ import {isClueTag, isTurnOutTag} from "../utils/crm-util";
 import AntcDropdown from "CMP_DIR/antc-dropdown";
 import AlwaysShowSelect from "CMP_DIR/always-show-select";
 import crmUtil from "../utils/crm-util";
+var CrmAction = require("../action/crm-actions");
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: "changeSales",//变更销售人员
     USER: "user",//变更销售人员url中传的type
@@ -105,6 +106,29 @@ var CrmBatchChange = React.createClass({
             return;
         }
         BatchChangeActions.setLoadingState(true);
+        //如果是批量变更或者转出所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
+        var member_id = this.state.sales_man.split("&&")[0];
+        if (transferType == BATCH_OPERATE_TYPE.USER || transferType == BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER){
+            //如果是选中全部的客户，要用全部客户的数量
+            var selectedCustomerNum = this.props.selectedCustomer.length;
+            if (this.props.selectAllMatched) {
+                selectedCustomerNum = this.props.matchedNum;
+            }
+            CrmAction.getCustomerLimit({member_id: member_id, num: selectedCustomerNum}, (result)=>{
+                if (_.isNumber(result) && result > 0){
+                    //超过销售拥有客户的上限
+                    var warningTip = transferType == BATCH_OPERATE_TYPE.USER ? Intl.get("crm.change.over.limit", "变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售",{num:result}) : Intl.get("crm.transfer.over.limit", "转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出",{num:result});
+                    message.warn(warningTip);
+                    BatchChangeActions.setLoadingState(false);
+                }else{
+                    this.batchSubmitData(transferType, title);
+                }
+            });
+        }else{
+            this.batchSubmitData(transferType, title);
+        }
+    },
+    batchSubmitData: function (transferType, title) {
         let condition = {
             query_param: {},
             update_param: {
@@ -122,6 +146,7 @@ var CrmBatchChange = React.createClass({
                 return customer.id;
             });
         }
+
         BatchChangeActions.doBatch(transferType, condition, (result) => {
             BatchChangeActions.setLoadingState(false);
             if (result.code == 0) {
@@ -158,6 +183,7 @@ var CrmBatchChange = React.createClass({
                 message.error(errorMsg);
             }
         });
+
     },
     addTag: function (e) {
         if (e.keyCode !== 13) return;

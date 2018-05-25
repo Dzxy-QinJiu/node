@@ -11,6 +11,9 @@ exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = "scrollBar.hideBottomLoading";
 //拨打电话emitter
 exports.phoneMsgEmitter = new EventEmitter();
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = "sendPhoneNumber";
+//关闭拨打电话模态框emitter
+exports.phoneMsgEmitter = new EventEmitter();
+exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = "closePhoneModal";
 //日程管理界面emitter
 exports.scheduleManagementEmitter = new EventEmitter();
 exports.scheduleManagementEmitter.SET_UPDATE_SCROLL_BAR_TRUE = "setUpdateScrollBarTrue";
@@ -91,13 +94,27 @@ const dateSelectorEmitter = new EventEmitter();
 dateSelectorEmitter.setMaxListeners(0);
 exports.dateSelectorEmitter = dateSelectorEmitter;
 // 日期选择组件--选中日期
-exports.dateSelectorEmitter.SELECTE_DATE = 'dateselector.select_date';
+exports.dateSelectorEmitter.SELECT_DATE = 'dateselector.select_date';
 // 应用选择组件的emitter
 const appSelectorEmitter = new EventEmitter();
 appSelectorEmitter.setMaxListeners(0);
 exports.appSelectorEmitter = appSelectorEmitter;
 // 应用选择组件--选中应用
-exports.appSelectorEmitter.SELECTE_APP = 'appselector.select_app';
+exports.appSelectorEmitter.SELECT_APP = 'appselector.select_app';
+
+// 分析tab选择组件的emitter
+const analysisTabEmitter = new EventEmitter();
+analysisTabEmitter.setMaxListeners(0);
+exports.analysisTabEmitter = analysisTabEmitter;
+// 分析tab选择组件--选中分析tab
+exports.analysisTabEmitter.SELECT_TAB = 'analysis_tab.select_tab';
+
+// 图表点击事件的emitter
+const chartClickEmitter = new EventEmitter();
+chartClickEmitter.setMaxListeners(0);
+exports.chartClickEmitter = chartClickEmitter;
+// 图表点击事件--触发点击
+exports.chartClickEmitter.CLICK_CHART = 'chartClick.click_chart';
 
 // 团队树组件的emitter
 const teamTreeEmitter = new EventEmitter();
@@ -121,4 +138,9 @@ export {contractEmitter};
 const crmEmitter = new EventEmitter();
 crmEmitter.IMPORT_CUSTOMER = "import_customer";
 export {crmEmitter};
+
+//线索客户相关事件
+const clueEmitter = new EventEmitter();
+clueEmitter.IMPORT_CLUE = "import_clue";
+export {clueEmitter};
 

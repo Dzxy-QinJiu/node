@@ -40,9 +40,9 @@ class ActiveEmailTip extends React.Component {
         });
         var warningText = (
             <div>
-                {this.props.hasNoEmail ? <ReactIntl.FormattedMessage
+                {this.props.addEmail ? <ReactIntl.FormattedMessage
                     id="sales.add.email.info"
-                    defaultMessage={`请到{userinfo}页面激活邮箱，否则将会无法接收用户申请的邮件。`}
+                    defaultMessage={`请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。`}
                     values={{
                         'userinfo': <span className="jump-to-userinfo" onClick={this.props.jumpToUserInfo}>
                                    {Intl.get("user.info.user.info","个人资料")}

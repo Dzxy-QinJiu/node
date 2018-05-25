@@ -47,6 +47,19 @@ var BootstrapDatepicker = React.createClass({
             options.startDate = new Date();
         }
 
+        if (props.disableDateBeforeRange) {
+            if (props.selectRange === "1w") { // 一周
+                options.startDate = moment().add(7 , "days").toDate();
+            } else if (props.selectRange === "0.5m") { // 半个月
+                options.startDate = moment().add(15 , "days").toDate();
+            } else if (/^\d+m$/.test(props.selectRange)) {
+                let num = props.selectRange.replace(/m$/,''); // 其他月份
+                options.startDate = moment().add(num , "months").toDate();
+            } else { // 自定义、永久
+                options.startDate = new Date();
+            }
+        }
+
         if (_.isObject(props.options)) {
             _.extend(options, props.options);
         }
@@ -70,7 +83,11 @@ var BootstrapDatepicker = React.createClass({
     },
     //重新设置
     resetDatePicker: function (nextProps) {
-        if (nextProps.onlyYear != this.props.onlyYear || nextProps.monthMode != this.props.monthMode
+        if (nextProps.disableDateBeforeRange) {
+            var options = this.getDatepickerOptions(nextProps);
+            $(this.refs.instanceDom).datepicker("destroy");
+            $(this.refs.instanceDom).datepicker(options);
+        } else if (nextProps.onlyYear != this.props.onlyYear || nextProps.monthMode != this.props.monthMode
             || nextProps.multidate != this.props.multidate) {
             var options = this.getDatepickerOptions(nextProps);
             $(this.refs.instanceDom).datepicker("destroy");
@@ -126,6 +143,8 @@ var BootstrapDatepicker = React.createClass({
             },
             //不让选择今天之前的时间(默认：false)
             disableDateBeforeToday: false,
+            // 不让选择范围之前的时间（默认：false）
+            disableDateBeforeRange: false,
             //不让选择今天之后的时间(默认：false)
             disableDateAfterToday: false,
             // 选择查看的时间范围（默认： 0）

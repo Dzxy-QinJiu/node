@@ -9,27 +9,32 @@ const processForTrace = function (item) {
     };
     if (_.isObject(item)) {
         //渲染时间线
-        var iconClass = '', title = '', des = '', contact = '', billsec = '', tip = [];
+        var iconClass = '', title = '', des = '', contact = '', tip = [];
         //根据不同的类型
         if (item.type) {
             switch (item.type) {
                 case 'visit':
-                    iconClass = 'icon-visit';
+                    iconClass = 'icon-visit-briefcase';
                     title = Intl.get("customer.visit", "拜访");
                     des = Intl.get("customer.visit.customer", "拜访客户");
                     break;
                 case 'phone':
-                    iconClass = 'icon-call-back';
+                    iconClass = 'icon-contact-phone';
                     title = Intl.get("customer.phone.system", "电话系统");
                     des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
                     break;
                 case 'app':
-                    iconClass = 'icon-ketao-app';
+                    iconClass = 'icon-contact-ketao-app';
                     title = Intl.get("customer.ketao.app", "客套app");
                     des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
                     break;
+                case 'call_back':
+                    iconClass = 'icon-callback';
+                    title = Intl.get("common.callback", "回访");
+                    des = Intl.get("common.callback.customer", "回访客户");
+                    break;
                 case 'other':
-                    iconClass = 'icon-other';
+                    iconClass = 'icon-trace-other';
                     title = Intl.get("customer.other", "其他");
                     des = Intl.get("customer.follow.customer", "跟进客户");
                     break;
@@ -37,13 +42,11 @@ const processForTrace = function (item) {
         }
         des && tip.push(des);
         iconClass += ' iconfont';
-        contact = (item.contact_name || item.dst) ? Intl.get('customer.contact.somebody', '联系') : '';
-        contact += item.contact_name && item.dst ? (item.contact_name + '（' + item.dst + '）') : '';
+        // contact = (item.contact_name || item.dst) ? Intl.get('customer.contact.somebody', '联系') : '';
+        contact += item.contact_name && item.dst ? (item.contact_name + ' ' + item.dst + ' ') : '';
         contact += item.contact_name && !item.dst ? (item.contact_name) : '';
         contact += !item.contact_name && item.dst ? (item.dst) : '';
         contact && tip.push(contact);
-        billsec = item.billsec == 0 ? (Intl.get("customer.no.connect", "未接通")) : (item.billsec ? Intl.get("customer.call.duration", "通话{num}秒", {'num': item.billsec}) : '');
-        billsec && tip.push(billsec);
         traceObj.traceDsc = tip.join('，');
         traceObj.iconClass = iconClass;
         traceObj.title = title;
@@ -58,6 +61,10 @@ const isClueTag = function(tag){
 //是否是试用合格后"转出"标签
 exports.isTurnOutTag = function(tag){
     return tag === Intl.get("crm.qualified.roll.out","转出");
+};
+// 是否是已回访标签
+exports.isHasCallBackTag = function (tag) {
+    return tag === Intl.get("common.has.callback", "已回访");
 };
 //获取客户标签背景色对应的类型
 exports.getCrmLabelCls=function (customer_label) {

@@ -17,7 +17,7 @@ let constantUtil = require("../util/constant");
 let showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;//当前展示的类型常量（销售团队列表、团队成员列表、销售的待办事宜）
 const Emitters = require("PUB_DIR/sources/utils/emitters");
 const teamTreeEmitter = Emitters.teamTreeEmitter;
-
+const TOP_TEAM_ID = "sales-team-list-parent-group-id";
 var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = "busy";//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
 let CrmRightList = React.createClass({
@@ -67,11 +67,32 @@ let CrmRightList = React.createClass({
             return (<div className="no-data-tip">{errorMsg || Intl.get("sales.home.get.data.failed", "获取数据失败")}</div>);
         }
     },
+    //获取传入团队的所有子团队的group_id,数组第一项为传入团队的group_id
+    getAllSubTeamId: function (team) {
+        let allChildTeamIds = [];
+        const getAllSubChild = team => {
+            if (team.group_id) {
+                allChildTeamIds.push(team.group_id);
+                if (team.child_groups && team.child_groups.length > 0) {
+                    team.child_groups.forEach(child => getAllSubChild(child));
+                } else {
+                    return;
+                }
+            }
+        };
+        getAllSubChild(team);
+        return allChildTeamIds;
+    },
     //点击查看当前团队的数据
     selectSalesTeam: function (e, team) {
         OplateCustomerAnalysisAction.resetChartData("loading");
         SalesHomeAction.selectSalesTeam(team);
-        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team.group_id);
+        let allChildTeamIds = [];
+        //不是顶级的"销售团队列表"
+        if (team.group_id !== TOP_TEAM_ID) {
+            allChildTeamIds = this.getAllSubTeamId(team);
+        }
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team.group_id, allChildTeamIds);
         //刷新左侧的统计、分析数据
         setTimeout(() => {
             this.props.refreshDataByChangeSales();
@@ -102,7 +123,12 @@ let CrmRightList = React.createClass({
         if (team_id === "sales-team-list-parent-group-id") {
             team_id = "";
         }
-        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id);
+        let allChildTeamIds = [];
+        //不是顶级的"销售团队列表"
+        if (team.group_id !== TOP_TEAM_ID) {
+            allChildTeamIds = this.getAllSubTeamId(team);
+        }
+        teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, team_id, allChildTeamIds);
     },
     //通过面包屑返回到销售成员列表
     returnSalesMemberList: function (e) {

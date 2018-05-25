@@ -5,7 +5,7 @@
 
 "use strict";
 var crmService = require("../service/crm-manage-service");
-
+var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 function templateFile(res, example, filename) {
     var example = Buffer.concat([new Buffer("\xEF\xBB\xBF", "binary"), new Buffer(example)]);
     res.setHeader("Content-disposition", "attachement; filename=" + filename);
@@ -184,7 +184,7 @@ exports.deleteRepeatCustomer = function (req, res) {
 
 //合并重复的客户
 exports.mergeRepeatCustomer = function (req, res) {
-    let mergeObj = {customer: JSON.parse(req.body.customer), delete_ids: JSON.parse(req.body.delete_ids)};
+    let mergeObj = {customer: JSON.parse(req.body.customer), delete_customers: JSON.parse(req.body.delete_customers)};
     crmService.mergeRepeatCustomer(req, res, mergeObj)
         .on("success", function (data) {
             res.status(200).json(data);
@@ -232,6 +232,7 @@ exports.updateCustomer = function (req, res) {
         res.status(500).json(err && err.message);
     });
 };
+
 //转出客户的处理
 exports.transferCustomer = function (req, res) {
     crmService.transferCustomer(req, res, req.body)
@@ -314,6 +315,14 @@ exports.callOut = function (req, res) {
 // 获取电话座机号
 exports.getUserPhoneNumber = function (req, res) {
     crmService.getUserPhoneNumber(req, res, req.params).on("success", function (data) {
+        res.status(200).json(data);
+    }).on("error", function (codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//标识能否继续添加客户
+exports.getCustomerLimit = function (req, res) {
+    crmService.getCustomerLimit(req, res).on("success", function (data) {
         res.status(200).json(data);
     }).on("error", function (codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

@@ -193,51 +193,41 @@ span.customize-btn {
 }
 
 /*
-* 兼容火狐的多行截断加省略号样式 
+* 只兼容chrome的多行截断加省略号样式 
+* firefox下只截断，不显示省略号
 * 在容器上添加line-camp line-clamp-[1-5]代表截断的行数*
 */
+
 .line-clamp {
-    display: block;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    position: relative;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: -webkit-box;   
+    -webkit-box-orient: vertical;
 }
-.line-clamp:after {
-    content: '...';
-    text-align: right;
-    bottom: 0;
-    right: 0;
-    width: 25%;
-    display: block;
-    position: absolute;
-    height: calc(~"1em * 1.2");
-    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 75%);
-}
-@supports (-webkit-line-clamp: 1) {
-    .line-clamp:after {
-        display: none !important;
-    }
-}
+
 .line-clamp-1 {
     -webkit-line-clamp: 1;
     height: calc(~"1em * 1.2 * 1");
 }
+
 .line-clamp-2 {
     -webkit-line-clamp: 2;
     height: calc(~"1em * 1.2 * 2");
 }
+
 .line-clamp-3 {
     -webkit-line-clamp: 3;
     height: calc(~"1em * 1.2 * 3");
 }
+
 .line-clamp-4 {
     -webkit-line-clamp: 4;
     height: calc(~"1em * 1.2 * 4");
 }
+
 .line-clamp-5 {
     -webkit-line-clamp: 5;
     height: calc(~"1em * 1.2 * 5");
 }
+
 /* End required CSS. */

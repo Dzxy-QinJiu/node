@@ -30,11 +30,13 @@ class PhoneInput extends React.Component {
             }
 
             if (
-                /^1[34578]\d{9}$/.test(value)
+                /^1[3456789]\d{9}$/.test(value)
                 ||
                 /^(0\d{2,3}-?)?[02-9]\d{6,7}$/.test(value)
                 ||
                 /^400-?\d{3}-?\d{4}$/.test(value)
+                ||
+                /^1010\d+$/.test(value)
             ) {
                 callback();
             } else {
@@ -56,7 +58,7 @@ class PhoneInput extends React.Component {
 
         return (
             <FormItem
-                label={Intl.get("common.phone", "电话")}
+                label={this.props.label ? this.props.label: Intl.get("common.phone", "电话")}
                 colon={this.props.colon}
                 key={this.props.id}
                 labelCol={this.props.labelCol}
@@ -80,6 +82,7 @@ class PhoneInput extends React.Component {
 }
 
 PhoneInput.defaultProps = {
+    label:"",
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
     placeholder: "",
@@ -116,7 +119,7 @@ const options = {
             if (lastValue && /-$/.test(lastValue) && /-\d$/.test(currentValue) && interval < 100) {
                 currentValue = currentValue.replace(/\d$/, "");
             }
-            
+
             if (_.indexOf(instance.lastValue, "-") === -1) {
                 currentValue = addHyphenToPhoneNumber(currentValue, instance.initialValue);
             }

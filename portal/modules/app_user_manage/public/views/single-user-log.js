@@ -16,7 +16,7 @@ var SearchInput = require("../../../../components/searchInput");
 var NoMoreDataTip = require("../../../../components/no_more_data_tip");
 const AlertTimer = require('CMP_DIR/alert-timer');
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
-
+import classNames from "classnames";
 var SingleUserLog = React.createClass({
     getDefaultProps: function () {
         return {
@@ -198,6 +198,10 @@ var SingleUserLog = React.createClass({
         return !this.state.logListLoading &&
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
     },
+    //展开收起操作详情
+    toggleOperateDetail:function (userLog) {
+        SingleUserLogAction.toggleOperateDetail(userLog);
+    },
 
     // 日志列表信息
     userLogInformationBlock: function () {
@@ -222,13 +226,29 @@ var SingleUserLog = React.createClass({
                     <div className="time-over-range-tips">
                         {this.renderSelectDateTips()}
                     </div>
-                    { this.state.auditLogList.map(function (userLogInformation, index) {
+                    { this.state.auditLogList.map((userLogInformation, index) => {
+                        let operateClass = classNames("iconfont",{
+                            "icon-down-twoline":!userLogInformation.detailShow,
+                            "icon-up-twoline":userLogInformation.detailShow
+                        });
+                        let operateTitle = userLogInformation.detailShow ? Intl.get("crm.basic.detail.hide", "收起详情"):
+                            Intl.get("crm.basic.detail.show", "展开详情");
                         return (
                             <div className="log-info-item" key={index}>
                                 <p className="operation">
                                     <span className="log-detail">{moment(userLogInformation.timestamp).format(oplateConsts.DATE_TIME_FORMAT)}</span>
                                 </p>
-                                <p><span className="log-detail">{userLogInformation.operate}</span></p>
+                                <div>
+                                    <div className="log-detail">
+                                        {userLogInformation.operate}
+                                        {userLogInformation.operate_detail?(
+                                            <span className={operateClass} title={operateTitle} onClick={this.toggleOperateDetail.bind(this,userLogInformation)}/>):null}
+                                    </div>
+                                    {userLogInformation.detailShow ?(
+                                        <div className="log-operate-detail">
+                                            {userLogInformation.operate_detail}
+                                        </div>):null}
+                                </div>
                                 <p>
                                     <span className="log-detail">{userLogInformation.user_ip }</span>
                                     <span className="log-detail">

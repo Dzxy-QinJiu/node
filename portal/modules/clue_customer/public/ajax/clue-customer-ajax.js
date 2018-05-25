@@ -73,6 +73,22 @@ exports.getClueChannel = function () {
     });
     return Deferred.promise();
 };
+//获取线索分类列表
+exports.getClueClassify = function () {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales_clue/classify',
+        dataType: 'json',
+        type: 'get',
+        success: function (list) {
+            Deferred.resolve(list);
+        },
+        error: function (xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //根据客户名获取行政级别
 exports.getAdministrativeLevel = function (queryObj) {
     var Deferred = $.Deferred();

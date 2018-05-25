@@ -23,7 +23,9 @@ function ClueCustomerActions() {
         "setSalesMan",//获取销售人员及团队的id
         "setSalesManName",//获取销售人员及团队的名字
         "setUnSelectDataTip",//未选择销售人员的提醒信息
-        "afterEditCustomerDetail"//修改线索客户完成后更新列表中的信息
+        "afterEditCustomerDetail",//修改线索客户完成后更新列表中的信息
+        "updateClueProperty",//修改线索是否有效属性
+        'removeClueItem'//删除某条线索
     );
     //获取线索客户列表
     this.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
@@ -53,6 +55,18 @@ function ClueCustomerActions() {
             }
         });
     };
+    //线索名称唯一性校验
+    this.checkOnlyClueName = function (clueName, callback, customerId) {
+        let queryObj= {name: clueName};
+        if(customerId){
+            queryObj.customer_id = customerId;
+        }
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function (data) {
+            _.isFunction(callback) && callback(data);
+        }, function (errorMsg) {
+            _.isFunction(callback) && callback(errorMsg || Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
+        });
+    };
     //获取销售列表
     this.getSalesManList = function (cb) {
         //客户所属销售（团队）下拉列表的数据获取
@@ -60,6 +74,7 @@ function ClueCustomerActions() {
             this.dispatch(list);
             if (cb) cb();
         }, (errorMsg) => {
+            // eslint-disable-next-line no-console
             console.log(errorMsg);
         });
     };
@@ -82,6 +97,14 @@ function ClueCustomerActions() {
         },(errorMsg)=>{
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
+        });
+    };
+    //标记线索是否有效
+    this.updateCluecustomerDetail = function (submitObj,callback) {
+        clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result)=>{
+            _.isFunction(callback) && callback();
+        },(errorMsg)=>{
+            _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
         });
     };
 }

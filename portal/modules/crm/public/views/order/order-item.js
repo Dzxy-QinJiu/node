@@ -11,6 +11,12 @@ import routeList from "../../../common/route";
 import ajax from "../../../common/ajax";
 const hasPrivilege = require("../../../../../components/privilege/checker").hasPrivilege;
 import Trace from "LIB_DIR/trace";
+import BasicEditSelectField from "CMP_DIR/basic-edit-field-new/select";
+import BasicEditInputField from "CMP_DIR/basic-edit-field-new/input";
+import DetailCard from "CMP_DIR/detail-card";
+import {DetailEditBtn} from "CMP_DIR/rightPanel";
+import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
+import classNames from "classnames";
 
 const OrderItem = React.createClass({
     getInitialState: function () {
@@ -20,8 +26,8 @@ const OrderItem = React.createClass({
             modalDialogType: 0,//1：删除
             isLoading: false,
             isAlertShow: false,
-            isStageSelectShow: false,
             isAppPanelShow: false,
+            submitErrorMsg: "",//修改应用时的错误提示
             apps: this.props.order.apps,
             stage: this.props.order.sale_stages,
             formData: JSON.parse(JSON.stringify(this.props.order)),
@@ -29,7 +35,7 @@ const OrderItem = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.isMerge||nextProps.order && nextProps.order.id !== this.props.order.id) {
+        if (nextProps.isMerge || nextProps.order && nextProps.order.id !== this.props.order.id) {
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.order)),
                 stage: nextProps.order.sale_stages,
@@ -55,7 +61,7 @@ const OrderItem = React.createClass({
     },
 
     //模态提示框确定后的处理
-    handleModalOK: function (order, apps) {
+    handleModalOK: function (order) {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确定删除订单");
         switch (this.state.modalDialogType) {
             case 1:
@@ -102,20 +108,6 @@ const OrderItem = React.createClass({
         this.setState({isStageSelectShow: true});
     },
 
-    closeStageSelect: function () {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "取消修改销售阶段");
-        this.setState({
-            isStageSelectShow: false,
-            stage: this.state.formData.sale_stages
-        });
-    },
-
-    onStageChange: function (stage) {
-        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "修改销售阶段为" + stage);
-        this.state.stage = stage;
-        this.setState(this.state);
-    },
-
     showAppPanel: function () {
         Trace.traceEvent($(this.getDOMNode()).find(".order-application-list .ant-btn-circle"), "修改应用");
         this.setState({isAppPanelShow: true});
@@ -128,9 +120,9 @@ const OrderItem = React.createClass({
 
     onAppsChange: function (selectedApps) {
         let oldAppList = _.isArray(this.state.apps) ? this.state.apps : [];
-        if (selectedApps.length > oldAppList.length){
+        if (selectedApps.length > oldAppList.length) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "选中某个应用");
-        }else{
+        } else {
             Trace.traceEvent($(this.getDOMNode()).find(".search-icon-list-content"), "取消选中某个应用");
         }
         this.state.apps = _.pluck(selectedApps, "client_id");
@@ -138,74 +130,85 @@ const OrderItem = React.createClass({
         this.setState(this.state);
     },
 
-    handleSubmit: function (updateTarget) {
-        let reqData = JSON.parse(JSON.stringify(this.props.order));
-        if (updateTarget === "stage") reqData.sale_stages = this.state.stage;
-        if (updateTarget === "app") reqData.apps = this.state.apps;
+    //修改订单的预算、备注
+    saveOrderBasicInfo: function (saveObj, successFunc, errorFunc) {
+        saveObj.customer_id = this.props.order.customer_id;
         if (this.props.isMerge) {
-            //合并客户时，修改订单的销售阶段或应用
-            this.props.updateMergeCustomerOrder(reqData);
-            if (updateTarget === "stage") {
-                this.state.isStageSelectShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
-            }
-            if (updateTarget === "app") {
-                this.state.isAppPanelShow = false;
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
-            }
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(saveObj);
+            if (_.isFunction(successFunc)) successFunc();
         } else {
-            //客户详情中修改订单的销售阶段或应用
-            this.setState({isLoading: true});
-            if (updateTarget === "stage") {
-                //修改订单的销售阶段
-                this.editOrderStage(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
-            } else if (updateTarget === "app") {
-                //修改订单的应用
-                this.editOrderApp(reqData);
-                Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
-            }
+            OrderAction.editOrder(saveObj, {}, (result) => {
+                if (result && result.code === 0) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    OrderAction.afterEditOrder(saveObj);
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(saveObj.customer_id);
+                    }, 200);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc(result || Intl.get("common.save.failed", "保存失败"));
+                }
+            });
         }
     },
+
     //修改订单的销售阶段
-    editOrderStage: function (reqData) {
-        let {customer_id, id, sale_stages} = reqData;
-        OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
-            this.state.isLoading = false;
-            if (result.code === 0) {
-                message.success(Intl.get("common.save.success", "保存成功"));
-                this.state.formData.sale_stages = reqData.sale_stages;
-                //关闭编辑状态，返回展示状态
-                this.state.isStageSelectShow = false;
-                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                setTimeout(() => {
-                    this.props.refreshCustomerList(reqData.customer_id);
-                }, 1000);
-            } else {
-                message.error(Intl.get("common.save.failed", "保存失败"));
-            }
-            this.setState(this.state);
-        });
+    editOrderStage: function (saveObj, successFunc, errorFunc) {
+        let {customer_id, id, sale_stages} = {...saveObj, customer_id: this.props.order.customer_id};
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存销售阶段的修改");
+        if (this.props.isMerge) {
+            //合并客户时，修改订单的销售阶段或应用
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder({
+                customer_id,
+                id,
+                sale_stages
+            });
+            if (_.isFunction(successFunc)) successFunc();
+        } else {
+            OrderAction.editOrderStage({customer_id, id, sale_stages}, {}, result => {
+                if (result && result.code === 0) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.state.formData.sale_stages = sale_stages;
+                    this.setState(this.state);
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(reqData.customer_id);
+                    }, 1000);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc(result || Intl.get("common.save.failed", "保存失败"));
+                }
+            });
+        }
     },
     //修改订单的应用
-    editOrderApp: function (reqData) {
-        //修改订单的应用
-        let {customer_id, id, apps} = reqData;
-        OrderAction.editOrder({customer_id, id, apps}, {}, (result) => {
-            this.state.isLoading = false;
-            if (result.code === 0) {
-                message.success(Intl.get("common.save.success", "保存成功"));
-                this.state.formData.apps = reqData.apps;
-                this.state.isAppPanelShow = false;
-                //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
-                setTimeout(() => {
-                    this.props.refreshCustomerList(reqData.customer_id);
-                }, 1000);
-            } else {
-                message.error(Intl.get("common.save.failed", "保存失败"));
-            }
-            this.setState(this.state);
-        });
+    editOrderApp: function () {
+        Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div"), "保存应用的修改");
+        let reqData = JSON.parse(JSON.stringify(this.props.order));
+        reqData.apps = this.state.apps;
+        if (this.props.isMerge) {
+            //合并客户时，修改订单的销售阶段或应用
+            if (_.isFunction(this.props.updateMergeCustomerOrder)) this.props.updateMergeCustomerOrder(reqData);
+            this.state.isAppPanelShow = false;
+        } else {
+            //客户详情中修改订单的应用
+            let {customer_id, id, apps} = reqData;
+            this.setState({isLoading: true});
+            OrderAction.editOrder({customer_id, id, apps}, {}, (result) => {
+                this.state.isLoading = false;
+                if (result.code === 0) {
+                    this.state.formData.apps = reqData.apps;
+                    this.state.isAppPanelShow = false;
+                    this.state.submitErrorMsg = "";
+                    //稍等一会儿再去重新获取数据，以防止更新未完成从而取到的还是旧数据
+                    setTimeout(() => {
+                        this.props.refreshCustomerList(reqData.customer_id);
+                    }, 1000);
+                } else {
+                    this.state.submitErrorMsg = result || Intl.get("common.save.failed", "保存失败");
+                }
+                this.setState(this.state);
+            });
+        }
     },
 
     //生成合同
@@ -248,7 +251,7 @@ const OrderItem = React.createClass({
         }, "/contract/list", {});
     },
 
-    render: function () {
+    renderOrderContent () {
         const _this = this;
         const order = this.state.formData;
         let selectedAppList = [];
@@ -292,85 +295,55 @@ const OrderItem = React.createClass({
             showGenerateContractBtn = true;
         }
 
+
+        let stageOptions = _.map(this.props.stageList, (stage, index) => {
+            return (<Option value={stage.name} key={index}>{stage.name}</Option>);
+        });
         return (
-            <div className={className}>
+            <div className="order-item modal-container">
                 {
                     this.state.isLoading ?
                         (<Spinner className="isloading"/>) :
                         (null)
                 }
-                <div className="order-title">
-                    <div className="order-title-left">
-                        <label><ReactIntl.FormattedMessage id="crm.146"
-                                                           defaultMessage="日期"/>：{moment(order.time).format(oplateConsts.DATE_FORMAT)}
-                        </label>
-                        <br />
-                        <label><ReactIntl.FormattedMessage id="crm.147" defaultMessage="订单号"/>：{order.id}</label>
-                    </div>
-                    <div className="order-title-right-btn">
-                        <div className="order-btn-class icon-delete iconfont"
-                             onClick={this.showDelModalDialog}
-                             data-tracename="删除订单"
-                        />
-                        <div className="order-btn-class icon-update iconfont"
-                             onClick={this.props.showForm.bind(null, order.id)}
-                        />
-                    </div>
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get("crm.order.id", "订单编号")}:</span>
+                    <span className="order-value">{order.id}</span>
                 </div>
-                <div className="order-introduce">
-                    <div className="order-introduce-div">
-                        <label><ReactIntl.FormattedMessage id="sales.stage.sales.stage" defaultMessage="销售阶段"/>：</label>
-                        {!this.state.isStageSelectShow ? (
-                            <label style={{marginRight: 8}}>{order.sale_stages}</label>
-                        ) : (
-                            <Select
-                                style={{width: 150, marginRight: 8}}
-                                value={this.state.stage}
-                                onChange={this.onStageChange}
-                            >
-                                {this.props.stageList.map(function (stage, index) {
-                                    return (<Option value={stage.name} key={index}>{stage.name}</Option>);
-                                })}
-                            </Select>
-                        )}
-                        {this.state.isStageSelectShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.save", "保存")}
-                                className="btn-save"
-                                onClick={this.handleSubmit.bind(this, "stage")}
-                            >
-                                <Icon type="save"/>
-                            </Button>
-                        ) : null}
-                        {this.state.isStageSelectShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.cancel", "取消")}
-                                onClick={this.closeStageSelect}
-                            >
-                                <Icon type="cross"/>
-                            </Button>
-                        ) : null}
-                        {!this.state.isStageSelectShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.edit", "编辑")}
-                                onClick={this.showStageSelect}
-                            >
-                                <Icon type="edit"/>
-                            </Button>
-                        ) : null}
-                    </div>
-                    <div className="order-introduce-div">
-                        <label
-                            className={(order.budget ? "" : " color-gray")}><ReactIntl.FormattedMessage id="crm.148"
-                                                                                                        defaultMessage="预算金额"/>：{order.budget ? Intl.get("crm.149", "{num}万", {num: order.budget}) : null}
-                        </label>
-                    </div>
-                    <div className="order-application-list">
-                        <label className={(apps ? "" : "color-gray")}><ReactIntl.FormattedMessage id="common.app"
-                                                                                                  defaultMessage="应用"/>：</label>
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get("sales.stage.sales.stage", "销售阶段")}:</span>
+                    <BasicEditSelectField
+                        id={order.id}
+                        displayText={order.sale_stages}
+                        value={order.sale_stages}
+                        field="sale_stages"
+                        selectOptions={stageOptions}
+                        hasEditPrivilege={true}
+                        placeholder={Intl.get("crm.155", "请选择销售阶段")}
+                        saveEditSelect={this.editOrderStage}
+                    />
+                </div>
+                <div className="order-item-content order-application-list">
+                    <span className="order-key">{Intl.get("call.record.application.product", "应用产品")}:</span>
+                    {this.state.isAppPanelShow ? (
+                        <div className="order-app-edit-block">
+                            <SearchIconList
+                                totalList={this.props.appList}
+                                selectedList={selectedAppList}
+                                selectedListId={selectedAppListId}
+                                id_field="client_id"
+                                name_field="client_name"
+                                image_field="client_image"
+                                search_fields={["client_name"]}
+                                onItemsChange={this.onAppsChange}
+                            />
+                            <SaveCancelButton loading={this.state.isLoading}
+                                              saveErrorMsg={this.state.submitErrorMsg}
+                                              handleSubmit={this.editOrderApp}
+                                              handleCancel={this.closeAppPanel}
+                            />
+                        </div>
+                    ) : (
                         <div className="order-application-div">
                             {apps.map(function (app, i) {
                                 return (
@@ -379,101 +352,106 @@ const OrderItem = React.createClass({
                                     </div>
                                 );
                             })}
+                            <DetailEditBtn onClick={this.showAppPanel}/>
                         </div>
-                        {this.state.isAppPanelShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.save", "保存")}
-                                className="btn-save"
-                                onClick={this.handleSubmit.bind(this, "app")}
-                            >
-                                <Icon type="save"/>
-                            </Button>
-                        ) : null}
-                        {this.state.isAppPanelShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.cancel", "取消")}
-                                onClick={this.closeAppPanel}
-                            >
-                                <Icon type="cross"/>
-                            </Button>
-                        ) : null}
-                        {!this.state.isAppPanelShow ? (
-                            <Button
-                                shape="circle"
-                                title={Intl.get("common.edit", "编辑")}
-                                onClick={this.showAppPanel}
-                            >
-                                <Icon type="edit"/>
-                            </Button>
-                        ) : null}
-                    </div>
-                    {this.state.isAppPanelShow ? (
-                        <SearchIconList
-                            totalList={this.props.appList}
-                            selectedList={selectedAppList}
-                            selectedListId={selectedAppListId}
-                            id_field="client_id"
-                            name_field="client_name"
-                            image_field="client_image"
-                            search_fields={["client_name"]}
-                            onItemsChange={this.onAppsChange}
-                        />
-                    ) : null}
-
-                    {applyBtnText && this.props.isApplyButtonShow ? (
-                        <div className="order-introduce-div">
-                            <label><ReactIntl.FormattedMessage id="crm.150" defaultMessage="用户申请"/>：</label>
-                            <Button type="ghost" className="order-introduce-btn"
-                                    onClick={this.showApplyForm.bind(this, applyType, order, apps)}
-                            >
-                                {applyBtnText}
-                            </Button>
-                        </div>
-                    ) : null}
-                    <div className="order-introduce-div">
-                        <label
-                            className={"order-label-salesRemarks" + (order.remarks ? "" : " color-gray")}><ReactIntl.FormattedMessage
-                            id="common.remark" defaultMessage="备注"/>：</label>
-                        <div
-                            className="order-div-salesRemarks">{order.remarks}</div>
-                    </div>
-
-                    {this.props.order.contract_id ? (
-                        <Button type="ghost" className="order-introduce-btn pull-right"
-                                onClick={this.gotoContract}
-                        >
-                            <ReactIntl.FormattedMessage id="crm.151" defaultMessage="查看合同"/>
-                        </Button>
-                    ) : null}
-
-                    {showGenerateContractBtn ? (
-                        <Button type="ghost" className="order-introduce-btn pull-right"
-                                onClick={this.generateContract}
-                        >
-                            <ReactIntl.FormattedMessage id="crm.152" defaultMessage="生成合同"/>
-                        </Button>
-                    ) : null}
+                    )}
                 </div>
-
-                <ModalDialog modalContent={_this.state.modalContent}
-                             modalShow={_this.state.modalDialogFlag}
-                             container={_this}
-                             hideModalDialog={_this.hideModalDialog.bind(_this, order)}
-                             delete={_this.handleModalOK.bind(_this, order, apps)}
-                             closedModalTip="取消删除订单"
-                />
-
-                {this.state.isAlertShow ? (
-                    <Alert
-                        message={Intl.get("crm.153", "请先添加应用")}
-                        type="error"
-                        showIcon
-                    />
+                {applyBtnText && this.props.isApplyButtonShow ? (
+                    <div className="order-item-content">
+                        <span className="order-key">{Intl.get("crm.150", "用户申请")}:</span>
+                        <Button type="ghost" className="order-introduce-btn"
+                                onClick={this.showApplyForm.bind(this, applyType, order, apps)}
+                        >
+                            {applyBtnText}
+                        </Button>
+                        {this.state.isAlertShow ? (
+                            <Alert
+                                className="add-app-tip"
+                                message={Intl.get("crm.153", "请先添加应用")}
+                                type="error"
+                                showIcon
+                            />
+                        ) : null}
+                    </div>
                 ) : null}
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get("crm.148", "预算金额")}:</span>
+                    <BasicEditInputField
+                        id={order.id}
+                        type="number"
+                        field="budget"
+                        value={order.budget}
+                        afterValTip={Intl.get("contract.139", "万")}
+                        placeholder={Intl.get("crm.order.budget.input", "请输入预算金额")}
+                        hasEditPrivilege={true}
+                        saveEditInput={this.saveOrderBasicInfo}
+                    />
+                </div>
+                <div className="order-item-content">
+                    <span className="order-key">{Intl.get("crm.order.remarks", "订单备注")}:</span>
+                    <BasicEditInputField
+                        id={order.id}
+                        type="textarea"
+                        field="remarks"
+                        value={order.remarks}
+                        editBtnTip={Intl.get("user.remark.set.tip", "设置备注")}
+                        placeholder={Intl.get("user.input.remark", "请输入备注")}
+                        hasEditPrivilege={true}
+                        saveEditInput={this.saveOrderBasicInfo}
+                    />
+                </div>
+                {/*<div className="order-introduce">*/}
+                {/*{this.props.order.contract_id ? (*/}
+                {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
+                {/*onClick={this.gotoContract}*/}
+                {/*>*/}
+                {/*{Intl.get("crm.151", "查看合同")}*/}
+                {/*</Button>*/}
+                {/*) : null}*/}
+
+                {/*{showGenerateContractBtn ? (*/}
+                {/*<Button type="ghost" className="order-introduce-btn pull-right"*/}
+                {/*onClick={this.generateContract}>*/}
+                {/*{Intl.get("crm.152", "生成合同")}*/}
+                {/*</Button>*/}
+                {/*) : null}*/}
+                {/*</div>*/}
             </div>
         );
+    },
+    renderOrderTitle(){
+        const order = this.state.formData;
+        return (
+            <span className="order-item-title">
+                <span className="order-time">
+                    {order.time ? moment(order.time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : ""}
+                </span>
+                <span className="order-item-buttons">
+                    {this.state.modalDialogFlag ? (
+                        <span className="item-delete-buttons">
+                            <Button className="item-delete-cancel delete-button-style"
+                                    onClick={this.hideModalDialog.bind(this, order)}>
+                                {Intl.get("common.cancel", "取消")}
+                            </Button>
+                            <Button className="item-delete-confirm delete-button-style"
+                                    onClick={this.handleModalOK.bind(this, order)}>
+                                {Intl.get("crm.contact.delete.confirm", "确认删除")}
+                            </Button>
+                        </span>) : (
+                        <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
+                              data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
+                    }
+                </span>
+            </span>
+        );
+    },
+    render(){
+        let containerClassName = classNames("order-item-container", {
+            "item-delete-border": this.state.modalDialogFlag
+        });
+        return (<DetailCard title={this.renderOrderTitle()}
+                            content={this.renderOrderContent()}
+                            className={containerClassName}/>);
     }
 });
 

@@ -25,8 +25,10 @@ function SingleUserLogAction() {
         "handleSearchEvent",  // 处理搜索框中内容的变化
         "getLogsBySearch",  // 根据搜索内容显示日志信息
         "changUserIdKeepSearch", //  切换用户时，保持搜索框内容
-        'resetLogState'
-    );
+        'resetLogState',
+        "toggleOperateDetail"//展开关闭操作详情
+    ); 
+
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function (searchObj, selectedAppId, appLists) {
         if (_.isObject(searchObj)) {

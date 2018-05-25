@@ -205,6 +205,11 @@ var en_US = {
     "common.app.minute": "minutes",//"分钟",
     "common.load.more": "load more",//"加载更多",
     "common.request.timeout": "Error. Request timeout",//"请求超时",
+    "common.callback": "Callback", //"回访",
+    "common.callback.time": "Callback time", // "回访时间"
+    "common.callback.person": "Callback person", // "回访人",
+    "common.has.callback": "Has callback", // "已回访",
+    "common.callback.customer": "Callback customer", // "回访客户",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
@@ -600,6 +605,7 @@ var en_US = {
     "member.operation.log": "Operation log",//操作日志
     "member.input.email": "Please input email",//请输入邮箱
     "member.input.qq": "Please input QQ",//请输入QQ号
+    "member.input.wechat": "Please input wechat",//请输入微信号
     "member.check.member.name": "Please enter a number, letter or underline, the first letter can not be a underline",//请输入数字、字母或下划线，首字母不能是下划线
     "member.email.is.unique": "The email is already taken",//邮箱唯一性校验出错！
     "member.no.role": "No role",//暂无角色
@@ -937,6 +943,8 @@ var en_US = {
     "call.analysis.total.count.failed": "Getting the total call number TOP10 failed",//获取通话总次数TOP10失败
     "call.analysis.total.time.failed": "Get the total long TOP10 failure of the call",//获取通话总时长TOP10失败
     "call.record.service.phone.rate": "Statistics of the ratio of 114",//114占比统计
+    "call.analysis.zone.distrute": "Zone distribution of customers", // 客户的地域分布
+    "call.analysis.map.return": "Back to previous", // 返回上一级
     //通话分析-end
 
 
@@ -1101,7 +1109,7 @@ var en_US = {
     "crm.96": "Area", // 地域
     "crm.97": "Import complete", // 导入完成
     "crm.98": "Import customer success", // 导入客户成功
-    "crm.99": "Import customer error, please retry", // 导入客户失败，请重试!
+    "crm.99": "Import customer error, please retry", // 导入客户失败
     "crm.100": "Existing users applied for trail users", // 老用户申请试用用户
     "crm.101": "Existing users applied for official users", // 老用户转签约用户
     "crm.102": "The username must be a combination of letters, numbers, underlines, or a valid email", // 用户名必须为字母、数字、下划线的组合或合法格式的邮箱
@@ -1209,7 +1217,7 @@ var en_US = {
     "crm.clue.source.placeholder": "Please select the source of the clues",//请选择线索来源
     "crm.sales.clue": "Clue",//线索
     "crm.sales.clue.add.disable": "'{label}' tags cannot be added manually",//不能手动添加'{label}'标签
-    "crm.clue.require.one": "Telephone, mail and QQ required one",//电话、邮箱、QQ必填一项
+    "crm.clue.require.one": "Telephone, mail, QQ and weChat required one",//电话、邮箱、QQ必填一项
     "crm.contact.list.failed": "Failed to get contact list",//获取联系人列表失败
     "crm.contact.name.length": "Please enter a name with a maximum of 50 characters",//请输入最多50个字符的姓名
     "crm.last.trace.content": "Last Trace content",//最后跟进内容
@@ -1224,7 +1232,7 @@ var en_US = {
     "crm.call.no.remark": "Final contact but no record",//最后联系但未写跟进记录
     "crm.call.no.remark.over30": "No follow-up records over 30 days",//超30天未写跟进记录
     "crm.last.contact": "Final contact",//最后联系
-    "crm.qualified.roll.out": "Roll out",//转出
+    "crm.qualified.roll.out": "Transfer out",//转出
     "crm.contact.name.department": "The contact name and department required one",//联系人姓名和部门必填一项
     "crm.delete.duplicate.customer.failed": "Delete",//删除重复客户失败
     "crm.detail.sales.role": "Sales role",//销售角色
@@ -1235,9 +1243,34 @@ var en_US = {
     "crm.customer.transfer.sales": "Sales",//"销售代表",
     "crm.customer.transfer.manager": "Manager",//"客户经理",
     "crm.sales.customerStage": "customer stage statistic",//"客户阶段变更统计",
+    "crm.sales.newTrailCustomer": "new customer statistic",//"新开试用、签约客户数统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
-    "crm.order.stage":"Order stage",//订单阶段
+	"crm.order.stage":"Order stage",//订单阶段
+    "crm.basic.detail.show": "Show detail",//展开详情
+    "crm.basic.detail.hide": "Hide detail",//收起详情
+    "crm.basic.overview": "Overview",//概览
+    "crm.overview.expire.tip": "{days}, have applications to trail expires",//有应用{days}试用到期
+    "crm.input.new.tag": "Please enter a new label",//请输入新标签
+    "crm.detail.no.tag": "No label",//暂无标签
+    "crm.detail.user": "Users",//用户
+    "crm.detail.contact.add": "Add a Contact",//添加联系人
+    "crm.detail.contact.default.set": "Set as a default contact",//设为默认联系人
+    "crm.contact.way.show": "Expand other ways of contact",//展开其他联系方式
+    "crm.contact.way.hide": "Take up",//收起
+    "crm.contact.delete.confirm": "Confirm deletion",//确认删除
+    "crm.contact.deparment.input": "Please enter the Department",//请输入部门
+    "crm.order.budget.input": "Please enter the budget amount",//请输入预算金额
+    "crm.order.id": "Order Num",//订单编号
+    "crm.order.remarks": "Order Remarks",//订单备注
+    "crm.schedule.begin.time": "Begin time",//开始
+    "crm.schedule.end.time": "End time",//结束
+    "crm.basic.concerned": "Concerned",//已关注
+    "crm.basic.unconcerned": "Unconcerned",//未关注
+    "crm.basic.more": "More",//更多
+    "crm.sales.update": "Modify it to",//修改为
+    "crm.sales.redistribution": "Redistribution",//重新分配
+    "crm.sales.transfer.confirm": "Transfer confirm",//确认转出
     // 客户管理end
 
     //客户分析 start
@@ -1502,6 +1535,7 @@ var en_US = {
     "user.analysis.active.customer": "Active customer",//活跃客户
     "user.analysis.moveoutCustomer": "Move-out customer ",// "转出客户统计",
     "user.analysis.sales.users": "Sales and opening of user statistics",//销售开通用户统计
+    "user.analysis.active.user.area.statistics": "Active user area statistics",//活跃用户地域统计
 
     //销售首页-新增客户分析
     "customer.analysis": "Customer Analysis",//客户分析@
@@ -1624,6 +1658,7 @@ var en_US = {
     "oplate_bd_analysis_realm_industry.7": "Proportion",//占比@
     //安全域分析-地域统计
     "oplate_bd_analysis_realm_zone.1": "Province",//省份@
+    "oplate_bd_analysis_realm_zone.2": "City", // 市区
     //右侧面板
     "rightpanel_upgrade": "upgrade record",//升级记录
     "rightpanel_app_auth": "application privilege",//应用权限
@@ -1870,6 +1905,7 @@ var en_US = {
     "crm.customer.failed.interested": "Failed to update the information!",//修改失败
     "call.record.play": "PLAY",//播放录音
     "call.record.pick.phone": "Please pick up the phone",//请拿起话机
+    "call.record.call.in.pick.phone":"There is a phone call, please pick up the phone",//有电话打入，请拿起话机
     "call.record.phone.alerting": "The phone is ringing, Waiting for answering",//已振铃，等待对方接听
     "call.record.phone.answered": "Calling ",//正在通话中
     "call.record.phone.unknown": "Hang up the call",//结束通话
@@ -1909,7 +1945,7 @@ var en_US = {
     "sales.homepage.hide.teamlist": "Hide team lists",//隐藏团队列表
     "sales.homepage.show.teamlist": "Show team lists",//展开团队列表
     "crm.save.customertrace.first": "Please save or cancel the edited customer trace record first",//请先保存或取消保存已编辑的跟进记录内容
-    "sales.add.email.info": "Please activate the mailbox on the {userinfo} page, otherwise you will be unable to receive the application email from users",//请到{userinfo}页面激活邮箱，否则将会无法接收用户申请的邮件。
+    "sales.add.email.info": "Please add the mailbox on the {userinfo} page, otherwise you will be unable to receive the application email from users",//请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。
     "crm.sales.add.clue": "Add clue",//添加线索
     "clue.customer.will.distribution": "To be assigned",//待分配
     "clue.customer.has.distribution": "Assigned",//已分配
@@ -2055,6 +2091,7 @@ var en_US = {
     "config.manage.no.tele": "No customer service phone, please add",//暂无客服电话，请添加
     "config.manage.reload.tele": "Retry to get customer service phone",//重新获取客服电话
     "config.manage.tele.config": "Customer service phone",//客服电话
+    'config.manage.input.tele': "Please input the correct phone number",//'请输入有效的客服电话 ( eg:0531-88887755 , +8613688887755)',
     "contract.22": "Unit",//个
     "sale.home.no.team": "No sales team",//暂无销售团队
     "coontract.114": "Import contract",//导入合同
@@ -2103,7 +2140,44 @@ var en_US = {
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
     "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
+    "crm.import.over.limit":"After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
+    "crm.transfer.over.limit": "Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers",//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
+    "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
+    "crm.should.reduce.customer":"The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
     "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
-    "sales.role.setting.name":"Sales role name"//销售角色名称
+    "sales.role.setting.name":"Sales role name",//销售角色名称
+    "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
+    "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
+    "sales.rewrite.contract.radio":"Renewed signing ratio",//续约提成比例
+    "sales.remark.clue.enable":"Mark this clue effective",//线索有效
+    "sales.remark.clue.able":"Mark this clue invalid",//线索无效
+    "sales.clue.is.enable":"Invalid",//无效
+    "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue",//标记该线索有效性失败
+    "clue.customer.check.only.exist": "Failed to verify the only clue names",//线索名称唯一性校验失败
+    "clue.customer.check.repeat": "The clue name is already existed",//该线索名称已存在
+    "clue.customer.clue.time": "Consult on {relative}",//咨询于{relative}
+    "failed.to.get.clue.classify":"Failed to get clue classify",//获取线索分类出错了
+    "clue.customer.classify":"clue  classification",//线索分类
+    "crm.clue.classify.placeholder": "Please select or enter the clue classify",//请选择或输入线索分类
+    "clue.customer.classify.agend":"Agents",//代理商
+    "clue.customer.classify.search":"Academic research",//学术研究
+    "clue.customer.may.associate.customer": "The customer may be associated with the clue",//该线索可能关联的客户
+    "clue.customer.phone.same":"The phone is the same",//电话一致
+    "clue.customer.customer.name.similar":"The customer is similar",//客户名相似
+    "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
+    "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
+    "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
+    "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
+    "sales.frontpage.has.no.conneted":"You have missed the call",//您有电话未接听
+    "clue.manage.import.clue": "Import clues",//导入线索
+    "clue.manage.import.clue.template": "Import clues template",//导入线索模板
+    "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!
+    "clue.customer.import.clue.suceess": "Import clues successfully",//导入线索成功
+    "clue.customer.import.clue.failed": "Failed to import clues",//导入线索失败
+    "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
+    "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import",//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
+    "clue.customer.belong.to.other.sales": "This phone is registered to {customer} and belongs to {sales}",//该电话属于客户{customer}，所属销售{sales}
+    "phone.alert.select.customer": "Please select the customer to follow",//请选择要跟进的客户
+    "clue.analysis.consult.time":"Consult time:",//咨询时间：
 };
 export default en_US;

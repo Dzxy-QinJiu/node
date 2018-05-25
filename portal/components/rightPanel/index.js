@@ -70,6 +70,12 @@ var RightPanelEdit = React.createClass({
         );
     }
 });
+//渲染详情中的编辑按钮
+var DetailEditBtn = React.createClass({
+    render: function () {
+        return (<span  {...this.props} className="iconfont icon-edit-btn"/>);
+    }
+});
 
 //渲染禁用按钮
 var RightPanelForbid = React.createClass({
@@ -173,6 +179,7 @@ exports.RightPanelSubmit = RightPanelSubmit;
 exports.RightPanelCancel = RightPanelCancel;
 exports.RightPanelClose = RightPanelClose;
 exports.RightPanelEdit = RightPanelEdit;
+exports.DetailEditBtn = DetailEditBtn;
 exports.RightPanelForbid = RightPanelForbid;
 exports.RightPanelReturn = RightPanelReturn;
 exports.RightPanelDelete = RightPanelDelete;

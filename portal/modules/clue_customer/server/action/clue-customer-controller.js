@@ -5,6 +5,7 @@
  */
 "use strict";
 var clueCustomerService = require("../service/clue-customer-service");
+var path = require("path");
 //获取线索客户列表
 exports.getClueCustomerList = function (req, res) {
     clueCustomerService.getClueCustomerList(req, res)
@@ -34,6 +35,16 @@ exports.getClueChannel = function (req, res) {
         res.status(500).json(err.message);
     });
 };
+//获取线索分类
+exports.getClueClassify = function (req, res) {
+    clueCustomerService.getClueClassify(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+
 //添加或者更新跟进内容
 exports.addCluecustomerTrace = function (req, res) {
     clueCustomerService.addCluecustomerTrace(req, res)
@@ -73,6 +84,49 @@ exports.checkOnlySalesClue=function (req, res) {
 //将线索和客户进行关联
 exports.relateClueAndCustomer = function (req, res) {
     clueCustomerService.relateClueAndCustomer(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};
+// 处理导入线索模板文件
+exports.getClueTemplate = function (req, res) {
+    var filePath = path.resolve(__dirname, "../../tpl/clue_temp.xls");
+    res.download(filePath);
+};
+
+exports.uploadClues = function (req, res) {
+    //调用上传请求服务
+    clueCustomerService.uploadClues(req, res)
+        .on("success", function (data) {
+            res.json(data.result);
+        })
+        .on("error", function (err) {
+            res.json(err.message);
+        });
+};
+exports.confirmUploadClues = function (req, res) {
+    clueCustomerService.confirmUploadClues(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        })
+        .on("error", function (err) {
+            res.status(500).json(err.message);
+        });
+};
+exports.deleteRepeatClue = function (req, res) {
+    clueCustomerService.deleteRepeatClue(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        })
+        .on("error", function (err) {
+            res.status(500).json(err.message);
+        });
+};
+//获取线索统计
+exports.getClueAnalysis = function (req, res) {
+    clueCustomerService.getClueAnalysis(req, res)
         .on("success", function (data) {
             res.status(200).json(data);
         }).on("error", function (err) {

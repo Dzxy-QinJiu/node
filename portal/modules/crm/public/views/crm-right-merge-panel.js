@@ -5,8 +5,6 @@ var Option = Select.Option;
 var AlertTimer = require("../../../../components/alert-timer");
 var rightPanelUtil = require("../../../../components/rightPanel/index");
 var RightPanel = rightPanelUtil.RightPanel;
-var RightPanelClose = rightPanelUtil.RightPanelClose;
-var BasicData = require("./basic_data");
 var Contacts = require("./contacts");
 var Dynamic = require("./dynamic");
 var CrmSchedule = require("./schedule");
@@ -16,6 +14,9 @@ var CustomerRepeatAction = require("../action/customer-repeat-action");
 import Trace from "LIB_DIR/trace";
 import ajax from "../ajax/index";
 import {tabNameList} from "../utils/crm-util";
+import BasicInfo from "./basic_info";
+import BasicOverview from "./basic-overview";
+import CustomerUsers from "./users";
 
 var CrmRightMergePanel = React.createClass({
     getInitialState: function () {
@@ -27,12 +28,18 @@ var CrmRightMergePanel = React.createClass({
             mergeErrorMsg: "",//合并失败的提示信息
             originCustomerList: this.props.originCustomerList,//后端返回的重复列表的数据
             mergeCustomerList: this.props.mergeCustomerList,//选中的要合并的客户
-            selectedCustomer: this.getMergedCustomer(this.props.mergeCustomerList, this.props.originCustomerList)//合并后保存的客户（默认第一个）
+            selectedCustomer: this.getMergedCustomer(this.props.mergeCustomerList, this.props.originCustomerList),//合并后保存的客户（默认第一个）
+            tabsContainerHeight: "auto"
         };
     },
 
     componentDidMount: function () {
         this.getRepeatCustomersById(this.props.mergeCustomerList);
+        this.setTabsContainerHeight();
+        $(window).resize(e => {
+            e.stopPropagation();
+            this.setTabsContainerHeight();
+        });
     },
     getRepeatCustomersById: function (mergeCustomerList) {
         let mergedCustomerIds = _.pluck(mergeCustomerList, 'id');
@@ -255,13 +262,13 @@ var CrmRightMergePanel = React.createClass({
     //合并客户
     mergeRepeatCustomer: function () {
         if (this.state.isMergingCustomer) return;
-        let deleteIds = [], mergeCustomerList = this.props.mergeCustomerList,
+        let delete_customers = [], mergeCustomerList = this.props.mergeCustomerList,
             selectedCustomer = this.state.selectedCustomer;
         //获取合并后要删除的重复客户id
         if (_.isArray(mergeCustomerList) && mergeCustomerList.length > 0) {
             mergeCustomerList.forEach((customer) => {
                 if (customer.id != selectedCustomer.id) {
-                    deleteIds.push(customer.id);
+                    delete_customers.push({id: customer.id, name: customer.name});
                 }
             });
         }
@@ -303,7 +310,7 @@ var CrmRightMergePanel = React.createClass({
         this.setState({isMergingCustomer: true});
         let mergeObj = {
             customer: selectedCustomer,
-            delete_ids: deleteIds
+            delete_customers: delete_customers
         };
         CustomerRepeatAction.mergeRepeatCustomer(mergeObj, resultObj => {
             if (resultObj.error) {
@@ -351,7 +358,7 @@ var CrmRightMergePanel = React.createClass({
             updateCustomer.industry = newBasic.industry;
         }
         //客户的行政级别
-        if (newBasic.administrative_level) {
+        if (newBasic.administrative_level || newBasic.administrative_level === "") {
             updateCustomer.administrative_level = newBasic.administrative_level;
         }
         //客户地域的修改
@@ -365,11 +372,11 @@ var CrmRightMergePanel = React.createClass({
             updateCustomer.county = newBasic.county;
         }
         //地址
-        if (newBasic.address || newBasic.address == "") {
+        if (newBasic.address || newBasic.address === "") {
             updateCustomer.address = newBasic.address;
         }
         //客户备注的修改
-        if (newBasic.remarks || newBasic.remarks == "") {
+        if (newBasic.remarks || newBasic.remarks === "") {
             updateCustomer.remarks = newBasic.remarks;
         }
         //客户所属销售的修改
@@ -438,7 +445,7 @@ var CrmRightMergePanel = React.createClass({
                 //找到要修改的订单并更新
                 _.some(mergedCustomer.sales_opportunities, (order, index) => {
                     if (order.id == newOrder.id) {
-                        mergedCustomer.sales_opportunities[index] = newOrder;
+                        mergedCustomer.sales_opportunities[index] = $.extend(mergedCustomer.sales_opportunities[index], newOrder);
                         return true;
                     }
                 });
@@ -457,6 +464,10 @@ var CrmRightMergePanel = React.createClass({
             this.setState({selectedCustomer: mergedCustomer});
         }
     },
+    setTabsContainerHeight: function () {
+        let tabsContainerHeight = $("body").height() - $(".select-customer-container").height() - $(".basic-info-contianer").outerHeight(true);
+        this.setState({tabsContainerHeight: tabsContainerHeight});
+    },
     render: function () {
         var className = "right-panel-content";
         if (this.state.applyUserShowFlag) {
@@ -466,10 +477,12 @@ var CrmRightMergePanel = React.createClass({
         return (
             <RightPanel showFlag={this.props.showFlag}
                         className="crm-right-panel white-space-nowrap crm-right-merge-panel" data-tracename="合并客户面板">
+               <span className="iconfont icon-close" onClick={(e) => {
+                   this.hideRightPanel(e);
+               }}/>
                 <div className={className}>
                     <div className="select-customer-container">
-                        <span className="select-customer-label"><ReactIntl.FormattedMessage id="crm.63"
-                                                                                            defaultMessage="合并后保存的客户"/>：</span>
+                        <span className="select-customer-label">{Intl.get("crm.63", "合并后保存的客户")}：</span>
                         <Select value={this.state.selectedCustomer.id}
                                 dropdownClassName="merge-customer-select"
                                 style={{width: 200}}
@@ -489,10 +502,16 @@ var CrmRightMergePanel = React.createClass({
                                         message={this.state.mergeErrorMsg}
                                         type="error" showIcon
                                         onHide={this.hideSaveTooltip}/></div>) : null}
-                    <RightPanelClose onClick={(e) => {
-                        this.hideRightPanel(e);
-                    }}/>
-                    <div className="crm-right-panel-content">
+                    <BasicInfo isRepeat={this.props.isRepeat}
+                               isMerge={true}
+                               curCustomer={this.state.selectedCustomer}
+                               refreshCustomerList={this.props.refreshCustomerList}
+                               updateMergeCustomer={this.updateMergeCustomer}
+                               handleFocusCustomer={this.props.handleFocusCustomer}
+                               setTabsContainerHeight={this.setTabsContainerHeight}
+                               showRightPanel={this.props.showRightPanel}
+                    />
+                    <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                         {this.state.selectedCustomer ? (
                             <Tabs
                                 defaultActiveKey="1"
@@ -500,15 +519,16 @@ var CrmRightMergePanel = React.createClass({
                                 onChange={this.changeActiveKey}
                             >
                                 <TabPane
-                                    tab={Intl.get("user.basic.info", "基本资料")}
+                                    tab={Intl.get("crm.basic.overview", "概览")}
                                     key="1"
                                 >
                                     {this.state.activeKey == "1" ? (
-                                        <BasicData
+                                        <BasicOverview
                                             isMerge={true}
                                             curCustomer={this.state.selectedCustomer}
-                                            updateMergeCustomer={this.updateMergeCustomer}
                                             refreshCustomerList={this.props.refreshCustomerList}
+                                            updateMergeCustomer={this.updateMergeCustomer}
+                                            changeActiveKey={this.changeActiveKey}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -528,10 +548,34 @@ var CrmRightMergePanel = React.createClass({
                                     ) : null}
                                 </TabPane>
                                 <TabPane
-                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    tab={Intl.get("menu.trace", "跟进记录")}
                                     key="3"
                                 >
                                     {this.state.activeKey == "3" ? (
+                                        <CustomerRecord
+                                            isMerge={true}
+                                            curCustomer={this.state.selectedCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("crm.detail.user", "用户")}
+                                    key="4"
+                                >
+                                    {this.state.activeKey == "4" ? (
+                                        <CustomerUsers
+                                            isMerge={true}
+                                            curCustomer={this.state.selectedCustomer}
+                                            refreshCustomerList={this.props.refreshCustomerList}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={Intl.get("user.apply.detail.order", "订单")}
+                                    key="5"
+                                >
+                                    {this.state.activeKey == "5" ? (
                                         <Order
                                             isMerge={true}
                                             updateMergeCustomerOrder={this.updateMergeCustomerOrder}
@@ -544,10 +588,10 @@ var CrmRightMergePanel = React.createClass({
                                 </TabPane>
                                 <TabPane
                                     tab={Intl.get("crm.39", "动态")}
-                                    key="4"
+                                    key="6"
 
                                 >
-                                    {this.state.activeKey == "4" ? (
+                                    {this.state.activeKey == "6" ? (
                                         <Dynamic
                                             isMerge={true}
                                             currentId={this.state.selectedCustomer.id}
@@ -556,23 +600,12 @@ var CrmRightMergePanel = React.createClass({
                                 </TabPane>
                                 <TabPane
                                     tab={Intl.get("crm.right.schedule", "联系计划")}
-                                    key="5"
+                                    key="7"
                                 >
-                                    {this.state.activeKey == "5" ? (
+                                    {this.state.activeKey == "7" ? (
                                         <CrmSchedule
                                             isMerge={true}
                                             curCustomer={this.state.selectedCustomer}
-                                        />
-                                    ) : null}
-                                </TabPane>
-                                <TabPane
-                                    tab={Intl.get("menu.trace", "跟进记录")}
-                                    key="6"
-                                >
-                                    {this.state.activeKey == "6" ? (
-                                        <CustomerRecord
-                                            curCustomer={this.state.selectedCustomer}
-                                            refreshCustomerList={this.props.refreshCustomerList}
                                         />
                                     ) : null}
                                 </TabPane>

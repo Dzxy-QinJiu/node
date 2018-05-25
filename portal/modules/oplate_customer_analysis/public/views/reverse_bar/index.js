@@ -13,6 +13,7 @@ var textWidth = require("../../../../../public/sources/utils/measure-text");
 var COLOR_MULTIPLE = ['#1790cf','#1bb2d8'];
 var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-csstext");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
     echartInstance : null,
@@ -54,7 +55,7 @@ var BarChart = React.createClass({
             text = text === 'unknown' ? Intl.get("user.unknown", "未知"):text;
             return textWidth.measureTextWidth(text , 12);
         });
-        var maxMargin = _.max(marginList) + 10;
+        var maxMargin = _.max(marginList) + 20;
         return maxMargin;
     },
     getCategorys : function() {
@@ -212,9 +213,10 @@ var BarChart = React.createClass({
         return option;
     },
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.clear();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.clear();
+            });
         }
         if(this.props.resultType === 'loading') {
             return;
@@ -224,7 +226,9 @@ var BarChart = React.createClass({
         this.echartInstance.setOption(options,true);
         if(!this.props.list.length) {
             if(this.echartInstance) {
-                try {_this.echartInstance.dispose();} catch(e){}
+                packageTry(() => {
+                    this.echartInstance.dispose();
+                });
                 this.echartInstance = null;
             }
             $(this.refs.chart).html("<div class='nodata'>" + Intl.get("common.no.data", "暂无数据") + "</div>");
@@ -248,8 +252,9 @@ var BarChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },

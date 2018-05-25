@@ -28,7 +28,7 @@ const SalesRoleManage = React.createClass({
             deleteErrMsg: '',
             //正在编辑客户容量的角色
             isEdittingItem: '',
-            updateRoleCustomerNum:'',//要更新某个销售角色的客户容量
+            updateRoleCustomerNum:0,//要更新某个销售角色的客户容量,默认值0
             addRoleCustomerNum:'',//某个添加角色的客户容量
             isUpdateloading: false,
             updateErrMsg:'',//修改客户容量失败后的错误信息
@@ -123,7 +123,16 @@ const SalesRoleManage = React.createClass({
         e.preventDefault();
         //输入的销售角色名称去左右空格
         let role = $.trim(this.refs.addSalesRole.value);
-        if (!role) {
+        if (role) {
+          //看列表中是否有和输入的名称一样的名字
+          var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
+          if (targetItem){
+              this.setState({
+                  addErrMsg: Intl.get("config.sales.role.has.repeat", "该销售角色名称已存在")
+              });
+              return;
+          }
+        }else{
             return;
         }
         //输入的客户容量
@@ -214,10 +223,17 @@ const SalesRoleManage = React.createClass({
     cancelEditCustomerNum: function () {
        this.setState({
            isEdittingItem: '',
-           updateErrMsg: ''
+           updateErrMsg: '',
+           updateRoleCustomerNum:0
        });
     },
     submitUpdateCustomerNum: function (item) {
+        if (this.state.updateRoleCustomerNum == 0){
+            this.setState({
+                isEdittingItem: ''
+            });
+            return;
+        }
         var updateObj = {
             id: item.id,
             customer_num: this.state.updateRoleCustomerNum
@@ -285,7 +301,7 @@ const SalesRoleManage = React.createClass({
                                     </span>
                                     <div className="customer-container">
                                         {Intl.get("sales.role.config.customer.num","最大客户数")}:
-                                        {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange}/>
+                                        {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange} min={1}/>
                                         {this.state.isUpdateloading ?<Icon type="loading"/> : <span>
                                                        <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
                                         </span>}
@@ -347,7 +363,7 @@ const SalesRoleManage = React.createClass({
                             <span className="name-label">
                                {Intl.get("sales.role.config.customer.num", "最大客户数")}:
                             </span>
-                            <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum}/>
+                            <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum} min={1}/>
                             <button className="btn mb-add-button" type="submit"
                                     disabled={this.state.isAddloading ? "disabled" : ""}>
                                 {Intl.get("common.add", "添加")}
@@ -363,4 +379,4 @@ const SalesRoleManage = React.createClass({
     }
 });
 
-module.exports = SalesRoleManage;
+module.exports = SalesRoleManage;

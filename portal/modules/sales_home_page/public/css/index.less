@@ -179,11 +179,6 @@
                 font-size: 26px;
                 font-weight: bold;
               }
-              .add-data-style {
-                .total-data-desc {
-                  font-size: 14px;
-                }
-              }
               .phone-total-count {
                 float: right;
               }
@@ -241,8 +236,8 @@
               span.customer-stage-number {
                 cursor: pointer;
               }
-            }
-            .transfer-customer-container, 
+            }            
+            .transfer-customer-container,             
             .stage-change-customer-container {
               background-color: white;              
               margin-bottom: 30px;
@@ -282,6 +277,9 @@
                 }
               }              
             }
+            .new-customer-statistic {
+              height: 140px;
+            }
 
           }
           .chart-holder {
@@ -318,6 +316,11 @@
                 padding-left: 5px;
               }
             }
+          }
+          .callback-table-block{
+            position: relative;
+            float: left;
+            width: 100%;
           }
           .antc-table {
             //隐藏table自带的排序按钮
@@ -363,7 +366,9 @@
             margin-bottom: 12px;
           }
         }
-
+        .hide-body {
+          visibility: hidden;
+        }
       }
       @media (max-width: 992px) {
         .statistic-data-analysis {

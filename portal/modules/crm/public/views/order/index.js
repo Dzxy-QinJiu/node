@@ -12,19 +12,17 @@ import Trace from "LIB_DIR/trace";
 import {RightPanel} from  "CMP_DIR/rightPanel";
 import Spinner from "CMP_DIR/spinner";
 import ApplyOpenAppPanel from "MOD_DIR/app_user_manage/public/views/v2/apply-user";
-import CrmUserApplyForm from "./crm-user-apply-form";
+import CrmUserApplyForm from "../users/crm-user-apply-form";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import classNames from "classnames";
-
+import NoDataTip from "../components/no-data-tip";
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
-    RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
-    RIGHT_PANEL_PADDING_BOTTOM: 20,//右侧面板底部padding
-    CONTACT_LIST_MARGIN_BOTTOM: 20,//列表距离底部margin
-    RIGHT_PANEL_TAB_HEIGHT: 36,//右侧面板tab高度
-    RIGHT_PANEL_TAB_MARGIN_BOTTOM: 17,//右侧面板tab的margin
-    CONTACT_ADD_BUTTON_HEIGHT: 34  //添加按钮高度
+    TOP_NAV_HEIGHT: 36 + 8,//36：头部导航的高度，8：导航的下边距
+    MARGIN_BOTTOM: 8, //跟进记录页的下边距
+    ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
+    TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
 //用户类型的转换对象
 const userTypeMap = {
@@ -56,10 +54,6 @@ const OrderIndex = React.createClass({
             OrderAction.getAppList();
             this.getOrderList(this.props.curCustomer, this.props.isMerge);
             OrderAction.getSysStageList();
-            if (!this.props.isMerge) {//合并客户时，不需要获取客户的用户列表
-                OrderAction.setPageNum(1);
-                setTimeout(() => this.getCrmUserList());
-            }
         },
         getOrderList: function (curCustomer, isMerge) {
             if (isMerge) {
@@ -80,10 +74,6 @@ const OrderIndex = React.createClass({
                 this.setState({curCustomer: nextProps.curCustomer});
                 setTimeout(() => {
                     this.getOrderList(nextProps.curCustomer, nextProps.isMerge);
-                    if (!nextProps.isMerge) {//合并客户时，不需要获取客户的用户列表
-                        OrderAction.setPageNum(1);
-                        this.getCrmUserList();
-                    }
                 });
             }
         },
@@ -92,19 +82,8 @@ const OrderIndex = React.createClass({
             OrderStore.unlisten(this.onChange);
         },
 
-        getCrmUserList: function () {
-            if (this.state.pageNum === 1) {
-                OrderAction.setCrmUsersLoading(true);
-            }
-            OrderAction.getCrmUserList({
-                customer_id: this.state.curCustomer.id,
-                page_num: this.state.pageNum,
-                page_size: this.state.pageSize
-            });
-        },
-
         showForm: function (id) {
-            var message = id ? "编辑订单":"添加订单";
+            var message = id ? "编辑订单" : "添加订单";
             Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn"), message);
             OrderAction.showForm(id);
         },
@@ -183,41 +162,6 @@ const OrderIndex = React.createClass({
         onChangeUserCheckBox: function (userId, e) {
             OrderAction.onChangeUserCheckBox({userId: userId, checked: e.target.checked});
         },
-        renderCrmUserList: function () {
-            if (this.state.isLoadingCrmUsers) {
-                return <Spinner />;
-            }
-            if (this.state.crmUsersErrorMsg) {
-                return (
-                    <div className="get-crm-users-error-tip">
-                        <Alert
-                            message={this.state.crmUsersErrorMsg}
-                            type="error"
-                            showIcon={true}
-                        />
-                    </div>);
-            }
-            let crmUserList = this.state.crmUserList;
-            if (_.isArray(crmUserList) && crmUserList.length) {
-                return crmUserList.map((userObj) => {
-                    let user = _.isObject(userObj) ? userObj.user : {};
-                    return (
-                        <div className="crm-user-item">
-                            <div className="crm-user-name">
-                                <Checkbox checked={user.checked}
-                                          onChange={this.onChangeUserCheckBox.bind(this, user.user_id)}>
-                                    {user.user_name}({user.nick_name})
-                                </Checkbox>
-                            </div>
-                            <div className="crm-user-apps">
-                                {this.getUserAppOptions(userObj)}
-                            </div>
-                        </div>
-                    );
-                });
-            }
-            return null;
-        },
         handleMenuClick: function (applyType) {
             let traceDescr = "";
             if (applyType === APPLY_TYPES.STOP_USE) {
@@ -237,61 +181,6 @@ const OrderIndex = React.createClass({
         getApplyBtnType: function (applyType) {
             return this.state.applyType === applyType ? "primary" : "";
         },
-        //获取申请下拉菜单
-        renderApplyBtns: function () {
-            let applyFlag = this.getApplyFlag();
-            //开通应用，只有选择用户后才可用
-            let openAppFlag = false;
-            let crmUserList = this.state.crmUserList;
-            if (_.isArray(crmUserList) && crmUserList.length) {
-                openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
-            }
-            return (
-                <div className="crm-user-apply-btns">
-                    <span className="crm-user-apply-label">{Intl.get("crm.109", "申请")}: </span>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
-                            disabled={!applyFlag}>
-                        {Intl.get("common.stop", "停用")}
-                    </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.DELAY)} disabled={!applyFlag}>
-                        {Intl.get("crm.user.delay", "延期")}
-                    </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.EDIT_PASSWORD)} disabled={!applyFlag}>
-                        {Intl.get("common.edit.password", "修改密码")}
-                    </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OTHER)} disabled={!applyFlag}>
-                        {Intl.get("crm.186", "其他")}
-                    </Button>
-                    <Button type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
-                        {Intl.get("user.app.open", "开通应用")}
-                    </Button>
-                </div>);
-        },
-        getApplyFlag: function () {
-            let crmUserList = this.state.crmUserList;
-            let flag = false;//申请按钮是否可用
-            if (_.isArray(crmUserList) && crmUserList.length) {
-                flag = _.some(crmUserList, userObj => {
-                    //有选择的用户
-                    if (userObj && userObj.user && userObj.user.checked) {
-                        return true;
-                    }
-                    //有选择的应用
-                    if (userObj && _.isArray(userObj.apps) && userObj.apps.length) {
-                        let checkedApp = _.find(userObj.apps, app => app.checked);
-                        if (checkedApp) {
-                            return true;
-                        }
-                    }
-                });
-            }
-            return flag;
-        },
         //发邮件使用的参数
         getEmailData: function (checkedUsers) {
             let email_customer_names = [];
@@ -309,71 +198,54 @@ const OrderIndex = React.createClass({
                 email_user_names: email_user_names.join('、')
             };
         },
-        closeRightPanel: function () {
-            OrderAction.onChangeApplyType("");
-        },
-        renderRightPanel: function () {
-            let rightPanelView = null;
-            if (this.state.applyType === APPLY_TYPES.OPEN_APP) {
-                let checkedUsers = _.filter(this.state.crmUserList, userObj => userObj.user && userObj.user.checked);
-                if (_.isArray(checkedUsers) && checkedUsers.length) {
-                    //发邮件使用的数据
-                    let emailData = this.getEmailData(checkedUsers);
-                    //应用列表
-                    var appList = this.state.appList.map((obj) => {
-                        return {
-                            client_id: obj.client_id,
-                            client_name: obj.client_name,
-                            client_image: obj.client_logo
-                        };
-                    });
-                    rightPanelView = (
-                        <ApplyOpenAppPanel
-                            appList={appList}
-                            users={checkedUsers}
-                            customerId={this.props.curCustomer.id}
-                            cancelApply={this.closeRightPanel}
-                            emailData={emailData}
-                        />
-                    );
-                }
-            }
-            return rightPanelView;
-        },
+
         render: function () {
             const _this = this;
             const appList = this.state.appList;
-            const curCustomer = this.props.curCustomer;
-            const userNum = curCustomer && curCustomer.app_user_ids && curCustomer.app_user_ids.length;
-            let divHeight = $(window).height() -
-                LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP - //右侧面板顶部padding
-                LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_BOTTOM - //右侧面板底部padding
-                LAYOUT_CONSTANTS.CONTACT_LIST_MARGIN_BOTTOM -//列表距离底部margin
-                LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_HEIGHT -//右侧面板tab高度
-                LAYOUT_CONSTANTS.RIGHT_PANEL_TAB_MARGIN_BOTTOM;//右侧面板tab的margin
-
+            let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
+            //减头部的客户基本信息高度
+            divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
+            //减添加订单面版的高度
+            if (this.state.isShowAddContactForm) {
+                divHeight -= LAYOUT_CONSTANTS.ADD_ORDER_HEIGHHT;
+            } else {//减共xxx条的高度
+                divHeight -= LAYOUT_CONSTANTS.TOP_TOTAL_HEIGHT;
+            }
             //合并面板，去掉客户选择框的高度
             if (this.props.isMerge) {
                 divHeight -= LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;
-            } else {
-                //添加按钮高度
-                divHeight -= LAYOUT_CONSTANTS.CONTACT_ADD_BUTTON_HEIGHT;
             }
             let isApplyButtonShow = false;
             if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
                 isApplyButtonShow = true;
             }
-            //查找是否有添加或编辑面板展示
-            const hasFormShow = _.some(this.state.orderList, order => order.isEdit);
+
+            let orderListLength = _.isArray(this.state.orderList) ? this.state.orderList.length : 0;
             return (
                 <div className="order-container" data-tracename="订单页面">
+                    {this.state.isAddFormShow ? null : (<div className="order-top-block">
+                            <span className="total-tip">
+                                <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
+                                                            values={{"n": orderListLength + ""}}/>
+                            </span>
+                        {this.props.isMerge ? null : (
+                            <span className="iconfont icon-add" title={Intl.get("crm.161", "添加订单")}
+                                  onClick={this.showForm.bind(this, "")}/>
+                        )}
+                    </div>)
+                    }
                     <div className="order-container-scroll" style={{height: divHeight}} ref="scrollOrderList">
-                        <GeminiScrollbar className="geminiScrollbar-vertical"
-                                         listenScrollBottom={this.state.listenScrollBottom}
-                                         handleScrollBottom={this.getCrmUserList.bind(this)}
-                                         itemCssSelector=".crm-user-list-container .crm-user-list>.crm-user-item"
-                        >
-                            {this.state.orderListLoading ? (<Spinner />) : (this.state.orderList.map(function (order, i) {
+                        <GeminiScrollbar>
+                            {this.state.isAddFormShow ? (
+                                <OrderForm order={{}}
+                                           stageList={_this.state.stageList}
+                                           appList={appList}
+                                           isMerge={_this.props.isMerge}
+                                           customerId={_this.props.curCustomer.id}
+                                           refreshCustomerList={_this.props.refreshCustomerList}
+                                           updateMergeCustomerOrder={_this.props.updateMergeCustomerOrder}/>) : null}
+                            {this.state.orderListLoading ? (
+                                <Spinner />) : _.isArray(this.state.orderList) && this.state.orderList.length ? (this.state.orderList.map(function (order, i) {
                                 return (
                                     order.isEdit ?
                                         (<OrderForm key={i}
@@ -400,36 +272,10 @@ const OrderIndex = React.createClass({
                                                     onChange={_this.onChange}
                                                     order={order}/>)
                                 );
-                            }))}
-                            {userNum ? (
-                                <div className="crm-user-list-container">
-                                    <div className="user-number">{Intl.get("crm.158", "用户数")}：{userNum}
-                                        {isApplyButtonShow ? this.renderApplyBtns()
-                                            : null}
-                                    </div>
-                                    {this.state.applyType && this.state.applyType !== APPLY_TYPES.OPEN_APP ? (
-                                        <CrmUserApplyForm applyType={this.state.applyType} APPLY_TYPES={APPLY_TYPES}
-                                                          closeApplyPanel={this.closeRightPanel}
-                                                          crmUserList={this.state.crmUserList}/>) : null}
-                                    <ul className="crm-user-list">
-                                        {this.renderCrmUserList()}
-                                    </ul>
-                                </div>
-                            ) : null}
+                            })) : <NoDataTip tipContent={Intl.get("common.no.data", "暂无数据")}/>
+                            }
                         </GeminiScrollbar>
                     </div>
-                    {this.props.isMerge || hasFormShow ? null : (
-                        // 正在加载订单列表或有订单列表展示或有用户列表展示时，添加订单按钮在底部显示
-                        <div className={this.state.orderListLoading || this.state.orderList.length || userNum ?
-                            "crm-right-panel-addbtn" : "crm-right-panel-addbtn go-top"}
-                             onClick={this.showForm.bind(this, "")}>
-                            <Icon type="plus"/><span><ReactIntl.FormattedMessage id="crm.161" defaultMessage="添加订单"/></span>
-                        </div>)}
-
-                    <RightPanel className="crm_user_apply_panel white-space-nowrap"
-                                showFlag={this.state.applyType && this.state.applyType === APPLY_TYPES.OPEN_APP}>
-                        {this.renderRightPanel()}
-                    </RightPanel>
                 </div>
             );
         }

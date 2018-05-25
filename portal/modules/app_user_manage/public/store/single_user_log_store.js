@@ -42,6 +42,11 @@ SingleUserLogStore.prototype.dismiss = function() {
     this.resetState();
 };
 
+//展开关闭操作详情
+SingleUserLogStore.prototype.toggleOperateDetail = function(userLog) {
+    let curLog = _.find(this.auditLogList, userLogInformation => userLogInformation.sort_id === userLog.sort_id);
+    curLog.detailShow = !curLog.detailShow;
+};
 SingleUserLogStore.prototype.getLogsBySearch = function() {
     this.logInitialState();
 };

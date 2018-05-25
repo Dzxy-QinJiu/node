@@ -8,7 +8,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var classNames = require("classnames");
 import CustomerRepeat from "MOD_DIR/crm/public/views/customer-repeat";
-import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE,CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
+import {ALL_LISTS_TYPE, ALL_CUSTOMER_LISTS_TYPE, CALL_TYPE_OPTION} from "PUB_DIR/sources/utils/consts";
 import Trace from "LIB_DIR/trace";
 import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
@@ -121,6 +121,8 @@ var SalesHomePage = React.createClass({
         this.getAppIlleageLogin();
         //获取重复客户列表
         this.getRepeatCustomerList();
+        //获取呼入未接的电话
+        this.getMissCallTypeList();
         //获取十天内即将到期的试用用户
         var todayTimeRange = TimeStampUtil.getTodayTimeStamp();
         SalesHomeAction.getExpireCustomer({
@@ -142,11 +144,26 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getExpireCustomer({
             tags: Intl.get("common.trial.user", "试用用户"),
             start_time: todayTimeRange.start_time - 10 * oplateConsts.ONE_DAY_TIME_RANGE,
-            end_time: todayTimeRange.end_time -  oplateConsts.ONE_DAY_TIME_RANGE,
+            end_time: todayTimeRange.end_time - oplateConsts.ONE_DAY_TIME_RANGE,
             dataType: ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER
         });
         //获取新分配的客户
         this.getNewDistributeCustomer();
+    },
+    //获取呼入未接通的电话
+    getMissCallTypeList: function(lastId){
+        var constObj = {
+            page_size: this.state.page_size,
+            start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
+            //把今天0点作为判断是否过期的时间点
+            end_time: TimeStampUtil.getTodayTimeStamp().start_time,//今日早上的零点作为结束时间
+            status: false,//日程的状态，未完成的日程
+            type: "missed_call"
+        };
+        if (lastId) {
+            constObj.id = lastId;
+        }
+        SalesHomeAction.getScheduleList(constObj, "missed_call");
     },
     //获取最近登录的客户
     getRecentLoginCustomers: function (lastId) {
@@ -192,7 +209,7 @@ var SalesHomePage = React.createClass({
             start_time: this.state.start_time,
             end_time: this.state.end_time,
         };
-        SalesHomeAction.getScheduleList(constObj);
+        SalesHomeAction.getScheduleList(constObj, "today");
     },
     //停用客户登录
     getAppIlleageLogin: function (lastId) {
@@ -276,6 +293,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
                 this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
+                this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
                 break;
         }
     },
@@ -361,6 +381,9 @@ var SalesHomePage = React.createClass({
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
                 rightPanel = this.renderNewDistributeCustomer();
                 break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
+                break;
         }
         return rightPanel;
     },
@@ -415,14 +438,14 @@ var SalesHomePage = React.createClass({
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent: function (dataObj) {
         //加载中的样式
-        if (dataObj.loading && dataObj.curPage === 1){
+        if (dataObj.loading && dataObj.curPage === 1) {
             return (
                 <div className="load-content">
-                   <Spinner />
-                   <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
+                    <Spinner />
+                    <p className="abnornal-status-tip">{Intl.get("common.sales.frontpage.loading", "加载中")}</p>
                 </div>
             );
-        }else if (dataObj.errMsg){
+        } else if (dataObj.errMsg) {
             //加载完出错的样式
             return (
                 <div className="err-content">
@@ -430,7 +453,7 @@ var SalesHomePage = React.createClass({
                     <p className="abnornal-status-tip">{dataObj.errMsg}</p>
                 </div>
             );
-        }else if(!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length){
+        } else if (!dataObj.loading && !dataObj.errMsg && !dataObj.data.list.length) {
             //数据为空的样式
             return (
                 <div className="no-data">
@@ -438,7 +461,7 @@ var SalesHomePage = React.createClass({
                     <p className="abnornal-status-tip">{Intl.get("common.sales.data.no.data", "暂无此类信息")}</p>
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
     },
@@ -520,6 +543,33 @@ var SalesHomePage = React.createClass({
                     </GeminiScrollbar>
                 </div>
             );
+        }else if (scheduleType === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE){
+            //呼入未接通电话
+            var data =  this.state.missCallObj.data.list;
+            return (
+                <div className="today-expired-schedule" ref="tableWrap">
+                    {this.renderLoadingAndErrAndNodataContent(this.state.missCallObj)}
+                    <GeminiScrollbar
+                        handleScrollBottom={this.handleScrollBarBottom.bind(this, ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE)}
+                        listenScrollBottom={this.state.listenScrollBottom}>
+                        {_.map(data, (item) => {
+                            return (
+                                <ScheduleItem
+                                    scheduleType={ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE}
+                                    scheduleItemDetail={item}
+                                    isShowTopTitle={false}
+                                    isShowScheduleTimerange={false}
+                                    openCustomerDetail={this.openCustomerDetail}
+                                    callNumber={this.state.callNumber}
+                                    errMsg={this.state.errMsg}
+                                />
+                            );
+                        })}
+                    </GeminiScrollbar>
+                </div>
+            );
+
+
         }
     },
     afterHandleMessage: function (messageObj) {
@@ -527,31 +577,31 @@ var SalesHomePage = React.createClass({
     },
     renderExpiredCustomerContent: function (data) {
         return (
-                <GeminiScrollbar>
-                    {_.map(data, (item, index) => {
-                        if (_.isArray(item.customer_list) && item.customer_list.length) {
-                            return (
-                                <div className="expire-customer-item">
-                                    <div>
-                                        {_.map(item.customer_list, (willExpiredCustomer) => {
-                                            return (
-                                                <WillExpireItem
-                                                    expireItem={willExpiredCustomer}
-                                                    openCustomerDetail={this.openCustomerDetail}
-                                                    callNumber={this.state.callNumber}
-                                                    errMsg={this.state.errMsg}
-                                                    willExpiredTime={getRelativeTime(item.date)}
-                                                />
-                                            );
-                                        })}
-                                    </div>
+            <GeminiScrollbar>
+                {_.map(data, (item, index) => {
+                    if (_.isArray(item.customer_list) && item.customer_list.length) {
+                        return (
+                            <div className="expire-customer-item">
+                                <div>
+                                    {_.map(item.customer_list, (willExpiredCustomer) => {
+                                        return (
+                                            <WillExpireItem
+                                                expireItem={willExpiredCustomer}
+                                                openCustomerDetail={this.openCustomerDetail}
+                                                callNumber={this.state.callNumber}
+                                                errMsg={this.state.errMsg}
+                                                willExpiredTime={getRelativeTime(item.date)}
+                                            />
+                                        );
+                                    })}
                                 </div>
-                            );
-                        } else {
-                            return null;
-                        }
-                    })}
-                </GeminiScrollbar>
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })}
+            </GeminiScrollbar>
         );
 
     },
@@ -576,7 +626,7 @@ var SalesHomePage = React.createClass({
                     {this.renderExpiredCustomerContent(data)}
                 </div>
             );
-        }else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER){
+        } else if (type === ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER) {
             //近10天过期未处理试用客户
             data = this.state.hasExpiredTryCustomer.data.list;
             return (
@@ -620,7 +670,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="concerned-customer-container" ref="tableWrap">
                     {this.renderLoadingAndErrAndNodataContent(this.state.concernCustomerObj)}
-                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data,false)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN, data, false)}
                 </div>
             );
         } else if (type === ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN) {
@@ -629,7 +679,7 @@ var SalesHomePage = React.createClass({
             return (
                 <div className="app-illeage-container" ref="tableWrap">
                     {this.renderLoadingAndErrAndNodataContent(this.state.appIllegalObj)}
-                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data,false)}
+                    {this.renderFocusAndIlleagalAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN, data, false)}
                 </div>
             );
         } else if (type === ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER) {
@@ -676,6 +726,9 @@ var SalesHomePage = React.createClass({
                 break;
             case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
                 total = this.state.newDistributeCustomer.data.total;
+                break;
+            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+                total = this.state.missCallObj.data.total;
                 break;
         }
         return total;

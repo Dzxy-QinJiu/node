@@ -62,6 +62,8 @@ var crmRestApis = {
     callOut: '/rest/customer/v2/phone/call/ou',
     // 获取电话座机号
     getUserPhoneNumber: '/rest/base/v1/user/member/phoneorder',
+    //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
+    getCustomerLimit: '/rest/customer/v2/customer/limit/flag',
 };
 exports.urls = crmRestApis;
 
@@ -258,6 +260,9 @@ exports.queryCustomer = function (req, res, condition) {
             delete condition.term_fields;
         }
         queryObj.query = condition;
+        if (query && query.user_id) {
+            queryObj.query.user_id = query.user_id;
+        }
         queryObj.rang_params = JSON.parse(req.body.rangParams);
     }
     return restUtil.authRest.post(
@@ -312,6 +317,7 @@ exports.updateCustomer = function (req, res, newCustomer) {
             res: res
         }, newCustomer);
 };
+
 //转出客户的处理
 exports.transferCustomer = function (req, res, newCustomer) {
     return restUtil.authRest.put(
@@ -390,3 +396,13 @@ exports.getUserPhoneNumber = function (req, res, member_id) {
             res: res
         }, member_id);
 };
+//获取是否能继续添加客户
+exports.getCustomerLimit = function (req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getCustomerLimit,
+            req: req,
+            res: res
+        },  req.query);
+};
+

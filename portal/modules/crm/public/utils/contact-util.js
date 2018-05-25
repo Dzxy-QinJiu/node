@@ -24,10 +24,10 @@ exports.getEmptyViewContactObject = function () {
         },
         //联系方式的数组对象
         contactWayAddObj: {
-            phone: [],//添加“电话”联系方式
-            email: [],//添加“邮箱”联系方式
-            qq: [],//添加“qq”联系方式
-            weChat: []//添加“微信”联系方式
+            phone: [""],//添加“电话”联系方式
+            email: [""],//添加“邮箱”联系方式
+            qq: [""],//添加“qq”联系方式
+            weChat: [""]//添加“微信”联系方式
         }
     };
 };
@@ -45,10 +45,10 @@ exports.newViewContactObject = function (contact) {
         contact: contact,
         //联系方式的数组对象
         contactWayAddObj: {
-            phone: contact.phone ? contact.phone : [],//添加“电话”联系方式
-            email: contact.email ? contact.email : [],//添加“邮箱”联系方式
-            qq: contact.qq ? contact.qq : [],//添加“qq”联系方式
-            weChat: contact.weChat ? contact.weChat : []//添加“微信”联系方式
+            phone: contact.phone ? contact.phone : [""],//添加“电话”联系方式
+            email: contact.email ? contact.email : [""],//添加“邮箱”联系方式
+            qq: contact.qq ? contact.qq : [""],//添加“qq”联系方式
+            weChat: contact.weChat ? contact.weChat : [""]//添加“微信”联系方式
         }
     };
 

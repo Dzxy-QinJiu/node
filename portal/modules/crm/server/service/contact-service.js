@@ -31,29 +31,13 @@ exports.setDefault = function (req, res, id) {
 
 //修改联系人
 exports.updateContact = function (req, res, newContact) {
-    let emitter = new EventEmitter();
-    let editType = req.params.editType;
-    let promiseList = [];
-    switch (editType) {
-        case "phone"://只修改了电话
-            promiseList = [updateContactPhone(req, res, newContact)];
-            break;
-        case "no_phone"://修改了除电话外的其他信息
-            promiseList = [updateContact(req, res, newContact)];
-            break;
-        case "all"://电话和其他信息都有修改
-            promiseList = [updateContact(req, res, newContact), updateContactPhone(req, res, newContact)];
-            break;
-        default:
-            promiseList = [updateContact(req, res, newContact)];
-            break;
-    }
-    Promise.all(promiseList).then(function (resultList) {
-        emitter.emit("success", resultList);
-    }, function (errorMsg) {
-        emitter.emit("error", errorMsg);
-    });
-    return emitter;
+    let contactObj = JSON.parse(JSON.stringify(newContact));
+    return restUtil.authRest.put(
+        {
+            url: v2Url,
+            req: req,
+            res: res
+        }, contactObj);
 };
 
 //更新联系人

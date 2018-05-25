@@ -5,6 +5,7 @@ var echarts = require("echarts-eefung");
 var immutable = require("immutable");
 //macrons主题
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
+import { packageTry } from 'LIB_DIR/func';
 var PieChart = React.createClass({
     echartInstance : null,
 
@@ -20,8 +21,9 @@ var PieChart = React.createClass({
     },
     componentWillUnmount : function() {
         if(this.echartInstance) {
-            var _this = this;
-            try {_this.echartInstance.dispose();}catch(e){}
+            packageTry(() => {
+                this.echartInstance.dispose();
+            });
             this.echartInstance = null;
         }
     },
@@ -37,9 +39,10 @@ var PieChart = React.createClass({
     },
 
     renderChart : function() {
-        var _this = this;
         if(this.echartInstance) {
-            try {_this.echartInstance.clear();} catch(e){}
+            packageTry(() => {
+                this.echartInstance.clear();
+            });
         }
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
         var options = this.getEchartOptions();
@@ -51,7 +54,7 @@ var PieChart = React.createClass({
         return legend.map((legendName,idx) => {
             return {
                 name : legendName,
-                value : list[idx].count  // 注意：饼图中，value是key
+                value : list[idx].num  // 注意：饼图中，value是key
             };
         });
     },
@@ -74,6 +77,11 @@ var PieChart = React.createClass({
                     radius : '55%',
                     center: ['50%', '60%'],
                     data: this.getSeries(),
+                    label : {
+                        normal : {
+                            formatter : "{c}"
+                        }
+                    },
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,

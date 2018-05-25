@@ -120,7 +120,19 @@ var CRMAddForm = React.createClass({
                 } else {
                     //先填写电话后编辑客户名或行业等带验证的字段时，电话内容会丢失，这里再加一下
                     this.state.formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, "");
-                    this.addCustomer();
+                    //导入客户前先校验，是不是超过了本人的客户上限
+                    let member_id = userData.getUserData().user_id;
+                    CrmAction.getCustomerLimit({member_id:member_id,num: 1}, (result)=>{
+                        if (_.isNumber(result)){
+                            if (result == 0){
+                                //可以添加
+                                this.addCustomer();
+                            }else if(result > 0){
+                                //不可以添加
+                                message.warn(Intl.get("crm.should.add.customer", "您拥有的客户已达到上限，请不要再添加客户了"));
+                            }
+                        }
+                    });
                 }
             });
         });

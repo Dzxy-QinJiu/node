@@ -28,6 +28,24 @@ SalesHomeStore.prototype.setInitState = function () {
     this.salesPhoneList = [];//销售-电话列表
     this.salesUserList = [];//销售-用户列表
     this.salesUserData = [];//销售-用户列表数据源
+    this.callBackRecord = {
+        //是否加载中
+        isLoading: true,
+        //一页多少条
+        pageSize: 20,
+        //当前第几页
+        page: 1,
+        //总共多少条
+        total: 0,
+        //是否监听下拉加载
+        listenScrollBottom: true,
+        //数据列表
+        dataList: [],
+        //排序字段
+        sortField: 'call_date',
+        //排序方向
+        sortOrder: 'descend'
+    }; // 回访列表
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
     this.resetSalesTeamMembersObj();
@@ -40,12 +58,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
-    this.emailEnable = true;//该用户邮箱是否已激活 默认值 true 表示邮箱已激活，
-    this.email = "";//该用户的邮箱地址
-    this.getWebConfigStatus = "";//获取个人配置的状态
-    this.getWebConfigObj = {};//个人配置信息
     this.setWebConfigStatus = "";//设置个人配置的状态
-    this.hasNoEmail = false;//此账号是否有邮箱
     this.salesCallStatus = {};//各销售对应的状态
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -61,6 +74,30 @@ SalesHomeStore.prototype.setInitState = function () {
     };
     //统计团队内成员个数的列表
     this.teamMemberCountList = [];
+    this.emailShowObj = {
+        isShowActiveEmail : false,  //是否展示邮箱激活提示
+    };
+};
+// 重置回访记录列表状态
+SalesHomeStore.prototype.resetCallBackRecord = function () {
+    this.callBackRecord = {
+        //是否加载中
+        isLoading: true,
+        //一页多少条
+        pageSize: 20,
+        //当前第几页
+        page: 1,
+        //总共多少条
+        total: 0,
+        //是否监听下拉加载
+        listenScrollBottom: true,
+        //数据列表
+        dataList: [],
+        //排序字段
+        sortField: 'call_date',
+        //排序方向
+        sortOrder: 'descend'
+    };
 };
 // 获取通话总次数、总时长TOP10的数据
 SalesHomeStore.prototype.getCallTotalList = function (dataObj) {
@@ -420,7 +457,6 @@ SalesHomeStore.prototype.getUserTotal = function (result) {
     }
 };
 
-
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function (type) {
     switch (type) {
@@ -601,35 +637,10 @@ SalesHomeStore.prototype.getExpireUser = function (data) {
         this.expireUserLists = {};
     }
 };
-//获取用户的个人信息
-SalesHomeStore.prototype.getUserInfo = function (userInfo) {
-    if (userInfo) {
-        this.email = userInfo.email || "";
-        if (!this.email) {
-            this.hasNoEmail = true;
-        }
-        if (userInfo.emailEnable) {
-            //邮箱已激活
-            this.emailEnable = true;
-        } else {
-            //邮箱未激活
-            this.emailEnable = false;
-        }
-    }
-};
-//获取个人信息配置
-SalesHomeStore.prototype.getWebsiteConfig = function (userInfo) {
-    if (userInfo.loading) {
-        this.getWebConfigStatus = "loading";
-        this.getWebConfigObj = {};
-    } else if (userInfo.error) {
-        //获取错误的情况
-        this.getWebConfigStatus = "error";
-        this.getWebConfigObj = {};
-    } else {
-        //获取正确的情况
-        this.getWebConfigObj = userInfo.resData;
-        this.getWebConfigStatus = "";
+//是否展示邮箱激活的提示
+SalesHomeStore.prototype.getShowActiveEmailObj = function (result) {
+    if (_.isObject(result)){
+        this.emailShowObj = result;
     }
 };
 //设置个人信息配置
@@ -638,4 +649,40 @@ SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
         this.setWebConfigStatus = "loading";
     }
 };
+// 获取回访列表
+SalesHomeStore.prototype.getCallBackList = function (result) {
+    let newData = result.resData;
+    let callBackRecord = this.callBackRecord;
+    callBackRecord.isLoading = result.loading;
+    if (callBackRecord.page === 1) {
+        callBackRecord.dataList = [];
+    }
+    if (result.loading) {
+        result.errorMsg = '';
+    } else {
+        if (result.error) {
+            callBackRecord.errorMsg = result.errorMsg || Intl.get("call.record.get.failed", "获取通话记录失败");
+        } else {
+            callBackRecord.errorMsg = '';
+            callBackRecord.total = newData.total;
+            if (newData.result) {
+                let dataList = newData.result;
+                if (!_.isArray(dataList)) {
+                    dataList = [];
+                }
+                // 累加
+                callBackRecord.dataList = callBackRecord.dataList.concat(dataList);
+                // 页数加1
+                callBackRecord.page++;
+            }
+            //是否监听下拉加载的处理
+            if (_.isArray(callBackRecord.dataList) && callBackRecord.dataList.length < callBackRecord.total) {
+                callBackRecord.listenScrollBottom = true;
+            } else {
+                callBackRecord.listenScrollBottom = false;
+            }
+        }
+    }
+};
+
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');

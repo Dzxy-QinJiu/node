@@ -48,9 +48,7 @@ class ContactItem extends React.Component {
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
-                        phoneNum: phoneNumber.replace('-', ''),
                         contact: contactName,
-                        customerId: customerId,//客户基本信息
                     }
                 );
                 let reqData = {

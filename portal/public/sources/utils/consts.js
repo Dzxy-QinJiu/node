@@ -73,6 +73,7 @@ export const SELECT_FULL_OPTIONS = [
 ];
 export const clueSourceArray = [Intl.get("crm.sales.clue.baidu", "百度搜索"), Intl.get("crm.sales.clue.weibo", "微博推广"), Intl.get("crm.sales.clue.customer.recommend", "客户推荐")];//线索来源
 export const accessChannelArray = [Intl.get("crm.sales.clue.phone", "400电话"), Intl.get("crm.sales.clue.qq", "营销QQ")];//接入渠道
+export const clueClassifyArray = [Intl.get("sales.home.customer", "客户"), Intl.get("clue.customer.classify.agend","代理商"),Intl.get("clue.customer.classify.search","学术研究")];//线索分类
 //销售团队中角色对应的颜色值（参照echart的颜色列表）
 export const COLOR_LIST = [
     "#33a3dc",
@@ -117,7 +118,8 @@ export const ALL_LISTS_TYPE = {
     CONCERNED_CUSTOMER_LOGIN: "concerCustomerLogin",//关注客户登录
     RECENT_LOGIN_CUSTOMER: "recent_login_customer",//最近登录的客户
     REPEAT_CUSTOMER: "repeat_customer",//重复客户
-    NEW_DISTRIBUTE_CUSTOMER: "new_distribute_customer"//新分配的客户
+    NEW_DISTRIBUTE_CUSTOMER: "new_distribute_customer",//新分配的客户
+    HAS_NO_CONNECTED_PHONE: "has_no_connected_phone",//你有未接听的来电
 };
 export const ALL_CUSTOMER_LISTS_TYPE = [
     {value: ALL_LISTS_TYPE.SCHEDULE_TODAY, name: Intl.get("sales.frontpage.will.contact.today", "今日待联系")},//今日计划联系日程列表
@@ -144,7 +146,12 @@ export const ALL_CUSTOMER_LISTS_TYPE = [
     {
         value: ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER,
         name: Intl.get("sales.frontpage.new.distribute.customer", "新分配但未联系的客户")
-    }
+    },
+    {
+        value: ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE,
+        name: Intl.get("sales.frontpage.has.no.conneted", "您有电话未接听")
+    },
+
 ];
 
 //处理 或者未处理

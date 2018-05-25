@@ -96,11 +96,24 @@ exports.editContact = function (req, res) {
         email: email,
         def_contancts: def_contancts
     };
-
-    contactService.updateContact(req, res, contact)
-        .on("success", function (data) {
-            res.json(contact);
-        }).on("error", function (err) {
+    let editType = req.params.editType;
+    switch (editType) {
+        case "phone"://只修改了电话
+            contact = {
+                customer_id: customer_id,
+                id: id,
+                phone: phone
+            };
+            break;
+        case "no_phone"://修改了除电话外的其他信息
+            delete contact.phone;
+            break;
+        case "all"://电话和其他信息都有修改
+            break;
+    }
+    contactService.updateContact(req, res, contact).on("success", function (data) {
+        res.status(200).json(contact);
+    }).on("error", function (err) {
         res.status(500).json(err.message);
     });
 };

@@ -4,7 +4,7 @@ const Validator = Validation.Validator;
  * Created by wangliping on 2017/8/23.
  * 添加销售线索面板
  */
-import {Icon, Form, Input, Select, message, DatePicker} from "antd";
+import { Form, Input, Select, message, DatePicker} from "antd";
 const FormItem = Form.Item;
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from "CMP_DIR/rightPanel";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
@@ -13,11 +13,8 @@ import AlertTimer from "CMP_DIR/alert-timer";
 import Spinner from "CMP_DIR/spinner";
 import PhoneInput from "CMP_DIR/phone-input";
 import {nameRegex} from "PUB_DIR/sources/utils/consts";
-import clueCustomerAjax from "../ajax/clue-customer-ajax";
 import ajax from "../../../crm/common/ajax";
 const routes = require("../../../crm/common/route");
-import routeList from "../../../common/route";
-import commonAjax from "../../../common/ajax";
 import {checkCustomerName,checkEmail} from "../utils/clue-customer-utils";
 import AssignClueAndSelectCustomer from "./assign-clue-and-select-customer";
 var clueCustomerAction = require("../action/clue-customer-action");
@@ -34,6 +31,7 @@ const SalesClueAddForm = React.createClass({
                 phone: {},//联系电话
                 email: {},//邮箱
                 qq: {},//QQ
+                weChat:{},//微信
                 clue_source: {},//线索来源
                 access_channel: {},//接入渠道
                 source: {},//线索描述
@@ -45,6 +43,7 @@ const SalesClueAddForm = React.createClass({
                 phone: defalutData.phone || "",//联系电话
                 email: defalutData.email || "",//邮箱
                 qq: defalutData.qq || "",//QQ
+                weChat:defalutData.weChat || "",//微信
                 clue_source: defalutData.clue_source || "",//线索来源
                 access_channel: defalutData.access_channel || "",//接入渠道
                 source: "",//线索描述
@@ -60,45 +59,48 @@ const SalesClueAddForm = React.createClass({
             saveMsg: "",
             saveResult: "",
             isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
-            newAddClue: {}//新增加的线索
+            newAddClue: {},//新增加的线索
+            clueNameExist: false,//线索名称是否存在
+            clueCustomerCheckErrMsg:""//线索名称校验失败
         };
     },
-
-    //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
-    autoFillGeoInfo (customerName) {
-        const route = _.find(routeList, route => route.handler === "getGeoInfo");
-
-        const arg = {
-            url: route.path,
-            query: {keywords: customerName}
-        };
-
-        commonAjax(arg).then(result => {
-            if (_.isEmpty(result)) return;
-            this.state.formData.address = result.address;
-            this.state.formData.location = result.location;
-            this.state.formData.province = result.pname;
-            this.state.formData.city = result.cityname;
-            this.state.formData.county = result.adname;
-            this.state.formData.phone = result.tel;
-            this.setState(this.state);
-        });
-    },
-    //根据客户名获取客户的行政级别并填充到对应字段上
-    autoFillAdministrativeLevel (customerName) {
-        clueCustomerAjax.getAdministrativeLevel({name: customerName}).then(result => {
-            if (_.isEmpty(result)) return;
-            this.state.formData.administrative_level = result.level > 0 ? result.level + '' : '';
-            this.setState({formData: this.state.formData});
-        });
-    },
-    //通过客户名自动填充的内容
-    autoFillContentByName(){
+    //验证客户名是否重复
+    checkOnlyClueCustomerName(){
         let customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
-            this.autoFillGeoInfo(customerName);
-            this.autoFillAdministrativeLevel(customerName);
+            clueCustomerAction.checkOnlyClueName(customerName, (data)=>{
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    this.setState({
+                        clueNameExist: false,
+                        clueCustomerCheckErrMsg: data
+                    });
+                } else {
+                    if (_.isObject(data) && data.result == "true") {
+                        this.setState({
+                            clueNameExist: false,
+                            clueCustomerCheckErrMsg: ''
+                        });
+                    } else {
+                        //已存在
+                        this.setState({
+                            clueNameExist: true,
+                            clueCustomerCheckErrMsg: ''
+                        });
+                    }
+                }
+
+            });
+        }
+    },
+    renderCheckClueNameMsg: function () {
+        if (this.state.clueNameExist) {
+            return (<div className="clue-name-repeat">{Intl.get("clue.customer.check.repeat", "该线索名称已存在")}</div>);
+        } else if (this.state.clueCustomerCheckErrMsg) {
+            return (<div className="clue-name-errmsg">{Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败")}</div>);
+        } else {
+            return "";
         }
     },
     getSubmitObj(){
@@ -134,6 +136,9 @@ const SalesClueAddForm = React.createClass({
         if (formData.qq) {
             contact.qq = [$.trim(formData.qq)];
         }
+        if (formData.weChat){
+            contact.weChat = [$.trim(formData.weChat)];
+        }
         submitObj.contacts = [contact];
         return submitObj;
     },
@@ -145,6 +150,9 @@ const SalesClueAddForm = React.createClass({
         validation.validate(valid => {
             //验证电话是否通过验证
             this.phoneInputRef.props.form.validateFields({force: true}, (errors, values) => {
+                if (this.state.clueNameExist || this.state.clueCustomerCheckErrMsg) {
+                    valid = false;
+                }
                 if (!valid || errors) {
                     return;
                 } else {
@@ -163,12 +171,15 @@ const SalesClueAddForm = React.createClass({
                                 newAddClue: data.result
                             });
                             clueCustomerAction.afterAddSalesClue(data.result);
-                            //如果线索来源或者接入渠道加入新的类型
+                            //如果线索来源或者接入渠道,线索类型加入新的类型
                             if (submitObj.clue_source && !_.contains(this.props.clueSourceArray,submitObj.clue_source)){
                                 _.isFunction(this.props.updateClueSource) && this.props.updateClueSource(submitObj.clue_source);
                             }
                             if (submitObj.access_channel && !_.contains(this.props.accessChannelArray,submitObj.access_channel)){
                                 _.isFunction(this.props.updateClueChannel) && this.props.updateClueChannel(submitObj.access_channel);
+                            }
+                            if (submitObj.clue_classify && !_.contains(this.props.clueClassifyArray,submitObj.clue_classify)){
+                                _.isFunction(this.props.updateClueClassify) && this.props.updateClueClassify(submitObj.clue_classify);
                             }
                             //线索客户添加成功后的回调
                             _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
@@ -229,8 +240,8 @@ const SalesClueAddForm = React.createClass({
                         }
                     });
                 } else {
-                    if (!this.state.formData.qq && !this.state.formData.email) {
-                        callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ必填一项")));
+                    if (!this.state.formData.qq && !this.state.formData.email && !this.state.formData.weChat) {
+                        callback(new Error(Intl.get("crm.clue.require.one", "电话、邮箱、QQ、微信必填一项")));
                     } else {
                         callback();
                     }
@@ -275,14 +286,15 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
+                                           className={this.state.clueNameExist||this.state.clueCustomerCheckErrMsg?"input-red-border":""}
                                            placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
                                            value={formData.name}
-                                           onBlur={this.autoFillContentByName}
+                                           onBlur={this.checkOnlyClueCustomerName}
                                            onChange={this.setField.bind(this, 'name')}
                                     />
                                 </Validator>
                             </FormItem>
-
+                            {this.renderCheckClueNameMsg()}
                             <FormItem
                                 label={Intl.get("call.record.contacts", "联系人")}
                                 labelCol={{span: 6}}
@@ -329,6 +341,17 @@ const SalesClueAddForm = React.createClass({
                                        onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
                                 />
                             </FormItem>
+                            <FormItem
+                                label={Intl.get("crm.58", "微信")}
+                                id="weChat"
+                                labelCol={{span: 6}}
+                                wrapperCol={{span: 18}}
+                            >
+                                <Input name="weChat" id="weChat" type="text" value={formData.weChat}
+                                       placeholder={Intl.get("member.input.wechat", "请输入微信号")}
+                                       onChange={this.setNeedPhoneValidateValue.bind(this, 'weChat')}
+                                />
+                            </FormItem>
 
                             <FormItem
                                 className="form-item-label"
@@ -360,13 +383,33 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Select combobox
                                         filterOption={false}
-                                        searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入线索接入渠道")}
+                                        searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
                                         name="access_channel"
                                         onChange={this.setField.bind(this, 'access_channel')}
                                         value={formData.access_channel}
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
+                                            return (<Option key={idx} value={source}>{source}</Option>);
+                                        }) : null
+                                    }
+                                </Select>
+                            </FormItem>
+                            <FormItem
+                                className="form-item-label"
+                                label={Intl.get("clue.customer.classify","线索分类")}
+                                labelCol={{span: 6}}
+                                wrapperCol={{span: 18}}
+                            >
+                                <Select combobox
+                                        filterOption={false}
+                                        searchPlaceholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
+                                        name="access_channel"
+                                        onChange={this.setField.bind(this, 'clue_classify')}
+                                        value={formData.clue_classify}
+                                >
+                                    {_.isArray(this.props.clueClassifyArray) ?
+                                        this.props.clueClassifyArray.map((source, idx) => {
                                             return (<Option key={idx} value={source}>{source}</Option>);
                                         }) : null
                                     }
@@ -424,7 +467,7 @@ const SalesClueAddForm = React.createClass({
 
     render() {
         return (
-            <RightPanel showFlag={true} data-tracename="添加线索客户">
+            <RightPanel showFlag={true} data-tracename="添加线索客户" className="sales-clue-add-container">
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加销售线索面板"/>
                 {this.state.isShowAssignAndRelate ? this.renderAssignAndRelate() : this.renderAddForm()}
             </RightPanel>

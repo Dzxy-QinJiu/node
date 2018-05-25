@@ -3,9 +3,9 @@
 @import "../../../../public/css/iconfont";
 .clue_customer_content{
 
-  .add-clue-customer-container{
+  .add-clue-customer-container,.import-clue-customer-container{
     float: right;
-    margin: 17px 70px 0 0;
+    margin: 17px 40px 0 0;
     .ant-btn{
       padding: 0px 5px;
     }
@@ -17,10 +17,9 @@
         background-color: #49a9ee;
       }
     }
-
   }
   .add-clue-customer-container.hide-des{
-    margin: 17px 85px 0 0;
+    margin: 17px 40px 0 0;
     .ant-btn{
       width: 30px;
     }
@@ -28,6 +27,12 @@
       display: none;
     }
   }
+  .clue-analysis-btn-container{
+    float: right;
+    margin: 17px 40px 0 0;
+  }
+
+
   .filter-block{
     overflow: visible;
   }
@@ -97,12 +102,27 @@
                 font-size: 15px;
                 line-height: 22px;
                 font-weight: bold;
+                .ant-tag.inavailable-tag{
+                  margin-left: 5px;
+                  font-weight: normal;
+                  color:#fff;
+                  background-color: @qualified-tag-color;
+                }
+              }
+            }
+            .contact-container{
+              overflow: hidden;
+              &>div{
+                float: left;
+              }
+              .contact-way{
+                margin-left: 10px;
               }
             }
             .trace-record-wrap{
 
               .trace-content-wrap{
-                width: 260px;
+                width: 280px;
                 .trace-content-flag{
                   color:#49a9ee;
                 }
@@ -159,14 +179,16 @@
 
                     }
                   }
-
+                }
+                .trace-content{
+                   word-break: break-all;
                 }
               }
 
             }
-            .action-button-wrap{
+            .action-button-wrap,.remark-clue-container{
               margin-top: 10px;
-              .ant-dropdown-trigger.ant-btn-primary{
+              .ant-dropdown-trigger.ant-btn-primary, .ant-btn.ant-btn-primary{
                 border-color: #49a9ee;
                 background-color: #49a9ee;
                 &:active{
@@ -294,7 +316,14 @@
   .clue_customer_rightpanel.right-pannel-default{
     //详情展示区域
     overflow: visible;
-
+    .availability-remark{
+      position: absolute;
+      border: 26px solid @qualified-tag-color;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      left: 0;
+      top: 0;
+    }
     .clue_customer_content_wrap{
       //顶部线索详情展示
       h5{
@@ -332,6 +361,45 @@
       }
     }
 
+  }
+  //线索导入
+  .import-clue-template-panel.right-pannel-default{
+    width:420px;
+    transform:translateX(100%);
+    font-size:14px;
+    .import-tips{
+      margin-top:60px;
+      margin-left:20px;
+      a{
+        text-decoration:none;
+      }
+      p{
+        padding-bottom:20px;
+      }
+    }
+    .import-file{
+      float:right;
+      margin-right:20px;
+      .ant-btn{
+        margin-bottom:3px;
+      }
+      .import-clue, .ant-btn .ant-btn-ghost{
+        border:1px solid #4d96d1;
+        border-radius:5px;
+        padding:4px 11px;
+        font-size:12px;
+        cursor:pointer;
+      }
+      .import-clue{
+        margin-right:12px;
+        color:#fff;
+        background-color:#4d96d1;
+        border-color:#4d96d1;
+        .icon-loading{
+          margin-left: 8px;
+        }
+      }
+    }
   }
   .alert-wrap .ant-alert.ant-alert-error{
     width: 350px;
@@ -393,11 +461,99 @@
       .customer-name{
         cursor: pointer;
       }
+      .recommend-customer-container{
+        margin-top: 10px;
+        .recommend-customer-item{
+          margin-bottom: 5px;
+        }
+      }
     }
     .ant-alert.ant-alert-success{
       position: absolute;
       top:80px;
       left:30px;
+    }
+  }
+}
+.sales-clue-add-container{
+  .input-red-border{
+    position:relative;
+    display:inline-block;
+    padding:6px 7px;
+    border:1px solid @error_tips_color;
+    line-height:1.5;
+    color:#666;
+    background-color:#fff;
+    background-image:none;
+    box-shadow:0 0 0 2px #ffddcc;
+    cursor:text;
+  }
+  .clue-name-repeat,.clue-name-errmsg{
+    margin-left: 25%;
+    color:@error_tips_color;
+    margin-top: -5px;
+  }
+}
+.clue-import-modal{
+  .import-warning{
+    color: @error_tips_color;
+    margin-right: 10px;
+  }
+}
+.repeat-clue-name{
+  color:@error_tips_color;
+}
+.clue-analysis-panel.right-pannel-default {
+  width: auto;
+  left: 75px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background-color: #fff;
+  display: block;
+  .date-range-wrap {
+     .range-datepicker {
+      float: left;
+      margin-top: 20px;
+      margin-left: 10px;
+    }
+    .consult-time{
+      float: left;
+      margin-top: 25px;
+      margin-left: 10px;
+    }
+  }
+  .analysis-clue-container{
+    margin: 80px 20px 0 20px;
+    .customer-num{
+      cursor: pointer;
+      font-weight: bold;
+    }
+  }
+  .filter-clue-wrap{
+    float: left;
+    margin: 20px 0 0 15px;
+    .clue-select-container{
+      .ant-select{
+        margin-right: 10px;
+        width: auto;
+      }
+    }
+  }
+}
+#app .customer-stage-table-wrapper.right-pannel-default {
+  width:auto;
+  left:0;
+  transform:translateX(100%);
+  -webkit-transform:translateX(100%);
+  background-color:#fff;
+  display:block;
+  .customer-table-close.topNav {
+    left: 0;
+  }
+  .stage-changed-customer-list-wrapper {
+    padding: 63px 20px 0;
+    .click-cell {
+      cursor: pointer;
     }
   }
 }

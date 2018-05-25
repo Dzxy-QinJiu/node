@@ -64,7 +64,8 @@ const OTHER_FILTER_ITEMS = {
 const SPECIAL_LABEL = {
     NON_TAGGED_CUSTOMER: Intl.get("crm.tag.unknown", "未打标签的客户"),
     TURN_OUT: Intl.get("crm.qualified.roll.out", "转出"),
-    CLUE: Intl.get("crm.sales.clue", "线索")
+    CLUE: Intl.get("crm.sales.clue", "线索"),
+    HAS_CALL_BACK: Intl.get('common.has.callback', '已回访'),
 };
 const day = 24 * 60 * 60 * 1000;
 const DAY_TIME = {
@@ -79,6 +80,8 @@ const DEFAULT_RANGE_PARAM = {
     type: "time",
     name: "start_time"
 };
+//查看是否可以继续添加客户
+let member_id = userData.getUserData().user_id;
 var Crm = React.createClass({
     getInitialState: function () {
         return {
@@ -196,9 +199,7 @@ var Crm = React.createClass({
         OrderAction.getSysStageList();
         this.getUserPhoneNumber();
         const query = _.clone(this.props.location.query);
-
         if (query.analysis_filter_field) {
-
             var filterField = query.analysis_filter_field;
             var filterValue = query.analysis_filter_value;
             filterValue = (filterValue == 'unknown' ? '未知' : filterValue);
@@ -560,7 +561,7 @@ var Crm = React.createClass({
                 delete condition.labels;
             } else {
                 //线索、转出不可操作标签的筛选处理
-                if (_.contains(condition.labels, SPECIAL_LABEL.CLUE) || _.contains(condition.labels, SPECIAL_LABEL.TURN_OUT)) {
+                if (_.contains(condition.labels, SPECIAL_LABEL.CLUE) || _.contains(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
                     condition.immutable_labels = [];
                     //线索标签
                     if (_.contains(condition.labels, SPECIAL_LABEL.CLUE)) {
@@ -573,6 +574,12 @@ var Crm = React.createClass({
                         condition.immutable_labels.push(SPECIAL_LABEL.TURN_OUT);
                         //过滤掉转出标签
                         condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.TURN_OUT);
+                    }
+                    // 已回访
+                    if (_.contains(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
+                        condition.immutable_labels.push(SPECIAL_LABEL.HAS_CALL_BACK);
+                        // 过滤掉已回访标签
+                        condition.labels = _.filter(condition.labels, label => label !== SPECIAL_LABEL.HAS_CALL_BACK);
                     }
                     term_fields.push("immutable_labels");//精确匹配
                 }
@@ -647,7 +654,10 @@ var Crm = React.createClass({
             condition.term_fields = term_fields;
         }
         delete condition.otherSelectedItem;
-        CrmAction.queryCustomer(condition, this.state.rangParams, this.state.pageSize, this.state.sorter, queryObj);
+        const conditionParams = (this.props.params && this.props.params.condition) || condition;
+        const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
+        const queryObjParams = $.extend({}, (this.props.params && this.props.params.queryObj), queryObj);
+        CrmAction.queryCustomer(conditionParams, rangParams, this.state.pageSize, this.state.sorter, queryObjParams);
         this.setState({rangeParams: this.state.rangParams});
     },
     //清除客户的选择
@@ -791,9 +801,21 @@ var Crm = React.createClass({
         return this.state.isNoMoreTipShow;
     },
     onCustomerImport(list) {
-        this.setState({
-            isPreviewShow: true,
-            previewList: CrmStore.processForList(list),
+        let member_id = userData.getUserData().user_id;
+        //导入客户前先校验，是不是超过了本人的客户上限
+        CrmAction.getCustomerLimit({member_id: member_id, num: list.length}, (result) => {
+            if (_.isNumber(result)) {
+                if (result == 0) {
+                    //可以转入
+                    this.setState({
+                        isPreviewShow: true,
+                        previewList: CrmStore.processForList(list),
+                    });
+                } else if (result > 0) {
+                    //不可以转入
+                    message.warn(Intl.get("crm.import.over.limit", "导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入", {num: result}));
+                }
+            }
         });
     },
     confirmImport(flag, cb) {
@@ -826,9 +848,7 @@ var Crm = React.createClass({
             this.setState({
                 isPreviewShow: false,
             });
-
             message.success(Intl.get("crm.98", "导入客户成功"));
-
             //刷新客户列表
             this.search();
         });
@@ -872,9 +892,7 @@ var Crm = React.createClass({
             if (this.state.callNumber) {
                 phoneMsgEmitter.emit(phoneMsgEmitter.SEND_PHONE_NUMBER,
                     {
-                        phoneNum: phoneNumber.replace('-', ''),
                         contact: record.contact,
-                        customerDetail: record,//客户基本信息
                     }
                 );
                 let reqData = {
@@ -984,7 +1002,6 @@ var Crm = React.createClass({
         if (customerArr) {
             customerArr.interest = interestObj.interest;
         }
-
         this.setState(
             {curPageCustomers: this.state.curPageCustomers}
         );
@@ -1243,24 +1260,28 @@ var Crm = React.createClass({
         let selectCustomerLength = this.state.selectedCustomer.length;
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
-                <FilterBlock>
-                    {selectCustomerLength ? (
-                        <div className="crm-list-selected-tip">
-                            <span className="iconfont icon-sys-notice"/>
-                            {this.renderSelectCustomerTips()}
-                        </div>
-                    ) : null}
-                    <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
-                        <CrmFilter
-                            ref="crmFilter"
-                            search={this.search.bind(this, true)}
-                            changeTableHeight={this.changeTableHeight}
-                            crmFilterValue={this.state.crmFilterValue}
-                        />
-                    </div>
-                    {this.renderHandleBtn()}
-                    <div className="filter-block-line"></div>
-                </FilterBlock>
+                {
+                    !this.props.fromSalesHome ?
+                        <FilterBlock>
+                            {selectCustomerLength ? (
+                                <div className="crm-list-selected-tip">
+                                    <span className="iconfont icon-sys-notice" />
+                                    {this.renderSelectCustomerTips()}
+                                </div>
+                            ) : null}
+                            <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
+                                <CrmFilter
+                                    ref="crmFilter"
+                                    search={this.search.bind(this, true)}
+                                    changeTableHeight={this.changeTableHeight}
+                                    crmFilterValue={this.state.crmFilterValue}
+                                />
+                            </div>
+                            {this.renderHandleBtn()}
+                            <div className="filter-block-line"></div>
+                        </FilterBlock> : null
+                }
+
                 {this.state.isAddFlag ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddForm}
@@ -1337,6 +1358,8 @@ var Crm = React.createClass({
                         curCustomer={this.state.curCustomer}
                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                         updateCustomerDefContact={CrmAction.updateCustomerDefContact}
+                        handleFocusCustomer={this.handleFocusCustomer}
+                        showRightPanel={this.showRightPanel}
                     />
                 ) : null}
                 {/*该客户下的用户列表*/}

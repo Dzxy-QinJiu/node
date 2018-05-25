@@ -147,5 +147,8 @@ ContactStore.prototype.toggleDefaultContact = function (contact) {
     let curContact = _.find(this.contactList, item => item.contact.id === contact.id);
     curContact.contact.def_contancts = "true";
 };
-
+//展开、收起联系方式
+ContactStore.prototype.toggleContactWay = function (contact) {
+    contact.isExpanded = !contact.isExpanded;
+};
 module.exports = alt.createStore(ContactStore, 'ContactStore');
