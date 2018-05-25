@@ -2100,38 +2100,44 @@ const ApplyViewDetail = React.createClass({
                 {this.renderApplyDetailInfo()}
                 {this.renderApplyFormResult()}
                 {this.renderBackoutApply()}
-                <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
-                            showFlag={this.state.showRightPanel}>
-                    {
-                        this.state.rightPanelUserId ? <UserDetail
-                            userId={this.state.rightPanelUserId}
-                        /> : null
-                    }
-                    {
-                        this.state.rightPanelAppConfig ? <UserTypeConfigForm
-                            togglePageChange={this.showAppConfigRightPanle}
-                            addUserTypeConfigInfoShow={true}
-                            appId={this.state.rightPanelAppConfig.app_id}
-                            appName={this.state.rightPanelAppConfig.app_name}
-                            item={this.state.appConfig}
-                            handleCancel={this.handleCancel}
-                            handleSaveAppConfig={this.handleSaveAppConfig}
-                        /> : null
-                    }
-                </RightPanel>
+                {this.state.showRightPanel && (this.state.rightPanelUserId || this.state.rightPanelAppConfig) ?
+                    <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
+                                showFlag={this.state.showRightPanel}>
+                        {
+                            this.state.rightPanelUserId ? <UserDetail
+                                userId={this.state.rightPanelUserId}
+                            /> : null
+                        }
+                        {
+                            this.state.rightPanelAppConfig ?
+                                <UserTypeConfigForm
+                                    togglePageChange={this.showAppConfigRightPanle}
+                                    addUserTypeConfigInfoShow={true}
+                                    appId={this.state.rightPanelAppConfig.app_id}
+                                    appName={this.state.rightPanelAppConfig.app_name}
+                                    item={this.state.appConfig}
+                                    handleCancel={this.handleCancel}
+                                    handleSaveAppConfig={this.handleSaveAppConfig}
+                                /> : null
+                        }
+                    </RightPanel> : null}
                 {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+                {
+                    this.state.isShowCustomerUserListPanel ?
+                        <RightPanel
+                            className="customer-user-list-panel"
+                            showFlag={this.state.isShowCustomerUserListPanel}
+                        >
+                            {this.state.isShowCustomerUserListPanel ?
+                                <AppUserManage
+                                    customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                    hideCustomerUserList={this.closeCustomerUserListPanel}
+                                    customer_name={this.state.CustomerInfoOfCurrUser.name}
+                                /> : null
+                            }
+                        </RightPanel> : null
+                }
+
             </div>
 
         );
