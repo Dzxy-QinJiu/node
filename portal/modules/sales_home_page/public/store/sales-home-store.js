@@ -55,7 +55,6 @@ SalesHomeStore.prototype.setInitState = function () {
     this.isLoadingCustomerList = false;//正在获取销售-客户列表
     this.isLoadingUserList = false;//正在获取销售-用户列表
     this.isLoadingPhoneList = false;//正在获取销售-电话列表
-    this.isLoadingCallBackList = false; // 正在获取回访列表
     this.errMsg = ''; //获取不同应用即将过期的试用用户或者签约用户失败后的提示
     this.isLoadingExpireUserList = false;
     this.expireUserLists = {};//获取不同应用，在不同时间段之内即将过期的试用用户（一天，一周，一个月）和签约用户（半年）列表
@@ -397,14 +396,6 @@ SalesHomeStore.prototype.setInitTotalData = function (type) {
             'totalCount': 0//总接通数
         }
     };
-    //回访统计数据
-    this.callBackTotalObj = {
-        resultType: type || '',
-        errorMsg: '',
-        data: type === 'loading' ? {} : {
-            'total': 0 // 总回访数
-        }
-    };
 };
 
 //获取当前登录用户的角色
@@ -479,9 +470,6 @@ SalesHomeStore.prototype.setListIsLoading = function (type) {
             break;
         case "phone":
             this.isLoadingPhoneList = true;
-            break;
-        case "call_back":
-            this.isLoadingCallBackList = true;
             break;
     }
 
@@ -693,7 +681,6 @@ SalesHomeStore.prototype.getCallBackList = function (result) {
     let newData = result.resData;
     let callBackRecord = this.callBackRecord;
     callBackRecord.is_loading = result.loading;
-    this.isLoadingCallBackList = false;
     if (callBackRecord.page === 1) {
         callBackRecord.data_list = [];
     }
