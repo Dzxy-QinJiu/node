@@ -36,6 +36,9 @@ import clueCustomerAjax from "./ajax/clue-customer-ajax";
 import ClueImportTemplate from "./views/clue-import-template";
 import { clueEmitter } from "OPLATE_EMITTER";
 import {AntcTable} from "antc";
+import rightPanelUtil from "CMP_DIR/rightPanel";
+const RightPanel = rightPanelUtil.RightPanel;
+import ClueAnalysisPanel from './views/clue-analysis-panel';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 68,
@@ -53,6 +56,7 @@ const ClueCustomer = React.createClass({
             isRemarkingItem:'',//正在标记的那条线索
             clueImportTemplateFormShow: false,//线索导入面板是否展示
             previewList:[],//预览列表
+            clueAnalysisPanelShow: false,//线索分析面板是否展示
             ...clueCustomerStore.getState()
         };
     },
@@ -181,6 +185,27 @@ const ClueCustomer = React.createClass({
             });
         });
     },
+    //点击展开线索分析面板
+    handleClueAnalysisPanel: function () {
+        this.setState({
+            clueAnalysisPanelShow: true
+        });
+    },
+    //点击关闭线索分析面板
+    closeClueAnalysisPanel: function () {
+        this.setState({
+            clueAnalysisPanelShow: false
+        });
+    },
+    renderClueAnalysisBtn: function () {
+        return (
+            <div className="clue-analysis-btn-container">
+                <Button type="primary" className="call-analysis-btn"  title="线索分析" onClick={this.handleClueAnalysisPanel}>
+                     <i className="iconfont  icon-call-analysis call-analysis" data-tracename="点击线索分析按钮"></i>
+                </Button>
+            </div>
+        );
+    },
     renderHandleBtn: function () {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
         let btnClass = "block ";
@@ -215,7 +240,6 @@ const ClueCustomer = React.createClass({
                     :null}
             </div>
         );
-
     },
     changeTableHeight: function (filterPanelHeight = 0) {
         var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
@@ -925,6 +949,7 @@ const ClueCustomer = React.createClass({
                             clueCustomerValue={this.state.clueCustomerValue}
                             onTypeChange={this.onTypeChange}
                         />
+                        {this.renderClueAnalysisBtn()}
                         {this.renderHandleBtn()}
                         {this.renderImportClue()}
                         <div className="filter-block-line"></div>
@@ -984,6 +1009,17 @@ const ClueCustomer = React.createClass({
                             updateClueClassify={this.updateClueClassify}
                         />
                     ) : null}
+                    {this.state.clueAnalysisPanelShow ?  <RightPanel
+                        className="clue-analysis-panel"
+                        showFlag={this.state.clueAnalysisPanelShow}
+                    >
+                        <ClueAnalysisPanel
+                            accessChannelArray={this.state.accessChannelArray}
+                            clueSourceArray={this.state.clueSourceArray}
+                            closeClueAnalysisPanel={this.closeClueAnalysisPanel}
+                        />
+                    </RightPanel>: null}
+
                 </div>
             </RightContent>
         );

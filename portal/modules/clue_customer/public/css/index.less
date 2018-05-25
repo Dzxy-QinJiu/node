@@ -5,7 +5,7 @@
 
   .add-clue-customer-container,.import-clue-customer-container{
     float: right;
-    margin: 17px 70px 0 0;
+    margin: 17px 40px 0 0;
     .ant-btn{
       padding: 0px 5px;
     }
@@ -19,7 +19,7 @@
     }
   }
   .add-clue-customer-container.hide-des{
-    margin: 17px 85px 0 0;
+    margin: 17px 40px 0 0;
     .ant-btn{
       width: 30px;
     }
@@ -27,6 +27,11 @@
       display: none;
     }
   }
+  .clue-analysis-btn-container{
+    float: right;
+    margin: 17px 40px 0 0;
+  }
+
 
   .filter-block{
     overflow: visible;
@@ -497,4 +502,35 @@
 }
 .repeat-clue-name{
   color:@error_tips_color;
+}
+.clue-analysis-panel.right-pannel-default {
+  width: auto;
+  left: 75px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background-color: #fff;
+  display: block;
+  .date-range-wrap {
+     .range-datepicker {
+      float: left;
+      margin-top: 20px;
+      margin-left: 10px;
+    }
+    .consult-time{
+      float: left;
+      margin-top: 25px;
+      margin-left: 10px;
+    }
+  }
+  .analysis-clue-container{
+    margin: 80px 20px 0 20px;
+  }
+  .filter-clue-wrap{
+    float: left;
+    margin: 20px 0 0 15px;
+    .clue-select-container{
+
+    }
+  }
+
 }
