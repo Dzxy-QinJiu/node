@@ -472,6 +472,7 @@ var zh_CN = {
     "fail.to.get.record": "获取用户变更记录失败",
     "user.log.login.fail": "获取登录信息失败！",
     "user.log.get.log.fail": "获取操作日志信息失败！",
+    "user.log.param.error": "请求参数错误！",
     "user.login.unnormal.location": "异常登录地",
     "user.login.normal.location": "常用登录地",
     "user.suggest.name.two": "创建{user01}或{user02}？",

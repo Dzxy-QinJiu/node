@@ -1,11 +1,19 @@
 /**
  * 单个用户日志的action
  */
-var AppUserStore = require('../store/app-user-store');
-var UserAuditLogStore = require('../store/user_audit_log_store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require("../../../../public/sources/utils/emitters").scrollBarEmitter;
-var ShareObj = require("../util/app-id-share-util");
+const LogAnalysisUtil = require("./log-analysis-util");
+
+function handleLogParams(_this, getLogParam, userOwnAppList) {
+    getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
+    _this.dispatch(
+        {
+            appId:  getLogParam.appid,
+            appList: userOwnAppList
+        }
+    );
+};
 
 function SingleUserLogAction() {
     this.generateActions(
@@ -22,72 +30,62 @@ function SingleUserLogAction() {
     ); 
 
     // 获取单个用户的应用列表
-    this.getSingleUserAppList = function (searchObj, selectedAppId) {
-        userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-            let userOwnAppArray = result.apps;
-            // 存储应用id的变量
-            let userOwnAppArrayAppIdList = [];
-            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1) {
-                userOwnAppArrayAppIdList = _.pluck(userOwnAppArray, 'app_id');
-            }
-            // 上一个用户选择应用id
-            let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
-            let index = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
-            // 获取UI界面上的app
-            var selectApp =  selectedAppId||AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
-                UserAuditLogStore.getState().selectAppId;
-            var selectedLogAppId = '';
-            // selectAPP == ''是针对全部应用
-            if (selectApp == '') {
-                if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index == -1) {
-                    selectedLogAppId = userOwnAppArray[0].app_id;
-                }else {
-                    selectedLogAppId = lastSelectAppId;
-                }
-            } else {
-                selectedLogAppId = selectApp;
-            }
-
-            let getLogListQueryParam = {
-                appid: selectedLogAppId,
+    this.getSingleUserAppList = function (searchObj, selectedAppId, appLists) {
+        if (_.isObject(searchObj)) {
+            let getLogParam = {
                 user_id: searchObj.user_id,
                 page: searchObj.page,
                 type_filter: searchObj.type_filter
             };
-            if (_.isObject(searchObj)) {
-                if (searchObj.starttime) {
-                    getLogListQueryParam.starttime = searchObj.starttime;
-                }
-                if (searchObj.endtime) {
-                    getLogListQueryParam.endtime = searchObj.endtime;
-                }
-                if (searchObj.search) {
-                    getLogListQueryParam.search = searchObj.search;
+            if (searchObj.starttime) {
+                getLogParam.starttime = searchObj.starttime;
+            }
+            if (searchObj.endtime) {
+                getLogParam.endtime = searchObj.endtime;
+            }
+            if (searchObj.search) {
+                getLogParam.search = searchObj.search;
+            }
+            if (selectedAppId) { // 已选中应用
+                getLogParam.appid = selectedAppId;
+            } else { // 全部应用条件下查看
+                if (appLists.length) {
+                    handleLogParams(this, getLogParam, appLists);
+                } else {
+                    userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+                        if (_.isObject(result) && result.apps) {
+                            handleLogParams(this, getLogParam, result.apps);
+                            // 日志列表信息
+                            this.actions.getSingleAuditLogList(getLogParam);
+                        }
+                    }, () => {
+                        // 获取应用列表失败的处理
+                        this.dispatch({error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
+                    } );
+                    return;
                 }
             }
             // 日志列表信息
-            this.actions.getSingleAuditLogList(getLogListQueryParam);
-            this.dispatch(
-                {
-                    appId: selectedLogAppId,
-                    appList: userOwnAppArray
-                }
-            );
-        },  (errorMsg) =>{
-            this.dispatch({error: true, errorMsg: errorMsg});
-        });
+            this.actions.getSingleAuditLogList(getLogParam);
+        } else {
+            // 请求参数错误
+            this.dispatch({error: true, errorMsg: Intl.get('user.log.param.error', '请求参数错误!')});
+        }
     };
-
 
     // 获取单个用户的审计日志信息
     this.getSingleAuditLogList = function (searchObj) {
-        this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
-            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({loading: false, error: false, data: data});
-        },  (errorMsg) =>{
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        if (searchObj && searchObj.appid) {
+            this.dispatch({loading: true, error: false});
+            userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
+                scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+                this.dispatch({loading: false, error: false, data: data});
+            },  (errorMsg) =>{
+                this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            });
+        } else {
+            this.dispatch({loading: false, error: true, errorMsg: Intl.get('user.log.get.log.fail', '获取操作日志信息失败！')});
+        }
     };
 }
 

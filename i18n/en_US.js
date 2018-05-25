@@ -472,6 +472,7 @@ var en_US = {
     "fail.to.get.record": "Failed to get change records",//获取用户变更记录失败
     "user.log.login.fail": "Failed to get the user of login information!", // 获取登录信息失败！
     "user.log.get.log.fail": "Failed to get the user of log information!",  // 获取操作日志信息失败！
+    "user.log.param.error": "Request parameter error.", // 请求参数错误！
     "user.login.unnormal.location": "A long-distance login", // 异常登录地
     "user.login.normal.location": "Normal Login Location", // 常用登录地
     "user.suggest.name.two": "Create username {user01} or {user02}", // 创建{user01}或{user02}
