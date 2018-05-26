@@ -52,7 +52,7 @@ PhoneAlertStore.prototype.getCustomerById = function (result) {
 };
 //添加客户成功后把新添加的客户资料放在state上，不用再去发请求获取了
 PhoneAlertStore.prototype.setAddCustomerInfo = function (addCustomerInfo) {
-    this.customerInfoArr = [addCustomerInfo];
+    this.customerInfoArr = crmStore.processForList([addCustomerInfo]);
 };
 PhoneAlertStore.prototype.setContent = function (value) {
     this.inputContent = value;
