@@ -87,7 +87,6 @@ class PhonePanel extends React.Component {
     }
 
     componentDidMount() {
-        Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         phoneAlertStore.listen(this.onStoreChange);
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
@@ -134,13 +133,13 @@ class PhonePanel extends React.Component {
                         this.getCustomerInfoByCustomerId(phonemsgObj);
                     }
                 }
-            }
-            //页面上如果存在上次打电话的模态框，再次拨打电话的时候
-            var $modal = $("#phone-status-content");
-            // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
-            // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
-            if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-                this.setInitialData(phonemsgObj);
+                //页面上如果存在上次打电话的模态框，再次拨打电话的时候
+                var $modal = $("#phone-status-content");
+                // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
+                // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
+                if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+                    this.setInitialData(phonemsgObj);
+                }
             }
         }
     }
@@ -498,17 +497,17 @@ class PhonePanel extends React.Component {
         });
     }
 
+    //申请后返回
     returnInfoPanel() {
-        //申请后返回
         this.setState({
             applyUserShowFlag: false
         });
     }
 
     hidePhonePanel(e) {
-        Trace.traceEvent(e, "关闭客户详情");
+        Trace.traceEvent(e, this.state.paramObj.call_params ? "关闭拨打电话的面板" : "关闭客户详情");
         this.returnInfoPanel();
-        let paramObj = this.props.paramObj;
+        let paramObj = this.state.paramObj;
         if (paramObj.customer_params && _.isFunction(paramObj.customer_params.hideRightPanel)) {
             paramObj.customer_params.hideRightPanel();
         }

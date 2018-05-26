@@ -10,6 +10,7 @@ require("./oplate");
 var LeftMenu = require("../../../components/privilege/nav-sidebar");
 var phoneMsgEmitter = require("PUB_DIR/sources/utils/emitters").phoneMsgEmitter;
 import PhonePanel from "MOD_DIR/phone_panel/public";
+import Trace from "LIB_DIR/trace";
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
     call_params: null//后端推送过来的通话状态相关的参数
@@ -31,6 +32,13 @@ var PageFrame = React.createClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
     },
     openPhonePanel: function (paramObj) {
+        if (!this.state.phonePanelShow) {
+            if (paramObj.call_params) {
+                Trace.traceEvent("电话弹屏", '弹出拨打电话的面板');
+            } else {
+                Trace.traceEvent("客户详情", '查看客户详情');
+            }
+        }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
     },
     closePhonePanel: function () {

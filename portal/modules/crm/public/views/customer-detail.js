@@ -33,7 +33,6 @@ var CrmRightPanel = React.createClass({
     getInitialState: function () {
         return {
             activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
-            applyUserShowFlag: false,//申请用户界面是否展示
             apps: [],
             curOrder: {},
             curCustomer: this.props.curCustomer,
@@ -59,11 +58,9 @@ var CrmRightPanel = React.createClass({
 
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
-            this.state.applyUserShowFlag = false;
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
         } else if (nextProps.currentId !== this.props.currentId) {
-            this.state.applyUserShowFlag = false;
             this.getCurCustomer(nextProps.currentId);
         }
         this.setTabsContainerHeight();
@@ -93,18 +90,10 @@ var CrmRightPanel = React.createClass({
         });
     },
 
-    returnInfoPanel: function () {
-        //申请后返回
-        this.setState({
-            applyUserShowFlag: false
-        });
-    },
-
     hideRightPanel: function (e) {
         Trace.traceEvent(e, "关闭客户详情");
         this.props.hideRightPanel();
         this.setState({
-            applyUserShowFlag: false,
             activeKey: TAB_KEYS.OVERVIEW_TAB
         });
     },
