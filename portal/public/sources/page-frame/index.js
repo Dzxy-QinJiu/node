@@ -31,6 +31,13 @@ var PageFrame = React.createClass({
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
     },
     openPhonePanel: function (paramObj) {
+        if (!this.state.phonePanelShow) {
+            if (paramObj.call_params) {
+                Trace.traceEvent("电话弹屏", '弹出拨打电话的面板');
+            } else {
+                Trace.traceEvent("客户详情", '查看客户详情');
+            }
+        }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
     },
     closePhonePanel: function () {

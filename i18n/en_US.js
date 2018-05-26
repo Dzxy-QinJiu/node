@@ -1246,7 +1246,7 @@ var en_US = {
     "crm.sales.newTrailCustomer": "new customer statistic",//"新开试用、签约客户数统计",
     "crm.repeat.phone": "Phone repeating",//电话重复
     "crm.repeat.phone.unhandle": "You have an unprocessed repeat phone: ",//您还有未处理的重复电话：
-	"crm.order.stage":"Order stage",//订单阶段
+    "crm.order.stage": "Order stage",//订单阶段
     "crm.basic.detail.show": "Show detail",//展开详情
     "crm.basic.detail.hide": "Hide detail",//收起详情
     "crm.basic.overview": "Overview",//概览
@@ -1271,6 +1271,8 @@ var en_US = {
     "crm.sales.update": "Modify it to",//修改为
     "crm.sales.redistribution": "Redistribution",//重新分配
     "crm.sales.transfer.confirm": "Transfer confirm",//确认转出
+    "crm.detail.no.data": "The customer has been deleted or turned away",//该客户已被删除或转走
+    "crm.detail.get.error": "Failure to get customer details",//获取客户详情失败
     // 客户管理end
 
     //客户分析 start
@@ -1905,7 +1907,7 @@ var en_US = {
     "crm.customer.failed.interested": "Failed to update the information!",//修改失败
     "call.record.play": "PLAY",//播放录音
     "call.record.pick.phone": "Please pick up the phone",//请拿起话机
-    "call.record.call.in.pick.phone":"There is a phone call, please pick up the phone",//有电话打入，请拿起话机
+    "call.record.call.in.pick.phone": "There is a phone call, please pick up the phone",//有电话打入，请拿起话机
     "call.record.phone.alerting": "The phone is ringing, Waiting for answering",//已振铃，等待对方接听
     "call.record.phone.answered": "Calling ",//正在通话中
     "call.record.phone.unknown": "Hang up the call",//结束通话
@@ -2140,35 +2142,35 @@ var en_US = {
     "call.record.average.call.duration": "Call length of person average",//人均时长
     "call.record.average.connected": "Connetion number of person average",//人均接通数
     "call.record.all.teams.trend": "show call trend of each team",//查看各团队通话趋势图
-    "crm.import.over.limit":"After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
+    "crm.import.over.limit": "After importing customers, you will exceed the limit of your own customers. Please reduce importing {num} customers",//导入客户后会超过您拥有客户的上限，请您减少{num}个客户后再导入
     "crm.transfer.over.limit": "Transferring to customers will exceed the limit of the sales-owning customer, please reduce the transfer to {num} customers",//转出客户后会超过该销售拥有客户的上限，请减少{num}个客户后再转出
     "crm.change.over.limit": "Changing the customer will exceed the limit of the sales-owning customer, please reduce the change {num} customers",//变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售
-    "crm.should.reduce.customer":"The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
-    "sales.role.config.customer.num":"Maximum number of customers",//最大客户数
-    "sales.role.setting.name":"Sales role name",//销售角色名称
+    "crm.should.reduce.customer": "The number of customers has reached the limit!",//该销售拥有客户数量已达到上限！
+    "sales.role.config.customer.num": "Maximum number of customers",//最大客户数
+    "sales.role.setting.name": "Sales role name",//销售角色名称
     "sales.if.switch.type": "Whether to distinguish between two types of new and renewal",//是否区分新签和续约类型
-    "sales.new.write.contract.radio":"New signing ratio",//新签提成比例
-    "sales.rewrite.contract.radio":"Renewed signing ratio",//续约提成比例
-    "sales.remark.clue.enable":"Mark this clue effective",//线索有效
-    "sales.remark.clue.able":"Mark this clue invalid",//线索无效
-    "sales.clue.is.enable":"Invalid",//无效
-    "failed.sales.remark.clue.valid":"Failed to mark the validity of the clue",//标记该线索有效性失败
+    "sales.new.write.contract.radio": "New signing ratio",//新签提成比例
+    "sales.rewrite.contract.radio": "Renewed signing ratio",//续约提成比例
+    "sales.remark.clue.enable": "Mark this clue effective",//线索有效
+    "sales.remark.clue.able": "Mark this clue invalid",//线索无效
+    "sales.clue.is.enable": "Invalid",//无效
+    "failed.sales.remark.clue.valid": "Failed to mark the validity of the clue",//标记该线索有效性失败
     "clue.customer.check.only.exist": "Failed to verify the only clue names",//线索名称唯一性校验失败
     "clue.customer.check.repeat": "The clue name is already existed",//该线索名称已存在
     "clue.customer.clue.time": "Consult on {relative}",//咨询于{relative}
-    "failed.to.get.clue.classify":"Failed to get clue classify",//获取线索分类出错了
-    "clue.customer.classify":"clue  classification",//线索分类
+    "failed.to.get.clue.classify": "Failed to get clue classify",//获取线索分类出错了
+    "clue.customer.classify": "clue  classification",//线索分类
     "crm.clue.classify.placeholder": "Please select or enter the clue classify",//请选择或输入线索分类
-    "clue.customer.classify.agend":"Agents",//代理商
-    "clue.customer.classify.search":"Academic research",//学术研究
+    "clue.customer.classify.agend": "Agents",//代理商
+    "clue.customer.classify.search": "Academic research",//学术研究
     "clue.customer.may.associate.customer": "The customer may be associated with the clue",//该线索可能关联的客户
-    "clue.customer.phone.same":"The phone is the same",//电话一致
-    "clue.customer.customer.name.similar":"The customer is similar",//客户名相似
-    "clue.customer.close.customer.search":"Please close the customer search box first",//请先关闭客户搜索框
-    "clue.customer.selected.customer":"Please search customers to associate",//请搜索客户进行关联
-    "clue.customer.no.related.customer":"None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
-    "config.sales.role.has.repeat":"This sales role name is existed",//该销售角色名称已存在
-    "sales.frontpage.has.no.conneted":"You have missed the call",//您有电话未接听
+    "clue.customer.phone.same": "The phone is the same",//电话一致
+    "clue.customer.customer.name.similar": "The customer is similar",//客户名相似
+    "clue.customer.close.customer.search": "Please close the customer search box first",//请先关闭客户搜索框
+    "clue.customer.selected.customer": "Please search customers to associate",//请搜索客户进行关联
+    "clue.customer.no.related.customer": "None of the above customers are associated customers, search for customers",//上述客户都不是相关联的客户，搜索客户
+    "config.sales.role.has.repeat": "This sales role name is existed",//该销售角色名称已存在
+    "sales.frontpage.has.no.conneted": "You have missed the call",//您有电话未接听
     "clue.manage.import.clue": "Import clues",//导入线索
     "clue.manage.import.clue.template": "Import clues template",//导入线索模板
     "clue.manage.failed.import.clue": "Failed to import clues.Please try again!",//导入线索失败，请重试!

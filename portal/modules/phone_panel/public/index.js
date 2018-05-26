@@ -21,6 +21,7 @@ import ApplyUserForm from "MOD_DIR/crm/public/views/apply-user-form";
 import classNames from "classnames";
 import Trace from "LIB_DIR/trace";
 import PhoneStatusTop from "./view/phone-status-top";
+var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -30,7 +31,8 @@ const Add_CUSTOMER_LAYOUT_CONSTANTS = {
     TOP_DELTA: 62,//顶部提示框的高度
     BOTTOM_DELTA: 10//底部的padding
 };
-
+//默认申请类型
+const DEFAULT_APPLY_TYPE = 2;//2：申请新增试用用户，3，申请新增正式用户
 const PHONERINGSTATUS = {
     //对方已振铃
     ALERT: "ALERT",
@@ -43,13 +45,12 @@ var phoneRecordObj = {
     callid: "",//通话的id
     received_time: ""//通话时间
 };
-var phoneMsgEmitter = require("../../../public/sources/utils/emitters").phoneMsgEmitter;
 class PhonePanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             applyUserShowFlag: false,//是否展示申请用户的面板
-            applyType: 2,//2：申请新增试用用户，3，申请新增正式用户
+            applyType: DEFAULT_APPLY_TYPE,
             apps: [],
             curOrder: {},
             paramObj: $.extend(true, {}, this.props.paramObj),
@@ -86,7 +87,6 @@ class PhonePanel extends React.Component {
     }
 
     componentDidMount() {
-        Trace.traceEvent("电话弹屏", '弹出电话弹屏');
         phoneAlertStore.listen(this.onStoreChange);
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
@@ -133,13 +133,13 @@ class PhonePanel extends React.Component {
                         this.getCustomerInfoByCustomerId(phonemsgObj);
                     }
                 }
-            }
-            //页面上如果存在上次打电话的模态框，再次拨打电话的时候
-            var $modal = $("#phone-status-content");
-            // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
-            // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
-            if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-                this.setInitialData(phonemsgObj);
+                //页面上如果存在上次打电话的模态框，再次拨打电话的时候
+                var $modal = $("#phone-status-content");
+                // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
+                // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
+                if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+                    this.setInitialData(phonemsgObj);
+                }
             }
         }
     }
@@ -203,9 +203,7 @@ class PhonePanel extends React.Component {
             addCustomer: false
         });
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
-        setTimeout(() => {
-            phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
-        }, 1000);
+        phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     //根据客户的id获取客户详情
     getCustomerInfoByCustomerId(phonemsgObj) {
@@ -298,6 +296,7 @@ class PhonePanel extends React.Component {
                 if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//该电话是自己客户的，展示客户详情
                     return (
                         <CustomerDetail currentId={customerInfoArr[0].id}
+                                        curCustomer={customerInfoArr[0]}
                                         editCustomerBasic={this.editCustomerBasic}
                                         hideRightPanel={this.hideRightPanel.bind(this)}
                                         ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
@@ -316,6 +315,7 @@ class PhonePanel extends React.Component {
                                 <span className="iconfont icon-return-btn"/> {Intl.get("crm.52", "返回")}
                             </a>
                             <CustomerDetail currentId={showDetailCustomer.id}
+                                            curCustomer={showDetailCustomer}
                                             editCustomerBasic={this.editCustomerBasic}
                                             hideRightPanel={this.hideRightPanel.bind(this)}
                                             ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
@@ -346,6 +346,7 @@ class PhonePanel extends React.Component {
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
             return (
                 <CustomerDetail currentId={customerInfoArr[0].id}
+                                curCustomer={customerInfoArr[0]}
                                 editCustomerBasic={this.editCustomerBasic}
                                 hideRightPanel={this.hideRightPanel.bind(this)}
                                 ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
@@ -496,17 +497,17 @@ class PhonePanel extends React.Component {
         });
     }
 
+    //申请后返回
     returnInfoPanel() {
-        //申请后返回
         this.setState({
             applyUserShowFlag: false
         });
     }
 
     hidePhonePanel(e) {
-        Trace.traceEvent(e, "关闭客户详情");
+        Trace.traceEvent(e, this.state.paramObj.call_params ? "关闭拨打电话的面板" : "关闭客户详情");
         this.returnInfoPanel();
-        let paramObj = this.props.paramObj;
+        let paramObj = this.state.paramObj;
         if (paramObj.customer_params && _.isFunction(paramObj.customer_params.hideRightPanel)) {
             paramObj.customer_params.hideRightPanel();
         }
@@ -626,7 +627,7 @@ class PhonePanel extends React.Component {
                 {this.state.curOrder.id ? (
                     <div className={className}>
                         <RightPanelReturn onClick={this.returnInfoPanel.bind(this)}/>
-                        <RightPanelClose onClick={this.hideRightPanel.bind(this)}/>
+                        <RightPanelClose onClick={this.returnInfoPanel.bind(this)}/>
                         <div className="crm-right-panel-content">
                             <ApplyUserForm
                                 applyType={this.state.applyType}
