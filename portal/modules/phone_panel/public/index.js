@@ -627,7 +627,7 @@ class PhonePanel extends React.Component {
                 {this.state.curOrder.id ? (
                     <div className={className}>
                         <RightPanelReturn onClick={this.returnInfoPanel.bind(this)}/>
-                        <RightPanelClose onClick={this.hideRightPanel.bind(this)}/>
+                        <RightPanelClose onClick={this.returnInfoPanel.bind(this)}/>
                         <div className="crm-right-panel-content">
                             <ApplyUserForm
                                 applyType={this.state.applyType}
