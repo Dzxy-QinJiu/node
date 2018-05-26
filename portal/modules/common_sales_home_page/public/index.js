@@ -27,7 +27,7 @@ const LAYOUT_CONSTS = {
 };
 
 var SalesHomePage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
             isShowRepeatCustomer: false,//是否展示重复客户
@@ -38,7 +38,7 @@ var SalesHomePage = React.createClass({
             ...SalesHomeStore.getState()
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         SalesHomeStore.listen(this.onChange);
         this.getSalesListData();
         this.getUserPhoneNumber();
@@ -46,7 +46,7 @@ var SalesHomePage = React.createClass({
         $(window).on('resize', this.windowResize);
         //给点击查看客户详情的客户加样式
         //之所以用jquery不用类名加样式，是因为客户会有重复的，通过customerId无法进行判断
-        $(".sales_home_content").on("click", ".sale-home-customer-name", function (e) {
+        $(".sales_home_content").on("click", ".sale-home-customer-name", function(e) {
             $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
             $(this).closest(".customer-detail-item").addClass("selected-customer-detail-item");
         });
@@ -61,30 +61,30 @@ var SalesHomePage = React.createClass({
             this.setState(SalesHomeStore.getState());
         });
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off('resize', this.windowResize);
         SalesHomeStore.unlisten(this.onChange);
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(SalesHomeStore.getState());
     },
-    closeCustomerUserListPanel: function () {
+    closeCustomerUserListPanel: function() {
         this.setState({
             isShowCustomerUserListPanel: false
         });
     },
-    closeRightCustomerPanel: function () {
+    closeRightCustomerPanel: function() {
         $(".selected-customer-detail-item").removeClass("selected-customer-detail-item");
         this.setState({curShowCustomerId: ""});
     },
-    ShowCustomerUserListPanel: function (data) {
+    ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
 
     },
-    openCustomerDetail: function (customer_id) {
+    openCustomerDetail: function(customer_id) {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
@@ -99,16 +99,16 @@ var SalesHomePage = React.createClass({
             }
         });
     },
-    openUserDetail: function (user_id) {
+    openUserDetail: function(user_id) {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
         this.setState({curShowUserId: user_id});
     },
-    closeRightUserPanel: function () {
+    closeRightUserPanel: function() {
         this.setState({curShowUserId: ""});
     },
-    getSalesListData: function () {
+    getSalesListData: function() {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
@@ -175,7 +175,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getScheduleList(constObj, "missed_call");
     },
     //获取最近登录的客户
-    getRecentLoginCustomers: function (lastId) {
+    getRecentLoginCustomers: function(lastId) {
         var queryObj = {
             total_size: this.state.page_size,
             cursor: true,
@@ -188,7 +188,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getRecentLoginCustomers({}, this.state.rangParamsLogin, this.state.page_size, this.state.sorterLogin, queryObj);
     },
     //重复客户列表
-    getRepeatCustomerList: function (lastId) {
+    getRepeatCustomerList: function(lastId) {
         var queryObj = {page_size: this.state.page_size};
         if (lastId) {
             queryObj.id = lastId;
@@ -197,7 +197,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getRepeatCustomerList(queryObj);
     },
     //获取新分配但未联系的客户
-    getNewDistributeCustomer: function (lastId) {
+    getNewDistributeCustomer: function(lastId) {
         //客户被分配后是否已联系 allot_no_contact  未联系 : "0" ，已联系 :"1"
         var queryObj = {
             total_size: this.state.page_size,
@@ -211,7 +211,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getNewDistributeCustomer({allot_no_contact: "0"}, this.state.rangParamsDistribute, this.state.page_size, this.state.sorterDistribute, queryObj);
     },
     //获取今日的日程列表
-    getScheduleListToday: function () {
+    getScheduleListToday: function() {
         var constObj = {
             page_size: 1000,//今天的日程要对取到的数据进行处理，所以不用下拉加载的方式
             status: false,//获取未处理的日程
@@ -221,7 +221,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getScheduleList(constObj, "today");
     },
     //停用客户登录
-    getAppIlleageLogin: function (lastId) {
+    getAppIlleageLogin: function(lastId) {
         let noticeQueryObj = {
             notice_type: ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN,
             page_size: this.state.page_size,//默认不传是5
@@ -233,7 +233,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getSystemNotices(noticeQueryObj, this.state.status, noticeQueryObj.notice_type);
     },
     //关注客户登录
-    getConcernedLogin: function (lastId) {
+    getConcernedLogin: function(lastId) {
         let noticeQueryObj = {
             notice_type: ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN,
             page_size: this.state.page_size,//默认不传是5
@@ -246,7 +246,7 @@ var SalesHomePage = React.createClass({
     },
 
     //获取过期日程列表(不包含今天)
-    getExpiredScheduleList: function (lastId) {
+    getExpiredScheduleList: function(lastId) {
         var constObj = {
             page_size: this.state.page_size,
             start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
@@ -261,7 +261,7 @@ var SalesHomePage = React.createClass({
     },
 
     //获取查询参数
-    getQueryParams: function () {
+    getQueryParams: function() {
         let queryParams = {
             urltype: 'v2',
             starttime: this.state.start_time,
@@ -269,7 +269,7 @@ var SalesHomePage = React.createClass({
         };
         return queryParams;
     },
-    getPhoneParams: function () {
+    getPhoneParams: function() {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -277,7 +277,7 @@ var SalesHomePage = React.createClass({
         };
         return phoneParams;
     },
-    getDataType: function () {
+    getDataType: function() {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
             return "all";
         } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
@@ -286,29 +286,29 @@ var SalesHomePage = React.createClass({
             return "";
         }
     },
-    handleScrollBarBottom: function (listType) {
+    handleScrollBarBottom: function(listType) {
         switch (listType) {
-            case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
-                this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
-                break;
-            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
-                this.getScrollData(this.state.appIllegalObj, this.getAppIlleageLogin);
-                break;
-            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
-                this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
-                break;
-            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
-                this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
-                break;
-            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
-                this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
-                break;
-            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
-                this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
-                break;
+        case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
+            this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
+            break;
+        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
+            this.getScrollData(this.state.appIllegalObj, this.getAppIlleageLogin);
+            break;
+        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN://关注客户登录
+            this.getScrollData(this.state.concernCustomerObj, this.getConcernedLogin);
+            break;
+        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER://最近7天登录的客户
+            this.getScrollData(this.state.recentLoginCustomerObj, this.getRecentLoginCustomers);
+            break;
+        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER://新分配的客户
+            this.getScrollData(this.state.newDistributeCustomer, this.getNewDistributeCustomer);
+            break;
+        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE://呼入未接通的电话
+            this.getScrollData(this.state.missCallObj, this.getMissCallTypeList);
+            break;
         }
     },
-    getScrollData: function (curDataObj, getDataFunction) {
+    getScrollData: function(curDataObj, getDataFunction) {
         var length = curDataObj.data.list.length;
         if (length < curDataObj.data.total) {
             var lastId = curDataObj.data.list[length - 1].id;
@@ -320,7 +320,7 @@ var SalesHomePage = React.createClass({
         }
     },
     //渲染左侧列表
-    renderDiffCustomerPanel: function () {
+    renderDiffCustomerPanel: function() {
         return (
             <ul>
                 {_.map(ALL_CUSTOMER_LISTS_TYPE, (item) => {
@@ -348,56 +348,56 @@ var SalesHomePage = React.createClass({
         );
     },
     //渲染右侧客户详情
-    renderCustomerContent: function () {
+    renderCustomerContent: function() {
         var rightPanel = null;
         switch (this.state.showCustomerPanel) {
-            //今日日程列表
-            case ALL_LISTS_TYPE.SCHEDULE_TODAY:
-                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.SCHEDULE_TODAY);
-                break;
+        //今日日程列表
+        case ALL_LISTS_TYPE.SCHEDULE_TODAY:
+            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.SCHEDULE_TODAY);
+            break;
             //今日过期日程
-            case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
-                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY);
-                break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
+            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY);
+            break;
             //即将过期的试用客户
-            case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
-                break;
-            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
-                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER);
-                break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
+            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER);
+            break;
+        case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER);
+            break;
             //即将过期的签约客户
-            case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-                rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER);
-                break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
+            rightPanel = this.renderWillExpiredTryAndAssignedCustomer(ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER);
+            break;
             //停用客户登录
-            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
-                break;
+        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
+            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN);
+            break;
             //关注客户登录
-            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
-                break;
+        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
+            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN);
+            break;
             //最近X日登录的客户
-            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-                rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER);
-                break;
+        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
+            rightPanel = this.renderAPPIlleageAndConcernedAndRecentContent(ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER);
+            break;
             //重复客户
-            case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-                rightPanel = <CustomerRepeat noNeedClose={true}/>;
-                break;
+        case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
+            rightPanel = <CustomerRepeat noNeedClose={true}/>;
+            break;
             //新分配的客户
-            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
-                rightPanel = this.renderNewDistributeCustomer();
-                break;
-            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
-                rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
-                break;
+        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+            rightPanel = this.renderNewDistributeCustomer();
+            break;
+        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+            rightPanel = this.renderScheduleContent(ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE);
+            break;
         }
         return rightPanel;
     },
     //新分配的客户
-    renderNewDistributeCustomer: function () {
+    renderNewDistributeCustomer: function() {
         var data = this.state.newDistributeCustomer.data.list;
         return (
             <div className="new-distribute-customer-container" ref="tableWrap">
@@ -421,7 +421,7 @@ var SalesHomePage = React.createClass({
         );
     },
     // 获取拨打电话的座机号
-    getUserPhoneNumber: function () {
+    getUserPhoneNumber: function() {
         let member_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
@@ -436,7 +436,7 @@ var SalesHomePage = React.createClass({
         });
     },
     //点击左侧不同客户类别的标题
-    handleClickDiffCustomerType: function (customerType) {
+    handleClickDiffCustomerType: function(customerType) {
         Trace.traceEvent($(this.getDOMNode()).find(".customer-item"), "打开" + customerType + "类型客户面板");
         GeminiScrollbar.scrollTo(this.refs.tableWrap, 0);
         this.setState({
@@ -445,7 +445,7 @@ var SalesHomePage = React.createClass({
         });
     },
     //渲染loading和出错的情况
-    renderLoadingAndErrAndNodataContent: function (dataObj) {
+    renderLoadingAndErrAndNodataContent: function(dataObj) {
         //加载中的样式
         if (dataObj.loading && dataObj.curPage === 1) {
             return (
@@ -475,7 +475,7 @@ var SalesHomePage = React.createClass({
         }
     },
     //渲染日程列表
-    renderScheduleContent: function (scheduleType) {
+    renderScheduleContent: function(scheduleType) {
         var data = [];
         //今天的日程
         if (scheduleType === ALL_LISTS_TYPE.SCHEDULE_TODAY) {
@@ -581,10 +581,10 @@ var SalesHomePage = React.createClass({
 
         }
     },
-    afterHandleMessage: function (messageObj) {
+    afterHandleMessage: function(messageObj) {
         SalesHomeAction.afterHandleMessage(messageObj);
     },
-    renderExpiredCustomerContent: function (data) {
+    renderExpiredCustomerContent: function(data) {
         return (
             <GeminiScrollbar>
                 {_.map(data, (item, index) => {
@@ -615,7 +615,7 @@ var SalesHomePage = React.createClass({
 
     },
     //渲染即将到期的试用客户和签约客户
-    renderWillExpiredTryAndAssignedCustomer: function (type) {
+    renderWillExpiredTryAndAssignedCustomer: function(type) {
         var data = [];
         if (type === ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER) {
             //十天内即将到期的试用客户
@@ -648,7 +648,7 @@ var SalesHomePage = React.createClass({
 
     },
     //渲染关注客户，停用后登录和最近登录
-    renderFocusAndIlleagalAndRecentContent: function (type, data, isRecentLoginCustomer) {
+    renderFocusAndIlleagalAndRecentContent: function(type, data, isRecentLoginCustomer) {
         return (
             <GeminiScrollbar
                 handleScrollBottom={this.handleScrollBarBottom.bind(this, type)}
@@ -671,7 +671,7 @@ var SalesHomePage = React.createClass({
         );
     },
     //渲染关注客户，停用客户和最近登录的客户情况
-    renderAPPIlleageAndConcernedAndRecentContent: function (type) {
+    renderAPPIlleageAndConcernedAndRecentContent: function(type) {
         var data = [];
         if (type === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {
             //关注客户登录
@@ -703,46 +703,46 @@ var SalesHomePage = React.createClass({
         }
     },
     //不同类型的客户所对应的数据
-    switchDiffCustomerTotalCount: function (type) {
+    switchDiffCustomerTotalCount: function(type) {
         var total = "";
         switch (type) {
-            case ALL_LISTS_TYPE.SCHEDULE_TODAY:
-                total = this.state.scheduleTodayObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
-                total = this.state.scheduleExpiredTodayObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
-                total = this.state.hasExpiredTryCustomer.data.total;
-                break;
-            case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
-                total = this.state.willExpiredTryCustomer.data.total;
-                break;
-            case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
-                total = this.state.willExpiredAssignCustomer.data.total;
-                break;
-            case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
-                total = this.state.appIllegalObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
-                total = this.state.concernCustomerObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
-                total = this.state.recentLoginCustomerObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
-                total = this.state.repeatCustomerObj.data.total;
-                break;
-            case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
-                total = this.state.newDistributeCustomer.data.total;
-                break;
-            case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
-                total = this.state.missCallObj.data.total;
-                break;
+        case ALL_LISTS_TYPE.SCHEDULE_TODAY:
+            total = this.state.scheduleTodayObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY:
+            total = this.state.scheduleExpiredTodayObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.HAS_EXPIRED_TRY_CUSTOMER:
+            total = this.state.hasExpiredTryCustomer.data.total;
+            break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_TRY_CUSTOMER:
+            total = this.state.willExpiredTryCustomer.data.total;
+            break;
+        case ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER:
+            total = this.state.willExpiredAssignCustomer.data.total;
+            break;
+        case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN:
+            total = this.state.appIllegalObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN:
+            total = this.state.concernCustomerObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.RECENT_LOGIN_CUSTOMER:
+            total = this.state.recentLoginCustomerObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.REPEAT_CUSTOMER:
+            total = this.state.repeatCustomerObj.data.total;
+            break;
+        case ALL_LISTS_TYPE.NEW_DISTRIBUTE_CUSTOMER:
+            total = this.state.newDistributeCustomer.data.total;
+            break;
+        case ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE:
+            total = this.state.missCallObj.data.total;
+            break;
         }
         return total;
     },
-    render: function () {
+    render: function() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
         var cls = classNames("customer-content-right", {
@@ -756,28 +756,28 @@ var SalesHomePage = React.createClass({
                             <li>
                                 <div className="statistic-total-content">
                                     <div className="content-right">
-                                            <span>
-                                                {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
-                                            </span>
-                                        <span className="data-container">
-                                                <span className="phone-total-time phone-total-data">
-                                                    {TimeUtil.getFormatTime(phoneData.totalTime || 0)}
+                                        <span>
+                                            {Intl.get("sales.frontpage.connected.range", "今日通话时长")}
                                         </span>
+                                        <span className="data-container">
+                                            <span className="phone-total-time phone-total-data">
+                                                {TimeUtil.getFormatTime(phoneData.totalTime || 0)}
                                             </span>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div className="statistic-total-content">
                                     <div className="content-right">
-                                            <span>
-                                                {Intl.get("sales.frontpage.connected.today", "今日接通电话")}
-                                            </span>
+                                        <span>
+                                            {Intl.get("sales.frontpage.connected.today", "今日接通电话")}
+                                        </span>
                                         <span className="data-container">
-                                                <span className="phone-total-count total-data-style">
-                                                    {phoneData.totalCount}
-                                                </span>
+                                            <span className="phone-total-count total-data-style">
+                                                {phoneData.totalCount}
                                             </span>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
@@ -786,10 +786,10 @@ var SalesHomePage = React.createClass({
                                     <div className="content-right">
                                         <span>{Intl.get("sales.frontpage.contact.today", "今日已跟进客户")}</span>
                                         <span className="data-container">
-                                                <span>
-                                                  {this.state.customerContactTodayObj.data.total}
-                                                </span>
-                                                </span>
+                                            <span>
+                                                {this.state.customerContactTodayObj.data.total}
+                                            </span>
+                                        </span>
                                     </div>
 
                                 </div>
@@ -799,10 +799,10 @@ var SalesHomePage = React.createClass({
                                     <div className="content-right">
                                         <span>{Intl.get("sales.frontpage.added.today", "今日新增客户")}</span>
                                         <span className="data-container">
-                                                <span>
-                                                    {this.state.customerTotalObj.data.added}
-                                                </span>
-                                                </span>
+                                            <span>
+                                                {this.state.customerTotalObj.data.added}
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
@@ -834,9 +834,9 @@ var SalesHomePage = React.createClass({
                     {
                         this.state.curShowUserId ?
                             <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"
-                                        showFlag={this.state.curShowUserId}>
+                                showFlag={this.state.curShowUserId}>
                                 <UserDetail userId={this.state.curShowUserId}
-                                            closeRightPanel={this.closeRightUserPanel}/>
+                                    closeRightPanel={this.closeRightUserPanel}/>
                             </RightPanel>
                             : null
                     }

@@ -212,7 +212,7 @@ class RecentLoginUsers extends React.Component {
                 appList = [];
             }
         }
-        return appList.map(function (item) {
+        return appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
     }
@@ -247,7 +247,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
                     var user_id = rowData.user && rowData.user.user_id || '';
                     const isShown = _.find(rowData.apps, app => {
@@ -258,7 +258,7 @@ class RecentLoginUsers extends React.Component {
                         <div title={user_name}>
                             {hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && isShown ?
                                 <i className="iconfont icon-warn-icon unnormal-login"
-                                   title={Intl.get("user.login.abnormal", "异常登录")}/> : null}
+                                    title={Intl.get("user.login.abnormal", "异常登录")}/> : null}
                             {user_name}
                             <input type="hidden" className="hidden_user_id" value={user_id}/>
                         </div>
@@ -272,7 +272,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     var nick_name = rowData.user && rowData.user.nick_name || '';
                     return (
                         <div title={nick_name}>
@@ -288,7 +288,7 @@ class RecentLoginUsers extends React.Component {
                 width: null,
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
                     return (
                         <div title={customer_name}>{customer_name}</div>
@@ -300,7 +300,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 key: 'appName',
                 width: null,
-                render: function (apps, rowData, idx) {
+                render: function(apps, rowData, idx) {
                     return getAppNameList(apps, rowData);
                 }
             },
@@ -309,7 +309,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 width: Oplate.hideUserManageItem ? '100px' : '75px',
                 key: 'status',
-                render: function (apps, rowData, idx) {
+                render: function(apps, rowData, idx) {
                     return getAppStatusList(apps, rowData);
                 }
             },
@@ -318,7 +318,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'apps',
                 width: '75px',
                 key: 'accountType',
-                render: function (apps, rowData, idx) {
+                render: function(apps, rowData, idx) {
                     return getAccountTypeList(apps, rowData);
                 }
             },
@@ -329,7 +329,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'grant_create_date',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     return getTimeList('create_time', rowData);
                 }
             },
@@ -340,7 +340,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'end_date',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     return getTimeList('end_time', rowData);
                 }
             },
@@ -351,7 +351,7 @@ class RecentLoginUsers extends React.Component {
                 key: 'member_name',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function (sales, rowData, idx) {
+                render: function(sales, rowData, idx) {
                     var sales_name = rowData.sales && rowData.sales.sales_name || '';
                     return (
                         <div title={sales_name}>{sales_name}</div>
@@ -364,7 +364,7 @@ class RecentLoginUsers extends React.Component {
                 width: '100px',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function (text, rowData, idx) {
+                render: function(text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
                         loginCount = rowData.apps[0].logins || 0;
@@ -380,7 +380,7 @@ class RecentLoginUsers extends React.Component {
                 width: '100px',
                 className: 'has-filter',
                 //sorter: sortable,
-                render: function (text, rowData, idx) {
+                render: function(text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
                         loginDays = rowData.apps[0].login_day_count || 0;
@@ -395,7 +395,7 @@ class RecentLoginUsers extends React.Component {
                 dataIndex: 'user',
                 key: 'description',
                 width: null,
-                render: function (user, rowData, idx) {
+                render: function(user, rowData, idx) {
                     return (
                         <div title={user.description}>{user.description}</div>
                     );
@@ -506,7 +506,7 @@ class RecentLoginUsers extends React.Component {
                         </SelectFullWidth>
                     </div>
                     <RightPanelClose title={Intl.get("common.app.status.close", "关闭")}
-                                     onClick={this.props.hideRecentLoginPanel}/>
+                        onClick={this.props.hideRecentLoginPanel}/>
                 </TopNav>
                 <div className="recent-login-users-table-wrap splice-table">
                     <div className="user-list-thead custom-thead">
@@ -517,7 +517,7 @@ class RecentLoginUsers extends React.Component {
                         />
                     </div>
                     <div className="user-list-tbody custom-tbody" style={{height: divHeight}}
-                         ref="recentLoginUsersTable">
+                        ref="recentLoginUsersTable">
                         <GeminiScrollBar
                             listenScrollBottom={this.state.listenScrollBottom}
                             handleScrollBottom={this.handleScrollBottom.bind(this)}
@@ -549,10 +549,10 @@ class RecentLoginUsers extends React.Component {
                     showFlag={this.state.isShowUserDetail}
                 >
                     {this.state.isShowUserDetail ? ( <UserDetail userId={this.state.userId}
-                                                                 appLists={this.state.curUserDetail.apps}
-                                                                 isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
-                                                                 selectedAppId={this.state.selectedAppId}
-                                                                 closeRightPanel={this.closeRightPanel.bind(this)}
+                        appLists={this.state.curUserDetail.apps}
+                        isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
+                        selectedAppId={this.state.selectedAppId}
+                        closeRightPanel={this.closeRightPanel.bind(this)}
                     />) : null}
                 </RightPanel>
             </div>

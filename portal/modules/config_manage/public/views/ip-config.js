@@ -142,21 +142,21 @@ const IpConfig = React.createClass({
                     {ipList.map((item, key) => {
                         return (
                             <li className="mb-tag" ref={key}>
-                                    <div className="mb-tag-content">
-                                        <span className="mb-tag-text">{item.ip}</span>&nbsp;&nbsp;
-                                            <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                                  onClick={this.handleDeleteIpConfig.bind(this,item.id)}
-                                                  data-tracename="移除某个IP"
-                                            >
-                                            </span>
-                                            { this.state.deleteIpId == item.id ? (
-                                                <span ><Icon type="loading" /></span>
-                                                ) : null
-                                            }
-                                    </div>
+                                <div className="mb-tag-content">
+                                    <span className="mb-tag-text">{item.ip}</span>&nbsp;&nbsp;
+                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                        onClick={this.handleDeleteIpConfig.bind(this,item.id)}
+                                        data-tracename="移除某个IP"
+                                    >
+                                    </span>
+                                    { this.state.deleteIpId == item.id ? (
+                                        <span ><Icon type="loading" /></span>
+                                    ) : null
+                                    }
+                                </div>
                             </li>
                         );
-                        }
+                    }
                     )}
                 </ul>
             </div>
@@ -167,16 +167,16 @@ const IpConfig = React.createClass({
         var inputValue = this.refs.addIpItem.value;
         var reg = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 
-       if(!reg.test(inputValue)){
+        if(!reg.test(inputValue)){
             this.setState({
                 addIpErrMsg: CHECKIPMSG
             });
-           $("#addIpConfigSaveBtn").attr("disabled", "disabled");
+            $("#addIpConfigSaveBtn").attr("disabled", "disabled");
         } else {
             this.setState({
                 addIpErrMsg: ''
             });
-           $("#addIpConfigSaveBtn").removeAttr("disabled");
+            $("#addIpConfigSaveBtn").removeAttr("disabled");
         }
     },
 

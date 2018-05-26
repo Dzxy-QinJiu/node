@@ -17,7 +17,7 @@ require("./css/basic-edit-field.less");
 
 var UserBasicEditField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             user_id: '1',
             //类型 text或password
@@ -35,13 +35,13 @@ var UserBasicEditField = React.createClass({
             //提示文案
             title: Intl.get("common.update", "修改"),
             //修改成功
-            modifySuccess: function () {
+            modifySuccess: function() {
             },
-            onDisplayTypeChange: function () {
+            onDisplayTypeChange: function() {
             },
-            onValueChange: function () {
+            onValueChange: function() {
             },
-            saveEditInput: function () {
+            saveEditInput: function() {
             },
             //行数
             rows: 5,
@@ -51,7 +51,7 @@ var UserBasicEditField = React.createClass({
             afterValTip: ''
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         var type = this.props.type, value = this.props.value;
         if (type === 'password') {
             value = secretPassword;
@@ -73,7 +73,7 @@ var UserBasicEditField = React.createClass({
             }
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.user_id !== this.props.user_id) {
             var type = nextProps.type, value = nextProps.value;
             if (type === 'password') {
@@ -87,7 +87,7 @@ var UserBasicEditField = React.createClass({
             });
         }
     },
-    setEditable: function (e) {
+    setEditable: function(e) {
         var formData = this.state.formData;
         formData.input = this.state.value;
         this.setState({
@@ -96,7 +96,7 @@ var UserBasicEditField = React.createClass({
             passStrength: {
                 passBarShow: false
             }
-        }, function () {
+        }, function() {
             var dom = $('input[type="text"],input[type="password"],textarea', this.refs.inputWrap)[1];
             var val = dom.value;
             if (dom.createTextRange) {//IE浏览器
@@ -115,16 +115,16 @@ var UserBasicEditField = React.createClass({
         this.props.onDisplayTypeChange("edit");
         Trace.traceEvent(e,"点击编辑"+this.props.field);
     },
-    md5: function (value) {
+    md5: function(value) {
         var md5Hash = crypto.createHash("md5");
         md5Hash.update(value);
         return md5Hash.digest("hex");
     },
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         var validation = this.refs.validation;
         var _this = this;
         Trace.traceEvent(e,"保存对"+this.props.field+"的修改");
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             }
@@ -162,7 +162,7 @@ var UserBasicEditField = React.createClass({
                     _this.props.updateMergeCustomer(user);
                     setDisplayState();
                 } else {
-                    _this.props.saveEditInput(user).then(function (result) {
+                    _this.props.saveEditInput(user).then(function(result) {
                         if (result) {
                             setDisplayState();
                             _this.props.modifySuccess(user);
@@ -172,7 +172,7 @@ var UserBasicEditField = React.createClass({
                                 submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
                             });
                         }
-                    }, function (errorMsg) {
+                    }, function(errorMsg) {
                         _this.setState({
                             loading: false,
                             submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")
@@ -185,7 +185,7 @@ var UserBasicEditField = React.createClass({
 
         });
     },
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         var oldValue = this.props.type === 'password' ? secretPassword : this.state.value;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -200,7 +200,7 @@ var UserBasicEditField = React.createClass({
         this.props.onDisplayTypeChange("text");
         Trace.traceEvent(e,"取消对"+this.props.field+"的修改");
     },
-    onFocusInput: function (type, event) {
+    onFocusInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
             if (currentValue === secretPassword) {
@@ -212,7 +212,7 @@ var UserBasicEditField = React.createClass({
             }
         }
     },
-    onBlurInput: function (type, event) {
+    onBlurInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
             if (currentValue === '') {
@@ -224,11 +224,11 @@ var UserBasicEditField = React.createClass({
             }
         }
     },
-    onInputChange: function (e) {
+    onInputChange: function(e) {
         this.setField.bind(this, 'input', e);
         this.props.onValueChange();
     },
-    render: function () {
+    render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         var displayCls = classNames({
@@ -247,7 +247,7 @@ var UserBasicEditField = React.createClass({
                 {
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={this.props.title}
-                           onClick={(e)=>{this.setEditable(e);}}></i>
+                            onClick={(e)=>{this.setEditable(e);}}></i>
                     ) : null
                 }
 
@@ -263,9 +263,9 @@ var UserBasicEditField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
-                   onClick={(e)=>{this.handleSubmit(e);}}></i>
+                    onClick={(e)=>{this.handleSubmit(e);}}></i>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={(e)=>{this.handleCancel(e);}}></i>
+                    onClick={(e)=>{this.handleCancel(e);}}></i>
             </div>
         );
 
@@ -284,14 +284,14 @@ var UserBasicEditField = React.createClass({
                         >
                             <Validator rules={this.props.validators}>
                                 <Input name="input"
-                                       rows={this.props.type === 'textarea' ? this.props.rows : null}
-                                       type={this.props.type}
-                                       placeholder={this.props.placeholder}
-                                       value={formData.input}
-                                       onChange={this.onInputChange}
-                                       autoComplete="off"
-                                       onFocus={this.onFocusInput.bind(this , this.props.type)}
-                                       onBlur={this.onBlurInput.bind(this,this.props.type)}
+                                    rows={this.props.type === 'textarea' ? this.props.rows : null}
+                                    type={this.props.type}
+                                    placeholder={this.props.placeholder}
+                                    value={formData.input}
+                                    onChange={this.onInputChange}
+                                    autoComplete="off"
+                                    onFocus={this.onFocusInput.bind(this , this.props.type)}
+                                    onBlur={this.onBlurInput.bind(this,this.props.type)}
                                 />
                             </Validator>
                         </FormItem>

@@ -13,7 +13,7 @@ function UserAbnormalLoginAction() {
         "setApp",//设置应用的名称
         "deleteAbnormalLoginInfo" // 删除某条异地登录的信息
     );
-    this.getUserAbnormalLogin = function (data) {
+    this.getUserAbnormalLogin = function(data) {
         this.dispatch({loading: true, error: false});
         userAbnormalLoginAjax.getUserAbnormalLogin(data).then((data) =>{
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -23,7 +23,7 @@ function UserAbnormalLoginAction() {
         });
     };
     // 根据用户的ID获取应用列表appId和应用的名称
-    this.getUserApp = function (userId,callback) {
+    this.getUserApp = function(userId,callback) {
         this.dispatch({loading: true,error: false});
         userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result)=> {
             this.dispatch({loading: false,error: false, dataObj: result.apps});

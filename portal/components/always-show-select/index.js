@@ -56,12 +56,12 @@ class AlwaysShowSelect extends React.Component {
             let options = dataList.map(data => {
                 let className = classNames("select-item", {"item-active": data.value === this.state.value});
                 return (<li className={className}
-                            onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>);
+                    onClick={this.onSelectChange.bind(this, data)}>{data.name}</li>);
             });
             if (this.props.hasClearOption) {//有清空选择的选项
                 let className = classNames("select-item", {"item-active": !this.state.value});
                 options.unshift(<li className={className}
-                                    onClick={this.onSelectChange.bind(this, {name: "", value: ""})}>&nbsp;</li>);
+                    onClick={this.onSelectChange.bind(this, {name: "", value: ""})}>&nbsp;</li>);
             }
             return options;
         } else {
@@ -87,9 +87,9 @@ class AlwaysShowSelect extends React.Component {
             <div className="always-show-select-container">
                 <div className="select-input">
                     <Input placeholder={this.props.placeholder}
-                           value={inputVal}
-                           onChange={this.onSearch}
-                           onFocus={this.inputFocus}
+                        value={inputVal}
+                        onChange={this.onSearch}
+                        onFocus={this.inputFocus}
                     />
                 </div>
                 <ul className="select-options">
@@ -105,9 +105,9 @@ AlwaysShowSelect.defaultProps = {
     hasClearOption: false,//是否有清空选择的选项
     dataList: [],//由{name：展示的内容,value：选择后需要保存的值}组成的下拉列表
     notFoundContent: Intl.get("common.no.data", "暂无数据"),//未搜索到或列表为空时的提示信息
-    onChange: function () {
+    onChange: function() {
     },
-    getSelectContent: function () {
+    getSelectContent: function() {
 
     }//取到所展示的内容
 };

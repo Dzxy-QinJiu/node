@@ -49,13 +49,13 @@ var SalesStageList = {
 };
 
 
-exports.init = function () {
+exports.init = function() {
 
     nock("http://172.19.104.108:8182")
         .persist()
         .get(SalesStageManageServic.urls.getSalesStageList)
         .query(true)
-        .reply(function () {
+        .reply(function() {
             return [200, SalesStageList];
         });
 };

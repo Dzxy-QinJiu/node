@@ -8,22 +8,22 @@ function Parser() {
     this.body = '';
 }
 //设置url的param
-Parser.prototype.setUrlParam = function (urlParam) {
+Parser.prototype.setUrlParam = function(urlParam) {
     this.urlParam = urlParam;
     return this;
 };
 //设置request
-Parser.prototype.setRequest = function (req) {
+Parser.prototype.setRequest = function(req) {
     this.req = req;
     return this;
 };
 //设置body
-Parser.prototype.setBody = function (body) {
+Parser.prototype.setBody = function(body) {
     this.body = body;
     return this;
 };
 //解析出req.query,req.param,req.body,req.param
-Parser.prototype.parse = function () {
+Parser.prototype.parse = function() {
     //返回的结果
     var ret = {
         query: {},

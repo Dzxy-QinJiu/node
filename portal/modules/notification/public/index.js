@@ -8,13 +8,13 @@ if (language.lan() == "es" || language.lan() == "en") {
 var SystemNotification = require("./views/system");
 
 var Notification = React.createClass({
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
     },
-    render: function () {
+    render: function() {
         return (
             <div className="notification_wrap">
                 <div className="notification_content">

@@ -16,31 +16,31 @@ import Trace from "LIB_DIR/trace";
 function noop() {
 }
 var LeftTree = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             getSalesTeamMemberList: noop
         };
     },
 
-    showOperationArea: function (item) {
+    showOperationArea: function(item) {
         SalesTeamAction.showOperationArea(item);
     },
 
-    editGroup: function (item) {
+    editGroup: function(item) {
         Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-update"),"编辑子团队");
         SalesTeamAction.editGroup(item);
     },
-    addGroup: function (item) {
+    addGroup: function(item) {
         Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-add"),"增加子团队");
         SalesTeamAction.addGroup(item);
     },
 
-    deleteGroup: function (item) {
+    deleteGroup: function(item) {
         Trace.traceEvent($(this.getDOMNode()).find("ul.left-tree-ul .tree-operation-div .icon-delete"),"删除子团队");
         SalesTeamAction.deleteGroup(item);
     },
 
-    cancelEditGroup: function (item) {
+    cancelEditGroup: function(item) {
         if (item && item.isEditGroup) {
             SalesTeamAction.cancelEditGroup(item);
         } else {
@@ -49,30 +49,30 @@ var LeftTree = React.createClass({
         }
     },
 
-    bodyClickFun: function (e) {
+    bodyClickFun: function(e) {
         var target = e.target;
         if (this.refs.operationElement && !$.contains(this.refs.operationElement, target)) {
             SalesTeamAction.hideAllOperationArea();
         }
     },
 
-    bindEvent: function () {
+    bindEvent: function() {
         $('body').on('click', this.bodyClickFun);
     },
 
-    unbindEvent: function () {
+    unbindEvent: function() {
         $('body').off('click', this.bodyClickFun);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.bindEvent();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         this.unbindEvent();
     },
 
-    toggleGroupTree: function (item, event) {
+    toggleGroupTree: function(item, event) {
         Trace.traceEvent(event,"打开或者关闭子列表");
         event.stopPropagation();
         var groupId = item.key;
@@ -90,7 +90,7 @@ var LeftTree = React.createClass({
         SalesTeamAction.toggleGroupTree(groupId);
     },
 
-    onSelectGroup: function (item, event) {
+    onSelectGroup: function(item, event) {
         event.stopPropagation();
 
         if (item.isEditGroup || item.isAddGroup) {
@@ -116,38 +116,38 @@ var LeftTree = React.createClass({
         SalesTeamAction.getSalesTeamMemberList(groupId);
         SalesTeamAction.setSelectSalesTeamGroup(groupId);
     },
-    hideModalDialog: function () {
+    hideModalDialog: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"隐藏模态框");
         SalesTeamAction.hideModalDialog(this.props.deleteGroupItem);
     },
-    saveDeleteGroup: function () {
+    saveDeleteGroup: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-dialog .modal-footer"),"确定删除某团队");
         SalesTeamAction.saveDeleteGroup(this.props.deleteGroupItem.key);
     },
-    operationElement: function (item) {
+    operationElement: function(item) {
         return (
             <div className="tree-operation-btn-div" ref="operationElement">
                 <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
                     <div className="tree-operation-btn-div-item" onClick={this.editGroup.bind(this, item)}>
-                    <span className="icon-operation iconfont icon-update">
-                    </span>
+                        <span className="icon-operation iconfont icon-update">
+                        </span>
                         <span className="operation-btn-item-span"><ReactIntl.FormattedMessage id="common.update"
-                                                                                              defaultMessage="修改"/></span>
+                            defaultMessage="修改"/></span>
                     </div>
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
-                    <span className="icon-operation iconfont icon-delete">
-                    </span>
+                        <span className="icon-operation iconfont icon-delete">
+                        </span>
                         <span className="operation-btn-item-span"><ReactIntl.FormattedMessage id="common.delete"
-                                                                                              defaultMessage="删除"/></span>
+                            defaultMessage="删除"/></span>
                     </div>
                 </PrivilegeChecker>
             </div>
         );
     },
 
-    element: function (item, type) {
+    element: function(item, type) {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
         return (
@@ -171,28 +171,28 @@ var LeftTree = React.createClass({
                                 id="sales.team.member.count"
                                 defaultMessage={`{teamMemberCount}人`}
                                 values={{
-                                     'teamMemberCount': teamMemberCount
-                                     }}
+                                    'teamMemberCount': teamMemberCount
+                                }}
                             />
                             )</span>
                     </div>
                     <div className="tree-operation-div">
                         <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
                             <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                  title={Intl.get("sales.team.add.child.team", "添加子团队")}
-                                  onClick={this.addGroup.bind(this, item)}
+                                title={Intl.get("sales.team.add.child.team", "添加子团队")}
+                                onClick={this.addGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
                         <PrivilegeChecker check="BGM_SALES_TEAM_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                  title={Intl.get("sales.team.edit.team", "编辑团队")}
-                                  onClick={this.editGroup.bind(this, item)}
+                                title={Intl.get("sales.team.edit.team", "编辑团队")}
+                                onClick={this.editGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
                         <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                  title={Intl.get("sales.team.del.team", "删除团队")}
-                                  onClick={this.deleteGroup.bind(this, item)}
+                                title={Intl.get("sales.team.del.team", "删除团队")}
+                                onClick={this.deleteGroup.bind(this, item)}
                             />
                         </PrivilegeChecker>
                     </div>
@@ -201,7 +201,7 @@ var LeftTree = React.createClass({
             </div>);
     },
 
-    treeElement: function (btnClass, item, type) {
+    treeElement: function(btnClass, item, type) {
 
         if (!type) {
             btnClass += " no-has-children";
@@ -233,11 +233,11 @@ var LeftTree = React.createClass({
             )
         );
     },
-    hideDelTooltip: function () {
+    hideDelTooltip: function() {
         SalesTeamAction.clearDelTeamErrorMsg();
     },
     //搜索团队的事件处理
-    searchEvent: function (searchContent) {
+    searchEvent: function(searchContent) {
         searchContent = searchContent ? searchContent.trim() : '';
         if (searchContent) {
             Trace.traceEvent($(this.getDOMNode()).find(".sales-team-root-add .search-input-container input"),"跟据团队名称搜索团队");
@@ -254,11 +254,11 @@ var LeftTree = React.createClass({
         }
     },
 
-    addSalesTeamRoot: function (e) {
+    addSalesTeamRoot: function(e) {
         Trace.traceEvent(e,"添加团队");
         SalesTeamAction.addSalesTeamRoot();
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var salesTeamGroupList = this.props.salesTeamGroupList;
 
@@ -317,9 +317,9 @@ var LeftTree = React.createClass({
                         </div>
                         <div className="add-sales-team-root-div">
                             <Button type="ghost" className="add-root-sales-team-btn"
-                                    onClick={(e)=>{this.addSalesTeamRoot(e);}}
+                                onClick={(e)=>{this.addSalesTeamRoot(e);}}
                             ><ReactIntl.FormattedMessage id="sales.team.add.team"
-                                                                                                defaultMessage="添加团队"/></Button>
+                                    defaultMessage="添加团队"/></Button>
                         </div>
                     </div>)
                     }
@@ -331,15 +331,15 @@ var LeftTree = React.createClass({
                         </ul>
                     </GeminiScrollbar>
                     <ModalDialog modalContent={modalContent}
-                                 modalShow={this.props.deleteGroupItem.modalDialogFlag}
-                                 container={this}
-                                 hideModalDialog={this.hideModalDialog}
-                                 delete={this.saveDeleteGroup}
+                        modalShow={this.props.deleteGroupItem.modalDialogFlag}
+                        container={this}
+                        hideModalDialog={this.hideModalDialog}
+                        delete={this.saveDeleteGroup}
                     />
                     {this.props.delTeamErrorMsg ? (<AlertTimer time={2000}
-                                                               message={this.props.delTeamErrorMsg}
-                                                               type='error' showIcon
-                                                               onHide={this.hideDelTooltip}/>) : null}
+                        message={this.props.delTeamErrorMsg}
+                        type='error' showIcon
+                        onHide={this.hideDelTooltip}/>) : null}
                 </div>
             </div>
         );

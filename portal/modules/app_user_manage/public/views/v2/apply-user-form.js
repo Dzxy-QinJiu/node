@@ -21,7 +21,7 @@ const dayTime = 24 * 60 * 60 * 1000;
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
-    getInitialState: function () {
+    getInitialState: function() {
         const formData = this.buildFormData(this.props);
 
         return {
@@ -33,7 +33,7 @@ const ApplyUserForm = React.createClass({
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps);
         let oldAppIds = _.pluck(this.props.apps, "client_id");
         let newAppIds = _.pluck(nextProps.apps, "client_id");
@@ -43,7 +43,7 @@ const ApplyUserForm = React.createClass({
         this.getAppsDefaultConfig(diffAppIds);
     },
 
-    buildFormData: function (props) {
+    buildFormData: function(props) {
         const users = _.pluck(props.users, "user");
         let formData = {
             user_ids: _.pluck(users, "user_id"),
@@ -73,13 +73,13 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         //获取各应用的默认设置
         this.getAppsDefaultConfig(_.pluck(this.props.apps, 'client_id'));
     },
 
     //获取各应用的默认设置
-    getAppsDefaultConfig: function (appIds) {
+    getAppsDefaultConfig: function(appIds) {
         if (_.isArray(appIds) && appIds.length) {
             //获取各应用的默认设置(不需要角色和权限信息)
             commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
@@ -103,7 +103,7 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    onAppChange: function (id) {
+    onAppChange: function(id) {
         if (id === this.state.appFormData.client_id) return;
         const appFormData = _.find(this.state.formData.products, app => app.client_id === id);
         this.setState({appFormData: appFormData});
@@ -111,7 +111,7 @@ const ApplyUserForm = React.createClass({
     /* 获取应用的配置, app：应用，appDefaultConfigList：各应用的默认配置列表，
      * userType:申请的用户类型（正式用户/试用用户）,resetDefault:是否需要重设默认值
      */
-    getAppConfig: function (app, appDefaultConfigList, userType, needSetDefault) {
+    getAppConfig: function(app, appDefaultConfigList, userType, needSetDefault) {
         //找到该应用对应用户类型的配置信息
         let defaultConfig = _.find(appDefaultConfigList, data => data.client_id === app.client_id && userType === data.user_type);
         let begin_date = DateSelectorPicker.getMilliseconds(moment().format(oplateConsts.DATE_FORMAT));
@@ -132,7 +132,7 @@ const ApplyUserForm = React.createClass({
         return app;
     },
 
-    onUserTypeChange: function (e) {
+    onUserTypeChange: function(e) {
         let formData = this.state.formData;
         formData.tag = e.target.value;
         formData.products = formData.products.map(app => {
@@ -141,24 +141,24 @@ const ApplyUserForm = React.createClass({
         this.setState({formData: formData});
     },
 
-    onRemarkChange: function (e) {
+    onRemarkChange: function(e) {
         this.state.formData.remark = e.target.value;
         this.setState(this.state);
     },
 
-    onTimeChange: function (begin_date, end_date, range) {
+    onTimeChange: function(begin_date, end_date, range) {
         this.state.appFormData.begin_date = parseInt(begin_date);
         this.state.appFormData.end_date = parseInt(end_date);
         this.state.appFormData.range = range;
         this.setState(this.state);
     },
 
-    onOverDraftChange: function (e) {
+    onOverDraftChange: function(e) {
         this.state.appFormData.over_draft = parseInt(e.target.value);
         this.setState(this.state);
     },
 
-    handleSubmit: function (cb) {
+    handleSubmit: function(cb) {
         if (this.state.isLoading) {
             //正在申请，不可重复申请
             return;
@@ -212,11 +212,11 @@ const ApplyUserForm = React.createClass({
         });
     },
 
-    handleCancel: function () {
+    handleCancel: function() {
         this.props.cancelApply();
     },
     //是否应用到所有应用上的设置
-    toggleCheckbox: function () {
+    toggleCheckbox: function() {
         this.setState({setAllChecked: !this.state.setAllChecked});
     },
     renderTabToolTip(app_name) {
@@ -226,7 +226,7 @@ const ApplyUserForm = React.createClass({
             </Tooltip>
         );
     },
-    render: function () {
+    render: function() {
         const formData = this.state.formData;
         const appFormData = this.state.appFormData;
         const timePickerConfig = {
@@ -256,7 +256,7 @@ const ApplyUserForm = React.createClass({
                                 wrapperCol={{span: 14}}
                             >
                                 <RadioGroup onChange={this.onUserTypeChange}
-                                            value={formData.tag}>
+                                    value={formData.tag}>
                                     <Radio key="1" value={Intl.get("common.trial.user", "试用用户")}>
                                         {Intl.get("common.trial.user", "试用用户")}
                                     </Radio>
@@ -271,27 +271,27 @@ const ApplyUserForm = React.createClass({
                                 wrapperCol={{span: 14}}
                             >
                                 <Input onChange={this.onRemarkChange}
-                                       value={this.state.formData.remark}
-                                       type="textarea"
+                                    value={this.state.formData.remark}
+                                    type="textarea"
                                 />
                             </FormItem>
                         </Validation>
                         <div className="app-user-info ant-form-item">
                             <Tabs tabPosition="left" onChange={this.onAppChange}
-                                  prefixCls="antd-vertical-tabs">
+                                prefixCls="antd-vertical-tabs">
                                 {this.props.apps.map(app => {
                                     let disabled = this.state.setAllChecked && app.client_id != appFormData.client_id;
                                     return (<TabPane key={app.client_id}
-                                                     tab={this.renderTabToolTip(app.client_name)}
-                                                     disabled={disabled}>
+                                        tab={this.renderTabToolTip(app.client_name)}
+                                        disabled={disabled}>
                                         <div className="set-all-check-box col-24">
                                             <Checkbox checked={this.state.setAllChecked}
-                                                      onChange={this.toggleCheckbox}/>
+                                                onChange={this.toggleCheckbox}/>
                                             <span className="checkbox-title" onClick={this.toggleCheckbox}>
                                                 {Intl.get("user.all.app.set", "设置到所有应用上")}
                                             </span>
                                             {/*<span className="checkbox-notice">*/}
-                                                {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
+                                            {/*({Intl.get("user.set.single.app", "注：若想设置单个应用，请取消此项的勾选")})*/}
                                             {/*</span>*/}
                                         </div>
                                         <div className="app-tab-pane col-24">
@@ -308,7 +308,7 @@ const ApplyUserForm = React.createClass({
                                                 wrapperCol={{span: 19}}
                                             >
                                                 <RadioGroup onChange={this.onOverDraftChange}
-                                                            value={appFormData.over_draft.toString()}>
+                                                    value={appFormData.over_draft.toString()}>
                                                     <Radio key="1" value="1"><ReactIntl.FormattedMessage
                                                         id="user.status.stop" defaultMessage="停用"/></Radio>
                                                     <Radio key="2" value="2"><ReactIntl.FormattedMessage

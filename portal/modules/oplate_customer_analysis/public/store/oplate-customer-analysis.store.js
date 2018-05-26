@@ -9,7 +9,7 @@ function OplateCustomerAnalysisStore() {
 }
 
 //设置store的初始值
-OplateCustomerAnalysisStore.prototype.resetState = function () {
+OplateCustomerAnalysisStore.prototype.resetState = function() {
     //默认查看总客户
     this.currentTab = 'total';
     //选中的app
@@ -55,11 +55,11 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
         data: [],
         errorMsg: ""
     },
-        //点击客户阶段数字进入的客户列表所需的参数
-        this.selectedCustomerStage = {
-            type: "",//阶段标签 
-            time: ""
-        };
+    //点击客户阶段数字进入的客户列表所需的参数
+    this.selectedCustomerStage = {
+        type: "",//阶段标签 
+        time: ""
+    };
     //是否展示客户阶段点击数字打开的客户列表
     this.isShowCustomerStageTable = false;
     //客户阶段变更的客户列表数据
@@ -101,7 +101,7 @@ OplateCustomerAnalysisStore.prototype.resetState = function () {
     this.currentMemberId = "";
 };
 //重置图表数据
-OplateCustomerAnalysisStore.prototype.resetChartData = function (type) {
+OplateCustomerAnalysisStore.prototype.resetChartData = function(type) {
     //总数、新增客户数、过期客户数、新增过期客户数
     this.summaryNumbers = {
         resultType: type || "",
@@ -166,7 +166,7 @@ OplateCustomerAnalysisStore.prototype.resetChartData = function (type) {
 };
 
 //获取统计总数
-OplateCustomerAnalysisStore.prototype.getSummaryNumbers = function (result) {
+OplateCustomerAnalysisStore.prototype.getSummaryNumbers = function(result) {
     var summaryNumbers = this.summaryNumbers;
     if (result.loading) {
         summaryNumbers.resultType = 'loading';
@@ -193,7 +193,7 @@ OplateCustomerAnalysisStore.prototype.getSummaryNumbers = function (result) {
 };
 
 //获取具体统计数据
-OplateCustomerAnalysisStore.prototype.getAnalysisData = function (result) {
+OplateCustomerAnalysisStore.prototype.getAnalysisData = function(result) {
     var analysis = this[result.reqData.customerProperty + "Analysis"];
     if (result.reqData.customerProperty == "active_customer") {
         analysis = this.activeCustomerAnalysis;
@@ -214,31 +214,31 @@ OplateCustomerAnalysisStore.prototype.getAnalysisData = function (result) {
 };
 
 //更换查询时间
-OplateCustomerAnalysisStore.prototype.changeSearchTime = function ({ startTime, endTime }) {
+OplateCustomerAnalysisStore.prototype.changeSearchTime = function({ startTime, endTime }) {
     this.startTime = startTime;
     this.endTime = endTime;
 };
 
 //更换选中应用
-OplateCustomerAnalysisStore.prototype.changeSelectedApp = function (selectedApp) {
+OplateCustomerAnalysisStore.prototype.changeSelectedApp = function(selectedApp) {
     this.isComposite = /all/.test(selectedApp);
     //为app重新赋值
     this.selectedApp = selectedApp;
 };
 //更换当前tab页
-OplateCustomerAnalysisStore.prototype.changeCurrentTab = function (tabName) {
+OplateCustomerAnalysisStore.prototype.changeCurrentTab = function(tabName) {
     this.currentTab = tabName;
 };
 //显示没有数据
-OplateCustomerAnalysisStore.prototype.showNoData = function () {
+OplateCustomerAnalysisStore.prototype.showNoData = function() {
     this.resetChartData();
 };
 //获取用户类型
-OplateCustomerAnalysisStore.prototype.getUserType = function (userType) {
+OplateCustomerAnalysisStore.prototype.getUserType = function(userType) {
     this.userType = userType;
 };
 //获取销售阶段列表
-OplateCustomerAnalysisStore.prototype.getSalesStageList = function (list) {
+OplateCustomerAnalysisStore.prototype.getSalesStageList = function(list) {
     if (_.isArray(list)) this.salesStageList = list;
 };
 
@@ -248,8 +248,8 @@ OplateCustomerAnalysisStore.prototype.getSalesStageList = function (list) {
  * resultString[string]: 用于存放loading和errorMsg的对象名
  * fn: 请求成功触发的回调，会传入响应结果result，包含{ errorMsg, loading, data, paramObj }
 */
-const resultHandler = function (resultString, fn) {
-    return function (result) {
+const resultHandler = function(resultString, fn) {
+    return function(result) {
         if (!this[resultString]) {
             return;
         }
@@ -277,7 +277,7 @@ const resultHandler = function (resultString, fn) {
 };
 
 //查询迁出客户
-OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("transferCustomers", function ({ loading, errorMsg, data, paramObj }) {
+OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("transferCustomers", function({ loading, errorMsg, data, paramObj }) {
     let customers = [];
     if (data.result && data.result.length > 0) {
         customers = data.result.map(item => {
@@ -300,7 +300,7 @@ OplateCustomerAnalysisStore.prototype.getTransferCustomers = resultHandler("tran
 });
 
 //获取客户阶段变更数据
-OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("customerStage", function ({ loading, errorMsg, data }) {
+OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("customerStage", function({ loading, errorMsg, data }) {
     if (data && data.length) {
         this.customerStage.data = data.map(x => {
             x.date = x.date ? moment(x.date).format(oplateConsts.DATE_FORMAT) : "";
@@ -310,7 +310,7 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomers = resultHandler("c
 });
 
 //获取客户阶段变更对应的客户列表数据
-OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler("stageChangedCustomerList", function ({ loading, errorMsg, data, paramObj }) {
+OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler("stageChangedCustomerList", function({ loading, errorMsg, data, paramObj }) {
     if (paramObj.isFirst) {
         this.stageChangedCustomerList.data = data.list;
     } else {
@@ -326,12 +326,12 @@ OplateCustomerAnalysisStore.prototype.getStageChangeCustomerList = resultHandler
 });
 
 //显示隐藏客户阶段的客户列表面板
-OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function () {
+OplateCustomerAnalysisStore.prototype.toggleStageCustomerList = function() {
     this.isShowCustomerStageTable = !this.isShowCustomerStageTable;
 };
 
 //获取各行业试用客户覆盖率
-OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function ({ loading, errorMsg, data, paramObj }) {
+OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler("industryCustomerOverlay", function({ loading, errorMsg, data, paramObj }) {
     let tempData = [];
     let list = [];
     if (data.result) {
@@ -399,7 +399,7 @@ OplateCustomerAnalysisStore.prototype.getIndustryCustomerOverlay = resultHandler
  *  }
  * ]
  */
-OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function ({ loading, errorMsg, data, paramObj }) {
+OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCustomerCount", function({ loading, errorMsg, data, paramObj }) {
     let list = [];
     if (data.list && data.list.length > 0) {
         data.list.forEach(teamItem => {
@@ -431,7 +431,7 @@ OplateCustomerAnalysisStore.prototype.getNewCustomerCount = resultHandler("newCu
 
 
 //获取不同阶段客户数
-OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("stageCustomerNum", function ({ loading, errorMsg, data, paramObj }) {
+OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("stageCustomerNum", function({ loading, errorMsg, data, paramObj }) {
     let list = [];
     if (data) {
         list = [
@@ -444,10 +444,10 @@ OplateCustomerAnalysisStore.prototype.getCustomerStageAnalysis = resultHandler("
     this.stageCustomerNum.data = list;
 });
 
-OplateCustomerAnalysisStore.prototype.teamChange = function (teamId) {
+OplateCustomerAnalysisStore.prototype.teamChange = function(teamId) {
     this.currentTeamId = teamId;
 };
-OplateCustomerAnalysisStore.prototype.memberChange = function (memberId) {
+OplateCustomerAnalysisStore.prototype.memberChange = function(memberId) {
     this.currentTeamId = "";
     this.currentMemberId = memberId;
 };

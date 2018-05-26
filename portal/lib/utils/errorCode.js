@@ -4,7 +4,7 @@ var logger = require("./logger").getLogger('rest');
 
 var ErrorCode = {};
 //获取错误状态码
-ErrorCode.getErrorCodeDesc = function (errorObj, req) {
+ErrorCode.getErrorCodeDesc = function(errorObj, req) {
     var errorCodeNumber = 0, errorCodeDesc;
     var commonErrorCodeMap = CommonErrorCode.getConfigJson(req);
     if (typeof errorObj === "string" || typeof errorObj === "number") {
@@ -34,7 +34,7 @@ ErrorCode.getErrorCodeDesc = function (errorObj, req) {
  * @returns {boolean}
  */
 
-ErrorCode.compareErrorCodeNumber = function (errorObj, errorCodeNumber) {
+ErrorCode.compareErrorCodeNumber = function(errorObj, errorCodeNumber) {
     if (!errorObj || !errorCodeNumber) {
         return false;
     } else {

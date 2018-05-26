@@ -10,7 +10,7 @@ function CustomerRecordStore() {
     this.resetState();
     this.bindActions(CustomerRecordActions);
 }
-CustomerRecordStore.prototype.resetState = function () {
+CustomerRecordStore.prototype.resetState = function() {
     this.customerRecord = [];//客户跟踪记录列表
     this.customerRecordLoading = false;//正在加载客户跟踪记录信息
     this.customerRecordErrMsg = '';//加载错误后的信息
@@ -20,7 +20,7 @@ CustomerRecordStore.prototype.resetState = function () {
     this.selectedtracetype = 'other';//下拉框选中的类型
     this.initialType = 'other';//下拉框默认选中的类型
     this.total = 0;//共获取的数据总数
-    this.addErrTip ='';//添加内容为空的提示
+    this.addErrTip = '';//添加内容为空的提示
     this.inputContent = '';//输入框中的内容
     this.initialContent = '';
     this.addContentDetailShow = 'false';//增加详情的输入框是否显示
@@ -44,9 +44,9 @@ CustomerRecordStore.prototype.resetState = function () {
 CustomerRecordStore.prototype.dismiss = function() {
     this.resetState();
 };
-CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
+CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
     this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg ="";
+    this.addCustomerSuccMsg = "";
     if (!result.loading){
         this.customerRecordLoading = false;
         if (result.error){
@@ -55,7 +55,7 @@ CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
         } else {
             this.customerRecordErrMsg = "";
             this.curPage++;
-            var customerRecord = _.isArray(result.data.result)?result.data.result:[];
+            var customerRecord = _.isArray(result.data.result) ? result.data.result : [];
             customerRecord.forEach(function(item){
                 item.showAdd = false;
             });
@@ -72,7 +72,7 @@ CustomerRecordStore.prototype.getCustomerTraceList = function (result) {
         }
     }
 };
-CustomerRecordStore.prototype.addCustomerTrace = function (result) {
+CustomerRecordStore.prototype.addCustomerTrace = function(result) {
     if (result.loading) {
         this.addCustomerLoading = true;
         this.addCustomerErrMsg = "";
@@ -92,7 +92,7 @@ CustomerRecordStore.prototype.addCustomerTrace = function (result) {
         this.selectedtracetype = 'other';
     }
 };
-CustomerRecordStore.prototype.updateCustomerTrace = function (result) {
+CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
     if (result.loading) {
         this.addDetailLoading = true;
         this.addDetailErrMsg = '';
@@ -103,7 +103,7 @@ CustomerRecordStore.prototype.updateCustomerTrace = function (result) {
         this.addDetailErrMsg = result.errorMsg;
         this.addDetailSuccMsg = '';
         var customerRecord = this.customerRecord;
-        customerRecord.forEach(function (item) {
+        customerRecord.forEach(function(item) {
             if (item.id == _this.updateId) {
                 item.showAdd = true;
             }
@@ -115,7 +115,7 @@ CustomerRecordStore.prototype.updateCustomerTrace = function (result) {
         this.addDetailSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
-        customerRecord.forEach(function (item) {
+        customerRecord.forEach(function(item) {
             if (item.id == _this.updateId) {
                 item.remark = _this.detailContent;
                 item.showAdd = false;
@@ -124,42 +124,42 @@ CustomerRecordStore.prototype.updateCustomerTrace = function (result) {
         this.customerRecord = customerRecord;
     }
 };
-CustomerRecordStore.prototype.setType = function (type) {
+CustomerRecordStore.prototype.setType = function(type) {
     this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg ="";
+    this.addCustomerSuccMsg = "";
     this.selectedtracetype = type;
 };
-CustomerRecordStore.prototype.setContent = function (content) {
+CustomerRecordStore.prototype.setContent = function(content) {
     this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg ="";
+    this.addCustomerSuccMsg = "";
     this.inputContent = content;
 };
-CustomerRecordStore.prototype.setDetailContent = function (content) {
+CustomerRecordStore.prototype.setDetailContent = function(content) {
     this.addCustomerErrMsg = "";
-    this.addCustomerSuccMsg ="";
+    this.addCustomerSuccMsg = "";
     this.detailContent = content;
     this.isEdit = true;
 };
-CustomerRecordStore.prototype.setUpdateId = function (id) {
+CustomerRecordStore.prototype.setUpdateId = function(id) {
     this.updateId = id;
 };
-CustomerRecordStore.prototype.setInitial = function () {
-    this.inputContent='',
+CustomerRecordStore.prototype.setInitial = function() {
+    this.inputContent = '',
     this.detailContent = '';
-    this.customerRecord= [];
+    this.customerRecord = [];
     this.listenScrollBottom = true;
     this.curPage = 1;
 };
-CustomerRecordStore.prototype.changeAddButtonType = function (type) {
+CustomerRecordStore.prototype.changeAddButtonType = function(type) {
     this.saveButtonType = type;
 };
-CustomerRecordStore.prototype.setModalDialogFlag = function (state) {
+CustomerRecordStore.prototype.setModalDialogFlag = function(state) {
     this.modalDialogFlag = state;
 };
-CustomerRecordStore.prototype.updateItem = function (item) {
+CustomerRecordStore.prototype.updateItem = function(item) {
     this.edittingItem = item;
 };
-CustomerRecordStore.prototype.setLoading = function () {
+CustomerRecordStore.prototype.setLoading = function() {
     this.customerRecordLoading = true;
 };
 

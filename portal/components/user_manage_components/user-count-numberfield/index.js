@@ -67,12 +67,12 @@ const UserCountNumberFieldMixin = {
                     wrapperCol={{span: 24}}
                 >
                     <InputNumber name="count_number"
-                                 value={currentValue}
-                                 min={1}
-                                 max={99}
-                                 size="large"
-                                 onBlur={onBlur.bind(this)}
-                                 onChange={onChange.bind(this)}/>
+                        value={currentValue}
+                        min={1}
+                        max={99}
+                        size="large"
+                        onBlur={onBlur.bind(this)}
+                        onChange={onChange.bind(this)}/>
                 </FormItem>
             </div>
         );

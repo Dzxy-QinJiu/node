@@ -15,19 +15,19 @@ var deleteTimeOut = 3 * 60 * 1000;
 exports.urls = authorityRestApis;
 
 // 获取权限列表
-exports.getAuthorityList = function (req, res, clientID) {
+exports.getAuthorityList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
             url: authorityRestApis.getAuthorityList + "/" + clientID,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isObject(data)) {
                     //权限组数据格式的修改
                     for (var key in data) {
-                        data[key] = data[key].map(function (permission) {
+                        data[key] = data[key].map(function(permission) {
                             return {
                                 permissionId: permission.permission_id,
                                 permissionName: permission.permission_name,
@@ -45,7 +45,7 @@ exports.getAuthorityList = function (req, res, clientID) {
 };
 
 // 获取权限组名称
-exports.editAuthorityGroupName = function (req, res, authorityGroup) {
+exports.editAuthorityGroupName = function(req, res, authorityGroup) {
     return restUtil.authRest.put(
         {
             url: authorityRestApis.editAuthorityGroupName + "/" + authorityGroup.classifyName,
@@ -56,7 +56,7 @@ exports.editAuthorityGroupName = function (req, res, authorityGroup) {
 };
 
 // 编辑权限
-exports.editAuthority = function (req, res, authority) {
+exports.editAuthority = function(req, res, authority) {
     return restUtil.authRest.put(
         {
             url: authorityRestApis.editAuthority,
@@ -64,7 +64,7 @@ exports.editAuthority = function (req, res, authority) {
             res: res
         },
         authority, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isObject(data)) {
                     //修改后权限数据格式的修改
@@ -83,7 +83,7 @@ exports.editAuthority = function (req, res, authority) {
 };
 
 // 添加权限
-exports.addAuthority = function (req, res, authoritys) {
+exports.addAuthority = function(req, res, authoritys) {
     return restUtil.authRest.post(
         {
             url: authorityRestApis.addAuthority,
@@ -91,11 +91,11 @@ exports.addAuthority = function (req, res, authoritys) {
             res: res
         },
         authoritys, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isArray(data)) {
                     //修改后权限数据格式的修改
-                    data = data.map(function (authority) {
+                    data = data.map(function(authority) {
                         return {
                             classifyName: authority.classify_name,
                             clientId: authority.client_id,
@@ -116,7 +116,7 @@ exports.addAuthority = function (req, res, authoritys) {
 };
 
 // 删除权限
-exports.deleteAuthority = function (req, res, authorityIds) {
+exports.deleteAuthority = function(req, res, authorityIds) {
     return restUtil.authRest.del(
         {
             url: authorityRestApis.deleteAuthority + "/" + authorityIds,

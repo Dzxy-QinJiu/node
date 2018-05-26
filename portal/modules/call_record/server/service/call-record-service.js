@@ -22,13 +22,13 @@ const restApis = {
 };
 
 //获取全部和客户电话的列表
-exports.getCallRecordList = function (req, res, params, filterObj, queryObj) {
+exports.getCallRecordList = function(req, res, params, filterObj, queryObj) {
     let url = params.type === "manager" ? managerCallRcordListUrl : callRecordListUrl;
     url = url.replace(":start_time", params.start_time)
-    .replace(":end_time", params.end_time)
-    .replace(":page_size", params.page_size)
-    .replace(":sort_field", params.sort_field)
-    .replace(":sort_order", params.sort_order);
+        .replace(":end_time", params.end_time)
+        .replace(":page_size", params.page_size)
+        .replace(":sort_field", params.sort_field)
+        .replace(":sort_order", params.sort_order);
     if (queryObj) {
         if (queryObj.id) {
             url += "?id=" + queryObj.id;
@@ -50,7 +50,7 @@ exports.getCallRecordList = function (req, res, params, filterObj, queryObj) {
 };
 
 //查询无效电话列表（客服和114）
-exports.getInvalidCallRecordList = function (req, res, params, filterObj, queryObj) {
+exports.getInvalidCallRecordList = function(req, res, params, filterObj, queryObj) {
     let url = invalidCallRecordListUrl.replace(":start_time", params.start_time)
         .replace(":type", params.type)
         .replace(":end_time", params.end_time)
@@ -77,7 +77,7 @@ exports.getInvalidCallRecordList = function (req, res, params, filterObj, queryO
 };
 
 // 编辑通话记录中跟进内容
-exports.editCallTraceContent = function (req, res, queryObj) {
+exports.editCallTraceContent = function(req, res, queryObj) {
     return restUtil.authRest.put(
         {
             url: restApis.editCallTraceContent,
@@ -87,7 +87,7 @@ exports.editCallTraceContent = function (req, res, queryObj) {
 };
 
 // 搜索电话号码号码时，提供推荐列表
-exports.getRecommendPhoneList = function (req, res, filterPhoneObj, filterObj) {
+exports.getRecommendPhoneList = function(req, res, filterPhoneObj, filterObj) {
 
     let url = restApis.getRecommendPhoneList.replace(":page_size", "10");
     if (filterPhoneObj && filterPhoneObj.filter_phone) {

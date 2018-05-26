@@ -32,21 +32,21 @@ function noop() {
 }
 
 var CardList = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             editCard: noop,
             deleteCard: noop
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             listenScrollBottom: true,
             cardWidth: "auto",
             loadedCardCount: 0
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         // 初始加载卡片的个数
         var firstLoaderCount = this.getCardsCount();
@@ -61,7 +61,7 @@ var CardList = React.createClass({
     },
 
     // 添加卡片时，滚动到顶部，重新获取数据
-    addCard: function () {
+    addCard: function() {
         this.setState({
             loadedCardCount: this.props.pageSize
         });
@@ -69,17 +69,17 @@ var CardList = React.createClass({
         this.props.changePageEvent(this.props.pageSize, 1);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         $(window).off("resize", this.changeWindowSize);
     },
 
     // 改变窗口
-    changeWindowSize: function () {
+    changeWindowSize: function() {
         // 重新render，计算滚动条的长短
         this.setState({});
         var _this = this;
-        setTimeout(function () {
+        setTimeout(function() {
             var lastCardLength = _this.props.curCardList.length;
             var nowCardLength = _this.getRequestPageSize();
             if (lastCardLength < nowCardLength) {
@@ -91,7 +91,7 @@ var CardList = React.createClass({
         }, 100);
     },
     // 获取卡片容器的高度
-    getCardListHeight: function () {
+    getCardListHeight: function() {
         //右侧卡片区域的高度设置
         var cardListHeight = $("body").height() - CONSTANTS.TOP_NAV_HEIGHT - CONSTANTS.PAGE_NAV_HEIGHT;
         if (this.props.isPanelShow) {
@@ -104,28 +104,28 @@ var CardList = React.createClass({
         return cardListHeight;
     },
     //编辑域
-    editCard: function (card) {
+    editCard: function(card) {
         this.props.editCard(card);
     },
     //删除域
-    deleteCard: function () {
+    deleteCard: function() {
         this.props.deleteCard();
     },
     //选择安全域
-    selectCard: function (cardId) {
+    selectCard: function(cardId) {
         this.props.addSelectCard(cardId);
     },
     //取消选择安全域
-    unSelectCard: function (cardId) {
+    unSelectCard: function(cardId) {
         this.props.subtractSelectCard(cardId);
     },
 
     //展示详细信息
-    showCardInfo: function (card) {
+    showCardInfo: function(card) {
         this.props.showCardInfo(card);
     },
     // 根据剩余空白宽度调整卡边的宽度
-    adjustCardWidth: function () {
+    adjustCardWidth: function() {
         var cardWidth = 0;
         var cardListWidth = $(".card-list-content").width();
         // 根据固定卡片宽度计算可以放卡片的个数
@@ -185,7 +185,7 @@ var CardList = React.createClass({
 
     },
 
-    getRequestPageSize: function () {
+    getRequestPageSize: function() {
         // cardCount是此屏幕中可以放置卡片的个数
         var cardCount = this.getCardsCount();
         //  窗口缩小时，每屏按没缩放之前区卡边的个数
@@ -199,7 +199,7 @@ var CardList = React.createClass({
         }
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.curPage == 1) {
             this.setState({
                 listenScrollBottom: true
@@ -207,7 +207,7 @@ var CardList = React.createClass({
         }
     },
 
-    stopScrollLoadedData: function () {
+    stopScrollLoadedData: function() {
         if (this.props.cardListSize == this.state.loadedCardCount) {
             this.setState({
                 listenScrollBottom: false
@@ -216,7 +216,7 @@ var CardList = React.createClass({
     },
 
 
-    handleScrollBottom: function () {
+    handleScrollBottom: function() {
         // 获取每次加载的数据
         var everyLoadedPageSize = this.getRequestPageSize();
         // 计算剩余还没加载卡边的个数  cardListSize总卡片数  loadedCardCount已加载卡片数
@@ -245,29 +245,29 @@ var CardList = React.createClass({
         }
     },
 
-    renderScrollBarLazyload: function () {
+    renderScrollBarLazyload: function() {
         var _this = this;
         var bulkOpersShow = _this.props.bulkOpersShow;
         var curCardListLen = _this.props.curCardList.length;
         var cards = "";
         // 当前页中的应用列表遍历
         if (_this.props.curCardList && curCardListLen > 0) {
-            cards = _this.props.curCardList.map(function (card, index) {
+            cards = _this.props.curCardList.map(function(card, index) {
                 var selectCards = _this.props.selectCards;
                 var isSelect = _.contains(selectCards, card.id);
                 return <Card key={index}
-                             curCard={card}
-                             imgUrl={card.image}
-                             bulkOpersShow={bulkOpersShow}
-                             selectCard={_this.selectCard}
-                             unselectCard={_this.unSelectCard}
-                             isSelect={isSelect}
-                             showCardInfo={_this.showCardInfo}
-                             cardWidth={_this.state.cardWidth}
-                             showRightFullScreen={_this.props.showRightFullScreen}
-                             showAppOverViewPanel={_this.props.showAppOverViewPanel}
-                             type={_this.props.type}
-                             removeFailRealm={_this.props.removeFailRealm}
+                    curCard={card}
+                    imgUrl={card.image}
+                    bulkOpersShow={bulkOpersShow}
+                    selectCard={_this.selectCard}
+                    unselectCard={_this.unSelectCard}
+                    isSelect={isSelect}
+                    showCardInfo={_this.showCardInfo}
+                    cardWidth={_this.state.cardWidth}
+                    showRightFullScreen={_this.props.showRightFullScreen}
+                    showAppOverViewPanel={_this.props.showAppOverViewPanel}
+                    type={_this.props.type}
+                    removeFailRealm={_this.props.removeFailRealm}
                 />;
             });
         }
@@ -304,7 +304,7 @@ var CardList = React.createClass({
         );
     },
 
-    render: function () {
+    render: function() {
         return (
             <div>
                 {this.renderScrollBarLazyload()}

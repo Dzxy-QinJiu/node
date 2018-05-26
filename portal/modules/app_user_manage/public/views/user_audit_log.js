@@ -39,7 +39,7 @@ const USER_TYPE_OPTION = {
 };
 
 var LogView = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             userType: USER_TYPE_OPTION.ALL, // 用户类型类型
             selectedRowIndex: null, // 点击的行索引
@@ -49,17 +49,17 @@ var LogView = React.createClass({
 
     },
 
-    onStoreChange: function () {
+    onStoreChange: function() {
         var state = UserAuditLogStore.getState();
         this.setState(state);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         UserAuditLogStore.listen(this.onStoreChange);
         $(window).on("resize", this.changeTableHeight);
         var _this = this;
-        UserAuditLogAction.getUserApp(function (app_id) {
+        UserAuditLogAction.getUserApp(function(app_id) {
             _this.getAuditLog({
                 appid: app_id,
                 sort_id: ''
@@ -67,12 +67,12 @@ var LogView = React.createClass({
         });
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
-    componentWillReceiveProps: function (newProps) {
+    componentWillReceiveProps: function(newProps) {
         this.setState({
             isShowRightPanel: newProps.isShowRightPanel || false
         });
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         UserAuditLogStore.unlisten(this.onStoreChange);
         $(window).off("resize", this.changeTableHeight);
@@ -80,7 +80,7 @@ var LogView = React.createClass({
     },
 
     // 根据选择条件获取对应的数据
-    getAuditLog: function (queryParams) {
+    getAuditLog: function(queryParams) {
         var searchObj = {
             load_size: this.state.loadSize,  // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
@@ -113,12 +113,12 @@ var LogView = React.createClass({
         }
         UserAuditLogAction.getAuditLogList(searchObj, this.addNoIdUserClass);
     },
-    addNoIdUserClass: function () {
+    addNoIdUserClass: function() {
         $(".userNoIdClass").parents(".ant-table-row").addClass("no_valid_user");
     },
     // 应用下拉框的选择
-    getAppOptions: function () {
-        var list = this.state.userAppArray.map(function (item) {
+    getAppOptions: function() {
+        var list = this.state.userAppArray.map(function(item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -131,7 +131,7 @@ var LogView = React.createClass({
     },
 
     // 选择应用
-    selectApp: function (app_id) {
+    selectApp: function(app_id) {
         UserAuditLogAction.setUserLogSelectedAppId(app_id);
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.getAuditLog({
@@ -141,7 +141,7 @@ var LogView = React.createClass({
     },
 
     // 搜索框
-    handleSearchEvent: function (inputContent) {
+    handleSearchEvent: function(inputContent) {
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         inputContent = inputContent ? inputContent : '';
         if (inputContent.trim() !== this.state.searchName.trim()) {
@@ -153,7 +153,7 @@ var LogView = React.createClass({
         }
     },
     // 更改时间
-    onSelectDate: function (start_time, end_time, range) {
+    onSelectDate: function(start_time, end_time, range) {
         let startTime = start_time;
         if (Date.now() - THREE_MONTH_TIME_RANGE > start_time) {
             startTime = Date.now() - THREE_MONTH_TIME_RANGE;
@@ -173,7 +173,7 @@ var LogView = React.createClass({
         });
     },
 
-    getTableColumns: function () {
+    getTableColumns: function() {
         var columns = [
             {
                 title: Intl.get("common.username", "用户名"),
@@ -182,7 +182,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '100px',
                 key: 'user_name',
-                render: function ($1, row) {
+                render: function($1, row) {
                     var userInputClass = classnames({
                         'user_id_hidden': true,  // 点击查看详情的类
                         'userNoIdClass': row.user_id ? false : true   // userId为空时的类
@@ -209,7 +209,7 @@ var LogView = React.createClass({
                 className: 'has-filter click-show-user-detail',
                 width: '90px',
                 key: 'tags',
-                render: function (userType, record, index) {
+                render: function(userType, record, index) {
                     let text = '';
                     if (_.isArray(userType) && userType.length) {
                         text = AppUserUtil.getUserTypeText(userType[0]);
@@ -228,7 +228,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '100px',
                 key: 'operation_name',
-                render: function (operate, rowData, idx) {
+                render: function(operate, rowData, idx) {
                     return (<span title={operate}>
                         {operate == "null" ? '' : operate}
                     </span>);
@@ -241,7 +241,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '200px',
                 key: 'operate_detail',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             <span title={text} className="operate-detail-style">
@@ -274,7 +274,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '110px',
                 key: 'location',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             {(record.country ? record.country : '') +
@@ -301,7 +301,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '210px',
                 key: 'browser',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             {record.browser_version ? (text + ' ' + record.browser_version) : text}
@@ -324,7 +324,7 @@ var LogView = React.createClass({
                 sorter: true,
                 width: '150px',
                 key: 'timestamp',
-                render: function (timestamp, rowData, idx) {
+                render: function(timestamp, rowData, idx) {
                     return (<span>
                         {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
                     </span>);
@@ -350,13 +350,13 @@ var LogView = React.createClass({
     },
 
     // 委内维拉项目，显示的列表项（不包括类型、IP归属地、运营商）
-    getTableColumnsVe: function () {
+    getTableColumnsVe: function() {
         return _.filter(this.getTableColumns(), (item) => {
             return item.dataIndex != 'location' && item.dataIndex != 'area' && item.dataIndex != 'tags';
         });
     },
 
-    handleTableChange: function (pagination, filters, sorter) {
+    handleTableChange: function(pagination, filters, sorter) {
         const sortField = sorter.field || this.state.sortField;
         //将ascend、descend转换成后端要求的asc、desc
         const sortOrder = (sorter.order && sorter.order.replace("end", "")) || this.state.sortOrder;
@@ -368,12 +368,12 @@ var LogView = React.createClass({
         });
     },
 
-    changeTableHeight: function () {
+    changeTableHeight: function() {
         this.setState({
             windowHeight: $(window).height()
         });
     },
-    renderLoadingBlock: function () {
+    renderLoadingBlock: function() {
         if (this.state.appUserListResult !== 'loading') {
             return null;
         } else if (this.state.getUserLogErrorMsg != '') {
@@ -417,7 +417,7 @@ var LogView = React.createClass({
             </Select>
         );
     },
-    renderLogHeader: function () {
+    renderLogHeader: function() {
         var appOptions = this.getAppOptions();
         return (
             <div className="user_audit_log_container">
@@ -480,7 +480,7 @@ var LogView = React.createClass({
             </div>
         );
     },
-    handleRefresh: function () {
+    handleRefresh: function() {
         UserAuditLogAction.handleRefresh();
         setTimeout(() => {
             this.getAuditLog({
@@ -491,11 +491,11 @@ var LogView = React.createClass({
         });
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
     },
-    getRowKey: function (record, index) {
+    getRowKey: function(record, index) {
         return index;
     },
 
-    handleScrollBottom: function () {
+    handleScrollBottom: function() {
         var length = this.state.auditLogList.length;
         if (length < this.state.total) {
             this.getAuditLog({
@@ -509,13 +509,13 @@ var LogView = React.createClass({
     },
 
     //是否显示没有更多数据了
-    showNoMoreDataTip: function () {
+    showNoMoreDataTip: function() {
         return !this.state.appUserListResult &&
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
     },
 
     //处理选中行的样式
-    handleRowClassName: function (record, index) {
+    handleRowClassName: function(record, index) {
         if ((index == this.state.selectedRowIndex) && this.state.isShowRightPanel) {
             return "current_row";
         }
@@ -524,12 +524,12 @@ var LogView = React.createClass({
         }
     },
     //记录点击行的索引
-    handleRowClick: function (record, index) {
+    handleRowClick: function(record, index) {
         this.setState({
             selectedRowIndex: index
         });
     },
-    renderTableContent: function () {
+    renderTableContent: function() {
         var isLoading = this.state.appUserListResult === 'loading';
         var doNotShow = false;
         if (isLoading && this.state.sortId === '') {
@@ -584,7 +584,7 @@ var LogView = React.createClass({
     },
 
     // 错误处理
-    renderDataErrorHandle: function () {
+    renderDataErrorHandle: function() {
         return <div className="alert-wrap">
             <Alert
                 message={this.state.getUserLogErrorMsg}
@@ -594,7 +594,7 @@ var LogView = React.createClass({
         </div>;
     },
 
-    render: function () {
+    render: function() {
         return (
             <div ref="userListTable" className="user_audit_log_style">
                 {this.renderLogHeader()}

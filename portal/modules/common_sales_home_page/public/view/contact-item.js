@@ -84,26 +84,26 @@ class ContactItem extends React.Component {
                         <div className="contact-container">
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
-                                {_.map(contactItem.phone, (phoneItem, index) => {
-                                    var cls = classNames({
-                                        "contact-name": contactItem.name
-                                    });
-                                    var text = <span className="call-out-tip"><i
-                                        className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
-                                    return (
-                                        <span className="contact-item"
-                                              onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
-                                              data-tracename="拨打电话">
-                                            {index === 0 && contactName ? <span className={cls}>
-                                                <i className="iconfont icon-phone-call-out"></i>{contactName}</span> :
-                                                <i className="iconfont icon-phone-call-out"></i>}
-                                            <span className="phone-num">
-                                                {phoneItem}
+                                    {_.map(contactItem.phone, (phoneItem, index) => {
+                                        var cls = classNames({
+                                            "contact-name": contactItem.name
+                                        });
+                                        var text = <span className="call-out-tip"><i
+                                            className="iconfont icon-phone-call-out-tip"></i>{Intl.get("common.sales.frontpage.click.phone", "点击即可拨打。")}</span>;
+                                        return (
+                                            <span className="contact-item"
+                                                onClick={this.handleClickCallOut.bind(this, phoneItem, contactName, customerId)}
+                                                data-tracename="拨打电话">
+                                                {index === 0 && contactName ? <span className={cls}>
+                                                    <i className="iconfont icon-phone-call-out"></i>{contactName}</span> :
+                                                    <i className="iconfont icon-phone-call-out"></i>}
+                                                <span className="phone-num">
+                                                    {phoneItem}
+                                                </span>
                                             </span>
-                                        </span>
-                                    );
-                                })}
-                            </span> : null}
+                                        );
+                                    })}
+                                </span> : null}
                         </div>
                     );
                 })}

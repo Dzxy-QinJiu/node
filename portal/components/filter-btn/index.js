@@ -7,7 +7,7 @@ var FilterBtn = React.createClass({
         return {
             expanded : false,
             className : "",
-            onClick : function () {}
+            onClick : function() {}
         };
     },
     render : function() {

@@ -14,7 +14,7 @@ function updateUnapprovedCount() {
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
         }
-        timeoutFunc = setTimeout(function () {
+        timeoutFunc = setTimeout(function() {
             //触发展示的组件待审批数的刷新
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
         }, timeout);

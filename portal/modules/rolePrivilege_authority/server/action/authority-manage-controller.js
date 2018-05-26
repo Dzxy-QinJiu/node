@@ -11,39 +11,39 @@ var Promise = require('bluebird');
 /*
  * list authority handler.
  */
-exports.getAuthorityList = function (req, res) {
+exports.getAuthorityList = function(req, res) {
     var clientID = req.params.client_id;
     authorityManageServic.getAuthorityList(req, res, clientID)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 
 
 //修改权限分组名称
-exports.editAuthorityGroupName = function (req, res) {
+exports.editAuthorityGroupName = function(req, res) {
 
     var authorityGroup = {
         classifyName: encodeURI(req.body.classifyName),
         authorityIDs: req.body.authorityIDs ? req.body.authorityIDs.split(",") : []
     };
     authorityManageServic.editAuthorityGroupName(req, res, authorityGroup)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 
 /**
  * add authority handler
  */
-exports.addAuthority = function (req, res) {
+exports.addAuthority = function(req, res) {
     var authoritys = req.body;
-    authoritys = authoritys.map(function (authority) {
+    authoritys = authoritys.map(function(authority) {
         return {
             classify_name: authority.classifyName,
             client_id: authority.clientId,
@@ -56,18 +56,18 @@ exports.addAuthority = function (req, res) {
         };
     });
     authorityManageServic.addAuthority(req, res, authoritys)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 
 };
 /**
  * edit authority handler
  */
-exports.editAuthority = function (req, res) {
+exports.editAuthority = function(req, res) {
     var authority = {
         permission_id: req.body.permissionId,
         permission_name: req.body.permissionName,
@@ -79,12 +79,12 @@ exports.editAuthority = function (req, res) {
         client_id: req.body.clientId
     };
     authorityManageServic.editAuthority(req, res, authority)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 
 };
 
@@ -92,7 +92,7 @@ exports.editAuthority = function (req, res) {
  * delete authority handler
  */
 
-exports.deleteAuthority = function (req, res) {
+exports.deleteAuthority = function(req, res) {
     var count = 10;
     var authorityIds = req.body.authorityIds;
     var times = Math.ceil(authorityIds.length / count);
@@ -101,17 +101,17 @@ exports.deleteAuthority = function (req, res) {
         promises.push(new Promise((resolve, reject) => {
             var ids = authorityIds.slice(i * count, (i + 1) * count).join(",");
             authorityManageServic.deleteAuthority(req, res, ids)
-                .on("success", function (data) {
+                .on("success", function(data) {
                     resolve(data);
-                }).on("error", function (codeMessage) {
+                }).on("error", function(codeMessage) {
                     reject(codeMessage && codeMessage.message);
                 }
-            );
+                );
         }));
     }
-    return Promise.all(promises).then(function (data) {
+    return Promise.all(promises).then(function(data) {
         res.status(200).json(data);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         res.status(500).json(errorMsg);
     });
 };

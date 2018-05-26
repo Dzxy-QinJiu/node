@@ -6,25 +6,25 @@ import language from 'PUB_DIR/language/getLanguage';
 
 const UserStatusFieldSwitch = React.createClass({
     //获取默认属性
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             //用户id
             userId: '',
             //状态
             status: '',
             //修改成功之后的回调
-            modifySuccess: function () {
+            modifySuccess: function() {
             }
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.status != this.props.status) {
             this.setState({
                 status: nextProps.status
             });
         }
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             resultType: '',
             errorMsg: '',
@@ -32,20 +32,20 @@ const UserStatusFieldSwitch = React.createClass({
         };
     },
 
-    onHideAlert: function () {
+    onHideAlert: function() {
         this.setState({
             resultType: '',
             errorMsg: '',
             status: this.props.status
         });
     },
-    changeUserStatus: function (checked) {
+    changeUserStatus: function(checked) {
         //展示修改用户状态并展示是否保存的提示框
         this.setState({status: checked}, ()=> {
             this.saveUserStatus();
         });
     },
-    saveUserStatus: function () {
+    saveUserStatus: function() {
         let submitObj = {
             user_id: this.props.userId,
             status: this.state.status ? "1" : "0"
@@ -69,21 +69,21 @@ const UserStatusFieldSwitch = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         return (
             <div>
                 {language.lan() == "es" ? (
-                <Switch checked={this.state.status} onChange={this.changeUserStatus}
+                    <Switch checked={this.state.status} onChange={this.changeUserStatus}
                         checkedChildren={<Icon type="check" />}
                         unCheckedChildren={<Icon type="cross" />} />
                 ) : (
                     <Switch checked={this.state.status} onChange={this.changeUserStatus}
-                            checkedChildren={Intl.get("common.enabled", "启用")}
-                            unCheckedChildren={Intl.get("common.stop", "停用")}/>
+                        checkedChildren={Intl.get("common.enabled", "启用")}
+                        unCheckedChildren={Intl.get("common.stop", "停用")}/>
                 )}
                 {this.state.resultType === 'loading' ? <Icon type="loading"/> : null}
                 {this.state.resultType === 'error' ? <AlertTimer time={2000} message={this.state.errorMsg} type="error"
-                                                                 onHide={this.onHideAlert} showIcon/> : null}
+                    onHide={this.onHideAlert} showIcon/> : null}
             </div>
         );
     }

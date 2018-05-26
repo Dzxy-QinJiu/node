@@ -20,9 +20,9 @@ function UserAuditLogAction() {
     );
 
     //获取应用appID
-    this.getUserApp = function (callback) {
+    this.getUserApp = function(callback) {
         var _this = this;
-        userAuditLogAjax.getUserApp().then(function (data) {
+        userAuditLogAjax.getUserApp().then(function(data) {
             var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
             var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
             var app_id = '';
@@ -40,22 +40,22 @@ function UserAuditLogAction() {
             }
             _this.dispatch({error: false, data: data});
             callback && callback(app_id);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({error: true, errorMsg: errorMsg});
         });
     };
 
     // 获取用户的审计日志信息
-    this.getAuditLogList = function (searchObj, callback) {
+    this.getAuditLogList = function(searchObj, callback) {
         var _this = this;
         _this.dispatch({loading: true, error: false});
-        userAuditLogAjax.getAuditLogList(searchObj).then(function (data) {
+        userAuditLogAjax.getAuditLogList(searchObj).then(function(data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: data});
             if (callback && typeof callback == "function") {
                 callback();
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };

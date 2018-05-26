@@ -37,7 +37,7 @@ function noop() {
 
 var AppAuthPanel = React.createClass({
     mixins: [Validation.FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             submitAppForm: noop,
             app: {
@@ -50,19 +50,19 @@ var AppAuthPanel = React.createClass({
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ...AppFormStore.getState(),
             appAuthArray: this.getAppAuthArray(this.props.appAuthMap)
         };
     },
-    getAppAuthArray: function (appAuthMap) {
+    getAppAuthArray: function(appAuthMap) {
         var appAuthArray = [];
         if (_.isObject(appAuthMap)) {
             for (var key in appAuthMap) {
                 //一个url对应一个或多个请求方式的处理
                 if (appAuthMap[key] && _.isString(appAuthMap[key])) {
-                    appAuthMap[key].split(",").forEach(function (method) {
+                    appAuthMap[key].split(",").forEach(function(method) {
                         appAuthArray.push({
                             apiMethod: method,
                             apiUrl: key
@@ -73,24 +73,24 @@ var AppAuthPanel = React.createClass({
         }
         return appAuthArray;
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         //this.refs.validation.reset();
         var stateData = this.getInitialState();
         stateData.appAuthArray = this.getAppAuthArray(nextProps.appAuthMap);
         this.setState(stateData);
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(AppFormStore.getState());
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AppFormStore.unlisten(this.onChange);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var _this = this;
         AppFormStore.listen(_this.onChange);
     },
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -103,19 +103,19 @@ var AppAuthPanel = React.createClass({
         return classes;
     },
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"取消添加应用权限信息");
         this.props.returnInfoPanel();
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"保存添加应用权限信息");
         var appAuthMap = {};
         var hasAppAuthApi = false;
         //遍历权限服务地址 [{url:‘urlVal’，method：‘methodVal’},..]数组,转成后台接口参数所需{urlVal:methodVal,..}对象
-        this.state.appAuthArray.forEach(function (appAuth, index) {
+        this.state.appAuthArray.forEach(function(appAuth, index) {
             if (appAuth.apiUrl) {
                 hasAppAuthApi = true;
                 //同一地址不同方法的处理
@@ -136,7 +136,7 @@ var AppAuthPanel = React.createClass({
     },
 
     //关闭
-    closePanel: function (e) {
+    closePanel: function(e) {
         e.stopPropagation();
         Trace.traceEvent(e,"关闭应用权限");
         this.props.closeRightPanel();
@@ -144,7 +144,7 @@ var AppAuthPanel = React.createClass({
     },
 
     //返回详细信息展示页
-    returnInfoPanel: function (e) {
+    returnInfoPanel: function(e) {
         e.stopPropagation();
         Trace.traceEvent(e,"返回到应用详情");
         this.props.returnInfoPanel();
@@ -152,12 +152,12 @@ var AppAuthPanel = React.createClass({
     },
 
     //去掉保存后提示信息
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         AppFormAction.resetSaveResult(this.state.saveResult, true);
     },
 
     //更新服务地址,i:当前修改的是第几个地址，newVal:修改后的url/method,type:当前修改的是url还是method
-    updatePermissionApiObj: function (i, newVal, type) {
+    updatePermissionApiObj: function(i, newVal, type) {
         var permissionApiArray = this.state.appAuthArray || [];
         //找到数组中对应的对象，更新method/url
         if (permissionApiArray[i] && _.isObject(permissionApiArray[i])) {
@@ -179,16 +179,16 @@ var AppAuthPanel = React.createClass({
         }
     },
     //选择服务地址的请求方式的处理
-    onPermissionSelect: function (index, selectVal) {
+    onPermissionSelect: function(index, selectVal) {
         this.updatePermissionApiObj(index, selectVal, "method");
     },
     //服务地址输入的处理
-    onPermissionInputChange: function (index, event) {
+    onPermissionInputChange: function(index, event) {
         var newKey = event.target.value;
         this.updatePermissionApiObj(index, newKey, "url");
     },
     //添加一个服务地址的处理
-    addPermissionApi: function () {
+    addPermissionApi: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".add-permission-inputgroup-btn"),"添加服务地址");
         var permissionApiArray = this.state.appAuthArray || [];
         permissionApiArray.push({
@@ -201,7 +201,7 @@ var AppAuthPanel = React.createClass({
         });
     },
     //删除服务地址
-    delPermissionApi: function (index, event) {
+    delPermissionApi: function(index, event) {
         Trace.traceEvent($(this.getDOMNode()).find(".del-permission-inputgroup-btn"),"删除服务地址");
         var value = event.target.value;
         if (value) {
@@ -216,38 +216,38 @@ var AppAuthPanel = React.createClass({
             });
         }
     },
-    renderPermissionApiItem: function (permissionApi, index, permissionApiLen) {
+    renderPermissionApiItem: function(permissionApi, index, permissionApiLen) {
         var onlyOneItem = index == 0 && index == permissionApiLen - 1;//只有一条服务地址,并且地址为空时不展示删除按钮
         return (<div className="permission-api-item" key={index}>
             <Select size="large"
-                    name="permissionApisVal" onChange={this.onPermissionSelect.bind(this,index)}
-                    value={permissionApi.apiMethod}>
+                name="permissionApisVal" onChange={this.onPermissionSelect.bind(this,index)}
+                value={permissionApi.apiMethod}>
                 <Option value="PUT">PUT</Option>
                 <Option value="GET">GET</Option>
                 <Option value="POST">POST</Option>
                 <Option value="DELETE">DELETE</Option>
             </Select>
             <Input name="permissionApisKey" id="permissionApisKey"
-                   value={permissionApi.apiUrl}
-                   onChange={this.onPermissionInputChange.bind(this,index)}
+                value={permissionApi.apiUrl}
+                onChange={this.onPermissionInputChange.bind(this,index)}
             />
             <div className="permission-inputgroup-btns-div">
                 {onlyOneItem && !permissionApi.apiUrl ? null : (
                     <Icon type="minus" className="del-permission-inputgroup-btn permission-inputgroup-btn"
-                          onClick={this.delPermissionApi.bind(this,index)}/>)}
+                        onClick={this.delPermissionApi.bind(this,index)}/>)}
                 {(index == permissionApiLen - 1) ? (
                     <Icon type="plus" className="add-permission-inputgroup-btn permission-inputgroup-btn"
-                          onClick={this.addPermissionApi}/>) : null}
+                        onClick={this.addPermissionApi}/>) : null}
             </div>
         </div>);
     },
-    renderAppAuthApis: function () {
+    renderAppAuthApis: function() {
         var appAuthArray = this.state.appAuthArray;
         var appAuthEle = [];
         var _this = this;
         if (_.isArray(appAuthArray) && appAuthArray.length > 0) {
             //如果权限服务地址数组有数据，则遍历数组中的服务地址对象进行渲染展示
-            appAuthEle = appAuthArray.map(function (appAuth, index) {
+            appAuthEle = appAuthArray.map(function(appAuth, index) {
                 if (_.isObject(appAuth)) {
                     return _this.renderPermissionApiItem(appAuth, index, appAuthArray.length);
                 }
@@ -263,22 +263,22 @@ var AppAuthPanel = React.createClass({
         return appAuthEle;
     },
     //展示添加、编辑权限面板
-    showEditAuthPanel: function () {
+    showEditAuthPanel: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".app-auth-api-container"),"修改权限");
         if (this.state.isEditAppAuth) {
             return;
         }
         AppFormAction.setEditAppAuthFlag(true);
     },
-    hideEditAuthPanel: function (e) {
+    hideEditAuthPanel: function(e) {
         Trace.traceEvent(e,"取消修改应用权限信息");
         AppFormAction.setEditAppAuthFlag(false);
         this.setState({appAuthArray: this.getAppAuthArray(this.props.appAuthMap)});
     },
-    renderAppAuthLi: function () {
+    renderAppAuthLi: function() {
         var appAuthLi = [], appAuthArray = this.state.appAuthArray;
         if (appAuthArray && appAuthArray.length > 0) {
-            appAuthArray.forEach(function (appAuth) {
+            appAuthArray.forEach(function(appAuth) {
                 if (appAuth.apiUrl) {
                     appAuthLi.push(<div className="app-auth-api-item">
                         <span className="api-item-left">{appAuth.apiMethod} </span>
@@ -292,8 +292,8 @@ var AppAuthPanel = React.createClass({
                         id="my.app.no.auth"
                         defaultMessage={`暂无数据，{clickTips}`}
                         values={{
-                           "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
-                          }}
+                            "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
+                        }}
                     />
                 </div>);
             }
@@ -303,15 +303,15 @@ var AppAuthPanel = React.createClass({
                     id="my.app.no.auth"
                     defaultMessage={`暂无数据，{clickTips}`}
                     values={{
-                           "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
-                          }}
+                        "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
+                    }}
                 />
             </div>);
         }
         return appAuthLi;
     },
 
-    render: function () {
+    render: function() {
         var editClassName = classNames("iconfont icon-update", {
             "edit-btn-active": this.state.isEditAppAuth
         });
@@ -325,7 +325,7 @@ var AppAuthPanel = React.createClass({
                 <div className="app-auth-api-container">
                     <div className="app-auth-api-title">
                         {Intl.get("rightpanel_app_auth","应用权限")}{appAuthMap && !_.isEmpty(appAuthMap) ? (
-                        <span className={editClassName} onClick={this.showEditAuthPanel}/>) : null}
+                            <span className={editClassName} onClick={this.showEditAuthPanel}/>) : null}
                     </div>
                     <div className="app-auth-api-content">
                         {(appAuthArray && appAuthArray.length > 0 && appAuthArray[0].apiUrl) || this.state.isEditAppAuth ? (
@@ -345,9 +345,9 @@ var AppAuthPanel = React.createClass({
                                             {this.state.saveResult ?
                                                 (
                                                     <AlertTimer time={this.state.saveResult=="error"?3000:600}
-                                                                message={this.state.saveMsg}
-                                                                type={this.state.saveResult} showIcon
-                                                                onHide={this.hideSaveTooltip}/>
+                                                        message={this.state.saveMsg}
+                                                        type={this.state.saveResult} showIcon
+                                                        onHide={this.hideSaveTooltip}/>
                                                 ) : ""
                                             }
                                         </div>

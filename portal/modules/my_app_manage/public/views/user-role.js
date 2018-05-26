@@ -20,20 +20,20 @@ function getStateFromStore() {
 var bootomHeight = 52; //距离底部高度
 var TYPE_CONSTANT = "myApp";
 var UserRolePage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore(this);
     },
     
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore(this);
         this.setState(datas);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         RoleStore.listen(this.onChange);
         RoleAction.setRoleListLoading(true);
         RoleAction.getRoleList(this.props.curAppId, TYPE_CONSTANT);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).unbind("resize");
         RoleStore.unlisten(this.onChange);
         $("body").css("overflow", "auto");
@@ -41,21 +41,21 @@ var UserRolePage = React.createClass({
 
     events: {
         //修改角色时展示编辑面板
-        editRole: function (role) {
+        editRole: function(role) {
             RoleAction.showRoleForm(role);
         },
 
         //删除角色
-        deleteRole: function (role) {
+        deleteRole: function(role) {
             RoleAction.deleteRole(role, TYPE_CONSTANT);
         },
 
         //添加角色
-        addRole: function () {
+        addRole: function() {
             RoleAction.showRoleForm();
         },
 
-        setDefaultRole:function (param) {
+        setDefaultRole:function(param) {
             if (this.state.setDefaulting) {
                 return;
             }
@@ -63,28 +63,28 @@ var UserRolePage = React.createClass({
             RoleAction.setDefaultRole(param);
         },
 
-        delDefaultRole: function (appId) {
+        delDefaultRole: function(appId) {
             RoleAction.delDefaultRole({ app_id: appId });
         },
 
 
         //展示删除角色时的提示框
-        showModalDialog: function (role) {
+        showModalDialog: function(role) {
             RoleAction.showModalDialog(role);
         },
 
         //隐藏删除角色时的提示框
-        hideModalDialog: function (role) {
+        hideModalDialog: function(role) {
             RoleAction.hideModalDialog(role);
         },
 
         //清除删除失败的提示内容
-        clearDelErrorMsg: function () {
+        clearDelErrorMsg: function() {
             RoleAction.clearDelErrorMsg();
         }
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var roleList = this.props.roleList || [];
         var height = this.props.divHeight;
@@ -92,7 +92,7 @@ var UserRolePage = React.createClass({
         var roleListDivHeight = height - bootomHeight;
         var repoListElement = "";
         if (roleList && roleList.length > 0) {
-            repoListElement = roleList.map(function (role, i) {
+            repoListElement = roleList.map(function(role, i) {
                 //给当前要删除的角色列表传入删除角色失败的内容
                 var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : "";
                 return (
@@ -125,12 +125,12 @@ var UserRolePage = React.createClass({
                         {
                             _this.state.roleListIsLoading ? (
                                 <Spinner className="isloading" />) : (_this.state.listTipMsg ? (
-                                    <NoData msg={_this.state.listTipMsg} />) : (
-                                        <GeminiScrollbar className="geminiScrollbar-div role-geminiScrollbar-div">
-                                            <div className="role-container" style={{ height: height }}>
-                                                {repoListElement}
-                                            </div>
-                                        </GeminiScrollbar>))
+                                <NoData msg={_this.state.listTipMsg} />) : (
+                                <GeminiScrollbar className="geminiScrollbar-div role-geminiScrollbar-div">
+                                    <div className="role-container" style={{ height: height }}>
+                                        {repoListElement}
+                                    </div>
+                                </GeminiScrollbar>))
                         }
                     </div>
                 </div>

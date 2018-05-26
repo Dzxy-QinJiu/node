@@ -5,8 +5,8 @@
 "use strict";
 var path = require("path");
 var auth = require(path.join(portal_root_path , "./lib/utils/auth"));
-var checkPrivileges = function (passport, requiredPrivilege) {
-    return function (req, res, next) {
+var checkPrivileges = function(passport, requiredPrivilege) {
+    return function(req, res, next) {
         // 无需登录的情况下，允许通过
         if (!passport.needLogin) {
             next();
@@ -34,11 +34,11 @@ var checkPrivileges = function (passport, requiredPrivilege) {
  * @param arrayObj
  * @returns {boolean}
  */
-var isContains = function (arrayObj_src, arrayObj_dest) {
+var isContains = function(arrayObj_src, arrayObj_dest) {
 
     var isExist = false;
-    arrayObj_src.some(function (aObj) {
-        arrayObj_dest.some(function (bObj) {
+    arrayObj_src.some(function(aObj) {
+        arrayObj_dest.some(function(bObj) {
             if (aObj === bObj) {
                 return (isExist = true);
             }

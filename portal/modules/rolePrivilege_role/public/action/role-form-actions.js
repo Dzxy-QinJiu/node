@@ -6,9 +6,9 @@ var RoleActions = require("./role-actions");
 function getAuhorityIds(role) {
     var authorityIds = [];
     if (role && _.isArray(role.permissionGroups) && role.permissionGroups.length > 0) {
-        role.permissionGroups.forEach(function (permisssionGroup) {
+        role.permissionGroups.forEach(function(permisssionGroup) {
             if (_.isArray(permisssionGroup.permissionList) && permisssionGroup.permissionList.length > 0) {
-                permisssionGroup.permissionList.forEach(function (permission) {
+                permisssionGroup.permissionList.forEach(function(permission) {
                     if (permission.status) {
                         authorityIds.push(permission.permissionId);
                     }
@@ -26,7 +26,7 @@ function RoleFormActions() {
     );
 
     //添加角色
-    this.addRole = function (role, clientId, type) {
+    this.addRole = function(role, clientId, type) {
         var _this = this;
         var authorityIds = getAuhorityIds(role);
         var addRole = {
@@ -35,7 +35,7 @@ function RoleFormActions() {
         };
         addRole.clientId = clientId ? clientId : userData.getUserData().auth.client_id;
         addRole.realmId = userData.getUserData().auth.realm_id;
-        roleAjax.addRole(addRole, type).then(function (roleCreated) {
+        roleAjax.addRole(addRole, type).then(function(roleCreated) {
             if (roleCreated) {
                 role.roleId = roleCreated.role_id;
                 RoleActions.afterAddRole(role);
@@ -43,13 +43,13 @@ function RoleFormActions() {
             } else {
                 _this.dispatch( Intl.get("role.add.role.failed", "添加角色失败"));
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("role.add.role.failed", "添加角色失败"));
         });
     };
 
     //修改角色
-    this.editRole = function (role, clientId, type) {
+    this.editRole = function(role, clientId, type) {
         var _this = this;
         var authorityIds = getAuhorityIds(role);
         var editRole = {
@@ -58,14 +58,14 @@ function RoleFormActions() {
             authorityIds: authorityIds.join(',')
         };
         editRole.clientId = clientId ? clientId : userData.getUserData().auth.client_id;
-        roleAjax.editRole(editRole, type).then(function (data) {
+        roleAjax.editRole(editRole, type).then(function(data) {
             if (data) {
                 RoleActions.afterEditRole(role);
                 _this.dispatch();
             } else {
                 _this.dispatch( Intl.get("role.edit.role.failed", "修改角色失败"));
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("role.edit.role.failed", "修改角色失败"));
         });
     };

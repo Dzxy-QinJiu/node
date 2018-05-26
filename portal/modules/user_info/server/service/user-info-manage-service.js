@@ -25,14 +25,14 @@ var userInfoRestApis = {
 
 exports.urls = userInfoRestApis;
 
-exports.getUserInfo = function (req, res, userId) {
+exports.getUserInfo = function(req, res, userId) {
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.getUserInfo + "/" + userId,
             req: req,
             res: res
         }, {}, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data) {
                     var roles = data.roles;
@@ -60,7 +60,7 @@ exports.getUserInfo = function (req, res, userId) {
         });
 };
 
-exports.getLogList = function (req, res) {
+exports.getLogList = function(req, res) {
     let userName = auth.getUser(req).user_name;
     let url = userInfoRestApis.getLogList.replace(":user_name", userName);
     return restUtil.authRest.get(
@@ -72,7 +72,7 @@ exports.getLogList = function (req, res) {
 };
 
 //激活邮箱
-exports.activeUserEmail = function (req, res) {
+exports.activeUserEmail = function(req, res) {
     return restUtil.authRest.post(
         {
             url: userInfoRestApis.activeUserEmail,
@@ -80,7 +80,7 @@ exports.activeUserEmail = function (req, res) {
             res: res
         }, null);
 };
-exports.editUserInfo = function (req, res, userInfo) {
+exports.editUserInfo = function(req, res, userInfo) {
     return restUtil.authRest.put(
         {
             url: userInfoRestApis.editUserInfo,
@@ -89,7 +89,7 @@ exports.editUserInfo = function (req, res, userInfo) {
         }, userInfo);
 };
 
-exports.setUserLanguage = function (req, res, userLang) {
+exports.setUserLanguage = function(req, res, userLang) {
     return restUtil.authRest.post(
         {
             url: userInfoRestApis.setUserLanguage,
@@ -98,7 +98,7 @@ exports.setUserLanguage = function (req, res, userLang) {
         }, userLang);
 };
 
-exports.editUserInfoPwd = function (req, res, object) {
+exports.editUserInfoPwd = function(req, res, object) {
     return restUtil.authRest.put(
         {
             url: userInfoRestApis.editUserInfoPwd + "/" + object.userId + "/password",
@@ -108,7 +108,7 @@ exports.editUserInfoPwd = function (req, res, object) {
         object.userInfo);
 };
 
-exports.checkUserInfoPwd = function (req, res, userInfoPasswd) {
+exports.checkUserInfoPwd = function(req, res, userInfoPasswd) {
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.checkUserInfoPwd,
@@ -118,7 +118,7 @@ exports.checkUserInfoPwd = function (req, res, userInfoPasswd) {
         {
             passwd: userInfoPasswd
         }, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", data);
             }
@@ -127,7 +127,7 @@ exports.checkUserInfoPwd = function (req, res, userInfoPasswd) {
 };
 
 //获得所管理的安全域
-exports.getManagedRealm = function (req, res) {
+exports.getManagedRealm = function(req, res) {
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.getManagedRealm,
@@ -136,7 +136,7 @@ exports.getManagedRealm = function (req, res) {
         }, null);
 };
 //设置订阅通知邮件
-exports.setSubscribeEmail = function (req, res, config) {
+exports.setSubscribeEmail = function(req, res, config) {
     return restUtil.authRest.post(
         {
             url: userInfoRestApis.setSubscribeEmail,

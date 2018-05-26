@@ -11,9 +11,9 @@ function SalesTeamMemberAction() {
         'setMemberListSaving'
     );
 
-    this.addMember = function (obj) {
+    this.addMember = function(obj) {
         var _this = this;
-        SalesTeamAjax.addMember(obj).then(function (data) {
+        SalesTeamAjax.addMember(obj).then(function(data) {
             if (data) {
                 _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
 
@@ -21,28 +21,28 @@ function SalesTeamMemberAction() {
                 _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
             }
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
         });
     };
 
-    this.editMember = function (obj) {
+    this.editMember = function(obj) {
         var _this = this;
-        SalesTeamAjax.editMember(obj).then(function (data) {
+        SalesTeamAjax.editMember(obj).then(function(data) {
             if (data) {
                 _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
             } else {
                 _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
             }
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
         });
     };
 
-    this.clearSaveFlags = function (type, saveResult, obj) {
+    this.clearSaveFlags = function(type, saveResult, obj) {
         if (saveResult == "success") {
             //刷新左侧树中该团队的人数
             if (type == "add") {

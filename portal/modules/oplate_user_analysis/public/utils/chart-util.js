@@ -2,7 +2,7 @@
  * Created by wangliping on 2017/4/27.
  */
 //线性图中tooltip展示位置的计算（不设置会超出图表展示区）
-exports.getTooltipPosition = function (_this, mousePointer, params, tooltipDom) {
+exports.getTooltipPosition = function(_this, mousePointer, params, tooltipDom) {
     var chartWidth = $(_this.refs.chart).width();
     var chartHeight = $(_this.refs.chart).height();
     var tooltipDomWidth = $(tooltipDom).outerWidth(true);

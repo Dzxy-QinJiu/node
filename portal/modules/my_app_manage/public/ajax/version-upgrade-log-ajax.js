@@ -18,7 +18,7 @@ exports.getAppRecordsList = function(searchObj){
         success : function(result){
             Deferred.resolve(result);
         },
-        error : function (xhr, state) {
+        error : function(xhr, state) {
             if ('abort' !== state){
                 Deferred.reject(xhr.responseJSON);
             }
@@ -35,10 +35,10 @@ exports.addAppVersion = function(versionContent){
         type: 'post',
         dateType: 'json',
         data: versionContent,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -58,7 +58,7 @@ exports.addUploadVersion = function(formData){
         success : function(result){
             Deferred.resolve(result);
         },
-        error : function (errorInfo) {
+        error : function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -72,10 +72,10 @@ exports.deleteAppVersionRecord = function(recordId){
     $.ajax({
         url: '/rest/delete_app/version/record/' + recordId ,
         type: 'delete',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON || "该记录删除失败！");
         }
     });

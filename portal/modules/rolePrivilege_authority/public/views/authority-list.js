@@ -11,7 +11,7 @@ function noop() {
 
 var AuthorityList = React.createClass({
 
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             addAuthority: noop,
             deleteAuthority: noop,
@@ -22,27 +22,27 @@ var AuthorityList = React.createClass({
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             authorityGroup: this.props.authorityGroup
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.setState(this.getInitialState());
         this.setState({
             authorityGroup: nextProps.authorityGroup,
         });
     },
 
-    showAddAuthorityForm: function (authorityGroup) {
+    showAddAuthorityForm: function(authorityGroup) {
         this.props.showAddAuthorityForm(authorityGroup, "addAuthority");
     },
 
-    deleteAuthorityGroup: function (authorityGroup) {
+    deleteAuthorityGroup: function(authorityGroup) {
         Trace.traceEvent($(this.getDOMNode()).find(".authority-operation"),"点击删除权限");
         var authorityIds = [];
         if (authorityGroup && _.isArray(authorityGroup.permissionList) && authorityGroup.permissionList.length > 0) {
-            authorityGroup.permissionList.forEach(function (authority) {
+            authorityGroup.permissionList.forEach(function(authority) {
                 authorityIds.push(authority.permissionId);
             });
         }
@@ -50,40 +50,40 @@ var AuthorityList = React.createClass({
     },
 
     //编辑权限分组
-    showAuthorityGroupForm: function (authorityGroup) {
+    showAuthorityGroupForm: function(authorityGroup) {
         Trace.traceEvent($(this.getDOMNode()).find(".icon-update"),"点击编辑权限分组");
         AuthorityAction.beforeEditAuthority(authorityGroup);
         this.props.showAuthorityGroupForm(authorityGroup);
     },
     //展示删除时的提示框
-    showModalDialog: function (authorityGroup) {
+    showModalDialog: function(authorityGroup) {
         this.props.showModalDialog(authorityGroup);
     },
 
     //隐藏删除时的提示框
-    hideModalDialog: function (authorityGroup) {
+    hideModalDialog: function(authorityGroup) {
         this.props.hideModalDialog(authorityGroup);
     },
 
     //展示删除时的提示框
-    showAuthorityModalDialog: function (authority) {
+    showAuthorityModalDialog: function(authority) {
         this.props.showAuthorityModalDialog(authority);
     },
 
     //展示删除时的提示框
-    hideAuthorityModalDialog: function (authority) {
+    hideAuthorityModalDialog: function(authority) {
         this.props.hideAuthorityModalDialog(authority);
     },
 
-    showAuthorityInfo: function (authority) {
+    showAuthorityInfo: function(authority) {
         this.props.showAuthorityInfo(authority);
     },
 
-    hideDelTooltip: function () {
+    hideDelTooltip: function() {
         this.props.clearDelAuthGroupErrorMsg();
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var authorityGroup = this.props.authorityGroup;
         authorityGroup.authorityIDs = [];
@@ -97,12 +97,12 @@ var AuthorityList = React.createClass({
                     <div className="authority-operation">
                         <PrivilegeChecker check={this.props.delAuthorityStr}>
                             <Button className="authority-btn-class icon-delete iconfont"
-                                    onClick={_this.showModalDialog.bind(_this, authorityGroup)}>
+                                onClick={_this.showModalDialog.bind(_this, authorityGroup)}>
                             </Button>
                         </PrivilegeChecker>
                         <PrivilegeChecker check={this.props.editAuthorityStr}>
                             <Button className="authority-btn-class icon-update iconfont"
-                                    onClick={_this.showAuthorityGroupForm.bind(_this, authorityGroup)}
+                                onClick={_this.showAuthorityGroupForm.bind(_this, authorityGroup)}
                             >
                             </Button>
                         </PrivilegeChecker>
@@ -111,7 +111,7 @@ var AuthorityList = React.createClass({
                 <div className="authority-content" style={{height:authorityListDivHeight - 30}}>
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         {
-                            authorityGroup.permissionList.map(function (authority, i) {
+                            authorityGroup.permissionList.map(function(authority, i) {
                                 return (<div className='authority-content-list' key={i}>
                                     <div className="authority-authorityName">{authority.permissionName}</div>
                                 </div>);
@@ -120,16 +120,16 @@ var AuthorityList = React.createClass({
                     </GeminiScrollbar>
                 </div>
                 <ModalDialog modalContent={modalContentClassifyName}
-                             modalShow={authorityGroup.modalDialogFlag}
-                             container={_this}
-                             hideModalDialog={_this.hideModalDialog.bind(_this,authorityGroup)}
-                             delete={_this.deleteAuthorityGroup.bind(_this, authorityGroup)}
+                    modalShow={authorityGroup.modalDialogFlag}
+                    container={_this}
+                    hideModalDialog={_this.hideModalDialog.bind(_this,authorityGroup)}
+                    delete={_this.deleteAuthorityGroup.bind(_this, authorityGroup)}
                 />
                 {
                     _this.props.delAuthGroupErrorMsg ? ( <AlertTimer time={2000}
-                                                                     message={_this.props.delAuthGroupErrorMsg}
-                                                                     type='error' showIcon
-                                                                     onHide={this.hideDelTooltip}/>) : null
+                        message={_this.props.delAuthGroupErrorMsg}
+                        type='error' showIcon
+                        onHide={this.hideDelTooltip}/>) : null
                 }
             </div>
         );

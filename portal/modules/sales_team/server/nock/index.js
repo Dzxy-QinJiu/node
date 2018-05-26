@@ -55,7 +55,7 @@ var SalesTeamPersonnelList = [
     })
 ];
 
-exports.init = function () {
+exports.init = function() {
 
     var memberList = [{
         "userId": "3722pgujaa37206ub2s4dPNRd6m84lPctk0frFi6tc8",
@@ -109,8 +109,8 @@ exports.init = function () {
         .persist()
         .get(/\/rest\/oplate\/v1\/group\/.*/i)
         .query(true)
-        .reply(function (uri, requestBody, cb) {
-            setTimeout(function () {
+        .reply(function(uri, requestBody, cb) {
+            setTimeout(function() {
                 if (/member/.test(uri)) {
                     cb(null, [
                         200, memberList, {}
@@ -128,14 +128,14 @@ exports.init = function () {
         .persist()
         .get(SalesTeamManageService.urls.getSalesTeamPersonnelList + "/1")
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var teamId = req.body.teamId;
             teamId = "1";
             var personnelList = [];
 
-            SalesTeamPersonnelList.map(function (personnel, index) {
+            SalesTeamPersonnelList.map(function(personnel, index) {
                 if (personnel.teamId == teamId) {
                     personnelList.push(personnel);
                 }

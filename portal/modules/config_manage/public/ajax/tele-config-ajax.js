@@ -1,5 +1,5 @@
 
-exports.getTeleList = function (param) {
+exports.getTeleList = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/getTele',
@@ -16,7 +16,7 @@ exports.getTeleList = function (param) {
     return Deferred.promise();
 };
 
-exports.addTele = function (param) {
+exports.addTele = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/addTele',
@@ -33,7 +33,7 @@ exports.addTele = function (param) {
     return Deferred.promise();
 };
 
-exports.delTele = function (param) {
+exports.delTele = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/delTele',

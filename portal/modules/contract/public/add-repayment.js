@@ -12,19 +12,19 @@ import { numberAddNoMoreThan } from "../../../lib/validator/rules";
 
 const AddRepayment = React.createClass({
     mixins: [ValidateMixin],
-    getInitialFormData: function () {
+    getInitialFormData: function() {
         return {
             type: "repay_plan",
             unit: "days",
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             repayments: [],
             formData: this.getInitialFormData(),
         };
     },
-    addRepayment: function () {
+    addRepayment: function() {
         this.refs.validation.validate(valid => {
             if (!valid) {
                 return;
@@ -38,12 +38,12 @@ const AddRepayment = React.createClass({
             }
         });
     },
-    deleteRepayment: function (index) {
+    deleteRepayment: function(index) {
         this.state.repayments.splice(index, 1);
 
         this.setState(this.state);
     },
-    onNumChange: function (e) {
+    onNumChange: function(e) {
         const num = e.target.value;
         this.state.formData.num = num;
 
@@ -55,7 +55,7 @@ const AddRepayment = React.createClass({
 
         this.setState(this.state);
     },
-    onUnitChange: function (value) {
+    onUnitChange: function(value) {
         this.state.formData.unit = value;
 
         const num = this.state.formData.num;
@@ -68,7 +68,7 @@ const AddRepayment = React.createClass({
 
         this.setState(this.state);
     },
-    render: function () {
+    render: function() {
         //合同额
         const contractAmount = this.props.parent.refs.addBasic.state.formData.contract_amount;
         //已添加的回款总额
@@ -85,66 +85,66 @@ const AddRepayment = React.createClass({
         return (
             <div className="add-repayments">
                 <div className="add-finance">
-                <Validation ref="validation" onValidate={this.handleValidate}>
-                    <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
-                    <FormItem 
-                         validateStatus={this.getValidateStatus("num")}
-                         help={this.getHelpMessage("num")}
-                    >
-                        <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, {pattern: /^\d+$/, message: Intl.get("contract.45", "请填写数字")}]}>
-                        <Input
-                            name="num"
-                            value={this.state.formData.num}
-                            onChange={this.onNumChange}
-                        />
-                        </Validator>
-                    </FormItem>
-                    <Select 
-                        value={this.state.formData.unit}
-                        onChange={this.onUnitChange}
-                    >
-                        <Option key="days" value="days"><ReactIntl.FormattedMessage id="contract.79" defaultMessage="日" /></Option>
-                        <Option key="weeks" value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
-                        <Option key="months" value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
-                    </Select>
+                    <Validation ref="validation" onValidate={this.handleValidate}>
+                        <ReactIntl.FormattedMessage id="contract.78" defaultMessage="从签订日起" />
+                        <FormItem 
+                            validateStatus={this.getValidateStatus("num")}
+                            help={this.getHelpMessage("num")}
+                        >
+                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, {pattern: /^\d+$/, message: Intl.get("contract.45", "请填写数字")}]}>
+                                <Input
+                                    name="num"
+                                    value={this.state.formData.num}
+                                    onChange={this.onNumChange}
+                                />
+                            </Validator>
+                        </FormItem>
+                        <Select 
+                            value={this.state.formData.unit}
+                            onChange={this.onUnitChange}
+                        >
+                            <Option key="days" value="days"><ReactIntl.FormattedMessage id="contract.79" defaultMessage="日" /></Option>
+                            <Option key="weeks" value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week" defaultMessage="周" /></Option>
+                            <Option key="months" value="months"><ReactIntl.FormattedMessage id="common.time.unit.month" defaultMessage="月" /></Option>
+                        </Select>
                     内，应收回款
-                    <FormItem 
-                         validateStatus={this.getValidateStatus("amount")}
-                         help={this.getHelpMessage("amount")}
-                    >
-                        <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get("contract.161", "已超合同额"))]}>
-                        <Input
-                            name="amount"
-                            value={this.state.formData.amount}
-                            onChange={this.setField.bind(this, "amount")}
-                        />
-                        </Validator>
-                    </FormItem>
-                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.addRepayment}
-                    >
-                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
-                    </Button>
-                </Validation>
+                        <FormItem 
+                            validateStatus={this.getValidateStatus("amount")}
+                            help={this.getHelpMessage("amount")}
+                        >
+                            <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, contractAmount, repaymentsAmount, Intl.get("contract.161", "已超合同额"))]}>
+                                <Input
+                                    name="amount"
+                                    value={this.state.formData.amount}
+                                    onChange={this.setField.bind(this, "amount")}
+                                />
+                            </Validator>
+                        </FormItem>
+                        <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                        <Button
+                            className="btn-primary-sure"
+                            onClick={this.addRepayment}
+                        >
+                            <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
+                        </Button>
+                    </Validation>
                 </div>
 
                 {this.state.repayments.length? (
-                <div className="finance-list">
-                    <ul>
-                        {this.state.repayments.map((repayment, index) => { return (
-                        <li key={index}>
-                            <div className="circle-button circle-button-minus"
-                                 title={Intl.get("common.delete", "删除")}
-                                 onClick={this.deleteRepayment.bind(this, index)}>
-                                <Icon type="minus"/>
-                            </div>
-                            {Intl.get("contract.83", "至")}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get("contract.94", "应收金额")}{repayment.amount}{Intl.get("contract.155", "元")}
-                        </li>
-                        );})}
-                    </ul>
-                </div>
+                    <div className="finance-list">
+                        <ul>
+                            {this.state.repayments.map((repayment, index) => { return (
+                                <li key={index}>
+                                    <div className="circle-button circle-button-minus"
+                                        title={Intl.get("common.delete", "删除")}
+                                        onClick={this.deleteRepayment.bind(this, index)}>
+                                        <Icon type="minus"/>
+                                    </div>
+                                    {Intl.get("contract.83", "至")}{moment(repayment.date).format(oplateConsts.DATE_FORMAT)} {Intl.get("contract.94", "应收金额")}{repayment.amount}{Intl.get("contract.155", "元")}
+                                </li>
+                            );})}
+                        </ul>
+                    </div>
                 ) : null}
             </div>
         );

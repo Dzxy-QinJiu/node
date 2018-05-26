@@ -1,6 +1,6 @@
 import { hasPrivilege } from "CMP_DIR/privilege/checker";
 var appAjaxTrans = require("../../../common/public/ajax/app");
-exports.getAppList = function () {
+exports.getAppList = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function(list) {
         list = list.map(function(app) {
@@ -19,10 +19,10 @@ exports.getAppList = function () {
     return Deferred.promise();
 };
 let salesTeamListAjax;
-exports.getTeamList = function () {
-    let type="self";//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
+exports.getTeamList = function() {
+    let type = "self";//GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS
     if (hasPrivilege("GET_TEAM_LIST_ALL")) {
-        type= "all";
+        type = "all";
     }
     salesTeamListAjax && salesTeamListAjax.abort();
     let Deferred = $.Deferred();
@@ -31,15 +31,15 @@ exports.getTeamList = function () {
         dataType: 'json',
         type: 'get',
         data: {type: type},
-        success: function (treeList) {
-            let list =[];
+        success: function(treeList) {
+            let list = [];
             if(_.isArray(treeList) && treeList.length >= 1){
                 //遍历团队树
                 traversingTeamTree(treeList,list);
             }
             Deferred.resolve(list);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -50,8 +50,8 @@ exports.getTeamList = function () {
 
 //遍历团队树
 function traversingTeamTree(treeList,list) {
-    if(_.isArray(treeList)&&treeList.length){
-         _.each(treeList, team => {
+    if(_.isArray(treeList) && treeList.length){
+        _.each(treeList, team => {
             list.push({group_id:team.group_id,group_name:team.group_name});
             if(team.child_groups){
                 traversingTeamTree(team.child_groups,list);
@@ -60,24 +60,24 @@ function traversingTeamTree(treeList,list) {
     }
 }
 
-exports.getStageList = function () {
+exports.getStageList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/customer/v2/salesopportunity/term/sale_stages',
         dataType: 'json',
         type: 'post',
         data: {reqData: JSON.stringify({})},
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getTagList = function () {
+exports.getTagList = function() {
     var pageSize = 100;
     var num = 1;
     let type = 'user';
@@ -89,10 +89,10 @@ exports.getTagList = function () {
         url: '/rest/crm/get_recommend_tags/' + pageSize + '/' + num + '/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -100,21 +100,21 @@ exports.getTagList = function () {
 };
 //获取销售角色列表
 let salesRoleListAjax;
-exports.getSalesRoleList=function () {
-    let type="user";//CRM_GET_USER_ROLE
+exports.getSalesRoleList = function() {
+    let type = "user";//CRM_GET_USER_ROLE
     if (hasPrivilege("CRM_GET_MANAGER_ROLE")) {
-        type= "manager";
+        type = "manager";
     }
     salesRoleListAjax && salesRoleListAjax.abort();
     let Deferred = $.Deferred();
-    salesRoleListAjax=$.ajax({
+    salesRoleListAjax = $.ajax({
         url: "/rest/crm_filter/:type/sales_role_list".replace(":type",type),
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -122,7 +122,7 @@ exports.getSalesRoleList=function () {
     });
     return Deferred.promise();
 };
-exports.getStageTagList = function () {
+exports.getStageTagList = function() {
     let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
     if(hasPrivilege("CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL")){
         type = 'manager';
@@ -132,17 +132,17 @@ exports.getStageTagList = function () {
         url: '/rest/crm/stage_tag/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取竞品列表
-exports.getCompetitorList = function () {
+exports.getCompetitorList = function() {
     let type = 'user';//CUSTOMER_USER_COMPETING_PRODUCTS_GET
     if(hasPrivilege("CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET")){
         type = 'manager';
@@ -152,10 +152,10 @@ exports.getCompetitorList = function () {
         url: '/rest/crm/competitor_list/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data.result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -169,26 +169,26 @@ exports.getIndustries = function() {
         url: '/rest/crm_filter/industries',
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getFilterProvinces=function(type){
+exports.getFilterProvinces = function(type){
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm_filter/provinces/' + type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

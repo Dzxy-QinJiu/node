@@ -17,7 +17,7 @@ exports.urls = urls;
  * @param req
  * @param res
  */
-exports.logout = function (req, res) {
+exports.logout = function(req, res) {
     return restUtil.authRest.get(
         {
             url: urls.logout,
@@ -30,7 +30,7 @@ exports.logout = function (req, res) {
  * @param req
  * @param res
  */
-exports.ssoLogout = function (req, res) {
+exports.ssoLogout = function(req, res) {
     return restUtil.authRest.get(
         {
             url: urls.ssoLogout,
@@ -44,7 +44,7 @@ exports.ssoLogout = function (req, res) {
  * @param accessToken
  */
 
-exports.sessionTimeout = function (sessionID, accessToken) {
+exports.sessionTimeout = function(sessionID, accessToken) {
     var url = urls.ssoLogout + "?only_exit_current=yes";
     return restUtil.baseRest.get(
         {

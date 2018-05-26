@@ -33,7 +33,7 @@ var VersionUpgradeForm = React.createClass({
             isLoading: false
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(":file").filestyle({icon: false,buttonText: "上传应用"});
     },
 
@@ -228,9 +228,9 @@ var VersionUpgradeForm = React.createClass({
                                         value={this.state.formData.forced}
                                         onChange={this.handleCheckBox}
                                     />
-                                        <span  style={{"fontSize":"14px","color":"#5d5d5d"}}>
+                                    <span  style={{"fontSize":"14px","color":"#5d5d5d"}}>
                                             客户端强制升级
-                                        </span>
+                                    </span>
                                 </FormItem>
                             ) : null}
 

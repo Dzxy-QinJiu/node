@@ -34,8 +34,8 @@ var NoMoreDataTip = React.createClass({
             return null;
         }
         return (<div className="no-more-data-tip" id={this.state.id}>
-                    <Alert message={this.props.message} type="info" showIcon/>
-                </div>);
+            <Alert message={this.props.message} type="info" showIcon/>
+        </div>);
     }
 });
 

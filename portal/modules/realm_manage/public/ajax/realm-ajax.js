@@ -1,7 +1,7 @@
 //获取当前页要展示的域列表
 var curRealmListAjax = null;
 
-exports.getCurRealmList = function (searchObj) {
+exports.getCurRealmList = function(searchObj) {
 
     var Deferred = $.Deferred();
 
@@ -12,10 +12,10 @@ exports.getCurRealmList = function (searchObj) {
         dataType: 'json',
         type: 'get',
         data: searchObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -25,13 +25,13 @@ exports.getCurRealmList = function (searchObj) {
 };
 
 //通过id获取当前安全域详细信息
-exports.getCurRealmById = function (realmId) {
+exports.getCurRealmById = function(realmId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/realm/' + realmId,
         dataType: 'json',
         type: 'get',
-        success: function (realm) {
+        success: function(realm) {
             Deferred.resolve(realm);
         }
     });
@@ -39,7 +39,7 @@ exports.getCurRealmById = function (realmId) {
 };
 
 //添加域
-exports.addRealm = function (realm) {
+exports.addRealm = function(realm) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/realm',
@@ -47,9 +47,9 @@ exports.addRealm = function (realm) {
         type: 'post',
         data: realm,
         timeout: 60 * 1000,
-        success: function (realmCreated) {
+        success: function(realmCreated) {
             Deferred.resolve(realmCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -57,7 +57,7 @@ exports.addRealm = function (realm) {
 };
 
 //添加所有者
-exports.addOwner = function (owner) {
+exports.addOwner = function(owner) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/realm/owner',
@@ -65,9 +65,9 @@ exports.addOwner = function (owner) {
         type: 'post',
         data: owner,
         timeout: 60 * 1000,
-        success: function (ownerCreated) {
+        success: function(ownerCreated) {
             Deferred.resolve(ownerCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -75,16 +75,16 @@ exports.addOwner = function (owner) {
 };
 
 //修改域
-exports.editRealm = function (realm) {
+exports.editRealm = function(realm) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/realm',
         dataType: 'json',
         type: 'put',
         data: realm,
-        success: function (realmModified) {
+        success: function(realmModified) {
             Deferred.resolve(realmModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -92,16 +92,16 @@ exports.editRealm = function (realm) {
 };
 
 //启停安全域
-exports.updateRealmStatus = function (realm) {
+exports.updateRealmStatus = function(realm) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/realm/status',
         dataType: 'json',
         type: 'put',
         data: realm,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -109,15 +109,15 @@ exports.updateRealmStatus = function (realm) {
 };
 
 //验证所有者用户名唯一性
-exports.checkOnlyUserName = function (userName) {
+exports.checkOnlyUserName = function(userName) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_name/' + userName,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -125,15 +125,15 @@ exports.checkOnlyUserName = function (userName) {
 };
 
 //验证所有者电话唯一性
-exports.checkOnlyOwnerPhone = function (phone) {
+exports.checkOnlyOwnerPhone = function(phone) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_phone/' + phone,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -141,15 +141,15 @@ exports.checkOnlyOwnerPhone = function (phone) {
 };
 
 //验证所有者电话唯一性
-exports.checkOnlyOwnerEmail = function (email) {
+exports.checkOnlyOwnerEmail = function(email) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_email/' + email,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

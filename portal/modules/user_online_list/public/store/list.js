@@ -7,12 +7,12 @@ function OnlineUserListStore() {
     //绑定action
     this.bindActions(OnlineUserListAction);
 }
-OnlineUserListStore.prototype.resetState = function () {
+OnlineUserListStore.prototype.resetState = function() {
     //应用列表
     this.appList = [];
     this.resetUserOnlineList();
 };
-OnlineUserListStore.prototype.resetUserOnlineList = function () {
+OnlineUserListStore.prototype.resetUserOnlineList = function() {
     //在线用户列表
     this.onlineUserList = [];
     //用户总数
@@ -28,11 +28,11 @@ OnlineUserListStore.prototype.resetUserOnlineList = function () {
     //是否加载出错
     this.appListErrorMsg = "";
 };
-OnlineUserListStore.prototype.handleRefresh = function () {
+OnlineUserListStore.prototype.handleRefresh = function() {
     this.resetUserOnlineList();
 };
 //获取在线用户列表
-OnlineUserListStore.prototype.getOnlineUserList = function (result) {
+OnlineUserListStore.prototype.getOnlineUserList = function(result) {
     if (result.loading) {
         this.isLoading = true;
         this.appListErrorMsg = "";
@@ -54,12 +54,12 @@ OnlineUserListStore.prototype.getOnlineUserList = function (result) {
     }
 };
 //翻页
-OnlineUserListStore.prototype.setPageNum = function (pageNum) {
+OnlineUserListStore.prototype.setPageNum = function(pageNum) {
     this.pageNum = pageNum;
 };
 
 //监听Action的kickUser方法
-OnlineUserListStore.prototype.kickUser = function (ids) {
+OnlineUserListStore.prototype.kickUser = function(ids) {
     let user_id = ids.user_ids[0];
     this.onlineUserList = _.filter(this.onlineUserList, (item) => {
         return item.user_id != user_id;

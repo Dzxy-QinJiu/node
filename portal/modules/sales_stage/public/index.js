@@ -27,31 +27,31 @@ function getStateFromStore(_this) {
 }
 
 var SalesStagePage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore(this);
     },
 
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore(this);
         this.setState(datas);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.resizeWindow);
         SalesStageStore.listen(this.onChange);
         SalesStageAction.getSalesStageList();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         SalesStageStore.unlisten(this.onChange);
     },
 
-    salesStageWidthFnc: function () {
+    salesStageWidthFnc: function() {
         return $(window).width() - leftWidth;
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             salesStageWidth: this.salesStageWidthFnc()
         });
@@ -59,18 +59,18 @@ var SalesStagePage = React.createClass({
 
     events: {
 
-        showSalesStageForm: function (salesStage) {
+        showSalesStageForm: function(salesStage) {
             if (this.state.isSavingSalesStage) {
                 return;
             }
             SalesStageAction.showSalesStageForm(salesStage);
         },
 
-        hideSalesStageeForm: function () {
+        hideSalesStageeForm: function() {
             SalesStageAction.hideSalesStageeForm();
         },
 
-        submitSalesStageForm: function (salesStage) {
+        submitSalesStageForm: function(salesStage) {
             if (salesStage.id) {
                 SalesStageAction.editSalesStage(salesStage);
             } else {
@@ -78,20 +78,20 @@ var SalesStagePage = React.createClass({
             }
         },
 
-        deleteSalesStage: function (salesStage) {
+        deleteSalesStage: function(salesStage) {
             SalesStageAction.changeIsSavingSalesStage();
             SalesStageAction.deleteSalesStage(salesStage);
         },
 
-        showSalesStageModalDialog: function (salesStage) {
+        showSalesStageModalDialog: function(salesStage) {
             SalesStageAction.showSalesStageModalDialog(salesStage);
         },
 
-        hideSalesStageModalDialog: function (salesStage) {
+        hideSalesStageModalDialog: function(salesStage) {
             SalesStageAction.hideSalesStageModalDialog(salesStage);
         },
 
-        showSalesStageEditOrder: function () {
+        showSalesStageEditOrder: function() {
             if (this.state.isSavingSalesStage) {
                 return;
             }
@@ -99,7 +99,7 @@ var SalesStagePage = React.createClass({
             SalesStageAction.showSalesStageEditOrder();
         },
 
-        hideSalesStageEditOrder: function () {
+        hideSalesStageEditOrder: function() {
             if (this.state.isSavingSalesStage) {
                 return;
             }
@@ -107,15 +107,15 @@ var SalesStagePage = React.createClass({
             SalesStageAction.hideSalesStageEditOrder();
         },
 
-        salesStageOrderUp: function (salesStage) {
+        salesStageOrderUp: function(salesStage) {
             SalesStageAction.salesStageOrderUp(salesStage);
         },
 
-        salesStageOrderDown: function (salesStage) {
+        salesStageOrderDown: function(salesStage) {
             SalesStageAction.salesStageOrderDown(salesStage);
         },
 
-        saveSalesStageOrder: function () {
+        saveSalesStageOrder: function() {
             if (this.state.isSavingSalesStage) {
                 return;
             }
@@ -125,7 +125,7 @@ var SalesStagePage = React.createClass({
         }
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var width = this.state.salesStageWidth;
         var salesStageList = this.state.salesStageList;
@@ -138,26 +138,26 @@ var SalesStagePage = React.createClass({
                             (<div className="sales-stage-top-div-group">
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                            onClick={_this.events.hideSalesStageEditOrder.bind(this)}
+                                        onClick={_this.events.hideSalesStageEditOrder.bind(this)}
                                     ><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></Button>
                                 </div>
                                 <div className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                            onClick={_this.events.saveSalesStageOrder.bind(this)}
+                                        onClick={_this.events.saveSalesStageOrder.bind(this)}
                                     ><ReactIntl.FormattedMessage id="common.save" defaultMessage="保存" /></Button>
                                 </div>
                             </div>) :
                             (<div className="sales-stage-top-div-group">
                                 <PrivilegeChecker check="BGM_SALES_STAGE_SORT" className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                            onClick={_this.events.showSalesStageEditOrder.bind(this)}
+                                        onClick={_this.events.showSalesStageEditOrder.bind(this)}
 
                                     ><ReactIntl.FormattedMessage id="sales.stage.change.sort" defaultMessage="变更顺序" /></Button>
                                 </PrivilegeChecker>
                                 <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="sales-stage-top-div">
                                     <Button type="ghost" className="sales-stage-top-btn"
-                                            onClick={_this.events.showSalesStageForm.bind(this, "addSalesStage")}
-                                            data-tracename="添加销售阶段"
+                                        onClick={_this.events.showSalesStageForm.bind(this, "addSalesStage")}
+                                        data-tracename="添加销售阶段"
                                     ><ReactIntl.FormattedMessage id="sales.stage.add.sales.stage" defaultMessage="添加销售阶段" /></Button>
                                 </PrivilegeChecker>
                             </div>)
@@ -179,7 +179,7 @@ var SalesStagePage = React.createClass({
                     </div>) : null}
                     <ul className="sales-stage-timeline">
                         {
-                            salesStageList.map(function (salesStage, key) {
+                            salesStageList.map(function(salesStage, key) {
                                 return (
                                     <li className="sales-stage-timeline-item" key={key}>
                                         <div className="sales-stage-timeline-item-tail"></div>

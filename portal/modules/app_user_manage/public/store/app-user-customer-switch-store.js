@@ -11,7 +11,7 @@ function AppUserCustomerSwitchStore() {
 }
 
 //恢复默认值
-AppUserCustomerSwitchStore.prototype.resetState = function () {
+AppUserCustomerSwitchStore.prototype.resetState = function() {
     //是否是第一次加载，第一次加载的时候
     this.firstLoading = true;
     //是否处于loading状态
@@ -42,12 +42,12 @@ AppUserCustomerSwitchStore.prototype.resetState = function () {
 };
 
 //FromAction-获取客户基本信息
-AppUserCustomerSwitchStore.prototype.getCustomerInfo = function (customerInfo) {
+AppUserCustomerSwitchStore.prototype.getCustomerInfo = function(customerInfo) {
     this.customerInfo = customerInfo;
 };
 
 //FromAction-获取客户对应的用户信息
-AppUserCustomerSwitchStore.prototype.getCustomerUserList = function (result) {
+AppUserCustomerSwitchStore.prototype.getCustomerUserList = function(result) {
     this.selectedCustomerUserRows = [];
     if (result.loading) {
         this.customerUserListResult = "loading";
@@ -63,7 +63,7 @@ AppUserCustomerSwitchStore.prototype.getCustomerUserList = function (result) {
     }
 };
 //FromAction-设置用户列表翻页页数
-AppUserCustomerSwitchStore.prototype.setCustomerUserPage = function (page) {
+AppUserCustomerSwitchStore.prototype.setCustomerUserPage = function(page) {
     this.customerUserPage = page;
 };
 //FromAction-设置用户列表每页显示多少条
@@ -71,19 +71,19 @@ AppUserCustomerSwitchStore.prototype.setCustomerPageSize = function(pageSize) {
     this.pageSize = pageSize;
 };
 //FromAction-隐藏右侧面板
-AppUserCustomerSwitchStore.prototype.closeRightPanel = function () {
+AppUserCustomerSwitchStore.prototype.closeRightPanel = function() {
     this.isShowRightPanel = false;
 };
 //FromAction-显示右侧面板
-AppUserCustomerSwitchStore.prototype.showRightPanel = function () {
+AppUserCustomerSwitchStore.prototype.showRightPanel = function() {
     this.isShowRightPanel = true;
 };
 //FromAction-设置搜索关键词
-AppUserCustomerSwitchStore.prototype.setSearchKeyword = function (keyword) {
+AppUserCustomerSwitchStore.prototype.setSearchKeyword = function(keyword) {
     this.searchKeyword = keyword;
 };
 //FromAction-设置选中的用户列表
-AppUserCustomerSwitchStore.prototype.setSelectedCustomerUserRows = function (rows) {
+AppUserCustomerSwitchStore.prototype.setSelectedCustomerUserRows = function(rows) {
     this.selectedCustomerUserRows = rows;
 };
 

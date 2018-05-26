@@ -18,7 +18,7 @@ exports.getAppRecordsList = function(searchObj){
         success : function(result){
             Deferred.resolve(result);
         },
-        error : function (xhr, state) {
+        error : function(xhr, state) {
             if ('abort' !== state){
                 Deferred.reject(xhr.responseJSON);
             }

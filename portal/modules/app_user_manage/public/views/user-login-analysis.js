@@ -8,21 +8,21 @@ import TimeUtil from '../../../../public/sources/utils/time-format-util';
 import CardContainer from 'CMP_DIR/card-container'; // 容器
 
 const UserLoginAnalysis = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             userId: '1'
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             selectValue: 'LoginFrequency',
             ...this.getStateData()
         };
     },
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(this.getStateData());
     },
-    getStateData: function () {
+    getStateData: function() {
         return UserLoginAnalysisStore.getState();
     },
     getUserAnalysisInfo(userId, selectedAppId) {
@@ -31,13 +31,13 @@ const UserLoginAnalysis = React.createClass({
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         UserLoginAnalysisStore.listen(this.onStateChange);
         UserLoginAnalysisAction.resetState();
         let userId = this.props.userId;
         this.getUserAnalysisInfo(userId, this.props.selectedAppId);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId != newUserId) {
             setTimeout(() => {
@@ -46,7 +46,7 @@ const UserLoginAnalysis = React.createClass({
             }, 0);
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         UserLoginAnalysisStore.unlisten(this.onStateChange);
     },
     getQueryParams(queryParams) {
@@ -68,7 +68,7 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.getUserLoginChartInfo(queryObj);
     },
     // 选择应用
-    onSelectedAppChange: function (appid) {
+    onSelectedAppChange: function(appid) {
         UserLoginAnalysisAction.resetState();
         UserLoginAnalysisAction.setSelectedAppId(appid);
         // 获取用户登录信息（时长、次数、首次和最后一次登录时间、登录时长统计、登录次数统计）
@@ -90,7 +90,7 @@ const UserLoginAnalysis = React.createClass({
                         maxWidth={270}
                         notFoundContent={Intl.get("common.not.found", "无法找到")}
                     >
-                        { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function (item) {
+                        { _.isArray(this.state.userOwnAppArray) ? this.state.userOwnAppArray.map(function(item) {
                             return (
                                 <Option value={item.app_id} key={item.app_id}>
                                     {item.app_name}
@@ -136,7 +136,7 @@ const UserLoginAnalysis = React.createClass({
         UserLoginAnalysisAction.getUserLoginInfo(queryObj);
     },
     // 用户登录信息
-    renderUserLoginInfo () {
+    renderUserLoginInfo() {
         let millisecond = this.state.loginInfo.duration;
         let timeObj = {timeDescr: ' '};
         if (millisecond !== '') {
@@ -241,7 +241,7 @@ const UserLoginAnalysis = React.createClass({
     },
 
     // 用户登录时长的统计图的提示信息
-    durationTooltip: function (time, sum) {
+    durationTooltip: function(time, sum) {
         let timeObj = TimeUtil.secondsToHourMinuteSecond(sum || 0);
         return [
             Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
@@ -250,26 +250,26 @@ const UserLoginAnalysis = React.createClass({
     },
 
     // 用户登录次数的统计图的提示信息
-    chartFrequencyTooltip: function (time, sum) {
+    chartFrequencyTooltip: function(time, sum) {
         return [
             Intl.get('common.login.time', '时间') + ' : ' + `${time}`,
             Intl.get('user.login.time', '次数') + ' : ' + `${sum}`
         ].join('<br />');
     },
 
-    handleSelectRadio: function (dataRange) {
+    handleSelectRadio: function(dataRange) {
         this.setState({
             selectValue: dataRange
         });
     },
 
-    render: function () {
+    render: function() {
         let appList = this.renderUserAppsList();
         let LoadingBlock = this.state.isLoading ? (
             <Spinner />
         ) : null;
         let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ?  <div className="user-no-login">
-             {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
+            {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
         </div> : <div className="user-login-info">
             {this.renderUserLoginInfo()}
             {this.renderLoginChart()}

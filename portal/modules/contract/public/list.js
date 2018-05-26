@@ -21,7 +21,7 @@ const LAYOUT_CONSTNTS = {
     BOTTOM: 20
 };
 const List = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             condition: {},
             rangeParams: [],
@@ -37,7 +37,7 @@ const List = React.createClass({
             selectedItemId: ""//选中的合同id
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.state.isScrollTop = nextProps.isScrollTop;
         this.state.sum = nextProps.sum;
         this.setState(this.state);
@@ -52,22 +52,22 @@ const List = React.createClass({
             });
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.setTableHeight);
         TableUtil.zoomInSortArea(this.refs.listTable);
         contractEmitter.on(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.setTableHeight);
         contractEmitter.removeListener(contractEmitter.IMPORT_CONTRACT, this.onContractImport);
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         this.setTableHeight();
         if (this.state.isScrollTop) {
             this.scrollTop();
         }
     },
-    setTableHeight: function () {
+    setTableHeight: function() {
         let newHeight = $(window).height() 
             - $(".custom-tbody").offset().top 
             - $(".custom-tfoot").outerHeight() 
@@ -75,10 +75,10 @@ const List = React.createClass({
         $(this.refs.listTable).find(".custom-tbody").height(newHeight);
         this.refs.gemiScrollBar.update();
     },
-    getRowKey: function (record, index) {
+    getRowKey: function(record, index) {
         return index;
     },
-    onRowClick: function (record, index, e) {
+    onRowClick: function(record, index, e) {
         if (e.currentTarget.className === "ant-table-selection-column") return;
         const $tr = $(e.target).closest("tr");
         $tr.addClass("current-row").siblings().removeClass("current-row");
@@ -88,7 +88,7 @@ const List = React.createClass({
         this.props.showRightPanel(view, index);
     },
     //处理选中行的样式
-    handleRowClassName: function (record, index) {
+    handleRowClassName: function(record, index) {
         if ((record.id == this.state.selectedItemId) && this.props.isRightPanelShow) {
             return "current-row";
         }
@@ -99,7 +99,7 @@ const List = React.createClass({
     onChange: function(pagination, filters, sorter) {
         this.props.getContractList(true, sorter);
     },
-    onFilterChange: function (field, value) {
+    onFilterChange: function(field, value) {
         //value可能为undefined，需要处理一下
         if (!value) {
             value = "";
@@ -166,21 +166,21 @@ const List = React.createClass({
         }, 500);
     },
 
-    toggleDateSelector: function (field) {
+    toggleDateSelector: function(field) {
         this.state[field] = !this.state[field];
         this.setState(this.state);
     },
 
-    handleScrollBottom: function () {
+    handleScrollBottom: function() {
         this.props.getContractList();
     },
 
-    scrollTop: function () {
+    scrollTop: function() {
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.setState({isScrollTop: false});
     },
 
-    buildFilterSelect: function (column, list, key) {
+    buildFilterSelect: function(column, list, key) {
         let options = list.map(item => {
             const value = key? item[key] : item;
             return (<Option
@@ -205,7 +205,7 @@ const List = React.createClass({
         );
     },
 
-    onFilterSelectChange: function (column, value) {
+    onFilterSelectChange: function(column, value) {
         let condition = this.state.condition;
 
         if (value === "all") {
@@ -268,7 +268,7 @@ const List = React.createClass({
         this.confirmImport(false);
     },
 
-    render: function () {
+    render: function() {
         const _this = this;
         let columns = CONTRACT_COLUMNS;
 
@@ -321,7 +321,7 @@ const List = React.createClass({
             }
 
             if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
-                column.render = function (text) {
+                column.render = function(text) {
                     let time = text? moment(text).format(DATE_FORMAT) : "";
                     return <span>{time}</span>;
                 };
@@ -337,7 +337,7 @@ const List = React.createClass({
 
             if (["contract_amount", "cost_price", "gross_profit", "total_amount", "total_gross_profit", "total_plan_amount", "total_invoice_amount", "repayment_amount", "repayment_gross_profit", "cost"].indexOf(column.dataIndex) > -1) {
                 column.className = "number-value";
-                column.render = function (text) {
+                column.render = function(text) {
                     if (column.dataIndex === "cost") {
                         text = parseFloat(text);
                         text = isNaN(text)? "" : text.toFixed(2);
@@ -351,7 +351,7 @@ const List = React.createClass({
 
             if (["gross_profit_rate"].indexOf(column.dataIndex) > -1) {
                 column.className = "number-value";
-                column.render = function (text) {
+                column.render = function(text) {
                     text = decimalToPercent(text);
                     return <span>{text}</span>;
                 };
@@ -362,7 +362,7 @@ const List = React.createClass({
             }
 
             if (column.dataIndex === "category") {
-                column.render = function (text) {
+                column.render = function(text) {
                     text = text? text : "";
                     return <span>{text}</span>;
                 };
@@ -439,12 +439,12 @@ const List = React.createClass({
                     />
                 </div>
                 {this.props.isTheadFilterShow? (
-                <div className="custom-thead-filter">
-                    <Table
-                        columns={filterColumns}
-                        pagination={false}
-                    />
-                </div>
+                    <div className="custom-thead-filter">
+                        <Table
+                            columns={filterColumns}
+                            pagination={false}
+                        />
+                    </div>
                 ) : null}
                 <div className="custom-tbody" ref="tableWrap">
                     <GeminiScrollBar
@@ -453,15 +453,15 @@ const List = React.createClass({
                         handleScrollBottom={this.handleScrollBottom}
                         itemCssSelector=".ant-table-tbody .ant-table-row"
                     >
-                    <Table
-                        dataSource={this.props.contractList}
-                        columns={columns}
-                        rowKey={this.getRowKey}
-                        loading={this.props.isListLoading}
-                        pagination={false}
-                        rowClassName={this.handleRowClassName}
-                        onRowClick={this.onRowClick}
-                    />
+                        <Table
+                            dataSource={this.props.contractList}
+                            columns={columns}
+                            rowKey={this.getRowKey}
+                            loading={this.props.isListLoading}
+                            pagination={false}
+                            rowClassName={this.handleRowClassName}
+                            onRowClick={this.onRowClick}
+                        />
                     </GeminiScrollBar>
                 </div>
                 <div className="custom-tfoot">
@@ -473,32 +473,32 @@ const List = React.createClass({
                         <ReactIntl.FormattedMessage
                             id="contract.124"
                             values={{
-                            "num":this.props.contractCount + '',
-                            "type": typeName
+                                "num":this.props.contractCount + '',
+                                "type": typeName
                             }}
                             defaultMessage={`共{num}个符合当前查询条件的{type}`} />
                         {this.props.type === "cost"? null : (
                             <span>
-                            <span>, </span>
-                            <ReactIntl.FormattedMessage
-                               id="contract.126"
-                               defaultMessage="相关款项合计"
-                            />
+                                <span>, </span>
+                                <ReactIntl.FormattedMessage
+                                    id="contract.126"
+                                    defaultMessage="相关款项合计"
+                                />
                             (
-                            <ReactIntl.FormattedMessage
-                               id="contract.160"
-                               defaultMessage="单位"
-                            />
-                            <span>: </span>
-                            <ReactIntl.FormattedMessage
-                               id="contract.139"
-                               defaultMessage="万"
-                            />
+                                <ReactIntl.FormattedMessage
+                                    id="contract.160"
+                                    defaultMessage="单位"
+                                />
+                                <span>: </span>
+                                <ReactIntl.FormattedMessage
+                                    id="contract.139"
+                                    defaultMessage="万"
+                                />
                             )
                             :
                             </span>
                         )}
-                        </span>
+                    </span>
                 </div>
                 <Modal
                     visible={this.state.isPreviewShow}
@@ -510,12 +510,12 @@ const List = React.createClass({
                     onCancel={this.cancelImport}
                 >
                     {this.state.isPreviewShow? (
-                    <Table
-                        dataSource={this.state.previewList}
-                        columns={columns}
-                        rowKey={this.getRowKey}
-                        pagination={false}
-                    />
+                        <Table
+                            dataSource={this.state.previewList}
+                            columns={columns}
+                            rowKey={this.getRowKey}
+                            pagination={false}
+                        />
                     ) : null}
                 </Modal>
             </div>

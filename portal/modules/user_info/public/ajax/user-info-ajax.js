@@ -1,14 +1,14 @@
 //获取用户信息
-exports.getUserInfo = function (userId) {
+exports.getUserInfo = function(userId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_info/' + userId,
         dataType: 'json',
         type: 'get',
-        success: function (usrInfo) {
+        success: function(usrInfo) {
             Deferred.resolve(usrInfo);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     })
@@ -17,16 +17,16 @@ exports.getUserInfo = function (userId) {
 };
 
 //获取用户所管理的安全域信息
-exports.getManagedRealm = function () {
+exports.getManagedRealm = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get_managed_realm',
         dataType: 'json',
         type: 'get',
-        success: function (realmInfo) {
+        success: function(realmInfo) {
             Deferred.resolve(realmInfo);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     })
@@ -35,33 +35,33 @@ exports.getManagedRealm = function () {
 };
 
 //获取登录日志
-exports.getLogList = function (params) {
+exports.getLogList = function(params) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/log_list',
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (logList) {
+        success: function(logList) {
             Deferred.resolve(logList);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.activeUserEmail = function () {
+exports.activeUserEmail = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_email/active',
         dataType: 'json',
         type: 'post',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -69,34 +69,34 @@ exports.activeUserEmail = function () {
 };
 
 //修改个人信息
-exports.editUserInfo = function (userInfo) {
+exports.editUserInfo = function(userInfo) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_info',
         dataType: 'json',
         type: 'put',
         data: userInfo,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //设置语言环境
-exports.setUserLanguage = function (userLang) {
+exports.setUserLanguage = function(userLang) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_lang',
         dataType: 'json',
         type: 'post',
         data: userLang,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -104,17 +104,17 @@ exports.setUserLanguage = function (userLang) {
 };
 
 //修改密码
-exports.editUserInfoPwd = function (userInfo) {
+exports.editUserInfoPwd = function(userInfo) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_info_pwd',
         dataType: 'json',
         type: 'put',
         data: userInfo,
-        success: function (userInfoModified) {
+        success: function(userInfoModified) {
             Deferred.resolve(userInfoModified);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -122,30 +122,30 @@ exports.editUserInfoPwd = function (userInfo) {
 };
 
 //校验密码
-exports.checkUserInfoPwd = function (userInfo) {
+exports.checkUserInfoPwd = function(userInfo) {
     var Deferred = $.Deferred();
 
     $.ajax({
         url: '/rest/user_info_pwd',
         type: 'get',
         data: userInfo,
-        success: function (userInfoModified) {
+        success: function(userInfoModified) {
             Deferred.resolve(userInfoModified.flag);
         }
     });
     return Deferred.promise();
 };
-exports.setSubscribeEmail = function (configObj) {
+exports.setSubscribeEmail = function(configObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/info_email/subscribe',
         dataType: 'json',
         type: 'post',
         data: configObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });

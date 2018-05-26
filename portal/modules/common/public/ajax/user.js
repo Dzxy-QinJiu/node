@@ -5,7 +5,7 @@ trans.register('getUserListByRole', {url: '/rest/user_list/byrole', type: 'get'}
 trans.register('getUserById', {url: '/rest/global/user/:user_id', type: 'get'});
 
 //根据当前成员的角色，获取成员列表
-exports.getUserListByRoleAjax = function () {
+exports.getUserListByRoleAjax = function() {
     return trans.getAjax('getUserListByRole');
 };
 

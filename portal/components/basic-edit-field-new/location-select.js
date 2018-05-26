@@ -3,7 +3,7 @@ import {AntcAreaSelection} from "antc";
 import {DetailEditBtn} from "../rightPanel";
 import SaveCancelButton from "../detail-card/save-cancel-button";
 const LocationSelectField = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             id: "",
             hasEditPrivilege: false,
@@ -12,13 +12,13 @@ const LocationSelectField = React.createClass({
             county: "",
             //编辑按钮的提示文案
             editBtnTip: Intl.get("crm.175", "设置地域"),
-            onChange: function () {
+            onChange: function() {
             },
-            onModifySuccess: function () {
+            onModifySuccess: function() {
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,//正在保存
             displayType: "text",
@@ -29,7 +29,7 @@ const LocationSelectField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.id != this.state.id) {
             //切换客户时,重新设置state数据
             let stateData = this.getInitialState();
@@ -40,7 +40,7 @@ const LocationSelectField = React.createClass({
             this.setState(stateData);
         }
     },
-    changeDisplayType: function (type) {
+    changeDisplayType: function(type) {
         if (type === 'text') {
             Trace.traceEvent(this.getDOMNode(), "取消对地域的修改");
             this.setState({
@@ -60,14 +60,14 @@ const LocationSelectField = React.createClass({
         }
     },
     //回到展示状态
-    backToDisplay: function () {
+    backToDisplay: function() {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
     },
-    handleSubmit: function () {
+    handleSubmit: function() {
         if (this.state.loading) return;
         if (this.state.province == this.props.province
             && this.state.city == this.props.city
@@ -91,19 +91,19 @@ const LocationSelectField = React.createClass({
             });
         });
     },
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         Trace.traceEvent(e, "取消对地域的修改");
         this.changeDisplayType("text");
     },
     //更新地址
-    updateLocation: function (address) {
+    updateLocation: function(address) {
         var location = address.split('/');
         this.state.province = location[0] || "";
         this.state.city = location[1] || "";
         this.state.county = location[2] || "";
         Trace.traceEvent(this.getDOMNode(), "修改地域");
     },
-    render: function () {
+    render: function() {
         var location = [];
         if (this.state.province) {
             location.push(this.state.province);
@@ -120,21 +120,21 @@ const LocationSelectField = React.createClass({
                     <span className="inline-block basic-info-text">{location.join('/')}</span>
                     {this.props.hasEditPrivilege ? (
                         <DetailEditBtn title={this.props.editBtnTip}
-                                       onClick={this.changeDisplayType.bind(this, "edit")}/>) : null
+                            onClick={this.changeDisplayType.bind(this, "edit")}/>) : null
                     }
                 </div>
             );
         }
         return (<div className="basic-edit-field location-edit-field">
             <AntcAreaSelection labelCol="0" wrapperCol="24"
-                               placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
-                               prov={this.state.province}
-                               city={this.state.city}
-                               county={this.state.county} updateLocation={this.updateLocation}/>
+                placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                prov={this.state.province}
+                city={this.state.city}
+                county={this.state.county} updateLocation={this.updateLocation}/>
             <SaveCancelButton loading={this.state.loading}
-                              saveErrorMsg={this.state.submitErrorMsg}
-                              handleSubmit={this.handleSubmit}
-                              handleCancel={this.handleCancel}
+                saveErrorMsg={this.state.submitErrorMsg}
+                handleSubmit={this.handleSubmit}
+                handleCancel={this.handleCancel}
             />
         </div>);
     }

@@ -104,20 +104,20 @@ function handleTeamData(teamTrail, teamOfficial) {
         return [];
     } else if (length2 == 0) {
         return _.map( teamTrail, (trailItem) => {
-                trailItem.official = 0;
-                return trailItem;
+            trailItem.official = 0;
+            return trailItem;
         } );
     } else {
         return _.map( teamTrail, (trailItem) => {
-           let findData = _.find(teamOfficial, (officalItem) => {
-               return officalItem.name == trailItem.name;
-           });
-           if (findData) {
-               trailItem.official = findData.count;
-           } else {
-               trailItem.official = 0;
-           }
-           return trailItem;
+            let findData = _.find(teamOfficial, (officalItem) => {
+                return officalItem.name == trailItem.name;
+            });
+            if (findData) {
+                trailItem.official = findData.count;
+            } else {
+                trailItem.official = 0;
+            }
+            return trailItem;
         } );
     }
 }

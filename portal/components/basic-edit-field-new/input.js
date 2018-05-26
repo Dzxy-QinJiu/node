@@ -18,7 +18,7 @@ import SaveCancelButton from "../detail-card/save-cancel-button";
 
 const BasicEditField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             id: '1',
             //类型 input、textarea或password、number
@@ -36,13 +36,13 @@ const BasicEditField = React.createClass({
             //编辑按钮的提示文案
             editBtnTip: Intl.get("common.update", "修改"),
             //修改成功
-            modifySuccess: function () {
+            modifySuccess: function() {
             },
-            onDisplayTypeChange: function () {
+            onDisplayTypeChange: function() {
             },
-            onValueChange: function () {
+            onValueChange: function() {
             },
-            saveEditInput: function () {
+            saveEditInput: function() {
             },
             //行数
             rows: 5,
@@ -52,7 +52,7 @@ const BasicEditField = React.createClass({
             afterValTip: ''
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         var type = this.props.type, value = this.props.value;
         if (type === 'password') {
             value = secretPassword;
@@ -74,7 +74,7 @@ const BasicEditField = React.createClass({
             }
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id) {
             var type = nextProps.type, value = nextProps.value;
             if (type === 'password') {
@@ -88,7 +88,7 @@ const BasicEditField = React.createClass({
             });
         }
     },
-    setEditable: function (e) {
+    setEditable: function(e) {
         var formData = this.state.formData;
         formData.input = this.state.value;
         this.setState({
@@ -97,7 +97,7 @@ const BasicEditField = React.createClass({
             passStrength: {
                 passBarShow: false
             }
-        }, function () {
+        }, function() {
             var dom = $('input[type="text"],input[type="password"],textarea', this.refs.inputWrap)[0];
             var val = dom.value;
             if (dom.createTextRange) {//IE浏览器
@@ -113,12 +113,12 @@ const BasicEditField = React.createClass({
         this.props.onDisplayTypeChange("edit");
         Trace.traceEvent(e, "点击编辑" + this.props.field);
     },
-    md5: function (value) {
+    md5: function(value) {
         var md5Hash = crypto.createHash("md5");
         md5Hash.update(value);
         return md5Hash.digest("hex");
     },
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         var validation = this.refs.validation;
         Trace.traceEvent(e, "保存对" + this.props.field + "的修改");
         validation.validate(valid => {
@@ -158,7 +158,7 @@ const BasicEditField = React.createClass({
             }
         });
     },
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         var oldValue = this.props.type === 'password' ? secretPassword : this.state.value;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -173,7 +173,7 @@ const BasicEditField = React.createClass({
         this.props.onDisplayTypeChange("text");
         Trace.traceEvent(e, "取消对" + this.props.field + "的修改");
     },
-    onFocusInput: function (type, event) {
+    onFocusInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
             if (currentValue === secretPassword) {
@@ -185,7 +185,7 @@ const BasicEditField = React.createClass({
             }
         }
     },
-    onBlurInput: function (type, event) {
+    onBlurInput: function(type, event) {
         if (type === 'password') {
             var currentValue = event.target.value;
             if (currentValue === '') {
@@ -197,11 +197,11 @@ const BasicEditField = React.createClass({
             }
         }
     },
-    onInputChange: function (e) {
+    onInputChange: function(e) {
         this.setField.bind(this, 'input', e);
         this.props.onValueChange();
     },
-    render: function () {
+    render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         var displayCls = classNames({
@@ -220,7 +220,7 @@ const BasicEditField = React.createClass({
                 </span>
                 {this.props.hasEditPrivilege ? (
                     <DetailEditBtn title={this.props.editBtnTip}
-                                   onClick={this.setEditable.bind(this)}/>) : null
+                        onClick={this.setEditable.bind(this)}/>) : null
                 }
             </div>
         ) : null;
@@ -239,31 +239,31 @@ const BasicEditField = React.createClass({
                             <Validator rules={this.props.validators}>
                                 {this.props.type === 'textarea' ?
                                     <Input name="input"
-                                           type={this.props.type}
-                                           placeholder={this.props.placeholder}
-                                           value={formData.input}
-                                           onChange={this.onInputChange}
-                                           autoComplete="off"
-                                           onFocus={this.onFocusInput.bind(this, this.props.type)}
-                                           onBlur={this.onBlurInput.bind(this, this.props.type)}
-                                           autosize={{minRows: 2, maxRows: 6}}/>
+                                        type={this.props.type}
+                                        placeholder={this.props.placeholder}
+                                        value={formData.input}
+                                        onChange={this.onInputChange}
+                                        autoComplete="off"
+                                        onFocus={this.onFocusInput.bind(this, this.props.type)}
+                                        onBlur={this.onBlurInput.bind(this, this.props.type)}
+                                        autosize={{minRows: 2, maxRows: 6}}/>
                                     : <Input name="input"
-                                             type={this.props.type}
-                                             placeholder={this.props.placeholder}
-                                             value={formData.input}
-                                             onChange={this.onInputChange}
-                                             autoComplete="off"
-                                             onFocus={this.onFocusInput.bind(this, this.props.type)}
-                                             onBlur={this.onBlurInput.bind(this, this.props.type)}
+                                        type={this.props.type}
+                                        placeholder={this.props.placeholder}
+                                        value={formData.input}
+                                        onChange={this.onInputChange}
+                                        autoComplete="off"
+                                        onFocus={this.onFocusInput.bind(this, this.props.type)}
+                                        onBlur={this.onBlurInput.bind(this, this.props.type)}
                                     />}
                             </Validator>
                         </FormItem>
                     </Validation>
                     {!this.props.hideButtonBlock ?
                         <SaveCancelButton loading={this.state.loading}
-                                          saveErrorMsg={this.state.submitErrorMsg}
-                                          handleSubmit={this.handleSubmit}
-                                          handleCancel={this.handleCancel}
+                            saveErrorMsg={this.state.submitErrorMsg}
+                            handleSubmit={this.handleSubmit}
+                            handleCancel={this.handleCancel}
                         /> : null}
                 </Form>
             </div>

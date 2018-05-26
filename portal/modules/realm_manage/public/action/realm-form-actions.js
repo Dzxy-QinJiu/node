@@ -17,9 +17,9 @@ function RealmFormActions() {
         'resetEmailFlags'
     );
     //保存安全域
-    this.addRealm = function (realm,cb) {
+    this.addRealm = function(realm,cb) {
         var _this = this;
-        realmAjax.addRealm(realm).then(function (list) {
+        realmAjax.addRealm(realm).then(function(list) {
             //保存成功后的处理
             _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
             //清空搜索内容
@@ -27,7 +27,7 @@ function RealmFormActions() {
             //将新创建的放在原有列表之前
             RealmActions.expandRealmLists(list);
             cb({saveResult: "success" , taskId : list.taskId});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
             cb({saveResult: "error", msg : errorMsg});
@@ -36,9 +36,9 @@ function RealmFormActions() {
 
 
     //保存所有者
-    this.addOwner = function (owner) {
+    this.addOwner = function(owner) {
         var _this = this;
-        realmAjax.addOwner(owner).then(function () {
+        realmAjax.addOwner(owner).then(function() {
             //保存成功后的处理
             _this.dispatch({saveResult: "success", saveMsg:Intl.get("common.save.success", "保存成功！")});
             //清空搜索内容
@@ -49,27 +49,27 @@ function RealmFormActions() {
                 page_size: 16,
                 search_content: ""
             });
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
         });
     };
     //编辑安全域
-    this.editRealm = function (realm) {
+    this.editRealm = function(realm) {
         var _this = this;
-        realmAjax.editRealm(realm).then(function (realmModified) {
+        realmAjax.editRealm(realm).then(function(realmModified) {
             //保存成功后的处理
             _this.dispatch({saveResult: "success", saveMsg:Intl.get("common.save.success", "保存成功！")});
             //修改成功后刷新左侧列表对应安全域卡片及其详情的数据
             RealmActions.afterEditRealm(realmModified);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
         });
     };
 
     //清空提示
-    this.resetSaveResult = function (formType, saveResult, realm) {
+    this.resetSaveResult = function(formType, saveResult, realm) {
         if (saveResult == "success") {
             if (formType == "add") {
                 //添加成功后关闭右侧面板
@@ -83,31 +83,31 @@ function RealmFormActions() {
     };
 
     //用户名唯一性的验证
-    this.checkOnlyUserName = function (userName) {
+    this.checkOnlyUserName = function(userName) {
         var _this = this;
-        realmAjax.checkOnlyUserName(userName).then(function (result) {
+        realmAjax.checkOnlyUserName(userName).then(function(result) {
             _this.dispatch(result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
 
     //电话唯一性的验证
-    this.checkOnlyOwnerPhone = function (phone) {
+    this.checkOnlyOwnerPhone = function(phone) {
         var _this = this;
-        realmAjax.checkOnlyOwnerPhone(phone).then(function (result) {
+        realmAjax.checkOnlyOwnerPhone(phone).then(function(result) {
             _this.dispatch(result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
 
     //邮箱唯一性的验证
-    this.checkOnlyOwnerEmail = function (email) {
+    this.checkOnlyOwnerEmail = function(email) {
         var _this = this;
-        realmAjax.checkOnlyOwnerEmail(email).then(function (result) {
+        realmAjax.checkOnlyOwnerEmail(email).then(function(result) {
             _this.dispatch(result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };

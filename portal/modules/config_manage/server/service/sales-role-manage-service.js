@@ -16,7 +16,7 @@ const salesRoleRestApis = {
 };
 
 //获取销售角色列表
-exports.getSalesRoleList = function (req, res) {
+exports.getSalesRoleList = function(req, res) {
     return restUtil.authRest.get({
         url: salesRoleRestApis.getSalesRoleList,
         req: req,
@@ -24,7 +24,7 @@ exports.getSalesRoleList = function (req, res) {
     }, null);
 };
 //添加销售角色
-exports.addSalesRole = function (req, res, role) {
+exports.addSalesRole = function(req, res, role) {
     return restUtil.authRest.post({
         url: salesRoleRestApis.addSalesRole,
         req: req,
@@ -32,7 +32,7 @@ exports.addSalesRole = function (req, res, role) {
     }, role);
 };
 //设置默认角色
-exports.setDefaultRole = function (req, res, role_id) {
+exports.setDefaultRole = function(req, res, role_id) {
     return restUtil.authRest.put({
         url: salesRoleRestApis.setDefaultRole.replace(":role_id", role_id),
         req: req,
@@ -40,7 +40,7 @@ exports.setDefaultRole = function (req, res, role_id) {
     }, null);
 };
 //删除销售角色
-exports.deleteSalesRole = function (req, res, role_id) {
+exports.deleteSalesRole = function(req, res, role_id) {
     return restUtil.authRest.del({
         url: salesRoleRestApis.deleteSalesRole.replace(":role_id", role_id),
         req: req,
@@ -48,14 +48,14 @@ exports.deleteSalesRole = function (req, res, role_id) {
     }, null);
 };
 //修改销售的角色
-exports.changeSalesRole = function (req, res, obj) {
+exports.changeSalesRole = function(req, res, obj) {
     return restUtil.authRest.post({
         url: salesRoleRestApis.changeSalesRole,
         req: req,
         res: res
     }, obj);
 };
-exports.getSalesRoleByMemberId = function (req, res, quryObj) {
+exports.getSalesRoleByMemberId = function(req, res, quryObj) {
     return restUtil.authRest.get({
         url: salesRoleRestApis.getSalesRoleByMemberId,
         req: req,
@@ -63,7 +63,7 @@ exports.getSalesRoleByMemberId = function (req, res, quryObj) {
     }, quryObj);
 };
 //设置某个角色的客户容量
-exports.setSalesRoleGoal = function (req, res) {
+exports.setSalesRoleGoal = function(req, res) {
     return restUtil.authRest.put({
         url: salesRoleRestApis.setSalesRoleGoal,
         req: req,

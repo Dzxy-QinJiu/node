@@ -18,7 +18,7 @@ const statusList = [
 const UserOnlineList = React.createClass({
     selectedUserId : '',
     showRightPanel : false,
-    getInitialState: function () {
+    getInitialState: function() {
         var state = OnlineUserIndexStore.getState();
         return {
             ...state,
@@ -35,12 +35,12 @@ const UserOnlineList = React.createClass({
             showRightPanel : false
         });
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         OnlineUserIndexAction.getAppList();
         OnlineUserIndexStore.listen(this.onStoreChange);
         emitter.on("user_detail_close_right_panel" , this.closeRightPanel);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         OnlineUserIndexStore.unlisten(this.onStoreChange);
         this.selectedUserId = '';
         this.showRightPanel = false;
@@ -65,14 +65,14 @@ const UserOnlineList = React.createClass({
             }
         });
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(this.getInitialState());
     },
     //选中某个应用
-    appSelected:function (appObj) {
+    appSelected:function(appObj) {
         OnlineUserIndexAction.setSelectedAppId(appObj);
     },
-    render: function () {
+    render: function() {
         return (
             <div data-tracename="在线用户列表页面">
                 <div className="online-user-list-wrap" ref="wrap">
@@ -91,7 +91,7 @@ const UserOnlineList = React.createClass({
                         statusList={statusList}/>
                 </div>
                 <RightPanel className="app_user_manage_rightpanel white-space-nowrap online_user_list_rightpanel"
-                            showFlag={this.state.showRightPanel}>
+                    showFlag={this.state.showRightPanel}>
                     {
                         this.state.selectedUserId ? (
                             <UserDetail userId={this.state.selectedUserId} selectedAppId={this.state.selectedAppId}/>

@@ -40,13 +40,13 @@ function constructorSearchObj(searchContent) {
     return searchContent;
 }
 var MyAppManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return AppStore.getState();
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(AppStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         AppStore.listen(this.onChange);
         //通过history.pushState({params}，“/myApp”,{urlParams});跳转过来时，params参数
@@ -66,27 +66,27 @@ var MyAppManage = React.createClass({
         myAppEmitter.on(myAppEmitter.GO_TO_ADD_PERMISSION, this.goToAddPermission);
     },
     //去设置角色
-    goToAddRole: function (appId) {
+    goToAddRole: function(appId) {
         if (appId) {
             AppAction.showAuthRolePanel(appId);
             AppAction.setShowRoleAuthType('role');
         }
     },
     //去设置角色
-    goToAddPermission: function (appId) {
+    goToAddPermission: function(appId) {
         if (appId) {
             AppAction.showAuthRolePanel(appId);
             AppAction.setShowRoleAuthType('authority');
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         AppStore.unlisten(this.onChange);
         myAppEmitter.removeListener(myAppEmitter.GO_TO_ADD_ROLE, this.goToAddRole);
         myAppEmitter.removeListener(myAppEmitter.GO_TO_ADD_PERMISSION, this.goToAddPermission);
     },
     events: {
-        showAppForm: function (type) {
+        showAppForm: function(type) {
             AppFormAction.setManagerListLoading(true);
             AppFormAction.getAppManagerList();
             AppFormAction.setAllAppListLoading(true);
@@ -96,32 +96,32 @@ var MyAppManage = React.createClass({
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
-                focusTimeout = setTimeout(function () {
+                focusTimeout = setTimeout(function() {
                     $("#name").focus();
                 }, 600);
             }
             AppAction.showAppForm(type);
         },
         // 版本升级记录
-        showVersionUpgradePanel: function () {
+        showVersionUpgradePanel: function() {
             AppAction.showVersionUpgradePanel();
         },
 
         // 系统公告
-        showAppNoticePanel: function () {
+        showAppNoticePanel: function() {
             AppAction.showAppNoticePanel();
         },
         //用户类型设置
-        showUserTypeConfigPanel: function () {
+        showUserTypeConfigPanel: function() {
             AppAction.showUserTypeConfigPanel();
         },
         //status:0->停用、1->启用
-        updateAppStatus: function (appId, status) {
+        updateAppStatus: function(appId, status) {
             AppAction.updateAppStatus({id: appId, status: status});
         },
 
         //切换页数时，当前页展示数据的修改
-        onChangePage: function (count, curPage) {
+        onChangePage: function(count, curPage) {
             AppAction.updateCurPage(curPage);
             var searchObj = {
                 cur_page: curPage,
@@ -131,25 +131,25 @@ var MyAppManage = React.createClass({
             AppAction.getMyAppList(searchObj);
         },
         //展示模态框
-        showModalDialog: function () {
+        showModalDialog: function() {
             AppAction.showModalDialog();
         },
         //隐藏模态框
-        hideModalDialog: function () {
+        hideModalDialog: function() {
             AppAction.hideModalDialog();
         },
         //应用代码跟踪
-        showAppCodeTrace:function () {
+        showAppCodeTrace:function() {
             AppAction.showAppCodeTrace();
         },
 
-        showAppInfo: function (app) {
+        showAppInfo: function(app) {
             //正在获取其他应用详情，则先不展示当前应用详情
             if (this.state.appIsLoading) {
                 return;
             }
             AppAction.setCurAppDetail(app.id);
-            setTimeout(function () {
+            setTimeout(function() {
                 //获取应用的详情
                 AppAction.getCurAppById(app.id);
             });
@@ -159,7 +159,7 @@ var MyAppManage = React.createClass({
                     if (openTimeout) {
                         clearTimeout(openTimeout);
                     }
-                    openTimeout = setTimeout(function () {
+                    openTimeout = setTimeout(function() {
                         AppAction.showAppInfo();
                     }, 200);
                 }
@@ -167,7 +167,7 @@ var MyAppManage = React.createClass({
                 AppAction.showAppInfo();
             }
         },
-        searchEvent: function (searchContent) {
+        searchEvent: function(searchContent) {
             AppAction.updateCurPage(1);
             AppAction.updateSearchContent(searchContent);
             var searchObj = {
@@ -178,7 +178,7 @@ var MyAppManage = React.createClass({
             AppAction.getMyAppList(searchObj);
         },
         //右侧面板的关闭
-        closeRightPanel: function () {
+        closeRightPanel: function() {
             AppAction.closeRightPanel();
         },
 
@@ -189,36 +189,36 @@ var MyAppManage = React.createClass({
         },
 
         //由编辑页面返回信息展示页面
-        returnInfoPanel: function () {
+        returnInfoPanel: function() {
             AppAction.returnInfoPanel();
         },
         //一页展示多少应用的修改
-        updatePageSize: function (count) {
+        updatePageSize: function(count) {
             AppAction.updatePageSize(count);
         },
-        showAuthRolePanel: function (app) {
+        showAuthRolePanel: function(app) {
             AppAction.showAuthRolePanel(app.id);
         },
-        closeAuthRolePanel: function (event) {
+        closeAuthRolePanel: function(event) {
             Trace.traceEvent(event,"关闭角色和权限界面");
             AppAction.closeAuthRolePanel();
         },
-        setShowRoleAuthType: function (type) {
+        setShowRoleAuthType: function(type) {
             AppAction.setShowRoleAuthType(type);
         },
-        showAppAuthPanel: function (event) {
+        showAppAuthPanel: function(event) {
             Trace.traceEvent(event,"点击查看应用权限");
             AppAction.showAppAuthPanel();
         },
         //刷新应用密钥
-        refreshAppSecret: function () {
+        refreshAppSecret: function() {
             //刷新应用密钥
             AppAction.setAppSecretRefreshing(true);
             AppAction.refreshAppSecret(this.state.currentApp.id);
         }
     },
 
-    renderRightPanel: function () {
+    renderRightPanel: function() {
         if (this.state.isAppFormShow) {
             return (
                 <EditAppForm
@@ -235,10 +235,10 @@ var MyAppManage = React.createClass({
         } else if (this.state.isAppAuthPanelShow) {
             return (
                 <AppAuthPanel closeRightPanel={this.events.closeRightPanel}
-                              returnInfoPanel={this.events.returnInfoPanel}
-                              appAuthPanelShow={this.state.appAuthPanelShow}
-                              appAuthMap={this.state.currentApp.appAuthMap}
-                              appId={this.state.currentApp.id}
+                    returnInfoPanel={this.events.returnInfoPanel}
+                    appAuthPanelShow={this.state.appAuthPanelShow}
+                    appAuthMap={this.state.currentApp.appAuthMap}
+                    appId={this.state.currentApp.id}
                 />
             );
         } else if (this.state.isAppNoticePanelShow) {
@@ -285,7 +285,7 @@ var MyAppManage = React.createClass({
         }
     },
     //获取卡片展示所需的应用列表
-    getCardShowAppList: function () {
+    getCardShowAppList: function() {
         let appList = _.isArray(this.state.curAppList) ? this.state.curAppList : [];
         return appList.map(app=> {
             let pageApp = {
@@ -324,15 +324,15 @@ var MyAppManage = React.createClass({
         });
 
     },
-    render: function () {
+    render: function() {
         var modalType = Intl.get("common.app", "应用");
         var authRoleView = null;
         var firstLoading = this.state.isLoading;
         if (this.state.isShowAuthRolePanel) {
             authRoleView = (<MyAppAuthRoleView curAppId={this.state.showAuthoRoleAppId}
-                                               showRoleAuthType={this.state.showRoleAuthType}
-                                               setShowRoleAuthType={this.events.setShowRoleAuthType}
-                                               closeAuthRolePanel={this.events.closeAuthRolePanel}/>);
+                showRoleAuthType={this.state.showRoleAuthType}
+                setShowRoleAuthType={this.events.setShowRoleAuthType}
+                closeAuthRolePanel={this.events.closeAuthRolePanel}/>);
         }
         var _this = this;
         var slideClassName = classNames("right-panel-content", {

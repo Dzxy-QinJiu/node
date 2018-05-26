@@ -350,26 +350,26 @@ const AddOrEditUser = React.createClass({
             }
         });
     },
-    onCustomerChoosen: function (info) {
+    onCustomerChoosen: function(info) {
         AppUserFormActions.customerChoosen(info);
     },
-    hideCustomerError: function () {
+    hideCustomerError: function() {
         AppUserFormActions.hideCustomerError();
     },
     //检查单个字段对应的用户是否存在
-    checkRestField: function (field, value) {
+    checkRestField: function(field, value) {
         var Deferred = $.Deferred();
         this.restFieldAjaxMap[field] = $.ajax({
             url: '/rest/appuser/exist/' + field + '/' + encodeURIComponent(value),
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 if (result === true) {
                     Deferred.resolve();
                 } else {
                     Deferred.reject();
                 }
             },
-            error: function () {
+            error: function() {
                 Deferred.reject();
             }
         });
@@ -380,13 +380,13 @@ const AddOrEditUser = React.createClass({
     //timeout,用户clearTimeout
     restFieldTimeoutMap: {},
     //获取验证方法
-    getRestFieldValidator: function (field) {
+    getRestFieldValidator: function(field) {
         var _this = this;
         var TEXT_MAP = {
             "phone": Intl.get("user.phone", "手机号"),
             "email": Intl.get("common.email", "邮箱")
         };
-        return function (rule, value, callback) {
+        return function(rule, value, callback) {
             clearTimeout(_this.restFieldTimeoutMap[field]);
             var lastAjax = _this.restFieldAjaxMap[field];
             lastAjax && lastAjax.abort();
@@ -402,7 +402,7 @@ const AddOrEditUser = React.createClass({
                 }
             } else if (field === 'email') {
                 if (!/^(((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(,((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)*$/i
-                        .test(trimValue)) {
+                    .test(trimValue)) {
                     callback(Intl.get("user.email.validate.tip", "请输入正确格式的邮箱"));
                     return;
                 }
@@ -507,7 +507,7 @@ const AddOrEditUser = React.createClass({
                 <div className="basic-data-form">
                     <div className="form-item">
                         <div className="form-item-label required_label"><ReactIntl.FormattedMessage id="common.username"
-                                                                                                    defaultMessage="用户名"/>
+                            defaultMessage="用户名"/>
                         </div>
                         <div className="form-item-content user-name-textfield-block">
                             <FormItem
@@ -519,11 +519,11 @@ const AddOrEditUser = React.createClass({
                             >
                                 <Validator rules={{validator: this.checkUserValid}} ref="userNameValidator">
                                     <Input name="user_name"
-                                           id="user_name"
-                                           placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
-                                           value={formData.user_name}
-                                           onChange={this.setField.bind(this, 'user_name')}
-                                           onFocus={this.renameUser}
+                                        id="user_name"
+                                        placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
+                                        value={formData.user_name}
+                                        onChange={this.setField.bind(this, 'user_name')}
+                                        onFocus={this.renameUser}
                                     />
                                 </Validator>
                                 {this.renderAddUserNameTips()}
@@ -532,7 +532,7 @@ const AddOrEditUser = React.createClass({
                     </div>
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.app.count"
-                                                                                     defaultMessage="数量"/></div>
+                            defaultMessage="数量"/></div>
                         <div
                             className={this.isAddOnlyOneUser() ? "form-item-content only-one-user-border" : "form-item-content"}>
                             {this.renderUserCountNumberField()}
@@ -561,16 +561,16 @@ const AddOrEditUser = React.createClass({
                                                 message: Intl.get("user.nickname.write.tip", "请填写昵称")
                                             }]}>
                                                 <Input name="nick_name"
-                                                       placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
-                                                       value={formData.nick_name}
-                                                       onChange={this.setField.bind(this, 'nick_name')}/>
+                                                    placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                                                    value={formData.nick_name}
+                                                    onChange={this.setField.bind(this, 'nick_name')}/>
                                             </Validator>
                                         </FormItem>
                                     </div>
                                 </div>
                                 <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.phone"
-                                                                                                 defaultMessage="手机号"/>
+                                        defaultMessage="手机号"/>
                                     </div>
                                     <div className="form-item-content input-item user-phone-textfield-block">
                                         <FormItem
@@ -582,16 +582,16 @@ const AddOrEditUser = React.createClass({
                                         >
                                             <Validator rules={[{validator: this.getRestFieldValidator('phone')}]}>
                                                 <Input name="phone"
-                                                       placeholder={Intl.get("user.phone.write.tip", "请填写手机号")}
-                                                       value={formData.phone}
-                                                       onChange={this.setField.bind(this, 'phone')}/>
+                                                    placeholder={Intl.get("user.phone.write.tip", "请填写手机号")}
+                                                    value={formData.phone}
+                                                    onChange={this.setField.bind(this, 'phone')}/>
                                             </Validator>
                                         </FormItem>
                                     </div>
                                 </div>
                                 <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="common.email"
-                                                                                                 defaultMessage="邮箱"/>
+                                        defaultMessage="邮箱"/>
                                     </div>
                                     <div className="form-item-content input-item user-email-textfield-block">
                                         <FormItem
@@ -603,9 +603,9 @@ const AddOrEditUser = React.createClass({
                                         >
                                             <Validator rules={[{validator: this.getRestFieldValidator('email')}]}>
                                                 <Input name="email"
-                                                       placeholder={Intl.get("user.email.write.tip", "请填写邮箱")}
-                                                       value={formData.email}
-                                                       onChange={this.setField.bind(this, 'email')}/>
+                                                    placeholder={Intl.get("user.email.write.tip", "请填写邮箱")}
+                                                    value={formData.email}
+                                                    onChange={this.setField.bind(this, 'email')}/>
                                             </Validator>
                                         </FormItem>
                                     </div>
@@ -617,7 +617,7 @@ const AddOrEditUser = React.createClass({
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className={customerLabelClass}><ReactIntl.FormattedMessage id="common.belong.customer"
-                                                                                            defaultMessage="所属客户"/>
+                                defaultMessage="所属客户"/>
                             </div>
                             <div className="form-item-content">
                                 {this.renderUserCustomerSuggestBlock()}
@@ -630,7 +630,7 @@ const AddOrEditUser = React.createClass({
                             (
                                 <div className="form-item form-item-text">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.sales.team"
-                                                                                                 defaultMessage="销售团队"/>
+                                        defaultMessage="销售团队"/>
                                     </div>
                                     <div className="form-item-content">
                                         {this.state.formData.sales_team.name}
@@ -643,7 +643,7 @@ const AddOrEditUser = React.createClass({
                             (
                                 <div className="form-item form-item-text">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.salesman"
-                                                                                                 defaultMessage="销售人员"/>
+                                        defaultMessage="销售人员"/>
                                     </div>
                                     <div className="form-item-content">
                                         {this.state.formData.sales.name}
@@ -653,7 +653,7 @@ const AddOrEditUser = React.createClass({
                     }
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.organization"
-                                                                                     defaultMessage="组织"/></div>
+                            defaultMessage="组织"/></div>
                         <div className="form-item-content">
                             <Organization
                                 onChange={this.organizationSelect}
@@ -664,7 +664,7 @@ const AddOrEditUser = React.createClass({
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="common.type"
-                                                                                         defaultMessage="类型"/></div>
+                                defaultMessage="类型"/></div>
                             <div className="form-item-content">
                                 {this.renderUserTypeRadioBlock()}
                             </div>
@@ -672,14 +672,14 @@ const AddOrEditUser = React.createClass({
                     )}
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle"
-                                                                                     defaultMessage="开通周期"/></div>
+                            defaultMessage="开通周期"/></div>
                         <div className="form-item-content">
                             {this.renderUserTimeRangeBlock()}
                         </div>
                     </div>
                     <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.expire.select"
-                                                                                     defaultMessage="到期可选"/></div>
+                            defaultMessage="到期可选"/></div>
                         <div className="form-item-content">
                             {this.renderUserOverDraftBlock()}
                         </div>
@@ -698,7 +698,7 @@ const AddOrEditUser = React.createClass({
                     {Oplate.hideSomeItem ? null : (
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login"
-                                                                                         defaultMessage="多人登录"/></div>
+                                defaultMessage="多人登录"/></div>
                             <div className="form-item-content">
                                 {this.renderMultiLoginRadioBlock()}
                             </div>
@@ -706,7 +706,7 @@ const AddOrEditUser = React.createClass({
                     )}
                     <div className="form-item" ref="descriptionBlock">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="common.remark"
-                                                                                     defaultMessage="备注"/></div>
+                            defaultMessage="备注"/></div>
                         <div className="form-item-content user-description-textarea-block">
                             {this.renderUserDescriptionBlock()}
                         </div>
@@ -748,17 +748,17 @@ const AddOrEditUser = React.createClass({
                     ) : (
                         appsListError ? (
                             <Alert type="error" showIcon
-                                   message={<span>
-                                   <ReactIntl.FormattedMessage
-                                       id="user.app.list.error.tip"
-                                       defaultMessage={`应用列表获取失败，{retry}`}
-                                       values={{
-                                           'retry': <a href="javascript:void(0)"
-                                                       onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage
-                                               id="common.get.again" defaultMessage="重新获取"/></a>
-                                       }}
-                                   />
-                                     </span>}/>
+                                message={<span>
+                                    <ReactIntl.FormattedMessage
+                                        id="user.app.list.error.tip"
+                                        defaultMessage={`应用列表获取失败，{retry}`}
+                                        values={{
+                                            'retry': <a href="javascript:void(0)"
+                                                onClick={AppUserFormActions.getCurrentRealmApps}><ReactIntl.FormattedMessage
+                                                    id="common.get.again" defaultMessage="重新获取"/></a>
+                                        }}
+                                    />
+                                </span>}/>
                         ) : (
                             <SearchIconList
                                 totalList={this.state.currentRealmApps}
@@ -772,7 +772,7 @@ const AddOrEditUser = React.createClass({
                     isSubmitError ? (
                         <div className="has-error">
                             <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip"
-                                                                                          defaultMessage="至少选择一个应用"/>
+                                defaultMessage="至少选择一个应用"/>
                             </div>
                         </div>
                     ) : null
@@ -819,13 +819,13 @@ const AddOrEditUser = React.createClass({
                 <Icon type="loading"/>
             );
         }
-        var hide = function () {
+        var hide = function() {
             AppUserFormActions.hideSubmitTip();
         };
         if (this.state.submitResult === 'success') {
             return (
                 <AlertTimer time={3000} message={Intl.get("user.user.add.success", "添加成功")} type="success" showIcon
-                            onHide={hide}/>
+                    onHide={hide}/>
             );
         }
         if (this.state.submitResult === 'error') {

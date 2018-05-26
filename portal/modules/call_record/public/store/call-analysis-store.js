@@ -9,7 +9,7 @@ function CallAnalysisStore() {
 }
 
 //设置初始化数据
-CallAnalysisStore.prototype.setInitState = function () {
+CallAnalysisStore.prototype.setInitState = function() {
     this.loading = false; // 通话信息的loading
     //默认展示今天的时间
     this.timeType = "day";
@@ -45,9 +45,9 @@ CallAnalysisStore.prototype.setInitState = function () {
     };
     //每个团队的通话数量和通话时长趋势图统计数据
     this.eachTeamCallList = {
-       loading: false,
-       list: [],
-       errMsg: '' //获取失败的提示
+        loading: false,
+        list: [],
+        errMsg: '' //获取失败的提示
     };
     // 通话信息
     this.salesPhoneList = [];
@@ -99,7 +99,7 @@ CallAnalysisStore.prototype.setInitState = function () {
 };
 
 //  获取通话时长为TOP10的列表
-CallAnalysisStore.prototype.getCallDurTopTen = function (result) {
+CallAnalysisStore.prototype.getCallDurTopTen = function(result) {
     var callDurList = this.callDurList;
     callDurList.loading = result.loading;
     if (result.error) {
@@ -116,7 +116,7 @@ CallAnalysisStore.prototype.getCallDurTopTen = function (result) {
     }
 };
 // 获取通话总次数TOP10的数据
-CallAnalysisStore.prototype.getCallTotalList = function (dataObj) {
+CallAnalysisStore.prototype.getCallTotalList = function(dataObj) {
     let callTotalCountObj = this.callTotalCountObj;
     let callTotalTimeObj = this.callTotalTimeObj;
     callTotalCountObj.loading = dataObj.loading;
@@ -148,7 +148,7 @@ CallAnalysisStore.prototype.getCallTotalList = function (dataObj) {
 };
 
 //  获取通话数量和通话时长趋势图统计
-CallAnalysisStore.prototype.getCallCountAndDur = function (result) {
+CallAnalysisStore.prototype.getCallCountAndDur = function(result) {
     var callList = this.callList;
     callList.loading = result.loading;
     if (result.error) {
@@ -171,7 +171,7 @@ CallAnalysisStore.prototype.getCallCountAndDur = function (result) {
     }
 };
 //分别获取不同团队的通话数量
-CallAnalysisStore.prototype.getCallCountAndDurSeparately = function (result) {
+CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
     var eachTeamCallList = this.eachTeamCallList;
     eachTeamCallList.loading = result.loading;
     if (result.error) {
@@ -227,7 +227,7 @@ function getBillingTime(seconds) {
     }
 }
 
-CallAnalysisStore.prototype.getCallInfo = function (result) {
+CallAnalysisStore.prototype.getCallInfo = function(result) {
     this.loading = result.loading;
     var data = result.resData;
     if (data && _.isObject(data)) {
@@ -266,14 +266,14 @@ CallAnalysisStore.prototype.getCallInfo = function (result) {
 };
 
 //更换查询时间
-CallAnalysisStore.prototype.changeSearchTime = function (timeObj) {
+CallAnalysisStore.prototype.changeSearchTime = function(timeObj) {
     this.start_time = timeObj.startTime;
     this.end_time = timeObj.endTime;
     this.timeType = timeObj.timeType;
 };
 
 // 114占比&客服电话
-CallAnalysisStore.prototype.getCallRate = function (result) {
+CallAnalysisStore.prototype.getCallRate = function(result) {
     const nameMap = {
         "service": Intl.get("call.record.service.phone", '客服电话'),
         "114": Intl.get("call.record.service.phone", '114电话')
@@ -321,7 +321,7 @@ CallAnalysisStore.prototype.getCallRate = function (result) {
 };
 
 //获取通话时段（数量\时长）的统计数据
-CallAnalysisStore.prototype.getCallIntervalData = function (result) {
+CallAnalysisStore.prototype.getCallIntervalData = function(result) {
     this.callIntervalData.loading = result.loading;
     if (result.error) {
         this.callIntervalData.errMsg = result.errMsg || Intl.get("call.record.count.failed", "获取通话数量失败");
@@ -340,7 +340,7 @@ CallAnalysisStore.prototype.getCallIntervalData = function (result) {
 };
 
 // 获取团队信息
-CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
+CallAnalysisStore.prototype.getSaleGroupTeams = function(result) {
     if (result.error) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
@@ -358,7 +358,7 @@ CallAnalysisStore.prototype.getSaleGroupTeams = function (result) {
 };
 
 // 获取成员信息
-CallAnalysisStore.prototype.getSaleMemberList = function (result) {
+CallAnalysisStore.prototype.getSaleMemberList = function(result) {
     if (result.error) {
         this.memberList.errMsg = result.errMsg;
     } else if (result.resData) {
@@ -422,7 +422,7 @@ CallAnalysisStore.prototype.getCallCustomerZoneStage = function(result) {
     }
 };
 
-CallAnalysisStore.prototype.showZoneDistribute = function (zone) {
+CallAnalysisStore.prototype.showZoneDistribute = function(zone) {
     let OriginalData = this.callZoneStageOriginalData;
     if (_.isObject(OriginalData) && OriginalData.code === 0) {
         let sumData = OriginalData.sum;
@@ -451,7 +451,7 @@ CallAnalysisStore.prototype.showZoneDistribute = function (zone) {
     }
 };
 // 获取订单阶段
-CallAnalysisStore.prototype.getSalesStageList = function (result) {
+CallAnalysisStore.prototype.getSalesStageList = function(result) {
     if (_.isArray(result) && result.length) {
         this.salesStageList = result;
     }

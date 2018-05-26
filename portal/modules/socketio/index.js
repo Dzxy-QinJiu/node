@@ -42,7 +42,7 @@ var ioServer = null;
  */
 function setSocketSessionid(ioServer) {
     if (ioServer) {
-        ioServer.set('authorization', function (data, callback) {
+        ioServer.set('authorization', function(data, callback) {
             if (data.headers.cookie) {
                 // save parsedSessionId to handshakeData
                 data.cookie = cookie.parse(data.headers.cookie);
@@ -86,12 +86,12 @@ function notifyChannelListener(data) {
     var messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {
         //遍历消息接收者
-        messageObj.consumers.forEach(function (consumer) {
+        messageObj.consumers.forEach(function(consumer) {
             if (consumer && consumer.user_id) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
                 var socketArray = socketStore[consumer.user_id] || [];
                 if (socketArray.length > 0) {
-                    socketArray.forEach(function (socketObj) {
+                    socketArray.forEach(function(socketObj) {
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             socket.emit("mes", messageObj);
@@ -115,7 +115,7 @@ function phoneEventChannelListener(data) {
         //找到该用户对应的socket，将数据推送到浏览器
         var socketArray = socketStore[phonemsgObj.user_id] || [];
         if (socketArray.length > 0) {
-            socketArray.forEach(function (socketObj) {
+            socketArray.forEach(function(socketObj) {
                 var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
                     socket.emit("phonemsg", phonemsgObj);
@@ -139,7 +139,7 @@ function scheduleAlertListener(data) {
         //找到该用户对应的socket，将数据推送到浏览器
         var socketArray = socketStore[scheduleAlertObj.member_id] || [];
         if (socketArray.length > 0) {
-            socketArray.forEach(function (socketObj) {
+            socketArray.forEach(function(socketObj) {
                 var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
                     socket.emit("scheduleAlertMsg", scheduleAlertObj);
@@ -164,7 +164,7 @@ function offlineChannelListener(data) {
         var socketArray = socketStore[userObj.user_id] || [];
         if (socketArray.length > 0) {
             //找到最后一个登录用户的socketId和token
-            var lastLoginSocketObj = _.find(socketArray, function (socketObj) {
+            var lastLoginSocketObj = _.find(socketArray, function(socketObj) {
                 return socketObj.token == userObj.token;
             });
             //找到存储中最后一个登录的socket
@@ -176,7 +176,7 @@ function offlineChannelListener(data) {
             //将最后一个登录用户的socketId和token,放到数组newSocketArray中
             var newSocketArray = lastLoginSocketObj ? [lastLoginSocketObj] : [];
             //找到除最后一个登录的外的其他sesssion下的socket推送踢出消息后清除存储中对应的socket
-            socketArray.forEach(function (socketObj) {
+            socketArray.forEach(function(socketObj) {
                 if (socketObj.token != userObj.token) {
                     //找到不是最后一个登录的socket
                     var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
@@ -191,7 +191,7 @@ function offlineChannelListener(data) {
                         } else {
                             //推出消息后，设置socket对应的session失效
                             socket.emit("offline", userObj);
-                            getSessionFromStore(socket, function (err, session) {
+                            getSessionFromStore(socket, function(err, session) {
                                 if (!err && session) {
                                     session.destroy();
                                 }
@@ -216,7 +216,7 @@ function systemNoticeListener(notice) {
         //找到消息接收者对应的socket，将数据推送到浏览器
         let socketArray = socketStore[notice.member_id] || [];
         if (socketArray.length > 0) {
-            socketArray.forEach(function (socketObj) {
+            socketArray.forEach(function(socketObj) {
                 let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                 if (socket) {
                     socket.emit("system_notice", notice);
@@ -250,7 +250,7 @@ function applyUnreadReplyListener(unreadList) {
                 //找到消息接收者对应的socket，将数据推送到浏览器
                 let socketArray = socketStore[memberId] || [];
                 if (socketArray.length > 0) {
-                    socketArray.forEach(function (socketObj) {
+                    socketArray.forEach(function(socketObj) {
                         let socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             let memberUnreadReplyList = _.map(memberUnreadObj[memberId], unreadReply => {
@@ -278,7 +278,7 @@ function createBackendClient() {
     var pushServerUrl = getPushServerByEureka();
     client = ioClient.connect(pushServerUrl, {forceNew: true});
     //监听 connect
-    client.on('connect', function () {
+    client.on('connect', function() {
         pushLogger.info('已与后台建立连接');
     });
     //创建接收消息的通道
@@ -296,11 +296,11 @@ function createBackendClient() {
     //创建申请审批未读回复的通道
     client.on(applyUnreadReplyChannel, applyUnreadReplyListener);
     //监听 disconnect
-    client.on('disconnect', function () {
+    client.on('disconnect', function() {
         pushLogger.info('断开后台连接');
     });
     //监听重连失败
-    client.on('reconnect_error', function () {
+    client.on('reconnect_error', function() {
         pushLogger.info('重新建立连接失败');
         //创建连接失败后，手动断开连接！
         client.disconnect();
@@ -322,7 +322,7 @@ function getSessionFromStore(socket, fn) {
     }
 }
 //启动socketio
-module.exports.startSocketio = function (nodeServer) {
+module.exports.startSocketio = function(nodeServer) {
     // 创建socket.io服务器
     ioServer = require('socket.io')(nodeServer);
     //为批量操作推送设置参数
@@ -330,54 +330,54 @@ module.exports.startSocketio = function (nodeServer) {
     //为socket请求设置sessionId.
     setSocketSessionid(ioServer);
     // 和浏览器建立连接后触发
-    ioServer.on('connection', function (socket) {
-            //  从session中获取用户的userId及token
-            getSessionFromStore(socket, function (err, session) {
-                if (!err && session && session.user) {
-                    //获取内存中该用户的userId对应的socket、token数据
-                    var socketArray = socketStore[session.user.userid] || [];
-                    socketArray.push({
-                        socketId: socket.id,
-                        token: session._USER_TOKEN_.access_token,
-                        sessionId: (socket.request.sessionId || '')
-                    });
-                    //将当前用户应用的socket、token保存到内存中
-                    socketStore[session.user.userid] = socketArray;
-                    pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+    ioServer.on('connection', function(socket) {
+        //  从session中获取用户的userId及token
+        getSessionFromStore(socket, function(err, session) {
+            if (!err && session && session.user) {
+                //获取内存中该用户的userId对应的socket、token数据
+                var socketArray = socketStore[session.user.userid] || [];
+                socketArray.push({
+                    socketId: socket.id,
+                    token: session._USER_TOKEN_.access_token,
+                    sessionId: (socket.request.sessionId || '')
+                });
+                //将当前用户应用的socket、token保存到内存中
+                socketStore[session.user.userid] = socketArray;
+                pushLogger.debug('用户信息 %s', JSON.stringify(session.user));
+            } else {
+                var sid = socket.request && socket.request.sessionId;
+                if (err) {
+                    pushLogger.error('获取id为 %s 的session报错 %s', sid, JSON.stringify(err));
                 } else {
-                    var sid = socket.request && socket.request.sessionId;
-                    if (err) {
-                        pushLogger.error('获取id为 %s 的session报错 %s', sid, JSON.stringify(err));
-                    } else {
-                        if (session) {
-                            pushLogger.error("session: %s", JSON.stringify(session));
-                        }
-                        pushLogger.error("sessionId %s 已退出", sid);
+                    if (session) {
+                        pushLogger.error("session: %s", JSON.stringify(session));
                     }
+                    pushLogger.error("sessionId %s 已退出", sid);
                 }
-            });
-            // 和浏览器断开连接后触发
-            socket.on('disconnect', function () {
-                //获取到socket的sessionId
-                var sessionId = socket.request.sessionId;
-                pushLogger.info('sessionID: ' + sessionId + ' 与浏览器断开连接');
-                //遍历socketStore
-                _.any(socketStore, function (userArray, userId) {
-                    //遍历userArray
-                    return _.any(userArray, function (obj, idx) {
-                        //如果userArray中存在当前socket，删除
-                        if (obj.sessionId === sessionId) {
-                            userArray.splice(idx, 1);
-                            //删除之后，如果数组为空，则在socketStore中移除
-                            if (userArray.length === 0) {
-                                delete socketStore[userId];
-                            }
-                            return true;
+            }
+        });
+        // 和浏览器断开连接后触发
+        socket.on('disconnect', function() {
+            //获取到socket的sessionId
+            var sessionId = socket.request.sessionId;
+            pushLogger.info('sessionID: ' + sessionId + ' 与浏览器断开连接');
+            //遍历socketStore
+            _.any(socketStore, function(userArray, userId) {
+                //遍历userArray
+                return _.any(userArray, function(obj, idx) {
+                    //如果userArray中存在当前socket，删除
+                    if (obj.sessionId === sessionId) {
+                        userArray.splice(idx, 1);
+                        //删除之后，如果数组为空，则在socketStore中移除
+                        if (userArray.length === 0) {
+                            delete socketStore[userId];
                         }
-                    });
+                        return true;
+                    }
                 });
             });
-        }
+        });
+    }
     );
     //创建与后台的连接
     createBackendClient();
@@ -398,7 +398,7 @@ function sessionExpired(expiredObj) {
             //找到消息接收者对应的socket，将数据推送到浏览器
             var socketArray = socketStore[userId] || [];
             if (socketArray.length > 0) {
-                socketArray.forEach(function (socketObj) {
+                socketArray.forEach(function(socketObj) {
                     if (socketObj.sessionId == expiredSessionId) {
                         //找到相同sessionId的socket
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];

@@ -29,7 +29,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-            "privileges": [
+        "privileges": [
             "APP_USER_LIST"
         ]
     },
@@ -40,7 +40,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-            "privileges": []
+        "privileges": []
     },
     {
         "method": "post",
@@ -49,10 +49,10 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-            "privileges": [
+        "privileges": [
             "APP_USER_ADD"
         ]
-        }, {
+    }, {
         "method": "put",
         "path": "/rest/appuser",
         "handler": "editAppUser",
@@ -144,10 +144,10 @@ module.exports = {
         "path": "/rest/appuser/addapp",
         "handler": "addApp",
         "passport": {
-           "needLogin": true
+            "needLogin": true
         },
         "privileges": [
-           "APP_USER_ADD"//为用户添加应用
+            "APP_USER_ADD"//为用户添加应用
         ]
     },
     {
@@ -155,7 +155,7 @@ module.exports = {
         "path": "/rest/appuser/editapp",
         "handler": "editApp",
         "passport": {
-           "needLogin": true
+            "needLogin": true
         },
         "privileges": [
             "APP_USER_EDIT"//为用户修改应用
@@ -225,39 +225,39 @@ module.exports = {
             "needLogin": true
         }
     }, {
-            "method": "get",
-            "path": "/rest/get_team_lists",
-            "handler": "getteamlists",
-            "passport": {
-                "needLogin": true
-            }
-        }, {
-            "method": "put",
-            "path": "/rest/appuser/backout_apply",
-            "handler": "saleBackoutApply",
-            "passport": {
-                "needLogin": true
-            }
-        }, {
-            "method": "get",
-            "path": "/rest/apply/user_name/valid",
-            "handler": "checkUserName",
-            "passport": {
-                "needLogin": true
-            }
-        }, { // 添加一个用户名，提示用户名信息
-            "method": "get",
-            "path": "/rest/add/one/user/suggest",
-            "handler": "addOneUserSuggestName",
-            "passport": {
-                "needLogin": true
-            }
-        }, { // 获取安全域信息列表
-            "method": "get",
-            "path": "/rest/get/realm/list",
-            "handler": "getRealmList",
-            "passport": {
-                "needLogin": true
-            }
-        }]
+        "method": "get",
+        "path": "/rest/get_team_lists",
+        "handler": "getteamlists",
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        "method": "put",
+        "path": "/rest/appuser/backout_apply",
+        "handler": "saleBackoutApply",
+        "passport": {
+            "needLogin": true
+        }
+    }, {
+        "method": "get",
+        "path": "/rest/apply/user_name/valid",
+        "handler": "checkUserName",
+        "passport": {
+            "needLogin": true
+        }
+    }, { // 添加一个用户名，提示用户名信息
+        "method": "get",
+        "path": "/rest/add/one/user/suggest",
+        "handler": "addOneUserSuggestName",
+        "passport": {
+            "needLogin": true
+        }
+    }, { // 获取安全域信息列表
+        "method": "get",
+        "path": "/rest/get/realm/list",
+        "handler": "getRealmList",
+        "passport": {
+            "needLogin": true
+        }
+    }]
 };

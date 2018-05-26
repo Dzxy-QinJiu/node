@@ -12,35 +12,35 @@ function noop() {
 }
 var roleTitleDivHeight = 80; //50+30每组角色列表标题高度+需要留白高度
 var RoleList = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             editRole: noop,
             deleteRole: noop,
             setDefaultRole: noop
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             setDefaulting: false
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.setState(nextProps);
     },
     //编辑角色
-    editRole: function (role) {
+    editRole: function(role) {
         Trace.traceEvent($(this.getDOMNode()).find(".role-btn-class"),"点击编辑角色按钮");
         this.props.editRole(role);
     },
 
     //删除角色
-    deleteRole: function (role) {
+    deleteRole: function(role) {
         Trace.traceEvent($(this.getDOMNode()).find(".role-title-div"),"删除角色");
         this.props.deleteRole(role);
     },
 
     //设置默认角色
-    setDefault: function (role) {
+    setDefault: function(role) {
         let appId = this.props.appId;
         this.props.setDefaultRole({
             app_id: appId,
@@ -49,32 +49,32 @@ var RoleList = React.createClass({
     },
 
     //
-    delDefault: function () {
+    delDefault: function() {
         this.props.delDefaultRole(this.props.appId);
     },
 
     //展示删除时的提示框
-    showModalDialog: function (role) {
+    showModalDialog: function(role) {
         this.props.showModalDialog(role);
     },
 
     //隐藏删除时的提示框
-    hideModalDialog: function (role) {
+    hideModalDialog: function(role) {
         this.props.hideModalDialog(role);
     },
-    hideDelTooltip: function () {
+    hideDelTooltip: function() {
         this.props.clearDelErrorMsg();
     },    
-    turnToAuthPanel: function () {
+    turnToAuthPanel: function() {
         this.props.setShowRoleAuthType("authority");
     },
     //权限列表
-    renderAuthList: function (role) {
+    renderAuthList: function(role) {
         var authListEle = [], permissionGroups = role.permissionGroups, _this = this;
         if (_.isArray(permissionGroups) && permissionGroups.length > 0) {
-            permissionGroups.map(function (permissionGroup, j) {
+            permissionGroups.map(function(permissionGroup, j) {
                 if (permissionGroup && permissionGroup.permissionList && permissionGroup.permissionList.length > 0) {
-                    var hasAuth = _.some(permissionGroup.permissionList, function (permission) {
+                    var hasAuth = _.some(permissionGroup.permissionList, function(permission) {
                         return permission.status;
                     });
                     if (hasAuth) {
@@ -82,7 +82,7 @@ var RoleList = React.createClass({
                             <div
                                 className="authority-group-name">{permissionGroup.permissionGroupName}</div>
                             {
-                                permissionGroup.permissionList.map(function (permission, i) {
+                                permissionGroup.permissionList.map(function(permission, i) {
                                     if (permission.status) {
                                         return (<div className="role-content-list" key={i}>
                                             <div
@@ -107,10 +107,10 @@ var RoleList = React.createClass({
                             id="role.no.auth.set"
                             defaultMessage={`未设置权限，请先{setting}`}
                             values={{
-                                       "setting": <a onClick={_this.editRole.bind(_this, role)}
-                                                        data-tracename ="设置权限"
-                                       >{Intl.get("role.set.auth", "设置权限")}</a>
-                                    }}
+                                "setting": <a onClick={_this.editRole.bind(_this, role)}
+                                    data-tracename ="设置权限"
+                                >{Intl.get("role.set.auth", "设置权限")}</a>
+                            }}
                         />
                     </div>);
             }
@@ -120,19 +120,19 @@ var RoleList = React.createClass({
                     id="role.no.auth.add"
                     defaultMessage={`未设置权限，请先{add}`}
                     values={{
-                                 "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
-                                                                    data-tracename ="添加权限"
-                                 >{Intl.get("role.add.auth", "添加权限")}</a>): (
-                                     <Link to="/backgroundManagement/authority" activeClassName="active">
-                                        {Intl.get("role.add.auth", "添加权限")}</Link>
-                                 ))
-                                  }}
+                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
+                            data-tracename ="添加权限"
+                        >{Intl.get("role.add.auth", "添加权限")}</a>): (
+                            <Link to="/backgroundManagement/authority" activeClassName="active">
+                                {Intl.get("role.add.auth", "添加权限")}</Link>
+                        ))
+                    }}
                 />
             </div>);
         }
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var role = this.props.role;
         var roleListDivHeight = this.props.roleListDivHeight;

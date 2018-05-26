@@ -31,106 +31,106 @@ var topHeight = 87; // 65 +22 : 距导航高度+顶部导航高度
 var bootomHeight = 52; //距离底部高度
 
 var AuthorityPage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore(this);
     },
 
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore(this);
         this.setState(datas);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.resizeWindow);
         AuthorityStore.listen(this.onChange);
         AuthorityAction.getAuthorityList();
         AuthorityAction.authorityInfo();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         AuthorityStore.unlisten(this.onChange);
     },
 
-    authorityContainerHeightFnc: function () {
+    authorityContainerHeightFnc: function() {
         return $(window).height() - topHeight;
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             authorityContainerHeight: this.authorityContainerHeightFnc()
         });
     },
     events: {
 
-        showAddAuthorityGroupForm: function () {
+        showAddAuthorityGroupForm: function() {
             AuthorityAction.showAuthorityForm("", "addAuthorityGroup");
         },
 
-        hideAuthorityForm: function () {
+        hideAuthorityForm: function() {
             AuthorityAction.hideAuthorityForm();
         },
 
-        editAuthority: function (authority) {
+        editAuthority: function(authority) {
             AuthorityAction.editAuthority(authority);
         },
 
-        showAddAuthorityForm: function (authorityGroup, flag) {
+        showAddAuthorityForm: function(authorityGroup, flag) {
             AuthorityAction.showAuthorityForm(authorityGroup, flag);
         },
 
-        deleteAuthority: function (authorityIds) {
+        deleteAuthority: function(authorityIds) {
             AuthorityAction.deleteAuthority(authorityIds);
         },
-        deleteAuthorityGroup: function (authorityIds, groupName) {
+        deleteAuthorityGroup: function(authorityIds, groupName) {
             AuthorityAction.deleteAuthorityGroup(authorityIds, groupName);
         },
 
-        showModalDialog: function (authorityGroup) {
+        showModalDialog: function(authorityGroup) {
             AuthorityAction.showModalDialog(authorityGroup);
         },
 
-        hideModalDialog: function (authorityGroup) {
+        hideModalDialog: function(authorityGroup) {
             AuthorityAction.hideModalDialog(authorityGroup);
         },
 
-        showAuthorityModalDialog: function (authority) {
+        showAuthorityModalDialog: function(authority) {
             AuthorityAction.showAuthorityModalDialog(authority);
         },
 
-        hideAuthorityModalDialog: function (authority) {
+        hideAuthorityModalDialog: function(authority) {
             AuthorityAction.hideAuthorityModalDialog(authority);
         },
 
-        showAuthorityInfo: function (authority) {
+        showAuthorityInfo: function(authority) {
             AuthorityAction.showAuthorityForm(authority);
             AuthorityAction.showAuthorityInfoFnc(authority);
         },
 
-        hideAuthorityInfoFnc: function (authority) {
+        hideAuthorityInfoFnc: function(authority) {
             AuthorityAction.hideAuthorityInfoFnc(authority);
         },
 
-        showAuthorityGroupForm: function (authorityGroup) {
+        showAuthorityGroupForm: function(authorityGroup) {
             AuthorityAction.showAuthorityGroupForm(authorityGroup);
         },
-        closeAuthorityGroupForm: function () {
+        closeAuthorityGroupForm: function() {
             AuthorityAction.closeAuthorityGroupForm();
         },
-        clearDelAuthErrorMsg: function () {
+        clearDelAuthErrorMsg: function() {
             AuthorityAction.clearDelAuthErrorMsg();
         },
-        clearDelAuthGroupErrorMsg: function () {
+        clearDelAuthGroupErrorMsg: function() {
             AuthorityAction.clearDelAuthGroupErrorMsg();
         }
 
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var authorityGroupList = this.state.authorityGroupList || [];
         var height = this.state.authorityContainerHeight;
         var authorityListDivHeight = height - bootomHeight;
         var authorityListElement = "";
         if (authorityGroupList && authorityGroupList.length > 0) {
-            authorityListElement = authorityGroupList.map(function (authorityGroup, i) {
+            authorityListElement = authorityGroupList.map(function(authorityGroup, i) {
                 var delAuthGroupErorrMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErorrMsg : "");
                 return (
                     <div className="backgroundManagement_authority_content">
@@ -163,7 +163,7 @@ var AuthorityPage = React.createClass({
                         <TopNav.MenuList/>
                         <PrivilegeChecker check="ROLEP_RIVILEGE_AUTHORITY_ADD" className="add-authority-div">
                             <Button type="ghost" className="authority-add-btn"
-                                    onClick={_this.events.showAddAuthorityGroupForm}><ReactIntl.FormattedMessage id="authority.add.group" defaultMessage="添加权限组" />
+                                onClick={_this.events.showAddAuthorityGroupForm}><ReactIntl.FormattedMessage id="authority.add.group" defaultMessage="添加权限组" />
                             </Button>
                         </PrivilegeChecker>
                     </TopNav>

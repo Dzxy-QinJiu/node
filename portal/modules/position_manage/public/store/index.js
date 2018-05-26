@@ -109,7 +109,7 @@ class PositionStore {
         });
     }
     // 安全域列表
-    getRealmList (result) {
+    getRealmList(result) {
         if (result && result.error) {
             this.realmList = [];
         } else {
@@ -118,13 +118,13 @@ class PositionStore {
     }
 
     // 设置排序参数
-    setSort (sorter) {
+    setSort(sorter) {
         this.sortField = sorter && sorter.sortField ;
         this.sortOrder = sorter && sorter.sortOrder;
     }
 
     // 搜索
-    search (searchObj) {
+    search(searchObj) {
         this.nick_name = searchObj && searchObj.nick_name || '';
         this.phone_order = searchObj && searchObj.phone_order || '';
     }

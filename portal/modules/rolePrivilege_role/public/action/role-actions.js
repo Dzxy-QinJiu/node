@@ -19,7 +19,7 @@ function RoleActions() {
     );
 
     //获取角色列表
-    this.getRoleList = function (clientId, type) {
+    this.getRoleList = function(clientId, type) {
         var _this = this;
         var clientID = "";
         if (clientId) {
@@ -27,20 +27,20 @@ function RoleActions() {
         } else {
             clientID = userData.getUserData().auth.client_id;
         }
-        roleAjax.getRoleList(clientID, type).then(function (roleListObj) {
+        roleAjax.getRoleList(clientID, type).then(function(roleListObj) {
             //拿到角色列表后查询默认角色
             _this.actions.getDefaultRole(clientID);
             _this.dispatch(roleListObj);
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("role.get.role.list.failed", "获取角色列表失败"));
         });
     };
     
     //删除角色
-    this.deleteRole = function (role, type) {
+    this.deleteRole = function(role, type) {
         var _this = this;
-        roleAjax.deleteRole(role.roleId, type).then(function (data) {
+        roleAjax.deleteRole(role.roleId, type).then(function(data) {
             var delResultObj = {
                 delResult: data,//true:删除成功，false:删除失败
                 delRoleId: role.roleId
@@ -49,7 +49,7 @@ function RoleActions() {
                 delResultObj.delRoleMsg = Intl.get("role.del.role.failed", "删除角色失败");
             }
             _this.dispatch(delResultObj);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({
                 delResult: false,
                 delRoleId: role.roleId,
@@ -59,9 +59,9 @@ function RoleActions() {
     };
 
     //设置默认角色
-    this.setDefaultRole = function (param) {
+    this.setDefaultRole = function(param) {
         var _this = this;
-        roleAjax.setDefaultRole(param).then(function (data) {
+        roleAjax.setDefaultRole(param).then(function(data) {
             var setResultObj = {
                 setResult: data,//true:设置成功，false:设置失败
                 setRoleId: param.base_role
@@ -70,7 +70,7 @@ function RoleActions() {
                 message.error(Intl.get("role.default.set.failed", "设置默认角色失败"));               
             }
             _this.dispatch(setResultObj);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             message.error(Intl.get("role.default.set.failed", "设置默认角色失败"));
             _this.dispatch({
                 setResult: false,
@@ -79,8 +79,8 @@ function RoleActions() {
         });
     };
 
-     //查询默认角色
-    this.getDefaultRole = function (clientId) {
+    //查询默认角色
+    this.getDefaultRole = function(clientId) {
         var _this = this;
         const ROLE = "APPLICATION_BASE_ROLE_MANAGEMENT";//查询默认角色的权限
         //没有权限不发出请求
@@ -90,12 +90,12 @@ function RoleActions() {
             });
             return ;
         }
-        roleAjax.getDefaultRole({app_id:clientId}).then(function (data) {              
+        roleAjax.getDefaultRole({app_id:clientId}).then(function(data) {              
             var getResultObj = {
                 result: data
             };            
             _this.dispatch(getResultObj);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({
                 result: false
             });
@@ -106,9 +106,9 @@ function RoleActions() {
     };
 
     //删除默认角色
-    this.delDefaultRole = function (param) {
+    this.delDefaultRole = function(param) {
         var _this = this;
-        roleAjax.delDefaultRole(param).then(function (data) {
+        roleAjax.delDefaultRole(param).then(function(data) {
             var delResultObj = {
                 delResult: data//true:删除成功，false:删除失败
             };
@@ -116,7 +116,7 @@ function RoleActions() {
                 message.error(Intl.get("role.default.del.failed", "取消默认角色失败"));                
             }
             _this.dispatch(delResultObj);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             message.error(Intl.get("role.default.del.failed", "取消默认角色失败"));
             _this.dispatch({
                 delResult: false

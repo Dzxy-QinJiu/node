@@ -20,7 +20,7 @@ function CustomerRecordAction() {
         'setLoading'
     );
     //获取客户跟踪列表
-    this.getCustomerTraceList = function (queryObj,callback) {
+    this.getCustomerTraceList = function(queryObj,callback) {
         customerRecordAjax.getCustomerTraceRecordList(queryObj).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading:false,error:false,data:data});
@@ -30,7 +30,7 @@ function CustomerRecordAction() {
         });
     };
     //增加客户跟踪记录
-    this.addCustomerTrace = function (queryObj, callback) {
+    this.addCustomerTrace = function(queryObj, callback) {
         this.dispatch({loading:true,error:false});
         customerRecordAjax.addCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading:false,error:false,data:data});
@@ -40,7 +40,7 @@ function CustomerRecordAction() {
         });
     };
     //更新客户跟踪记录
-    this.updateCustomerTrace = function (queryObj, callback) {
+    this.updateCustomerTrace = function(queryObj, callback) {
         this.dispatch({loading:true,error:false});
         customerRecordAjax.updateCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading:false,error:false,data:data});

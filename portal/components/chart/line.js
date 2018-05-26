@@ -250,7 +250,7 @@ var LineChart = React.createClass({
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
-                     data-title={this.props.title}></div>
+                    data-title={this.props.title}></div>
             </div>
         );
     }

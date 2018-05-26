@@ -27,26 +27,26 @@ function AppUserCustomerSwitchAction() {
     );
 
     //获取客户对应的用户列表
-    this.getCustomerUserList = function (obj) {
+    this.getCustomerUserList = function(obj) {
         var _this = this;
         _this.dispatch({loading: true, error: false});
-        AppUserAjax.getCustomerUserList(obj).then(function (data) {
+        AppUserAjax.getCustomerUserList(obj).then(function(data) {
             _this.dispatch({loading: false, error: false, data: data});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
 
     //获取客户基本信息
-    this.getCustomerInfo = function (customerId) {
+    this.getCustomerInfo = function(customerId) {
         var _this = this;
-        crmAjax.queryCustomer({id: customerId}, 1, 1).then(function (data) {
+        crmAjax.queryCustomer({id: customerId}, 1, 1).then(function(data) {
             var customerInfo = {};
             if (data && $.isArray(data.result) && data.result[0]) {
                 customerInfo = data.result[0];
             }
             _this.dispatch(customerInfo);
-        }, function () {
+        }, function() {
             _this.dispatch({});
         });
     };

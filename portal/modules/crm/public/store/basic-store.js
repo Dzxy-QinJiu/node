@@ -22,33 +22,33 @@ function CRMStore() {
 }
 
 //公开方法，获取客户的基本资料
-CRMStore.prototype.getBasicInfo = function () {
+CRMStore.prototype.getBasicInfo = function() {
     return this.getState().basicData;
 };
 
-CRMStore.prototype.getBasicState = function () {
+CRMStore.prototype.getBasicState = function() {
     return this.getState().basicIsLoading;
 };
 
-CRMStore.prototype.getEditShowFlag = function () {
+CRMStore.prototype.getEditShowFlag = function() {
     return this.getState().editShowFlag;
 };
 
-CRMStore.prototype.getSalesObj = function () {
+CRMStore.prototype.getSalesObj = function() {
     return this.getState().salesObj;
 };
 
 //监听Actions的方法处理
-CRMStore.prototype.getBasicData = function (basicData) {
+CRMStore.prototype.getBasicData = function(basicData) {
     this.basicData = basicData;
     this.basicIsLoading = false;
 };
 
-CRMStore.prototype.setBasicState = function (state) {
+CRMStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
 };
 
-CRMStore.prototype.submitBaiscForm = function (newBasicData) {
+CRMStore.prototype.submitBaiscForm = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
     if (newBasicData.id == this.basicData.id) {
         this.basicData = newBasicData;

@@ -32,7 +32,7 @@ ScheduleStore.prototype.getScheduleList = function(result) {
     }else{
         this.isLoadingScheduleList = false;
         this.getScheduleListErrmsg = "";
-        var scheduleList = _.isArray(result.data.list)? result.data.list:[];
+        var scheduleList = _.isArray(result.data.list) ? result.data.list : [];
         if (!this.lastScheduleId){
             this.scheduleList = scheduleList;
         }else{
@@ -78,13 +78,13 @@ ScheduleStore.prototype.afterAddSchedule = function(newSchedule) {
     this.scheduleList.splice(0,1);
     this.scheduleList.unshift(newSchedule);
 };
-ScheduleStore.prototype.afterDelSchedule = function (id) {
+ScheduleStore.prototype.afterDelSchedule = function(id) {
     this.scheduleList = _.filter(this.scheduleList,(schedule)=>{
         return schedule.id != id;
     });
 };
 
-ScheduleStore.prototype.afterHandleStatus = function (newStatusObj) {
+ScheduleStore.prototype.afterHandleStatus = function(newStatusObj) {
     var curSchedule = _.filter(this.scheduleList, (schedule)=>{return schedule.id == newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };

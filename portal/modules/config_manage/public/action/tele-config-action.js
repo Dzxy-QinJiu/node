@@ -15,11 +15,11 @@ function TeleConfigActions(){
         var _this = this;
         _this.dispatch({loading:true});
         TeleConfigAjax.getTeleList(param)
-        .then(function (data) {
-            _this.dispatch({loading:false,error:false, data: data});
-        },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
-        });
+            .then(function(data) {
+                _this.dispatch({loading:false,error:false, data: data});
+            },function(errorMsg) {
+                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            });
     };   
 
     //删除电话
@@ -27,11 +27,11 @@ function TeleConfigActions(){
         var _this = this;
         _this.dispatch({loading:true});
         TeleConfigAjax.delTele(param)
-        .then(function (data) {
-            _this.dispatch({loading:false,error:false, data: data});
-        },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
-        });
+            .then(function(data) {
+                _this.dispatch({loading:false,error:false, data: data});
+            },function(errorMsg) {
+                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            });
     };
     
 

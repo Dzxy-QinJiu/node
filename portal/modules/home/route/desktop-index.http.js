@@ -11,7 +11,7 @@
 
 module.exports = {
     module: "home/action/desktop-index-controller",
-    routes: (function () {
+    routes: (function() {
         var list = [{
             "method": "get",
             "path": "/weekly_report",
@@ -76,7 +76,7 @@ module.exports = {
         var leftMenus = new MenusAll();
         var leftMenuList = leftMenus.getLeftMenuList();
         var treeWalk = require("tree-walk");
-        treeWalk.preorder(leftMenuList, function (value, key, parent) {
+        treeWalk.preorder(leftMenuList, function(value, key, parent) {
             if (key === "routePath") {
                 list.push({
                     "method": "get",

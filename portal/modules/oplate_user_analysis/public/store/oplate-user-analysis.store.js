@@ -15,7 +15,7 @@ const DATE_FORMAT_WITH_YEAR = oplateConsts.DATE_FORMAT;
 const DATE_FORMAT_WITHOUT_YEAR = oplateConsts.DATE_MONTH_DAY_FORMAT;
 
 //设置store的初始值
-OplateUserAnalysisStore.prototype.resetState = function () {
+OplateUserAnalysisStore.prototype.resetState = function() {
     //默认查看总用户
     this.currentTab = 'total';
     //选中的app
@@ -52,9 +52,9 @@ OplateUserAnalysisStore.prototype.resetState = function () {
     this.resetChartData('loading');
 };
 //切换过滤条件选中状态
-OplateUserAnalysisStore.prototype.toggleFilterParam = function ({field, checked}) {
+OplateUserAnalysisStore.prototype.toggleFilterParam = function({field, checked}) {
     if (this.filterParams.indexOf(field) >= 0) {
-        this.filterParams = _.filter(this.filterParams, function (f) {
+        this.filterParams = _.filter(this.filterParams, function(f) {
             return field !== f;
         });
     } else {
@@ -62,12 +62,12 @@ OplateUserAnalysisStore.prototype.toggleFilterParam = function ({field, checked}
     }
 };
 //显示/隐藏 筛选区域
-OplateUserAnalysisStore.prototype.toggleFilterArea = function () {
+OplateUserAnalysisStore.prototype.toggleFilterArea = function() {
     this.filterExpanded = !this.filterExpanded;
 };
 
 //用户登录时长统计
-OplateUserAnalysisStore.prototype.getUserLoginLong = function (result) {
+OplateUserAnalysisStore.prototype.getUserLoginLong = function(result) {
     var loginLong = this.loginLong;
     if (result.loading) {
         loginLong.resultType = 'loading';
@@ -85,7 +85,7 @@ OplateUserAnalysisStore.prototype.getUserLoginLong = function (result) {
 };
 
 //重置统计图数据
-OplateUserAnalysisStore.prototype.resetChartData = function (type) {
+OplateUserAnalysisStore.prototype.resetChartData = function(type) {
     //总数、新增用户数、过期用户数、新增过期用户数
     this.summaryNumbers = {
         resultType: type || '',
@@ -192,7 +192,7 @@ OplateUserAnalysisStore.prototype.resetChartData = function (type) {
 };
 
 //总数、新增用户数、过期用户数、新增过期用户数
-OplateUserAnalysisStore.prototype.getSummaryNumbers = function (result) {
+OplateUserAnalysisStore.prototype.getSummaryNumbers = function(result) {
     var summaryNumbers = this.summaryNumbers;
     if (result.loading) {
         summaryNumbers.resultType = 'loading';
@@ -220,7 +220,7 @@ OplateUserAnalysisStore.prototype.getSummaryNumbers = function (result) {
 OplateUserAnalysisStore.prototype.getTotalSummary =
     OplateUserAnalysisStore.prototype.getAddedSummary =
         OplateUserAnalysisStore.prototype.getExpiredSummary =
-            OplateUserAnalysisStore.prototype.getAddedExpiredSummary = function (result) {
+            OplateUserAnalysisStore.prototype.getAddedExpiredSummary = function(result) {
                 var userAnalysis = this.userAnalysis;
                 if (result.loading) {
                     userAnalysis.resultType = 'loading';
@@ -237,7 +237,7 @@ OplateUserAnalysisStore.prototype.getTotalSummary =
                     //找到app_name为''的，改为'综合'
                     if (this.isComposite) {
                         //更改综合名称
-                        _.find(userAnalysis.data, function (obj, idx) {
+                        _.find(userAnalysis.data, function(obj, idx) {
                             if (obj.app_name === '') {
                                 obj.app_name = Intl.get("oplate.user.analysis.22", "综合");
                                 //将当前这个放到最头上
@@ -247,7 +247,7 @@ OplateUserAnalysisStore.prototype.getTotalSummary =
                             }
                         });
                         //对数据进行排序
-                        userAnalysis.data.sort(function (obj1, obj2) {
+                        userAnalysis.data.sort(function(obj1, obj2) {
                             return obj2.total - obj1.total;
                         });
                     }
@@ -263,7 +263,7 @@ OplateUserAnalysisStore.prototype.getTotalTeam =
                     OplateUserAnalysisStore.prototype.getAddedMember =
                         OplateUserAnalysisStore.prototype.getExpiredMember =
                             OplateUserAnalysisStore.prototype.getAddedExpiredMember =
-                                function (result) {
+                                function(result) {
                                     var teamOrMemberAnalysis = this.teamOrMemberAnalysis;
                                     if (result.loading) {
                                         teamOrMemberAnalysis.resultType = 'loading';
@@ -284,7 +284,7 @@ OplateUserAnalysisStore.prototype.getTotalTeam =
 OplateUserAnalysisStore.prototype.getTotalZone =
     OplateUserAnalysisStore.prototype.getAddedZone =
         OplateUserAnalysisStore.prototype.getExpiredZone =
-            OplateUserAnalysisStore.prototype.getAddedExpiredZone = function (result) {
+            OplateUserAnalysisStore.prototype.getAddedExpiredZone = function(result) {
                 var zoneAnalysis = this.zoneAnalysis;
                 if (result.loading) {
                     zoneAnalysis.resultType = 'loading';
@@ -305,7 +305,7 @@ OplateUserAnalysisStore.prototype.getTotalZone =
 OplateUserAnalysisStore.prototype.getTotalIndustry =
     OplateUserAnalysisStore.prototype.getAddedIndustry =
         OplateUserAnalysisStore.prototype.getExpiredIndustry =
-            OplateUserAnalysisStore.prototype.getAddedExpiredIndustry = function (result) {
+            OplateUserAnalysisStore.prototype.getAddedExpiredIndustry = function(result) {
                 var industryAnalysis = this.industryAnalysis;
                 if (result.loading) {
                     industryAnalysis.resultType = 'loading';
@@ -364,7 +364,7 @@ OplateUserAnalysisStore.prototype.getTotalIndustry =
  *              }
  *          },...]
  */
-OplateUserAnalysisStore.prototype.getSalesOpenUserAnalysis = function (result) {
+OplateUserAnalysisStore.prototype.getSalesOpenUserAnalysis = function(result) {
     var salesOpenUserAnalysis = this.salesOpenUserAnalysis;
     if (result.loading) {
         salesOpenUserAnalysis.resultType = 'loading';
@@ -422,7 +422,7 @@ OplateUserAnalysisStore.prototype.getSalesOpenUserAnalysis = function (result) {
 };
 
 //获取活跃度统计（单个应用）
-OplateUserAnalysisStore.prototype.getUserActiveNess = function (result) {
+OplateUserAnalysisStore.prototype.getUserActiveNess = function(result) {
     var activeNess = this.activeNess;
     if (result.loading) {
         activeNess.resultType = 'loading';
@@ -440,9 +440,9 @@ OplateUserAnalysisStore.prototype.getUserActiveNess = function (result) {
         var dataLines = result.data;
         //针对数据进行处理，对后面超出当前时间范围的数据，进行忽略
         var searchEndTime = moment().valueOf();
-        _.each(dataLines, function (line) {
+        _.each(dataLines, function(line) {
             var lineDatas = line.datas;
-            var idx = _.findIndex(lineDatas, function (obj) {
+            var idx = _.findIndex(lineDatas, function(obj) {
                 if (obj.timestamp > searchEndTime) {
                     return true;
                 }
@@ -455,7 +455,7 @@ OplateUserAnalysisStore.prototype.getUserActiveNess = function (result) {
     }
 };
 //获取活跃时间段（单个应用）
-OplateUserAnalysisStore.prototype.getUserActiveTime = function (result) {
+OplateUserAnalysisStore.prototype.getUserActiveTime = function(result) {
     var activeTime = this.activeTime;
     if (result.loading) {
         activeTime.resultType = 'loading';
@@ -473,7 +473,7 @@ OplateUserAnalysisStore.prototype.getUserActiveTime = function (result) {
 };
 
 //获取用户留存i（单个应用）
-OplateUserAnalysisStore.prototype.getRetention = function (result) {
+OplateUserAnalysisStore.prototype.getRetention = function(result) {
     var retention = this.retention;
     if (result.loading) {
         retention.resultType = 'loading';
@@ -584,14 +584,14 @@ OplateUserAnalysisStore.prototype.getRetention = function (result) {
 };
 
 //更换查询时间
-OplateUserAnalysisStore.prototype.changeSearchTime = function ({startTime, endTime}) {
+OplateUserAnalysisStore.prototype.changeSearchTime = function({startTime, endTime}) {
     this.startTime = startTime;
     this.endTime = endTime;
     this.resetChartData('loading');
 };
 
 //更换选中应用
-OplateUserAnalysisStore.prototype.changeSelectedApp = function ({selectedApp, isComposite}) {
+OplateUserAnalysisStore.prototype.changeSelectedApp = function({selectedApp, isComposite}) {
     this.isComposite = isComposite;
     if (this.isComposite) {
         this.allAppId = selectedApp;
@@ -600,18 +600,18 @@ OplateUserAnalysisStore.prototype.changeSelectedApp = function ({selectedApp, is
     this.selectedApp = selectedApp;
 };
 //更换当前tab页
-OplateUserAnalysisStore.prototype.changeCurrentTab = function (tabName) {
+OplateUserAnalysisStore.prototype.changeCurrentTab = function(tabName) {
     this.currentTab = tabName;
 };
 
 //显示各统计图没有数据
-OplateUserAnalysisStore.prototype.showNoData = function () {
+OplateUserAnalysisStore.prototype.showNoData = function() {
     this.resetChartData();
 };
 
 
 // 用户类型统计
-OplateUserAnalysisStore.prototype.getUserTypeStatistics = function (result) {
+OplateUserAnalysisStore.prototype.getUserTypeStatistics = function(result) {
     var userType = this.userType;
     if (result.loading) {
         userType.resultType = 'loading';
@@ -650,7 +650,7 @@ OplateUserAnalysisStore.prototype.getUserTypeStatistics = function (result) {
 
 
 // 应用的启停用状态统计
-OplateUserAnalysisStore.prototype.getAppStatus = function (result) {
+OplateUserAnalysisStore.prototype.getAppStatus = function(result) {
     var appStatus = this.appStatus;
     if (result.loading) {
         appStatus.dataType = result.dataType;
@@ -682,7 +682,7 @@ OplateUserAnalysisStore.prototype.getAppStatus = function (result) {
     }
 };
 // 全部应用下（综合）,团队统计
-OplateUserAnalysisStore.prototype.getAppsTeam = function (result) {
+OplateUserAnalysisStore.prototype.getAppsTeam = function(result) {
     var teamOrMemberAnalysis = this.teamOrMemberAnalysis;
     if (result.loading) {
         teamOrMemberAnalysis.resultType = 'loading';
@@ -700,7 +700,7 @@ OplateUserAnalysisStore.prototype.getAppsTeam = function (result) {
 };
 
 // 全部应用下（综合）,行业统计
-OplateUserAnalysisStore.prototype.getAppsIndustry = function (result) {
+OplateUserAnalysisStore.prototype.getAppsIndustry = function(result) {
     var industryAnalysis = this.industryAnalysis;
     if (result.loading) {
         industryAnalysis.resultType = 'loading';
@@ -718,7 +718,7 @@ OplateUserAnalysisStore.prototype.getAppsIndustry = function (result) {
 };
 
 // 全部应用下（综合）,地域统计
-OplateUserAnalysisStore.prototype.getAppsZone = function (result) {
+OplateUserAnalysisStore.prototype.getAppsZone = function(result) {
     var zoneAnalysis = this.zoneAnalysis;
     if (result.loading) {
         zoneAnalysis.resultType = 'loading';
@@ -736,32 +736,32 @@ OplateUserAnalysisStore.prototype.getAppsZone = function (result) {
 };
 
 // 点击用户类型图表获取对应的类型：试用、签约、员工、赠送、培训、未知
-OplateUserAnalysisStore.prototype.setLinkageUserType = function (userType) {
+OplateUserAnalysisStore.prototype.setLinkageUserType = function(userType) {
     this.user_type = userType;
 };
 
 // 点击启停用图表获取对应的类型：启用、停用
-OplateUserAnalysisStore.prototype.setLinkageAppStatus = function (appStatus) {
+OplateUserAnalysisStore.prototype.setLinkageAppStatus = function(appStatus) {
     this.status = appStatus;
 };
 
 // 点击地域图表获取地域
-OplateUserAnalysisStore.prototype.setLinkageZone = function (zone) {
+OplateUserAnalysisStore.prototype.setLinkageZone = function(zone) {
     this.zone = zone;
 };
 
 // 点击行业图表获取行业
-OplateUserAnalysisStore.prototype.setLinkageIndustry = function (industry) {
+OplateUserAnalysisStore.prototype.setLinkageIndustry = function(industry) {
     this.industry = industry;
 };
 
 // 点击团队图表获取对应的团队
-OplateUserAnalysisStore.prototype.setLinkageTeam = function (team) {
+OplateUserAnalysisStore.prototype.setLinkageTeam = function(team) {
     this.team = team;
 };
 
 // 获取应用下载的统计
-OplateUserAnalysisStore.prototype.getAppsDownloadStatistics = function (result) {
+OplateUserAnalysisStore.prototype.getAppsDownloadStatistics = function(result) {
     var appDownload = this.appDownload;
     if (result.loading) {
         appDownload.resultType = 'loading';

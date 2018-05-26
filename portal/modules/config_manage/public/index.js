@@ -19,7 +19,7 @@ const auths = {
     TEAM_ROLE_MANAGE: "TEAM_ROLE_MANAGE"//销售角色管理权限
 };
 var ConfigManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return ({
             //行业标签列表
             TagLists: [],
@@ -40,7 +40,7 @@ var ConfigManage = React.createClass({
         });
     },
     //获取初始行业列表
-    getInitialData: function () {
+    getInitialData: function() {
         var _this = this;
         var page_size = 1000;
         $.ajax({
@@ -48,7 +48,7 @@ var ConfigManage = React.createClass({
             type: 'get',
             dateType: 'json',
             data: {page_size: page_size},
-            success: function (Msg) {
+            success: function(Msg) {
                 _this.setState({
                     TagLists: Msg,
                     isRefreshLoading: -1,
@@ -56,7 +56,7 @@ var ConfigManage = React.createClass({
 
                 });
             },
-            error: function (errorMsg) {
+            error: function(errorMsg) {
                 _this.setState({
                     isRefreshLoading: -1,
                     isGetInforcorrect: -1,
@@ -66,11 +66,11 @@ var ConfigManage = React.createClass({
         });
 
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         this.getInitialData();
     },
     //点击刷新按钮
-    getRefreshInfo: function (e) {
+    getRefreshInfo: function(e) {
         this.setState({
             isRefreshLoading: 0,
             TagLists: []
@@ -78,7 +78,7 @@ var ConfigManage = React.createClass({
         this.getInitialData();
     },
     //删除行业标签
-    handleDeleteItem: function (item) {
+    handleDeleteItem: function(item) {
         var _this = this;
         //当前正在删除的标签的id
         _this.setState({
@@ -88,10 +88,10 @@ var ConfigManage = React.createClass({
             url: '/rest/delete_industries/' + item.id,
             type: 'delete',
             dateType: 'json',
-            success: function (result) {
+            success: function(result) {
                 //获取正在删除标签在数组中的下标
                 var delIndex = '';
-                _this.state.TagLists.forEach(function (tag, index) {
+                _this.state.TagLists.forEach(function(tag, index) {
                     if (tag.id == item.id) {
                         delIndex = index;
                     }
@@ -103,7 +103,7 @@ var ConfigManage = React.createClass({
                     TagLists: _this.state.TagLists
                 });
             },
-            error: function (errorInfo) {
+            error: function(errorInfo) {
                 _this.setState({
                     DeletingItemId: -1,
                     deleteErrMsg: errorInfo.responseJSON
@@ -113,7 +113,7 @@ var ConfigManage = React.createClass({
 
     },
     //增加行业标签
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         Trace.traceEvent(e, "点击添加行业按钮");
         var _this = this;
         e.preventDefault();
@@ -130,7 +130,7 @@ var ConfigManage = React.createClass({
             type: 'post',
             dateType: 'json',
             data: {industry: text},
-            success: function (result) {
+            success: function(result) {
                 //数组开头添加输入的标签
                 _this.state.TagLists.unshift(result);
                 _this.setState({
@@ -141,7 +141,7 @@ var ConfigManage = React.createClass({
                 _this.refs.edit.value = '';
 
             },
-            error: function (errorInfo) {
+            error: function(errorInfo) {
                 _this.setState({
                     isAddloading: -1,
                     addErrMsg: errorInfo.responseJSON
@@ -172,7 +172,7 @@ var ConfigManage = React.createClass({
         );
     },
 
-    handleDeleteIndustryFail: function () {
+    handleDeleteIndustryFail: function() {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -191,7 +191,7 @@ var ConfigManage = React.createClass({
         );
     },
 
-    render: function () {
+    render: function() {
         var TagLists = this.state.TagLists;
         var height = $(window).height() - $(".topNav").height();
         return (
@@ -204,14 +204,14 @@ var ConfigManage = React.createClass({
                         <div className="box" data-tracename="行业配置">
                             <div className="box-title">
                                 <ReactIntl.FormattedMessage id="config.manage.industry.manage"
-                                                            defaultMessage="行业管理"/>&nbsp;&nbsp;
+                                    defaultMessage="行业管理"/>&nbsp;&nbsp;
                                 <span
                                     onClick={this.getRefreshInfo.bind(this)}
                                     className="refresh"
                                     data-tracename="点击获取行业刷新按钮"
                                 >
-							<Icon type="reload" title={Intl.get("config.manage.reload.industry", "重新获取行业")}/>
-						</span>
+                                    <Icon type="reload" title={Intl.get("config.manage.reload.industry", "重新获取行业")}/>
+                                </span>
                                 {this.state.deleteErrMsg != '' ? this.handleDeleteIndustryFail() : null}
                             </div>
                             <div className="box-body">
@@ -222,29 +222,29 @@ var ConfigManage = React.createClass({
                                 ) : (
                                     TagLists.length == 0 && this.state.isRefreshLoading == -1 ?
                                         (<Alert type="info" showIcon
-                                                message={Intl.get("config.manage.no.industry", "暂无行业配置，请添加！")}/>)
+                                            message={Intl.get("config.manage.no.industry", "暂无行业配置，请添加！")}/>)
                                         : (this.state.isRefreshLoading == -1 ? null : <Spinner/>)
                                 )}
 
                                 <ul className="mb-taglist">
                                     {TagLists.map((item, index) => {
-                                            return (
-                                                <li className="mb-tag">
-                                                    <div className="mb-tag-content">
-                                                        <span className="mb-tag-text">{item.industry}</span>
+                                        return (
+                                            <li className="mb-tag">
+                                                <div className="mb-tag-content">
+                                                    <span className="mb-tag-text">{item.industry}</span>
                                                         &nbsp;&nbsp;
-                                                        <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                                              onClick={this.handleDeleteItem.bind(this, item)}
-                                                              data-tracename="点击删除某个行业按钮"
-                                                        ></span>
-                                                        { this.state.DeletingItemId == item.id ? (
-                                                            <span ><Icon type="loading"/></span>
-                                                        ) : null
-                                                        }
-                                                    </div>
-                                                </li>
-                                            );
-                                        }
+                                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                                        onClick={this.handleDeleteItem.bind(this, item)}
+                                                        data-tracename="点击删除某个行业按钮"
+                                                    ></span>
+                                                    { this.state.DeletingItemId == item.id ? (
+                                                        <span ><Icon type="loading"/></span>
+                                                    ) : null
+                                                    }
+                                                </div>
+                                            </li>
+                                        );
+                                    }
                                     )}
                                 </ul>
                             </div>

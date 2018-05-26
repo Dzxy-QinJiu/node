@@ -35,7 +35,7 @@ function ContactStore() {
     this.bindActions(ContactActions);
 }
 //设置初始化数据
-ContactStore.prototype.setInitData = function () {
+ContactStore.prototype.setInitData = function() {
     //是否显示添加联系人表单
     this.isShowAddContactForm = false;
     this.contactListLoading = false;
@@ -47,7 +47,7 @@ ContactStore.prototype.setInitData = function () {
 };
 
 //FromAction-通过ajax获取联系人列表
-ContactStore.prototype.getContactList = function (data) {
+ContactStore.prototype.getContactList = function(data) {
     if (data.isLoading) {
         this.contactListLoading = data.isLoading;
     } else if (data.errorMsg) {
@@ -68,17 +68,17 @@ ContactStore.prototype.getContactList = function (data) {
 };
 
 //FromAction-展示添加联系人表单
-ContactStore.prototype.showAddContactForm = function () {
+ContactStore.prototype.showAddContactForm = function() {
     this.isShowAddContactForm = true;
 };
 
 //FromAction-隐藏添加联系人表单
-ContactStore.prototype.hideAddContactForm = function () {
+ContactStore.prototype.hideAddContactForm = function() {
     this.isShowAddContactForm = false;
 };
 
 //FromAction-提交添加联系人表单
-ContactStore.prototype.submitAddContact = function (result) {
+ContactStore.prototype.submitAddContact = function(result) {
     if (result.errorMsg) {
         this.submitAddContactErrorMsg = result.errorMsg;
     } else if (result.contact) {
@@ -90,7 +90,7 @@ ContactStore.prototype.submitAddContact = function (result) {
 };
 
 //FromAction-展示修改联系人表单
-ContactStore.prototype.showEditContactForm = function (contact) {
+ContactStore.prototype.showEditContactForm = function(contact) {
     contact.isShowEditContactForm = true;
     //["phone", "qq", "weChat", "email"].forEach(function (type) {
     //    contact.contactWayAddObj[type] = contact.contact[type];
@@ -98,12 +98,12 @@ ContactStore.prototype.showEditContactForm = function (contact) {
 };
 
 //FromAction-隐藏修改联系人表单
-ContactStore.prototype.hideEditContactForm = function (contact) {
+ContactStore.prototype.hideEditContactForm = function(contact) {
     contact.isShowEditContactForm = false;
 };
 
 //FromAction-提交修改联系人表单
-ContactStore.prototype.submitEditContact = function (contact) {
+ContactStore.prototype.submitEditContact = function(contact) {
     var targetContact = ContactUtils.getContactFromContactListView(this.contactList, contact);
     if (typeof contact === 'string') {
         targetContact.submitEditContactErrorMsg = contact;
@@ -120,35 +120,35 @@ ContactStore.prototype.submitEditContact = function (contact) {
 };
 
 //FromAction-添加一个联系方式
-ContactStore.prototype.addContactWay = function (array) {
+ContactStore.prototype.addContactWay = function(array) {
     var obj = array[0], type = array[1];
     obj.contactWayAddObj[type].push("");
 };
 
 //FromAction-显示删除一个联系人的对话框
-ContactStore.prototype.showDeleteContactConfirm = function (contact) {
+ContactStore.prototype.showDeleteContactConfirm = function(contact) {
     contact.isShowDeleteContactConfirm = true;
 };
 
 //FromAction-隐藏删除一个联系人的对话框
-ContactStore.prototype.hideDeleteContactConfirm = function (contact) {
+ContactStore.prototype.hideDeleteContactConfirm = function(contact) {
     contact.isShowDeleteContactConfirm = false;
 };
 
 //FromAction-删除一个联系人
-ContactStore.prototype.deleteContact = function (contactData) {
+ContactStore.prototype.deleteContact = function(contactData) {
     ContactUtils.deleteContactFromContactListView(this.contactList, contactData.contact);
     contactData.isShowDeleteContactConfirm = false;
 };
 
 //FromAction-设置为默认联系人
-ContactStore.prototype.toggleDefaultContact = function (contact) {
+ContactStore.prototype.toggleDefaultContact = function(contact) {
     ContactUtils.unsetDefaultContacts(this.contactList);
     let curContact = _.find(this.contactList, item => item.contact.id === contact.id);
     curContact.contact.def_contancts = "true";
 };
 //展开、收起联系方式
-ContactStore.prototype.toggleContactWay = function (contact) {
+ContactStore.prototype.toggleContactWay = function(contact) {
     contact.isExpanded = !contact.isExpanded;
 };
 module.exports = alt.createStore(ContactStore, 'ContactStore');

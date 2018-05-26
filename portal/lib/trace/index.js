@@ -20,7 +20,7 @@ function getParentsTraceLines(target) {
     if (target) {
         var parents = $(target).parents("[data-tracename]");
         if (parents && parents.length > 0) {
-            parentNames = parents.get().reverse().map(function (p) {
+            parentNames = parents.get().reverse().map(function(p) {
                 return $(p).attr("data-tracename");
             });
         }
@@ -30,7 +30,7 @@ function getParentsTraceLines(target) {
 
 module.exports = {
     //事件处理器
-    eventHandler: function (event) {
+    eventHandler: function(event) {
         event = event || window.event;
         var target = event.target;
         var tracename = $(target).attr("data-tracename");
@@ -46,7 +46,7 @@ module.exports = {
     }
     ,
     //添加事件监听
-    addEventListener: function (element, eventType, eventHandler, useCapture = false) {
+    addEventListener: function(element, eventType, eventHandler, useCapture = false) {
         if (element.addEventListener) {
             element.addEventListener(eventType, eventHandler, useCapture);
         } else if (element.attachEvent) {
@@ -57,7 +57,7 @@ module.exports = {
     }
     ,
     //取消事件监听
-    detachEventListener: function (element, eventType, eventHandler, useCapture = false) {
+    detachEventListener: function(element, eventType, eventHandler, useCapture = false) {
         if (element.removeEventListener) {
             element.removeEventListener(eventType, eventHandler, useCapture);
         } else if (element.detachEvent) {
@@ -66,7 +66,7 @@ module.exports = {
             element['on' + eventType] = null;
         }
     },//直接发送事件数据
-    traceEvent: function (element, traceName) {
+    traceEvent: function(element, traceName) {
         if (!traceName)
             return;
         var parentNames = [];

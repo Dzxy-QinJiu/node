@@ -1,16 +1,16 @@
 'use strict';
 var scrollBarEmitter = require("../../public/sources/utils/emitters").scrollBarEmitter;
-var _extends = Object.assign || function (target) {
-        for (var i = 1; i < arguments.length; i++) {
-            var source = arguments[i];
-            for (var key in source) {
-                if (Object.prototype.hasOwnProperty.call(source, key)) {
-                    target[key] = source[key];
-                }
+var _extends = Object.assign || function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+        for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
             }
         }
-        return target;
-    };
+    }
+    return target;
+};
 
 function _objectWithoutProperties(obj, keys) {
     var target = {};
@@ -51,13 +51,13 @@ var ReactScrollBar = React.createClass({
             forceGemini: true,
             enabled: true,
             listenScrollBottom: false,
-            handleScrollBottom: function () {},
+            handleScrollBottom: function() {},
             //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
             itemCssSelector : ''
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             scrollBottomLoading: false
         };
@@ -69,10 +69,10 @@ var ReactScrollBar = React.createClass({
      */
     scrollbar: null,
 
-    hideBottomLoading: function () {
+    hideBottomLoading: function() {
         this.setState({
             scrollBottomLoading: false
-        }, function () {
+        }, function() {
             this.scrollbar.scrollBottomUnlock();
         });
     },
@@ -80,7 +80,7 @@ var ReactScrollBar = React.createClass({
     /**
      * when scroll to bottom , this function occur
      */
-    handleScrollBottom: function () {
+    handleScrollBottom: function() {
         this.setState({
             scrollBottomLoading: true
         });
@@ -91,7 +91,7 @@ var ReactScrollBar = React.createClass({
 
         this.props.handleScrollBottom(scrollBarObject);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (this.props.listenScrollBottom != nextProps.listenScrollBottom) {
             if (nextProps.listenScrollBottom === true) {
                 this.scrollbar.bindScrollBottom();
@@ -107,7 +107,7 @@ var ReactScrollBar = React.createClass({
             }
         }
     },
-    initScrollbar: function () {
+    initScrollbar: function() {
         this.scrollbar = new GeminiScrollbar({
             element: ReactDOM.findDOMNode(this),
             autoshow: this.props.autoshow,
@@ -119,7 +119,7 @@ var ReactScrollBar = React.createClass({
         }).create();
     },
     //更新滚动条位置，大小
-    update: function () {
+    update: function() {
         if (this.scrollbar) {
             this.scrollbar.update();
         }
@@ -193,7 +193,7 @@ var ReactScrollBar = React.createClass({
                     {
                         this.props.listenScrollBottom ? (
                             <div className="gm-bottom-loading"
-                                 style={{opacity: this.state.scrollBottomLoading ? 1 : 0}}>
+                                style={{opacity: this.state.scrollBottomLoading ? 1 : 0}}>
                                 <Icon type="loading"/>
                             </div>
                         ) : null
@@ -204,7 +204,7 @@ var ReactScrollBar = React.createClass({
     }
 });
 
-ReactScrollBar.scrollTo = function (dom, px) {
+ReactScrollBar.scrollTo = function(dom, px) {
     var $scrollbar = $(dom).find(".gm-scroll-view");
     if ($scrollbar[0]) {
         $scrollbar[0].scrollTop = px;

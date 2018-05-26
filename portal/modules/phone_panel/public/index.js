@@ -268,7 +268,7 @@ class PhonePanel extends React.Component {
                 { myCustomer ? (//我的客户可以查看客户详情
                     <p className="show-customer-detail">
                         <Button type="primary" onClick={this.toggleCustomerDetail.bind(this, customer.id)}
-                                data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
+                            data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
                             {myCustomer.isShowDetail ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("call.record.show.customer.detail", "查看详情")}
                         </Button>
                     </p>) : null
@@ -296,11 +296,11 @@ class PhonePanel extends React.Component {
                 if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//该电话是自己客户的，展示客户详情
                     return (
                         <CustomerDetail currentId={customerInfoArr[0].id}
-                                        curCustomer={customerInfoArr[0]}
-                                        editCustomerBasic={this.editCustomerBasic}
-                                        hideRightPanel={this.hideRightPanel.bind(this)}
-                                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                                        showApplyUserForm={this.showApplyUserForm.bind(this)}
+                            curCustomer={customerInfoArr[0]}
+                            editCustomerBasic={this.editCustomerBasic}
+                            hideRightPanel={this.hideRightPanel.bind(this)}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                            showApplyUserForm={this.showApplyUserForm.bind(this)}
                         />);
                 } else {//该电话不是自己客户的
                     return this.renderCustomerCard(phonemsgObj.customers[0]);
@@ -311,15 +311,15 @@ class PhonePanel extends React.Component {
                     return (
                         <div className="show-customer-detail">
                             <a className="return-customer-cards"
-                               onClick={this.toggleCustomerDetail.bind(this, showDetailCustomer.id)}>
+                                onClick={this.toggleCustomerDetail.bind(this, showDetailCustomer.id)}>
                                 <span className="iconfont icon-return-btn"/> {Intl.get("crm.52", "返回")}
                             </a>
                             <CustomerDetail currentId={showDetailCustomer.id}
-                                            curCustomer={showDetailCustomer}
-                                            editCustomerBasic={this.editCustomerBasic}
-                                            hideRightPanel={this.hideRightPanel.bind(this)}
-                                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                                            showApplyUserForm={this.showApplyUserForm.bind(this)}
+                                curCustomer={showDetailCustomer}
+                                editCustomerBasic={this.editCustomerBasic}
+                                hideRightPanel={this.hideRightPanel.bind(this)}
+                                ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                                showApplyUserForm={this.showApplyUserForm.bind(this)}
                             />
                         </div>);
                 } else {
@@ -346,11 +346,11 @@ class PhonePanel extends React.Component {
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
             return (
                 <CustomerDetail currentId={customerInfoArr[0].id}
-                                curCustomer={customerInfoArr[0]}
-                                editCustomerBasic={this.editCustomerBasic}
-                                hideRightPanel={this.hideRightPanel.bind(this)}
-                                ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                                showApplyUserForm={this.showApplyUserForm.bind(this)}
+                    curCustomer={customerInfoArr[0]}
+                    editCustomerBasic={this.editCustomerBasic}
+                    hideRightPanel={this.hideRightPanel.bind(this)}
+                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                    showApplyUserForm={this.showApplyUserForm.bind(this)}
                 />);
         } else {
             //客户不存在时，展示添加客户的按钮(添加完客户后，此提示不再提示添加客户)
@@ -609,8 +609,8 @@ class PhonePanel extends React.Component {
         let className = classNames("right-panel-content", {"crm-right-panel-content-slide": this.state.applyUserShowFlag});
         return (
             <RightPanel showFlag={this.props.showFlag}
-                        className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
-                        data-tracename={paramObj.call_params ? "电话弹屏" : "客户详情"}>
+                className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
+                data-tracename={paramObj.call_params ? "电话弹屏" : "客户详情"}>
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hidePhonePanel(e);
                 }}/>
@@ -619,8 +619,8 @@ class PhonePanel extends React.Component {
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
                     {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
                         <CustomerDetail  {...paramObj.customer_params}
-                                         hideRightPanel={this.hideRightPanel.bind(this)}
-                                         showApplyUserForm={this.showApplyUserForm.bind(this)}
+                            hideRightPanel={this.hideRightPanel.bind(this)}
+                            showApplyUserForm={this.showApplyUserForm.bind(this)}
                         />) : null
                     }
                 </div>
@@ -646,12 +646,12 @@ class PhonePanel extends React.Component {
 
 PhonePanel
     .defaultProps = {
-    showFlag: false,
-    paramObj: {
-        call_params: null,//后端推送过来的电话状态相关的参数
-        customer_params: null//客户详情相关的参数
-    }
-};
+        showFlag: false,
+        paramObj: {
+            call_params: null,//后端推送过来的电话状态相关的参数
+            customer_params: null//客户详情相关的参数
+        }
+    };
 export
 default
 PhonePanel;

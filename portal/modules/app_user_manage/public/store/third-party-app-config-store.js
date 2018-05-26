@@ -16,7 +16,7 @@ class ThreePartyAppConfigStore {
     }
 
     //获取应用配置详情
-    getAppConfigList (result) {
+    getAppConfigList(result) {
         this.isLoading = false;
         if(result.error) {
             this.getAppConfigErrorMsg = result.appConfigErrorMsg;

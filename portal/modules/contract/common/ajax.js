@@ -1,4 +1,4 @@
-export default function (arg) {
+export default function(arg) {
     let url = arg.url;
     const Deferred = $.Deferred();
     const type = arg.type || "get";
@@ -23,10 +23,10 @@ export default function (arg) {
         dataType: arg.dataType || "json",
         type: type,
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });

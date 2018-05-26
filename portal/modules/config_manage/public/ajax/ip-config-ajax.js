@@ -56,10 +56,10 @@ exports.deleteIpConfigItem = function(id){
     $.ajax({
         url: '/rest/delete/ip_config/'+ id,
         type: 'delete',
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON || Intl.get("config.manage.del.ip.failed", "删除配置IP失败！"));
         }
     });
@@ -80,10 +80,10 @@ exports.filterIp = function(status) {
         type: 'post',
         dataType: 'json',
         data: filterObj,
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON || Intl.get("config.filter.inner.ip.failed", "过滤内网ip失败！"));
         }
     });
@@ -93,7 +93,7 @@ exports.filterIp = function(status) {
 // 获取配置过滤内网信息
 exports.getFilterIp = function() {
     var Deferred = $.Deferred();
-   $.ajax({
+    $.ajax({
         url: '/rest/get/config/filter/ip',
         type: 'get',
         success: function(resData){

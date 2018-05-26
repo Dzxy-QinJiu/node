@@ -2,17 +2,17 @@ import { Select, Icon } from "antd";
 import SearchInput from "../../../components/searchInput";
 
 const Filter = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             formData: {},
             condition: {},
         };
     },
-    search: function () {
+    search: function() {
         this.state.condition = _.extend({}, this.state.formData, this.refs.searchInput.state.formData);
         this.props.getContractList();
     },
-    render: function () {
+    render: function() {
         const searchFields = [
             {
                 name: Intl.get("crm.41", "客户名"),

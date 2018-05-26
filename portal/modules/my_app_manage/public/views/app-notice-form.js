@@ -68,7 +68,7 @@ var AppNoticeForm = React.createClass({
         AppNoticeAction.hideForm();
     },
 
-    changeChoiceNoticeType : function (e) {
+    changeChoiceNoticeType : function(e) {
         this.state.formData.value = e.target.value;
         this.setState({
             formData: this.state.formData

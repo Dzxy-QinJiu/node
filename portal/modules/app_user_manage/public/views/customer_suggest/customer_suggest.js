@@ -51,7 +51,7 @@ var CustomerSuggest = React.createClass({
                     sales : {
                         id : '',
                         name : ''
-        }
+                    }
                 });
             }
         }
@@ -115,7 +115,7 @@ var CustomerSuggest = React.createClass({
             }
         }
     },
-    suggestChange: function (value) {
+    suggestChange: function(value) {
         clearTimeout(this.suggestTimer);
         var _this = this;
         //是否展示客户名后的对号或者叉号
@@ -233,7 +233,7 @@ var CustomerSuggest = React.createClass({
                 <div className="customer_suggest_tip customer_suggest_error_tip">
                     {
                         search_input_val ?
-                        Intl.get("user.customer.suggest.not.found","未找到该客户") :
+                            Intl.get("user.customer.suggest.not.found","未找到该客户") :
                             (this.props.required ? Intl.get("contract.59","请选择客户") : '')
                     }
                 </div>
@@ -317,7 +317,7 @@ var CustomerSuggest = React.createClass({
                         dropdownClassName="customer_combobox_search"
                         notFoundContent={Intl.get("common.no.data", "暂无数据")}>
                         {
-                            this.state.list.map(function (item) {
+                            this.state.list.map(function(item) {
                                 return (
                                     <Option value={item.customer_id} key={item.customer_id} title={item.customer_name}>{item.customer_name}({item.sales_name})</Option>
                                 );

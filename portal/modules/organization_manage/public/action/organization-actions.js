@@ -34,39 +34,39 @@ function OrganizationAction() {
         'updateOrganizationNameAfterEdit'//修改组织名称后更新组织列表中对应的名称
     );
 
-    this.getOrganizationList = function () {
+    this.getOrganizationList = function() {
         var _this = this;
-        OrganizationAjax.getOrganizationList().then(function (list) {
+        OrganizationAjax.getOrganizationList().then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("organization.get.organization.list.failed"));
         });
     };
 
 
-    this.getOrganizationMemberList = function (teamId) {
+    this.getOrganizationMemberList = function(teamId) {
         var _this = this;
-        OrganizationAjax.getOrganizationMemberList(teamId).then(function (list) {
+        OrganizationAjax.getOrganizationMemberList(teamId).then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("organization.get.organization.member.list.failed"));
         });
     };
 
-    this.saveDeleteGroup = function (groupId) {
+    this.saveDeleteGroup = function(groupId) {
         var _this = this;
-        OrganizationAjax.deleteGroup(groupId).then(function () {
+        OrganizationAjax.deleteGroup(groupId).then(function() {
             //刷新添加时展示的不属于任何组织的成员列表
             //_this.actions.getMemberList();
             _this.dispatch({success: true, groupId: groupId});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({success: false, errorMsg: errorMsg || Intl.get("organization.save.delete.group.failed")});
         });
     };
 
     //保存添加的组织
-    this.saveAddGroup = function (organization, callback) {
-        OrganizationAjax.addGroup(organization).then(function (data) {
+    this.saveAddGroup = function(organization, callback) {
+        OrganizationAjax.addGroup(organization).then(function(data) {
             if (data) {
                 if (callback) {
                     callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")}, data);
@@ -76,7 +76,7 @@ function OrganizationAction() {
                     callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
                 }
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
             }
@@ -84,8 +84,8 @@ function OrganizationAction() {
     };
 
     //保存编辑后的的组织名称及上级组织
-    this.saveEditGroup = function (organization, callback) {
-        OrganizationAjax.editGroup(organization).then(function (data) {
+    this.saveEditGroup = function(organization, callback) {
+        OrganizationAjax.editGroup(organization).then(function(data) {
             if (data) {
                 if (callback) {
                     callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
@@ -95,7 +95,7 @@ function OrganizationAction() {
                     callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
                 }
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
             }

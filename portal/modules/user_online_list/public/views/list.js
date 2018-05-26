@@ -17,7 +17,7 @@ import Trace from "LIB_DIR/trace";
 var dynamicStyle;
 
 const OnlineUserList = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             currentUserId: '',
             clientId: '',
@@ -25,15 +25,15 @@ const OnlineUserList = React.createClass({
             ...OnlineUserListStore.getState()
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(OnlineUserListStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $('body').css("overflow", "hidden");
         OnlineUserListStore.listen(this.onStoreChange);
         Utils.emitter.on(Utils.EMITTER_CONSTANTS.APP_LIST_LOADED, this.appListLoaded);
     },   
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $('body').css("overflow", "auto");
         if (dynamicStyle) {
             dynamicStyle.destroy();
@@ -42,7 +42,7 @@ const OnlineUserList = React.createClass({
         OnlineUserListStore.unlisten(this.onStoreChange);
         Utils.emitter.removeListener(Utils.EMITTER_CONSTANTS.APP_LIST_LOADED, this.appListLoaded);
     },
-    appListLoaded: function (list) {
+    appListLoaded: function(list) {
         var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
         var lastSelectAppId = storageValue && storageValue.onlineAppId ? storageValue.onlineAppId : '';
         if (lastSelectAppId) {
@@ -61,19 +61,19 @@ const OnlineUserList = React.createClass({
             this.search();
         }
     },
-    search: function () {
+    search: function() {
         const condition = OnlineUserFilterStore.getState().condition;
 
         OnlineUserListAction.getOnlineUserList(this.state.pageSize, this.state.pageNum, condition);
     },
-    getRowKey: function (record, index) {
+    getRowKey: function(record, index) {
         return index;
     },
-    changePage: function (page) {
+    changePage: function(page) {
         OnlineUserListAction.setPageNum(page);
 
         const _this = this;
-        setTimeout(function () {
+        setTimeout(function() {
             _this.search();
         });
     },
@@ -101,7 +101,7 @@ const OnlineUserList = React.createClass({
         return <span>{formatedTime}</span>;
     },
     // 确认踢出用户
-    confirmKick: function (userId, clientId) {
+    confirmKick: function(userId, clientId) {
         Trace.traceEvent($(this.getDOMNode()).find(".kick-btn-class"), "点击踢出某用户");
         this.state.currentUserId = userId;
         this.state.clientId = clientId;
@@ -110,13 +110,13 @@ const OnlineUserList = React.createClass({
     },
 
     // 隐藏踢出的模态框
-    hideKickModal: function () {
+    hideKickModal: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "取消确认踢出某用户");
         this.state.showKickConfirm = false;
         this.setState(this.state);
     },
     // 踢出用户
-    kickUser: function () {
+    kickUser: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".modal-footer .btn-ok"), "确认踢出某用户");
         this.hideKickModal();
         const ids = {
@@ -129,7 +129,7 @@ const OnlineUserList = React.createClass({
 
     },
 
-    render: function () {
+    render: function() {
 
         const _this = this;
 
@@ -142,7 +142,7 @@ const OnlineUserList = React.createClass({
         let columns = [
             {
                 title: Intl.get("common.username", "用户名"), dataIndex: "user_name", className: 'show-user-detail', key: "user_name",
-                width: 120, render: function ($1, row) {
+                width: 120, render: function($1, row) {
                     return <div>{row.user_name}<input type="hidden" value={row.user_id} className="user_id_hidden" /></div>;
                 }
             },
@@ -160,7 +160,7 @@ const OnlineUserList = React.createClass({
             },
             {
                 title: Intl.get("user.user.type", "用户类型"), dataIndex: "tags", className: 'show-user-detail', key: "tags",
-                width: 80, render: function ($1, row) {
+                width: 80, render: function($1, row) {
                     var targetItem = _.find(typeList, (obj) => {
                         return obj.value === row.tags;
                     });
@@ -182,7 +182,7 @@ const OnlineUserList = React.createClass({
             },
             {
                 title: Intl.get("common.operate", "操作"), dataIndex: 'operate', key: 'operate',
-                width: 50, render: function (text, record, index) {
+                width: 50, render: function(text, record, index) {
                     return (
                         <span className="cus-op">
                             {hasPrivilege("USER_KICKOUT") ? (

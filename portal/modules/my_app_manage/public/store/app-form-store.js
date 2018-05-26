@@ -25,11 +25,11 @@ function AppFormStore() {
     this.bindActions(AppFormActions);
 }
 //设置是否正在获取成员列表
-AppFormStore.prototype.setManagerListLoading = function (flag) {
+AppFormStore.prototype.setManagerListLoading = function(flag) {
     this.isLoadingManagerList = flag;
 };
 //获取成员列表
-AppFormStore.prototype.getAppManagerList = function (managerList) {
+AppFormStore.prototype.getAppManagerList = function(managerList) {
     this.isLoadingManagerList = false;
     if (_.isArray(managerList) && managerList.length > 0) {
         this.appManagerList = managerList;
@@ -39,15 +39,15 @@ AppFormStore.prototype.getAppManagerList = function (managerList) {
 };
 
 //设置是否正在获取应用列表
-AppFormStore.prototype.setAllAppListLoading = function (flag) {
+AppFormStore.prototype.setAllAppListLoading = function(flag) {
     this.isLoadingAllAppList = flag;
 };
 
 //获取所有APP列表
-AppFormStore.prototype.getAllAppList = function (appList) {
+AppFormStore.prototype.getAllAppList = function(appList) {
     this.isLoadingAllAppList = false;
     if (_.isArray(appList) && appList.length > 0) {
-        this.allAppList = appList.map(function (app) {
+        this.allAppList = appList.map(function(app) {
             return {id: app.app_id, name: app.app_name};
         });
     } else {
@@ -55,32 +55,32 @@ AppFormStore.prototype.getAllAppList = function (appList) {
     }
 };
 
-AppFormStore.prototype.setEditAppAuthFlag = function (flag) {
+AppFormStore.prototype.setEditAppAuthFlag = function(flag) {
     this.isEditAppAuth = flag;
 };
 //正在保存的属性设置
-AppFormStore.prototype.setSaveFlag = function (flag) {
+AppFormStore.prototype.setSaveFlag = function(flag) {
     this.isSaving = flag;
 };
 //保存后的处理
-AppFormStore.prototype.afterSave = function (resultObj) {
+AppFormStore.prototype.afterSave = function(resultObj) {
     //去掉正在保存的效果
     this.isSaving = false;
     this.saveResult = resultObj.saveResult;
     this.saveMsg = resultObj.saveMsg;
 };
 //保存后的处理
-AppFormStore.prototype.addApp = function (resultObj) {
+AppFormStore.prototype.addApp = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //保存后的处理
-AppFormStore.prototype.editApp = function (resultObj) {
+AppFormStore.prototype.editApp = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //清空保存的提示信息
-AppFormStore.prototype.resetSaveResult = function () {
+AppFormStore.prototype.resetSaveResult = function() {
     if (this.saveResult == SUCCESS) {
         this.isEditAppAuth = false;
     }

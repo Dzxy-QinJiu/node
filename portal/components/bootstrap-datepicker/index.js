@@ -19,7 +19,7 @@ var YEAR_MODE = "years";
 var MONTH_MODE = "months";
 var BootstrapDatepicker = React.createClass({
     //获取日历初始化选项
-    getDatepickerOptions: function (props) {
+    getDatepickerOptions: function(props) {
         var options = {
             format: oplateConsts.DATE_FORMAT,
             language: lang
@@ -66,7 +66,7 @@ var BootstrapDatepicker = React.createClass({
 
         return options;
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var options = this.getDatepickerOptions(this.props);
         $(this.refs.instanceDom).datepicker(options);
         if (this.props.multidate) {
@@ -75,14 +75,14 @@ var BootstrapDatepicker = React.createClass({
             $(this.refs.instanceDom).datepicker('update', this.state.value);
         }
         var _this = this;
-        $(this.refs.instanceDom).datepicker().on("changeDate", function (event) {
+        $(this.refs.instanceDom).datepicker().on("changeDate", function(event) {
             _this.state.value = event.date;
             _this.props.onChange(event.date);
         });
         $(this.refs.instanceDom).find(".datepicker-inline").append('<span class="arrow"></span>');
     },
     //重新设置
-    resetDatePicker: function (nextProps) {
+    resetDatePicker: function(nextProps) {
         if (nextProps.disableDateBeforeRange) {
             var options = this.getDatepickerOptions(nextProps);
             $(this.refs.instanceDom).datepicker("destroy");
@@ -123,14 +123,14 @@ var BootstrapDatepicker = React.createClass({
             }
         }
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.resetDatePicker(nextProps);
     },
     /**
      * value 显示日历的时候，选中哪一天
      * onChange 当日期改变的时候，触发的回调
      */
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             value: 'today',
             //是否只能选择“年”
@@ -139,7 +139,7 @@ var BootstrapDatepicker = React.createClass({
             monthMode: false,
             //multidate,展示多个日期
             multidate: false,
-            onChange: function () {
+            onChange: function() {
             },
             //不让选择今天之前的时间(默认：false)
             disableDateBeforeToday: false,
@@ -152,7 +152,7 @@ var BootstrapDatepicker = React.createClass({
         };
     }
     ,
-    getInitialState: function () {
+    getInitialState: function() {
         var value = this.props.value;
         if (value === 'today') {
             value = moment().format();
@@ -167,11 +167,11 @@ var BootstrapDatepicker = React.createClass({
     /**
      * 提供一个接口，让外界能够直接调用jquery，对datepicker进行更新。
      */
-    updateDatepicker: function () {
+    updateDatepicker: function() {
         $(this.refs.instanceDom).datepicker.apply($(this.refs.instanceDom), arguments);
     }
     ,
-    render: function () {
+    render: function() {
 
         const {children, value, onChange, className, ...props} = this.props;
         var cls = classNames(className, "bootstrap-datepicker-wrap");

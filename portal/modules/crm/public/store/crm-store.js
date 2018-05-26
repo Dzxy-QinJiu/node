@@ -21,7 +21,7 @@ function CrmStore() {
     });
 }
 //设置初始值
-CrmStore.prototype.setInitialState = function () {
+CrmStore.prototype.setInitialState = function() {
     //是否展示确认删除的模态框
     this.modalDialogShow = false;
     //客户列表的长度
@@ -55,7 +55,7 @@ CrmStore.prototype.setInitialState = function () {
     //下次点击的页数
     this.nextPageNum = 0;
 };
-CrmStore.prototype.updateCurrentCustomerRemark = function (submitObj) {
+CrmStore.prototype.updateCurrentCustomerRemark = function(submitObj) {
     let customer = _.find(this.curCustomers, (customer) => {
         return customer.id == submitObj.customer_id;
     });
@@ -68,47 +68,47 @@ CrmStore.prototype.updateCurrentCustomerRemark = function (submitObj) {
 },
 
 //合并后的处理
-    CrmStore.prototype.afterMergeCustomer = function (mergeObj) {
-        if (mergeObj && _.isObject(mergeObj)) {
-            //合并后客户的处理
-            let mergeCustomer = mergeObj.customer;
-            let index = _.findIndex(this.curCustomers, customer => customer.id == mergeCustomer.id);
-            this.curCustomers[index] = mergeCustomer;
-            //过滤掉合并后删除的客户
-            let delCustomerIds = mergeObj.delete_ids;
-            if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
-                this.curCustomers = _.filter(this.curCustomers, customer => delCustomerIds.indexOf(customer.id) === -1);
-                this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
-            }
+CrmStore.prototype.afterMergeCustomer = function(mergeObj) {
+    if (mergeObj && _.isObject(mergeObj)) {
+        //合并后客户的处理
+        let mergeCustomer = mergeObj.customer;
+        let index = _.findIndex(this.curCustomers, customer => customer.id == mergeCustomer.id);
+        this.curCustomers[index] = mergeCustomer;
+        //过滤掉合并后删除的客户
+        let delCustomerIds = mergeObj.delete_ids;
+        if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
+            this.curCustomers = _.filter(this.curCustomers, customer => delCustomerIds.indexOf(customer.id) === -1);
+            this.customersSize -= delCustomerIds.length;//客户的总数去掉删除的客户数
         }
-    };
+    }
+};
 //是否展示客户查重界面的设置
-CrmStore.prototype.setRepeatCustomerShow = function (flag) {
+CrmStore.prototype.setRepeatCustomerShow = function(flag) {
     this.isRepeatCustomerShow = flag;
 };
 
 //是否展示客户查重界面的设置
-CrmStore.prototype.setCustomerId = function (id) {
+CrmStore.prototype.setCustomerId = function(id) {
     this.customerId = id;
 };
 
 //公开方法，获取当前页展示客户数量
-CrmStore.prototype.getCustomersLength = function () {
+CrmStore.prototype.getCustomersLength = function() {
     return this.getState().customersSize;
 };
 
 //公开方法，获取当前页客户列表
-CrmStore.prototype.getCurPageCustomers = function () {
+CrmStore.prototype.getCurPageCustomers = function() {
     return this.getState().curCustomers;
 };
 
 //公开方法，获取前一次正确时获取的数据，为便于翻页
-CrmStore.prototype.getlastCurPageCustomers = function () {
+CrmStore.prototype.getlastCurPageCustomers = function() {
     return this.getState().customersBack;
 };
 
 //监听Action的queryCustomer方法
-CrmStore.prototype.queryCustomer = function (data) {
+CrmStore.prototype.queryCustomer = function(data) {
     if (data.loading) {
         this.isLoading = true;
         this.getErrMsg = "";
@@ -147,19 +147,19 @@ CrmStore.prototype.queryCustomer = function (data) {
 };
 
 //监听Action的addCustomer方法
-CrmStore.prototype.addCustomer = function (added) {
+CrmStore.prototype.addCustomer = function(added) {
     this.curCustomers.unshift(added);
 };
 
 //监听Action的deleteCustomer方法
-CrmStore.prototype.deleteCustomer = function (ids) {
+CrmStore.prototype.deleteCustomer = function(ids) {
     //从列表中移除已删除项
     this.curCustomers = _.filter(this.curCustomers, item => ids.indexOf(item.id) === -1);
     //列表下面客户的总数减去已删除的客户数量
     this.customersSize -= ids.length;
 };
 //修改基本资料后，更新客户列表
-CrmStore.prototype.editBasicSuccess = function (newBasic) {
+CrmStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id == newBasic.id);
         for (var key in newBasic) {
@@ -180,7 +180,7 @@ CrmStore.prototype.editBasicSuccess = function (newBasic) {
     }
 };
 //修改默认联系人后，更新客户列表中该客户的默认联系人
-CrmStore.prototype.updateCustomerDefContact = function (contact) {
+CrmStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
         let updateCustomer = _.find(this.curCustomers, customer => customer.id == contact.customer_id);
         updateCustomer.contacts = [contact];
@@ -219,11 +219,11 @@ function getOrderListSortByStage(orderList) {
     return orderList;
 }
 //对客户字段进行处理，以便在客户列表上显示
-CrmStore.prototype.processForList = function (curCustomers) {
+CrmStore.prototype.processForList = function(curCustomers) {
     if (!_.isArray(curCustomers)) return [];
     let list = _.clone(curCustomers);
     for (let i = 0, len = list.length; i < len; i++) {
-        let curCustomer = list[i]||{};
+        let curCustomer = list[i] || {};
         curCustomer.dynamic = curCustomer.customer_dynamic_dto ? curCustomer.customer_dynamic_dto.message : "";
         curCustomer.start_time = curCustomer.start_time ? moment(curCustomer.start_time).format(oplateConsts.DATE_FORMAT) : "";
         curCustomer.last_contact_time = curCustomer.last_contact_time ? moment(curCustomer.last_contact_time).format(oplateConsts.DATE_FORMAT) : "";
@@ -237,7 +237,7 @@ CrmStore.prototype.processForList = function (curCustomers) {
             curCustomer.contact = contact.name;
             curCustomer.contact_way = "";
             if (_.isArray(contact.phone)) {
-                contact.phone.forEach(function (phone) {
+                contact.phone.forEach(function(phone) {
                     if (phone) {
                         curCustomer.contact_way += addHyphenToPhoneNumber(phone) + "\n";
                     }
@@ -255,11 +255,11 @@ CrmStore.prototype.processForList = function (curCustomers) {
     return list;
 };
 
-CrmStore.prototype.setLoadingState = function (loadingState) {
+CrmStore.prototype.setLoadingState = function(loadingState) {
     this.isLoading = loadingState;
 };
 
-CrmStore.prototype.setCurrentCustomer = function (id) {
+CrmStore.prototype.setCurrentCustomer = function(id) {
     this.currentId = id;
     this.curCustomer = _.find(this.curCustomers, customer => {
         return customer.id === id;
@@ -267,7 +267,7 @@ CrmStore.prototype.setCurrentCustomer = function (id) {
 };
 
 //刷新客户列表
-CrmStore.prototype.refreshCustomerList = function (data) {
+CrmStore.prototype.refreshCustomerList = function(data) {
     if (data) {
         _.some(this.curCustomers, (customer, index) => {
             if (customer.id == data.id) {
@@ -283,7 +283,7 @@ CrmStore.prototype.refreshCustomerList = function (data) {
 };
 
 //批量变更销售以后，同步列表数据
-CrmStore.prototype.batchChangeSalesman = function ({taskInfo, taskParams, curCustomers}) {
+CrmStore.prototype.batchChangeSalesman = function({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
@@ -342,7 +342,7 @@ CrmStore.prototype.batchChangeSalesman = function ({taskInfo, taskParams, curCus
 };
 
 //批量变更标签以后，同步列表数据
-CrmStore.prototype.batchChangeTags = function ({taskInfo, taskParams, curCustomers}, type) {
+CrmStore.prototype.batchChangeTags = function({taskInfo, taskParams, curCustomers}, type) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
@@ -400,7 +400,7 @@ CrmStore.prototype.batchChangeTags = function ({taskInfo, taskParams, curCustome
 };
 
 //批量变更行业以后，同步列表数据
-CrmStore.prototype.batchChangeIndustry = function ({taskInfo, taskParams, curCustomers}) {
+CrmStore.prototype.batchChangeIndustry = function({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
@@ -436,7 +436,7 @@ CrmStore.prototype.batchChangeIndustry = function ({taskInfo, taskParams, curCus
     });
 };
 //批量变更行政级别以后，同步列表数据
-CrmStore.prototype.batchChangeLevel = function ({taskInfo, taskParams, curCustomers}) {
+CrmStore.prototype.batchChangeLevel = function({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
@@ -472,7 +472,7 @@ CrmStore.prototype.batchChangeLevel = function ({taskInfo, taskParams, curCustom
     });
 };
 //批量变更地域以后，同步列表数据
-CrmStore.prototype.batchChangeTerritory = function ({taskInfo, taskParams, curCustomers}) {
+CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCustomers}) {
     //如果参数不合法，不进行更新
     if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
         return;
@@ -511,10 +511,10 @@ CrmStore.prototype.batchChangeTerritory = function ({taskInfo, taskParams, curCu
         customerInfo.county = county;
     });
 };
-CrmStore.prototype.setPageNum = function (pageNum) {
+CrmStore.prototype.setPageNum = function(pageNum) {
     this.pageNum = pageNum;
 };
-CrmStore.prototype.setNextPageNum = function (pageNum) {
+CrmStore.prototype.setNextPageNum = function(pageNum) {
     this.nextPageNum = pageNum;
 };
 

@@ -46,7 +46,7 @@ const UserTwoFactorField = {
                 wrapperCol={{span: 24}}
             >
                 <RadioGroup onChange={onChange}
-                            value={currentValue}>
+                    value={currentValue}>
                     <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                     <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                 </RadioGroup>

@@ -46,15 +46,15 @@ class DayAgendaScheduleLists extends React.Component {
         //鼠标移出的时候，如果有popover还在显示，就不能去掉标识背景颜色的类，如果没有popover显示，才去掉这个类
         $("#content-block").on("mouseleave",".schedule-items-content",(e)=>{
             //调用popover隐藏方法比调用此方法慢，所以要加个延时
-              setTimeout(()=>{
-                  if ($(".ant-popover:not(.ant-popover-hidden)").length){
-                      return;
-                  }else{
-                      if ($(".list-item.hover-item").length){
-                          $(".list-item.hover-item").removeClass("hover-item");
-                      }
-                  }
-              },1000);
+            setTimeout(()=>{
+                if ($(".ant-popover:not(.ant-popover-hidden)").length){
+                    return;
+                }else{
+                    if ($(".list-item.hover-item").length){
+                        $(".list-item.hover-item").removeClass("hover-item");
+                    }
+                }
+            },1000);
         });
     }
 
@@ -152,34 +152,34 @@ class DayAgendaScheduleLists extends React.Component {
     };
     //联系人和联系电话
     renderPopoverContent(item){
-      return (
-          <div className="contacts-containers">
-              {_.map(item.contacts,(contact)=>{
-                  var cls = classNames("contacts-item",
-                      {"def-contact-item": contact.def_contancts === "true"});
-                  return (
-                      <div className={cls}>
-                          <div className="contacts-name-content">
-                              <i className="iconfont icon-contact"></i>
-                              {contact.name}
-                          </div>
-                          <div className="contacts-phone-content">
-                              {_.map(contact.phone, (phone)=>{
-                                  return (
-                                      <div className="phone-item">
-                                          {phone}
-                                          <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
-                                              {Intl.get("schedule.call.out","拨打")}
-                                          </Button>
-                                      </div>
-                                  );
-                              })}
-                          </div>
-                      </div>
-                  );
-              })}
-          </div>
-      );
+        return (
+            <div className="contacts-containers">
+                {_.map(item.contacts,(contact)=>{
+                    var cls = classNames("contacts-item",
+                        {"def-contact-item": contact.def_contancts === "true"});
+                    return (
+                        <div className={cls}>
+                            <div className="contacts-name-content">
+                                <i className="iconfont icon-contact"></i>
+                                {contact.name}
+                            </div>
+                            <div className="contacts-phone-content">
+                                {_.map(contact.phone, (phone)=>{
+                                    return (
+                                        <div className="phone-item">
+                                            {phone}
+                                            <Button size="small" onClick={this.handleClickCallOut.bind(this, phone, contact.name,item)}>
+                                                {Intl.get("schedule.call.out","拨打")}
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
     }
     //渲染日程列表样式
     renderDayScheduleList() {
@@ -201,7 +201,7 @@ class DayAgendaScheduleLists extends React.Component {
                 var customerContent = this.renderPopoverContent(item);
                 return (
                     <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
-                         data-tracename="日程列表">
+                        data-tracename="日程列表">
                         <div className={itemCls}>
                             <Row>
                                 <Col sm={4}>
@@ -259,14 +259,14 @@ class DayAgendaScheduleLists extends React.Component {
                                 <span className="timerange">{Intl.get("common.login.time", "时间")}</span>
                             </Col>
                             <Col sm={9}>
-                                    <span className="todo">
-                                        {Intl.get("schedule.todo.list", "待办")}
-                                    </span>
+                                <span className="todo">
+                                    {Intl.get("schedule.todo.list", "待办")}
+                                </span>
                             </Col>
                             <Col sm={10}>
-                                    <span className="content">
-                                        {Intl.get("crm.177", "内容")}
-                                    </span>
+                                <span className="content">
+                                    {Intl.get("crm.177", "内容")}
+                                </span>
                             </Col>
                         </Row>
                     </div>
@@ -279,13 +279,13 @@ class DayAgendaScheduleLists extends React.Component {
 DayAgendaScheduleLists.navigate = (date, action) => {
     //
     switch (action){
-        case BigCalendar.Navigate.PREVIOUS:
-            return dates.add(date, -1, 'day');
+    case BigCalendar.Navigate.PREVIOUS:
+        return dates.add(date, -1, 'day');
 
-        case BigCalendar.Navigate.NEXT:
-            return dates.add(date, 1, 'day');
-        default:
-            return date;
+    case BigCalendar.Navigate.NEXT:
+        return dates.add(date, 1, 'day');
+    default:
+        return date;
 
     }
 };
@@ -298,8 +298,8 @@ DayAgendaScheduleLists.title = (date, { formats, culture }) => {
 DayAgendaScheduleLists.defaultProps = {
     curCustomerId:"",
     updateScrollBar: false,
-    handleScheduleItemStatus: function () {},
-    showCustomerDetail: function () {}
+    handleScheduleItemStatus: function() {},
+    showCustomerDetail: function() {}
 
 };
 export default DayAgendaScheduleLists;

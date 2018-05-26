@@ -15,7 +15,7 @@ import SaveCancelButton from "../detail-card/save-cancel-button";
 
 let BasicEditSelectField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             id: '',
             //是否是多选(默认：单选)
@@ -40,15 +40,15 @@ let BasicEditSelectField = React.createClass({
             selectOptions: [],
             //编辑按钮的提示文案
             editBtnTip: Intl.get("common.update", "修改"),
-            onDisplayTypeChange: function (type) {
+            onDisplayTypeChange: function(type) {
             },
-            saveEditSelect: function () {
+            saveEditSelect: function() {
             },
             hideButtonBlock: false
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,
             displayType: this.props.displayType || "text",
@@ -64,7 +64,7 @@ let BasicEditSelectField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.id !== this.props.id) {
             this.setState({
                 loading: false,
@@ -85,7 +85,7 @@ let BasicEditSelectField = React.createClass({
             });
         }
     },
-    setEditable: function (e) {
+    setEditable: function(e) {
         var formData = this.state.formData;
         formData.select = this.props.value;
         this.setState({
@@ -94,7 +94,7 @@ let BasicEditSelectField = React.createClass({
         });
         Trace.traceEvent(e, "点击编辑" + this.props.field);
     },
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         var validation = this.refs.validation;
         validation.validate((valid) => {
             if (!valid) {
@@ -127,7 +127,7 @@ let BasicEditSelectField = React.createClass({
             }
         });
     },
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         Trace.traceEvent(e, "取消对" + this.props.field + "修改");
         var formData = this.state.formData;
         var status = this.state.status;
@@ -140,14 +140,14 @@ let BasicEditSelectField = React.createClass({
             submitErrorMsg: ''
         });
     },
-    onSelectChange: function (selectVal) {
+    onSelectChange: function(selectVal) {
         var formData = this.state.formData;
         formData.select = selectVal;
         this.setState({
             formData: formData
         });
     },
-    render: function () {
+    render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         var displayCls = classNames({
@@ -162,7 +162,7 @@ let BasicEditSelectField = React.createClass({
                 </span>
                 {this.props.hasEditPrivilege ? (
                     <DetailEditBtn title={this.props.editBtnTip}
-                                   onClick={this.setEditable.bind(this)}/>) : null
+                        onClick={this.setEditable.bind(this)}/>) : null
                 }
             </div>
         ) : null;
@@ -178,17 +178,17 @@ let BasicEditSelectField = React.createClass({
                         >
                             <Validator rules={this.props.validators}>
                                 <Select multiple={this.props.multiple}
-                                        combobox={this.props.combobox}
-                                        filterOption={this.props.filterOption}
-                                        name="select"
-                                        className="edit-select-item"
-                                        showSearch
-                                        optionFilterProp="children"
-                                        searchPlaceholder={this.props.placeholder}
-                                        placeholder={this.props.placeholder}
-                                        notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                        value={formData.select}
-                                        onChange={this.onSelectChange}>
+                                    combobox={this.props.combobox}
+                                    filterOption={this.props.filterOption}
+                                    name="select"
+                                    className="edit-select-item"
+                                    showSearch
+                                    optionFilterProp="children"
+                                    searchPlaceholder={this.props.placeholder}
+                                    placeholder={this.props.placeholder}
+                                    notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                    value={formData.select}
+                                    onChange={this.onSelectChange}>
                                     {this.state.selectOptions}
                                 </Select>
                             </Validator>
@@ -197,9 +197,9 @@ let BasicEditSelectField = React.createClass({
                     <div className="buttons">
                         {!this.props.hideButtonBlock ?
                             <SaveCancelButton loading={this.state.loading}
-                                              saveErrorMsg={this.state.submitErrorMsg}
-                                              handleSubmit={this.handleSubmit}
-                                              handleCancel={this.handleCancel}
+                                saveErrorMsg={this.state.submitErrorMsg}
+                                handleSubmit={this.handleSubmit}
+                                handleCancel={this.handleCancel}
                             /> : null}
                     </div>
                 </Form>

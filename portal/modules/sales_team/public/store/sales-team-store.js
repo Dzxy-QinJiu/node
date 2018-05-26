@@ -33,21 +33,21 @@ function SalesTeamStore() {
 
     this.bindActions(SalesTeamActions);
 }
-SalesTeamStore.prototype.showUserInfoPanel = function () {
+SalesTeamStore.prototype.showUserInfoPanel = function() {
     this.userInfoShow = true;
     this.userFormShow = false;
     this.rightPanelShow = true;
 };
-SalesTeamStore.prototype.closeRightPanel = function () {
+SalesTeamStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
     this.userInfoShow = false;
 };
 //获取统计团队内成员个数的列表
-SalesTeamStore.prototype.getTeamMemberCountList = function (list) {
+SalesTeamStore.prototype.getTeamMemberCountList = function(list) {
     this.teamMemberCountList = _.isArray(list) ? list : [];
 };
 //获取销售目标
-SalesTeamStore.prototype.getSalesGoals = function (reqObj) {
+SalesTeamStore.prototype.getSalesGoals = function(reqObj) {
     if (reqObj.loading){
         this.isLoadingSalesGoal = true;
         this.getSalesGoalErrMsg = "";
@@ -65,7 +65,7 @@ SalesTeamStore.prototype.getSalesGoals = function (reqObj) {
 
 };
 //更新销售目标
-SalesTeamStore.prototype.updateSalesGoals = function (updateObj) {
+SalesTeamStore.prototype.updateSalesGoals = function(updateObj) {
     let salesGoals = updateObj.salesGoals;
     if (updateObj.type == "member") {
         //个人销售目标
@@ -84,7 +84,7 @@ SalesTeamStore.prototype.updateSalesGoals = function (updateObj) {
     }
 };
 //清空根据团队名称进行搜索的搜索条件时，还原所有团队及团队关系
-SalesTeamStore.prototype.resetSearchSalesTeam = function () {
+SalesTeamStore.prototype.resetSearchSalesTeam = function() {
     this.salesTeamLisTipMsg = "";//清空搜索时，清空没有符合条件的团队的提示
     this.salesTeamList.forEach(team => {
         delete team.select;
@@ -94,7 +94,7 @@ SalesTeamStore.prototype.resetSearchSalesTeam = function () {
 };
 
 //搜索内容的设置
-SalesTeamStore.prototype.setSearchContent = function (searchContent) {
+SalesTeamStore.prototype.setSearchContent = function(searchContent) {
     this.searchContent = searchContent;
 };
 /**递归遍历树，根据团队名查找团队
@@ -103,7 +103,7 @@ SalesTeamStore.prototype.setSearchContent = function (searchContent) {
  * @param filterGroupArray 将团队名中包含name的团队存入filterGroupArray中
  * @param delSelect 是否删除团队的选中标识
  */
-SalesTeamStore.prototype.findGroupListByName = function (groupList, name, filterGroupArray) {
+SalesTeamStore.prototype.findGroupListByName = function(groupList, name, filterGroupArray) {
     groupList.forEach(group => {
         if (group.title.indexOf(name) != -1) {
             filterGroupArray.push(group);
@@ -114,7 +114,7 @@ SalesTeamStore.prototype.findGroupListByName = function (groupList, name, filter
 };
 
 //递归遍历去掉之前选中的团队
-SalesTeamStore.prototype.delSelectSalesTeam = function (groupList) {
+SalesTeamStore.prototype.delSelectSalesTeam = function(groupList) {
     groupList.forEach(group => {
         delete group.select;
         delete group.isLiSelect;
@@ -125,7 +125,7 @@ SalesTeamStore.prototype.delSelectSalesTeam = function (groupList) {
 };
 
 //根据团队名称搜索团队
-SalesTeamStore.prototype.filterByTeamName = function (teamName) {
+SalesTeamStore.prototype.filterByTeamName = function(teamName) {
     //去掉之前选中的组织
     this.salesTeamList.forEach(group => {
         delete group.select;
@@ -155,10 +155,10 @@ SalesTeamStore.prototype.filterByTeamName = function (teamName) {
 };
 
 //根据成员昵称、用户名搜索团队
-SalesTeamStore.prototype.filterByUserName = function (filterTeamList) {
+SalesTeamStore.prototype.filterByUserName = function(filterTeamList) {
     var filterTeamArray = [];
     if (_.isArray(filterTeamList) && filterTeamList.length > 0) {
-        filterTeamArray = filterTeamList.map(function (team) {
+        filterTeamArray = filterTeamList.map(function(team) {
             return {
                 title: team.group_name,
                 key: team.group_id,
@@ -197,7 +197,7 @@ SalesTeamStore.prototype.filterByUserName = function (filterTeamList) {
  * @param parentId
  * @param newTeam
  */
-SalesTeamStore.prototype.findGroupByIdAddTeam = function (treeGroupList, parentId, newTeam) {
+SalesTeamStore.prototype.findGroupByIdAddTeam = function(treeGroupList, parentId, newTeam) {
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
     _.some(treeGroupList, group => {
         //找到要添加子团队的团队
@@ -217,7 +217,7 @@ SalesTeamStore.prototype.findGroupByIdAddTeam = function (treeGroupList, parentI
     });
 };
 //添加后刷新团队列表
-SalesTeamStore.prototype.refreshTeamListAfterAdd = function (addTeam) {
+SalesTeamStore.prototype.refreshTeamListAfterAdd = function(addTeam) {
     this.salesTeamList.push(addTeam);
     let newTeam = {
         title: addTeam.group_name,
@@ -238,7 +238,7 @@ SalesTeamStore.prototype.refreshTeamListAfterAdd = function (addTeam) {
 
 };
 //修改团队名称后更新列表中对应团队的名称
-SalesTeamStore.prototype.updateTeamNameAfterEdit = function (editTeam) {
+SalesTeamStore.prototype.updateTeamNameAfterEdit = function(editTeam) {
     let team = _.find(this.salesTeamList, team => team.group_id == editTeam.key);
     team.group_name = editTeam.title;
     //递归遍历树形团队列表，根据id找团队并修改名称
@@ -249,7 +249,7 @@ SalesTeamStore.prototype.updateTeamNameAfterEdit = function (editTeam) {
  * @param treeGroupList
  * @param editTeam
  */
-SalesTeamStore.prototype.findGroupByIdEditName = function (treeGroupList, editTeam) {
+SalesTeamStore.prototype.findGroupByIdEditName = function(treeGroupList, editTeam) {
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
     _.some(treeGroupList, group => {
         //找到要修改名称的团队
@@ -264,13 +264,13 @@ SalesTeamStore.prototype.findGroupByIdEditName = function (treeGroupList, editTe
 };
 
 //设置正在加载销售团队的标志
-SalesTeamStore.prototype.setSalesTeamLoading = function (flag) {
+SalesTeamStore.prototype.setSalesTeamLoading = function(flag) {
     this.isLoadingSalesTeam = flag;
     this.salesTeamLisTipMsg = "";
 };
 
 //获取团队分组列表
-SalesTeamStore.prototype.getSalesTeamList = function (resultData) {
+SalesTeamStore.prototype.getSalesTeamList = function(resultData) {
     this.isLoadingSalesTeam = false;
     this.deleteGroupItem = {};
     if (_.isString(resultData)) {
@@ -294,7 +294,7 @@ SalesTeamStore.prototype.getSalesTeamList = function (resultData) {
 };
 
 //添加成员时获取不属于任何团队的成员列表
-SalesTeamStore.prototype.getMemberList = function (resultData) {
+SalesTeamStore.prototype.getMemberList = function(resultData) {
     if (_.isString(resultData)) {
         this.addMemberListTipMsg = resultData;
     } else {
@@ -309,18 +309,18 @@ SalesTeamStore.prototype.getMemberList = function (resultData) {
 };
 
 //设置正在获取团队成员的标志
-SalesTeamStore.prototype.setTeamMemberLoading = function (flag) {
+SalesTeamStore.prototype.setTeamMemberLoading = function(flag) {
     this.isLoadingTeamMember = flag;
     this.teamMemberListTipMsg = "";
 };
 
 //修改团队成员成功后的处理
-SalesTeamStore.prototype.afterEditMember = function (data) {
+SalesTeamStore.prototype.afterEditMember = function(data) {
     if (data) {
         this.isEditMember = false;
         //当前展示组的信息
         var curTeamId = data.group_id;
-        var curShowTeam = _.find(this.salesTeamList, function (team) {
+        var curShowTeam = _.find(this.salesTeamList, function(team) {
             if (team.group_id == curTeamId) {
                 return true;
             }
@@ -385,7 +385,7 @@ SalesTeamStore.prototype.afterEditMember = function (data) {
  * @param userIds:删除的成员id列表
  * @param memberType: 删除的是owner、manager还是user
  */
-SalesTeamStore.prototype.delTeamMemberCount = function (curTeamId, userIds, memberType) {
+SalesTeamStore.prototype.delTeamMemberCount = function(curTeamId, userIds, memberType) {
     //删除的启用状态成员个数
     let delAvailableMemberCount = 0;
     _.each(userIds, userId => {
@@ -408,12 +408,12 @@ SalesTeamStore.prototype.delTeamMemberCount = function (curTeamId, userIds, memb
 };
 
 //添加团队内的成员成功后的处理
-SalesTeamStore.prototype.afterAddMember = function (data) {
+SalesTeamStore.prototype.afterAddMember = function(data) {
     if (data) {
         this.isAddFormShow = false;
         //当前展示组的信息
         var curTeamId = data.groupId;
-        var curShowTeam = _.find(this.salesTeamList, function (team) {
+        var curShowTeam = _.find(this.salesTeamList, function(team) {
             if (team.group_id == curTeamId) {
                 return true;
             }
@@ -425,7 +425,7 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
         if (addUserCount) {
             //该团队中原来就有成员则加入新增成员，原来无成员则新建成员列表
             if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length > 0) {
-                userIds.forEach(function (id) {
+                userIds.forEach(function(id) {
                     curShowTeam.user_ids.push(id);
                 });
             } else {
@@ -443,7 +443,7 @@ SalesTeamStore.prototype.afterAddMember = function (data) {
  * @param curTeamId 添加成员的团队id
  * @param userIds:添加的成员id列表
  */
-SalesTeamStore.prototype.addTeamMemberCount = function (curTeamId, userIds) {
+SalesTeamStore.prototype.addTeamMemberCount = function(curTeamId, userIds) {
     let addUserCount = userIds.length;
     //添加的启用状态成员个数
     let addAvailableUserCount = 0;
@@ -468,7 +468,7 @@ SalesTeamStore.prototype.addTeamMemberCount = function (curTeamId, userIds) {
     }
 };
 //获取当前团队的成员列表
-SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
+SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
     this.isLoadingTeamMember = false;
     if (_.isString(resultData)) {
         //获取失败、出错的提示信息
@@ -480,14 +480,14 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
             var _this = this;
             //当前展示组的信息
             var curTeamId = _this.curShowTeamMemberObj.groupId;
-            var curShowTeam = _.find(_this.salesTeamList, function (team) {
+            var curShowTeam = _.find(_this.salesTeamList, function(team) {
                 if (team.group_id == curTeamId) {
                     return true;
                 }
             });
             //负责人
             if (curShowTeam.owner_id) {
-                this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function (member) {
+                this.curShowTeamMemberObj.owner = _.find(_this.salesTeamMemberList, function(member) {
                     if (curShowTeam.owner_id == member.userId) {
                         return true;
                     }
@@ -496,8 +496,8 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
             //秘书
             if (curShowTeam.manager_ids) {
                 var managers = [];
-                curShowTeam.manager_ids.forEach(function (id) {
-                    var manager = _.find(_this.salesTeamMemberList, function (member) {
+                curShowTeam.manager_ids.forEach(function(id) {
+                    var manager = _.find(_this.salesTeamMemberList, function(member) {
                         if (id == member.userId) {
                             return true;
                         }
@@ -511,8 +511,8 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
             //成员
             if (curShowTeam.user_ids) {
                 var users = [];
-                curShowTeam.user_ids.forEach(function (id) {
-                    var user = _.find(_this.salesTeamMemberList, function (member) {
+                curShowTeam.user_ids.forEach(function(id) {
+                    var user = _.find(_this.salesTeamMemberList, function(member) {
                         if (id == member.userId) {
                             return true;
                         }
@@ -534,47 +534,47 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function (resultData) {
 };
 //将停用的成员排后面
 function sortTeamMembers(list) {
-    return list.sort(function (a, b) {
+    return list.sort(function(a, b) {
         return b.status - a.status;
     });
 }
-SalesTeamStore.prototype.deleteGroup = function (deleteGroupItem) {
+SalesTeamStore.prototype.deleteGroup = function(deleteGroupItem) {
     deleteGroupItem.modalDialogFlag = true;
     this.deleteGroupItem = deleteGroupItem;
 };
 
-SalesTeamStore.prototype.hideModalDialog = function (deleteGroupItem) {
+SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
     deleteGroupItem.modalDialogFlag = false;
 };
 
 //编辑成员
-SalesTeamStore.prototype.getIsEditMember = function () {
+SalesTeamStore.prototype.getIsEditMember = function() {
     this.isAddMember = false;
     this.isEditMember = true;
 };
 
 //取消编辑成员
-SalesTeamStore.prototype.cancelEditMember = function () {
+SalesTeamStore.prototype.cancelEditMember = function() {
     this.isEditMember = false;
 };
 
 //添加成员
-SalesTeamStore.prototype.getIsAddMember = function () {
+SalesTeamStore.prototype.getIsAddMember = function() {
     this.isEditMember = false;
     this.isAddMember = true;
 
 };
 
 //取消添加成员
-SalesTeamStore.prototype.cancelAddMember = function () {
+SalesTeamStore.prototype.cancelAddMember = function() {
     this.isAddMember = false;
 
 };
 
 //当前查看的团队组ID
-SalesTeamStore.prototype.setSelectSalesTeamGroup = function (selectSalesTeamGroupId) {
+SalesTeamStore.prototype.setSelectSalesTeamGroup = function(selectSalesTeamGroupId) {
     this.curShowTeamMemberObj = {groupId: selectSalesTeamGroupId};
-    var curSalesTeam = _.find(this.salesTeamList, function (team) {
+    var curSalesTeam = _.find(this.salesTeamList, function(team) {
         if (team.group_id == selectSalesTeamGroupId) {
             return true;
         }
@@ -583,7 +583,7 @@ SalesTeamStore.prototype.setSelectSalesTeamGroup = function (selectSalesTeamGrou
 };
 
 //是否展示组编辑菜单
-SalesTeamStore.prototype.showOperationArea = function (item) {
+SalesTeamStore.prototype.showOperationArea = function(item) {
     if (item.isShowOperationArea) {
         item.isShowOperationArea = false;
     } else {
@@ -592,8 +592,8 @@ SalesTeamStore.prototype.showOperationArea = function (item) {
 };
 
 //隐藏所有展示组编辑菜单
-SalesTeamStore.prototype.hideAllOperationArea = function () {
-    (this.salesTeamList).map(function (item, key) {
+SalesTeamStore.prototype.hideAllOperationArea = function() {
+    (this.salesTeamList).map(function(item, key) {
         if (item.isShowOperationArea) {
             item.isShowOperationArea = false;
         }
@@ -602,7 +602,7 @@ SalesTeamStore.prototype.hideAllOperationArea = function () {
 };
 
 //删除团队后的处理
-SalesTeamStore.prototype.saveDeleteGroup = function (result) {
+SalesTeamStore.prototype.saveDeleteGroup = function(result) {
     if (result.success) {
         //删除团队成功，过滤掉删除的团队
         this.salesTeamList = _.filter(this.salesTeamList, team => team.group_id != result.groupId);
@@ -617,34 +617,34 @@ SalesTeamStore.prototype.saveDeleteGroup = function (result) {
     this.delTeamErrorMsg = result.errorMsg;
 };
 //清空删除团队失败的错误提示
-SalesTeamStore.prototype.clearDelTeamErrorMsg = function () {
+SalesTeamStore.prototype.clearDelTeamErrorMsg = function() {
     this.delTeamErrorMsg = "";
 
 };
 //添加跟组织的标识设置
-SalesTeamStore.prototype.addSalesTeamRoot = function () {
+SalesTeamStore.prototype.addSalesTeamRoot = function() {
     this.isAddSalesTeamRoot = true;
 };
 
 //展示组修改表单
-SalesTeamStore.prototype.editGroup = function (item) {
+SalesTeamStore.prototype.editGroup = function(item) {
     item.isEditGroup = true;
     item.isShowOperationArea = false;
 };
 
 //取消展示组修改表单
-SalesTeamStore.prototype.cancelEditGroup = function (item) {
+SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
 };
 
 //展示组添加表单
-SalesTeamStore.prototype.addGroup = function (item) {
+SalesTeamStore.prototype.addGroup = function(item) {
     item.isAddGroup = true;
     item.isShowOperationArea = false;
 };
 
 //取消展示组添加表单
-SalesTeamStore.prototype.cancelAddGroup = function (item) {
+SalesTeamStore.prototype.cancelAddGroup = function(item) {
     if (item) {
         //关闭添加该组织添加子组织的面板
         item.isAddGroup = false;
@@ -654,9 +654,9 @@ SalesTeamStore.prototype.cancelAddGroup = function (item) {
     }
 };
 
-SalesTeamStore.prototype.selectTree = function (groupId) {
+SalesTeamStore.prototype.selectTree = function(groupId) {
     var parentGroup = "";
-    this.salesTeamList.map(function (item, key) {
+    this.salesTeamList.map(function(item, key) {
         if (item.group_id == groupId) {
             item.select = true;
             if (!item.isLiSelect) {
@@ -677,9 +677,9 @@ SalesTeamStore.prototype.selectTree = function (groupId) {
     this.salesTeamTree(true);
 };
 
-SalesTeamStore.prototype.toggleGroupTree = function (groupId) {
+SalesTeamStore.prototype.toggleGroupTree = function(groupId) {
     var parentGroup = "";
-    this.salesTeamList.map(function (item, key) {
+    this.salesTeamList.map(function(item, key) {
         if (item.group_id == groupId) {
             item.isLiSelect = !item.isLiSelect;
             if (item.parent_group) {
@@ -695,7 +695,7 @@ SalesTeamStore.prototype.toggleGroupTree = function (groupId) {
 };
 
 //搜索条件下，搜索后组织树的设置
-SalesTeamStore.prototype.setSearchSalesTeamTree = function () {
+SalesTeamStore.prototype.setSearchSalesTeamTree = function() {
     if (this.searchContent) {
         let filterGroupArray = [];
         this.findGroupListByName(this.salesTeamListArray, this.searchContent, filterGroupArray);
@@ -703,9 +703,9 @@ SalesTeamStore.prototype.setSearchSalesTeamTree = function () {
     }
 };
 
-SalesTeamStore.prototype.checkIsLiSelect = function (parentGroup) {
+SalesTeamStore.prototype.checkIsLiSelect = function(parentGroup) {
     var nowParentGroup = "";
-    (this.salesTeamList).map(function (item, key) {
+    (this.salesTeamList).map(function(item, key) {
         if (item.group_id == parentGroup) {
             item.isLiSelect = true;
             if (item.parent_group) {
@@ -720,12 +720,12 @@ SalesTeamStore.prototype.checkIsLiSelect = function (parentGroup) {
 };
 
 //判断当前是否有选中的团队
-SalesTeamStore.prototype.checkSelectTree = function () {
+SalesTeamStore.prototype.checkSelectTree = function() {
     var selectObj = {
         isFirstSelect: true,//是否是第一次渲染销售团队的成员展示
         isFirstLiSelect: true//是否是第一次展开销售团队
     };
-    (this.salesTeamList).map(function (item, kry) {
+    (this.salesTeamList).map(function(item, kry) {
         if (item.select != undefined) {
             //有展示过则不是第一次
             selectObj.isFirstSelect = false;
@@ -738,7 +738,7 @@ SalesTeamStore.prototype.checkSelectTree = function () {
     return selectObj;
 };
 //修改用户详情后，更改列表中的数据
-SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
+SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(user) {
     var teamMemberObj = this.curShowTeamMemberObj;
     //修改用户的昵称
     if (user.nick_name) {
@@ -778,7 +778,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function (user) {
     }
 };
 
-SalesTeamStore.prototype.salesTeamTree = function (flag) {
+SalesTeamStore.prototype.salesTeamTree = function(flag) {
     var isSelectObj = this.checkSelectTree();
     var salesTeamList = this.salesTeamList;
     var salesTeamArray = [];//所有根团队
@@ -838,7 +838,7 @@ SalesTeamStore.prototype.salesTeamTree = function (flag) {
     this.setSearchSalesTeamTree();
 };
 //salesTeamList:子团队列表，salesTeamArray:根团队列表
-SalesTeamStore.prototype.salesTeamChildrenTree = function (salesTeamList, salesTeamArray) {
+SalesTeamStore.prototype.salesTeamChildrenTree = function(salesTeamList, salesTeamArray) {
     var newSalesTeamList = [];//二级子团队的列表
     //遍历子团队
     for (var i = 0; i < salesTeamList.length; i++) {

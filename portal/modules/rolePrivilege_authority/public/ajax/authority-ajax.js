@@ -1,6 +1,6 @@
 var TYPE_CONSTANT = "myApp";
 //获取权限列表
-exports.getAuthorityList = function (clientID, type) {
+exports.getAuthorityList = function(clientID, type) {
     var Deferred = $.Deferred();
     var getAutorityListUrl = '/rest/authority/';
     if (type === TYPE_CONSTANT) {
@@ -10,9 +10,9 @@ exports.getAuthorityList = function (clientID, type) {
         url: getAutorityListUrl + clientID,
         dataType: 'json',
         type: 'get',
-        success: function (obj) {
+        success: function(obj) {
             Deferred.resolve(obj);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -20,7 +20,7 @@ exports.getAuthorityList = function (clientID, type) {
 };
 
 //修改权限分组名称
-exports.editAuthorityGroupName = function (authorityGroup, type) {
+exports.editAuthorityGroupName = function(authorityGroup, type) {
     var Deferred = $.Deferred();
     var editAuthorityGroupListUrl = '/rest/authority_group_name/';
     if (type === TYPE_CONSTANT) {
@@ -31,10 +31,10 @@ exports.editAuthorityGroupName = function (authorityGroup, type) {
         dataType: 'json',
         type: 'put',
         data: authorityGroup,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -42,7 +42,7 @@ exports.editAuthorityGroupName = function (authorityGroup, type) {
 };
 
 //添加权限
-exports.addAuthority = function (authority, type) {
+exports.addAuthority = function(authority, type) {
     var Deferred = $.Deferred();
     var addAutorityListUrl = '/rest/authority';
     if (type === TYPE_CONSTANT) {
@@ -54,10 +54,10 @@ exports.addAuthority = function (authority, type) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(authority),
-        success: function (authorityCreated) {
+        success: function(authorityCreated) {
             Deferred.resolve(authorityCreated);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -65,7 +65,7 @@ exports.addAuthority = function (authority, type) {
 };
 
 //修改权限
-exports.editAuthority = function (authority, type) {
+exports.editAuthority = function(authority, type) {
     var Deferred = $.Deferred();
     var editAutorityListUrl = '/rest/authority';
     if (type === TYPE_CONSTANT) {
@@ -76,10 +76,10 @@ exports.editAuthority = function (authority, type) {
         dataType: 'json',
         type: 'put',
         data: authority,
-        success: function (authorityModified) {
+        success: function(authorityModified) {
             Deferred.resolve(authorityModified);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -87,7 +87,7 @@ exports.editAuthority = function (authority, type) {
 };
 
 //删除权限
-exports.deleteAuthority = function (authorityIds, type) {
+exports.deleteAuthority = function(authorityIds, type) {
     var Deferred = $.Deferred();
     var delAuthorityListUrl = '/rest/authority/del';
     if (type === TYPE_CONSTANT) {
@@ -97,10 +97,10 @@ exports.deleteAuthority = function (authorityIds, type) {
         url: delAuthorityListUrl,
         type: 'post',
         data: {authorityIds: authorityIds},
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

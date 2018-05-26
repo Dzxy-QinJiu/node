@@ -73,7 +73,7 @@ Batch.prototype.listener = function(data) {
                                     this.ioServer.sockets.sockets[socketObj.socketId];
             if(socket) {
                 //  从session中获取用户的userId及token
-                getSessionFromStore(socket, function (err, session) {
+                getSessionFromStore(socket, function(err, session) {
                     let lang = "zh_CN";
                     if (!err && session && session.lang) {
                         lang=session.lang;

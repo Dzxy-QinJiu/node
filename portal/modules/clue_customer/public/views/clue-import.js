@@ -27,7 +27,7 @@ var ClueImport = React.createClass({
             this.setState({isLoading: false});
         }
     },
-    render: function () {
+    render: function() {
         var props = {
             name: 'clues',
             action: '/rest/clue/upload',

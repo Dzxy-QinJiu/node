@@ -16,7 +16,7 @@ const POSITION_AREA_OPTIONS = {
 };
 const BatchPositionForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             status: {
                 phoneOrder: {}
@@ -40,7 +40,7 @@ const BatchPositionForm = React.createClass({
         let formData = this.state.formData;
         if (formData.realm_id != nextState.formData.realm_id && nextState.formData.realm_id) {
             let SelectId  = this.getOrganizationId(nextState.formData.realm_id)[0];
-           PositionAction.getUnbindMemberList({realm: SelectId});
+            PositionAction.getUnbindMemberList({realm: SelectId});
         }
     },
     // 地域的选择
@@ -55,7 +55,7 @@ const BatchPositionForm = React.createClass({
             areaValue: selectOptions
         });
     },
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
         var classes = classNames({
@@ -210,8 +210,8 @@ const BatchPositionForm = React.createClass({
                             >
                                 <Validator rules={[{validator:this.checkPhoneOrder}]}>
                                     <Input name='phoneOrder' id='phoneOrder' value={formData.phoneOrder}
-                                           onChange={this.setField.bind(this, 'phoneOrder')}
-                                           onFocus ={this.focusPositionInput}
+                                        onChange={this.setField.bind(this, 'phoneOrder')}
+                                        onFocus ={this.focusPositionInput}
                                     />
                                 </Validator>
                             </FormItem>
@@ -232,13 +232,13 @@ const BatchPositionForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select name='realm_id'
-                                        id='realm_id'
-                                        placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
-                                        notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
-                                        showSearch
-                                        searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
-                                        value={formData.realm_id}
-                                        onChange={this.setField.bind(this, 'realm_id')}
+                                    id='realm_id'
+                                    placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
+                                    notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
+                                    showSearch
+                                    searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
+                                    value={formData.realm_id}
+                                    onChange={this.setField.bind(this, 'realm_id')}
                                 >
                                     {this.renderOrganizationOptions()}
                                 </Select>
@@ -250,13 +250,13 @@ const BatchPositionForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select name='member'
-                                        id='member'
-                                        placeholder={LANGLOBAL.USER.first} // 请绑定用户
-                                        notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
-                                        showSearch
-                                        searchPlaceholder={LANGLOBAL.USER.placeholder} // 输入用户名称搜索
-                                        value={formData.member}
-                                        onChange={this.setField.bind(this, 'member')}
+                                    id='member'
+                                    placeholder={LANGLOBAL.USER.first} // 请绑定用户
+                                    notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
+                                    showSearch
+                                    searchPlaceholder={LANGLOBAL.USER.placeholder} // 输入用户名称搜索
+                                    value={formData.member}
+                                    onChange={this.setField.bind(this, 'member')}
                                 >
                                     {this.renderMemberOptions()}
                                 </Select>

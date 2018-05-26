@@ -3,7 +3,7 @@ const restLogger = require("../utils/logger").getLogger('rest');
 const restUtil = require("ant-auth-request").restUtil(restLogger);
 const _ = require("underscore");
 
-module.exports = function (req, res) {
+module.exports = function(req, res) {
     const queryStr = querystring.stringify(req.query);
     let url = queryStr? req.path + "?" + queryStr : req.path;
 
@@ -30,9 +30,9 @@ module.exports = function (req, res) {
     if (req.query.timeout) options.timeout = req.query.timeout;
 
     restUtil.authRest[method](
-            options,
-            data
-        )
+        options,
+        data
+    )
         .on("success", result => {
             res.status(200).json(result);
         })

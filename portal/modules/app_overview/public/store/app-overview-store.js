@@ -105,7 +105,7 @@ class AppOverViewStore {
         }
     }
     // 用户总数中用户类型的试用和签约的用户数
-    getUserTypeStatistics (result) {
+    getUserTypeStatistics(result) {
         this.handleUserType(result, this.userType);
     }
     // 新增用户中用户类型的试用和签约的用户数
@@ -202,7 +202,7 @@ class AppOverViewStore {
 
     // 新增地域统计（新增用户）
     getAddedZone(result) {
-       this.handleUserZone(result);
+        this.handleUserZone(result);
     }
 
 

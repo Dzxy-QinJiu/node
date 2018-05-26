@@ -13,7 +13,7 @@ class SaveCancelButton extends React.Component {
         return (
             <div className="button-container">
                 <Button className="button-save" type="primary"
-                        onClick={this.props.handleSubmit.bind(this)}>
+                    onClick={this.props.handleSubmit.bind(this)}>
                     {Intl.get("common.save", "保存")}
                 </Button>
                 <Button className="button-cancel" onClick={this.props.handleCancel.bind(this)}>
@@ -30,9 +30,9 @@ class SaveCancelButton extends React.Component {
 SaveCancelButton.defaultProps = {
     loading: false,//是否正在保存
     saveErrorMsg: "",//保存的错误提示
-    handleSubmit: function () {
+    handleSubmit: function() {
     },//保存的处理
-    handleCancel: function () {
+    handleCancel: function() {
     }//取消的处理
 };
 export default SaveCancelButton;

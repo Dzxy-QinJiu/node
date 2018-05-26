@@ -104,7 +104,7 @@ class DatePicker extends React.Component {
         super(props);
         var menu_lists = [];
         var allMenu;//记录全部时间
-        React.Children.forEach(props.children, function (item) {
+        React.Children.forEach(props.children, function(item) {
             var value = item.props.value;
             var label = item.props.children;
             if (value !== "all") {
@@ -127,7 +127,7 @@ class DatePicker extends React.Component {
         this.componentId = _.uniqueId("DatePicker");
         //验证时间范围
         let timeRange = props.range || "day";
-        var hasRange = _.find(timeRanges, function (range) {
+        var hasRange = _.find(timeRanges, function(range) {
             if (timeRange === range)
                 return true;
         });
@@ -145,29 +145,29 @@ class DatePicker extends React.Component {
             timeObj = {start_time: '', end_time: ""};
         } else {
             switch (timeRange) {
-                case 'day':
-                    timeObj = Utils.getTodayTime();
-                    break;
-                case 'week':
-                    timeObj = Utils.getThisWeekTime(props.disableDateAfterToday ? true : false);
-                    break;
-                case 'month':
-                    timeObj = Utils.getThisMonthTime(props.disableDateAfterToday ? true : false);
-                    break;
-                case 'quarter':
-                    timeObj = Utils.getThisQuarterTime(props.disableDateAfterToday ? true : false);
-                    showYear = true;
-                    break;
-                case 'year':
-                    timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
-                    showYear = true;
-                    break;
-                case 'custom':
-                    timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
-                    break;
-                default:
-                    timeObj = Utils.getTodayTime();
-                    break;
+            case 'day':
+                timeObj = Utils.getTodayTime();
+                break;
+            case 'week':
+                timeObj = Utils.getThisWeekTime(props.disableDateAfterToday ? true : false);
+                break;
+            case 'month':
+                timeObj = Utils.getThisMonthTime(props.disableDateAfterToday ? true : false);
+                break;
+            case 'quarter':
+                timeObj = Utils.getThisQuarterTime(props.disableDateAfterToday ? true : false);
+                showYear = true;
+                break;
+            case 'year':
+                timeObj = Utils.getThisYearTime(props.disableDateAfterToday ? true : false);
+                showYear = true;
+                break;
+            case 'custom':
+                timeObj = Utils.getCustomTime(new Date(props.start_time), new Date(props.end_time));
+                break;
+            default:
+                timeObj = Utils.getTodayTime();
+                break;
             }
         }
         this.state = {
@@ -232,7 +232,7 @@ class DatePicker extends React.Component {
     //调用this.props.onSelect，将时间传递出去
     transportOuter(start_time, end_time, timeRange) {
         var label;
-        var target = _.find(this.state.menu_lists, function (obj) {
+        var target = _.find(this.state.menu_lists, function(obj) {
             return obj.value == timeRange;
         });
         if (target) {
@@ -677,11 +677,11 @@ class DatePicker extends React.Component {
         let range = "选择日期范围" + this.state.timeRange;
         return (
             <div className="period-type"
-                 style={{display: (this.state.isShowCalendar || this.state.showYear) ? 'block' : 'none'}}>
+                style={{display: (this.state.isShowCalendar || this.state.showYear) ? 'block' : 'none'}}>
                 {menu}
                 <Button type="primary" className="btn_calendar_apply"
-                        data-tracename={range}
-                        onClick={this.calendarApply.bind(this)}>
+                    data-tracename={range}
+                    onClick={this.calendarApply.bind(this)}>
                     {Intl.get("common.sure", "确定")}
                 </Button>
             </div>
@@ -755,7 +755,7 @@ class DatePicker extends React.Component {
         if (!this.props.disableDateAfterToday || new Date().getFullYear() > year) {
             return QUARTER_CHINESE_TEXT_LIST;
         } else {
-            return QUARTER_CHINESE_TEXT_LIST.filter(function (text, num) {
+            return QUARTER_CHINESE_TEXT_LIST.filter(function(text, num) {
                 var startTime = moment().year(year).quarter(num + 1).startOf("quarter").toDate().getTime();
                 var now = new Date().getTime();
                 if (now >= startTime) {
@@ -832,9 +832,9 @@ class DatePicker extends React.Component {
                         <Icon type="calendar"/>
                         {popover}
                         <i className="click_left"
-                           onClick={this.showCalendar.bind(this, "click_date", options)}></i>
+                            onClick={this.showCalendar.bind(this, "click_date", options)}></i>
                         <i className="click_right"
-                           onClick={this.showCalendar.bind(this, "click_date", options)}></i>
+                            onClick={this.showCalendar.bind(this, "click_date", options)}></i>
                         {this.renderCalendar()}
                     </div>
                 </div>
@@ -907,12 +907,12 @@ DatePicker.propTypes = {
  *
  */
 var DatePickerOption = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             value: ""
         };
     },
-    render: function () {
+    render: function() {
         return null;
     }
 });

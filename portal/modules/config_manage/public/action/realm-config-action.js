@@ -15,11 +15,11 @@ function RealmConfigActions(){
         var _this = this;
         _this.dispatch({loading:true});
         RealmConfigAjax.getRealmStrategy(param)
-        .then(function (data) {
-            _this.dispatch({loading:false,error:false, data: data});
-        },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
-        });
+            .then(function(data) {
+                _this.dispatch({loading:false,error:false, data: data});
+            },function(errorMsg) {
+                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            });
     };
 
     // 修改
@@ -27,11 +27,11 @@ function RealmConfigActions(){
         var _this = this;
         _this.dispatch({loading:true,value:param});
         RealmConfigAjax.updateRealmStrategy(param)
-        .then(function (result) {
-            _this.dispatch({loading:false,error:false, data: result,value:param});
-        },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
-        });
+            .then(function(result) {
+                _this.dispatch({loading:false,error:false, data: result,value:param});
+            },function(errorMsg) {
+                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            });
     };
 
    

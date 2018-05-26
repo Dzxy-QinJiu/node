@@ -136,40 +136,40 @@ class ExpireScheduleLists extends React.Component {
                     return (
                         <div className="list-item" data-tracename="超期日程列表">
                             <h4 className="item-title">
-                                    <span>
-                                        {moment(item.start_time).format(oplateConsts.DATE_FORMAT)}
-                                    </span>
+                                <span>
+                                    {moment(item.start_time).format(oplateConsts.DATE_FORMAT)}
+                                </span>
                                 <span className="pull-right">
-                                        {moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                                    {moment(item.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
                                     - {moment(item.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                                    </span>
+                                </span>
                             </h4>
                             <p className="item-customer-content" title={item.customer_name || item.topic}>
                                 <i className={cls}></i>
                                 <span onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
-                                      data-tracename="点击查看客户详情">
-                                        {item.customer_name || item.topic}
-                                        </span>
+                                    data-tracename="点击查看客户详情">
+                                    {item.customer_name || item.topic}
+                                </span>
                             </p>
                             <p className="item-schedule-content">
-                                        <span>
-                                            <span className="label">{Intl.get("crm.177", "内容")}</span>
-                                            <span className="content">{item.content}</span>
-                                        </span>
+                                <span>
+                                    <span className="label">{Intl.get("crm.177", "内容")}</span>
+                                    <span className="content">{item.content}</span>
+                                </span>
                                 {item.socketio_notice ?
                                     <span>
-                                                <span className="label">{Intl.get("schedule.list.remind", "提醒")}</span>
-                                                <span
-                                                    className="content">{moment(item.alert_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</span>
-                                            </span>
+                                        <span className="label">{Intl.get("schedule.list.remind", "提醒")}</span>
+                                        <span
+                                            className="content">{moment(item.alert_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT)}</span>
+                                    </span>
                                     : null}
 
                             </p>
                             <p className="item-handle-content">
                                 {user_id == item.member_id ?
                                     <Button type="primary"
-                                            onClick={this.handleMarkFinishStatus.bind(this, item)}
-                                            data-tracename="点击标记日程状态为完成"
+                                        onClick={this.handleMarkFinishStatus.bind(this, item)}
+                                        data-tracename="点击标记日程状态为完成"
                                     >{Intl.get("schedule.list.mark.finish", "标记为完成")}
                                         {this.state.handleStatusLoading ?
                                             <Icon type="loading"/> : null}</Button> :
@@ -202,9 +202,9 @@ class ExpireScheduleLists extends React.Component {
             var retry = (
                 <span>
                     {this.state.scheduleExpiredErrMsg}，<a href="javascript:void(0)"
-                                                          onClick={this.getExpiredScheduleList()}>
-                    {Intl.get("common.retry", "重试")}
-                </a>
+                        onClick={this.getExpiredScheduleList()}>
+                        {Intl.get("common.retry", "重试")}
+                    </a>
                 </span>
             );
             return (
@@ -304,7 +304,7 @@ class ExpireScheduleLists extends React.Component {
                 </div>
                 <div className="scroll-tip">
                     <span className="scroll-flag" onClick={this.handleScrollExpiredPanel}
-                          data-tracename="点击展开或收起超期日程列表">{expiredTipContent}</span>
+                        data-tracename="点击展开或收起超期日程列表">{expiredTipContent}</span>
                 </div>
                 {/*添加日程*/}
                 <div className="add-schedule-btn">
@@ -315,7 +315,7 @@ class ExpireScheduleLists extends React.Component {
     }
 }
 ExpireScheduleLists.defaultProps = {
-    showCustomerDetail: function () {
+    showCustomerDetail: function() {
 
     }
 };

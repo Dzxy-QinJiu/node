@@ -5,7 +5,7 @@
 import { addHyphenToPhoneNumber } from "LIB_DIR/func";
 import { Form, Input } from "antd";
 const FormItem = Form.Item;
-const noop = function () {};
+const noop = function() {};
 let instanceMap = {};
 
 class PhoneInput extends React.Component {

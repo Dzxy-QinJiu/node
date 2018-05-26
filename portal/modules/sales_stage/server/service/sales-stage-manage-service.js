@@ -15,7 +15,7 @@ var salesStageRestApis = {
 };
 exports.urls = salesStageRestApis;
 
-exports.getSalesStageList = function (req, res) {
+exports.getSalesStageList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: salesStageRestApis.getSalesStageList,
@@ -24,7 +24,7 @@ exports.getSalesStageList = function (req, res) {
         });
 };
 
-exports.addSalesStage = function (req, res, salesStage) {
+exports.addSalesStage = function(req, res, salesStage) {
     return restUtil.authRest.post(
         {
             url: salesStageRestApis.addSalesStage,
@@ -33,14 +33,14 @@ exports.addSalesStage = function (req, res, salesStage) {
         },
         salesStage,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", data);
             }
         });
 };
 
-exports.editSalesStage = function (req, res, salesStageArray) {
+exports.editSalesStage = function(req, res, salesStageArray) {
     return restUtil.authRest.put(
         {
             url: salesStageRestApis.editSalesStage,
@@ -49,14 +49,14 @@ exports.editSalesStage = function (req, res, salesStageArray) {
         },
         salesStageArray,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", data);
             }
         });
 };
 
-exports.deleteSalesStage = function (req, res, idsArray) {
+exports.deleteSalesStage = function(req, res, idsArray) {
     return restUtil.authRest.del(
         {
             url: salesStageRestApis.deleteSalesStage,
@@ -64,7 +64,7 @@ exports.deleteSalesStage = function (req, res, idsArray) {
             res: res
         },
         idsArray, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", data);
             }

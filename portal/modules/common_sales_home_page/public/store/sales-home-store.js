@@ -15,7 +15,7 @@ function getData(data) {
     }
 }
 //设置初始化数据
-SalesHomeStore.prototype.setInitState = function () {
+SalesHomeStore.prototype.setInitState = function() {
     //电话统计数据
     this.phoneTotalObj = {
         loading: true,
@@ -188,7 +188,7 @@ SalesHomeStore.prototype.setInitState = function () {
     this.listenScrollBottom = true;//是否监听滚动
 };
 //获取今日通话数量和时长
-SalesHomeStore.prototype.getPhoneTotal = function (result) {
+SalesHomeStore.prototype.getPhoneTotal = function(result) {
     this.phoneTotalObj.loading = result.loading;
     if (result.error) {
         this.phoneTotalObj.errMsg = result.errMsg;
@@ -212,7 +212,7 @@ SalesHomeStore.prototype.getPhoneTotal = function (result) {
     }
 };
 //获取客户统计总数
-SalesHomeStore.prototype.getCustomerTotal = function (result) {
+SalesHomeStore.prototype.getCustomerTotal = function(result) {
     var customerTotalObj = this.customerTotalObj;
     customerTotalObj.loading = result.loading;
     if (result.error) {
@@ -230,7 +230,7 @@ SalesHomeStore.prototype.getCustomerTotal = function (result) {
     }
 };
 //获取今日联系的客户列表
-SalesHomeStore.prototype.getTodayContactCustomer = function (result) {
+SalesHomeStore.prototype.getTodayContactCustomer = function(result) {
     var customerContactTodayObj = this.customerContactTodayObj;
     customerContactTodayObj.loading = result.loading;
 
@@ -241,7 +241,7 @@ SalesHomeStore.prototype.getTodayContactCustomer = function (result) {
     }
 };
 //获取最近登录的客户列表
-SalesHomeStore.prototype.getRecentLoginCustomers = function (result) {
+SalesHomeStore.prototype.getRecentLoginCustomers = function(result) {
     var recentLoginCustomerObj = this.recentLoginCustomerObj;
     recentLoginCustomerObj.loading = result.loading;
     if (result.error) {
@@ -263,7 +263,7 @@ SalesHomeStore.prototype.getRecentLoginCustomers = function (result) {
     }
 };
 //获取新分配的客户列表
-SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
+SalesHomeStore.prototype.getNewDistributeCustomer = function(result) {
     var newDistributeCustomer = this.newDistributeCustomer;
     newDistributeCustomer.loading = result.loading;
     if (result.error) {
@@ -274,7 +274,7 @@ SalesHomeStore.prototype.getNewDistributeCustomer = function (result) {
     }
 };
 //获取日程列表
-SalesHomeStore.prototype.getScheduleList = function (result) {
+SalesHomeStore.prototype.getScheduleList = function(result) {
     if (result.type === "expired") {
         //获取的过期日程列表
         var scheduleExpiredTodayObj = this.scheduleExpiredTodayObj;
@@ -335,7 +335,7 @@ function processScheduleLists(list, isSort) {
     return list;
 }
 //获取关注客户登录或者是停用客户登录
-SalesHomeStore.prototype.getSystemNotices = function (result) {
+SalesHomeStore.prototype.getSystemNotices = function(result) {
     if (result.type === "concerCustomerLogin") {
         //获取的过期日程列表
         var concernCustomerObj = this.concernCustomerObj;
@@ -376,7 +376,7 @@ function getExpireCustomerData(stateData,resultData) {
     }
 }
 //获取即将到期的客户
-SalesHomeStore.prototype.getExpireCustomer = function (result) {
+SalesHomeStore.prototype.getExpireCustomer = function(result) {
     if (result.type === ALL_LISTS_TYPE.WILL_EXPIRED_ASSIGN_CUSTOMER) {
         //获取即将到期的签约用户
         getExpireCustomerData(this.willExpiredAssignCustomer,result);
@@ -392,7 +392,7 @@ SalesHomeStore.prototype.getExpireCustomer = function (result) {
 };
 
 //获取重复客户列表
-SalesHomeStore.prototype.getRepeatCustomerList = function (result) {
+SalesHomeStore.prototype.getRepeatCustomerList = function(result) {
     var repeatCustomerObj = this.repeatCustomerObj;
     repeatCustomerObj.loading = result.loading;
     if (result.error) {
@@ -404,7 +404,7 @@ SalesHomeStore.prototype.getRepeatCustomerList = function (result) {
 };
 
 //修改某个提醒的状态
-SalesHomeStore.prototype.afterHandleStatus = function (newStatusObj) {
+SalesHomeStore.prototype.afterHandleStatus = function(newStatusObj) {
     //如果是今日的日程
     if (newStatusObj.type === ALL_LISTS_TYPE.SCHEDULE_TODAY) {
         //如果是过期的日程
@@ -419,7 +419,7 @@ SalesHomeStore.prototype.afterHandleStatus = function (newStatusObj) {
         this.scheduleExpiredTodayObj.data.total--;
     }
 };
-SalesHomeStore.prototype.afterHandleMessage = function (messageObj) {
+SalesHomeStore.prototype.afterHandleMessage = function(messageObj) {
     //关注客户登录
     var data = [];
     if (messageObj.noticeType === ALL_LISTS_TYPE.CONCERNED_CUSTOMER_LOGIN) {

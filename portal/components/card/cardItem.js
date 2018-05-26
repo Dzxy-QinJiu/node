@@ -5,7 +5,7 @@ import {Icon} from "antd";
 
 var CardItem = React.createClass({
 
-    render: function () {
+    render: function() {
         var className = "card-item";
         if (this.props.className) {
             className += " " + this.props.className;
@@ -19,7 +19,7 @@ var CardItem = React.createClass({
                     </span>)}
                 {this.props.hasRefreshBtn ? (
                     <a className="refresh-app-secret"
-                       onClick={this.props.refreshAppSecret}>
+                        onClick={this.props.refreshAppSecret}>
                         {Intl.get("common.refresh", "刷新")} {this.props.appSecretRefreshing ? (<Icon type="loading"/>) : null}</a>
                 ) : null}
             </div>

@@ -30,7 +30,7 @@ exports.addAppVersion = function(req, res, versionContent){
 };
 
 // 添加版本升级记录上传apk文件
-exports.uploadVersionUpgrade = function (req, res, formData) {
+exports.uploadVersionUpgrade = function(req, res, formData) {
     return restUtil.authRest.post({
         url: AppUserRestApis.uploadVersionUpgrade,
         req: req,

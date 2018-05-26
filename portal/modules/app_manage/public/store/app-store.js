@@ -80,30 +80,30 @@ function AppStore() {
 }
 
 //过滤状态的设置
-AppStore.prototype.setSelectStatus = function (status) {
+AppStore.prototype.setSelectStatus = function(status) {
     this.selectStatus = status;
 };
 
 //过滤标签的设置
-AppStore.prototype.setSelectTag = function (tag) {
+AppStore.prototype.setSelectTag = function(tag) {
     this.selectTag = tag;
 };
 
 //应用的标签列表
 function getAppTagList(appTagObj) {
     var appTagList = [];
-    _.each(appTagObj, function (value, key) {
+    _.each(appTagObj, function(value, key) {
         appTagList.push(key);
     });
     return appTagList;
 }
 
-AppStore.prototype.toggleFilterPanel = function () {
+AppStore.prototype.toggleFilterPanel = function() {
     this.isFilterPanelShow = !this.isFilterPanelShow;
 };
 
 //通过id获取其姓名
-AppStore.prototype.getNickName = function (id, userList) {
+AppStore.prototype.getNickName = function(id, userList) {
     var nickName = '';
     if (userList && userList.length > 0) {
         for (var i = 0, len = userList.length; i < len; i++) {
@@ -116,11 +116,11 @@ AppStore.prototype.getNickName = function (id, userList) {
 };
 
 //通过id获取app的名称
-AppStore.prototype.getAppNameById = function (id) {
+AppStore.prototype.getAppNameById = function(id) {
     var appName = id;
     var appList = AppFormStore.state.allAppList;
     if (appList && appList.length > 0) {
-        appList.forEach(function (app) {
+        appList.forEach(function(app) {
             if (app.id == id) {
                 appName = app.name;
             }
@@ -130,7 +130,7 @@ AppStore.prototype.getAppNameById = function (id) {
 };
 
 
-AppStore.prototype.setCurApp = function (app) {
+AppStore.prototype.setCurApp = function(app) {
     if (app && !_.isString(app)) {
         this.currentApp = app;
     }
@@ -139,8 +139,8 @@ AppStore.prototype.setCurApp = function (app) {
     this.appFormShow = false;
 };
 
-AppStore.prototype.setCurAppDetail = function (appId) {
-    var curApp = _.find(this.curAppList, function (app) {
+AppStore.prototype.setCurAppDetail = function(appId) {
+    var curApp = _.find(this.curAppList, function(app) {
         if (app.id == appId) {
             return true;
         }
@@ -148,7 +148,7 @@ AppStore.prototype.setCurAppDetail = function (appId) {
     this.currentApp = curApp || emptyApp;
 };
 
-AppStore.prototype.getCurAppById = function (app) {
+AppStore.prototype.getCurAppById = function(app) {
     this.appIsLoading = false;
     if (_.isString(app)) {
         this.getAppDetailError = app;
@@ -165,7 +165,7 @@ AppStore.prototype.getCurAppById = function (app) {
     }
 };
 //公开方法，获取当前展示的列表
-AppStore.prototype.getCurAppList = function (appListObj) {
+AppStore.prototype.getCurAppList = function(appListObj) {
     this.isLoading = false;
     if (_.isString(appListObj)) {
         //错误提示的赋值
@@ -228,7 +228,7 @@ AppStore.prototype.getCurAppList = function (appListObj) {
     }
 };
 
-AppStore.prototype.closeAddPanel = function () {
+AppStore.prototype.closeAddPanel = function() {
     this.appFormShow = false;
     this.rightPanelShow = false;
 };
@@ -247,7 +247,7 @@ function updateStatusCount(oldStatus, newStatus, appStatusObj) {
     }
 }
 //修改完app后，app信息的更新
-AppStore.prototype.updateApp = function (appModified, curApp) {
+AppStore.prototype.updateApp = function(appModified, curApp) {
     if (appModified.hasOwnProperty('status')) {
         //更新状态对应的数量
         updateStatusCount(curApp.status, appModified.status, this.appStatusObj);
@@ -283,11 +283,11 @@ AppStore.prototype.updateApp = function (appModified, curApp) {
 //更新标签对应的数量
 function updateTagCount(oldTags, newTags, appTagObj) {
     //原标签对应的数量减一
-    oldTags.forEach(function (tag) {
+    oldTags.forEach(function(tag) {
         appTagObj[tag]--;
     });
     //修改后标签对应的数量加一
-    newTags.forEach(function (tag) {
+    newTags.forEach(function(tag) {
         if (appTagObj[tag]) {
             appTagObj[tag]++;
         } else {
@@ -298,7 +298,7 @@ function updateTagCount(oldTags, newTags, appTagObj) {
     });
 }
 //详情页修改标签后的处理
-AppStore.prototype.afterEditAppTag = function (appModified) {
+AppStore.prototype.afterEditAppTag = function(appModified) {
     if (_.isObject(appModified)) {
         //找到需要更新的应用
         let updateApp = _.find(this.curAppList, app => app.id == appModified.id);
@@ -309,7 +309,7 @@ AppStore.prototype.afterEditAppTag = function (appModified) {
     }
 };
 
-AppStore.prototype.afterEditApp = function (appModified) {
+AppStore.prototype.afterEditApp = function(appModified) {
     if (_.isObject(appModified)) {
         //应用管理中修改完后的处理
         var curAppList = this.curAppList;
@@ -322,7 +322,7 @@ AppStore.prototype.afterEditApp = function (appModified) {
     }
 };
 
-AppStore.prototype.showAppForm = function (type) {
+AppStore.prototype.showAppForm = function(type) {
     if (type === "add") {
         this.currentApp = emptyApp;
     }
@@ -336,7 +336,7 @@ AppStore.prototype.showAppForm = function (type) {
 };
 
 // 版本升级记录
-AppStore.prototype.showVersionUpgradePanel = function () {
+AppStore.prototype.showVersionUpgradePanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -348,7 +348,7 @@ AppStore.prototype.showVersionUpgradePanel = function () {
 };
 
 // 系统公告
-AppStore.prototype.showAppNoticePanel = function () {
+AppStore.prototype.showAppNoticePanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -361,7 +361,7 @@ AppStore.prototype.showAppNoticePanel = function () {
 
 
 //用户类型设置
-AppStore.prototype.showUserTypeConfigPanel = function () {
+AppStore.prototype.showUserTypeConfigPanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -371,23 +371,23 @@ AppStore.prototype.showUserTypeConfigPanel = function () {
     this.rightPanelShow = true;
     this.userTypeConfigShow = true;
 };
-AppStore.prototype.showModalDialog = function () {
+AppStore.prototype.showModalDialog = function() {
     this.modalDialogShow = true;
 };
 
-AppStore.prototype.hideModalDialog = function () {
+AppStore.prototype.hideModalDialog = function() {
     this.modalDialogShow = false;
 };
 
-AppStore.prototype.updateCurPage = function (curPage) {
+AppStore.prototype.updateCurPage = function(curPage) {
     this.curPage = curPage;
 };
 
-AppStore.prototype.updatePageSize = function (pageSize) {
+AppStore.prototype.updatePageSize = function(pageSize) {
     this.pageSize = pageSize;
 };
 
-AppStore.prototype.showAppInfo = function () {
+AppStore.prototype.showAppInfo = function() {
     this.appInfoShow = true;
     this.appFormShow = false;
     this.rightPanelShow = true;
@@ -399,19 +399,19 @@ AppStore.prototype.showAppInfo = function () {
     this.userTypeConfigShow = false;
 };
 
-AppStore.prototype.updateSearchContent = function (searchContent) {
+AppStore.prototype.updateSearchContent = function(searchContent) {
     this.searchContent = searchContent;
 
 };
 
-AppStore.prototype.closeRightPanel = function () {
+AppStore.prototype.closeRightPanel = function() {
     this.versionUpgradeShow = false;
     this.appNoticePanelShow = false;
     this.rightPanelShow = false;
     this.userTypeConfigShow = false;
 };
 
-AppStore.prototype.returnInfoPanel = function () {
+AppStore.prototype.returnInfoPanel = function() {
     this.appInfoShow = true;
     this.appFormShow = false;
     this.versionUpgradeShow = false;

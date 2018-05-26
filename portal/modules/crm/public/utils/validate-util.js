@@ -12,7 +12,7 @@ var telephone400Regex = /^400\-?\d{3}\-?\d{4}$/;
 exports.telephone400Regex = telephone400Regex;
 
 //验证电话号码
-exports.checkPhone = function (rule, value, callback) {
+exports.checkPhone = function(rule, value, callback) {
     value = $.trim(value);
     if (value) {
         if ((phoneRegex.test(value)) ||
@@ -32,7 +32,7 @@ exports.checkPhone = function (rule, value, callback) {
 };
 
 //验证客户名
-exports.checkCustomerName = function (rule, value, callback) {
+exports.checkCustomerName = function(rule, value, callback) {
     value = $.trim(value);
     if (value) {
         if (nameRegex.test(value)) {

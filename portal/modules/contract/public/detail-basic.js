@@ -16,38 +16,38 @@ import AddProduct from "./add-product";
 
 const DetailBasic = React.createClass({
     mixins: [ValidateMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isBasicInfoEdit: false,
             isAppEdit: false,
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (this.props.contract.id !== nextProps.contract.id) {
             this.hideBasicInfoForm();
             this.hideAppForm();
         }
     },
-    showBasicInfoForm: function () {
+    showBasicInfoForm: function() {
         this.setState({isBasicInfoEdit: true, isAppEdit: false});
     },
-    hideBasicInfoForm: function () {
+    hideBasicInfoForm: function() {
         this.setState({isBasicInfoEdit: false});
     },
-    showAppForm: function () {
+    showAppForm: function() {
         this.setState({isAppEdit: true, isBasicInfoEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
-    hideAppForm: function () {
+    hideAppForm: function() {
         this.setState({isAppEdit: false}, () => {
             this.props.updateScrollBar();
         });
     },
-    getRowKey: function (record, index) {
+    getRowKey: function(record, index) {
         return index;
     },
-    handleSubmit: function (target) {
+    handleSubmit: function(target) {
         const ref = target === "app"? "addProduct" : "addBasic";
 
         this.refs[ref].refs.validation.validate(valid => {
@@ -78,7 +78,7 @@ const DetailBasic = React.createClass({
             }
         });
     },
-    render: function () {
+    render: function() {
         const products = this.props.contract.products || [];
         const contract = this.props.contract;
 
@@ -97,7 +97,7 @@ const DetailBasic = React.createClass({
                 title: Intl.get("common.app.count", "数量"),
                 dataIndex: "num",
                 key: "num",
-                render: function (text) {
+                render: function(text) {
                     return <span>{text}个</span>;
                 }
             },
@@ -105,7 +105,7 @@ const DetailBasic = React.createClass({
                 title: Intl.get("contract.23", "总价"),
                 dataIndex: "total_price",
                 key: "total_price",
-                render: function (text) {
+                render: function(text) {
                     return <span>{text}{Intl.get("contract.155", "元")}</span>;
                 }
             },
@@ -113,7 +113,7 @@ const DetailBasic = React.createClass({
                 title: Intl.get("contract.141", "提成比例"),
                 dataIndex: "commission_rate",
                 key: "commission_rate",
-                render: function (text) {
+                render: function(text) {
                     return <span>{text? text + " %" : ""}</span>;
                 }
             },
@@ -130,176 +130,176 @@ const DetailBasic = React.createClass({
         return (
             <div className="detail-basic">
                 {isEditBtnShow? (
-                <RightPanelEdit 
-                     onClick={this.showBasicInfoForm}
-                />
+                    <RightPanelEdit 
+                        onClick={this.showBasicInfoForm}
+                    />
                 ) : null}
 
                 {this.state.isBasicInfoEdit? (
-                <div>
-                    <AddBasic
-                        ref="addBasic"
-                        contract={this.props.contract}
-                        teamList={this.props.teamList}
-                        userList={this.props.userList}
-                        getUserList={this.props.getUserList}
-                        isGetUserSuccess={this.props.isGetUserSuccess}
-                    />
-                    <div className="op-buttons">
-                        <RightPanelCancel onClick={this.hideBasicInfoForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                        <RightPanelSubmit onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                    <div>
+                        <AddBasic
+                            ref="addBasic"
+                            contract={this.props.contract}
+                            teamList={this.props.teamList}
+                            userList={this.props.userList}
+                            getUserList={this.props.getUserList}
+                            isGetUserSuccess={this.props.isGetUserSuccess}
+                        />
+                        <div className="op-buttons">
+                            <RightPanelCancel onClick={this.hideBasicInfoForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                            <RightPanelSubmit onClick={this.handleSubmit}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                        </div>
                     </div>
-                </div>
                 ) : null}
 
                 {!this.state.isAppEdit && !this.state.isBasicInfoEdit? (
-                <div className="basic-info"> 
-                    <div className="detail-item">
-                        {Intl.get("contract.24", "合同号")}:
-                        {contract.num}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("crm.41", "客户名")}:
-                        {contract.customer_name}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.4", "甲方")}:
-                        {contract.buyer}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("crm.6", "负责人")}:
-                        {contract.user_name}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("crm.113", "部门")}:
-                        {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.25", "合同额")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.contract_amount)? "" : contract.contract_amount.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.26", "成本额")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.cost_price)? "" : contract.cost_price.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.165", "成本构成")}:
-                        {contract.cost_structure}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.27", "合同毛利")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.gross_profit)? "" : contract.gross_profit.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item half">
-                        {Intl.get("contract.28", "回款额")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.total_amount)? "" : contract.total_amount.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.29", "回款毛利")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.total_gross_profit)? "" : contract.total_gross_profit.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item half">
-                        {Intl.get("contract.30", "应收款")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.total_plan_amount)? "" : contract.total_plan_amount.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.31", "已开发票额")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.159"
-                            values={{"num":(isNaN(contract.total_invoice_amount)? "" : contract.total_invoice_amount.toFixed(2))}}
-                            defaultMessage={`{num}元`} />
-                    </div>
-                    <div className="detail-item" style={{clear: "left"}}>
-                        {Intl.get("contract.32", "合同份数")}:
-                        <ReactIntl.FormattedMessage
-                            id="contract.33"
-                            values={{"num":contract.copy_number}}
-                            defaultMessage={`{num}份`} />
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.34", "签订时间")}:
-                        {date}
-                    </div>
-                    <div className="detail-item half">
-                        {Intl.get("contract.35", "起始时间")}:
-                        {start_time}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("user.time.end", "到期时间")}:
-                        {end_time}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.36", "合同阶段")}:
-                        {contract.stage}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.164", "签约类型")}:
-                        {getLabelName(contract.label)}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("contract.37", "合同类型")}:
-                        {contract.category}
-                    </div>
-                    <div className="detail-item">
-                        {Intl.get("common.remark", "备注")}:
-                        <div className="remarks">
-                            {contract.remarks}
+                    <div className="basic-info"> 
+                        <div className="detail-item">
+                            {Intl.get("contract.24", "合同号")}:
+                            {contract.num}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("crm.41", "客户名")}:
+                            {contract.customer_name}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.4", "甲方")}:
+                            {contract.buyer}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("crm.6", "负责人")}:
+                            {contract.user_name}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("crm.113", "部门")}:
+                            {contract.sales_team || getTeamName(this.props.teamList, contract.sales_team_id)}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.25", "合同额")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.contract_amount)? "" : contract.contract_amount.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.26", "成本额")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.cost_price)? "" : contract.cost_price.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.165", "成本构成")}:
+                            {contract.cost_structure}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.27", "合同毛利")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.gross_profit)? "" : contract.gross_profit.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item half">
+                            {Intl.get("contract.28", "回款额")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.total_amount)? "" : contract.total_amount.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.29", "回款毛利")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.total_gross_profit)? "" : contract.total_gross_profit.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item half">
+                            {Intl.get("contract.30", "应收款")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.total_plan_amount)? "" : contract.total_plan_amount.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.31", "已开发票额")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.159"
+                                values={{"num":(isNaN(contract.total_invoice_amount)? "" : contract.total_invoice_amount.toFixed(2))}}
+                                defaultMessage={`{num}元`} />
+                        </div>
+                        <div className="detail-item" style={{clear: "left"}}>
+                            {Intl.get("contract.32", "合同份数")}:
+                            <ReactIntl.FormattedMessage
+                                id="contract.33"
+                                values={{"num":contract.copy_number}}
+                                defaultMessage={`{num}份`} />
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.34", "签订时间")}:
+                            {date}
+                        </div>
+                        <div className="detail-item half">
+                            {Intl.get("contract.35", "起始时间")}:
+                            {start_time}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("user.time.end", "到期时间")}:
+                            {end_time}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.36", "合同阶段")}:
+                            {contract.stage}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.164", "签约类型")}:
+                            {getLabelName(contract.label)}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("contract.37", "合同类型")}:
+                            {contract.category}
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("common.remark", "备注")}:
+                            <div className="remarks">
+                                {contract.remarks}
+                            </div>
+                        </div>
+                        <div className="detail-item">
+                            {Intl.get("common.belong.customer", "所属客户")}:
+                            {contract.oplate_customer_name}
                         </div>
                     </div>
-                    <div className="detail-item">
-                        {Intl.get("common.belong.customer", "所属客户")}:
-                        {contract.oplate_customer_name}
-                    </div>
-                </div>
                 ) : null}
 
                 {this.state.isAppEdit? (
-                <div>
-                    <AddProduct
-                        ref="addProduct"
-                        products={products}
-                        appList={this.props.appList}
-                        updateScrollBar={this.props.updateScrollBar}
-                    />
-                    <div className="op-buttons">
-                        <RightPanelCancel onClick={this.hideAppForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                        <RightPanelSubmit onClick={this.handleSubmit.bind(this, "app")}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                    <div>
+                        <AddProduct
+                            ref="addProduct"
+                            products={products}
+                            appList={this.props.appList}
+                            updateScrollBar={this.props.updateScrollBar}
+                        />
+                        <div className="op-buttons">
+                            <RightPanelCancel onClick={this.hideAppForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                            <RightPanelSubmit onClick={this.handleSubmit.bind(this, "app")}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                        </div>
                     </div>
-                </div>
                 ) : null}
 
                 {!this.state.isAppEdit && !this.state.isBasicInfoEdit? (
-                <div>
-                    <Table
-                        dataSource={products}
-                        columns={columns}
-                        rowKey={this.getRowKey}
-                        pagination={false}
-                    />
-                    {hasPrivilege("OPLATE_CONTRACT_UPDATE")? (
-                    <div className="op-buttons">
-                        <RightPanelSubmit onClick={this.showAppForm}><ReactIntl.FormattedMessage id="contract.38" defaultMessage="编辑应用" /></RightPanelSubmit>
+                    <div>
+                        <Table
+                            dataSource={products}
+                            columns={columns}
+                            rowKey={this.getRowKey}
+                            pagination={false}
+                        />
+                        {hasPrivilege("OPLATE_CONTRACT_UPDATE")? (
+                            <div className="op-buttons">
+                                <RightPanelSubmit onClick={this.showAppForm}><ReactIntl.FormattedMessage id="contract.38" defaultMessage="编辑应用" /></RightPanelSubmit>
+                            </div>
+                        ) : null}
                     </div>
-                    ) : null}
-                </div>
                 ) : null}
             </div>
         );

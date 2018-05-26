@@ -1,6 +1,6 @@
 var TYPE_CONSTANT = "myApp";
 //获取角色列表
-exports.getRoleList = function (clientID, type) {
+exports.getRoleList = function(clientID, type) {
     var Deferred = $.Deferred();
     var getRoleListUrl = '/rest/role_list/';
     if (type === TYPE_CONSTANT) {
@@ -10,9 +10,9 @@ exports.getRoleList = function (clientID, type) {
         url: getRoleListUrl + clientID,
         dataType: 'json',
         type: 'get',
-        success: function (listObj) {
+        success: function(listObj) {
             Deferred.resolve(listObj);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -20,7 +20,7 @@ exports.getRoleList = function (clientID, type) {
 };
 
 //添加角色
-exports.addRole = function (role, type) {
+exports.addRole = function(role, type) {
     var Deferred = $.Deferred();
     var addRoleUrl = '/rest/role/';
     if (type === TYPE_CONSTANT) {
@@ -31,9 +31,9 @@ exports.addRole = function (role, type) {
         dataType: 'json',
         type: 'post',
         data: role,
-        success: function (roleCreated) {
+        success: function(roleCreated) {
             Deferred.resolve(roleCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -41,17 +41,17 @@ exports.addRole = function (role, type) {
 };
 
 //设置默认角色
-exports.setDefaultRole = function (param) {
+exports.setDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url:"/rest/baserole/config",
         dataType: 'json',
         type: 'post',
         data:param,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (result) {
+        error: function(result) {
             Deferred.resolve(result);
         }
     });    
@@ -59,17 +59,17 @@ exports.setDefaultRole = function (param) {
 };
 
 //获取默认角色
-exports.getDefaultRole = function (param) {
+exports.getDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url:"/rest/baserole/config",
         dataType: 'json',
         type: 'get',   
         data:param,     
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (result) {
+        error: function(result) {
             Deferred.reject(result);
         }
     });
@@ -77,17 +77,17 @@ exports.getDefaultRole = function (param) {
 };
 
 //删除默认角色
-exports.delDefaultRole = function (param) {
+exports.delDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
         url:"/rest/baserole/config",
         dataType: 'json',
         type: 'delete',
         data:param,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (result) {
+        error: function(result) {
             Deferred.reject(result);
         }
     });
@@ -95,7 +95,7 @@ exports.delDefaultRole = function (param) {
 };
 
 //修改角色
-exports.editRole = function (role, type) {
+exports.editRole = function(role, type) {
     var Deferred = $.Deferred();
     var editRoleUrl = '/rest/role/';
     if (type === TYPE_CONSTANT) {
@@ -106,9 +106,9 @@ exports.editRole = function (role, type) {
         dataType: 'json',
         type: 'put',
         data: role,
-        success: function (roleModified) {
+        success: function(roleModified) {
             Deferred.resolve(roleModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -116,7 +116,7 @@ exports.editRole = function (role, type) {
 };
 
 //删除角色
-exports.deleteRole = function (roleId, type) {
+exports.deleteRole = function(roleId, type) {
     var Deferred = $.Deferred();
     var delRoleUrl = '/rest/role/';
     if (type === TYPE_CONSTANT) {
@@ -125,10 +125,10 @@ exports.deleteRole = function (roleId, type) {
     $.ajax({
         url: delRoleUrl + roleId,
         type: 'delete',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

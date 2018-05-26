@@ -8,12 +8,12 @@ import classNames  from "classnames";
 function noop() {}
 class ActiveEmailTip extends React.Component {
     constructor(props){
-       super (props);
-       this.state = {
-           isAnimateShow : this.props.isAnimateShow,
-           isAnimateHide : this.props.isAnimateHide,
-           setWebConfigStatus : this.props.setWebConfigStatus
-       };
+        super (props);
+        this.state = {
+            isAnimateShow : this.props.isAnimateShow,
+            isAnimateHide : this.props.isAnimateHide,
+            setWebConfigStatus : this.props.setWebConfigStatus
+        };
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.isAnimateShow != this.props.isAnimateShow ) {
@@ -45,22 +45,22 @@ class ActiveEmailTip extends React.Component {
                     defaultMessage={`请到{userinfo}页面添加邮箱，否则将会无法接收用户申请的邮件。`}
                     values={{
                         'userinfo': <span className="jump-to-userinfo" onClick={this.props.jumpToUserInfo}>
-                                   {Intl.get("user.info.user.info","个人资料")}
-                               </span>
+                            {Intl.get("user.info.user.info","个人资料")}
+                        </span>
                     }}
                 />:<div>
-                      <span>
-                    {Intl.get("sales.frontpage.active.info","请激活邮箱，以免影响收取审批邮件！")}
-                </span>
+                    <span>
+                        {Intl.get("sales.frontpage.active.info","请激活邮箱，以免影响收取审批邮件！")}
+                    </span>
                     <Button type="primary" size="small" onClick={this.props.activeUserEmail}>{Intl.get("sales.frontpage.active.email","激活邮箱")}</Button>
                     <span className="no-tip" onClick={this.props.handleClickNoTip}>
-                    {Intl.get("sale.homepage.no.tip.more","不再提示")}
+                        {Intl.get("sale.homepage.no.tip.more","不再提示")}
                         {this.state.setWebConfigStatus === "loading" ? <Icon type="loading"/>: null}
-                </span>
+                    </span>
                 </div>}
 
             </div>
-           );
+        );
         return (
             <div className={cls}>
                 <Alert message={warningText} type="warning" showIcon />

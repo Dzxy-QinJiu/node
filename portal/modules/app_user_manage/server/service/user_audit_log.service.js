@@ -100,7 +100,7 @@ function  handleLogin(req, res, obj, urlList) {
     return loginList;
 }
 
-function handleLoginInfo (req, res, obj, url, param){
+function handleLoginInfo(req, res, obj, url, param){
     let tempObj = _.clone(obj);
     let app_id = tempObj.appid;
     let user_id = tempObj.user_id;
@@ -114,7 +114,7 @@ function handleLoginInfo (req, res, obj, url, param){
             req: req,
             res: res
         }, tempObj, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 if(data) {
                     let obj = {};
                     obj[param] = data;

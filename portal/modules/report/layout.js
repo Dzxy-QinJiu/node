@@ -25,24 +25,24 @@ const ReportLayout = React.createClass({
                     <AnalysisFilter isSelectFirstApp={!storedAppId} selectedApp={storedAppId} />
                 </TopNav>
                 <div className="operation-report-content">
-                {this.props.sectionList.map((section, index) => { return (
-                    <div className="report-item">
-                        <h4>{section.name}</h4>
-                        <div className="report-item-content">
-                        {section.charts.map((chart, index) => { return (
-                            <div className="report-chart-container" style={chart.style || {}}>
-                                <div className="chart-descr">{index + 1}、{chart.name}</div>
-                                <div className="report-chart">
-                                    {chart.title? (
-                                    <div className="report-chart-title">{chart.title}</div>
-                                    ) : null}
-                                    {chart.content}
-                                </div>
+                    {this.props.sectionList.map((section, index) => { return (
+                        <div className="report-item">
+                            <h4>{section.name}</h4>
+                            <div className="report-item-content">
+                                {section.charts.map((chart, index) => { return (
+                                    <div className="report-chart-container" style={chart.style || {}}>
+                                        <div className="chart-descr">{index + 1}、{chart.name}</div>
+                                        <div className="report-chart">
+                                            {chart.title? (
+                                                <div className="report-chart-title">{chart.title}</div>
+                                            ) : null}
+                                            {chart.content}
+                                        </div>
+                                    </div>
+                                );})}
                             </div>
-                        );})}
                         </div>
-                    </div>
-                );})}
+                    );})}
                 </div>
             </div>
         );

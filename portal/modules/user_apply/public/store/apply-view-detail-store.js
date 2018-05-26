@@ -315,7 +315,7 @@ class ApplyViewDetailStore {
     cancelUserName() {
         this.formData.user_name = this.detailInfoObj.info.user_names[0];
     }
-   //显示用户详情右侧面板
+    //显示用户详情右侧面板
     showUserDetail(userId) {
         //是否显示右侧面板
         this.showRightPanel = true;

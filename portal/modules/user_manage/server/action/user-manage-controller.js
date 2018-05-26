@@ -12,10 +12,10 @@ let BackendIntl = require("../../../../lib/utils/backend_intl");
 /*
  * list log handler.
  */
-exports.getLogList = function (req, res) {
-    userManageService.getUserLog(req, res, req.query).on("success", function (data) {
+exports.getLogList = function(req, res) {
+    userManageService.getUserLog(req, res, req.query).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -23,7 +23,7 @@ exports.getLogList = function (req, res) {
 /*
  * show list user handler.
  */
-exports.getCurUserList = function (req, res) {
+exports.getCurUserList = function(req, res) {
     var params = {}, isGetAllUser = false;
     var curPage = req.query.cur_page, pageSize = req.query.page_size,
         filterContent = req.query.search_content, roleParam = req.query.role_param;
@@ -43,9 +43,9 @@ exports.getCurUserList = function (req, res) {
     if (roleParam) {
         params.role_param = roleParam;
     }
-    userManageService.getUsers(req, res, params === {} ? null : params, isGetAllUser).on("success", function (data) {
+    userManageService.getUsers(req, res, params === {} ? null : params, isGetAllUser).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -53,10 +53,10 @@ exports.getCurUserList = function (req, res) {
 /*
  * show user detail infor handler.
  */
-exports.getCurUserById = function (req, res) {
-    userManageService.getCurUserById(req, res, req.params.user_id).on("success", function (data) {
+exports.getCurUserById = function(req, res) {
+    userManageService.getCurUserById(req, res, req.params.user_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -65,20 +65,20 @@ exports.getCurUserById = function (req, res) {
 /**
  * add user handler
  */
-exports.addUser = function (req, res) {
-    userManageService.addUser(req, res, req.body).on("success", function (data) {
+exports.addUser = function(req, res) {
+    userManageService.addUser(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 /**
  * edit user handler
  */
-exports.editUser = function (req, res) {
-    userManageService.editUser(req, res, req.body).on("success", function (data) {
+exports.editUser = function(req, res) {
+    userManageService.editUser(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -87,22 +87,22 @@ exports.editUser = function (req, res) {
 /**
  * edit user team handler
  */
-exports.updateUserTeam = function (req, res) {
-    userManageService.updateUserTeam(req, res, req.params).on("success", function (data) {
+exports.updateUserTeam = function(req, res) {
+    userManageService.updateUserTeam(req, res, req.params).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
-exports.updateUserRoles = function (req, res) {
+exports.updateUserRoles = function(req, res) {
     let user = {
         user_id: req.body.user_id,
         role_ids: JSON.parse(req.body.role_ids)
     };
-    userManageService.updateUserRoles(req, res, user).on("success", function (data) {
+    userManageService.updateUserRoles(req, res, user).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -110,13 +110,13 @@ exports.updateUserRoles = function (req, res) {
 /**
  * stop/start user handler
  */
-exports.updateUserStatus = function (req, res) {
+exports.updateUserStatus = function(req, res) {
     if (req.session.user && req.session.user.userid && req.session.user.userid == req.body.id) {
         res.status(500).json(BackendIntl.get("member.forbidden.self", "禁止禁用自己"));
     } else {
-        userManageService.updateUserStatus(req, res, req.body).on("success", function (data) {
+        userManageService.updateUserStatus(req, res, req.body).on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
     }
@@ -127,54 +127,54 @@ exports.updateUserStatus = function (req, res) {
  * user roles handler
  */
 
-exports.getRoleList = function (req, res) {
-    userManageService.getRoleList(req, res, req.params.client_id).on("success", function (data) {
+exports.getRoleList = function(req, res) {
+    userManageService.getRoleList(req, res, req.params.client_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
 
 //用户名唯一性验证
-exports.checkOnlyUserName = function (req, res) {
-    userManageService.checkOnlyUserName(req, res, req.params.user_name).on("success", function (data) {
+exports.checkOnlyUserName = function(req, res) {
+    userManageService.checkOnlyUserName(req, res, req.params.user_name).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //电话唯一性验证
-exports.checkOnlyPhone = function (req, res) {
-    userManageService.checkOnlyPhone(req, res, req.params.phone).on("success", function (data) {
+exports.checkOnlyPhone = function(req, res) {
+    userManageService.checkOnlyPhone(req, res, req.params.phone).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 //邮箱唯一性验证
-exports.checkOnlyEmail = function (req, res) {
-    userManageService.checkOnlyEmail(req, res, req.params.email).on("success", function (data) {
+exports.checkOnlyEmail = function(req, res) {
+    userManageService.checkOnlyEmail(req, res, req.params.email).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 //获取销售目标和提成比例
-exports.getSalesGoals = function (req, res) {
+exports.getSalesGoals = function(req, res) {
     userManageService.getSalesGoals(req, res)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (err) {
-        res.status(500).json(err.message);
-    });
+        }).on("error", function(err) {
+            res.status(500).json(err.message);
+        });
 };
-exports.setSalesGoals = function (req, res) {
+exports.setSalesGoals = function(req, res) {
     userManageService.setSalesGoals(req, res)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (err) {
-        res.status(500).json(err.message);
-    });
+        }).on("error", function(err) {
+            res.status(500).json(err.message);
+        });
 };

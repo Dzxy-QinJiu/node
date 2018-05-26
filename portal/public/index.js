@@ -29,7 +29,7 @@ function hideLoading(errorTip) {
             logoutTime: logoutTime
         });
         //跳转到登录页，倒计时3秒的处理
-        setInterval(function () {
+        setInterval(function() {
             if (logoutTime > 0) {
                 logoutTime--;
             }
@@ -53,7 +53,7 @@ function suppressWarnings() {
     var loc = window.location.href;
     if (!/localhost|127\.0\.0\.1|192\.168\./.test(loc)) {
         // eslint-disable-next-line no-console
-        console.warn = function () {
+        console.warn = function() {
         };
     }
 }
@@ -68,7 +68,7 @@ function getUserPrivilegeAndStart() {
         appDom
     );
 
-    userData.getUserDataByAjax().done(function () {
+    userData.getUserDataByAjax().done(function() {
         //全局设置moment的语言环境
         moment.locale(Oplate.lang);
         unmountPrivilegeGet();
@@ -80,7 +80,7 @@ function getUserPrivilegeAndStart() {
         });
         //启动socketio接收数据
         !Oplate.hideSomeItem && require('./sources/push').startSocketIo();
-    }).fail(function (errorTip) {
+    }).fail(function(errorTip) {
         //错误处理
         hideLoading(errorTip);
     });

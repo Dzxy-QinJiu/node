@@ -40,7 +40,7 @@ var CONSTANT = {
 
 var OrganizationPage = React.createClass({
     mixins: [reactIntlMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         var data = OrganizationStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
@@ -52,7 +52,7 @@ var OrganizationPage = React.createClass({
         return data;
     },
 
-    onChange: function () {
+    onChange: function() {
         var data = OrganizationStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
@@ -60,7 +60,7 @@ var OrganizationPage = React.createClass({
         this.setState(data);
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             containerHeight: this.containerHeightFnc(),
             containerWidth: this.containerWidthFnc(),
@@ -68,7 +68,7 @@ var OrganizationPage = React.createClass({
         });
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         $(window).on("resize", this.resizeWindow);
         OrganizationStore.listen(this.onChange);
@@ -76,45 +76,45 @@ var OrganizationPage = React.createClass({
         OrganizationAction.getOrganizationList();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         OrganizationStore.unlisten(this.onChange);
         $("body").css("overflow", "auto");
     },
 
-    containerHeightFnc: function () {
+    containerHeightFnc: function() {
         return $(window).height() - topHeight - bootomHeight;
     },
 
-    windowHeightFnc: function () {
+    windowHeightFnc: function() {
         return $(window).height();
     },
 
-    containerWidthFnc: function () {
+    containerWidthFnc: function() {
         return $(window).width() - 65 - 90;
     },
 
-    addGroup: function () {
+    addGroup: function() {
         OrganizationAction.addGroup();
     },
 
-    cancelAddGroup: function () {
+    cancelAddGroup: function() {
         OrganizationAction.cancelAddGroup();
     },
     //组织名称修改的处理
-    onOrganizationNameChange: function (event) {
+    onOrganizationNameChange: function(event) {
         this.state.organizationName = event.target.value;
         this.setState({organizationName: this.state.organizationName});
     },
     //添加组织
-    addOrganization: function () {
+    addOrganization: function() {
         var _this = this;
         _this.setState({
             isSavingOrganization: true
         });
         OrganizationAjax.addGroup({
             groupName: this.state.organizationName
-        }).then(function (data) {
+        }).then(function(data) {
             _this.state.isSavingOrganization = false;
             if (data) {
                 _this.state.saveOrganizationMsg = CONSTANT.SAVE_SUCCESS;
@@ -124,7 +124,7 @@ var OrganizationPage = React.createClass({
                 _this.state.saveOrganizationResult = CONSTANT.ERROR;
             }
             _this.updateSaveState();
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.state.isSavingOrganization = false;
             _this.state.saveOrganizationMsg = errorMsg || CONSTANT.SAVE_ERROR;
             _this.state.saveOrganizationResult = CONSTANT.ERROR;
@@ -132,7 +132,7 @@ var OrganizationPage = React.createClass({
         });
     },
     //更新添加组织返回结果的相关数据
-    updateSaveState: function () {
+    updateSaveState: function() {
         this.setState({
             isSavingOrganization: this.state.isSavingOrganization,
             saveOrganizationMsg: this.state.saveOrganizationMsg,
@@ -140,7 +140,7 @@ var OrganizationPage = React.createClass({
         });
     },
     //隐藏添加组织后的提示信息
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         if (this.state.saveOrganizationResult == CONSTANT.SUCCESS) {
             OrganizationAction.getOrganizationList();
         }
@@ -148,7 +148,7 @@ var OrganizationPage = React.createClass({
         this.state.saveOrganizationResult = "";
     },
     //无组织时，添加组织面板的渲染
-    renderAddOrganization: function () {
+    renderAddOrganization: function() {
         return (<PrivilegeChecker check="USER_ORGANIZATION_ADD" className="organization-null-add-container">
             <div className="no-organization-tip">
                 <ReactIntl.FormattedMessage id="organization.no.organization.tip" defaultMessage={this.formatMessage(messages.organization_no_organization_tip)}/>:
@@ -156,23 +156,23 @@ var OrganizationPage = React.createClass({
             </div>
             <div className="add-organization-div">
                 <Input value={this.state.organizationName}
-                       size="large"
-                       onChange={this.onOrganizationNameChange}
-                       placeholder={this.formatMessage(messages.organization_input_placeholder)}/>
+                    size="large"
+                    onChange={this.onOrganizationNameChange}
+                    placeholder={this.formatMessage(messages.organization_input_placeholder)}/>
                 {this.state.saveOrganizationMsg ? (<div className="indicator">
                     <AlertTimer time={this.state.saveOrganizationResult==CONSTANT.ERROR?3000:600}
-                                message={this.state.saveOrganizationMsg}
-                                type={this.state.saveOrganizationResult} showIcon
-                                onHide={this.hideSaveTooltip}/>
+                        message={this.state.saveOrganizationMsg}
+                        type={this.state.saveOrganizationResult} showIcon
+                        onHide={this.hideSaveTooltip}/>
                 </div>) : null}
                 <Button type="primary" size="large"
-                        onClick={this.addOrganization}>
+                    onClick={this.addOrganization}>
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>{this.state.isSavingOrganization ? (
-                    <Icon type="loading"/>) : ""}</Button>
+                        <Icon type="loading"/>) : ""}</Button>
             </div>
         </PrivilegeChecker>);
     },
-    render: function () {
+    render: function() {
         var containerHeight = this.state.containerHeight - 2;
         var containerWidth = this.state.containerWidth - 2;
         var organizationMemberWidth = containerWidth - 300 - 2;
@@ -186,32 +186,32 @@ var OrganizationPage = React.createClass({
                 {this.state.organizationLisTipMsg ?
                     (this.state.organizationLisTipMsg == CONSTANT.ORGANIZATION_IS_NULL ? this.renderAddOrganization() :
                         <NoData msg={this.state.organizationLisTipMsg}/>) : (this.state.isLoadingOrganization ? (
-                    <Spinner className="isloading"/>) : (
-                    <div className="organization-table-block modal-container"
-                         style={{width: containerWidth, height: containerHeight}}>
-                        <LeftTree
-                            containerHeight={containerHeight}
-                            organizationList={organizationList}
-                            searchContent={this.state.searchContent}
-                            organizationGroupList={leftTreeData}
-                            deleteGroupItem={this.state.deleteGroupItem}
-                            isLoadingTeamMember={this.state.isLoadingTeamMember}
-                            delOrganizationErrorMsg={this.state.delOrganizationErrorMsg}
-                            isAddOrganizationRoot={this.state.isAddOrganizationRoot}
-                        />
-                        <MemberList
-                            organizationMemberWidth={organizationMemberWidth}
-                            containerHeight={containerHeight}
-                            isLoadingTeamMember={this.state.isLoadingTeamMember}
-                            organizationMerberList={this.state.organizationMemberList}
-                            curShowTeamMemberObj={this.state.curShowTeamMemberObj}
-                            isAddMember={this.state.isAddMember}
-                            isEditMember={this.state.isEditMember}
-                            showMemberOperationBtn={this.state.showMemberOperationBtn}
-                            teamMemberListTipMsg={this.state.teamMemberListTipMsg}
-                        >
-                        </MemberList>
-                    </div>))
+                        <Spinner className="isloading"/>) : (
+                        <div className="organization-table-block modal-container"
+                            style={{width: containerWidth, height: containerHeight}}>
+                            <LeftTree
+                                containerHeight={containerHeight}
+                                organizationList={organizationList}
+                                searchContent={this.state.searchContent}
+                                organizationGroupList={leftTreeData}
+                                deleteGroupItem={this.state.deleteGroupItem}
+                                isLoadingTeamMember={this.state.isLoadingTeamMember}
+                                delOrganizationErrorMsg={this.state.delOrganizationErrorMsg}
+                                isAddOrganizationRoot={this.state.isAddOrganizationRoot}
+                            />
+                            <MemberList
+                                organizationMemberWidth={organizationMemberWidth}
+                                containerHeight={containerHeight}
+                                isLoadingTeamMember={this.state.isLoadingTeamMember}
+                                organizationMerberList={this.state.organizationMemberList}
+                                curShowTeamMemberObj={this.state.curShowTeamMemberObj}
+                                isAddMember={this.state.isAddMember}
+                                isEditMember={this.state.isEditMember}
+                                showMemberOperationBtn={this.state.showMemberOperationBtn}
+                                teamMemberListTipMsg={this.state.teamMemberListTipMsg}
+                            >
+                            </MemberList>
+                        </div>))
                 }
             </div>
         );

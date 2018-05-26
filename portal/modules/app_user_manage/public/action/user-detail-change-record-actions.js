@@ -11,7 +11,7 @@ function UserDetailChangeRecordAction() {
         // 获取用户的app列表
         "getUserApp",
     );
-    this.getUserDetailChangeRecord = function (searchObj) {
+    this.getUserDetailChangeRecord = function(searchObj) {
         this.dispatch({loading: true, error: false});
         userDetailChangeRecordAjax.getUserDetailChangeRecord(searchObj).then((data) =>{
             this.dispatch({loading: false, error: false, data: data});
@@ -20,7 +20,7 @@ function UserDetailChangeRecordAction() {
         });
     };
     // 根据用户的ID获取应用列表appId和应用的名称
-    this.getUserApp = function (userId,callback) {
+    this.getUserApp = function(userId,callback) {
         var dataObj = {
             app_name :'',//下拉框中显示app的名字
             app_id : '',

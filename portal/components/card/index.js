@@ -19,7 +19,7 @@ var Card = React.createClass({
             cardWidth: "auto"
         };
     },
-    selectCardEvent: function () {
+    selectCardEvent: function() {
         var cardId = this.props.curCard.id;
         if (this.props.isSelect) {
             //之前选中，则取消选中
@@ -29,7 +29,7 @@ var Card = React.createClass({
             this.props.selectCard(cardId);
         }
     },
-    showCardInfo: function (event) {
+    showCardInfo: function(event) {
         Trace.traceEvent(event,"查看应用详情");
         var curCard = this.props.curCard;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
@@ -38,13 +38,13 @@ var Card = React.createClass({
         }
         this.props.showCardInfo(curCard);
     },
-    showRightFullScreen: function (event) {
+    showRightFullScreen: function(event) {
         event.stopPropagation();
         Trace.traceEvent($(this.getDOMNode()).find(".icon-role-auth-config"),"查看应用角色列表和权限列表");
         this.props.showRightFullScreen(this.props.curCard);
     },
 
-    render: function () {
+    render: function() {
         //当前要展示的卡片
         var card = this.props.curCard;
         var imgUrl = this.props.imgUrl;
@@ -110,10 +110,10 @@ var Card = React.createClass({
                         </div>
 
                         <Icon className={iconClass} type="check-circle-o"
-                              style={{display:this.props.bulkOpersShow ? 'block' : 'none'}}
-                              onClick={this.selectCardEvent}/>
+                            style={{display:this.props.bulkOpersShow ? 'block' : 'none'}}
+                            onClick={this.selectCardEvent}/>
                         {this.props.type == "myApp" ? (<div className="iconfont icon-role-auth-config"
-                                                            onClick={this.showRightFullScreen} title={Intl.get("my.app.role.auth.config.title","设置角色、权限")}></div>) : null}
+                            onClick={this.showRightFullScreen} title={Intl.get("my.app.role.auth.config.title","设置角色、权限")}></div>) : null}
                     </div>
                 </div>
             </div>

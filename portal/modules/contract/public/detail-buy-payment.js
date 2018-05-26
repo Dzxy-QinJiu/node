@@ -20,33 +20,33 @@ import GeminiScrollBar from '../../../components/react-gemini-scrollbar';
 
 const DetailBuyPayment = React.createClass({
     mixins: [ValidateMixin],
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.setContentHeight);
         //加一个延时，等dom渲染完后再设置内容高度，否则会设置不正确
         setTimeout(() => {
             this.setContentHeight();
         });
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.setContentHeight);
     },
-    setContentHeight: function () {
+    setContentHeight: function() {
         const wrapper = $(".finance-list");
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - wrapper.offset().top - 20);
         this.refs.gemiScrollBar.update();
     },
-    showForm: function (index, payment) {
+    showForm: function(index, payment) {
         const key = "formData" + index;
         this.state[key] = _.clone(payment);
         this.state["isFormShow" + index] = true;
         this.setState(this.state);
     },
-    hideForm: function (index) {
+    hideForm: function(index) {
         this.state["isFormShow" + index] = false;
         this.setState(this.state);
     },
-    handleSubmit: function (type, index, id) {
+    handleSubmit: function(type, index, id) {
         let data, params;
 
         if (type === "delete") {
@@ -73,7 +73,7 @@ const DetailBuyPayment = React.createClass({
             });
         }
     },
-    editPayment: function (type, data, params, cb) {
+    editPayment: function(type, data, params, cb) {
         this.props.showLoading();
 
         const handler = type + "Payment";
@@ -97,7 +97,7 @@ const DetailBuyPayment = React.createClass({
             message.error(errorObj.message || OPERATE[type] + "失败");
         });
     },
-    renderForm: function (payment, index) {
+    renderForm: function(payment, index) {
         index = isNaN(index)? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
@@ -107,7 +107,7 @@ const DetailBuyPayment = React.createClass({
             formData = this.state[key] = {};
         }
 
-        const disabledDate = function (current) {
+        const disabledDate = function(current) {
             //不允许选择大于当前天的日期
             return current && current.valueOf() > Date.now();
         };
@@ -115,8 +115,8 @@ const DetailBuyPayment = React.createClass({
         return (
             <Validation ref={ref} onValidate={this.handleValidate}>
                 <FormItem 
-                     validateStatus={this.getValidateStatus("date" + index)}
-                     help={this.getHelpMessage("date" + index)}
+                    validateStatus={this.getValidateStatus("date" + index)}
+                    help={this.getHelpMessage("date" + index)}
                 >
                     <Validator rules={[{required: true, type: "date", message: Intl.get("contract.42", "请选择日期")}]}>
                         <DatePicker
@@ -129,98 +129,98 @@ const DetailBuyPayment = React.createClass({
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.91" defaultMessage="付款" />
                 <FormItem 
-                     validateStatus={this.getValidateStatus("amount" + index)}
-                     help={this.getHelpMessage("amount" + index)}
+                    validateStatus={this.getValidateStatus("amount" + index)}
+                    help={this.getHelpMessage("amount" + index)}
                 >
                     <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
-                    <Input
-                        name={"amount" + index}
-                        value={this.parseAmount(formData.amount)}
-                        onChange={this.setField.bind(this, "amount", index)}
-                    />
+                        <Input
+                            name={"amount" + index}
+                            value={this.parseAmount(formData.amount)}
+                            onChange={this.setField.bind(this, "amount", index)}
+                        />
                     </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.159" defaultMessage="元" />
             </Validation>
         );
     },
-    render: function () {
+    render: function() {
         let payments = this.props.contract.payments || [];
         payments = _.sortBy(payments, item => item.date).reverse();
         return (
             <div className="detail-payments">
                 {hasPrivilege("OPLATE_PAYMENT_ADD")? (
-                <div className="add-finance">
-                    {this.renderForm()}
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.handleSubmit.bind(this, "add")}
-                    >
-                        <ReactIntl.FormattedMessage id="contract.92" defaultMessage="添加付款" />
-                    </Button>
-                </div>
+                    <div className="add-finance">
+                        {this.renderForm()}
+                        <Button
+                            className="btn-primary-sure"
+                            onClick={this.handleSubmit.bind(this, "add")}
+                        >
+                            <ReactIntl.FormattedMessage id="contract.92" defaultMessage="添加付款" />
+                        </Button>
+                    </div>
                 ) : null}
 
                 <div className="finance-list">
                     <GeminiScrollBar ref="gemiScrollBar">
-                    <ul>
-                        {payments.map((payment, index) => {
-                            const isFormShow = this.state["isFormShow" + index];
+                        <ul>
+                            {payments.map((payment, index) => {
+                                const isFormShow = this.state["isFormShow" + index];
 
-                            return (
-                                <li key={index}>
-                                    {isFormShow? (
-                                    <span className="add-finance">
-                                        {this.renderForm(payment, index)}
-                                    </span>
-                                    ) : (
-                                    <span>
-                                        {payment.date? moment(payment.date).format(DATE_FORMAT) : ""}
-                                        &nbsp;
-                                        <ReactIntl.FormattedMessage id="contract.91" defaultMessage="付款" />
-                                        {payment.amount}
-                                        <ReactIntl.FormattedMessage id="contract.159" defaultMessage="元" />
-                                    </span>
-                                    )}
-        
-                                    {hasPrivilege("OPLATE_PAYMENT_ADD")? (
-                                    <span>
-                                        {isFormShow ? (
-                                        <span>
-                                            <Button
-                                                shape="circle"
-                                                title={Intl.get("common.save", "保存")}
-                                                className="btn-save"
-                                                onClick={this.handleSubmit.bind(this, "update", index)}
-                                            >
-                                                <Icon type="save"/>
-                                            </Button>
-                                            <Button
-                                                shape="circle"
-                                                className="btn-cancel"
-                                                title={Intl.get("common.cancel", "取消")}
-                                                onClick={this.hideForm.bind(this, index)}
-                                            >
-                                                <Icon type="cross"/>
-                                            </Button>
-                                        </span>
+                                return (
+                                    <li key={index}>
+                                        {isFormShow? (
+                                            <span className="add-finance">
+                                                {this.renderForm(payment, index)}
+                                            </span>
                                         ) : (
-                                        <span>
-                                            <RightPanelEdit 
-                                                 onClick={this.showForm.bind(this, index, payment)}
-                                            />
-                                            <RightPanelDelete 
-                                                 title={Intl.get("common.delete", "删除")}
-                                                 onClick={this.handleSubmit.bind(this, "delete", index, payment.id)}
-                                            />
-                                        </span>
+                                            <span>
+                                                {payment.date? moment(payment.date).format(DATE_FORMAT) : ""}
+                                        &nbsp;
+                                                <ReactIntl.FormattedMessage id="contract.91" defaultMessage="付款" />
+                                                {payment.amount}
+                                                <ReactIntl.FormattedMessage id="contract.159" defaultMessage="元" />
+                                            </span>
                                         )}
-                                        </span>
-                                    ) : null}
-                                </li>
-                            );
-                        })}
-                    </ul>
+        
+                                        {hasPrivilege("OPLATE_PAYMENT_ADD")? (
+                                            <span>
+                                                {isFormShow ? (
+                                                    <span>
+                                                        <Button
+                                                            shape="circle"
+                                                            title={Intl.get("common.save", "保存")}
+                                                            className="btn-save"
+                                                            onClick={this.handleSubmit.bind(this, "update", index)}
+                                                        >
+                                                            <Icon type="save"/>
+                                                        </Button>
+                                                        <Button
+                                                            shape="circle"
+                                                            className="btn-cancel"
+                                                            title={Intl.get("common.cancel", "取消")}
+                                                            onClick={this.hideForm.bind(this, index)}
+                                                        >
+                                                            <Icon type="cross"/>
+                                                        </Button>
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <RightPanelEdit 
+                                                            onClick={this.showForm.bind(this, index, payment)}
+                                                        />
+                                                        <RightPanelDelete 
+                                                            title={Intl.get("common.delete", "删除")}
+                                                            onClick={this.handleSubmit.bind(this, "delete", index, payment.id)}
+                                                        />
+                                                    </span>
+                                                )}
+                                            </span>
+                                        ) : null}
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </GeminiScrollBar>
                 </div>
             </div>

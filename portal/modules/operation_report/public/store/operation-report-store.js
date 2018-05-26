@@ -9,7 +9,7 @@ function OperationReportStore() {
 }
 
 //设置store的初始值
-OperationReportStore.prototype.resetState = function () {
+OperationReportStore.prototype.resetState = function() {
     this.appList = [];//应用列表
     this.selectAppList = [];//已选择应用的列表
     this.teamList = [];//团队列表
@@ -19,7 +19,7 @@ OperationReportStore.prototype.resetState = function () {
 };
 
 //重置统计图数据
-OperationReportStore.prototype.resetChartData = function (type) {
+OperationReportStore.prototype.resetChartData = function(type) {
     //各应用登录情况的统计
     this.appLoginUserObj = {
         resultType: type || '',
@@ -183,22 +183,22 @@ OperationReportStore.prototype.resetChartData = function (type) {
     };
 };
 //选择应用列表的设置
-OperationReportStore.prototype.setSelectAppList = function (list) {
+OperationReportStore.prototype.setSelectAppList = function(list) {
     this.selectAppList = list;
 };
 //获取应用列表
-OperationReportStore.prototype.getAppList = function (data) {
+OperationReportStore.prototype.getAppList = function(data) {
     this.appList = _.isArray(data) ? data : [];
 };
 //获取团队列表
-OperationReportStore.prototype.getTeamList = function (data) {
+OperationReportStore.prototype.getTeamList = function(data) {
     this.teamList = _.isArray(data) ? data : [];
     //未知团队的添加
     this.teamList.push({teamName: Intl.get("user.unknown", "未知"), teamId: "unknown"});
 };
 
 //获取各部门签约用户的登录表格数据
-OperationReportStore.prototype.getTeamSignedLoginUser = function (result) {
+OperationReportStore.prototype.getTeamSignedLoginUser = function(result) {
     if (result.loading) {
         this.teamSignedLoginUser.resultType = 'loading';
         this.teamSignedLoginUser.errorMsg = '';
@@ -216,7 +216,7 @@ OperationReportStore.prototype.getTeamSignedLoginUser = function (result) {
     }
 };
 //获取各应用用户的登录部门分布表格数据
-OperationReportStore.prototype.getTeamLoginUser = function (result) {
+OperationReportStore.prototype.getTeamLoginUser = function(result) {
     if (result.loading) {
         this.teamLoginUser.resultType = 'loading';
         this.teamLoginUser.errorMsg = '';
@@ -232,7 +232,7 @@ OperationReportStore.prototype.getTeamLoginUser = function (result) {
     }
 };
 //获取到期用户的周登录时长超1小时的各应用的用户数
-OperationReportStore.prototype.getExpiredUserExceedLoginTime = function (result) {
+OperationReportStore.prototype.getExpiredUserExceedLoginTime = function(result) {
     if (result.loading) {
         this.expiredUserExceedLoginTime.resultType = 'loading';
         this.expiredUserExceedLoginTime.errorMsg = '';
@@ -265,7 +265,7 @@ OperationReportStore.prototype.getExpiredUserExceedLoginTime = function (result)
 };
 
 //获取各部门到期用户的登录表格数据
-OperationReportStore.prototype.getTeamExpiredLoginUser = function (result) {
+OperationReportStore.prototype.getTeamExpiredLoginUser = function(result) {
     if (result.loading) {
         this.teamExpiredLoginUser.resultType = 'loading';
         this.teamExpiredLoginUser.errorMsg = '';
@@ -300,7 +300,7 @@ function getTeamLastWeekTotal(lastWeekData) {
     }
 }
 //获取团队列表数据、总数和上周总数的对象
-OperationReportStore.prototype.getTeamDataObj = function (resultData) {
+OperationReportStore.prototype.getTeamDataObj = function(resultData) {
     let teamDataObj = {data: [], total: 0, lastWeekTotal: 0};
     let thisWeekData = [], lastWeekData = [];//[{app_id:'1',data:[{count:10,name:‘team_id’},{}...]},{},{}...]
     if (_.isArray(resultData) && resultData.length) {
@@ -319,7 +319,7 @@ OperationReportStore.prototype.getTeamDataObj = function (resultData) {
 };
 
 //获取到期用户登录时长统计表数据
-OperationReportStore.prototype.getTeamExpiredUserLoginTime = function (result) {
+OperationReportStore.prototype.getTeamExpiredUserLoginTime = function(result) {
     if (result.loading) {
         this.teamExpiredUserLoginTime.resultType = 'loading';
         this.teamExpiredUserLoginTime.errorMsg = '';
@@ -339,7 +339,7 @@ OperationReportStore.prototype.getTeamExpiredUserLoginTime = function (result) {
 };
 
 //获取各部门新开试用账号的统计表格
-OperationReportStore.prototype.getTeamNewTrialUser = function (result) {
+OperationReportStore.prototype.getTeamNewTrialUser = function(result) {
     if (result.loading) {
         this.teamNewTrialUser.resultType = 'loading';
         this.teamNewTrialUser.errorMsg = '';
@@ -356,7 +356,7 @@ OperationReportStore.prototype.getTeamNewTrialUser = function (result) {
 };
 
 //获取各部门新增延期用户的统计表格
-OperationReportStore.prototype.getTeamNewDelayUser = function (result) {
+OperationReportStore.prototype.getTeamNewDelayUser = function(result) {
     if (result.loading) {
         this.teamNewDelayUser.resultType = 'loading';
         this.teamNewDelayUser.errorMsg = '';
@@ -372,7 +372,7 @@ OperationReportStore.prototype.getTeamNewDelayUser = function (result) {
     }
 };
 //获取各部门新增延期用户的统计表格
-OperationReportStore.prototype.getTeamNewDelayLoginUser = function (result) {
+OperationReportStore.prototype.getTeamNewDelayLoginUser = function(result) {
     if (result.loading) {
         this.teamNewDelayLoginUser.resultType = 'loading';
         this.teamNewDelayLoginUser.errorMsg = '';
@@ -391,7 +391,7 @@ OperationReportStore.prototype.getTeamNewDelayLoginUser = function (result) {
     }
 };
 //获取各部门新开试用账号登录的统计表格
-OperationReportStore.prototype.getTeamNewTrialLoginUser = function (result) {
+OperationReportStore.prototype.getTeamNewTrialLoginUser = function(result) {
     if (result.loading) {
         this.teamNewTrialLoginUser.resultType = 'loading';
         this.teamNewTrialLoginUser.errorMsg = '';
@@ -410,7 +410,7 @@ OperationReportStore.prototype.getTeamNewTrialLoginUser = function (result) {
     }
 };
 //获取各部门登录超过x小时的统计表格数据
-OperationReportStore.prototype.getTeamExceedLoginTime = function (result) {
+OperationReportStore.prototype.getTeamExceedLoginTime = function(result) {
     if (result.loading) {
         this.teamExceedLoginTime.resultType = 'loading';
         this.teamExceedLoginTime.errorMsg = '';
@@ -428,7 +428,7 @@ OperationReportStore.prototype.getTeamExceedLoginTime = function (result) {
     }
 };
 //获取各部门登录超过x小时的延期用统计表格数据
-OperationReportStore.prototype.getTeamDelayUserLoginTime = function (result) {
+OperationReportStore.prototype.getTeamDelayUserLoginTime = function(result) {
     if (result.loading) {
         this.teamDelayUserLoginTime.resultType = 'loading';
         this.teamDelayUserLoginTime.errorMsg = '';
@@ -446,7 +446,7 @@ OperationReportStore.prototype.getTeamDelayUserLoginTime = function (result) {
     }
 };
 //获取团队表格列表数据
-OperationReportStore.prototype.getTeamTableData = function (resultData) {
+OperationReportStore.prototype.getTeamTableData = function(resultData) {
     let teamTableData = [];
     //组装成界面表格中所需数据格式[{name:团队名称,appId1:count,appId2:count},...]
     if (_.isArray(this.teamList) && this.teamList.length) {
@@ -500,7 +500,7 @@ OperationReportStore.prototype.getTeamTableData = function (resultData) {
 };
 
 //各应用登录情况的统计
-OperationReportStore.prototype.getAppLoginUser = function (result) {
+OperationReportStore.prototype.getAppLoginUser = function(result) {
     if (result.loading) {
         this.appLoginUserObj.resultType = 'loading';
         this.appLoginUserObj.errorMsg = '';
@@ -555,7 +555,7 @@ OperationReportStore.prototype.getAppLoginUser = function (result) {
 };
 
 //获取各应用新开账号统计
-OperationReportStore.prototype.getAppNewTrialUser = function (result) {
+OperationReportStore.prototype.getAppNewTrialUser = function(result) {
     if (result.loading) {
         this.appNewTrialUser.resultType = 'loading';
         this.appNewTrialUser.errorMsg = '';
@@ -610,7 +610,7 @@ OperationReportStore.prototype.getAppNewTrialUser = function (result) {
 };
 
 //获取各应用新开账号统计
-OperationReportStore.prototype.getAppNewDelayUser = function (result) {
+OperationReportStore.prototype.getAppNewDelayUser = function(result) {
     if (result.loading) {
         this.appNewDelayUser.resultType = 'loading';
         this.appNewDelayUser.errorMsg = '';
@@ -664,7 +664,7 @@ OperationReportStore.prototype.getAppNewDelayUser = function (result) {
     }
 };
 //获取各应用的签约用户数
-OperationReportStore.prototype.getAppSignedUser = function (result) {
+OperationReportStore.prototype.getAppSignedUser = function(result) {
     if (result.loading) {
         this.appSignedUser.resultType = 'loading';
         this.appSignedUser.errorMsg = '';
@@ -682,7 +682,7 @@ OperationReportStore.prototype.getAppSignedUser = function (result) {
     }
 };
 //获取近四周的登录对比
-OperationReportStore.prototype.getAppLoginComparison = function (result) {
+OperationReportStore.prototype.getAppLoginComparison = function(result) {
     if (result.loading) {
         this.appLoginComparison.resultType = 'loading';
         this.appLoginComparison.errorMsg = '';
@@ -716,7 +716,7 @@ OperationReportStore.prototype.getAppLoginComparison = function (result) {
     }
 };
 //获取应用用户数
-OperationReportStore.prototype.getAppsUserCount = function (result) {
+OperationReportStore.prototype.getAppsUserCount = function(result) {
     if (!result.loading && !result.error) {
         this.appUserTotal = result.data ? result.data.total : 0;
     } else {
@@ -724,7 +724,7 @@ OperationReportStore.prototype.getAppsUserCount = function (result) {
     }
 };
 //获取近四周周登录总时长超过1小时的用户数对比
-OperationReportStore.prototype.getAppWeeklyLoginTotalTime = function (result) {
+OperationReportStore.prototype.getAppWeeklyLoginTotalTime = function(result) {
     if (result.loading) {
         this.appWeeklyLoginTotalTime.resultType = 'loading';
         this.appWeeklyLoginTotalTime.errorMsg = '';
@@ -769,7 +769,7 @@ OperationReportStore.prototype.getAppWeeklyLoginTotalTime = function (result) {
     }
 };
 //获取近四周到期用户的登录对比
-OperationReportStore.prototype.getAppExpiredLoginComparison = function (result) {
+OperationReportStore.prototype.getAppExpiredLoginComparison = function(result) {
     if (result.loading) {
         this.appExpiredLoginComparison.resultType = 'loading';
         this.appExpiredLoginComparison.errorMsg = '';
@@ -803,7 +803,7 @@ OperationReportStore.prototype.getAppExpiredLoginComparison = function (result) 
     }
 };
 //获取近四周签约用户的登录对比
-OperationReportStore.prototype.getAppFormalUserLoginComparison = function (result) {
+OperationReportStore.prototype.getAppFormalUserLoginComparison = function(result) {
     if (result.loading) {
         this.appFormalLoginComparison.resultType = 'loading';
         this.appFormalLoginComparison.errorMsg = '';
@@ -846,7 +846,7 @@ OperationReportStore.prototype.getAppFormalUserLoginComparison = function (resul
     }
 };
 //近四周新开通用户对比
-OperationReportStore.prototype.getAppNewUserComparison = function (result) {
+OperationReportStore.prototype.getAppNewUserComparison = function(result) {
     if (result.loading) {
         this.appNewUserComparison.resultType = 'loading';
         this.appNewUserComparison.errorMsg = '';
@@ -873,7 +873,7 @@ OperationReportStore.prototype.getAppNewUserComparison = function (result) {
     }
 };
 //近四周新增延期用户对比
-OperationReportStore.prototype.getAppNewDelayUserComparison = function (result) {
+OperationReportStore.prototype.getAppNewDelayUserComparison = function(result) {
     if (result.loading) {
         this.appNewDelayUserComparison.resultType = 'loading';
         this.appNewDelayUserComparison.errorMsg = '';
@@ -900,7 +900,7 @@ OperationReportStore.prototype.getAppNewDelayUserComparison = function (result) 
     }
 };
 //获取近四周用户活跃度
-OperationReportStore.prototype.getUserActive = function (result) {
+OperationReportStore.prototype.getUserActive = function(result) {
     if (result.loading) {
         this.userActive.resultType = 'loading';
         this.userActive.errorMsg = '';
@@ -928,7 +928,7 @@ OperationReportStore.prototype.getUserActive = function (result) {
 };
 
 //获取用户日活跃度
-OperationReportStore.prototype.getUserDailyActive = function (result) {
+OperationReportStore.prototype.getUserDailyActive = function(result) {
     if (result.loading) {
         this.userDailyActive.resultType = 'loading';
         this.userDailyActive.errorMsg = '';

@@ -134,8 +134,8 @@ const ThreePartyAppConfig = React.createClass({
                                 className="operate"
                             >
                                 <a href="javascript:void(0)"
-                                   onClick={this.showSingleAppDetail.bind(this, app)}
-                                   title={Intl.get("user.third.app.detail", "查看开放平台应用详情")}>
+                                    onClick={this.showSingleAppDetail.bind(this, app)}
+                                    title={Intl.get("user.third.app.detail", "查看开放平台应用详情")}>
                                     <i className="iconfont icon-app-detail"></i>
                                 </a>
                             </PrivilegeChecker>
@@ -164,8 +164,8 @@ const ThreePartyAppConfig = React.createClass({
             if (this.state.getDetailErrorMsg) {
                 let retry = (
                     <span>{this.state.getAppConfigErrorMsg}，<a href="javascript:void(0)"
-                                                             onClick={this.retryGetAppConfig}><ReactIntl.FormattedMessage
-                        id="common.retry" defaultMessage="重试"/></a></span>
+                        onClick={this.retryGetAppConfig}><ReactIntl.FormattedMessage
+                            id="common.retry" defaultMessage="重试"/></a></span>
                 );
                 return (
                     <div className="get_app_config_error_tip">

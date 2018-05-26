@@ -23,13 +23,13 @@ import BigCalendar from "react-big-calendar";
 import moment from "moment";
 BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
-  TOPANDBOTTOM:50
+    TOPANDBOTTOM:50
 };
 //自定义的点击日程数字后，日程列表的样式
 import CustomEvent from "./views/customer-event";
 const LESSONESECOND = 24 * 60 * 60 * 1000 - 1000;//之前添加日程时，一天的开始时间是00:00:00 到24:59:59秒，但是这个组件中认为的一天是从第一天的00;00：00 到第二天的00:00：00 。所以存储的全天的日程就被认为少了1000毫秒 但是可以通过加allday这个属性，被分到全天的日程中
 const ScheduleManagement = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             rightPanelIsShow: false,//是否展示右侧客户详情
             scheduleTableListTotal: 0,//日程列表是数量
@@ -44,10 +44,10 @@ const ScheduleManagement = React.createClass({
             ...scheduleManagementStore.getState()
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(scheduleManagementStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         scheduleManagementStore.listen(this.onStoreChange);
         //获取今天要展示的数据
         var startTime = moment().startOf('day').valueOf();
@@ -56,7 +56,7 @@ const ScheduleManagement = React.createClass({
         this.getAgendaData({start_time: startTime, end_time: endTime}, "day");
     },
     //根据不同视图对日程数据进行处理
-    handleScheduleData:function (events,viewType) {
+    handleScheduleData:function(events,viewType) {
         var _this = this;
         if (viewType == "day"){
             this.setState({
@@ -70,22 +70,22 @@ const ScheduleManagement = React.createClass({
                 //对数据进行处理
                 var Week = moment(even.start_time).format('dddd');
                 switch (Week){
-                    case Intl.get("schedule.user.time.monday", "星期一"): weekScheduleLists.Mon.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.tuesday", "星期二"): weekScheduleLists.Tus.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.wednesday", "星期三"): weekScheduleLists.Wed.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.thursday", "星期四"): weekScheduleLists.Thur.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.friday", "星期五"): weekScheduleLists.Fri.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.saturday", "星期六"): weekScheduleLists.Sat.push(even);
-                        break;
-                    case Intl.get("schedule.user.time.sunday", "星期日"): weekScheduleLists.Sun.push(even);
-                        break;
-                    default:
-                        break;
+                case Intl.get("schedule.user.time.monday", "星期一"): weekScheduleLists.Mon.push(even);
+                    break;
+                case Intl.get("schedule.user.time.tuesday", "星期二"): weekScheduleLists.Tus.push(even);
+                    break;
+                case Intl.get("schedule.user.time.wednesday", "星期三"): weekScheduleLists.Wed.push(even);
+                    break;
+                case Intl.get("schedule.user.time.thursday", "星期四"): weekScheduleLists.Thur.push(even);
+                    break;
+                case Intl.get("schedule.user.time.friday", "星期五"): weekScheduleLists.Fri.push(even);
+                    break;
+                case Intl.get("schedule.user.time.saturday", "星期六"): weekScheduleLists.Sat.push(even);
+                    break;
+                case Intl.get("schedule.user.time.sunday", "星期日"): weekScheduleLists.Sun.push(even);
+                    break;
+                default:
+                    break;
                 }
             });
             this.setState({
@@ -114,7 +114,7 @@ const ScheduleManagement = React.createClass({
     },
 
     //获取日程列表的方法
-    getAgendaData: function (dateObj, viewType) {
+    getAgendaData: function(dateObj, viewType) {
         var _this = this;
         var startTime = dateObj.start_time;
         var endTime = dateObj.end_time;
@@ -136,18 +136,18 @@ const ScheduleManagement = React.createClass({
             dataType: 'json',
             type: 'get',
             data: constObj,
-            success: function (data) {
+            success: function(data) {
                 var events = _this.processForList(data.list);
                 _this.handleScheduleData(events,viewType);
             },
-            error: function (errorMsg) {
+            error: function(errorMsg) {
                 message.error(Intl.get("schedule.get.schedule.list.failed", "获取日程管理列表失败"));
             }
         });
     },
 
     //把数据转换成组件需要的类型
-    processForList: function (originList) {
+    processForList: function(originList) {
         if (!_.isArray(originList)) return [];
         let list = _.clone(originList);
         for (let i = 0, len = list.length; i < len; i++) {
@@ -185,11 +185,11 @@ const ScheduleManagement = React.createClass({
         var sortedList = _.flatten([Fulldaylist, notFulldaylist, hasFinishedList]);
         return sortedList;
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         scheduleManagementStore.unlisten(this.onStoreChange);
     },
     //点击日程列表中的标记为完成
-    handleScheduleItemStatus: function (item, event) {
+    handleScheduleItemStatus: function(item, event) {
         const reqData = {
             id: item.id,
             status: "handle",
@@ -204,7 +204,7 @@ const ScheduleManagement = React.createClass({
         });
     },
     //查看客户的详情
-    showCustomerDetail: function (customer_id, event) {
+    showCustomerDetail: function(customer_id, event) {
         //如果点击到更改状态的按钮上，就不用展示客户详情了
         if (event && event.target.className == "ant-btn ant-btn-primary") {
             return;
@@ -223,14 +223,14 @@ const ScheduleManagement = React.createClass({
         });
     },
     //关闭右侧客户详情
-    hideRightPanel: function () {
+    hideRightPanel: function() {
         $(".list-item.selected-customer").removeClass("selected-customer");
         this.setState({
             curCustomerId: "",
             rightPanelIsShow: false
         });
     },
-    ShowCustomerUserListPanel: function (data) {
+    ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
@@ -242,7 +242,7 @@ const ScheduleManagement = React.createClass({
         });
     },
 
-    renderModalContent: function () {
+    renderModalContent: function() {
         return (
             <div>
                 <p>{Intl.get("crm.4", "客户名称")}：{this.state.isEdittingItem.customer_name}</p>
@@ -250,14 +250,14 @@ const ScheduleManagement = React.createClass({
             </div>
         );
     },
-    updateExpiredPanelState: function (newStates) {
+    updateExpiredPanelState: function(newStates) {
         this.setState({
             isShowExpiredPanel: newStates.isShowExpiredPanel,
             isFirstLogin: false,
         });
     },
     //切换不同的视图
-    changeView: function (viewName) {
+    changeView: function(viewName) {
         var preViewName = this.state.curViewName;
         this.state.curViewName = viewName;
         this.setState({
@@ -272,36 +272,36 @@ const ScheduleManagement = React.createClass({
         this.getAgendaData(dateObj, viewName);
     },
     //获取不同视图的开始和结束时间
-    getDifTypeStartAndEnd: function (date, view) {
+    getDifTypeStartAndEnd: function(date, view) {
         var dateObj = {
             start_time: "",
             end_time: ""
         };
         switch (view) {
-            case 'day':
-                dateObj.start_time = moment(date).startOf("day").valueOf();
-                dateObj.end_time = moment(date).endOf("day").valueOf();
-                break;
-            case 'week':
-                dateObj.start_time = moment(date).startOf("week").valueOf();
-                dateObj.end_time = moment(date).endOf("week").valueOf();
-                break;
-            case 'month':
-                dateObj.start_time = moment(date).startOf("month").valueOf();
-                dateObj.end_time = moment(date).endOf("month").valueOf();
-                break;
+        case 'day':
+            dateObj.start_time = moment(date).startOf("day").valueOf();
+            dateObj.end_time = moment(date).endOf("day").valueOf();
+            break;
+        case 'week':
+            dateObj.start_time = moment(date).startOf("week").valueOf();
+            dateObj.end_time = moment(date).endOf("week").valueOf();
+            break;
+        case 'month':
+            dateObj.start_time = moment(date).startOf("month").valueOf();
+            dateObj.end_time = moment(date).endOf("month").valueOf();
+            break;
         }
         return dateObj;
     },
     //点击 前，后翻页，点击月视图的日期跳转到日视图,或者返回今天的按钮
-    handleNavigateChange: function (date) {
+    handleNavigateChange: function(date) {
         var view = this.state.curViewName;
         //把当前展示视图的时间记录一下
         scheduleManagementStore.setViewDate(moment(date).valueOf());
         var dateObj = this.getDifTypeStartAndEnd(date, view);
         this.getAgendaData(dateObj, view);
     },
-    onCheckChange:function (checkedValue) {
+    onCheckChange:function(checkedValue) {
         var filterScheduleType = checkedValue.join(",");
         this.setState({
             filterScheduleType:filterScheduleType
@@ -312,7 +312,7 @@ const ScheduleManagement = React.createClass({
             this.getAgendaData(dateObj,viewName);
         });
     },
-    render: function () {
+    render: function() {
         //右侧日程列表动画 如果没有超时日程，那么左侧日程列表不显示
         var calendarCls = classNames({
             "initial-calendar-panel": this.state.isShowExpiredPanel && !this.state.isFirstLogin,

@@ -21,33 +21,33 @@ import { numberAddNoMoreThan } from "../../../lib/validator/rules";
 
 const DetailRepayment = React.createClass({
     mixins: [ValidateMixin],
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.setContentHeight);
         //加一个延时，等dom渲染完后再设置内容高度，否则会设置不正确
         setTimeout(() => {
             this.setContentHeight();
         });
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.setContentHeight);
     },
-    setContentHeight: function () {
+    setContentHeight: function() {
         const wrapper = $(".finance-list");
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - wrapper.offset().top - 20);
         this.refs.gemiScrollBar.update();
     },
-    showForm: function (index, repayment) {
+    showForm: function(index, repayment) {
         const key = "formData" + index;
         this.state[key] = _.clone(repayment);
         this.state["isFormShow" + index] = true;
         this.setState(this.state);
     },
-    hideForm: function (index) {
+    hideForm: function(index) {
         this.state["isFormShow" + index] = false;
         this.setState(this.state);
     },
-    handleSubmit: function (type, index, id) {
+    handleSubmit: function(type, index, id) {
         let data;
 
         if (type === "delete") {
@@ -74,7 +74,7 @@ const DetailRepayment = React.createClass({
             });
         }
     },
-    editRepayment: function (type, data, params, cb) {
+    editRepayment: function(type, data, params, cb) {
         this.props.showLoading();
 
         const handler = type + "Repayment";
@@ -98,7 +98,7 @@ const DetailRepayment = React.createClass({
             }
         });
     },
-    renderForm: function (repayment, index) {
+    renderForm: function(repayment, index) {
         index = isNaN(index)? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
@@ -109,7 +109,7 @@ const DetailRepayment = React.createClass({
             formData.date = moment().valueOf();
         }
 
-        const disabledDate = function (current) {
+        const disabledDate = function(current) {
             //不允许选择大于当前天的日期
             return current && current.valueOf() > Date.now();
         };
@@ -117,41 +117,41 @@ const DetailRepayment = React.createClass({
         return (
             <Validation ref={ref} onValidate={this.handleValidate}>
                 <FormItem 
-                     validateStatus={this.getValidateStatus("date" + index)}
-                     help={this.getHelpMessage("date" + index)}
+                    validateStatus={this.getValidateStatus("date" + index)}
+                    help={this.getHelpMessage("date" + index)}
                 >
-                        <DatePicker
-                            name={"date" + index}
-                            onChange={this.setField.bind(this, "date", index)}
-                            value={formData.date? moment(formData.date) : moment()}
-                            disabledDate={disabledDate}
-                        />
+                    <DatePicker
+                        name={"date" + index}
+                        onChange={this.setField.bind(this, "date", index)}
+                        value={formData.date? moment(formData.date) : moment()}
+                        disabledDate={disabledDate}
+                    />
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
                 <FormItem 
-                     validateStatus={this.getValidateStatus("amount" + index)}
-                     help={this.getHelpMessage("amount" + index)}
+                    validateStatus={this.getValidateStatus("amount" + index)}
+                    help={this.getHelpMessage("amount" + index)}
                 >
                     <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule(), numberAddNoMoreThan.bind(this, this.props.contract.contract_amount, this.props.contract.total_amount, Intl.get("contract.161", "已超合同额"))]}>
-                    <Input
-                        name={"amount" + index}
-                        value={this.parseAmount(formData.amount)}
-                        onChange={this.setField.bind(this, "amount", index)}
-                    />
+                        <Input
+                            name={"amount" + index}
+                            value={this.parseAmount(formData.amount)}
+                            onChange={this.setField.bind(this, "amount", index)}
+                        />
                     </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />,
                 <ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
                 <FormItem 
-                     validateStatus={this.getValidateStatus("gross_profit" + index)}
-                     help={this.getHelpMessage("gross_profit" + index)}
+                    validateStatus={this.getValidateStatus("gross_profit" + index)}
+                    help={this.getHelpMessage("gross_profit" + index)}
                 >
                     <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
-                    <Input
-                        name={"gross_profit" + index}
-                        value={this.parseAmount(formData.gross_profit)}
-                        onChange={this.setField.bind(this, "gross_profit", index)}
-                    />
+                        <Input
+                            name={"gross_profit" + index}
+                            value={this.parseAmount(formData.gross_profit)}
+                            onChange={this.setField.bind(this, "gross_profit", index)}
+                        />
                     </Validator>
                 </FormItem>
                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
@@ -168,90 +168,90 @@ const DetailRepayment = React.createClass({
             </Validation>
         );
     },
-    render: function () {
+    render: function() {
         let repayments = this.props.contract.repayments || [];
         repayments = _.sortBy(repayments, item => item.date).reverse();
         return (
             <div className="detail-repayments">
                 {hasPrivilege("OPLATE_REPAYMENT_ADD")? (
-                <div className="add-finance">
-                    {this.renderForm()}
-                    <Button
-                        className="btn-primary-sure"
-                        onClick={this.handleSubmit.bind(this, "add")}
-                    >
-                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
-                    </Button>
-                </div>
+                    <div className="add-finance">
+                        {this.renderForm()}
+                        <Button
+                            className="btn-primary-sure"
+                            onClick={this.handleSubmit.bind(this, "add")}
+                        >
+                            <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
+                        </Button>
+                    </div>
                 ) : null}
 
                 <div className="finance-list">
                     <GeminiScrollBar ref="gemiScrollBar">
-                    <ul>
-                        {repayments.map((repayment, index) => {
-                            const isFormShow = this.state["isFormShow" + index];
+                        <ul>
+                            {repayments.map((repayment, index) => {
+                                const isFormShow = this.state["isFormShow" + index];
 
-                            return (
-                                <li key={index}>
-                                    {isFormShow? (
-                                    <span className="add-finance">
-                                        {this.renderForm(repayment, index)}
-                                    </span>
-                                    ) : (
-                                    <span>
-                                        {repayment.date? moment(repayment.date).format(DATE_FORMAT) : ""}
-                                        &nbsp;
-                                        <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
-                                        {repayment.amount || 0}
-                                        <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
-                                        {repayment.gross_profit || 0}
-                                        <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                                        {repayment.is_first === "true"? (
-                                        <span>
-                                        , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
-                                        </span>
-                                        ) : null}
-                                    </span>
-                                    )}
-        
-                                    {hasPrivilege("OPLATE_REPAYMENT_ADD")? (
-                                    <span>
-                                        {isFormShow ? (
-                                        <span>
-                                            <Button
-                                                shape="circle"
-                                                title={Intl.get("common.save", "保存")}
-                                                className="btn-save"
-                                                onClick={this.handleSubmit.bind(this, "update", index)}
-                                            >
-                                                <Icon type="save"/>
-                                            </Button>
-                                            <Button
-                                                shape="circle"
-                                                className="btn-cancel"
-                                                title={Intl.get("common.cancel", "取消")}
-                                                onClick={this.hideForm.bind(this, index)}
-                                            >
-                                                <Icon type="cross"/>
-                                            </Button>
-                                        </span>
+                                return (
+                                    <li key={index}>
+                                        {isFormShow? (
+                                            <span className="add-finance">
+                                                {this.renderForm(repayment, index)}
+                                            </span>
                                         ) : (
-                                        <span>
-                                            <RightPanelEdit 
-                                                 onClick={this.showForm.bind(this, index, repayment)}
-                                            />
-                                            <RightPanelDelete 
-                                                 title={Intl.get("common.delete", "删除")}
-                                                 onClick={this.handleSubmit.bind(this, "delete", index, repayment.id)}
-                                            />
-                                        </span>
+                                            <span>
+                                                {repayment.date? moment(repayment.date).format(DATE_FORMAT) : ""}
+                                        &nbsp;
+                                                <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
+                                                {repayment.amount || 0}
+                                                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
+                                                {repayment.gross_profit || 0}
+                                                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                                                {repayment.is_first === "true"? (
+                                                    <span>
+                                        , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
+                                                    </span>
+                                                ) : null}
+                                            </span>
                                         )}
-                                        </span>
-                                    ) : null}
-                                </li>
-                            );
-                        })}
-                    </ul>
+        
+                                        {hasPrivilege("OPLATE_REPAYMENT_ADD")? (
+                                            <span>
+                                                {isFormShow ? (
+                                                    <span>
+                                                        <Button
+                                                            shape="circle"
+                                                            title={Intl.get("common.save", "保存")}
+                                                            className="btn-save"
+                                                            onClick={this.handleSubmit.bind(this, "update", index)}
+                                                        >
+                                                            <Icon type="save"/>
+                                                        </Button>
+                                                        <Button
+                                                            shape="circle"
+                                                            className="btn-cancel"
+                                                            title={Intl.get("common.cancel", "取消")}
+                                                            onClick={this.hideForm.bind(this, index)}
+                                                        >
+                                                            <Icon type="cross"/>
+                                                        </Button>
+                                                    </span>
+                                                ) : (
+                                                    <span>
+                                                        <RightPanelEdit 
+                                                            onClick={this.showForm.bind(this, index, repayment)}
+                                                        />
+                                                        <RightPanelDelete 
+                                                            title={Intl.get("common.delete", "删除")}
+                                                            onClick={this.handleSubmit.bind(this, "delete", index, repayment.id)}
+                                                        />
+                                                    </span>
+                                                )}
+                                            </span>
+                                        ) : null}
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </GeminiScrollBar>
                 </div>
             </div>

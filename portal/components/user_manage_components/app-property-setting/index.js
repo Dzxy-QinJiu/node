@@ -330,7 +330,7 @@ const AppPropertySetting = React.createClass({
             <div className={this.state.changeCurrentAppLoading ? "app-property-container-content change-current-app-loading" : "app-property-container-content"}>
                 <div className="app-property-custom-settings">
                     <div className="app-property-content basic-data-form app-property-other-property"
-                         style={{display : this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
+                        style={{display : this.props.hideSingleApp && this.props.selectedApps.length <= 1 ? 'none' : 'block'}}
                     >
                         {this.props.showUserNumber ? (
                             <div className="form-item">
@@ -348,18 +348,18 @@ const AppPropertySetting = React.createClass({
                             </div>
                         ) : null}
                         {this.props.isSingleAppEdit ? (
-                         !Oplate.hideSomeItem && <div className="form-item">
-                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
-                             <div className="form-item-content">
-                                 {
-                                     this.renderUserTypeRadioBlock({
-                                         isCustomSetting : true,
-                                         appId : currentApp.app_id,
-                                         globalUserType : defaultSettings.user_type
-                                     })
-                                 }
-                             </div>
-                         </div>
+                            !Oplate.hideSomeItem && <div className="form-item">
+                                <div className="form-item-label"><ReactIntl.FormattedMessage id="user.user.type" defaultMessage="用户类型" /></div>
+                                <div className="form-item-content">
+                                    {
+                                        this.renderUserTypeRadioBlock({
+                                            isCustomSetting : true,
+                                            appId : currentApp.app_id,
+                                            globalUserType : defaultSettings.user_type
+                                        })
+                                    }
+                                </div>
+                            </div>
                         ) : null}
                         <div className="form-item">
                             <div className="form-item-label"><ReactIntl.FormattedMessage id="user.open.cycle" defaultMessage="开通周期" /></div>
@@ -387,7 +387,7 @@ const AppPropertySetting = React.createClass({
                         </div>
                         {
                             this.props.showIsTwoFactor ? (
-                            !Oplate.hideSomeItem && <div className="form-item">
+                                !Oplate.hideSomeItem && <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.two.step.certification" defaultMessage="二步认证" /></div>
                                     <div className="form-item-content">
                                         {
@@ -416,7 +416,7 @@ const AppPropertySetting = React.createClass({
                         ) : null}
                         {
                             this.props.showMultiLogin ? (
-                            !Oplate.hideSomeItem && <div className="form-item">
+                                !Oplate.hideSomeItem && <div className="form-item">
                                     <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                                     <div className="form-item-content">
                                         {
@@ -482,17 +482,17 @@ const AppPropertySetting = React.createClass({
         return (
             <div className={cls}>
                 <div className="app-property-container">
-                         <Tabs tabPosition="left" onChange={this.currentTabChange} prefixCls="antd-vertical-tabs">
-                         {
-                             this.props.selectedApps.map((app) => {
-                                 return <TabPane tab={this.renderTabToolTip(app.app_name)} key={app.app_id}>
-                                     <GeminiScrollBar style={{height:height}} ref="gemini" className="app-property-content">
-                                         {this.renderTabContent(app.app_id)}
-                                     </GeminiScrollBar>
-                                 </TabPane>;
-                             })
-                         }
-                         </Tabs>
+                    <Tabs tabPosition="left" onChange={this.currentTabChange} prefixCls="antd-vertical-tabs">
+                        {
+                            this.props.selectedApps.map((app) => {
+                                return <TabPane tab={this.renderTabToolTip(app.app_name)} key={app.app_id}>
+                                    <GeminiScrollBar style={{height:height}} ref="gemini" className="app-property-content">
+                                        {this.renderTabContent(app.app_id)}
+                                    </GeminiScrollBar>
+                                </TabPane>;
+                            })
+                        }
+                    </Tabs>
 
                 </div>
             </div>

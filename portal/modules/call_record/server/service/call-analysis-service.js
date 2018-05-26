@@ -39,7 +39,7 @@ const restApis = {
 };
  
 // 获取单次通话时长为top10的数据
-exports.getCallDurTopTen = function (req, res, params, reqBody) {
+exports.getCallDurTopTen = function(req, res, params, reqBody) {
     let url = params.type === "manager" ? restApis.getManagerCallDurTopTen : restApis.getCallDurTopTen;
     if (reqBody && reqBody.user_id) {
         url = restApis.getSingleUserCallDurTopTen;
@@ -57,7 +57,7 @@ exports.getCallDurTopTen = function (req, res, params, reqBody) {
 };
 
 // 获取通话数量和通话时长趋势图统计
-exports.getCallCountAndDur = function (req, res, params, reqBody) {
+exports.getCallCountAndDur = function(req, res, params, reqBody) {
     // 团队
     let url = restApis.getCallCountAndDur;
     if (reqBody && reqBody.user_id) {  // 销售个人
@@ -70,14 +70,14 @@ exports.getCallCountAndDur = function (req, res, params, reqBody) {
             res: res
         }, reqBody);
 };
-exports.getCallCountAndDurSeperately = function (req, res, params, reqBody) {
+exports.getCallCountAndDurSeperately = function(req, res, params, reqBody) {
     return restUtil.authRest.post(
         {
             url: restApis.getTeamCallCountAndDur.replace(":start_time", params.start_time).replace(":end_time", params.end_time).replace(":interval", "day"),
             req: req,
             res: res
         }, reqBody, {
-            success: function (emitter, teamCallData) {
+            success: function(emitter, teamCallData) {
                 var list = [];
                 _.each(teamCallData.result, (value, key) => {
                     list.push({
@@ -97,12 +97,12 @@ function batchGetCallInfo(req, res, params, reqData) {
             req: req,
             res: res
         }, reqData, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var callInfo = CallObj.toFrontCallAnalysis(data);
                 resolve(callInfo);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -116,10 +116,10 @@ function getActiveSalesInTeams(req, res) {
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 resolve(data);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -127,7 +127,7 @@ function getActiveSalesInTeams(req, res) {
 }
 
 // 获取电话的接通情况
-exports.getCallInfo = function (req, res, params, reqData) {
+exports.getCallInfo = function(req, res, params, reqData) {
     var emitter = new EventEmitter();
     let memberArray = reqData.member_ids ? reqData.member_ids.split(',') : [];
     let memberArrayLength = memberArray.length;
@@ -177,7 +177,7 @@ exports.getCallInfo = function (req, res, params, reqData) {
 };
 
 // 114占比
-exports.getCallRate = function (req, res, params, reqBody) {
+exports.getCallRate = function(req, res, params, reqBody) {
     // 团队
     let url = restApis.getTeamCallRate;
     // 成员 
@@ -202,7 +202,7 @@ exports.getCallRate = function (req, res, params, reqBody) {
 };
 
 //获取通话数量和时长的统计数据
-exports.getCallIntervalData = function (req, res, reqQuery) {
+exports.getCallIntervalData = function(req, res, reqQuery) {
     return restUtil.authRest.get(
         {
             url: restApis.getCallIntervalData.replace(":authType", req.params.authType),
@@ -212,7 +212,7 @@ exports.getCallIntervalData = function (req, res, reqQuery) {
 };
 
 // 获取通话总次数、总时长为top10的数据
-exports.getCallTotalList = function (req, res, reqQuery) {
+exports.getCallTotalList = function(req, res, reqQuery) {
     return restUtil.authRest.get(
         {
             url: restApis.getCallTotalList.replace(":authType", req.params.authType),
@@ -222,7 +222,7 @@ exports.getCallTotalList = function (req, res, reqQuery) {
 };
 
 // 获取团队信息
-exports.getSaleGroupTeams = function (req, res, params) {
+exports.getSaleGroupTeams = function(req, res, params) {
     return restUtil.authRest.get(
         {
             url: restApis.getSaleGroupTeams.replace(":type", params.type),
@@ -232,7 +232,7 @@ exports.getSaleGroupTeams = function (req, res, params) {
 };
 
 // 获取成员信息
-exports.getSaleMemberList = function (req, res, params) {
+exports.getSaleMemberList = function(req, res, params) {
     return restUtil.authRest.get(
         {
             url: restApis.getSaleMemberList.replace(":type", params.type),

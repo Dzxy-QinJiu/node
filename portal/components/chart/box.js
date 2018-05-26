@@ -3,14 +3,14 @@
  */
 
 let Box = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
-            renderContent: function (value) {
+            renderContent: function(value) {
                 return value;
             }
         };
     },
-    render: function () {
+    render: function() {
         return (
             <div className="chart-box">
                 {this.props.renderContent(this.props.chartData.value,this.props.app_id)}

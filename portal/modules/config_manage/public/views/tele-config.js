@@ -171,7 +171,7 @@ const TeleConfig = React.createClass({
                             <li className="mb-tag" ref={key}>
                                 <div className="mb-tag-content">
                                     <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
-                                            <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
                                         onClick={this.handleDeleteTele.bind(this, item)}
                                         data-tracename="删除客服电话"
                                     >

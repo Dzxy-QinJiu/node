@@ -204,13 +204,13 @@ var logList = [
         loginEquipment: "电脑（win10）"
     })
 ];
-exports.init = function () {
+exports.init = function() {
 
     nock(config.nockUrl)
         .persist()
         .get(/\/rest\/oplate\/v1\/user\/id\/.*/)
         .query(true)
-        .reply(function () {
+        .reply(function() {
             return [200, userInfo];
         });
 
@@ -218,7 +218,7 @@ exports.init = function () {
         .persist()
         .get(userInfoManageServic.urls.getLogList)
         .query(true)
-        .reply(function () {
+        .reply(function() {
             return [200, logList];
         });
 
@@ -227,7 +227,7 @@ exports.init = function () {
         .persist()
         .put(userInfoManageServic.urls.editUserInfo)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var id = req.body.id;
@@ -256,7 +256,7 @@ exports.init = function () {
         .persist()
         .put(userInfoManageServic.urls.editUserInfoPwd)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var id = req.body.id;
@@ -285,7 +285,7 @@ exports.init = function () {
         .persist()
         .get(userInfoManageServic.urls.checkUserInfoPwd)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var passwd = req.query.passwd;

@@ -11,12 +11,12 @@ var RealmZoneService = require("../service/realm-zone-service");
 exports.getRealmZoneAnalysisData = function(req,res) {
     var startTime  = req.query.starttime;
     var endTime = req.query.endtime;
-    RealmZoneService.getRealmZoneAnalysisData(req,res,startTime,endTime).on("success", function (data) {
+    RealmZoneService.getRealmZoneAnalysisData(req,res,startTime,endTime).on("success", function(data) {
         if(!data.hasRealm) {
             res.set('norealm' , true);
         }
         res.json(data.list);
-    }).on("error", function (data) {
+    }).on("error", function(data) {
         res.json(data);
     });
 };

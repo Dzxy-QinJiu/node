@@ -3,7 +3,7 @@
  * 通话记录的转换
  */
 
-exports.toFrontObject = function (restObject) {
+exports.toFrontObject = function(restObject) {
     var frontObj = {};
     frontObj.id = restObject.id;
     frontObj.nickName = restObject.nick_name || "";//呼叫者（打电话的人）

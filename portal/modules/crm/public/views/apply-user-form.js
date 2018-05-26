@@ -30,7 +30,7 @@ const LAY_CONSTS = {
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
 
-    getInitialState: function () {
+    getInitialState: function() {
         const formData = this.buildFormData(this.props);
 
         return {
@@ -44,7 +44,7 @@ const ApplyUserForm = React.createClass({
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.buildFormData(nextProps);
         let oldAppIds = _.pluck(this.props.apps, "client_id");
         let newAppIds = _.pluck(nextProps.apps, "client_id");
@@ -54,7 +54,7 @@ const ApplyUserForm = React.createClass({
         this.getAppsDefaultConfig(diffAppIds);
     },
 
-    buildFormData: function (props) {
+    buildFormData: function(props) {
         const timeObj = DatePickerUtils.getHalfAMonthTime();
         const begin_date = DatePickerUtils.getMilliseconds(timeObj.start_time);
         let end_date = DatePickerUtils.getMilliseconds(timeObj.end_time);
@@ -101,7 +101,7 @@ const ApplyUserForm = React.createClass({
             return formData;
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         let appList = this.props.apps;
         if (_.isArray(appList) && appList.length) {
             //获取各应用的默认设置
@@ -110,7 +110,7 @@ const ApplyUserForm = React.createClass({
         this.getCustomerContacts();
     },
     //获取客户联系人列表
-    getCustomerContacts: function () {
+    getCustomerContacts: function() {
         let customerId = this.state.formData ? this.state.formData.customer_id : "";
         if (!customerId) return;
         contactAjax.getContactList(customerId).then((data) => {
@@ -125,7 +125,7 @@ const ApplyUserForm = React.createClass({
         });
     },
     //获取各应用的默认设置
-    getAppsDefaultConfig: function (appIds) {
+    getAppsDefaultConfig: function(appIds) {
         if (_.isArray(appIds) && appIds.length) {
             //获取各应用的默认设置(不需要角色和权限信息)
             commonAppAjax.getAppsDefaultConfigAjax().sendRequest({
@@ -158,7 +158,7 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    onAppChange: function (id) {
+    onAppChange: function(id) {
         //如果用户名是邮箱格式，并且应用对应用户开通数量超过1时，不能切换应用
         if (id === this.state.appFormData.client_id || this.state.onlyOneUser) {
             return;
@@ -167,17 +167,17 @@ const ApplyUserForm = React.createClass({
             this.setState({appFormData: appFormData});
         }
     },
-    onNickNameChange: function (e) {
+    onNickNameChange: function(e) {
         this.state.formData.nick_name = e.target.value.trim();
         this.setState(this.state);
     },
 
-    onRemarkChange: function (e) {
+    onRemarkChange: function(e) {
         this.state.formData.remark = e.target.value.trim();
         this.setState(this.state);
     },
 
-    onUserNameChange: function (e) {
+    onUserNameChange: function(e) {
         let userName = e.target.value.trim();
         this.state.formData.user_name = userName;
         if (userName && userName.indexOf("@") != -1 && this.state.appFormData.number > 1) {
@@ -189,7 +189,7 @@ const ApplyUserForm = React.createClass({
         this.setState(this.state);
     },
 
-    onCountChange: function (v) {
+    onCountChange: function(v) {
         let userName = this.state.formData.user_name;
         if (userName && userName.indexOf("@") != -1 && v > 1) {
             //用户名是邮箱格式时，只能申请1个用户
@@ -201,19 +201,19 @@ const ApplyUserForm = React.createClass({
         this.setState(this.state);
     },
 
-    onTimeChange: function (begin_date, end_date, range) {
+    onTimeChange: function(begin_date, end_date, range) {
         this.state.appFormData.begin_date = parseInt(begin_date);
         this.state.appFormData.end_date = parseInt(end_date);
         this.state.appFormData.range = range;
         this.setState(this.state);
     },
 
-    onOverDraftChange: function (e) {
+    onOverDraftChange: function(e) {
         this.state.appFormData.over_draft = parseInt(e.target.value);
         this.setState(this.state);
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         if (this.state.isLoading) {
             //正在申请，不可重复申请
@@ -265,11 +265,11 @@ const ApplyUserForm = React.createClass({
         });
     },
 
-    handleCancel: function () {
+    handleCancel: function() {
         this.props.cancelApply();
     },
     //是否应用到所有应用上的设置
-    toggleCheckbox: function () {
+    toggleCheckbox: function() {
         this.setState({setAllChecked: !this.state.setAllChecked});
     },
     renderTabToolTip(app_name) {
@@ -292,14 +292,14 @@ const ApplyUserForm = React.createClass({
         };
         UserNameTextfieldUtil.checkUserExist(rule, obj, callback, number, this.refs.username_block);
     },
-    selectEmail: function (value, field) {
+    selectEmail: function(value, field) {
         value = $.trim(value);
         if (value) {
             this.state.formData.user_name = value;
             this.setState({formData: this.state.formData});
         }
     },
-    renderUserNameInput: function (userName) {
+    renderUserNameInput: function(userName) {
         const placeholder = Intl.get("user.username.write.tip", "请填写用户名");
         let input = (
             <Input
@@ -324,12 +324,12 @@ const ApplyUserForm = React.createClass({
         if (emailList.length) {
             return (
                 <Select combobox
-                        name="user_name"
-                        placeholder={placeholder}
-                        filterOption={false}
-                        onChange={this.selectEmail}
-                        value={userName}
-                        dropdownMatchSelectWidth={false}
+                    name="user_name"
+                    placeholder={placeholder}
+                    filterOption={false}
+                    onChange={this.selectEmail}
+                    value={userName}
+                    dropdownMatchSelectWidth={false}
                 >
                     {emailList.map((email, i) => {
                         return (<Option key={i} value={email}>{email}</Option>);
@@ -341,7 +341,7 @@ const ApplyUserForm = React.createClass({
         }
     },
 
-    render: function () {
+    render: function() {
         const appFormData = this.state.appFormData;
         const fixedHeight = $(window).height() - LAY_CONSTS.TAB_TITLE_HEIGHT;
         const formData = this.state.formData;
@@ -416,19 +416,19 @@ const ApplyUserForm = React.createClass({
                                     </Validation>
                                     <div className="app-user-info ant-form-item" style={{maxHeight: fixedHeight}}>
                                         <Tabs tabPosition="left" onChange={this.onAppChange}
-                                              prefixCls="antd-vertical-tabs">
+                                            prefixCls="antd-vertical-tabs">
                                             {this.props.apps.map(app => {
                                                 //应用到所有应用或只能申请一个应用的验证未通过，并且不是当前展示应用时，不可切换到其他应用
                                                 let disabled = (this.state.setAllChecked || this.state.onlyOneUser) && app.client_id != appFormData.client_id;
                                                 return (<TabPane key={app.client_id}
-                                                                 tab={this.renderTabToolTip(app.client_name)}
-                                                                 disabled={disabled}>
+                                                    tab={this.renderTabToolTip(app.client_name)}
+                                                    disabled={disabled}>
                                                     <div className="set-all-check-box col-22">
                                                         <Checkbox checked={this.state.setAllChecked}
-                                                                  onChange={this.toggleCheckbox}/>
+                                                            onChange={this.toggleCheckbox}/>
                                                         <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                        {Intl.get("user.all.app.set", "设置到所有应用上")}
-                                                    </span>
+                                                            {Intl.get("user.all.app.set", "设置到所有应用上")}
+                                                        </span>
                                                         {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
                                                     </div>
                                                     <div className="app-tab-pane col-22">
@@ -460,7 +460,7 @@ const ApplyUserForm = React.createClass({
                                                             wrapperCol={{span: 19}}
                                                         >
                                                             <RadioGroup onChange={this.onOverDraftChange}
-                                                                        value={appFormData.over_draft.toString()}>
+                                                                value={appFormData.over_draft.toString()}>
                                                                 <Radio key="1" value="1"><ReactIntl.FormattedMessage
                                                                     id="user.status.stop" defaultMessage="停用"/></Radio>
                                                                 <Radio key="2" value="2"><ReactIntl.FormattedMessage
@@ -485,12 +485,12 @@ const ApplyUserForm = React.createClass({
                                         wrapperCol={{span: 23}}
                                     >
                                         <RightPanelCancel onClick={this.handleCancel}
-                                                          style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
+                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
                                             <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                         </RightPanelCancel>
                                         <RightPanelSubmit onClick={this.handleSubmit}
-                                                          style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
-                                                          disabled={this.state.isLoading}>
+                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
+                                            disabled={this.state.isLoading}>
                                             <ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请"/>
                                         </RightPanelSubmit>
                                     </FormItem>

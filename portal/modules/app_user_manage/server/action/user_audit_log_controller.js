@@ -4,19 +4,19 @@
 var  userAuditLog = require("../service/user_audit_log.service");
 
 // 获取用户审计日志列表
-exports.getUserLogList = function (req, res) {
-    userAuditLog.getUserLogList(req, res, req.query).on("success", function (data) {
+exports.getUserLogList = function(req, res) {
+    userAuditLog.getUserLogList(req, res, req.query).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 获取单个用户审计日志列表
-exports.getSingleAuditLogList = function (req, res) {
-    userAuditLog.getSingleAuditLogList(req, res,  req.query, req.params.user_id).on("success", function (data) {
+exports.getSingleAuditLogList = function(req, res) {
+    userAuditLog.getSingleAuditLogList(req, res,  req.query, req.params.user_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

@@ -35,11 +35,11 @@ var TimeSeriesLinechart = React.createClass({
             this.echartInstance = null;
         }
     },
-    windowResize: function () {
+    windowResize: function() {
         clearTimeout(this.resizeTimeout);
         var _this = this;
         this.resizeTimeout = setTimeout(() => {
-           this.renderChart();
+            this.renderChart();
         }, 300);
     },
     renderChart : function() {
@@ -52,7 +52,7 @@ var TimeSeriesLinechart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    getCategorys: function () {
+    getCategorys: function() {
         var data = [];
         if (this.props.isMutileLine) {
             var dataType = this.props.lineType;
@@ -67,7 +67,7 @@ var TimeSeriesLinechart = React.createClass({
         }
         return data;
     },
-    getLegendData: function () {
+    getLegendData: function() {
         var data = [];
         if (this.props.isMutileLine) {
             var dataList = this.props.dataList;
@@ -75,8 +75,8 @@ var TimeSeriesLinechart = React.createClass({
         }
         return data;
     },
-    getDataSerise: function () {
-       //共同的属性
+    getDataSerise: function() {
+        //共同的属性
         var commonObj = {
             data: [],
             type: 'line',
@@ -106,7 +106,7 @@ var TimeSeriesLinechart = React.createClass({
         }
         return serise;
     },
-    getEchartOptions: function () {
+    getEchartOptions: function() {
         return {
             title : null,
             toolbox: {

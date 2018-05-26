@@ -43,44 +43,44 @@ function SalesStageStore() {
     });
 }
 
-SalesStageStore.prototype.getSalesStageListData = function () {
+SalesStageStore.prototype.getSalesStageListData = function() {
     return this.getState().salesStageList;
 };
-SalesStageStore.prototype.getIsSavingSalesStage = function () {
+SalesStageStore.prototype.getIsSavingSalesStage = function() {
     return this.getState().isSavingSalesStage;
 };
 
-SalesStageStore.prototype.getCurrentSalesStageData = function () {
+SalesStageStore.prototype.getCurrentSalesStageData = function() {
     return this.getState().currentSalesStage;
 };
 
-SalesStageStore.prototype.isFormShowFnc = function () {
+SalesStageStore.prototype.isFormShowFnc = function() {
     return this.getState().salesStageFormShow;
 };
 
-SalesStageStore.prototype.isEditOrderFnc = function () {
+SalesStageStore.prototype.isEditOrderFnc = function() {
     return this.getState().salesStageEditOrder;
 };
 
-SalesStageStore.prototype.getCurrentSalesStageListData = function () {
+SalesStageStore.prototype.getCurrentSalesStageListData = function() {
     return this.getState().currentSalesStageList;
 };
 
 //获取销售阶段列表
-SalesStageStore.prototype.getSalesStageList = function (salesStageList) {
+SalesStageStore.prototype.getSalesStageList = function(salesStageList) {
     this.salesStageList = salesStageList;
     this.isSavingSalesStage = false;
 
-    this.currentSalesStageList = $.map(salesStageList, function (obj) {
+    this.currentSalesStageList = $.map(salesStageList, function(obj) {
         return $.extend(true, {}, obj);//返回对象的深拷贝
     });
 };
 
 //添加销售阶段
-SalesStageStore.prototype.addSalesStage = function (salesStageCreated) {
+SalesStageStore.prototype.addSalesStage = function(salesStageCreated) {
     var _this = this;
     if (typeof salesStageCreated !== "string") {
-        $.each(salesStageCreated, function (i, salesStage) {
+        $.each(salesStageCreated, function(i, salesStage) {
             _this.salesStageList.push(salesStage);
         });
     }
@@ -88,12 +88,12 @@ SalesStageStore.prototype.addSalesStage = function (salesStageCreated) {
 };
 
 //修改销售阶段
-SalesStageStore.prototype.editSalesStage = function (salesStageModified) {
+SalesStageStore.prototype.editSalesStage = function(salesStageModified) {
 
     var _this = this;
     if (typeof salesStageModified !== "string") {
-        $.each(salesStageModified, function (i, salesStage) {
-            var target = _.find(_this.salesStageList, function (item) {
+        $.each(salesStageModified, function(i, salesStage) {
+            var target = _.find(_this.salesStageList, function(item) {
                 if (item.id === salesStage.id) {
                     return true;
                 }
@@ -107,7 +107,7 @@ SalesStageStore.prototype.editSalesStage = function (salesStageModified) {
     this.salesStageFormShow = false;
 };
 
-SalesStageStore.prototype.saveSalesStageOrder = function (salesStageModified) {
+SalesStageStore.prototype.saveSalesStageOrder = function(salesStageModified) {
 
     if (typeof salesStageModified !== "string") {
         this.salesStageList = salesStageModified;
@@ -118,17 +118,17 @@ SalesStageStore.prototype.saveSalesStageOrder = function (salesStageModified) {
 };
 
 //删除销售阶段
-SalesStageStore.prototype.deleteSalesStage = function (salesStage) {
-    this.salesStageList = _.filter(this.salesStageList, function (item) {
+SalesStageStore.prototype.deleteSalesStage = function(salesStage) {
+    this.salesStageList = _.filter(this.salesStageList, function(item) {
         if (item.id !== salesStage.id) {
             return true;
         }
     });
 };
 
-SalesStageStore.prototype.salesStageOrderUp = function (salesStage) {
+SalesStageStore.prototype.salesStageOrderUp = function(salesStage) {
     var oldIndex = parseInt(salesStage.index);
-    this.salesStageList = _.filter(this.salesStageList, function (item) {
+    this.salesStageList = _.filter(this.salesStageList, function(item) {
         var index = item.index;
         if (parseInt(item.index) === oldIndex) {
             index = (parseInt(item.index) - 1).toString();
@@ -142,14 +142,14 @@ SalesStageStore.prototype.salesStageOrderUp = function (salesStage) {
         return true;
     });
 
-    this.salesStageList = this.salesStageList.sort(function (item1, item2) {
+    this.salesStageList = this.salesStageList.sort(function(item1, item2) {
         return item1.index - item2.index;
     });
 };
 
-SalesStageStore.prototype.salesStageOrderDown = function (salesStage) {
+SalesStageStore.prototype.salesStageOrderDown = function(salesStage) {
     var oldIndex = parseInt(salesStage.index);
-    this.salesStageList = _.filter(this.salesStageList, function (item) {
+    this.salesStageList = _.filter(this.salesStageList, function(item) {
         var index = item.index;
         if (parseInt(item.index) == oldIndex) {
             index = (parseInt(item.index) + 1).toString();
@@ -162,7 +162,7 @@ SalesStageStore.prototype.salesStageOrderDown = function (salesStage) {
         return true;
     });
 
-    this.salesStageList = this.salesStageList.sort(function (item1, item2) {
+    this.salesStageList = this.salesStageList.sort(function(item1, item2) {
         return item1.index - item2.index;
     });
 
@@ -170,7 +170,7 @@ SalesStageStore.prototype.salesStageOrderDown = function (salesStage) {
 
 
 //展示右侧编辑面板
-SalesStageStore.prototype.showSalesStageForm = function (salesStage) {
+SalesStageStore.prototype.showSalesStageForm = function(salesStage) {
     this.salesStageFormShow = true;
     if (salesStage === "addSalesStage") {
         this.currentSalesStage = emptySalesStage;
@@ -180,36 +180,36 @@ SalesStageStore.prototype.showSalesStageForm = function (salesStage) {
 };
 
 //隐藏右侧编辑面板
-SalesStageStore.prototype.hideSalesStageeForm = function () {
+SalesStageStore.prototype.hideSalesStageeForm = function() {
     this.salesStageFormShow = false;
 };
 
 //展示删除销售阶段提示
-SalesStageStore.prototype.showSalesStageModalDialog = function (salesStage) {
+SalesStageStore.prototype.showSalesStageModalDialog = function(salesStage) {
     salesStage.modalDialogFlag = true;
 };
 
 //隐藏删除销售阶段提示
-SalesStageStore.prototype.hideSalesStageModalDialog = function (salesStage) {
+SalesStageStore.prototype.hideSalesStageModalDialog = function(salesStage) {
     salesStage.modalDialogFlag = false;
 };
 
 //编辑销售阶段顺序
-SalesStageStore.prototype.showSalesStageEditOrder = function () {
+SalesStageStore.prototype.showSalesStageEditOrder = function() {
     this.salesStageEditOrder = true;
 };
 
-SalesStageStore.prototype.changeIsSavingSalesStage = function () {
+SalesStageStore.prototype.changeIsSavingSalesStage = function() {
     this.isSavingSalesStage = true;
 };
 
 //取消编辑销售阶段顺序
-SalesStageStore.prototype.hideSalesStageEditOrder = function () {
+SalesStageStore.prototype.hideSalesStageEditOrder = function() {
     this.salesStageEditOrder = false;
-    this.currentSalesStageList = this.currentSalesStageList.sort(function (item1, item2) {
+    this.currentSalesStageList = this.currentSalesStageList.sort(function(item1, item2) {
         return item1.index - item2.index;
     });
-    this.salesStageList = $.map(this.currentSalesStageList, function (obj) {
+    this.salesStageList = $.map(this.currentSalesStageList, function(obj) {
         return $.extend(true, {}, obj);//返回对象的深拷贝
     });
 };

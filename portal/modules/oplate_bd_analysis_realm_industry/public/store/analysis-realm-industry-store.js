@@ -107,7 +107,7 @@ AnalysisRealmIndustryStore.prototype.setEndTime = function(endTime) {
 //FromAction-从服务器获取当前安全域行业开通总数之后，传递到store，进行数据处理
 AnalysisRealmIndustryStore.prototype.getRealmIndustryAnalysisDataByAjax = function(ret) {
     var RealmIndustryAnalysisListByServer = ret.realmIndustryAnalysisListByServer,
-    //是否一个安全域都没有
+        //是否一个安全域都没有
         noIndustryAtAll = ret.noIndustryAtAll;
     //是否一个安全域也没有
     this.noIndustryAtAll = noIndustryAtAll;

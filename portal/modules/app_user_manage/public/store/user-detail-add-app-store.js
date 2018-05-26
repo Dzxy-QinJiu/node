@@ -256,11 +256,11 @@ UserDetailAddAppStore.prototype.remarkChange = function({field,value}) {
     this.formData.remark[field] = value;
 };
 //延期时间数字
-UserDetailAddAppStore.prototype.delayTimeNumberChange = function (val) {
+UserDetailAddAppStore.prototype.delayTimeNumberChange = function(val) {
     this.formData.delayTimeNumber = val;
 };
 //延期时间范围
-UserDetailAddAppStore.prototype.delayTimeRangeChange = function (val) {
+UserDetailAddAppStore.prototype.delayTimeRangeChange = function(val) {
     this.formData.delayTimeRange = val;
 };
 

@@ -9,7 +9,7 @@ var autosize = require("autosize");
 import Trace from "LIB_DIR/trace";
 require("../css/commission.less");
 var CommissionAndTarget = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             //某条销售目标或者提成比例记录的id
             id : '',
@@ -23,11 +23,11 @@ var CommissionAndTarget = React.createClass({
             value: "",
             //提示文案
             title: Intl.get("common.update", "修改"),
-            setSalesGoals: function () {
+            setSalesGoals: function() {
             },
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             id: this.props.id,
             userInfo: $.extend(true,{},this.props.userInfo),
@@ -38,7 +38,7 @@ var CommissionAndTarget = React.createClass({
             submitErrorMsg: '',
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.userInfo.id !== this.state.userInfo.id || nextProps.value !== this.state.initalValue || nextProps.id !== this.state.id) {
             this.setState({
                 userInfo: $.extend(true,{},nextProps.userInfo),
@@ -47,13 +47,13 @@ var CommissionAndTarget = React.createClass({
             });
         }
     },
-    setEditable: function (e) {
+    setEditable: function(e) {
         this.setState({
             displayType: "edit",
         });
         Trace.traceEvent(e, "点击编辑" + this.props.field);
     },
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         Trace.traceEvent(e, "保存对" + this.props.field + "的修改");
         var value = this.state.value;
         this.setState({
@@ -106,19 +106,19 @@ var CommissionAndTarget = React.createClass({
         });
     },
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         this.setState({
             displayType: "text",
             submitErrorMsg: ''
         });
         Trace.traceEvent(e, "取消对" + this.props.field + "的修改");
     },
-    onInputChange: function (value) {
+    onInputChange: function(value) {
         this.setState({
             value: value
         });
     },
-    render: function () {
+    render: function() {
         var displayCls = classNames({
             'commission-target-text': true,
             'editing': this.state.displayType === 'edit'
@@ -132,9 +132,9 @@ var CommissionAndTarget = React.createClass({
                 {
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={this.props.title}
-                           onClick={(e) => {
-                               this.setEditable(e);
-                           }}></i>
+                            onClick={(e) => {
+                                this.setEditable(e);
+                            }}></i>
                     ) : null
                 }
 
@@ -150,23 +150,23 @@ var CommissionAndTarget = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
-                   onClick={(e) => {
-                       this.handleSubmit(e);
-                   }}></i>
+                    onClick={(e) => {
+                        this.handleSubmit(e);
+                    }}></i>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={(e) => {
-                       this.handleCancel(e);
-                   }}></i>
+                    onClick={(e) => {
+                        this.handleCancel(e);
+                    }}></i>
             </div>
         );
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <InputNumber name="input"
-                             defaultValue={this.state.initalValue}
-                             onChange={this.onInputChange}
-                             autoComplete="off"
-                             min={this.props.min}
-                             max={this.props.max}
+                    defaultValue={this.state.initalValue}
+                    onChange={this.onInputChange}
+                    autoComplete="off"
+                    min={this.props.min}
+                    max={this.props.max}
                 />
                 <div className="text-container">{this.props.countTip}</div>
                 <div className="buttons-container">

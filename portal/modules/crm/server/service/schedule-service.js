@@ -6,7 +6,7 @@ var restApis = {
 };
 exports.restUrls = restApis;
 //获取日程管理列表
-exports.getScheduleList = function (req, res) {
+exports.getScheduleList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: `${restApis.scheduleApis}list`,
@@ -16,7 +16,7 @@ exports.getScheduleList = function (req, res) {
 };
 
 //增加日程管理
-exports.addSchedule = function (req, res) {
+exports.addSchedule = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.scheduleApis + req.body.scheduleType,
@@ -26,7 +26,7 @@ exports.addSchedule = function (req, res) {
 };
 
 //编辑日程管理
-exports.editSchedule = function (req, res) {
+exports.editSchedule = function(req, res) {
     return restUtil.authRest.put(
         {
             url: restApis.scheduleApis + req.params.scheduleId,
@@ -36,7 +36,7 @@ exports.editSchedule = function (req, res) {
 };
 
 //删除日程管理
-exports.deleteSchedule = function (req, res) {
+exports.deleteSchedule = function(req, res) {
     return restUtil.authRest.del(
         {
             url: restApis.scheduleApis + req.body.id,
@@ -46,7 +46,7 @@ exports.deleteSchedule = function (req, res) {
 };
 
 //修改日程管理状态
-exports.handleScheduleStatus = function (req, res) {
+exports.handleScheduleStatus = function(req, res) {
     return restUtil.authRest.put(
         {
             url: restApis.scheduleApis + "handle/" + req.params.scheduleId + '/' + req.params.status,

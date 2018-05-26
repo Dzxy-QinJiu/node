@@ -117,9 +117,9 @@ class ClueAnalysisPanel extends React.Component {
         });
     };
     closeCustomersContentPanel=()=>{
-       this.setState({
-           showCustomerIds: []
-       });
+        this.setState({
+            showCustomerIds: []
+        });
     };
     closeClueAnalysisPanel = () =>{
         ClueAnalysisAction.setInitState();
@@ -267,7 +267,7 @@ class ClueAnalysisPanel extends React.Component {
     }
 }
 ClueAnalysisPanel.defaultProps = {
-    closeClueAnalysisPanel: function () {
+    closeClueAnalysisPanel: function() {
     },
 
 

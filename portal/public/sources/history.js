@@ -6,7 +6,7 @@
 var createHistory = require("history").createHistory;
 var url = require("url");
 var history = createHistory();
-history.listenBefore(function (location) {
+history.listenBefore(function(location) {
     var parseObj = url.parse(window.location.href);
     if (parseObj.pathname !== location.pathname) {
         alt.flush();

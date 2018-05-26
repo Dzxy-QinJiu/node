@@ -9,7 +9,7 @@ import Translate from '../intl/i18nTemplate';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 var HomeIndexRoute = React.createClass({
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function () {
+    componentWillMount: function() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
         if (sideBarMenus[0] && sideBarMenus[0].routePath) {
@@ -17,7 +17,7 @@ var HomeIndexRoute = React.createClass({
         }
     },
     //渲染内容为空，只做跳转
-    render: function () {
+    render: function() {
         return null;
     }
 });
@@ -26,10 +26,10 @@ var HomeIndexRoute = React.createClass({
 //如果访问/，销售人员跳转到销售首页的第一个路由
 var SalesIndexRoute = React.createClass({
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function () {
+    componentWillMount: function() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
-        _.some(sideBarMenus, function (menu) {
+        _.some(sideBarMenus, function(menu) {
             if (menu.routePath == "sales/home") {
                 //跳到销售首页
                 history.replace("sales/home");
@@ -38,7 +38,7 @@ var SalesIndexRoute = React.createClass({
         });
     },
     //渲染内容为空，只做跳转
-    render: function () {
+    render: function() {
         return null;
     }
 });
@@ -46,10 +46,10 @@ var SalesIndexRoute = React.createClass({
 //如果访问/，销售人员跳转到销售首页的第一个路由
 var MyAppIndexRoute = React.createClass({
     //当组件即将加载的时候，跳转到第一个路由
-    componentWillMount: function () {
+    componentWillMount: function() {
         var data = userData.getUserData();
         var sideBarMenus = data.sideBarMenus;
-        _.some(sideBarMenus, function (menu) {
+        _.some(sideBarMenus, function(menu) {
             if (menu.routePath == "my_app") {
                 //跳到销售首页
                 history.replace("my_app");
@@ -58,31 +58,31 @@ var MyAppIndexRoute = React.createClass({
         });
     },
     //渲染内容为空，只做跳转
-    render: function () {
+    render: function() {
         return null;
     }
 });
 
 //跳转到合同仪表盘
 var ContractIndexRoute = React.createClass({
-    componentWillMount: function () {
+    componentWillMount: function() {
         var data = userData.getUserData();
         var subModules = data.subModules.contract;
-        _.some(subModules, function (module) {
+        _.some(subModules, function(module) {
             if (module.routePath == "contract/dashboard") {
                 history.replace("contract/dashboard");
                 return true;
             }
         });
     },
-    render: function () {
+    render: function() {
         return null;
     }
 });
 
 //如果之前是直接请求某个模块的路径，后登录的
 var TurnPageIndexRoute = React.createClass({
-    componentWillMount: function () {
+    componentWillMount: function() {
         var data = userData.getUserData();
         //跳到对应页
         history.replace(data.preUrl || "/");
@@ -91,7 +91,7 @@ var TurnPageIndexRoute = React.createClass({
         return true;
     },
     //渲染内容为空，只做跳转
-    render: function () {
+    render: function() {
         return null;
     }
 });
@@ -101,11 +101,11 @@ function getUserType(callback) {
         url: '/rest/group_position',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             if (callback)
                 callback.call(this, _.isArray(list) ? list[0] : "");
         },
-        error: function (error) {
+        error: function(error) {
             Message.error(error.responseJSON);
             if (callback)
                 callback.call(this, "");
@@ -118,91 +118,91 @@ function init(options) {
     var childRoutes = [];
     childRoutes.push(require("../../modules/weekly_report"));
     var user = userData.getUserData();
-    _.each(user.modules, function (module) {
+    _.each(user.modules, function(module) {
         switch (module) {
-            //销售主页
-            case 'sales_home_page':
-                //如果是普通销售
-                if (user.isCommonSales) {
-                    childRoutes.push(require("../../modules/common_sales_home_page"));
-                } else {
-                    childRoutes.push(require("../../modules/sales_home_page"));
-                }
-                break;
+        //销售主页
+        case 'sales_home_page':
+            //如果是普通销售
+            if (user.isCommonSales) {
+                childRoutes.push(require("../../modules/common_sales_home_page"));
+            } else {
+                childRoutes.push(require("../../modules/sales_home_page"));
+            }
+            break;
             //域管理
-            case 'realm_manage':
-                childRoutes.push(require("../../modules/realm_manage"));
-                break;
+        case 'realm_manage':
+            childRoutes.push(require("../../modules/realm_manage"));
+            break;
             //用户管理
-            case 'user_manage':
-                childRoutes.push(require("../../modules/user_manage"));
-                break;
+        case 'user_manage':
+            childRoutes.push(require("../../modules/user_manage"));
+            break;
             //安全域运营分析
-            case 'analysis/realm':
-                childRoutes.push(require("./realm_analysis"));
-                break;
-            case 'oplate_user_analysis':
-                childRoutes.push(require("../../modules/oplate_user_analysis"));
-                break;
-            case 'oplate_customer_analysis':
-                childRoutes.push(require("../../modules/oplate_customer_analysis"));
-                break;
+        case 'analysis/realm':
+            childRoutes.push(require("./realm_analysis"));
+            break;
+        case 'oplate_user_analysis':
+            childRoutes.push(require("../../modules/oplate_user_analysis"));
+            break;
+        case 'oplate_customer_analysis':
+            childRoutes.push(require("../../modules/oplate_customer_analysis"));
+            break;
             //角色权限管理
-            case 'background_management':
-                childRoutes.push(require("./background_management"));
-                break;
+        case 'background_management':
+            childRoutes.push(require("./background_management"));
+            break;
             //个人信息管理
-            case 'user_info_manage':
-                childRoutes.push(require("./user_info_manage"));
-                break;
+        case 'user_info_manage':
+            childRoutes.push(require("./user_info_manage"));
+            break;
             //客户关系管理
-            case 'crm':
-                childRoutes.push(require("../../modules/crm"));
-                break;
+        case 'crm':
+            childRoutes.push(require("../../modules/crm"));
+            break;
             //线索客户管理
-            case 'clue_customer':
-                childRoutes.push(require("../../modules/clue_customer"));
-                break;
+        case 'clue_customer':
+            childRoutes.push(require("../../modules/clue_customer"));
+            break;
             //通话记录
-            case 'call_record':
-                childRoutes.push(require("../../modules/call_record"));
-                break;
+        case 'call_record':
+            childRoutes.push(require("../../modules/call_record"));
+            break;
             //合同管理
-            case 'contract':
-                childRoutes.push(require("./contract"));
-                break;
+        case 'contract':
+            childRoutes.push(require("./contract"));
+            break;
             //应用管理
-            case 'app_manage':
-                childRoutes.push(require("../../modules/app_manage"));
-                break;
+        case 'app_manage':
+            childRoutes.push(require("../../modules/app_manage"));
+            break;
             //应用管理
-            case 'my_app_manage':
-                childRoutes.push(require("../../modules/my_app_manage"));
-                break;
+        case 'my_app_manage':
+            childRoutes.push(require("../../modules/my_app_manage"));
+            break;
             //应用用户管理
-            case 'user':
-                childRoutes.push(require("./app_user_manage"));
-                break;
+        case 'user':
+            childRoutes.push(require("./app_user_manage"));
+            break;
             //通知
-            case 'notification':
-                childRoutes.push(require("../../modules/notification"));
-                break;
-            case 'online':
-                childRoutes.push(require("./user_online"));
-                break;
-            case 'report':
-                childRoutes.push(require("./report"));
-                break;
-            case 'app_user_manage_apply':
-                childRoutes.push(require("../../modules/user_apply"));
-                break;
-            case 'app_overview':
-                childRoutes.push(require("../../modules/app_overview"));
-                break;
+        case 'notification':
+            childRoutes.push(require("../../modules/notification"));
+            break;
+        case 'online':
+            childRoutes.push(require("./user_online"));
+            break;
+        case 'report':
+            childRoutes.push(require("./report"));
+            break;
+        case 'app_user_manage_apply':
+            childRoutes.push(require("../../modules/user_apply"));
+            break;
+        case 'app_overview':
+            childRoutes.push(require("../../modules/app_overview"));
+            break;
             //日程管理
-            case 'schedule_management':
-                childRoutes.push(require("../../modules/schedule_management"));
-                break;
+        case 'schedule_management':
+            childRoutes.push(require("../../modules/schedule_management"));
+            break;
         }
     });
 
@@ -216,7 +216,7 @@ function init(options) {
         childRoutes: [{
             path: '/',
             //添加indexroute，做首页访问的跳转
-            getIndexRoute: function (location, callback) {
+            getIndexRoute: function(location, callback) {
                 if (user.preUrl && user.preUrl !== "/") {
                     callback(null, {
                         component: TurnPageIndexRoute

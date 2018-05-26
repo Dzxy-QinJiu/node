@@ -27,29 +27,29 @@ function noop() {
 
 var LeftTree = React.createClass({
     mixins: [reactIntlMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             getOrganizationMemberList: noop
         };
     },
 
-    showOperationArea: function (item) {
+    showOperationArea: function(item) {
         OrganizationAction.showOperationArea(item);
     },
 
-    editGroup: function (item) {
+    editGroup: function(item) {
         OrganizationAction.editGroup(item);
     },
 
-    addGroup: function (item) {
+    addGroup: function(item) {
         OrganizationAction.addGroup(item);
     },
 
-    deleteGroup: function (item) {
+    deleteGroup: function(item) {
         OrganizationAction.deleteGroup(item);
     },
 
-    cancelOrganizationForm: function (item) {
+    cancelOrganizationForm: function(item) {
         if (item && item.isEditGroup) {
             OrganizationAction.cancelEditGroup(item);
         } else {
@@ -57,30 +57,30 @@ var LeftTree = React.createClass({
             setTimeout(()=>$(".organization-search-input-container .search-input").val(this.props.searchContent));
         }
     },
-    bodyClickFun: function (e) {
+    bodyClickFun: function(e) {
         var target = e.target;
         if (this.refs.operationElement && !$.contains(this.refs.operationElement, target)) {
             OrganizationAction.hideAllOperationArea();
         }
     },
 
-    bindEvent: function () {
+    bindEvent: function() {
         $('body').on('click', this.bodyClickFun);
     },
 
-    unbindEvent: function () {
+    unbindEvent: function() {
         $('body').off('click', this.bodyClickFun);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.bindEvent();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         this.unbindEvent();
     },
 
-    toggleGroupTree: function (item, event) {
+    toggleGroupTree: function(item, event) {
         event.stopPropagation();
         var groupId = item.key;
         if (item.isEditGroup || item.isAddGroup) {
@@ -97,7 +97,7 @@ var LeftTree = React.createClass({
         OrganizationAction.toggleGroupTree(groupId);
     },
 
-    onSelectGroup: function (item, event) {
+    onSelectGroup: function(item, event) {
         event.stopPropagation();
 
         if (item.isEditGroup || item.isAddGroup) {
@@ -121,26 +121,26 @@ var LeftTree = React.createClass({
         OrganizationAction.getOrganizationMemberList(groupId);
         OrganizationAction.setSelectOrganizationGroup(groupId);
     },
-    hideModalDialog: function () {
+    hideModalDialog: function() {
         OrganizationAction.hideModalDialog(this.props.deleteGroupItem);
     },
-    saveDeleteGroup: function () {
+    saveDeleteGroup: function() {
         OrganizationAction.saveDeleteGroup(this.props.deleteGroupItem.key);
     },
 
-    hideDelTooltip: function () {
+    hideDelTooltip: function() {
         OrganizationAction.clearDelGroupErrorMsg();
     },
-    addOrganizationRoot: function () {
+    addOrganizationRoot: function() {
         OrganizationAction.addOrganizationRoot();
     },
-    operationElement: function (item) {
+    operationElement: function(item) {
         return (
             <div className="tree-operation-btn-div" ref="operationElement">
                 <PrivilegeChecker check="USER_ORGANIZATION_EDIT">
                     <div className="tree-operation-btn-div-item" onClick={this.editGroup.bind(this, item)}>
-                    <span className="icon-operation iconfont icon-update">
-                    </span>
+                        <span className="icon-operation iconfont icon-update">
+                        </span>
                         <span className="operation-btn-item-span">
                             <ReactIntl.FormattedMessage id="common.update" defaultMessage="修改"/>
                         </span>
@@ -148,8 +148,8 @@ var LeftTree = React.createClass({
                 </PrivilegeChecker>
                 <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
-                    <span className="icon-operation iconfont icon-delete">
-                    </span>
+                        <span className="icon-operation iconfont icon-delete">
+                        </span>
                         <span className="operation-btn-item-span">
                             <ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除"/>
                         </span>
@@ -158,7 +158,7 @@ var LeftTree = React.createClass({
             </div>
         );
     },
-    element: function (item, type) {
+    element: function(item, type) {
         let iconflag = <i className="iconfont icon-zuzhi" title={Intl.get("user.organization","组织")}></i>;
         if (item.category == CATEGORY_TYPE.DEPARTMENT) {
             iconflag = <i className="iconfont icon-bumen" title={Intl.get("crm.113","部门")}></i>;
@@ -191,20 +191,20 @@ var LeftTree = React.createClass({
                         {//团队下没有字团队，因此，团队上没有添加按钮
                             item.category == CATEGORY_TYPE.TEAM ? null :
                                 <PrivilegeChecker check="USER_ORGANIZATION_ADD">
-                            <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.add.department","添加部门"):Intl.get("common.add","添加")}
-                                  onClick={this.addGroup.bind(this, item)}/>
+                                    <span className="icon-operation iconfont icon-add tree-operation-icon"
+                                        title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.add.department","添加部门"):Intl.get("common.add","添加")}
+                                        onClick={this.addGroup.bind(this, item)}/>
                                 </PrivilegeChecker>
                         }
                         <PrivilegeChecker check="USER_ORGANIZATION_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.edit.department","编辑部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.edit.team","编辑团队"):Intl.get("organization.edit.organization","编辑组织")}
-                                  onClick={this.editGroup.bind(this, item)}/>
+                                title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.edit.department","编辑部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.edit.team","编辑团队"):Intl.get("organization.edit.organization","编辑组织")}
+                                onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                  title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.del.department","删除部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.del.team","删除团队"):Intl.get("organization.del.organization","删除组织")}
-                                  onClick={this.deleteGroup.bind(this, item)}/>
+                                title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.del.department","删除部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.del.team","删除团队"):Intl.get("organization.del.organization","删除组织")}
+                                onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                     </div>
                 </div>
@@ -212,7 +212,7 @@ var LeftTree = React.createClass({
             </div>);
     },
 
-    treeElement: function (btnClass, item, type) {
+    treeElement: function(btnClass, item, type) {
 
         if (!type) {
             btnClass += " no-has-children";
@@ -253,13 +253,13 @@ var LeftTree = React.createClass({
         );
     },
     //隐藏搜索框
-    clearSearchInput: function () {
+    clearSearchInput: function() {
         OrganizationAction.setSearchContent("");
         OrganizationAction.resetSearchOrganization();
         $(".organization-search-input-container .search-input").val("");
     },
     //搜索组织的事件处理
-    searchEvent: function (searchContent) {
+    searchEvent: function(searchContent) {
         searchContent = searchContent ? searchContent.trim() : '';
         if (searchContent) {
             //搜索内容的设置
@@ -274,7 +274,7 @@ var LeftTree = React.createClass({
             OrganizationAction.setSearchContent("");
         }
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var organizationGroupList = this.props.organizationGroupList;
 
@@ -332,8 +332,8 @@ var LeftTree = React.createClass({
 
                         </div>
                         <div className="add-root-organization-btn"
-                             title={Intl.get("organization.add.organization", "添加组织")}
-                             onClick={this.addOrganizationRoot}>
+                            title={Intl.get("organization.add.organization", "添加组织")}
+                            onClick={this.addOrganizationRoot}>
                             <span className="iconfont icon-add"/>
                         </div>
                     </div>)
@@ -346,15 +346,15 @@ var LeftTree = React.createClass({
                         </ul>
                     </GeminiScrollbar>
                     <ModalDialog modalContent={modalContent}
-                                 modalShow={this.props.deleteGroupItem.modalDialogFlag}
-                                 container={this}
-                                 hideModalDialog={this.hideModalDialog}
-                                 delete={this.saveDeleteGroup}
+                        modalShow={this.props.deleteGroupItem.modalDialogFlag}
+                        container={this}
+                        hideModalDialog={this.hideModalDialog}
+                        delete={this.saveDeleteGroup}
                     />
                     {this.props.delOrganizationErrorMsg ? (<AlertTimer time={2000}
-                                                                       message={this.props.delOrganizationErrorMsg}
-                                                                       type='error' showIcon
-                                                                       onHide={this.hideDelTooltip}/>) : null}
+                        message={this.props.delOrganizationErrorMsg}
+                        type='error' showIcon
+                        onHide={this.hideDelTooltip}/>) : null}
                 </div>
             </div>
         );

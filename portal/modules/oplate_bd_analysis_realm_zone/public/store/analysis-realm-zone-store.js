@@ -111,8 +111,8 @@ AnalysisRealmZoneStore.prototype.setEndTime = function(endTime) {
 AnalysisRealmZoneStore.prototype.getRealmZoneAnalysisDataByAjax = function(ret) {
     //服务器返回数据
     var realmZoneAnalysisListByServer = ret.realmZoneAnalysisListByServer,
-    //是否一个安全域都没有
-    noRealmAtAll = ret.noRealmAtAll;
+        //是否一个安全域都没有
+        noRealmAtAll = ret.noRealmAtAll;
     //是否一个安全域也没有
     this.noRealmAtAll = noRealmAtAll;
     //设置不loading

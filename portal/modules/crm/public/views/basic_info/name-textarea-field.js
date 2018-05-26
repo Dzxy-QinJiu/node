@@ -18,16 +18,16 @@ import userData from "PUB_DIR/sources/user-data";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             customerId: "",
             name: "",
             //修改成功
-            modifySuccess: function () {
+            modifySuccess: function() {
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,
             isMerge: this.props.isMerge,
@@ -44,7 +44,7 @@ let NameTextareaField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
             let stateData = this.getInitialState();
@@ -55,7 +55,7 @@ let NameTextareaField = React.createClass({
         }
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         if (this.state.loading) return;
         if (this.state.formData.name == this.props.name) {
             this.props.setEditNameFlag(false);
@@ -95,7 +95,7 @@ let NameTextareaField = React.createClass({
     },
 
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         let formData = this.state.formData;
         let status = this.state.status;
         formData.name = this.props.name;
@@ -111,7 +111,7 @@ let NameTextareaField = React.createClass({
     },
 
     //客户名格式验证
-    checkCustomerName: function (rule, value, callback) {
+    checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
@@ -126,7 +126,7 @@ let NameTextareaField = React.createClass({
         }
     },
     //客户名唯一性验证
-    checkOnlyCustomerName: function (e) {
+    checkOnlyCustomerName: function(e) {
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && customerName != this.props.name && nameRegex.test(customerName)) {
@@ -150,7 +150,7 @@ let NameTextareaField = React.createClass({
         }
     },
     //客户名唯一性验证的提示信息
-    renderCustomerNameMsg: function () {
+    renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
             let name = this.state.formData.name;
             const list = _.clone(this.state.existCustomerList);
@@ -168,7 +168,7 @@ let NameTextareaField = React.createClass({
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)"
-                           onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                     ) : (
                         <span>{customer.name} ({customer.user_name})</span>
                     )}
@@ -181,7 +181,7 @@ let NameTextareaField = React.createClass({
                                     <div>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
-                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                                                onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                                             </div>
                                         ) : (
                                             <div>{customer.name} ({customer.user_name})</div>
@@ -201,7 +201,7 @@ let NameTextareaField = React.createClass({
             return "";
         }
     },
-    render: function () {
+    render: function() {
         let formData = this.state.formData;
         let status = this.state.status;
         return (
@@ -217,17 +217,17 @@ let NameTextareaField = React.createClass({
                     >
                         <Validator rules={[{validator: this.checkCustomerName}]}>
                             <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"
-                                              onBlur={this.checkOnlyCustomerName}
-                                              onChange={this.setField.bind(this, 'name')}
+                                onBlur={this.checkOnlyCustomerName}
+                                onChange={this.setField.bind(this, 'name')}
                             />
                         </Validator>
                     </FormItem>
                     {this.renderCustomerNameMsg()}
                 </Validation>
                 <SaveCancelButton loading={this.state.loading}
-                                  saveErrorMsg={this.state.submitErrorMsg}
-                                  handleSubmit={this.handleSubmit}
-                                  handleCancel={this.handleCancel}
+                    saveErrorMsg={this.state.submitErrorMsg}
+                    handleSubmit={this.handleSubmit}
+                    handleCancel={this.handleCancel}
                 />
             </Form>
         );

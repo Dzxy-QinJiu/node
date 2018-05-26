@@ -7,7 +7,7 @@
 var errorLogger = require("../utils/logger").getLogger('error');
 let BackendIntl = require("../../lib/utils/backend_intl");
 
-module.exports = function (error, req, res, next) {
+module.exports = function(error, req, res, next) {
     if (error) {
         var status = res.statusCode || 500;
         var backendIntl = new BackendIntl(req.query.lang || undefined);

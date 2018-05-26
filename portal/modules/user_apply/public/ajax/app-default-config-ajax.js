@@ -9,10 +9,10 @@ exports.getApplyAppDefaultInfo = function(obj) {
         url: '/rest/usertypeconfig',
         dateType: 'json',
         data: obj,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON || Intl.get("user.apply.detail.get.config.failed", "获取应用默认配置失败！"));
         }
     });

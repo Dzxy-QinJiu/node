@@ -7,35 +7,35 @@ var TimeLine = require("../../../../../components/time-line");
 import RightPanelScrollBar from "../components/rightPanelScrollBar";
 
 var Dynamic = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return this.getStateFromStore();
     },
-    getStateFromStore: function () {
+    getStateFromStore: function() {
         return {
             dynamicList: DynamicStore.getDynamicListFromView(),
             windowHeight: $(window).height()
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(this.getStateFromStore());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         DynamicStore.listen(this.onStoreChange);
         DynamicAction.getDynamicList(this.props.currentId);
         $(window).on("resize", this.onStoreChange);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.currentId !== this.props.currentId) {
             setTimeout(() => {
                 DynamicAction.getDynamicList(nextProps.currentId);
             });
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         DynamicStore.unlisten(this.onStoreChange);
         $(window).off("resize", this.onStoreChange);
     },
-    timeLineItemRender: function (item) {
+    timeLineItemRender: function(item) {
         const call_time = Intl.get("crm.199",
             "在{time}拨打了号码{phone} ，通话时长{duration} 秒",
             {
@@ -56,7 +56,7 @@ var Dynamic = React.createClass({
             </dl>
         );
     },
-    render: function () {
+    render: function() {
         return (
             <RightPanelScrollBar>
                 <div className="dynamicList">

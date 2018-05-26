@@ -17,7 +17,7 @@ var RightPanelCancel = rightPanelUtil.RightPanelCancel;
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 function cx(classNames) {
     if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function (className) {
+        return Object.keys(classNames).filter(function(className) {
             return classNames[className];
         }).join(' ');
     } else {
@@ -30,7 +30,7 @@ function noop() {
 
 var SalesStageForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             submitSalesStageForm: noop,
             cancelSalesStageForm: noop,
@@ -43,7 +43,7 @@ var SalesStageForm = React.createClass({
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             status: {
                 id: {},
@@ -55,19 +55,19 @@ var SalesStageForm = React.createClass({
             salesStageFormShow: this.props.salesStageFormShow
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         var stateData = this.getInitialState();
         stateData.formData = nextProps.salesStage;
         stateData.salesStageFormShow = nextProps.salesStageFormShow;
         this.setState(stateData);
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         if (this.state.formData.id) {
             this.refs.validation.validate(noop);
         }
     },
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -81,17 +81,17 @@ var SalesStageForm = React.createClass({
     },
 
     //取消事件
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         this.props.cancelSalesStageForm();
     },
 
     //保存角色信息
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         var _this = this;
         var validation = this.refs.validation;
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             } else {
@@ -100,7 +100,7 @@ var SalesStageForm = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -121,9 +121,9 @@ var SalesStageForm = React.createClass({
                                 help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
                                 <Validator rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                     <Input name="name" id="name" value={formData.name}
-                                           onChange={this.setField.bind(this, 'name')}
-                                           placeholder={Intl.get("common.required.tip", "必填项*")}
-                                           data-tracename="填写/编辑销售阶段"
+                                        onChange={this.setField.bind(this, 'name')}
+                                        placeholder={Intl.get("common.required.tip", "必填项*")}
+                                        data-tracename="填写/编辑销售阶段"
                                     />
                                 </Validator>
                             </FormItem>
@@ -141,11 +141,11 @@ var SalesStageForm = React.createClass({
                                 <Validator
                                     rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                                     <Input name="description" id="description"
-                                           value={formData.description}
-                                           onChange={_this.setField.bind(_this, 'description')}
-                                           type="textarea"
-                                           rows="3"
-                                           data-tracename="填写/编辑销售阶段描述"
+                                        value={formData.description}
+                                        onChange={_this.setField.bind(_this, 'description')}
+                                        type="textarea"
+                                        rows="3"
+                                        data-tracename="填写/编辑销售阶段描述"
                                     />
                                 </Validator>
                             </FormItem>

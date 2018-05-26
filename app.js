@@ -20,7 +20,7 @@ var auth = require("./portal/lib/utils/auth");
 process.env.NODE_CONFIG = JSON.stringify(config);
 
 //让log4js-config模块使用conf/config.js里的配置，而不用去找config/app-logging.json文件
-require("log4js-config").init(function () {
+require("log4js-config").init(function() {
     return require("./conf/logger.js");
 });
 
@@ -89,7 +89,7 @@ require("./portal/controller")(app);
 app.use(require("./portal/lib/middlewares/404"));
 //处理uncaughtException
 var errorLogger = require("./portal/lib/utils/logger").getLogger("error");
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', function(err) {
     errorLogger.error(err.stack || err.message || 'uncaughtException');
 });
 //为程序指定一个进程名
@@ -97,14 +97,14 @@ process.title = config.processTitle;
 // init rest-global-handler
 require('./portal/global/rest-global-handler');
 //启动应用
-var server = app.listen(app.get('port'), function () {
+var server = app.listen(app.get('port'), function() {
     // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
 
 //初始化coordinator
 if (auth.getLang() !== "es_VE") {
-    coordinator(function () {
+    coordinator(function() {
         //Coordinator启动后，创建socketIO,启动推送
         require("./portal/modules/socketio").startSocketio(server);
     });

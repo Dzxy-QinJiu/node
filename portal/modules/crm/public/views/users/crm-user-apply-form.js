@@ -288,11 +288,11 @@ class CrmUserApplyForm extends React.Component {
                     >
                         {this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
-                                        onChange={this.setDelayDeadlineTime.bind(this)}
-                                        disabledDate={this.setDisabledDate}
-                                        defaultValue={moment(this.state.formData.delayDeadlineTime)}
-                                        allowClear={false}
-                                        showToday={false}
+                                onChange={this.setDelayDeadlineTime.bind(this)}
+                                disabledDate={this.setDisabledDate}
+                                defaultValue={moment(this.state.formData.delayDeadlineTime)}
+                                allowClear={false}
+                                showToday={false}
                             />
                         ) : (
                             <InputNumber
@@ -310,15 +310,15 @@ class CrmUserApplyForm extends React.Component {
                             onChange={this.delayTimeRangeChange.bind(this)}
                         >
                             <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day"
-                                                                             defaultMessage="天"/></Option>
+                                defaultMessage="天"/></Option>
                             <Option value="weeks"><ReactIntl.FormattedMessage id="common.time.unit.week"
-                                                                              defaultMessage="周"/></Option>
+                                defaultMessage="周"/></Option>
                             <Option value="months"><ReactIntl.FormattedMessage id="common.time.unit.month"
-                                                                               defaultMessage="月"/></Option>
+                                defaultMessage="月"/></Option>
                             <Option value="years"><ReactIntl.FormattedMessage id="common.time.unit.year"
-                                                                              defaultMessage="年"/></Option>
+                                defaultMessage="年"/></Option>
                             <Option value="custom"><ReactIntl.FormattedMessage id="user.time.custom"
-                                                                               defaultMessage="自定义"/></Option>
+                                defaultMessage="自定义"/></Option>
                         </Select>
                     </FormItem>
                 </div>
@@ -328,12 +328,12 @@ class CrmUserApplyForm extends React.Component {
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this, 'over_draft')}
-                                value={this.state.formData.over_draft}>
+                        value={this.state.formData.over_draft}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用"/></Radio>
                         <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade"
-                                                                             defaultMessage="降级"/></Radio>
+                            defaultMessage="降级"/></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability"
-                                                                             defaultMessage="不变"/></Radio>
+                            defaultMessage="不变"/></Radio>
                     </RadioGroup>
                 </FormItem>
                 {/*申请延期要填备注，批量延期不需要填备注*/}
@@ -358,13 +358,13 @@ class CrmUserApplyForm extends React.Component {
                 <Icon type="loading"/>
             );
         }
-        const hide = function () {
+        const hide = function() {
             this.setState({applyErrorMsg: ""});
         };
         if (this.state.applyErrorMsg) {
             return (
                 <AlertTimer time={3000} message={this.state.applyErrorMsg} type="error" showIcon
-                            onHide={hide.bind(this)}/>
+                    onHide={hide.bind(this)}/>
             );
         }
         return null;

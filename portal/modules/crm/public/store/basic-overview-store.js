@@ -17,7 +17,7 @@ function CRMStore() {
     this.bindActions(CRMActions);
 }
 //获取客户开通的用户列表
-CRMStore.prototype.getCrmUserList = function (resultObj) {
+CRMStore.prototype.getCrmUserList = function(resultObj) {
     if (resultObj.loading) {
         this.isUserLoading = true;
         this.userErrorMsg = "";
@@ -34,7 +34,7 @@ CRMStore.prototype.getCrmUserList = function (resultObj) {
         }
     }
 };
-CRMStore.prototype.getNotCompletedScheduleList = function (result) {
+CRMStore.prototype.getNotCompletedScheduleList = function(result) {
     if (result.loading) {
         this.isLoadingScheduleList = true;
         this.getScheduleListErrmsg = "";
@@ -48,27 +48,27 @@ CRMStore.prototype.getNotCompletedScheduleList = function (result) {
         this.scheduleList = _.isArray(result.data.list) ? result.data.list : [];
     }
 };
-CRMStore.prototype.afterHandleStatus = function (newStatusObj) {
+CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
     var curSchedule = _.filter(this.scheduleList, (schedule)=>{return schedule.id == newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 
-CRMStore.prototype.getEditShowFlag = function () {
+CRMStore.prototype.getEditShowFlag = function() {
     return this.getState().editShowFlag;
 };
 
 //监听Actions的方法处理
-CRMStore.prototype.getBasicData = function (basicData) {
+CRMStore.prototype.getBasicData = function(basicData) {
     this.basicData = basicData;
     this.userTotal = basicData && _.isArray(basicData.app_user_ids) ? basicData.app_user_ids.length : 0;
     this.basicIsLoading = false;
 };
 
-CRMStore.prototype.setBasicState = function (state) {
+CRMStore.prototype.setBasicState = function(state) {
     this.basicIsLoading = state;
 };
 
-CRMStore.prototype.submitBaiscForm = function (newBasicData) {
+CRMStore.prototype.submitBaiscForm = function(newBasicData) {
     //如果当前展示的是要修改的客户资料，则更新，否则，不更新
     if (newBasicData.id == this.basicData.id) {
         this.basicData = newBasicData;

@@ -25,7 +25,7 @@ function CrmActions() {
         "updateCustomerDefContact"
     );
 
-    this.queryCustomer = function (condition, rangParams, pageSize, sorter, queryObj) {
+    this.queryCustomer = function(condition, rangParams, pageSize, sorter, queryObj) {
         this.dispatch({error: false, loading: true});
         crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -39,19 +39,19 @@ function CrmActions() {
         });
     };
 
-    this.addCustomer = function (newCus, cb) {
+    this.addCustomer = function(newCus, cb) {
         var _this = this;
-        crmAjax.addCustomer(newCus).then(function (data) {
+        crmAjax.addCustomer(newCus).then(function(data) {
             if (data && _.isArray(data.result)) {
                 _this.dispatch(data.result[0]);
             }
             cb(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             cb(errorMsg || Intl.get("crm.192", "添加客户失败!"));
         });
     };
 
-    this.deleteCustomer = function (ids) {
+    this.deleteCustomer = function(ids) {
         crmAjax.deleteCustomer(ids).then((data) => {
             if (data && data.code === 0) {
                 message.success(Intl.get("crm.138", "删除成功"));
@@ -64,7 +64,7 @@ function CrmActions() {
         });
     };
 
-    this.updateCustomer = function (newCus, cb) {
+    this.updateCustomer = function(newCus, cb) {
         crmAjax.updateCustomer(newCus).then(result => {
             if (_.isFunction(cb)) cb();
         }, errorMsg => {
@@ -74,43 +74,43 @@ function CrmActions() {
     };
 
     //修改后刷新客户列表中对应的客户数据
-    this.refreshCustomerList = function (customerId) {
+    this.refreshCustomerList = function(customerId) {
         var _this = this;
-        crmAjax.getCustomerById(customerId).then(function (data) {
+        crmAjax.getCustomerById(customerId).then(function(data) {
             _this.dispatch(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("crm.189", "更新客户列表失败!"));
         });
     };
     //客户名唯一性的验证
-    this.checkOnlyCustomerName = function (customerName, callback, customerId) {
+    this.checkOnlyCustomerName = function(customerName, callback, customerId) {
         let queryObj = {name: customerName};
         if (customerId) {
             queryObj.customer_id = customerId;
         }
-        crmAjax.checkOnlyCustomer(queryObj).then(function (data) {
+        crmAjax.checkOnlyCustomer(queryObj).then(function(data) {
             if (callback) {
                 callback(data);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback(errorMsg || Intl.get("crm.193", "客户名唯一性验证失败！"));
             }
         });
     };
     //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function (phone, callback) {
-        crmAjax.checkOnlyCustomer({phone: phone}).then(function (data) {
+    this.checkOnlyContactPhone = function(phone, callback) {
+        crmAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
             if (callback) {
                 callback(data);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback(errorMsg || Intl.get("crm.194", "联系人电话唯一性验证失败"));
             }
         });
     };
-    this.getIndustries = function (callback) {
+    this.getIndustries = function(callback) {
         crmAjax.getIndustries().then((list) => {
             if (callback) {
                 callback(list);
@@ -122,7 +122,7 @@ function CrmActions() {
         });
     };
     //是否能继续添加客户,如果是0 是可以转入的，如果大于0，代表超出客户的数量
-    this.getCustomerLimit = function (reqObj, callback) {
+    this.getCustomerLimit = function(reqObj, callback) {
         crmAjax.getCustomerLimit(reqObj).then((data) => {
             _.isFunction(callback) && callback(data);
         }, (errorMsg) => {

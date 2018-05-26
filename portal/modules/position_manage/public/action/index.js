@@ -17,19 +17,19 @@ class PositionActions {
     getPhoneOrderList(reqParam) {
         this.dispatch({ loading: true ,error: false});
         PositionAjax.getPhoneOrderList(reqParam).then( (resData) => {
-                this.dispatch({ loading: false, error: false, resData: resData});
-            }, (errMsg) => {
-                this.dispatch({loading: false, error: true, errMsg: errMsg});
-            }
+            this.dispatch({ loading: false, error: false, resData: resData});
+        }, (errMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errMsg});
+        }
         );
     }
     // 获取未绑定座席号的用户列表
     getUnbindMemberList(reqRealm) {
         PositionAjax.getUnbindMemberList(reqRealm).then( (resData) => {
-                this.dispatch({ error: false, resData: resData});
-            }, (errMsg) => {
-                this.dispatch({ error: true, errMsg: errMsg});
-            }
+            this.dispatch({ error: false, resData: resData});
+        }, (errMsg) => {
+            this.dispatch({ error: true, errMsg: errMsg});
+        }
         );
     }
     

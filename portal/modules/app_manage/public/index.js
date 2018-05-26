@@ -18,28 +18,28 @@ var openTimeout = null;//打开面板时的时间延迟设置
 var focusTimeout = null;//focus事件的时间延迟设置
 var DEFAULT_TAG = "全部", DISABLE = "disable";
 var AppManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return AppStore.getState();
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(AppStore.getState());
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         AppStore.listen(this.onChange);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         AppStore.unlisten(this.onChange);
     },
     //获取搜索条件
-    getSearchObj: function (curPage, pageSize, searchContent) {
+    getSearchObj: function(curPage, pageSize, searchContent) {
         var searchObj = {
-            cur_page: curPage,
-            page_size: pageSize
-        }, selectTag = this.state.selectTag, selectStatus = this.state.selectStatus;
+                cur_page: curPage,
+                page_size: pageSize
+            }, selectTag = this.state.selectTag, selectStatus = this.state.selectStatus;
         //搜索框的搜索,搜索关键字：应用名、描述
         if (searchContent) {
             searchObj.app_name = searchContent;
@@ -56,7 +56,7 @@ var AppManage = React.createClass({
         return searchObj;
     },
     events: {
-        showAppForm: function (type) {
+        showAppForm: function(type) {
             if (type == 'add') {
                 Trace.traceEvent($(this.getDOMNode()).find(".right-cards-container"),"点击添加应用按钮");
             }
@@ -71,7 +71,7 @@ var AppManage = React.createClass({
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
-                focusTimeout = setTimeout(function () {
+                focusTimeout = setTimeout(function() {
                     $("#name").focus();
                 }, 600);
             }
@@ -79,46 +79,46 @@ var AppManage = React.createClass({
         },
 
         // 版本升级记录
-        showVersionUpgradePanel: function () {
+        showVersionUpgradePanel: function() {
             AppAction.showVersionUpgradePanel();
         },
 
         // 系统公告
-        showAppNoticePanel: function () {
+        showAppNoticePanel: function() {
             AppAction.showAppNoticePanel();
         },
         //用户类型设置
-        showUserTypeConfigPanel:function () {
+        showUserTypeConfigPanel:function() {
             AppAction.showUserTypeConfigPanel();
         },
         
         //status:0->停用、1->启用
-        updateAppStatus: function (appId, status) {
+        updateAppStatus: function(appId, status) {
             AppAction.updateAppStatus({id: appId, status: status}, "appManage");
         },
 
         //切换页数时，当前页展示数据的修改
-        onChangePage: function (count, curPage) {
+        onChangePage: function(count, curPage) {
             AppAction.updateCurPage(curPage);
             var searchObj = this.getSearchObj(curPage, count, this.state.searchContent);
             AppAction.getCurAppList(searchObj);
         },
         //展示模态框
-        showModalDialog: function () {
+        showModalDialog: function() {
             AppAction.showModalDialog();
         },
         //隐藏模态框
-        hideModalDialog: function () {
+        hideModalDialog: function() {
             AppAction.hideModalDialog();
         },
 
-        showAppInfo: function (app) {
+        showAppInfo: function(app) {
             //正在获取其他应用详情，则先不展示当前应用详情
             if (this.state.appIsLoading) {
                 return;
             }
             AppAction.setCurAppDetail(app.id);
-            setTimeout(function () {
+            setTimeout(function() {
                 //获取应用的详情
                 AppAction.getCurAppById(app.id);
             });
@@ -128,7 +128,7 @@ var AppManage = React.createClass({
                     if (openTimeout) {
                         clearTimeout(openTimeout);
                     }
-                    openTimeout = setTimeout(function () {
+                    openTimeout = setTimeout(function() {
                         AppAction.showAppInfo();
                     }, 200);
                 }
@@ -136,7 +136,7 @@ var AppManage = React.createClass({
                 AppAction.showAppInfo();
             }
         },
-        searchEvent: function (searchContent) {
+        searchEvent: function(searchContent) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按应用名/描述搜索应用");
             AppAction.updateCurPage(1);
             AppAction.updateSearchContent(searchContent);
@@ -144,50 +144,50 @@ var AppManage = React.createClass({
             AppAction.getCurAppList(searchObj);
         },
         //右侧面板的关闭
-        closeRightPanel: function () {
+        closeRightPanel: function() {
             AppAction.closeRightPanel();
         },
         //由编辑页面返回信息展示页面
-        returnInfoPanel: function () {
+        returnInfoPanel: function() {
             AppAction.returnInfoPanel();
         },
         //一页展示多少应用的修改
-        updatePageSize: function (count) {
+        updatePageSize: function(count) {
             AppAction.updatePageSize(count);
         },
         //展示、收起标签筛选面板的处理
-        toggleFilterPanel: function () {
+        toggleFilterPanel: function() {
             Trace.traceEvent($(this.getDOMNode()).find(".tag-filter-btn"),"展示/收起标签筛选");
             AppAction.toggleFilterPanel();
         },
         //设置选择的筛选标签，并筛选应用
-        filterAppByTags: function (tag) {
+        filterAppByTags: function(tag) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按标签筛选应用");
             AppAction.setSelectTag(tag);
             AppAction.updateCurPage(1);
             var _this = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 var searchObj = _this.getSearchObj(1, _this.state.pageSize, _this.state.searchContent);
                 AppAction.getCurAppList(searchObj);
             });
         },
-        editAppTag: function (data, callback) {
+        editAppTag: function(data, callback) {
             AppFormAction.editApp(data, callback);
         },
         //设置筛选状态，并筛选应用
-        filterAppByStatus: function (status) {
+        filterAppByStatus: function(status) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-input-block"),"按状态筛选应用");
             AppAction.setSelectStatus(status);
             AppAction.updateCurPage(1);
             var _this = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 var searchObj = _this.getSearchObj(1, _this.state.pageSize, _this.state.searchContent);
                 AppAction.getCurAppList(searchObj);
             });
         }
     },
 
-    renderRightPanel: function () {
+    renderRightPanel: function() {
         if (this.state.isAppFormShow) {
             return (
                 <AddAppForm
@@ -232,7 +232,7 @@ var AppManage = React.createClass({
         }
     },
     //获取卡片展示所需的应用列表
-    getCardShowAppList: function () {
+    getCardShowAppList: function() {
         let appList = _.isArray(this.state.curAppList) ? this.state.curAppList : [];
         return appList.map(app=> {
             let pageApp = {
@@ -270,7 +270,7 @@ var AppManage = React.createClass({
             return pageApp;
         });
     },
-    render: function () {
+    render: function() {
         var modalType = Intl.get("common.app", "应用");
         var firstLoading = this.state.isLoading;
         var _this = this;
@@ -310,14 +310,14 @@ var AppManage = React.createClass({
                             type="appManage"
                         >
                             <AppFilterAdv filterAppByTags={this.events.filterAppByTags.bind(this)}
-                                          allAppTotal={this.state.allAppTotal}
-                                          appTagObj={this.state.appTagObj}
-                                          appStatusObj={this.state.appStatusObj}
-                                          appTagList={this.state.appTagList}
-                                          isFilterPanelShow={this.state.isFilterPanelShow}
-                                          selectStatus={this.state.selectStatus}
-                                          filterAppByStatus={this.events.filterAppByStatus.bind(this)}
-                                          selectTag={this.state.selectTag}/>
+                                allAppTotal={this.state.allAppTotal}
+                                appTagObj={this.state.appTagObj}
+                                appStatusObj={this.state.appStatusObj}
+                                appTagList={this.state.appTagList}
+                                isFilterPanelShow={this.state.isFilterPanelShow}
+                                selectStatus={this.state.selectStatus}
+                                filterAppByStatus={this.events.filterAppByStatus.bind(this)}
+                                selectTag={this.state.selectTag}/>
                             <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow} >
                                 <AppInfo
                                     appInfo={this.state.currentApp}

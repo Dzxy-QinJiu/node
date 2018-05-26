@@ -15,7 +15,7 @@ function BatchChangeAction() {
         'locationChange'
     );
 
-    this.getSalesManList = function (cb) {
+    this.getSalesManList = function(cb) {
         //客户所属销售(团队)下拉列表的数据获取
         batchChangeAjax.getSalesManList().then((list) => {
             this.dispatch(list);
@@ -26,22 +26,22 @@ function BatchChangeAction() {
         });
     };
     //批量操作调用
-    this.doBatch = function (type, condition, cb) {
+    this.doBatch = function(type, condition, cb) {
         var _this = this;
-        batchChangeAjax.doBatch(type, condition).then(function (taskId) {
+        batchChangeAjax.doBatch(type, condition).then(function(taskId) {
             cb({code: 0, taskId: taskId});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             cb({code: 1, msg: errorMsg});
         });
     };
 
 
-    this.getRecommendTags = function (cb) {
+    this.getRecommendTags = function(cb) {
         var _this = this;
-        batchChangeAjax.getRecommendTags().then(function (data) {
+        batchChangeAjax.getRecommendTags().then(function(data) {
             _this.dispatch(data && data.result);
             if (cb) cb(data && data.result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (cb) {
                 cb(errorMsg);
             }
@@ -51,7 +51,7 @@ function BatchChangeAction() {
     };
 
     //获取行业列表
-    this.getIndustries = function () {
+    this.getIndustries = function() {
         this.dispatch({loading: true});
         batchChangeAjax.getIndustries().then((list) => {
             this.dispatch({list: list});

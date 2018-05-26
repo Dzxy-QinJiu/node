@@ -44,13 +44,13 @@ if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
     });
 }
 const CrmFilterPanel = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return FilterStore.getState();
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(FilterStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         FilterStore.listen(this.onStoreChange);
         FilterAction.getTeamList();
         FilterAction.getSalesRoleList();
@@ -68,22 +68,22 @@ const CrmFilterPanel = React.createClass({
         }
         FilterAction.getFilterProvinces(type);
     },
-    componentDidUpdate: function (prevProps) {
+    componentDidUpdate: function(prevProps) {
         var filterPanelHeight = $(".crm-filter-panel").outerHeight(true);
         if (prevProps.filterPanelHeight !== filterPanelHeight) {
             this.props.changeTableHeight(filterPanelHeight);
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         FilterStore.unlisten(this.onStoreChange);
     },
-    appSelected: function (app) {
+    appSelected: function(app) {
         FilterAction.setApp(app);
 
         const _this = this;
         setTimeout(() => _this.props.search());
     },
-    stageSelected: function (stage) {
+    stageSelected: function(stage) {
         const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
         let newSelectedStages = getSelected(curSelectedStages, stage);
         //未知的处理
@@ -100,7 +100,7 @@ const CrmFilterPanel = React.createClass({
         stage = stage ? stage : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按销售阶段筛选");
     },
-    teamSelected: function (team) {
+    teamSelected: function(team) {
         const curSelectedTeams = this.state.condition.sales_team_id;
 
         const newSelectedTeams = getSelected(curSelectedTeams, team);
@@ -113,7 +113,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按团队筛选客户");
     },
     //行政级别的筛选
-    levelSelected: function (level) {
+    levelSelected: function(level) {
         const curSelectedLevels = this.state.condition.administrative_level;
 
         const newSelectedLevels = getSelected(curSelectedLevels, level);
@@ -125,7 +125,7 @@ const CrmFilterPanel = React.createClass({
         setTimeout(() => this.props.search());
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按行政级别筛选客户");
     },
-    tagSelected: function (tag) {
+    tagSelected: function(tag) {
         //标签
         let labels = this.state.condition.labels;
         let selectedTags = [""];
@@ -160,7 +160,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按标签筛选");
     },
     //阶段标签的选择
-    stageTagSelected: function (stageTag) {
+    stageTagSelected: function(stageTag) {
         if (this.state.condition.customer_label === stageTag) {
             if (stageTag) {//不是全部时，则取消当前选项的选择
                 stageTag = "";
@@ -173,7 +173,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按阶段标签筛选");
     },
     //销售角色的选择
-    salesRoleSelected: function (role) {
+    salesRoleSelected: function(role) {
         if (this.state.condition.member_role === role) {
             if (role) {//不是全部时，则取消当前选项的选择
                 role = "";
@@ -186,7 +186,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按销售角色筛选");
     },
     //竞品的选择
-    competitorSelected: function (tag) {
+    competitorSelected: function(tag) {
         let labels = this.state.condition.competing_products;
         let selectedTags = [""];
         //当前选中的标签多于一个且当前点击的不是全部时进行处理
@@ -205,7 +205,7 @@ const CrmFilterPanel = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按标签筛选");
     },
 
-    industrySelected: function (industry) {
+    industrySelected: function(industry) {
         const curSelectedIndustrys = this.state.condition.industry;
         let newSelectedIndustrys = "";
         //未知的处理
@@ -222,7 +222,7 @@ const CrmFilterPanel = React.createClass({
         industry = industry ? industry : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按行业筛选");
     },
-    provinceSelected: function (province) {
+    provinceSelected: function(province) {
         const curSelectedProvince = this.state.condition.province;
         let newSelectedProvince = "";
         //未知的处理
@@ -237,7 +237,7 @@ const CrmFilterPanel = React.createClass({
         province = province ? province : "全部";
         Trace.traceEvent($(this.getDOMNode()).find("li"), "按地域筛选");
     },
-    otherSelected: function (item) {
+    otherSelected: function(item) {
         //当前选择的是之前选择的时
         if (item === this.state.condition.otherSelectedItem) {
             if (item) {//不是全部时，则取消当前选项的选择
@@ -249,46 +249,46 @@ const CrmFilterPanel = React.createClass({
         FilterAction.setOtherSelectedItem(item);
         setTimeout(() => this.props.search());
         switch (item) {
-            case otherFilterArray[1].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
-                break;
-            case otherFilterArray[2].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "超15天未联系的筛选");
-                break;
-            case otherFilterArray[3].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "超7天未联系的筛选");
-                break;
-            case otherFilterArray[4].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");
-                break;
-            case otherFilterArray[5].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "最后联系但未写更近记录客户的筛选");
-                break;
-            case otherFilterArray[6].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未写跟进记录客户的筛选");
-                break;
-            case otherFilterArray[7].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
-                break;
-            case otherFilterArray[8].value:
-                Trace.traceEvent($(this.getDOMNode()).find("li"), "多个订单客户的筛选");
-                break;
+        case otherFilterArray[1].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未联系的筛选");
+            break;
+        case otherFilterArray[2].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "超15天未联系的筛选");
+            break;
+        case otherFilterArray[3].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "超7天未联系的筛选");
+            break;
+        case otherFilterArray[4].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "无联系方式的客户的筛选");
+            break;
+        case otherFilterArray[5].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "最后联系但未写更近记录客户的筛选");
+            break;
+        case otherFilterArray[6].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "超30天未写跟进记录客户的筛选");
+            break;
+        case otherFilterArray[7].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "关注客户的筛选");
+            break;
+        case otherFilterArray[8].value:
+            Trace.traceEvent($(this.getDOMNode()).find("li"), "多个订单客户的筛选");
+            break;
         }
         if (otherFilterArray[9] && item === otherFilterArray[8].value) {
             Trace.traceEvent($(this.getDOMNode()).find("li"), "未分配客户的筛选");
         }
     },
-    render: function () {
+    render: function() {
         const appListJsx = this.state.appList.map((app, idx) => {
             let className = app.client_id == this.state.condition.sales_opportunities[0].apps[0] ? "selected" : "";
             return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
-                       className={className}>{app.client_name}</li>;
+                className={className}>{app.client_name}</li>;
         });
         const teams = this.state.condition.sales_team_id.split(",");
         const teamListJsx = this.state.teamList.map((team, idx) => {
             let className = teams.indexOf(team.group_id) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.teamSelected.bind(this, team.group_id)}
-                       className={className}>{team.group_name}</li>;
+                className={className}>{team.group_name}</li>;
         });
         //用Store.getState()方法获取存在store里的state时，若state下的某个属性所在层次较深且其值为空时，该属性会被丢掉
         //所以这个地方需要判断一下sale_stages属性是否存在，若不存在则用空值替代
@@ -301,45 +301,45 @@ const CrmFilterPanel = React.createClass({
         const stageListJsx = stageArray.map((stage, idx) => {
             let className = selectedStages.indexOf(stage.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.stageSelected.bind(this, stage.name)}
-                       className={className}>{stage.show_name}</li>;
+                className={className}>{stage.show_name}</li>;
         });
         const tagListJsx = this.state.tagList.map((tag, idx) => {
             let className = this.state.condition.labels.indexOf(tag.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.tagSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>;
+                className={className}>{tag.show_name}</li>;
         });
         const stageTagListJsx = this.state.stageTagList.map((tag, idx) => {
             let className = this.state.condition.customer_label === tag.name ? "selected" : "";
             return <li key={idx} onClick={this.stageTagSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>;
+                className={className}>{tag.show_name}</li>;
         });
         const competitorListJsx = this.state.competitorList.map((tag, idx) => {
             let className = this.state.condition.competing_products.indexOf(tag.name) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.competitorSelected.bind(this, tag.name)}
-                       className={className}>{tag.show_name}</li>;
+                className={className}>{tag.show_name}</li>;
         });
         const industryArray = ["", Intl.get("user.unknown", "未知")].concat(this.state.industryList);
         const industryListJsx = industryArray.map((item, idx) => {
             let className = this.state.condition.industry.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.industrySelected.bind(this, item)}
-                       className={className}>{item || Intl.get("common.all", "全部")}</li>;
+                className={className}>{item || Intl.get("common.all", "全部")}</li>;
         });
         //行政级别
         const levelListJsx = filterLevelArray.map((item, idx) => {
             let className = this.state.condition.administrative_level.split(",").indexOf(item.id) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.levelSelected.bind(this, item.id)}
-                       className={className}>{item.level}</li>;
+                className={className}>{item.level}</li>;
         });
         const provinceListJsx = ["", Intl.get("user.unknown", "未知")].concat(this.state.provinceList).map((item, idx) => {
             let className = this.state.condition.province.split(",").indexOf(item) > -1 ? "selected" : "";
             return <li key={idx} onClick={this.provinceSelected.bind(this, item)}
-                       className={className}>{item || Intl.get("common.all", "全部")}</li>;
+                className={className}>{item || Intl.get("common.all", "全部")}</li>;
         });
         //销售角色
         const salesRoleListJsx = this.state.salesRoleList.map((role, idx) => {
             let className = this.state.condition.member_role === role.name ? "selected" : "";
             return <li key={idx} onClick={this.salesRoleSelected.bind(this, role.name)}
-                       className={className}>{role.show_name}</li>;
+                className={className}>{role.show_name}</li>;
         });
         return (
             <div data-tracename="筛选">

@@ -24,7 +24,7 @@ new WebpackDevServer(webpack(config), {
     headers: {
         "Access-Control-Allow-Origin": "*",
     },
-}).listen(8081, function (err, result) {
+}).listen(8081, function(err, result) {
     if (err) {
         // eslint-disable-next-line no-console
         return console.log(err);

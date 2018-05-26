@@ -6,7 +6,7 @@ var nockParser = require(path.resolve(portal_root_path, "./lib/utils/nockParser"
 
 var LoginService = require("../service/desktop-login-service");
 
-exports.init = function () {
+exports.init = function() {
     nock(config.nockUrl)
         .persist()
         .get(LoginService.urls.logincheck)
@@ -23,7 +23,7 @@ exports.init = function () {
         .persist()
         .post(LoginService.urls.login)
         .query(true)
-        .reply(function (uri, requestBody) {
+        .reply(function(uri, requestBody) {
             return {
                 //登录用户基本信息
                 "user_id": "xxxxx9xX4mRbXW0BZcFFfZv",

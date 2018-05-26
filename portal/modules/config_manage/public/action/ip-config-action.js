@@ -14,7 +14,7 @@ function IpConfigActions(){
     this.getIpConfigList = function(searchObj){
         var _this = this;
         _this.dispatch({loading:true});
-        IpConfigAjax.getIpConfigList(searchObj).then(function (resData) {
+        IpConfigAjax.getIpConfigList(searchObj).then(function(resData) {
             _this.dispatch({loading:false,error:false, resData: resData});
         },function(errorMsg) {
             _this.dispatch({loading:false,error:true, errorMsg:errorMsg});

@@ -42,33 +42,33 @@ function SalesTeamAction() {
     );
 
     //获取统计团队内成员个数的列表
-    this.getTeamMemberCountList = function () {
+    this.getTeamMemberCountList = function() {
         SalesTeamAjax.getTeamMemberCountList().then((resData) => {
-                this.dispatch(resData);
-            }, (errMsg) => {
-                this.dispatch(errMsg);
-            }
+            this.dispatch(resData);
+        }, (errMsg) => {
+            this.dispatch(errMsg);
+        }
         );
     };
-    this.getSalesTeamList = function () {
+    this.getSalesTeamList = function() {
         var _this = this;
-        SalesTeamAjax.getSalesTeamList().then(function (list) {
+        SalesTeamAjax.getSalesTeamList().then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("common.get.sale.lists.failed", "获取销售团队列表失败"));
         });
     };
 
-    this.filterByUserName = function (userName) {
+    this.filterByUserName = function(userName) {
         var _this = this;
-        SalesTeamAjax.filterSalesTeamList(userName).then(function (list) {
+        SalesTeamAjax.filterSalesTeamList(userName).then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("sales.team.filter.by.username.failed", "根据昵称、用户名搜索销售团队失败"));
         });
     };
     //获取销售目标
-    this.getSalesGoals= function (teamId) {
+    this.getSalesGoals= function(teamId) {
         this.dispatch({loading:true, error:false});
         SalesTeamAjax.getSalesGoals(teamId).then((salesGoals)=>{
             this.dispatch({loading: false, error: false, result:salesGoals});
@@ -77,27 +77,27 @@ function SalesTeamAction() {
         });
     };
 
-    this.getSalesTeamMemberList = function (teamId) {
+    this.getSalesTeamMemberList = function(teamId) {
         var _this = this;
-        SalesTeamAjax.getSalesTeamMemberList(teamId).then(function (list) {
+        SalesTeamAjax.getSalesTeamMemberList(teamId).then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("sales.team.get.sales.team.member.list.failed", "获取团队成员失败"));
         });
     };
 
-    this.getMemberList = function () {
+    this.getMemberList = function() {
         var _this = this;
-        SalesTeamAjax.getMemberList().then(function (list) {
+        SalesTeamAjax.getMemberList().then(function(list) {
             _this.dispatch(list);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("common.get.member.lists.failed", "获取可添加成员列表失败"));
         });
     };
 
-    this.saveDeleteGroup = function (groupId) {
+    this.saveDeleteGroup = function(groupId) {
         var _this = this;
-        SalesTeamAjax.deleteGroup(groupId).then(function (data) {
+        SalesTeamAjax.deleteGroup(groupId).then(function(data) {
             //_this.actions.getSalesTeamList();
             if (data) {
                 //刷新添加时展示的不属于任何团队的成员列表
@@ -106,14 +106,14 @@ function SalesTeamAction() {
             } else {
                 _this.dispatch({success: false, errorMsg: Intl.get("sales.team.del.team.failed", "删除团队失败")});
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({success: false, errorMsg: errorMsg || Intl.get("sales.team.del.team.failed", "删除团队失败")});
         });
     };
     //保存添加的团队
-    this.saveAddGroup = function (salesTeam, callback) {
+    this.saveAddGroup = function(salesTeam, callback) {
         var _this = this;
-        SalesTeamAjax.addGroup(salesTeam).then(function (data) {
+        SalesTeamAjax.addGroup(salesTeam).then(function(data) {
             if (data) {
                 if (callback) {
                     callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")}, data);
@@ -123,15 +123,15 @@ function SalesTeamAction() {
                     callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
                 }
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
             }
         });
     };
     //保存编辑后的的团队名称及上级团队
-    this.saveEditGroup = function (salesTeam, callback) {
-        SalesTeamAjax.editGroup(salesTeam).then(function (data) {
+    this.saveEditGroup = function(salesTeam, callback) {
+        SalesTeamAjax.editGroup(salesTeam).then(function(data) {
             if (data) {
                 if (callback) {
                     callback({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功")});
@@ -141,7 +141,7 @@ function SalesTeamAction() {
                     callback({saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")});
                 }
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
             }

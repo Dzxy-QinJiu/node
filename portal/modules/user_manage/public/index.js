@@ -18,22 +18,22 @@ var CONSTANTS = {
 import Trace from "LIB_DIR/trace";
 
 var UserManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return UserStore.getState();
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(UserStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         UserStore.listen(this.onChange);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         UserStore.unlisten(this.onChange);
     },
     events: {
-        showUserForm: function (type) {
+        showUserForm: function(type) {
             //type：“edit”/"add"
             if (type === "add") {
                 Trace.traceEvent("成员管理","成员详情面板点击添加成员按钮");
@@ -48,7 +48,7 @@ var UserManage = React.createClass({
                 if (focusTimeout) {
                     clearTimeout(focusTimeout);
                 }
-                focusTimeout = setTimeout(function () {
+                focusTimeout = setTimeout(function() {
                     $("#userName").focus();
                 }, 600);
             }
@@ -57,7 +57,7 @@ var UserManage = React.createClass({
 
 
         //切换页数时，当前页展示数据的修改
-        onChangePage: function (count, curPage) {
+        onChangePage: function(count, curPage) {
             UserAction.updateCurPage(curPage);
             var searchObj = {
                 cur_page: curPage,
@@ -69,7 +69,7 @@ var UserManage = React.createClass({
         },
 
 
-        showUserInfo: function (user) {
+        showUserInfo: function(user) {
             //如果正在展示其他详情，则先不展示当前点击的成员详情
             if (this.state.userIsLoading || this.state.logIsLoading) {
                 return;
@@ -84,7 +84,7 @@ var UserManage = React.createClass({
                 if (openTimeout) {
                     clearTimeout(openTimeout);
                 }
-                openTimeout = setTimeout(function () {
+                openTimeout = setTimeout(function() {
                     UserAction.showUserInfoPanel();
                 }, 200);
             } else {
@@ -100,7 +100,7 @@ var UserManage = React.createClass({
             UserFormAction.getRoleList();
         },
 
-        searchEvent: function (searchContent) {
+        searchEvent: function(searchContent) {
             if (searchContent) {
                 Trace.traceEvent($(this.getDOMNode()).find(".search-input-container input"),"跟据用户名/昵称/电话/邮箱搜索成员");
             }else{
@@ -117,31 +117,31 @@ var UserManage = React.createClass({
             UserAction.getCurUserList(searchObj);
         },
         //右侧面板的关闭
-        closeRightPanel: function () {
+        closeRightPanel: function() {
             //将数据清空
             UserAction.setInitialData();
             UserAction.closeRightPanel();
             UserAction.hideContinueAddButton();
         },
         //显示继续添加按钮
-        showContinueAddButton: function () {
+        showContinueAddButton: function() {
             UserAction.showContinueAddButton();
         },
         //由编辑页面返回信息展示页面
-        returnInfoPanel: function (newAddUser) {
+        returnInfoPanel: function(newAddUser) {
             UserAction.returnInfoPanel(newAddUser);
         },
 
         //一页展示多少安全域的修改
-        updatePageSize: function (count) {
+        updatePageSize: function(count) {
             UserAction.updatePageSize(count);
         },
         //展示、收起筛选面板的处理
-        toggleFilterPanel: function () {
+        toggleFilterPanel: function() {
             UserAction.toggleFilterPanel();
         },
         //过滤角色选择与修改时，已选标签的修改
-        filterUserByRole: function (role) {
+        filterUserByRole: function(role) {
             //设置筛选角色，并筛选成员
             UserAction.setSelectRole(role);
             UserAction.updateCurPage(1);
@@ -156,7 +156,7 @@ var UserManage = React.createClass({
             UserAction.getCurUserList(searchObj);
         }
     },
-    getCardShowUserList: function () {
+    getCardShowUserList: function() {
         let userList = _.isArray(this.state.curUserList) ? this.state.curUserList : [];
         return userList.map(user=> {
             return {
@@ -183,14 +183,14 @@ var UserManage = React.createClass({
         });
 
     },
-    changeUserFieldSuccess: function (user) {
+    changeUserFieldSuccess: function(user) {
         UserAction.afterEditUser(user);
     },
-    updateUserStatus: function (updateObj) {
+    updateUserStatus: function(updateObj) {
         UserAction.updateUserStatus(updateObj);
         UserAction.updateCurrentUserStatus(updateObj.status);
     },
-    render: function () {
+    render: function() {
         var firstLoading = this.state.isLoading;
         return (
             <div className="user_manage_style backgroundManagement_user_content" data-tracename="成员管理">
@@ -222,16 +222,16 @@ var UserManage = React.createClass({
                     <TopNav>
                         <TopNav.MenuList />
                         <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block handle-btn-container"
-                                          onClick={this.events.showUserForm.bind(this,"add")}
-                                          data-tracename="添加成员"  >
+                            onClick={this.events.showUserForm.bind(this,"add")}
+                            data-tracename="添加成员"  >
                             <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
                         </PrivilegeChecker>
                     </TopNav>
                     <UserFilterAdv isFilterPanelShow={this.state.isFilterPanelShow}
-                                   allUserTotal={this.state.allUserTotal}
-                                   selectRole={this.state.selectRole}
-                                   userRoleList={this.state.userRoleList}
-                                   filterUserByRole={this.events.filterUserByRole.bind(this)}
+                        allUserTotal={this.state.allUserTotal}
+                        selectRole={this.state.selectRole}
+                        userRoleList={this.state.userRoleList}
+                        filterUserByRole={this.events.filterUserByRole.bind(this)}
                     />
                     <RightPanel className="white-space-nowrap" showFlag={this.state.rightPanelShow}>
                         <UserInfo

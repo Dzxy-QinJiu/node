@@ -123,10 +123,10 @@ const Analysis = React.createClass({
         });
     },
     retryGetData(){
-       this.getData();
+        this.getData();
     },
     // 处理请求返回错误或请求成功但是返回错误的数据（{httpCode: 500, message: '获取数据错误'}）的情况
-    handleErrorCase (props, errorMsg) {
+    handleErrorCase(props, errorMsg) {
         if (_.isFunction(props.processData)){
             props.processData([], "error");
         }
@@ -224,7 +224,7 @@ const Analysis = React.createClass({
         if (_.isEmpty(chartData)) {
             return <div className='nodata'>
                 {Intl.get("common.no.data", "暂无数据")}
-                </div>;
+            </div>;
         } else {
             return React.createElement(chartType, props, null);
         }
@@ -245,9 +245,9 @@ const Analysis = React.createClass({
             //加载完成，出错的情况
             var errMsg = <div className="err-tip">{this.state.resultErrorMsg}
                 <a onClick={this.retryGetData}>
-                  {Intl.get("user.info.retry", "请重试")}
-               </a>
-               </div>;
+                    {Intl.get("user.info.retry", "请重试")}
+                </a>
+            </div>;
             if (this.props.errAndRightBothShow) {
                 return (
                     <div className="err-tip-content-wrap">
@@ -317,9 +317,9 @@ const Analysis = React.createClass({
 
         const chartType = CHART_TYPE_MAP[props.chartType];
         return (
-                <div style={{height:this.props.height}} className="analysis-container">
-                    {this.renderChartContent(chartType, props)}
-                </div>
+            <div style={{height:this.props.height}} className="analysis-container">
+                {this.renderChartContent(chartType, props)}
+            </div>
         );
     }
 });

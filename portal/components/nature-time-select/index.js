@@ -7,7 +7,7 @@ function noop() {
 }
 let DATE_FORMAT = oplateConsts.DATE_FORMAT;
 var TimeSelect = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             showTimeTypeSelect: false,//是否展示年、月、周的类型选择
             timeType: "week",//时间类型的选择（年：year，月：month，周：week）
@@ -20,15 +20,15 @@ var TimeSelect = React.createClass({
             onChangeWeek: noop//周的选择处理方法
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         //{weekStartTime,weekEndTime}
         return this.getWeekTimeRange(this.props.yearTime, this.props.weekTime);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.setState(this.getWeekTimeRange(nextProps.yearTime, nextProps.weekTime));
     },
     //获取周的开始结束时间
-    getWeekTimeRange: function (yearTime, weekTime) {
+    getWeekTimeRange: function(yearTime, weekTime) {
         let weekStartTime = "", weekEndTime = "";
         //当前年中的第几周的日期
         let curYear = JSON.stringify(parseInt(yearTime));
@@ -52,7 +52,7 @@ var TimeSelect = React.createClass({
     },
 
     //年选项的渲染
-    renderYearOptions: function () {
+    renderYearOptions: function() {
         var yearOptions = [];
         var curYear = moment().year();
         for (var i = 0; i <= 10; i++) {
@@ -61,7 +61,7 @@ var TimeSelect = React.createClass({
         return yearOptions;
     },
     //月选项的渲染
-    renderMonthOptions: function () {
+    renderMonthOptions: function() {
         var monthOptions = [];
         for (var i = 1; i <= 12; i++) {
             monthOptions.push(<Option key={i} Value={i}>{i}月</Option>);
@@ -69,7 +69,7 @@ var TimeSelect = React.createClass({
         return monthOptions;
     },
 
-    render: function () {
+    render: function() {
         return (
             <div className="nature-time-select-container">
                 {this.props.showTimeTypeSelect ? (<div className="time-type-div">

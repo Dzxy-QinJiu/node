@@ -13,7 +13,7 @@ import {DetailEditBtn} from "CMP_DIR/rightPanel";
 const OrderForm = React.createClass({
     mixins: [ValidateMixin],
 
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isLoading: false,
             isAppPanelShow: false,
@@ -22,13 +22,13 @@ const OrderForm = React.createClass({
         };
     },
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         Trace.traceEvent(this.getDOMNode(), "取消添加订单");
         e.preventDefault();
         OrderAction.hideForm();
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         const validation = this.refs.validation;
         Trace.traceEvent(this.getDOMNode(), "保存订单");
@@ -60,15 +60,15 @@ const OrderForm = React.createClass({
             }
         });
     },
-    onAppsChange: function (selectedApps) {
+    onAppsChange: function(selectedApps) {
         Trace.traceEvent(this.getDOMNode(), "点击选中/取消选中某个应用");
         this.state.formData.apps = _.pluck(selectedApps, "client_id");
         this.setState(this.state);
     },
-    handleSelect: function () {
+    handleSelect: function() {
         Trace.traceEvent(this.getDOMNode(), "选择销售阶段");
     },
-    renderOrderForm: function () {
+    renderOrderForm: function() {
         const formData = this.state.formData;
         //添加时，app的添加，修改时不需要展示
         let selectedAppList = [];
@@ -102,13 +102,13 @@ const OrderForm = React.createClass({
                     >
                         <Validator rules={[{required: true, message: Intl.get("crm.155", "请选择销售阶段")}]}>
                             <Select size="large" placeholder={Intl.get("crm.155", "请选择销售阶段")}
-                                    style={{width: '100%'}}
-                                    value={formData.sale_stages}
-                                    onChange={this.setField.bind(this, 'sale_stages')}
-                                    name="sale_stages"
-                                    onSelect={this.handleSelect}
+                                style={{width: '100%'}}
+                                value={formData.sale_stages}
+                                onChange={this.setField.bind(this, 'sale_stages')}
+                                name="sale_stages"
+                                onSelect={this.handleSelect}
                             >
-                                {this.props.stageList.map(function (stage, index) {
+                                {this.props.stageList.map(function(stage, index) {
                                     return (<Option value={stage.name} key={index}>{stage.name}</Option>);
                                 })}
                             </Select>
@@ -125,8 +125,8 @@ const OrderForm = React.createClass({
                         <Validator
                             rules={[{pattern: /^\d+(\.\d+)?$/, message: Intl.get("crm.157", "预算金额必须为数字")}]}>
                             <Input value={formData.budget}
-                                   name="budget"
-                                   onChange={this.setField.bind(this, 'budget')}
+                                name="budget"
+                                onChange={this.setField.bind(this, 'budget')}
                             />
                         </Validator>
                     </FormItem>
@@ -152,9 +152,9 @@ const OrderForm = React.createClass({
                         labelCol={{span: 4}}
                         wrapperCol={{span: 20}}>
                         <Input type="textarea" rows="3"
-                               value={formData.remarks}
-                               onChange={this.setField.bind(this, 'remarks')}
-                               data-tracename="填写备注"
+                            value={formData.remarks}
+                            onChange={this.setField.bind(this, 'remarks')}
+                            data-tracename="填写备注"
                         />
                     </FormItem>
                 </Validation>
@@ -163,12 +163,12 @@ const OrderForm = React.createClass({
     },
     render(){
         return (<DetailCard content={this.renderOrderForm()}
-                            isEdit={true}
-                            className="order-form-container"
-                            loading={this.state.isLoading}
-                            saveErrorMsg={this.state.errorMsg}
-                            handleSubmit={this.handleSubmit}
-                            handleCancel={this.handleCancel}
+            isEdit={true}
+            className="order-form-container"
+            loading={this.state.isLoading}
+            saveErrorMsg={this.state.errorMsg}
+            handleSubmit={this.handleSubmit}
+            handleCancel={this.handleCancel}
         />);
     }
 });

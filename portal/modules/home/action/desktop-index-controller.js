@@ -21,7 +21,7 @@ let moment = require("moment");
 /*
  * home page handler.
  */
-exports.home = function (req, res) {
+exports.home = function(req, res) {
     var user = auth.getUser(req);
     // 委内维拉项目隐藏一些项的属性
     let hideSomeItem = '';
@@ -44,19 +44,19 @@ exports.home = function (req, res) {
 /**
  * 获取权限
  */
-exports.getUserData = function (req, res) {
+exports.getUserData = function(req, res) {
     var userSession = auth.getUser(req);
     var user = extend(true, {}, userSession);
     DesktopIndexService.getUserLanguage(req, res, user.user_id)
-        .on("success", function (data) {
+        .on("success", function(data) {
             let lang = global.config.lang || "zh_CN";
             if (data && data.language) {
                 lang = data.language;
             }
             setLang(lang);
-        }).on("error", function (codeMessage) {
-        setLang(global.config.lang || "zh_CN");
-    });
+        }).on("error", function(codeMessage) {
+            setLang(global.config.lang || "zh_CN");
+        });
     //设置语言环境
     function setLang(lang) {
         moment.locale(lang);
@@ -78,7 +78,7 @@ exports.getUserData = function (req, res) {
         delete user.auth.refresh_token;
         var callback = req.query.callback;
         DesktopIndexService.getUserInfo(req, res, user.user_id)
-            .on("success", function (data) {
+            .on("success", function(data) {
                 //将界面上可能会修改到的登录用户的信息进行刷新
                 user.user_logo = data.user_logo;
                 user.nick_name = data.nick_name;
@@ -89,7 +89,7 @@ exports.getUserData = function (req, res) {
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
                 req.session.user.roles = user.roles;
                 req.session.user.nickname = data.nick_name;
-                req.session.save(function () {
+                req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
                     res.send(callback + '(' + JSON.stringify(user) + ')');
                 });
@@ -97,25 +97,25 @@ exports.getUserData = function (req, res) {
                 user.preUrl = req.session.preUrl;
                 //取完数据后，删除preUrl
                 delete req.session.preUrl;
-            }).on("error", function (codeMessage) {
+            }).on("error", function(codeMessage) {
                 res.header('Content-Type', 'application/javascript');
                 let errorObj = {lang: lang, errorMsg: codeMessage && codeMessage.message};
                 res.status(codeMessage.httpCode).send(callback + '(' + JSON.stringify(errorObj) + ')');
             }
-        );
+            );
     }
 };
 
 /**
  * 上传
  */
-exports.upload = function (req, res) {
+exports.upload = function(req, res) {
     //构造上传表单
     //multiparty模块详细用法参见：https://github.com/andrewrk/node-multiparty
     var form = new multiparty.Form();
 
     //开始处理上传请求
-    form.parse(req, function (err, fields, files) {
+    form.parse(req, function(err, fields, files) {
         var uploadDir = 'upload';
         var subDir = fields['subdir'][0];
         var tmpPath = files['file'][0].path;
@@ -130,7 +130,7 @@ exports.upload = function (req, res) {
         var readStream = fs.createReadStream(tmpPath);
         var writeStream = fs.createWriteStream(finalPath);
 
-        util.pump(readStream, writeStream, function () {
+        util.pump(readStream, writeStream, function() {
             fs.unlinkSync(tmpPath);
             res.json({path: '/' + relativePath});
         });
@@ -140,27 +140,27 @@ exports.upload = function (req, res) {
 /**
  * 显示测试结果
  */
-exports.test = function (req, res) {
+exports.test = function(req, res) {
     res.render('home/tpl/test');
 };
 
 // 微信检测
-exports.getAppQrCodeAgent = function (req, res) {
+exports.getAppQrCodeAgent = function(req, res) {
     res.render('home/tpl/weixin-inspector');
 };
 //邮箱激活
-exports.activeEmail = function (req, res) {
-    DesktopIndexService.activeEmail(req, res, req.query.code).on("success", function (data) {
+exports.activeEmail = function(req, res) {
+    DesktopIndexService.activeEmail(req, res, req.query.code).on("success", function(data) {
         res.set('Content-Type', 'text/html');
         res.send(data);
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.set('Content-Type', 'text/html');
         res.send(errorObj && errorObj.message);
     });
 };
 
 //记录页面的日志
-exports.recordLog = function (req, res) {
+exports.recordLog = function(req, res) {
     DesktopIndexService.recordLog(req, res, req.query.message);
     res.send("");
 };

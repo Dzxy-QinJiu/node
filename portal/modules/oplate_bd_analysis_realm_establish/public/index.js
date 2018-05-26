@@ -206,28 +206,28 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
         return (
             <div className="analysis_realm_establish_content" data-tracename="安全域分析">
                 <div className={outerClass} data-tracename="开启时间统计">
-                <TopNav>
-                    <AnalysisMenu />
-                    <TopNav.MenuList />
-                </TopNav>
-                {/*没有数据的时候显示nodata*/}
-                <NoData />
-                {/*图表外层容器，设置高度*/}
-                <div className="chartwrap" ref="chart" style={{height:divHeight}}>
-                    {/*时间选择器和计数*/}
-                    <div className="timepicker" ref="timepicker">
+                    <TopNav>
+                        <AnalysisMenu />
+                        <TopNav.MenuList />
+                    </TopNav>
+                    {/*没有数据的时候显示nodata*/}
+                    <NoData />
+                    {/*图表外层容器，设置高度*/}
+                    <div className="chartwrap" ref="chart" style={{height:divHeight}}>
+                        {/*时间选择器和计数*/}
+                        <div className="timepicker" ref="timepicker">
                             {/*时间选择器*/}
-                        <DatePicker
-                            disableDateAfterToday={true}
-                            range="all"
-                            onSelect={this.onSelectDate}>
-                            <DatePicker.Option value="all">{Intl.get("user.time.all","全部时间")}</DatePicker.Option>
-                            <DatePicker.Option value="week">{Intl.get("common.time.unit.week","周")}</DatePicker.Option>
-                            <DatePicker.Option value="month">{Intl.get("common.time.unit.month","月")}</DatePicker.Option>
-                            <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
-                            <DatePicker.Option value="year">{Intl.get("common.time.unit.year","年")}</DatePicker.Option>
-                            <DatePicker.Option value="custom">{Intl.get("user.time.custom","自定义")}</DatePicker.Option>
-                        </DatePicker>
+                            <DatePicker
+                                disableDateAfterToday={true}
+                                range="all"
+                                onSelect={this.onSelectDate}>
+                                <DatePicker.Option value="all">{Intl.get("user.time.all","全部时间")}</DatePicker.Option>
+                                <DatePicker.Option value="week">{Intl.get("common.time.unit.week","周")}</DatePicker.Option>
+                                <DatePicker.Option value="month">{Intl.get("common.time.unit.month","月")}</DatePicker.Option>
+                                <DatePicker.Option value="quarter">{Intl.get("common.time.unit.quarter", "季度")}</DatePicker.Option>
+                                <DatePicker.Option value="year">{Intl.get("common.time.unit.year","年")}</DatePicker.Option>
+                                <DatePicker.Option value="custom">{Intl.get("user.time.custom","自定义")}</DatePicker.Option>
+                            </DatePicker>
                             {/*计数*/}
                             <AnalysisRealmCount title={this.state.rankListTitle} total={this.state.realmEstablishTotalCount}/>
                         </div>
@@ -259,8 +259,8 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
                                 (<Spinner className="isloading"/>):
                                 (null)
                         }
+                    </div>
                 </div>
-            </div>
             </div>
         );
     }

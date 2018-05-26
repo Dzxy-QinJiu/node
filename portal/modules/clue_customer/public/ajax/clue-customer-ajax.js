@@ -15,7 +15,7 @@ const DISTRIBUTEAUTHS = {
 let salesmanAjax = require("../../../common/public/ajax/salesman");
 let teamAjax = require("../../../common/public/ajax/team");
 //查询线索客户
-exports.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
+exports.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
     pageSize = pageSize || 20;
     sorter = sorter ? sorter : {field: "id", order: "descend"};
     var data = {
@@ -32,120 +32,120 @@ exports.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, page
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取线索来源列表
-exports.getClueSource = function () {
+exports.getClueSource = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_clue/source',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取线索渠道列表
-exports.getClueChannel = function () {
+exports.getClueChannel = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_clue/channel',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取线索分类列表
-exports.getClueClassify = function () {
+exports.getClueClassify = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_clue/classify',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //根据客户名获取行政级别
-exports.getAdministrativeLevel = function (queryObj) {
+exports.getAdministrativeLevel = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/administrative_level',
         dataType: 'json',
         type: 'get',
         data: queryObj,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //联系人电话唯一性的验证
-exports.checkOnlyCustomer = function (queryObj) {
+exports.checkOnlyCustomer = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_clue/only/check',
         dataType: 'json',
         type: 'get',
         data: queryObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取销售人员列表
-exports.getSalesManList = function () {
+exports.getSalesManList = function() {
     var Deferred = $.Deferred();
     salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
         .success(list => {
             Deferred.resolve(list);
         }).error((xhr) => {//xhr:XMLHttpRequest
-        Deferred.reject(xhr.responseJSON);
-    });
+            Deferred.reject(xhr.responseJSON);
+        });
     return Deferred.promise();
 };
 //获取某销售团队成员列表
 var salesTeamMembersAjax;
-exports.getSalesTeamMembers = function (teamId) {
+exports.getSalesTeamMembers = function(teamId) {
     salesTeamMembersAjax && salesTeamMembersAjax.abort();
     var Deferred = $.Deferred();
     salesTeamMembersAjax = teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: teamId
     }).sendRequest({
         filter_manager: true//过滤掉舆情秘书
-    }).success(function (list) {
+    }).success(function(list) {
         Deferred.resolve(list);
-    }).error(function (xhr, statusText) {
+    }).error(function(xhr, statusText) {
         if (statusText !== 'abort') {
             Deferred.reject(xhr.responseJSON);
         }
@@ -154,7 +154,7 @@ exports.getSalesTeamMembers = function (teamId) {
 };
 //添加或者更新跟进记录内容
 var addCluecustomerTraceAjax;
-exports.addCluecustomerTrace = function (submitObj) {
+exports.addCluecustomerTrace = function(submitObj) {
     var Deferred = $.Deferred();
     addCluecustomerTraceAjax && addCluecustomerTraceAjax.abort();
     addCluecustomerTraceAjax = $.ajax({
@@ -162,10 +162,10 @@ exports.addCluecustomerTrace = function (submitObj) {
         dataType: 'json',
         type: 'post',
         data: submitObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -173,7 +173,7 @@ exports.addCluecustomerTrace = function (submitObj) {
 };
 //把线索客户分配给对应的销售
 var distributeCluecustomerToSaleAjax;
-exports.distributeCluecustomerToSale = function (submitObj) {
+exports.distributeCluecustomerToSale = function(submitObj) {
     var Deferred = $.Deferred();
     if (hasPrivilege(DISTRIBUTEAUTHS.DISTRIBUTEALL)) {
         submitObj.hasDistributeAuth = true;
@@ -184,10 +184,10 @@ exports.distributeCluecustomerToSale = function (submitObj) {
         dataType: 'json',
         type: 'post',
         data: submitObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -195,7 +195,7 @@ exports.distributeCluecustomerToSale = function (submitObj) {
 };
 //更新线索客户的基本信息
 var updateCluecustomerDetailAjax;
-exports.updateCluecustomerDetail = function (submitObj) {
+exports.updateCluecustomerDetail = function(submitObj) {
     var data = {},updateObj = {};
     //如果是修改联系人的相关信息时，不但要传客户的id还要传联系人的id
     //更新联系人的相关字段时
@@ -234,10 +234,10 @@ exports.updateCluecustomerDetail = function (submitObj) {
         dataType: 'json',
         type: 'put',
         data: data,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

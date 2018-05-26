@@ -10,7 +10,7 @@ function UserAuditLogStore(){
     // bindActions()将action与store绑定到一起
     this.bindActions(UserAuditLogAction);
 }
-UserAuditLogStore.prototype.resetAuditLog = function () {
+UserAuditLogStore.prototype.resetAuditLog = function() {
     //是否是第一次加载，第一次加载的时候
     this.firstLoading = true;
     //是否处于loading状态
@@ -37,7 +37,7 @@ UserAuditLogStore.prototype.resetAuditLog = function () {
     // 下拉加载
     this.listenScrollBottom = true;
 },
-UserAuditLogStore.prototype.resetState = function () {
+UserAuditLogStore.prototype.resetState = function() {
     // 今天
     var timeObj = DateSelectorUtils.getTodayTime();
     //开始时间
@@ -54,33 +54,33 @@ UserAuditLogStore.prototype.resetState = function () {
 },
 // 获取应用产品的信息
 UserAuditLogStore.prototype.getUserApp = function(result){
-   if (result.error){
+    if (result.error){
         this.getUserLogErrorMsg = result.errorMsg;
     } else {
-       this.userAppArray = result.data;
-       var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-       var lastSelectAppId = storageValue && storageValue.logViewAppId ?  storageValue.logViewAppId : '';
-       if(lastSelectAppId){
-           //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
-           this.selectAppId=lastSelectAppId;
-       }else{
-             // 不存在（首次）
-           if(ShareObj.app_id){
+        this.userAppArray = result.data;
+        var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
+        var lastSelectAppId = storageValue && storageValue.logViewAppId ?  storageValue.logViewAppId : '';
+        if(lastSelectAppId){
+            //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
+            this.selectAppId=lastSelectAppId;
+        }else{
+            // 不存在（首次）
+            if(ShareObj.app_id){
                 // 已有用戶有选择的应用时，用户审计日志也要展示该应用的
-               this.selectAppId = ShareObj.app_id;
-           }else{
+                this.selectAppId = ShareObj.app_id;
+            }else{
                 // 已有用户应用选择框中选择全部时，用户审计日志默认展示第一个应用的
-               if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
-                   this.selectAppId = this.userAppArray[0].app_id;
-               }
-           }
-       }
+                if( _.isArray(this.userAppArray) && (this.userAppArray.length >= 1) ){
+                    this.selectAppId = this.userAppArray[0].app_id;
+                }
+            }
+        }
        
     }
 };
 
 // 获取用户审计日志的信息
-UserAuditLogStore.prototype.getAuditLogList = function (result) {
+UserAuditLogStore.prototype.getAuditLogList = function(result) {
     if (result.loading){
         this.appUserListResult = "loading";
         this.getUserLogErrorMsg = "";
@@ -105,7 +105,7 @@ UserAuditLogStore.prototype.getAuditLogList = function (result) {
 };
 
 // 记录搜索框中输入的内容
-UserAuditLogStore.prototype.handleSearchEvent = function (searchName) {
+UserAuditLogStore.prototype.handleSearchEvent = function(searchName) {
     this.searchName = searchName;
     this.sortId = '';
     this.firstLoading = true;
@@ -146,14 +146,14 @@ UserAuditLogStore.prototype.handleRefresh = function(){
 };
 
 // 用户类型的过滤
-UserAuditLogStore.prototype.handleFilterUserType = function () {
+UserAuditLogStore.prototype.handleFilterUserType = function() {
     this.sortId = '';
     this.auditLogList = [];
     this.firstLoading = true;
 };
 
 // 过滤日志类型
-UserAuditLogStore.prototype.handleFilterLogType = function () {
+UserAuditLogStore.prototype.handleFilterLogType = function() {
     this.sortId = '';
     this.auditLogList = [];
     this.firstLoading = true;

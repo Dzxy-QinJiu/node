@@ -1,9 +1,9 @@
 var _ = require("underscore");
 //用户审批列表转换
-exports.toRestObject = function (list) {
+exports.toRestObject = function(list) {
     var result = [];
     list = list || [];
-    list.forEach(function (item) {
+    list.forEach(function(item) {
         result.push({
             topic: item.topic,
             presenter: item.producer ? item.producer.nick_name : "",
@@ -24,29 +24,29 @@ function transferApprovalStateToNumber(approval_state) {
     //审批状态
     var result_approval_state = '';
     switch (approval_state) {
-        //全部和未审批都是0
-        case 'all':
-        case 'false':
-            result_approval_state = '0';
-            break;
+    //全部和未审批都是0
+    case 'all':
+    case 'false':
+        result_approval_state = '0';
+        break;
         //通过是1
-        case 'pass':
-            result_approval_state = '1';
-            break;
+    case 'pass':
+        result_approval_state = '1';
+        break;
         //驳回是2
-        case 'reject':
-            result_approval_state = '2';
-            break;
+    case 'reject':
+        result_approval_state = '2';
+        break;
         // 撤销是3
-        case 'cancel':
-            result_approval_state = '3';
-            break;
+    case 'cancel':
+        result_approval_state = '3';
+        break;
     }
     return result_approval_state;
 }
 
 //用户审批详情转换
-exports.toDetailRestObject = function (obj) {
+exports.toDetailRestObject = function(obj) {
 
     //审批单内容
     var serverResult = obj || {};
@@ -167,7 +167,7 @@ function transformCustomerInfo(detail, result) {
 }
 
 //用户延期审批详情转换
-exports.toDetailDelayRestObject = function (obj) {
+exports.toDetailDelayRestObject = function(obj) {
     //审批单内容
     var serverResult = obj || {};
     //申请单详情
@@ -227,7 +227,7 @@ exports.toDetailDelayRestObject = function (obj) {
 };
 
 //销售申请修改密码(其他类型)详情转换
-exports.toDetailChangePwdOtherRestObject = function (obj) {
+exports.toDetailChangePwdOtherRestObject = function(obj) {
     //审批单内容
     var serverResult = obj || {};
     //申请单详情
@@ -277,7 +277,7 @@ exports.toDetailChangePwdOtherRestObject = function (obj) {
 };
 
 //销售申请修改应用状态详情转换
-exports.toDetailStatusRestObject = function (obj) {
+exports.toDetailStatusRestObject = function(obj) {
     //审批单内容
     var serverResult = obj || {};
     //申请单详情
@@ -351,7 +351,7 @@ function addProperties(detail, preData) {
     return detail;
 }
 //角色实体
-exports.Role = function (obj, with_permission_ids) {
+exports.Role = function(obj, with_permission_ids) {
     this.role_id = obj.role_id || '';
     this.role_name = obj.role_name || '';
     if (with_permission_ids) {
@@ -359,7 +359,7 @@ exports.Role = function (obj, with_permission_ids) {
     }
 };
 //权限实体
-exports.Privilege = function (obj) {
+exports.Privilege = function(obj) {
     this.permission_id = obj.permission_id || '';
     this.permission_define = obj.permission_define || '';
     this.permission_name = obj.permission_name || '';

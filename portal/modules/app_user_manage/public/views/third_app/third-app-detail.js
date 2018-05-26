@@ -134,7 +134,7 @@ class ThirdAppEdit extends React.Component {
     }
     renderIndicator() {        
         let error = null;
-         _.each(this.state.errMsg,(value, key) => {
+        _.each(this.state.errMsg,(value, key) => {
             if(value!="") {
                 error = value;
             }
@@ -178,7 +178,7 @@ class ThirdAppEdit extends React.Component {
                             rules: [{ required: true, message: Intl.get("user.third.thirdapp.name.reuqired", "请填写应用名称") }]
                         })(
                             <Input />
-                            )
+                        )
                     }
                 </FormItem>
                 <FormItem {...itemLayout} className="fix" label={Intl.get("user.third.thirdapp.platform", "应用平台")}>
@@ -187,17 +187,17 @@ class ThirdAppEdit extends React.Component {
                             initialValue: this.state.app && this.state.app.platform,
                             rules: [{ required: true, message: Intl.get("user.third.thirdapp.platform.reuqired", "请选择或填写应用平台") }]
                         })(
-                                <Select combobox
-                                    filterOption={false}
-                                    searchPlaceholder={Intl.get("user.third.thirdapp.platform.reuqired", "请选择或填写应用平台")}
-                                >
-                                    {
-                                        this.state.platforms.map((item, idx) => {
-                                            return (<Option key={idx} value={item}>{item}</Option>);
-                                        })
-                                    }
-                                </Select>
-                            )
+                            <Select combobox
+                                filterOption={false}
+                                searchPlaceholder={Intl.get("user.third.thirdapp.platform.reuqired", "请选择或填写应用平台")}
+                            >
+                                {
+                                    this.state.platforms.map((item, idx) => {
+                                        return (<Option key={idx} value={item}>{item}</Option>);
+                                    })
+                                }
+                            </Select>
+                        )
                     }
                     
                 </FormItem>
@@ -208,7 +208,7 @@ class ThirdAppEdit extends React.Component {
                             rules: [{ required: true, message: Intl.get("user.third.thirdapp.platform.reuqired", "请填写APP Key") }]
                         })(
                             <Input />
-                            )
+                        )
                     }
                 </FormItem>
                 <FormItem {...itemLayout} label="APP Secret">
@@ -218,7 +218,7 @@ class ThirdAppEdit extends React.Component {
                             rules: [{ required: true, message: Intl.get("user.third.thirdapp.secret.reuqired", "请填写APP Secret") }]
                         })(
                             <Input />
-                            )
+                        )
                     }
                 </FormItem>
                 <FormItem {...itemLayout} label={Intl.get("user.third.thirdapp.cb", "回调地址")}>
@@ -227,22 +227,22 @@ class ThirdAppEdit extends React.Component {
                             initialValue: this.state.app && this.state.app.redirect_uri
                         })(
                             <Input />
-                            )
+                        )
                     }
                 </FormItem>
                 { this.displayOnly()? 
-                <FormItem {...itemLayout} label={Intl.get("member.create.time", "创键时间")}>
-                    {
-                         this.state.app.create_time
-                    }
-                </FormItem>: null }
+                    <FormItem {...itemLayout} label={Intl.get("member.create.time", "创键时间")}>
+                        {
+                            this.state.app.create_time
+                        }
+                    </FormItem>: null }
                 <FormItem {...itemLayout} label={Intl.get("user.third.thirdapp.des", "应用简介")}>
                     {
                         this.displayOnly() ? this.state.app.about : getFieldDecorator("app.about", {
                             initialValue: this.state.app && this.state.app.about
                         })(
                             <textarea className="fix"/>
-                            )
+                        )
                     }
                 </FormItem>   
                 {this.renderIndicator()}             
@@ -250,8 +250,8 @@ class ThirdAppEdit extends React.Component {
         );
     }
     renderStatusBtn() { 
-            return (
-                this.state.app.status === "enable" ?
+        return (
+            this.state.app.status === "enable" ?
                 <div className="circle-button iconfont icon-forbid app_user_manage_rightpanel right-pannel-default status-btn"
                     title={Intl.get("user.status.stop", "停用")}
                     data-tracename="停用应用"
@@ -262,7 +262,7 @@ class ThirdAppEdit extends React.Component {
                     title={Intl.get("common.enabled", "启用")}
                     onClick={this.changeAppStatus.bind(this, "enable")}
                 ></div>
-            );        
+        );        
     }
     render() {        
         return (
@@ -271,12 +271,12 @@ class ThirdAppEdit extends React.Component {
                     { this.state.status === "add"? null: this.renderStatusBtn() }
                     {
                         this.displayOnly() ?
-                        <div className="icon-update circle-button iconfont app_user_manage_rightpanel right-pannel-default"
-                            title={Intl.get("third.party.app.edit", "配置开放平台应用")}
-                            onClick={this.changeStatus.bind(this, "edit")}
-                            style={{ right: "62px", top: "18px" }}
-                        ></div>
-                        : this.state.status === "edit"? <RightPanelReturn onClick={this.cancel.bind(this)} />: null
+                            <div className="icon-update circle-button iconfont app_user_manage_rightpanel right-pannel-default"
+                                title={Intl.get("third.party.app.edit", "配置开放平台应用")}
+                                onClick={this.changeStatus.bind(this, "edit")}
+                                style={{ right: "62px", top: "18px" }}
+                            ></div>
+                            : this.state.status === "edit"? <RightPanelReturn onClick={this.cancel.bind(this)} />: null
                     }
                 </PrivilegeChecker>
                 <RightPanelClose onClick={this.closeRightPanel.bind(this)} />

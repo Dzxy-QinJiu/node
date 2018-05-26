@@ -16,7 +16,7 @@ const timeRange = "week";
 
 const AnalysisFilter = React.createClass({
     getDefaultProps() {
-         return {
+        return {
             isAppSelectorShow: true,
             selectedApp: localStorage[STORED_APP_ID_KEY],
         };
@@ -46,14 +46,14 @@ const AnalysisFilter = React.createClass({
         return (
             <div className="analysis-filter">
                 {this.props.isAppSelectorShow? (
-                <span>
-                    <AnalysisAppSelector
-                        onSelectApp={this.onSelectApp}
-                        maxWidth={200}
-                        isSelectFirstApp={this.props.isSelectFirstApp}
-                        selectedApp={this.props.selectedApp}
-                    />
-                </span>
+                    <span>
+                        <AnalysisAppSelector
+                            onSelectApp={this.onSelectApp}
+                            maxWidth={200}
+                            isSelectFirstApp={this.props.isSelectFirstApp}
+                            selectedApp={this.props.selectedApp}
+                        />
+                    </span>
                 ) : null}
                 <div className="date-selector-wrap">
                     <DatePicker

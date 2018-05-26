@@ -34,7 +34,7 @@ const SORT_ICON_WIDTH = 16;
 const DELAY_TIME = 2000;
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 var SalesHomePage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         SalesHomeAction.setInitState();
         let stateData = SalesHomeStore.getState();
         var isSaleTeamShow = true;
@@ -58,10 +58,10 @@ var SalesHomePage = React.createClass({
             callBackSorter: {}, // 回访的排序对象
         };
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(SalesHomeStore.getState());
     },
-    getDataType: function () {
+    getDataType: function() {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
             return "all";
         } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
@@ -70,7 +70,7 @@ var SalesHomePage = React.createClass({
             return "";
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
         //获取统计团队内成员个数的列表
@@ -79,7 +79,7 @@ var SalesHomePage = React.createClass({
         this.refreshSalesListData();
         this.resizeLayout();
         $(window).resize(() => this.resizeLayout());
-        $(".statistic-data-analysis").mousewheel(function () {
+        $(".statistic-data-analysis").mousewheel(function() {
             $(".statistic-data-analysis .thumb").show();
             if (scrollTimeout) {
                 clearTimeout(scrollTimeout);
@@ -95,7 +95,7 @@ var SalesHomePage = React.createClass({
             });
         }, DELAY_TIME);
     },
-    resizeLayout: function () {
+    resizeLayout: function() {
         //宽屏不出现滚动条
         if ($(window).width() < Oplate.layout['screen-md']) {
             $('body').css({
@@ -116,10 +116,10 @@ var SalesHomePage = React.createClass({
         });
     },
     //获取个人配置信息
-    getWebConfig: function () {
+    getWebConfig: function() {
         SalesHomeAction.getWebsiteConfig();
     },
-    getListBlockHeight: function () {
+    getListBlockHeight: function() {
         let listHeight = null;
 
         if (this.state.scrollbarEnabled) {
@@ -128,12 +128,12 @@ var SalesHomePage = React.createClass({
         }
         return listHeight;
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         SalesHomeAction.setInitState();
         SalesHomeStore.unlisten(this.onChange);
     },
     //获取查询参数
-    getQueryParams: function () {
+    getQueryParams: function() {
         let queryParams = {
             urltype: 'v2',
             starttime: this.state.start_time,
@@ -156,7 +156,7 @@ var SalesHomePage = React.createClass({
         }
         return authType;
     },
-    getPhoneTop10Params: function () {
+    getPhoneTop10Params: function() {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -174,7 +174,7 @@ var SalesHomePage = React.createClass({
         return queryParams;
     },
     //刷新数据
-    refreshSalesListData: function () {
+    refreshSalesListData: function() {
         let queryParams = this.getQueryParams();
         let dataType = this.getDataType();
         queryParams.dataType = dataType;
@@ -201,7 +201,7 @@ var SalesHomePage = React.createClass({
         //获取过期用户列表
         SalesHomeAction.getExpireUser(queryObj);
     },
-    getPhoneParams: function () {
+    getPhoneParams: function() {
         let phoneParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -217,7 +217,7 @@ var SalesHomePage = React.createClass({
         return phoneParams;
     },
     // 设置获取回访列表的接口参数
-    getCallBackList (queryParam) {
+    getCallBackList(queryParam) {
         let startTime = this.state.start_time ? this.state.start_time : moment('2010-01-01 00:00:00').valueOf(),
             endTime = this.state.end_time ? this.state.end_time : moment().endOf("day").valueOf();
         let paramsObj = {
@@ -240,7 +240,7 @@ var SalesHomePage = React.createClass({
         SalesHomeAction.getCallBackList(paramsObj, filterObj);
     },
     //获取销售列的标题
-    getSalesColumnTitle: function () {
+    getSalesColumnTitle: function() {
         var userType = this.state.userType;
         var label = Intl.get("sales.home.sales", "销售");
         if (userType == "senior_leader") {
@@ -248,7 +248,7 @@ var SalesHomePage = React.createClass({
         }
         return label;
     },
-    getPhoneColumnTitle: function (label, key) {
+    getPhoneColumnTitle: function(label, key) {
         let sorter = this.state.phoneSorter;
         let sortIcon = null;
         if (sorter.field === key) {
@@ -260,7 +260,7 @@ var SalesHomePage = React.createClass({
         }
         return <span>{label}{sortIcon}</span>;
     },
-    getCallBackColumnTitle (label, key) {
+    getCallBackColumnTitle(label, key) {
         let sorter = this.state.callBackSorter;
         let sortIcon = null;
         if (sorter.field === key) {
@@ -272,14 +272,14 @@ var SalesHomePage = React.createClass({
         }
         return <span>{label}{sortIcon}</span>;
     },
-    getColumnMinWidth: function (width, key) {
+    getColumnMinWidth: function(width, key) {
         //正在排序的列宽需加上排序按钮的宽度
         if (this.state.phoneSorter.field === key) {
             width += SORT_ICON_WIDTH;
         }
         return width;
     },
-    getPhoneListColumn: function () {
+    getPhoneListColumn: function() {
         let col_width = 95, num_col_width = 80;
         let columns = [{
             title: this.getSalesColumnTitle(),
@@ -290,7 +290,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.total.duration", "总时长"), "totalTimeDescr"),
             dataIndex: 'totalTimeDescr',
             key: 'total_time',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
             className: 'has-filter table-data-align-right',
@@ -299,7 +299,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.total.connected", "总接通数"), "calloutSuccess"),
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter table-data-align-right',
@@ -308,7 +308,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.average.duration", "日均时长"), "averageTimeDescr"),
             dataIndex: 'averageTimeDescr',
             key: 'average_time',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
             className: 'has-filter table-data-align-right',
@@ -317,7 +317,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.average.connected", "日均接通数"), "averageAnswer"),
             dataIndex: 'averageAnswer',
             key: 'average_answer',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.averageAnswer - b.averageAnswer;
             },
             className: 'has-filter table-data-align-right',
@@ -326,7 +326,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin", "呼入次数"), "callinCount"),
             dataIndex: 'callinCount',
             key: 'callin_count',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinCount - b.callinCount;
             },
             className: 'has-filter table-data-align-right',
@@ -335,7 +335,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin.success", "成功呼入"), "callinSuccess"),
             dataIndex: 'callinSuccess',
             key: 'callin_success',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinSuccess - b.callinSuccess;
             },
             className: 'has-filter table-data-align-right',
@@ -344,7 +344,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callin.rate", "呼入接通率"), "callinRate"),
             dataIndex: 'callinRate',
             key: 'callin_rate',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinRate - b.callinRate;
             },
             className: 'has-filter table-data-align-right',
@@ -353,7 +353,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callout", "呼出次数"), "calloutCount"),
             dataIndex: 'calloutCount',
             key: 'callout_count',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutCount - b.calloutCount;
             },
             className: 'has-filter table-data-align-right',
@@ -362,7 +362,7 @@ var SalesHomePage = React.createClass({
             title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.callout.rate", "呼出接通率"), "calloutRate"),
             dataIndex: 'calloutRate',
             key: 'callout_rate',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter table-data-align-right',
@@ -374,7 +374,7 @@ var SalesHomePage = React.createClass({
                 title: this.getPhoneColumnTitle(Intl.get("sales.home.phone.billing.time", "计费时长") + "(min)", "billingTime"),
                 dataIndex: 'billingTime',
                 key: 'filling_time',
-                sorter: function (a, b) {
+                sorter: function(a, b) {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter table-data-align-right',
@@ -383,13 +383,13 @@ var SalesHomePage = React.createClass({
         }
         return columns;
     },
-    getCallBackListColumn () {
+    getCallBackListColumn() {
         let columns = [
             {
                 title: this.getCallBackColumnTitle(Intl.get("common.callback.time", "回访时间"), 'call_date'),
                 dataIndex: 'call_date',
                 width: 100,
-                sorter: function (a, b) {
+                sorter: function(a, b) {
                     return a.call_date - b.call_date;
                 },
                 className: 'has-sorter table-data-align-right',
@@ -424,7 +424,7 @@ var SalesHomePage = React.createClass({
         return columns;
     },
     //获取分析图表展示区所需的布局参数
-    getChartLayoutParams: function () {
+    getChartLayoutParams: function() {
         let chartWidth = 0;
         let chartListHeight = $(window).height() - $(".statistic-total-data").height() - layoutConstant.TOP - layoutConstant.BOTTOM;
         let windowWidth = $(window).width();
@@ -437,7 +437,7 @@ var SalesHomePage = React.createClass({
         return {chartWidth: chartWidth, chartListHeight: chartListHeight};
     },
     //通过销售名称获取对应的Id
-    getSaleIdByName: function (name) {
+    getSaleIdByName: function(name) {
         let teamMemberList = this.state.salesTeamMembersObj.data;
         if (_.isArray(teamMemberList) && teamMemberList.length) {
             let sales = _.find(teamMemberList, member => member.nickName == name);
@@ -447,7 +447,7 @@ var SalesHomePage = React.createClass({
         }
     },
 
-    getChangeCallTypeData: function () {
+    getChangeCallTypeData: function() {
         let queryParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(queryParams);
         let callTotalAuth = this.getCallTotalAuth();
@@ -495,7 +495,7 @@ var SalesHomePage = React.createClass({
             </div>
         );
     },
-    getPhoneTableMinWidth: function () {
+    getPhoneTableMinWidth: function() {
         let tableMinWitdh = this.state.callType == CALL_TYPE_OPTION.APP ? 965 : 845;
         //有排序的列，table的宽带需要加上排序按钮的宽度
         if (!_.isEmpty(this.state.phoneSorter)) {
@@ -504,28 +504,28 @@ var SalesHomePage = React.createClass({
         return tableMinWitdh;
     },
     //渲染数据分析视图
-    renderAnalysisView: function () {
+    renderAnalysisView: function() {
         if (this.state.activeView == viewConstant.CUSTOMER) {
             return (<CustomerAnalysis ref="customerView" startTime={this.state.start_time} endTime={this.state.end_time}
-                                      timeType={this.state.timeType}
-                                      scrollbarEnabled={this.state.scrollbarEnabled}
-                                      currShowSalesTeam={this.state.currShowSalesTeam}
-                                      currShowSalesman={this.state.currShowSalesman}
-                                      originSalesTeamTree={this.state.originSalesTeamTree}
-                                      getSaleIdByName={this.getSaleIdByName}
-                                      getChartLayoutParams={this.getChartLayoutParams}
-                                      updateScrollBar={this.state.updateScrollBar}
+                timeType={this.state.timeType}
+                scrollbarEnabled={this.state.scrollbarEnabled}
+                currShowSalesTeam={this.state.currShowSalesTeam}
+                currShowSalesman={this.state.currShowSalesman}
+                originSalesTeamTree={this.state.originSalesTeamTree}
+                getSaleIdByName={this.getSaleIdByName}
+                getChartLayoutParams={this.getChartLayoutParams}
+                updateScrollBar={this.state.updateScrollBar}
             />);
         } else if (this.state.activeView == viewConstant.USER) {
             return (<UserAnalysis ref="userView" startTime={this.state.start_time} endTime={this.state.end_time}
-                                  timeType={this.state.timeType}
-                                  scrollbarEnabled={this.state.scrollbarEnabled}
-                                  currShowSalesTeam={this.state.currShowSalesTeam}
-                                  currShowSalesman={this.state.currShowSalesman}
-                                  originSalesTeamTree={this.state.originSalesTeamTree}
-                                  getSaleIdByName={this.getSaleIdByName}
-                                  getChartLayoutParams={this.getChartLayoutParams}
-                                  updateScrollBar={this.state.updateScrollBar}
+                timeType={this.state.timeType}
+                scrollbarEnabled={this.state.scrollbarEnabled}
+                currShowSalesTeam={this.state.currShowSalesTeam}
+                currShowSalesman={this.state.currShowSalesman}
+                originSalesTeamTree={this.state.originSalesTeamTree}
+                getSaleIdByName={this.getSaleIdByName}
+                getChartLayoutParams={this.getChartLayoutParams}
+                updateScrollBar={this.state.updateScrollBar}
             />);
         } else if (this.state.activeView == viewConstant.PHONE) {
             return (<div className="sales-table-container sales-phone-table" ref="phoneList">
@@ -533,10 +533,10 @@ var SalesHomePage = React.createClass({
                 <div className="phone-table-block" style={{height: this.getListBlockHeight()}}>
                     <GeminiScrollbar enabled={this.props.scrollbarEnabled} ref="phoneScrollbar">
                         <AntcTable dataSource={this.state.salesPhoneList} columns={this.getPhoneListColumn()}
-                                   loading={this.state.isLoadingPhoneList}
-                                   scroll={{x: this.getPhoneTableMinWidth()}}
-                                   pagination={false} bordered util={{zoomInSortArea: true}}
-                                   onChange={this.onTableChange}
+                            loading={this.state.isLoadingPhoneList}
+                            scroll={{x: this.getPhoneTableMinWidth()}}
+                            pagination={false} bordered util={{zoomInSortArea: true}}
+                            onChange={this.onTableChange}
                         />
                         {/*根据电话的排序的通话次数TOP10*/}
                         {this.renderCallTopTen(this.state.callTotalCountObj, {
@@ -646,7 +646,7 @@ var SalesHomePage = React.createClass({
                 width: '100',
                 className: 'table-data-align-right',
                 key: 'holding_time',
-                render: function (data) {
+                render: function(data) {
                     return <div>{titleObj.dataKey === "count" ? data : TimeUtil.getFormatTime(data)}</div>;
                 }
             }, {
@@ -664,14 +664,14 @@ var SalesHomePage = React.createClass({
             }
         ];
     },
-    onTableChange: function (pagination, filters, sorter) {
+    onTableChange: function(pagination, filters, sorter) {
         this.setState({phoneSorter: sorter});
     },
-    onCallBackTableChange (pagination, filters, sorter) {
+    onCallBackTableChange(pagination, filters, sorter) {
         this.setState({callBackSorter: sorter});
     },
     //时间的设置
-    onSelectDate: function (startTime, endTime, timeType) {
+    onSelectDate: function(startTime, endTime, timeType) {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         SalesHomeAction.changeSearchTime(timeObj);
         SalesHomeAction.resetCallBackRecord();
@@ -688,7 +688,7 @@ var SalesHomePage = React.createClass({
         });
     },
     //切换销售团队、销售时，刷新数据
-    refreshDataByChangeSales: function () {
+    refreshDataByChangeSales: function() {
         //刷新统计数据
         this.refreshSalesListData();
         if (this.state.activeView == viewConstant.CUSTOMER) {
@@ -700,7 +700,7 @@ var SalesHomePage = React.createClass({
         }
     },
     //获取右侧销售团队列表的高度
-    getSalesListHeight: function () {
+    getSalesListHeight: function() {
         let salesListHeight = "auto";
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP - layoutConstant.TITLE_HEIGHT;
@@ -708,7 +708,7 @@ var SalesHomePage = React.createClass({
         return salesListHeight;
     },
     //获取左侧即将到期客户高度
-    getWillExpireUserListHeight: function () {
+    getWillExpireUserListHeight: function() {
         let salesListHeight = "auto";
         if (this.state.scrollbarEnabled) {
             salesListHeight = $(window).height() - layoutConstant.TOP_NAV_H - layoutConstant.EXPIRE_TITLE_H - layoutConstant.BOTTOM;
@@ -716,7 +716,7 @@ var SalesHomePage = React.createClass({
         return salesListHeight;
     },
     //点击 邮箱激活提示 中的不再提示，隐藏提示框
-    hideActiveEmailTip: function () {
+    hideActiveEmailTip: function() {
         SalesHomeAction.setWebsiteConfig({"setting_notice_ignore": "yes"}, (errMsg) => {
             if (errMsg) {
                 //设置错误后的提示
@@ -730,7 +730,7 @@ var SalesHomePage = React.createClass({
         });
     },
     //点击 激活邮箱 按钮
-    activeUserEmail: function () {
+    activeUserEmail: function() {
         if (!this.state.emailShowObj.email) {
             return;
         }
@@ -744,7 +744,7 @@ var SalesHomePage = React.createClass({
             }
         });
     },
-    handleCrmTeamListShow: function () {
+    handleCrmTeamListShow: function() {
         this.setState({
             isSaleTeamShow: !this.state.isSaleTeamShow,
             notfirstLogin: true,
@@ -759,10 +759,10 @@ var SalesHomePage = React.createClass({
         });
     },
     //跳转到个人信息页面
-    jumpToUserInfo: function () {
+    jumpToUserInfo: function() {
         history.pushState({}, "/user_info_manage/user_info", {});
     },
-    renderWillExpireUser: function () {
+    renderWillExpireUser: function() {
         return (
             <WillExpiredUsers
                 expireUserLists={this.state.expireUserLists}
@@ -775,7 +775,7 @@ var SalesHomePage = React.createClass({
         );
     },
     //渲染客户关系首页
-    render: function () {
+    render: function() {
         var crmSaleList = classNames("sale-list-zone", {
             'saleteam-list-show': this.state.isSaleTeamShow && this.state.notfirstLogin,
             'saleteam-list-hide': !this.state.isSaleTeamShow && this.state.notfirstLogin,
@@ -812,8 +812,8 @@ var SalesHomePage = React.createClass({
                     </div>
                     {(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? null :
                         <div className="crm-home-teamlist-show-flag">
-                        <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
-                        </span>
+                            <span className={hamburgerCls} onClick={this.handleCrmTeamListShow} title={title}>
+                            </span>
                         </div>}
                     {
                         //<div className="crm-home-add-btn">
@@ -857,17 +857,17 @@ var SalesHomePage = React.createClass({
                         {!(this.state.currShowType == showTypeConstant.SALESMAN && !this.state.currShowSalesman) ? (
                             <div className={crmSaleList}>
                                 <CrmRightList currShowType={this.state.currShowType}
-                                              salesTeamListObj={this.state.salesTeamListObj}
-                                              originSalesTeamTree={this.state.originSalesTeamTree}
-                                              scrollbarEnabled={this.state.scrollbarEnabled}
-                                              currShowSalesTeam={this.state.currShowSalesTeam}
-                                              currShowSalesman={this.state.currShowSalesman}
-                                              getSalesListHeight={this.getSalesListHeight}
-                                              refreshDataByChangeSales={this.refreshDataByChangeSales}
-                                              salesTeamMembersObj={this.state.salesTeamMembersObj}
-                                              updateScrollBar={this.state.updateScrollBar}
-                                              salesCallStatus={this.state.salesCallStatus}
-                                              teamMemberCountList={this.state.teamMemberCountList}
+                                    salesTeamListObj={this.state.salesTeamListObj}
+                                    originSalesTeamTree={this.state.originSalesTeamTree}
+                                    scrollbarEnabled={this.state.scrollbarEnabled}
+                                    currShowSalesTeam={this.state.currShowSalesTeam}
+                                    currShowSalesman={this.state.currShowSalesman}
+                                    getSalesListHeight={this.getSalesListHeight}
+                                    refreshDataByChangeSales={this.refreshDataByChangeSales}
+                                    salesTeamMembersObj={this.state.salesTeamMembersObj}
+                                    updateScrollBar={this.state.updateScrollBar}
+                                    salesCallStatus={this.state.salesCallStatus}
+                                    teamMemberCountList={this.state.teamMemberCountList}
                                 />
                             </div>
                         ) : null}

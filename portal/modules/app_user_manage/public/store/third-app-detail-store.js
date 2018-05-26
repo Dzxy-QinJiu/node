@@ -13,7 +13,7 @@ function ThirdAppDetailStore() {
     this.bindActions(ThirdAppDetailActions);
 }
 
-ThirdAppDetailStore.prototype.resetState = function () {
+ThirdAppDetailStore.prototype.resetState = function() {
     this.status = "display";
     this.platforms = _.clone(defaultPlatforms);
     this.result = {
@@ -44,7 +44,7 @@ ThirdAppDetailStore.prototype.resetState = function () {
     };
 };
 
-ThirdAppDetailStore.prototype.changePanelStatus = function (status) {
+ThirdAppDetailStore.prototype.changePanelStatus = function(status) {
     this.status = status;
 };
 
@@ -54,8 +54,8 @@ ThirdAppDetailStore.prototype.changePanelStatus = function (status) {
  * @param {string} errMsg 错误信息
  * @param {function} fn   成功后的回调,会传入result
  */
-const resultHandler = function (status, errMsg, fn) {
-    return function (result) {
+const resultHandler = function(status, errMsg, fn) {
+    return function(result) {
         if (result.loading) {
             this[status] = "loading";
         }
@@ -72,7 +72,7 @@ const resultHandler = function (status, errMsg, fn) {
 };
 
 //get app detail
-ThirdAppDetailStore.prototype.getAppDetail = resultHandler("result.getAppDetail", "errMsg.getAppDetail", function (result) {
+ThirdAppDetailStore.prototype.getAppDetail = resultHandler("result.getAppDetail", "errMsg.getAppDetail", function(result) {
     this.app = result.data;
     if (this.app.create_time) {
         this.app.create_time = moment(this.app.create_time).format("YYYY-MM-DD hh:ss");
@@ -80,7 +80,7 @@ ThirdAppDetailStore.prototype.getAppDetail = resultHandler("result.getAppDetail"
 });
 
 //add app
-ThirdAppDetailStore.prototype.addApp = function (result) {
+ThirdAppDetailStore.prototype.addApp = function(result) {
     if (result.loading) {
         this.result.addApp = "loading";
     } else if (result.error) {
@@ -100,7 +100,7 @@ ThirdAppDetailStore.prototype.addApp = function (result) {
 };
 
 //edit app
-ThirdAppDetailStore.prototype.editApp = resultHandler("result.editApp", "result.error", function (result) {
+ThirdAppDetailStore.prototype.editApp = resultHandler("result.editApp", "result.error", function(result) {
     message.success(Intl.get("user.third.thirdapp.success.edit", "修改成功"));
     this.app = result.paramObj;
     if (this.app.create_time) {
@@ -114,7 +114,7 @@ ThirdAppDetailStore.prototype.editApp = resultHandler("result.editApp", "result.
 });
 
 //chagne status
-ThirdAppDetailStore.prototype.changeAppStatus = resultHandler("result.changeAppStatus", "errMsg.changeAppStatus", function (result) {
+ThirdAppDetailStore.prototype.changeAppStatus = resultHandler("result.changeAppStatus", "errMsg.changeAppStatus", function(result) {
     let tipMap = {
         "enable": Intl.get("user.third.thirdapp.success.enable", "启用成功"),
         "disable": Intl.get("user.third.thirdapp.success.disable", "禁用成功")
@@ -125,7 +125,7 @@ ThirdAppDetailStore.prototype.changeAppStatus = resultHandler("result.changeAppS
     ThirdPartyAppConfigAction.getAppConfigList(result.paramObj.userId);
 });
 
-ThirdAppDetailStore.prototype.getPlatforms = resultHandler("result.getPlatforms", "errMsg.getPlatforms", function (result) {
+ThirdAppDetailStore.prototype.getPlatforms = resultHandler("result.getPlatforms", "errMsg.getPlatforms", function(result) {
     this.platforms = _.union(defaultPlatforms, result.data);
 });
 

@@ -22,7 +22,7 @@ const Promise = require("bluebird");
  * @param res
  */
 
-exports.showLoginPage = function (req, res) {
+exports.showLoginPage = function(req, res) {
     var loginErrorMsg = req.session.loginErrorMsg;
     if (loginErrorMsg) {
         delete req.session.loginErrorMsg;
@@ -51,10 +51,10 @@ exports.showLoginPage = function (req, res) {
     }
     //展示登录页面前先获取验证码
     function getLoginCaptcha() {
-        DesktopLoginService.getLoginCaptcha(req, res, last_login_user).on("success", function (data) {
+        DesktopLoginService.getLoginCaptcha(req, res, last_login_user).on("success", function(data) {
             obj.captchaCode = data ? data.data : "";
             renderHtml();
-        }).on("error", function (errorObj) {
+        }).on("error", function(errorObj) {
             renderHtml();
         });
     }
@@ -92,7 +92,7 @@ exports.showLoginPage = function (req, res) {
 /*
  * 登录逻辑
  */
-exports.login = function (req, res) {
+exports.login = function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
     var captcha = req.body.retcode;
@@ -106,7 +106,7 @@ exports.login = function (req, res) {
 /*
  * sso登录逻辑
  */
-exports.ssologin = function (req, res) {
+exports.ssologin = function(req, res) {
     var ticket = req.query.t;
     if (!ticket) {
         req.session.stopcheck = "true";
@@ -131,12 +131,12 @@ function modifySessionData(req, data) {
 //登录成功处理
 function loginSuccess(req, res) {
     req.session.stopcheck = "";
-    return function (data) {
+    return function(data) {
         //修改session数据
         modifySessionData(req, data);
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
-        req.session.save(function () {
+        req.session.save(function() {
             if (req.xhr) {
                 //session失效时，登录成功后的处理
                 res.status(200).json("success");
@@ -149,7 +149,7 @@ function loginSuccess(req, res) {
 }
 //登录失败处理
 function loginError(req, res) {
-    return function (data) {
+    return function(data) {
         let lang = req.session && req.session.lang || "zh_CN";
         req.session.stopcheck = "true";
         let backendIntl = new BackendIntl(req);
@@ -158,7 +158,7 @@ function loginError(req, res) {
         } else {
             req.session.loginErrorMsg = backendIntl.get("login.username.password.error", "用户名或密码错误");
         }
-        req.session.save(function () {
+        req.session.save(function() {
             if (req.xhr) {
                 //session失效时，登录失败后的处理
                 res.status(500).json(data && data.message || backendIntl.get("login.password.error", "密码错误"));
@@ -171,7 +171,7 @@ function loginError(req, res) {
 }
 
 //获取验证码
-exports.getLoginCaptcha = function (req, res) {
+exports.getLoginCaptcha = function(req, res) {
     var type = req.query.type;
     var username = req.query.username || '';
     username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
@@ -179,15 +179,15 @@ exports.getLoginCaptcha = function (req, res) {
         res.status(400).send("need username parameter");
         return;
     }
-    DesktopLoginService.getLoginCaptcha(req, res, username, type).on("success", function (data) {
+    DesktopLoginService.getLoginCaptcha(req, res, username, type).on("success", function(data) {
         res.status(200).json(data ? data.data : "");
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
 
 //刷新验证码
-exports.refreshCaptcha = function (req, res) {
+exports.refreshCaptcha = function(req, res) {
     var type = req.query.type;
     var username = req.query.username || '';
     username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
@@ -195,16 +195,16 @@ exports.refreshCaptcha = function (req, res) {
         res.status(400).send("need username parameter");
         return;
     }
-    DesktopLoginService.refreshLoginCaptcha(req, res, username, type).on("success", function (data) {
+    DesktopLoginService.refreshLoginCaptcha(req, res, username, type).on("success", function(data) {
         res.status(200).json(data ? data.data : "");
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
 
 //检查联系方式是否存在
-exports.checkContactInfoExists = function (req, res) {
-    DesktopLoginService.checkContactInfoExists(req, res).on("success", function (data) {
+exports.checkContactInfoExists = function(req, res) {
+    DesktopLoginService.checkContactInfoExists(req, res).on("success", function(data) {
         if (typeof data === "object") {
             //过滤掉无关字段
             data = {
@@ -215,90 +215,90 @@ exports.checkContactInfoExists = function (req, res) {
             data = "";
         }
         res.status(200).json(data);
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
 
 //获取操作码
 function getOperateCode(req, res) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
         const user_name = req.query.user_name;
         const captcha = req.query.captcha;
-        DesktopLoginService.getOperateCode(req, res, user_name, captcha).on("success", function (data) {
+        DesktopLoginService.getOperateCode(req, res, user_name, captcha).on("success", function(data) {
             const operateCode = data && data.operate_code;
             resolve(operateCode);
-        }).on("error", function (errorObj) {
+        }).on("error", function(errorObj) {
             reject(errorObj);
         });
     });
 }
 
 //发送重置密码时的身份验证信息
-exports.sendResetPasswordMsg = function (req, res) {
+exports.sendResetPasswordMsg = function(req, res) {
     //先获取操作码
-    getOperateCode(req, res).then(function (operateCode) {
+    getOperateCode(req, res).then(function(operateCode) {
         const userName = req.query.user_name;
         const sendType = req.query.send_type;
         //发送信息
-        DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on("success", function (data) {
+        DesktopLoginService.sendResetPasswordMsg(req, res, userName, sendType, operateCode).on("success", function(data) {
             if (!data) data = "";
             res.status(200).json(data);
-        }).on("error", function (errorObj) {
+        }).on("error", function(errorObj) {
             res.status(500).json(errorObj);
         });
-    }).catch(function (errorObj) {
+    }).catch(function(errorObj) {
         res.status(500).json(errorObj);
     });
 };
 
 //获取凭证
-exports.getTicket = function (req, res) {
+exports.getTicket = function(req, res) {
     const user_id = req.query.user_id;
     const code = req.query.code;
-    DesktopLoginService.getTicket(req, res, user_id, code).on("success", function (data) {
+    DesktopLoginService.getTicket(req, res, user_id, code).on("success", function(data) {
         if (!data) data = "";
         res.status(200).json(data);
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
 
 //重置密码
-exports.resetPassword = function (req, res) {
+exports.resetPassword = function(req, res) {
     const user_id = req.query.user_id;
     const ticket = req.query.ticket;
     const new_password = req.query.new_password;
-    DesktopLoginService.resetPassword(req, res, user_id, ticket, new_password).on("success", function (data) {
+    DesktopLoginService.resetPassword(req, res, user_id, ticket, new_password).on("success", function(data) {
         if (!data) data = "";
         res.status(200).json(data);
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
 
 //获取扫描登录的二维码
-exports.getLoginQRCode = function (req, res) {
-    DesktopLoginService.getLoginQRCode(req, res).on("success", function (data) {
+exports.getLoginQRCode = function(req, res) {
+    DesktopLoginService.getLoginQRCode(req, res).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (errorObj) {
+    }).on("error", function(errorObj) {
         res.status(500).json(errorObj);
     });
 };
 //二维码登录
-exports.loginByQRCode = function (req, res) {
+exports.loginByQRCode = function(req, res) {
     var qrcode = req.params.qrcode;
-    DesktopLoginService.loginByQRCode(req, res, qrcode).on("success", function (data) {
+    DesktopLoginService.loginByQRCode(req, res, qrcode).on("success", function(data) {
         //修改session数据
         modifySessionData(req, data);
         //设置sessionStore，如果是内存session时，需要从req中获取
         global.config.sessionStore = global.config.sessionStore || req.sessionStore;
-        req.session.save(function () {
+        req.session.save(function() {
             //登录界面，登录成功后的处理
             // res.redirect("/");
             res.status(200).json("success");
         });
-    }).on("error", function (data) {
+    }).on("error", function(data) {
         res.status(500).json(data);
     });
 

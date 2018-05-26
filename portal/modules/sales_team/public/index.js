@@ -24,7 +24,7 @@ var CONSTANT = {
 };
 
 var SalesTeamPage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         var data = SalesTeamStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
@@ -36,7 +36,7 @@ var SalesTeamPage = React.createClass({
         return data;
     },
 
-    onChange: function () {
+    onChange: function() {
         var data = SalesTeamStore.getState();
         data.containerHeight = this.containerHeightFnc();
         data.containerWidth = this.containerWidthFnc();
@@ -44,7 +44,7 @@ var SalesTeamPage = React.createClass({
         this.setState(data);
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             containerHeight: this.containerHeightFnc(),
             containerWidth: this.containerWidthFnc(),
@@ -52,7 +52,7 @@ var SalesTeamPage = React.createClass({
         });
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         $(window).on("resize", this.resizeWindow);
         SalesTeamStore.listen(this.onChange);
@@ -62,42 +62,42 @@ var SalesTeamPage = React.createClass({
         SalesTeamAction.getMemberList();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         SalesTeamStore.unlisten(this.onChange);
         $("body").css("overflow", "auto");
     },
 
-    containerHeightFnc: function () {
+    containerHeightFnc: function() {
         return $(window).height() - topHeight - bootomHeight;
     },
 
-    windowHeightFnc: function () {
+    windowHeightFnc: function() {
         return $(window).height();
     },
 
-    containerWidthFnc: function () {
+    containerWidthFnc: function() {
         return $(window).width() - 75 - 40;
     },
 
-    cancelAddGroup: function () {
+    cancelAddGroup: function() {
         SalesTeamAction.cancelAddGroup();
     },
 
     //团队名称修改的处理
-    onSalesTeamNameChange: function (event) {
+    onSalesTeamNameChange: function(event) {
         this.state.salesTeamName = event.target.value;
         this.setState({salesTeamName: this.state.salesTeamName});
     },
     //添加团队
-    addSalesTeam: function () {
+    addSalesTeam: function() {
         var _this = this;
         _this.setState({
             isSavingSalesTeam: true
         });
         SalesTeamAjax.addGroup({
             groupName: this.state.salesTeamName
-        }).then(function (data) {
+        }).then(function(data) {
             _this.state.isSavingSalesTeam = false;
             if (data) {
                 _this.state.saveSalesTeamMsg = CONSTANT.SAVE_SUCCESS;
@@ -107,7 +107,7 @@ var SalesTeamPage = React.createClass({
                 _this.state.saveSalesTeamResult = CONSTANT.ERROR;
             }
             _this.updateSaveState();
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.state.isSavingSalesTeam = false;
             _this.state.saveSalesTeamMsg = errorMsg || CONSTANT.SAVE_ERROR;
             _this.state.saveSalesTeamResult = CONSTANT.ERROR;
@@ -115,7 +115,7 @@ var SalesTeamPage = React.createClass({
         });
     },
     //更新添加团队返回结果的相关数据
-    updateSaveState: function () {
+    updateSaveState: function() {
         this.setState({
             isSavingSalesTeam: this.state.isSavingSalesTeam,
             saveSalesTeamMsg: this.state.saveSalesTeamMsg,
@@ -123,7 +123,7 @@ var SalesTeamPage = React.createClass({
         });
     },
     //隐藏添加团队后的提示信息
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         if (this.state.saveSalesTeamResult == CONSTANT.SUCCESS) {
             SalesTeamAction.getSalesTeamList();
         }
@@ -131,21 +131,21 @@ var SalesTeamPage = React.createClass({
         this.state.saveSalesTeamResult = "";
     },
     //无团队时，添加团队面板的渲染
-    renderAddSalesTeam: function () {
+    renderAddSalesTeam: function() {
         return (<PrivilegeChecker check="BGM_SALES_TEAM_ADD" className="sales-team-null-add-container">
             <div className="no-sales-team-tip">
                 <ReactIntl.FormattedMessage id="sales.team.no.sales.team.tip" defaultMessage="暂无团队，请先添加："/>
             </div>
             <div className="add-sales-team-div">
                 <Input value={this.state.salesTeamName}
-                       size="large"
-                       onChange={this.onSalesTeamNameChange}
-                       placeholder={Intl.get("sales.team.search.placeholder", "请输入团队名称")}/>
+                    size="large"
+                    onChange={this.onSalesTeamNameChange}
+                    placeholder={Intl.get("sales.team.search.placeholder", "请输入团队名称")}/>
                 {this.state.saveSalesTeamMsg ? (<div className="indicator">
                     <AlertTimer time={this.state.saveSalesTeamResult==CONSTANT.ERROR?3000:600}
-                                message={this.state.saveSalesTeamMsg}
-                                type={this.state.saveSalesTeamResult} showIcon
-                                onHide={this.hideSaveTooltip}/>
+                        message={this.state.saveSalesTeamMsg}
+                        type={this.state.saveSalesTeamResult} showIcon
+                        onHide={this.hideSaveTooltip}/>
                 </div>) : null}
                 <Button type="primary" size="large" onClick={this.addSalesTeam}>
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
@@ -154,7 +154,7 @@ var SalesTeamPage = React.createClass({
             </div>
         </PrivilegeChecker>);
     },
-    render: function () {
+    render: function() {
         var containerHeight = this.state.containerHeight - 2;
         var containerWidth = this.state.containerWidth - 2;
         var salesTeamMemberWidth = containerWidth - 300 - 2;
@@ -169,7 +169,7 @@ var SalesTeamPage = React.createClass({
                     <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                     <Spinner className="isloading"/>) : (
                     <div className="sales-team-table-block modal-container"
-                         style={{width:containerWidth,height:containerHeight}}>
+                        style={{width:containerWidth,height:containerHeight}}>
                         <LeftTree
                             containerHeight={containerHeight}
                             salesTeamList={salesTeamList}

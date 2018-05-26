@@ -23,7 +23,7 @@ require('babel-core/register');
  * 初始化 资源控制器
  * @param app express app
  */
-var initController = function (app) {
+var initController = function(app) {
     if (isInited) {
         return;
     }
@@ -40,7 +40,7 @@ var initController = function (app) {
         }
         var routeConfig = require(fp);
         if (!routeConfig.module || !routeConfig.routes || !routeConfig.routes.length) {return;}
-        routeConfig.routes.forEach(function (route) {
+        routeConfig.routes.forEach(function(route) {
             try {
                 route.passport = route.passport === undefined ? routeConfig.passport : route.passport;
                 route.passport = (route.passport === undefined || route.passport === true) ? {
@@ -77,7 +77,7 @@ var initController = function (app) {
     // 处理所有前面未拦截的请求处理
     // 1. 未登录：重定向到登录页
     // 2. 已登录：重定向到首页
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
         if (!/(^\/favicon\.ico$)|(\.(js|css|png|jpg|gif|woff2?|ttf|eot|svg)$)/i.test(req.originalUrl)) {
             if (!req.session || !req.session.user) {
                 if (global.config.useSso) {
@@ -101,7 +101,7 @@ var initController = function (app) {
  *
  * @param app express app
  */
-var setAppConfig = function (app) {
+var setAppConfig = function(app) {
     util._extend(app.locals, {
         isProduction : config.isProduction,
         webpackMode : config.webpackMode
@@ -112,7 +112,7 @@ var setAppConfig = function (app) {
  * @param app express app
  * @returns {Function}
  */
-module.exports = function (app) {
+module.exports = function(app) {
     setAppConfig(app);
     initController(app);
 

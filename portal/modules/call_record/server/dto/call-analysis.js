@@ -1,7 +1,7 @@
 var _ = require("underscore");
 
 // 通话分析中的数据的转换
-exports.toFrontCallAnalysis = function (data) {
+exports.toFrontCallAnalysis = function(data) {
     var callInfo = {};
     if (data && _.isObject(data)) {
         callInfo.salesPhoneList = [];

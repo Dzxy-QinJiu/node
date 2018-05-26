@@ -60,7 +60,7 @@ LineChart.prototype.getEchartOptions = function() {
             textStyle : {
                 color: '#fff'
             },
-            formatter : function (obj) {
+            formatter : function(obj) {
                 var idx = obj.dataIndex;
                 var tooltipDate =  DateSelectorUtils.getEchartTooltipDate(_this.dataList , idx , _this.unit);
                 var newObj = {

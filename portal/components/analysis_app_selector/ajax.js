@@ -10,20 +10,20 @@ exports.getAppList = function() {
     var hasAll = privileges.indexOf("APP_MANAGE_LIST_APPS") >= 0 || privileges.indexOf("USER_INFO_MYAPP") < 0;
     //调用统一的接口发请求
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success(function(list) {
-        list = list.map(function(app) {
-            return {
-                id : app.app_id,
-                name : app.app_name,
-                image : app.app_logo
-            };
+        success(function(list) {
+            list = list.map(function(app) {
+                return {
+                    id : app.app_id,
+                    name : app.app_name,
+                    image : app.app_logo
+                };
+            });
+            Deferred.resolve({list :list , hasAll : hasAll});
+        }).error(function() {
+            Deferred.resolve({list :[] , hasAll : hasAll});
+        }).timeout(function() {
+            Deferred.resolve({list :[] , hasAll : hasAll});
         });
-        Deferred.resolve({list :list , hasAll : hasAll});
-    }).error(function() {
-        Deferred.resolve({list :[] , hasAll : hasAll});
-    }).timeout(function() {
-        Deferred.resolve({list :[] , hasAll : hasAll});
-    });
 
     return Deferred.promise();
 };

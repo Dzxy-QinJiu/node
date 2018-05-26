@@ -7,8 +7,8 @@ var logger = require("../portal/lib/utils/logger");
 //访问日志
 var accessLogger = logger.getLogger('access');
 
-var checkLogin = function (passport) {
-    return function (req, res, next) {
+var checkLogin = function(passport) {
+    return function(req, res, next) {
         // 登入登出的一种特殊检测
         if (/^\/login/i.test(req.url)) {
             if (req.session.user) {

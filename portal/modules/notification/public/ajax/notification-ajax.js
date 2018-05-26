@@ -1,7 +1,7 @@
 
 //获取系统通知
 let systemNoticesAjax;
-exports.getSystemNotices = function (queryObj, status) {
+exports.getSystemNotices = function(queryObj, status) {
     if (systemNoticesAjax) {
         systemNoticesAjax.abort();
     }
@@ -11,10 +11,10 @@ exports.getSystemNotices = function (queryObj, status) {
         dataType: 'json',
         type: 'get',
         data: queryObj,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (error, errorText) {
+        error: function(error, errorText) {
             if (errorText !== 'abort') {
                 Deferred.reject(error && error.responseJSON || Intl.get("notification.system.notice.failed", "获取系统消息列表失败"));
             }
@@ -24,7 +24,7 @@ exports.getSystemNotices = function (queryObj, status) {
 };
 //系统消息
 let handleSystemNoticeAjax;
-exports.handleSystemNotice =  function (noticeId) {
+exports.handleSystemNotice =  function(noticeId) {
     if (handleSystemNoticeAjax) {
         handleSystemNoticeAjax.abort();
     }
@@ -33,10 +33,10 @@ exports.handleSystemNotice =  function (noticeId) {
         url: `/rest/notification/system/handle/${noticeId}`,
         dataType: 'json',
         type: 'put',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (error, errorText) {
+        error: function(error, errorText) {
             if (errorText !== 'abort') {
                 Deferred.reject(error && error.responseJSON );
             }
@@ -46,16 +46,16 @@ exports.handleSystemNotice =  function (noticeId) {
 };
 
 //清除未读数
-exports.clearUnreadNum = function (type) {
+exports.clearUnreadNum = function(type) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/notification/unread_num/' + type,
         dataType: 'json',
         type: 'put',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

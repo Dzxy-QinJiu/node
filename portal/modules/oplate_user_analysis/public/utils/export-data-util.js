@@ -43,7 +43,7 @@ function handleUserType(userTypeData) {
     return userTypeArrayData;
 }
 // 用户统计数据的处理
-export function handleUserStatis (userAnalysisData) {
+export function handleUserStatis(userAnalysisData) {
     let exportData = [];
     if (_.isArray(userAnalysisData) && userAnalysisData.length) {
         if (userAnalysisData[0].app_name) { // 综合条件下
@@ -210,7 +210,7 @@ export function handleRetentionData(processData) {
         return title;
     });
     exportData.push(titleArray);
-   let tableJsonList = processData.tableJsonList || [];
+    let tableJsonList = processData.tableJsonList || [];
     _.each( tableJsonList, (rowObj) => {
         exportData.push( _.values(rowObj) );
     } );
@@ -224,7 +224,7 @@ export function handleAppDownLoadData(processData, appTitleName) {
         return moment(new Date(+time)).format(oplateConsts.DATE_FORMAT);
     });
     titleNameArray.unshift(Intl.get('contract.21', '版本号'));
-   exportData.push(titleNameArray);
+    exportData.push(titleNameArray);
     _.each(processData, (versionData) => {
         let countArray = versionData.data;
         countArray.unshift(versionData.name);

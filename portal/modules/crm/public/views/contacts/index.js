@@ -25,7 +25,7 @@ var LAYOUT_CONSTANTS = {
 
 import Trace from "LIB_DIR/trace";
 var Contacts = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             callNumber: '', // 座机号
             getCallNumberError: '', // 获取座机号失败的信息
@@ -34,10 +34,10 @@ var Contacts = React.createClass({
             ...ContactStore.getState()
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(ContactStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
             ContactAction.getContactList(this.props.curCustomer, this.props.isMerge);
@@ -46,7 +46,7 @@ var Contacts = React.createClass({
         this.getUserPhoneNumber();
         $(window).on("resize", this.onStoreChange);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.isMerge || nextProps.curCustomer && nextProps.curCustomer.id !== this.props.curCustomer.id) {
             this.setState({
                 curCustomer: nextProps.curCustomer
@@ -57,20 +57,20 @@ var Contacts = React.createClass({
             });
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         ContactStore.unlisten(this.onStoreChange);
         setTimeout(() => {
             ContactAction.setInitData();
         });
         $(window).off("resize", this.onStoreChange);
     },
-    showAddContactForm: function () {
+    showAddContactForm: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".crm-right-panel-addbtn .anticon-plus"), "添加联系人");
         ContactAction.showAddContactForm();
         GeminiScrollbar.scrollTo(this.refs.scrollList, 0);
     },
     // 获取拨打电话的座席号
-    getUserPhoneNumber: function () {
+    getUserPhoneNumber: function() {
         let member_id = userData.getUserData().user_id;
         crmAjax.getUserPhoneNumber(member_id).then((result) => {
             if (result.phone_order) {
@@ -84,7 +84,7 @@ var Contacts = React.createClass({
             });
         });
     },
-    render: function () {
+    render: function() {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
         //减头部的客户基本信息高度
@@ -107,17 +107,17 @@ var Contacts = React.createClass({
             <div className="crm-pannel-contacts" data-tracename="联系人页面">
                 {this.state.isShowAddContactForm ? (
                     <ContactForm type="add" customer_id={this.state.curCustomer.id}
-                                 customer_name={this.state.curCustomer ? this.state.curCustomer.name : ""}
-                                 contactListLength={contactListLength}
-                                 refreshCustomerList={this.props.refreshCustomerList}/>) : (
+                        customer_name={this.state.curCustomer ? this.state.curCustomer.name : ""}
+                        contactListLength={contactListLength}
+                        refreshCustomerList={this.props.refreshCustomerList}/>) : (
                     <div className="contact-top-block">
                         <span className="total-tip">
-                        <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
-                                                    values={{"n": contactListLength + ""}}/>
+                            <ReactIntl.FormattedMessage id="sales.frontpage.total.list" defaultMessage={`共{n}条`}
+                                values={{"n": contactListLength + ""}}/>
                         </span>
                         {this.props.isMerge ? null : (
                             <span className="iconfont icon-add" title={Intl.get("crm.detail.contact.add", "添加联系人")}
-                                  onClick={this.showAddContactForm.bind(this)}/>
+                                onClick={this.showAddContactForm.bind(this)}/>
                         )}
                     </div>
                 )}
@@ -127,22 +127,22 @@ var Contacts = React.createClass({
                             if (contact) {
                                 return contact.isShowEditContactForm ?
                                     (<ContactForm contact={contact}
-                                                  key={i}
-                                                  isMerge={this.props.isMerge}
-                                                  updateMergeCustomerContact={this.props.updateMergeCustomerContact}
-                                                  refreshCustomerList={this.props.refreshCustomerList}
-                                                  updateCustomerDefContact={this.props.updateCustomerDefContact}
-                                                  type="edit"/>) :
+                                        key={i}
+                                        isMerge={this.props.isMerge}
+                                        updateMergeCustomerContact={this.props.updateMergeCustomerContact}
+                                        refreshCustomerList={this.props.refreshCustomerList}
+                                        updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                        type="edit"/>) :
                                     (<ContactItem isMerge={this.props.isMerge} contact={contact}
-                                                  key={i}
-                                                  setMergeCustomerDefaultContact={this.props.setMergeCustomerDefaultContact}
-                                                  delMergeCustomerContact={this.props.delMergeCustomerContact}
-                                                  updateMergeCustomerContact={this.props.updateMergeCustomerContact}
-                                                  updateCustomerDefContact={this.props.updateCustomerDefContact}
-                                                  refreshCustomerList={this.props.refreshCustomerList}
-                                                  callNumber={this.state.callNumber}
-                                                  getCallNumberError={this.state.getCallNumberError}
-                                                  curCustomer={this.state.curCustomer}
+                                        key={i}
+                                        setMergeCustomerDefaultContact={this.props.setMergeCustomerDefaultContact}
+                                        delMergeCustomerContact={this.props.delMergeCustomerContact}
+                                        updateMergeCustomerContact={this.props.updateMergeCustomerContact}
+                                        updateCustomerDefContact={this.props.updateCustomerDefContact}
+                                        refreshCustomerList={this.props.refreshCustomerList}
+                                        callNumber={this.state.callNumber}
+                                        getCallNumberError={this.state.getCallNumberError}
+                                        curCustomer={this.state.curCustomer}
                                     />);
                             } else {
                                 return "";

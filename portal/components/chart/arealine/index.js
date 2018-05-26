@@ -311,7 +311,7 @@ var AreaLine = React.createClass({
             this.echartInstance.setOption(options,true);
         }
     },
-    windowResize: function () {
+    windowResize: function() {
         clearTimeout(this.resizeTimeout);
         var _this = this;
         this.resizeTimeout = setTimeout(() => {

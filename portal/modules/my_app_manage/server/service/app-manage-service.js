@@ -32,14 +32,14 @@ var appRestApis = {
 };
 exports.urls = appRestApis;
 
-exports.getMyAppList = function (req, res, condition) {
+exports.getMyAppList = function(req, res, condition) {
     return restUtil.authRest.get(
         {
             url: appRestApis.getUserMyApp,
             req: req,
             res: res
         }, condition, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var appListObj = data;
                 if (_.isObject(appListObj)) {
@@ -55,14 +55,14 @@ exports.getMyAppList = function (req, res, condition) {
 };
 
 //通过id获取应用的详细信息
-exports.getCurAppById = function (req, res, appId) {
+exports.getCurAppById = function(req, res, appId) {
     return restUtil.authRest.get(
         {
             url: appRestApis.getCurAppById + "/" + appId,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", App.toFrontObject(data));
             }
@@ -70,7 +70,7 @@ exports.getCurAppById = function (req, res, appId) {
 };
 
 //修改应用
-exports.editApp = function (req, res, frontApp) {
+exports.editApp = function(req, res, frontApp) {
     var editApp = App.toRestObject(frontApp);
     return restUtil.authRest.put(
         {
@@ -81,7 +81,7 @@ exports.editApp = function (req, res, frontApp) {
 };
 
 //刷新应用密钥
-exports.refreshAppSecret = function (req, res, appId) {
+exports.refreshAppSecret = function(req, res, appId) {
     return restUtil.authRest.put(
         {
             url: appRestApis.refreshSecret + "/" + appId + "/refresh_secret",
@@ -90,7 +90,7 @@ exports.refreshAppSecret = function (req, res, appId) {
         }, null);
 };
 //修改应用到期时间
-exports.updateExpireDate = function (req, res, app) {
+exports.updateExpireDate = function(req, res, app) {
     return restUtil.authRest.put(
         {
             url: appRestApis.updateExpireDate,
@@ -100,14 +100,14 @@ exports.updateExpireDate = function (req, res, app) {
 };
 
 // 导出权限
-exports.exportAuthorityList = function (req, res, clientID) {
+exports.exportAuthorityList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
             url: appRestApis.exportAuthorityList + "/" + clientID,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 eventEmitter.emit("success", data);
             }
         });
@@ -116,7 +116,7 @@ exports.exportAuthorityList = function (req, res, clientID) {
 /**
  * 导入权限
  */
-exports.uploadAuthority = function (req, res, clientID, data) {
+exports.uploadAuthority = function(req, res, clientID, data) {
     return restUtil.authRest.post({
         url: appRestApis.importAuthority + "/" + clientID,
         req: req,
@@ -125,14 +125,14 @@ exports.uploadAuthority = function (req, res, clientID, data) {
 };
 
 // 导出角色
-exports.exportRoleList = function (req, res, clientID) {
+exports.exportRoleList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
             url: appRestApis.exportRoleList + "/" + clientID,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 eventEmitter.emit("success", data);
             }
         });
@@ -141,7 +141,7 @@ exports.exportRoleList = function (req, res, clientID) {
 /**
  * 导入角色
  */
-exports.uploadRole = function (req, res, clientID, data) {
+exports.uploadRole = function(req, res, clientID, data) {
     return restUtil.authRest.post({
         url: appRestApis.importRole + "/" + clientID,
         req: req,

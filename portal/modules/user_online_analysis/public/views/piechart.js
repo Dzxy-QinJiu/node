@@ -353,14 +353,14 @@ var PieChart = React.createClass({
                             </div>
                         ):
                         (
-                        <dl className="dl-horizontal">
-                            <dt>
-                                <div className="chart" ref="chart" data-title={this.props.title}></div>
-                            </dt>
-                            <dd>
-                                {this.renderRankList()}
-                            </dd>
-                        </dl>
+                            <dl className="dl-horizontal">
+                                <dt>
+                                    <div className="chart" ref="chart" data-title={this.props.title}></div>
+                                </dt>
+                                <dd>
+                                    {this.renderRankList()}
+                                </dd>
+                            </dl>
                         )
                 }
             </div>

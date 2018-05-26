@@ -6,7 +6,7 @@ var nockParser = require(path.resolve(portal_root_path, "./lib/utils/nockParser"
 
 var HomeIndexService = require("../service/destktop-index-service");
 
-exports.init = function () {
+exports.init = function() {
     nock(config.nockUrl)
         .persist()
         .get(/\/rest\/base\/v1\/user\/id\/[a-z0-9]+/)

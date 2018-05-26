@@ -25,7 +25,7 @@ var SelectFullWidth = React.createClass({
         return {
             minWidth : 120,
             maxWidth : 500,
-            onLayout : function () {}
+            onLayout : function() {}
         };
     },
     getInitialState : function() {

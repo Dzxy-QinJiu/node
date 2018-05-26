@@ -35,29 +35,29 @@ function UserFormActions() {
     );
 
     //获取团队列表
-    this.getUserTeamList = function () {
+    this.getUserTeamList = function() {
         var _this = this;
         var clientId = userData.getUserData().auth.client_id;
-        userAjax.getUserTeamList(clientId).then(function (salesTeamList) {
+        userAjax.getUserTeamList(clientId).then(function(salesTeamList) {
             _this.dispatch(salesTeamList);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("common.get.team.list.failed", "获取团队列表失败"));
         });
     };
 
     //获取角色列表
-    this.getRoleList = function () {
+    this.getRoleList = function() {
         var _this = this;
         var clientId = userData.getUserData().auth.client_id;
-        userAjax.getRoleList(clientId).then(function (roleList) {
+        userAjax.getRoleList(clientId).then(function(roleList) {
             _this.dispatch(roleList);
         });
     };
 
     //保存成员
-    this.addUser = function (user) {
+    this.addUser = function(user) {
         var _this = this;
-        userAjax.addUser(user).then(function (savedUser) {
+        userAjax.addUser(user).then(function(savedUser) {
             //保存成功后的处理
             let email = Intl.get("member.add.member.email", "新增成员的邮箱") ;
             if (savedUser && savedUser.email) {
@@ -65,15 +65,15 @@ function UserFormActions() {
             }
             _this.dispatch({saveResult: "success", saveMsg: Intl.get("user.info.active.email", "激活邮件已发送至{email}",{email}), savedUser: savedUser});
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("member.add.failed", "添加失败！") });
         });
     };
     //编辑成员
-    this.editUser = function (user) {
+    this.editUser = function(user) {
         var _this = this;
-        userAjax.editUser(user).then(function (data) {
+        userAjax.editUser(user).then(function(data) {
             //修改成功data=true，false:修改失败
             if (data) {
                 //保存成功后的处理
@@ -83,14 +83,14 @@ function UserFormActions() {
             } else {
                 _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed", '保存失败!')});
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", '保存失败!')});
         });
     };
 
     //清空提示
-    this.resetSaveResult = function (formType, saveResult) {
+    this.resetSaveResult = function(formType, saveResult) {
         if (saveResult == "success") {
             if (formType == "add") {
                 cardEmitter.emit(cardEmitter.ADD_CARD);
@@ -105,35 +105,35 @@ function UserFormActions() {
     };
 
     //用户名唯一性的验证
-    this.checkOnlyUserName = function (userName) {
+    this.checkOnlyUserName = function(userName) {
         var _this = this;
-        userAjax.checkOnlyUserName(userName).then(function (result) {
+        userAjax.checkOnlyUserName(userName).then(function(result) {
             _this.dispatch(result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
 
     //电话唯一性的验证
-    this.checkOnlyPhone = function (phone) {
+    this.checkOnlyPhone = function(phone) {
         var _this = this;
-        userAjax.checkOnlyPhone(phone).then(function (result) {
+        userAjax.checkOnlyPhone(phone).then(function(result) {
             _this.dispatch(result);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
 
     //邮箱唯一性的验证
-    this.checkOnlyEmail = function (email) {
+    this.checkOnlyEmail = function(email) {
         var _this = this;
-        userAjax.checkOnlyEmail(email).then(function (result) {
+        userAjax.checkOnlyEmail(email).then(function(result) {
             _this.dispatch(result);
             if (!result) {
                 //不存在邮箱为email的用户时，验证是否存在用户名为该邮箱的用户
                 _this.actions.checkOnlyUserName(email);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };

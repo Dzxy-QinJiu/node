@@ -28,20 +28,20 @@ function AppFormStore() {
 }
 
 //设置是否正在获取所有者列表
-AppFormStore.prototype.setOwnerListLoading = function (flag) {
+AppFormStore.prototype.setOwnerListLoading = function(flag) {
     this.isLoadingOwnerList = flag;
 };
 //设置是否正在获取成员列表
-AppFormStore.prototype.setManagerListLoading = function (flag) {
+AppFormStore.prototype.setManagerListLoading = function(flag) {
     this.isLoadingManagerList = flag;
 };
 //设置是否正在获取应用列表
-AppFormStore.prototype.setAllAppListLoading = function (flag) {
+AppFormStore.prototype.setAllAppListLoading = function(flag) {
     this.isLoadingAllAppList = flag;
 };
 
 //获取应用所有者列表
-AppFormStore.prototype.getAppOwnerList = function (ownerList) {
+AppFormStore.prototype.getAppOwnerList = function(ownerList) {
     this.isLoadingOwnerList = false;
     if (_.isArray(ownerList) && ownerList.length > 0) {
         this.appOwnerList = ownerList;
@@ -50,7 +50,7 @@ AppFormStore.prototype.getAppOwnerList = function (ownerList) {
     }
 };
 //获取应用管理员列表
-AppFormStore.prototype.getAppManagerList = function (managerList) {
+AppFormStore.prototype.getAppManagerList = function(managerList) {
     this.isLoadingManagerList = false;
     if (_.isArray(managerList) && managerList.length > 0) {
         this.appManagerList = managerList;
@@ -60,7 +60,7 @@ AppFormStore.prototype.getAppManagerList = function (managerList) {
 };
 
 //获取所有APP列表
-AppFormStore.prototype.getAllAppList = function (appListObj) {
+AppFormStore.prototype.getAllAppList = function(appListObj) {
     this.isLoadingAllAppList = false;
     var appListData = appListObj.data;
     if (_.isArray(appListData) && appListData.length > 0) {
@@ -71,28 +71,28 @@ AppFormStore.prototype.getAllAppList = function (appListObj) {
 };
 
 //正在保存的属性设置
-AppFormStore.prototype.setSaveFlag = function (flag) {
+AppFormStore.prototype.setSaveFlag = function(flag) {
     this.isSaving = flag;
 };
 //保存后的处理
-AppFormStore.prototype.afterSave = function (resultObj) {
+AppFormStore.prototype.afterSave = function(resultObj) {
     //去掉正在保存的效果
     this.isSaving = false;
     this.saveResult = resultObj.saveResult;
     this.saveMsg = resultObj.saveMsg;
 };
 //保存后的处理
-AppFormStore.prototype.addApp = function (resultObj) {
+AppFormStore.prototype.addApp = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //保存后的处理
-AppFormStore.prototype.editApp = function (resultObj) {
+AppFormStore.prototype.editApp = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //清空保存的提示信息
-AppFormStore.prototype.resetSaveResult = function () {
+AppFormStore.prototype.resetSaveResult = function() {
     this.saveMsg = "";
     this.saveResult = "";
 };

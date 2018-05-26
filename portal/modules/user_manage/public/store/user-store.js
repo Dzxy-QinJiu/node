@@ -66,35 +66,35 @@ function UserStore() {
 
 }
 //关闭右侧详情后，将数据置为
-UserStore.prototype.setInitialData = function () {
+UserStore.prototype.setInitialData = function() {
     this.currentUser = emptyUser;
 };
 //过滤角色的设置
-UserStore.prototype.setSelectRole = function (role) {
+UserStore.prototype.setSelectRole = function(role) {
     //搜索框和角色不能联合查询
     this.selectRole = role;
     this.searchContent = "";
 };
 //过滤面板是否展示的设置
-UserStore.prototype.toggleFilterPanel = function () {
+UserStore.prototype.toggleFilterPanel = function() {
     this.isFilterPanelShow = !this.isFilterPanelShow;
 };
 
 
 //修改成员所属团队
-UserStore.prototype.updateUserTeam = function (team) {
+UserStore.prototype.updateUserTeam = function(team) {
     if (this.currentUser) {
         this.currentUser.teamId = team.group_id;
         this.currentUser.teamName = team.group_name;
     }
 };
 //更新成员的启用或者禁用状态
-UserStore.prototype.updateCurrentUserStatus = function (status) {
-  if(this.currentUser){
-      this.currentUser.status = status;
-  }
+UserStore.prototype.updateCurrentUserStatus = function(status) {
+    if(this.currentUser){
+        this.currentUser.status = status;
+    }
 };
-UserStore.prototype.updateUserRoles = function (roleObj) {
+UserStore.prototype.updateUserRoles = function(roleObj) {
     if (this.currentUser) {
         //更新筛选面板下对应角色的数量
         updateRoleCount(this.currentUser.roleNames, roleObj.roleNames, this.userRoleList);
@@ -103,7 +103,7 @@ UserStore.prototype.updateUserRoles = function (roleObj) {
     }
 };
 //公开方法，获取当前展示的列表
-UserStore.prototype.getCurUserList = function (userListObj) {
+UserStore.prototype.getCurUserList = function(userListObj) {
     this.isLoading = false;
 
     if (_.isString(userListObj)) {
@@ -162,8 +162,8 @@ UserStore.prototype.getCurUserList = function (userListObj) {
 };
 
 //点击成员查看详情时，先设置已有的详情信息
-UserStore.prototype.setCurUser = function (userId) {
-    var curUser = _.find(this.curUserList, function (user) {
+UserStore.prototype.setCurUser = function(userId) {
+    var curUser = _.find(this.curUserList, function(user) {
         if (user.id == userId) {
             return true;
         }
@@ -171,7 +171,7 @@ UserStore.prototype.setCurUser = function (userId) {
     this.currentUser = curUser || emptyUser;
 };
 //获取成员详情后，重新赋值详情信息
-UserStore.prototype.getCurUserById = function (user) {
+UserStore.prototype.getCurUserById = function(user) {
     this.userIsLoading = false;
     if (_.isString(user)) {
         this.getUserDetailError = user;
@@ -192,12 +192,12 @@ UserStore.prototype.getCurUserById = function (user) {
     }
 };
 
-UserStore.prototype.closeAddPanel = function () {
+UserStore.prototype.closeAddPanel = function() {
     this.userFormShow = false;
     this.rightPanelShow = false;
 };
 //启停用成员
-UserStore.prototype.updateUserStatus = function (modifiedUser) {
+UserStore.prototype.updateUserStatus = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
         var curUserList = this.curUserList;
         for (var j = 0, rLen = curUserList.length; j < rLen; j++) {
@@ -212,23 +212,23 @@ UserStore.prototype.updateUserStatus = function (modifiedUser) {
 function updateRoleCount(oldRoles, newRoles, userRoleList) {
 
     //将原角色对应的数量减一
-    oldRoles.forEach(function (roleName) {
-        _.some(userRoleList, function (role) {
+    oldRoles.forEach(function(roleName) {
+        _.some(userRoleList, function(role) {
             if (roleName == role.role_name) {
                 role.num--;
             }
         });
     });
     //将新角色对应的数量加一
-    newRoles.forEach(function (roleName) {
-        _.some(userRoleList, function (role) {
+    newRoles.forEach(function(roleName) {
+        _.some(userRoleList, function(role) {
             if (roleName == role.role_name) {
                 role.num++;
             }
         });
     });
 }
-UserStore.prototype.afterEditUser = function (modifiedUser) {
+UserStore.prototype.afterEditUser = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
         var curUserList = this.curUserList;
         for (var j = 0, rLen = curUserList.length; j < rLen; j++) {
@@ -272,7 +272,7 @@ UserStore.prototype.afterEditUser = function (modifiedUser) {
     }
 };
 
-UserStore.prototype.showUserForm = function (type) {
+UserStore.prototype.showUserForm = function(type) {
     if (type === "add") {
         this.currentUser = emptyUser;
     }
@@ -284,14 +284,14 @@ UserStore.prototype.showUserForm = function (type) {
 
 
 
-UserStore.prototype.updateCurPage = function (curPage) {
+UserStore.prototype.updateCurPage = function(curPage) {
     this.curPage = curPage;
 };
 
-UserStore.prototype.updatePageSize = function (pageSize) {
+UserStore.prototype.updatePageSize = function(pageSize) {
     this.pageSize = pageSize;
 };
-UserStore.prototype.setUserLoading = function (flag) {
+UserStore.prototype.setUserLoading = function(flag) {
     this.userIsLoading = flag;
     if (flag) {
         //重新获取详情时，清空之前的错误提示
@@ -299,31 +299,31 @@ UserStore.prototype.setUserLoading = function (flag) {
     }
 };
 
-UserStore.prototype.showUserInfoPanel = function () {
+UserStore.prototype.showUserInfoPanel = function() {
     this.userInfoShow = true;
     this.userFormShow = false;
     this.rightPanelShow = true;
 };
 
-UserStore.prototype.updateSearchContent = function (searchContent) {
+UserStore.prototype.updateSearchContent = function(searchContent) {
     //搜索框和角色不能联合查询
     this.searchContent = searchContent;
     this.selectRole = "";
 
 };
-UserStore.prototype.closeRightPanel = function () {
+UserStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
 };
 
-UserStore.prototype.showContinueAddButton = function () {
+UserStore.prototype.showContinueAddButton = function() {
     this.isContinueAddButtonShow = true;
 };
 
-UserStore.prototype.hideContinueAddButton = function () {
+UserStore.prototype.hideContinueAddButton = function() {
     this.isContinueAddButtonShow = false;
 };
 
-UserStore.prototype.returnInfoPanel = function (newAddUser) {
+UserStore.prototype.returnInfoPanel = function(newAddUser) {
     if (newAddUser && newAddUser.id) {
         //添加完成员返回详情页的处理
         if (_.isArray(newAddUser.roleIds) && newAddUser.roleIds.length > 0) {

@@ -21,7 +21,7 @@ var clueCustomerAction = require("../action/clue-customer-action");
 const PHONE_INPUT_ID = "phoneInput";
 const SalesClueAddForm = React.createClass({
     mixins: [FieldMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         const today = moment().format("YYYY-MM-DD");
         var defalutData = this.props.defaultClueData ? this.props.defaultClueData : {};
         return {
@@ -94,7 +94,7 @@ const SalesClueAddForm = React.createClass({
             });
         }
     },
-    renderCheckClueNameMsg: function () {
+    renderCheckClueNameMsg: function() {
         if (this.state.clueNameExist) {
             return (<div className="clue-name-repeat">{Intl.get("clue.customer.check.repeat", "该线索名称已存在")}</div>);
         } else if (this.state.clueCustomerCheckErrMsg) {
@@ -142,7 +142,7 @@ const SalesClueAddForm = React.createClass({
         submitObj.contacts = [contact];
         return submitObj;
     },
-    handleSubmit () {
+    handleSubmit() {
         if (this.state.isSaving) {
             return;
         }
@@ -203,7 +203,7 @@ const SalesClueAddForm = React.createClass({
         });
     },
     //去掉保存后提示信息
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         if (this.state.saveResult == "success") {
             this.setState({
                 isShowAssignAndRelate: true
@@ -216,12 +216,12 @@ const SalesClueAddForm = React.createClass({
         }
     },
     //关闭添加销售线索面板
-    closeAddPanel () {
+    closeAddPanel() {
         this.setState(this.getInitialState());
         this.props.hideAddForm();
     },
     //电话必填一项及唯一性的验证
-    getPhoneInputValidateRules: function () {
+    getPhoneInputValidateRules: function() {
         return [{
             validator: (rule, value, callback) => {
                 value = $.trim(value);
@@ -250,7 +250,7 @@ const SalesClueAddForm = React.createClass({
         }];
     },
     // 设置传入的值并触发手机验证
-    setNeedPhoneValidateValue (field, e) {
+    setNeedPhoneValidateValue(field, e) {
         const newFormData = _.clone(this.state.formData);
         newFormData[field] = $.trim(e.target.value);
         this.setState({
@@ -286,11 +286,11 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
-                                           className={this.state.clueNameExist||this.state.clueCustomerCheckErrMsg?"input-red-border":""}
-                                           placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
-                                           value={formData.name}
-                                           onBlur={this.checkOnlyClueCustomerName}
-                                           onChange={this.setField.bind(this, 'name')}
+                                        className={this.state.clueNameExist||this.state.clueCustomerCheckErrMsg?"input-red-border":""}
+                                        placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
+                                        value={formData.name}
+                                        onBlur={this.checkOnlyClueCustomerName}
+                                        onChange={this.setField.bind(this, 'name')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -301,8 +301,8 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="contact_name" placeholder={Intl.get("crm.90", "请输入姓名")}
-                                       value={formData.contact_name}
-                                       onChange={this.setField.bind(this, 'contact_name')}
+                                    value={formData.contact_name}
+                                    onChange={this.setField.bind(this, 'contact_name')}
                                 />
                             </FormItem>
 
@@ -325,8 +325,8 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkEmail}]}>
                                     <Input name="email" value={formData.email}
-                                           placeholder={Intl.get("member.input.email", "请输入邮箱")}
-                                           onChange={this.setNeedPhoneValidateValue.bind(this, 'email')}
+                                        placeholder={Intl.get("member.input.email", "请输入邮箱")}
+                                        onChange={this.setNeedPhoneValidateValue.bind(this, 'email')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -337,8 +337,8 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="qq" id="qq" type="text" value={formData.qq}
-                                       placeholder={Intl.get("member.input.qq", "请输入QQ号")}
-                                       onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
+                                    placeholder={Intl.get("member.input.qq", "请输入QQ号")}
+                                    onChange={this.setNeedPhoneValidateValue.bind(this, 'qq')}
                                 />
                             </FormItem>
                             <FormItem
@@ -348,8 +348,8 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="weChat" id="weChat" type="text" value={formData.weChat}
-                                       placeholder={Intl.get("member.input.wechat", "请输入微信号")}
-                                       onChange={this.setNeedPhoneValidateValue.bind(this, 'weChat')}
+                                    placeholder={Intl.get("member.input.wechat", "请输入微信号")}
+                                    onChange={this.setNeedPhoneValidateValue.bind(this, 'weChat')}
                                 />
                             </FormItem>
 
@@ -360,11 +360,11 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                        filterOption={false}
-                                        searchPlaceholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
-                                        name="clue_source"
-                                        onChange={this.setField.bind(this, 'clue_source')}
-                                        value={formData.clue_source}
+                                    filterOption={false}
+                                    searchPlaceholder={Intl.get("crm.clue.source.placeholder", "请选择或输入线索来源")}
+                                    name="clue_source"
+                                    onChange={this.setField.bind(this, 'clue_source')}
+                                    value={formData.clue_source}
                                 >
                                     {
                                         _.isArray(this.props.clueSourceArray) ?
@@ -382,11 +382,11 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                        filterOption={false}
-                                        searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
-                                        name="access_channel"
-                                        onChange={this.setField.bind(this, 'access_channel')}
-                                        value={formData.access_channel}
+                                    filterOption={false}
+                                    searchPlaceholder={Intl.get("crm.access.channel.placeholder", "请选择或输入接入渠道")}
+                                    name="access_channel"
+                                    onChange={this.setField.bind(this, 'access_channel')}
+                                    value={formData.access_channel}
                                 >
                                     {_.isArray(this.props.accessChannelArray) ?
                                         this.props.accessChannelArray.map((source, idx) => {
@@ -402,11 +402,11 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select combobox
-                                        filterOption={false}
-                                        searchPlaceholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
-                                        name="access_channel"
-                                        onChange={this.setField.bind(this, 'clue_classify')}
-                                        value={formData.clue_classify}
+                                    filterOption={false}
+                                    searchPlaceholder={Intl.get("crm.clue.classify.placeholder", "请选择或输入线索分类")}
+                                    name="access_channel"
+                                    onChange={this.setField.bind(this, 'clue_classify')}
+                                    value={formData.clue_classify}
                                 >
                                     {_.isArray(this.props.clueClassifyArray) ?
                                         this.props.clueClassifyArray.map((source, idx) => {
@@ -421,7 +421,7 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Input type="textarea" id="source" rows="3" value={formData.source}
-                                       onChange={this.setField.bind(this, 'source')}
+                                    onChange={this.setField.bind(this, 'source')}
                                 />
 
                             </FormItem>
@@ -432,8 +432,8 @@ const SalesClueAddForm = React.createClass({
                                 wrapperCol={{span: 10}}
                             >
                                 <DatePicker value={moment(formData.source_time)}
-                                            onChange={this.setField.bind(this, 'source_time')}
-                                            allowClear={false}
+                                    onChange={this.setField.bind(this, 'source_time')}
+                                    allowClear={false}
                                 />
                             </FormItem>
                             <FormItem wrapperCol={{span: 24}}>
@@ -441,9 +441,9 @@ const SalesClueAddForm = React.createClass({
                                     {saveResult ?
                                         (
                                             <AlertTimer time={saveResult == "error" ? 3000 : 600}
-                                                        message={this.state.saveMsg}
-                                                        type={saveResult} showIcon
-                                                        onHide={this.hideSaveTooltip}/>
+                                                message={this.state.saveMsg}
+                                                type={saveResult} showIcon
+                                                onHide={this.hideSaveTooltip}/>
                                         ) : ""
                                     }
                                 </div>
@@ -451,7 +451,7 @@ const SalesClueAddForm = React.createClass({
                                     {Intl.get("common.cancel", "取消")}
                                 </RightPanelCancel>
                                 <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
-                                                  data-tracename="点击保存添加销售线索按钮">
+                                    data-tracename="点击保存添加销售线索按钮">
                                     {Intl.get("common.save", "保存")}
                                 </RightPanelSubmit>
                             </FormItem>

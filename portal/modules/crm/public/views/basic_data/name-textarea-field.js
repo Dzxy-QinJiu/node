@@ -17,18 +17,18 @@ import Trace from "LIB_DIR/trace";
 
 let NameTextareaField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             //是否能修改
             disabled: false,
             customerId: "",
             name: "",
             //修改成功
-            modifySuccess: function () {
+            modifySuccess: function() {
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,
             displayType: "text",
@@ -44,7 +44,7 @@ let NameTextareaField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
             let stateData = this.getInitialState();
@@ -55,12 +55,12 @@ let NameTextareaField = React.createClass({
             this.setState(stateData);
         }
     },
-    setEditable: function (e) {
+    setEditable: function(e) {
         Trace.traceEvent(e,"点击设置客户名");
         this.setState({displayType: "edit"});
     },
     //回到展示状态
-    backToDisplay: function () {
+    backToDisplay: function() {
         this.setState({
             loading: false,
             displayType: 'text',
@@ -68,7 +68,7 @@ let NameTextareaField = React.createClass({
         });
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         if (this.state.loading) return;
         if (this.state.formData.name == this.props.name) {
             this.backToDisplay();
@@ -107,7 +107,7 @@ let NameTextareaField = React.createClass({
     },
 
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         let formData = this.state.formData;
         let status = this.state.status;
         formData.name = this.props.name;
@@ -123,7 +123,7 @@ let NameTextareaField = React.createClass({
     },
 
     //客户名格式验证
-    checkCustomerName: function (rule, value, callback) {
+    checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
@@ -137,7 +137,7 @@ let NameTextareaField = React.createClass({
             callback(new Error( Intl.get("crm.81", "请填写客户名称")));
         }
     },
-    render: function () {
+    render: function() {
         let formData = this.state.formData;
         let status = this.state.status;
         let textBlock = this.state.displayType === 'text' ? (
@@ -146,7 +146,7 @@ let NameTextareaField = React.createClass({
                 {
                     !this.state.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get("crm.170", "设置客户名")}
-                           onClick={(e)=>this.setEditable(e)}/>
+                            onClick={(e)=>this.setEditable(e)}/>
                     ) : null
                 }
 
@@ -177,9 +177,9 @@ let NameTextareaField = React.createClass({
                         >
                             <Validator rules={[{validator: this.checkCustomerName}]}>
                                 <AutosizeTextarea name="name" rows="1" value={formData.name} autoComplete="off"
-                                                  width={300}
-                                                  onBlur={this.checkOnlyCustomerName}
-                                                  onChange={this.setField.bind(this, 'name')}
+                                    width={300}
+                                    onBlur={this.checkOnlyCustomerName}
+                                    onChange={this.setField.bind(this, 'name')}
                                 />
                             </Validator>
                         </FormItem>

@@ -34,14 +34,14 @@ var realmRestApis = {
 };
 exports.urls = realmRestApis;
 //获取安全域
-exports.getRealms = function (req, res, condition) {
+exports.getRealms = function(req, res, condition) {
     return restUtil.authRest.get(
         {
             url: realmRestApis.getRealms,
             req: req,
             res: res
         }, condition, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var realmListObj = data;
                 if (_.isObject(realmListObj)) {
@@ -56,21 +56,21 @@ exports.getRealms = function (req, res, condition) {
         });
 };
 //通过id获取该安全域的详细信息
-exports.getCurRealmById = function (req, res, realmId) {
+exports.getCurRealmById = function(req, res, realmId) {
     return restUtil.authRest.get(
         {
             url: realmRestApis.getCurRealmById + "/" + realmId,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", Realm.toFrontObject(data));
             }
         });
 };
 //添加安全域
-exports.addRealm = function (req, res, frontRealm) {
+exports.addRealm = function(req, res, frontRealm) {
     var restRealm = Realm.toRestObject(frontRealm);
     return restUtil.authRest.post(
         {
@@ -81,7 +81,7 @@ exports.addRealm = function (req, res, frontRealm) {
         },
         restRealm,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 if (data) {
                     //为新增数据增加taskId属性
                     frontRealm.taskId = data;
@@ -93,7 +93,7 @@ exports.addRealm = function (req, res, frontRealm) {
         });
 };
 //添加所有者
-exports.addOwner = function (req, res, frontOwner) {
+exports.addOwner = function(req, res, frontOwner) {
     return restUtil.authRest.post(
         {
             url: realmRestApis.addOwner + "/" + frontOwner.realm_id,
@@ -103,14 +103,14 @@ exports.addOwner = function (req, res, frontOwner) {
         },
         frontOwner,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 eventEmitter.emit("success", data);
             }
         });
 };
 //修改安全域
-exports.editRealm = function (req, res, frontRealm) {
+exports.editRealm = function(req, res, frontRealm) {
     var editRealm = {};
     if (frontRealm.status || frontRealm.status == 0) {
         //启用、停用的修改
@@ -125,7 +125,7 @@ exports.editRealm = function (req, res, frontRealm) {
             res: res
         },
         editRealm, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 frontRealm.owner = data.owner;
                 eventEmitter.emit("success", frontRealm);
@@ -135,7 +135,7 @@ exports.editRealm = function (req, res, frontRealm) {
 };
 
 //启停安全域
-exports.updateRealmStatus = function (req, res, frontRealm) {
+exports.updateRealmStatus = function(req, res, frontRealm) {
     var flag = frontRealm.status == 0 ? "disable" : "enable";//成员的启停
     return restUtil.authRest.put(
         {

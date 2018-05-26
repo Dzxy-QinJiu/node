@@ -8,7 +8,7 @@ import {getSalesTeamRoleList} from "../../../common/public/ajax/role";
 import {COLOR_LIST} from "PUB_DIR/sources/utils/consts";
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const SalesRoleManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return ({
             //角色列表
             salesRoleList: [],
@@ -35,7 +35,7 @@ const SalesRoleManage = React.createClass({
         });
     },
     //获取销售角色列表
-    getSalesRoleList: function () {
+    getSalesRoleList: function() {
         this.setState({
             isRefreshLoading: true
         });
@@ -51,11 +51,11 @@ const SalesRoleManage = React.createClass({
             });
         });
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         this.getSalesRoleList();
     },
     //点击刷新按钮
-    getRefreshInfo: function (e) {
+    getRefreshInfo: function(e) {
         this.setState({
             isRefreshLoading: true,
             salesRoleList: []
@@ -63,7 +63,7 @@ const SalesRoleManage = React.createClass({
         this.getSalesRoleList();
     },
     //删除销售角色
-    handleDeleteItem: function (delId) {
+    handleDeleteItem: function(delId) {
         //当前正在删除的销售角色的id
         this.setState({
             DeletingItem: delId
@@ -89,7 +89,7 @@ const SalesRoleManage = React.createClass({
         });
     },
     //设为默认角色
-    setDefautRole: function (role) {
+    setDefautRole: function(role) {
         if (role.is_default) {
             return;
         }
@@ -118,20 +118,20 @@ const SalesRoleManage = React.createClass({
         });
     },
     //增加销售角色
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         Trace.traceEvent(e, "点击添加销售角色按钮");
         e.preventDefault();
         //输入的销售角色名称去左右空格
         let role = $.trim(this.refs.addSalesRole.value);
         if (role) {
-          //看列表中是否有和输入的名称一样的名字
-          var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
-          if (targetItem){
-              this.setState({
-                  addErrMsg: Intl.get("config.sales.role.has.repeat", "该销售角色名称已存在")
-              });
-              return;
-          }
+            //看列表中是否有和输入的名称一样的名字
+            var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
+            if (targetItem){
+                this.setState({
+                    addErrMsg: Intl.get("config.sales.role.has.repeat", "该销售角色名称已存在")
+                });
+                return;
+            }
         }else{
             return;
         }
@@ -191,11 +191,11 @@ const SalesRoleManage = React.createClass({
         );
     },
 
-    renderErrorAlert: function (errorMsg, hide) {
+    renderErrorAlert: function(errorMsg, hide) {
         return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
     },
 
-    handleDeleteRoleFail: function () {
+    handleDeleteRoleFail: function() {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -207,27 +207,27 @@ const SalesRoleManage = React.createClass({
             </div>
         );
     },
-    getRoleColor: function () {
+    getRoleColor: function() {
         //角色列表中已存在的颜色列表
         let existColors = _.pluck(this.state.salesRoleList, "color");
         //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
         let roleColor = _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
         return roleColor;
     },
-    handleEditItem: function (item) {
-       this.setState({
-           isEdittingItem:item.id,
-           updateErrMsg:''
-       });
+    handleEditItem: function(item) {
+        this.setState({
+            isEdittingItem:item.id,
+            updateErrMsg:''
+        });
     },
-    cancelEditCustomerNum: function () {
-       this.setState({
-           isEdittingItem: '',
-           updateErrMsg: '',
-           updateRoleCustomerNum:0
-       });
+    cancelEditCustomerNum: function() {
+        this.setState({
+            isEdittingItem: '',
+            updateErrMsg: '',
+            updateRoleCustomerNum:0
+        });
     },
-    submitUpdateCustomerNum: function (item) {
+    submitUpdateCustomerNum: function(item) {
         if (this.state.updateRoleCustomerNum == 0){
             this.setState({
                 isEdittingItem: ''
@@ -269,7 +269,7 @@ const SalesRoleManage = React.createClass({
         });
 
     },
-    renderSalesRoleList: function () {
+    renderSalesRoleList: function() {
         let salesRoleList = this.state.salesRoleList;
         //正在获取数据的状态渲染
         if (this.state.isRefreshLoading) {
@@ -286,57 +286,57 @@ const SalesRoleManage = React.createClass({
             //销售角色列表
             return (<ul className="mb-taglist" data-tracename="销售角色管理">
                 {salesRoleList.map((item, index) => {
-                        let defaultCls = classNames("default-role-descr", {"default-role-checked": item.is_default});
-                        let title_tip = item.is_default ? "" : Intl.get("role.set.default", "设为默认角色");
-                        return (
-                            <li className="sales-tag">
-                                <div className="sales-tag-content">
-                                    <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
-                                    <span className="sales-tag-text">{item.name}</span>
-                                    <span className={defaultCls} title={title_tip}
-                                          onClick={this.setDefautRole.bind(this, item)}
-                                          data-tracename="点击设为默认角色按钮">
-                                        {Intl.get("role.default.set", "默认")}
-                                        {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
-                                    </span>
-                                    <div className="customer-container">
-                                        {Intl.get("sales.role.config.customer.num","最大客户数")}:
-                                        {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange} min={1}/>
+                    let defaultCls = classNames("default-role-descr", {"default-role-checked": item.is_default});
+                    let title_tip = item.is_default ? "" : Intl.get("role.set.default", "设为默认角色");
+                    return (
+                        <li className="sales-tag">
+                            <div className="sales-tag-content">
+                                <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
+                                <span className="sales-tag-text">{item.name}</span>
+                                <span className={defaultCls} title={title_tip}
+                                    onClick={this.setDefautRole.bind(this, item)}
+                                    data-tracename="点击设为默认角色按钮">
+                                    {Intl.get("role.default.set", "默认")}
+                                    {this.state.settingDefaultRole === item.id ? <Icon type="loading"/> : null}
+                                </span>
+                                <div className="customer-container">
+                                    {Intl.get("sales.role.config.customer.num","最大客户数")}:
+                                    {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange} min={1}/>
                                         {this.state.isUpdateloading ?<Icon type="loading"/> : <span>
-                                                       <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
+                                            <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
                                         </span>}
-                                  </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
-                                    </div>
-                                    {item.is_default || this.state.settingDefaultRole == item.id ? null :
-                                        <span className="anticon anticon-delete"
-                                              onClick={this.handleDeleteItem.bind(this, item.id)}
-                                              data-tracename="点击删除某个销售角色按钮"
-                                        />}
-                                    { this.state.DeletingItem === item.id ? (
-                                        <Icon type="loading"/>
-                                    ) : null}
-                                    {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide): null}
+                                    </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
                                 </div>
-                            </li>);
-                    }
+                                {item.is_default || this.state.settingDefaultRole == item.id ? null :
+                                    <span className="anticon anticon-delete"
+                                        onClick={this.handleDeleteItem.bind(this, item.id)}
+                                        data-tracename="点击删除某个销售角色按钮"
+                                    />}
+                                { this.state.DeletingItem === item.id ? (
+                                    <Icon type="loading"/>
+                                ) : null}
+                                {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide): null}
+                            </div>
+                        </li>);
+                }
                 )}
             </ul>);
         } else {//没有销售角色时的提示
             return <Alert type="info" showIcon
-                          message={Intl.get("config.manage.no.role", "暂无销售角色，请添加！")}/>;
+                message={Intl.get("config.manage.no.role", "暂无销售角色，请添加！")}/>;
         }
     },
-    onChange: function (value) {
-       this.setState({
-           addRoleCustomerNum: value
-       });
+    onChange: function(value) {
+        this.setState({
+            addRoleCustomerNum: value
+        });
     },
-    onUpdateCustomerNumChange: function (value) {
+    onUpdateCustomerNumChange: function(value) {
         this.setState({
             updateRoleCustomerNum: value
         });
     },
-    render: function () {
+    render: function() {
         return (
             <div className="box" data-tracename="销售角色配置">
                 <div className="box-title">
@@ -361,11 +361,11 @@ const SalesRoleManage = React.createClass({
                             </span>
                             <input className="mb-input" ref="addSalesRole"/>
                             <span className="name-label">
-                               {Intl.get("sales.role.config.customer.num", "最大客户数")}:
+                                {Intl.get("sales.role.config.customer.num", "最大客户数")}:
                             </span>
                             <InputNumber onChange={this.onChange} value={this.state.addRoleCustomerNum} min={1}/>
                             <button className="btn mb-add-button" type="submit"
-                                    disabled={this.state.isAddloading ? "disabled" : ""}>
+                                disabled={this.state.isAddloading ? "disabled" : ""}>
                                 {Intl.get("common.add", "添加")}
                                 {this.state.isAddloading ?
                                     <Icon type="loading"/> : null}

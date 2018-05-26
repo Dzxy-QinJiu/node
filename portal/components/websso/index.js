@@ -32,7 +32,7 @@ const ssoLogin = new SSOClient({
 });
 
 // 生成一张验证码图片地址（用于点击验证码的刷新之用）
-const buildRefreshCaptchaUrl = function () {
+const buildRefreshCaptchaUrl = function() {
     return ssoLogin.buildCaptchaUrl();
 };
 

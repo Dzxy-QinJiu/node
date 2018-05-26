@@ -14,13 +14,13 @@ require("../../app_user_manage/public/css/main-zh_CN.less");
 
 var ApplyView = require("./views/apply-view");
 var UserApply = React.createClass({
-    render:function () {
+    render:function() {
         return(
             <div data-tracename="用户审批">
                 <div className="user_apply_page">
-                  <div className="user_apply_contentwrap">
+                    <div className="user_apply_contentwrap">
                         <ApplyView applyId={this.props.location.query && this.props.location.query.id}/>
-                  </div>
+                    </div>
                 </div>
 
             </div>

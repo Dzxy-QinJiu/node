@@ -16,7 +16,7 @@ var ImportData = React.createClass({
     },
 
     // 导入数据成功之后，重新刷新界面
-    refreshData: function (key) {
+    refreshData: function(key) {
         var client_id = AppStore.getState().showAuthoRoleAppId;
         if (key == "authority") {
             AuthorityAction.setAuthListLoading(true);
@@ -28,7 +28,7 @@ var ImportData = React.createClass({
     },
 
     // 检查上传文件的格式
-    checkFile: function (file) {
+    checkFile: function(file) {
         if (!/\.json$/.test(file.name)) {
             return false;
         } else {
@@ -52,7 +52,7 @@ var ImportData = React.createClass({
         }
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var client_id = AppStore.getState().showAuthoRoleAppId;
         if (this.props.type == "role") {

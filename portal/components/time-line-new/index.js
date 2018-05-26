@@ -176,7 +176,7 @@ TimeLine.defaultProps = {
     //左侧是否用相对时间显示
     relativeDate: false,
     //渲染函数，根据回调返回的列表项数据，渲染列表项html
-    renderTimeLineItem: function (item, hasSplitLine) {
+    renderTimeLineItem: function(item, hasSplitLine) {
         return null;
     },
 };

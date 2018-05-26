@@ -53,7 +53,7 @@ function clickUserName(user_id, username_block) {
     });
 }
 
-exports.checkUserExist = function (rule, obj, callback, number, username_block) {
+exports.checkUserExist = function(rule, obj, callback, number, username_block) {
     clearTimeout(userExistTimeout);
     userExistTimeout = setTimeout(() => {
         checkUserExistAjax(obj).then((result) => {  // 通过验证情况
@@ -92,7 +92,7 @@ exports.checkUserExist = function (rule, obj, callback, number, username_block) 
     }, checkUserExistIntervalTime);
 };
 
-exports.validatorMessageTips = function (value, callback) {
+exports.validatorMessageTips = function(value, callback) {
     let userNameRegex = /^[0-9a-zA-Z_@.-]{1,50}$/;
     if (language.lan() == "es") {
         // 西班牙语中用户名的验证规则（Ññ Áá Éé Óó Úú Íí）

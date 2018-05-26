@@ -29,13 +29,13 @@ function RealmActions() {
     );
     
 
-    this.getCurRealmList = function (searchObj) {
+    this.getCurRealmList = function(searchObj) {
         var _this = this;
-        realmAjax.getCurRealmList(searchObj).then(function (listObj) {
+        realmAjax.getCurRealmList(searchObj).then(function(listObj) {
             _this.dispatch(listObj);
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -43,20 +43,20 @@ function RealmActions() {
     };
 
 
-    this.getCurRealmById = function (realmId) {
+    this.getCurRealmById = function(realmId) {
         var _this = this;
-        realmAjax.getCurRealmById(realmId).then(function (realm) {
+        realmAjax.getCurRealmById(realmId).then(function(realm) {
             _this.dispatch(realm);
         });
     };
 
-    this.updateRealmStatus = function (realm) {
+    this.updateRealmStatus = function(realm) {
         var _this = this;
-        realmAjax.updateRealmStatus(realm).then(function (data) {
+        realmAjax.updateRealmStatus(realm).then(function(data) {
             if (data) {
                 _this.dispatch(realm);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };

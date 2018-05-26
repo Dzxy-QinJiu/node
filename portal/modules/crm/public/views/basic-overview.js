@@ -26,7 +26,7 @@ import Trace from "LIB_DIR/trace";
 import RightPanelScrollBar from "./components/rightPanelScrollBar";
 
 var BasicOverview = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ...basicOverviewStore.getState(),
             salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
@@ -34,10 +34,10 @@ var BasicOverview = React.createClass({
             recommendTags: []//推荐标签
         };
     },
-    onChange: function () {
+    onChange: function() {
         this.setState({...basicOverviewStore.getState()});
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         basicOverviewStore.listen(this.onChange);
         basicOverviewAction.getBasicData(this.props.curCustomer);
         this.getRecommendTags();
@@ -47,7 +47,7 @@ var BasicOverview = React.createClass({
         });
     },
     //获取推荐标签列表
-    getRecommendTags: function () {
+    getRecommendTags: function() {
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
                 // 过滤掉线索、转出、已回访标签，保证selectedTagsArray中有”线索“、“转出”、“已回访”标签，则只展示，没有就不展示
@@ -57,7 +57,7 @@ var BasicOverview = React.createClass({
         });
     },
     //获取客户开通的用户列表
-    getCrmUserList: function (curCustomer) {
+    getCrmUserList: function(curCustomer) {
         if (curCustomer && curCustomer.id) {
             //该客户开通的用户个数
             let appUserLength = curCustomer && _.isArray(curCustomer.app_user_ids) ? curCustomer.app_user_ids.length : 0;
@@ -70,7 +70,7 @@ var BasicOverview = React.createClass({
         }
     },
     //获取未完成的日程列表
-    getNotCompletedScheduleList: function (curCustomer) {
+    getNotCompletedScheduleList: function(curCustomer) {
         if (curCustomer && curCustomer.id) {
             basicOverviewAction.getNotCompletedScheduleList({
                 customer_id: curCustomer.id,
@@ -83,7 +83,7 @@ var BasicOverview = React.createClass({
         }
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
         if (nextProps.curCustomer && nextProps.curCustomer.id !== this.state.basicData.id) {
             setTimeout(() => {
@@ -92,18 +92,18 @@ var BasicOverview = React.createClass({
             });
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         basicOverviewStore.unlisten(this.onChange);
     },
 
     //展示按客户搜索到的用户列表
-    triggerUserList: function () {
+    triggerUserList: function() {
         //获取客户基本信息
         var basicData = this.state.basicData || {};
         this.props.ShowCustomerUserListPanel({customerObj: basicData || {}});
     },
     //修改客户基本资料成功后的处理
-    editBasicSuccess: function (newBasic) {
+    editBasicSuccess: function(newBasic) {
         if (this.props.isMerge) {
             //合并面板的修改保存
             if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(newBasic);
@@ -121,26 +121,26 @@ var BasicOverview = React.createClass({
             }
         }
     },
-    getAdministrativeLevelOptions: function () {
+    getAdministrativeLevelOptions: function() {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
     },
-    onSelectAdministrativeLevel: function (administrative_level) {
+    onSelectAdministrativeLevel: function(administrative_level) {
         administrative_level = parseInt(administrative_level);
         if (!_.isNaN(administrative_level)) {
             this.state.basicData.administrative_level = parseInt(administrative_level);
             this.setState({basicData: this.state.basicData});
         }
     },
-    getAdministrativeLevel: function (levelId) {
+    getAdministrativeLevel: function(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
     },
     //保存修改后的标签
-    saveEditTags: function (tags, successFunc, errorFunc) {
+    saveEditTags: function(tags, successFunc, errorFunc) {
         // 保存前先过滤掉线索、转出、已回访标签
         tags = _.filter(tags, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
         let submitData = {
@@ -169,7 +169,7 @@ var BasicOverview = React.createClass({
     },
 
     //是否有转出客户的权限
-    enableTransferCustomer: function () {
+    enableTransferCustomer: function() {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
@@ -182,13 +182,13 @@ var BasicOverview = React.createClass({
         return enable;
     },
     //控制客户详情展示隐藏的方法
-    toggleBasicDetail: function () {
+    toggleBasicDetail: function() {
         this.setState({
             showDetailFlag: !this.state.showDetailFlag
         });
     },
     //渲染有应用到期的提示
-    renderExpireTip: function () {
+    renderExpireTip: function() {
         let crmUserList = this.state.crmUserList;
         const TRIAL_TYPE = "试用用户";
         let expireTrialUsers = [];//3天内到期的试用用户列表
@@ -217,7 +217,7 @@ var BasicOverview = React.createClass({
                         {Intl.get("crm.overview.expire.tip", "有应用{days}试用到期", {days: expireTrialUsers[0].overDraftTimeStr})}
                     </span>
                     <span className="iconfont icon-arrow-right" onClick={this.turnToUserList}
-                          title={Intl.get("call.record.show.customer.detail", "查看详情")}/>
+                        title={Intl.get("call.record.show.customer.detail", "查看详情")}/>
                 </div>);
             return (<DetailCard content={tip} className="expire-tip-contianer"/>);
         } else {
@@ -231,7 +231,7 @@ var BasicOverview = React.createClass({
         //渲染完跟进记录列表后需要重新render来刷新滚动条（因为跟进记录渲染完成后不会走概览页的render，所以滚动条的高度计算还是一开始没有跟进记录时的界面高度）
         this.setState(this.state);
     },
-    renderCustomerRcord: function () {
+    renderCustomerRcord: function() {
         return <CustomerRecord
             isOverViewPanel={true}
             isMerge={this.props.isMerge}
@@ -248,7 +248,7 @@ var BasicOverview = React.createClass({
     },
 
     //修改状态
-    handleItemStatus: function (item) {
+    handleItemStatus: function(item) {
         const user_id = userData.getUserData().user_id;
         //只能修改自己创建的日程的状态
         if (user_id != item.member_id) {
@@ -272,26 +272,26 @@ var BasicOverview = React.createClass({
             }
         });
     },
-    renderScheduleItem: function (item) {
+    renderScheduleItem: function(item) {
         return (<ScheduleItem item={item}
-                              hideDelete={true}
-                              hasSplitLine={false}
-                              isMerge={this.props.isMerge}
-                              toggleScheduleContact={this.toggleScheduleContact}
-                              handleItemStatus={this.handleItemStatus}
+            hideDelete={true}
+            hasSplitLine={false}
+            isMerge={this.props.isMerge}
+            toggleScheduleContact={this.toggleScheduleContact}
+            handleItemStatus={this.handleItemStatus}
         />);
     },
-    renderUnComplateScheduleList: function () {
+    renderUnComplateScheduleList: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return _.map(this.state.scheduleList, item => {
                 return (
                     <DetailCard title={ item.start_time ? moment(item.start_time).format(oplateConsts.DATE_FORMAT) : ""}
-                                content={this.renderScheduleItem(item)}/>);
+                        content={this.renderScheduleItem(item)}/>);
             });
         }
         return null;
     },
-    render: function () {
+    render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
         //线索、转出标签不可操作的标签，在immutable_labels属性中,和普通标签一起展示，但不可操作
@@ -317,23 +317,23 @@ var BasicOverview = React.createClass({
                     { _.isArray(basicData.competing_products) && basicData.competing_products.length ? (
                         <dl className="dl-horizontal  crm-basic-item detail_item crm-basic-competing-products">
                             <TagCard title={`${Intl.get("crm.competing.products", "竞品")}:`}
-                                     tags={basicData.competing_products}
-                                     enableEdit={false}
+                                tags={basicData.competing_products}
+                                enableEdit={false}
                             />
                         </dl>
                     ) : null}
                     <TagCard title={`${Intl.get("common.tag", "标签")}:`}
-                             placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
-                             data={basicData}
-                             tags={tagArray}
-                             recommendTags={this.state.recommendTags}
-                             enableEdit={hasPrivilege("CUSTOMER_UPDATE_LABEL")}
-                             noDataTip={tagArray.length ? "" : Intl.get("crm.detail.no.tag", "暂无标签")}
-                             saveTags={this.saveEditTags}
+                        placeholder={Intl.get("crm.input.new.tag", "请输入新标签")}
+                        data={basicData}
+                        tags={tagArray}
+                        recommendTags={this.state.recommendTags}
+                        enableEdit={hasPrivilege("CUSTOMER_UPDATE_LABEL")}
+                        noDataTip={tagArray.length ? "" : Intl.get("crm.detail.no.tag", "暂无标签")}
+                        saveTags={this.saveEditTags}
                     />
                     {this.renderUnComplateScheduleList()}
                     <DetailCard title={`${Intl.get("sales.frontpage.recent.record", "最新跟进")}:`}
-                                content={this.renderCustomerRcord()}
+                        content={this.renderCustomerRcord()}
                     />
                 </div>
             </RightPanelScrollBar>

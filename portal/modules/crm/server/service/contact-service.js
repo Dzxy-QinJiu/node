@@ -10,7 +10,7 @@ var EventEmitter = require("events").EventEmitter;
 const v2Url = "/rest/customer/v2/contacts";
 
 //获取联系人列表
-exports.getContactList = function (req, res, reqBody) {
+exports.getContactList = function(req, res, reqBody) {
     return restUtil.authRest.post(
         {
             url: v2Url + "/query/" + req.params.type + "/all/10",
@@ -20,7 +20,7 @@ exports.getContactList = function (req, res, reqBody) {
 };
 
 //设置默认联系人
-exports.setDefault = function (req, res, id) {
+exports.setDefault = function(req, res, id) {
     return restUtil.authRest.post(
         {
             url: v2Url + "/default/" + id,
@@ -30,7 +30,7 @@ exports.setDefault = function (req, res, id) {
 };
 
 //修改联系人
-exports.updateContact = function (req, res, newContact) {
+exports.updateContact = function(req, res, newContact) {
     let contactObj = JSON.parse(JSON.stringify(newContact));
     return restUtil.authRest.put(
         {
@@ -51,10 +51,10 @@ function updateContact(req, res, newContact) {
                 req: req,
                 res: res
             }, contactObj, {
-                success: function (eventEmitter, result) {
+                success: function(eventEmitter, result) {
                     resolve(result);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });
@@ -75,10 +75,10 @@ function updateContactPhone(req, res, newContact) {
                 req: req,
                 res: res
             }, phoneContact, {
-                success: function (eventEmitter, result) {
+                success: function(eventEmitter, result) {
                     resolve(result);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });
@@ -86,7 +86,7 @@ function updateContactPhone(req, res, newContact) {
 }
 
 //添加联系人
-exports.addContact = function (req, res, newContact) {
+exports.addContact = function(req, res, newContact) {
     return restUtil.authRest.post(
         {
             url: v2Url,
@@ -96,7 +96,7 @@ exports.addContact = function (req, res, newContact) {
 };
 
 //删除联系人
-exports.deleteContact = function (req, res, ids) {
+exports.deleteContact = function(req, res, ids) {
     return restUtil.authRest.del(
         {
             url: v2Url + "/" + ids,

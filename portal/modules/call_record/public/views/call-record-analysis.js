@@ -86,7 +86,7 @@ const TREND_TIME = 30 * 24 * 60 * 60 * 1000;
 const FIRSR_SELECT_DATA = [LITERAL_CONSTANT.TEAM, LITERAL_CONSTANT.MEMBER];
 var CallRecordAnalyis = React.createClass({
     //获取初始状态
-    getInitialState: function () {
+    getInitialState: function() {
         CallAnalysisAction.resetState();
         let callStateData = CallAnalysisStore.getState();
         let trendWidth = $(window).width() - LAYOUT_WIDTH.ORIGIN_WIDTH;
@@ -103,7 +103,7 @@ var CallRecordAnalyis = React.createClass({
         };
     },
 
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(CallAnalysisStore.getState());
     },
 
@@ -117,7 +117,7 @@ var CallRecordAnalyis = React.createClass({
     getSalesStageList() {
         CallAnalysisAction.getSalesStageList();
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         CallAnalysisStore.listen(this.onStoreChange);
         this.getSalesStageList();  // 获取订单阶段
         this.getTeamMemberData(); //获取销售团队和成员数据
@@ -184,7 +184,7 @@ var CallRecordAnalyis = React.createClass({
         // 获取通话数量和通话时长的趋势图数据
         CallAnalysisAction.getCallCountAndDur(trendParams, reqBody);
     },
-    setChartContainerHeight:function () {
+    setChartContainerHeight:function() {
         //如果选择全部团队或者团队选择的个数大于4个时，把容器的高度撑高
         if ((this.state.secondSelectValue == LITERAL_CONSTANT.ALL && this.state.switchStatus) || (_.isArray(this.state.secondSelectValue) && this.state.secondSelectValue.length > 4)){
             this.setState({
@@ -316,7 +316,7 @@ var CallRecordAnalyis = React.createClass({
         this.getCallCustomerZoneStage(reqBody);
     },
     //获取通话时段（数量和时长）的参数
-    getCallIntervalParams: function (params) {
+    getCallIntervalParams: function(params) {
         let queryParams = {
             start_time: this.state.start_time || 0,
             end_time: this.state.end_time || moment().toDate().getTime(),
@@ -384,12 +384,12 @@ var CallRecordAnalyis = React.createClass({
         let authType = this.getCallCustomerZoneStageAuth();
         CallAnalysisAction.getCallCustomerZoneStage(authType, queryParams);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         CallAnalysisStore.unlisten(this.onStoreChange);
     },
 
     //获取销售列的标题
-    getSalesColumnTitle: function () {
+    getSalesColumnTitle: function() {
         var label = Intl.get("sales.home.sales", "销售");
         if (this.state.firstSelectValue == LITERAL_CONSTANT.TEAM && this.state.teamList.list.length > 1) {
             label = Intl.get("user.sales.team", "销售团队");
@@ -400,7 +400,7 @@ var CallRecordAnalyis = React.createClass({
      * 电话接通率的数据
      * @param isExport 是否是导出时调用的，导出时，时长都展示秒数
      */
-    getPhoneListColumn: function (isExport) {
+    getPhoneListColumn: function(isExport) {
         let columns = [{
             title: this.getSalesColumnTitle(),
             width: 114,
@@ -412,7 +412,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: isExport ? 'totalTime' : 'totalTimeFormated',
             key: 'total_time',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.totalTime - b.totalTime;
             },
             className: 'has-filter table-data-align-right'
@@ -421,7 +421,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'calloutSuccess',
             key: 'callout_success',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutSuccess - b.calloutSuccess;
             },
             className: 'has-filter table-data-align-right'
@@ -430,7 +430,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: isExport ? 'averageTime' : 'averageTimeFormated',
             key: 'average_time',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.averageTime - b.averageTime;
             },
             className: 'has-filter table-data-align-right'
@@ -439,7 +439,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'averageAnswer',
             key: 'average_answer',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.averageAnswer - b.averageAnswer;
             },
             className: 'has-filter table-data-align-right'
@@ -448,7 +448,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'callinCount',
             key: 'callin_count',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinCount - b.callinCount;
             },
             className: 'has-filter table-data-align-right'
@@ -457,7 +457,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'callinSuccess',
             key: 'callin_success',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinSuccess - b.callinSuccess;
             },
             className: 'has-filter table-data-align-right'
@@ -466,7 +466,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'callinRate',
             key: 'callin_rate',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.callinRate - b.callinRate;
             },
             className: 'has-filter table-data-align-right'
@@ -475,7 +475,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'calloutCount',
             key: 'callout_count',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutCount - b.calloutCount;
             },
             className: 'has-filter table-data-align-right'
@@ -484,7 +484,7 @@ var CallRecordAnalyis = React.createClass({
             width: 114,
             dataIndex: 'calloutRate',
             key: 'callout_rate',
-            sorter: function (a, b) {
+            sorter: function(a, b) {
                 return a.calloutRate - b.calloutRate;
             },
             className: 'has-filter table-data-align-right'
@@ -496,7 +496,7 @@ var CallRecordAnalyis = React.createClass({
                 dataIndex: 'billingTime',
                 key: 'filling_time',
                 width: '10%',
-                sorter: function (a, b) {
+                sorter: function(a, b) {
                     return a.billingTime - b.billingTime;
                 },
                 className: 'has-filter table-data-align-right'
@@ -511,7 +511,7 @@ var CallRecordAnalyis = React.createClass({
                 align: "right",
                 dataIndex: isExport ? 'personAverageTime' : 'personAverageTimeFormated',
                 key: "person_average_time",
-                sorter: function (a, b) {
+                sorter: function(a, b) {
                     return a.personAverageTime - b.personAverageTime;
                 },
             }, {
@@ -520,7 +520,7 @@ var CallRecordAnalyis = React.createClass({
                 align: "right",
                 dataIndex: 'personAverageAnswer',
                 key: "person_average_answer",
-                sorter: function (a, b) {
+                sorter: function(a, b) {
                     return a.personAverageAnswer - b.personAverageAnswer;
                 },
             },);
@@ -615,11 +615,11 @@ var CallRecordAnalyis = React.createClass({
         return (
             <div>
                 <div className="duration-count-radio clearfix">
-                        <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
-                            <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
-                            <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
-                        </RadioGroup>
-                    </div>
+                    <RadioGroup onChange={this.handleSelectRadio} value={this.state.selectRadioValue}>
+                        <Radio value="count">{Intl.get('sales.home.call.cout', '通话数量')}</Radio>
+                        <Radio value="duration">{Intl.get('call.record.call.duration', '通话时长')}</Radio>
+                    </RadioGroup>
+                </div>
                 {this.state.switchStatus && this.state.firstSelectValue == LITERAL_CONSTANT.TEAM ?
                     <div>
                         {
@@ -631,14 +631,14 @@ var CallRecordAnalyis = React.createClass({
                         }
                     </div>
                     : (<div>
-                    {
-                        this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
+                        {
+                            this.state.selectRadioValue === CALL_RADIO_VALUES.COUNT ?
                             // 通话数量
-                            this.renderCallChart(this.state.callList.count, this.countTooltip) :
+                                this.renderCallChart(this.state.callList.count, this.countTooltip) :
                             // 通话时长
-                            this.renderCallChart(this.state.callList.duration, this.durationTooltip)
-                    }
-                </div>)}
+                                this.renderCallChart(this.state.callList.duration, this.durationTooltip)
+                        }
+                    </div>)}
 
             </div>
         );
@@ -669,13 +669,13 @@ var CallRecordAnalyis = React.createClass({
         if (_.isArray(data) && data.length) {
             return (this.state.selectedCallInterval === CALL_RADIO_VALUES.COUNT ?
                 <ScatterChart list={data}
-                              title={Intl.get("call.record.count", "通话数量统计：")}
-                              dataName={Intl.get("sales.home.call.cout", "通话数量")}
+                    title={Intl.get("call.record.count", "通话数量统计：")}
+                    dataName={Intl.get("sales.home.call.cout", "通话数量")}
                 /> :
                 <ScatterChart list={data}
-                              title={Intl.get("call.record.time", "通话时长统计：")}
-                              dataName={Intl.get("call.record.call.duration", "通话时长")}
-                              dataType="time"
+                    title={Intl.get("call.record.time", "通话时长统计：")}
+                    dataName={Intl.get("call.record.call.duration", "通话时长")}
+                    dataType="time"
                 />);
         } else {
             if (this.state.callIntervalData.errMsg) {//错误提示
@@ -715,7 +715,7 @@ var CallRecordAnalyis = React.createClass({
         );
     },
     //通话时长统计描述
-    getDurationDescription: function (item, time, team) {
+    getDurationDescription: function(item, time, team) {
         var descriptionArr = [
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.DURATION + ' : ' + `${time}`,
@@ -727,7 +727,7 @@ var CallRecordAnalyis = React.createClass({
     },
 
     // 通话时长统计图的提示信息
-    durationTooltip: function (time, sum, teamArr) {
+    durationTooltip: function(time, sum, teamArr) {
         if (_.isArray(teamArr)){
             var returnObj = _.map(time, (item, index)=>{
                 let timeObj = TimeUtil.secondsToHourMinuteSecond(sum[index] || 0);
@@ -742,7 +742,7 @@ var CallRecordAnalyis = React.createClass({
         }
     },
     //获取通话数量描述
-    getCountDescription: function (item, sum, team) {
+    getCountDescription: function(item, sum, team) {
         var countArr = [
             TOOLTIPDESCRIPTION.TIME + ' : ' + `${item}`,
             TOOLTIPDESCRIPTION.COUNT + ' : ' + `${sum}`,
@@ -754,7 +754,7 @@ var CallRecordAnalyis = React.createClass({
     },
 
     // 通话数量统计图的提示信息
-    countTooltip: function (time, sum, teamArr) {
+    countTooltip: function(time, sum, teamArr) {
         if (_.isArray(teamArr)){
             var returnObj = _.map(time, (item,index)=>{
                 var desObj = this.getCountDescription(item, sum[index], teamArr[index]);
@@ -782,7 +782,7 @@ var CallRecordAnalyis = React.createClass({
                 width: '100',
                 className: 'table-data-align-right',
                 key: 'holding_time',
-                render: function (data) {
+                render: function(data) {
                     return <div>{titleObj.dataKey === "count" ? data : TimeUtil.getFormatTime(data)}</div>;
                 }
             }, {
@@ -812,9 +812,9 @@ var CallRecordAnalyis = React.createClass({
         }
         return (
             <AntcTable dataSource={this.state.salesPhoneList}
-                       columns={this.getPhoneListColumn()}
-                       pagination={false}
-                       bordered
+                columns={this.getPhoneListColumn()}
+                pagination={false}
+                bordered
             />
         );
     },
@@ -904,7 +904,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }
     },
-    exportPhoneTable:function () {
+    exportPhoneTable:function() {
         let exportData = handleTableData(this.state.salesPhoneList, this.getPhoneListColumn(true));
         exportToCsv("sales_phone_table.csv",exportData);
     },
@@ -1010,7 +1010,7 @@ var CallRecordAnalyis = React.createClass({
             }
         }
     },
-    renderCallAnalysisView: function () {
+    renderCallAnalysisView: function() {
         const tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - $('.duration-count-chart').height() - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         return (<div className="call-table-container" ref="phoneList">
             {/**
@@ -1023,7 +1023,7 @@ var CallRecordAnalyis = React.createClass({
                         <div className="each-team-trend">
                             {Intl.get("call.record.all.teams.trend", "查看各团队通话趋势图")}：
                             <Switch checked={this.state.switchStatus} onChange={this.handleSwitchChange} checkedChildren={Intl.get("user.yes", "是")}
-                                    unCheckedChildren={Intl.get("user.no", "否")}/>
+                                unCheckedChildren={Intl.get("user.no", "否")}/>
                         </div>: null}
                 </div>
                 {this.renderCallTrendChart()}
@@ -1032,7 +1032,7 @@ var CallRecordAnalyis = React.createClass({
                 {this.state.salesPhoneList.length ? (
                     <div className="export-file" style={{top: this.state.trendHeight + 60}} onClick={this.exportPhoneTable.bind(this)}>
                         <i className="iconfont icon-export"
-                           title={Intl.get("call.time.export.statistic", "点击导出通话时长统计")}>
+                            title={Intl.get("call.time.export.statistic", "点击导出通话时长统计")}>
                             {Intl.get("common.export", "导出")}
                         </i>
                     </div>) : null}
@@ -1083,7 +1083,7 @@ var CallRecordAnalyis = React.createClass({
                                 </div>
                                 <div className="call-interval-radio clearfix">
                                     <RadioGroup onChange={this.onChangeCallIntervalRadio}
-                                                value={this.state.selectedCallInterval}>
+                                        value={this.state.selectedCallInterval}>
                                         <Radio value={CALL_RADIO_VALUES.COUNT}>
                                             {Intl.get('sales.home.call.cout', '通话数量')}
                                         </Radio>
@@ -1127,7 +1127,7 @@ var CallRecordAnalyis = React.createClass({
         </div>);
     },
     //时间的设置
-    onSelectDate: function (startTime, endTime, timeType) {
+    onSelectDate: function(startTime, endTime, timeType) {
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         CallAnalysisAction.changeSearchTime(timeObj);
         setTimeout(() => {
@@ -1244,7 +1244,7 @@ var CallRecordAnalyis = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         return (<RightContent>
             <div className="call-analysis-content" data-tracename="通话分析界面">
                 <TopNav>

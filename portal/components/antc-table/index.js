@@ -93,13 +93,13 @@ class AntcTable extends React.Component {
         if ($(dom).data("thead-sorter-zoomed")) {
             return;
         }
-        $(dom).on("click", ".has-sorter, .ant-table-column-sort", function (e) {
+        $(dom).on("click", ".has-sorter, .ant-table-column-sort", function(e) {
             var filterUp = $(this).find(".ant-table-column-sorter-up")[0];
             var filterDown = $(this).find(".ant-table-column-sorter-down")[0];
-            $(filterDown).click(function (e) {
+            $(filterDown).click(function(e) {
                 e.stopPropagation();
             });
-            $(filterUp).click(function (e) {
+            $(filterUp).click(function(e) {
                 e.stopPropagation();
             });
             if ($(filterDown).hasClass("off")) {

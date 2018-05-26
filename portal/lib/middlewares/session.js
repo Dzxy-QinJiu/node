@@ -22,7 +22,7 @@ if (process.argv.indexOf("m") < 0
 
     store = new CasterClientStore({
         resaveTime: 1000 * 20,
-        connectedCallback: function () {
+        connectedCallback: function() {
             //开始监听 Session 的过期或被删除事件
             sessionUtils.startWatchSessionExpire(this.casterMapInstance);
         }

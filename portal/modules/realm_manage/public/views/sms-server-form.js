@@ -45,9 +45,9 @@ class SmsServerForm extends React.Component {
         if (this.state.errMsg) {
             return (
                 <AlertTimer time="3000"
-                            message={this.state.errMsg}
-                            type="error" showIcon
-                            onHide={this.hideSaveTooltip}/>
+                    message={this.state.errMsg}
+                    type="error" showIcon
+                    onHide={this.hideSaveTooltip}/>
             );
         } else {
             return null;

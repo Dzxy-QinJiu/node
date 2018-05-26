@@ -52,7 +52,7 @@ exports.getUnbindMemberList = function(reqRealm) {
     return Deferred.promise();
 };
 // 修改座席号(座席号、地域)
-exports.updatePhoneOrder = function (phoneObj) {
+exports.updatePhoneOrder = function(phoneObj) {
     let queryObj = {
         id: phoneObj.user_id || phoneObj.id
     };
@@ -68,16 +68,16 @@ exports.updatePhoneOrder = function (phoneObj) {
         dataType: 'json',
         type: 'put',
         data: queryObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 // 成员绑定座席号
-exports.memberBindPhoneOrder = function (reqObj) {
+exports.memberBindPhoneOrder = function(reqObj) {
     var memberList = PositionStore.getState().unbindMember.data;
     let filterData = _.filter(memberList, (item) => {
         return  item.nick_name == reqObj.user_id;
@@ -91,25 +91,25 @@ exports.memberBindPhoneOrder = function (reqObj) {
         dataType: 'json',
         type: 'put',
         data: reqObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 // 获取安全域信息列表
-exports.getRealmList = function () {
+exports.getRealmList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/realm/list',
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

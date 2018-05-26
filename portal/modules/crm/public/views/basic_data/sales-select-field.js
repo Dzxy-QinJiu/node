@@ -8,20 +8,20 @@ import Trace from "LIB_DIR/trace";
 var CrmAction = require("../../action/crm-actions");
 
 var SalesSelectField = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             list: [],
-            onChange: function () {
+            onChange: function() {
             },
-            onModifySuccess: function () {
+            onModifySuccess: function() {
             }
         };
     },
-    getSalesTeamList: function (userId, salesManList) {
+    getSalesTeamList: function(userId, salesManList) {
         let salesTeamList = [];
         _.each(salesManList, (salesMan) => {
             if (salesMan.user_info && salesMan.user_info.user_id === userId) {
-                salesMan.user_groups.forEach(function (group) {
+                salesMan.user_groups.forEach(function(group) {
                     salesTeamList.push({
                         group_id: group.group_id,
                         group_name: group.group_name
@@ -31,7 +31,7 @@ var SalesSelectField = React.createClass({
         });
         return salesTeamList;
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             list: [],//下拉列表中的数据
             displayType: "text",
@@ -51,7 +51,7 @@ var SalesSelectField = React.createClass({
             salesRole: ""
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         //有修改所属销售的权限时
         if (this.state.enableEdit) {
             //获取团队和对应的成员列表（管理员：所有，销售：所在团队及其下级团队和对应的成员列表）
@@ -63,7 +63,7 @@ var SalesSelectField = React.createClass({
         }
 
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState({
@@ -98,7 +98,7 @@ var SalesSelectField = React.createClass({
     },
 
     //获取客户所属销售及其团队下拉列表
-    getSalesManList: function () {
+    getSalesManList: function() {
         batchChangeAjax.getSalesManList().then(list => {
             if (_.isArray(list) && list.length) {
                 //过滤掉停用的成员
@@ -111,7 +111,7 @@ var SalesSelectField = React.createClass({
             this.setState({salesManList: []});
         });
     },
-    getSalesRoleByMemberId: function (memberId) {
+    getSalesRoleByMemberId: function(memberId) {
         $.ajax({
             url: '/rest/sales/role',
             type: 'get',
@@ -132,7 +132,7 @@ var SalesSelectField = React.createClass({
         });
     },
     // 获取普通销售所在团队里的成员列表
-    getSalesTeamMembers: function () {
+    getSalesTeamMembers: function() {
         let userInfo = userData.getUserData();
         let teamId = userInfo.team_id;
         batchChangeAjax.getSalesTeamMembers(teamId).then(list => {
@@ -154,7 +154,7 @@ var SalesSelectField = React.createClass({
         });
     },
     //更新销售人员
-    handleSalesManChange: function (userId) {
+    handleSalesManChange: function(userId) {
         if (this.props.hideSalesRole){
             this.getSalesRoleByMemberId(userId);
         }
@@ -183,7 +183,7 @@ var SalesSelectField = React.createClass({
         this.setState(this.state);
     },
 
-    changeDisplayType: function (type) {
+    changeDisplayType: function(type) {
         if (type === 'text') {
             Trace.traceEvent(this.getDOMNode(), "取消对销售人员/团队的修改");
             if (!this.props.hideSalesRole){
@@ -209,7 +209,7 @@ var SalesSelectField = React.createClass({
         }
     },
     //回到展示状态
-    backToDisplay: function () {
+    backToDisplay: function() {
         this.setState({
             loading: false,
             displayType: 'text',
@@ -217,7 +217,7 @@ var SalesSelectField = React.createClass({
         });
     },
 
-    submitData: function () {
+    submitData: function() {
         let submitData = {
             id: this.state.customerId,
             type: "sales",
@@ -261,7 +261,7 @@ var SalesSelectField = React.createClass({
 
     },
 
-    handleSubmit: function () {
+    handleSubmit: function() {
         if (this.state.loading) return;
         if (this.state.userId == this.props.userId) {
             //没做修改时，直接回到展示状态
@@ -285,20 +285,20 @@ var SalesSelectField = React.createClass({
         }
     },
     //更新团队
-    handleTeamChange: function (value) {
+    handleTeamChange: function(value) {
         const team = _.find(this.state.salesTeamList, item => item.group_id === value);
         this.state.salesTeamId = value;
         this.state.salesTeam = team ? team.group_name : "";
         this.setState(this.state);
     },
 
-    render: function () {
+    render: function() {
         //销售人员与销售团队下拉列表的填充内容
-        let salesmanOptions = this.state.salesManList.map(function (salesman) {
+        let salesmanOptions = this.state.salesManList.map(function(salesman) {
             return (<Option value={salesman.user_info.user_id}
-                            key={salesman.user_info.user_id}>{salesman.user_info.nick_name}</Option>);
+                key={salesman.user_info.user_id}>{salesman.user_info.nick_name}</Option>);
         });
-        let salesTeamOptions = this.state.salesTeamList.map(function (sales_team) {
+        let salesTeamOptions = this.state.salesTeamList.map(function(sales_team) {
             return (<Option value={sales_team.group_id} key={sales_team.group_id}>{sales_team.group_name}</Option>);
         });
         let buttonBlock = this.state.loading ? (
@@ -306,9 +306,9 @@ var SalesSelectField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose"
-                   onClick={this.handleSubmit}/>
+                    onClick={this.handleSubmit}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={this.changeDisplayType.bind(this, "text")}/>
+                    onClick={this.changeDisplayType.bind(this, "text")}/>
             </div>
         );
         return (<div className="crm-basic-sales-content client-info-content">
@@ -322,11 +322,11 @@ var SalesSelectField = React.createClass({
 
                             {this.state.enableEdit ? (
                                 <i className="iconfont icon-update" title={Intl.get("crm.sales.change", "变更销售")}
-                                   onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
+                                    onClick={this.changeDisplayType.bind(this, "edit")}/>) : null}
                             {this.state.enableTransfer && !this.state.isMerge ? (
                                 <span className="iconfont icon-transfer"
-                                      title={Intl.get("crm.qualified.roll.out", "转出")}
-                                      onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
+                                    title={Intl.get("crm.qualified.roll.out", "转出")}
+                                    onClick={this.changeDisplayType.bind(this, "transfer")}/>) : null}
                         </div>
                     ) : (
                         <div className="basic-sales-edit-field">
@@ -362,8 +362,8 @@ var SalesSelectField = React.createClass({
                     ) : (
                         <div className="basic-sales-edit-field">
                             <Select placeholder={Intl.get("crm.31", "请选择销售团队")} name="sales_team-select"
-                                    value={this.state.salesTeamId}
-                                    onChange={this.handleTeamChange}
+                                value={this.state.salesTeamId}
+                                onChange={this.handleTeamChange}
                             >
                                 {salesTeamOptions}
                             </Select>

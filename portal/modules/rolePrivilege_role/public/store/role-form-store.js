@@ -9,17 +9,17 @@ function RoleFormStore() {
 }
 
 //清空保存结果和提示信息
-RoleFormStore.prototype.setSavingFlag = function (flag) {
+RoleFormStore.prototype.setSavingFlag = function(flag) {
     this.isSaving = flag;
 };
 
 //清空保存结果和提示信息
-RoleFormStore.prototype.clearSaveFlags = function () {
+RoleFormStore.prototype.clearSaveFlags = function() {
     this.saveMsg = "";
 };
 
 //保存结果的处理
-RoleFormStore.prototype.setSaveFlags = function (result) {
+RoleFormStore.prototype.setSaveFlags = function(result) {
     //去掉正在保存的效果
     this.isSaving = false;
     if (result && _.isString(result)) {
@@ -27,12 +27,12 @@ RoleFormStore.prototype.setSaveFlags = function (result) {
     }
 };
 //清空保存结果和提示信息
-RoleFormStore.prototype.addRole = function (result) {
+RoleFormStore.prototype.addRole = function(result) {
     this.setSaveFlags(result);
 };
 
 //清空保存结果和提示信息
-RoleFormStore.prototype.editRole = function (result) {
+RoleFormStore.prototype.editRole = function(result) {
     this.setSaveFlags(result);
 };
 

@@ -32,7 +32,7 @@ var topHeight = 64;//顶部导航的高度
 var paddingBottom = 30;//距离底部高度
 var TYPE_CONSTANT = "myApp";
 var AuthRoleView = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         var appRoleState = RoleStore.getState();
         var authorityState = AuthorityStore.getState();
         return {
@@ -43,39 +43,39 @@ var AuthRoleView = React.createClass({
             uploadFileRightPanelShow : false
         };
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(this.getInitialState());
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.resizeWindow);
         RoleStore.listen(this.onChange);
         AuthorityStore.listen(this.onChange);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         RoleStore.unlisten(this.onChange);
         AuthorityStore.unlisten(this.onChange);
     },
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             userInfoContainerHeight: this.userInfoContainerHeightFnc(),
             userInfoContainerWidth: this.userInfoContainerWidthFnc()
         });
     },
-    userInfoContainerHeightFnc: function () {
+    userInfoContainerHeightFnc: function() {
         var height = $("body").height() - topHeight - paddingBottom;
         return height;
     },
 
-    userInfoContainerWidthFnc: function () {
+    userInfoContainerWidthFnc: function() {
         var width = $("body").width() - 90 - 75;
         return width;
     },
 
     
     events: {
-        handleChangeTabPane: function (key) {
+        handleChangeTabPane: function(key) {
             this.props.setShowRoleAuthType(key);
             if (key == "authority") {
                 Trace.traceEvent($(this.getDOMNode()).find(".authority-formItem-group"),"权限列表");
@@ -89,36 +89,36 @@ var AuthRoleView = React.createClass({
         },
 
         //添加角色
-        addRole: function (e) {
+        addRole: function(e) {
             e.stopPropagation();
             Trace.traceEvent(e,"添加角色");
             RoleAction.showRoleForm();
         },
 
-        showAddAuthorityGroupForm: function (e) {
+        showAddAuthorityGroupForm: function(e) {
             e.stopPropagation();
             Trace.traceEvent(e,"点击添加权限组");
             AuthorityAction.showAuthorityForm("", "addAuthorityGroup");
         },
 
         //隐藏编辑面板
-        hideRoleForm: function () {
+        hideRoleForm: function() {
             RoleAction.hideRoleForm();
         },
 
-        hideAuthorityForm: function () {
+        hideAuthorityForm: function() {
             AuthorityAction.hideAuthorityForm();
         },
 
-        hideAuthorityInfoFnc: function (authority) {
+        hideAuthorityInfoFnc: function(authority) {
             AuthorityAction.hideAuthorityInfoFnc(authority);
         },
 
-        editAuthority: function (authority) {
+        editAuthority: function(authority) {
             AuthorityAction.editAuthority(authority, TYPE_CONSTANT);
         },
 
-        showAuthorityInfo: function (authority) {
+        showAuthorityInfo: function(authority) {
             AuthorityAction.showAuthorityForm(authority);
             AuthorityAction.showAuthorityInfoFnc(authority);
         }
@@ -132,14 +132,14 @@ var AuthRoleView = React.createClass({
         });
     },
 
-    closeUploadFile : function (e) {
+    closeUploadFile : function(e) {
         Trace.traceEvent(e,"关闭上传界面");
         this.setState({
             uploadFileRightPanelShow : false
         });
     },
 
-    render: function () {
+    render: function() {
         var height = this.state.userInfoContainerHeight;
         var width = this.state.userInfoContainerWidth;
         var isShowRoleButton =  _.isArray(RoleStore.getState().roleList) &&
@@ -167,27 +167,27 @@ var AuthRoleView = React.createClass({
                                 }
 
                                 <Button type="ghost" className="role-add-btn custom-top-add-btn"
-                                        onClick={this.events.addRole}>{Intl.get("role.add.role", "添加角色")}</Button>
+                                    onClick={this.events.addRole}>{Intl.get("role.add.role", "添加角色")}</Button>
                             </div>
                         )
-                             : (
-                            <div className="my-app-manage-authority-style" data-tracename="权限列表">
-                                <Button type="ghost" className="upload-authority" onClick={this.showUploadFile}>
-                                    {Intl.get("authority.import.auth", "导入权限")}
-                                </Button>
-                                {isShowAuthorityButton  ?
-                                    <a
-                                        href={"/rest/my_app/export_authority/" + this.props.curAppId }
-                                        className="download-authority"
-                                    >
-                                        {Intl.get("authority.export.auth", "导出权限")}
-                                    </a>  :  null
-                                }
+                            : (
+                                <div className="my-app-manage-authority-style" data-tracename="权限列表">
+                                    <Button type="ghost" className="upload-authority" onClick={this.showUploadFile}>
+                                        {Intl.get("authority.import.auth", "导入权限")}
+                                    </Button>
+                                    {isShowAuthorityButton  ?
+                                        <a
+                                            href={"/rest/my_app/export_authority/" + this.props.curAppId }
+                                            className="download-authority"
+                                        >
+                                            {Intl.get("authority.export.auth", "导出权限")}
+                                        </a>  :  null
+                                    }
 
-                                <Button type="ghost" className="authority-add-btn custom-top-add-btn"
+                                    <Button type="ghost" className="authority-add-btn custom-top-add-btn"
                                         onClick={this.events.showAddAuthorityGroupForm}>{Intl.get("authority.add.group", "添加权限组")}</Button>
-                            </div>
-                        )
+                                </div>
+                            )
 
                     }
 

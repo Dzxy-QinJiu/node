@@ -16,6 +16,6 @@ exports.getPrivilegeGroupsByAppId = function() {
     return trans.getAjax('getPrivilegeGroupsByAppId');
 };
 //获取销售在团队中的角色列表
-exports.getSalesTeamRoleList = function () {
+exports.getSalesTeamRoleList = function() {
     return trans.getAjax('getSalesTeamRoleList');
 };

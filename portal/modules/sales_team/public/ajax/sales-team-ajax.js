@@ -2,15 +2,15 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let teamAjax = require("../../../common/public/ajax/team");
-exports.getSalesTeamList = function () {
+exports.getSalesTeamList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -19,7 +19,7 @@ exports.getSalesTeamList = function () {
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
-exports.getTeamMemberCountList = function () {
+exports.getTeamMemberCountList = function() {
     teamMemberCountAjax && teamMemberCountAjax.abort();
     let Deferred = $.Deferred();
     teamMemberCountAjax = teamAjax.getTeamMemberCountListAjax().sendRequest()
@@ -31,30 +31,30 @@ exports.getTeamMemberCountList = function () {
     return Deferred.promise();
 };
 
-exports.filterSalesTeamList = function (userName) {
+exports.filterSalesTeamList = function(userName) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/filter/sales_team_list/' + userName,
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取销售目标
-exports.getSalesGoals = function (teamId) {
+exports.getSalesGoals = function(teamId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals/' + teamId,
         dataType: 'json',
         type: 'get',
-        success: function (salesGoals) {
+        success: function(salesGoals) {
             Deferred.resolve(salesGoals);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -62,34 +62,34 @@ exports.getSalesGoals = function (teamId) {
 };
 
 //获取某销售团队成员列表
-exports.getSalesTeamMemberList = function (groupId) {
+exports.getSalesTeamMemberList = function(groupId) {
     var Deferred = $.Deferred();
     teamAjax.getMemberListByTeamIdAjax().resolvePath({
         group_id: groupId
-    }).sendRequest().success(function (list) {
+    }).sendRequest().success(function(list) {
         Deferred.resolve(list);
-    }).error(function (errorInfo) {
+    }).error(function(errorInfo) {
         Deferred.reject(errorInfo.responseJSON);
     });
     return Deferred.promise();
 };
 
-exports.getMemberList = function () {
+exports.getMemberList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/member_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.addMember = function (obj) {
+exports.addMember = function(obj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_member',
@@ -97,16 +97,16 @@ exports.addMember = function (obj) {
         contentType: 'application/json',
         type: 'post',
         data: JSON.stringify(obj),
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.editMember = function (obj) {
+exports.editMember = function(obj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_member',
@@ -114,9 +114,9 @@ exports.editMember = function (obj) {
         contentType: 'application/json',
         type: 'put',
         data: JSON.stringify(obj),
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -124,7 +124,7 @@ exports.editMember = function (obj) {
 };
 
 //添加团队
-exports.addGroup = function (salesTeam) {
+exports.addGroup = function(salesTeam) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team',
@@ -132,9 +132,9 @@ exports.addGroup = function (salesTeam) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(salesTeam),
-        success: function (salesTeamCreated) {
+        success: function(salesTeamCreated) {
             Deferred.resolve(salesTeamCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -142,16 +142,16 @@ exports.addGroup = function (salesTeam) {
 };
 
 //修改团队
-exports.editGroup = function (salesTeam) {
+exports.editGroup = function(salesTeam) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team',
         dataType: 'json',
         type: 'put',
         data: salesTeam,
-        success: function (salesTeamModified) {
+        success: function(salesTeamModified) {
             Deferred.resolve(salesTeamModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -159,14 +159,14 @@ exports.editGroup = function (salesTeam) {
 };
 
 //删除团队
-exports.deleteGroup = function (groupId) {
+exports.deleteGroup = function(groupId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team/' + groupId,
         type: 'delete',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -174,7 +174,7 @@ exports.deleteGroup = function (groupId) {
 };
 
 //保存销售目标
-exports.saveSalesGoals = function (salesGoals) {
+exports.saveSalesGoals = function(salesGoals) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/team/sales_goals',
@@ -182,9 +182,9 @@ exports.saveSalesGoals = function (salesGoals) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(salesGoals),
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

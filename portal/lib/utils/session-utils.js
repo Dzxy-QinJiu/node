@@ -16,15 +16,15 @@ function logout(sessionData) {
     var req = {session: sessionData, headers: {}};
     var res = {};
 
-    logoutService.logout(req, res).on("success", function () {
+    logoutService.logout(req, res).on("success", function() {
         authLogger.debug("session过期后自动触发从auth2登出, 登出成功");
-    }).on("error", function (data) {
+    }).on("error", function(data) {
         authLogger.error("session过期后自动触发从auth2登出, 登出失败");
 
         //重试一次
-        logoutService.logout(req, res).on("success", function () {
+        logoutService.logout(req, res).on("success", function() {
             authLogger.debug("session过期后自动触发从auth2登出, 重试成功");
-        }).on("error", function (data) {
+        }).on("error", function(data) {
             authLogger.error("session过期后自动触发从auth2登出, 重试失败");
         });
     });
@@ -36,14 +36,14 @@ module.exports = {
      *
      * @param instance {Hazelcast Node.js Client instance}
      */
-    startWatchSessionExpire: function (instance) {
+    startWatchSessionExpire: function(instance) {
         if (isStarted) return;
 
         isStarted = true;
 
         instance.addEntryListener({
             // 自动过期后的回调
-            evicted: function (key, value) {
+            evicted: function(key, value) {
                 if (value.data && value.data.user) {
                     sessionLogger.debug("%s 的session在hazelcast中已过期被自动删除", value.data.user && value.data.user.nickname);
                     //logout(value);

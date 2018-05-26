@@ -7,7 +7,7 @@ import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
 
 //获取无效电话
-exports.getInvalidPhone = function (onSuccess, onError) {
+exports.getInvalidPhone = function(onSuccess, onError) {
     const route = _.find(routeList, route => route.handler === "getInvalidPhone");
     const arg = {
         url: route.path,
@@ -24,7 +24,7 @@ exports.getInvalidPhone = function (onSuccess, onError) {
     });
 };
 //添加为无效电话
-exports.addInvalidPhone = function (data, onSuccess, onError) {
+exports.addInvalidPhone = function(data, onSuccess, onError) {
     const route = _.find(routeList, route => route.handler === "addInvalidPhone");
     const arg = {
         url: route.path,

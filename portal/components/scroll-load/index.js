@@ -127,7 +127,7 @@ class ScrollLoad extends React.Component {
     }
     //下拉加载
     handleTableScroll() {
-        let scrollBottomHandler = _.isFunction(this.props.handleScrollBottom) ? this.props.handleScrollBottom : function () { };
+        let scrollBottomHandler = _.isFunction(this.props.handleScrollBottom) ? this.props.handleScrollBottom : function() { };
         let $container = this.getHeights().$container;
         //卷动距离大于（table高度减去外层容器高度）时，触发滚动到底部事件
         let { scrollHeight, tableHeight, containerHeight } = this.getHeights();

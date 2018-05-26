@@ -115,7 +115,7 @@ function updateNotifyContentGeneral(title,content,taskId,data) {
         var notify = NotificationMap[taskId];
         //如果存在创建失败的任务列表，将错误提示都展示出来
         if (data.failedTasks && data.failedTasks.length!==0){
-            data.failedTasks.forEach(function (failedTask) {
+            data.failedTasks.forEach(function(failedTask) {
                 failedTask.taskDetail && (errTip += failedTask.taskDetail.remark+'<br/>');
             });
             notificationUtil.updateText(notify, {
@@ -146,7 +146,7 @@ function renderNotify(title,content,taskId) {
             content: content,
             closeWith: ["button"],
             callback: {
-                onClose: function () {
+                onClose: function() {
                     removeTaskIdFromList(taskId);
                     delete NotificationMap[taskId];
                     delete notyCloseTimeoutMap[taskId];

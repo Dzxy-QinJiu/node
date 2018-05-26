@@ -21,7 +21,7 @@ var NotificationRestApis = {
 exports.urls = NotificationRestApis;
 
 //获取系统消息列表
-exports.getSystemNotices = function (req, res, queryObj) {
+exports.getSystemNotices = function(req, res, queryObj) {
     let url = NotificationRestApis.getUnHandledSystemNotices;//未处理的系统消息
     if (req.params.status === "handled") {//已处理
         url = NotificationRestApis.getHandledSystemNotices;
@@ -33,7 +33,7 @@ exports.getSystemNotices = function (req, res, queryObj) {
     }, queryObj);
 };
 //将系统消息设为已处理
-exports.handleSystemNotice = function (req, res, noticeId) {
+exports.handleSystemNotice = function(req, res, noticeId) {
     return restUtil.authRest.put({
         url: NotificationRestApis.handleSystemNotice.replace(":noticeId", noticeId),
         req: req,
@@ -41,7 +41,7 @@ exports.handleSystemNotice = function (req, res, noticeId) {
     }, null);
 };
 //清除未读数
-exports.clearUnreadNum = function (req, res, type) {
+exports.clearUnreadNum = function(req, res, type) {
     return restUtil.authRest.put({
         url: NotificationRestApis.clearUnreadNum.replace(":type", type),
         req: req,
@@ -49,7 +49,7 @@ exports.clearUnreadNum = function (req, res, type) {
     });
 };
 //获取客户提醒、申请消息未读数和待审批数
-exports.getUnreadCount = function (req, res, queryObj) {
+exports.getUnreadCount = function(req, res, queryObj) {
     var emitter = new EventEmitter();
     let promiseList = [];
     if (queryObj.type == "unread") {
@@ -63,7 +63,7 @@ exports.getUnreadCount = function (req, res, queryObj) {
         promiseList.push(getUnreadInfoCount(req, res));
         promiseList.push(getUnapprovedCount(req, res));
     }
-    Promise.all(promiseList).then(function (dataList) {
+    Promise.all(promiseList).then(function(dataList) {
         var unreadObj = {};
         if (queryObj.type == "unread") {
             //只获取未读数
@@ -82,7 +82,7 @@ exports.getUnreadCount = function (req, res, queryObj) {
             unreadObj.approve = dataList[1] ? dataList[1].total || 0 : 0;
         }
         emitter.emit("success", unreadObj);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
@@ -96,10 +96,10 @@ function getUnreadInfoCount(req, res) {
                 req: req,
                 res: res
             }, null, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resolve(data);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });
@@ -114,10 +114,10 @@ function getUnapprovedCount(req, res) {
                 req: req,
                 res: res
             }, null, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resolve(data);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });

@@ -76,8 +76,8 @@ var FunnelChart = React.createClass({
                 x: "center",
                 y: "bottom",
                 textStyle: {
-                   fontSize: 14,
-                   fontWeight: "normal"
+                    fontSize: 14,
+                    fontWeight: "normal"
                 }
             },
             animation : false,

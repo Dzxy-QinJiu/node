@@ -258,7 +258,7 @@ var roles = [{
 }];
 
 //获取用户列表所需数据
-var getUsers = function (params) {
+var getUsers = function(params) {
     if (!params.current_page && !params.page_size && !params.filter_content) {
         return userList;
     } else {
@@ -309,7 +309,7 @@ var getUsers = function (params) {
     }
 };
 
-var addUser = function (user) {
+var addUser = function(user) {
     user.userId = uuid();
     var roleId = user.roles[0] ? user.roles[0].roleId : '';
     for (var i = 0, len = roles.length; i < len; i++) {
@@ -323,8 +323,8 @@ var addUser = function (user) {
     return user;
 };
 
-var editUser = function (user) {
-    var target = userList.find(function (item) {
+var editUser = function(user) {
+    var target = userList.find(function(item) {
         return item.userId === user.userId;
     });
     if (target) {
@@ -346,11 +346,11 @@ var editUser = function (user) {
     return target;
 };
 
-var getUserLog = function () {
+var getUserLog = function() {
     return logList;
 };
 
-var deleteUser = function (userId) {
+var deleteUser = function(userId) {
     for (var j = 0, jLen = userList.length; j < jLen; j++) {
         if (userId == userList[j].userId) {
             userList.splice(j, 1);
@@ -359,7 +359,7 @@ var deleteUser = function (userId) {
     }
 };
 
-var getRoles = function () {
+var getRoles = function() {
     return {roles: roles};
 };
 

@@ -25,7 +25,7 @@ const TimeLine = React.createClass({
             render: function(item){return null;},
         };
     },
-    render: function () {
+    render: function() {
         let classNameArr = ["time-line"];
 
         if (this.props.groupByDay) classNameArr.push("group-by-day");
@@ -41,52 +41,52 @@ const TimeLine = React.createClass({
         return (
             <div className={className}>
                 {this.props.list.length? (
-                <Timeline>
-                    {this.props.list.map((item, index) => {
-                        let dayJsx = null;
-                        const groupByDay = this.props.groupByDay;
-                        const timeField = this.props.timeField;
-                        const relativeDate = this.props.relativeDate;
+                    <Timeline>
+                        {this.props.list.map((item, index) => {
+                            let dayJsx = null;
+                            const groupByDay = this.props.groupByDay;
+                            const timeField = this.props.timeField;
+                            const relativeDate = this.props.relativeDate;
 
-                        //如果需要按天分组且指明了时间字段，则处理按天分组逻辑
-                        if (groupByDay && timeField) {
+                            //如果需要按天分组且指明了时间字段，则处理按天分组逻辑
+                            if (groupByDay && timeField) {
                             //该天是否第一次出现
-                            let isDayFirstApper = false;
-                            const curItemTime = item[timeField];
-                            curItemDay = moment(curItemTime).startOf("day").valueOf();
+                                let isDayFirstApper = false;
+                                const curItemTime = item[timeField];
+                                curItemDay = moment(curItemTime).startOf("day").valueOf();
 
-                            //如果没有之前项，说明该天是第一次出现
-                            if (!prevItemDay) {
-                                isDayFirstApper = true;
-                            } else {
+                                //如果没有之前项，说明该天是第一次出现
+                                if (!prevItemDay) {
+                                    isDayFirstApper = true;
+                                } else {
                                 //如果当前项的天和之前项的天不同，说明该天是第一次出现
-                                if (curItemDay !== prevItemDay) isDayFirstApper = true;
-                            }
-
-                            //如果该天是第一次出现且当前项时间有值，则显示该天
-                            if (isDayFirstApper && curItemTime) {
-                                let dayStr = '';
-                                if (relativeDate){
-                                    dayStr = moment(curItemTime).fromNow();
-                                }else{
-                                    dayStr = moment(curItemTime).format(oplateConsts.DATE_FORMAT);
+                                    if (curItemDay !== prevItemDay) isDayFirstApper = true;
                                 }
 
-                                dayJsx = (<div className="group-day">{dayStr}</div>);
+                                //如果该天是第一次出现且当前项时间有值，则显示该天
+                                if (isDayFirstApper && curItemTime) {
+                                    let dayStr = '';
+                                    if (relativeDate){
+                                        dayStr = moment(curItemTime).fromNow();
+                                    }else{
+                                        dayStr = moment(curItemTime).format(oplateConsts.DATE_FORMAT);
+                                    }
+
+                                    dayJsx = (<div className="group-day">{dayStr}</div>);
+                                }
+
+                                //将当前项保存下来，以备下次循环中使用
+                                prevItemDay = curItemDay;
                             }
 
-                            //将当前项保存下来，以备下次循环中使用
-                            prevItemDay = curItemDay;
-                        }
-
-                        return (
-                            <Timeline.Item key={index} className={dayJsx ? "day-first-item":""}>
-                                {dayJsx}
-                                {this.props.render(item)}
-                            </Timeline.Item>
-                        );
-                    })}
-                </Timeline>
+                            return (
+                                <Timeline.Item key={index} className={dayJsx ? "day-first-item":""}>
+                                    {dayJsx}
+                                    {this.props.render(item)}
+                                </Timeline.Item>
+                            );
+                        })}
+                    </Timeline>
                 ) : null}
             </div>
         );

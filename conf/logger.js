@@ -112,12 +112,12 @@ var localAppenders = [
 //远程日志es appender模板
 var esType = {
     type: "log4js-elasticsearch",
-    indexName: function (loggingEvent) {
+    indexName: function(loggingEvent) {
         //es索引名称
         return "oplateweb_write";
     },
     url: global.config.esUrl,
-    logId: function (loggingEvent) {
+    logId: function(loggingEvent) {
         return uuidV4();
     },
     buffersize: 1024,
@@ -125,14 +125,14 @@ var esType = {
     layout: {
         type: "logstash",
         tags: [global.config.loggerTag],
-        sourceHost: function (loggingEvent) {
+        sourceHost: function(loggingEvent) {
             return serverIp;
         }
     },
     logLevel: DEFAULT_LOG_LEVEL
 };
 //远程日志appender
-var remoteAppenders = _.map(localAppenders, function (item) {
+var remoteAppenders = _.map(localAppenders, function(item) {
     if (item.type == "file") {
         var appender = _.extend({}, esType);
         //将不同类型日志生成es的type表

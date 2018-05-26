@@ -32,12 +32,12 @@ class CustomEvent extends React.Component {
                         "has-handled": item.status == "handle",
                         "selected-customer": item.customer_id == this.state.curCustomerId
                     });
-                        return (
-                            <p className={listCls} onClick={this.handleClickEvent.bind(this, item.customer_id)}>
-                                {item.customer_name}
-                            </p>
-                        );
-                    })}
+                    return (
+                        <p className={listCls} onClick={this.handleClickEvent.bind(this, item.customer_id)}>
+                            {item.customer_name}
+                        </p>
+                    );
+                })}
             </div>
         );
     };

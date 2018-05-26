@@ -22,7 +22,7 @@ exports.getAppLists = function(req, res) {
         },null);
 };
 //添加产品反馈
-exports.addAppFeedback = function (req, res, reqBody) {
+exports.addAppFeedback = function(req, res, reqBody) {
     // reqBody.product = JSON.parse(reqBody.product);
     var emitter = new EventEmitter();
     let promiseList = [];
@@ -37,14 +37,14 @@ exports.addAppFeedback = function (req, res, reqBody) {
     //     });
     // }
     var feedbackObj = {
-         app_id:reqBody.product,
-         topic:reqBody.topic,
-         content:reqBody.content
-        };
+        app_id:reqBody.product,
+        topic:reqBody.topic,
+        content:reqBody.content
+    };
     promiseList.push(addFeedbackPromise(req, res, feedbackObj));
-    Promise.all(promiseList).then(function (result) {
+    Promise.all(promiseList).then(function(result) {
         emitter.emit("success", result);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
@@ -57,10 +57,10 @@ function addFeedbackPromise(req, res, reqBody) {
                 req: req,
                 res: res
             }, reqBody, {
-                success: function (eventEmitter, result) {
+                success: function(eventEmitter, result) {
                     resolve(result);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });

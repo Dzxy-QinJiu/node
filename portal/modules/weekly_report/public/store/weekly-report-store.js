@@ -6,7 +6,7 @@ function weeklyReportStore() {
 }
 
 //设置初始化数据
-weeklyReportStore.prototype.setInitState = function () {
+weeklyReportStore.prototype.setInitState = function() {
     // 团队数据
     this.teamList = {
         loading:true,
@@ -27,7 +27,7 @@ weeklyReportStore.prototype.setInitState = function () {
 
 // 获取团队信息
 // 获取团队信息成功后，再组合数据
-weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
+weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
     this.teamList.loading = result.loading;
     if (result.error) {
         this.teamList.errMsg = result.errMsg;
@@ -60,7 +60,7 @@ weeklyReportStore.prototype.getSaleGroupTeams = function (result) {
 };
 
 // 获取成员信息
-weeklyReportStore.prototype.getSaleMemberList = function (result) {
+weeklyReportStore.prototype.getSaleMemberList = function(result) {
     if (result.error) {
         this.memberList.errMsg = result.errMsg;
     } else if (result.resData) {
@@ -80,24 +80,24 @@ weeklyReportStore.prototype.getSaleMemberList = function (result) {
 
 
 //清空数据
-weeklyReportStore.prototype.clearData = function () {
+weeklyReportStore.prototype.clearData = function() {
     this.applyListObj.list = [];
     this.selectedReportItem = {};
     this.selectedReportItemIdx = -1;
 };
 //设置当前要查看详情的申请
-weeklyReportStore.prototype.setSelectedWeeklyReportItem = function ({obj, idx}) {
+weeklyReportStore.prototype.setSelectedWeeklyReportItem = function({obj, idx}) {
     this.selectedReportItem = obj;
     this.selectedReportItemIdx = idx;
 };
 //去除数组中为空的
 function removeEmptyArrayEle(arr){
-     _.filter(arr,(item)=>{
+    _.filter(arr,(item)=>{
         return !item;
     });
 }
 //设置当前要查看详情的申请
-weeklyReportStore.prototype.changeSearchInputValue = function (value) {
+weeklyReportStore.prototype.changeSearchInputValue = function(value) {
     this.searchKeyword = value;
     //把搜索的关键词按空格进行分割
     var keyWordArr = value.trim().split(" ");

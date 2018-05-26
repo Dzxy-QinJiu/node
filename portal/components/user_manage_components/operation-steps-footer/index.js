@@ -21,13 +21,13 @@ class OperationStepsFooter extends React.Component {
 
     turnStep(action) {
         switch (action) {
-            case 'prev':
-            case 'next':
-                this.props.onStepChange(action);
-                break;
-            case 'finish':
-                this.props.onFinish();
-                break;
+        case 'prev':
+        case 'next':
+            this.props.onStepChange(action);
+            break;
+        case 'finish':
+            this.props.onFinish();
+            break;
         }
     }
 
@@ -55,7 +55,7 @@ class OperationStepsFooter extends React.Component {
         }
         return (
             <RightPanelSubmit onClick={this.turnStep.bind(this,"finish")}
-                              disabled={this.props.isSubmiting}>{this.props.finishText}</RightPanelSubmit>
+                disabled={this.props.isSubmiting}>{this.props.finishText}</RightPanelSubmit>
         );
     }
 

@@ -26,39 +26,39 @@ function UserActions() {
         'updateUserRoles',
         'updateCurrentUserStatus'
     );
-    this.getCurUserList = function (searchObj) {
+    this.getCurUserList = function(searchObj) {
         var _this = this;
-        userAjax.getCurUserList(searchObj).then(function (listObj) {
+        userAjax.getCurUserList(searchObj).then(function(listObj) {
             _this.dispatch(listObj);
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         });
     };
 
-    this.getCurUserById = function (userId) {
+    this.getCurUserById = function(userId) {
         var _this = this;
-        userAjax.getCurUserById(userId).then(function (userObj) {
+        userAjax.getCurUserById(userId).then(function(userObj) {
             if (_.isObject(userObj)) {
                 _this.dispatch(userObj);
             } else {
                 _this.dispatch( Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("member.get.detail.failed", "获取成员的详情失败!"));
         });
     };
 
-    this.updateUserStatus = function (user) {
+    this.updateUserStatus = function(user) {
         var _this = this;
-        userAjax.updateUserStatus(user).then(function (data) {
+        userAjax.updateUserStatus(user).then(function(data) {
             if (data) {
                 _this.dispatch(user);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };

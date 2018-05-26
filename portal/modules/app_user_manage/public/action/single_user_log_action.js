@@ -13,7 +13,7 @@ function handleLogParams(_this, getLogParam, userOwnAppList) {
             appList: userOwnAppList
         }
     );
-};
+}
 
 function SingleUserLogAction() {
     this.generateActions(
@@ -30,7 +30,7 @@ function SingleUserLogAction() {
     ); 
 
     // 获取单个用户的应用列表
-    this.getSingleUserAppList = function (searchObj, selectedAppId, appLists) {
+    this.getSingleUserAppList = function(searchObj, selectedAppId, appLists) {
         if (_.isObject(searchObj)) {
             let getLogParam = {
                 user_id: searchObj.user_id,
@@ -74,7 +74,7 @@ function SingleUserLogAction() {
     };
 
     // 获取单个用户的审计日志信息
-    this.getSingleAuditLogList = function (searchObj) {
+    this.getSingleAuditLogList = function(searchObj) {
         if (searchObj && searchObj.appid) {
             this.dispatch({loading: true, error: false});
             userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {

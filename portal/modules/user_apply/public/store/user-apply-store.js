@@ -13,7 +13,7 @@ function UserApplyStore() {
 }
 
 //初始化数据
-UserApplyStore.prototype.resetState = function () {
+UserApplyStore.prototype.resetState = function() {
     //申请列表
     this.applyListObj = {
         // "" loading error
@@ -55,18 +55,18 @@ UserApplyStore.prototype.resetState = function () {
 };
 
 //设置是否查看未读回复的申请列表
-UserApplyStore.prototype.setIsCheckUnreadApplyList = function (flag) {
+UserApplyStore.prototype.setIsCheckUnreadApplyList = function(flag) {
     this.isCheckUnreadApplyList = flag;
 };
 //刷新未读回复列表;
-UserApplyStore.prototype.refreshUnreadReplyList = function (unreadReplyList) {
+UserApplyStore.prototype.refreshUnreadReplyList = function(unreadReplyList) {
     this.unreadReplyList = _.isArray(unreadReplyList) ? unreadReplyList : [];
 };
 /**
  * 清除未读回复申请列表中已读的回复
  * @param applyId：有值时只清除applyId对应的申请，不传时，清除当前登录用户所有的未读回复申请列表
  */
-UserApplyStore.prototype.clearUnreadReply = function (applyId) {
+UserApplyStore.prototype.clearUnreadReply = function(applyId) {
     const APPLY_UNREAD_REPLY = "apply_unread_reply";
     let userId = userData.getUserData().user_id;
     //获取sessionStorage中该用户的未读回复列表
@@ -88,18 +88,18 @@ UserApplyStore.prototype.clearUnreadReply = function (applyId) {
     }
 };
 //是否显示更新数据提示,flag:true/false
-UserApplyStore.prototype.setShowUpdateTip = function (flag) {
+UserApplyStore.prototype.setShowUpdateTip = function(flag) {
     this.showUpdateTip = flag;
 };
 //清空数据
-UserApplyStore.prototype.clearData = function () {
+UserApplyStore.prototype.clearData = function() {
     this.applyListObj.list = [];
     this.selectedDetailItem = {};
     this.selectedDetailItemIdx = -1;
     this.listenScrollBottom = false;
 };
 //获取申请列表
-UserApplyStore.prototype.getApplyList = function (obj) {
+UserApplyStore.prototype.getApplyList = function(obj) {
     if (obj.loading) {
         this.applyListObj.loadingResult = 'loading';
         this.applyListObj.errorMsg = '';
@@ -135,7 +135,7 @@ UserApplyStore.prototype.getApplyList = function (obj) {
 };
 
 //根据id获取申请（通过邮件中的链接查看申请时）
-UserApplyStore.prototype.getApplyById = function (obj) {
+UserApplyStore.prototype.getApplyById = function(obj) {
     if (obj.error) {
         this.applyListObj.loadingResult = 'error';
         this.applyListObj.errorMsg = obj.errorMsg;
@@ -157,13 +157,13 @@ UserApplyStore.prototype.getApplyById = function (obj) {
     }
 };
 //分页改变
-UserApplyStore.prototype.setLastApplyId = function (applyId) {
+UserApplyStore.prototype.setLastApplyId = function(applyId) {
     this.lastApplyId = applyId;
     this.listenScrollBottom = true;
 };
 
 //更改用户审批筛选类型
-UserApplyStore.prototype.changeApplyListType = function (type) {
+UserApplyStore.prototype.changeApplyListType = function(type) {
     this.applyListType = type;
     this.lastApplyId = "";
     this.ifClickedFilterLabel = true;
@@ -172,19 +172,19 @@ UserApplyStore.prototype.changeApplyListType = function (type) {
 };
 
 //输入框的值改变
-UserApplyStore.prototype.changeSearchInputValue = function (value) {
+UserApplyStore.prototype.changeSearchInputValue = function(value) {
     this.searchKeyword = value;
     this.lastApplyId = "";
     this.showUpdateTip = false;
 };
 
 //设置当前要查看详情的申请
-UserApplyStore.prototype.setSelectedDetailItem = function ({obj, idx}) {
+UserApplyStore.prototype.setSelectedDetailItem = function({obj, idx}) {
     this.selectedDetailItem = obj;
     this.selectedDetailItemIdx = idx;
 };
 //更新处理申请错误的状态,"success"或者"error"
-UserApplyStore.prototype.updateDealApplyError = function (status) {
+UserApplyStore.prototype.updateDealApplyError = function(status) {
     this.dealApplyError = status;
 };
 //使用alt导出store

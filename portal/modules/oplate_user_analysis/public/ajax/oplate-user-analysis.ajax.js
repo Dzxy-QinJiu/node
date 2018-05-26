@@ -10,10 +10,10 @@ exports.getSummaryNumbers = function(obj) {
         timeout: 180 * 1000,
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -34,10 +34,10 @@ exports.getTotalSummary = function(obj) {
         timeout: 180 * 1000,
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -58,10 +58,10 @@ exports.getAddedSummary = function(obj) {
         type: 'get',
         timeout: 180 * 1000,
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -82,10 +82,10 @@ exports.getExpiredSummary = function(obj) {
         type: 'get',
         timeout: 180 * 1000,
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -106,10 +106,10 @@ exports.getAddedExpiredSummary = function(obj) {
         type: 'get',
         timeout: 180 * 1000,
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -129,10 +129,10 @@ exports.getTotalTeam = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -152,10 +152,10 @@ exports.getAddedTeam = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -175,10 +175,10 @@ exports.getExpiredTeam = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -198,10 +198,10 @@ exports.getAddedExpiredTeam = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -221,10 +221,10 @@ exports.getTotalZone = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -244,10 +244,10 @@ exports.getAddedZone = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -267,10 +267,10 @@ exports.getExpiredZone = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -290,10 +290,10 @@ exports.getAddedExpiredZone = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -313,10 +313,10 @@ exports.getTotalIndustry = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -335,10 +335,10 @@ exports.getSalesOpenUserAnalysis= function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -357,10 +357,10 @@ exports.getAddedIndustry = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -380,10 +380,10 @@ exports.getExpiredIndustry = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -403,10 +403,10 @@ exports.getAddedExpiredIndustry = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -426,10 +426,10 @@ exports.getUserActiveNess = function(dataType,dateRange,obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -449,10 +449,10 @@ exports.getUserActiveTime = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -471,10 +471,10 @@ exports.getUserType = function() {
         url: '/rest/group_position',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -493,10 +493,10 @@ exports.getTotalMember = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -516,10 +516,10 @@ exports.getAddedMember = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -539,10 +539,10 @@ exports.getExpiredMember = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -562,10 +562,10 @@ exports.getAddedExpiredMember = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -585,10 +585,10 @@ exports.getUserLoginLong = function(dataType,dateRange,obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -608,10 +608,10 @@ exports.getRetention = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -631,10 +631,10 @@ exports.getUserTypeStatistics = function(dataType,obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -654,10 +654,10 @@ exports.getAppStatus = function(dataType,obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -677,10 +677,10 @@ exports.getAppsTeam = function(dataType, obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -700,10 +700,10 @@ exports.getAppsIndustry = function(dataType, obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -723,10 +723,10 @@ exports.getAppsZone = function(dataType, obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

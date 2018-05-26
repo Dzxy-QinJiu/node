@@ -77,7 +77,7 @@ ModalIntro.defaultProps = {
     message:"",
     introModalLayout:{},
     $introElement:"",
-    hideModalIntro:function () {},
-    handleOnclickHole: function () {},
+    hideModalIntro:function() {},
+    handleOnclickHole: function() {},
 };
 export default ModalIntro;

@@ -14,7 +14,7 @@ var HtmlUtil = {
      * @param useDefaultValue
      * @returns {*}
      */
-    escape: function (content, useDefaultValue) {
+    escape: function(content, useDefaultValue) {
         return _.isString(content) ? content.replace(/</g, "&lt;").replace(/>/g, "&gt;") : (useDefaultValue ? "" : undefined);
     },
     /**
@@ -23,7 +23,7 @@ var HtmlUtil = {
      * @param useDefaultValue
      * @returns {*}
      */
-    unescape: function (content, useDefaultValue) {
+    unescape: function(content, useDefaultValue) {
         return _.isString(content) ? content.replace(/\&lt;/g, "<").replace(/\&gt;/g, ">") : (useDefaultValue ? "" : undefined);
     }
 };
@@ -34,7 +34,7 @@ var IPUtil = {
      * @param req
      * @returns {string} ip地址
      */
-    getClientIp: function (req) {
+    getClientIp: function(req) {
         if (!req || !req.headers || !req.connection || !req.socket) {
             return "0.0.0.0";
         }
@@ -56,12 +56,12 @@ var IPUtil = {
      * 获取本机ip地址
      * @returns {Array}
      */
-    getServerAddresses: function () {
+    getServerAddresses: function() {
         var os = require('os');
         var ifaces = os.networkInterfaces();
         var addresses = [];
-        Object.keys(ifaces).forEach(function (ifname) {
-            ifaces[ifname].forEach(function (iface) {
+        Object.keys(ifaces).forEach(function(ifname) {
+            ifaces[ifname].forEach(function(iface) {
                 if ('IPv4' !== iface.family || iface.internal !== false) {
                     return;
                 }
@@ -74,7 +74,7 @@ var IPUtil = {
      * 获取本机以192.168.开头的ip
      * @returns  string
      */
-    getServerIp: function () {
+    getServerIp: function() {
         var addresses = this.getServerAddresses();
         for (var i = 0; i < addresses.length; i++) {
             if (/^192\.168\./.test(addresses[i])) {
@@ -87,7 +87,7 @@ var IPUtil = {
      * 如果当前机器ip有以172.19开头的，说明是工程中心的，返回true
      * @returns {boolean}
      */
-    isProductionEnvironment: function () {
+    isProductionEnvironment: function() {
         var addresses = this.getServerAddresses();
         for (var i = 0, len = addresses.length; i < len; i++) {
             var address = addresses[i];
@@ -107,7 +107,7 @@ var FileUtil = {
      * @param target
      * @returns {boolean}
      */
-    existSync: function (target) {
+    existSync: function(target) {
         try {
             fs.accessSync(target, fs.F_OK);
             return true;

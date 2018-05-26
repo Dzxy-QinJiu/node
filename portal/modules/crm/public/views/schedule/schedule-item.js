@@ -22,18 +22,18 @@ class ScheduleItem extends React.Component {
             timeClass: ""
         };
         switch (item.type) {
-            case 'visit':
-                scheduleShowOb.iconClass = 'icon-visit-briefcase';
-                scheduleShowOb.title = Intl.get("customer.visit", "拜访");
-                break;
-            case 'calls':
-                scheduleShowOb.iconClass = 'icon-phone-call-out';
-                scheduleShowOb.title = Intl.get("schedule.phone.connect", "电联");
-                break;
-            case 'other':
-                scheduleShowOb.iconClass = 'icon-trace-other';
-                scheduleShowOb.title = Intl.get("customer.other", "其他");
-                break;
+        case 'visit':
+            scheduleShowOb.iconClass = 'icon-visit-briefcase';
+            scheduleShowOb.title = Intl.get("customer.visit", "拜访");
+            break;
+        case 'calls':
+            scheduleShowOb.iconClass = 'icon-phone-call-out';
+            scheduleShowOb.title = Intl.get("schedule.phone.connect", "电联");
+            break;
+        case 'other':
+            scheduleShowOb.iconClass = 'icon-trace-other';
+            scheduleShowOb.title = Intl.get("customer.other", "其他");
+            break;
         }
         //未完成的日程样式
         if (item.status == "false") {
@@ -112,34 +112,34 @@ class ScheduleItem extends React.Component {
                                         </Button>);
                                 })}
                                 <span className="iconfont icon-close"
-                                      title={Intl.get("common.app.status.close", "关闭")}
-                                      onClick={this.toggleScheduleContact.bind(this, item, false)}/>
+                                    title={Intl.get("common.app.status.close", "关闭")}
+                                    onClick={this.toggleScheduleContact.bind(this, item, false)}/>
                             </div>) : (
                             <Button className="schedule-contact-btn"
-                                    onClick={this.toggleScheduleContact.bind(this, item, true)}
-                                    size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button>)
+                                onClick={this.toggleScheduleContact.bind(this, item, true)}
+                                size="small">{Intl.get("customer.contact.customer", "联系客户")}</Button>)
                             : null}
                         {user_id === item.member_id ?
                             <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
-                                    size="small">
+                                size="small">
                                 {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
                             </Button> : null}
                         <span className="right-handle-buttons">
-                                {item.socketio_notice && item.alert_time ? (<Popover
-                                    content={moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
-                                    trigger="hover" placement="bottom"
-                                    overlayClassName="schedule-alert-time">
-                                    <span className="iconfont icon-alarm-clock"/>
-                                </Popover>) : null}
+                            {item.socketio_notice && item.alert_time ? (<Popover
+                                content={moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT)}
+                                trigger="hover" placement="bottom"
+                                overlayClassName="schedule-alert-time">
+                                <span className="iconfont icon-alarm-clock"/>
+                            </Popover>) : null}
                             {/*<DetailEditBtn  onClick={this.editSchedule.bind(this, item)}/>*/}
                             {/*只能删除自己创建的日程*/}
                             {user_id == item.member_id && !this.props.hideDelete && !this.props.isMerge ?
                                 <Popover content={Intl.get("common.delete", "删除")}
-                                         trigger="hover" placement="bottom" overlayClassName="schedule-alert-time">
-                                        <span className="iconfont icon-delete" data-tracename="点击删除日程按钮"
-                                              onClick={this.deleteSchedule.bind(this, item.id)}/>
+                                    trigger="hover" placement="bottom" overlayClassName="schedule-alert-time">
+                                    <span className="iconfont icon-delete" data-tracename="点击删除日程按钮"
+                                        onClick={this.deleteSchedule.bind(this, item.id)}/>
                                 </Popover> : null}
-                            </span>
+                        </span>
                     </div>)}
             </div>);
 
@@ -151,11 +151,11 @@ ScheduleItem.defaultProps = {
     hasSplitLine: false,//是否展示分割线
     isMerge: false,//是否是合并面板
     hideDelete: false,//是否隐藏删除按钮
-    toggleScheduleContact: function () {
+    toggleScheduleContact: function() {
     },
-    deleteSchedule: function () {
+    deleteSchedule: function() {
     },
-    handleItemStatus: function () {
+    handleItemStatus: function() {
     }
 };
 export default ScheduleItem;

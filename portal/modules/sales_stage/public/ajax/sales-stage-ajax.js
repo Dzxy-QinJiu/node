@@ -1,17 +1,17 @@
-exports.getSalesStageList = function () {
+exports.getSalesStageList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         }
     });
     return Deferred.promise();
 };
 
-exports.addSalesStage = function (salesStage) {
+exports.addSalesStage = function(salesStage) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage',
@@ -19,14 +19,14 @@ exports.addSalesStage = function (salesStage) {
         contentType: 'application/json',
         type: 'post',
         data: JSON.stringify(salesStage),
-        success: function (salesStageCreated) {
+        success: function(salesStageCreated) {
             Deferred.resolve(salesStageCreated);
         }
     });
     return Deferred.promise();
 };
 
-exports.editSalesStage = function (salesStage) {
+exports.editSalesStage = function(salesStage) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage',
@@ -34,14 +34,14 @@ exports.editSalesStage = function (salesStage) {
         dataType: 'json',
         type: 'put',
         data: JSON.stringify(salesStage),
-        success: function (salesStageModified) {
+        success: function(salesStageModified) {
             Deferred.resolve(salesStageModified);
         }
     });
     return Deferred.promise();
 };
 
-exports.deleteSalesStage = function (idsArray) {
+exports.deleteSalesStage = function(idsArray) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage',
@@ -49,7 +49,7 @@ exports.deleteSalesStage = function (idsArray) {
         dataType: 'json',
         type: 'delete',
         data: JSON.stringify(idsArray),
-        success: function () {
+        success: function() {
             Deferred.resolve();
         }
     });

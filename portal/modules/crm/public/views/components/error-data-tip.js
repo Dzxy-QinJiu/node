@@ -26,7 +26,7 @@ class ErrorDataTip extends React.Component {
                             <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                         </a>
                     ) : null}
-                   </span>
+                </span>
             </div>
         );
     }
@@ -35,7 +35,7 @@ class ErrorDataTip extends React.Component {
 ErrorDataTip.defaultProps = {
     errorMsg: "",//错误提示
     isRetry: false,//是否重试
-    retryFunc: function () {
+    retryFunc: function() {
         //点击重试时调用的方法
     }
 };

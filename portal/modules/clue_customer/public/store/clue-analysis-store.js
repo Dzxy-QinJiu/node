@@ -10,7 +10,7 @@ function ClueAnalysisStore() {
     this.setInitState();
     this.bindActions(ClueAnalysisAction);
 }
-ClueAnalysisStore.prototype.setInitState = function () {
+ClueAnalysisStore.prototype.setInitState = function() {
     this.clueAnalysisList = [];//线索分析列表
     this.getClueAnalysisLoading = false;//正在获取线索分析
     this.getClueAnalysisErrMsg = false;//获取线索分析失败
@@ -25,19 +25,19 @@ ClueAnalysisStore.prototype.setInitState = function () {
     this.selectedSource = Intl.get("common.all", "全部");
 
 };
-ClueAnalysisStore.prototype.changeSearchTime = function (timeObj) {
+ClueAnalysisStore.prototype.changeSearchTime = function(timeObj) {
     this.source_start_time = timeObj.sourceStartTime;
     this.source_end_time = timeObj.sourceEndTime;
 };
 
-ClueAnalysisStore.prototype.changeAccess = function (access) {
+ClueAnalysisStore.prototype.changeAccess = function(access) {
     this.selectedAccess = access;
 };
 
-ClueAnalysisStore.prototype.changeSource = function (source) {
+ClueAnalysisStore.prototype.changeSource = function(source) {
     this.selectedSource = source;
 };
-ClueAnalysisStore.prototype.getClueAnalysis = function (result) {
+ClueAnalysisStore.prototype.getClueAnalysis = function(result) {
     if (result.loading) {
         this.getClueAnalysisLoading = true;
         this.getClueAnalysisErrMsg = "";
@@ -50,7 +50,7 @@ ClueAnalysisStore.prototype.getClueAnalysis = function (result) {
         this.clueAnalysisList = result.data;
     }
 };
-ClueAnalysisStore.prototype.getCustomerById = function (result) {
+ClueAnalysisStore.prototype.getCustomerById = function(result) {
     if (result.loading) {
         this.getCustomersLoading = true;
         this.getCustomersErrMsg = "";

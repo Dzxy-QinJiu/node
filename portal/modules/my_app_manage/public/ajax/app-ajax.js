@@ -5,18 +5,18 @@ var myAppListAjax = null;
 var appAjaxTrans = require("../../../common/public/ajax/app");
 
 //获取密令app列表
-exports.grantApplicationList = function () {
+exports.grantApplicationList = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success(function (data) {
-        Deferred.resolve(data);
-    }).error(function (xhr) {
-        Deferred.resolve(xhr.responseJSON);
-    });
+        success(function(data) {
+            Deferred.resolve(data);
+        }).error(function(xhr) {
+            Deferred.resolve(xhr.responseJSON);
+        });
     return Deferred.promise();
 };
 
-exports.getMyAppList = function (searchObj) {
+exports.getMyAppList = function(searchObj) {
 
     var Deferred = $.Deferred();
 
@@ -27,10 +27,10 @@ exports.getMyAppList = function (searchObj) {
         dataType: 'json',
         type: 'get',
         data: searchObj,
-        success: function (userMyApp) {
+        success: function(userMyApp) {
             Deferred.resolve(userMyApp);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -40,57 +40,57 @@ exports.getMyAppList = function (searchObj) {
 };
 
 //根据id获取app的详情
-exports.getCurAppById = function (appId) {
+exports.getCurAppById = function(appId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/my_app/' + appId,
         dataType: 'json',
         type: 'get',
-        success: function (app) {
+        success: function(app) {
             Deferred.resolve(app);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取应用管理员列表
-exports.getAppManagerList = function () {
+exports.getAppManagerList = function() {
     var Deferred = $.Deferred();
     userAjaxTrans.getUserListByRoleAjax().sendRequest({role_type: "app_manager"}).
-    success(function (userList) {
-        Deferred.resolve(userList);
-    }).error(function (errorInfo) {
-        Deferred.reject(errorInfo.responseJSON);
-    });
+        success(function(userList) {
+            Deferred.resolve(userList);
+        }).error(function(errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        });
     return Deferred.promise();
 };
 //修改应用
-exports.editApp = function (app) {
+exports.editApp = function(app) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/my_app',
         dataType: 'json',
         type: 'put',
         data: app,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //刷新应用密钥
-exports.refreshAppSecret = function (appId) {
+exports.refreshAppSecret = function(appId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/my_app/refresh_secret/' + appId,
         dataType: 'json',
         type: 'put',
-        success: function (appSecret) {
+        success: function(appSecret) {
             Deferred.resolve(appSecret);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -98,16 +98,16 @@ exports.refreshAppSecret = function (appId) {
 };
 
 //修改应用到期时间
-exports.updateAppExpireDate = function (app) {
+exports.updateAppExpireDate = function(app) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/my_app/expire_date',
         dataType: 'json',
         type: 'put',
         data: app,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -115,15 +115,15 @@ exports.updateAppExpireDate = function (app) {
 };
 
 //根据id获取piwik字符串
-exports.getCurAppKeyById = function (appId) {
+exports.getCurAppKeyById = function(appId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appcodetrace/' + appId,
         dataType: 'json',
         type: 'get',
-        success: function (app) {
+        success: function(app) {
             Deferred.resolve(app);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

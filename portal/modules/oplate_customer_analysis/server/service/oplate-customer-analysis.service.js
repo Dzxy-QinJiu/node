@@ -25,7 +25,7 @@ var urls = {
 exports.urls = urls;
 
 // 获取 统计总数
-exports.getSummaryNumbers = function (req, res, queryParams) {
+exports.getSummaryNumbers = function(req, res, queryParams) {
     let url = urls.getSummaryNumbers;
     if (queryParams.urltype == 'v2') {
         delete queryParams.urltype;
@@ -45,7 +45,7 @@ exports.getSummaryNumbers = function (req, res, queryParams) {
 };
 
 // 获取具体统计数据
-exports.getAnalysisData = function (req, res, queryParams) {
+exports.getAnalysisData = function(req, res, queryParams) {
     let url = urls.getAnalysisData;
     if (queryParams.urltype == 'v2') {
         delete queryParams.urltype;
@@ -65,7 +65,7 @@ exports.getAnalysisData = function (req, res, queryParams) {
 };
 
 // 获取当前登录用户在团队树中的位置
-exports.getGroupPosition = function (req, res) {
+exports.getGroupPosition = function(req, res) {
     return restUtil.authRest.get(
         {
             url: urls.getGroupPosition,

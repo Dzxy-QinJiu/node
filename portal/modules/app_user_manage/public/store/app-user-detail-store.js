@@ -149,7 +149,7 @@ AppUserDetailStore.prototype.changeUserFieldSuccess = function(userObj) {
 };
 
 //修改用户组织
-AppUserDetailStore.prototype.changeUserOrganization = function (userObj) {
+AppUserDetailStore.prototype.changeUserOrganization = function(userObj) {
     //覆盖用户信息
     $.extend(this.initialUser.user , userObj);
 };

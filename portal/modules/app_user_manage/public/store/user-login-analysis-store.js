@@ -10,7 +10,7 @@ function UserLoginAnalysisStore(){
 }
 
 // 用户登录相关的初始信息
-UserLoginAnalysisStore.prototype.loginInfoInitialState = function () {
+UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     this.isLoading = true; 
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.loginInfo = {

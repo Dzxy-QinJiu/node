@@ -5,7 +5,7 @@ function getPathname() {
 }
 
 var RightContent = React.createClass({
-    checkRoute: function () {
+    checkRoute: function() {
         var locationPath = getPathname();
         if (this.props.route && locationPath === this.props.route.path) {
             var routes = this.props.route.routesExports;
@@ -16,7 +16,7 @@ var RightContent = React.createClass({
         }
         return false;
     },
-    render: function () {
+    render: function() {
         var jump = this.checkRoute();
         if (jump) {
             return null;

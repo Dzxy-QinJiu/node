@@ -8,7 +8,7 @@ import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl}  from "../../lib/websso";
 var UI_ERROR = require("../../lib/utils/request-error-util");
 import {Modal} from 'antd';
 
-(function () {
+(function() {
     let crypto = require("crypto");
     //socket的emitter
     var socketEmitter = require("./utils/emitters").socketEmitter;
@@ -59,30 +59,30 @@ import {Modal} from 'antd';
         let $errorDiv = $("#session-invalid-modal .modal-submit-error");
         let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
         //密码框获取焦点时，清空密码和错误提示
-        $passwordInput.focus(function () {
+        $passwordInput.focus(function() {
             $errorDiv.html("");
             $(this).val("");
-        }).keydown(function (e) {
+        }).keydown(function(e) {
             //点击enter时的处理
             if (e.keyCode == 13 && $captchaWrap.is(":hidden")) {
                 $("#session-invalid-modal .modal-submit-btn").trigger("click");
             }
         });
         //验证码输入框获取焦点时，清空错误提示
-        $captchaWrap.find(".captcha_input").focus(function () {
+        $captchaWrap.find(".captcha_input").focus(function() {
             $errorDiv.html("");
-        }).keydown(function (e) {
+        }).keydown(function(e) {
             //点击enter时的处理
             if (e.keyCode == 13) {
                 $("#session-invalid-modal .modal-submit-btn").trigger("click");
             }
         });
         //点击验证码的图片刷新验证码
-        $captchaWrap.find("img").click(function () {
+        $captchaWrap.find("img").click(function() {
             refreshCaptchaCode();
         });
         //点击提交时的登录处理
-        $("#session-invalid-modal .modal-submit-btn").click(function () {
+        $("#session-invalid-modal .modal-submit-btn").click(function() {
             const password = $passwordInput.val();
             const userName = userData.getUserData().user_name;
             //将密码进行md5加密
@@ -132,16 +132,16 @@ import {Modal} from 'antd';
                     });
                 }).catch((data) => {
                 //渲染验证码
-                if (data.captcha) {
-                    let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
-                    $captchaWrap.show();
-                    $captchaWrap.find("img").attr("src", data.captcha);
-                }
-                if (data.error) {
-                    $("#session-invalid-modal .modal-submit-error").html(data.error);
-                }
-                $submitBtn.html(Intl.get("retry.submit.again", "提交"));
-            });
+                    if (data.captcha) {
+                        let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
+                        $captchaWrap.show();
+                        $captchaWrap.find("img").attr("src", data.captcha);
+                    }
+                    if (data.error) {
+                        $("#session-invalid-modal .modal-submit-error").html(data.error);
+                    }
+                    $submitBtn.html(Intl.get("retry.submit.again", "提交"));
+                });
         } else {
             $.ajax({
                 url: '/login',
@@ -156,7 +156,7 @@ import {Modal} from 'antd';
 
     //登录成功处理
     function loginSuccess() {
-        userData.getUserDataByAjax().done(function () {
+        userData.getUserDataByAjax().done(function() {
             //重新建立socket连接
             !Oplate.hideSomeItem && require("./push").startSocketIo();
             $("#session-invalid-modal .modal-submit-error").html("");
@@ -202,7 +202,7 @@ import {Modal} from 'antd';
             data: {
                 username: username
             },
-            success: function (data) {
+            success: function(data) {
                 //渲染验证码
                 if (data) {
                     let $captchaWrap = $("#session-invalid-modal .captcha_wrap");
@@ -214,7 +214,7 @@ import {Modal} from 'antd';
                 }
                 $submitBtn.html(Intl.get("retry.submit.again", "提交"));
             },
-            error: function () {
+            error: function() {
                 sendMessage && sendMessage(Intl.get("retry.failed.get.code", "获取验证码错误"));
                 $error.html(NO_SERVICE_ERROR);
                 $submitBtn.html(Intl.get("retry.submit.again", "提交"));
@@ -231,13 +231,13 @@ import {Modal} from 'antd';
             data: {
                 username: username
             },
-            success: function (data) {
+            success: function(data) {
                 //渲染验证码
                 if (data) {
                     $("#session-invalid-modal .captcha_image").attr("src", BASE64_PREFIX + data);
                 }
             },
-            error: function () {
+            error: function() {
                 $("#session-invalid-modal .modal-submit-error").html(NO_SERVICE_ERROR);
             }
         });
@@ -262,11 +262,11 @@ import {Modal} from 'antd';
             wrapClassName: 'socket-io',
             content: tipContent,
             okText: Intl.get("retry.login.again", "重新登录"),
-            onOk: function () {
+            onOk: function() {
                 window.location.href = '/logout';
             }
         });
-        setTimeout(function () {
+        setTimeout(function() {
             //设置提示框的样式
             var $modal = $("body >.ant-modal-container");
             if ($modal && $modal.length > 0) {
@@ -294,26 +294,26 @@ import {Modal} from 'antd';
     function globalErrorHandler(xhr, options) {
         var status = xhr.status;
         switch (status) {
-            case 401:
-                handel401Ajax();
-                break;
-            case 403:
-                //不允许多人登录被踢出的统一处理
-                if (xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON == UI_ERROR.KICKED_BY_ADMIN) {
-                    let reloginError = Intl.get("login.by.another", "您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！");
-                    let kickedByAmdin = Intl.get("kicked.by.admin", "您已被被管理员踢出，请重新登录!");
-                    handleReloginError((xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
-                } else {
-                    handel403Ajax(xhr);
-                }
-                break;
-            case 408:
-                handleTimeout(xhr, options);
-                break;
+        case 401:
+            handel401Ajax();
+            break;
+        case 403:
+            //不允许多人登录被踢出的统一处理
+            if (xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE || xhr.responseJSON == UI_ERROR.KICKED_BY_ADMIN) {
+                let reloginError = Intl.get("login.by.another", "您的账号在另一地点登录，如非本人操作，建议您尽快修改密码！");
+                let kickedByAmdin = Intl.get("kicked.by.admin", "您已被被管理员踢出，请重新登录!");
+                handleReloginError((xhr.responseJSON == UI_ERROR.LOGIN_ONLY_ONE ) ? reloginError : kickedByAmdin);
+            } else {
+                handel403Ajax(xhr);
+            }
+            break;
+        case 408:
+            handleTimeout(xhr, options);
+            break;
         }
     }
 
-    $(document).ajaxError(function (event, xhr, options, thrownError) {
+    $(document).ajaxError(function(event, xhr, options, thrownError) {
         globalErrorHandler(xhr, options);
     });
 })();

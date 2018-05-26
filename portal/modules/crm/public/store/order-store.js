@@ -20,19 +20,19 @@ function OrderStore() {
     this.bindActions(OrderActions);
 }
 
-OrderStore.prototype.setOrderListLoading = function (flag) {
+OrderStore.prototype.setOrderListLoading = function(flag) {
     this.orderListLoading = flag;
 };
 
-OrderStore.prototype.setPageNum = function (num) {
+OrderStore.prototype.setPageNum = function(num) {
     this.pageNum = num;
 };
 
-OrderStore.prototype.setCrmUsersLoading = function (flag) {
+OrderStore.prototype.setCrmUsersLoading = function(flag) {
     this.isLoadingCrmUsers = flag;
 };
 
-OrderStore.prototype.getCrmUserList = function (obj) {
+OrderStore.prototype.getCrmUserList = function(obj) {
     if (obj.errorMsg) {
         this.isLoadingCrmUsers = false;
         this.crmUsersErrorMsg = obj.errorMsg;
@@ -55,7 +55,7 @@ OrderStore.prototype.getCrmUserList = function (obj) {
 };
 
 //（取消）选择用户时，（取消）选择用户下的所有应用
-OrderStore.prototype.onChangeUserCheckBox = function (checkObj) {
+OrderStore.prototype.onChangeUserCheckBox = function(checkObj) {
     if (_.isArray(this.crmUserList)) {
         let userObj = _.find(this.crmUserList, (obj) => obj.user.user_id === checkObj.userId);
         if (userObj) {
@@ -72,7 +72,7 @@ OrderStore.prototype.onChangeUserCheckBox = function (checkObj) {
 };
 
 //（取消）选择应用时的处理
-OrderStore.prototype.onChangeAppCheckBox = function (checkObj) {
+OrderStore.prototype.onChangeAppCheckBox = function(checkObj) {
     if (_.isArray(this.crmUserList)) {
         let userObj = _.find(this.crmUserList, (obj) => obj.user.user_id === checkObj.userId);
         if (userObj) {
@@ -97,15 +97,15 @@ OrderStore.prototype.onChangeAppCheckBox = function (checkObj) {
     }
 };
 //申请类型的修改
-OrderStore.prototype.onChangeApplyType = function (applyType) {
+OrderStore.prototype.onChangeApplyType = function(applyType) {
     this.applyType = applyType;
 };
 //获取要合并重复客户的订单列表（通过参数传过来的）
-OrderStore.prototype.getMergeOrderList = function (customer) {
+OrderStore.prototype.getMergeOrderList = function(customer) {
     this.orderList = customer.sales_opportunities || [];
 };
 //获取客户详情的订单列表(通过接口获取)
-OrderStore.prototype.getOrderList = function (data) {
+OrderStore.prototype.getOrderList = function(data) {
     this.setOrderListLoading(false);
     if (data.result && _.isArray(data.result)) {
         this.orderList = data.result;
@@ -114,32 +114,32 @@ OrderStore.prototype.getOrderList = function (data) {
     }
 };
 //删除订单后的处理
-OrderStore.prototype.afterDelOrder = function (delOrderId) {
+OrderStore.prototype.afterDelOrder = function(delOrderId) {
     this.orderList = _.filter(this.orderList, item => item.id !== delOrderId);
 };
 
 //修改订单后的处理
-OrderStore.prototype.afterEditOrder = function (order) {
+OrderStore.prototype.afterEditOrder = function(order) {
     let editOrder = _.find(this.orderList, item => item.id === order.id);
     editOrder.budget = order.budget;
     editOrder.remarks = order.remarks;
     editOrder.isEdit = false;
 };
 //添加订单后的处理
-OrderStore.prototype.afterAddOrder = function (order) {
+OrderStore.prototype.afterAddOrder = function(order) {
     this.isAddFormShow = false;
     this.orderList.unshift(order);//将新加的订单加入订单列表的头部
 };
 
-OrderStore.prototype.getSysStageList = function (result) {
+OrderStore.prototype.getSysStageList = function(result) {
     this.stageList = result.result || [];
 };
 
-OrderStore.prototype.getAppList = function (result) {
+OrderStore.prototype.getAppList = function(result) {
     this.appList = _.isArray(result) ? result : [];
 };
 
-OrderStore.prototype.showForm = function (id) {
+OrderStore.prototype.showForm = function(id) {
     if (id) {
         this.orderList.forEach(order => {
             if (order.id === id) order.isEdit = true;
@@ -149,7 +149,7 @@ OrderStore.prototype.showForm = function (id) {
     }
 };
 
-OrderStore.prototype.hideForm = function (id) {
+OrderStore.prototype.hideForm = function(id) {
     if (id) {
         this.orderList.forEach(order => {
             if (order.id === id) order.isEdit = false;

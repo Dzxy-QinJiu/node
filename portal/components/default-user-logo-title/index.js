@@ -5,13 +5,13 @@ require("./default-img-title.less");
 var classNames = require("classnames");
 
 var DefaultUserLogoTitle = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             userLogo: this.props.userLogo
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(nextProps.userLogo !== this.props.userLogo) {
             this.setState({
                 userLogo: nextProps.userLogo
@@ -19,11 +19,11 @@ var DefaultUserLogoTitle = React.createClass({
         }
     },
 
-    setDefaultImg: function () {
+    setDefaultImg: function() {
         this.setState({userLogo: ''});
     },
 
-    render: function () {
+    render: function() {
         var userName = this.props.userName ? this.props.userName : "";
         //没有昵称时，用用户名展示
         var nickName = this.props.nickName ? this.props.nickName : userName;
@@ -35,10 +35,10 @@ var DefaultUserLogoTitle = React.createClass({
         return (
             this.state.userLogo ?
                 ( <img className={this.props.defaultImgClass}
-                       src={this.state.userLogo}
-                       onError={this.setDefaultImg}
-                       style={this.props.style}
-                       alt={this.props.name}/>) :
+                    src={this.state.userLogo}
+                    onError={this.setDefaultImg}
+                    style={this.props.style}
+                    alt={this.props.name}/>) :
                 (<div
                     className={headIconDefIconClass}
                     style={this.props.style}

@@ -154,13 +154,13 @@ var authorityList = [
     })
 ];
 
-exports.init = function () {
+exports.init = function() {
 
     nock(config.nockUrl)
         .persist()
         .get(roleManageServic.urls.getRoleList)
         .query(true)
-        .reply(function () {
+        .reply(function() {
             return [200, {
                 roleList: roleList,
                 authorityList: authorityList
@@ -171,7 +171,7 @@ exports.init = function () {
         .persist()
         .post(roleManageServic.urls.addRole)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var roleName = req.body.roleName;
@@ -197,7 +197,7 @@ exports.init = function () {
         .persist()
         .put(roleManageServic.urls.editRole)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
 
             var id = req.body.id;
@@ -205,7 +205,7 @@ exports.init = function () {
             var roleControl = req.body.roleControl;
             var authorityNames = req.body.authorityNames.split(",");
 
-            var target = roleList.find(function (item) {
+            var target = roleList.find(function(item) {
                 return item.id === id;
             });
 
@@ -223,11 +223,11 @@ exports.init = function () {
         .persist()
         .delete(roleManageServic.urls.deleteRole)
         .query(true)
-        .reply(function (url, requestBody) {
+        .reply(function(url, requestBody) {
             var req = new nockParser().setUrlParam('/rest/deleteRole/:roleId').setRequest(this.req).setBody(requestBody).parse();
 
             var id = req.body.id, idx = -1;
-            roleList.find(function (item, i) {
+            roleList.find(function(item, i) {
                 if (item.id === id) {
                     idx = i;
                     return true;

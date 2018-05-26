@@ -10,7 +10,7 @@ const CompetingProductRestApis = {
 };
 
 //获取竞品列表
-exports.getCompetingProduct = function (req, res) {
+exports.getCompetingProduct = function(req, res) {
     return restUtil.authRest.get({
         url: CompetingProductRestApis.CompetingProduct,
         req: req,
@@ -18,7 +18,7 @@ exports.getCompetingProduct = function (req, res) {
     }, null);
 };
 //添加竞品
-exports.addCompetingProduct = function (req, res, obj) {
+exports.addCompetingProduct = function(req, res, obj) {
     return restUtil.authRest.post({
         url: CompetingProductRestApis.CompetingProduct,
         req: req,
@@ -26,7 +26,7 @@ exports.addCompetingProduct = function (req, res, obj) {
     }, [obj.product]);
 };
 //删除竞品
-exports.deleteCompetingProduct = function (req, res, product) {
+exports.deleteCompetingProduct = function(req, res, product) {
     return restUtil.authRest.del({
         url: CompetingProductRestApis.CompetingProduct + '/' + encodeURI(product),
         req: req,

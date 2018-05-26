@@ -21,13 +21,13 @@ unknownDataMap[unknownObj.key] = unknownObj.name;
 //用户类型
 //Todo: 移到公共常量文件中
 const USER_TYPES = [
-        {name: Intl.get("common.official", "签约"), key: "formal", dataName: "正式用户"},
-        {name: Intl.get("common.trial", "试用"), key: "trial", dataName: "试用用户"},
-        {name: Intl.get("user.type.presented", "赠送"), key: "special"},
-        {name: Intl.get("user.type.train", "培训"), key: "training"},
-        {name: Intl.get("user.type.employee", "员工"), key: "internal"},
-        unknownObj,
-    ];
+    {name: Intl.get("common.official", "签约"), key: "formal", dataName: "正式用户"},
+    {name: Intl.get("common.trial", "试用"), key: "trial", dataName: "试用用户"},
+    {name: Intl.get("user.type.presented", "赠送"), key: "special"},
+    {name: Intl.get("user.type.train", "培训"), key: "training"},
+    {name: Intl.get("user.type.employee", "员工"), key: "internal"},
+    unknownObj,
+];
 
 //用户类型名到中文的映射
 let userTypeDataMap = {};
@@ -39,9 +39,9 @@ _.each(USER_TYPES, userType => {
 
 //带标题的用户类型名数组
 const USER_TYPES_WITH_TITLE = [{
-        name: Intl.get("oplate.user.analysis.user.type", "用户类型"),
-        key: "name"
-    }]
+    name: Intl.get("oplate.user.analysis.user.type", "用户类型"),
+    key: "name"
+}]
     .concat(USER_TYPES)
     .concat([{
         name: Intl.get('operation.report.total.num', '总数'),
@@ -54,14 +54,14 @@ const authType = hasPrivilege("USER_ANALYSIS_MANAGER")? "manager" : "common";
 //一周7天的中文名
 //Todo: 移到公共常量文件中
 const WEEKDAY = [
-        Intl.get("user.time.sunday", "周日"),
-        Intl.get("user.time.monday", "周一"),
-        Intl.get("user.time.tuesday", "周二"),
-        Intl.get("user.time.wednesday", "周三"),
-        Intl.get("user.time.thursday", "周四"),
-        Intl.get("user.time.friday", "周五"),
-        Intl.get("user.time.saturday", "周六")
-    ];
+    Intl.get("user.time.sunday", "周日"),
+    Intl.get("user.time.monday", "周一"),
+    Intl.get("user.time.tuesday", "周二"),
+    Intl.get("user.time.wednesday", "周三"),
+    Intl.get("user.time.thursday", "周四"),
+    Intl.get("user.time.friday", "周五"),
+    Intl.get("user.time.saturday", "周六")
+];
 
 //范围类型
 const rangeType = hasPrivilege("CRM_MANAGER_APP_USER_COUNT")? "all" : "self";
@@ -80,7 +80,7 @@ function getRangeReqData(rangeParams, multiple) {
             reqData.push(...rangeParam.map(value => ({
                 "from": value,
                 "to": value
-            })))
+            })));
         }
         else {
             if (multiple) {
@@ -180,7 +180,7 @@ const onlineTimeReqData = getRangeReqData(
 
 var OPLATE_USER_ANALYSIS = React.createClass({
     //获取图表定义
-    getCharts: function () {
+    getCharts: function() {
         return [{
             title: "Tabs",
             url: "/rest/analysis/user/v1/:auth_type/summary",
@@ -287,7 +287,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         "": Intl.get("oplate.user.analysis.22", "综合"),
                     },
                 },
-                generateCsvData: function (data) {
+                generateCsvData: function(data) {
                     let csvData = [];
                     let thead = [Intl.get("common.app.name", "应用名称")];
                     let subData = data[0] && data[0].data;
@@ -497,7 +497,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                     {
                         name: Intl.get("operation.report.active", "活跃率"),
                         key: "percent",
-                        render: function (td) {
+                        render: function(td) {
                             return `${(td * 100).toFixed(2)}%`;
                         }
                     },
@@ -530,7 +530,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 tab: ["delayed", "added", "expired", "added_expired"],
                 callback: () => isSales,
             },
-            generateCsvData: function (data) {
+            generateCsvData: function(data) {
                 let csvData = [];
                 let thead = [Intl.get("common.login.time", "时间")];
                 _.each(_.range(24), hour => {
@@ -778,7 +778,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                         {name: Intl.get("common.time.unit.month", "月"), value: "monthly"},
                         {name: Intl.get("common.time.unit.quarter", "季度"), value: "quarterly"},
                         {name: Intl.get("common.time.unit.year", "年"), value: "yearly"}
-                        ],
+                    ],
                     activeOption: "hourly",
                     conditionName: "interval",
                 }],
@@ -794,7 +794,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }];
     },
 
-    getEmitters: function () {
+    getEmitters: function() {
         return [{
             instance: emitters.appSelectorEmitter,
             event: emitters.appSelectorEmitter.SELECT_APP,
@@ -812,7 +812,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
         }];
     },
 
-    render: function () {
+    render: function() {
         const charts = this.getCharts();
 
         return (
@@ -827,7 +827,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                 <AntcAnalysis
                     charts={charts}
                     emitters={this.getEmitters()}
-                   isUseScrollBar={true}
+                    isUseScrollBar={true}
                     conditions={[{
                         name: "app_id",
                         value: "all",

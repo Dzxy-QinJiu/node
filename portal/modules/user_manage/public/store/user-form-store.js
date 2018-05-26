@@ -31,39 +31,39 @@ function UserFormStore() {
 }
 
 //获取团队列表
-UserFormStore.prototype.getUserTeamList = function (teamList) {
+UserFormStore.prototype.getUserTeamList = function(teamList) {
     this.isLoadingTeamList = false;
     this.userTeamList = _.isArray(teamList) ? teamList : [];
 };
 
 //设置是否正在获取团队列表
-UserFormStore.prototype.setTeamListLoading = function (flag) {
+UserFormStore.prototype.setTeamListLoading = function(flag) {
     this.isLoadingTeamList = flag;
 };
 
 //设置是否正在获取角色列表
-UserFormStore.prototype.setRoleListLoading = function (flag) {
+UserFormStore.prototype.setRoleListLoading = function(flag) {
     this.isLoadingRoleList = flag;
 };
 //获取角色列表
-UserFormStore.prototype.getRoleList = function (roleList) {
+UserFormStore.prototype.getRoleList = function(roleList) {
     this.isLoadingRoleList = false;
     this.roleList = _.isArray(roleList) ? roleList : [];
 };
 
 //正在保存的属性设置
-UserFormStore.prototype.setSaveFlag = function (flag) {
+UserFormStore.prototype.setSaveFlag = function(flag) {
     this.isSaving = flag;
 };
 //保存后的处理
-UserFormStore.prototype.afterSave = function (resultObj) {
+UserFormStore.prototype.afterSave = function(resultObj) {
     //去掉正在保存的效果
     this.isSaving = false;
     this.saveResult = resultObj.saveResult;
     this.saveMsg = resultObj.saveMsg;
 };
 //保存后的处理
-UserFormStore.prototype.addUser = function (resultObj) {
+UserFormStore.prototype.addUser = function(resultObj) {
     if (resultObj.savedUser) {
         this.savedUser = resultObj.savedUser;
     }
@@ -72,18 +72,18 @@ UserFormStore.prototype.addUser = function (resultObj) {
 };
 
 //保存后的处理
-UserFormStore.prototype.editUser = function (resultObj) {
+UserFormStore.prototype.editUser = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //清空保存的提示信息
-UserFormStore.prototype.resetSaveResult = function () {
+UserFormStore.prototype.resetSaveResult = function() {
     this.saveMsg = "";
     this.saveResult = "";
 };
 
 //用户名唯一性的验证
-UserFormStore.prototype.checkOnlyUserName = function (result) {
+UserFormStore.prototype.checkOnlyUserName = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.userNameError = true;
@@ -95,7 +95,7 @@ UserFormStore.prototype.checkOnlyUserName = function (result) {
 };
 
 //邮箱唯一性的验证
-UserFormStore.prototype.checkOnlyEmail = function (result) {
+UserFormStore.prototype.checkOnlyEmail = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.emailError = true;
@@ -106,7 +106,7 @@ UserFormStore.prototype.checkOnlyEmail = function (result) {
 };
 
 //电话唯一性的验证
-UserFormStore.prototype.checkOnlyPhone = function (result) {
+UserFormStore.prototype.checkOnlyPhone = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.phoneError = true;
@@ -116,19 +116,19 @@ UserFormStore.prototype.checkOnlyPhone = function (result) {
 };
 
 //重置用户验证的标志
-UserFormStore.prototype.resetUserNameFlags = function () {
+UserFormStore.prototype.resetUserNameFlags = function() {
     this.userNameExist = false;
     this.userNameError = false;
 };
 
 //重置电话验证的标志
-UserFormStore.prototype.resetPhoneFlags = function () {
+UserFormStore.prototype.resetPhoneFlags = function() {
     this.phoneExist = false;
     this.phoneError = false;
 };
 
 //重置邮箱验证的标志
-UserFormStore.prototype.resetEmailFlags = function () {
+UserFormStore.prototype.resetEmailFlags = function() {
     this.emailExist = false;
     this.emailError = false;
 };

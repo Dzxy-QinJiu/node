@@ -7,24 +7,24 @@ function weeklyReportActions() {
         "changeSearchInputValue"//修改搜索框的值
     );
     // 团队信息
-    this.getSaleGroupTeams = function (reqData) {
+    this.getSaleGroupTeams = function(reqData) {
         this.dispatch({loading: true, error: false});
         weeklyReportAjax.getSaleGroupTeams(reqData).then((resData) => {
-                this.dispatch({loading: false ,error: false, resData: resData});
-            }, (errorMsg) => {
-                this.dispatch({loading: false ,error: true, errMsg: errorMsg});
-            }
+            this.dispatch({loading: false ,error: false, resData: resData});
+        }, (errorMsg) => {
+            this.dispatch({loading: false ,error: true, errMsg: errorMsg});
+        }
         );
     };
 
     // 成员信息
-    this.getSaleMemberList = function (reqData) {
+    this.getSaleMemberList = function(reqData) {
         this.dispatch({loading: true, error: false});
         weeklyReportAjax.getSaleMemberList(reqData).then((resData) => {
-                this.dispatch({loading: false,error: false, resData: resData});
-            }, (errorMsg) => {
-                this.dispatch({loading: false,error: true, errMsg: errorMsg});
-            }
+            this.dispatch({loading: false,error: false, resData: resData});
+        }, (errorMsg) => {
+            this.dispatch({loading: false,error: true, errMsg: errorMsg});
+        }
         );
     };
 

@@ -20,7 +20,7 @@ var base64_prefix = "data:image/png;base64,";
 import { storageUtil } from "ant-utils";
 
 var LoginForm = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             //用户名
             username: this.props.username,
@@ -34,7 +34,7 @@ var LoginForm = React.createClass({
             logining: false
         };
     },
-    beforeSubmit: function (event) {
+    beforeSubmit: function(event) {
         var userName = $.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
@@ -80,7 +80,7 @@ var LoginForm = React.createClass({
         this.refs.password.value = newValue;
     },
     //sso登录
-    ssologin: function (userName, password) {
+    ssologin: function(userName, password) {
         var lang = window.Oplate && window.Oplate.lang || "zh_CN";
         var captcha = this.refs.captcha_input ? this.refs.captcha_input.value : "";
         // 将登录界面中的用户名与密码提交到SSO应用中
@@ -97,11 +97,11 @@ var LoginForm = React.createClass({
             });
         });
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.showUserName();
     },
     //展示记录过的用户名，登录按钮变为可用
-    showUserName: function () {
+    showUserName: function() {
         var userName = window.Oplate.initialProps.username || storageUtil.local.get("last_login_name") || '';
         this.setState({
             username: userName,
@@ -118,41 +118,41 @@ var LoginForm = React.createClass({
             }
         });
     },
-    userNameChange: function (evt) {
+    userNameChange: function(evt) {
         this.setState({
             username: evt.target.value
         }, () => this.props.setErrorMsg(""));
     },
-    passwordChange: function (evt) {
+    passwordChange: function(evt) {
         this.setState({
             password: evt.target.value
         }, () => this.props.setErrorMsg(""));
     },
-    renderCaptchaBlock: function (hasWindow) {
+    renderCaptchaBlock: function(hasWindow) {
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
             <input placeholder={hasWindow ? Intl.get("common.captcha", "验证码") : null} type="text"
-                   name="retcode" autoComplete="off"
-                   tabIndex="3"
-                   ref="captcha_input" maxLength="4"/>
+                name="retcode" autoComplete="off"
+                tabIndex="3"
+                ref="captcha_input" maxLength="4"/>
             {this.renderCaptchaImg(hasWindow)}
         </div>) : null);
     },
     //展示验证码图片
-    renderCaptchaImg: function (hasWindow) {
+    renderCaptchaImg: function(hasWindow) {
         if (hasWindow && window.Oplate && window.Oplate.useSso) {
             return (
                 <img ref="captcha_img" src={ this.state.captchaCode} width="120" height="40"
-                     title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
-                     onClick={this.refreshCaptchaCode}/> );
+                    title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                    onClick={this.refreshCaptchaCode}/> );
         } else {
             return ( <img src={base64_prefix + this.state.captchaCode} width="120"
-                          height="40"
-                          title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
-                          onClick={this.refreshCaptchaCode}/>);
+                height="40"
+                title={Intl.get("login.dim.exchange", "看不清？点击换一张")}
+                onClick={this.refreshCaptchaCode}/>);
         }
     },
     //获取验证码
-    getLoginCaptcha: function () {
+    getLoginCaptcha: function() {
         if (window.Oplate && window.Oplate.useSso) {
             this.getLoginCaptchaWithSso();
         } else {
@@ -160,7 +160,7 @@ var LoginForm = React.createClass({
         }
     },
     //刷新验证码
-    refreshCaptchaCode: function () {
+    refreshCaptchaCode: function() {
         if (window.Oplate && window.Oplate.useSso) {
             this.getLoginCaptchaWithSso();
         } else {
@@ -168,13 +168,13 @@ var LoginForm = React.createClass({
         }
     },
     //从sso服务器获取验证码
-    getLoginCaptchaWithSso: function () {
+    getLoginCaptchaWithSso: function() {
         if (this.refs.captcha_img) {
             this.refs.captcha_img.src = buildRefreshCaptchaUrl();
         }
     },
     ///不是用sso，获取验证码
-    getLoginCaptchaWithoutSso: function () {
+    getLoginCaptchaWithoutSso: function() {
         var username = this.state.username;
         if (!username) {
             return;
@@ -196,7 +196,7 @@ var LoginForm = React.createClass({
         });
     },
     //不是用sso，刷新验证码
-    refreshCaptchaCodeWithoutSso: function () {
+    refreshCaptchaCodeWithoutSso: function() {
         var username = this.state.username;
         if (!username) {
             return;
@@ -220,7 +220,7 @@ var LoginForm = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         const loginButtonClassName = classnames("login-button", {"not-allowed": this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
@@ -239,9 +239,9 @@ var LoginForm = React.createClass({
 
                     <div className="input-item">
                         <input placeholder={hasWindow ? Intl.get("common.password", "密码") : null}
-                               type="password" tabIndex="2"
-                               ref="password_input"
-                               onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
+                            type="password" tabIndex="2"
+                            ref="password_input"
+                            onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
                     </div>
 
 
@@ -251,9 +251,9 @@ var LoginForm = React.createClass({
                 <input type="hidden" name="password" id="hidedInput" ref="password"/>
 
                 <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? "button" : "submit"}
-                        tabIndex="3"
-                        disabled={this.state.loginButtonDisabled }
-                        data-tracename="点击登录"
+                    tabIndex="3"
+                    disabled={this.state.loginButtonDisabled }
+                    data-tracename="点击登录"
                 >
                     {hasWindow ? Intl.get("login.login", "登录") : null}
                     {this.state.logining ? <Icon type="loading"/> : null}

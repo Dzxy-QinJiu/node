@@ -16,7 +16,7 @@ var hasPrivilege = require("CMP_DIR/privilege/checker").hasPrivilege;
 import classNames from "classnames";
 var userData = require("../../../../public/sources/user-data");
 import {nameRegex} from "PUB_DIR/sources/utils/consts";
-const noop = function () {
+const noop = function() {
 };
 class ClueRightPanel extends React.Component {
     constructor(props) {

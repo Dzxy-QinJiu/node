@@ -6,7 +6,7 @@ var CrmImport = require("./crm-import");
 
 var ImportCrmTemplate = React.createClass({
     
-    handleCancel : function (e) {
+    handleCancel : function(e) {
         e.preventDefault();
         this.props.closeCrmTemplatePanel();
     },
@@ -25,15 +25,15 @@ var ImportCrmTemplate = React.createClass({
                                     id="common.download.template"
                                     defaultMessage={`点击下载{template}`}
                                     values={{
-                                                "template":  <a data-tracename="点击导入客户模板" href="/rest/crm/download_template">{Intl.get("crm.34", "导入客户模板")}</a>
-                                             }}
+                                        "template":  <a data-tracename="点击导入客户模板" href="/rest/crm/download_template">{Intl.get("crm.34", "导入客户模板")}</a>
+                                    }}
                                 />
                             </p>
                             <p>
                                2.{Intl.get("common.write.template", "填写模板文件后，选择文件并导入")}
                             </p>
                             <p>
-                               {Intl.get("crm.209", "注意：每次导入的客户数量不能超过300条")}
+                                {Intl.get("crm.209", "注意：每次导入的客户数量不能超过300条")}
                             </p>
                         </div>
 

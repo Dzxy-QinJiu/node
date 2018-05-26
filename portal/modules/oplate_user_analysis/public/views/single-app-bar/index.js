@@ -136,12 +136,12 @@ var SingleAppBarChart = React.createClass({
                     }
                 }
             ],
-           series : [{
-               type : 'bar',
-               barMaxWidth:40,
-               barMinWidth : 4,
-               data : _.pluck(this.props.list , 'count')
-           }]
+            series : [{
+                type : 'bar',
+                barMaxWidth:40,
+                barMinWidth : 4,
+                data : _.pluck(this.props.list , 'count')
+            }]
         };
         return option;
     },

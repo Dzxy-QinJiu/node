@@ -119,9 +119,9 @@ function UserDetailAddAppActions() {
             if (isSales) {
                 obj.data.application_ids = selectedAppId;
                 //销售提交申请延期
-                AppUserAjax.applyDelayTime(obj.data).then(function (newAppObj) {
+                AppUserAjax.applyDelayTime(obj.data).then(function(newAppObj) {
                     _this.dispatch({error: false, app: newAppObj});
-                }, function (errorMsg) {
+                }, function(errorMsg) {
                     _this.dispatch({error: true, errorMsg: errorMsg});
                 });
             } else {
@@ -139,7 +139,7 @@ function UserDetailAddAppActions() {
                     submitObj.end_date = obj.data.end_date;
                 }
                 //管理员直接延期
-                AppUserAjax.delayTime(submitObj).then(function (taskId) {
+                AppUserAjax.delayTime(submitObj).then(function(taskId) {
                     //保存提交参数，以便推送批量操作进度时使用更新界面
                     var taskParams = AppUserUtil.formatTaskParams(timeObj , selectedAppId , obj.extra);
                     //保存任务参数
@@ -160,7 +160,7 @@ function UserDetailAddAppActions() {
                     });
                     //返回成功
                     _this.dispatch({error: false});
-                }, function (errorMsg) {
+                }, function(errorMsg) {
                     _this.dispatch({error: true, errorMsg: errorMsg});
                 });
             }
@@ -171,9 +171,9 @@ function UserDetailAddAppActions() {
                 application_ids: selectedAppId
             };
             //调用修改密码
-            AppUserAjax.applyChangePassword(submitObj).then(function (newAppObj) {
+            AppUserAjax.applyChangePassword(submitObj).then(function(newAppObj) {
                 _this.dispatch({error: false, app: newAppObj});
-            }, function (errorMsg) {
+            }, function(errorMsg) {
                 _this.dispatch({error: true, errorMsg: errorMsg});
             });
         }else if(field === 'sales_grant_status') {
@@ -184,9 +184,9 @@ function UserDetailAddAppActions() {
                 application_ids: selectedAppId
             };
             //调用申请修改开通状态
-            AppUserAjax.salesApplyStatus(submitObj).then(function (newAppObj) {
+            AppUserAjax.salesApplyStatus(submitObj).then(function(newAppObj) {
                 _this.dispatch({error: false, app: newAppObj});
-            }, function (errorMsg) {
+            }, function(errorMsg) {
                 _this.dispatch({error: true, errorMsg: errorMsg});
             });
         } else {

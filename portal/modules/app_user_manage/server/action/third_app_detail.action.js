@@ -1,17 +1,17 @@
 var ThirdAppService = require("../service/third_app_detail.service");
 var extend = require("extend");
 var _ = require("underscore");
-const serviceHandler = function (service) {
-    return function (req, res) {
-        service(req, res).on("success", function (data) {
+const serviceHandler = function(service) {
+    return function(req, res) {
+        service(req, res).on("success", function(data) {
             res.json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
     };
 };
 
-_.each(ThirdAppService, function (value, key) {
+_.each(ThirdAppService, function(value, key) {
     if (key != "getAppConfigList") {
         exports[key] = serviceHandler(value);
     }

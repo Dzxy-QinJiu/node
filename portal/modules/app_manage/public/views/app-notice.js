@@ -20,22 +20,22 @@ var LAYOUT_CONSTANTS = {
 
 var AppNotice = React.createClass({
 
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             appId: ""
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return AppNoticeStore.getState();
     },
 
-    onStoreChange: function () {
+    onStoreChange: function() {
         var state = AppNoticeStore.getState();
         this.setState(state);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         AppNoticeStore.listen(this.onStoreChange);
         AppNoticeAction.resetState();
         var appId = AppStore.getState().currentApp.id;
@@ -47,7 +47,7 @@ var AppNotice = React.createClass({
         AppNoticeAction.getAppNoticeList(searchObj);
     },
 
-    componentWillReceiveProps : function (nextProps){
+    componentWillReceiveProps : function(nextProps){
         var appId = nextProps.appId;
         if (appId != this.props.appId) {
             AppNoticeAction.resetState();
@@ -82,13 +82,13 @@ var AppNotice = React.createClass({
     },
 
     //关闭
-    closePanel: function (e) {
+    closePanel: function(e) {
         Trace.traceEvent(e,"关闭应用公告界面");
         this.props.closeRightPanel(e);
     },
 
     //返回详细信息展示页
-    returnInfoPanel: function (e) {
+    returnInfoPanel: function(e) {
         Trace.traceEvent(e,"返回到应用详情界面");
         this.props.returnInfoPanel(e);
     },

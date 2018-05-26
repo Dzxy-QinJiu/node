@@ -45,7 +45,7 @@ class WillExpireUserList extends React.Component {
         SalesHomeAction.getExpireUser();
     }
 
-    gotoUserList (item, e){
+    gotoUserList(item, e){
         Trace.traceEvent(e, "跳转到用户列表");
         //跳转到用户列表
         history.pushState({
@@ -78,10 +78,10 @@ class WillExpireUserList extends React.Component {
         var _this = this;
         var expireUserLists = this.props.expireUserLists;
         var errMsg = <span>{_this.props.errMsg}<a onClick={_this.retry}                                                  
-                                                  style={{
-                                                      marginLeft: "20px",
-                                                      marginTop: "20px"
-                                                  }}>{Intl.get("user.info.retry", "请重试")} </a></span>;
+            style={{
+                marginLeft: "20px",
+                marginTop: "20px"
+            }}>{Intl.get("user.info.retry", "请重试")} </a></span>;
         //获取用户列表错误提示
         if (_this.props.isLoadingExpireUserList) {
             return <div>

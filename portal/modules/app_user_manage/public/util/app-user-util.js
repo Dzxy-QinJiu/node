@@ -14,7 +14,7 @@ exports.localStorageLogViewPageSizeKey = 'app_user_manage.log_view.page_size';
 // 审计日志和在线用户选择应用时，将应用保存到localStorage中，将当前用户user_id作为key
 exports.saveSelectAppKeyUserId = UserData ? UserData.user_id : "";
 // 获取存储在localStorage中的审计日志和在线用户应用的对象
-exports.getLocalStorageObj = function (property ,selectApp){
+exports.getLocalStorageObj = function(property ,selectApp){
     let localObj = {};
     let localValue = storageUtil.local.get(JSON.stringify(UserData ? UserData.user_id : ""));
     if(localValue){
@@ -48,7 +48,7 @@ exports.EMITTER_CONSTANTS = {
     UPDATE_APP_FIELD : "updateAppField",
     //选中的行改变
     SELECTED_USER_ROW_CHANGE : "selectedUserRowChange",
-	//用户列表滚动条置顶
+    //用户列表滚动条置顶
     CHANGE_USER_LIST_SCROLL_TOP : "changeUserListScrollTop",
     //回复列表滚动到最后
     REPLY_LIST_SCROLL_TO_BOTTOM : "replyListScrollToBottom"

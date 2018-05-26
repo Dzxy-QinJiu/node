@@ -3,8 +3,8 @@
  */
 var ThirdAjax = require("../ajax/third-app-ajax");
 
-const asyncDispatchProcessor = function (ajax) {
-    return function (paramObj) {
+const asyncDispatchProcessor = function(ajax) {
+    return function(paramObj) {
         var _this = this;
         _this.dispatch({error: false, loading: true});
         ajax(paramObj).then(function(data) {

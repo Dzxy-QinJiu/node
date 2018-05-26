@@ -65,7 +65,7 @@ class CustomerNoticeMessage extends React.Component {
                     {getRelativeTime(item.create_time) ? moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : moment(item.create_time).format(oplateConsts.DATE_TIME_FORMAT)}
                 </span>
                 <span className="user-name"
-                      onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
+                    onClick={this.openUserDetail.bind(this, item.user_id)}>{item.user_name}</span>
                 {item.app_name ?
                     <span>{Intl.get("notification.system.login", "登录了") + item.app_name}</span> : ""}
             </div>;
@@ -114,16 +114,16 @@ class CustomerNoticeMessage extends React.Component {
                 <div className="customer-notice-content">
                     <div className="customer-title">
                         <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, customer_id)}
-                              data-tracename="打开客户详情">
+                            data-tracename="打开客户详情">
                             {this.props.isRecentLoginCustomer ? this.renderTagsContent(customerMessage) : null}
                             {customer_name}
                         </span>
                         {
                             loginUserId === customerMessage.member_id ?
                                 <Button type="primary" className="notice-handled-set"
-                                        onClick={this.handleSystemNotice.bind(this, customerMessage)}>
+                                    onClick={this.handleSystemNotice.bind(this, customerMessage)}>
                                     {Intl.get("notification.system.handled.set", "处理")}{customerMessage.isHandling ?
-                                    <Icon type="loading"/> : null}
+                                        <Icon type="loading"/> : null}
                                 </Button> : null
                         }
                         {customerMessage.last_login_time ? <span
@@ -140,7 +140,7 @@ class CustomerNoticeMessage extends React.Component {
                 </div>
                 {_.isArray(customerMessage.contacts) && customerMessage.contacts.length ?
                     <ContactItem contacts={customerMessage.contacts} callNumber={this.props.callNumber}
-                                 errMsg={this.props.errMsg}/> : null}
+                        errMsg={this.props.errMsg}/> : null}
             </div>
         );
     }
@@ -150,13 +150,13 @@ CustomerNoticeMessage.defaultProps = {
     noticeType: "",
     customerNoticeMessage: {},
     isRecentLoginCustomer: false,
-    openCustomerDetail: function () {
+    openCustomerDetail: function() {
 
     },
-    openUserDetail: function () {
+    openUserDetail: function() {
 
     },
-    afterHandleMessage: function () {
+    afterHandleMessage: function() {
 
     }
 };

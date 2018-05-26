@@ -50,8 +50,8 @@ class AssignClueAndSelectCustomer extends React.Component {
         return userData.isSalesManager();
     }
     componentDidMount(){
-      this.queryCustomerByClueId(this.state.curClueDetail.id);
-      this.getRecommendAssociatedCustomer();
+        this.queryCustomerByClueId(this.state.curClueDetail.id);
+        this.getRecommendAssociatedCustomer();
     }
     //根据线索的id查询该线索关联的客户
     queryCustomerByClueId(currentId) {
@@ -178,7 +178,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             });
         }
     };
-   //是否显示对号和叉号
+    //是否显示对号和叉号
     isShowUpdateOrClose = (flag) =>{
         this.setState({
             ShowUpdateOrClose: flag
@@ -261,7 +261,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             return (<Icon type="loading"/>);
         }
         var _this = this;
-        var onSuccessHide = function () {
+        var onSuccessHide = function() {
             _this.setState({
                 submitType: '',
                 displayType: 'text'
@@ -302,7 +302,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 customer_name: this.props.customer_name
             });
         }else if (type === 'select'){
-           //避免添加成功后，立刻点击编辑按钮时有保存成功的提示
+            //避免添加成功后，立刻点击编辑按钮时有保存成功的提示
             this.setState({
                 submitType: '',
             });
@@ -316,9 +316,9 @@ class AssignClueAndSelectCustomer extends React.Component {
                 {this.renderCustomerBlock()}
                 {showBtnBool ? <span>
                     <span className="iconfont icon-choose" onClick={this.submit}
-                          data-tracename="保存关联客户"></span>
+                        data-tracename="保存关联客户"></span>
                     <span className="iconfont icon-close"
-                          onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></span>
+                        onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></span>
                 </span> : null}
                 {this.renderIndicator()}
             </div>
@@ -362,7 +362,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                 <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)} data-tracename="点击查看客户详情">{relatedCustomerName}</span>
                 {
                     canEdit ? <i className="iconfont icon-update"
-                                 onClick={this.changeDisplayCustomerType.bind(this, "select")} data-tracename="点击修改/添加关联客户"></i> : null
+                        onClick={this.changeDisplayCustomerType.bind(this, "select")} data-tracename="点击修改/添加关联客户"></i> : null
                 }
             </div>
         );
@@ -386,7 +386,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     {this.state.recommendByName ? Intl.get("clue.customer.customer.name.similar","客户名相似") : null}
                     {this.state.recommendByPhone ? Intl.get("clue.customer.phone.same","电话一致"): null}
                     ）</p>
-                    {
+                {
                     _.map(this.state.recommendCustomerLists, (recommendItem,index)=>{
                         var checked = recommendItem.id == this.state.checkedCustomerItem ? true : false;
                         return (
@@ -396,63 +396,63 @@ class AssignClueAndSelectCustomer extends React.Component {
                                     onChange={this.onCheckedItemChange.bind(this, recommendItem)}
                                 >
                                     <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
-                                <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
+                                    <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
                                 </Checkbox>
                                 {this.state.checkedCustomerItem && index === (this.state.recommendCustomerLists.length -1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
-                                                                                                                                          data-tracename="保存关联客户"></i>
-                    <i className="iconfont icon-close"
-                          onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></i></span> : null}
+                                    data-tracename="保存关联客户"></i>
+                                <i className="iconfont icon-close"
+                                    onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></i></span> : null}
                             </p>
                         );
                     })
                 }
             </div>
-            );
+        );
     }
 
     render() {
         var curClueDetail = this.state.curClueDetail;
         return (
             <div>
-                 <div className="sales-assign-wrap">
-                        <h5>{Intl.get("cluecustomer.trace.person", "跟进人")}</h5>
-                        <div className="sales-assign-content">
-                            <SalesSelectField
-                                ref="distribute"
-                                enableEdit={(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || (hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER"))) ? true : false}
-                                isMerge={true}
-                                updateMergeCustomer={this.distributeCustomerToSale}
-                                customerId={curClueDetail.id}
-                                userName={curClueDetail.user_name}
-                                userId={curClueDetail.user_id}
-                                salesTeam={curClueDetail.sales_team}
-                                salesTeamId={curClueDetail.sales_team_id}
-                                hideSalesRole={true}
-                            />
-                        </div>
+                <div className="sales-assign-wrap">
+                    <h5>{Intl.get("cluecustomer.trace.person", "跟进人")}</h5>
+                    <div className="sales-assign-content">
+                        <SalesSelectField
+                            ref="distribute"
+                            enableEdit={(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || (hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER"))) ? true : false}
+                            isMerge={true}
+                            updateMergeCustomer={this.distributeCustomerToSale}
+                            customerId={curClueDetail.id}
+                            userName={curClueDetail.user_name}
+                            userId={curClueDetail.user_id}
+                            salesTeam={curClueDetail.sales_team}
+                            salesTeamId={curClueDetail.sales_team_id}
+                            hideSalesRole={true}
+                        />
                     </div>
-                 <div className="associate-customer-wrap">
-                         <h5>{Intl.get("clue.customer.associate.customer", "关联客户")}</h5>
-                         <div className="customer-text-and-edit">
-                             {this.state.recommendCustomerLists.length && !this.state.relatedCustomerId ? <div>
-                                 {this.renderRecommendCustomer()}
-                             </div> : null}
-                             {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
-                         </div>
+                </div>
+                <div className="associate-customer-wrap">
+                    <h5>{Intl.get("clue.customer.associate.customer", "关联客户")}</h5>
+                    <div className="customer-text-and-edit">
+                        {this.state.recommendCustomerLists.length && !this.state.relatedCustomerId ? <div>
+                            {this.renderRecommendCustomer()}
+                        </div> : null}
+                        {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
                     </div>
-                    {/*该客户下的用户列表*/}
-                    <RightPanel
-                        className="customer-user-list-panel"
-                        showFlag={this.state.isShowCustomerUserListPanel}
-                    >
-                        { this.state.isShowCustomerUserListPanel ?
-                            <AppUserManage
-                                customer_id={this.state.CustomerInfoOfCurrUser.id}
-                                hideCustomerUserList={this.closeCustomerUserListPanel}
-                                customer_name={this.state.CustomerInfoOfCurrUser.name}
-                            /> : null
-                        }
-                    </RightPanel>
+                </div>
+                {/*该客户下的用户列表*/}
+                <RightPanel
+                    className="customer-user-list-panel"
+                    showFlag={this.state.isShowCustomerUserListPanel}
+                >
+                    { this.state.isShowCustomerUserListPanel ?
+                        <AppUserManage
+                            customer_id={this.state.CustomerInfoOfCurrUser.id}
+                            hideCustomerUserList={this.closeCustomerUserListPanel}
+                            customer_name={this.state.CustomerInfoOfCurrUser.name}
+                        /> : null
+                    }
+                </RightPanel>
             </div>
         );
     }

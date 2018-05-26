@@ -1,15 +1,15 @@
 var appAjaxTrans = require("../../../../modules/common/public/ajax/app");
 // 获取应用列表
-exports.getAppList = function () {
+exports.getAppList = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success((list) => {
-        Deferred.resolve(list);
-    }).error((xhr, code , errText) => {
-        Deferred.reject();
-    }).timeout(function() {
-        Deferred.reject();
-    });
+        success((list) => {
+            Deferred.resolve(list);
+        }).error((xhr, code , errText) => {
+            Deferred.reject();
+        }).timeout(function() {
+            Deferred.reject();
+        });
     return Deferred.promise();
 };
 
@@ -110,7 +110,7 @@ exports.getAddedUserTypeStatistics = (dataType,obj) => {
 exports.getUserActiveNess = (dataType,dateRange,obj) => {
     obj = obj || {};
     var Deferred = $.Deferred();
-     $.ajax({
+    $.ajax({
         url: `/rest/analysis/user/activeness/${dataType}/${dateRange}`,
         dataType: 'json',
         type: 'get',

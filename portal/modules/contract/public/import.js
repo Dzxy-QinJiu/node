@@ -26,7 +26,7 @@ const ContractImport = React.createClass({
             this.setState({isLoading: false});
         }
     },
-    render: function () {
+    render: function() {
         const _this = this;
         const props = {
             name: "contracts",

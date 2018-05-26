@@ -97,12 +97,12 @@ const RealmConfig = React.createClass({
                 </div>
                 <div className="box-body">
                     <Popconfirm placement="leftTop" 
-                    visible={this.state.showConfirm} 
-                    title={STRATEGYCONFIRMMSG} 
-                    onConfirm={this.confirm} 
-                    onCancel={this.cancel} 
-                    okText={Intl.get("config.manage.realm.oktext","确定")} 
-                    cancelText={Intl.get("config.manage.realm.canceltext","取消")}>
+                        visible={this.state.showConfirm} 
+                        title={STRATEGYCONFIRMMSG} 
+                        onConfirm={this.confirm} 
+                        onCancel={this.cancel} 
+                        okText={Intl.get("config.manage.realm.oktext","确定")} 
+                        cancelText={Intl.get("config.manage.realm.canceltext","取消")}>
                         <RadioGroup
                             size="large"
                             style={{ marginLeft: "65px", marginTop: "40px" }}

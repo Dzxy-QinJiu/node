@@ -30,7 +30,7 @@ module.exports = {
     path: 'user',
     //在RightContent中用来做跳转,重要
     routesExports: getChildRoutes(),
-    getChildRoutes: function (location, cb) {
+    getChildRoutes: function(location, cb) {
         var childRoutes = getChildRoutes();
         cb(null, childRoutes);
     },

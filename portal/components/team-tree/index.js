@@ -33,7 +33,7 @@ const salesmanAjax = require("../../modules/common/public/ajax/salesman");
 const teamTreeEmitter = Emitters.teamTreeEmitter;
 import { Tree } from "antd";
 const TreeNode = Tree.TreeNode;
-const noop = function () {
+const noop = function() {
 };
 
 const TeamTree = React.createClass({
@@ -73,8 +73,8 @@ const TeamTree = React.createClass({
             .success(result => {
                 this.setState({userList: result});
             }).error(() => {
-            this.setState({userList: []});
-        });
+                this.setState({userList: []});
+            });
     },
     handleTeamSelect(e) {
         const selectedKeys = e.selectedKeys || e;

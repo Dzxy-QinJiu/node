@@ -10,19 +10,19 @@ import Trace from "LIB_DIR/trace";
 
 var IndustrySelectField = React.createClass({
     mixins: [FieldMixin],
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.getIndustryList();
     },
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             list: [],
-            onChange: function () {
+            onChange: function() {
             },
-            onModifySuccess: function () {
+            onModifySuccess: function() {
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,//正在保存
             displayType: "text",
@@ -39,7 +39,7 @@ var IndustrySelectField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时，重新设置state数据
             let stateData = this.getInitialState();
@@ -50,7 +50,7 @@ var IndustrySelectField = React.createClass({
             this.setState(stateData);
         }
     },
-    getIndustryList: function () {
+    getIndustryList: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingList: true});
         CrmAction.getIndustries(result=> {
@@ -61,19 +61,19 @@ var IndustrySelectField = React.createClass({
             this.setState({isLoadingList: false, list: list});
         });
     },
-    getSelectOptions: function () {
+    getSelectOptions: function() {
         var list = this.state.list.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
         });
         return list;
     },
-    getSelectedText: function () {
+    getSelectedText: function() {
         var target = _.find(this.state.list, (item) => {
             return item == this.state.formData.industry;
         });
         return target ? target : <span>&nbsp;</span>;
     },
-    changeDisplayType: function (type) {
+    changeDisplayType: function(type) {
         if (type === 'text') {
             Trace.traceEvent(this.getDOMNode(),"取消对行业的修改");
             this.state.formData.industry = this.props.industry;
@@ -93,14 +93,14 @@ var IndustrySelectField = React.createClass({
 
     },
     //回到展示状态
-    backToDisplay: function () {
+    backToDisplay: function() {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
     },
-    handleSubmit: function () {
+    handleSubmit: function() {
         var validation = this.refs.validation;
         if (this.state.loading) {
             return;
@@ -126,7 +126,7 @@ var IndustrySelectField = React.createClass({
                     this.setState({loading: true});
                     CrmBasicAjax.updateCustomer(submitData).then(result=> {
                         if (result) {
-                           this.backToDisplay();
+                            this.backToDisplay();
                             //更新列表中的客户行业
                             this.props.modifySuccess(submitData);
                         }
@@ -140,16 +140,16 @@ var IndustrySelectField = React.createClass({
             }
         });
     },
-    handleSelect: function () {
-       Trace.traceEvent(this.getDOMNode(),"选择行业");
+    handleSelect: function() {
+        Trace.traceEvent(this.getDOMNode(),"选择行业");
     },
-    render: function () {
+    render: function() {
         if (this.state.displayType === 'text') {
             return (
                 <div className="basic-industry-field">
                     <span>{this.state.formData.industry}</span>
                     <i className="iconfont icon-update" title={Intl.get("crm.163", "设置行业")}
-                       onClick={this.changeDisplayType.bind(this , "edit")}/>
+                        onClick={this.changeDisplayType.bind(this , "edit")}/>
                 </div>
             );
         }
@@ -161,7 +161,7 @@ var IndustrySelectField = React.createClass({
             <div>
                 <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={this.handleSubmit}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                   onClick={this.changeDisplayType.bind(this,"text")}/>
+                    onClick={this.changeDisplayType.bind(this,"text")}/>
             </div>
         ) : null;
 
@@ -179,12 +179,12 @@ var IndustrySelectField = React.createClass({
                         <Validator
                             rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
                             <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
-                                    searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
-                                    optionFilterProp="children"
-                                    notFoundContent={this.state.list.length ? Intl.get("crm.23", "无相关行业") : Intl.get("crm.24", "暂无行业")}
-                                    value={this.state.formData.industry}
-                                    onChange={this.setField.bind(this, 'industry')}
-                                    onSelect={this.handleSelect}
+                                searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                                optionFilterProp="children"
+                                notFoundContent={this.state.list.length ? Intl.get("crm.23", "无相关行业") : Intl.get("crm.24", "暂无行业")}
+                                value={this.state.formData.industry}
+                                onChange={this.setField.bind(this, 'industry')}
+                                onSelect={this.handleSelect}
                             >
                                 {options}
                             </Select>

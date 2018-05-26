@@ -112,19 +112,19 @@ var BarChart = React.createClass({
         const legend = this.props.legend;
 
         if (_.isEmpty(legend)) {
-                const serie = _.clone(serieTpl);
-                if (this.props.reverseChart){
-                    serie.data = _.pluck(chartData.slice().reverse(), this.props.valueField);
-                }else{
-                    serie.data = _.pluck(chartData, this.props.valueField);
+            const serie = _.clone(serieTpl);
+            if (this.props.reverseChart){
+                serie.data = _.pluck(chartData.slice().reverse(), this.props.valueField);
+            }else{
+                serie.data = _.pluck(chartData, this.props.valueField);
+            }
+            serie.itemStyle = {
+                normal: {
+                    color: COLORSINGLE,
                 }
-                serie.itemStyle = {
-                    normal: {
-                        color: COLORSINGLE,
-                    }
-                };
+            };
 
-                return serie;
+            return serie;
         } else {
             return _.map(legend, (legendItem,idx) => {
                 var currentColor = COLORMULTIPLE[idx];
@@ -252,7 +252,7 @@ var BarChart = React.createClass({
         };
         return option;
     },
-    getReverseEchartOptions : function () {
+    getReverseEchartOptions : function() {
         //grid上的margin
         var maxMargin = this.getMargin();
         const categories = this.getCategories();
@@ -413,11 +413,11 @@ var BarChart = React.createClass({
         }
 
     },
-    render: function () {
+    render: function() {
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"
-                     data-title={this.props.title}></div>
+                    data-title={this.props.title}></div>
             </div>
         );
     }

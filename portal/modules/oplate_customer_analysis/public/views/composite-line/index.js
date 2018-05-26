@@ -350,18 +350,18 @@ var LineChart = React.createClass({
         var chartWidth = (this.props.width || $(this.refs.wrap).width());
         return (
             <div className="analysis_composite_line_chart" ref="wrap">
-                    {this.props.resultType === 'loading'?
-                        (
-                            <div className="loadwrap" style={{height:this.props.height}}>
-                                <Spinner/>
-                            </div>
-                        ):
-                        (
+                {this.props.resultType === 'loading'?
+                    (
+                        <div className="loadwrap" style={{height:this.props.height}}>
+                            <Spinner/>
+                        </div>
+                    ):
+                    (
                         <div>
                             <div ref="chart" style={{width:chartWidth,height:this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
-                        )
-                    }
+                    )
+                }
             </div>
         );
     }

@@ -10,7 +10,7 @@ function AddMoreInfoStore() {
     //绑定action
     this.bindActions(addMoreInfoAction);
 }
-AddMoreInfoStore.prototype.resetState = function () {
+AddMoreInfoStore.prototype.resetState = function() {
     //正在获取应用列表
     this.isGettingAppLists = false;
     //获取应用列表失败
@@ -19,7 +19,7 @@ AddMoreInfoStore.prototype.resetState = function () {
     this.appLists = [];
 };
 //获取应用列表
-AddMoreInfoStore.prototype.getAppList = function (result) {
+AddMoreInfoStore.prototype.getAppList = function(result) {
     if (result.loading){
         this.isGettingAppLists = true;
         this.getAppListsErrMsg = "";

@@ -11,10 +11,10 @@ function AppNoticeActions(){
         'resetState'
     );
     //获取应用的系统公告列表
-    this.getAppNoticeList = function (searchObj) {
+    this.getAppNoticeList = function(searchObj) {
         var _this = this;
         _this.dispatch({loading:true,error:false});
-        noticeAjax.getAppNoticeList(searchObj).then(function (resData) {
+        noticeAjax.getAppNoticeList(searchObj).then(function(resData) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading:false,error:false, resData: resData});
         },function(errorMsg) {

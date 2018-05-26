@@ -65,17 +65,17 @@ const delayTime = 500;
 const PropTypes = React.PropTypes;
 
 const SearchInput = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             type: "input",
-            searchEvent: function () {},
+            searchEvent: function() {},
             searchPlaceholder: "",
             searchFields: [],
             searchOnTyped: false,
             hasCloseBtn: false
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         let state = {};
 
         if (this.props.type === "select") {
@@ -99,7 +99,7 @@ const SearchInput = React.createClass({
 
         return state;
     },
-    onKeywordChange: function (keyword) {
+    onKeywordChange: function(keyword) {
         const trimedKeyword = keyword.trim();
 
         //直接输入空格或在中文打字过程中时不进行处理
@@ -131,7 +131,7 @@ const SearchInput = React.createClass({
 
         this.setState(this.state);
     },
-    onKeywordSelect: function (value, option) {
+    onKeywordSelect: function(value, option) {
         Trace.traceEvent(this.getDOMNode(),"按" + value + "搜索");
         const keyword = this.state.keyword.trim();
         const index = option.props.index;
@@ -152,17 +152,17 @@ const SearchInput = React.createClass({
         //执行搜索
         this.props.searchEvent(keyword, selectedField);
     },
-    searchEvent: function () {
+    searchEvent: function() {
         var _this = this;
         if (inputTimeOut) {
             clearTimeout(inputTimeOut);
         }
-        inputTimeOut = setTimeout(function () {
+        inputTimeOut = setTimeout(function() {
             var searchContent = _this.refs.searchInput.value;
             _this.props.searchEvent(searchContent);
         }, delayTime);
     },
-    onSearchButtonClick: function () {
+    onSearchButtonClick: function() {
         if (this.props.type === "input") {
             if (this.refs.searchInput.value.trim()) {
                 this.searchEvent();
@@ -185,7 +185,7 @@ const SearchInput = React.createClass({
             }
         }
     },
-    closeSearchInput: function () {
+    closeSearchInput: function() {
         if (this.props.type === "input"){
             //在销售首页的右侧列表，会将整个搜索框都隐藏掉
             if (this.props.closeSearchInput){
@@ -205,7 +205,7 @@ const SearchInput = React.createClass({
             Trace.traceEvent(this.getDOMNode(),"清除搜索条件");
         }
     },
-    render: function () {
+    render: function() {
         let keywordOptions = [];
 
         if (this.props.type === "select" && this.state.keyword.trim()) {
@@ -220,8 +220,8 @@ const SearchInput = React.createClass({
             <div className="search-input-container">
                 {this.props.type === "input" ? (
                     <input type="text" placeholder={this.props.searchPlaceHolder} ref="searchInput"
-                           onKeyUp={this.searchEvent}
-                           className="search-input"/>
+                        onKeyUp={this.searchEvent}
+                        className="search-input"/>
                 ) : (
                     <Select
                         combobox
@@ -236,9 +236,9 @@ const SearchInput = React.createClass({
                 )}
                 {(this.props.type === "input" && this.refs.searchInput && this.refs.searchInput.value)||
                  (this.props.type === "select" && this.state.keyword)? (
-                    <Icon type="cross-circle-o" className="search-icon" onClick={this.closeSearchInput}/>
-                ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
-                )}
+                        <Icon type="cross-circle-o" className="search-icon" onClick={this.closeSearchInput}/>
+                    ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
+                    )}
             </div>
         );
     }

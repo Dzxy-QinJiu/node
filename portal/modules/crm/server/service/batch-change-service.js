@@ -2,7 +2,7 @@ var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //获取当前用户下属销售团队列表
-exports.getGroupList = function (req, res) {
+exports.getGroupList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: "/rest/base/v1/group/child_groups",
@@ -12,7 +12,7 @@ exports.getGroupList = function (req, res) {
 };
 
 //客户批量操作
-exports.doBatch = function (req,res) {
+exports.doBatch = function(req,res) {
     return restUtil.authRest.put({
         url : "/rest/customer/v2/customer/batch/customer?type=" + req.query.type,
         req : req,
@@ -21,7 +21,7 @@ exports.doBatch = function (req,res) {
 };
 
 //获取推荐标签
-exports.getRecommendTags = function (req, res) {
+exports.getRecommendTags = function(req, res) {
     var pageSize = req.params.pageSize;
     var num = req.params.num;
     var type = req.params.type;

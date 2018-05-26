@@ -17,7 +17,7 @@ var uuid = require("uuid/v4");
 
 function cx(classNames) {
     if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function (className) {
+        return Object.keys(classNames).filter(function(className) {
             return classNames[className];
         }).join(' ');
     } else {
@@ -26,14 +26,14 @@ function cx(classNames) {
 }
 var ContactForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             contact: ContactUtil.newViewContactObject(),
             type: 'add'
         };
     },
     //联系方式的数组展开放到对应的formData中
-    formatContact: function (type, contactData, formData, status) {
+    formatContact: function(type, contactData, formData, status) {
         if (contactData && _.isArray(contactData)) {
             for (var i = 0, len = contactData.length; i < len; i++) {
                 formData[type + i] = contactData[i];
@@ -41,7 +41,7 @@ var ContactForm = React.createClass({
             }
         }
     },
-    getInitialState: function () {
+    getInitialState: function() {
         var contact = this.props.contact.contact;
         var phoneInputIds = _.isArray(contact.phone) && contact.phone.length ? _.map(contact.phone, item => {
             return uuid();
@@ -83,7 +83,7 @@ var ContactForm = React.createClass({
         };
     },
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -96,9 +96,9 @@ var ContactForm = React.createClass({
         return classes;
     },
 
-    addContactWay: function (type) {
+    addContactWay: function(type) {
         var _this = this;
-        return function () {
+        return function() {
             if (type === "phone") {
                 _this.state.phoneInputIds.push(uuid());
                 _this.setState(_this.state);
@@ -109,9 +109,9 @@ var ContactForm = React.createClass({
         };
     },
 
-    removeContactWay: function (type, index) {
+    removeContactWay: function(type, index) {
         var _this = this;
-        return function () {
+        return function() {
             if (type === "phone") {
                 _this.state.phoneInputIds.splice(index, 1);
             }
@@ -155,7 +155,7 @@ var ContactForm = React.createClass({
         };
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
@@ -184,7 +184,7 @@ var ContactForm = React.createClass({
 
     },
 
-    getPhoneFormValue: function (form) {
+    getPhoneFormValue: function(form) {
         return new Promise(resolve => {
             form.validateFields((errs, fields) => {
                 resolve({errs, fields});
@@ -193,7 +193,7 @@ var ContactForm = React.createClass({
     },
 
 
-    doSubmit: function () {
+    doSubmit: function() {
         var formData = _.extend({}, this.state.formData);
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
@@ -269,7 +269,7 @@ var ContactForm = React.createClass({
         }
     },
     //获取修改的类型，是phone、no_phone还是all
-    getEditType: function (formData) {
+    getEditType: function(formData) {
         let oldData = this.props.contact.contact;
         let isEditPhone = !isEqualArray(JSON.parse(formData.phone), oldData.phone);
         let isEditOtherInfo = false;
@@ -294,10 +294,10 @@ var ContactForm = React.createClass({
         }
     },
     //提交完数据后
-    afterSubmit: function (result) {
+    afterSubmit: function(result) {
         this.state.errorMsg = result.errorMsg || '';
         this.state.isLoading = false;
-       if (result.contact && result.contact.def_contancts === "true") {
+        if (result.contact && result.contact.def_contancts === "true") {
             //只有在客户列表中才有更新列表中联系人的方法
             if (_.isFunction(this.props.updateCustomerDefContact)) {
                 //修改默认联系人的信息时，更新列表中的联系人数据
@@ -307,7 +307,7 @@ var ContactForm = React.createClass({
         this.setState(this.state);
     },
 
-    cancel: function () {
+    cancel: function() {
         if (this.props.type === 'add') {
             Trace.traceEvent($(this.getDOMNode()).find(".crm-contact-form-btns .form-cancel-btn"), "取消添加联系人");
             ContactAction.hideAddContactForm();
@@ -316,7 +316,7 @@ var ContactForm = React.createClass({
             ContactAction.hideEditContactForm(this.props.contact);
         }
     },
-    handleSelect: function () {
+    handleSelect: function() {
         Trace.traceEvent(this.getDOMNode(), "新建/修改联系人的角色");
     },
     //获取当前已添加的电话列表
@@ -375,13 +375,13 @@ var ContactForm = React.createClass({
         }];
     },
     //联系人名和部门必填一项的验证
-    validateContactNameDepartment: function () {
+    validateContactNameDepartment: function() {
         //是否通过联系人名和部门必填一项的验证
         let isValid = validateRequiredOne(this.state.formData.name, this.state.formData.department);
         this.setState({isValidNameDepartment: isValid});
     },
     //渲染联系人名和部门必填一项的提示
-    renderValidNameDepartmentTip: function () {
+    renderValidNameDepartmentTip: function() {
         if (this.state.isValidNameDepartment) {
             return null;
         } else {
@@ -396,7 +396,7 @@ var ContactForm = React.createClass({
                 <Icon type="plus"/>
             </div>) : null}
             {index == 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
-                                                            onClick={this.removeContactWay(type, index)}>
+                onClick={this.removeContactWay(type, index)}>
                 <Icon type="minus"/>
             </div>}
         </div>);
@@ -408,7 +408,7 @@ var ContactForm = React.createClass({
      * @param formData: 联系人的表单数据
      * @param status: 联系人表单数据的验证状态
      */
-    renderPhoneInput (index, size, formData, status) {
+    renderPhoneInput(index, size, formData, status) {
         const phoneKey = "phone" + index;
         if (!status[phoneKey]) {
             formData[phoneKey] = "";
@@ -452,13 +452,13 @@ var ContactForm = React.createClass({
                 key={index}
             >
                 <Input name={typeKey} value={formData[typeKey]}
-                       onChange={this.setField.bind(this, typeKey)}
+                    onChange={this.setField.bind(this, typeKey)}
                 />
                 {this.renderContactWayBtns(index, size, type)}
             </FormItem>
         );
     },
-    renderContactForm: function () {
+    renderContactForm: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         var contact = this.state.contact;
@@ -475,16 +475,16 @@ var ContactForm = React.createClass({
                     >
                         <Col span={12} className="form-col-padding">
                             <FormItem validateStatus={this.renderValidateStyle('name')}
-                                      help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
+                                help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
                                 <Validator rules={[{
                                     max: 50,
                                     message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
                                 }]}>
                                     <Input name="name" value={formData.name}
-                                           autocomplete="off"
-                                           placeholder={Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}
-                                           onBlur={this.validateContactNameDepartment.bind(this)}
-                                           onChange={this.setField.bind(this, 'name')}
+                                        autocomplete="off"
+                                        placeholder={Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}
+                                        onBlur={this.validateContactNameDepartment.bind(this)}
+                                        onChange={this.setField.bind(this, 'name')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -492,19 +492,19 @@ var ContactForm = React.createClass({
                         <Col span={6} className="form-col-padding">
                             <FormItem>
                                 <Input name="department" value={formData.department}
-                                       autocomplete="off"
-                                       placeholder={Intl.get("crm.contact.deparment.input", "请输入部门")}
-                                       onBlur={this.validateContactNameDepartment.bind(this)}
-                                       onChange={this.setField.bind(this, 'department')}
+                                    autocomplete="off"
+                                    placeholder={Intl.get("crm.contact.deparment.input", "请输入部门")}
+                                    onBlur={this.validateContactNameDepartment.bind(this)}
+                                    onChange={this.setField.bind(this, 'department')}
                                 />
                             </FormItem>
                         </Col>
                         <Col span={6}>
                             <FormItem>
                                 <Input name="position" value={formData.position}
-                                       autocomplete="off"
-                                       placeholder={Intl.get("crm.114", "请输入职位")}
-                                       onChange={this.setField.bind(this, 'position')}
+                                    autocomplete="off"
+                                    placeholder={Intl.get("crm.114", "请输入职位")}
+                                    onChange={this.setField.bind(this, 'position')}
                                 />
                             </FormItem>
                         </Col>
@@ -518,8 +518,8 @@ var ContactForm = React.createClass({
                         wrapperCol={{span: 22}}
                     >
                         <RadioGroup onChange={this.setField.bind(this, 'role')}
-                                    value={formData.role ? formData.role : Intl.get("crm.115", "经办人")}>
-                            {ContactUtil.roleArray.map(function (role, index) {
+                            value={formData.role ? formData.role : Intl.get("crm.115", "经办人")}>
+                            {ContactUtil.roleArray.map(function(role, index) {
                                 return (<Radio value={role} key={index}>{role}</Radio>);
                             })}
                         </RadioGroup>
@@ -551,14 +551,14 @@ var ContactForm = React.createClass({
         );
     },
 
-    render: function () {
+    render: function() {
         return (<DetailCard content={this.renderContactForm()}
-                            isEdit={true}
-                            className="contact-form-container"
-                            loading={this.state.loading}
-                            saveErrorMsg={this.state.errorMsg}
-                            handleSubmit={this.handleSubmit}
-                            handleCancel={this.cancel}
+            isEdit={true}
+            className="contact-form-container"
+            loading={this.state.loading}
+            saveErrorMsg={this.state.errorMsg}
+            handleSubmit={this.handleSubmit}
+            handleCancel={this.cancel}
         />);
     }
 });

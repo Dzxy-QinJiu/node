@@ -49,7 +49,7 @@ class RadioCard extends React.Component {
             isCheckBoxChecked: e.target.checked
         });
     };
-    getQueryParams (){
+    getQueryParams(){
         var user = {};
         //如果提成或者目标的id存在，就更新那条记录
         if (this.state.id) {
@@ -134,9 +134,9 @@ class RadioCard extends React.Component {
         });
     };
     handleChangeRenewalCommissionRadio = (value) =>{
-       this.setState({
-           submitRenewalCommissionRadio: value
-       });
+        this.setState({
+            submitRenewalCommissionRadio: value
+        });
     };
     handleRadioCount = (value) => {
         this.setState({
@@ -161,17 +161,17 @@ class RadioCard extends React.Component {
                         {Intl.get("sales.rewrite.contract.radio", "续约提成比例")}:
                         <InputNumber min={0} max={100} defaultValue={this.state.renewalCommissionRatio} onChange={this.handleChangeRenewalCommissionRadio}/>%
                         {this.state.loading ? <Icon type="loading"/>: <span>
-                             <i title={Intl.get("common.update", "修改")} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="保存修改新签和续约提成比例"></i>
-                        <i title={Intl.get("common.cancel", "取消")} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="取消修改新签和续约提成比例"></i>
+                            <i title={Intl.get("common.update", "修改")} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="保存修改新签和续约提成比例"></i>
+                            <i title={Intl.get("common.cancel", "取消")} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="取消修改新签和续约提成比例"></i>
                         </span>}
                     </div>
                 </div>: <div>
                     {Intl.get("contract.141", "提成比例")}:
                     <InputNumber min={0} max={100} defaultValue={this.state.commissionRadio} onChange={this.handleRadioCount}/>%
                     {this.state.loading ? <Icon type="loading"/>: <span>
-                             <i title={Intl.get("common.update", "修改")} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="保存修改提成比例"></i>
+                        <i title={Intl.get("common.update", "修改")} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="保存修改提成比例"></i>
                         <i title={Intl.get("common.cancel", "取消")} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="取消修改提成比例"></i>
-                        </span>}
+                    </span>}
                 </div>}
                 {errorBlock}
             </div>

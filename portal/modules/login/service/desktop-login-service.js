@@ -45,7 +45,7 @@ exports.urls = urls;
 /**
  * 调用后端接口进行登录
  */
-exports.login = function (req, res, username, password, captchaCode) {
+exports.login = function(req, res, username, password, captchaCode) {
     var formData = getLoginFormData(username, password, captchaCode);
     return restUtil.baseRest.post(
         {
@@ -65,7 +65,7 @@ exports.login = function (req, res, username, password, captchaCode) {
 /*
  根据ticket登录
  */
-exports.loginWithTicket = function (req, res, ticket) {
+exports.loginWithTicket = function(req, res, ticket) {
     return restUtil.appAuthRest.post({
         url: urls.loginWithTicket,
         req: req,
@@ -132,7 +132,7 @@ function getLoginResult(data) {
                 //privileges
                 var permissions = userClient.permission_infos || [];
                 if (permissions && permissions.length > 0) {
-                    loginResult.privileges = permissions.map(function (permission) {
+                    loginResult.privileges = permissions.map(function(permission) {
                         return permission.permission_define;
                     });
                 }
@@ -152,7 +152,7 @@ function getLoginResult(data) {
  * @param user_name
  * @param type  区分是登录验证码还是找回密码验证码
  */
-exports.getLoginCaptcha = function (req, res, user_name, type) {
+exports.getLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.getLoginCaptcha;
     var headers = {
         session_id: req.sessionID
@@ -179,7 +179,7 @@ exports.getLoginCaptcha = function (req, res, user_name, type) {
  * 刷新验证码
  *
  */
-exports.refreshLoginCaptcha = function (req, res, user_name, type) {
+exports.refreshLoginCaptcha = function(req, res, user_name, type) {
     var url = urls.refreshLoginCaptcha;
     var headers = {
         session_id: req.sessionID
@@ -225,7 +225,7 @@ function getLoginFormData(username, password, captchaCode) {
  * 检测联系方式是否存在
  *
  */
-exports.checkContactInfoExists = function (req, res) {
+exports.checkContactInfoExists = function(req, res) {
     const contactType = req.query.contactType;
     const contactInfo = req.query.contactInfo;
     const url = urls.checkContactInfoExists + contactType + "/" + contactInfo;
@@ -245,7 +245,7 @@ exports.checkContactInfoExists = function (req, res) {
  * 获取操作码
  *
  */
-exports.getOperateCode = function (req, res, user_name, captcha) {
+exports.getOperateCode = function(req, res, user_name, captcha) {
     const url = urls.getOperateCode;
 
     return restUtil.appAuthRest.post(
@@ -269,7 +269,7 @@ exports.getOperateCode = function (req, res, user_name, captcha) {
  * 发送验证信息
  *
  */
-exports.sendResetPasswordMsg = function (req, res, user_name, send_type, operate_code) {
+exports.sendResetPasswordMsg = function(req, res, user_name, send_type, operate_code) {
     const url = urls.sendResetPasswordMsg;
 
     return restUtil.appAuthRest.post(
@@ -293,7 +293,7 @@ exports.sendResetPasswordMsg = function (req, res, user_name, send_type, operate
  * 获取凭证
  *
  */
-exports.getTicket = function (req, res, user_id, code) {
+exports.getTicket = function(req, res, user_id, code) {
     const url = urls.getTicket;
 
     return restUtil.appAuthRest.post(
@@ -316,7 +316,7 @@ exports.getTicket = function (req, res, user_id, code) {
  * 重置密码
  *
  */
-exports.resetPassword = function (req, res, user_id, ticket, new_password) {
+exports.resetPassword = function(req, res, user_id, ticket, new_password) {
     const url = urls.resetPassword;
 
     return restUtil.appAuthRest.post(
@@ -340,7 +340,7 @@ exports.resetPassword = function (req, res, user_id, ticket, new_password) {
  * 获取扫码登录的二维码
  *
  */
-exports.getLoginQRCode = function (req, res) {
+exports.getLoginQRCode = function(req, res) {
     return restUtil.appAuthRest.post(
         {
             url: urls.getLoginQRCode,
@@ -353,7 +353,7 @@ exports.getLoginQRCode = function (req, res) {
  * 扫码登录
  *
  */
-exports.loginByQRCode = function (req, res, qrcode) {
+exports.loginByQRCode = function(req, res, qrcode) {
     return restUtil.appAuthRest.post(
         {
             url: urls.loginByQRCode,
@@ -364,7 +364,7 @@ exports.loginByQRCode = function (req, res, qrcode) {
                 screen_code: qrcode
             }
         }, null, {
-            success: function (emitter, data) {
+            success: function(emitter, data) {
                 //如果未返回数据
                 if (!data) {
                     let backendIntl = new BackendIntl(req);
@@ -373,7 +373,7 @@ exports.loginByQRCode = function (req, res, qrcode) {
                     emitter.emit("success", getLoginResult(data));
                 }
             },
-            timeout: function (emitter, data) {
+            timeout: function(emitter, data) {
                 emitter.emit("error", data);
             }
         });

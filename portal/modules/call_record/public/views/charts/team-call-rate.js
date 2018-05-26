@@ -11,7 +11,7 @@ import { packageTry } from 'LIB_DIR/func';
 var RateBarChart = React.createClass({
     echartInstance: null,
 
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             dataList: [],
             height: 410,
@@ -20,10 +20,10 @@ var RateBarChart = React.createClass({
             xAxisRotate: 0//x轴坐标label倾斜的角度（避免重叠时设置）
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         if (this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -31,7 +31,7 @@ var RateBarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    componentDidUpdate: function (prevProps) {
+    componentDidUpdate: function(prevProps) {
         if (
             this.props.dataList &&
             prevProps.dataList &&
@@ -42,11 +42,11 @@ var RateBarChart = React.createClass({
         this.renderChart();
     },
 
-    getTooltip: function () {
+    getTooltip: function() {
         return {
             show: true,
             extraCssText: echartsTooltipCssText,
-            formatter: function (obj) {
+            formatter: function(obj) {
                 let name = obj.name;
                 return `<div>
                            <span>${(obj.data[0])}</span>  
@@ -59,7 +59,7 @@ var RateBarChart = React.createClass({
         };
     },
 
-    renderChart: function () {
+    renderChart: function() {
         if (this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.clear();
@@ -70,7 +70,7 @@ var RateBarChart = React.createClass({
         this.echartInstance.setOption(options, true);
     },
 
-    getEchartOptions: function () {
+    getEchartOptions: function() {
         return {
             animation: false,
             tooltip: this.getTooltip(),
@@ -144,7 +144,7 @@ var RateBarChart = React.createClass({
             ]
         };
     },
-    render: function () {
+    render: function() {
         return (
             <div className="echart_wrap" ref="chart" style={{ width: '100%', height: this.props.height }}></div>
         );

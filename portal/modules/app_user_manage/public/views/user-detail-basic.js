@@ -28,49 +28,49 @@ var AppUserAjax = require("../ajax/app-user-ajax");
 const FORMAT = oplateConsts.DATE_FORMAT;
 
 var UserDetailBasic = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             userId: '1'
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return this.getStateData();
     },
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(this.getStateData());
     },
-    getStateData: function () {
+    getStateData: function() {
         return AppUserDetailStore.getState();
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
         AppUserDetailAction.getUserDetail(this.props.userId);
     },
-    componentDidUpdate: function (prevProps, prevState) {
+    componentDidUpdate: function(prevProps, prevState) {
         var newUserId = this.props.userId;
         if (prevProps.userId != newUserId && newUserId) {
-            setTimeout(function () {
+            setTimeout(function() {
                 AppUserDetailAction.dismiss();
                 AppUserDetailAction.getUserDetail(newUserId);
             }, 0);
         }
     },
-    retryGetDetail: function () {
+    retryGetDetail: function() {
         var userId = this.props.userId;
         if (!userId) return;
-        setTimeout(function () {
+        setTimeout(function() {
             AppUserDetailAction.dismiss();
             AppUserDetailAction.getUserDetail(userId);
         }, 0);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AppUserDetailStore.unlisten(this.onStateChange);
         setTimeout(() => {
             AppUserDetailAction.dismiss();
         });
     },
-    checkPhone: function (rule, value, callback) {
+    checkPhone: function(rule, value, callback) {
         if ((/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) ||
             (/^\d{3,4}\-\d{7,8}$/.test(value)) ||
             (/^400\-?\d{3}\-?\d{4}$/.test(value))) {
@@ -79,13 +79,13 @@ var UserDetailBasic = React.createClass({
             callback(new Error(Intl.get("common.input.correct.phone", "请输入正确的电话号码")));
         }
     },
-    showDisableAllAppsModal: function () {
+    showDisableAllAppsModal: function() {
         AppUserDetailAction.showDisableAllAppsModal();
     },
-    cancelAllAppsModal: function () {
+    cancelAllAppsModal: function() {
         AppUserDetailAction.cancelAllAppsModal();
     },
-    submitDisableAllApps: function () {
+    submitDisableAllApps: function() {
         AppUserDetailAction.cancelAllAppsModal();
         AppUserDetailAction.submitDisableAllApps({
             user_id: this.props.userId,
@@ -96,7 +96,7 @@ var UserDetailBasic = React.createClass({
             });
         });
     },
-    getDisableAllAppsBlock: function () {
+    getDisableAllAppsBlock: function() {
         if (this.state.modalStatus.disable_all.loading) {
             return (
                 <Icon type="loading"/>
@@ -117,8 +117,8 @@ var UserDetailBasic = React.createClass({
         if (this.state.modalStatus.disable_all.errorMsg) {
             var retry = (
                 <span>{this.state.modalStatus.disable_all.errorMsg}，<a href="javascript:void(0)"
-                                                                       onClick={this.showDisableAllAppsModal}><ReactIntl.FormattedMessage
-                    id="common.retry" defaultMessage="重试"/></a></span>
+                    onClick={this.showDisableAllAppsModal}><ReactIntl.FormattedMessage
+                        id="common.retry" defaultMessage="重试"/></a></span>
             );
             return (
                 <Alert
@@ -142,28 +142,28 @@ var UserDetailBasic = React.createClass({
         );
     },
     //显示app的面板
-    showAddAppPanel: function () {
+    showAddAppPanel: function() {
         AppUserPanelSwitchActions.switchToAddAppPanel();
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
     },
-    editSingleApp: function (app) {
+    editSingleApp: function(app) {
         AppUserPanelSwitchActions.switchToEditAppPanel(app);
         //向左滑动面板
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT);
     },
     //获取用户类型文本
-    getUserTypeText: function (app) {
+    getUserTypeText: function(app) {
         var user_type_value = app.user_type;
         var user_type_text = AppUserUtil.getUserTypeText(user_type_value);
         return user_type_text;
     },
     //修改单个字段成功
-    onFieldChangeSuccess: function (result) {
+    onFieldChangeSuccess: function(result) {
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_FIELD, result);
         AppUserDetailAction.changeAppFieldSuccess(result);
     },
-    renderMultiLogin: function (app) {
+    renderMultiLogin: function(app) {
         var multilogin = /^[10]$/.test((app.multilogin + '')) ? app.multilogin + '' : '';
         if (!hasPrivilege("APP_USER_EDIT")) {
             return multilogin ? (multilogin === '1' ? Intl.get("common.app.status.open", "开启") : Intl.get("common.app.status.close", "关闭")) : multilogin;
@@ -185,7 +185,7 @@ var UserDetailBasic = React.createClass({
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     },
-    renderIsTwoFactor: function (app) {
+    renderIsTwoFactor: function(app) {
         var is_two_factor = /^[10]$/.test((app.is_two_factor + '')) ? app.is_two_factor + '' : '';
         if (!hasPrivilege("APP_USER_EDIT")) {
             return is_two_factor ? (is_two_factor === '1' ? Intl.get("common.app.status.open", "开启") : Intl.get("common.app.status.close", "关闭")) : is_two_factor;
@@ -207,7 +207,7 @@ var UserDetailBasic = React.createClass({
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     },
-    renderOverDraft: function (app) {
+    renderOverDraft: function(app) {
         var over_draft = /^[210]$/.test((app.over_draft + '')) ? app.over_draft + '' : '1';
         if (over_draft == '0') {
             return Intl.get("user.status.immutability", "不变");
@@ -218,7 +218,7 @@ var UserDetailBasic = React.createClass({
         }
 
     },
-    renderStatus: function (app) {
+    renderStatus: function(app) {
         var is_disabled = app.is_disabled;
         if (typeof is_disabled === 'boolean') {
             is_disabled = is_disabled.toString();
@@ -243,7 +243,7 @@ var UserDetailBasic = React.createClass({
             onSubmitSuccess={this.onFieldChangeSuccess}
         />;
     },
-    renderAppInfo: function (app) {
+    renderAppInfo: function(app) {
         var start_time = moment(new Date(+app.start_time)).format(FORMAT);
         var end_time = moment(new Date(+app.end_time)).format(FORMAT);
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
@@ -273,29 +273,29 @@ var UserDetailBasic = React.createClass({
             <div className="rows-3">
                 <div className="app-prop-list">
                     <span><ReactIntl.FormattedMessage id="user.time.start"
-                                                      defaultMessage="开通时间"/>：{displayEstablishTime}</span>
+                        defaultMessage="开通时间"/>：{displayEstablishTime}</span>
                     <span><ReactIntl.FormattedMessage id="user.start.time"
-                                                      defaultMessage="启用时间"/>：{displayStartTime}</span>
+                        defaultMessage="启用时间"/>：{displayStartTime}</span>
                     <span><ReactIntl.FormattedMessage id="user.time.end" defaultMessage="到期时间"/>：{displayEndTime}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.user.type"
-                                                                               defaultMessage="用户类型"/>：{this.getUserTypeText(app)}</span>}
+                        defaultMessage="用户类型"/>：{this.getUserTypeText(app)}</span>}
                     <span><ReactIntl.FormattedMessage id="user.expire.status"
-                                                      defaultMessage="到期状态"/>：{this.renderOverDraft(app)}</span>
+                        defaultMessage="到期状态"/>：{this.renderOverDraft(app)}</span>
                     <span><ReactIntl.FormattedMessage id="common.app.status"
-                                                      defaultMessage="开通状态"/>：{this.renderStatus(app)}</span>
+                        defaultMessage="开通状态"/>：{this.renderStatus(app)}</span>
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.two.step.certification"
-                                                                               defaultMessage="二步认证"/>：{this.renderIsTwoFactor(app)}</span>}
+                        defaultMessage="二步认证"/>：{this.renderIsTwoFactor(app)}</span>}
 
                     {!Oplate.hideSomeItem && <span><ReactIntl.FormattedMessage id="user.multi.login"
-                                                                               defaultMessage="多人登录"/>：{this.renderMultiLogin(app)}</span> }
+                        defaultMessage="多人登录"/>：{this.renderMultiLogin(app)}</span> }
                 </div>
             </div>
         );
     },
     //获取应用列表段
-    getAppsBlock: function () {
+    getAppsBlock: function() {
         var _this = this;
-        var maxWidthApp = _.max(this.state.initialUser.apps, function (app) {
+        var maxWidthApp = _.max(this.state.initialUser.apps, function(app) {
             return measureText.measureTextWidth(app.app_name, 12);
         });
         var maxWidth = 0;
@@ -326,7 +326,7 @@ var UserDetailBasic = React.createClass({
         let selectApp = this.props.selectApp;
         return (
             <ul className="app_list">
-                {this.state.initialUser.apps.map(function (app) {
+                {this.state.initialUser.apps.map(function(app) {
                     return (
                         <li className="clearfix list-unstyled" key={app.app_id}>
                             <div className={className} title={app.app_name}>
@@ -359,8 +359,8 @@ var UserDetailBasic = React.createClass({
                                 className="operate"
                             >
                                 <a href="javascript:void(0)"
-                                   onClick={_this.editSingleApp.bind(_this, app)}
-                                   title={Intl.get("user.app.change", "变更应用")}>
+                                    onClick={_this.editSingleApp.bind(_this, app)}
+                                    title={Intl.get("user.app.change", "变更应用")}>
                                     <span className="iconfont icon-guanli"></span>
                                 </a>
                             </PrivilegeChecker>
@@ -370,7 +370,7 @@ var UserDetailBasic = React.createClass({
             </ul>
         );
     },
-    renderAddAppBtn: function () {
+    renderAddAppBtn: function() {
         //所有应用列表
         var allApps = AppUserStore.getState().appList || [];
         //已经添加的应用
@@ -394,7 +394,7 @@ var UserDetailBasic = React.createClass({
             ) : null
         );
     },
-    userBelongChange: function ({tag, customer_id, customer_name, sales_id, sales_name, sales_team_id, sales_team_name}) {
+    userBelongChange: function({tag, customer_id, customer_name, sales_id, sales_name, sales_team_id, sales_team_name}) {
         //更改用户所属
         AppUserDetailAction.changeUserBelong({
             tag,
@@ -417,37 +417,37 @@ var UserDetailBasic = React.createClass({
         });
     },
     //修改单个字段成功
-    changeUserFieldSuccess: function (userObj) {
+    changeUserFieldSuccess: function(userObj) {
         AppUserDetailAction.changeUserFieldSuccess(userObj);
         //更新用户基本信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_USER_INFO, userObj);
     },
     //修改组织成功
-    organizationChangeSuccess: function ({organization_id, organization_name}) {
+    organizationChangeSuccess: function({organization_id, organization_name}) {
         AppUserDetailAction.changeUserOrganization({
             group_id: organization_id,
             group_name: organization_name
         });
     },
-    userCustomerChangeSuccess: function (customerObj) {
+    userCustomerChangeSuccess: function(customerObj) {
         AppUserDetailAction.changeCustomer(customerObj);
         //更新用户客户信息
         AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_CUSTOMER_INFO, customerObj);
     },
-    onPasswordDisplayTypeChange: function (type) {
+    onPasswordDisplayTypeChange: function(type) {
         if (type === "edit") {
             this.setState({isConfirmPasswordShow: true});
         } else {
             this.setState({isConfirmPasswordShow: false});
         }
     },
-    onPasswordValueChange: function () {
+    onPasswordValueChange: function() {
         const confirmPassword = this.refs.confirmPassword;
         if (confirmPassword && confirmPassword.state.formData.input) {
             confirmPassword.refs.validation.forceValidate();
         }
     },
-    onConfirmPasswordDisplayTypeChange: function () {
+    onConfirmPasswordDisplayTypeChange: function() {
         this.setState({isConfirmPasswordShow: false});
         this.refs.password.setState({displayType: "text"});
     },
@@ -477,24 +477,24 @@ var UserDetailBasic = React.createClass({
         }
     },
 
-    renderUserStatus: function (user) {
+    renderUserStatus: function(user) {
         let userStatus = user.status;
         if (!hasPrivilege("APP_USER_EDIT")) {
             return userStatus === '1' ? Intl.get("common.enabled", "启用") : Intl.get("common.stop", "停用");
         }
         return (<UserStatusSwitch userId={user.user_id} status={userStatus === '1' ? true : false}/>);
     },
-    render: function () {
+    render: function() {
         var LoadingBlock = this.state.isLoading ? (
             <Spinner />
         ) : null;
         var _this = this;
-        var ErrorBlock = (function () {
+        var ErrorBlock = (function() {
             if (_this.state.getDetailErrorMsg) {
                 var retry = (
                     <span>{_this.state.getDetailErrorMsg}，<a href="javascript:void(0)"
-                                                             onClick={_this.retryGetDetail}><ReactIntl.FormattedMessage
-                        id="common.retry" defaultMessage="重试"/></a></span>
+                        onClick={_this.retryGetDetail}><ReactIntl.FormattedMessage
+                            id="common.retry" defaultMessage="重试"/></a></span>
                 );
                 return (
                     <div className="get_detail_error_tip">
@@ -710,11 +710,11 @@ var UserDetailBasic = React.createClass({
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>
                         <BootstrapButton className="btn-ok"
-                                         onClick={this.submitDisableAllApps}><ReactIntl.FormattedMessage
-                            id="common.sure" defaultMessage="确定"/></BootstrapButton>
+                            onClick={this.submitDisableAllApps}><ReactIntl.FormattedMessage
+                                id="common.sure" defaultMessage="确定"/></BootstrapButton>
                         <BootstrapButton className="btn-cancel"
-                                         onClick={this.cancelAllAppsModal}><ReactIntl.FormattedMessage
-                            id="common.cancel" defaultMessage="取消"/></BootstrapButton>
+                            onClick={this.cancelAllAppsModal}><ReactIntl.FormattedMessage
+                                id="common.cancel" defaultMessage="取消"/></BootstrapButton>
                     </BootstrapModal.Footer>
                 </BootstrapModal>
             </div>

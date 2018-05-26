@@ -15,7 +15,7 @@ function ScheduleAction() {
     );
 
     //获取日程管理列表
-    this.getScheduleList = function (queryObj) {
+    this.getScheduleList = function(queryObj) {
         this.dispatch({loading:true,error:false});
         scheduleAjax.getScheduleList(queryObj).then((resData) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -25,7 +25,7 @@ function ScheduleAction() {
         });
     };
     //添加日程管理
-    this.addSchedule = function (reqData, cb) {
+    this.addSchedule = function(reqData, cb) {
         scheduleAjax.addSchedule(reqData).then((resData) => {
             cb(resData);
         },(errMsg)=>{
@@ -33,13 +33,13 @@ function ScheduleAction() {
         });
     };
     //编辑日程管理
-    this.editSchedule = function (reqData, cb) {
-        scheduleAjax.editSchedule(reqData).then(function (resData) {
+    this.editSchedule = function(reqData, cb) {
+        scheduleAjax.editSchedule(reqData).then(function(resData) {
             cb(resData);
         });
     };
     //删除日程管理
-    this.deleteSchedule = function (reqData, cb) {
+    this.deleteSchedule = function(reqData, cb) {
         scheduleAjax.deleteSchedule(reqData).then((resData)=> {
             cb(resData);
         },(errMsg)=>{
@@ -47,8 +47,8 @@ function ScheduleAction() {
         });
     };
     //修改某条日程管理的状态
-    this.handleScheduleStatus = function (reqData, cb) {
-        scheduleAjax.handleScheduleStatus(reqData).then(function (resData) {
+    this.handleScheduleStatus = function(reqData, cb) {
+        scheduleAjax.handleScheduleStatus(reqData).then(function(resData) {
             cb(resData);
         },(errMsg)=>{
             cb(errMsg);

@@ -111,12 +111,12 @@ const UserDetailAddApp = React.createClass({
         if(appsListError) {
             return (
                 <Alert type="error" showIcon message={<span>
-                <ReactIntl.FormattedMessage
-                                     id="user.app.list.error.tip"
-                                     defaultMessage={`应用列表获取失败，{retry}`}
-                                     values={{
-                                     'retry':<a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
-                                     />
+                    <ReactIntl.FormattedMessage
+                        id="user.app.list.error.tip"
+                        defaultMessage={`应用列表获取失败，{retry}`}
+                        values={{
+                            'retry':<a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
+                    />
                 </span>}/>
             );
         }

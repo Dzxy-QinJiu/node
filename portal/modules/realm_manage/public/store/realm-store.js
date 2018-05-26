@@ -54,8 +54,8 @@ function RealmStore() {
     this.bindActions(RealmActions);
 }
 //推送任务完成后更改相应的属性
-RealmStore.prototype.createRealms = function (result) {
-     var detail = result[0];
+RealmStore.prototype.createRealms = function(result) {
+    var detail = result[0];
     // 找到当前正在创建的安全域
     var realm = _.find(this.curRealmList, realm=>realm.taskId && realm.taskId == detail.taskId);
     if (detail.failed == 0) {
@@ -70,16 +70,16 @@ RealmStore.prototype.createRealms = function (result) {
         realm.createMsg = "error";
     }
 };
- //在页面上删除创建失败的安全域
-RealmStore.prototype.removeFailRealm = function (realmtaskId) {
-        this.curRealmList= _.filter(this.curRealmList,function (item) {
-            return item.taskId!==realmtaskId;
-        });
+//在页面上删除创建失败的安全域
+RealmStore.prototype.removeFailRealm = function(realmtaskId) {
+    this.curRealmList= _.filter(this.curRealmList,function(item) {
+        return item.taskId!==realmtaskId;
+    });
 };
 
 //点击安全域查看详情时，先设置已有的详情信息
-RealmStore.prototype.setCurRealm = function (realmId) {
-    var curRealm = _.find(this.curRealmList, function (realm) {
+RealmStore.prototype.setCurRealm = function(realmId) {
+    var curRealm = _.find(this.curRealmList, function(realm) {
         if (realm.id == realmId) {
             return true;
         }
@@ -87,7 +87,7 @@ RealmStore.prototype.setCurRealm = function (realmId) {
     this.currentRealm = curRealm || emptyRealm;
 };
 
-RealmStore.prototype.getCurRealmById = function (realm) {
+RealmStore.prototype.getCurRealmById = function(realm) {
     this.currentRealm = realm;
     var curRealmList = this.curRealmList;
     for (var i = 0, len = curRealmList.length; i < len; i++) {
@@ -98,7 +98,7 @@ RealmStore.prototype.getCurRealmById = function (realm) {
     this.realmIsLoading = false;
 };
 //监听Action的getCurRealmList方法
-RealmStore.prototype.getCurRealmList = function (realmListObj) {
+RealmStore.prototype.getCurRealmList = function(realmListObj) {
     this.isLoading = false;
     if (_.isString(realmListObj)) {
         //错误提示的赋值
@@ -147,25 +147,25 @@ RealmStore.prototype.getCurRealmList = function (realmListObj) {
     }
 };
 
-RealmStore.prototype.closeAddPanel = function () {
+RealmStore.prototype.closeAddPanel = function() {
     this.realmFormShow = false;
     this.ownerFormShow = false;
     this.rightPanelShow = false;
 };
 
-RealmStore.prototype.showOwnerForm = function (realm) {
+RealmStore.prototype.showOwnerForm = function(realm) {
     if (realm) this.currentRealm = realm;
     else this.formType = "";
 
     this.ownerFormShow = true;
 };
 
-RealmStore.prototype.infoPanel2OwnerForm = function () {
+RealmStore.prototype.infoPanel2OwnerForm = function() {
     this.realmInfoShow = false;
     this.formType = "edit";
 };
 
-RealmStore.prototype.updateRealmStatus = function (modifiedRealm) {
+RealmStore.prototype.updateRealmStatus = function(modifiedRealm) {
     if (_.isObject(modifiedRealm)) {
         var curRealmList = this.curRealmList;
         for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
@@ -177,7 +177,7 @@ RealmStore.prototype.updateRealmStatus = function (modifiedRealm) {
     }
 };
 
-RealmStore.prototype.afterEditRealm = function (modifiedRealm) {
+RealmStore.prototype.afterEditRealm = function(modifiedRealm) {
     if (_.isObject(modifiedRealm)) {
         var curRealmList = this.curRealmList;
         for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
@@ -202,7 +202,7 @@ RealmStore.prototype.afterEditRealm = function (modifiedRealm) {
     }
 };
 
-RealmStore.prototype.showRealmForm = function (type) {
+RealmStore.prototype.showRealmForm = function(type) {
     //type：“edit”/"add"
     if (type === "add") {
         this.currentRealm = emptyRealm;
@@ -214,15 +214,15 @@ RealmStore.prototype.showRealmForm = function (type) {
     this.rightPanelShow = true;
 };
 
-RealmStore.prototype.showModalDialog = function () {
+RealmStore.prototype.showModalDialog = function() {
     this.modalDialogShow = true;
 };
 
-RealmStore.prototype.hideModalDialog = function () {
+RealmStore.prototype.hideModalDialog = function() {
     this.modalDialogShow = false;
 };
 
-RealmStore.prototype.handleUser = function (realmId, flag) {
+RealmStore.prototype.handleUser = function(realmId, flag) {
     var curRealmList = this.curRealmList;
     for (var j = 0, rLen = curRealmList.length; j < rLen; j++) {
         if (curRealmList[j].id == realmId) {
@@ -232,15 +232,15 @@ RealmStore.prototype.handleUser = function (realmId, flag) {
     }
 };
 
-RealmStore.prototype.updateCurPage = function (curPage) {
+RealmStore.prototype.updateCurPage = function(curPage) {
     this.curPage = curPage;
 };
 
-RealmStore.prototype.updatePageSize = function (pageSize) {
+RealmStore.prototype.updatePageSize = function(pageSize) {
     this.pageSize = pageSize;
 };
 
-RealmStore.prototype.showRealmInfo = function () {
+RealmStore.prototype.showRealmInfo = function() {
     //this.currentRealm = realm;
     this.realmInfoShow = true;
     this.realmFormShow = false;
@@ -249,22 +249,22 @@ RealmStore.prototype.showRealmInfo = function () {
     this.realmIsLoading = true;
 };
 
-RealmStore.prototype.updateSearchContent = function (searchContent) {
+RealmStore.prototype.updateSearchContent = function(searchContent) {
     this.searchContent = searchContent;
 
 };
 
-RealmStore.prototype.expandRealmLists = function (newRealm) {
+RealmStore.prototype.expandRealmLists = function(newRealm) {
     //在安全域列表的前面加上新增的安全域
     this.curRealmList.unshift(newRealm);
     this.rightPanelShow = false;
 
 };
-RealmStore.prototype.closeRightPanel = function () {
+RealmStore.prototype.closeRightPanel = function() {
     this.rightPanelShow = false;
 };
 
-RealmStore.prototype.returnInfoPanel = function () {
+RealmStore.prototype.returnInfoPanel = function() {
     this.realmInfoShow = true;
     this.realmFormShow = false;
     this.ownerFormShow = false;

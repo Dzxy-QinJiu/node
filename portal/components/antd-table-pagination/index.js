@@ -20,7 +20,7 @@ exports.zoomInSortArea = function(dom, setFilterCondition) {
     if($(dom).data("binded-thead-filter")) {
         return;
     }
-    $(dom).on("click", ".has-filter, .ant-table-column-sort", function (e) {
+    $(dom).on("click", ".has-filter, .ant-table-column-sort", function(e) {
         //点击筛选按钮时对筛选面板内容进行自定义修改
         if (e.target.className.indexOf("anticon-filter") > -1) {
             //等表头筛选面板渲染出来之后再对其进行修改
@@ -76,10 +76,10 @@ exports.zoomInSortArea = function(dom, setFilterCondition) {
 
         var filterUp = $(this).find(".ant-table-column-sorter-up")[0];
         var filterDown = $(this).find(".ant-table-column-sorter-down")[0];
-        $(filterDown).click(function (e) {
+        $(filterDown).click(function(e) {
             e.stopPropagation();
         });
-        $(filterUp).click(function (e) {
+        $(filterUp).click(function(e) {
             e.stopPropagation();
         });
         if ($(filterDown).hasClass("off")) {

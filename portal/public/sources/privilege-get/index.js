@@ -2,7 +2,7 @@ require("./index.less");
 
 var Spinner = require("../../../components/spinner");
 var PrivilegeGet = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isLoading: true,
             needLogout: false,
@@ -10,13 +10,13 @@ var PrivilegeGet = React.createClass({
             logoutTime: 3//获取用户信息出错3秒后重新登录
         };
     },
-    retry: function () {
+    retry: function() {
         if (this.state.needLogout) {
             return;
         }
         this.props.retry();
     },
-    render: function () {
+    render: function() {
         if (this.state.isLoading) {
             return (
                 <div className="PrivilegeGet">

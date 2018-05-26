@@ -5,7 +5,7 @@ import { storageUtil } from "ant-utils";
 
 //设置网站个性化配置
 var websiteConfig = {
-    setWebsiteConfig: function (data, onSuccess, onError) {        
+    setWebsiteConfig: function(data, onSuccess, onError) {        
         const route = _.find(routeList, route => route.handler === "setWebsiteConfig");
         const arg = {
             url: route.path,
@@ -16,13 +16,13 @@ var websiteConfig = {
             const preStorage = JSON.parse(storageUtil.local.get(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG));
             const curStorage = $.extend({}, preStorage, data);
             storageUtil.local.set(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG, JSON.stringify(curStorage));
-           _.isFunction(onSuccess) && onSuccess(result);
+            _.isFunction(onSuccess) && onSuccess(result);
         }, err => {
             _.isFunction(onError) &&  onError(err);
         });
     },
     //设置某个模块是否被点击过
-    setWebsiteConfigModuleRecord: function (data, onSuccess, onError) {
+    setWebsiteConfigModuleRecord: function(data, onSuccess, onError) {
         const route = _.find(routeList, route => route.handler === "setWebsiteConfigModuleRecord");
         const arg = {
             url: route.path,
@@ -40,7 +40,7 @@ var websiteConfig = {
         });
     },
     //获取网站个性化配置
-    getWebsiteConfig: function (callback) {
+    getWebsiteConfig: function(callback) {
         const route = _.find(routeList, route => route.handler === "getWebsiteConfig");
         const arg = {
             url: route.path,

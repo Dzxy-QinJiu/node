@@ -33,7 +33,7 @@ var initialItem = {
     valid_period: 1209600000
 };
 var UserTypeConfig = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             appId: "",
             appName: "",
@@ -41,7 +41,7 @@ var UserTypeConfig = React.createClass({
             userTypeConfigShow: true
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             //增加用户类型设置信息表单页面是否展示
             addUserTypeConfigInfoShow: false,
@@ -52,13 +52,13 @@ var UserTypeConfig = React.createClass({
         };
     },
     //list页面和form页面的切换
-    togglePageChange: function (newstate) {
+    togglePageChange: function(newstate) {
         this.setState({
             addUserTypeConfigInfoShow: newstate
         });
     },
     //点击编辑按钮 区分修改和增加两种情况
-    handleEdit: function (item) {
+    handleEdit: function(item) {
         var _this = this;
         if (item.id != '') {
             Trace.traceEvent($(this.getDOMNode()).find(".grantinfo-content-list"),"编辑用户类型配置");
@@ -77,7 +77,7 @@ var UserTypeConfig = React.createClass({
         }
     },
     //展示配置列表还是配置表单的逻辑
-    renderContent: function () {
+    renderContent: function() {
         if (this.state.addUserTypeConfigInfoShow) {
             return <div className="grantinfo-content-list" data-tracename="添加/编辑用户类型界面">
                 <UserTypeConfigForm
@@ -101,7 +101,7 @@ var UserTypeConfig = React.createClass({
             />
         </div>);
     },
-    render: function () {
+    render: function() {
         return (
             <div className="usertype-config-style right-panel-content" data-tracename="用户类型界面">
                 <div className="usertype-config-item-lists">

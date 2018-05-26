@@ -12,9 +12,9 @@
 var util = require("util");
 var request = util._extend({}, {"rest": require('request')});
 var logger = require("./../utils/logger").getLogger('session');
-var noop = function () {
+var noop = function() {
 };
-module.exports = function (session) {
+module.exports = function(session) {
 
     /**
      * Express's session Store.
@@ -57,7 +57,7 @@ module.exports = function (session) {
             var instance = request.get(url, {
                 headers: headers
             });
-            instance.on('error', function (err, response) {
+            instance.on('error', function(err, response) {
                 if (doNotRetry) {
                     logger.error("fetch session (id:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -65,7 +65,7 @@ module.exports = function (session) {
                     logger.warn("fetch session (id:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     getSessionData.call(self, url, sid, fn, headers, true);
                 }
-            }).on('fail', function (err, response) {
+            }).on('fail', function(err, response) {
                 if (doNotRetry) {
                     logger.error("fetch session (id:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -73,7 +73,7 @@ module.exports = function (session) {
                     logger.warn("fetch session (id:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     getSessionData.call(self, url, sid, fn, headers, true);
                 }
-            }).on('success', function (result, response) {
+            }).on('success', function(result, response) {
                 var elapseTime = Date.now() - startTime;
 
                 if (response.statusCode == 200) {
@@ -112,7 +112,7 @@ module.exports = function (session) {
          * @param {Function} fn
          * @api public
          */
-        HazelcastStore.prototype.get = function (sid, fn) {
+        HazelcastStore.prototype.get = function(sid, fn) {
             var self = this;
             var psid = self.prefix + sid;
             if (!fn) fn = noop;
@@ -132,7 +132,7 @@ module.exports = function (session) {
             var instance = request.post(url, {
                 body: storeObj,
                 headers: headers
-            }).on('error', function (err, response) {
+            }).on('error', function(err, response) {
                 if (doNotRetry) {
                     logger.error("update session (sid:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -140,7 +140,7 @@ module.exports = function (session) {
                     logger.warn("update session (sid:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     setSessionData.call(self, url, sid, storeObj, fn, headers, true);
                 }
-            }).on('fail', function (err, response) {
+            }).on('fail', function(err, response) {
                 if (doNotRetry) {
                     logger.error("update session (sid:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -148,7 +148,7 @@ module.exports = function (session) {
                     logger.warn("update session (sid:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     setSessionData.call(self, url, sid, storeObj, fn, headers, true);
                 }
-            }).on('success', function () {
+            }).on('success', function() {
                 var elapseTime = Date.now() - startTime;
                 logger.debug("update session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
                 return fn && fn();
@@ -163,7 +163,7 @@ module.exports = function (session) {
          * @param {Function} fn
          * @api public
          */
-        HazelcastStore.prototype.set = function (sid, sess, fn) {
+        HazelcastStore.prototype.set = function(sid, sess, fn) {
             var self = this;
             var psid = self.prefix + sid;
             if (!fn) fn = noop;
@@ -197,7 +197,7 @@ module.exports = function (session) {
             logger.debug("removing session (sid:" + sid + ") , headers:" + JSON.stringify(headers));
             var instance = request.del(url, {
                 headers: headers
-            }).on('error', function (err, response) {
+            }).on('error', function(err, response) {
                 if (doNotRetry) {
                     logger.error("remove session (sid:" + sid + ") has error (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -205,7 +205,7 @@ module.exports = function (session) {
                     logger.warn("remove session (sid:" + sid + ") has error (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     removeSeesionData.call(self, url, sid, fn, headers, true);
                 }
-            }).on('fail', function (err, response) {
+            }).on('fail', function(err, response) {
                 if (doNotRetry) {
                     logger.error("remove session (sid:" + sid + ") is failed (httpStatus:%s): ", (response && response.statusCode ? response.statusCode : "未知"), err);
                     return fn && fn(err);
@@ -213,7 +213,7 @@ module.exports = function (session) {
                     logger.warn("remove session (sid:" + sid + ") is failed (httpStatus:%s), and retry.", (response && response.statusCode ? response.statusCode : "未知"));
                     removeSeesionData.call(self, url, sid, fn, headers, true);
                 }
-            }).on('success', function () {
+            }).on('success', function() {
                 var elapseTime = Date.now() - startTime;
                 logger.debug("removed session (sid:%s) successfully! taking %s s", sid, elapseTime / 1000);
                 return fn && fn();
@@ -227,15 +227,15 @@ module.exports = function (session) {
          * @api public
          */
 
-        HazelcastStore.prototype.destroy = function (sid, fn) {
+        HazelcastStore.prototype.destroy = function(sid, fn) {
             var self = this;
             removeSeesionData.call(self, self.url + self.prefix + sid, sid, fn, self.headers);
         };
 
         var RequestOverride = {
-            baseRequest: function (url, options, method) {
+            baseRequest: function(url, options, method) {
                 var startTime = Date.now();
-                var instance = request.rest[method](url, options, function (error, response, body) {
+                var instance = request.rest[method](url, options, function(error, response, body) {
                     logger.debug("baseRequest taking %ss", ( Date.now() - startTime) / 1000);
                     if (!error && response) {
                         if (parseInt(response.statusCode) >= 400) {
@@ -247,16 +247,16 @@ module.exports = function (session) {
                 });
                 return instance;
             },
-            get: function (url, options) {
+            get: function(url, options) {
                 return RequestOverride.baseRequest(url, options, "get");
             },
-            post: function (url, options) {
+            post: function(url, options) {
                 return RequestOverride.baseRequest(url, options, "post");
             },
-            put: function (url, options) {
+            put: function(url, options) {
                 return RequestOverride.baseRequest(url, options, "put");
             },
-            del: function (url, options) {
+            del: function(url, options) {
                 return RequestOverride.baseRequest(url, options, "del");
             }
         };

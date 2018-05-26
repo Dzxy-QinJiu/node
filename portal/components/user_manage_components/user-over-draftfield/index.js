@@ -45,7 +45,7 @@ const UserOverDraftField = {
                 wrapperCol={{span: 24}}
             >
                 <RadioGroup onChange={onChange}
-                            value={currentValue}>
+                    value={currentValue}>
                     <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用" /></Radio>
                     <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade" defaultMessage="降级" /></Radio>
                     <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability" defaultMessage="不变" /></Radio>

@@ -27,7 +27,7 @@ var Organization = React.createClass({
             onChange : function(){},
             showBtn : false,
             organization_id : "",
-            onModifySuccess : function () {}
+            onModifySuccess : function() {}
         };
     },
     getInitialState : function() {

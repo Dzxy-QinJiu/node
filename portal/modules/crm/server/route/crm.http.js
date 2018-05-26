@@ -213,7 +213,7 @@ module.exports = {
                 needLogin: true
             }
         },
-        {  // 拨打电话
+        { // 拨打电话
             "method": "post",
             "path": "/rest/call/out",
             "handler": "callOut",
@@ -221,7 +221,7 @@ module.exports = {
                 "needLogin": true
             }
         },
-        {  // 获取电话座机号
+        { // 获取电话座机号
             "method": "get",
             "path": "/rest/call/phone/:member_id",
             "handler": "getUserPhoneNumber",

@@ -25,7 +25,7 @@ class AppOverViewActions {
         });
     }
     // 获取用户类型统计（用户总数）
-    getUserTypeStatistics (dataType,obj) {
+    getUserTypeStatistics(dataType,obj) {
         this.dispatch({loading:true,error:false,dataType:dataType});
         AppOverViewAjax.getUserTypeStatistics(dataType,obj).then( (data) => {
             this.dispatch({loading:false,error:false,data:data});
@@ -46,7 +46,7 @@ class AppOverViewActions {
 
     //获取用户活跃度统计
     // 类型(数据类型 (总数)  数据类型 (日活、周活、月活) )
-    getUserActiveNess (dataType,dateRange,obj) {
+    getUserActiveNess(dataType,dateRange,obj) {
         this.dispatch({loading:true, error:false, dataType: dataType, dateRange: dateRange});
         AppOverViewAjax.getUserActiveNess(dataType,dateRange,obj).then((data) => {
             this.dispatch({loading:false,error:false,data:data});

@@ -7,13 +7,13 @@ function CRMActions() {
         'afterHandleStatus': 'afterHandleStatus'
     });
 
-    this.getBasicData = function (curCustomer) {
+    this.getBasicData = function(curCustomer) {
         var basicData = curCustomer || {};
         setTimeout(() => {
             this.dispatch(basicData);
         });
     };
-    this.getCrmUserList = function (queryParams) {
+    this.getCrmUserList = function(queryParams) {
         this.dispatch({errorMsg: "", loading: true});
         crmAjax.getCrmUserList(queryParams).then((result) => {
             this.dispatch({loading: false, errorMsg: "", result: result});
@@ -21,7 +21,7 @@ function CRMActions() {
             this.dispatch({loading: false, errorMsg: errorMsg || Intl.get("failed.get.crm.list", "获取客户列表失败")});
         });
     };
-    this.getNotCompletedScheduleList = function (queryObj) {
+    this.getNotCompletedScheduleList = function(queryObj) {
         this.dispatch({loading: true, error: false});
         scheduleAjax.getScheduleList(queryObj).then((resData) => {
             this.dispatch({loading: false, error: false, data: resData});
@@ -30,8 +30,8 @@ function CRMActions() {
         });
     };
     //修改某条日程的状态
-    this.handleScheduleStatus = function (reqData, cb) {
-        scheduleAjax.handleScheduleStatus(reqData).then(function (resData) {
+    this.handleScheduleStatus = function(reqData, cb) {
+        scheduleAjax.handleScheduleStatus(reqData).then(function(resData) {
             cb(resData);
         }, (errMsg) => {
             cb(errMsg);

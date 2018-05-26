@@ -6,7 +6,7 @@ const AUTHS = {
 };
 //获取统计总数
 var summaryNumbersAjax;
-exports.getSummaryNumbers = function (reqData) {
+exports.getSummaryNumbers = function(reqData) {
     summaryNumbersAjax && summaryNumbersAjax.abort();
     reqData = reqData || {};
     var Deferred = $.Deferred();
@@ -16,10 +16,10 @@ exports.getSummaryNumbers = function (reqData) {
         type: 'get',
         timeout: 180 * 1000,
         data: reqData,
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -30,7 +30,7 @@ exports.getSummaryNumbers = function (reqData) {
 
 //获取具体统计数据
 var analysisDataAjax = {};
-exports.getAnalysisData = function (reqData) {
+exports.getAnalysisData = function(reqData) {
     analysisDataAjax[reqData.customerProperty] && analysisDataAjax[reqData.customerProperty].abort();
     reqData = reqData || {};
     var Deferred = $.Deferred();
@@ -39,10 +39,10 @@ exports.getAnalysisData = function (reqData) {
         dataType: 'json',
         type: 'get',
         data: reqData,
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -51,16 +51,16 @@ exports.getAnalysisData = function (reqData) {
     return Deferred.promise();
 };
 
-exports.getUserType = function () {
+exports.getUserType = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/group_position',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -68,13 +68,13 @@ exports.getUserType = function () {
 };
 
 //获取销售阶段列表
-exports.getSalesStageList = function () {
+exports.getSalesStageList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         }
     });
@@ -83,7 +83,7 @@ exports.getSalesStageList = function () {
 
 
 //查询迁出客户
-exports.getTransferCustomers = function (paramObj) {
+exports.getTransferCustomers = function(paramObj) {
     const handler = "getTransferCustomers";
     const route = routes.find(x => x.handler == handler);
     const { page_size, sort_field, order } = paramObj;
@@ -103,7 +103,7 @@ exports.getTransferCustomers = function (paramObj) {
 };
 
 //获取客户阶段变更数据
-exports.getStageChangeCustomers = function (paramObj) {
+exports.getStageChangeCustomers = function(paramObj) {
     const handler = "getStageChangeCustomers";
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
@@ -123,7 +123,7 @@ exports.getStageChangeCustomers = function (paramObj) {
 };
 
 //获取客户阶段变动的客户列表
-exports.getStageChangeCustomerList = function (paramObj) {
+exports.getStageChangeCustomerList = function(paramObj) {
     const handler = "getStageChangeCustomerList";
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
@@ -146,7 +146,7 @@ exports.getStageChangeCustomerList = function (paramObj) {
 };
 
 //获取客户阶段变动的客户列表
-exports.getIndustryCustomerOverlay = function (paramObj) {
+exports.getIndustryCustomerOverlay = function(paramObj) {
     const handler = "getIndustryCustomerOverlay";
     const route = routes.find(x => x.handler == handler);
     //普通销售权限
@@ -168,7 +168,7 @@ exports.getIndustryCustomerOverlay = function (paramObj) {
 };
 
 //获取销售新开客户数
-exports.getNewCustomerCount = function (paramObj) {
+exports.getNewCustomerCount = function(paramObj) {
     const handler = "getNewCustomerCount";
     const route = routes.find(x => x.handler == handler);
     //普通销售权限

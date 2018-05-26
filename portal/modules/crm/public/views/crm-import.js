@@ -23,7 +23,7 @@ var CrmImport = React.createClass({
             this.setState({isLoading: false});
         }
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var props = {
             name: 'customers',
@@ -33,7 +33,7 @@ var CrmImport = React.createClass({
         };
         return (
             <Upload {...props} className="import-crm">
-                {Intl.get("common.import", "导入")} {this.state.isLoading? <Icon type="loading" style={{marginLeft: 8}}/> : null}
+                {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 8}}/> : null}
             </Upload>
         );
     }

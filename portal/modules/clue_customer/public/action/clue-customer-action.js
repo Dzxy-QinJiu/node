@@ -28,7 +28,7 @@ function ClueCustomerActions() {
         'removeClueItem'//删除某条线索
     );
     //获取线索客户列表
-    this.getClueCustomerList = function (clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
+    this.getClueCustomerList = function(clueCustomerTypeFilter, rangParams, pageSize, sorter, lastCustomerId) {
         if (!lastCustomerId){
             this.dispatch({error: false, loading: true});
         }
@@ -44,31 +44,31 @@ function ClueCustomerActions() {
         });
     };
     //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function (phone, callback) {
-        clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function (data) {
+    this.checkOnlyContactPhone = function(phone, callback) {
+        clueCustomerAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
             if (callback) {
                 callback(data);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             if (callback) {
                 callback(errorMsg || Intl.get("crm.194", "联系人电话唯一性验证失败"));
             }
         });
     };
     //线索名称唯一性校验
-    this.checkOnlyClueName = function (clueName, callback, customerId) {
+    this.checkOnlyClueName = function(clueName, callback, customerId) {
         let queryObj= {name: clueName};
         if(customerId){
             queryObj.customer_id = customerId;
         }
-        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function (data) {
+        clueCustomerAjax.checkOnlyCustomer(queryObj).then(function(data) {
             _.isFunction(callback) && callback(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _.isFunction(callback) && callback(errorMsg || Intl.get("clue.customer.check.only.exist", "线索名称唯一性校验失败"));
         });
     };
     //获取销售列表
-    this.getSalesManList = function (cb) {
+    this.getSalesManList = function(cb) {
         //客户所属销售（团队）下拉列表的数据获取
         clueCustomerAjax.getSalesManList().then((list) => {
             this.dispatch(list);
@@ -79,7 +79,7 @@ function ClueCustomerActions() {
         });
     };
     //添加或更新跟进内容
-    this.addCluecustomerTrace = function (submitObj,callback) {
+    this.addCluecustomerTrace = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
         clueCustomerAjax.addCluecustomerTrace(submitObj).then((result)=>{
             this.dispatch({error: false, loading: false, submitTip: result});
@@ -89,7 +89,7 @@ function ClueCustomerActions() {
         });
     };
     //把线索客户分配给对应的销售
-    this.distributeCluecustomerToSale = function (submitObj,callback) {
+    this.distributeCluecustomerToSale = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
         clueCustomerAjax.distributeCluecustomerToSale(submitObj).then((result)=>{
             this.dispatch({error: false, loading: false});
@@ -100,7 +100,7 @@ function ClueCustomerActions() {
         });
     };
     //标记线索是否有效
-    this.updateCluecustomerDetail = function (submitObj,callback) {
+    this.updateCluecustomerDetail = function(submitObj,callback) {
         clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result)=>{
             _.isFunction(callback) && callback();
         },(errorMsg)=>{

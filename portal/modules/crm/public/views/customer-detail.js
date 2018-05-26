@@ -30,7 +30,7 @@ const TAB_KEYS = {
 
 };
 var CrmRightPanel = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
             apps: [],
@@ -41,14 +41,14 @@ var CrmRightPanel = React.createClass({
         };
     },
 
-    componentWillMount: function () {
+    componentWillMount: function() {
         if (!this.state.curCustomer) {
             if (this.props.currentId) {
                 this.getCurCustomer(this.props.currentId);
             }
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.setTabsContainerHeight();
         $(window).resize(e => {
             e.stopPropagation();
@@ -56,7 +56,7 @@ var CrmRightPanel = React.createClass({
         });
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
             this.state.curCustomer = nextProps.curCustomer;
             this.setState(this.state);
@@ -66,7 +66,7 @@ var CrmRightPanel = React.createClass({
         this.setTabsContainerHeight();
     },
 
-    setTabsContainerHeight: function () {
+    setTabsContainerHeight: function() {
         let tabsContainerHeight = $("body").height() - $(".basic-info-contianer").outerHeight(true);
         if ($(".phone-alert-modal-title").size()) {
             tabsContainerHeight -= $(".phone-alert-modal-title").outerHeight(true);
@@ -74,7 +74,7 @@ var CrmRightPanel = React.createClass({
         this.setState({tabsContainerHeight: tabsContainerHeight});
     },
 
-    getCurCustomer: function (id) {
+    getCurCustomer: function(id) {
         let condition = {id: id};
         crmAjax.queryCustomer(condition).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
@@ -90,7 +90,7 @@ var CrmRightPanel = React.createClass({
         });
     },
 
-    hideRightPanel: function (e) {
+    hideRightPanel: function(e) {
         Trace.traceEvent(e, "关闭客户详情");
         this.props.hideRightPanel();
         this.setState({
@@ -98,25 +98,25 @@ var CrmRightPanel = React.createClass({
         });
     },
     //切换tab时的处理
-    changeActiveKey: function (key) {
+    changeActiveKey: function(key) {
         Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "查看" + tabNameList[key]);
         this.setState({
             activeKey: key
         });
     },
-    render: function () {
+    render: function() {
         if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
             return (<div className="no-data-tip">{this.state.getCusomerResultdMsg}</div>);
         }
         return (
             <div className="customer-detail-content">
                 <BasicInfo isRepeat={this.props.isRepeat}
-                           curCustomer={this.state.curCustomer}
-                           refreshCustomerList={this.props.refreshCustomerList}
-                           editCustomerBasic={this.props.editCustomerBasic}
-                           handleFocusCustomer={this.props.handleFocusCustomer}
-                           setTabsContainerHeight={this.setTabsContainerHeight}
-                           showRightPanel={this.props.showRightPanel}
+                    curCustomer={this.state.curCustomer}
+                    refreshCustomerList={this.props.refreshCustomerList}
+                    editCustomerBasic={this.props.editCustomerBasic}
+                    handleFocusCustomer={this.props.handleFocusCustomer}
+                    setTabsContainerHeight={this.setTabsContainerHeight}
+                    showRightPanel={this.props.showRightPanel}
                 />
                 <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                     {this.state.curCustomer ? (

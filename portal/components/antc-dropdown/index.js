@@ -65,9 +65,9 @@ class AntcDropdown extends React.Component {
                             </span>) : null}
                         {this.props.isSaving ? <Icon type="loading"/> : null}
                         <span title={this.props.okTitle} className="inline-block iconfont icon-choose"
-                              onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮"/>
+                            onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮"/>
                         <span title={this.props.cancelTitle} className="inline-block iconfont icon-close"
-                              onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮"/>
+                            onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮"/>
                     </div>
                 </div>
                 <Menu.Divider />
@@ -79,8 +79,8 @@ class AntcDropdown extends React.Component {
 
         return (
             <Dropdown overlay={menu} visible={this.state.menuVisible}
-                      placement="bottomLeft" trigger={['click']}
-                      onVisibleChange={this.handleVisibleChange.bind(this)}
+                placement="bottomLeft" trigger={['click']}
+                onVisibleChange={this.handleVisibleChange.bind(this)}
 
             >
                 {this.props.content}
@@ -97,9 +97,9 @@ AntcDropdown.defaultProps = {
     cancelTitle: Intl.get("common.cancel", "取消"),//叉号对应的title提示(string)
     unSelectDataTip: "",//未选择数据保存时的提示信息
     isSaving: false,//是否正在保存数据（boolean）
-    handleSubmit: function () {
+    handleSubmit: function() {
     },//保存时的处理
-    clearSelectData: function () {
+    clearSelectData: function() {
     }//关面板后，清空选择数据的处理
 };
 export default AntcDropdown;

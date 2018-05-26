@@ -12,19 +12,19 @@ var message = require("antd").message;
 var DefaultUserLogoTitle = require("../default-user-logo-title");
 
 var HeadIcon = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             headIcon: this.props.headIcon
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.setState({
             headIcon: nextProps.headIcon
         });
     },
 
-    uploadImg: function (event) {
+    uploadImg: function(event) {
         var _this = this;
         var flag = false;
         var file = event.target.files ? event.target.files[0] : null;
@@ -42,7 +42,7 @@ var HeadIcon = React.createClass({
             } else {
                 var reader = new FileReader();
                 var _this = this;
-                reader.onload = function (evt) {
+                reader.onload = function(evt) {
                     var image = evt.target.result;
                     _this.props.onChange(image);
                 };
@@ -53,13 +53,13 @@ var HeadIcon = React.createClass({
         return flag;
     },
 
-    setDefaultImg: function () {
+    setDefaultImg: function() {
         this.setState({
             headIcon: ''
         });
     },
 
-    render: function () {
+    render: function() {
         var headIcon = this.state.headIcon;
         return (
             <div className="head-image-container">
@@ -67,8 +67,8 @@ var HeadIcon = React.createClass({
                     {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get("common.image.upload.size","请上传小于300kb的图片")}>
                         <div className="update-logo-desr"> {Intl.get("common.upload.img.change","更改")}</div>
                         <input className="upload-img-select" type="file" name="imgUpload" data-tracename="上传头像"
-                               onChange={this.uploadImg}
-                               accept="image/*"/>
+                            onChange={this.uploadImg}
+                            accept="image/*"/>
                         {
                             this.props.isUserHeadIcon ?
                                 (<DefaultUserLogoTitle
@@ -78,7 +78,7 @@ var HeadIcon = React.createClass({
                                 >
                                 </DefaultUserLogoTitle>) :
                                 (<img src={headIcon} style={{cursor: "pointer"}}
-                                      onError={this.setDefaultImg}/>)
+                                    onError={this.setDefaultImg}/>)
                         }
                     </div>) : (
                         this.props.isUserHeadIcon ?
@@ -89,7 +89,7 @@ var HeadIcon = React.createClass({
                             >
                             </DefaultUserLogoTitle>) :
                             (<img src={headIcon} style={{cursor: "pointer"}}
-                                  onError={this.setDefaultImg}/>))
+                                onError={this.setDefaultImg}/>))
                     }
                 </div>
                 {

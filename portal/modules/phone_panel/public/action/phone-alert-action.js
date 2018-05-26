@@ -17,7 +17,7 @@ function PhoneAlertAction() {
         'setInitialCustomerArr',
         'toggleCustomerDetail'
     );
-    this.getCustomerById = function (customerId) {
+    this.getCustomerById = function(customerId) {
         var rangParams = [{//时间范围参数
             from: "",
             to: "",
@@ -41,7 +41,7 @@ function PhoneAlertAction() {
         });
     };
     //更新客户跟踪记录
-    this.updateCustomerTrace = function (queryObj, callback) {
+    this.updateCustomerTrace = function(queryObj, callback) {
         this.dispatch({loading:true,error:false});
         customerRecordAjax.updateCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading:false,error:false,data:data});

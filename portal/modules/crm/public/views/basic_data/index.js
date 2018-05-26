@@ -42,45 +42,45 @@ function getBasicPanelH(isMerge) {
 }
 
 var BasicData = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore(this.props.isMerge);
     },
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore(this.props.isMerge);
         this.setState(datas);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.autoLayout();
         CRMStore.listen(this.onChange);
         CRMAction.getBasicData(this.props.curCustomer);
     },
-    autoLayout: function () {
+    autoLayout: function() {
         var _this = this;
-        $(window).resize(function () {
+        $(window).resize(function() {
             _this.setState({
                 basicPanelH: getBasicPanelH(_this.props.isMerge)
             });
         });
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         CRMAction.getBasicData(nextProps.curCustomer);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         CRMStore.unlisten(this.onChange);
     },
 
     //展示编辑基本资料页面
-    showEditForm: function () {
+    showEditForm: function() {
         this.setState({editShowFlag: true});
     },
 
     //返回基本资料展示页面
-    returnInfoPanel: function () {
+    returnInfoPanel: function() {
         this.setState({editShowFlag: false});
     },
 
     //提交修改
-    submitBaiscForm: function (newBasicData, changedData) {
+    submitBaiscForm: function(newBasicData, changedData) {
         if (this.props.isMerge) {
             //合并面板的修改保存
             this.props.updateMergeCustomer(newBasicData);
@@ -92,13 +92,13 @@ var BasicData = React.createClass({
         }
     },
     //展示按客户搜索到的用户列表
-    triggerUserList: function () {
+    triggerUserList: function() {
         //获取客户基本信息
         var basicData = this.state.basicData || {};
         this.props.ShowCustomerUserListPanel({customerObj: basicData || {}});
     },
     //修改客户基本资料成功后的处理
-    editBasicSuccess: function (newBasic) {
+    editBasicSuccess: function(newBasic) {
         if (this.props.isMerge) {
             //合并面板的修改保存
             this.props.updateMergeCustomer(newBasic);
@@ -116,30 +116,30 @@ var BasicData = React.createClass({
             }
         }
     },
-    getAdministrativeLevelOptions: function () {
+    getAdministrativeLevelOptions: function() {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
     },
-    onSelectAdministrativeLevel: function (administrative_level) {
+    onSelectAdministrativeLevel: function(administrative_level) {
         administrative_level = parseInt(administrative_level);
         if (!_.isNaN(administrative_level)) {
             this.state.basicData.administrative_level = parseInt(administrative_level);
             this.setState({basicData: this.state.basicData});
         }
     },
-    cancelAdministrativeLevel: function () {
+    cancelAdministrativeLevel: function() {
         this.state.basicData.administrative_level = CRMStore.getState().basicData.administrative_level;
         this.setState({basicData: this.state.basicData});
     },
-    getAdministrativeLevel: function (levelId) {
+    getAdministrativeLevel: function(levelId) {
         let levelObj = _.find(crmUtil.administrativeLevels, level => level.id == levelId);
         return levelObj ? levelObj.level : "";
     },
     //是否有转出客户的权限
-    enableTransferCustomer: function () {
+    enableTransferCustomer: function() {
         let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
@@ -152,7 +152,7 @@ var BasicData = React.createClass({
         return enable;
     },
 
-    render: function () {
+    render: function() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否显示用户统计内容
         var showUserStatistic = basicData.app_user_ids && (basicData.app_user_ids[0] ? true : false);
@@ -198,7 +198,7 @@ var BasicData = React.createClass({
                                             <dd>
                                                 {basicData.competing_products.map((products, index) => {
                                                     return (<Tag key={index}
-                                                                 className="customer-label competing-label">{products}</Tag>);
+                                                        className="customer-label competing-label">{products}</Tag>);
                                                 })}
                                             </dd>
                                         </dl>
@@ -330,7 +330,7 @@ var BasicData = React.createClass({
                                             check="GET_CUSTOMER_USERS"
                                         >
                                             <div className=" iconfont icon-turn-user-list"
-                                                 onClick={this.triggerUserList}></div>
+                                                onClick={this.triggerUserList}></div>
                                         </PrivilegeChecker>)}
                                 </div>
                                 : null}

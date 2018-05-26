@@ -45,7 +45,7 @@ var UserInfoLog = React.createClass({
             dataIndex: 'loginMessage',
             width:'20%'
         }];
-        var rowKey = function (record) {
+        var rowKey = function(record) {
             return record.id;
         };
         let localeObj = {emptyText: this.props.logErrorMsg || this.formatMessage(messages.common_no_data)};
@@ -64,7 +64,7 @@ var UserInfoLog = React.createClass({
         return (
             <div className="user-log-list-table-wrap scroll-load"
 
-                 style={{display : doNotShow ? "none" : "block"}}
+                style={{display : doNotShow ? "none" : "block"}}
             >
                 <div className="log-table" style={{ height: this.props.height }}>
                     <AntcTable

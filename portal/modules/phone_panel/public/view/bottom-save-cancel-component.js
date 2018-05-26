@@ -40,8 +40,8 @@ class BottomSaveCancel extends React.Component{
 
 }
 BottomSaveCancel.defaultProps = {
-    handleSubmit:function () {},
-    handleCancel:function () {},
+    handleSubmit:function() {},
+    handleCancel:function() {},
     isAddingAppFeedback:"",
 };
 export default BottomSaveCancel;

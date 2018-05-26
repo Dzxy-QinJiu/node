@@ -19,15 +19,15 @@ import { DATE_FORMAT, OPERATE } from "../consts";
 
 const DetailInvoice = React.createClass({
     mixins: [ValidateMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             formData: {},
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.clearState();
     },
-    showForm: function (index, invoice) {
+    showForm: function(index, invoice) {
         if (isNaN(index)) {
             index = "";
 
@@ -48,12 +48,12 @@ const DetailInvoice = React.createClass({
         this.state["isFormShow" + index] = true;
         this.setState(this.state);
     },
-    hideForm: function (index) {
+    hideForm: function(index) {
         if (isNaN(index)) index = "";
         this.state["isFormShow" + index] = false;
         this.setState(this.state);
     },
-    handleSubmit: function (type, index, target, id) {
+    handleSubmit: function(type, index, target, id) {
         let data, params, cb;
 
         if (type === "delete") {
@@ -78,7 +78,7 @@ const DetailInvoice = React.createClass({
             });
         }
     },
-    editInvoice: function (type, data, params, cb, target) {
+    editInvoice: function(type, data, params, cb, target) {
         this.props.showLoading();
 
         if (!target || _.isObject(target)) target = "";
@@ -106,7 +106,7 @@ const DetailInvoice = React.createClass({
             }
         });
     },
-    renderForm: function (invoice, index) {
+    renderForm: function(invoice, index) {
         index = isNaN(index)? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
@@ -117,48 +117,48 @@ const DetailInvoice = React.createClass({
             formData.date = moment().valueOf();
         }
 
-        const disabledDate = function (current) {
+        const disabledDate = function(current) {
             //不允许选择大于当前天的日期
             return current && current.valueOf() > Date.now();
         };
 
         return (
             <div className="render-form">
-            <Validation ref={ref} onValidate={this.handleValidate}>
-                <FormItem 
-                     validateStatus={this.getValidateStatus("date" + index)}
-                     help={this.getHelpMessage("date" + index)}
-                >
+                <Validation ref={ref} onValidate={this.handleValidate}>
+                    <FormItem 
+                        validateStatus={this.getValidateStatus("date" + index)}
+                        help={this.getHelpMessage("date" + index)}
+                    >
                         <DatePicker
                             name={"date" + index}
                             onChange={this.setField.bind(this, "date", index)}
                             value={formData.date? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
-                </FormItem>
+                    </FormItem>
                 &nbsp;
-                <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
+                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
                 &nbsp;
-                <FormItem 
-                     validateStatus={this.getValidateStatus("amount" + index)}
-                     help={this.getHelpMessage("amount" + index)}
-                >
-                    <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
-                    <Input
-                        name={"amount" + index}
-                        value={this.parseAmount(formData.amount)}
-                        onChange={this.setField.bind(this, "amount", index)}
-                    />
-                    </Validator>
-                </FormItem>
+                    <FormItem 
+                        validateStatus={this.getValidateStatus("amount" + index)}
+                        help={this.getHelpMessage("amount" + index)}
+                    >
+                        <Validator rules={[{required: true, message: Intl.get("contract.44", "不能为空")}, this.getNumberValidateRule()]}>
+                            <Input
+                                name={"amount" + index}
+                                value={this.parseAmount(formData.amount)}
+                                onChange={this.setField.bind(this, "amount", index)}
+                            />
+                        </Validator>
+                    </FormItem>
                 &nbsp;
-                <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
-            </Validation>
+                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
+                </Validation>
             </div>
         );
     },
-    render: function () {
+    render: function() {
         const invoiceDetail = this.props.contract.invoice_detail || {};
         let invoices = this.props.contract.invoices || [];
         invoices = _.sortBy(invoices, item => item.date).reverse();
@@ -176,202 +176,202 @@ const DetailInvoice = React.createClass({
         return (
             <div className="detail-invoice">
                 {isEditBtnShow? (
-                <RightPanelEdit 
-                     onClick={this.showForm}
-                />
+                    <RightPanelEdit 
+                        onClick={this.showForm}
+                    />
                 ) : null}
 
                 {this.state.isFormShow? (
-                <Form horizontal>
-                <Validation ref="validation" onValidate={this.handleValidate}>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.47", "公司全称")}
-                         validateStatus={this.getValidateStatus("payer_name")}
-                         help={this.getHelpMessage("payer_name")}
-                    >
-                        <Validator rules={[{required: true, message: Intl.get("contract.48", "请填写公司全称")}]}>
-                        <Input
-                            name="payer_name"
-                            value={this.state.formData.payer_name}
-                            onChange={this.setField.bind(this, "payer_name")}
-                        />
-                        </Validator>
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.49", "银行帐号")}
-                    >
-                        <Input
-                            value={this.state.formData.account_number}
-                            onChange={this.setField.bind(this, "account_number")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.50", "开户行")}
-                    >
-                        <Input
-                            value={this.state.formData.opening_bank}
-                            onChange={this.setField.bind(this, "opening_bank")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("realm.address", "地址")}
-                    >
-                        <Input
-                            value={this.state.formData.address}
-                            onChange={this.setField.bind(this, "address")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("common.phone", "电话")}
-                    >
-                        <Input
-                            value={this.state.formData.phone}
-                            onChange={this.setField.bind(this, "phone")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.51", "邮寄地址")}
-                    >
-                        <Input
-                            value={this.state.formData.email_address}
-                            onChange={this.setField.bind(this, "email_address")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.52", "营业执照号码")}
-                    >
-                        <Input
-                            value={this.state.formData.business_license_id}
-                            onChange={this.setField.bind(this, "business_license_id")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.53", "组织机构代码")}
-                    >
-                        <Input
-                            value={this.state.formData.organization_id}
-                            onChange={this.setField.bind(this, "organization_id")}
-                        />
-                    </FormItem>
-                    <FormItem 
-                         {...formItemLayout}
-                         label={Intl.get("contract.54", "纳税人识别号")}
-                    >
-                        <Input
-                            value={this.state.formData.taxpayer_id}
-                            onChange={this.setField.bind(this, "taxpayer_id")}
-                        />
-                    </FormItem>
-                    <div className="op-buttons">
-                        <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
-                        <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp, "", "")}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
-                    </div>
-                </Validation>
-                </Form>
-                ) : (
-                <div className="invoice-info">
-                    {invoiceDetail.payer_name? (
-                    <div className="info">
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.47" defaultMessage="公司全称" /></span>：<span className="filed-value">{invoiceDetail.payer_name}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.49" defaultMessage="银行帐号" /></span>：<span className="filed-value">{invoiceDetail.account_number}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.50" defaultMessage="开户行" /></span>：<span className="filed-value">{invoiceDetail.opening_bank}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="realm.address" defaultMessage="地址" /></span>：<span className="filed-value">{invoiceDetail.address}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话" /></span>：<span className="filed-value">{invoiceDetail.phone}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.51" defaultMessage="邮寄地址" /></span>：<span className="filed-value">{invoiceDetail.email_address}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.52" defaultMessage="营业执照号码" /></span>：<span className="filed-value">{invoiceDetail.business_license_id}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.53" defaultMessage="组织机构代码" /></span>：<span className="filed-value">{invoiceDetail.organization_id}</span><br/>
-                        <span className="field-name"><ReactIntl.FormattedMessage id="contract.54" defaultMessage="纳税人识别号" /></span>：<span className="filed-value">{invoiceDetail.taxpayer_id}</span>
-                    </div>
-                    ) : (
-                    <div className="info info-blank">
-                        <ReactIntl.FormattedMessage id="contract.add.invoice.info" defaultMessage="发票基本信息尚未添加，可点击后面的编辑按钮进行添加" />    
-                    
-                    </div>
-                    )}
-                    <div className="extra">
-                        {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
-                        <div className="add-invoice">
-                            {this.renderForm("", 0)}
-                            <Button
-                                className="btn-primary-sure btn-add-invoice"
-                                onClick={this.handleSubmit.bind(this, "add", 0, "Amount")}
+                    <Form horizontal>
+                        <Validation ref="validation" onValidate={this.handleValidate}>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.47", "公司全称")}
+                                validateStatus={this.getValidateStatus("payer_name")}
+                                help={this.getHelpMessage("payer_name")}
                             >
-                                <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
-                            </Button>
-                        </div>
-                        ) : null}
-                        <ul>
-                            {invoices.map((invoice, index) => {
-                                index = index + 1;
-                                const isFormShow = this.state["isFormShow" + index];
+                                <Validator rules={[{required: true, message: Intl.get("contract.48", "请填写公司全称")}]}>
+                                    <Input
+                                        name="payer_name"
+                                        value={this.state.formData.payer_name}
+                                        onChange={this.setField.bind(this, "payer_name")}
+                                    />
+                                </Validator>
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.49", "银行帐号")}
+                            >
+                                <Input
+                                    value={this.state.formData.account_number}
+                                    onChange={this.setField.bind(this, "account_number")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.50", "开户行")}
+                            >
+                                <Input
+                                    value={this.state.formData.opening_bank}
+                                    onChange={this.setField.bind(this, "opening_bank")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("realm.address", "地址")}
+                            >
+                                <Input
+                                    value={this.state.formData.address}
+                                    onChange={this.setField.bind(this, "address")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("common.phone", "电话")}
+                            >
+                                <Input
+                                    value={this.state.formData.phone}
+                                    onChange={this.setField.bind(this, "phone")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.51", "邮寄地址")}
+                            >
+                                <Input
+                                    value={this.state.formData.email_address}
+                                    onChange={this.setField.bind(this, "email_address")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.52", "营业执照号码")}
+                            >
+                                <Input
+                                    value={this.state.formData.business_license_id}
+                                    onChange={this.setField.bind(this, "business_license_id")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.53", "组织机构代码")}
+                            >
+                                <Input
+                                    value={this.state.formData.organization_id}
+                                    onChange={this.setField.bind(this, "organization_id")}
+                                />
+                            </FormItem>
+                            <FormItem 
+                                {...formItemLayout}
+                                label={Intl.get("contract.54", "纳税人识别号")}
+                            >
+                                <Input
+                                    value={this.state.formData.taxpayer_id}
+                                    onChange={this.setField.bind(this, "taxpayer_id")}
+                                />
+                            </FormItem>
+                            <div className="op-buttons">
+                                <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
+                                <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp, "", "")}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>
+                            </div>
+                        </Validation>
+                    </Form>
+                ) : (
+                    <div className="invoice-info">
+                        {invoiceDetail.payer_name? (
+                            <div className="info">
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.47" defaultMessage="公司全称" /></span>：<span className="filed-value">{invoiceDetail.payer_name}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.49" defaultMessage="银行帐号" /></span>：<span className="filed-value">{invoiceDetail.account_number}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.50" defaultMessage="开户行" /></span>：<span className="filed-value">{invoiceDetail.opening_bank}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="realm.address" defaultMessage="地址" /></span>：<span className="filed-value">{invoiceDetail.address}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="common.phone" defaultMessage="电话" /></span>：<span className="filed-value">{invoiceDetail.phone}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.51" defaultMessage="邮寄地址" /></span>：<span className="filed-value">{invoiceDetail.email_address}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.52" defaultMessage="营业执照号码" /></span>：<span className="filed-value">{invoiceDetail.business_license_id}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.53" defaultMessage="组织机构代码" /></span>：<span className="filed-value">{invoiceDetail.organization_id}</span><br/>
+                                <span className="field-name"><ReactIntl.FormattedMessage id="contract.54" defaultMessage="纳税人识别号" /></span>：<span className="filed-value">{invoiceDetail.taxpayer_id}</span>
+                            </div>
+                        ) : (
+                            <div className="info info-blank">
+                                <ReactIntl.FormattedMessage id="contract.add.invoice.info" defaultMessage="发票基本信息尚未添加，可点击后面的编辑按钮进行添加" />    
+                    
+                            </div>
+                        )}
+                        <div className="extra">
+                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
+                                <div className="add-invoice">
+                                    {this.renderForm("", 0)}
+                                    <Button
+                                        className="btn-primary-sure btn-add-invoice"
+                                        onClick={this.handleSubmit.bind(this, "add", 0, "Amount")}
+                                    >
+                                        <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加" />
+                                    </Button>
+                                </div>
+                            ) : null}
+                            <ul>
+                                {invoices.map((invoice, index) => {
+                                    index = index + 1;
+                                    const isFormShow = this.state["isFormShow" + index];
     
-                                return (
-                                    <li key={index}>
-                                        {isFormShow? (
-                                        <span>
-                                            {this.renderForm(invoice, index)}
-                                        </span>
-                                        ) : (
-                                        <span>
-                                            {invoice.date? moment(invoice.date).format(DATE_FORMAT) : ""}
-                                            &nbsp;
-                                            <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
-                                            &nbsp;
-                                            {invoice.amount}
-                                            &nbsp;
-            <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                                            <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
-                                        </span>
-                                        )}
-            
-                                        {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
-                                        <span>
-                                            {isFormShow ? (
-                                            <span>
-                                                <Button
-                                                    shape="circle"
-                                                    title={Intl.get("common.save", "保存")}
-                                                    className="btn-save"
-                                                    onClick={this.handleSubmit.bind(this, "update", index, "Amount")}
-                                                >
-                                                    <Icon type="save"/>
-                                                </Button>
-                                                <Button
-                                                    shape="circle"
-                                                    className="btn-cancel"
-                                                    title={Intl.get("common.cancel", "取消")}
-                                                    onClick={this.hideForm.bind(this, index)}
-                                                >
-                                                    <Icon type="cross"/>
-                                                </Button>
-                                            </span>
+                                    return (
+                                        <li key={index}>
+                                            {isFormShow? (
+                                                <span>
+                                                    {this.renderForm(invoice, index)}
+                                                </span>
                                             ) : (
-                                            <span>
-                                                <RightPanelEdit 
-                                                     onClick={this.showForm.bind(this, index, invoice)}
-                                                />
-                                                <RightPanelDelete 
-                                                     title={Intl.get("common.delete", "删除")}
-                                                     onClick={this.handleSubmit.bind(this, "delete", index, "Amount", invoice.id)}
-                                                />
-                                            </span>
+                                                <span>
+                                                    {invoice.date? moment(invoice.date).format(DATE_FORMAT) : ""}
+                                            &nbsp;
+                                                    <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
+                                            &nbsp;
+                                                    {invoice.amount}
+                                            &nbsp;
+                                                    <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
+                                                    <ReactIntl.FormattedMessage id="contract.46" defaultMessage="发票" />
+                                                </span>
                                             )}
-                                            </span>
-                                        ) : null}
-                                    </li>
-                                );
-                            })}
-                        </ul>
+            
+                                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
+                                                <span>
+                                                    {isFormShow ? (
+                                                        <span>
+                                                            <Button
+                                                                shape="circle"
+                                                                title={Intl.get("common.save", "保存")}
+                                                                className="btn-save"
+                                                                onClick={this.handleSubmit.bind(this, "update", index, "Amount")}
+                                                            >
+                                                                <Icon type="save"/>
+                                                            </Button>
+                                                            <Button
+                                                                shape="circle"
+                                                                className="btn-cancel"
+                                                                title={Intl.get("common.cancel", "取消")}
+                                                                onClick={this.hideForm.bind(this, index)}
+                                                            >
+                                                                <Icon type="cross"/>
+                                                            </Button>
+                                                        </span>
+                                                    ) : (
+                                                        <span>
+                                                            <RightPanelEdit 
+                                                                onClick={this.showForm.bind(this, index, invoice)}
+                                                            />
+                                                            <RightPanelDelete 
+                                                                title={Intl.get("common.delete", "删除")}
+                                                                onClick={this.handleSubmit.bind(this, "delete", index, "Amount", invoice.id)}
+                                                            />
+                                                        </span>
+                                                    )}
+                                                </span>
+                                            ) : null}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
                     </div>
-                </div>
                 )}
             </div>
         );

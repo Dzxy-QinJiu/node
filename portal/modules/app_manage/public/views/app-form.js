@@ -31,7 +31,7 @@ function noop() {
 
 var AppForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             submitAppForm: noop,
             app: {
@@ -44,7 +44,7 @@ var AppForm = React.createClass({
         };
     },
 
-    formatAppInfo: function (app) {
+    formatAppInfo: function(app) {
         let managers = [];
         if (_.isArray(app.managers) && app.managers.length) {
             managers = _.pluck(app.managers, "managerId");
@@ -62,7 +62,7 @@ var AppForm = React.createClass({
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         var appInfo = this.formatAppInfo(this.props.app);
         return {
             ...AppFormStore.getState(),
@@ -79,7 +79,7 @@ var AppForm = React.createClass({
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var appInfo = this.formatAppInfo(nextProps.app);
         this.refs.validation.reset();
         this.setState({
@@ -87,35 +87,35 @@ var AppForm = React.createClass({
             appTagList: nextProps.appTagList || []//应用的标签列表
         });
     },
-    onChange: function () {
+    onChange: function() {
         this.setState(AppFormStore.getState());
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AppFormStore.unlisten(this.onChange);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var _this = this;
         AppFormStore.listen(_this.onChange);
         _this.layout();
-        $(window).resize(function (e) {
+        $(window).resize(function(e) {
             e.stopPropagation();
             _this.layout();
         });
     },
 
-    layout: function () {
+    layout: function() {
         var bHeight = $("body").height();
         var formHeight = bHeight - $("form .head-image-container").outerHeight(true);
         $(".app-form-scroll").height(formHeight);
     },
 
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         if (this.state.formData.id) {
             this.refs.validation.validate(noop);
         }
     },
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -128,7 +128,7 @@ var AppForm = React.createClass({
         return classes;
     },
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         if (this.props.formType == "edit") {
             Trace.traceEvent(e, '返回应用详情界面');
@@ -139,12 +139,12 @@ var AppForm = React.createClass({
         }
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         Trace.traceEvent(e, '点击保存按钮');
         var validation = this.refs.validation;
         var _this = this;
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             } else {
@@ -169,7 +169,7 @@ var AppForm = React.createClass({
         });
     },
 
-    uploadImg: function (src) {
+    uploadImg: function(src) {
         Trace.traceEvent($(this.getDOMNode()).find(".head-image-container"),"上传头像");
         var formData = this.state.formData;
         formData.image = src;
@@ -177,23 +177,23 @@ var AppForm = React.createClass({
     },
 
     //关闭
-    closePanel: function (e) {
+    closePanel: function(e) {
         Trace.traceEvent(e, '点击关闭按钮');
         this.props.closeRightPanel();
     },
 
     //返回详细信息展示页
-    returnInfoPanel: function (e) {
+    returnInfoPanel: function(e) {
         Trace.traceEvent(e, '返回应用详情界面');
         this.props.returnInfoPanel();
     },
 
     //去掉保存后提示信息
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         AppFormAction.resetSaveResult(this.props.formType, this.state.saveResult);
     },
     //下拉列表的渲染
-    renderSelectOptions: function (isManager) {
+    renderSelectOptions: function(isManager) {
         var options = '';
         var userList = this.state.appOwnerList;
         if (isManager) {
@@ -201,12 +201,12 @@ var AppForm = React.createClass({
         }
         var managers = this.state.formData.managers;
         if (_.isArray(userList) && userList.length > 0) {
-            options = userList.map(function (user) {
+            options = userList.map(function(user) {
                 var className = "";
                 if (isManager) {
                     //管理员（多选）选择后，从下拉列表中去掉已选的选项
                     if (_.isArray(managers) && managers.length > 0) {
-                        managers.forEach(function (manager) {
+                        managers.forEach(function(manager) {
                             if (manager == user.userId) {
                                 className = "manager-options-selected";
                             }
@@ -223,11 +223,11 @@ var AppForm = React.createClass({
         return options;
     },
     //渲染密令APP的下拉列表
-    renderSecretAppOptions: function () {
+    renderSecretAppOptions: function() {
         var options = '';
         var appList = this.state.allAppList;
         if (_.isArray(appList) && appList.length > 0) {
-            options = appList.map(function (app) {
+            options = appList.map(function(app) {
                 return (<Option key={app.id} value={app.id}>
                     {app.name}
                 </Option>);
@@ -238,7 +238,7 @@ var AppForm = React.createClass({
         return options;
     },
     //按enter键添加标签
-    addTag: function (e) {
+    addTag: function(e) {
         if (e.keyCode !== 13) return;
 
         const tag = e.target.value.trim();
@@ -250,7 +250,7 @@ var AppForm = React.createClass({
         this.refs.newTag.refs.input.value = "";
     },
     //标签的选中与取消处理
-    toggleTag: function (tag, isAdd) {
+    toggleTag: function(tag, isAdd) {
         let tags = this.state.formData.tags || [];
         if (tags.indexOf(tag) > -1) {
             if (isAdd) return;
@@ -272,14 +272,14 @@ var AppForm = React.createClass({
         this.setState(this.state);
     },
     //渲染标签列表
-    renderAppTagList: function () {
+    renderAppTagList: function() {
         var selectedTagsArray = this.state.formData.tags || [];
         var appTagList = _.isArray(this.state.appTagList) ? this.state.appTagList : [];
         var unionTagsArray = _.union(appTagList, selectedTagsArray);
         var tagsJsx = "";
         if (_.isArray(unionTagsArray) && unionTagsArray.length > 0) {
             var _this = this;
-            tagsJsx = unionTagsArray.map(function (tag, index) {
+            tagsJsx = unionTagsArray.map(function(tag, index) {
                 let className = "app-tag";
                 className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";
                 return (<span key={index} onClick={() => _this.toggleTag(tag)} className={className}>{tag}</span>);
@@ -299,7 +299,7 @@ var AppForm = React.createClass({
         }
     },
 
-    render: function () {
+    render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         var className = "right-panel-content";
@@ -324,11 +324,11 @@ var AppForm = React.createClass({
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
-                              iconDescr={formData.name||logoDescr}
-                              upLoadDescr={logoDescr}
-                              isEdit={true}
-                              isUserHeadIcon={true}
-                              onChange={this.uploadImg}/>
+                        iconDescr={formData.name||logoDescr}
+                        upLoadDescr={logoDescr}
+                        isEdit={true}
+                        isUserHeadIcon={true}
+                        onChange={this.uploadImg}/>
                     <Input type="hidden" name="image" id="image" value={formData.image}/>
                     <div className="app-form-scroll">
                         <GeminiScrollbar className="geminiScrollbar-vertical">
@@ -344,8 +344,8 @@ var AppForm = React.createClass({
                                     <Validator
                                         rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                         <Input name="name" id="name" value={formData.name}
-                                               placeholder={Intl.get("common.required.tip", "必填项*")}
-                                               onChange={this.setField.bind(this, 'name')}
+                                            placeholder={Intl.get("common.required.tip", "必填项*")}
+                                            onChange={this.setField.bind(this, 'name')}
                                         />
                                     </Validator>
                                 </FormItem>
@@ -357,7 +357,7 @@ var AppForm = React.createClass({
                                     wrapperCol={{span: 12}}
                                 >
                                     <Input name="appUrl" id="appUrl" value={formData.appUrl}
-                                           onChange={this.setField.bind(this, 'appUrl')}/>
+                                        onChange={this.setField.bind(this, 'appUrl')}/>
                                 </FormItem>
                                 <FormItem
                                     label={Intl.get("common.tag", "标签")}
@@ -369,7 +369,7 @@ var AppForm = React.createClass({
                                     </div>
                                     <div>
                                         <Input placeholder={Intl.get("app.tag.placeholder", "按Enter键添加新标签")} ref="newTag"
-                                               onKeyUp={this.addTag}
+                                            onKeyUp={this.addTag}
                                         />
                                     </div>
                                 </FormItem>
@@ -385,11 +385,11 @@ var AppForm = React.createClass({
                                         <div className="user-list-loading"><ReactIntl.FormattedMessage id="app.app.get.owner.list" defaultMessage="正在获取所有者列表" /><Icon type="loading"/></div>) : (
                                         <Validator rules={[{required:true,message: Intl.get("app.app.owner.placeholder", "请选择所有者")}]}>
                                             <Select showSearch name="owner" id="owner" placeholder={Intl.get("app.app.owner.placeholder", "请选择所有者")}
-                                                    value={formData.owner}
-                                                    optionFilterProp="children" notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                                    searchPlaceholder={Intl.get("app.app.owner.search.placeholder", "输入名称进行过滤")}
-                                                    onChange={this.setField.bind(this, 'owner')}
-                                                    onSelect={this.handleSelect.bind(this, 'owner')}
+                                                value={formData.owner}
+                                                optionFilterProp="children" notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                                searchPlaceholder={Intl.get("app.app.owner.search.placeholder", "输入名称进行过滤")}
+                                                onChange={this.setField.bind(this, 'owner')}
+                                                onSelect={this.handleSelect.bind(this, 'owner')}
                                             >
                                                 {this.renderSelectOptions()}
                                             </Select>
@@ -407,12 +407,12 @@ var AppForm = React.createClass({
                                     {this.state.isLoadingManagerList ? (
                                         <div className="user-list-loading"><ReactIntl.FormattedMessage id="app.app.get.managers.list" defaultMessage="正在获取管理员列表" /><Icon type="loading"/></div>) : (
                                         <Select className="" multiple name="managers" id="managers"
-                                                optionFilterProp="children"
-                                                searchPlaceholder={Intl.get("app.app.managers.placeholder", "请选择管理员*")}
-                                                notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                                value={formData.managers}
-                                                onChange={this.setField.bind(this, 'managers')}
-                                                onSelect={this.handleSelect.bind(this, 'managers')}
+                                            optionFilterProp="children"
+                                            searchPlaceholder={Intl.get("app.app.managers.placeholder", "请选择管理员*")}
+                                            notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                            value={formData.managers}
+                                            onChange={this.setField.bind(this, 'managers')}
+                                            onSelect={this.handleSelect.bind(this, 'managers')}
                                         >
                                             {this.renderSelectOptions(true)}
                                         </Select>)}
@@ -426,12 +426,12 @@ var AppForm = React.createClass({
                                     {this.state.isLoadingAllAppList ? (
                                         <div className="app-list-loading"><ReactIntl.FormattedMessage id="app.app.get.secret.list" defaultMessage="正在获取密令APP列表" /><Icon type="loading"/></div>) : (
                                         <Select showSearch name="secretApp" id="secretApp"
-                                                placeholder={Intl.get("app.app.secret.placeholder", "请选择密令APP")}
-                                                value={formData.secretApp}
-                                                optionFilterProp="children" notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                                searchPlaceholder={Intl.get("app.app.secret.search.placeholder", "请输入应用名称进行过滤")}
-                                                onChange={this.setField.bind(this, 'secretApp')}
-                                                onSelect={this.handleSelect.bind(this, 'secretApp')}
+                                            placeholder={Intl.get("app.app.secret.placeholder", "请选择密令APP")}
+                                            value={formData.secretApp}
+                                            optionFilterProp="children" notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                                            searchPlaceholder={Intl.get("app.app.secret.search.placeholder", "请输入应用名称进行过滤")}
+                                            onChange={this.setField.bind(this, 'secretApp')}
+                                            onSelect={this.handleSelect.bind(this, 'secretApp')}
                                         >
                                             {this.renderSecretAppOptions()}
                                         </Select>)}
@@ -444,7 +444,7 @@ var AppForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('descr')}
                                 >
                                     <Input type="textarea" id="descr" rows="3" value={formData.descr}
-                                           onChange={this.setField.bind(this, 'descr')}
+                                        onChange={this.setField.bind(this, 'descr')}
                                     />
                                 </FormItem>
 
@@ -454,9 +454,9 @@ var AppForm = React.createClass({
                                         {saveResult ?
                                             (
                                                 <AlertTimer time={saveResult=="error"?3000:600}
-                                                            message={this.state.saveMsg}
-                                                            type={this.state.saveResult} showIcon
-                                                            onHide={this.hideSaveTooltip}/>
+                                                    message={this.state.saveMsg}
+                                                    type={this.state.saveResult} showIcon
+                                                    onHide={this.hideSaveTooltip}/>
                                             ) : ""
                                         }
                                     </div>

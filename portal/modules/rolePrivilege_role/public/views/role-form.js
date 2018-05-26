@@ -36,7 +36,7 @@ let CONSTANTS = {
 
 var RoleForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             cancelRoleForm: noop,
             role: {
@@ -47,14 +47,14 @@ var RoleForm = React.createClass({
             roleFormShow: false
         };
     },
-    getFormData: function (props) {
+    getFormData: function(props) {
         var formData = $.extend(true, {}, props.role);
         if (props.formType == "add") {
             formData.permissionGroups = $.extend(true, [], props.permissionGroups);
         }
         return formData;
     },
-    getInitialState: function () {
+    getInitialState: function() {
         var stateData = RoleFormStore.getState();
         return {
             status: {
@@ -68,22 +68,22 @@ var RoleForm = React.createClass({
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         };
     },
-    onChange: function () {
+    onChange: function() {
         var stateData = RoleFormStore.getState();
         this.setState({
             isSaving: stateData.isSaving,//是否正在保存
             saveMsg: stateData.saveMsg//保存失败后的提示信息
         });
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         RoleFormStore.listen(this.onChange);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         RoleFormStore.unlisten(this.onChange);
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         var stateData = this.getInitialState();
         stateData.formData = this.getFormData(nextProps);
@@ -91,13 +91,13 @@ var RoleForm = React.createClass({
         this.setState(stateData);
     },
 
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         if (this.state.formData.roleId) {
             this.refs.validation.validate(noop);
         }
     },
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -111,19 +111,19 @@ var RoleForm = React.createClass({
     },
 
     //取消事件
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"点击取消保存角色按钮");
         this.props.cancelRoleForm(e);
     },
 
     //保存角色信息
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"点击保存角色按钮");
         var validation = this.refs.validation;
         var _this = this;
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             } else {
@@ -153,13 +153,13 @@ var RoleForm = React.createClass({
     },
 
     //获取当前选中权限
-    handleCheckBox: function (event) {
+    handleCheckBox: function(event) {
         var curId = event.target.id, checked = event.target.checked;
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
-                function (permisssionGroup) {
+                function(permisssionGroup) {
                     if (_.isArray(permisssionGroup.permissionList) && permisssionGroup.permissionList.length > 0) {
-                        permisssionGroup.permissionList.forEach(function (permission) {
+                        permisssionGroup.permissionList.forEach(function(permission) {
                             if (permission.permissionId == curId) {
                                 permission.status = checked;
                             }
@@ -168,13 +168,13 @@ var RoleForm = React.createClass({
                 }
             );
             this.setState({
-                    formData: this.state.formData
-                }
+                formData: this.state.formData
+            }
             );
         }
     },
     //全选、取消选中的处理
-    handleSelectAllAuthority: function (curPermissionGroupName, flag) {
+    handleSelectAllAuthority: function(curPermissionGroupName, flag) {
         if (flag) {
             Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"选中全部的权限");
         } else {
@@ -182,10 +182,10 @@ var RoleForm = React.createClass({
         }
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
-                function (permisssionGroup) {
+                function(permisssionGroup) {
                     if (permisssionGroup.permissionGroupName == curPermissionGroupName) {
                         if (_.isArray(permisssionGroup.permissionList) && permisssionGroup.permissionList.length > 0) {
-                            permisssionGroup.permissionList.forEach(function (permission) {
+                            permisssionGroup.permissionList.forEach(function(permission) {
                                 permission.status = flag;
                             });
                         }
@@ -193,58 +193,58 @@ var RoleForm = React.createClass({
                 }
             );
             this.setState({
-                    formData: this.state.formData
-                }
+                formData: this.state.formData
+            }
             );
         }
     },
 
     //反选
-    reverseSelectAuthority: function (curPermissionGroupName) {
+    reverseSelectAuthority: function(curPermissionGroupName) {
         Trace.traceEvent($(this.getDOMNode()).find(".form-authority-group-name-btn-label"),"反选权限");
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
-                function (permisssionGroup) {
+                function(permisssionGroup) {
                     if (permisssionGroup.permissionGroupName == curPermissionGroupName)
                         if (_.isArray(permisssionGroup.permissionList) && permisssionGroup.permissionList.length > 0) {
-                            permisssionGroup.permissionList.forEach(function (permission) {
+                            permisssionGroup.permissionList.forEach(function(permission) {
                                 permission.status = !permission.status;
                             });
                         }
                 }
             );
             this.setState({
-                    formData: this.state.formData
-                }
+                formData: this.state.formData
+            }
             );
         }
     },
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         RoleFormAction.clearSaveFlags();
     },
     //转到权限设置面板（我的应用中的处理）
-    turnToAuthPanel: function (e) {
+    turnToAuthPanel: function(e) {
         this.handleCancel(e);
         this.props.setShowRoleAuthType("authority");
     },
     //展示收起单个权限组的处理
-    toggleAuth: function (curPermissionGroupName) {
+    toggleAuth: function(curPermissionGroupName) {
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
             this.state.formData.permissionGroups.forEach(
-                function (permisssionGroup) {
+                function(permisssionGroup) {
                     if (permisssionGroup.permissionGroupName == curPermissionGroupName) {
                         permisssionGroup.isShow = !permisssionGroup.isShow;
                     }
                 }
             );
             this.setState({
-                    formData: this.state.formData
-                }
+                formData: this.state.formData
+            }
             );
         }
     },
     //展示收起所有权限分组的处理
-    toggleAllAuth: function () {
+    toggleAllAuth: function() {
         if (this.state.allAuthIsShow ) {
             Trace.traceEvent($(this.getDOMNode()).find(".form-authority-container"),"全部收起权限");
         } else {
@@ -263,7 +263,7 @@ var RoleForm = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -288,8 +288,8 @@ var RoleForm = React.createClass({
                             help={status.roleName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.roleName.errors && status.roleName.errors.join(','))}>
                             <Validator rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                 <Input name="roleName" id="edit-roleName" value={formData.roleName}
-                                       onChange={this.setField.bind(this, 'roleName')}
-                                       placeholder={Intl.get("common.required.tip", "必填项*")}
+                                    onChange={this.setField.bind(this, 'roleName')}
+                                    placeholder={Intl.get("common.required.tip", "必填项*")}
                                 />
                             </Validator>
                         </FormItem>
@@ -310,9 +310,9 @@ var RoleForm = React.createClass({
                                 }
                                 </div>
                                 <div className="right-form-scroll-div" ref="roleFormScroll"
-                                     style={{height:scrollHeight}}  data-tracename ="选择权限">
+                                    style={{height:scrollHeight}}  data-tracename ="选择权限">
                                     <GeminiScrollbar className="geminiScrollbar-vertical">
-                                        {permissionGroups.map(function (permissionGroup, j) {
+                                        {permissionGroups.map(function(permissionGroup, j) {
                                             return (
                                                 <div className="form-authority-group-div" key={j}>
                                                     <div
@@ -324,33 +324,33 @@ var RoleForm = React.createClass({
                                                         </div>
                                                         <div className="form-authority-group-name-btn" >
                                                             <Button type="ghost"
-                                                                    className="form-authority-group-name-btn-label"
-                                                                    onClick={_this.handleSelectAllAuthority.bind(_this, permissionGroup.permissionGroupName, true)}
+                                                                className="form-authority-group-name-btn-label"
+                                                                onClick={_this.handleSelectAllAuthority.bind(_this, permissionGroup.permissionGroupName, true)}
                                                             >
                                                                 <ReactIntl.FormattedMessage id="authority.all.select" defaultMessage="全选" />
                                                             </Button>
                                                             <Button type="ghost"
-                                                                    className="form-authority-group-name-btn-label"
-                                                                    onClick={_this.reverseSelectAuthority.bind(_this, permissionGroup.permissionGroupName)}
+                                                                className="form-authority-group-name-btn-label"
+                                                                onClick={_this.reverseSelectAuthority.bind(_this, permissionGroup.permissionGroupName)}
                                                             >
                                                                 <ReactIntl.FormattedMessage id="authority.invert.select" defaultMessage="反选" />
                                                             </Button>
                                                             <Button type="ghost"
-                                                                    className="form-authority-group-name-btn-label"
-                                                                    onClick={_this.handleSelectAllAuthority.bind(_this, permissionGroup.permissionGroupName, false)}
+                                                                className="form-authority-group-name-btn-label"
+                                                                onClick={_this.handleSelectAllAuthority.bind(_this, permissionGroup.permissionGroupName, false)}
                                                             >
                                                                 <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" />
                                                             </Button>
                                                         </div>
                                                     </div>
-                                                    {permissionGroup.isShow ? (permissionGroup.permissionList.map(function (permission, i) {
+                                                    {permissionGroup.isShow ? (permissionGroup.permissionList.map(function(permission, i) {
                                                         return (<label className="edit-role-content-label" key={i}>
                                                             <Checkbox id={permission.permissionId}
-                                                                      className="ant-checkbox-vertical edit-role-checkbox"
-                                                                      checked={permission.status}
-                                                                      onChange={_this.handleCheckBox}/>
-                                                                    <span
-                                                                        className="permission-item">{permission.permissionName}</span>
+                                                                className="ant-checkbox-vertical edit-role-checkbox"
+                                                                checked={permission.status}
+                                                                onChange={_this.handleCheckBox}/>
+                                                            <span
+                                                                className="permission-item">{permission.permissionName}</span>
                                                         </label> );
                                                     })) : null}
                                                 </div>);
@@ -362,11 +362,11 @@ var RoleForm = React.createClass({
                                     id="role.no.set.auth.add"
                                     defaultMessage={`暂无权限,请先{add}`}
                                     values={{
-                                     "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get("role.add.auth", "添加权限")}</a>): (
-                                         <Link to="/backgroundManagement/authority" activeClassName="active">
-                                            {Intl.get("role.add.auth", "添加权限")}</Link>
-                                     ))
-                                      }}
+                                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get("role.add.auth", "添加权限")}</a>): (
+                                            <Link to="/backgroundManagement/authority" activeClassName="active">
+                                                {Intl.get("role.add.auth", "添加权限")}</Link>
+                                        ))
+                                    }}
                                 />
                             </div>)
 
@@ -377,9 +377,9 @@ var RoleForm = React.createClass({
                             {this.state.saveMsg ? (
                                 <div className="indicator">
                                     <AlertTimer time={3000}
-                                                message={this.state.saveMsg}
-                                                type="error" showIcon
-                                                onHide={this.hideSaveTooltip}/>
+                                        message={this.state.saveMsg}
+                                        type="error" showIcon
+                                        onHide={this.hideSaveTooltip}/>
                                 </div>) : null
                             }
                             <RightPanelCancel onClick={this.handleCancel}>

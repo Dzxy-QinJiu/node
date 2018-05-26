@@ -20,7 +20,7 @@ UserDetailChangeRecordStore.prototype.resetState = function() {
     this.getAppLoading = true;//正在加载app列表
     this.appLists = [];//app列表
 };
-UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function (result) {
+UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function(result) {
     if (result.loading){
         this.changeRecordLoading = true;
     } else if (result.error){
@@ -33,7 +33,7 @@ UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function (resu
         this.changeRecord = result.data || [];
     }
 };
-UserDetailChangeRecordStore.prototype.getUserApp = function (result) {
+UserDetailChangeRecordStore.prototype.getUserApp = function(result) {
     if (result.loading){
         this.getAppLoading = true;
     }else if (result.error){
@@ -46,7 +46,7 @@ UserDetailChangeRecordStore.prototype.getUserApp = function (result) {
         this.app = result.dataObj.app_name;
     }
 };
-UserDetailChangeRecordStore.prototype.setApp = function (app) {
+UserDetailChangeRecordStore.prototype.setApp = function(app) {
     this.app = app;
 };
 

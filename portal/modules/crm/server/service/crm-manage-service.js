@@ -67,7 +67,7 @@ var crmRestApis = {
 };
 exports.urls = crmRestApis;
 
-exports.getCrmUserList = function (req, res, queryObj) {
+exports.getCrmUserList = function(req, res, queryObj) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getCrmUserList,
@@ -76,7 +76,7 @@ exports.getCrmUserList = function (req, res, queryObj) {
         }, queryObj);
 };
 //获取筛选面板的行业列表
-exports.getFilterIndustries = function (req, res) {
+exports.getFilterIndustries = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterIndustries,
@@ -85,7 +85,7 @@ exports.getFilterIndustries = function (req, res) {
         }, null);
 };
 //获取筛选面板的销售角色列表
-exports.getFilterSalesRoleList = function (req, res) {
+exports.getFilterSalesRoleList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterSalesRoleList.replace(":type", req.params.type),
@@ -95,7 +95,7 @@ exports.getFilterSalesRoleList = function (req, res) {
 };
 
 //获取筛选面板的地域列表
-exports.getFilterProvinces = function (req, res) {
+exports.getFilterProvinces = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getFilterProvinces.replace(":type", req.params.type),
@@ -104,7 +104,7 @@ exports.getFilterProvinces = function (req, res) {
         }, null);
 };
 //获取阶段标签列表
-exports.getStageTagList = function (req, res) {
+exports.getStageTagList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getStageTagList.replace(":type", req.params.type),
@@ -113,7 +113,7 @@ exports.getStageTagList = function (req, res) {
         }, null);
 };
 //获取竞品列表
-exports.getCompetitorList = function (req, res) {
+exports.getCompetitorList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getCompetitorList.replace(":type", req.params.type),
@@ -123,7 +123,7 @@ exports.getCompetitorList = function (req, res) {
 };
 
 //客户名、联系人电话唯一性的验证
-exports.checkOnlyCustomer = function (req, res) {
+exports.checkOnlyCustomer = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.checkCustomerRepeat,
@@ -133,7 +133,7 @@ exports.checkOnlyCustomer = function (req, res) {
 };
 
 //获取客户列表
-exports.getCustomerList = function (req, res) {
+exports.getCustomerList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.list + "/" + req.params.pageSize + "/" + req.params.pageNum + "/id",
@@ -142,7 +142,7 @@ exports.getCustomerList = function (req, res) {
         }, null);
 };
 //根据客户id获取客户
-exports.getCustomerById = function (req, res, customerId) {
+exports.getCustomerById = function(req, res, customerId) {
     return restUtil.authRest.post(
         {
             url: crmRestApis.getCustomerById,
@@ -151,7 +151,7 @@ exports.getCustomerById = function (req, res, customerId) {
         }, {
             id: customerId
         }, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 let customer = null;
                 if (_.isObject(data) && _.isArray(data.result) && data.result.length > 0) {
                     customer = data.result[0];
@@ -161,7 +161,7 @@ exports.getCustomerById = function (req, res, customerId) {
         });
 };
 //获取重复的客户列表
-exports.getRepeatCustomerList = function (req, res, queryParams) {
+exports.getRepeatCustomerList = function(req, res, queryParams) {
     let url = crmRestApis.repeatCustomer;
     if (queryParams && queryParams.page_size) {
         url += "?page_size=" + queryParams.page_size;
@@ -179,7 +179,7 @@ exports.getRepeatCustomerList = function (req, res, queryParams) {
 };
 
 //通过重复客户的客户id获取重复客户
-exports.getRepeatCustomerById = function (req, res) {
+exports.getRepeatCustomerById = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getRepeatCustomerById.replace(":customerId", req.params.customerId),
@@ -189,7 +189,7 @@ exports.getRepeatCustomerById = function (req, res) {
 };
 
 //删除重复客户
-exports.deleteRepeatCustomer = function (req, res, customerIdArray) {
+exports.deleteRepeatCustomer = function(req, res, customerIdArray) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.delRepeatCustomer,
@@ -198,7 +198,7 @@ exports.deleteRepeatCustomer = function (req, res, customerIdArray) {
         }, customerIdArray);
 };
 //合并重复客户
-exports.mergeRepeatCustomer = function (req, res, mergeObj) {
+exports.mergeRepeatCustomer = function(req, res, mergeObj) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.mergeRepeatCustomer,
@@ -209,7 +209,7 @@ exports.mergeRepeatCustomer = function (req, res, mergeObj) {
 };
 
 //查询客户
-exports.queryCustomer = function (req, res, condition) {
+exports.queryCustomer = function(req, res, condition) {
     let url = "";
     let call_phone = condition && condition.call_phone;
     let id = condition && condition.id;
@@ -217,10 +217,10 @@ exports.queryCustomer = function (req, res, condition) {
     let customer_clue_id = condition && condition.customer_clue_id;
     delete condition.call_phone;
     let queryObj = {};
-    if (call_phone) {  // 通话记录，查看客户详情
+    if (call_phone) { // 通话记录，查看客户详情
         url = crmRestApis.getCustomerByPhone + "/" + req.params.pageSize + "/" + req.params.sortFeild + "/" + req.params.sortOrder;
         queryObj = _.clone(condition);
-    } else if (id || customer_clue_id) {  // 根据客户的id,或者线索的id查询客户详情
+    } else if (id || customer_clue_id) { // 根据客户的id,或者线索的id查询客户详情
         url = crmRestApis.query;
         if (req.body.hasManageAuth) {
             url = crmRestApis.managerQuery;
@@ -231,7 +231,7 @@ exports.queryCustomer = function (req, res, condition) {
         }else if (customer_clue_id){
             queryObj.query = {"customer_clue_id": customer_clue_id};
         }
-    } else {  // 客户列表
+    } else { // 客户列表
         let baseUrl = "";
         if (req.body.hasManageAuth) {
             baseUrl = crmRestApis.managerQuery;
@@ -274,38 +274,38 @@ exports.queryCustomer = function (req, res, condition) {
 };
 
 //修改客户
-exports.updateCustomer = function (req, res, newCustomer) {
+exports.updateCustomer = function(req, res, newCustomer) {
     let type = newCustomer.type;
     let urlType = newCustomer.urlType;
     let url = crmRestApis.basic.updateComment;
     switch (type) {
-        case "name":
-            url = crmRestApis.basic.updateName;
-            break;
-        case "label":
-            url = crmRestApis.basic.updateLabel;
-            break;
-        case "industry":
-            url = crmRestApis.basic.updateIndustry;
-            break;
-        case "address":
-            url = crmRestApis.basic.updateAddress;
-            break;
-        case "comment":
-            url = crmRestApis.basic.updateComment;
-            break;
-        case "sales":
-            url = crmRestApis.basic.updateSales;
-            break;
-        case "administrative_level":
-            url = crmRestApis.basic.updateAdministrativeLevel;
-            break;
-        case "detail_address":
-            url = crmRestApis.basic.updateDetailAddress;
-            break;
-        case "customer_interest":
-            url = crmRestApis.basic.updateInterest;
-            break;
+    case "name":
+        url = crmRestApis.basic.updateName;
+        break;
+    case "label":
+        url = crmRestApis.basic.updateLabel;
+        break;
+    case "industry":
+        url = crmRestApis.basic.updateIndustry;
+        break;
+    case "address":
+        url = crmRestApis.basic.updateAddress;
+        break;
+    case "comment":
+        url = crmRestApis.basic.updateComment;
+        break;
+    case "sales":
+        url = crmRestApis.basic.updateSales;
+        break;
+    case "administrative_level":
+        url = crmRestApis.basic.updateAdministrativeLevel;
+        break;
+    case "detail_address":
+        url = crmRestApis.basic.updateDetailAddress;
+        break;
+    case "customer_interest":
+        url = crmRestApis.basic.updateInterest;
+        break;
     }
     url = url.replace(":url_type", urlType);
     delete newCustomer.type;
@@ -319,7 +319,7 @@ exports.updateCustomer = function (req, res, newCustomer) {
 };
 
 //转出客户的处理
-exports.transferCustomer = function (req, res, newCustomer) {
+exports.transferCustomer = function(req, res, newCustomer) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.basic.transferCustomer.replace(":url_type", req.params.type),
@@ -329,7 +329,7 @@ exports.transferCustomer = function (req, res, newCustomer) {
 };
 
 //添加客户
-exports.addCustomer = function (req, res, newCustomer) {
+exports.addCustomer = function(req, res, newCustomer) {
     return restUtil.authRest.post(
         {
             url: crmRestApis.customer,
@@ -339,7 +339,7 @@ exports.addCustomer = function (req, res, newCustomer) {
 };
 
 //删除客户
-exports.deleteCustomer = function (req, res, ids) {
+exports.deleteCustomer = function(req, res, ids) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.customer + "/delete",
@@ -349,7 +349,7 @@ exports.deleteCustomer = function (req, res, ids) {
 };
 
 //获取动态列表
-exports.getDynamicList = function (req, res, customer_id) {
+exports.getDynamicList = function(req, res, customer_id) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.dynamic + "/" + customer_id + "/100",
@@ -357,7 +357,7 @@ exports.getDynamicList = function (req, res, customer_id) {
             res: res
         }, null);
 };
-exports.uploadCustomers = function (req, res) {
+exports.uploadCustomers = function(req, res) {
     return restUtil.authRest.post({
         url: crmRestApis.upload,
         req: req,
@@ -368,7 +368,7 @@ exports.uploadCustomers = function (req, res) {
 };
 
 //根据客户名获取行政级别
-exports.getAdministrativeLevel = function (req, res, customerName) {
+exports.getAdministrativeLevel = function(req, res, customerName) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getAdministrativeLevel.replace(":customer_name", customerName),
@@ -378,7 +378,7 @@ exports.getAdministrativeLevel = function (req, res, customerName) {
 };
 
 // 拨打电话
-exports.callOut = function (req, res, queryObj) {
+exports.callOut = function(req, res, queryObj) {
     return restUtil.authRest.post(
         {
             url: crmRestApis.callOut,
@@ -388,7 +388,7 @@ exports.callOut = function (req, res, queryObj) {
 };
 
 // 获取电话座机号
-exports.getUserPhoneNumber = function (req, res, member_id) {
+exports.getUserPhoneNumber = function(req, res, member_id) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getUserPhoneNumber,
@@ -397,12 +397,12 @@ exports.getUserPhoneNumber = function (req, res, member_id) {
         }, member_id);
 };
 //获取是否能继续添加客户
-exports.getCustomerLimit = function (req, res) {
+exports.getCustomerLimit = function(req, res) {
     return restUtil.authRest.get(
         {
             url: crmRestApis.getCustomerLimit,
             req: req,
             res: res
-        },  req.query);
+        }, req.query);
 };
 

@@ -1,5 +1,5 @@
 var LogOut = React.createClass({
-    render: function () {
+    render: function() {
         return (
             // <a href="/logout" className="logout">退出&nbsp;&nbsp;&nbsp;<i className="iconfont">&#xe602;</i></a>
             <a href="/logout" className="logout">

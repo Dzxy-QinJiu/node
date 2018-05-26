@@ -175,7 +175,7 @@ function handleUserType(userTypeData) {
     return userTypeArrayData;
 }
 // 用户统计数据的处理
-export function handleUserStatis (userAnalysisData) {
+export function handleUserStatis(userAnalysisData) {
     let exportData = [];
     if (_.isArray(userAnalysisData) && userAnalysisData.length) {
         if (userAnalysisData[0].app_name) { // 综合条件下

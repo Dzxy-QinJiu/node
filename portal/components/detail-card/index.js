@@ -45,11 +45,11 @@ DetailCard.defaultProps = {
     className: "",//自定义类
     isEdit: false,//是否是编辑状态,编辑状态会展示阴影
     loading: false,//是否正在保存
-    handleSubmit: function () {
+    handleSubmit: function() {
     },//保存的处理
-    handleCancel: function () {
+    handleCancel: function() {
     },//取消的处理
-    renderHandleSaveBtns: function () {
+    renderHandleSaveBtns: function() {
     },//渲染自定义的处理保存的按钮
     saveErrorMsg: ""//保存的错误提示
 };

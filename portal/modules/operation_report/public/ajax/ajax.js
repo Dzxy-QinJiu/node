@@ -1,51 +1,51 @@
 //获取应用列表
 let appAjaxTrans = require("../../../common/public/ajax/app");
 let teamAjaxTrans = require("../../../common/public/ajax/team");
-exports.getAppList = function () {
+exports.getAppList = function() {
     var Deferred = $.Deferred();
     //调用统一的接口发请求
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success(function (list) {
-        list = list.map(function (app) {
-            return {
-                id: app.app_id,
-                name: app.app_name,
-                image: app.app_logo
-            };
+        success(function(list) {
+            list = list.map(function(app) {
+                return {
+                    id: app.app_id,
+                    name: app.app_name,
+                    image: app.app_logo
+                };
+            });
+            Deferred.resolve(list);
+        }).error(function(error) {
+            Deferred.resolve(error.responseText);
+        }).timeout(function() {
+            Deferred.resolve([]);
         });
-        Deferred.resolve(list);
-    }).error(function (error) {
-        Deferred.resolve(error.responseText);
-    }).timeout(function () {
-        Deferred.resolve([]);
-    });
     return Deferred.promise();
 };
 
 //获取团队列表
 let teamListAjax;
-exports.getTeamList = function () {
+exports.getTeamList = function() {
     teamListAjax && teamListAjax.abort();
     var Deferred = $.Deferred();
     teamAjaxTrans.getTeamListAjax().sendRequest().
-    success(function (list) {
-        list = list.map(function (team) {
-            return {
-                teamId: team.groupId,
-                teamName: team.groupName,
-            };
+        success(function(list) {
+            list = list.map(function(team) {
+                return {
+                    teamId: team.groupId,
+                    teamName: team.groupName,
+                };
+            });
+            Deferred.resolve(list);
+        }).error(function(error) {
+            Deferred.resolve(error.responseText);
+        }).timeout(function() {
+            Deferred.resolve([]);
         });
-        Deferred.resolve(list);
-    }).error(function (error) {
-        Deferred.resolve(error.responseText);
-    }).timeout(function () {
-        Deferred.resolve([]);
-    });
     return Deferred.promise();
 };
 //各应用登录情况
 let appLoginAjax;
-exports.getAppLoginUser = function (params) {
+exports.getAppLoginUser = function(params) {
     appLoginAjax && appLoginAjax.abort();
     var Deferred = $.Deferred();
     appLoginAjax = $.ajax({
@@ -53,10 +53,10 @@ exports.getAppLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -67,7 +67,7 @@ exports.getAppLoginUser = function (params) {
 
 //获取各应用新开账号统计
 let appSignedUserAjax;
-exports.getAppSignedUser = function (params) {
+exports.getAppSignedUser = function(params) {
     appSignedUserAjax && appSignedUserAjax.abort();
     var Deferred = $.Deferred();
     appSignedUserAjax = $.ajax({
@@ -75,10 +75,10 @@ exports.getAppSignedUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -89,7 +89,7 @@ exports.getAppSignedUser = function (params) {
 
 //获取各应用新开账号统计
 let appNewTrialUserAjax;
-exports.getAppNewTrialUser = function (params) {
+exports.getAppNewTrialUser = function(params) {
     appNewTrialUserAjax && appNewTrialUserAjax.abort();
     var Deferred = $.Deferred();
     appNewTrialUserAjax = $.ajax({
@@ -97,10 +97,10 @@ exports.getAppNewTrialUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -111,7 +111,7 @@ exports.getAppNewTrialUser = function (params) {
 
 //获取各应用延期用户的统计
 let appNewDelayUserAjax;
-exports.getAppNewDelayUser = function (params) {
+exports.getAppNewDelayUser = function(params) {
     appNewDelayUserAjax && appNewDelayUserAjax.abort();
     var Deferred = $.Deferred();
     appNewDelayUserAjax = $.ajax({
@@ -119,10 +119,10 @@ exports.getAppNewDelayUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -132,7 +132,7 @@ exports.getAppNewDelayUser = function (params) {
 };
 //获取近四周的登录对比
 let loginComparisonAjx;
-exports.getAppLoginComparison = function (params) {
+exports.getAppLoginComparison = function(params) {
     loginComparisonAjx && loginComparisonAjx.abort();
     var Deferred = $.Deferred();
     loginComparisonAjx = $.ajax({
@@ -140,10 +140,10 @@ exports.getAppLoginComparison = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -155,7 +155,7 @@ exports.getAppLoginComparison = function (params) {
 
 //获取近四周的登录对比
 let appsUserCountAjx;
-exports.getAppsUserCount = function (params) {
+exports.getAppsUserCount = function(params) {
     appsUserCountAjx && appsUserCountAjx.abort();
     var Deferred = $.Deferred();
     appsUserCountAjx = $.ajax({
@@ -163,10 +163,10 @@ exports.getAppsUserCount = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -177,7 +177,7 @@ exports.getAppsUserCount = function (params) {
 
 //获取近四周周登录总时长超过1小时的用户数对比
 let weeklyLoginTotalTimeAjax;
-exports.getAppWeeklyLoginTotalTime = function (params) {
+exports.getAppWeeklyLoginTotalTime = function(params) {
     weeklyLoginTotalTimeAjax && weeklyLoginTotalTimeAjax.abort();
     var Deferred = $.Deferred();
     weeklyLoginTotalTimeAjax = $.ajax({
@@ -185,10 +185,10 @@ exports.getAppWeeklyLoginTotalTime = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -198,7 +198,7 @@ exports.getAppWeeklyLoginTotalTime = function (params) {
 };
 //获取近四周到期用户登录对比
 let expiredLoginComparisonAjx;
-exports.getAppExpiredLoginComparison = function (params) {
+exports.getAppExpiredLoginComparison = function(params) {
     expiredLoginComparisonAjx && expiredLoginComparisonAjx.abort();
     var Deferred = $.Deferred();
     expiredLoginComparisonAjx = $.ajax({
@@ -206,10 +206,10 @@ exports.getAppExpiredLoginComparison = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -219,7 +219,7 @@ exports.getAppExpiredLoginComparison = function (params) {
 };
 // 获取近四周的用户活跃度
 let userActiveAjax;
-exports.getUserActive = function (params) {
+exports.getUserActive = function(params) {
     userActiveAjax && userActiveAjax.abort();
     var Deferred = $.Deferred();
     userActiveAjax = $.ajax({
@@ -227,10 +227,10 @@ exports.getUserActive = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -240,7 +240,7 @@ exports.getUserActive = function (params) {
 };
 //获取用户日活跃度
 let userDailyActiveAjax;
-exports.getUserDailyActive = function (params) {
+exports.getUserDailyActive = function(params) {
     userDailyActiveAjax && userDailyActiveAjax.abort();
     var Deferred = $.Deferred();
     if (params.end_time > new Date().getTime()) {
@@ -251,10 +251,10 @@ exports.getUserDailyActive = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -265,7 +265,7 @@ exports.getUserDailyActive = function (params) {
 
 //获取近四周新开通用户对比
 let appNewUserAjax;
-exports.getAppNewUserComparison = function (params) {
+exports.getAppNewUserComparison = function(params) {
     appNewUserAjax && appNewUserAjax.abort();
     var Deferred = $.Deferred();
     appNewUserAjax = $.ajax({
@@ -273,10 +273,10 @@ exports.getAppNewUserComparison = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -287,7 +287,7 @@ exports.getAppNewUserComparison = function (params) {
 
 //获取近四周新开通用户对比
 let appNewDelayUserComparisonAjax;
-exports.getAppNewDelayUserComparison = function (params) {
+exports.getAppNewDelayUserComparison = function(params) {
     appNewDelayUserComparisonAjax && appNewDelayUserComparisonAjax.abort();
     var Deferred = $.Deferred();
     appNewDelayUserComparisonAjax = $.ajax({
@@ -295,10 +295,10 @@ exports.getAppNewDelayUserComparison = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -309,7 +309,7 @@ exports.getAppNewDelayUserComparison = function (params) {
 
 //获取近四周签约用户的登录对比
 let appFormalLoginAjax;
-exports.getAppFormalUserLoginComparison = function (params) {
+exports.getAppFormalUserLoginComparison = function(params) {
     appFormalLoginAjax && appFormalLoginAjax.abort();
     var Deferred = $.Deferred();
     appFormalLoginAjax = $.ajax({
@@ -317,10 +317,10 @@ exports.getAppFormalUserLoginComparison = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -331,7 +331,7 @@ exports.getAppFormalUserLoginComparison = function (params) {
 
 //获取各部门到期用户的登录表格数据
 let teamSignedLoginAjax;
-exports.getTeamSignedLoginUser = function (params) {
+exports.getTeamSignedLoginUser = function(params) {
     teamSignedLoginAjax && teamSignedLoginAjax.abort();
     var Deferred = $.Deferred();
     teamSignedLoginAjax = $.ajax({
@@ -339,10 +339,10 @@ exports.getTeamSignedLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -353,7 +353,7 @@ exports.getTeamSignedLoginUser = function (params) {
 
 //获取各应用用户登录情况的部门分布表格数据
 let teamLoginUserAjax;
-exports.getTeamLoginUser = function (params) {
+exports.getTeamLoginUser = function(params) {
     teamLoginUserAjax && teamLoginUserAjax.abort();
     var Deferred = $.Deferred();
     teamLoginUserAjax = $.ajax({
@@ -361,10 +361,10 @@ exports.getTeamLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -374,7 +374,7 @@ exports.getTeamLoginUser = function (params) {
 };
 //获取各部门到期用户的登录表格数据
 let teamExpiredLoginAjax;
-exports.getTeamExpiredLoginUser = function (params) {
+exports.getTeamExpiredLoginUser = function(params) {
     teamExpiredLoginAjax && teamExpiredLoginAjax.abort();
     var Deferred = $.Deferred();
     teamExpiredLoginAjax = $.ajax({
@@ -382,10 +382,10 @@ exports.getTeamExpiredLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -395,7 +395,7 @@ exports.getTeamExpiredLoginUser = function (params) {
 };
 //获取到期用户的周登录时长超1小时的各应用的用户数
 let expiredUserExceedLoginTimeAjax;
-exports.getExpiredUserExceedLoginTime = function (params) {
+exports.getExpiredUserExceedLoginTime = function(params) {
     expiredUserExceedLoginTimeAjax && expiredUserExceedLoginTimeAjax.abort();
     var Deferred = $.Deferred();
     expiredUserExceedLoginTimeAjax = $.ajax({
@@ -403,10 +403,10 @@ exports.getExpiredUserExceedLoginTime = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -416,7 +416,7 @@ exports.getExpiredUserExceedLoginTime = function (params) {
 };
 //获取到期用户登录时长统计表数据
 let teamExpiredLoginTimeAjax;
-exports.getTeamExpiredUserLoginTime = function (params) {
+exports.getTeamExpiredUserLoginTime = function(params) {
     teamExpiredLoginTimeAjax && teamExpiredLoginTimeAjax.abort();
     var Deferred = $.Deferred();
     teamExpiredLoginTimeAjax = $.ajax({
@@ -424,10 +424,10 @@ exports.getTeamExpiredUserLoginTime = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -437,7 +437,7 @@ exports.getTeamExpiredUserLoginTime = function (params) {
 };
 //获取各部门新开试用账号的统计表格
 let teamNewTrialAjax;
-exports.getTeamNewTrialUser = function (params) {
+exports.getTeamNewTrialUser = function(params) {
     teamNewTrialAjax && teamNewTrialAjax.abort();
     var Deferred = $.Deferred();
     teamNewTrialAjax = $.ajax({
@@ -445,10 +445,10 @@ exports.getTeamNewTrialUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -459,7 +459,7 @@ exports.getTeamNewTrialUser = function (params) {
 
 //获取各部门新增延期用户的统计表格
 let teamNewDelayAjax;
-exports.getTeamNewDelayUser = function (params) {
+exports.getTeamNewDelayUser = function(params) {
     teamNewDelayAjax && teamNewDelayAjax.abort();
     var Deferred = $.Deferred();
     teamNewDelayAjax = $.ajax({
@@ -467,10 +467,10 @@ exports.getTeamNewDelayUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -481,7 +481,7 @@ exports.getTeamNewDelayUser = function (params) {
 
 //获取各部门新开试用账号登录的统计表格
 let teamNewTrialLoginAjax;
-exports.getTeamNewTrialLoginUser = function (params) {
+exports.getTeamNewTrialLoginUser = function(params) {
     teamNewTrialLoginAjax && teamNewTrialLoginAjax.abort();
     var Deferred = $.Deferred();
     teamNewTrialLoginAjax = $.ajax({
@@ -489,10 +489,10 @@ exports.getTeamNewTrialLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -502,7 +502,7 @@ exports.getTeamNewTrialLoginUser = function (params) {
 };
 //获取各部门延期用户登录的统计表格
 let teamNewDelayLoginAjax;
-exports.getTeamNewDelayLoginUser = function (params) {
+exports.getTeamNewDelayLoginUser = function(params) {
     teamNewDelayLoginAjax && teamNewDelayLoginAjax.abort();
     var Deferred = $.Deferred();
     teamNewDelayLoginAjax = $.ajax({
@@ -510,10 +510,10 @@ exports.getTeamNewDelayLoginUser = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -524,7 +524,7 @@ exports.getTeamNewDelayLoginUser = function (params) {
 
 //获取各部门登录超过x小时的统计表格数据
 let teamExceedLoginTimeAjax;
-exports.getTeamExceedLoginTime = function (params) {
+exports.getTeamExceedLoginTime = function(params) {
     teamExceedLoginTimeAjax && teamExceedLoginTimeAjax.abort();
     var Deferred = $.Deferred();
     teamExceedLoginTimeAjax = $.ajax({
@@ -532,10 +532,10 @@ exports.getTeamExceedLoginTime = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -546,7 +546,7 @@ exports.getTeamExceedLoginTime = function (params) {
 
 //获取各部门登录超过x小时的延期用户统计表格数据
 let teamDelayUserLoginTimeAjax;
-exports.getTeamDelayUserLoginTime = function (params) {
+exports.getTeamDelayUserLoginTime = function(params) {
     teamDelayUserLoginTimeAjax && teamDelayUserLoginTimeAjax.abort();
     var Deferred = $.Deferred();
     teamDelayUserLoginTimeAjax = $.ajax({
@@ -554,10 +554,10 @@ exports.getTeamDelayUserLoginTime = function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

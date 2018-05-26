@@ -22,7 +22,7 @@ UserAbnormalLoginStore.prototype.resetState = function() {
     this.listenScrollBottom = true;//是否监听下拉加载
     this.isNoMoreTipShow = false;//是否显示没有更多数据了
 };
-UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function (result) {
+UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function(result) {
     if (result.loading){
         this.abnormalLoginLoading = true;
     } else if (result.error){
@@ -39,7 +39,7 @@ UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function (result) {
         this.abnormalLoginList = this.abnormalLoginList.concat(result.data || []);
     }
 };
-UserAbnormalLoginStore.prototype.setApp = function (appId) {
+UserAbnormalLoginStore.prototype.setApp = function(appId) {
 
     this.abnormalLoginList =[];//变更记录展示的列表
     this.abnormalLoginLoading = true;//是否正在加载变更记录
@@ -49,7 +49,7 @@ UserAbnormalLoginStore.prototype.setApp = function (appId) {
     this.appId = appId;
 
 };
-UserAbnormalLoginStore.prototype.getUserApp = function (result) {
+UserAbnormalLoginStore.prototype.getUserApp = function(result) {
     if (result.loading){
         this.getAppLoading = true;
     }else if (result.error){
@@ -61,7 +61,7 @@ UserAbnormalLoginStore.prototype.getUserApp = function (result) {
         this.appLists = result.dataObj;
     }
 };
-UserAbnormalLoginStore.prototype.deleteAbnormalLoginInfo = function (id) {
+UserAbnormalLoginStore.prototype.deleteAbnormalLoginInfo = function(id) {
     this.abnormalLoginList =_.filter(this.abnormalLoginList, itemLogin => itemLogin.id !== id);
 };
 module.exports = alt.createStore(UserAbnormalLoginStore , 'UserAbnormalLoginStore');

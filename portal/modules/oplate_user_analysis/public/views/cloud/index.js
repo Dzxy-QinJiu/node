@@ -12,11 +12,11 @@ const CONSTS = {
 let options = {
     minSize: 8,
     gridSize: 12,
-    weightFactor: function (size) {
+    weightFactor: function(size) {
         return Math.ceil(size / 2) + 15;
     },
     fontFamily: CONSTS.FONT_FAMILY,
-    color: function (text, level) {
+    color: function(text, level) {
         return CONSTS.FONT_COLOR;
     },
     rotateRatio: 0,

@@ -3,36 +3,36 @@
  */
 //用户列表ajax请求返回值
 var userListAjax = null;
-exports.getOrganizationList = function () {
+exports.getOrganizationList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 
-exports.getOrganizationMemberList = function (groupId) {
+exports.getOrganizationMemberList = function(groupId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization_member_list/' + groupId,
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
-exports.getMemberList = function (queryObj) {
+exports.getMemberList = function(queryObj) {
     if (userListAjax) {
         userListAjax.abort();
     }
@@ -42,10 +42,10 @@ exports.getMemberList = function (queryObj) {
         dataType: 'json',
         type: 'get',
         data: queryObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (error, textStatus) {
+        error: function(error, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(Intl.get("organization.get.add.organization.member.list.failed"));
             }
@@ -54,7 +54,7 @@ exports.getMemberList = function (queryObj) {
     return Deferred.promise();
 };
 
-exports.addMember = function (obj) {
+exports.addMember = function(obj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization_member',
@@ -62,9 +62,9 @@ exports.addMember = function (obj) {
         contentType: 'application/json',
         type: 'post',
         data: JSON.stringify(obj),
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -72,7 +72,7 @@ exports.addMember = function (obj) {
 };
 
 
-exports.editMember = function (obj) {
+exports.editMember = function(obj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization_member',
@@ -80,9 +80,9 @@ exports.editMember = function (obj) {
         contentType: 'application/json',
         type: 'put',
         data: JSON.stringify(obj),
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -90,7 +90,7 @@ exports.editMember = function (obj) {
 };
 
 //添加组织
-exports.addGroup = function (organization) {
+exports.addGroup = function(organization) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization',
@@ -98,9 +98,9 @@ exports.addGroup = function (organization) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(organization),
-        success: function (organizationCreated) {
+        success: function(organizationCreated) {
             Deferred.resolve(organizationCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -108,16 +108,16 @@ exports.addGroup = function (organization) {
 };
 
 //修改组织
-exports.editGroup = function (organization) {
+exports.editGroup = function(organization) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization',
         dataType: 'json',
         type: 'put',
         data: organization,
-        success: function (organizationModified) {
+        success: function(organizationModified) {
             Deferred.resolve(organizationModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -125,14 +125,14 @@ exports.editGroup = function (organization) {
 };
 
 //删除组织
-exports.deleteGroup = function (groupId) {
+exports.deleteGroup = function(groupId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/organization/' + groupId,
         type: 'delete',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

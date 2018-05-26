@@ -33,28 +33,28 @@ function FilterStore() {
 }
 
 //获取地域列表
-FilterStore.prototype.getFilterProvinces = function (list) {
+FilterStore.prototype.getFilterProvinces = function(list) {
     this.provinceList = list;
 };
 
 //获取行业列表
-FilterStore.prototype.getIndustries = function (list) {
+FilterStore.prototype.getIndustries = function(list) {
     this.industryList = list;
 };
 
-FilterStore.prototype.getAppList = function (list) {
+FilterStore.prototype.getAppList = function(list) {
     this.appList = list;
 };
 
-FilterStore.prototype.getTeamList = function (list) {
+FilterStore.prototype.getTeamList = function(list) {
     this.teamList = list;
 };
 
-FilterStore.prototype.getStageList = function (list) {
+FilterStore.prototype.getStageList = function(list) {
     this.stageList = list;
 };
 
-FilterStore.prototype.getStageTagList = function (data) {
+FilterStore.prototype.getStageTagList = function(data) {
     let stageTagList = [{name: "", show_name: Intl.get("common.all", "全部")}];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, tag => {
@@ -79,7 +79,7 @@ FilterStore.prototype.getStageTagList = function (data) {
     this.stageTagList = stageTagList;
 };
 
-FilterStore.prototype.getSalesRoleList= function (data) {
+FilterStore.prototype.getSalesRoleList = function(data) {
     let salesRoleList = [{name: "", show_name: Intl.get("common.all", "全部")}];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, role => {
@@ -90,70 +90,70 @@ FilterStore.prototype.getSalesRoleList= function (data) {
     this.salesRoleList = salesRoleList;
 };
 
-FilterStore.prototype.getTagList = function (list) {
+FilterStore.prototype.getTagList = function(list) {
     this.tagList = list;
 };
 
-FilterStore.prototype.getCompetitorList = function (list) {
+FilterStore.prototype.getCompetitorList = function(list) {
     this.competitorList = list;
 };
 
-FilterStore.prototype.setApp = function (value) {
+FilterStore.prototype.setApp = function(value) {
     this.condition.sales_opportunities[0].apps = [value];
 };
 
-FilterStore.prototype.setTeam = function (value) {
+FilterStore.prototype.setTeam = function(value) {
     this.condition.sales_team_id = value;
 };
 
-FilterStore.prototype.setStage = function (value) {
+FilterStore.prototype.setStage = function(value) {
     this.condition.sales_opportunities[0].sale_stages = value;
 };
 
-FilterStore.prototype.setTag = function (value) {
+FilterStore.prototype.setTag = function(value) {
     this.condition.labels = value;
 };
-FilterStore.prototype.setStageTag = function (value) {
+FilterStore.prototype.setStageTag = function(value) {
     this.condition.customer_label = value;
 };
 
-FilterStore.prototype.setSalesRole = function (value) {
+FilterStore.prototype.setSalesRole = function(value) {
     this.condition.member_role = value;
 };
 
-FilterStore.prototype.setCompetitor = function (value) {
+FilterStore.prototype.setCompetitor = function(value) {
     this.condition.competing_products = value;
 };
 
-FilterStore.prototype.setIndustry = function (value) {
+FilterStore.prototype.setIndustry = function(value) {
     this.condition.industry = value;
 };
 
-FilterStore.prototype.setProvince = function (value) {
+FilterStore.prototype.setProvince = function(value) {
     this.condition.province = value;
 };
-FilterStore.prototype.setContact = function (value) {
+FilterStore.prototype.setContact = function(value) {
     this.condition.contact = value;
 };
-FilterStore.prototype.setInputCondition = function (value) {
+FilterStore.prototype.setInputCondition = function(value) {
     this.inputCondition = value;
 };
-FilterStore.prototype.setClue = function (value) {
+FilterStore.prototype.setClue = function(value) {
     this.condition.clue = value;
 };
-FilterStore.prototype.setLevel = function (value) {
+FilterStore.prototype.setLevel = function(value) {
     this.condition.administrative_level = value;
 };
 
-FilterStore.prototype.setOtherSelectedItem = function (item) {
+FilterStore.prototype.setOtherSelectedItem = function(item) {
     this.condition.otherSelectedItem = item;
 };
 
-FilterStore.prototype.showPanel = function () {
+FilterStore.prototype.showPanel = function() {
     this.isPanelShow = true;
 };
 
-FilterStore.prototype.hidePanel = function () {
+FilterStore.prototype.hidePanel = function() {
     this.isPanelShow = false;
 };
 

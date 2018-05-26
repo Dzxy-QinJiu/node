@@ -42,7 +42,7 @@ const UserStatusRadioField = {
                     wrapperCol={{span: 24}}
                 >
                     <RadioGroup onChange={onChange}
-                                value={currentValue}>
+                        value={currentValue}>
                         <Radio key="false" value="false"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                         <Radio key="true" value="true"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>

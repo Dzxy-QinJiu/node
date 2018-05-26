@@ -12,7 +12,7 @@ function accessLogMiddleware() {
     //配置morgan
     var morganMiddleware = morgan(morganConfig.tokenParams, {
         stream: {
-            write: function (str) {
+            write: function(str) {
                 accessLog.info(str);
             }
         }

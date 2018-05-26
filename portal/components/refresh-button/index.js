@@ -11,7 +11,7 @@ class RefreshButton extends React.Component {
         return (
             <span className="refresh-btn">
                 <i className="iconfont  icon-refresh refresh" title={Intl.get("common.refresh", "刷新")}
-                   onClick={this.props.handleRefresh} data-tracename="点击刷新按钮"></i>
+                    onClick={this.props.handleRefresh} data-tracename="点击刷新按钮"></i>
             </span>
         );
     }

@@ -4,7 +4,7 @@ import { storageUtil } from "ant-utils";
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;
-exports.getRecentLoginUsers= function (params) {
+exports.getRecentLoginUsers= function(params) {
     var Deferred = $.Deferred();
     if(recentLoginUsersAjax) {
         recentLoginUsersAjax.abort();
@@ -14,10 +14,10 @@ exports.getRecentLoginUsers= function (params) {
         dataType: 'json',
         type: 'get',
         data: params,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr , textStatus) {
+        error: function(xhr , textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
             }
@@ -31,7 +31,7 @@ exports.getRecentLoginUsers= function (params) {
  */
 //用户ajax请求返回值
 var appUserAjax = null;
-exports.getAppUserList = function (obj) {
+exports.getAppUserList = function(obj) {
     obj = obj || {};
     if(appUserAjax) {
         appUserAjax.abort();
@@ -112,10 +112,10 @@ exports.getAppUserList = function (obj) {
         type: 'get',
         data: requestObj,
         timeout : 180*1000,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr , textStatus) {
+        error: function(xhr , textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get("user.app.user.list.failed", "获取应用的用户列表失败"));
             }
@@ -125,7 +125,7 @@ exports.getAppUserList = function (obj) {
 };
 
 var appUserDetailAjax = null;
-exports.getUserDetail = function (userId) {
+exports.getUserDetail = function(userId) {
     var Deferred = $.Deferred();
     appUserDetailAjax && appUserDetailAjax.abort();
     appUserDetailAjax = $.ajax({
@@ -133,10 +133,10 @@ exports.getUserDetail = function (userId) {
         dataType: 'json',
         type: 'get',
         timeout : 180*1000,
-        success: function (userDetail) {
+        success: function(userDetail) {
             Deferred.resolve(userDetail);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -148,7 +148,7 @@ exports.getUserDetail = function (userId) {
 /**
  * 添加应用用户
  */
-exports.addAppUser = function (user) {
+exports.addAppUser = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser',
@@ -157,10 +157,10 @@ exports.addAppUser = function (user) {
         type: 'post',
         data: JSON.stringify(user),
         timeout : 180*1000,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("user.add.user.failed", "添加用户失败"));
         }
     });
@@ -170,7 +170,7 @@ exports.addAppUser = function (user) {
 /**
  * 修改应用用户
  */
-exports.editAppUser = function (user) {
+exports.editAppUser = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser',
@@ -179,10 +179,10 @@ exports.editAppUser = function (user) {
         type: 'put',
         data: JSON.stringify(user),
         timeout : 180*1000,
-        success: function (newUser) {
+        success: function(newUser) {
             Deferred.resolve(newUser);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -192,29 +192,29 @@ exports.editAppUser = function (user) {
 /**
  * 获取应用列表
  */
-exports.getApps = function () {
+exports.getApps = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success(function(list) {
-        Deferred.resolve(list);
-    }).error(function(xhr, code , errText) {
-        Deferred.reject();
-    }).timeout(function() {
-        Deferred.reject();
-    });
+        success(function(list) {
+            Deferred.resolve(list);
+        }).error(function(xhr, code , errText) {
+            Deferred.reject();
+        }).timeout(function() {
+            Deferred.reject();
+        });
     return Deferred.promise();
 };
 
 /**
  * 获取销售团队
  */
-exports.getSalesTeams = function (clientId) {
+exports.getSalesTeams = function(clientId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/getSalesTeamList',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
         error : function(codeMessage) {
@@ -227,13 +227,13 @@ exports.getSalesTeams = function (clientId) {
 /**
  * 获取所有团队信息
  */
-exports.getTeamLists = function () {
+exports.getTeamLists = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get_team_lists',
         dataType: 'json',
         type: 'get',
-        success: function (teamlists) {
+        success: function(teamlists) {
             Deferred.resolve(teamlists);
         },
         error : function(codeMessage) {
@@ -245,13 +245,13 @@ exports.getTeamLists = function () {
 /**
  * 获取销售人员
  */
-exports.getSales = function (groupId) {
+exports.getSales = function(groupId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/getSalesTeamMemberList/' + groupId,
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
         error : function(codeMessage) {
@@ -264,7 +264,7 @@ exports.getSales = function (groupId) {
 /**
  * 全部停用
  */
-exports.disableAllAppsByUser = function (user_id) {
+exports.disableAllAppsByUser = function(user_id) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/disable_apps',
@@ -274,10 +274,10 @@ exports.disableAllAppsByUser = function (user_id) {
             user_id: user_id,
         },
         timeout : 180*1000,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || "全部停用失败");
         }
     });
@@ -287,7 +287,7 @@ exports.disableAllAppsByUser = function (user_id) {
 /**
  * 添加应用
  */
-exports.addApp = function (appList) {
+exports.addApp = function(appList) {
     var Deferred = $.Deferred();
     var DEFAULT_ERROR_MSG = "添加应用失败";
     $.ajax({
@@ -296,14 +296,14 @@ exports.addApp = function (appList) {
         contentType: 'application/json',
         data: JSON.stringify(appList),
         timeout: 180*1000,
-        success: function (result) {
+        success: function(result) {
             if(_.isArray(result)) {
                 Deferred.resolve(result);
             } else {
                 Deferred.reject(DEFAULT_ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             var responseJSON = xhr.responseJSON || {};
             var errorMsg = responseJSON.message || DEFAULT_ERROR_MSG;
             Deferred.reject(errorMsg);
@@ -314,7 +314,7 @@ exports.addApp = function (appList) {
 /**
  * 批量操作
  */
-exports.batchUpdate = function (field, submitData,selectedAppId) {
+exports.batchUpdate = function(field, submitData,selectedAppId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/batch',
@@ -325,10 +325,10 @@ exports.batchUpdate = function (field, submitData,selectedAppId) {
             data: JSON.stringify(submitData)
         },
         timeout : 180*1000,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             var errorMsg = xhr.responseJSON || "批量操作失败";
             Deferred.reject(errorMsg);
         }
@@ -338,7 +338,7 @@ exports.batchUpdate = function (field, submitData,selectedAppId) {
 /**
  * 获取某个客户下的用户列表
  */
-exports.getCustomerUserList = function (obj) {
+exports.getCustomerUserList = function(obj) {
     var Deferred = $.Deferred();
     //首先获取localStorage中保存的页数
     var pageSize = parseInt(storageUtil.local.get(AppUserUtil.localStorageCustomerViewPageSizeKey));
@@ -354,10 +354,10 @@ exports.getCustomerUserList = function (obj) {
             page_size: pageSize,
             filter_content: obj.keyword
         },
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject((xhr && xhr.responseJSON) || Intl.get("user.crm.user.failed", "获取客户下的用户列表失败"));
         }
     });
@@ -365,7 +365,7 @@ exports.getCustomerUserList = function (obj) {
 };
 
 //修改用户的单个应用
-exports.editApp = function (appInfo) {
+exports.editApp = function(appInfo) {
     var Deferred = $.Deferred();
     var DEFAULT_ERROR_MSG = Intl.get("user.edit.app.failed", "修改应用失败");
     $.ajax({
@@ -374,14 +374,14 @@ exports.editApp = function (appInfo) {
         contentType: 'application/json',
         data: JSON.stringify(appInfo),
         timeout: 180*1000,
-        success: function (flag) {
+        success: function(flag) {
             if (flag) {
                 Deferred.resolve(flag);
             } else {
                 Deferred.reject(DEFAULT_ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             var responseJSON = xhr.responseJSON || DEFAULT_ERROR_MSG;
             Deferred.reject(responseJSON);
         }
@@ -397,10 +397,10 @@ exports.applyDelayTime = function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("user.apply.delay.failed", "申请延期失败"));
         }
     });
@@ -414,10 +414,10 @@ exports.delayTime = function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("user.batch.delay.failed", "批量延期失败"));
         }
     });
@@ -425,7 +425,7 @@ exports.delayTime = function(data) {
 };
 
 //申请用户
-exports.applyUser = function (data) {
+exports.applyUser = function(data) {
     data = {reqData: JSON.stringify(data)};
     var Deferred = $.Deferred();
     $.ajax({
@@ -433,10 +433,10 @@ exports.applyUser = function (data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function () {
+        error: function() {
             Deferred.reject( Intl.get("common.apply.failed", "申请失败"));
         }
     });
@@ -451,7 +451,7 @@ exports.editAppField = function(data) {
         type: 'put',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             //操作成功返回true
             if(result === true) {
                 Deferred.resolve(result);
@@ -459,7 +459,7 @@ exports.editAppField = function(data) {
                 Deferred.reject( Intl.get("common.edit.failed", "修改失败"));
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("common.edit.failed", "修改失败"));
         }
     });
@@ -475,7 +475,7 @@ exports.applyChangePassword = function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             //操作成功返回true
             if(result === true) {
                 Deferred.resolve(result);
@@ -483,7 +483,7 @@ exports.applyChangePassword = function(data) {
                 Deferred.reject(ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });
@@ -499,7 +499,7 @@ exports.applyChangeOther= function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             //操作成功返回true
             if(result === true) {
                 Deferred.resolve(result);
@@ -507,7 +507,7 @@ exports.applyChangeOther= function(data) {
                 Deferred.reject(ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });
@@ -523,7 +523,7 @@ exports.salesApplyStatus = function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             //操作成功返回true
             if(result === true) {
                 Deferred.resolve(result);
@@ -531,7 +531,7 @@ exports.salesApplyStatus = function(data) {
                 Deferred.reject(ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });
@@ -546,26 +546,26 @@ exports.addOneUserSuggestName = function(data) {
         type: 'get',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
 // 获取安全域信息列表
-exports.getRealmList = function () {
+exports.getRealmList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/realm/list',
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

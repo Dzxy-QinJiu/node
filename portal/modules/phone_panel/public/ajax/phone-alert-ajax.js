@@ -1,6 +1,6 @@
 
 //根据客户id获取客户信息
-exports.getCustomerById = function (data) {
+exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
     $.ajax({
@@ -8,10 +8,10 @@ exports.getCustomerById = function (data) {
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -22,17 +22,17 @@ exports.getCustomerById = function (data) {
 
 //获取应用列表
 var getAppListsAjax;
-exports.getAppLists = function () {
+exports.getAppLists = function() {
     getAppListsAjax && getAppListsAjax.abort();
     var Deferred = $.Deferred();
     getAppListsAjax = $.ajax({
         url: '/rest/base/phonecall/application',
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -42,7 +42,7 @@ exports.getAppLists = function () {
 };
 //增加产品反馈
 var addAppFeedbackAjax;
-exports.addAppFeedback = function (sumbitObj) {
+exports.addAppFeedback = function(sumbitObj) {
     addAppFeedbackAjax && addAppFeedbackAjax.abort();
     var Deferred = $.Deferred();
     // sumbitObj.product = JSON.stringify(sumbitObj.product);
@@ -51,10 +51,10 @@ exports.addAppFeedback = function (sumbitObj) {
         dataType: 'json',
         type: 'post',
         data: sumbitObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

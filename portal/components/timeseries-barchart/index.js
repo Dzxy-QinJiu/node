@@ -94,7 +94,7 @@ var TimeSeriesBarchart = React.createClass({
             calculable : false,
             tooltip : { // 图表中的提示数据信息
                 trigger: 'item',
-                formatter : function (params) {
+                formatter : function(params) {
                     var timeText = moment(params && params.data && params.data[0] || Date.now()).format(oplateConsts.DATE_FORMAT);
                     var sum = params && params.data && params.data[1] || '0';
                     return _this.props.tooltip(timeText , sum);

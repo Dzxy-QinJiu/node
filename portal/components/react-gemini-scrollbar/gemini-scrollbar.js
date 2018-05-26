@@ -4,7 +4,7 @@
  * @link http://noeldelgado.github.io/gemini-scrollbar/
  * @license MIT
  */
-(function () {
+(function() {
     var SCROLLBAR_WIDTH, DONT_CREATE_GEMINI, CLASSNAMES, addClass, removeClass, getScrollbarWidth;
 
     CLASSNAMES = {
@@ -32,7 +32,7 @@
 
     addClass = function addClass(el, classNames) {
         if (el.classList) {
-            return classNames.forEach(function (cl) {
+            return classNames.forEach(function(cl) {
                 el.classList.add(cl);
             });
         }
@@ -42,7 +42,7 @@
 
     removeClass = function removeClass(el, classNames) {
         if (el.classList) {
-            return classNames.forEach(function (cl) {
+            return classNames.forEach(function(cl) {
                 el.classList.remove(cl);
             });
         }
@@ -59,7 +59,7 @@
         //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
         this.itemCssSelector = '';
 
-        Object.keys(config || {}).forEach(function (propertyName) {
+        Object.keys(config || {}).forEach(function(propertyName) {
             this[propertyName] = config[propertyName];
         }, this);
 
@@ -215,11 +215,11 @@
         return null;
     };
 
-    GeminiScrollbar.prototype.getViewElement = function () {
+    GeminiScrollbar.prototype.getViewElement = function() {
         return this._viewElement;
     };
 
-    GeminiScrollbar.prototype._bindEvents = function () {
+    GeminiScrollbar.prototype._bindEvents = function() {
         this._cache.events.scrollHandler = this._scrollHandler.bind(this);
         this._cache.events.clickVerticalTrackHandler = this._clickVerticalTrackHandler.bind(this);
         this._cache.events.clickHorizontalTrackHandler = this._clickHorizontalTrackHandler.bind(this);
@@ -237,7 +237,7 @@
         this._window.addEventListener('resize', this._cache.events.resizeWindowHandler);
 
         var _this = this;
-        $(this.element).mousewheel(function (e, delta) {
+        $(this.element).mousewheel(function(e, delta) {
             var _elementScrollView = $(this).find(".gm-scroll-view")[0];
             var scrollLeft = $(_elementScrollView).scrollLeft();
             if (_this.checkVerticalFlag(e, _elementScrollView)) {
@@ -254,7 +254,7 @@
         return this;
     };
 
-    GeminiScrollbar.prototype._unbinEvents = function () {
+    GeminiScrollbar.prototype._unbinEvents = function() {
         this._viewElement.removeEventListener('scroll', this._cache.events.scrollHandler);
         if(this._cache.events.handleScrollBottomHandler) {
             this._viewElement.removeEventListener('scroll', this._cache.events.handleScrollBottomHandler);
@@ -270,7 +270,7 @@
         return this;
     };
 
-    GeminiScrollbar.prototype._scrollHandler = function (event) {
+    GeminiScrollbar.prototype._scrollHandler = function(event) {
         var viewElement, x, y;
         viewElement = this._viewElement;
         y = ((viewElement.scrollTop * 100) / viewElement.clientHeight);
@@ -344,7 +344,7 @@
         }
     };
 
-    GeminiScrollbar.prototype._clickVerticalTrackHandler = function (e) {
+    GeminiScrollbar.prototype._clickVerticalTrackHandler = function(e) {
         var offset = Math.abs(e.target.getBoundingClientRect().top - e.clientY);
         var thumbHalf = (this._thumbVerticalElement.offsetHeight / 2);
         var thumbPositionPercentage = ((offset - thumbHalf) * 100 / this._scrollbarVerticalElement.offsetHeight);
@@ -352,7 +352,7 @@
         this._viewElement.scrollTop = (thumbPositionPercentage * this._viewElement.scrollHeight / 100);
     };
 
-    GeminiScrollbar.prototype._clickHorizontalTrackHandler = function (e) {
+    GeminiScrollbar.prototype._clickHorizontalTrackHandler = function(e) {
         var offset = Math.abs(e.target.getBoundingClientRect().left - e.clientX);
         var thumbHalf = (this._thumbHorizontalElement.offsetWidth / 2);
         var thumbPositionPercentage = ((offset - thumbHalf) * 100 / this._scrollbarHorizontalElement.offsetWidth);
@@ -360,27 +360,27 @@
         this._viewElement.scrollLeft = (thumbPositionPercentage * this._viewElement.scrollWidth / 100);
     };
 
-    GeminiScrollbar.prototype._clickVerticalThumbHandler = function (e) {
+    GeminiScrollbar.prototype._clickVerticalThumbHandler = function(e) {
         this._startDrag(e);
         this._prevPageY = (e.currentTarget.offsetHeight - (e.clientY - e.currentTarget.getBoundingClientRect().top));
     };
 
-    GeminiScrollbar.prototype._clickHorizontalThumbHandler = function (e) {
+    GeminiScrollbar.prototype._clickHorizontalThumbHandler = function(e) {
         this._startDrag(e);
         this._prevPageX = (e.currentTarget.offsetWidth - (e.clientX - e.currentTarget.getBoundingClientRect().left));
     };
 
-    GeminiScrollbar.prototype._startDrag = function (e) {
+    GeminiScrollbar.prototype._startDrag = function(e) {
         e.stopImmediatePropagation();
         this._cursorDown = true;
         addClass(document.body, [CLASSNAMES.disable]);
         this._document.addEventListener('mousemove', this._cache.events.mouseMoveDocumentHandler);
-        this._document.onselectstart = function () {
+        this._document.onselectstart = function() {
             return false;
         };
     };
 
-    GeminiScrollbar.prototype._mouseUpDocumentHandler = function () {
+    GeminiScrollbar.prototype._mouseUpDocumentHandler = function() {
         this._cursorDown = false;
         this._prevPageX = this._prevPageY = 0;
         removeClass(document.body, [CLASSNAMES.disable]);
@@ -388,7 +388,7 @@
         this._document.onselectstart = null;
     };
 
-    GeminiScrollbar.prototype._mouseMoveDocumentHandler = function (e) {
+    GeminiScrollbar.prototype._mouseMoveDocumentHandler = function(e) {
         if (this._cursorDown === false) {
             return void 0;
         }

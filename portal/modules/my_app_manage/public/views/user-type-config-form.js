@@ -27,16 +27,16 @@ var UserTypeConfigForm = React.createClass({
         UserOverDraftField,
         UserMultiLoginField
     ],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
-            handleCancel: function () {
+            handleCancel: function() {
             },
-            handleSaveAppConfig: function () {
+            handleSaveAppConfig: function() {
             },
             appName: ""
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             //向后台提交的数据
             formData: {
@@ -64,7 +64,7 @@ var UserTypeConfigForm = React.createClass({
         };
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var appId = nextProps.appId;
         if (appId != this.state.appId) {
             //切换到上一个界面
@@ -72,7 +72,7 @@ var UserTypeConfigForm = React.createClass({
         }
     },
     // 提交用户类型配置数据
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         var _this = this;
         var data = {};
         data.config_name = this.state.formData.config_name;
@@ -100,7 +100,7 @@ var UserTypeConfigForm = React.createClass({
                 contentType: 'application/json',
                 dateType: 'json',
                 data: JSON.stringify(data),
-                success: function (result) {
+                success: function(result) {
                     _this.setState({
                         isLoading: false,
                         successMessage: '保存成功'
@@ -110,11 +110,11 @@ var UserTypeConfigForm = React.createClass({
                         clearTimeout(timer);
                     }
                     //2s以后，跳转页面
-                    timer = setTimeout(function () {
+                    timer = setTimeout(function() {
                         _this.props.togglePageChange(false);
                     }, 2000);
                 },
-                error: function (errorInfo) {
+                error: function(errorInfo) {
                     _this.setState({
                         isLoading: false,
                         errorMessage: errorInfo.responseText
@@ -130,17 +130,17 @@ var UserTypeConfigForm = React.createClass({
                 contentType: 'application/json',
                 dateType: 'json',
                 data: JSON.stringify(data),
-                success: function (result) {
+                success: function(result) {
                     _this.setState({
                         isLoading: false,
                         successMessage: '保存成功'
                     });
                     $("#usertypeconfigsave").removeAttr("disabled");
-                    setTimeout(function () {
+                    setTimeout(function() {
                         _this.props.togglePageChange(false);
                     }, 2000);
                 },
-                error: function (errorInfo) {
+                error: function(errorInfo) {
                     _this.setState({
                         isLoading: false,
                         errorMessage: errorInfo.responseText
@@ -151,52 +151,52 @@ var UserTypeConfigForm = React.createClass({
         }
     },
     // 计算开通周期的毫秒数，如果为永久，就传0
-    getTimeMillis: function () {
+    getTimeMillis: function() {
         var range = this.state.formData.range;
         var mills = '';
         switch (range) {
-            case '1w':
-                mills = 24 * 60 * 60 * 1000 * 7;
-                break;
-            case '0.5m':
-                mills = 24 * 60 * 60 * 1000 * 15;
-                break;
-            case '1m':
-                mills = 24 * 60 * 60 * 1000 * 30;
-                break;
-            case '6m':
-                mills = 24 * 60 * 60 * 1000 * 30 * 6;
-                break;
-            case '12m':
-                mills = 24 * 60 * 60 * 1000 * 30 * 12;
-                break;
-            case 'forever':
-                mills = 0;
-                break;
+        case '1w':
+            mills = 24 * 60 * 60 * 1000 * 7;
+            break;
+        case '0.5m':
+            mills = 24 * 60 * 60 * 1000 * 15;
+            break;
+        case '1m':
+            mills = 24 * 60 * 60 * 1000 * 30;
+            break;
+        case '6m':
+            mills = 24 * 60 * 60 * 1000 * 30 * 6;
+            break;
+        case '12m':
+            mills = 24 * 60 * 60 * 1000 * 30 * 12;
+            break;
+        case 'forever':
+            mills = 0;
+            break;
         }
         return mills;
     },
     //点击取消按钮，跳转页面
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         Trace.traceEvent(e, "取消编辑配置用户类型");
         this.props.handleCancel();
         this.props.togglePageChange(false);
     },
     //修改时间周期后
-    RangeModify: function (val) {
+    RangeModify: function(val) {
         var formData = this.state.formData;
         formData.range = val;
         this.setState({formData: formData});
     },
     //角色权限修改后
-    rolesPermissionsChange: function (roles, permissions) {
+    rolesPermissionsChange: function(roles, permissions) {
         var formData = this.state.formData;
         formData.selectedRoles = roles.slice();
         formData.selectedPermissions = permissions.slice();
         this.setState({formData: formData});
     },
     //周期选择组件
-    renderModifyTime: function () {
+    renderModifyTime: function() {
         return (
             <div className="modify-delay-time-style">
                 <Select
@@ -214,11 +214,11 @@ var UserTypeConfigForm = React.createClass({
             </div>
         );
     },
-    updateScrollBar: function () {
+    updateScrollBar: function() {
         this.refs.scrollbar.update();
     },
     //提交后的成功或者错误提示
-    handleSubmitResult: function () {
+    handleSubmitResult: function() {
         var hide = () => {
             this.setState({
                 errorMessage: '',
@@ -252,7 +252,7 @@ var UserTypeConfigForm = React.createClass({
         );
 
     },
-    render: function () {
+    render: function() {
         var item = this.props.item;
         var divHeight = $(window).height()
             - LAYOUT_CONSTANTS.RIGHT_PANEL_PADDING_TOP

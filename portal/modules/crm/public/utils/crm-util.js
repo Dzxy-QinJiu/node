@@ -1,6 +1,6 @@
 import classNames from "classnames";
 //将后端传来的字段拼接成句子
-const processForTrace = function (item) {
+const processForTrace = function(item) {
     var traceObj = {
         traceDsc: "",
         iconClass: "",
@@ -13,31 +13,31 @@ const processForTrace = function (item) {
         //根据不同的类型
         if (item.type) {
             switch (item.type) {
-                case 'visit':
-                    iconClass = 'icon-visit-briefcase';
-                    title = Intl.get("customer.visit", "拜访");
-                    des = Intl.get("customer.visit.customer", "拜访客户");
-                    break;
-                case 'phone':
-                    iconClass = 'icon-contact-phone';
-                    title = Intl.get("customer.phone.system", "电话系统");
-                    des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
-                    break;
-                case 'app':
-                    iconClass = 'icon-contact-ketao-app';
-                    title = Intl.get("customer.ketao.app", "客套app");
-                    des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户"): "";
-                    break;
-                case 'call_back':
-                    iconClass = 'icon-callback';
-                    title = Intl.get("common.callback", "回访");
-                    des = Intl.get("common.callback.customer", "回访客户");
-                    break;
-                case 'other':
-                    iconClass = 'icon-trace-other';
-                    title = Intl.get("customer.other", "其他");
-                    des = Intl.get("customer.follow.customer", "跟进客户");
-                    break;
+            case 'visit':
+                iconClass = 'icon-visit-briefcase';
+                title = Intl.get("customer.visit", "拜访");
+                des = Intl.get("customer.visit.customer", "拜访客户");
+                break;
+            case 'phone':
+                iconClass = 'icon-contact-phone';
+                title = Intl.get("customer.phone.system", "电话系统");
+                des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户") : "";
+                break;
+            case 'app':
+                iconClass = 'icon-contact-ketao-app';
+                title = Intl.get("customer.ketao.app", "客套app");
+                des = (!item.contact_name && !item.dst) ? Intl.get("customer.contact.customer", "联系客户") : "";
+                break;
+            case 'call_back':
+                iconClass = 'icon-callback';
+                title = Intl.get("common.callback", "回访");
+                des = Intl.get("common.callback.customer", "回访客户");
+                break;
+            case 'other':
+                iconClass = 'icon-trace-other';
+                title = Intl.get("customer.other", "其他");
+                des = Intl.get("customer.follow.customer", "跟进客户");
+                break;
             }
         }
         des && tip.push(des);
@@ -63,11 +63,11 @@ exports.isTurnOutTag = function(tag){
     return tag === Intl.get("crm.qualified.roll.out","转出");
 };
 // 是否是已回访标签
-exports.isHasCallBackTag = function (tag) {
+exports.isHasCallBackTag = function(tag) {
     return tag === Intl.get("common.has.callback", "已回访");
 };
 //获取客户标签背景色对应的类型
-exports.getCrmLabelCls=function (customer_label) {
+exports.getCrmLabelCls = function(customer_label) {
     const LABEL_TYPES = {
         INFO_TAG: "信息",
         INTENT_TAG: "意向",
@@ -93,11 +93,11 @@ exports.getCrmLabelCls=function (customer_label) {
 exports.administrativeLevels = [{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
 exports.filterAdministrativeLevel = (level) => {
     //4：乡镇、街道，目前只要求展示到区县，所以此级别不展示
-    return  level > 0 && level !== 4 ? level + '' : '';
+    return level > 0 && level !== 4 ? level + '' : '';
 };
 exports.processForTrace = processForTrace;
 exports.isClueTag = isClueTag;
-exports.CUSTOMER_TAGS={
+exports.CUSTOMER_TAGS = {
     QUALIFIED: Intl.get("common.qualified", "合格"),
     TRIAL_QUALIFIED: Intl.get("common.trial.qualified", "试用合格"),
     SIGN_QUALIFIED: Intl.get("common.official.qualified", "签约合格"),

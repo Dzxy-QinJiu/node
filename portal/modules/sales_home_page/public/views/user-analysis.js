@@ -26,7 +26,7 @@ var constantUtil = require("../util/constant");
 var delayConstant = constantUtil.DELAY.TIMERANG;
 //用户分析
 var UserAnlyis = React.createClass({
-    getStateData: function () {
+    getStateData: function() {
         let stateData = OplateUserAnalysisStore.getState();
         return {
             ...stateData,
@@ -37,14 +37,14 @@ var UserAnlyis = React.createClass({
             updateScrollBar:false
         };
     },
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(this.getStateData());
     },
 
-    getInitialState: function () {
+    getInitialState: function() {
         return this.getStateData();
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         let timeObj = {
             timeType: nextProps.timeType,
             startTime: nextProps.startTime,
@@ -64,7 +64,7 @@ var UserAnlyis = React.createClass({
             });
         }
     },
-    getDataType: function () {
+    getDataType: function() {
         if (hasPrivilege("GET_TEAM_LIST_ALL")) {
             return "all";
         } else if (hasPrivilege("GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS")) {
@@ -73,7 +73,7 @@ var UserAnlyis = React.createClass({
             return "";
         }
     },
-    getChartData: function () {
+    getChartData: function() {
         var queryParams = {
             starttime: this.state.startTime,
             endtime: this.state.endTime,
@@ -102,12 +102,12 @@ var UserAnlyis = React.createClass({
     //缩放延时，避免页面卡顿
     resizeTimeout: null,
     //窗口缩放时候的处理函数
-    windowResize: function () {
+    windowResize: function() {
         clearTimeout(this.resizeTimeout);
         //窗口缩放的时候，调用setState，重新走render逻辑渲染
         this.resizeTimeout = setTimeout(() => this.setState(this.getStateData()), 300);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         OplateUserAnalysisStore.listen(this.onStateChange);
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
@@ -115,7 +115,7 @@ var UserAnlyis = React.createClass({
         this.getChartData();
         $(".statistic-data-analysis .thumb").hide();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         OplateUserAnalysisStore.unlisten(this.onStateChange);
         //$('body').css('overflow', 'visible');
         //组件销毁时，清除缩放的延时
@@ -123,21 +123,21 @@ var UserAnlyis = React.createClass({
         //解除window上绑定的resize函数
         $(window).off('resize', this.windowResize);
     },
-    getStartDateText: function () {
+    getStartDateText: function() {
         if (this.state.startTime) {
             return moment(new Date(+this.state.startTime)).format(DATE_FORMAT);
         } else {
             return "";
         }
     },
-    getEndDateText: function () {
+    getEndDateText: function() {
         if (!this.state.endTime) {
             return moment().format(DATE_FORMAT);
         }
         return moment(new Date(+this.state.endTime)).format(DATE_FORMAT);
     },
     //总用户统计
-    getUserChart: function () {
+    getUserChart: function() {
         if (this.state.isComposite) {
             var list = _.isArray(this.state.userAnalysis.data) ?
                 this.state.userAnalysis.data : [];
@@ -166,7 +166,7 @@ var UserAnlyis = React.createClass({
         }
     },
     //地域统计
-    getZoneChart: function () {
+    getZoneChart: function() {
         var startDate = this.getStartDateText();
         var endDate = this.getEndDateText();
         return (
@@ -186,7 +186,7 @@ var UserAnlyis = React.createClass({
     },
 
     //获取通过点击统计图中的柱子跳转到用户列表时需传的参数
-    getJumpProps: function () {
+    getJumpProps: function() {
         let analysis_filter_field = "sales_id", currShowSalesTeam = this.props.currShowSalesTeam;
         //当前展示的是下级团队还是团队内所有成员
         if (currShowSalesTeam) {
@@ -210,7 +210,7 @@ var UserAnlyis = React.createClass({
         };
     },
     //团队统计
-    getTeamChart: function () {
+    getTeamChart: function() {
         var startDate = this.getStartDateText();
         var endDate = this.getEndDateText();
         //TODO 跳转的处理
@@ -231,7 +231,7 @@ var UserAnlyis = React.createClass({
         );
     },
 
-    getIndustryChart: function () {
+    getIndustryChart: function() {
         var startDate = this.getStartDateText();
         var endDate = this.getEndDateText();
         return (
@@ -248,28 +248,28 @@ var UserAnlyis = React.createClass({
             />
         );
     },
-    renderChartContent: function () {
+    renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
                 {this.state.timeType != "day" ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                         data-title={Intl.get("user.analysis.user.add", "用户-新增")}>
+                        data-title={Intl.get("user.analysis.user.add", "用户-新增")}>
                         <div className="chart-holder" ref="chartWidthDom" data-tracename="用户-新增统计">
                             <div className="title">{Intl.get("user.analysis.user.add", "用户-新增")}</div>
                             {this.getUserChart()}
                         </div>
                     </div>) : null}
                 <div className="analysis_chart col-md-6 col-sm-12"
-                     data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
+                    data-title={Intl.get("user.analysis.location.add", "地域-新增")}>
                     <div className="chart-holder" data-tracename="地域-新增统计">
                         <div className="title">{Intl.get("user.analysis.location.add", "地域-新增")}</div>
                         {this.getZoneChart()}
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                     data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
+                    data-title={Intl.get("user.analysis.industry.add", "行业-新增")}>
                     <div className="chart-holder" data-tracename="行业-新增统计">
                         <div className="title">{Intl.get("user.analysis.industry.add", "行业-新增")}</div>
                         {this.getIndustryChart()}
@@ -277,7 +277,7 @@ var UserAnlyis = React.createClass({
                 </div>
                 {hideTeamChart ? null : (
                     <div className="analysis_chart col-md-6 col-sm-12"
-                         data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
+                        data-title={Intl.get("user.analysis.team.add", "团队-新增")}>
                         <div className="chart-holder" data-tracename="团队-新增统计">
                             <div className="title">{Intl.get("user.analysis.team.add", "团队-新增")}</div>
                             {this.getTeamChart()}
@@ -286,7 +286,7 @@ var UserAnlyis = React.createClass({
             </div>
         );
     },
-    renderContent:function () {
+    renderContent:function() {
         if(this.state.updateScrollBar){
             return this.renderChartContent();
 
@@ -299,7 +299,7 @@ var UserAnlyis = React.createClass({
         }
     },
 
-    render: function () {
+    render: function() {
         let layoutParams = this.props.getChartLayoutParams();
         this.chartWidth = layoutParams.chartWidth;
         return (

@@ -133,7 +133,7 @@ var AppUserRestApis = {
 
 exports.urls = AppUserRestApis;
 //添加用户
-exports.addUser = function (req, res, user) {
+exports.addUser = function(req, res, user) {
     return restUtil.authRest.post(
         {
             url: AppUserRestApis.addUser,
@@ -142,7 +142,7 @@ exports.addUser = function (req, res, user) {
         },
         user,
         {
-            error: function (eventEmitter, errorCodeDesc, restResp) {
+            error: function(eventEmitter, errorCodeDesc, restResp) {
                 //添加错误码,10214（表示该用户名已存在）
                 if (restResp.body && restResp.body.errorCode) {
                     errorCodeDesc.errorCode = restResp.body.errorCode;
@@ -153,7 +153,7 @@ exports.addUser = function (req, res, user) {
 };
 
 //为用户添加应用
-exports.addApp = function (req, res, appList) {
+exports.addApp = function(req, res, appList) {
     return restUtil.authRest.post(
         {
             url: AppUserRestApis.addApp,
@@ -164,7 +164,7 @@ exports.addApp = function (req, res, appList) {
     );
 };
 //为用户修改应用
-exports.editApp = function (req, res, appInfo) {
+exports.editApp = function(req, res, appInfo) {
     return restUtil.authRest.put(
         {
             url: AppUserRestApis.editApp,
@@ -175,7 +175,7 @@ exports.editApp = function (req, res, appInfo) {
     );
 };
 //获取近期登录的用户列表
-exports.getRecentLoginUsers = function (req, res, queryObj) {
+exports.getRecentLoginUsers = function(req, res, queryObj) {
     return restUtil.authRest.get(
         {
             url: AppUserRestApis.getUsers,
@@ -192,10 +192,10 @@ function getUsersList(req, res, obj, requestUrl) {
             req: req,
             res: res,
         }, obj, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 resolve(data);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -203,7 +203,7 @@ function getUsersList(req, res, obj, requestUrl) {
 }
 
 //获取用户列表和异地登录的封装信息
-exports.getUsers = function (req, res, obj) {
+exports.getUsers = function(req, res, obj) {
     var emitter = new EventEmitter();
     obj = obj || {};
     var requestUrl = '';
@@ -223,7 +223,7 @@ exports.getUsers = function (req, res, obj) {
     return emitter;
 };
 //获取用户详情
-exports.getUserDetail = function (req, res, user_id) {
+exports.getUserDetail = function(req, res, user_id) {
     return restUtil.authRest.get({
         url: AppUserRestApis.getUserDetail.replace(":user_id", user_id),
         req: req,
@@ -231,7 +231,7 @@ exports.getUserDetail = function (req, res, user_id) {
     });
 };
 //停用所有应用
-exports.disableAllApps = function (req, res, user_id) {
+exports.disableAllApps = function(req, res, user_id) {
     return restUtil.authRest.put({
         url: AppUserRestApis.disableApps.replace(":user_id", user_id),
         req: req,
@@ -239,7 +239,7 @@ exports.disableAllApps = function (req, res, user_id) {
     });
 };
 //批量更新
-exports.batchUpdate = function (req, res, field, data, application_ids) {
+exports.batchUpdate = function(req, res, field, data, application_ids) {
     var userObj = {};
     try {
         userObj = JSON.parse(data);
@@ -256,34 +256,34 @@ exports.batchUpdate = function (req, res, field, data, application_ids) {
     }
     var restUrl = '';
     switch (field) {
-        //批量 添加/修改 应用
-        case 'grant_application':
-            restUrl = AppUserRestApis.BATCH_GRANT_APPLICATION;
-            break;
+    //批量 添加/修改 应用
+    case 'grant_application':
+        restUrl = AppUserRestApis.BATCH_GRANT_APPLICATION;
+        break;
         //批量修改密码
-        case 'change_password':
-            restUrl = AppUserRestApis.BATCH_UPDATE_USER_PASSWORD;
-            break;
+    case 'change_password':
+        restUrl = AppUserRestApis.BATCH_UPDATE_USER_PASSWORD;
+        break;
         //批量修改类型
-        case 'grant_type':
-            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_TYPE;
-            break;
+    case 'grant_type':
+        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_TYPE;
+        break;
         //批量修改开通状态
-        case 'grant_status':
-            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_STATUS;
-            break;
+    case 'grant_status':
+        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_STATUS;
+        break;
         //批量延期
-        case 'grant_period':
-            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_PERIOD;
-            break;
+    case 'grant_period':
+        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_PERIOD;
+        break;
         //批量修改客户
-        case 'grant_customer':
-            restUrl = AppUserRestApis.BATCH_UPDATE_USER_CUSTOMER;
-            break;
+    case 'grant_customer':
+        restUrl = AppUserRestApis.BATCH_UPDATE_USER_CUSTOMER;
+        break;
         //批量修改角色
-        case 'grant_roles':
-            restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_ROLES;
-            break;
+    case 'grant_roles':
+        restUrl = AppUserRestApis.BATCH_UPDATE_GRANT_ROLES;
+        break;
     }
     return restUtil.authRest.put({
         url: restUrl,
@@ -294,7 +294,7 @@ exports.batchUpdate = function (req, res, field, data, application_ids) {
 /**
  * 获取申请列表
  */
-exports.getApplyList = function (req, res, obj) {
+exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
     //获取有未读回复的申请列表
     if (obj.isUnreadApply=="true") {
@@ -308,7 +308,7 @@ exports.getApplyList = function (req, res, obj) {
         req: req,
         res: res
     }, obj, {
-        success: function (eventEmitter, data) {
+        success: function(eventEmitter, data) {
             //处理数据
             if (data && data.list && data.list.length) {
                 var applyList = applyDto.toRestObject(data.list || []);
@@ -319,7 +319,7 @@ exports.getApplyList = function (req, res, obj) {
     });
 };
 //修改用户字段
-exports.editAppUser = function (req, res, obj) {
+exports.editAppUser = function(req, res, obj) {
     //调用接口
     var requestUrl = AppUserRestApis.editAppUser;
     //是否是销售修改客户
@@ -346,7 +346,7 @@ exports.editAppUser = function (req, res, obj) {
 };
 
 //根据客户id获取对应的用户列表
-exports.getCustomerUsers = function (req, res, obj) {
+exports.getCustomerUsers = function(req, res, obj) {
     obj = obj || {};
     return restUtil.authRest.get({
         url: AppUserRestApis.getCustomerUsers + "/" + req.params.customer_id,
@@ -360,7 +360,7 @@ exports.getCustomerUsers = function (req, res, obj) {
 };
 
 //获取申请单详情
-exports.getApplyDetail = function (req, res, apply_id) {
+exports.getApplyDetail = function(req, res, apply_id) {
     var emitter = new EventEmitter();
     getApplyBasicDetail(req, res, apply_id).then((applyBasicDetail) => {
         // 申请正式、试用，已用用户申请正式、试用的情况
@@ -375,7 +375,7 @@ exports.getApplyDetail = function (req, res, apply_id) {
                 let index = _.indexOf(privilegesArray, 'GET_APP_EXTRA_GRANTS');
                 if (index != -1) {
                     let user_type = (applyBasicDetail.type == CONSTANTS.APPLY_USER_TRIAL || applyBasicDetail.type == CONSTANTS.EXIST_APPLY_TRIAL ?
-                            CONSTANTS.USER_TRIAL : CONSTANTS.USER_OFFICIAL
+                        CONSTANTS.USER_TRIAL : CONSTANTS.USER_OFFICIAL
                     );
                     let appIdList = _.pluck(applyBasicDetail.apps, 'client_id');
                     let obj = {
@@ -478,7 +478,7 @@ function getApplyBasicDetail(req, res, apply_id) {
             req: req,
             res: res
         }, obj, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 if (data && data.message && !_.isEmpty(data.message)) {
                     var detailObj;
                     if (data.message.type === CONSTANTS.APPLY_GRANT_DELAY) { // 延期
@@ -506,7 +506,7 @@ function getApplyBasicDetail(req, res, apply_id) {
                     }
                 }
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -521,10 +521,10 @@ function getAppExtraConfigInfo(req, res, obj) {
             req: req,
             res: res
         }, obj, {
-            success: function (emitter, list) {
+            success: function(emitter, list) {
                 resolve(list);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -539,10 +539,10 @@ function getAppRoleNames(req, res, obj) {
             req: req,
             res: res
         }, obj, {
-            success: function (emitter, list) {
+            success: function(emitter, list) {
                 resolve(list);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -559,10 +559,10 @@ function getQueryCustomerById(req, res, id) {
                 req: req,
                 res: res
             }, queryObj, {
-                success: function (emitter, list) {
+                success: function(emitter, list) {
                     resolve(list);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });
@@ -576,10 +576,10 @@ function getAppPermissionNames(req, res, obj) {
             req: req,
             res: res
         }, obj, {
-            success: function (emitter, list) {
+            success: function(emitter, list) {
                 resolve(list);
             },
-            error: function (eventEmitter, errorDesc) {
+            error: function(eventEmitter, errorDesc) {
                 reject(errorDesc.message);
             }
         });
@@ -587,7 +587,7 @@ function getAppPermissionNames(req, res, obj) {
 }
 
 //审批申请单
-exports.submitApply = function (req, res, requestObj) {
+exports.submitApply = function(req, res, requestObj) {
     //审批提交地址
     var applyUrl;
     //如果有用户名，是新申请
@@ -642,7 +642,7 @@ exports.submitApply = function (req, res, requestObj) {
 };
 
 //根据用户名获取用户信息
-exports.getUserByName = function (req, res, userName) {
+exports.getUserByName = function(req, res, userName) {
     return restUtil.authRest.get({
         url: AppUserRestApis.getUserByName,
         req: req,
@@ -650,7 +650,7 @@ exports.getUserByName = function (req, res, userName) {
     }, {
         user_name: userName
     }, {
-        success: function (eventEmitter, data) {
+        success: function(eventEmitter, data) {
             if (data && data.user_id) {
                 delete data.password;
                 delete data.password_salt;
@@ -663,7 +663,7 @@ exports.getUserByName = function (req, res, userName) {
 };
 
 //检查用户是否存在
-exports.checkUserExist = function (req, res, field, value) {
+exports.checkUserExist = function(req, res, field, value) {
     var data = {};
     data[field] = value;
     return restUtil.authRest.get({
@@ -671,7 +671,7 @@ exports.checkUserExist = function (req, res, field, value) {
         req: req,
         res: res
     }, data, {
-        success: function (eventEmitter, data) {
+        success: function(eventEmitter, data) {
             if (data && data.user_id) {
                 eventEmitter.emit("success", true);
             } else {
@@ -682,7 +682,7 @@ exports.checkUserExist = function (req, res, field, value) {
 };
 
 //申请用户
-exports.applyUser = function (req, res, requestObj) {
+exports.applyUser = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyUser,
         req: req,
@@ -691,7 +691,7 @@ exports.applyUser = function (req, res, requestObj) {
 };
 
 //申请延期
-exports.applyDelayUser = function (req, res, requestObj) {
+exports.applyDelayUser = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyDelayUser,
         req: req,
@@ -700,7 +700,7 @@ exports.applyDelayUser = function (req, res, requestObj) {
 };
 
 //批量用户延期
-exports.batchDelayUser = function (req, res, requestObj) {
+exports.batchDelayUser = function(req, res, requestObj) {
     return restUtil.authRest.put({
         url: AppUserRestApis.BATCH_UPDATE_GRANT_DELAY,
         req: req,
@@ -709,7 +709,7 @@ exports.batchDelayUser = function (req, res, requestObj) {
 };
 
 //销售申请修改密码
-exports.applyChangePassword = function (req, res, requestObj) {
+exports.applyChangePassword = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.changePassword,
         req: req,
@@ -718,7 +718,7 @@ exports.applyChangePassword = function (req, res, requestObj) {
 };
 
 //申请修改其他类型
-exports.applyChangeOther = function (req, res, requestObj) {
+exports.applyChangeOther = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyChangeOther,
         req: req,
@@ -727,7 +727,7 @@ exports.applyChangeOther = function (req, res, requestObj) {
 };
 
 //销售申请修改开通状态
-exports.applyChangeStatus = function (req, res, requestObj) {
+exports.applyChangeStatus = function(req, res, requestObj) {
     return restUtil.authRest.post({
         url: AppUserRestApis.applyChangeStatus,
         req: req,
@@ -736,7 +736,7 @@ exports.applyChangeStatus = function (req, res, requestObj) {
 };
 
 //编辑用户应用单个字段
-exports.editAppDetail = function (req, res, requestObj) {
+exports.editAppDetail = function(req, res, requestObj) {
 
     var list = [
         "status",
@@ -761,7 +761,7 @@ exports.editAppDetail = function (req, res, requestObj) {
 };
 
 //针对一个用户申请，添加一条回复
-exports.addReply = function (req, res, postData) {
+exports.addReply = function(req, res, postData) {
     return restUtil.authRest.post({
         url: AppUserRestApis.addReply,
         req: req,
@@ -770,7 +770,7 @@ exports.addReply = function (req, res, postData) {
 };
 
 //获取一个申请单的回复列表
-exports.getReplyList = function (req, res, apply_id) {
+exports.getReplyList = function(req, res, apply_id) {
     return restUtil.authRest.get({
         url: AppUserRestApis.getReplyList,
         req: req,
@@ -779,7 +779,7 @@ exports.getReplyList = function (req, res, apply_id) {
         apply_id: apply_id,
         page_size: 1000
     }, {
-        success: function (eventEmitter, data) {
+        success: function(eventEmitter, data) {
             var list = [];
             //处理数据
             if (data && data.list && data.list.length) {
@@ -791,7 +791,7 @@ exports.getReplyList = function (req, res, apply_id) {
 };
 
 //获取团队信息
-exports.getteamlists = function (req, res) {
+exports.getteamlists = function(req, res) {
     return restUtil.authRest.get({
         url: AppUserRestApis.getteamlists,
         req: req,
@@ -800,7 +800,7 @@ exports.getteamlists = function (req, res) {
 };
 
 // 撤销申请
-exports.saleBackoutApply = function (req, res, obj) {
+exports.saleBackoutApply = function(req, res, obj) {
     return restUtil.authRest.put({
         url: AppUserRestApis.saleBackoutApply,
         req: req,
@@ -809,7 +809,7 @@ exports.saleBackoutApply = function (req, res, obj) {
 };
 
 // 判断审批的用户名的合法性
-exports.checkUserName = function (req, res, obj) {
+exports.checkUserName = function(req, res, obj) {
     return restUtil.authRest.get({
         url: AppUserRestApis.checkUserName,
         req: req,
@@ -818,7 +818,7 @@ exports.checkUserName = function (req, res, obj) {
 };
 
 //  添加一个用户时，提示用户名信息
-exports.addOneUserSuggestName = function (req, res, obj) {
+exports.addOneUserSuggestName = function(req, res, obj) {
     return restUtil.authRest.get({
         url: AppUserRestApis.addOneUserSuggestName,
         req: req,
@@ -827,7 +827,7 @@ exports.addOneUserSuggestName = function (req, res, obj) {
 };
 
 // 获取安全域信息列表
-exports.getRealmList = function (req, res) {
+exports.getRealmList = function(req, res) {
     return restUtil.authRest.get({
         url: AppUserRestApis.getRealmList,
         req: req,

@@ -17,48 +17,48 @@ function AppFormActions() {
         'setAllAppListLoading'
     );
 
-    this.getAllAppList = function () {
+    this.getAllAppList = function() {
         var _this = this;
-        appAjax.getCurAppList().then(function (listObj) {
+        appAjax.getCurAppList().then(function(listObj) {
             _this.dispatch(listObj);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg);
         });
     };
     //获取应用管理员列表
-    this.getAppManagerList = function () {
+    this.getAppManagerList = function() {
         var _this = this;
-        appAjax.getAppUserList("app_manager").then(function (userList) {
+        appAjax.getAppUserList("app_manager").then(function(userList) {
             _this.dispatch(userList);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch([]);
         });
     };
     //获取应用所有者列表
-    this.getAppOwnerList = function () {
+    this.getAppOwnerList = function() {
         var _this = this;
-        appAjax.getAppUserList("app_owner").then(function (userList) {
+        appAjax.getAppUserList("app_owner").then(function(userList) {
             _this.dispatch(userList);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch([]);
         });
     };
 
     //保存应用
-    this.addApp = function (app) {
+    this.addApp = function(app) {
         var _this = this;
-        appAjax.addApp(app).then(function () {
+        appAjax.addApp(app).then(function() {
             //保存成功后的处理
             _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
         });
     };
     //编辑应用
-    this.editApp = function (app, callback) {
+    this.editApp = function(app, callback) {
         var _this = this;
-        appAjax.editApp(app).then(function (data) {
+        appAjax.editApp(app).then(function(data) {
             if (data) {
                 //保存成功后的处理
                 const editResult = {saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")};
@@ -82,7 +82,7 @@ function AppFormActions() {
                     _this.dispatch(editResult);
                 }
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             var editResult = {saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")};
             if (callback) {
@@ -94,7 +94,7 @@ function AppFormActions() {
     };
 
     //清空提示
-    this.resetSaveResult = function (formType, saveResult) {
+    this.resetSaveResult = function(formType, saveResult) {
         if (saveResult == "success") {
             if (formType == "add") {
                 cardEmitter.emit(cardEmitter.ADD_CARD);

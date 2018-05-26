@@ -11,18 +11,18 @@ function CallRecordActions() {
         'showCallAnalysisPanel' // 显示通话分析的界面
     );
     //获取通话记录列表
-    this.getCallRecordList = function (params, filterObj) {
+    this.getCallRecordList = function(params, filterObj) {
         this.dispatch({loading: true, error: false});
         let _this = this;
-        callRecordAjax.getCallRecordList(params, filterObj).then(function (resData) {
+        callRecordAjax.getCallRecordList(params, filterObj).then(function(resData) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, result: resData});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     // 搜索电话号码号码时，提供推荐列表
-    this.getRecommendPhoneList = function (params, filterObj) {
+    this.getRecommendPhoneList = function(params, filterObj) {
         callRecordAjax.getRecommendPhoneList(params, filterObj).then( (resData) => {
             this.dispatch({ error: false, resData: resData, searchInputVal: filterObj.query.dst});
         },  (errMsg) => {

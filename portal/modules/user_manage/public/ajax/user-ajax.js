@@ -1,15 +1,15 @@
 //获取用户的个人日志
-exports.getLogList = function (condition) {
+exports.getLogList = function(condition) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/log_list',
         dataType: 'json',
         type: 'get',
         data: condition,
-        success: function (logList) {
+        success: function(logList) {
             Deferred.resolve(logList);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -17,17 +17,17 @@ exports.getLogList = function (condition) {
 };
 
 //获取当前页的用户列表
-exports.getCurUserList = function (searchObj) {
+exports.getCurUserList = function(searchObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user',
         dataType: 'json',
         type: 'get',
         data: searchObj,
-        success: function (userListObj) {
+        success: function(userListObj) {
             Deferred.resolve(userListObj);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -37,16 +37,16 @@ exports.getCurUserList = function (searchObj) {
 };
 
 //获取当前用户的详细信息
-exports.getCurUserById = function (userId) {
+exports.getCurUserById = function(userId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/id/' + userId,
         dataType: 'json',
         type: 'get',
-        success: function (userObj) {
+        success: function(userObj) {
             Deferred.resolve(userObj);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -55,16 +55,16 @@ exports.getCurUserById = function (userId) {
 
 
 //添加用户
-exports.addUser = function (user) {
+exports.addUser = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user',
         dataType: 'json',
         type: 'post',
         data: user,
-        success: function (userCreated) {
+        success: function(userCreated) {
             Deferred.resolve(userCreated);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -72,16 +72,16 @@ exports.addUser = function (user) {
 };
 
 //修改用户
-exports.editUser = function (user) {
+exports.editUser = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user',
         dataType: 'json',
         type: 'put',
         data: user,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -89,15 +89,15 @@ exports.editUser = function (user) {
 };
 
 //修改成员的所属团队
-exports.updateUserTeam = function (user) {
+exports.updateUserTeam = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_team/' + user.id + "/" + user.team,
         dataType: 'json',
         type: 'put',
-        success: function (userModified) {
+        success: function(userModified) {
             Deferred.resolve(userModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -105,16 +105,16 @@ exports.updateUserTeam = function (user) {
 };
 
 //修改成员的角色
-exports.updateUserRoles = function (user) {
+exports.updateUserRoles = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_roles',
         dataType: 'json',
         type: 'put',
         data: {user_id: user.id, role_ids: JSON.stringify(user.role)},
-        success: function (userModified) {
+        success: function(userModified) {
             Deferred.resolve(userModified);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -122,16 +122,16 @@ exports.updateUserRoles = function (user) {
 };
 
 //启停用户
-exports.updateUserStatus = function (user) {
+exports.updateUserStatus = function(user) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/status',
         dataType: 'json',
         type: 'put',
         data: user,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -139,12 +139,12 @@ exports.updateUserStatus = function (user) {
 };
 
 //获取角色列表
-exports.getRoleList = function (clientId) {
+exports.getRoleList = function(clientId) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/roles/' + clientId,
         type: 'get',
-        success: function (roleList) {
+        success: function(roleList) {
             Deferred.resolve(roleList);
         }
     });
@@ -152,15 +152,15 @@ exports.getRoleList = function (clientId) {
 };
 
 //获取团队列表
-exports.getUserTeamList = function () {
+exports.getUserTeamList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_list',
         dataType: 'json',
         type: 'get',
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -168,15 +168,15 @@ exports.getUserTeamList = function () {
 };
 
 //验证用户名唯一性
-exports.checkOnlyUserName = function (userName) {
+exports.checkOnlyUserName = function(userName) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_name/' + userName,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -184,15 +184,15 @@ exports.checkOnlyUserName = function (userName) {
 };
 
 //验证电话唯一性
-exports.checkOnlyPhone = function (phone) {
+exports.checkOnlyPhone = function(phone) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_phone/' + phone,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -200,31 +200,31 @@ exports.checkOnlyPhone = function (phone) {
 };
 
 //验证邮箱唯一性
-exports.checkOnlyEmail = function (email) {
+exports.checkOnlyEmail = function(email) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_email/' + email,
         dataType: 'json',
         type: 'get',
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //获取销售目标和提成比例
-exports.getSalesGoals = function (queryObj) {
+exports.getSalesGoals = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/contract/goal/users',
         dataType: 'json',
         type: 'get',
         data:queryObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });
@@ -232,16 +232,16 @@ exports.getSalesGoals = function (queryObj) {
 };
 //设置销售目标或者提成比例
 //获取销售目标和提成比例
-exports.setSalesGoals = function (queryObj) {
+exports.setSalesGoals = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/set/contract/goal/users',
         dataType: 'json',
         type: 'post',
         data: queryObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
-        }, error: function (errorInfo) {
+        }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

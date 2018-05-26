@@ -13,7 +13,7 @@ import { packageTry } from 'LIB_DIR/func';
 
 var ScatterChart = React.createClass({
     echartInstance: null,
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             list: [],
             width: '100%',
@@ -24,7 +24,7 @@ var ScatterChart = React.createClass({
             dataType: ''//time:时间的需要转换
         };
     },
-    renderChart: function () {
+    renderChart: function() {
         var hours = _.range(24);
         var days = [Intl.get("user.time.sunday", "周日"), Intl.get("user.time.monday", "周一"), Intl.get("user.time.tuesday", "周二"), Intl.get("user.time.wednesday", "周三"), Intl.get("user.time.thursday", "周四"), Intl.get("user.time.friday", "周五"), Intl.get("user.time.saturday", "周六")];
         var data = this.props.list;
@@ -43,7 +43,7 @@ var ScatterChart = React.createClass({
         var option = {
             tooltip: {
                 extraCssText: echartsTooltipCssText,
-                formatter: function (obj) {
+                formatter: function(obj) {
                     var weekdaysIndex = obj.seriesIndex;
                     var hour = obj.value[0];
                     var data = obj.value[1];
@@ -62,7 +62,7 @@ var ScatterChart = React.createClass({
             series: []
         };
 
-        echarts.util.each(days, function (day, idx) {
+        echarts.util.each(days, function(day, idx) {
             option.title.push({
                 textBaseline: 'middle',
                 top: (idx + 0.5) * 100 / 10 + '%',
@@ -109,7 +109,7 @@ var ScatterChart = React.createClass({
                 coordinateSystem: 'singleAxis',
                 type: 'scatter',
                 data: [],
-                symbolSize: function (dataItem) {
+                symbolSize: function(dataItem) {
                     if (countMax == 0) {
                         return dataItem[1];
                     }
@@ -138,11 +138,11 @@ var ScatterChart = React.createClass({
         }
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.renderChart();
     },
 
-    componentDidUpdate: function (prevProps) {
+    componentDidUpdate: function(prevProps) {
         if (
             this.props.list.length &&
             prevProps.list.length &&
@@ -154,7 +154,7 @@ var ScatterChart = React.createClass({
         this.renderChart();
     },
 
-    render: function () {
+    render: function() {
         return (
             <div className="analysis_timerange_bar_chart" ref="wrap">
                 {this.props.resultType === 'loading' ?
@@ -163,13 +163,13 @@ var ScatterChart = React.createClass({
                             <Spinner/>
                         </div>
                     ) : (
-                    <div>
-                        <div ref="chart"
-                             style={{width: this.props.width, height: this.props.height}}
-                             className="chart"
-                             data-title={this.props.title}>
+                        <div>
+                            <div ref="chart"
+                                style={{width: this.props.width, height: this.props.height}}
+                                className="chart"
+                                data-title={this.props.title}>
+                            </div>
                         </div>
-                    </div>
                     )
                 }
             </div>

@@ -70,7 +70,7 @@ class AddMoreInfo extends React.Component {
         };
         var appLists = this.state.appLists || [];
         //应用下拉列表
-        var appListsOptions = appLists.map(function (app, index) {
+        var appListsOptions = appLists.map(function(app, index) {
             return (<Option key={index} value={app.client_id}>{app.client_name}</Option>);
         });
         return (

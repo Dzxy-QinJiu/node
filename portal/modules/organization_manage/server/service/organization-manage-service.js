@@ -20,7 +20,7 @@ var organizationRestApis = {
 };
 exports.urls = organizationRestApis;
 
-exports.getOrganizationList = function (req, res) {
+exports.getOrganizationList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: organizationRestApis.getOrganizationList,
@@ -32,7 +32,7 @@ exports.getOrganizationList = function (req, res) {
 //转换为界面上所需的数据格式
 function turnToFrontMember(data) {
     if (data && data.length > 0) {
-        data = data.map(function (member) {
+        data = data.map(function(member) {
             return {
                 userId: member.user_id,
                 nickName: member.nick_name,
@@ -47,7 +47,7 @@ function turnToFrontMember(data) {
     return data;
 }
 
-exports.getOrganizeMembersById = function (req, res, groupId) {
+exports.getOrganizeMembersById = function(req, res, groupId) {
     return restUtil.authRest.get(
         {
             url: organizationRestApis.getOrganizationMemberList + "/" + groupId,
@@ -56,7 +56,7 @@ exports.getOrganizeMembersById = function (req, res, groupId) {
         },
         null,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 data = turnToFrontMember(data);
                 eventEmitter.emit("success", data);
             }
@@ -66,7 +66,7 @@ exports.getOrganizeMembersById = function (req, res, groupId) {
 //转换为界面上所需的添加成员列表的数据格式
 function turnToFrontUser(data) {
     if (data && data.length > 0) {
-        data = data.map(function (userObj) {
+        data = data.map(function(userObj) {
             if (userObj && userObj.user) {
                 return {
                     key: userObj.user.user_id,
@@ -79,7 +79,7 @@ function turnToFrontUser(data) {
     }
     return data;
 }
-exports.getMemberList = function (req, res, queryObj) {
+exports.getMemberList = function(req, res, queryObj) {
     return restUtil.authRest.get(
         {
             url: organizationRestApis.getMemberList,
@@ -88,14 +88,14 @@ exports.getMemberList = function (req, res, queryObj) {
         },
         queryObj,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 data.data = turnToFrontUser(data.data);
                 eventEmitter.emit("success", data);
             }
         });
 };
 
-exports.addMember = function (req, res, obj) {
+exports.addMember = function(req, res, obj) {
     return restUtil.authRest.post(
         {
             url: organizationRestApis.addMember,
@@ -105,7 +105,7 @@ exports.addMember = function (req, res, obj) {
         obj);
 };
 
-exports.editMember = function (req, res, obj, type) {
+exports.editMember = function(req, res, obj, type) {
     let url = organizationRestApis.setUserToManager;
     if (type == "manager") {
         url = organizationRestApis.setManagerToUser;
@@ -119,7 +119,7 @@ exports.editMember = function (req, res, obj, type) {
         obj);
 };
 
-exports.deleteGroup = function (req, res, groupId) {
+exports.deleteGroup = function(req, res, groupId) {
     return restUtil.authRest.del(
         {
             url: organizationRestApis.deleteGroup + "/" + groupId,
@@ -128,7 +128,7 @@ exports.deleteGroup = function (req, res, groupId) {
         });
 };
 
-exports.editGroup = function (req, res, organization) {
+exports.editGroup = function(req, res, organization) {
     return restUtil.authRest.put(
         {
             url: organizationRestApis.editGroup,
@@ -138,7 +138,7 @@ exports.editGroup = function (req, res, organization) {
         organization);
 };
 
-exports.addGroup = function (req, res, organization, category) {
+exports.addGroup = function(req, res, organization, category) {
     let addUrl = organizationRestApis.addGroup;
     if (category == CATEGORY_TYPE.DEPARTMENT) {
         //部门

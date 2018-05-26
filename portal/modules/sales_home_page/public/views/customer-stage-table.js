@@ -85,7 +85,7 @@ class CustomerStageTable extends React.Component {
                 }
             });
         };
-        const getRowKey = function (record, index) {
+        const getRowKey = function(record, index) {
             return index;
         };
         //处理选中行的样式
@@ -129,7 +129,7 @@ class CustomerStageTable extends React.Component {
                     title: Intl.get("crm.4", "客户名称"),
                     render: (text, item, index) => {
                         return (<span className="click-cell"
-                                      onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
+                            onClick={handleCustomerClick.bind(this, item, index)}>{text}</span>);
                     },
                     width: 100
                 },

@@ -5,7 +5,7 @@ const momentMap = {
 };
 exports.DATE_FORMAT = MOMENT_DATE_FORMAT;
 //获取日期字符串
-exports.getDateStr = function (dateStr) {
+exports.getDateStr = function(dateStr) {
     dateStr += '';
     if (dateStr === '0') {
         return dateStr;
@@ -18,7 +18,7 @@ exports.getDateStr = function (dateStr) {
     return dateStr;
 };
 //获取时间戳 开始时间00:00:00 结束时间00:00:00
-exports.getMilliseconds = function (dateStr, endTimeEndOfDay) {
+exports.getMilliseconds = function(dateStr, endTimeEndOfDay) {
     if (dateStr === '0') {
         return dateStr;
     }
@@ -35,14 +35,14 @@ exports.getMilliseconds = function (dateStr, endTimeEndOfDay) {
 };
 
 //获取今天的开始、结束时间
-exports.getTodayTime = function () {
+exports.getTodayTime = function() {
     var start_time = moment().format(MOMENT_DATE_FORMAT);
     var end_time = moment().format(MOMENT_DATE_FORMAT);
     return {start_time, end_time};
 };
 
 //获取昨天的开始、结束时间
-exports.getYesterdayTime = function () {
+exports.getYesterdayTime = function() {
     var start_time = moment().subtract(1, "days").format(MOMENT_DATE_FORMAT);
     var end_time = moment().subtract(1, "days").format(MOMENT_DATE_FORMAT);
     return {start_time, end_time};
@@ -53,7 +53,7 @@ exports.getYesterdayTime = function () {
  * @param endOfToday  是否截止到今天
  * @returns {{start_time, end_time: string}}
  */
-exports.getThisWeekTime = function (endOfToday) {
+exports.getThisWeekTime = function(endOfToday) {
     return {
         start_time: moment().weekday(0).format(MOMENT_DATE_FORMAT),
         end_time: endOfToday ? moment().format(MOMENT_DATE_FORMAT) : moment().weekday(6).format(MOMENT_DATE_FORMAT)//  截止到今天或周日
@@ -61,7 +61,7 @@ exports.getThisWeekTime = function (endOfToday) {
 };
 
 //获取上周的开始、结束时间
-exports.getLastWeekTime = function () {
+exports.getLastWeekTime = function() {
     var start_time = moment().weekday(0).subtract(7, "days").format(MOMENT_DATE_FORMAT);
     var end_time = moment().weekday(6).subtract(7, "days").format(MOMENT_DATE_FORMAT);
     return {start_time, end_time};
@@ -72,7 +72,7 @@ exports.getLastWeekTime = function () {
  * @param endOfToday  是否截止到今天
  * @returns {{start_time, end_time: *}}
  */
-exports.getThisMonthTime = function (endOfToday) {
+exports.getThisMonthTime = function(endOfToday) {
     return {
         start_time: moment().date(1).format(MOMENT_DATE_FORMAT),
         end_time: endOfToday ? moment().format(MOMENT_DATE_FORMAT) : moment().add(1, "month").date(1).subtract(1, "day").format(MOMENT_DATE_FORMAT)
@@ -80,42 +80,42 @@ exports.getThisMonthTime = function (endOfToday) {
 };
 
 //获取上月的开始、结束时间
-exports.getLastMonthTime = function () {
+exports.getLastMonthTime = function() {
     var start_time = moment().date(1).subtract("1", "months").format(MOMENT_DATE_FORMAT);
     var end_time = moment().date(1).subtract(1, "day").format(MOMENT_DATE_FORMAT);
     return {start_time, end_time};
 };
 
 //获取一周时间
-exports.getOneWeekTime = function () {
+exports.getOneWeekTime = function() {
     return {
         start_time: moment().format(MOMENT_DATE_FORMAT),
         end_time: moment().add(7, "days")
     };
 };
 //获取半个月时间
-exports.getHalfAMonthTime = function () {
+exports.getHalfAMonthTime = function() {
     return {
         start_time: moment().format(MOMENT_DATE_FORMAT),
         end_time: moment().add(15, "days").format(MOMENT_DATE_FORMAT)
     };
 };
 //获取月份时间
-exports.getMonthTime = function (num) {
+exports.getMonthTime = function(num) {
     return {
         start_time: moment().format(MOMENT_DATE_FORMAT),
         end_time: moment().add(num, "month").format(MOMENT_DATE_FORMAT)
     };
 };
 //获取永久时间
-exports.getForeverTime = function () {
+exports.getForeverTime = function() {
     return {
         start_time: moment().format(MOMENT_DATE_FORMAT),
         end_time: '0'
     };
 };
 //获取全部时间
-exports.getAllTime = function () {
+exports.getAllTime = function() {
     return {
         start_time: '',
         end_time: ''
@@ -126,7 +126,7 @@ exports.getAllTime = function () {
  * 如果时间有效直接使用时间，如果无效则使用当前时间；
  * 如果开始时间大于结束时间时，会将时间翻转
  */
-exports.getCustomTime = function (start_time, end_time) {
+exports.getCustomTime = function(start_time, end_time) {
     let options = {
         start_time: "",
         end_time: ""
@@ -155,7 +155,7 @@ exports.getCustomTime = function (start_time, end_time) {
 };
 
 //获取最近时间
-exports.getLastTime = function (word) {
+exports.getLastTime = function(word) {
     var result = /\-(\d+)([mw])/.exec(word);
     if (!result) {
         throw 'date-selector/utils getLastTime Error , please check arguments';
@@ -170,7 +170,7 @@ exports.getLastTime = function (word) {
 };
 
 //获取自然时间单位
-exports.getNatureUnit = function (startTime, endTime) {
+exports.getNatureUnit = function(startTime, endTime) {
     if (!startTime && !endTime) {
         return 'month';
     }
@@ -191,7 +191,7 @@ exports.getNatureUnit = function (startTime, endTime) {
 };
 
 //获取季度的时间值
-exports.getQuarterTime = function (which, year) {
+exports.getQuarterTime = function(which, year) {
     which += '';
     if (!/^[1234]$/.test(which)) {
         throw 'date-selector/utils getQuarterTime Error , please check arguments';
@@ -208,7 +208,7 @@ exports.getQuarterTime = function (which, year) {
  * @returns {{start_time, end_time: *}}
  */
 
-exports.getThisQuarterTime = function (endOfToday) {
+exports.getThisQuarterTime = function(endOfToday) {
     return {
         start_time: moment().startOf("quarter").format(MOMENT_DATE_FORMAT),
         end_time: endOfToday ?
@@ -220,7 +220,7 @@ exports.getThisQuarterTime = function (endOfToday) {
  * @param endOfToday 是否截止到今天
  * @returns {{start_time, end_time}}
  */
-exports.getThisYearTime = function (endOfToday) {
+exports.getThisYearTime = function(endOfToday) {
     return {
         start_time: moment().startOf("year").format(MOMENT_DATE_FORMAT),
         end_time: endOfToday ?
@@ -228,7 +228,7 @@ exports.getThisYearTime = function (endOfToday) {
     };
 };
 //根据年获取开始结束时间值
-exports.getYearTime = function (year) {
+exports.getYearTime = function(year) {
     year = year || new Date().getFullYear();
     return {
         start_time: moment().year(year).startOf("year").format(MOMENT_DATE_FORMAT),
@@ -236,9 +236,9 @@ exports.getYearTime = function (year) {
     };
 };
 //返回按照 自然日、自然周、自然月 的横轴时间
-exports.getNaturalDate = function (list, unit) {
+exports.getNaturalDate = function(list, unit) {
     var yearMap = {};
-    var result = list.map(function (obj, idx) {
+    var result = list.map(function(obj, idx) {
         var concat = '';
         var startMoment = moment(obj.starttime);
         var endMoment = moment(obj.endtime);
@@ -272,7 +272,7 @@ exports.getNaturalDate = function (list, unit) {
     return result;
 };
 //获取echart的tooltip上显示的日期
-exports.getEchartTooltipDate = function (list, idx, unit) {
+exports.getEchartTooltipDate = function(list, idx, unit) {
     var obj = list[idx];
     var timeRange = obj.timerange;
     var startMoment = moment(timeRange.starttime);
@@ -304,7 +304,7 @@ exports.getEchartTooltipDate = function (list, idx, unit) {
  * @param endOfToday  是否截止到今天
  * @returns {{}}
  */
-exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
+exports.autoSelectTime = function(time_moment, timeRange, endOfToday) {
     //如果时间不存在或者无效，使用当前时间
     if (!time_moment || !time_moment.isValid()) {
         time_moment = moment();
@@ -341,7 +341,7 @@ exports.autoSelectTime = function (time_moment, timeRange, endOfToday) {
 };
 
 // 近一周的时间
-exports.getNearlyWeekTime = function () {
+exports.getNearlyWeekTime = function() {
     return {
         start_time: moment().add(-7, "days"),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -349,7 +349,7 @@ exports.getNearlyWeekTime = function () {
 };
 
 // 近一月的时间
-exports.getNearlyMonthTime = function () {
+exports.getNearlyMonthTime = function() {
     return {
         start_time: moment().subtract(1, 'months').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -357,7 +357,7 @@ exports.getNearlyMonthTime = function () {
 };
 
 // 近一季度的时间
-exports.getNearlyQuarterTime = function () {
+exports.getNearlyQuarterTime = function() {
     return {
         start_time: moment().subtract(1, 'quarter').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)
@@ -365,7 +365,7 @@ exports.getNearlyQuarterTime = function () {
 };
 
 // 近一年的时间
-exports.getNearlyYearTime = function () {
+exports.getNearlyYearTime = function() {
     return {
         start_time: moment().subtract(1, 'year').format(MOMENT_DATE_FORMAT),
         end_time: moment().format(MOMENT_DATE_FORMAT)

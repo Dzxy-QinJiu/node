@@ -113,7 +113,7 @@ var urls = {
 exports.urls = urls;
 
 // 获取 统计数字（总用户、新增用户、过期用户、新增过期用户）
-exports.getSummaryNumbers = function (req, res, queryParams) {
+exports.getSummaryNumbers = function(req, res, queryParams) {
     let url = urls.getSummaryNumbers;
     //销售首页
     if (queryParams.urltype == "v2") {
@@ -139,7 +139,7 @@ exports.getSummaryNumbers = function (req, res, queryParams) {
 };
 
 // 获取总用户的用户统计
-exports.getTotalSummary = function (req, res, queryParams) {
+exports.getTotalSummary = function(req, res, queryParams) {
     let url = urls.getTotalSummary;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getTotalSummary;
@@ -159,7 +159,7 @@ exports.getTotalSummary = function (req, res, queryParams) {
 };
 
 //获取新增用户的用户统计
-exports.getAddedSummary = function (req, res, queryParams) {
+exports.getAddedSummary = function(req, res, queryParams) {
     let url = urls.getAddedSummary;
     if (queryParams.urltype == "v2") {
         if (queryParams.dataType == "all") {
@@ -184,7 +184,7 @@ exports.getAddedSummary = function (req, res, queryParams) {
 };
 
 //获取过期用户的用户统计
-exports.getExpiredSummary = function (req, res, queryParams) {
+exports.getExpiredSummary = function(req, res, queryParams) {
     let url = urls.getExpiredSummary;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -199,7 +199,7 @@ exports.getExpiredSummary = function (req, res, queryParams) {
 };
 
 //获取新增过期用户的用户统计
-exports.getAddedExpiredSummary = function (req, res, queryParams) {
+exports.getAddedExpiredSummary = function(req, res, queryParams) {
     let url = urls.getAddedExpiredSummary;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -214,7 +214,7 @@ exports.getAddedExpiredSummary = function (req, res, queryParams) {
 };
 
 //获取总用户的团队统计
-exports.getTotalTeam = function (req, res, queryParams) {
+exports.getTotalTeam = function(req, res, queryParams) {
     let url = urls.getTotalTeam;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getTotalTeam;
@@ -234,7 +234,7 @@ exports.getTotalTeam = function (req, res, queryParams) {
 };
 
 //获取新增用户的团队统计
-exports.getAddedTeam = function (req, res, queryParams) {
+exports.getAddedTeam = function(req, res, queryParams) {
     let url = urls.getAddedTeam;
     if (queryParams.urltype == "v2") {
         if (queryParams.dataType == "all") {
@@ -259,7 +259,7 @@ exports.getAddedTeam = function (req, res, queryParams) {
 };
 
 //获取过期用户的团队统计
-exports.getExpiredTeam = function (req, res, queryParams) {
+exports.getExpiredTeam = function(req, res, queryParams) {
     let url = urls.getExpiredTeam;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -274,7 +274,7 @@ exports.getExpiredTeam = function (req, res, queryParams) {
 };
 
 //获取新增过期用户的团队统计
-exports.getAddedExpiredTeam = function (req, res, queryParams) {
+exports.getAddedExpiredTeam = function(req, res, queryParams) {
     let url = urls.getAddedExpiredTeam;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -289,7 +289,7 @@ exports.getAddedExpiredTeam = function (req, res, queryParams) {
 };
 
 //获取总用户的地域统计
-exports.getTotalZone = function (req, res, queryParams) {
+exports.getTotalZone = function(req, res, queryParams) {
     let url = urls.getTotalZone;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getTotalZone;
@@ -309,7 +309,7 @@ exports.getTotalZone = function (req, res, queryParams) {
 };
 
 //获取新增用户的地域统计
-exports.getAddedZone = function (req, res, queryParams) {
+exports.getAddedZone = function(req, res, queryParams) {
     let url = urls.getAddedZone;
     if (queryParams.urltype == "v2") {
         if (queryParams.dataType == "all") {
@@ -334,7 +334,7 @@ exports.getAddedZone = function (req, res, queryParams) {
 };
 
 //获取过期用户的地域统计
-exports.getExpiredZone = function (req, res, queryParams) {
+exports.getExpiredZone = function(req, res, queryParams) {
     let url = urls.getExpiredZone;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -349,7 +349,7 @@ exports.getExpiredZone = function (req, res, queryParams) {
 };
 
 //获取新增过期用户的地域统计
-exports.getAddedExpiredZone = function (req, res, queryParams) {
+exports.getAddedExpiredZone = function(req, res, queryParams) {
     let url = urls.getAddedExpiredZone;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -364,7 +364,7 @@ exports.getAddedExpiredZone = function (req, res, queryParams) {
 };
 
 //获取总用户的行业统计
-exports.getTotalIndustry = function (req, res, queryParams) {
+exports.getTotalIndustry = function(req, res, queryParams) {
     let url = urls.getTotalIndustry;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getTotalIndustry;
@@ -384,7 +384,7 @@ exports.getTotalIndustry = function (req, res, queryParams) {
 };
 
 // 获取销售开通各应用用户数的统计
-exports.getSalesOpenUserAnalysis = function (req, res, queryParams) {
+exports.getSalesOpenUserAnalysis = function(req, res, queryParams) {
     return restUtil.authRest.get(
         {
             url: urls.getSalesOpenUserAnalysis.replace(":auth_type", queryParams.authType),
@@ -394,7 +394,7 @@ exports.getSalesOpenUserAnalysis = function (req, res, queryParams) {
 };
 
 //获取新增用户的行业统计
-exports.getAddedIndustry = function (req, res, queryParams) {
+exports.getAddedIndustry = function(req, res, queryParams) {
     let url = urls.getAddedIndustry;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getAddedIndustry;
@@ -418,7 +418,7 @@ exports.getAddedIndustry = function (req, res, queryParams) {
 };
 
 //获取过期用户的行业统计
-exports.getExpiredIndustry = function (req, res, queryParams) {
+exports.getExpiredIndustry = function(req, res, queryParams) {
     let url = urls.getExpiredIndustry;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -433,7 +433,7 @@ exports.getExpiredIndustry = function (req, res, queryParams) {
 };
 
 //获取新增过期用户的行业统计
-exports.getAddedExpiredIndustry = function (req, res, queryParams) {
+exports.getAddedExpiredIndustry = function(req, res, queryParams) {
     let url = urls.getAddedExpiredIndustry;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -456,10 +456,10 @@ function getTeams(req, res) {
                 req: req,
                 res: res
             }, {}, {
-                success: function (eventEmitter, result) {
+                success: function(eventEmitter, result) {
                     resolve(result);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });
@@ -469,7 +469,7 @@ function getTeams(req, res) {
 //获取成员
 function getMembers(req, res) {
     return new Promise((resolve, reject) => {
-        getTeams(req, res).then(function (teams) {
+        getTeams(req, res).then(function(teams) {
             if (!_.isArray(teams) || _.isEmpty(teams)) {
                 var user = auth.getUser(req);
                 resolve({
@@ -483,7 +483,7 @@ function getMembers(req, res) {
                 });
             } else {
                 if (teams.length > 1) {
-                    var list = _.map(teams, function (team) {
+                    var list = _.map(teams, function(team) {
                         return {
                             id: team.group_id,
                             name: team.group_name
@@ -501,7 +501,7 @@ function getMembers(req, res) {
                             req: req,
                             res: res
                         }, {}, {
-                            success: function (eventEmitter, result) {
+                            success: function(eventEmitter, result) {
                                 if (!_.isArray(result) || _.isEmpty(result)) {
                                     var user = auth.getUser(req);
                                     resolve({
@@ -514,7 +514,7 @@ function getMembers(req, res) {
                                         ]
                                     });
                                 } else {
-                                    var list = _.map(result, function (sales) {
+                                    var list = _.map(result, function(sales) {
                                         return {
                                             id: sales.user_id,
                                             name: sales.nick_name
@@ -526,13 +526,13 @@ function getMembers(req, res) {
                                     });
                                 }
                             },
-                            error: function (eventEmitter, errorDesc) {
+                            error: function(eventEmitter, errorDesc) {
                                 reject(errorDesc.message);
                             }
                         });
                 }
             }
-        }).catch(function (errorMsg) {
+        }).catch(function(errorMsg) {
             reject(errorMsg);
         });
     });
@@ -559,7 +559,7 @@ function getActiveNessLineData(req, res, reqParams, dataType, dataRange, authTyp
                 req: req,
                 res: res
             }, reqParams, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     if (dataType !== 'total' && data && data[0] && data[0].appId) {
                         resolve({
                             userName: userName,
@@ -572,7 +572,7 @@ function getActiveNessLineData(req, res, reqParams, dataType, dataRange, authTyp
                         });
                     }
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });
@@ -580,7 +580,7 @@ function getActiveNessLineData(req, res, reqParams, dataType, dataRange, authTyp
 }
 
 //获取用户活跃度统计
-exports.getActiveNess = function (req, res, dataType, dataRange, queryParams) {
+exports.getActiveNess = function(req, res, dataType, dataRange, queryParams) {
     let authType = queryParams.authType;
     delete queryParams.authType;
     var emitter = new EventEmitter();
@@ -589,11 +589,11 @@ exports.getActiveNess = function (req, res, dataType, dataRange, queryParams) {
         auth.hasRole(req, auth.ROLE_CONSTANTS.SECRETARY) ||
         auth.hasRole(req, auth.ROLE_CONSTANTS.SALES_LEADER)
     ) {
-        getMembers(req, res).then(function (memberResult) {
+        getMembers(req, res).then(function(memberResult) {
             var memberType = memberResult.type;
             var memberList = memberResult.list;
             var promiseList = [];
-            _.each(memberList, function (member) {
+            _.each(memberList, function(member) {
                 var reqParam = queryParams;
                 reqParam.userName = member.name;
                 if (memberType === 'sales') {
@@ -603,12 +603,12 @@ exports.getActiveNess = function (req, res, dataType, dataRange, queryParams) {
                 }
                 promiseList.push(getActiveNessLineData(req, res, reqParam, dataType, dataRange, authType));
             });
-            Promise.all(promiseList).then(function (lineList) {
+            Promise.all(promiseList).then(function(lineList) {
                 emitter.emit("success", lineList);
-            }, function (errorMsg) {
+            }, function(errorMsg) {
                 emitter.emit("error", errorMsg);
             });
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             emitter.emit("error", errorMsg);
         });
         //如果不是销售，使用之前的逻辑
@@ -616,10 +616,10 @@ exports.getActiveNess = function (req, res, dataType, dataRange, queryParams) {
         var reqParams = queryParams;
         reqParams.userName = "";
         var lines = [];
-        getActiveNessLineData(req, res, reqParams, dataType, dataRange, authType).then(function (lineObj) {
+        getActiveNessLineData(req, res, reqParams, dataType, dataRange, authType).then(function(lineObj) {
             lines.push(lineObj);
             emitter.emit("success", lines);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             emitter.emit("error", errorMsg);
         });
     }
@@ -627,7 +627,7 @@ exports.getActiveNess = function (req, res, dataType, dataRange, queryParams) {
 };
 
 //获取用户活跃时间段以weekly为间隔获取数据
-exports.getActiveTime = function (req, res, queryParams) {
+exports.getActiveTime = function(req, res, queryParams) {
     delete queryParams.authType;
     let app_id = queryParams.app_id;
     return restUtil.authRest.get(
@@ -638,7 +638,7 @@ exports.getActiveTime = function (req, res, queryParams) {
         }, queryParams);
 };
 //获取全部成员
-exports.getTotalMember = function (req, res, queryParams) {
+exports.getTotalMember = function(req, res, queryParams) {
     let url = urls.getTotalMember;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -653,7 +653,7 @@ exports.getTotalMember = function (req, res, queryParams) {
 };
 
 //获取新增成员
-exports.getAddedMember = function (req, res, queryParams) {
+exports.getAddedMember = function(req, res, queryParams) {
     let url = urls.getAddedMember;
     if (queryParams.urltype == "v2") {
         url = urls.v2.getAddedMember;
@@ -677,7 +677,7 @@ exports.getAddedMember = function (req, res, queryParams) {
 };
 
 //获取过期成员
-exports.getExpiredMember = function (req, res, queryParams) {
+exports.getExpiredMember = function(req, res, queryParams) {
     let url = urls.getExpiredMember;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -692,7 +692,7 @@ exports.getExpiredMember = function (req, res, queryParams) {
 };
 
 //获取新增过期成员
-exports.getAddedExpiredMember = function (req, res, queryParams) {
+exports.getAddedExpiredMember = function(req, res, queryParams) {
     let url = urls.getAddedExpiredMember;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -707,7 +707,7 @@ exports.getAddedExpiredMember = function (req, res, queryParams) {
 };
 
 //获取登录时长统计
-exports.getLoginLong = function (req, res, dataType, hours, queryParams) {
+exports.getLoginLong = function(req, res, dataType, hours, queryParams) {
     delete queryParams.authType;
     var restUrl = '';
     var requestObj = queryParams;
@@ -728,7 +728,7 @@ exports.getLoginLong = function (req, res, dataType, hours, queryParams) {
 };
 
 //获取用户留存
-exports.getRetention = function (req, res, queryParams) {
+exports.getRetention = function(req, res, queryParams) {
     delete queryParams.authType;
     return restUtil.authRest.get(
         {
@@ -739,7 +739,7 @@ exports.getRetention = function (req, res, queryParams) {
 };
 
 // 获取用户类型统计
-exports.getUserTypeStatistics = function (req, res, analysis_type, queryParams) {
+exports.getUserTypeStatistics = function(req, res, analysis_type, queryParams) {
     let url = urls.getUserTypeStatistics;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -754,7 +754,7 @@ exports.getUserTypeStatistics = function (req, res, analysis_type, queryParams) 
 };
 
 // 获取应用的启停用统计
-exports.getAppStatus = function (req, res, analysis_type, queryParams) {
+exports.getAppStatus = function(req, res, analysis_type, queryParams) {
     let url = urls.getAppStatus;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -769,7 +769,7 @@ exports.getAppStatus = function (req, res, analysis_type, queryParams) {
 };
 
 // 全部应用下，获取团队统计
-exports.getAppsTeam = function (req, res, analysis_type, team, queryParams) {
+exports.getAppsTeam = function(req, res, analysis_type, team, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -784,7 +784,7 @@ exports.getAppsTeam = function (req, res, analysis_type, team, queryParams) {
 };
 
 // 全部应用下，获取行业统计
-exports.getAppsIndustry = function (req, res, analysis_type, industry, queryParams) {
+exports.getAppsIndustry = function(req, res, analysis_type, industry, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);
@@ -799,7 +799,7 @@ exports.getAppsIndustry = function (req, res, analysis_type, industry, queryPara
 };
 
 // 全部应用下，获取地域统计
-exports.getAppsZone = function (req, res, analysis_type, zone, queryParams) {
+exports.getAppsZone = function(req, res, analysis_type, zone, queryParams) {
     let url = urls.getAppsStatistics;
     if (queryParams.authType) {//common、manager
         url = url.replace(":auth_type", queryParams.authType);

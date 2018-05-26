@@ -1,4 +1,4 @@
-export default function (arg) {
+export default function(arg) {
     let url = arg.url;
     const Deferred = $.Deferred();
     const type = arg.type || "get";
@@ -14,7 +14,7 @@ export default function (arg) {
         }
     }
     if (!_.isEmpty(arg.params)) {
-        url = url.replace(/\:([a-z_\-0-9]+)/g, function ($0, $1) {
+        url = url.replace(/\:([a-z_\-0-9]+)/g, function($0, $1) {
             return arg.params[$1];
         });
         //下拉加载时，当前展示的最后条数据的id;
@@ -27,10 +27,10 @@ export default function (arg) {
         dataType: arg.dataType || "json",
         type: type,
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });

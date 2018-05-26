@@ -35,7 +35,7 @@ function noop() {
 var TYPE_CONSTANT = "myApp";
 var AuthorityForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         var saveFlags = AuthorityFormStore.getState();
         return {
             status: {
@@ -62,7 +62,7 @@ var AuthorityForm = React.createClass({
             saveGroupResult: saveFlags.saveGroupResult//error、success
         };
     },
-    onChange: function () {
+    onChange: function() {
         var saveFlags = AuthorityFormStore.getState();
         this.setState({
             isGroupSaving: saveFlags.isGroupSaving,
@@ -70,19 +70,19 @@ var AuthorityForm = React.createClass({
             saveGroupResult: saveFlags.saveGroupResult
         });
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         AuthorityFormStore.listen(this.onChange);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AuthorityFormStore.unlisten(this.onChange);
     },
 
-    componentWillReceiveProps: function () {
+    componentWillReceiveProps: function() {
         this.refs.validation.reset();
         this.setState(this.getInitialState());
     },
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -95,30 +95,30 @@ var AuthorityForm = React.createClass({
         return classes;
     },
 
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"点击取消添加权限组按钮");
         this.props.cancelAuthorityForm();
     },
 
-    showAuthorityInfo: function (e) {
+    showAuthorityInfo: function(e) {
         e.preventDefault();
         this.props.showAuthorityInfo(this.props.authority);
     },
 
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         Trace.traceEvent(e,"点击保存添加权限组按钮");
         var _this = this;
         var validation = this.refs.validation;
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             } else {
                 var authority = _this.returnAuthorityArrayData();
                 var isValid = true;
                 //添加权限的服务地址有为空的，验证不通过，不可保存
-                _this.state.multiFormNumArr.find(function (index) {
+                _this.state.multiFormNumArr.find(function(index) {
                     if (!_this.state.formData[CONSTANT.HAS_PERMISSION_API + index]) {
                         isValid = false;
                         return true;
@@ -144,7 +144,7 @@ var AuthorityForm = React.createClass({
         });
     },
 
-    returnAuthorityArrayData: function () {
+    returnAuthorityArrayData: function() {
         var clientId = this.props.appId ? this.props.appId : userData.getUserData().auth.client_id;//应用id
         var realmId = userData.getUserData().auth.realm_id;//安全域id
 
@@ -153,7 +153,7 @@ var AuthorityForm = React.createClass({
         var authorityArray = [], _this = this;
         var classifyName = formData.classifyName;//权限组名
         //添加权限的处理
-        multiFormNumArr.map(function (index) {
+        multiFormNumArr.map(function(index) {
             var defaultAuthority = {
                 permissionName: formData[CONSTANT.PERMISSION_NAME + index],
                 permissionDefine: formData[CONSTANT.PERMISSION_DEFINE + index],
@@ -167,7 +167,7 @@ var AuthorityForm = React.createClass({
 
             //数据权限的赋值
             if (formData[CONSTANT.PERMISSION_TYPE + index] == "DATA") {
-                defaultAuthority.permissionDatas = _.filter(formData[CONSTANT.PERMISSION_DATAS + index] || [], function (str) {
+                defaultAuthority.permissionDatas = _.filter(formData[CONSTANT.PERMISSION_DATAS + index] || [], function(str) {
                     return str.trim() !== '';
                 });
                 if (defaultAuthority.permissionDatas.length == 0) {
@@ -179,7 +179,7 @@ var AuthorityForm = React.createClass({
                 formData[CONSTANT.HAS_PERMISSION_API + index] = true;//保存时，用来判断服务地址验证是否通过
             } else {//服务地址
                 //遍历添加权限的服务地址数组，将[{url:‘urlVal’，method：‘methodVal’},..]对象数组，转为后台接口参数所需{urlVal:methodVal,..}对象
-                formData[CONSTANT.PERMISSION_API_ARRAY + index].forEach(function (permission, i) {
+                formData[CONSTANT.PERMISSION_API_ARRAY + index].forEach(function(permission, i) {
                     if (permission.permissionApiUrl) {
                         _this.handlePermissionApis(defaultAuthority.permissionApis, permission);
                         formData[CONSTANT.HAS_PERMISSION_API + index] = true;//保存时，用来判断服务地址验证是否通过
@@ -203,7 +203,7 @@ var AuthorityForm = React.createClass({
     },
 
     //权限的服务地址的处理
-    handlePermissionApis: function (permissionApis, permission) {
+    handlePermissionApis: function(permissionApis, permission) {
         //同一地址不同方法的处理
         if (permissionApis[permission.permissionApiUrl]) {
             //如果已有该路径，该路径对应的value中没有当前方法名，则value+=,method
@@ -216,10 +216,10 @@ var AuthorityForm = React.createClass({
         }
     },
 
-    addFormDiv: function (event) {
+    addFormDiv: function(event) {
         Trace.traceEvent(event,"添加一个权限信息模块");
         var validation = this.refs.validation, _this = this;
-        validation.validate(function (valid) {
+        validation.validate(function(valid) {
             if (!valid) {
                 return;
             } else {
@@ -229,7 +229,7 @@ var AuthorityForm = React.createClass({
                 //前一项权限模块的验证通过后再添加
                 var preAuthorityIndex = multiFormNumArr[multiFormNumArr.length - 1];
                 if (formData[CONSTANT.PERMISSION_TYPE + preAuthorityIndex] == "DATA") {
-                    let permissionDatas = _.filter(formData[CONSTANT.PERMISSION_DATAS + preAuthorityIndex] || [], function (str) {
+                    let permissionDatas = _.filter(formData[CONSTANT.PERMISSION_DATAS + preAuthorityIndex] || [], function(str) {
                         return str.trim() !== '';
                     });
                     //前一项数据权限的验证
@@ -244,7 +244,7 @@ var AuthorityForm = React.createClass({
 
                 } else {
                     //前一项的服务地址验证
-                    var hasPermissionApi = _.some(formData[CONSTANT.PERMISSION_API_ARRAY + preAuthorityIndex], function (permission, i) {
+                    var hasPermissionApi = _.some(formData[CONSTANT.PERMISSION_API_ARRAY + preAuthorityIndex], function(permission, i) {
                         if (permission.permissionApiUrl) {
                             return true;
                         } else if (i == 0) {
@@ -287,7 +287,7 @@ var AuthorityForm = React.createClass({
         });
     },
 
-    deleteFormDiv: function (index) {
+    deleteFormDiv: function(index) {
         var formData = this.state.formData;
         var status = this.state.status;
         var multiFormNumArr = this.state.multiFormNumArr;
@@ -310,7 +310,7 @@ var AuthorityForm = React.createClass({
         });
     },
 
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         if (this.props.appId) {
             AuthorityFormAction.clearSaveFlags(this.state.saveGroupResult, this.props.appId, TYPE_CONSTANT);
         } else {
@@ -318,7 +318,7 @@ var AuthorityForm = React.createClass({
         }
     },
     //更新state中formData的服务地址数组
-    updateCurPermissionApiArray: function (permissionIndex, permissionApiArray) {
+    updateCurPermissionApiArray: function(permissionIndex, permissionApiArray) {
         if (permissionIndex) {
             //更新添加一个权限模块的服务地址数组
             this.state.formData[CONSTANT.PERMISSION_API_ARRAY + permissionIndex] = permissionApiArray;
@@ -332,7 +332,7 @@ var AuthorityForm = React.createClass({
     },
 
     //更新服务地址,i:当前修改的是第几个地址，newVal:修改后的url/method,type:当前修改的是url还是method
-    updatePermissionApiObj: function (i, newVal, type, permissionIndex) {
+    updatePermissionApiObj: function(i, newVal, type, permissionIndex) {
         var permissionApiArray = this.getCurPermissionApiArray(permissionIndex);
         //找到数组中对应的对象，更新url/method
         if (permissionApiArray[i] && _.isObject(permissionApiArray[i])) {
@@ -351,16 +351,16 @@ var AuthorityForm = React.createClass({
         }
     },
     //选择服务地址的请求方式的处理
-    onPermissionSelect: function (index, permissionIndex, selectVal) {
+    onPermissionSelect: function(index, permissionIndex, selectVal) {
         this.updatePermissionApiObj(index, selectVal, "method", permissionIndex);
     },
     //服务地址输入的处理
-    onPermissionInputChange: function (index, permissionIndex, event) {
+    onPermissionInputChange: function(index, permissionIndex, event) {
         var newKey = event.target.value;
         this.updatePermissionApiObj(index, newKey, "url", permissionIndex);
     },
     //添加一个服务地址的处理
-    addPermissionApi: function (permissionIndex, event) {
+    addPermissionApi: function(permissionIndex, event) {
         Trace.traceEvent(event,"添加服务地址");
         var permissionApiArray = this.getCurPermissionApiArray(permissionIndex);
         permissionApiArray.push({
@@ -370,7 +370,7 @@ var AuthorityForm = React.createClass({
         this.updateCurPermissionApiArray(permissionIndex, permissionApiArray);
     },
     //删除服务地址
-    delPermissionApi: function (index, permissionIndex, event) {
+    delPermissionApi: function(index, permissionIndex, event) {
         Trace.traceEvent(event,"删除服务地址");
         var value = event.target.value;
         if (value) {
@@ -383,7 +383,7 @@ var AuthorityForm = React.createClass({
         }
     },
     //验证服务地址是否为空
-    validatePermissionApi: function (index, permissionIndex, event) {
+    validatePermissionApi: function(index, permissionIndex, event) {
         var value = event.target.value;
         var permissionApiArray = this.getCurPermissionApiArray(permissionIndex);
         if (permissionApiArray[index]) {
@@ -398,31 +398,31 @@ var AuthorityForm = React.createClass({
         }
     },
 
-    renderPermissionApiItem: function (permissionApi, index, permissionApiLen, permissionIndex) {
+    renderPermissionApiItem: function(permissionApi, index, permissionApiLen, permissionIndex) {
         var onlyOneItem = index == 0 && index == permissionApiLen - 1;//只有一条服务地址
         return (<div className="permission-api-item" key={index}>
             <Select size="large"
-                    name="permissionApisVal" onChange={this.onPermissionSelect.bind(this,index,permissionIndex)}
-                    value={permissionApi.permissionApiMethod}>
+                name="permissionApisVal" onChange={this.onPermissionSelect.bind(this,index,permissionIndex)}
+                value={permissionApi.permissionApiMethod}>
                 <Option value="PUT">PUT</Option>
                 <Option value="GET">GET</Option>
                 <Option value="POST">POST</Option>
                 <Option value="DELETE">DELETE</Option>
             </Select>
             <Input name="permissionApisKey" id="permissionApisKey"
-                   className={permissionApi.isNull?"auth-validate-error":""}
-                   value={permissionApi.permissionApiUrl}
-                   placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
-                   onBlur={index==0?this.validatePermissionApi.bind(this,index,permissionIndex):noop}
-                   onChange={this.onPermissionInputChange.bind(this,index,permissionIndex)}
+                className={permissionApi.isNull?"auth-validate-error":""}
+                value={permissionApi.permissionApiUrl}
+                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
+                onBlur={index==0?this.validatePermissionApi.bind(this,index,permissionIndex):noop}
+                onChange={this.onPermissionInputChange.bind(this,index,permissionIndex)}
             />
             <div className="permission-inputgroup-btns-div">
                 {onlyOneItem ? null : (
                     <Icon type="minus" className="del-permission-inputgroup-btn permission-inputgroup-btn"
-                          onClick={this.delPermissionApi.bind(this,index,permissionIndex)}/>)}
+                        onClick={this.delPermissionApi.bind(this,index,permissionIndex)}/>)}
                 {(index == permissionApiLen - 1) ? (
                     <Icon type="plus" className="add-permission-inputgroup-btn permission-inputgroup-btn"
-                          onClick={this.addPermissionApi.bind(this,permissionIndex)}/>) : null}
+                        onClick={this.addPermissionApi.bind(this,permissionIndex)}/>) : null}
             </div>
             {permissionApi.isNull ? (
                 <div className="auth-validate-error-tip permissionApi-validate">
@@ -433,7 +433,7 @@ var AuthorityForm = React.createClass({
         </div>);
     },
     //获取当前权限的服务地址数组
-    getCurPermissionApiArray: function (permissionIndex) {
+    getCurPermissionApiArray: function(permissionIndex) {
         var permissionApiArray = [];
         if (permissionIndex) {
             //点击添加一个权限模块后添加的权限的服务地址数组
@@ -445,14 +445,14 @@ var AuthorityForm = React.createClass({
         return permissionApiArray;
     },
     //渲染某个权限的服务地址
-    renderPermissionApis: function (permissionIndex) {
+    renderPermissionApis: function(permissionIndex) {
         var permissionApiArray = this.getCurPermissionApiArray(permissionIndex);
         var permissionApiLen = _.isArray(permissionApiArray) ? permissionApiArray.length : 0;
         var permissionApisEle = [];
         var _this = this;
         if (permissionApiLen > 0) {
             //如果权限服务地址数组有数据，则遍历数组中的服务地址对象进行渲染展示
-            permissionApisEle = permissionApiArray.map(function (permissionApi, index) {
+            permissionApisEle = permissionApiArray.map(function(permissionApi, index) {
                 if (_.isObject(permissionApi)) {
                     return _this.renderPermissionApiItem(permissionApi, index, permissionApiLen, permissionIndex);
                 }
@@ -468,7 +468,7 @@ var AuthorityForm = React.createClass({
         return permissionApisEle;
     },
     //获取当前权限的数据权限
-    getCurPermissionDatas: function (permissionIndex) {
+    getCurPermissionDatas: function(permissionIndex) {
         var permissionDatas = [];
         if (permissionIndex) {
             //点击添加一个权限模块后添加的权限的数据权限数组
@@ -484,7 +484,7 @@ var AuthorityForm = React.createClass({
     },
 
     //渲染数据权限
-    renderPermissionDatas: function (permissionIndex) {
+    renderPermissionDatas: function(permissionIndex) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
         var _this = this;
         var onlyOneItem = permissionDatas.length === 1;
@@ -494,24 +494,24 @@ var AuthorityForm = React.createClass({
         return (
             <div className="permissionDatas-content">
                 {
-                    permissionDatas.map(function (str, index) {
+                    permissionDatas.map(function(str, index) {
                         return <div className="permissionData-item" key={index}>
                             <Input name="permissionData" id="permissionData"
-                                   className={permissionDataNull&&index==0?"auth-validate-error":""}
-                                   placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
-                                   value={permissionDatas[index]}
-                                   onBlur={index==0?_this.validatePermissionData.bind(this,index,permissionIndex):noop}
-                                   onChange={_this.onPermissionDataChange.bind(_this , index,permissionIndex)}
+                                className={permissionDataNull&&index==0?"auth-validate-error":""}
+                                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
+                                value={permissionDatas[index]}
+                                onBlur={index==0?_this.validatePermissionData.bind(this,index,permissionIndex):noop}
+                                onChange={_this.onPermissionDataChange.bind(_this , index,permissionIndex)}
                             />
                             <div className="permission-inputgroup-btns-div">
                                 {onlyOneItem ? null : (
                                     <Icon type="minus"
-                                          className="del-permission-inputgroup-btn permission-inputgroup-btn"
-                                          onClick={_this.removePermissionData.bind(_this , index,permissionIndex)}/>)}
+                                        className="del-permission-inputgroup-btn permission-inputgroup-btn"
+                                        onClick={_this.removePermissionData.bind(_this , index,permissionIndex)}/>)}
                                 {(index == permissionDatasLen - 1) ? (
                                     <Icon type="plus"
-                                          className="add-permission-inputgroup-btn permission-inputgroup-btn"
-                                          onClick={_this.addPermissionData.bind(_this , permissionIndex)}/>) : null}
+                                        className="add-permission-inputgroup-btn permission-inputgroup-btn"
+                                        onClick={_this.addPermissionData.bind(_this , permissionIndex)}/>) : null}
                             </div>
                             {permissionDataNull && index == 0 ? (
                                 <div className="auth-validate-error-tip"><ReactIntl.FormattedMessage
@@ -525,14 +525,14 @@ var AuthorityForm = React.createClass({
         );
     },
     //数据权限输入框发生改变
-    onPermissionDataChange: function (idx, permissionIndex, event) {
+    onPermissionDataChange: function(idx, permissionIndex, event) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
         permissionDatas[idx] = event.target.value;
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
         this.validatePermissionData(idx, permissionIndex, event);
     },
     //验证数据权限是否为空
-    validatePermissionData: function (idx, permissionIndex, event) {
+    validatePermissionData: function(idx, permissionIndex, event) {
         var value = event.target.value;
         if (value) {
             //数据权限不为空时，则删除是否为空的标志(只要有一个即可)
@@ -554,7 +554,7 @@ var AuthorityForm = React.createClass({
         });
     },
     //更新state中formData的服务地址数组
-    updateCurPermissionDatas: function (permissionIndex, permissionDatas) {
+    updateCurPermissionDatas: function(permissionIndex, permissionDatas) {
         if (permissionIndex) {
             //更新添加一个权限模块的服务地址数组
             this.state.formData[CONSTANT.PERMISSION_DATAS + permissionIndex] = permissionDatas;
@@ -568,18 +568,18 @@ var AuthorityForm = React.createClass({
     },
 
     //添加一个数据权限
-    addPermissionData: function (permissionIndex) {
+    addPermissionData: function(permissionIndex) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
         permissionDatas.push("");
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
     },
     //移除一个数据权限
-    removePermissionData: function (index, permissionIndex) {
+    removePermissionData: function(index, permissionIndex) {
         var permissionDatas = this.getCurPermissionDatas(permissionIndex);
         permissionDatas.splice(index, 1);
         this.updateCurPermissionDatas(permissionIndex, permissionDatas);
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var multiFormNumArr = this.state.multiFormNumArr;
         var formData = this.state.formData;
@@ -591,7 +591,7 @@ var AuthorityForm = React.createClass({
         let labelCol = (language.lan() == 'zh' ? 6 : 8);
         let wrapperCol = (language.lan() == 'zh' ? 17 : 16);
 
-        var mulitFormElement = multiFormNumArr.map(function (index) {
+        var mulitFormElement = multiFormNumArr.map(function(index) {
             var permissionNameID = CONSTANT.PERMISSION_NAME + index;
             var permissionDefineID = CONSTANT.PERMISSION_DEFINE + index;
             var permissionTypeID = CONSTANT.PERMISSION_TYPE + index;
@@ -608,9 +608,9 @@ var AuthorityForm = React.createClass({
                         <Validator
                             rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                             <Input name={permissionNameID} id={permissionNameID}
-                                   value={formData[permissionNameID]}
-                                   placeholder={Intl.get("common.required.tip", "必填项*")}
-                                   onChange={_this.setField.bind(_this, permissionNameID)}
+                                value={formData[permissionNameID]}
+                                placeholder={Intl.get("common.required.tip", "必填项*")}
+                                onChange={_this.setField.bind(_this, permissionNameID)}
                             />
 
                         </Validator>
@@ -621,7 +621,7 @@ var AuthorityForm = React.createClass({
                         wrapperCol={{span: wrapperCol}}
                     >
                         <RadioGroup onChange={_this.setField.bind(_this, permissionTypeID)}
-                                    value={formData[permissionTypeID]||"REST"}>
+                            value={formData[permissionTypeID]||"REST"}>
                             <Radio value="REST">REST</Radio>
                             <Radio value="DATA">DATA</Radio>
                         </RadioGroup>
@@ -655,14 +655,14 @@ var AuthorityForm = React.createClass({
                         <Validator
                             rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                             <Input name={permissionDefineID} id={permissionDefineID}
-                                   value={formData[permissionDefineID]}
-                                   onChange={_this.setField.bind(_this, permissionDefineID)}
-                                   placeholder={Intl.get("common.required.tip", "必填项*")}/>
+                                value={formData[permissionDefineID]}
+                                onChange={_this.setField.bind(_this, permissionDefineID)}
+                                placeholder={Intl.get("common.required.tip", "必填项*")}/>
                         </Validator>
                     </FormItem>
                     {index == 1 ? null : (<div className="delete-action-icon-div">
                         <Icon type="minus-circle" className="delete-action "
-                              onClick={_this.deleteFormDiv.bind(_this, index)}/>
+                            onClick={_this.deleteFormDiv.bind(_this, index)}/>
                     </div>)}
                 </div>
             );
@@ -676,7 +676,7 @@ var AuthorityForm = React.createClass({
                         <Form horizontal className="form"
                         >
                             <Validation ref="validation"
-                                        onValidate={this.handleValidate}
+                                onValidate={this.handleValidate}
                             >
                                 <div className="classifyName-div">
                                     <FormItem
@@ -691,9 +691,9 @@ var AuthorityForm = React.createClass({
                                         <Validator
                                             rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                                             <Input name="classifyName" id="classifyName"
-                                                   value={formData.classifyName}
-                                                   onChange={this.setField.bind(this, 'classifyName')}
-                                                   placeholder={Intl.get("common.required.tip", "必填项*")}/>
+                                                value={formData.classifyName}
+                                                onChange={this.setField.bind(this, 'classifyName')}
+                                                placeholder={Intl.get("common.required.tip", "必填项*")}/>
                                         </Validator>
                                     </FormItem>
                                 </div>
@@ -714,9 +714,9 @@ var AuthorityForm = React.createClass({
                             {this.state.saveGroupResult ? (
                                 <div className="indicator">
                                     <AlertTimer time={this.state.saveGroupResult=="error"?3000:600}
-                                                message={this.state.saveGroupMsg}
-                                                type={this.state.saveGroupResult} showIcon
-                                                onHide={this.hideSaveTooltip}/>
+                                        message={this.state.saveGroupMsg}
+                                        type={this.state.saveGroupResult} showIcon
+                                        onHide={this.hideSaveTooltip}/>
                                 </div>) : null
                             }
                         </div>

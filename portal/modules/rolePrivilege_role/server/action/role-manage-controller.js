@@ -6,20 +6,20 @@
 var roleManageServic = require("../service/role-manage-service");
 
 //获取角色列表
-exports.getRoleList = function (req, res) {
+exports.getRoleList = function(req, res) {
 
     var clientID = req.params.client_id;
 
     roleManageServic.getRoleList(req, res, clientID)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 
 //添加角色
-exports.addRole = function (req, res) {
+exports.addRole = function(req, res) {
 
     var role = {
         role_name: req.body.roleName,
@@ -29,16 +29,16 @@ exports.addRole = function (req, res) {
     };
 
     roleManageServic.addRole(req, res, role)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 
 //修改角色
-exports.editRole = function (req, res) {
+exports.editRole = function(req, res) {
 
     var role = {
         role_id: req.body.roleId,
@@ -48,59 +48,59 @@ exports.editRole = function (req, res) {
     };
 
     roleManageServic.editRole(req, res, role)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 
 //删除角色
-exports.deleteRole = function (req, res) {
+exports.deleteRole = function(req, res) {
     var roleId = req.params.id;
     if (roleId) {
         roleManageServic.deleteRole(req, res, roleId)
-            .on("success", function (data) {
+            .on("success", function(data) {
                 res.status(200).json(data);
-            }).on("error", function (codeMessage) {
+            }).on("error", function(codeMessage) {
                 res.status(500).json(codeMessage && codeMessage.message);
             }
-        );
+            );
     }
 };
 
 //设置默认角色
-exports.setDefaultRole = function (req, res) {     
+exports.setDefaultRole = function(req, res) {     
     let param = {app_id:req.body.app_id,base_role:req.body.base_role}; 
     roleManageServic.setDefaultRole(req, res,param)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );    
+        );    
 };
 
 //查询默认角色
-exports.getDefaultRole = function (req, res) {   
+exports.getDefaultRole = function(req, res) {   
     var appId = req.query.app_id;
     roleManageServic.getDefaultRole(req, res,appId)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 
 //删除默认角色
-exports.delDefaultRole = function (req,res) { 
-     var param = {app_id:req.body.app_id};
-     roleManageServic.delDefaultRole(req, res,param)
-        .on("success", function (data) {            
+exports.delDefaultRole = function(req,res) { 
+    var param = {app_id:req.body.app_id};
+    roleManageServic.delDefaultRole(req, res,param)
+        .on("success", function(data) {            
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };

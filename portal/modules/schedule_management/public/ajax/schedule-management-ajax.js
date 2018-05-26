@@ -4,33 +4,33 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 //查询日程列表
-exports.getScheduleList = function (queryObj) {
+exports.getScheduleList = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/schedule/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();
 };
 //修改某条日程管理的状态
-exports.handleScheduleStatus = function (reqData) {
+exports.handleScheduleStatus = function(reqData) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/change/schedule/' + reqData.id + '/' + reqData.status,
         dataType: 'json',
         type: 'put',
-        success: function (resData) {
+        success: function(resData) {
             Deferred.resolve(resData);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });

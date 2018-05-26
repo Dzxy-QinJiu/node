@@ -8,7 +8,7 @@ function weeklyReportDetailStore() {
 const CALL_TYPE_OPTION = {
     ALL: 'all',
 };
-weeklyReportDetailStore.prototype.setInitState = function () {
+weeklyReportDetailStore.prototype.setInitState = function() {
     //开始时间
     this.start_time = moment().startOf('week').valueOf();
     //结束时间
@@ -54,7 +54,7 @@ weeklyReportDetailStore.prototype.setInitState = function () {
 
 };
 //获取电话统计
-weeklyReportDetailStore.prototype.getCallInfo = function (result) {
+weeklyReportDetailStore.prototype.getCallInfo = function(result) {
     this.salesPhone.loading = result.loading;
     if (result.error) {
         this.salesPhone.errMsg = result.errMsg;
@@ -71,7 +71,7 @@ weeklyReportDetailStore.prototype.getCallInfo = function (result) {
     }
 };
 //获取合同信息
-weeklyReportDetailStore.prototype.getContractInfo = function (result) {
+weeklyReportDetailStore.prototype.getContractInfo = function(result) {
     this.contractData.loading = result.loading;
     if (result.error) {
         this.contractData.errMsg = result.errMsg;
@@ -80,7 +80,7 @@ weeklyReportDetailStore.prototype.getContractInfo = function (result) {
     }
 };
 //获取回款信息
-weeklyReportDetailStore.prototype.getRepaymentInfo = function (result) {
+weeklyReportDetailStore.prototype.getRepaymentInfo = function(result) {
     this.repaymentData.loading = result.loading;
     if (result.error) {
         this.repaymentData.errMsg = result.errMsg;
@@ -91,7 +91,7 @@ weeklyReportDetailStore.prototype.getRepaymentInfo = function (result) {
 };
 
 //获取地域分布信息
-weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
+weeklyReportDetailStore.prototype.getRegionOverlayInfo = function(result) {
     this.regionOverlayData.loading = result.loading;
     if (result.error) {
         this.regionOverlayData.errMsg = result.errMsg;
@@ -101,7 +101,7 @@ weeklyReportDetailStore.prototype.getRegionOverlayInfo = function (result) {
 };
 
 //获取销售阶段
-weeklyReportDetailStore.prototype.getSalesStageList = function (result) {
+weeklyReportDetailStore.prototype.getSalesStageList = function(result) {
     this.salesStageObj.loading = result.loading;
     if (result.error){
         this.salesStageObj.errMsg = result.errMsg;
@@ -111,7 +111,7 @@ weeklyReportDetailStore.prototype.getSalesStageList = function (result) {
 };
 
 //获取客户阶段
-weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
+weeklyReportDetailStore.prototype.getCustomerStageInfo = function(result) {
     this.customerStageData.loading = result.loading;
     if (result.error) {
         this.customerStageData.errMsg = result.errMsg;
@@ -122,7 +122,7 @@ weeklyReportDetailStore.prototype.getCustomerStageInfo = function (result) {
 };
 
 //保存员工请假信息
-weeklyReportDetailStore.prototype.addForLeave = function (result) {
+weeklyReportDetailStore.prototype.addForLeave = function(result) {
     this.addAskForLeave.submitting = result.submitting;
     if (result.error) {
         this.addAskForLeave.errMsg = result.errMsg;

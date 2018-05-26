@@ -54,7 +54,7 @@ var TopNav = React.createClass({
             }
         }
     },
-    resizeFunc : function () {
+    resizeFunc : function() {
         clearTimeout(this.resizeFunc.timeout);
         this.resizeFunc.timeout = setTimeout(this.resizeHandler , 10);
     },
@@ -89,7 +89,7 @@ var TopNav = React.createClass({
         $("body").off("click" , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);
     },
-    render: function () {
+    render: function() {
         return (
             <div className="topNav" ref="topNav">
                 {this.props.children}
@@ -114,7 +114,7 @@ function getCategory() {
 }
 //顶部导航的导航菜单
 TopNav.MenuList = React.createClass({
-    render: function () {
+    render: function() {
         //获取第一层路由
         var category = getCategory();
         //获取所有子模块
@@ -139,7 +139,7 @@ TopNav.MenuList = React.createClass({
                 </button>
                 <ul className="clearfix topnav-links">
                     {
-                        subModules.map(function (menu, i) {
+                        subModules.map(function(menu, i) {
                             var menuRoutePath = menu.routePath.replace(/\//g, "_");
                             var icoClassName = "ico " + menuRoutePath + "_ico";
                             var cls = classNames(icoClassName, {
@@ -147,7 +147,7 @@ TopNav.MenuList = React.createClass({
                             });
 
                             var liContent = (<Link to={`/${menu.routePath}`}
-                                                   activeClassName="active" ref="navLinks">{menu.name}</Link>);
+                                activeClassName="active" ref="navLinks">{menu.name}</Link>);
                             if (menuName == "myAppMenu" && menu.name == "我的应用") {
                                 liContent = (<Dropdown overlay={subMenu}>
                                     {liContent}

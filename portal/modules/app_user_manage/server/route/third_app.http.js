@@ -9,7 +9,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "THIRD_PARTY_MANAGE"
+            "THIRD_PARTY_MANAGE"
         ]
     },{
         "method": "put",
@@ -19,7 +19,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "THIRD_PARTY_MANAGE"
+            "THIRD_PARTY_MANAGE"
         ]
     },{
         "method": "put",
@@ -29,7 +29,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "THIRD_PARTY_MANAGE"
+            "THIRD_PARTY_MANAGE"
         ]
     },{
         "method": "get",
@@ -39,7 +39,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-           "THIRD_PARTY_MANAGE"
+            "THIRD_PARTY_MANAGE"
         ]
     },{
         "method": "get", // 获取用户绑定的第三方平台列表
@@ -57,6 +57,6 @@ module.exports = {
         },
         "privileges": [
             "THIRD_PARTY_MANAGE"
-         ]
+        ]
     }]
 };

@@ -18,7 +18,7 @@ var CustomRadioGroup = React.createClass({
             value : value
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.setState({
             value:nextProps.value
         });

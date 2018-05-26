@@ -10,7 +10,7 @@ var urls = {
     memberBindPhoneOrder: '/rest/base/v1/realm/phoneorder/binding' // 成员绑定座席号
 };
 // 添加坐席号
-exports.addPhoneOrder = function (req, res, reqBody) {
+exports.addPhoneOrder = function(req, res, reqBody) {
     return restUtil.authRest.post(
         {
             url: urls.addPhoneOrder,

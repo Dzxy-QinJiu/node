@@ -278,7 +278,7 @@ var UserDetailAddApp = React.createClass({
         //修改密码要验证表单再提交
         if(this.hasChangePassword()) {
             var validation = this.refs.validation;
-            validation.validate(function (valid) {
+            validation.validate(function(valid) {
                 if (!valid) {
                     return;
                 }
@@ -298,16 +298,16 @@ var UserDetailAddApp = React.createClass({
     removeApp : function(app) {
         UserDetailAddAppAction.removeApp(app);
     },
-    customRadioValueChange: function (field, value) {
+    customRadioValueChange: function(field, value) {
         UserDetailAddAppAction.customRadioValueChange({field, value});
     },
-    end_time_disable_date: function (current) {
+    end_time_disable_date: function(current) {
         return (current && current.getTime() < moment(this.state.formData.start_time).toDate().getTime());
     },
-    start_time_disable_date: function (current) {
+    start_time_disable_date: function(current) {
         return current && current.getTime() > moment(this.state.formData.end_time).toDate().getTime();
     },
-    radioValueChange: function (field, event) {
+    radioValueChange: function(field, event) {
         var value = event.target.value;
         UserDetailAddAppAction.radioValueChange({field, value});
     },
@@ -334,7 +334,7 @@ var UserDetailAddApp = React.createClass({
             UserDetailAddAppAction.batchAppChange(newSelectedAppIdList);
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         UserDetailAddAppStore.listen(this.onStoreChange);
         UserDetailAddAppAction.getApps();
         $(window).on('resize' , this.onWindowResize);
@@ -345,16 +345,16 @@ var UserDetailAddApp = React.createClass({
         UserDetailAddAppAction.setDefaultBatchSelectedApps(batchAppsToSelect);
 
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         UserDetailAddAppStore.unlisten(this.onStoreChange);
         $(window).off('resize' , this.onWindowResize);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.SELECTED_USER_ROW_CHANGE , this.checkSelectedBatchAppList);
     },
     mixins: [FieldMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return UserDetailAddAppStore.getState();
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(UserDetailAddAppStore.getState());
     },
     renderIndicator : function() {
@@ -666,9 +666,9 @@ var UserDetailAddApp = React.createClass({
                 >
                     <Validator
                         rules={[
-                                {required: true,whitespace: true,message: Intl.get("common.password.unequal", "两次输入密码不一致！")},
-                                {validator: this.checkPass2}
-                              ]}
+                            {required: true,whitespace: true,message: Intl.get("common.password.unequal", "两次输入密码不一致！")},
+                            {validator: this.checkPass2}
+                        ]}
                     >
                         <Input
                             name="repassword"
@@ -770,7 +770,7 @@ var UserDetailAddApp = React.createClass({
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this , 'over_draft')}
-                                value={formData.over_draft}>
+                        value={formData.over_draft}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用" /></Radio>
                         <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade" defaultMessage="降级" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability" defaultMessage="不变" /></Radio>
@@ -782,7 +782,7 @@ var UserDetailAddApp = React.createClass({
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this , 'user_status')}
-                                value={formData.user_status}>
+                        value={formData.user_status}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>
@@ -827,7 +827,7 @@ var UserDetailAddApp = React.createClass({
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this , 'user_status')}
-                                value={formData.user_status}>
+                        value={formData.user_status}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.app.status.open" defaultMessage="开启" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="common.app.status.close" defaultMessage="关闭" /></Radio>
                     </RadioGroup>
@@ -942,14 +942,14 @@ var UserDetailAddApp = React.createClass({
                     labelCol={labelCol}
                     wrapperCol={{span:20}}
                 >
-                {this.renderBatchApps()}
-                {
-                    this.state.batchSelectedAppError ? (
-                        <div>
-                            <Alert message={this.state.batchSelectedAppError} showIcon type="error"/>
-                        </div>
-                    ) : null
-                }
+                    {this.renderBatchApps()}
+                    {
+                        this.state.batchSelectedAppError ? (
+                            <div>
+                                <Alert message={this.state.batchSelectedAppError} showIcon type="error"/>
+                            </div>
+                        ) : null
+                    }
                 </FormItem>
             </div>);
     },
@@ -978,11 +978,11 @@ var UserDetailAddApp = React.createClass({
                     >
                         {this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
-                                        onChange={this.setDelayDeadlineTime}
-                                        disabledDate={this.disabledDate}
-                                        defaultValue={moment(this.state.formData.delayDeadlineTime)}
-                                        allowClear={false}
-                                        showToday={false}
+                                onChange={this.setDelayDeadlineTime}
+                                disabledDate={this.disabledDate}
+                                defaultValue={moment(this.state.formData.delayDeadlineTime)}
+                                allowClear={false}
+                                showToday={false}
                             />
                         ) : (
                             <InputNumber
@@ -1013,7 +1013,7 @@ var UserDetailAddApp = React.createClass({
                     wrapperCol={wrapperCol}
                 >
                     <RadioGroup onChange={this.radioValueChange.bind(this , 'over_draft')}
-                                value={this.state.formData.over_draft}>
+                        value={this.state.formData.over_draft}>
                         <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.status.stop" defaultMessage="停用" /></Radio>
                         <Radio key="2" value="2"><ReactIntl.FormattedMessage id="user.status.degrade" defaultMessage="降级" /></Radio>
                         <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.status.immutability" defaultMessage="不变" /></Radio>

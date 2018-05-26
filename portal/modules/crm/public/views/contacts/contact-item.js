@@ -13,25 +13,25 @@ import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 import classNames from "classnames";
 var ContactItem = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isLoading: false
         };
     },
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             contact: ContactUtil.getEmptyViewContactObject()
         };
     },
-    showEditContactForm: function () {
+    showEditContactForm: function() {
         Trace.traceEvent(this.getDOMNode(), "编辑联系人");
         ContactAction.showEditContactForm(this.props.contact);
     },
-    showDeleteContactConfirm: function () {
+    showDeleteContactConfirm: function() {
         Trace.traceEvent(this.getDOMNode(), "删除联系人");
         ContactAction.showDeleteContactConfirm(this.props.contact);
     },
-    setDefaultContact: function (contact) {
+    setDefaultContact: function(contact) {
         if (contact.def_contancts === "true") return;
         if (this.props.isMerge) {
             this.props.setMergeCustomerDefaultContact(this.props.contact.contact.id);
@@ -52,11 +52,11 @@ var ContactItem = React.createClass({
             });
         }
     },
-    hideDeleteContactModal: function () {
+    hideDeleteContactModal: function() {
         Trace.traceEvent(this.getDOMNode(), "取消删除联系人");
         ContactAction.hideDeleteContactConfirm(this.props.contact);
     },
-    deleteContact: function () {
+    deleteContact: function() {
         if (this.props.isMerge) {
             this.props.delMergeCustomerContact(this.props.contact.contact.id);
             ContactAction.hideDeleteContactConfirm(this.props.contact.contact);
@@ -142,7 +142,7 @@ var ContactItem = React.createClass({
         return (
             <span className="contact-item-title">
                 <span className={defaultClassName} data-tracename="点击设置默认联系人按钮"
-                      title={defaultTitle} onClick={this.setDefaultContact.bind(this, contact)}/>
+                    title={defaultTitle} onClick={this.setDefaultContact.bind(this, contact)}/>
                 <span className="contact-name" title={contact.name}>{contact.name}</span>
                 {contact.role || contact.department || contact.position ? (
                     <span className="contact-info">
@@ -155,7 +155,7 @@ var ContactItem = React.createClass({
                 {this.props.contact.isShowDeleteContactConfirm ? (
                     <span className="contact-delete-buttons">
                         <Button className="contact-delete-cancel delete-button-style"
-                                onClick={this.hideDeleteContactModal}>
+                            onClick={this.hideDeleteContactModal}>
                             {Intl.get("common.cancel", "取消")}
                         </Button>
                         <Button className="contact-delete-confirm delete-button-style" onClick={this.deleteContact}>
@@ -164,14 +164,14 @@ var ContactItem = React.createClass({
                     </span>) : (
                     <span className="contact-item-buttons">
                         <span className="iconfont icon-delete" title={Intl.get("common.delete", "删除")}
-                              data-tracename="点击删除联系人按钮"
-                              onClick={this.showDeleteContactConfirm}/>
+                            data-tracename="点击删除联系人按钮"
+                            onClick={this.showDeleteContactConfirm}/>
                         <DetailEditBtn title={Intl.get("common.edit", "编辑")} onClick={this.showEditContactForm}
-                                       data-tracename="点击编辑联系人按钮"/>
+                            data-tracename="点击编辑联系人按钮"/>
                         <span className={contactWayClassName}
-                              data-tracename={isExpanded ? "收起联系方式" : "展开其他联系方式"}
-                              title={isExpanded ? Intl.get("crm.contact.way.hide", "收起") : Intl.get("crm.contact.way.show", "展开其他联系方式")}
-                              onClick={this.toggleContactWay}/>
+                            data-tracename={isExpanded ? "收起联系方式" : "展开其他联系方式"}
+                            title={isExpanded ? Intl.get("crm.contact.way.hide", "收起") : Intl.get("crm.contact.way.show", "展开其他联系方式")}
+                            onClick={this.toggleContactWay}/>
                     </span>)}
             </span>);
     },
@@ -180,14 +180,14 @@ var ContactItem = React.createClass({
         return contact[type] && _.isArray(contact[type]) && contact[type].length;
     },
 
-    renderContactWayContent (contact, type) {
+    renderContactWayContent(contact, type) {
         return this.hasContactWay(contact, type) ? _.map(contact[type], item => {
             return ( <div className="contact-way-item">
                 <span className="contact-way-text">{addHyphenToPhoneNumber(item)}</span>
                 {type === "phone" && this.props.callNumber ? (
                     <span className="phone-call-button" onClick={this.handleClickCallOut.bind(this, item)}>
-                                    {Intl.get("schedule.call.out", "拨打")}
-                                </span>) : null}
+                        {Intl.get("schedule.call.out", "拨打")}
+                    </span>) : null}
             </div>);
         }) : null;
     },
@@ -217,7 +217,7 @@ var ContactItem = React.createClass({
                 </div>
                 <div className="contact-way-type">
                     <div className="iconfont icon-email contact-way-icon"
-                         title={Intl.get("common.email", "邮箱")}/>
+                        title={Intl.get("common.email", "邮箱")}/>
                     <div className="contact-way-content">
                         {this.renderContactWayContent(contact, "email")}
                     </div>
@@ -230,8 +230,8 @@ var ContactItem = React.createClass({
             "contact-delete-border": this.props.contact.isShowDeleteContactConfirm
         });
         return (<DetailCard title={this.renderContactTitle()}
-                            content={this.renderContactWay()}
-                            className={containerClassName}/>);
+            content={this.renderContactWay()}
+            className={containerClassName}/>);
     }
 });
 

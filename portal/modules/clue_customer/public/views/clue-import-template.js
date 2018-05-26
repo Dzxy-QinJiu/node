@@ -19,18 +19,18 @@ class ClueImportTemplate extends React.Component {
     render(){
         return (
             <RightPanel className="import-clue-template-panel white-space-nowrap"
-                        showFlag={this.props.showFlag} data-tracename="导入线索模板">
+                showFlag={this.props.showFlag} data-tracename="导入线索模板">
                 <RightPanelClose onClick={this.props.closeClueTemplatePanel} data-tracename="点击关闭导入线索面板"/>
                 <div>
                     <div className="import-tips">
                         <p>
                             1.<ReactIntl.FormattedMessage
-                            id="common.download.template"
-                            defaultMessage={`点击下载{template}`}
-                            values={{
-                                "template":  <a data-tracename="点击导入线索模板" href="/rest/clue/download_template">{Intl.get("clue.manage.import.clue.template", "导入线索模板")}</a>
-                            }}
-                        />
+                                id="common.download.template"
+                                defaultMessage={`点击下载{template}`}
+                                values={{
+                                    "template":  <a data-tracename="点击导入线索模板" href="/rest/clue/download_template">{Intl.get("clue.manage.import.clue.template", "导入线索模板")}</a>
+                                }}
+                            />
                         </p>
                         <p>
                             2.{Intl.get("common.write.template", "填写模板文件后，选择文件并导入")}

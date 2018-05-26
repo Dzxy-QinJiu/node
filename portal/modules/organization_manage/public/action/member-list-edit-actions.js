@@ -14,19 +14,19 @@ function OrganizationMemberActions() {
         'setSelectedMemberRows'
     );
 
-    this.getMemberList = function (queryObj) {
+    this.getMemberList = function(queryObj) {
         var _this = this;
         _this.actions.setAddMemberListLoading(true);
-        OrganizationAjax.getMemberList(queryObj).then(function (data) {
+        OrganizationAjax.getMemberList(queryObj).then(function(data) {
             _this.dispatch(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get('common.get.member.lists.failed'));
         });
     };
 
-    this.addMember = function (obj) {
+    this.addMember = function(obj) {
         var _this = this;
-        OrganizationAjax.addMember(obj).then(function (data) {
+        OrganizationAjax.addMember(obj).then(function(data) {
             if (data) {
                 _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success")});
 
@@ -34,28 +34,28 @@ function OrganizationMemberActions() {
                 _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed")});
             }
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed")});
         });
     };
 
-    this.editMember = function (obj) {
+    this.editMember = function(obj) {
         var _this = this;
-        OrganizationAjax.editMember(obj).then(function (data) {
+        OrganizationAjax.editMember(obj).then(function(data) {
             if (data) {
                 _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success")});
             } else {
                 _this.dispatch({saveResult: "error", saveMsg: Intl.get("common.save.failed")});
             }
 
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed")});
         });
     };
 
-    this.clearSaveFlags = function (type, saveResult, obj) {
+    this.clearSaveFlags = function(type, saveResult, obj) {
         if (saveResult == "success") {
             //刷新左侧树中该组织的人数
             if (type == "add") {

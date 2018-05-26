@@ -1,7 +1,7 @@
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 // 获取通话时长为TOP10的列表
 let callDurTopTenAjax = null;
-exports.getCallDurTopTen = function (reqData, reqBody) {
+exports.getCallDurTopTen = function(reqData, reqBody) {
     let auth_type = hasPrivilege("CUSTOMER_CALLRECORD_MANAGER_ONLY") ? "manager" : "user";
     callDurTopTenAjax && callDurTopTenAjax.abort();
     let url = '/rest/call/duration/top/ten/' + auth_type + '/' + reqData.start_time + '/' +
@@ -12,10 +12,10 @@ exports.getCallDurTopTen = function (reqData, reqBody) {
         dataType: 'json',
         type: 'post',
         data: reqBody,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -24,7 +24,7 @@ exports.getCallDurTopTen = function (reqData, reqBody) {
 
 // 获取通话数量和通话时长趋势图统计
 let callCountAndDurAjax = null;
-exports.getCallCountAndDur = function (reqData, reqBody) {
+exports.getCallCountAndDur = function(reqData, reqBody) {
     callCountAndDurAjax && callCountAndDurAjax.abort();
     let url = '/rest/call/duration/count/' + reqData.start_time + '/' + reqData.end_time;
     var Deferred = $.Deferred();
@@ -33,10 +33,10 @@ exports.getCallCountAndDur = function (reqData, reqBody) {
         dataType: 'json',
         type: 'post',
         data: reqBody,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -44,7 +44,7 @@ exports.getCallCountAndDur = function (reqData, reqBody) {
 };
 //分别获取单个团队的通话趋势和通话时长
 let callCountAndDurSeparatelyAjax = null;
-exports.getCallCountAndDurSeparately = function (reqData, reqBody) {
+exports.getCallCountAndDurSeparately = function(reqData, reqBody) {
     callCountAndDurSeparatelyAjax && callCountAndDurSeparatelyAjax.abort();
     let url = '/rest/call/duration/count/seperately/' + reqData.start_time + '/' + reqData.end_time;
     var Deferred = $.Deferred();
@@ -53,10 +53,10 @@ exports.getCallCountAndDurSeparately = function (reqData, reqBody) {
         dataType: 'json',
         type: 'post',
         data: reqBody,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -65,17 +65,17 @@ exports.getCallCountAndDurSeparately = function (reqData, reqBody) {
 
 
 // 获取电话的接通情况
-exports.getCallInfo = function (pathParam, reqData, type) {
+exports.getCallInfo = function(pathParam, reqData, type) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/call/info/' + type,
         dataType: 'json',
         type: 'post',
         data: reqData,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -87,7 +87,7 @@ let callRateAjax = {
     "114": null,
     "service": null
 };
-exports.getCallRate = function (reqData, reqBody, type) {
+exports.getCallRate = function(reqData, reqBody, type) {
     callRateAjax[type] && callRateAjax[type].abort();
     var Deferred = $.Deferred();
     callRateAjax[type] = $.ajax({
@@ -95,10 +95,10 @@ exports.getCallRate = function (reqData, reqBody, type) {
         dataType: 'json',
         type: 'post',
         data: reqBody,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -107,7 +107,7 @@ exports.getCallRate = function (reqData, reqBody, type) {
 
 //获取通话时段（数量和时长）的统计数据
 let callIntervalAjax = null;
-exports.getCallIntervalData = function (authType, reqData) {
+exports.getCallIntervalData = function(authType, reqData) {
     callIntervalAjax && callIntervalAjax.abort();
     var Deferred = $.Deferred();
     callIntervalAjax = $.ajax({
@@ -115,10 +115,10 @@ exports.getCallIntervalData = function (authType, reqData) {
         dataType: 'json',
         type: 'get',
         data: reqData,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -128,7 +128,7 @@ exports.getCallIntervalData = function (authType, reqData) {
 };
 //获取通话总次数、总时长Top10列表
 let callTotalAjax = null;
-exports.getCallTotalList = function (authType, reqData) {
+exports.getCallTotalList = function(authType, reqData) {
     callTotalAjax && callTotalAjax.abort();
     var Deferred = $.Deferred();
     callTotalAjax = $.ajax({
@@ -136,10 +136,10 @@ exports.getCallTotalList = function (authType, reqData) {
         dataType: 'json',
         type: 'get',
         data: reqData,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -150,16 +150,16 @@ exports.getCallTotalList = function (authType, reqData) {
 
 
 // 获取团队信息
-exports.getSaleGroupTeams = function (reqData) {
+exports.getSaleGroupTeams = function(reqData) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/sale/teams/' + reqData.type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -167,16 +167,16 @@ exports.getSaleGroupTeams = function (reqData) {
 };
 
 // 获取成员信息
-exports.getSaleMemberList = function (reqData) {
+exports.getSaleMemberList = function(reqData) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/sale/member/' + reqData.type,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
         }
     });
@@ -185,7 +185,7 @@ exports.getSaleMemberList = function (reqData) {
 
 // 获取通话客户的地域和阶段分布
 let callZoneStageAjax = null;
-exports.getCallCustomerZoneStage = function (authType, reqData) {
+exports.getCallCustomerZoneStage = function(authType, reqData) {
     callZoneStageAjax && callZoneStageAjax.abort();
     var Deferred = $.Deferred();
     callZoneStageAjax = $.ajax({
@@ -206,7 +206,7 @@ exports.getCallCustomerZoneStage = function (authType, reqData) {
 };
 
 // 获取订单阶段
-exports.getSalesStageList = function () {
+exports.getSalesStageList = function() {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_stage_list',

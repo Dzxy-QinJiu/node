@@ -30,7 +30,7 @@ function handleFileName(req, res, filename) {
 }
 
 //获取用户信息
-exports.getMyAppList = function (req, res) {
+exports.getMyAppList = function(req, res) {
     var params = {};
     var curPage = req.query.cur_page, pageSize = req.query.page_size, filterContent = req.query.search_content;
     if (curPage) {
@@ -45,17 +45,17 @@ exports.getMyAppList = function (req, res) {
         params.filter_content = filterContent;
     }
     appManageServic.getMyAppList(req, res, params === {} ? null : params)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 
-exports.getCurAppById = function (req, res) {
-    appManageServic.getCurAppById(req, res, req.params.app_id).on("success", function (data) {
+exports.getCurAppById = function(req, res) {
+    appManageServic.getCurAppById(req, res, req.params.app_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -63,49 +63,49 @@ exports.getCurAppById = function (req, res) {
 /**
  * edit app handler
  */
-exports.editApp = function (req, res) {
+exports.editApp = function(req, res) {
     appManageServic.editApp(req, res, req.body)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 /**
  * refresh app secret
  */
-exports.refreshAppSecret = function (req, res) {
+exports.refreshAppSecret = function(req, res) {
     appManageServic.refreshAppSecret(req, res, req.params.app_id)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 
 //修改应用到期时间
-exports.updateExpireDate = function (req, res) {
+exports.updateExpireDate = function(req, res) {
     appManageServic.updateExpireDate(req, res, req.body)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
+        }).on("error", function(codeMessage) {
             res.status(500).json(codeMessage && codeMessage.message);
         }
-    );
+        );
 };
 
 // 导出权限
-exports.exportAuthorityList = function (req, res) {
+exports.exportAuthorityList = function(req, res) {
     var clientID = req.params.client_id;
     var clientAppName = "";
     // 以年月日的格式命名文件名比如：20161018
     var date = moment(new Date()).format("YYYYMMDD");
-    appManageServic.getCurAppById(req, res, clientID).on("success", function (data) {
+    appManageServic.getCurAppById(req, res, clientID).on("success", function(data) {
         clientAppName = data.name;
         appManageServic.exportAuthorityList(req, res, clientID)
-            .on("success", function (data) {
+            .on("success", function(data) {
                 // 导出文件的命名方式role-appName-date
                 var filename = 'auth-' + clientAppName + '-' + date + '.json';
                 // 数据
@@ -114,16 +114,16 @@ exports.exportAuthorityList = function (req, res) {
                 handleFileName(req, res, filename);
                 res.write(authorityData);
                 res.end();
-            }).on("error", function (codeMessage) {
-            res.status(500).json(codeMessage && codeMessage.message);
-        });
-    }).on("error", function () {
+            }).on("error", function(codeMessage) {
+                res.status(500).json(codeMessage && codeMessage.message);
+            });
+    }).on("error", function() {
         res.status(500).json("导出权限失败");
     });
 };
 
 // 导出权限模板文件
-exports.exportAuthModuleFilename = function (req, res) {
+exports.exportAuthModuleFilename = function(req, res) {
     var example = [
         {
             "classify_name": "应用管理",
@@ -163,20 +163,20 @@ exports.exportAuthModuleFilename = function (req, res) {
 /**
  * 导入（上传）权限json文件
  */
-exports.uploadAuthority = function (req, res) {
+exports.uploadAuthority = function(req, res) {
 
     var client_id = req.params.client_id;
 
     var form = new multiparty.Form();
 
     //开始处理上传请求
-    form.parse(req, function (err, fields, files) {
+    form.parse(req, function(err, fields, files) {
         var tmpPath = files['import_authority'][0].path;
         var data = fs.readFileSync(tmpPath, 'utf8');
         var importData = JSON.parse(data);
-        appManageServic.uploadAuthority(req, res, client_id, importData).on("success", function (message) {
+        appManageServic.uploadAuthority(req, res, client_id, importData).on("success", function(message) {
             res.json(message);
-        }).on("error", function (ret) {
+        }).on("error", function(ret) {
             res.status(500).json(ret);
         });
         // 删除临时文件
@@ -185,15 +185,15 @@ exports.uploadAuthority = function (req, res) {
 };
 
 // 导出角色
-exports.exportRoleList = function (req, res) {
+exports.exportRoleList = function(req, res) {
     var clientID = req.params.client_id;
     var clientAppName = "";
     // 以年月日的格式命名文件名比如：20161018
     var date = moment(new Date()).format("YYYYMMDD");
-    appManageServic.getCurAppById(req, res, clientID).on("success", function (data) {
+    appManageServic.getCurAppById(req, res, clientID).on("success", function(data) {
         clientAppName = data.name;
         appManageServic.exportRoleList(req, res, clientID)
-            .on("success", function (data) {
+            .on("success", function(data) {
                 // 导出文件的命名方式role-appName-date
                 var filename = 'role-' + clientAppName + '-' + date + '.json';
                 // 数据
@@ -202,16 +202,16 @@ exports.exportRoleList = function (req, res) {
                 handleFileName(req, res, filename);
                 res.write(roleData);
                 res.end();
-            }).on("error", function (codeMessage) {
-            res.status(500).json(codeMessage && codeMessage.message);
-        });
-    }).on("error", function () {
+            }).on("error", function(codeMessage) {
+                res.status(500).json(codeMessage && codeMessage.message);
+            });
+    }).on("error", function() {
         res.status(500).json("导出角色失败");
     });
 };
 
 // 导出角色模板文件
-exports.exportRoleModuleFilename = function (req, res) {
+exports.exportRoleModuleFilename = function(req, res) {
     var example = [
         {
             "role_name": "应用管理员",
@@ -241,31 +241,31 @@ exports.exportRoleModuleFilename = function (req, res) {
 /**
  *  导入（上传）角色json文件
  */
-exports.uploadRole = function (req, res) {
+exports.uploadRole = function(req, res) {
 
     var client_id = req.params.client_id;
 
     var form = new multiparty.Form();
 
     //开始处理上传请求
-    form.parse(req, function (err, fields, files) {
+    form.parse(req, function(err, fields, files) {
         var tmpPath = files['import_role'][0].path;
         var data = fs.readFileSync(tmpPath, 'utf8');
         var importData = JSON.parse(data);
 
-        appManageServic.uploadRole(req, res, client_id, importData).on("success", function (message) {
+        appManageServic.uploadRole(req, res, client_id, importData).on("success", function(message) {
             res.json(message);
-        }).on("error", function (ret) {
+        }).on("error", function(ret) {
             res.status(500).json(ret);
         });
         // 删除临时文件
         fs.unlinkSync(tmpPath);
     });
 };
-exports.getCurAppKey = function (req, res) {
-    appManageServic.getCurAppKey(req, res, req.params.app_id).on("success", function (data) {
+exports.getCurAppKey = function(req, res) {
+    appManageServic.getCurAppKey(req, res, req.params.app_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

@@ -17,7 +17,7 @@ exports.getUserDetailChangeRecord = function(searchObj){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -37,7 +37,7 @@ exports.getSingleUserAppList = function(userId){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }

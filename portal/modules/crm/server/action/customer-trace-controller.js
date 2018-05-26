@@ -6,37 +6,37 @@
 var customerTraceService = require("../service/customer-trace-service");
 /*
 * 获取客户跟踪记录列表 */
-exports.getCustomerTraceList = function (req, res) {
+exports.getCustomerTraceList = function(req, res) {
     customerTraceService.getCustomerTraceList(req, res)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (err) {
-        res.status(500).json(err.message);
-    });
+        }).on("error", function(err) {
+            res.status(500).json(err.message);
+        });
 };
 /*
 * 添加客户跟踪记录*/
-exports.addCustomerTraceList = function (req, res) {
+exports.addCustomerTraceList = function(req, res) {
     customerTraceService.addCustomerTraceList(req, res)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 /*
  * 更新客户跟踪记录*/
-exports.updateCustomerTraceList = function (req, res) {
+exports.updateCustomerTraceList = function(req, res) {
     customerTraceService.updateCustomerTraceList(req, res)
-        .on("success", function (data) {
+        .on("success", function(data) {
             res.status(200).json(data);
-        }).on("error", function (codeMessage) {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
+        }).on("error", function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
 };
 /*
  *
  * 获取电话录音*/
-exports.getPhoneRecordAudio = function (req, res) {
+exports.getPhoneRecordAudio = function(req, res) {
     customerTraceService.getPhoneRecordAudio(req, res);
 };

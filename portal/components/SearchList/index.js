@@ -243,22 +243,22 @@ var SearchList = React.createClass({
         );
         var _this = this;
         return (
-             <span className={cls} style={{width:this.props.width}} id={this.searchListId} ref="wrap">
-                 <Dropdown
-                     getPopupContainer={function(){return document.getElementById(_this.searchListId);}}
-                     overlay={menu}
-                     visible={true}
-                     prefixCls="ant-dropdown">
-                     <div className="input-wrap">
-                         <input type="text"
-                                 onKeyDown={this.keyDownPress}
-                                 className="searchbox"
-                                 value={this.state.keyword}
-                                 autoFocus={true}
-                                 onChange={this.keywordValueChange}/>
-                     </div>
-                 </Dropdown>
-             </span>
+            <span className={cls} style={{width:this.props.width}} id={this.searchListId} ref="wrap">
+                <Dropdown
+                    getPopupContainer={function(){return document.getElementById(_this.searchListId);}}
+                    overlay={menu}
+                    visible={true}
+                    prefixCls="ant-dropdown">
+                    <div className="input-wrap">
+                        <input type="text"
+                            onKeyDown={this.keyDownPress}
+                            className="searchbox"
+                            value={this.state.keyword}
+                            autoFocus={true}
+                            onChange={this.keywordValueChange}/>
+                    </div>
+                </Dropdown>
+            </span>
 
         );
     }

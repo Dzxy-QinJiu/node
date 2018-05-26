@@ -10,7 +10,7 @@
  * @param filterManager: 是否过滤掉舆情秘书
  */
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
-exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
+exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id == curTeamId);
     //该团队启用状态下的人数
@@ -36,7 +36,7 @@ exports.getTeamMemberCount = function (salesTeam, teamMemberCount, teamMemberCou
     return teamMemberCount;
 };
 //判断录音文件是否以.WAV结尾
-exports.checkWav = function (str) {
+exports.checkWav = function(str) {
     var index = str.lastIndexOf('.WAV');
     if (index === -1) {
         return false;
@@ -45,7 +45,7 @@ exports.checkWav = function (str) {
     }
 };
 //返回录音url
-exports.getAudioRecordUrl = function (itemLocal, itemRecord, phoneType) {
+exports.getAudioRecordUrl = function(itemLocal, itemRecord, phoneType) {
     //播放长沙，济南和北京的录音
     var local = "changsha", audioType = "";
     if (itemLocal == "jinan") {
@@ -68,7 +68,7 @@ exports.getAudioRecordUrl = function (itemLocal, itemRecord, phoneType) {
     }
 };
 //去除json对象中的空白项
-const removeEmptyItem = function (obj) {
+const removeEmptyItem = function(obj) {
     _.each(obj, (v, k) => {
         if (v === "") delete obj[k];
         if (_.isArray(v)) {
@@ -86,7 +86,7 @@ exports.removeEmptyItem = removeEmptyItem;
 
 // 根据权限，判断获取团队和成员时所传字段的值
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-exports.getParamByPrivilege = function () {
+exports.getParamByPrivilege = function() {
     let reqData = {};
     if (hasPrivilege("GET_TEAM_LIST_ALL") || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
         reqData.type = 'all';
@@ -96,7 +96,7 @@ exports.getParamByPrivilege = function () {
     return reqData;
 };
 //是否通过两项必填一项的验证
-exports.validateRequiredOne = function (item1, item2) {
+exports.validateRequiredOne = function(item1, item2) {
     item1 = $.trim(item1);
     item2 = $.trim(item2);
     if (item1 || item2) {
@@ -106,7 +106,7 @@ exports.validateRequiredOne = function (item1, item2) {
         return false;
     }
 };
-exports.getRelativeTime = function (time) {
+exports.getRelativeTime = function(time) {
     var relativeTime = "";
     var todayStartTime = TimeStampUtil.getTodayTimeStamp().start_time;
     var todayEndTime = TimeStampUtil.getTodayTimeStamp().end_time;
@@ -126,7 +126,7 @@ exports.getRelativeTime = function (time) {
     return relativeTime;
 };
 //对数字进行四舍五入保留n位小数的方法
-exports.formatRoundingData = function (data, n) {
+exports.formatRoundingData = function(data, n) {
     if (isNaN(data)) {
         return "-";
     } else {
@@ -135,7 +135,7 @@ exports.formatRoundingData = function (data, n) {
     }
 };
 //把数字转化成百分数，并进行四舍五入保留n位小数的方法
-exports.formatRoundingPercentData = function (data, n) {
+exports.formatRoundingPercentData = function(data, n) {
     if (isNaN(data)) {
         return "-";
     } else {
@@ -147,7 +147,7 @@ exports.formatRoundingPercentData = function (data, n) {
     }
 };
 //比较两个数组中元素是否有不同的
-exports.isDiffOfTwoArray = function (array1, array2) {
+exports.isDiffOfTwoArray = function(array1, array2) {
     // 返回来自array1，并且不存在于array2的数组
     let diff1 = _.difference(array1, array2);
     // 返回来自array2，并且不存在于array1的数组

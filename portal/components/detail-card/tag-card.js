@@ -114,7 +114,7 @@ class TagCard extends React.Component {
 
     renderTagContent() {
         let tagsArray = this.state.tags ? this.state.tags : [];
-        let tags = tagsArray.map(function (tag, index) {
+        let tags = tagsArray.map(function(tag, index) {
             return (<span key={index} className="common-tag tag-selected">{tag}</span>);
         });
         let selectedTagsArray = this.state.tags ? this.state.tags : [];
@@ -128,14 +128,14 @@ class TagCard extends React.Component {
                             {unionTagsArray.map((tag, index) => {
                                 let className = classNames("common-tag", {"tag-selected": selectedTagsArray.indexOf(tag) > -1});
                                 return (<span key={index} onClick={this.toggleTag.bind(this, tag, false)} ref={tag}
-                                              className={className}>{tag}</span>);
+                                    className={className}>{tag}</span>);
                             })}
                         </div>
                         <div className="tag-input-block">
                             <Input className="tag-input" ref="newTag"
-                                   placeholder={this.props.placeholder}/>
+                                placeholder={this.props.placeholder}/>
                             <span className="iconfont icon-add" ref="newTagAdd"
-                                  onClick={this.addTag.bind(this)}/>
+                                onClick={this.addTag.bind(this)}/>
                         </div>
                     </div>)
                 }
@@ -165,13 +165,13 @@ class TagCard extends React.Component {
         }
         return (
             <DetailCard title={this.renderTagTitle()}
-                        className="tag-card-container"
-                        content={this.renderTagContent()}
-                        isEdit={this.state.displayType === "edit"}
-                        loading={this.state.loading}
-                        saveErrorMsg={this.state.submitErrorMsg}
-                        handleSubmit={this.handleSubmit.bind(this)}
-                        handleCancel={this.handleCancel.bind(this)}
+                className="tag-card-container"
+                content={this.renderTagContent()}
+                isEdit={this.state.displayType === "edit"}
+                loading={this.state.loading}
+                saveErrorMsg={this.state.submitErrorMsg}
+                handleSubmit={this.handleSubmit.bind(this)}
+                handleCancel={this.handleCancel.bind(this)}
             />
         );
     }
@@ -183,7 +183,7 @@ DetailCard.defaultProps = {
     recommendTags: [],//所有推荐标签的列表
     enableEdit: false,//能否编辑(Boolean)
     noDataTip: "",//无数据时的提示
-    saveTags: function () {
+    saveTags: function() {
     }//保存修改后的标签列表（Function）
 };
 export default TagCard;

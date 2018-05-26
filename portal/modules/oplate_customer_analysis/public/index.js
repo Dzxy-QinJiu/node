@@ -33,24 +33,24 @@ const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
 };
 //客户分析
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(OplateCustomerAnalysisStore.getState());
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return OplateCustomerAnalysisStore.getState();
     },
     //缩放延时，避免页面卡顿
     resizeTimeout: null,
     //窗口缩放时候的处理函数
-    windowResize: function () {
+    windowResize: function() {
         clearTimeout(this.resizeTimeout);
         var _this = this;
-        this.resizeTimeout = setTimeout(function () {
+        this.resizeTimeout = setTimeout(function() {
             //窗口缩放的时候，调用setState，重新走render逻辑渲染
             _this.setState(OplateCustomerAnalysisStore.getState());
         }, 300);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         appSelectorEmitter.on(appSelectorEmitter.SELECT_APP, this.onAppChange);
         dateSelectorEmitter.on(dateSelectorEmitter.SELECT_DATE, this.onDateChange);
         OplateCustomerAnalysisStore.listen(this.onStateChange);
@@ -72,7 +72,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         //绑定window的resize，进行缩放处理
         $(window).on('resize', this.windowResize);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         appSelectorEmitter.removeListener(appSelectorEmitter.SELECT_APP, this.onAppChange);
         dateSelectorEmitter.removeListener(dateSelectorEmitter.SELECT_DATE, this.onDateChange);
         OplateCustomerAnalysisStore.unlisten(this.onStateChange);
@@ -127,7 +127,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
      * @param hasAll 是否含有“全部应用”选项
      * @param list 应用列表的list
      */
-    processTrendChartData: function (trendData) {
+    processTrendChartData: function(trendData) {
         if (trendData[0] && trendData[0].data) {
             trendData = trendData[0].data;
         } else {
@@ -136,7 +136,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return trendData;
     },
     //趋势统计
-    getCustomerChart: function () {
+    getCustomerChart: function() {
         return (
             this.getComponent(Analysis, {
                 refName: "qu_shi_tong_ji",
@@ -166,7 +166,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
     },
     //地域统计
-    getZoneChart: function () {
+    getZoneChart: function() {
         // var endDate = this.getEndDateText();
         var legend = [{ name: Intl.get("oplate_customer_analysis.2", "总数"), key: "total" }];
         return (
@@ -197,7 +197,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         );
     },
     //团队统计
-    getTeamChart: function () {
+    getTeamChart: function() {
         var userType = "team";
         //基层销售主管或舆情秘书看到的是其团队成员的统计数据
         if (this.state.userType && (this.state.userType.indexOf("salesmanager") > -1 || this.state.userType.indexOf("salesleader") > -1)) {
@@ -231,7 +231,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
-    getIndustryChart: function () {
+    getIndustryChart: function() {
         return (
             this.getComponent(Analysis, {
                 refName: "hang_ye_tong_ji",
@@ -261,7 +261,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         );
     },
     //获取客户阶段统计图
-    getCustomerStageChart: function () {
+    getCustomerStageChart: function() {
         return (
             this.getComponent(Analysis, {
                 refName: "ke_hu_jie_duan_tong_ji",
@@ -284,7 +284,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return processOrderStageChartData(this.state.salesStageList, data);
     },
     //获取订单阶段统计图
-    getOrderStageChart: function () {
+    getOrderStageChart: function() {
         return (
             this.getComponent(Analysis, {
                 refName: "ding_dan_jie_duan_tong_ji",
@@ -483,7 +483,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             })
         );
     },
-    changeCurrentTab: function (tabName, event) {
+    changeCurrentTab: function(tabName, event) {
         OplateCustomerAnalysisAction.changeCurrentTab(tabName);
         var sendRequest = ["total", "added"].indexOf(tabName) > -1 ? true : false;
         this.setState({
@@ -491,7 +491,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             sendRequest: sendRequest,
         });
     },
-    processSummaryNumberData: function (data, resultType) {
+    processSummaryNumberData: function(data, resultType) {
         this.state.summaryNumbers.data = data;
         this.state.summaryNumbers.resultType = resultType;
         return data;
@@ -506,7 +506,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return exportArr;
     },   
     //处理 行业试用客户覆盖率 切换筛选条件
-    handleSelectChange: function (key, value) {
+    handleSelectChange: function(key, value) {
         this.state.industryCustomerOverlay.paramObj[key] = value;
         if (key == "customer_label") {
             //"试用合格"标签需要特殊处理
@@ -565,7 +565,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         }
         return exportArr;
     },   
-    renderSummaryCountBoxContent: function () {
+    renderSummaryCountBoxContent: function() {
         return (
             <Row>
                 <Col xs={24} sm={8} md={4}>
@@ -627,49 +627,49 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             </Row>
         );
     },
-    getCharts: function () {
+    getCharts: function() {
         return [{
-                title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
-                content: this.getCustomerChart(),
-            }, {
-                title: Intl.get("oplate_customer_analysis.3", "地域统计"),
-                content: this.getZoneChart(),
-            }, {
-                title: Intl.get("oplate_customer_analysis.5", "行业统计"),
-                content: this.getIndustryChart(),
-            }, {
-                title: Intl.get("oplate_customer_analysis.4", "团队统计"),
-                content: this.getTeamChart(),
-            }, {
-                title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
-                content: this.getCustomerStageChart(),
-                hide: this.state.currentTab !== "total",
-            }, {
-                title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
-                content: this.getOrderStageChart(),
-                hide: this.state.currentTab !== "total",
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
-                content: this.getIndustryCustomerOverlayTable(),
-                hide: this.state.currentTab !== "total",
-                subTitle: <div>
-                    <IndustrySelector
-                        onChange={this.handleSelectChange.bind(this, "industry")}
-                    />
-                    <StageSelector
-                        onChange={this.handleSelectChange.bind(this, "customer_label")}
-                    />
-                </div>
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
-                content: this.getNewCustomerCountTable(),
-                hide: this.state.currentTab !== "total",                
-            }
+            title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
+            content: this.getCustomerChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.3", "地域统计"),
+            content: this.getZoneChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.5", "行业统计"),
+            content: this.getIndustryChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.4", "团队统计"),
+            content: this.getTeamChart(),
+        }, {
+            title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
+            content: this.getCustomerStageChart(),
+            hide: this.state.currentTab !== "total",
+        }, {
+            title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
+            content: this.getOrderStageChart(),
+            hide: this.state.currentTab !== "total",
+        },
+        {
+            title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
+            content: this.getIndustryCustomerOverlayTable(),
+            hide: this.state.currentTab !== "total",
+            subTitle: <div>
+                <IndustrySelector
+                    onChange={this.handleSelectChange.bind(this, "industry")}
+                />
+                <StageSelector
+                    onChange={this.handleSelectChange.bind(this, "customer_label")}
+                />
+            </div>
+        },
+        {
+            title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
+            content: this.getNewCustomerCountTable(),
+            hide: this.state.currentTab !== "total",                
+        }
         ];
     },
-    render: function () {
+    render: function() {
         var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
         var windowWidth = $(window).width();
         if (windowWidth >= Oplate.layout['screen-md']) {

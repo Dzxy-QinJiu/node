@@ -111,7 +111,7 @@ exports.getForeverTime = function() {
     };
 };
 //获取全部时间
-exports.getAllTime = function () {
+exports.getAllTime = function() {
     return {
         start_time : '',
         end_time : ''
@@ -230,30 +230,30 @@ exports.getEchartTooltipDate = function(list , idx , unit) {
     }
 };
 //获取到的毫秒数转化成前端展示的开通周期范围，default是为了解决上一个版本的测试数据
-exports.getDateRange = function (mills) {
+exports.getDateRange = function(mills) {
     let range = '0.5m';
     let dayTime = 24 * 60 * 60 * 1000;
     switch (mills) {
-        case 7 * dayTime:
-            range = '1w';
-            break;
-        case 15 * dayTime:
-            range = '0.5m';
-            break;
-        case 30 * dayTime:
-            range = '1m';
-            break;
-        case 30 * 6 * dayTime:
-            range = '6m';
-            break;
-        case 30 * 12 * dayTime:
-            range = '12m';
-            break;
-        case 0:
-            range = 'forever';
-            break;
-        default:
-            range = mills / dayTime + '天';
+    case 7 * dayTime:
+        range = '1w';
+        break;
+    case 15 * dayTime:
+        range = '0.5m';
+        break;
+    case 30 * dayTime:
+        range = '1m';
+        break;
+    case 30 * 6 * dayTime:
+        range = '6m';
+        break;
+    case 30 * 12 * dayTime:
+        range = '12m';
+        break;
+    case 0:
+        range = 'forever';
+        break;
+    default:
+        range = mills / dayTime + '天';
     }
     return range;
 

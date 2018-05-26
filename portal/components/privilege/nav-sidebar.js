@@ -151,7 +151,7 @@ var hamburgerIntroModalLayout = {
 
 var NavSidebar = React.createClass({
     mixins: [UnreadMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             menus: getMenus(),
             userInfoLogo: getUserInfoLogo(),
@@ -172,7 +172,7 @@ var NavSidebar = React.createClass({
     //轮询获取未读数的清除器
     unreadTimeout: null,
     //动态添加未读数样式，以便在通知页面顶部显示未读数数字
-    insertStyleForUnreadCount: function (unreadCountObj) {
+    insertStyleForUnreadCount: function(unreadCountObj) {
         if (this.unreadStyle) {
             this.unreadStyle.destroy();
         }
@@ -191,7 +191,7 @@ var NavSidebar = React.createClass({
         this.unreadStyle = insertStyle(styles.join('\n'));
     },
     //刷新未读数
-    refreshNotificationUnread: function () {
+    refreshNotificationUnread: function() {
         if (Oplate && Oplate.unread) {
             var messages = Oplate.unread;
             this.setState({
@@ -201,7 +201,7 @@ var NavSidebar = React.createClass({
             this.insertStyleForUnreadCount(messages);
         }
     },
-    changeUserInfoLogo: function (userLogoInfo) {
+    changeUserInfoLogo: function(userLogoInfo) {
         //修改名称
         if (userLogoInfo.nickName) {
             this.state.userInfo.nick_name = userLogoInfo.nickName;
@@ -218,11 +218,11 @@ var NavSidebar = React.createClass({
             userData.updateUserLogo(userLogoInfo);
         }
     },
-    resizeFunction: function () {
+    resizeFunction: function() {
         this.setState({});
     },
     //确定要加引导的元素是日程管理的图标还是汉堡包按钮
-    selectedIntroElement: function () {
+    selectedIntroElement: function() {
         //查看汉堡包按钮是否存在
         var hamburger = document.getElementById("hamburger");
         var isHamburgerShow = hamburger.style.display;
@@ -248,7 +248,7 @@ var NavSidebar = React.createClass({
 
     //是否需要发送ajax请求获取"未读数"数据
     needSendNotificationRequest: false,
-    componentDidMount: function () {
+    componentDidMount: function() {
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.on(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         //未读回复列表变化后触发
@@ -278,7 +278,7 @@ var NavSidebar = React.createClass({
         //重新渲染一次，需要使用高度
         this.setState({});
     },
-    getHasUnreadReply:function () {
+    getHasUnreadReply:function() {
         const APPLY_UNREAD_REPLY = "apply_unread_reply";
         let userId = userData.getUserData().user_id;
         //获取sessionStore中已存的未读回复列表
@@ -289,7 +289,7 @@ var NavSidebar = React.createClass({
             this.refreshHasUnreadReply(applyUnreadReplyList);
         }
     },
-    refreshHasUnreadReply: function (unreadReplyList) {
+    refreshHasUnreadReply: function(unreadReplyList) {
         if (_.isArray(unreadReplyList) && unreadReplyList.length) {
             this.setState({hasUnreadReply: true});
         } else {
@@ -297,10 +297,10 @@ var NavSidebar = React.createClass({
         }
     },
     //本次要加的引导是否没有被点击过
-    isIntroModlueNeverClicked: function (WebsiteConfigModuleRecord) {
+    isIntroModlueNeverClicked: function(WebsiteConfigModuleRecord) {
         return (_.indexOf(WebsiteConfigModuleRecord, menu.name) < 0);
     },
-    calculateHeight: function () {
+    calculateHeight: function() {
         //>75  目的是左侧只有一个导航图标时不会出现汉堡包按钮
         //窗口高度小于 （logo高度+导航高度+个人信息高度）时，出现汉堡包按钮，隐藏导航图标
         if ($(window).height() < (responsiveLayout.logoHeight + responsiveLayout.MenusHeight + responsiveLayout.userInfoHeight) && (responsiveLayout.MenusHeight > 75)) {
@@ -315,7 +315,7 @@ var NavSidebar = React.createClass({
             this.selectedIntroElement();
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_NOTIFICATION_UNREAD, this.refreshNotificationUnread);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
@@ -323,11 +323,11 @@ var NavSidebar = React.createClass({
         $(window).off('resize', this.resizeFunction);
         clearTimeout(this.unreadTimeout);
     },
-    navContainerHeightFnc: function () {
+    navContainerHeightFnc: function() {
         return $(window).height();
     },
     //是否有未读消息
-    hasUnread: function () {
+    hasUnread: function() {
         var numbers = this.state.messages;
         for (var key in numbers) {
             if (numbers[key] > 0 && key !== 'approve' && key !== 'apply') {
@@ -336,7 +336,7 @@ var NavSidebar = React.createClass({
         }
         return false;
     },
-    getNotificationClass: function () {
+    getNotificationClass: function() {
         var urlInfo = url.parse(window.location.href);
         if (/^\/notification\//.test(urlInfo.pathname)) {
             return "active";
@@ -345,21 +345,21 @@ var NavSidebar = React.createClass({
         }
     },
 
-    getLinkListByPrivilege: function (linkList) {
+    getLinkListByPrivilege: function(linkList) {
         let userPrivileges = userData.getUserData().privileges;
-        return linkList.filter(function (item) {
+        return linkList.filter(function(item) {
             if (userPrivileges.indexOf(item.privilege) >= 0) {
                 return true;
             }
         });
     },
-    getNotificationLinks: function (notifications) {
+    getNotificationLinks: function(notifications) {
         var _this = this;
         var pathname = url.parse(window.location.href).pathname;
         return (
             <ul className="ul-unstyled">
                 {
-                    notifications.map(function (obj) {
+                    notifications.map(function(obj) {
                         var cls = classNames({
                             pad: _this.state.messages[obj.key] > 99
                         });
@@ -381,7 +381,7 @@ var NavSidebar = React.createClass({
         );
     },
     //个人信息部分右侧弹框
-    getUserInfoLinks: function () {
+    getUserInfoLinks: function() {
         //个人资料部分
         var UserInfoLinkList = [
             {
@@ -398,7 +398,7 @@ var NavSidebar = React.createClass({
         return (
             <ul className="ul-unstyled">
                 {
-                    UserInfoLinkList.map(function (obj) {
+                    UserInfoLinkList.map(function(obj) {
                         return (
                             <li key={obj.key}>
                                 <Link to={obj.href} activeClassName="active">
@@ -414,7 +414,7 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
-    getNotificationBlock: function () {
+    getNotificationBlock: function() {
         var notificationLinks = this.getLinkListByPrivilege(NotificationLinkList);
         if (!notificationLinks.length) {
             return null;
@@ -428,7 +428,7 @@ var NavSidebar = React.createClass({
             </div>
         );
     },
-    getApplyBlock: function () {
+    getApplyBlock: function() {
         var applyLinks = this.getLinkListByPrivilege(applyentryLink);
         if (!applyLinks.length) {
             return null;
@@ -439,16 +439,16 @@ var NavSidebar = React.createClass({
                     <i className="iconfont icon-applyentry" title={Intl.get("menu.appuser.apply", "用户审批")}/>
                     {this.state.messages.approve == 0 && this.state.hasUnreadReply ?
                         <span className="iconfont icon-apply-message-tip"
-                              title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
+                            title={Intl.get("user.apply.unread.reply", "有未读回复")}/> : null}
                 </Link>
             </div>
         );
     },
-    getBackendConfigLinks: function (backendConfigLinks) {
+    getBackendConfigLinks: function(backendConfigLinks) {
         return (
             <ul className="ul-unstyled">
                 {
-                    backendConfigLinks.map(function (obj) {
+                    backendConfigLinks.map(function(obj) {
                         return (
                             <li key={obj.key}>
                                 <Link to={obj.href} activeClassName="active">
@@ -462,7 +462,7 @@ var NavSidebar = React.createClass({
         );
     },
     //后台管理配置模块
-    renderBackendConfigBlock: function () {
+    renderBackendConfigBlock: function() {
         let backendConfigLinks = this.getLinkListByPrivilege(BackendConfigLinkList);
         if (!backendConfigLinks.length) {
             return null;
@@ -472,7 +472,7 @@ var NavSidebar = React.createClass({
         return (
             <div className="sidebar-backend-config">
                 <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                         overlayClassName="nav-sidebar-backend-config">
+                    overlayClassName="nav-sidebar-backend-config">
                     <Link to={defaultLink.href} activeClassName="active">
                         <i className="iconfont icon-role-auth-config"/>
                     </Link>
@@ -482,30 +482,30 @@ var NavSidebar = React.createClass({
     },
 
     //侧边导航左下个人信息
-    getUserInfoBlock: function () {
+    getUserInfoBlock: function() {
         var userinfoList = this.getUserInfoLinks();
         return (
             <div className="sidebar-userinfo">
                 <Popover content={userinfoList} trigger="hover"
-                         placement="rightBottom"
-                         overlayClassName="nav-sidebar-userinfo">
+                    placement="rightBottom"
+                    overlayClassName="nav-sidebar-userinfo">
                     <div className="avatar_container">
                         <Avatar className="avatar"
-                                size="51"
-                                src={this.state.userInfoLogo}
-                                userName={this.state.userInfo.user_name}
-                                nickName={this.state.userInfo.nick_name}
-                                round="true" link="true" url="/user_info_manage"/>
+                            size="51"
+                            src={this.state.userInfoLogo}
+                            userName={this.state.userInfo.user_name}
+                            nickName={this.state.userInfo.nick_name}
+                            round="true" link="true" url="/user_info_manage"/>
                     </div>
                 </Popover>
             </div>
         );
     },
-    getNavbarLists: function () {
+    getNavbarLists: function() {
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
             <ul className="ul-unstyled">
-                {NavSidebarLists.map(function (obj) {
+                {NavSidebarLists.map(function(obj) {
                     return (
                         <li>
                             <Link to={`/${obj.routePath}`} activeClassName="active">
@@ -518,22 +518,22 @@ var NavSidebar = React.createClass({
             </ul>
         );
     },
-    handleOnclickHole: function () {
+    handleOnclickHole: function() {
         //跳转到新加模块界面
         history.pushState({}, "/" + menu.routePath, {});
         this.saveModalClicked();
     },
     //将该模块存入后端并隐藏模态框
-    saveModalClicked: function () {
+    saveModalClicked: function() {
         this.setState({
             isShowIntroModal: false
         });
         setWebsiteConfigModuleRecord({"module_record": [menu.name]});
     },
-    hideModalIntro: function () {
+    hideModalIntro: function() {
         this.saveModalClicked();
     },
-    render: function () {
+    render: function() {
         var windowHeight = this.navContainerHeightFnc();
         const pathName = location.pathname.replace(/^\/|\/$/g, "");
         var currentPageCategory = pathName.split("/")[0];
@@ -552,12 +552,12 @@ var NavSidebar = React.createClass({
                             <ul className="nav navbar-nav" id="menusLists">
                                 {
                                     //过滤掉不显示的
-                                    this.state.menus.filter(function (menu, i) {
+                                    this.state.menus.filter(function(menu, i) {
                                         if (excludePathList.indexOf(menu.routePath) < 0) {
                                             return true;
                                         }
                                         return false;
-                                    }).map(function (menu, i) {
+                                    }).map(function(menu, i) {
                                         var category = menu.routePath.replace(/\/.*$/, '');
                                         var extraClass = currentPageCategory === category && pathName !== "contract/dashboard" ? 'active' : '';
                                         //将侧边导航图标的名称和路径放在数组NavSidebarLists中
@@ -567,8 +567,8 @@ var NavSidebar = React.createClass({
                                         return (
                                             <li key={i} className={`ico ${menu.routePath.replace(/\//g, '_')}_ico`}>
                                                 <Link to={`/${menu.routePath}`}
-                                                      activeClassName={extraClass}
-                                                      className={extraClass}
+                                                    activeClassName={extraClass}
+                                                    className={extraClass}
                                                 >
                                                     <i title={menu.name}></i>
                                                     <span>{menu.name}</span>
@@ -579,7 +579,7 @@ var NavSidebar = React.createClass({
                                 }
                             </ul>
                             <Popover content={this.getNavbarLists()} trigger="hover" placement="rightTop"
-                                     overlayClassName="nav-sidebar-lists">
+                                overlayClassName="nav-sidebar-lists">
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
                                     <span className="line"></span>

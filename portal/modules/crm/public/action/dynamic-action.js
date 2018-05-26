@@ -10,9 +10,9 @@ function DynamicAction() {
     );
 
     //获取动态列表
-    this.getDynamicList = function (customer_id) {
+    this.getDynamicList = function(customer_id) {
         var _this = this;
-        crmAjax.getDynamicList(customer_id).then(function (list) {
+        crmAjax.getDynamicList(customer_id).then(function(list) {
             if (!_.isArray(list)) list = [];
             _this.dispatch(list);
         });

@@ -25,7 +25,7 @@ function CustomerRepeatStore() {
     this.bindActions(CustomerRepeatAction);
 }
 //修改默认联系人后，更新列表
-CustomerRepeatStore.prototype.updateCustomerDefContact = function (contact) {
+CustomerRepeatStore.prototype.updateCustomerDefContact = function(contact) {
     if (contact && contact.customer_id) {
         let updateCustomer = _.find(this.originCustomerList, customer => customer.id === contact.customer_id);
         updateCustomer.contacts = [contact];
@@ -35,7 +35,7 @@ CustomerRepeatStore.prototype.updateCustomerDefContact = function (contact) {
     }
 };
 
-CustomerRepeatStore.prototype.editBasicSuccess = function (newBasic) {
+CustomerRepeatStore.prototype.editBasicSuccess = function(newBasic) {
     if (newBasic && newBasic.id) {
         let updateCustomer = _.find(this.originCustomerList, customer => customer.id == newBasic.id);
         for (var key in newBasic) {
@@ -47,46 +47,46 @@ CustomerRepeatStore.prototype.editBasicSuccess = function (newBasic) {
     }
 };
 //重置页数
-CustomerRepeatStore.prototype.resetPage = function () {
+CustomerRepeatStore.prototype.resetPage = function() {
     this.page = 1;
 };
 //搜索内容的设置
-CustomerRepeatStore.prototype.setFilterObj = function (filterObj) {
+CustomerRepeatStore.prototype.setFilterObj = function(filterObj) {
     this.filterObj = filterObj;
 };
 //搜索框的展示隐藏
-CustomerRepeatStore.prototype.toggleSearchInput = function (keyObj) {
+CustomerRepeatStore.prototype.toggleSearchInput = function(keyObj) {
     this.filterObj = {};
     switch (keyObj.key) {
-        case "name":
-            this.nameSearchIsShow = keyObj.isShow;
-            if (keyObj.isShow) {
-                //展示客户搜索时，关闭其他搜索
-                this.userNameSearchIsShow = false;
-                this.remarksSearchIsShow = false;
-            }
-            break;
-        case "user_name":
-            this.userNameSearchIsShow = keyObj.isShow;
-            if (keyObj.isShow) {
-                //展示客户搜索时，关闭其他搜索
-                this.nameSearchIsShow = false;
-                this.remarksSearchIsShow = false;
-            }
-            break;
-        case "remarks":
-            this.remarksSearchIsShow = keyObj.isShow;
-            if (keyObj.isShow) {
-                //展示客户搜索时，关闭其他搜索
-                this.nameSearchIsShow = false;
-                this.userNameSearchIsShow = false;
-            }
-            break;
+    case "name":
+        this.nameSearchIsShow = keyObj.isShow;
+        if (keyObj.isShow) {
+            //展示客户搜索时，关闭其他搜索
+            this.userNameSearchIsShow = false;
+            this.remarksSearchIsShow = false;
+        }
+        break;
+    case "user_name":
+        this.userNameSearchIsShow = keyObj.isShow;
+        if (keyObj.isShow) {
+            //展示客户搜索时，关闭其他搜索
+            this.nameSearchIsShow = false;
+            this.remarksSearchIsShow = false;
+        }
+        break;
+    case "remarks":
+        this.remarksSearchIsShow = keyObj.isShow;
+        if (keyObj.isShow) {
+            //展示客户搜索时，关闭其他搜索
+            this.nameSearchIsShow = false;
+            this.userNameSearchIsShow = false;
+        }
+        break;
     }
 };
 
 //合并重复客户后的处理
-CustomerRepeatStore.prototype.afterMergeRepeatCustomer = function (mergeObj) {
+CustomerRepeatStore.prototype.afterMergeRepeatCustomer = function(mergeObj) {
     //合并后保存的客户的id也放入要删除的客户id列表中
     if (_.isObject(mergeObj.customer) && mergeObj.customer.id) {
         if (_.isArray(mergeObj.delete_ids) && mergeObj.delete_ids.length > 0) {
@@ -100,15 +100,15 @@ CustomerRepeatStore.prototype.afterMergeRepeatCustomer = function (mergeObj) {
 };
 
 //是否展示客户合并面板的设置
-CustomerRepeatStore.prototype.setMergePanelShow = function (flag) {
+CustomerRepeatStore.prototype.setMergePanelShow = function(flag) {
     this.mergePanelIsShow = flag;
 };
 //是否正在加载重复客户列表的设置
-CustomerRepeatStore.prototype.setRepeatCustomerLoading = function (flag) {
+CustomerRepeatStore.prototype.setRepeatCustomerLoading = function(flag) {
     this.isLoadingRepeatCustomer = flag;
 };
 //获取重复的客户列表
-CustomerRepeatStore.prototype.getRepeatCustomerList = function (data) {
+CustomerRepeatStore.prototype.getRepeatCustomerList = function(data) {
     this.isLoadingRepeatCustomer = false;
     if (_.isString(data)) {
         this.errorMsg = data;
@@ -145,7 +145,7 @@ CustomerRepeatStore.prototype.getRepeatCustomerList = function (data) {
 };
 
 //对客户字段进行处理，以便在客户列表上显示
-CustomerRepeatStore.prototype.processForList = function (curCustomers) {
+CustomerRepeatStore.prototype.processForList = function(curCustomers) {
     if (!_.isArray(curCustomers)) return [];
     let repeatCustomerObj = _.groupBy(curCustomers, (item) => item.repeat_id);
     return _.map(repeatCustomerObj, (repeatList, repeatId) => {
@@ -161,7 +161,7 @@ CustomerRepeatStore.prototype.processForList = function (curCustomers) {
 };
 
 //刷新客户列表
-CustomerRepeatStore.prototype.refreshRepeatCustomer = function (data) {
+CustomerRepeatStore.prototype.refreshRepeatCustomer = function(data) {
     if (data) {
         _.some(this.originCustomerList, (customer, index) => {
             if (customer.id == data.id) {
@@ -176,7 +176,7 @@ CustomerRepeatStore.prototype.refreshRepeatCustomer = function (data) {
     }
 };
 //删除重复的客户
-CustomerRepeatStore.prototype.delRepeatCustomer = function (delCustomerIds) {
+CustomerRepeatStore.prototype.delRepeatCustomer = function(delCustomerIds) {
     //删除成功后的处理
     if (_.isArray(delCustomerIds) && delCustomerIds.length > 0) {
         this.originCustomerList = _.filter(this.originCustomerList, customer => delCustomerIds.indexOf(customer.id) === -1);
@@ -192,24 +192,24 @@ CustomerRepeatStore.prototype.delRepeatCustomer = function (delCustomerIds) {
     }
 };
 //设置选中的客户
-CustomerRepeatStore.prototype.setSelectedCustomer = function (selectRows) {
+CustomerRepeatStore.prototype.setSelectedCustomer = function(selectRows) {
     this.selectedCustomers = selectRows;
 };
 
 //设置要合并的客户们
-CustomerRepeatStore.prototype.setMergeRepeatCustomers = function (repeatCustomers) {
+CustomerRepeatStore.prototype.setMergeRepeatCustomers = function(repeatCustomers) {
     this.mergeRepeatCustomers = repeatCustomers;
 };
 //设置是否展示删除客户的确认框
-CustomerRepeatStore.prototype.setDelModalShow = function (flag) {
+CustomerRepeatStore.prototype.setDelModalShow = function(flag) {
     this.delModalShow = flag;
 };
 //设置是否展示右侧面板
-CustomerRepeatStore.prototype.setRightPanelShow = function (flag) {
+CustomerRepeatStore.prototype.setRightPanelShow = function(flag) {
     this.rightPanelIsShow = flag;
 };
 //设置当前要展示的客户
-CustomerRepeatStore.prototype.setCurCustomer = function (id) {
+CustomerRepeatStore.prototype.setCurCustomer = function(id) {
     let curCustomer = _.find(this.originCustomerList, customer => customer.id === id);
     this.curCustomer = curCustomer ? curCustomer : {};
 };

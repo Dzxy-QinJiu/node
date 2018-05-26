@@ -14,7 +14,7 @@ function updateUnread(type, unread) {
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
         }
-        timeoutFunc = setTimeout(function () {
+        timeoutFunc = setTimeout(function() {
             //触发展示的组件未读数的刷新
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
         }, timeout);
@@ -31,7 +31,7 @@ function NotificationAction() {
     );
 
     //清除未读数
-    this.clearUnreadNum = function (type, callback) {
+    this.clearUnreadNum = function(type, callback) {
         let clearTip = Intl.get("notification.clear.unread.failed", "全部标为已读失败！"), error = true;
         NotificationAjax.clearUnreadNum(type).then(data=> {
             if (data) {

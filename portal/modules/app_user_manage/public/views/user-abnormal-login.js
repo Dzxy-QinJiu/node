@@ -29,26 +29,26 @@ var LAYOUT_CONSTANTS = {
 };
 const IGNORE_ABNORMAL_SUCCESS = Intl.get("user.login.abnormal.success", "该条异地信息已忽略！");
 var UserAbnormalLogin = React.createClass({
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             userId: '1',
             appLists: []
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ignoreAbnormalErrorMsg: '', // 忽略异地登录信息的失败的提示信息，默认为空
             ignoreId: '', // 忽略的id
             ...this.getStateData()
         };
     },
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(this.getStateData());
     },
-    getStateData: function () {
+    getStateData: function() {
         return UserAbnormalLoginStore.getState();
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         UserAbnormalLoginStore.listen(this.onStateChange);
         var searchObj = {
             user_id: this.props.userId,
@@ -64,10 +64,10 @@ var UserAbnormalLogin = React.createClass({
             this.getAbnormalLoginLists(searchObj);
         });
     },
-    getAbnormalLoginLists: function (searchObj) {
+    getAbnormalLoginLists: function(searchObj) {
         UserAbnormalLoginAction.getUserAbnormalLogin(searchObj);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.userId !== this.props.userId) {
             var userId = nextProps.userId;
             setTimeout(() => {
@@ -87,13 +87,13 @@ var UserAbnormalLogin = React.createClass({
             });
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         setTimeout(()=>{
             UserAbnormalLoginAction.resetState();
         });
         UserAbnormalLoginStore.unlisten(this.onStateChange);
     },
-    retryGetAbnormalLogin: function () {
+    retryGetAbnormalLogin: function() {
         var searchObj = {
             user_id: this.props.userId,
             page_size:this.state.page_size,
@@ -103,16 +103,16 @@ var UserAbnormalLogin = React.createClass({
             this.getAbnormalLoginLists(searchObj);
         });
     },
-    renderAbnormalLogin:function () {
+    renderAbnormalLogin:function() {
         if (this.state.getAppLoading){
             return (<Spinner />);
         }else if (this.state.getAppErrorMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.getAppErrorMsg}
                 <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
+                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                </a>
+            </span>;
             return (
                 <div className="intial-alert-wrap">
                     <Alert
@@ -127,7 +127,7 @@ var UserAbnormalLogin = React.createClass({
         }
     },
     //监听下拉加载
-    handleScrollBarBottom: function () {
+    handleScrollBarBottom: function() {
         var length = this.state.abnormalLoginList.length;
         var lastId = this.state.abnormalLoginList[length - 1].id;
         var searchObj = {
@@ -141,7 +141,7 @@ var UserAbnormalLogin = React.createClass({
         }
         this.getAbnormalLoginLists(searchObj);
     },
-    handleChange: function (app_id, app_name) {
+    handleChange: function(app_id, app_name) {
         UserAbnormalLoginAction.setApp(app_id);
         var searchObj = {
             user_id: this.props.userId,
@@ -201,30 +201,30 @@ var UserAbnormalLogin = React.createClass({
             </div>
         );
     },
-    renderTimeLineItem: function (item) {
+    renderTimeLineItem: function(item) {
         var des = "";
         var appObj = _.find(this.state.appLists,(app)=>{return app.app_id == item.client_id;});
         var appName = appObj? appObj.app_name : '';
         if (item.type){
             switch (item.type){
-                case 'appIllegal':
-                    des = Intl.get("user.retry.login","停用后登录。该用户的{appName}账号已经停用，仍尝试登录。",{"appName":appName});
-                    break;
-                case 'illegalLocation':
-                    des = Intl.get("user.exception.login","登录地异常。该用户的{client_name}账号，不在常用登录地登录。",{"client_name":item.client_name});
-                    //有常用登录地字段时
-                    des += (item.usual_location ? Intl.get("user.usual.location","常用登录地为{usuallocation}。",{"usuallocation":item.usual_location}) :"");
-                    //有该次登录地字段时
-                    des += (item.current_location ? Intl.get("user.current.location","该次登录地为{currentlocation},",{"currentlocation":item.current_location}) : "");
-                    // 有该次登录的IP字段
-                    des += (item.user_ip ? Intl.get("user.current.ip","IP为{currentip}。",{"currentip":item.user_ip}) : "");
-                    break;
-                case 'loginFailedFrequencyException':
-                    des = Intl.get("user.failed.frequent.login","登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。",{"appName":appName});
-                    break;
-                case 'loginSuccessFrequencyException':
-                    des = Intl.get("user.success.frequent.login","登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。",{"appName":appName});
-                    break;
+            case 'appIllegal':
+                des = Intl.get("user.retry.login","停用后登录。该用户的{appName}账号已经停用，仍尝试登录。",{"appName":appName});
+                break;
+            case 'illegalLocation':
+                des = Intl.get("user.exception.login","登录地异常。该用户的{client_name}账号，不在常用登录地登录。",{"client_name":item.client_name});
+                //有常用登录地字段时
+                des += (item.usual_location ? Intl.get("user.usual.location","常用登录地为{usuallocation}。",{"usuallocation":item.usual_location}) :"");
+                //有该次登录地字段时
+                des += (item.current_location ? Intl.get("user.current.location","该次登录地为{currentlocation},",{"currentlocation":item.current_location}) : "");
+                // 有该次登录的IP字段
+                des += (item.user_ip ? Intl.get("user.current.ip","IP为{currentip}。",{"currentip":item.user_ip}) : "");
+                break;
+            case 'loginFailedFrequencyException':
+                des = Intl.get("user.failed.frequent.login","登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录失败。",{"appName":appName});
+                break;
+            case 'loginSuccessFrequencyException':
+                des = Intl.get("user.success.frequent.login","登录频率异常。该用户的{appName}账号，1小时内连续登录超过50次，每次都登录成功。",{"appName":appName});
+                break;
             }
         }
         return (
@@ -248,10 +248,10 @@ var UserAbnormalLogin = React.createClass({
         );
     },
     //是否显示没有更多数据了
-    showNoMoreDataTip: function () {
+    showNoMoreDataTip: function() {
         return this.state.isNoMoreTipShow && this.state.abnormalLoginList.length >= 10;
     },
-    renderAbnormalLoginList: function () {
+    renderAbnormalLoginList: function() {
         //应用的下拉框
         var appLists = this.state.appLists;
         var list = appLists.map((item) => {
@@ -264,8 +264,8 @@ var UserAbnormalLogin = React.createClass({
             return (
                 <div>
                     <Select style={{width:120}}
-                            onChange={this.handleChange}
-                            value={this.state.appId}
+                        onChange={this.handleChange}
+                        value={this.state.appId}
                     >
                         {list}
                     </Select>
@@ -276,9 +276,9 @@ var UserAbnormalLogin = React.createClass({
             //加载完成，出错的情况
             var errMsg = <span>{this.state.abnormalLoginErrMsg}
                 <a onClick={this.retryGetAbnormalLogin} style={{marginLeft:"20px",marginTop:"20px"}}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
+                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                </a>
+            </span>;
             return (
                 <div className="alert-wrap">
                     <Alert
@@ -292,8 +292,8 @@ var UserAbnormalLogin = React.createClass({
             return (
                 <div>
                     <Select style={{width:120}}
-                            onChange={this.handleChange}
-                            value={this.state.appId}
+                        onChange={this.handleChange}
+                        value={this.state.appId}
                     >
                         {list}
                     </Select>
@@ -320,8 +320,8 @@ var UserAbnormalLogin = React.createClass({
             return (
                 <div>
                     <Select style={{width:120}}
-                            onChange={this.handleChange}
-                            value={this.state.appId}
+                        onChange={this.handleChange}
+                        value={this.state.appId}
                     >
                         {list}
                     </Select>
@@ -334,7 +334,7 @@ var UserAbnormalLogin = React.createClass({
             );
         }
     },
-    render: function () {
+    render: function() {
         return (
             <div className="abnormalLoginList">
                 {this.renderAbnormalLogin()}

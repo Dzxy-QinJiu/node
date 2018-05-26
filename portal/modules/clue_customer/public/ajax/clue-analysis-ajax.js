@@ -4,23 +4,23 @@
  * Created by zhangshujuan on 2018/5/24.
  */
 //获取线索统计列表
-exports.getClueAnalysis = function (data) {
+exports.getClueAnalysis = function(data) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/clue/analysis',
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (list) {
+        success: function(list) {
             Deferred.resolve(list);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
     return Deferred.promise();
 };
-exports.getCustomerById = function (data) {
+exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
     $.ajax({
@@ -28,10 +28,10 @@ exports.getCustomerById = function (data) {
         dataType: 'json',
         type: 'post',
         data: data,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

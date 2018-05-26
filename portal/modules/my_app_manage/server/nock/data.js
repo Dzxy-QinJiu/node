@@ -127,7 +127,7 @@ var appList = [
 ];
 
 //获取安全域列表所需数据
-var getApps = function (params) {
+var getApps = function(params) {
     if (!params.current_page && !params.page_size && !params.filter_content) {
         return {
             list_size: appList.length,//所有应用列表的长度
@@ -180,24 +180,24 @@ var getApps = function (params) {
     }
 };
 
-var addApp = function (app) {
-        app.appId = uuid();
-        ownerId = addApp.owner ? addApp.owner.ownerId : '';
-        for (var i = 0, len = owners.length; i < len; i++) {
-            if (owners[i].userId == ownerId) {
-                app.owner = {
-                    ownerId: owners[i].userId,
-                    ownerName: owners[i].userName
-                };
-                break;
-            }
+var addApp = function(app) {
+    app.appId = uuid();
+    ownerId = addApp.owner ? addApp.owner.ownerId : '';
+    for (var i = 0, len = owners.length; i < len; i++) {
+        if (owners[i].userId == ownerId) {
+            app.owner = {
+                ownerId: owners[i].userId,
+                ownerName: owners[i].userName
+            };
+            break;
         }
-        appList.push(app);
-        return app;
     }
+    appList.push(app);
+    return app;
+}
     ;
-var editApp = function (editApp) {
-    var target = appList.find(function (item) {
+var editApp = function(editApp) {
+    var target = appList.find(function(item) {
         return item.appId === editApp.appId;
     });
     if (target) {

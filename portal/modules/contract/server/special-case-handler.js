@@ -6,7 +6,7 @@ import { DATE_FORMAT, CONTRACT_COLUMNS, REPAYMENT_COLUMNS, COST_COLUMNS } from "
 
 //获取回款列表，并根据每条回款记录里的合同id，查询合同相关信息，然后将回款信息和合同信息进行组装
 //返回一个兼有回款信息和合同信息的列表
-const getRepaymentList = function (req, res, cb) {
+const getRepaymentList = function(req, res, cb) {
     //回款字段前缀
     const repayPrefix = "repayment_";
     //在url参数中去掉为合并合同和回款数据而添加的字段前缀，还原字段原本状态
@@ -168,14 +168,14 @@ const getRepaymentList = function (req, res, cb) {
     }
 };
 
-exports.getRepaymentList = function (req, res, next) {
+exports.getRepaymentList = function(req, res, next) {
     getRepaymentList(req, res, (result, code = 200) => {
         res.status(code).json(result);
     });
 };
 
 //导出数据
-exports.exportData = function (req, res, next) {
+exports.exportData = function(req, res, next) {
     const reqData = JSON.parse(req.body.reqData);
     const type = reqData.query.type;
     if (type === "repayment") {

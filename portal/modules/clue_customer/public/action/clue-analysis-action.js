@@ -16,7 +16,7 @@ function ClueAnalysisActions() {
         'changeSource'
     );
     //标记线索是否有效
-    this.getClueAnalysis = function (data) {
+    this.getClueAnalysis = function(data) {
         this.dispatch({error: false, loading: true});
         clueAnalysisAjax.getClueAnalysis(data).then((result)=>{
             this.dispatch({error: false, loading: false, data:result});
@@ -24,7 +24,7 @@ function ClueAnalysisActions() {
             this.dispatch({error: true, loading: false,errorMsg:errorMsg});
         });
     };
-    this.getCustomerById = function (customerId,label) {
+    this.getCustomerById = function(customerId,label) {
         var rangParams = [{//时间范围参数
             from: "",
             to: "",

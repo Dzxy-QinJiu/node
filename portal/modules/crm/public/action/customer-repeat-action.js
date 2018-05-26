@@ -17,41 +17,41 @@ function CustomerRepeatAction() {
         'updateCustomerDefContact'//修改默认联系人后，更新重复客户列表
     );
     //获取重复客户列表
-    this.getRepeatCustomerList = function (queryParams) {
+    this.getRepeatCustomerList = function(queryParams) {
         var _this = this;
-        customerAjax.getRepeatCustomerList(queryParams).then(function (data) {
+        customerAjax.getRepeatCustomerList(queryParams).then(function(data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("crm.188", "获取重复客户列表失败!"));
         });
     };
     //删除选中的重复客户
-    this.delRepeatCustomer = function (customerIdArray, callback) {
+    this.delRepeatCustomer = function(customerIdArray, callback) {
         var _this = this;
-        customerAjax.delRepeatCustomer(customerIdArray).then(function (data) {
+        customerAjax.delRepeatCustomer(customerIdArray).then(function(data) {
             if (_.isObject(data) && data.result === "success") {
                 _this.dispatch(customerIdArray);
                 callback({error: false, successMsg: Intl.get("crm.138", "删除成功")});
             } else {
                 callback({error: true, errorMsg: Intl.get("crm.139", "删除失败")});
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             callback({error: true, errorMsg: errorMsg || Intl.get("crm.139", "删除失败")});
         });
     };
     //修改后刷新客户列表中对应的客户数据
-    this.refreshRepeatCustomer = function (customerId) {
+    this.refreshRepeatCustomer = function(customerId) {
         var _this = this;
-        customerAjax.getCustomerById(customerId).then(function (data) {
+        customerAjax.getCustomerById(customerId).then(function(data) {
             _this.dispatch(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch(errorMsg || Intl.get("crm.189", "更新客户列表失败!"));
         });
     };
     //合并重复客户
-    this.mergeRepeatCustomer = function (mergeObj, callback) {
-        customerAjax.mergeRepeatCustomer(mergeObj).then(function (data) {
+    this.mergeRepeatCustomer = function(mergeObj, callback) {
+        customerAjax.mergeRepeatCustomer(mergeObj).then(function(data) {
             let resultObj = {};
             if (data && data.result == "success") {
                 //合并成功
@@ -63,7 +63,7 @@ function CustomerRepeatAction() {
             if (callback) {
                 callback(resultObj);
             }
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             //合并失败
             let resultObj = {error: true, errorMsg: errorMsg || Intl.get("crm.190", "合并重复客户失败!")};
             if (callback) {

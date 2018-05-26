@@ -4,14 +4,14 @@ var notificationEmitter = require("../../../public/sources/utils/emitters").noti
 var UnreadMixin = {
     dynamicStyle: null,
     //菜单切换时，重新获取未处理申请数
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.showUnhandledApplyCount();
     },
     /*
      *  待审批数的展示
      * @param type  :approve
      */
-    showUnhandledApplyCount: function () {
+    showUnhandledApplyCount: function() {
         //从全局数据中获取
         if (Oplate && Oplate.unread) {
             var count = Oplate.unread.approve || 0;
@@ -40,14 +40,14 @@ var UnreadMixin = {
             this.dynamicStyle = insertStyle(styleText);
         }
     },
-    registerEventEmitter: function () {
+    registerEventEmitter: function() {
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledApplyCount);
     },
-    unregisterEventEmitter: function () {
+    unregisterEventEmitter: function() {
         notificationEmitter.removeListener(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT, this.showUnhandledApplyCount);
     },
     //能够获取未读数
-    shouldGetUnreadData: function () {
+    shouldGetUnreadData: function() {
         var userData = UserData.getUserData();
         var privileges = userData.privileges || [];
         if (privileges.indexOf("APP_USER_APPLY_LIST") >= 0) {
@@ -55,14 +55,14 @@ var UnreadMixin = {
         }
         return false;
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         if (!this.shouldGetUnreadData()) {
             return;
         }
         this.showUnhandledApplyCount();
         this.registerEventEmitter();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         if (!this.shouldGetUnreadData()) {
             return;
         }

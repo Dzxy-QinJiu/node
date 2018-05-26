@@ -19,10 +19,10 @@ exports.getUserOnlineAnalysisList = function(queryObj) {
         url: urls.getUserOnlineAnalysisList + '/' + queryObj.page_size + '/' + queryObj.page,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (error,textStatus) {
+        error: function(error,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(error && error.description || '获取在线用户统计数据失败');
             }
@@ -39,10 +39,10 @@ exports.getOnlineBrowserByApp = function(queryObj) {
         url: urls.getOnlineBrowserByApp + '/' + queryObj.app_id,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (error) {
+        error: function(error) {
             Deferred.reject(error && error.description || '获取浏览器统计信息失败');
         }
     });
@@ -57,10 +57,10 @@ exports.getOnlineZoneByApp = function(queryObj) {
         url: urls.getOnlineZoneByApp + '/' + queryObj.app_id,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (error) {
+        error: function(error) {
             Deferred.reject(error && error.description || '获取地域统计信息失败');
         }
     });

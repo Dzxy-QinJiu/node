@@ -2,7 +2,7 @@
 exports.roleArray = [Intl.get("crm.115", "经办人"), Intl.get("crm.184", "决策人"), Intl.get("crm.185", "关键人"), Intl.get("crm.186", "其他")];
 
 //获取一个空的视图中使用的联系人对象
-exports.getEmptyViewContactObject = function () {
+exports.getEmptyViewContactObject = function() {
     return {
         //是否显示修改的表单
         isShowEditContactForm: false,
@@ -32,7 +32,7 @@ exports.getEmptyViewContactObject = function () {
     };
 };
 //构建一个视图中使用的联系人对象
-exports.newViewContactObject = function (contact) {
+exports.newViewContactObject = function(contact) {
     contact = contact || {};
     var complexContact = {
         //是否显示修改的表单
@@ -56,8 +56,8 @@ exports.newViewContactObject = function (contact) {
 };
 
 //从界面的联系人列表中获取一个联系人
-exports.getContactFromContactListView = function (list, contact) {
-    return _.find(list, function (item) {
+exports.getContactFromContactListView = function(list, contact) {
+    return _.find(list, function(item) {
         if (item.contact.id === contact.id) {
             return true;
         }
@@ -65,9 +65,9 @@ exports.getContactFromContactListView = function (list, contact) {
 };
 
 //从界面的联系人列表中删除一个联系人
-exports.deleteContactFromContactListView = function (list, contact) {
+exports.deleteContactFromContactListView = function(list, contact) {
     var idx = -1;
-    _.find(list, function (item, i) {
+    _.find(list, function(item, i) {
         if (item.contact.id === contact.id) {
             idx = i;
             return true;
@@ -79,8 +79,8 @@ exports.deleteContactFromContactListView = function (list, contact) {
 };
 
 //将所有的默认联系人设置为非默认联系人
-exports.unsetDefaultContacts = function (list) {
-    _.each(list, function (item) {
+exports.unsetDefaultContacts = function(list) {
+    _.each(list, function(item) {
         item.contact.def_contancts = "false";
     });
 };

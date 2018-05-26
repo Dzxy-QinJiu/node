@@ -16,7 +16,7 @@ exports.getUserAbnormalLogin = function(data){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -27,7 +27,7 @@ exports.getUserAbnormalLogin = function(data){
 
 // 忽略异常登录地
 let ignoreAbnormalLoginAjax = null;
-exports.ignoreAbnormalLogin = function (id) {
+exports.ignoreAbnormalLogin = function(id) {
     let Deferred = $.Deferred();
     ignoreAbnormalLoginAjax && ignoreAbnormalLoginAjax.abort();
     ignoreAbnormalLoginAjax = $.ajax({

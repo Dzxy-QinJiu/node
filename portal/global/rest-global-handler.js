@@ -26,15 +26,15 @@ function cleanAuthAndSendData(req, res, data) {
 //添加全局请求头
 //restManage.baseRest.addCustomGlobalHeader("test", "testvalue");
 
-userAuthRestEmitter.on("timeout", function (req, res, data) {//rest请求超时
+userAuthRestEmitter.on("timeout", function(req, res, data) {//rest请求超时
     res.status(data.httpCode).json(data.message);
-}).on(errors.REFRESH_TOKEN_SUCCESS, function (newToken, userBaseInfo, req) {//刷新token成功
+}).on(errors.REFRESH_TOKEN_SUCCESS, function(newToken, userBaseInfo, req) {//刷新token成功
     //复制一份用户数据
     var user = _.clone(userBaseInfo);
     user.auth.access_token = newToken.access_token;
     user.auth.refresh_token = newToken.refresh_token;
     auth.saveUserInfo(req, user);
-}).on(errors.GLOBAL_ERROR, function (req, res, error) {//error 标示不同的错误类型
+}).on(errors.GLOBAL_ERROR, function(req, res, error) {//error 标示不同的错误类型
     if (error == errors.LOGIN_ONLY_ONE) {
         cleanAuthAndSendData(req, res, UI_CONST.LOGIN_ONLY_ONE);//被他人踢出，只允许1人登录时
     } else if (error == errors.KICKED_BY_ADMIN) {

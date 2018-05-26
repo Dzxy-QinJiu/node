@@ -13,14 +13,14 @@ var Button = require("react-bootstrap").Button;
 var classNames = require("classnames");
 
 var ModalDialog = React.createClass({
-    delete: function () {
+    delete: function() {
         this.props.delete();
         this.close();
     },
-    close: function () {
+    close: function() {
         this.props.hideModalDialog();
     },
-    render: function () {
+    render: function() {
         var btnClass = classNames('', this.props.className, {
             'transparentBgFlag modal': this.props.transparentBgFlag,
             'modal': !this.props.transparentBgFlag
@@ -45,7 +45,7 @@ var ModalDialog = React.createClass({
                     </Button>
                     <Button className="btn-cancel" onClick={this.close} data-tracename={closedModalTip}>
                         {Intl.get("common.cancel")}
-                        </Button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

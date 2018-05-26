@@ -40,7 +40,7 @@ const restApis = {
 
 };
 //查询客户
-exports.getClueCustomerList = function (req, res) {
+exports.getClueCustomerList = function(req, res) {
     let queryObj = {};
     queryObj.query = JSON.parse(req.body.clueCustomerTypeFilter);
     let baseUrl = restApis.queryCluecustomer;
@@ -60,7 +60,7 @@ exports.getClueCustomerList = function (req, res) {
         }, queryObj);
 };
 //获取线索来源
-exports.getClueSource = function (req, res) {
+exports.getClueSource = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getClueSource,
@@ -69,7 +69,7 @@ exports.getClueSource = function (req, res) {
         }, null);
 };
 //获取线索渠道
-exports.getClueChannel = function (req, res) {
+exports.getClueChannel = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getClueChannel,
@@ -78,7 +78,7 @@ exports.getClueChannel = function (req, res) {
         }, null);
 };
 //获取线索分类
-exports.getClueClassify = function (req, res) {
+exports.getClueClassify = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getClueClassify,
@@ -87,7 +87,7 @@ exports.getClueClassify = function (req, res) {
         }, null);
 };
 //添加跟进内容
-exports.addCluecustomerTrace = function (req, res) {
+exports.addCluecustomerTrace = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.addCluecustomerTrace,
@@ -97,7 +97,7 @@ exports.addCluecustomerTrace = function (req, res) {
 };
 //把线索客户分配给对应的销售
 //添加跟进内容
-exports.distributeCluecustomerToSale = function (req, res) {
+exports.distributeCluecustomerToSale = function(req, res) {
     var queryObj = req.body;
     var type = "user";
     if (queryObj.hasDistributeAuth){
@@ -112,7 +112,7 @@ exports.distributeCluecustomerToSale = function (req, res) {
         }, queryObj);
 };
 //对线索客户的详情进行更新
-exports.updateCluecustomerDetail = function (req, res) {
+exports.updateCluecustomerDetail = function(req, res) {
     var updateItem = req.body.updateItem;
     if (updateItem === "weChat"){
         updateItem = "wechat";
@@ -126,7 +126,7 @@ exports.updateCluecustomerDetail = function (req, res) {
 };
 
 //线索名、电话唯一性验证
-exports.checkOnlySalesClue = function (req, res) {
+exports.checkOnlySalesClue = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.checkOnlySalesClue,
@@ -135,7 +135,7 @@ exports.checkOnlySalesClue = function (req, res) {
         }, req.query);
 };
 //将线索和客户进行关联
-exports.relateClueAndCustomer = function (req, res) {
+exports.relateClueAndCustomer = function(req, res) {
     return restUtil.authRest.put(
         {
             url: restApis.RelateClueAndCustomer.replace(":type",req.params.type),
@@ -144,7 +144,7 @@ exports.relateClueAndCustomer = function (req, res) {
         }, req.body);
 };
 //上传线索
-exports.uploadClues = function (req, res) {
+exports.uploadClues = function(req, res) {
     return restUtil.authRest.post({
         url: restApis.upload,
         req: req,
@@ -155,7 +155,7 @@ exports.uploadClues = function (req, res) {
     }, null);
 };
 //上传线索预览
-exports.confirmUploadClues = function (req, res) {
+exports.confirmUploadClues = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.uploadClueConfirm.replace(":flag",req.params.flag),
@@ -164,7 +164,7 @@ exports.confirmUploadClues = function (req, res) {
         }, null);
 };
 //删除某个重复线索
-exports.deleteRepeatClue = function (req, res) {
+exports.deleteRepeatClue = function(req, res) {
     return restUtil.authRest.del(
         {
             url: restApis.deleteRepeatClue.replace(":index",req.params.index),
@@ -173,7 +173,7 @@ exports.deleteRepeatClue = function (req, res) {
         }, null);
 };
 
-exports.getClueAnalysis = function (req, res) {
+exports.getClueAnalysis = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.getClueAnalysis,

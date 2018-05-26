@@ -27,12 +27,12 @@ function NotificationStore() {
     this.bindActions(NotificationActions);
 }
 //将最后一个
-NotificationStore.prototype.resetLastNotificationId = function () {
+NotificationStore.prototype.resetLastNotificationId = function() {
     this.lastNotificationId = "";
 };
 
 //清除未读数
-NotificationStore.prototype.clearUnreadNum = function (result) {
+NotificationStore.prototype.clearUnreadNum = function(result) {
     if (result) {
         this.isClearUnreadNum = true;
         this.unreadNum = 0;

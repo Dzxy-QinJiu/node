@@ -5,7 +5,7 @@ import Trace from "LIB_DIR/trace";
 import {Icon, Alert} from "antd";
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 const competingProductManage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return ({
             //竞品列表
             productList: [],
@@ -24,7 +24,7 @@ const competingProductManage = React.createClass({
         });
     },
     //获取竞品列表
-    getProductList: function () {
+    getProductList: function() {
         this.setState({
             isRefreshLoading: true
         });
@@ -47,11 +47,11 @@ const competingProductManage = React.createClass({
         });
 
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         this.getProductList();
     },
     //点击刷新按钮
-    getRefreshInfo: function (e) {
+    getRefreshInfo: function(e) {
         this.setState({
             isRefreshLoading: true,
             productList: []
@@ -59,7 +59,7 @@ const competingProductManage = React.createClass({
         this.getProductList();
     },
     //删除竞品标签
-    handleDeleteItem: function (item) {
+    handleDeleteItem: function(item) {
         //当前正在删除的竞品的id
         this.setState({
             DeletingItem: item
@@ -86,7 +86,7 @@ const competingProductManage = React.createClass({
 
     },
     //增加竞品
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         Trace.traceEvent(e, "点击添加竞品按钮");
         e.preventDefault();
         //输入的竞品名称去左右空格
@@ -137,11 +137,11 @@ const competingProductManage = React.createClass({
         );
     },
 
-    renderErrorAlert: function (errorMsg, hide) {
+    renderErrorAlert: function(errorMsg, hide) {
         return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
     },
 
-    handleDeleteIndustryFail: function () {
+    handleDeleteIndustryFail: function() {
         var hide = () => {
             this.setState({
                 deleteErrMsg: ''
@@ -154,7 +154,7 @@ const competingProductManage = React.createClass({
         );
     },
 
-    renderCompetingProductList: function () {
+    renderCompetingProductList: function() {
         let productList = this.state.productList;
         //正在获取数据的状态渲染
         if (this.state.isRefreshLoading) {
@@ -166,28 +166,28 @@ const competingProductManage = React.createClass({
             //竞品列表
             return (<ul className="mb-taglist">
                 {productList.map((item, index) => {
-                        return (
-                            <li className="mb-tag">
-                                <div className="mb-tag-content">
-                                    <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
-                                    <span className="glyphicon glyphicon-remove mb-tag-remove"
-                                          onClick={this.handleDeleteItem.bind(this, item)}
-                                          data-tracename="点击删除某个竞品按钮"
-                                    />
-                                    { this.state.DeletingItem === item ? (
-                                        <Icon type="loading"/>
-                                    ) : null}
-                                </div>
-                            </li>);
-                    }
+                    return (
+                        <li className="mb-tag">
+                            <div className="mb-tag-content">
+                                <span className="mb-tag-text">{item}</span>&nbsp;&nbsp;
+                                <span className="glyphicon glyphicon-remove mb-tag-remove"
+                                    onClick={this.handleDeleteItem.bind(this, item)}
+                                    data-tracename="点击删除某个竞品按钮"
+                                />
+                                { this.state.DeletingItem === item ? (
+                                    <Icon type="loading"/>
+                                ) : null}
+                            </div>
+                        </li>);
+                }
                 )}
             </ul>);
         } else {//没有竞品时的提示
             return <Alert type="info" showIcon
-                          message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>;
+                message={Intl.get("config.manage.no.product", "暂无竞品配置，请添加！")}/>;
         }
     },
-    render: function () {
+    render: function() {
         return (
             <div className="box" data-tracename="竞品配置">
                 <div className="box-title">
@@ -209,7 +209,7 @@ const competingProductManage = React.createClass({
                         <div>
                             <input className="mb-input" ref="addProduct"/>
                             <button className="btn mb-add-button" type="submit"
-                                    disabled={this.state.isAddloading ? "disabled" : ""}>
+                                disabled={this.state.isAddloading ? "disabled" : ""}>
                                 {Intl.get("common.add", "添加")}
                                 {this.state.isAddloading ?
                                     <Icon type="loading"/> : null}

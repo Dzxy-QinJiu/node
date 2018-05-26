@@ -26,21 +26,21 @@ function RoleStore() {
     this.setDefaulting = false;//设置默认角色加载状态    
 }
 
-RoleStore.prototype.setRoleListLoading = function (flag) {
+RoleStore.prototype.setRoleListLoading = function(flag) {
     this.roleListIsLoading = flag;
 };
-RoleStore.prototype.setDefaulting = function (flag) {
+RoleStore.prototype.setDefaulting = function(flag) {
     this.setDefaulting = flag;
 };
-RoleStore.prototype.setRoleNumber = function () {
-    _.each(this.roleList.roleList, function (obj, i) {
+RoleStore.prototype.setRoleNumber = function() {
+    _.each(this.roleList.roleList, function(obj, i) {
         obj.number = i + 1;
     });
 };
 
-RoleStore.prototype.changeAuthorityGroupObject = function () {
+RoleStore.prototype.changeAuthorityGroupObject = function() {
     var authorityGroupListObj = [];
-    _.each(this.roleList.authorityGroupList, function (obj, i) {
+    _.each(this.roleList.authorityGroupList, function(obj, i) {
         var group = {
             classifyName: obj,
             authorityIDs: []
@@ -51,7 +51,7 @@ RoleStore.prototype.changeAuthorityGroupObject = function () {
 };
 
 //重构角色下的权限组列表，permissionGroups：所有的权限分组及权限列表map
-RoleStore.prototype.refactorPermissionGroups = function (permissionGroups) {
+RoleStore.prototype.refactorPermissionGroups = function(permissionGroups) {
     var authorityGroups = [];//转换后的权限组列表
     for (var key in permissionGroups) {
         if (key) {
@@ -66,7 +66,7 @@ RoleStore.prototype.refactorPermissionGroups = function (permissionGroups) {
 };
 
 //获取角色列表
-RoleStore.prototype.getRoleList = function (roleListObj) {   
+RoleStore.prototype.getRoleList = function(roleListObj) {   
     if (_.isString(roleListObj)) {
         //获取角色列表失败的提示
         this.listTipMsg = roleListObj;
@@ -85,9 +85,9 @@ RoleStore.prototype.getRoleList = function (roleListObj) {
 };
 
 //重构角色列表的数据
-RoleStore.prototype.refactorRoleList = function (roles) {
+RoleStore.prototype.refactorRoleList = function(roles) {
     var _this = this;
-    this.roleList = roles.map(function (role) {
+    this.roleList = roles.map(function(role) {
         var rolePermissionGroups = _this.getRolePermissionGroups(role.permissionIds);
         return {
             roleId: role.roleId,
@@ -99,19 +99,19 @@ RoleStore.prototype.refactorRoleList = function (roles) {
 };
 
 //获取角色下的权限组及组下权限列表的数据
-RoleStore.prototype.getRolePermissionGroups = function (permissionIds) {
+RoleStore.prototype.getRolePermissionGroups = function(permissionIds) {
     var rolePermissionGroups = $.extend(true, [], this.permissionGroups);
     //遍历权限组列表
     if (_.isArray(rolePermissionGroups) && rolePermissionGroups.length > 0) {
-        rolePermissionGroups.forEach(function (permissionGroup) {
+        rolePermissionGroups.forEach(function(permissionGroup) {
             //遍历权限组下的权限列表
             if (permissionGroup && _.isArray(permissionGroup.permissionList)) {
-                permissionGroup.permissionList.forEach(function (permission) {
+                permissionGroup.permissionList.forEach(function(permission) {
                     if (permission) {
                         permission.status = false;
                         //遍历该角色所持有的权限的id,找到对应的权限设置为true(选中状态)
                         if (_.isArray(permissionIds) && permissionIds.length > 0) {
-                            permissionIds.forEach(function (permissionId) {
+                            permissionIds.forEach(function(permissionId) {
                                 if (permission.permissionId == permissionId) {
                                     permission.status = true;
                                 }
@@ -126,7 +126,7 @@ RoleStore.prototype.getRolePermissionGroups = function (permissionIds) {
 };
 
 //添加角色
-RoleStore.prototype.afterAddRole = function (roleCreated) {
+RoleStore.prototype.afterAddRole = function(roleCreated) {
     var addRoleArray = [roleCreated];
     this.roleList = addRoleArray.concat(this.roleList);
     this.roleFormShow = false;
@@ -136,9 +136,9 @@ RoleStore.prototype.afterAddRole = function (roleCreated) {
 };
 
 //修改角色
-RoleStore.prototype.afterEditRole = function (roleModified) {
+RoleStore.prototype.afterEditRole = function(roleModified) {
     this.roleFormShow = false;
-    var target = _.find(this.roleList, function (item) {
+    var target = _.find(this.roleList, function(item) {
         if (item.roleId === roleModified.roleId) {
             return true;
         }
@@ -150,10 +150,10 @@ RoleStore.prototype.afterEditRole = function (roleModified) {
 };
 
 //删除角色
-RoleStore.prototype.deleteRole = function (delResultObj) {
+RoleStore.prototype.deleteRole = function(delResultObj) {
     if (delResultObj.delResult) {
         //删除成功
-        this.roleList = _.filter(this.roleList, function (item) {
+        this.roleList = _.filter(this.roleList, function(item) {
             if (item.roleId !== delResultObj.delRoleId) {
                 return true;
             }
@@ -170,13 +170,13 @@ RoleStore.prototype.deleteRole = function (delResultObj) {
     }
 };
 
-RoleStore.prototype.clearDelErrorMsg = function () {
+RoleStore.prototype.clearDelErrorMsg = function() {
     this.delRoleErrorMsg = "";
     this.delRoleId = "";
 };
 
 //展示添加修改角色面板
-RoleStore.prototype.showRoleForm = function (role) {
+RoleStore.prototype.showRoleForm = function(role) {
     this.roleFormShow = true;
     if (role) {
         this.currentRole = role;
@@ -188,12 +188,12 @@ RoleStore.prototype.showRoleForm = function (role) {
 };
 
 //隐藏添加修改角色面板
-RoleStore.prototype.hideRoleForm = function () {
+RoleStore.prototype.hideRoleForm = function() {
     this.roleFormShow = false;
 };
 
 //判断当前权限是否选中
-RoleStore.prototype.roleAuthority = function (authority, role) {
+RoleStore.prototype.roleAuthority = function(authority, role) {
     var flag = false;
     if (authority && role) {
         var authorityIds = role.authorityIds;
@@ -210,17 +210,17 @@ RoleStore.prototype.roleAuthority = function (authority, role) {
 };
 
 //展示删除角色时的提示框
-RoleStore.prototype.showModalDialog = function (role) {
+RoleStore.prototype.showModalDialog = function(role) {
     role.modalDialogFlag = true;
 };
 
 //隐藏删除角色时的提示框
-RoleStore.prototype.hideModalDialog = function (role) {
+RoleStore.prototype.hideModalDialog = function(role) {
     role.modalDialogFlag = false;
 };
 
 //设置默认角色
-RoleStore.prototype.setDefaultRole = function (obj) {
+RoleStore.prototype.setDefaultRole = function(obj) {
     this.setDefaulting = false;
     if (obj.setResult) {   
         this.roleList.forEach(x => {
@@ -235,7 +235,7 @@ RoleStore.prototype.setDefaultRole = function (obj) {
 };
 
 //获取默认角色
-RoleStore.prototype.getDefaultRole = function (obj) {
+RoleStore.prototype.getDefaultRole = function(obj) {
     //默认角色加载完成后再显示角色列表
     this.roleListIsLoading = false;
     if (obj.result) {
@@ -251,7 +251,7 @@ RoleStore.prototype.getDefaultRole = function (obj) {
 };
 
 //删除默认角色
-RoleStore.prototype.delDefaultRole = function (data) {
+RoleStore.prototype.delDefaultRole = function(data) {
     if(data.delResult) {
         this.roleList.forEach(x => x.isDefault = "0");
     }

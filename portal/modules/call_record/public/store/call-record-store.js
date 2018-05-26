@@ -40,7 +40,7 @@ SalesCallRecordStore.prototype.resetCallRecord = function() {
 };
 
 //恢复状态
-SalesCallRecordStore.prototype.resetState = function () {
+SalesCallRecordStore.prototype.resetState = function() {
     //默认展示今天的时间
     var timeRange = DateSelectorUtils.getTodayTime();
     //开始时间
@@ -51,7 +51,7 @@ SalesCallRecordStore.prototype.resetState = function () {
 };
 
 //获取通话列表
-SalesCallRecordStore.prototype.getCallRecordList = function (serverData) {
+SalesCallRecordStore.prototype.getCallRecordList = function(serverData) {
     var callRecord = this.callRecord;
     callRecord.is_loading = serverData.loading;
     var isFirstPage = callRecord.page === 1;
@@ -94,7 +94,7 @@ SalesCallRecordStore.prototype.filterPhone = function(status) {
 };
 
 // 更新客户和联系人
-SalesCallRecordStore.prototype.updateCallRecord = function (addData) {
+SalesCallRecordStore.prototype.updateCallRecord = function(addData) {
     let addNumber = addData.contacts0_phone;
     _.each(this.callRecord.data_list, (item) => {
         if (item.dst == addNumber) {
@@ -105,7 +105,7 @@ SalesCallRecordStore.prototype.updateCallRecord = function (addData) {
 };
 
 // 更新跟进内容
-SalesCallRecordStore.prototype.updateCallContent = function (editContent) {
+SalesCallRecordStore.prototype.updateCallContent = function(editContent) {
     let id = editContent.id;
     _.each(this.callRecord.data_list, (item) => {
         if (item.id == id) {
@@ -124,13 +124,13 @@ SalesCallRecordStore.prototype.toggleConfirm = function(obj){
 };
 
 // 刷新通话记录
-SalesCallRecordStore.prototype.handleRefresh = function () {
+SalesCallRecordStore.prototype.handleRefresh = function() {
     this.resetCallRecord();
     this.callRecord.listenScrollBottom = false;
 };
 
 // 搜索电话号码号码时，提供推荐列表
-SalesCallRecordStore.prototype.getRecommendPhoneList = function (result) {
+SalesCallRecordStore.prototype.getRecommendPhoneList = function(result) {
     if (result.error) {
         this.recommendList.errMsg = result.errMsg || Intl.get("call.record.recommend.list",  '获取推荐列表失败！');
     } else {

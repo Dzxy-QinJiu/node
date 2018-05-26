@@ -2,7 +2,7 @@
  * Created by wangliping on 2016/2/22.
  * 应用实体
  */
-exports.App = function (opts) {
+exports.App = function(opts) {
     this.appId = opts.client_id;
     this.appName = opts.client_name || "";//应用名称
     this.redirectUrl = opts.redirect_url || "";//应用URL
@@ -12,7 +12,7 @@ exports.App = function (opts) {
     this.status = opts.status || "";//应用的状态
 };
 
-exports.toFrontObject = function (restObject) {
+exports.toFrontObject = function(restObject) {
     var frontObj = {};
     frontObj.id = restObject.client_id;
     frontObj.name = restObject.client_name || "";
@@ -31,7 +31,7 @@ exports.toFrontObject = function (restObject) {
     frontObj.sessionCaptcha = restObject.session_captcha;
     //管理员
     var managers = restObject.managers || [];
-    managers = managers.map(function (manager) {
+    managers = managers.map(function(manager) {
         return {
             managerId: manager.manager_id,
             managerName: manager.manager_name
@@ -61,7 +61,7 @@ exports.toFrontObject = function (restObject) {
     }
     return frontObj;
 };
-exports.toRestObject = function (frontObj) {
+exports.toRestObject = function(frontObj) {
     var restObject = {};
     restObject.client_id = frontObj.id;
     if (frontObj.appUrl) {
@@ -107,7 +107,7 @@ exports.toRestObject = function (frontObj) {
     return restObject;
 };
 
-exports.toRestStatusObject = function (frontObj) {
+exports.toRestStatusObject = function(frontObj) {
     var statusObj = {};
     statusObj.client_id = frontObj.id;
     statusObj.status = frontObj.status;

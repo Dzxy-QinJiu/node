@@ -8,7 +8,7 @@ import Trace from "LIB_DIR/trace";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 
 const CallRecordList = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             rightPanelCustomerId: '',//通话记录，通过客户id查看客户详情
             showRightPanel: false,// 标记显示右侧客户详情面板 false不显示 true显示
@@ -18,20 +18,20 @@ const CallRecordList = React.createClass({
         };
     },
     // 关闭客户详情面板
-    closeRightPanel: function () {
+    closeRightPanel: function() {
         this.setState({
             rightPanelCustomerId: '',
             showRightPanel: false
         });
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         callReordEmitter.on(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
-        $wrap.on("click", ".customer_column", function () {
+        $wrap.on("click", ".customer_column", function() {
             var $customer_id_hidden = $(this).find(".customer_id_hidden");
             if ($customer_id_hidden[0]) {
                 Trace.traceEvent($(_this.getDOMNode()).find(".customer_column"), "打开客户详情");
@@ -41,11 +41,11 @@ const CallRecordList = React.createClass({
     },
 
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         this.closeRightPanel();
         callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
     },
-    showRightPanel:function (customerId) {
+    showRightPanel:function(customerId) {
         this.setState({
             rightPanelCustomerId: customerId,
             showRightPanel: true
@@ -59,18 +59,18 @@ const CallRecordList = React.createClass({
             }
         });
     },
-    ShowCustomerUserListPanel: function (data) {
+    ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
     },
-    closeCustomerUserListPanel: function () {
+    closeCustomerUserListPanel: function() {
         this.setState({
             isShowCustomerUserListPanel: false
         });
     },
-    render: function () {
+    render: function() {
         return (
             <div>
                 <div className='call-record-wrap table-btn-fix' data-tracename="通话记录界面">

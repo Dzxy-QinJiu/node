@@ -4,17 +4,17 @@
  */
 var _ = require("underscore");
 
-exports.toFrontSalesCustomer = function (data) {
+exports.toFrontSalesCustomer = function(data) {
     var salesCustomer = {};
     if (data && _.isObject(data)) {
         salesCustomer.salesRole = data.type;
         salesCustomer.saleStageList = data.stage_list;
         salesCustomer.salesCustomerList = [];
         if (_.isArray(data.result) && data.result.length > 0) {
-            salesCustomer.salesCustomerList = data.result.map(function (saleObj) {
+            salesCustomer.salesCustomerList = data.result.map(function(saleObj) {
                 var stageList = [];
                 if (saleObj && _.isArray(saleObj.sale_stage_views) && saleObj.sale_stage_views.length > 0) {
-                    stageList = saleObj.sale_stage_views.map(function (stage) {
+                    stageList = saleObj.sale_stage_views.map(function(stage) {
                         return {
                             stage: stage.sales_stage_name || "",//销售阶段
                             customerCount: stage.sales_stage_count || 0//客户数
@@ -33,16 +33,16 @@ exports.toFrontSalesCustomer = function (data) {
 };
 
 
-exports.toFrontSalesUser = function (data) {
+exports.toFrontSalesUser = function(data) {
     var salesUser = {};
     if (data && _.isObject(data)) {
         salesUser.salesRole = data.type;
         salesUser.salesUserList = [];
         if (_.isArray(data.result) && data.result.length > 0) {
-            salesUser.salesUserList = data.result.map(function (saleObj) {
+            salesUser.salesUserList = data.result.map(function(saleObj) {
                 var appList = [];
                 if (saleObj && _.isArray(saleObj.application_views) && saleObj.application_views.length > 0) {
-                    appList = saleObj.application_views.map(function (app) {
+                    appList = saleObj.application_views.map(function(app) {
                         return {
                             appName: app.app_name || "",//应用名称
                             newFormalUser: app.official_num || 0,//新增正式用户
@@ -62,13 +62,13 @@ exports.toFrontSalesUser = function (data) {
     return salesUser;
 };
 
-exports.toFrontSalesPhone = function (data) {
+exports.toFrontSalesPhone = function(data) {
     var salesPhone = {};
     if (data && _.isObject(data)) {
         salesPhone.salesRole = data.type;
         salesPhone.salesPhoneList = [];
         if (_.isArray(data.list) && data.list.length > 0) {
-            salesPhone.salesPhoneList = data.list.map(function (salesObj) {
+            salesPhone.salesPhoneList = data.list.map(function(salesObj) {
                 return {
                     salesName: salesObj.name,//销售名称
                     totalTime: salesObj.total_time,//总时长
@@ -89,13 +89,13 @@ exports.toFrontSalesPhone = function (data) {
 };
 
 //传向前端的过期用户数据
-exports.toFrontExpireUser = function (data) {
+exports.toFrontExpireUser = function(data) {
     var expireUser = {};
     if (_.isObject(data)) {
-        _.each(data, function (userLists, timeRange) {
+        _.each(data, function(userLists, timeRange) {
             if (userLists.length !== 0) {
                 expireUser[timeRange] = [];
-                _.each(userLists, function (userItem) {
+                _.each(userLists, function(userItem) {
                     //非半年的时间类型（今天，本周，本月）只展示试用用户的数量
                     if (timeRange !== 'half_year' && userItem.users.trial) {
                         userItem.user_type = '试用用户';

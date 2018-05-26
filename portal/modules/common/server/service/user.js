@@ -9,17 +9,17 @@ var _ = require("underscore");
 let getUserListByRoleUrl = "/rest/base/v1/user/byrole";
 let getUserInfoById = "/rest/base/v1/user/id/:user_id";
 //根据角色，获取成员列表
-exports.getUserListByRole = function (req, res, queryParams) {
+exports.getUserListByRole = function(req, res, queryParams) {
     return restUtil.authRest.get({
         url: getUserListByRoleUrl,
         req: req,
         res: res
     }, queryParams, {
-        success: function (emitter, list) {
+        success: function(emitter, list) {
             if (!_.isArray(list)) {
                 list = [];
             }
-            var responseList = list.map(function (originUser) {
+            var responseList = list.map(function(originUser) {
                 return new userDto.User(originUser);
             });
             emitter.emit("success", responseList);
@@ -33,7 +33,7 @@ exports.getUserById = function(req,res,userId) {
         req: req,
         res: res
     }, {}, {
-        success: function (emitter, data) {
+        success: function(emitter, data) {
             var transferUser = new userDto.UserById(data);
             emitter.emit("success", transferUser);
         }

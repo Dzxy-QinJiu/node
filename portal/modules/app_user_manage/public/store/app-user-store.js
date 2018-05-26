@@ -13,7 +13,7 @@ function AppUserStore() {
     this.bindActions(AppUserActions);
 }
 
-AppUserStore.prototype.resetState = function () {
+AppUserStore.prototype.resetState = function() {
     //是否处于loading状态
     this.appUserListResult = "loading";
     //获取app列表错误信息
@@ -422,7 +422,7 @@ AppUserStore.prototype.updateAddAppInfo = function(updateInfo) {
         if(!this.selectedAppId) {
             if(_.isArray(target_user.apps)) {
                 if(_.isArray(updateInfo.app_info_array))
-                target_user.apps = updateInfo.app_info_array.concat(target_user.apps).slice();
+                    target_user.apps = updateInfo.app_info_array.concat(target_user.apps).slice();
             }
         }
     }
@@ -464,7 +464,7 @@ AppUserStore.prototype.updateAppField = function(result) {
 };
 
 //表格排序改变
-AppUserStore.prototype.changeTableSort = function (sorter) {
+AppUserStore.prototype.changeTableSort = function(sorter) {
     this.sort_field = sorter && sorter.sort_field || '';
     this.sort_order = sorter && sorter.sort_order || '';
     this.appUserPage = 1;
@@ -477,7 +477,7 @@ AppUserStore.prototype.showApplyUserForm = function() {
 };
 
 //批量推送，修改所属客户，更新用户列表
-AppUserStore.prototype.batchPushChangeCustomer = function (result) {
+AppUserStore.prototype.batchPushChangeCustomer = function(result) {
     //获取任务信息，java端推送过来的
     var taskInfo = result.taskInfo;
     //获取当时提交的参数，前端自己保存的
@@ -1000,7 +1000,7 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
  ]
  */
 //批量推送，添加用户，更新用户列表
-AppUserStore.prototype.batchPushChangeUserCreate = function (result) {
+AppUserStore.prototype.batchPushChangeUserCreate = function(result) {
     //获取任务信息，java端推送过来的
     var taskInfo = result.taskInfo;
     //获取当时提交的参数，前端自己保存的
@@ -1143,7 +1143,7 @@ AppUserStore.prototype.getRolesByAppId = function(result) {
 
 
 //获取团队列表信息
-AppUserStore.prototype.getTeamLists = function (result) {
+AppUserStore.prototype.getTeamLists = function(result) {
     var  filterTeams = this.filterTeams;
     if (result.loading){
         filterTeams.teamlists = [];
@@ -1167,7 +1167,7 @@ AppUserStore.prototype.getTeamLists = function (result) {
 };
 
 //根据角色过滤用户
-AppUserStore.prototype.filterUserByRole = function (role_id) {
+AppUserStore.prototype.filterUserByRole = function(role_id) {
     //有角色查询的时候，不能再查询过滤条件和关键词，不能再排序
     if(role_id) {
         this.filterFieldMap = {};
@@ -1178,7 +1178,7 @@ AppUserStore.prototype.filterUserByRole = function (role_id) {
 };
 
 // 安全域列表
-AppUserStore.prototype.getRealmList = function (result) {
+AppUserStore.prototype.getRealmList = function(result) {
     if (result && result.error) {
         this.realmList = [];
     } else {

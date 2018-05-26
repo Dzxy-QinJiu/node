@@ -105,23 +105,23 @@ var UserDetail = React.createClass({
         if(this.state.panel_switch_currentView) {
             let {thirdApp} = this.state;
             switch(this.state.panel_switch_currentView) {
-                case 'app':
-                    var initialUser = AppUserDetailStore.getState().initialUser;
-                    moveView = (<UserDetailAddApp initialUser={initialUser}/>);
-                    break;
-                case 'editapp':
-                    var initialUser = AppUserDetailStore.getState().initialUser;
-                    var appInfo = this.state.panel_switch_appToEdit;
-                    moveView = (
-                        <UserDetailEditApp
-                            initialUser={initialUser}
-                            appInfo={appInfo}/>
-                    );
-                    break;
-                case 'thirdapp':
-                    moveView = (
-                        <ThirdAppDetail {...thirdApp}/>
-                    );
+            case 'app':
+                var initialUser = AppUserDetailStore.getState().initialUser;
+                moveView = (<UserDetailAddApp initialUser={initialUser}/>);
+                break;
+            case 'editapp':
+                var initialUser = AppUserDetailStore.getState().initialUser;
+                var appInfo = this.state.panel_switch_appToEdit;
+                moveView = (
+                    <UserDetailEditApp
+                        initialUser={initialUser}
+                        appInfo={appInfo}/>
+                );
+                break;
+            case 'thirdapp':
+                moveView = (
+                    <ThirdAppDetail {...thirdApp}/>
+                );
             }
         }
         //当前选择的应用（用户详情的接口中无法返回应用是否合格的属性，需要用用户列表接口中返回的应用是否合格属性）

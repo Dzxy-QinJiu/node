@@ -20,7 +20,7 @@ function OrderActions() {
     );
 
     routes.forEach(route => {
-        this[route.handler] = function (reqData, params, cb) {
+        this[route.handler] = function(reqData, params, cb) {
             const arg = {
                 url: route.path,
                 type: route.method,
@@ -38,9 +38,9 @@ function OrderActions() {
         };
     });
 
-    this.getAppList = function () {
+    this.getAppList = function() {
         appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(list => {
-            list = list.map(function (app) {
+            list = list.map(function(app) {
                 return {
                     client_id: app.app_id,
                     client_name: app.app_name,
@@ -56,7 +56,7 @@ function OrderActions() {
         });
     };
     //获取客户下的用户列表
-    this.getCrmUserList = function (reqData) {
+    this.getCrmUserList = function(reqData) {
         crmAjax.getCrmUserList(reqData).then((userData) => {
             this.dispatch({errorMsg: "", result: userData});
         }, (errorMsg) => {

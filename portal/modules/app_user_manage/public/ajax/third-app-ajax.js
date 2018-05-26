@@ -1,6 +1,6 @@
 const ajaxPro = function(config) {
     let jqXHR = null;
-    return function (param) {
+    return function(param) {
         var Deferred = $.Deferred();
         if (typeof param === "object") {
             config.data = param;
@@ -13,7 +13,7 @@ const ajaxPro = function(config) {
             success: function(result) {
                 Deferred.resolve(result);
             },
-            error: function (xhr, status) {
+            error: function(xhr, status) {
                 if (status !== 'abort') {
                     Deferred.reject(xhr.responseJSON);
                 }
@@ -56,7 +56,7 @@ exports.getPlatforms = ajaxPro({
 });
 
 let AppConfigListAjax = null;
-exports.getAppConfigList = function (userId) {
+exports.getAppConfigList = function(userId) {
     var Deferred = $.Deferred();
     AppConfigListAjax && AppConfigListAjax.abort();
     AppConfigListAjax = $.ajax({

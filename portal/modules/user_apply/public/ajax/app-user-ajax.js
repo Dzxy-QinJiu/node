@@ -11,10 +11,10 @@ exports.getApplyList = function(obj) {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (data,textStatus) {
+        error: function(data,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(data && data.message || Intl.get("common.get.user.apply.failed", "获取用户审批列表失败"));
             }
@@ -34,10 +34,10 @@ exports.getApplyDetail = function(id) {
         url: '/rest/appuser/apply/' + id,
         dataType: 'json',
         type: 'get',
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr,textStatus) {
+        error: function(xhr,textStatus) {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr && xhr.responseJSON || Intl.get("user.apply.detail.get.failed", "获取申请详情失败"));
             }
@@ -50,17 +50,17 @@ exports.getApplyDetail = function(id) {
 /**
  * 获取申请的回复列表
  */
-exports.getReplyList = function (id) {
+exports.getReplyList = function(id) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/replylist/' + id,
         dataType: 'json',
         type: 'get',
         timeout : 180 * 1000,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("user.apply.reply.get.list.failed", "回复列表获取失败"));
         }
     });
@@ -79,10 +79,10 @@ exports.submitApply = function(obj) {
         type: 'post',
         data : submitData,
         timeout : 180 * 1000,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("user.apply.detail.send.result.error", "申请结果发送失败"));
         }
     });
@@ -90,7 +90,7 @@ exports.submitApply = function(obj) {
 };
 
 //申请用户
-exports.applyUser = function (data) {
+exports.applyUser = function(data) {
     data = {reqData: JSON.stringify(data)};
     var Deferred = $.Deferred();
     $.ajax({
@@ -98,10 +98,10 @@ exports.applyUser = function (data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function () {
+        error: function() {
             Deferred.reject( Intl.get("common.apply.failed", "申请失败"));
         }
     });
@@ -117,10 +117,10 @@ exports.addReply = function(data) {
         type: 'post',
         dataType: 'json',
         data: data,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });
@@ -136,7 +136,7 @@ exports.saleBackoutApply = function(obj) {
         type: 'put',
         dataType: 'json',
         data: obj,
-        success: function (result) {
+        success: function(result) {
             //操作成功返回true
             if(result === true) {
                 Deferred.resolve(result);
@@ -144,7 +144,7 @@ exports.saleBackoutApply = function(obj) {
                 Deferred.reject(ERROR_MSG);
             }
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || ERROR_MSG);
         }
     });

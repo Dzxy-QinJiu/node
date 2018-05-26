@@ -6,10 +6,10 @@ exports.getRoleList = function(appId) {
         dataType: 'json',
         type: 'get',
         data: {},
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg);
         }
     });
@@ -41,10 +41,10 @@ exports.getPermissionMap = function(appId) {
         dataType: 'json',
         type: 'get',
         data: {},
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (errorMsg) {
+        error: function(errorMsg) {
             Deferred.reject(errorMsg);
         }
     });

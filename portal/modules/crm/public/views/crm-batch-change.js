@@ -38,36 +38,36 @@ var CrmScheduleForm = require("./schedule/form");
 
 var CrmBatchChange = React.createClass({
     mixins: [ValidateMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ...BatchChangeStore.getState(),
             stopContentHide: false,//content内容中有select下拉框时，
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(BatchChangeStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         BatchChangeStore.listen(this.onStoreChange);
         BatchChangeActions.getSalesManList();
         BatchChangeActions.getRecommendTags();
         BatchChangeActions.getIndustries();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         BatchChangeStore.unlisten(this.onStoreChange);
     },
-    setCurrentTab: function (tab) {
+    setCurrentTab: function(tab) {
         Trace.traceEvent($(this.getDOMNode()).find(".op-type"), "点击切换变更类型");
         BatchChangeActions.setCurrentTab(tab);
         if (tab === BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS) {
             this.state.stopContentHide = true;
         }
     },
-    onSalesmanChange: function (sales_man) {
+    onSalesmanChange: function(sales_man) {
         Trace.traceEvent($(this.getDOMNode()).find(".change-salesman"), "点击切换销售人员");
         BatchChangeActions.setSalesMan(sales_man);
     },
-    getSalesBatchParams: function () {
+    getSalesBatchParams: function() {
         let salesId = "", teamId = "", salesName = "", teamName = "";
         //客户所属销售团队的修改
         //销售id和所属团队的id
@@ -99,7 +99,7 @@ var CrmBatchChange = React.createClass({
      * @param transferType: user/transfer_customer
      * @param title: 变更销售/转出客户
      */
-    doTransfer: function (transferType, title) {
+    doTransfer: function(transferType, title) {
         if (!this.state.sales_man) {
             // message.error(Intl.get("crm.17", "请选择销售人员"));
             BatchChangeActions.setUnSelectDataTip(Intl.get("crm.17", "请选择销售人员"));
@@ -128,7 +128,7 @@ var CrmBatchChange = React.createClass({
             this.batchSubmitData(transferType, title);
         }
     },
-    batchSubmitData: function (transferType, title) {
+    batchSubmitData: function(transferType, title) {
         let condition = {
             query_param: {},
             update_param: {
@@ -142,7 +142,7 @@ var CrmBatchChange = React.createClass({
         } else {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
-            condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
+            condition.query_param.id = this.props.selectedCustomer.map(function(customer) {
                 return customer.id;
             });
         }
@@ -185,7 +185,7 @@ var CrmBatchChange = React.createClass({
         });
 
     },
-    addTag: function (e) {
+    addTag: function(e) {
         if (e.keyCode !== 13) return;
 
         const tag = e.target.value.trim();
@@ -199,12 +199,12 @@ var CrmBatchChange = React.createClass({
         Trace.traceEvent(e, "按enter键添加新标签");
 
     },
-    toggleTag: function (tag, isAdd) {
+    toggleTag: function(tag, isAdd) {
 
         BatchChangeActions.toggleTag({tag, isAdd});
     },
     //批量更新标签
-    doChangeTag: function (type, typeText) {
+    doChangeTag: function(type, typeText) {
         if (!_.isArray(this.state.tags) || !this.state.tags.length) {
             BatchChangeActions.setUnSelectDataTip(Intl.get("crm.212", "请选择标签"));
             return;
@@ -224,7 +224,7 @@ var CrmBatchChange = React.createClass({
         } else {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
-            condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
+            condition.query_param.id = this.props.selectedCustomer.map(function(customer) {
                 return customer.id;
             });
         }
@@ -263,7 +263,7 @@ var CrmBatchChange = React.createClass({
         });
     },
     //批量修改行业
-    doChangeIndustry: function () {
+    doChangeIndustry: function() {
         let industryStr = this.state.selected_industries.join(',');
         if (!industryStr) {
             BatchChangeActions.setUnSelectDataTip(Intl.get("crm.22", "请选择行业"));
@@ -283,7 +283,7 @@ var CrmBatchChange = React.createClass({
         } else {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
-            condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
+            condition.query_param.id = this.props.selectedCustomer.map(function(customer) {
                 return customer.id;
             });
         }
@@ -322,7 +322,7 @@ var CrmBatchChange = React.createClass({
         });
     },
     //批量修改地域
-    doChangeTerritory: function () {
+    doChangeTerritory: function() {
         let territoryObj = this.state.territoryObj;
         if (!territoryObj.city && !territoryObj.county && !territoryObj.province) {
             BatchChangeActions.setUnSelectDataTip(Intl.get("realm.edit.address.placeholder", "请选择地址"));
@@ -340,7 +340,7 @@ var CrmBatchChange = React.createClass({
         } else {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
-            condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
+            condition.query_param.id = this.props.selectedCustomer.map(function(customer) {
                 return customer.id;
             });
         }
@@ -379,7 +379,7 @@ var CrmBatchChange = React.createClass({
         });
     },
     //批量修改行政级别
-    doChangeAdministrativeLevel: function () {
+    doChangeAdministrativeLevel: function() {
         let administrativeLevel = this.state.administrative_level;
         BatchChangeActions.setLoadingState(true);
         let condition = {
@@ -395,7 +395,7 @@ var CrmBatchChange = React.createClass({
         } else {
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
-            condition.query_param.id = this.props.selectedCustomer.map(function (customer) {
+            condition.query_param.id = this.props.selectedCustomer.map(function(customer) {
                 return customer.id;
             });
         }
@@ -434,63 +434,63 @@ var CrmBatchChange = React.createClass({
         });
     },
     //批量添加联系计划
-    doAddScheduleLists: function () {
+    doAddScheduleLists: function() {
         //调用子组件中保存数据的方法
         this.refs.crmScheduleForm.handleSave();
     },
     //添加完联系计划后，关闭下拉面板
-    closeContent: function () {
+    closeContent: function() {
         this.refs.addSchedule.handleCancel();
     },
     //取消添加日程
-    cancelAddSchedule: function () {
+    cancelAddSchedule: function() {
         this.state.stopContentHide = false;
         this.setState({
             stopContentHide: this.state.stopContentHide
         });
         this.refs.crmScheduleForm.handleCancel();
     },
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         Trace.traceEvent(e, "点击变更按钮");
         var currentTab = this.state.currentTab;
         switch (currentTab) {
-            case BATCH_OPERATE_TYPE.CHANGE_SALES:
-                this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get("crm.18", "变更销售人员"));
-                break;
-            case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
-                this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get("crm.customer.transfer", "转出客户"));
-                break;
-            case BATCH_OPERATE_TYPE.CHANGE_TAG:
-                this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get("crm.206", "更新标签"));
-                break;
-            case BATCH_OPERATE_TYPE.ADD_TAG:
-                this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get("crm.205", "添加标签"));
-                break;
-            case BATCH_OPERATE_TYPE.REMOVE_TAG:
-                this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get("crm.204", "移除标签"));
-                break;
-            case BATCH_OPERATE_TYPE.CHANGE_INDUSTRY:
-                this.doChangeIndustry();
-                break;
-            case BATCH_OPERATE_TYPE.CHANGE_TERRITORY:
-                //批量修改地域
-                this.doChangeTerritory();
-                break;
-            case BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL:
-                //批量修改行政级别
-                this.doChangeAdministrativeLevel();
-                break;
-            case BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS:
-                //批量添加联系计划
-                this.doAddScheduleLists();
-                break;
+        case BATCH_OPERATE_TYPE.CHANGE_SALES:
+            this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get("crm.18", "变更销售人员"));
+            break;
+        case BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER:
+            this.doTransfer(BATCH_OPERATE_TYPE.TRANSFER_CUSTOMER, Intl.get("crm.customer.transfer", "转出客户"));
+            break;
+        case BATCH_OPERATE_TYPE.CHANGE_TAG:
+            this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get("crm.206", "更新标签"));
+            break;
+        case BATCH_OPERATE_TYPE.ADD_TAG:
+            this.doChangeTag(BATCH_OPERATE_TYPE.ADD_LABEL, Intl.get("crm.205", "添加标签"));
+            break;
+        case BATCH_OPERATE_TYPE.REMOVE_TAG:
+            this.doChangeTag(BATCH_OPERATE_TYPE.REMOVE_LABEL, Intl.get("crm.204", "移除标签"));
+            break;
+        case BATCH_OPERATE_TYPE.CHANGE_INDUSTRY:
+            this.doChangeIndustry();
+            break;
+        case BATCH_OPERATE_TYPE.CHANGE_TERRITORY:
+            //批量修改地域
+            this.doChangeTerritory();
+            break;
+        case BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL:
+            //批量修改行政级别
+            this.doChangeAdministrativeLevel();
+            break;
+        case BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS:
+            //批量添加联系计划
+            this.doAddScheduleLists();
+            break;
         }
     },
-    industryChange: function (industry) {
+    industryChange: function(industry) {
         Trace.traceEvent($(this.getDOMNode()).find(".block-industry-edit"), "选择行业");
         BatchChangeActions.industryChange([industry]);
     },
-    renderIndustryBlock: function () {
+    renderIndustryBlock: function() {
         let dataList = [], industryList = this.state.industries.list;
         if (_.isArray(industryList)) {
             dataList = industryList.map(item => {
@@ -509,7 +509,7 @@ var CrmBatchChange = React.createClass({
             </div>
         );
     },
-    renderAdministrativeLevelBlock: function () {
+    renderAdministrativeLevelBlock: function() {
         let dataList = crmUtil.administrativeLevels.map(item => {
             return {name: item.level, value: item.id};
         });
@@ -527,18 +527,18 @@ var CrmBatchChange = React.createClass({
         );
     },
     //更新地址
-    updateLocation: function (address) {
+    updateLocation: function(address) {
         BatchChangeActions.locationChange(address);
         Trace.traceEvent($(this.getDOMNode()).find(".change-territory"), "选择地址");
     },
     //标签变更类型的切换
-    onChangeTag: function (e, v) {
+    onChangeTag: function(e, v) {
         this.setCurrentTab(e.target.value);
     },
-    renderSalesBlock: function () {
+    renderSalesBlock: function() {
         let dataList = [];
         //展示其所在团队的成员列表
-        this.state.salesManList.forEach(function (salesman) {
+        this.state.salesManList.forEach(function(salesman) {
             let teamArray = salesman.user_groups;
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
             if (_.isArray(teamArray) && teamArray.length) {
@@ -564,7 +564,7 @@ var CrmBatchChange = React.createClass({
         );
     },
     //批量添加联系计划
-    renderScheduleLists: function () {
+    renderScheduleLists: function() {
         //批量操作选中的客户
         var selectedCustomer = this.props.selectedCustomer;
         const newSchedule = {
@@ -588,19 +588,19 @@ var CrmBatchChange = React.createClass({
             </div>
         );
     },
-    renderAddressBlock: function () {
+    renderAddressBlock: function() {
         let territoryObj = this.state.territoryObj;//地域
         return (
             <div className="op-pane change-territory">
                 {<AntcAreaSelection labelCol="0" wrapperCol="24" width="210"
-                                    isAlwayShow={true}
-                                    prov={territoryObj.province} city={territoryObj.city}
-                                    county={territoryObj.county}
-                                    updateLocation={this.updateLocation}/>}
+                    isAlwayShow={true}
+                    prov={territoryObj.province} city={territoryObj.city}
+                    county={territoryObj.county}
+                    updateLocation={this.updateLocation}/>}
             </div>
         );
     },
-    renderTagChangeBlock: function () {
+    renderTagChangeBlock: function() {
         let selectedTagsArray = this.state.tags ? this.state.tags : [];
         let recommendTagsArray = _.isArray(this.state.recommendTags) ? this.state.recommendTags : [];
         let unionTagsArray = _.union(recommendTagsArray, selectedTagsArray);
@@ -610,7 +610,7 @@ var CrmBatchChange = React.createClass({
             let className = "customer-tag";
             className += selectedTagsArray.indexOf(tag) > -1 ? " tag-selected" : "";
             return (<span key={index} onClick={() => this.toggleTag(tag)} className={className}
-                          data-tracename="点击选中/取消选中某个标签">{tag}</span>);
+                data-tracename="点击选中/取消选中某个标签">{tag}</span>);
         });
         return (
             <div className="op-pane change-tag">
@@ -626,30 +626,30 @@ var CrmBatchChange = React.createClass({
                 </div>
                 {this.state.currentTab == BATCH_OPERATE_TYPE.CHANGE_TAG || this.state.currentTab == BATCH_OPERATE_TYPE.ADD_TAG ? (
                     <Input placeholder={Intl.get("crm.28", "按Enter键添加新标签")}
-                           onChange={this.setField.bind(this, "tag")}
-                           value={this.state.formData.tag}
-                           onKeyUp={this.addTag}
+                        onChange={this.setField.bind(this, "tag")}
+                        value={this.state.formData.tag}
+                        onKeyUp={this.addTag}
                     />
                 ) : ""}
             </div>
         );
     },
-    clearSelectSales: function () {
+    clearSelectSales: function() {
         BatchChangeActions.setSalesMan("");
     },
-    clearSelectLocation: function () {
+    clearSelectLocation: function() {
         BatchChangeActions.locationChange("");
     },
-    clearSelectIndustry: function () {
+    clearSelectIndustry: function() {
         BatchChangeActions.industryChange([]);
     },
-    clearSelectTags: function () {
+    clearSelectTags: function() {
         BatchChangeActions.clearSelectedTag();
     },
-    administrativeLevelChange: function (level) {
+    administrativeLevelChange: function(level) {
         BatchChangeActions.administrativeLevelChange(level);
     },
-    render: function () {
+    render: function() {
         const changeBtns = {
             tag: (<Button
                 onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.CHANGE_TAG)}>{Intl.get("crm.19", "变更标签")}</Button>),
@@ -728,7 +728,7 @@ var CrmBatchChange = React.createClass({
                     unSelectDataTip={this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
                 />
-                {   //普通销售不可做转出操作
+                { //普通销售不可做转出操作
                     !userData.getUserData().isCommonSales ? (<AntcDropdown
                         ref="transferCustomer"
                         content={changeBtns.transfer}

@@ -12,9 +12,9 @@ function ScheduleManagementActions() {
         'afterHandleStatus',
     );
     //获取日程列表
-    this.getScheduleList = function (queryObj, listType) {
-            //左侧过期未完成的日程数据
-            this.dispatch({error: false, loading: true});
+    this.getScheduleList = function(queryObj, listType) {
+        //左侧过期未完成的日程数据
+        this.dispatch({error: false, loading: true});
         this.dispatch({error: false, loading: true});
         scheduleManagementAjax.getScheduleList(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -28,7 +28,7 @@ function ScheduleManagementActions() {
         });
     };
     //修改某条日程管理的状态
-    this.handleScheduleStatus = function (reqData, cb) {
+    this.handleScheduleStatus = function(reqData, cb) {
         this.dispatch({error: false, loading: true});
         scheduleManagementAjax.handleScheduleStatus(reqData).then((resData) => {
             cb(resData);

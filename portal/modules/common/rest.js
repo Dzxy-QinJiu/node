@@ -5,7 +5,7 @@ const routes = require("./route");
 const _ = require("underscore");
 
 routes.forEach(route => {
-    exports[route.handler] = function (req, res) {
+    exports[route.handler] = function(req, res) {
         const queryStr = querystring.stringify(req.query);
         let url = queryStr? route.path + "?" + queryStr : route.path;
 

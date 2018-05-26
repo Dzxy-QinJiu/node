@@ -21,7 +21,7 @@ var salesTeamRestApis = {
 };
 exports.urls = salesTeamRestApis;
 
-exports.getSalesTeamList = function (req, res) {
+exports.getSalesTeamList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: salesTeamRestApis.getSalesTeamList,
@@ -30,7 +30,7 @@ exports.getSalesTeamList = function (req, res) {
         });
 };
 
-exports.getSalesGoals = function (req, res, team_id) {
+exports.getSalesGoals = function(req, res, team_id) {
     return restUtil.authRest.get(
         {
             url: salesTeamRestApis.getSalesGoals,
@@ -38,7 +38,7 @@ exports.getSalesGoals = function (req, res, team_id) {
             res: res
         }, {sales_team_id: team_id});
 };
-exports.saveSalesGoals = function (req, res, salesGoals) {
+exports.saveSalesGoals = function(req, res, salesGoals) {
     return restUtil.authRest.post(
         {
             url: salesTeamRestApis.saveSalesGoals,
@@ -46,7 +46,7 @@ exports.saveSalesGoals = function (req, res, salesGoals) {
             res: res
         }, salesGoals);
 };
-exports.filterSalesTeamList = function (req, res, userName) {
+exports.filterSalesTeamList = function(req, res, userName) {
     return restUtil.authRest.get(
         {
             url: salesTeamRestApis.filterSalesTeamList + "/" + userName + "/username",
@@ -58,7 +58,7 @@ exports.filterSalesTeamList = function (req, res, userName) {
 function turnToFrontMember(data) {
     let frontMemberList = [];
     if (data && data.length > 0) {
-        data.forEach(function (member) {
+        data.forEach(function(member) {
             if (member) {
                 frontMemberList.push({
                     userId: member.user_id,
@@ -73,7 +73,7 @@ function turnToFrontMember(data) {
     }
     return frontMemberList;
 }
-exports.getMemberList = function (req, res) {
+exports.getMemberList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: salesTeamRestApis.getMemberList,
@@ -82,13 +82,13 @@ exports.getMemberList = function (req, res) {
         },
         null,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 data = turnToFrontMember(data);
                 eventEmitter.emit("success", data);
             }
         });
 };
-exports.addMember = function (req, res, obj) {
+exports.addMember = function(req, res, obj) {
     return restUtil.authRest.post(
         {
             url: salesTeamRestApis.addMember,
@@ -98,7 +98,7 @@ exports.addMember = function (req, res, obj) {
         obj);
 };
 
-exports.editMember = function (req, res, obj) {
+exports.editMember = function(req, res, obj) {
     var editObj = {
         group_id: obj.group_id,
         operate: obj.operate
@@ -122,7 +122,7 @@ exports.editMember = function (req, res, obj) {
         }, editObj);
 };
 
-exports.deleteGroup = function (req, res, groupId) {
+exports.deleteGroup = function(req, res, groupId) {
     return restUtil.authRest.del(
         {
             url: salesTeamRestApis.deleteGroup + "/" + groupId,
@@ -131,7 +131,7 @@ exports.deleteGroup = function (req, res, groupId) {
         });
 };
 
-exports.editGroup = function (req, res, salesTeam) {
+exports.editGroup = function(req, res, salesTeam) {
     return restUtil.authRest.put(
         {
             url: salesTeamRestApis.editGroup,
@@ -141,7 +141,7 @@ exports.editGroup = function (req, res, salesTeam) {
         salesTeam);
 };
 
-exports.addGroup = function (req, res, salesTeam) {
+exports.addGroup = function(req, res, salesTeam) {
     return restUtil.authRest.post(
         {
             url: salesTeamRestApis.addGroup,

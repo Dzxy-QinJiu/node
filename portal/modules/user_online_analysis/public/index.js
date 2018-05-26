@@ -40,7 +40,7 @@ var UserOnlineAnalysis = React.createClass({
         $(window).off("resize",this.onStoreChange);
         this.dynamicStyle.destroy();
     },
-    render: function () {
+    render: function() {
         var view = null;
         if(this.state.isShowRightPanel) {
             view = (<AnalysisChartView />);

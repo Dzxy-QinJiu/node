@@ -11,86 +11,86 @@ function getStateFromStore() {
 }
 var TYPE_CONSTANT = "myApp";
 var UserInfoAuthority = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore();
     },
 
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore();
         this.setState(datas);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         AuthorityStore.listen(this.onChange);
         AuthorityAction.setAuthListLoading(true);
         AuthorityAction.getAuthorityList(this.props.curAppId, TYPE_CONSTANT);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AuthorityStore.unlisten(this.onChange);
     },
 
     events: {
 
-        showAddAuthorityGroupForm: function () {
+        showAddAuthorityGroupForm: function() {
             AuthorityAction.showAuthorityForm("", "addAuthorityGroup");
         },
 
-        hideAuthorityForm: function () {
+        hideAuthorityForm: function() {
             AuthorityAction.hideAuthorityForm();
         },
 
-        showAddAuthorityForm: function (authorityGroup, flag) {
+        showAddAuthorityForm: function(authorityGroup, flag) {
             AuthorityAction.showAuthorityForm(authorityGroup, flag);
         },
 
-        showEditClassifyNameInput: function (authorityGroup) {
+        showEditClassifyNameInput: function(authorityGroup) {
             AuthorityAction.showEditClassifyNameInput(authorityGroup);
         },
 
-        hideEditClassifyNameInput: function (authorityGroup) {
+        hideEditClassifyNameInput: function(authorityGroup) {
             AuthorityAction.hideEditClassifyNameInput(authorityGroup);
         },
-        deleteAuthority: function (authorityIds) {
+        deleteAuthority: function(authorityIds) {
             AuthorityAction.deleteAuthority(authorityIds, TYPE_CONSTANT);
         },
-        deleteAuthorityGroup: function (authorityIds, groupName) {
+        deleteAuthorityGroup: function(authorityIds, groupName) {
             AuthorityAction.deleteAuthorityGroup(authorityIds, groupName, this.props.curAppId, TYPE_CONSTANT);
         },
 
-        showModalDialog: function (authorityGroup) {
+        showModalDialog: function(authorityGroup) {
             AuthorityAction.showModalDialog(authorityGroup);
         },
 
-        hideModalDialog: function (authorityGroup) {
+        hideModalDialog: function(authorityGroup) {
             AuthorityAction.hideModalDialog(authorityGroup);
         },
 
-        showAuthorityModalDialog: function (authority) {
+        showAuthorityModalDialog: function(authority) {
             AuthorityAction.showAuthorityModalDialog(authority);
         },
 
-        hideAuthorityModalDialog: function (authority) {
+        hideAuthorityModalDialog: function(authority) {
             AuthorityAction.hideAuthorityModalDialog(authority);
         },
 
-        showAuthorityInfo: function (authority) {
+        showAuthorityInfo: function(authority) {
             AuthorityAction.showAuthorityForm(authority);
             AuthorityAction.showAuthorityInfoFnc(authority);
         },
-        showAuthorityGroupForm: function (authorityGroup) {
+        showAuthorityGroupForm: function(authorityGroup) {
             AuthorityAction.showAuthorityGroupForm(authorityGroup);
         },
-        closeAuthorityGroupForm: function () {
+        closeAuthorityGroupForm: function() {
             AuthorityAction.closeAuthorityGroupForm();
         },
-        clearDelAuthErrorMsg: function () {
+        clearDelAuthErrorMsg: function() {
             AuthorityAction.clearDelAuthErrorMsg();
         },
-        clearDelAuthGroupErrorMsg: function () {
+        clearDelAuthGroupErrorMsg: function() {
             AuthorityAction.clearDelAuthGroupErrorMsg();
         }
 
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var authorityGroupList = this.state.authorityGroupList || [];
         var height = this.props.divHeight;
@@ -99,7 +99,7 @@ var UserInfoAuthority = React.createClass({
         var authorityListDivHeight = height - bootomHeight;
         var authorityListElement = "";
         if (authorityGroupList && authorityGroupList.length > 0) {
-            authorityListElement = authorityGroupList.map(function (authorityGroup, i) {
+            authorityListElement = authorityGroupList.map(function(authorityGroup, i) {
                 var delAuthGroupErrorMsg = (authorityGroup.permissionGroupName == _this.state.delAuthGroupName ? _this.state.delAuthGroupErrorMsg : "");
                 return (
                     <AuthorityListView

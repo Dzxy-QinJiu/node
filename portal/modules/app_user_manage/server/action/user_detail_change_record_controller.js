@@ -7,10 +7,10 @@
 
 var  userDetailChangeRecord = require("../service/user_detail_change_record.service");
 // 获取用户详情变更记录
-exports.getUserDetailChangeRecord = function (req, res) {
-    userDetailChangeRecord.getUserChangeRecord(req, res, req.query).on("success", function (data) {
+exports.getUserDetailChangeRecord = function(req, res) {
+    userDetailChangeRecord.getUserChangeRecord(req, res, req.query).on("success", function(data) {
         res.json(data || []);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

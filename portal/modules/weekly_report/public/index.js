@@ -16,22 +16,22 @@ var WeekReportUtil = require("./utils/weekly-report-utils");
 import WeeklyReportDetail from "./view/weekly-report-detail";
 import {Alert} from "antd";
 const WeeklyReport = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ...WeeklyReportStore.getState(),
             nweek: "",//当前日期是今年的第几周
             keywordValue: "",//跟据关键词进行搜索
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         WeeklyReportStore.listen(this.onStoreChange);
         this.getTeamMemberData(); //获取销售团队和成员数据
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(WeeklyReportStore.getState());
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         WeeklyReportStore.unlisten(this.onStoreChange);
     },
 
@@ -41,30 +41,30 @@ const WeeklyReport = React.createClass({
         WeeklyReportAction.getSaleGroupTeams(reqData);
         WeeklyReportAction.getSaleMemberList(reqData);
     },
-    onSearchInputChange: function (keyword) {
+    onSearchInputChange: function(keyword) {
         keyword = keyword ? keyword : '';
         if (keyword.trim() !== this.state.searchKeyword.trim()) {
             Trace.traceEvent($(this.getDOMNode()).find(".search-content"), "根据关键词搜索");
             WeeklyReportAction.changeSearchInputValue(keyword);
         }
     },
-    handleClickReportTitle: function (obj, idx) {
+    handleClickReportTitle: function(obj, idx) {
         Trace.traceEvent($(this.getDOMNode()).find(".report-title-item"), "查看周报详情");
         WeeklyReportAction.setSelectedWeeklyReportItem({obj, idx});
     },
-    handleErrResult: function () {
+    handleErrResult: function() {
         var errMsg = <span>{this.state.teamList.errMsg}
             <a onClick={this.getTeamMemberData}>{Intl.get("user.info.retry", "请重试")}</a></span>;
         return (
-                <Alert
-                    message={errMsg}
-                    type="error"
-                    showIcon
-                />
+            <Alert
+                message={errMsg}
+                type="error"
+                showIcon
+            />
         );
     },
     //统计周报的标题
-    renderWeeklyReportTitle: function () {
+    renderWeeklyReportTitle: function() {
         if (this.state.teamList.loading) {
             return (
                 <Spinner/>
@@ -98,7 +98,7 @@ const WeeklyReport = React.createClass({
             }
         }
     },
-    getReportTitleListDivHeight: function () {
+    getReportTitleListDivHeight: function() {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
@@ -106,7 +106,7 @@ const WeeklyReport = React.createClass({
         return height;
     },
     //左侧标题列表顶部的筛选区域
-    renderSearchBarHeader: function () {
+    renderSearchBarHeader: function() {
         return (
             <div className="search-content pull-left">
                 <SearchInput
@@ -118,7 +118,7 @@ const WeeklyReport = React.createClass({
             </div>
         );
     },
-    render: function () {
+    render: function() {
         //列表高度
         //详情高度
         var reportTitleListHeight = 'auto';
@@ -142,29 +142,29 @@ const WeeklyReport = React.createClass({
                 <div className="weekly-report-wrap">
                     <div className="weekly-report-content clearfix">
                         <GeminiScrollbar>
-                        <div className="col-md-3 weekly-report-title-wrap">
-                            <div className="search-bar clearfix">
-                                {this.renderSearchBarHeader()}
-                            </div>
-                            <div>
-                                <div style={{height: reportTitleListHeight}}>
-                                    <GeminiScrollbar>
-                                        <div className="report-des-content">
-                                            {this.renderWeeklyReportTitle()}
-                                        </div>
-                                    </GeminiScrollbar>
+                            <div className="col-md-3 weekly-report-title-wrap">
+                                <div className="search-bar clearfix">
+                                    {this.renderSearchBarHeader()}
                                 </div>
-                            </div>
+                                <div>
+                                    <div style={{height: reportTitleListHeight}}>
+                                        <GeminiScrollbar>
+                                            <div className="report-des-content">
+                                                {this.renderWeeklyReportTitle()}
+                                            </div>
+                                        </GeminiScrollbar>
+                                    </div>
+                                </div>
 
-                        </div>
-                        <div className="col-md-9 weekly-report-detail-wrap">
-                            {noShowReportDetail ? null : (
-                                <WeeklyReportDetail
-                                    selectedItem={this.state.selectedReportItem}
-                                    memberList={this.state.memberList}
-                                />
-                            )}
-                        </div>
+                            </div>
+                            <div className="col-md-9 weekly-report-detail-wrap">
+                                {noShowReportDetail ? null : (
+                                    <WeeklyReportDetail
+                                        selectedItem={this.state.selectedReportItem}
+                                        memberList={this.state.memberList}
+                                    />
+                                )}
+                            </div>
                         </GeminiScrollbar>
                     </div>
                 </div>

@@ -15,14 +15,14 @@ let _ = require("underscore");
  * }
  * 需要过滤哪个传哪个，不传代表不过滤
  **/
-exports.getSalesTeamMemberList = function (req, res, groupId, queryObj) {
+exports.getSalesTeamMemberList = function(req, res, groupId, queryObj) {
     return restUtil.authRest.get(
         {
             url: "/rest/base/v1/group/member/" + groupId,
             req: req,
             res: res
         }, queryObj, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 data = turnToFrontMember(data);
                 eventEmitter.emit("success", data);
             }
@@ -30,7 +30,7 @@ exports.getSalesTeamMemberList = function (req, res, groupId, queryObj) {
 };
 
 //获取统计团队内成员个数的列表
-exports.getTeamMemberCountList = function (req, res) {
+exports.getTeamMemberCountList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: "/rest/base/v1/group/team/available/statistic",
@@ -40,14 +40,14 @@ exports.getTeamMemberCountList = function (req, res) {
 };
 
 //获取销售所在团队及其子团队列表
-exports.getSalesTeamList = function (req, res) {
+exports.getSalesTeamList = function(req, res) {
     return restUtil.authRest.get(
         {
             url: "/rest/base/v1/group/myteam",
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data && data.length > 0) {
                     data = data.map(salesTeam => {

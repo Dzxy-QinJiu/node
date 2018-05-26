@@ -33,17 +33,17 @@ let OperationReport = React.createClass({
             hasReportData: true//是否有报告数据
         };
     },
-    onStateChange: function () {
+    onStateChange: function() {
         this.setState(OperationReportStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         OperationReportStore.listen(this.onStateChange);
         this.getAppList();
         //$('body').css('overflow','hidden');
         //绑定window的resize，进行缩放处理
         //$(window).on('resize',this.windowResize);
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         OperationReportStore.unlisten(this.onStateChange);
         //$('body').css('overflow','visible');
         //组件销毁时，清除缩放的延时
@@ -238,11 +238,11 @@ let OperationReport = React.createClass({
     renderSelectOptions(){
         let options = '', appList = this.state.appList, selectAppList = this.state.selectAppList;
         if (_.isArray(appList) && appList.length > 0) {
-            options = appList.map(function (app) {
+            options = appList.map(function(app) {
                 var className = "";
                 //应用（多选）选择后，从下拉列表中去掉已选的选项
                 if (_.isArray(selectAppList) && selectAppList.length > 0) {
-                    selectAppList.forEach(function (appId) {
+                    selectAppList.forEach(function(appId) {
                         if (appId == app.id) {
                             className = "app-options-selected";
                         }
@@ -256,12 +256,12 @@ let OperationReport = React.createClass({
             });
         } else {
             options = <Option disabled value=""><ReactIntl.FormattedMessage id="my.app.no.app"
-                                                                            defaultMessage="暂无应用"/></Option>;
+                defaultMessage="暂无应用"/></Option>;
         }
         return options;
     },
     //登录统计条形图
-    renderLoginBarChart () {
+    renderLoginBarChart() {
         let weekTimeObj = this.refs.timeSelect ? this.refs.timeSelect.state : {};
         var legend = [{name: Intl.get("operation.report.login.count", "登录人数"), key: "count"}];
         return (
@@ -677,19 +677,19 @@ let OperationReport = React.createClass({
                     <Button onClick={this.doExport} data-tracename="导出" className="btn-export">{Intl.get("common.export", "导出")}</Button>
                     <div className="report-time-container">
                         <NatureTimeSelect ref="timeSelect" onChangeYear={this.onChangeYear}
-                                          onChangeWeek={this.onChangeWeek}
-                                          showTimeTypeSelect={false}
-                                          timeType="week"
-                                          yearTime={this.state.yearTime}
-                                          weekTime={this.state.weekTime}/>
+                            onChangeWeek={this.onChangeWeek}
+                            showTimeTypeSelect={false}
+                            timeType="week"
+                            yearTime={this.state.yearTime}
+                            weekTime={this.state.weekTime}/>
                     </div>
                     <div className="report-app-select-container">
                         <Select multiple name="managers"
-                                optionFilterProp="children"
-                                searchPlaceholder={Intl.get("user.app.select.please", "请选择应用")}
-                                notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
-                                value={this.state.selectAppList}
-                                onChange={this.onAppChange}>
+                            optionFilterProp="children"
+                            searchPlaceholder={Intl.get("user.app.select.please", "请选择应用")}
+                            notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
+                            value={this.state.selectAppList}
+                            onChange={this.onAppChange}>
                             {this.renderSelectOptions()}
                         </Select>
                     </div>
@@ -701,8 +701,8 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.this.week.total.login.tip"
-                                                                defaultMessage={`1、本周共有{num}个（上周{lastWeekNum}个）用户登录了应用`}
-                                                                values={{num:this.state.appLoginUserObj.total+"", lastWeekNum:this.state.appLoginUserObj.lastWeekTotal+""}}/>
+                                        defaultMessage={`1、本周共有{num}个（上周{lastWeekNum}个）用户登录了应用`}
+                                        values={{num:this.state.appLoginUserObj.total+"", lastWeekNum:this.state.appLoginUserObj.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -779,9 +779,9 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.expire.user.login.tip"
-                                                                defaultMessage={`1、本周共有{num}个(上周{lastWeekNum}个)过期用户登录了应用`}
-                                                                values={{num: this.state.teamExpiredLoginUser.total + "",
-                                                                lastWeekNum:this.state.teamExpiredLoginUser.lastWeekTotal+""}}/>
+                                        defaultMessage={`1、本周共有{num}个(上周{lastWeekNum}个)过期用户登录了应用`}
+                                        values={{num: this.state.teamExpiredLoginUser.total + "",
+                                            lastWeekNum:this.state.teamExpiredLoginUser.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamExpiredLoginUserTable()}
@@ -796,8 +796,8 @@ let OperationReport = React.createClass({
                                 </div>
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.total.average.login.tip"
-                                                                defaultMessage={`共有{num}个(上周{lastWeekNum}个)过期用户一周内平均每天登录8个小时以上，具体情况如下表所示：`}
-                                                                values={{num: this.state.teamExpiredUserLoginTime.total + "",lastWeekNum:this.state.teamExpiredUserLoginTime.lastWeekTotal+""}}/>
+                                        defaultMessage={`共有{num}个(上周{lastWeekNum}个)过期用户一周内平均每天登录8个小时以上，具体情况如下表所示：`}
+                                        values={{num: this.state.teamExpiredUserLoginTime.total + "",lastWeekNum:this.state.teamExpiredUserLoginTime.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderExpiredUserLoginTimeTable()}
@@ -810,7 +810,7 @@ let OperationReport = React.createClass({
                                 <div className="report-chart">
                                     <div className="report-chart-title">
                                         <ReactIntl.FormattedMessage id="operation.report.expired.login.comparison.chart"
-                                                                    defaultMessage="近四周过期用户登录情况对比图"/>
+                                            defaultMessage="近四周过期用户登录情况对比图"/>
                                     </div>
                                     {this.renderExpiredLoginLineChart()}
                                 </div>
@@ -820,14 +820,14 @@ let OperationReport = React.createClass({
                     <div className="report-item">
                         <h4>
                             <ReactIntl.FormattedMessage id="operation.report.open.account.login"
-                                                        defaultMessage="三、新开通试用用户登录情况"/>
+                                defaultMessage="三、新开通试用用户登录情况"/>
                         </h4>
                         <div className="report-item-content">
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.open.trial.app.distribute"
-                                                                defaultMessage={`1、本周共开设{num}个(上周{lastWeekNum}个)试用用户，应用分布情况如下图所示：`}
-                                                                values={{num: this.state.appNewTrialUser.total + "",lastWeekNum:this.state.appNewTrialUser.lastWeekTotal+""}}/>
+                                        defaultMessage={`1、本周共开设{num}个(上周{lastWeekNum}个)试用用户，应用分布情况如下图所示：`}
+                                        values={{num: this.state.appNewTrialUser.total + "",lastWeekNum:this.state.appNewTrialUser.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -857,13 +857,13 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.open.trial.login.tip"
-                                                                defaultMessage={`4、新开通试用用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
-                                                                values={{count: this.state.teamNewTrialLoginUser.total + "",
-                                                                lastWeekCount:this.state.teamNewTrialLoginUser.lastWeekTotal+"",
-                                                                percent:this.getPercentData(this.state.teamNewTrialLoginUser.total,this.state.appNewTrialUser.total),
-                                                                allCount:this.state.appNewTrialUser.total+"",
-                                                                lastWeekPercent:this.getPercentData(this.state.teamNewTrialLoginUser.lastWeekTotal,this.state.appNewTrialUser.lastWeekTotal),
-                                                                lastWeekAllCount:this.state.appNewTrialUser.lastWeekTotal+""}}/>
+                                        defaultMessage={`4、新开通试用用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
+                                        values={{count: this.state.teamNewTrialLoginUser.total + "",
+                                            lastWeekCount:this.state.teamNewTrialLoginUser.lastWeekTotal+"",
+                                            percent:this.getPercentData(this.state.teamNewTrialLoginUser.total,this.state.appNewTrialUser.total),
+                                            allCount:this.state.appNewTrialUser.total+"",
+                                            lastWeekPercent:this.getPercentData(this.state.teamNewTrialLoginUser.lastWeekTotal,this.state.appNewTrialUser.lastWeekTotal),
+                                            lastWeekAllCount:this.state.appNewTrialUser.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamNewTrialLoginUserTable()}
@@ -872,8 +872,8 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.total.week.login.tip"
-                                                                defaultMessage={`5、共有{count}个新开试用用户周登录总时长超过1小时，部门分布情况如下表所示:`}
-                                                                values={{count: this.state.teamExceedLoginTime.total + ""}}/>
+                                        defaultMessage={`5、共有{count}个新开试用用户周登录总时长超过1小时，部门分布情况如下表所示:`}
+                                        values={{count: this.state.teamExceedLoginTime.total + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamExceedLoginTimeTable()}
@@ -887,13 +887,13 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.singed.user.login.percent.tip"
-                                                                defaultMessage={`1、本周共有{count}个(上周{lastWeekCount})签约用户登录各应用,占本周登录总用户数的{percent}({count}/{allCount}),上周{lastWeekPercent}（{lastWeekCount}/{allCount}）,部门分布情况如下表所示:`}
-                                                                values={{count: this.state.appFormalLoginComparison.total + "",
-                                                                lastWeekCount:this.state.appFormalLoginComparison.lastWeekTotal + "",
-                                                                percent:this.getPercentData(this.state.appFormalLoginComparison.total,this.state.appUserTotal),
-                                                                allCount:this.state.appUserTotal+"",
-                                                                lastWeekPercent:this.getPercentData(this.state.appFormalLoginComparison.lastWeekTotal,this.state.appUserTotal)
-                                                                }}/>
+                                        defaultMessage={`1、本周共有{count}个(上周{lastWeekCount})签约用户登录各应用,占本周登录总用户数的{percent}({count}/{allCount}),上周{lastWeekPercent}（{lastWeekCount}/{allCount}）,部门分布情况如下表所示:`}
+                                        values={{count: this.state.appFormalLoginComparison.total + "",
+                                            lastWeekCount:this.state.appFormalLoginComparison.lastWeekTotal + "",
+                                            percent:this.getPercentData(this.state.appFormalLoginComparison.total,this.state.appUserTotal),
+                                            allCount:this.state.appUserTotal+"",
+                                            lastWeekPercent:this.getPercentData(this.state.appFormalLoginComparison.lastWeekTotal,this.state.appUserTotal)
+                                        }}/>
                                 </div>
                                 {this.renderAppSignedUserTips()}
                                 <div className="chart-descr-tip">
@@ -920,14 +920,14 @@ let OperationReport = React.createClass({
                     <div className="report-item">
                         <h4>
                             <ReactIntl.FormattedMessage id="operation.report.delay.user.login"
-                                                        defaultMessage="五、延期用户登录情况"/>
+                                defaultMessage="五、延期用户登录情况"/>
                         </h4>
                         <div className="report-item-content">
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.delay.user.app.distribute"
-                                                                defaultMessage={`1、本周新增{num}个(上周{lastWeekNum}个)延期用户，应用分布情况如下图所示：`}
-                                                                values={{num: this.state.appNewDelayUser.total + "",lastWeekNum:this.state.appNewDelayUser.lastWeekTotal+""}}/>
+                                        defaultMessage={`1、本周新增{num}个(上周{lastWeekNum}个)延期用户，应用分布情况如下图所示：`}
+                                        values={{num: this.state.appNewDelayUser.total + "",lastWeekNum:this.state.appNewDelayUser.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -956,13 +956,13 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.delay.user.login.tip"
-                                                                defaultMessage={`4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
-                                                                values={{count: this.state.teamNewDelayLoginUser.total + "",
-                                                                lastWeekCount:this.state.teamNewDelayLoginUser.lastWeekTotal+"",
-                                                                percent:this.getPercentData(this.state.teamNewDelayLoginUser.total,this.state.appNewDelayUser.total),
-                                                                allCount:this.state.appNewDelayUser.total+"",
-                                                                lastWeekPercent:this.getPercentData(this.state.teamNewDelayLoginUser.lastWeekTotal,this.state.appNewDelayUser.lastWeekTotal),
-                                                                lastWeekAllCount:this.state.appNewDelayUser.lastWeekTotal+""}}/>
+                                        defaultMessage={`4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
+                                        values={{count: this.state.teamNewDelayLoginUser.total + "",
+                                            lastWeekCount:this.state.teamNewDelayLoginUser.lastWeekTotal+"",
+                                            percent:this.getPercentData(this.state.teamNewDelayLoginUser.total,this.state.appNewDelayUser.total),
+                                            allCount:this.state.appNewDelayUser.total+"",
+                                            lastWeekPercent:this.getPercentData(this.state.teamNewDelayLoginUser.lastWeekTotal,this.state.appNewDelayUser.lastWeekTotal),
+                                            lastWeekAllCount:this.state.appNewDelayUser.lastWeekTotal+""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamDelayLoginUserTable()}
@@ -971,8 +971,8 @@ let OperationReport = React.createClass({
                             <div className="report-chart-container">
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.delay.user.week.login.tip"
-                                                                defaultMessage={`5、共有{count}个延期用户周登录总时长超过1小时，部门分布情况如下表所示:`}
-                                                                values={{count: this.state.teamDelayUserLoginTime.total + ""}}/>
+                                        defaultMessage={`5、共有{count}个延期用户周登录总时长超过1小时，部门分布情况如下表所示:`}
+                                        values={{count: this.state.teamDelayUserLoginTime.total + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamDelayUserLoginTimeTable()}

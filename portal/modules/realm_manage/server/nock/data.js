@@ -209,7 +209,7 @@ var realmList = [
     })
 ];
 //获取安全域列表所需数据
-var getRealms = function (params) {
+var getRealms = function(params) {
     if (!params.current_page && !params.page_size && !params.filter_content) {
         return realmList;
     } else {
@@ -264,15 +264,15 @@ var getRealms = function (params) {
     }
 };
 
-var addRealm = function (addRealm) {
+var addRealm = function(addRealm) {
     var realm = new Realm(addRealm.realm);
     realm.realmId = uuid();
     realmList.push(realm);
     userData.addUser(addRealm.user);
     return realm;
 };
-var editRealm = function (realm) {
-    var target = realmList.find(function (item) {
+var editRealm = function(realm) {
+    var target = realmList.find(function(item) {
         return item.realmId === realm.realmId;
     });
     if (target) {

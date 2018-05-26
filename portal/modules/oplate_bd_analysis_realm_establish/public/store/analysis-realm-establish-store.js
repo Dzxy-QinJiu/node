@@ -119,8 +119,8 @@ AnalysisRealmEstablishStore.prototype.setEndTime = function(endTime) {
 AnalysisRealmEstablishStore.prototype.getRealmEstablishAnalysisDataByAjax = function(ret) {
     //服务器返回数据
     var realmEstablishAnalysisListByServer = ret.realmEstablishAnalysisListByServer,
-    //是否一个安全域都没有
-    noRealmAtAll = ret.noRealmAtAll;
+        //是否一个安全域都没有
+        noRealmAtAll = ret.noRealmAtAll;
     //保存unit
     this.unit = ret.unit;
     //是否一个安全域也没有

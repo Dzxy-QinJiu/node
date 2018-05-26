@@ -22,25 +22,25 @@ var LAYOUT_CONSTANTS = {
 };
 
 var AppUserCustomerSwitch = React.createClass({
-    searchInputEvent: function (value) {
+    searchInputEvent: function(value) {
         AppUserCustomerSwitchActions.setSearchKeyword(value);
     },
-    getCustomerId: function () {
+    getCustomerId: function() {
         return this.props.params.customerId;
     },
-    changeTableHeight: function () {
+    changeTableHeight: function() {
         this.setState({
             windowHeight: $(window).height()
         });
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         $(window).on("resize", this.changeTableHeight);
         AppUserCustomerSwitchStore.listen(this.onStoreChange);
         TableUtil.alignTheadTbody(this.refs.userListTable);
         this.fetchCustomerUserList();
     },
-    fetchCustomerUserList: function (obj) {
+    fetchCustomerUserList: function(obj) {
         var ajaxObj = {
             num: obj ? obj.customerUserPage : this.state.customerUserPage,
             customer_id: this.getCustomerId(),
@@ -48,11 +48,11 @@ var AppUserCustomerSwitch = React.createClass({
         };
         AppUserCustomerSwitchActions.getCustomerUserList(ajaxObj);
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         TableUtil.alignTheadTbody(this.refs.userListTable);
         this.updateJumpPageByJquery();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         $(window).off("resize", this.changeTableHeight);
         AppUserCustomerSwitchStore.unlisten(this.onStoreChange);
@@ -61,24 +61,24 @@ var AppUserCustomerSwitch = React.createClass({
             dynamicStyle = null;
         }
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(
             AppUserCustomerSwitchStore.getState()
         );
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return AppUserCustomerSwitchStore.getState();
     },
-    back: function () {
+    back: function() {
         //返回客户列表
         history.pushState({}, "/crm", {});
     },
-    showApplyForm: function () {
+    showApplyForm: function() {
         this.setState({
             isShowRightPanel: true
         });
     },
-    renderLoadingBlock: function () {
+    renderLoadingBlock: function() {
         if(this.state.customerUserListResult !== 'loading') {
             return null;
         }
@@ -88,8 +88,8 @@ var AppUserCustomerSwitch = React.createClass({
             </div>
         );
     },
-    getAppNameList: function (apps, rowData) {
-        var appList = apps.map(function (app, i) {
+    getAppNameList: function(apps, rowData) {
+        var appList = apps.map(function(app, i) {
             return (
                 <li key={i}>
                     {app.app_name}
@@ -102,7 +102,7 @@ var AppUserCustomerSwitch = React.createClass({
             </ul>
         );
     },
-    getTableColumns: function () {
+    getTableColumns: function() {
         var _this = this;
         var columns = [
             {
@@ -110,7 +110,7 @@ var AppUserCustomerSwitch = React.createClass({
                 dataIndex: 'user',
                 width: '22%',
                 key: 'user_name',
-                render: function (user, rowData, idx) {
+                render: function(user, rowData, idx) {
                     return (
                         <div>
                             {user.user_name}
@@ -124,7 +124,7 @@ var AppUserCustomerSwitch = React.createClass({
                 dataIndex: 'customer',
                 width: '31%',
                 key: 'customer_name',
-                render: function (customer, rowData, idx) {
+                render: function(customer, rowData, idx) {
                     return (
                         <div>{customer.customer_name}</div>
                     );
@@ -135,7 +135,7 @@ var AppUserCustomerSwitch = React.createClass({
                 dataIndex: 'sales',
                 width: '23%',
                 key: 'sales_name',
-                render: function (sales, rowData, idx) {
+                render: function(sales, rowData, idx) {
                     return (
                         <div>{sales.sales_name}</div>
                     );
@@ -146,7 +146,7 @@ var AppUserCustomerSwitch = React.createClass({
                 dataIndex: 'apps',
                 width: '24%',
                 key: 'appName',
-                render: function (apps, rowData, idx) {
+                render: function(apps, rowData, idx) {
                     return _this.getAppNameList(apps, rowData);
                 }
             }
@@ -172,7 +172,7 @@ var AppUserCustomerSwitch = React.createClass({
             num : changeToPage
         });
     },
-    getPagination: function () {
+    getPagination: function() {
         var basicConfig = {
             total : this.state.customerUserCount,
             pageSize : this.state.pageSize,
@@ -186,10 +186,10 @@ var AppUserCustomerSwitch = React.createClass({
         }
         return basicConfig;
     },
-    getRowSelection: function () {
+    getRowSelection: function() {
         return {
             type: 'checkbox',
-            onSelect: function (currentRow, isSelected, allSelectedRows) {
+            onSelect: function(currentRow, isSelected, allSelectedRows) {
                 AppUserCustomerSwitchActions.setSelectedCustomerUserRows(allSelectedRows);
             },
             onSelectAll : function(isSelectedAll , allSelectedRows) {
@@ -197,10 +197,10 @@ var AppUserCustomerSwitch = React.createClass({
             }
         };
     },
-    handleTableChange: function (pagination, filters, sorter) {
+    handleTableChange: function(pagination, filters, sorter) {
         AppUserCustomerSwitchActions.setCustomerUserPage(pagination.current);
     },
-    componentWillUpdate: function (nextProps, nextState) {
+    componentWillUpdate: function(nextProps, nextState) {
         if (
             (this.state.customerUserPage != nextState.customerUserPage) ||
             (this.state.searchKeyword != nextState.searchKeyword)
@@ -208,7 +208,7 @@ var AppUserCustomerSwitch = React.createClass({
             this.fetchCustomerUserList(nextState);
         }
     },
-    renderTableBlock: function () {
+    renderTableBlock: function() {
         if(this.state.firstLoading) {
             return null;
         }
@@ -232,14 +232,14 @@ var AppUserCustomerSwitch = React.createClass({
                         id="user.total.data"
                         defaultMessage={`共{number}个用户`}
                         values={{
-                        'number':this.state.customerUserCount || ' '
+                            'number':this.state.customerUserCount || ' '
                         }}
                     />
                 </div>
             </div>
         );
     },
-    hideRightPanel: function () {
+    hideRightPanel: function() {
         this.setState({
             isShowRightPanel: false
         });
@@ -263,7 +263,7 @@ var AppUserCustomerSwitch = React.createClass({
             email_user_names : email_user_names.join('、')
         };
     },
-    render: function () {
+    render: function() {
         if (dynamicStyle) {
             dynamicStyle.destroy();
             dynamicStyle = null;
@@ -290,7 +290,7 @@ var AppUserCustomerSwitch = React.createClass({
                             </div>
                             <div className="inline-block add-btn" onClick={this.back}>
                                 <ReactIntl.FormattedMessage id="crm.52" defaultMessage="返回" />
-                                </div>
+                            </div>
                         </div>
                     </TopNav>
                     <div className="app_user_manage_contentwrap">
@@ -303,11 +303,11 @@ var AppUserCustomerSwitch = React.createClass({
                 <RightPanel className="app_user_manage_rightpanel" showFlag={this.state.isShowRightPanel}>
                     <RightPanelClose onClick={this.hideRightPanel}/>
                     <ApplyUser
-                       appList={JSON.parse(storageUtil.local.get("oplateCrmAppList"))}
-                       users={this.state.selectedCustomerUserRows}
-                       customerId={this.props.params.customerId}
-                       cancelApply={this.hideRightPanel}
-                       emailData={emailData}
+                        appList={JSON.parse(storageUtil.local.get("oplateCrmAppList"))}
+                        users={this.state.selectedCustomerUserRows}
+                        customerId={this.props.params.customerId}
+                        cancelApply={this.hideRightPanel}
+                        emailData={emailData}
                     />
                 </RightPanel>
             </div>

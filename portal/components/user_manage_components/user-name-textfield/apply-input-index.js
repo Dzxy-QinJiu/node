@@ -45,9 +45,9 @@ const UserNameTextFieldMixin = {
                 >
                     <Validator rules={validators}>
                         <Input name="user_name"
-                               placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
-                               value={formData.user_name}
-                               onChange={this.setField.bind(this, 'user_name')}/>
+                            placeholder={Intl.get("user.username.write.tip", "请填写用户名")}
+                            value={formData.user_name}
+                            onChange={this.setField.bind(this, 'user_name')}/>
                     </Validator>
                 </FormItem>
             </div>
@@ -72,9 +72,9 @@ const UserNameTextFieldMixin = {
                 >
                     <Validator rules={validators}>
                         <Input name="nick_name"
-                               placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
-                               value={formData.nick_name}
-                               onChange={this.setField.bind(this, 'nick_name')}/>
+                            placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                            value={formData.nick_name}
+                            onChange={this.setField.bind(this, 'nick_name')}/>
                     </Validator>
                 </FormItem>
             </div>

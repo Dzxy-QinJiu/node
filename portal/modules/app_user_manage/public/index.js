@@ -37,7 +37,7 @@ var topNavEmitter = require("../../../public/sources/utils/emitters").topNavEmit
 
 /*用户管理界面外层容器*/
 var AppUserManage = React.createClass({
-    getStoreData: function () {
+    getStoreData: function() {
         var AppUserStoreData = AppUserStore.getState();
         var AppUserPanelSwitchStoreData = AppUserPanelSwitchStore.getState();
         return {
@@ -46,16 +46,16 @@ var AppUserManage = React.createClass({
             customer_name:this.props.customer_name//从客户页面跳转过来传过的客户名字
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(this.getStoreData());
     },
     //获取初始状态
-    getInitialState: function () {
+    getInitialState: function() {
         return this.getStoreData();
     },
     //记住上一次路由
     prevRoutePath: null,
-    componentDidMount: function () {
+    componentDidMount: function() {
         AppUserStore.listen(this.onStoreChange);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         //当前视图
@@ -138,7 +138,7 @@ var AppUserManage = React.createClass({
         //记住上一次路由
         this.prevRoutePath = currentView;
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customer_id && this.state.customer_id !== nextProps.customer_id) {
             this.setState({
                 customer_id: nextProps.customer_id,
@@ -150,7 +150,7 @@ var AppUserManage = React.createClass({
             });
         }
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         //如果当前路由是用户，上一次路由是用户审批时，重新获取应用列表
         var currentRoutePath = AppUserUtil.getCurrentView();
         if (currentRoutePath == 'user' && this.prevRoutePath && this.prevRoutePath !== 'user') {
@@ -172,20 +172,20 @@ var AppUserManage = React.createClass({
         }
         this.prevRoutePath = AppUserUtil.getCurrentView();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         AppUserStore.unlisten(this.onStoreChange);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         ShareObj.app_id = '';
         ShareObj.share_app_list = [];
     },
-    addAppUser: function () {
+    addAppUser: function() {
         AppUserAction.showAppUserForm();
     },
     //显示用户表单
-    showAddUserForm: function () {
+    showAddUserForm: function() {
         AppUserAction.showAppUserForm();
     },
-    getAppOptions: function () {
+    getAppOptions: function() {
         var appList = this.state.appList;
         if (!_.isArray(appList) || !appList.length) {
             if (_.isArray(ShareObj.share_app_list) && ShareObj.share_app_list.length) {
@@ -194,14 +194,14 @@ var AppUserManage = React.createClass({
                 appList = [];
             }
         }
-        var list = appList.map(function (item) {
+        var list = appList.map(function(item) {
             return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
         });
         list.unshift(<Option value="" key="all" title={Intl.get("user.app.all", "全部应用")}><ReactIntl.FormattedMessage
             id="user.app.all" defaultMessage="全部应用"/></Option>);
         return list;
     },
-    onSelectedAppChange: function (app_id, app_name) {
+    onSelectedAppChange: function(app_id, app_name) {
         //原来的应用id
         const oldSelectAppId = this.state.selectedAppId;
         //设置当前选中应用
@@ -219,14 +219,14 @@ var AppUserManage = React.createClass({
         this.appsSelectorLayout();
     },
     //显示申请用户的表单
-    showApplyUserForm: function () {
+    showApplyUserForm: function() {
         AppUserAction.showApplyUserForm();
     },
     searchTimeout: null,
-    doSearch: function (obj) {
+    doSearch: function(obj) {
         clearTimeout(this.searchTimeout);
         var _this = this;
-        this.searchTimeout = setTimeout(function () {
+        this.searchTimeout = setTimeout(function() {
             //搜索参数
             var queryObj = {
                 //从第一页开始查
@@ -241,7 +241,7 @@ var AppUserManage = React.createClass({
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.FETCH_USER_LIST, queryObj);
         }, 500);
     },
-    onSearchInputChange: function (keyword) {
+    onSearchInputChange: function(keyword) {
         keyword = keyword ? keyword : '';
         if (keyword.trim() !== this.state.keywordValue.trim()) {
             AppUserAction.keywordValueChange(keyword);
@@ -251,22 +251,22 @@ var AppUserManage = React.createClass({
         }
     },
     //切换筛选状态
-    toggleFilterArea: function () {
+    toggleFilterArea: function() {
         AppUserAction.toggleFilterExpanded();
     },
     //是否有添加用户按钮
-    addUserBtnCheckun: function () {
+    addUserBtnCheckun: function() {
         return hasPrivilege("APP_USER_ADD") && !this.state.customer_id;
     },
     //销售选择用户的提示
-    getUserRowsTooltip: function () {
+    getUserRowsTooltip: function() {
         return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击"/><i
             className="iconfont icon-radio"
             style={{fontSize:'20px',verticalAlign:'middle',position:'relative',top:'-3px'}}/><ReactIntl.FormattedMessage
             id="user.user.list.select" defaultMessage="选择用户"/></span>;
     },
     //发邮件使用的参数
-    getEmailData: function () {
+    getEmailData: function() {
         var selectedRows = this.state.selectedUserRows;
 
         var email_customer_names = [];
@@ -284,11 +284,11 @@ var AppUserManage = React.createClass({
             email_user_names: email_user_names.join('、')
         };
     },
-    showBatchOperate: function () {
+    showBatchOperate: function() {
         AppUserAction.showBatchOperate();
     },
     //获取缩放时候的批量操作按钮
-    getBatchOperateBtnMini: function () {
+    getBatchOperateBtnMini: function() {
         if (this.isShowBatchOperateBtn()){
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showBatchOperate}>
@@ -313,14 +313,14 @@ var AppUserManage = React.createClass({
         return hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) || (isCustomerDetailJump && hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES));
     },
     //显示批量操作按钮
-    getBatchOperateBtn: function () {
+    getBatchOperateBtn: function() {
         //管理员直接显示
         //销售需要从某个客户详情中跳转过来时，才可以展示
         if (this.isShowBatchOperateBtn()) {
             //如果选择了用户，直接显示
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn add-btn-common"
-                            onClick={this.showBatchOperate}>{Intl.get("user.batch.change", "批量变更")}</div>;
+                    onClick={this.showBatchOperate}>{Intl.get("user.batch.change", "批量变更")}</div>;
             }
             //没有选择用户，加一个提示
             return <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
@@ -330,7 +330,7 @@ var AppUserManage = React.createClass({
         return null;
     },
     //显示申请用户按钮
-    getApplyUserBtn: function () {
+    getApplyUserBtn: function() {
         //销售显示开通应用
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             //选中了用户直接显示
@@ -349,7 +349,7 @@ var AppUserManage = React.createClass({
         return null;
     },
     //显示缩放时候的开通应用按钮
-    getApplyUserBtnMini: function () {
+    getApplyUserBtnMini: function() {
         if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block add-btn-mini" onClick={this.showApplyUserForm}>
@@ -365,69 +365,69 @@ var AppUserManage = React.createClass({
         return null;
     },
     //当应用列表重新布局的时候，让顶部导航重新渲染
-    appsSelectorLayout: function () {
+    appsSelectorLayout: function() {
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     },
-    showRecentLoginPanel: function () {
+    showRecentLoginPanel: function() {
         AppUserAction.setRecentLoginPanelFlag(true);
     },
-    hideRecentLoginPanel: function () {
+    hideRecentLoginPanel: function() {
         AppUserAction.setRecentLoginPanelFlag(false);
     },
     //关闭属于某个客户的用户列表
-    hideCustomerUserList: function () {
+    hideCustomerUserList: function() {
         this.props.hideCustomerUserList();
         //清空数据
         AppUserAction.setInitialData();
     },
-    render: function () {
+    render: function() {
         var currentView = AppUserUtil.getCurrentView();
         var appOptions = this.getAppOptions();
         var rightPanelView = null;
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
-                case 'detail' :
-                    rightPanelView = (
-                        <UserDetail userId={this.state.detailUser.user.user_id}
-                                    appLists={this.state.detailUser.apps}
-                                    isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
-                                    selectedAppId={this.state.selectedAppId}
+            case 'detail' :
+                rightPanelView = (
+                    <UserDetail userId={this.state.detailUser.user.user_id}
+                        appLists={this.state.detailUser.apps}
+                        isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
+                        selectedAppId={this.state.selectedAppId}
 
-                        />
-                    );
-                    break;
-                case 'addOrEditUser':
-                    rightPanelView = (
-                        <AddOrEditUser operation_type={this.state.appUserFormType}/>
-                    );
-                    break;
-                case 'batch' :
-                    rightPanelView = (
-                        <div className="full_size wrap_padding">
-                            <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
-                        </div>
-                    );
-                    break;
-                case 'applyUser':
-                    //发邮件使用的数据
-                    var emailData = this.getEmailData();
-                    //应用列表
-                    var appListTransform = this.state.appList.map((obj) => {
-                        return {
-                            client_id: obj.app_id,
-                            client_name: obj.app_name,
-                            client_image: obj.app_logo
-                        };
-                    });
-                    rightPanelView = (
-                        <ApplyUser
-                            appList={appListTransform}
-                            users={this.state.selectedUserRows}
-                            customerId={this.state.customer_id}
-                            cancelApply={AppUserAction.closeRightPanel}
-                            emailData={emailData}
-                        />
-                    );
+                    />
+                );
+                break;
+            case 'addOrEditUser':
+                rightPanelView = (
+                    <AddOrEditUser operation_type={this.state.appUserFormType}/>
+                );
+                break;
+            case 'batch' :
+                rightPanelView = (
+                    <div className="full_size wrap_padding">
+                        <UserDetailAddApp multiple={true} initialUser={this.state.selectedUserRows}/>
+                    </div>
+                );
+                break;
+            case 'applyUser':
+                //发邮件使用的数据
+                var emailData = this.getEmailData();
+                //应用列表
+                var appListTransform = this.state.appList.map((obj) => {
+                    return {
+                        client_id: obj.app_id,
+                        client_name: obj.app_name,
+                        client_image: obj.app_logo
+                    };
+                });
+                rightPanelView = (
+                    <ApplyUser
+                        appList={appListTransform}
+                        users={this.state.selectedUserRows}
+                        customerId={this.state.customer_id}
+                        cancelApply={AppUserAction.closeRightPanel}
+                        emailData={emailData}
+                    />
+                );
             }
         }
         var topNavRightClass = classNames({
@@ -442,12 +442,12 @@ var AppUserManage = React.createClass({
 
         var showView = null;
         switch (currentView) {
-            case 'user':
-                showView = (<UserView customer_id={this.state.customer_id} />);
-                break;
-            case 'log':
-                showView = (<UserAuditLog />);
-                break;
+        case 'user':
+            showView = (<UserView customer_id={this.state.customer_id} />);
+            break;
+        case 'log':
+            showView = (<UserAuditLog />);
+            break;
         }
         //是否显示“过滤”按钮
         var showFilterBtn = this.state.selectedAppId;
@@ -532,7 +532,7 @@ var AppUserManage = React.createClass({
 
                 </div>
                 <RightPanel className="app_user_manage_rightpanel white-space-nowrap"
-                            showFlag={this.state.isShowRightPanel}>
+                    showFlag={this.state.isShowRightPanel}>
                     {
                         rightPanelView
                     }

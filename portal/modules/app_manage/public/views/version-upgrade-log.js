@@ -28,11 +28,11 @@ var VersionUpgradeLog = React.createClass({
         return VersionUpgradeLogStore.getState();
     },
 
-    onStoreChange: function () {
+    onStoreChange: function() {
         var state = VersionUpgradeLogStore.getState();
         this.setState(state);
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         VersionUpgradeLogStore.listen(this.onStoreChange);
         VersionUpgradeLogAction.resetState();
         var appId = AppStore.getState().currentApp.id;
@@ -45,7 +45,7 @@ var VersionUpgradeLog = React.createClass({
     },
 
 
-    componentWillReceiveProps : function (nextProps){
+    componentWillReceiveProps : function(nextProps){
         var appId = nextProps.appId;
         if ( appId !=  this.props.appId){
             VersionUpgradeLogAction.resetState();
@@ -60,13 +60,13 @@ var VersionUpgradeLog = React.createClass({
     
 
     //关闭
-    closePanel: function (e) {
+    closePanel: function(e) {
         Trace.traceEvent(e,"关闭版本升级界面");
         this.props.closeRightPanel(e);
     },
 
     //返回详细信息展示页
-    returnInfoPanel: function (e) {
+    returnInfoPanel: function(e) {
         Trace.traceEvent(e,"返回到应用详情界面");
         this.props.returnInfoPanel(e);
     },
@@ -102,7 +102,7 @@ var VersionUpgradeLog = React.createClass({
         this.getAppRecordsList(searchObj);
     },
     
-    render: function () {
+    render: function() {
         var className = "app-record-style right-panel-content";
         if(this.props.versionUpgradeShow){
             className += " right-panel-content-slide";
@@ -115,7 +115,7 @@ var VersionUpgradeLog = React.createClass({
             <div className={className} data-tracename="版本升级记录界面">
                 <RightPanelClose onClick={this.closePanel}/>
                 {(this.props.cardInfoShow || !this.props.versionUpgradeShow) ? null : (
-                <RightPanelReturn onClick={this.returnInfoPanel}/>)}
+                    <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <div className="version-list" style={{height: divHeight}}>
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom}

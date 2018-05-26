@@ -8,7 +8,7 @@ function AddMoreInfoAction() {
     this.generateActions(
         'resetState'
     );
-    this.getAppList = function () {
+    this.getAppList = function() {
         this.dispatch({ loading: true, error: false});
         phoneAlertAjax.getAppLists().then((data) => {
             this.dispatch({ loading: false, error: false, lists: data});
@@ -16,7 +16,7 @@ function AddMoreInfoAction() {
             this.dispatch({loading: false, error: true, errMsg: errMsg});
         });
     };
-    this.addAppFeedback = function (submitObj, cb) {
+    this.addAppFeedback = function(submitObj, cb) {
         phoneAlertAjax.addAppFeedback(submitObj).then((data)=>{
             cb(data);
         },(errorMsg)=>{

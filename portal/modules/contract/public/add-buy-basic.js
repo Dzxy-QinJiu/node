@@ -10,21 +10,21 @@ import BasicMixin from "./mixin-basic";
 
 const AddBuyBasic = React.createClass({
     mixins: [ValidateMixin, BasicMixin],
-    render: function () {
+    render: function() {
         const formData = this.state.formData;
 
         return (
             <Form horizontal className="add-basic">
-            <Validation ref="validation" onValidate={this.handleValidate}>
-                {this.renderNumField()}
-                {this.renderUserField()}
-                {this.renderTeamField()}
-                {this.renderDateField()}
-                {this.renderAmountField()}
-                {this.renderStageField()}
-                {formData.category? this.renderCategoryField() : null}
-                {this.renderRemarksField()}
-            </Validation>
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    {this.renderNumField()}
+                    {this.renderUserField()}
+                    {this.renderTeamField()}
+                    {this.renderDateField()}
+                    {this.renderAmountField()}
+                    {this.renderStageField()}
+                    {formData.category? this.renderCategoryField() : null}
+                    {this.renderRemarksField()}
+                </Validation>
             </Form>
         );
     }

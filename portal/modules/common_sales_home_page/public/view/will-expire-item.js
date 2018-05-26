@@ -31,7 +31,7 @@ class WillExpireItem extends React.Component {
             <div className="will-expire-container customer-detail-item">
                 <div className="will-customer-title">
                     <span className="sale-home-customer-name"
-                          onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
+                        onClick={this.openCustomerDetail.bind(this, expireItem.customer_id)} data-tracename="打开客户详情">
                         {expireItem.customer_name}
                     </span>
                 </div>
@@ -51,7 +51,7 @@ class WillExpireItem extends React.Component {
 }
 WillExpireItem.defaultProps = {
     expireItem: {},
-    openCustomerDetail: function () {
+    openCustomerDetail: function() {
 
     },
     willExpiredTime:""//即将到期的时间

@@ -151,16 +151,16 @@ const PositionInfo = React.createClass({
             reqObj.user_id = this.getUnbindMemberId(this.state.formData.member)[0];
         }
         PositionAjax.memberBindPhoneOrder(reqObj).then( (result) => {
-           if (result) {
-               PositionAction.bindMember(reqObj);
-               this.state.positionInfo.realm_id = this.state.formData.realm_id;
-               this.state.positionInfo.user_id = this.state.formData.member;
-               this.setState({
-                   positionInfo: $.extend(true, {},  this.state.positionInfo)
-               });
-               this.props.closeRightPanel();
-               PositionAction.getPhoneOrderList({order: PositionStore.getState().sortOrder}); // 获取座席号列表
-           }
+            if (result) {
+                PositionAction.bindMember(reqObj);
+                this.state.positionInfo.realm_id = this.state.formData.realm_id;
+                this.state.positionInfo.user_id = this.state.formData.member;
+                this.setState({
+                    positionInfo: $.extend(true, {},  this.state.positionInfo)
+                });
+                this.props.closeRightPanel();
+                PositionAction.getPhoneOrderList({order: PositionStore.getState().sortOrder}); // 获取座席号列表
+            }
         } );
     },
     // 修改组织
@@ -224,19 +224,19 @@ const PositionInfo = React.createClass({
                                 <dt>{LANGLOBAL.ORGANIZATION.organ}</dt>
                                 <dd>{this.state.editOrgFlag ? (
                                     <Select name='realm_id'
-                                            id='realm_id'
-                                            placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
-                                            notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
-                                            showSearch
-                                            searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
-                                            value={formData.realm_id}
-                                            onChange={this.setField.bind(this, 'realm_id')}
+                                        id='realm_id'
+                                        placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
+                                        notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
+                                        showSearch
+                                        searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
+                                        value={formData.realm_id}
+                                        onChange={this.setField.bind(this, 'realm_id')}
                                     >
                                         {this.renderOrganizationOptions()}
                                     </Select>
                                 ) : this.state.positionInfo.realm_name}
-                                    {!this.state.editOrgFlag && <i className='inline-block iconfont icon-update'
-                                       onClick={this.handleEditOrganization.bind(this)} title='修改' />}
+                                {!this.state.editOrgFlag && <i className='inline-block iconfont icon-update'
+                                    onClick={this.handleEditOrganization.bind(this)} title='修改' />}
                                 </dd>
                             </dl>
                             <dl className='dl-horizontal detail_item position-info-item'>
@@ -245,13 +245,13 @@ const PositionInfo = React.createClass({
                                     {this.state.editOrgFlag ? (
                                         <div>
                                             <Select name='member'
-                                                    id='member'
-                                                    placeholder={LANGLOBAL.USER.first} // 请绑定用户
-                                                    notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
-                                                    showSearch
-                                                    searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
-                                                    value={formData.member}
-                                                    onChange={this.setField.bind(this, 'member')}
+                                                id='member'
+                                                placeholder={LANGLOBAL.USER.first} // 请绑定用户
+                                                notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
+                                                showSearch
+                                                searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
+                                                value={formData.member}
+                                                onChange={this.setField.bind(this, 'member')}
                                             >
                                                 {this.getMemberOptions()}
                                             </Select>
@@ -290,13 +290,13 @@ const PositionInfo = React.createClass({
                                         wrapperCol={{span: 17}}
                                     >
                                         <Select name='realm_id'
-                                                id='realm_id'
-                                                placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
-                                                notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
-                                                showSearch
-                                                searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
-                                                value={formData.realm_id}
-                                                onChange={this.setField.bind(this, 'realm_id')}
+                                            id='realm_id'
+                                            placeholder={LANGLOBAL.ORGANIZATION.first} // 请先选择组织
+                                            notFoundContent={LANGLOBAL.ORGANIZATION.tips} // 暂无此组织
+                                            showSearch
+                                            searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
+                                            value={formData.realm_id}
+                                            onChange={this.setField.bind(this, 'realm_id')}
                                         >
                                             {this.renderOrganizationOptions()}
                                         </Select>
@@ -309,13 +309,13 @@ const PositionInfo = React.createClass({
                                             wrapperCol={{span: 17}}
                                         >
                                             <Select name='member'
-                                                    id='member'
-                                                    placeholder={LANGLOBAL.USER.first} // 请绑定用户
-                                                    notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
-                                                    showSearch
-                                                    searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
-                                                    value={formData.member}
-                                                    onChange={this.setField.bind(this, 'member')}
+                                                id='member'
+                                                placeholder={LANGLOBAL.USER.first} // 请绑定用户
+                                                notFoundContent={LANGLOBAL.USER.tips} // 暂无此用户
+                                                showSearch
+                                                searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
+                                                value={formData.member}
+                                                onChange={this.setField.bind(this, 'member')}
                                             >
                                                 {this.getMemberOptions()}
                                             </Select>
@@ -333,7 +333,7 @@ const PositionInfo = React.createClass({
                             </Form>
                         </div>}
                     </div>
-                 </div>
+                </div>
             </RightPanel>
         );
     }

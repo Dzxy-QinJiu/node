@@ -12,7 +12,7 @@ module.exports = function initCoordinator(callback) {
     // 启动前需要设置token，
     client.setToken("123");
     client.logger.level('info');
-    client.start(function (error) {
+    client.start(function(error) {
         //error存在的时候启动失败，不存在的时候启动成功
         // eslint-disable-next-line no-console
         console.log(error || 'Coordinator启动成功!');

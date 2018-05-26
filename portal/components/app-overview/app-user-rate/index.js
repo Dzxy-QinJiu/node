@@ -7,7 +7,7 @@ class AppUserRate extends React.Component {
     constructor(props) {
         super(props);
     }
-    render () {
+    render() {
         let userRate = this.props.appUserRate;
         return (
             <div className="app-rate-item">

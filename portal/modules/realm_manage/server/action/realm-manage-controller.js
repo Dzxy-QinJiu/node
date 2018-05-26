@@ -11,7 +11,7 @@ var realmManageService = require("../service/realm-manage-service");
 /*
  * show list realm handler.
  */
-exports.getCurRealmList = function (req, res) {
+exports.getCurRealmList = function(req, res) {
     var params = {};
     var curPage = req.query.cur_page, pageSize = req.query.page_size, filterContent = req.query.search_content;
     if (curPage) {
@@ -23,16 +23,16 @@ exports.getCurRealmList = function (req, res) {
     if (filterContent) {
         params.filter_content = filterContent;
     }
-    realmManageService.getRealms(req, res, params === {} ? null : params).on("success", function (data) {
+    realmManageService.getRealms(req, res, params === {} ? null : params).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
-exports.getCurRealmById = function (req, res) {
-    realmManageService.getCurRealmById(req, res, req.params.realm_id).on("success", function (data) {
+exports.getCurRealmById = function(req, res) {
+    realmManageService.getCurRealmById(req, res, req.params.realm_id).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.json(codeMessage && codeMessage.message);
     });
 };
@@ -40,10 +40,10 @@ exports.getCurRealmById = function (req, res) {
 /**
  * add realm handler
  */
-exports.addRealm = function (req, res) {
-    realmManageService.addRealm(req, res, req.body).on("success", function (data) {
+exports.addRealm = function(req, res) {
+    realmManageService.addRealm(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -51,20 +51,20 @@ exports.addRealm = function (req, res) {
 /**
  * add owner handler
  */
-exports.addOwner = function (req, res) {
-    realmManageService.addOwner(req, res, req.body).on("success", function (data) {
+exports.addOwner = function(req, res) {
+    realmManageService.addOwner(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 /**
  * edit realm handler
  */
-exports.editRealm = function (req, res) {
-    realmManageService.editRealm(req, res, req.body).on("success", function (data) {
+exports.editRealm = function(req, res) {
+    realmManageService.editRealm(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -72,10 +72,10 @@ exports.editRealm = function (req, res) {
 /**
  * start/stop realm handler
  */
-exports.updateRealmStatus = function (req, res) {
-    realmManageService.updateRealmStatus(req, res, req.body).on("success", function (data) {
+exports.updateRealmStatus = function(req, res) {
+    realmManageService.updateRealmStatus(req, res, req.body).on("success", function(data) {
         res.status(200).json(data);
-    }).on("error", function (codeMessage) {
+    }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

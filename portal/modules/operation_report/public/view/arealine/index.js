@@ -33,7 +33,7 @@ var AreaLineChart = React.createClass({
     isBiggerThanYear: false,
     //滚动条的scrollTop
     scrollTop: 0,
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             list: [],
             title: Intl.get("operation.report.activity", "活跃度"),
@@ -43,7 +43,7 @@ var AreaLineChart = React.createClass({
             //日活、周活、月活
             dataRange: '',
             //时间范围改变的回调函数
-            onDataRangeChange: function () {
+            onDataRangeChange: function() {
             },
             //开始查询时间
             startTime: new Date().getTime(),
@@ -52,21 +52,21 @@ var AreaLineChart = React.createClass({
         };
 
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             dataRange: this.props.dataRange,
             topIconEnable: false,
             bottomIconEnable: true
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (this.state.dataRange !== nextProps.dataRange) {
             this.setState({
                 dataRange: nextProps.dataRange
             });
         }
     },
-    getCategorys: function () {
+    getCategorys: function() {
         var items = this.props.list || [];
         if (!items.length) {
             return items;
@@ -79,7 +79,7 @@ var AreaLineChart = React.createClass({
         if (biggerThanYear) {
             this.isBiggerThanYear = true;
         }
-        var times = items.map(function (obj) {
+        var times = items.map(function(obj) {
             if (biggerThanYear) {
                 return moment(new Date(+obj.timestamp)).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
             } else {
@@ -97,7 +97,7 @@ var AreaLineChart = React.createClass({
             }
         };
     },
-    getSeries: function () {
+    getSeries: function() {
         var _this = this;
         //普通线
         function getLine(name, list, color) {
@@ -120,7 +120,7 @@ var AreaLineChart = React.createClass({
         }
 
         var series = [], colorIdx = 0;
-        _.each(_this.props.list, function (line) {
+        _.each(_this.props.list, function(line) {
             var color = colors[colorIdx++];
             if (!color) {
                 colorIdx = 0;
@@ -130,7 +130,7 @@ var AreaLineChart = React.createClass({
         });
         return series;
     },
-    getTooltip: function () {
+    getTooltip: function() {
         var _this = this;
         return {
             trigger: 'axis',
@@ -140,7 +140,7 @@ var AreaLineChart = React.createClass({
                     width: 1
                 }
             },
-            position: function (mousePointer, params, tooltipDom) {
+            position: function(mousePointer, params, tooltipDom) {
                 var chartWidth = $(_this.refs.chart).width();
                 var chartHeight = $(_this.refs.chart).height();
                 var tooltipDomWidth = $(tooltipDom).width();
@@ -156,7 +156,7 @@ var AreaLineChart = React.createClass({
                     Math.floor((chartHeight - tooltipDomHeight) / 2) - 20,
                 ];
             },
-            formatter: function (lines) {
+            formatter: function(lines) {
                 var index = _.findIndex(_this.props.list, (item) => item.datas.length > 0);
                 var idx = lines[index].dataIndex;
                 var time = _this.props.list[index].datas[idx].timestamp;
@@ -194,7 +194,7 @@ var AreaLineChart = React.createClass({
                     </thead>
               `);
                 tableHtmlList.push(`<tbody>`);
-                _this.props.list.map(function (line) {
+                _this.props.list.map(function(line) {
                     tableHtmlList.push(`<tr>`);
                     var active = line.datas[idx] && line.datas[idx].active || 0;
                     var total = line.datas[idx] && line.datas[idx].total || 0;
@@ -211,7 +211,7 @@ var AreaLineChart = React.createClass({
             extraCssText: echartsTooltipCssText
         };
     },
-    getEchartOptions: function () {
+    getEchartOptions: function() {
         var _this = this;
         var options = {
             animation: false,
@@ -305,7 +305,7 @@ var AreaLineChart = React.createClass({
         };
         return options;
     },
-    renderChart: function () {
+    renderChart: function() {
         if (this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -334,10 +334,10 @@ var AreaLineChart = React.createClass({
             this.echartInstance.setOption(options, true);
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate: function (prevProps) {
+    componentDidUpdate: function(prevProps) {
         if (
             this.props.list.length &&
             prevProps.list.length &&
@@ -348,7 +348,7 @@ var AreaLineChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         if (this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -356,14 +356,14 @@ var AreaLineChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    onDataRangeChange: function (event) {
+    onDataRangeChange: function(event) {
         this.setState({
             dataRange: event.target.value
         });
         this.props.onDataRangeChange(event.target.value);
     },
     //处理向上滚动
-    handleScrollUp: function () {
+    handleScrollUp: function() {
         //scrollTop减去某个值
         this.scrollTop -= LAYOUT.SINGLE_ITEM_HEIGHT;
         //默认认为顶部的方向按钮能用
@@ -381,7 +381,7 @@ var AreaLineChart = React.createClass({
         });
     },
     //处理向下滚动
-    handleScrollDown: function () {
+    handleScrollDown: function() {
         //获取最大滚动高度
         var maxScrollHeight = this.refs.legendWrap.scrollHeight - $(this.refs.legendWrap).height();
         //滚动高度增加
@@ -399,7 +399,7 @@ var AreaLineChart = React.createClass({
             bottomIconEnable: bottomIconEnable
         });
     },
-    onMouseWheel: function (event) {
+    onMouseWheel: function(event) {
         event.preventDefault();
         if (event.deltaY > 0) {
             this.handleScrollDown();
@@ -408,10 +408,10 @@ var AreaLineChart = React.createClass({
         }
     },
     legendMouseTimeout: null,
-    legendMouseenter: function (obj, idx, event) {
+    legendMouseenter: function(obj, idx, event) {
         clearTimeout(this.legendMouseTimeout);
         var _this = this;
-        this.legendMouseTimeout = setTimeout(function () {
+        this.legendMouseTimeout = setTimeout(function() {
             var options = _this.getEchartOptions();
             var series = options.series[idx];
             var oldColor = series.itemStyle.normal.color;
@@ -421,16 +421,16 @@ var AreaLineChart = React.createClass({
             _this.echartInstance.setOption(options);
         }, 300);
     },
-    legendMouseleave: function (obj, idx, event) {
+    legendMouseleave: function(obj, idx, event) {
         clearTimeout(this.legendMouseTimeout);
         var _this = this;
-        this.legendMouseTimeout = setTimeout(function () {
+        this.legendMouseTimeout = setTimeout(function() {
             var options = _this.getEchartOptions();
             _this.echartInstance.clear();
             _this.echartInstance.setOption(options);
         }, 300);
     },
-    renderLegend: function () {
+    renderLegend: function() {
         var _this = this;
         var colorIdx = 0;
         if (!this.props.list.length) {
@@ -439,10 +439,10 @@ var AreaLineChart = React.createClass({
         return (
             <div ref="legend" className="legend">
                 <Icon type="caret-up" style={{visibility:this.state.topIconEnable ? 'visible' : 'hidden'}}
-                      onClick={this.handleScrollUp}/>
+                    onClick={this.handleScrollUp}/>
                 <ul className="list-unstyled" ref="legendWrap" onWheel={this.onMouseWheel}>
                     {
-                        this.props.list.map(function (obj, idx) {
+                        this.props.list.map(function(obj, idx) {
                             var color = colors[colorIdx++];
                             if (!color) {
                                 colorIdx = 0;
@@ -462,11 +462,11 @@ var AreaLineChart = React.createClass({
                     }
                 </ul>
                 <Icon type="caret-down" style={{visibility:this.state.bottomIconEnable ? 'visible' : 'hidden'}}
-                      onClick={this.handleScrollDown}/>
+                    onClick={this.handleScrollDown}/>
             </div>
         );
     },
-    render: function () {
+    render: function() {
         //宽度需要减去“图例”的宽度
         var chartWidth = (this.props.width || $(this.refs.wrap).width()) - LAYOUT.LEGEND_WIDTH;
         return (
@@ -494,7 +494,7 @@ var AreaLineChart = React.createClass({
                         (
                             <div>
                                 <div ref="chart" style={{width:chartWidth,height:this.props.height}}
-                                     className="chart" data-title={this.props.title}></div>
+                                    className="chart" data-title={this.props.title}></div>
                                 {this.renderLegend()}
                             </div>
                         )

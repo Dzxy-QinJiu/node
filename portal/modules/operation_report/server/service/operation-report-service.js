@@ -65,7 +65,7 @@ exports.urls = urls;
 const weekTime = 7 * 24 * 60 * 60 * 1000;
 
 //获取各应用的签约用户数
-exports.getAppSignedUser = function (req, res, queryParams) {
+exports.getAppSignedUser = function(req, res, queryParams) {
     //签约总用户数开始时间传0
     queryParams.start_time = 0;
     return restUtil.authRest.get(
@@ -76,7 +76,7 @@ exports.getAppSignedUser = function (req, res, queryParams) {
         }, queryParams);
 };
 //获取到期用户的周登录时长超1小时的各应用的用户数
-exports.getExpiredUserExceedLoginTime = function (req, res, queryParams) {
+exports.getExpiredUserExceedLoginTime = function(req, res, queryParams) {
     return restUtil.authRest.get(
         {
             url: urls.getExpiredUserExceedLoginTime,
@@ -86,7 +86,7 @@ exports.getExpiredUserExceedLoginTime = function (req, res, queryParams) {
 };
 
 // 获取各应用登录情况
-exports.getAppLoginUser = function (req, res, queryParams) {
+exports.getAppLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -95,15 +95,15 @@ exports.getAppLoginUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppLoginUser), getDataPromise(req, res, lastWeekParams, urls.getAppLoginUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各应用新增账号的统计
-exports.getAppNewTrialUser = function (req, res, queryParams) {
+exports.getAppNewTrialUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -112,15 +112,15 @@ exports.getAppNewTrialUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppNewTrialUser), getDataPromise(req, res, lastWeekParams, urls.getAppNewTrialUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各应用新增延期用户的统计
-exports.getAppNewDelayUser = function (req, res, queryParams) {
+exports.getAppNewDelayUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -129,16 +129,16 @@ exports.getAppNewDelayUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getDataPromise(req, res, queryParams, urls.getAppNewDelayUser), getDataPromise(req, res, lastWeekParams, urls.getAppNewDelayUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //获取近四周的登录对比
-exports.getAppLoginComparison = function (req, res, queryParams) {
+exports.getAppLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -146,15 +146,15 @@ exports.getAppLoginComparison = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppLoginComparison));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取近四周周登录总时长超过1小时的用户数对比
-exports.getAppWeeklyLoginTotalTime = function (req, res, queryParams) {
+exports.getAppWeeklyLoginTotalTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -162,16 +162,16 @@ exports.getAppWeeklyLoginTotalTime = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppWeeklyLoginTotalTime));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //获取近四周到期用户的登录对比
-exports.getAppExpiredLoginComparison = function (req, res, queryParams) {
+exports.getAppExpiredLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -179,15 +179,15 @@ exports.getAppExpiredLoginComparison = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppExpiredLoginComparison));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取近四周签约用户的登录对比
-exports.getAppFormalUserLoginComparison = function (req, res, queryParams) {
+exports.getAppFormalUserLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -195,16 +195,16 @@ exports.getAppFormalUserLoginComparison = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppFormalUserLoginComparison));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //近四周新开用户的对比
-exports.getAppNewUserComparison = function (req, res, queryParams) {
+exports.getAppNewUserComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -212,15 +212,15 @@ exports.getAppNewUserComparison = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewUserComparison));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取近四周新增延期用户对比
-exports.getAppNewDelayUserComparison = function (req, res, queryParams) {
+exports.getAppNewDelayUserComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -228,15 +228,15 @@ exports.getAppNewDelayUserComparison = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewDelayUserComparison));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取近四周的用户活跃度
-exports.getUserActive = function (req, res, queryParams) {
+exports.getUserActive = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -244,16 +244,16 @@ exports.getUserActive = function (req, res, queryParams) {
         queryParams.app_id = appId;//appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserActive));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //获取用户日活
-exports.getUserDailyActive = function (req, res, queryParams) {
+exports.getUserDailyActive = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -261,16 +261,16 @@ exports.getUserDailyActive = function (req, res, queryParams) {
         queryParams.app_id = appId;//appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserDailyActive));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //获取各部门签约用户的登录表格数据
-exports.getTeamSignedLoginUser = function (req, res, queryParams) {
+exports.getTeamSignedLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -278,15 +278,15 @@ exports.getTeamSignedLoginUser = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamSignedLoginUser));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各应用登录用户数的部门分布表格数据
-exports.getTeamLoginUser = function (req, res, queryParams) {
+exports.getTeamLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -294,15 +294,15 @@ exports.getTeamLoginUser = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamLoginUser));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门到期用户的登录表格数据
-exports.getTeamExpiredLoginUser = function (req, res, queryParams) {
+exports.getTeamExpiredLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -311,9 +311,9 @@ exports.getTeamExpiredLoginUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamExpiredLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamExpiredLoginUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
@@ -327,16 +327,16 @@ function getPromiseListData(req, res, reqParams, url) {
             reqParams.app_id = appId;
             promiseList.push(getDataPromise(req, res, reqParams, url));
         });
-        return Promise.all(promiseList).then(function (lineList) {
+        return Promise.all(promiseList).then(function(lineList) {
             resolve(lineList);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             reject(errorMsg);
         });
     });
 }
 
 //获取各部门到期用户的登录时长表格数据
-exports.getTeamExpiredUserLoginTime = function (req, res, queryParams) {
+exports.getTeamExpiredUserLoginTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -345,15 +345,15 @@ exports.getTeamExpiredUserLoginTime = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamExpiredUserLoginTime), getPromiseListData(req, res, lastWeekParams, urls.getTeamExpiredUserLoginTime)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门新开试用账号的统计表格
-exports.getTeamNewTrialUser = function (req, res, queryParams) {
+exports.getTeamNewTrialUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -361,15 +361,15 @@ exports.getTeamNewTrialUser = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewTrialUser));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门新增延期用户的统计表格
-exports.getTeamNewDelayUser = function (req, res, queryParams) {
+exports.getTeamNewDelayUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -377,16 +377,16 @@ exports.getTeamNewDelayUser = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewDelayUser));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 
 //获取各部门新开试用账号登录的统计表格
-exports.getTeamNewTrialLoginUser = function (req, res, queryParams) {
+exports.getTeamNewTrialLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -395,15 +395,15 @@ exports.getTeamNewTrialLoginUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamNewTrialLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamNewTrialLoginUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门新增延期用户登录的统计表格
-exports.getTeamNewDelayLoginUser = function (req, res, queryParams) {
+exports.getTeamNewDelayLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     //获取上一周数据的参数
     let lastWeekParams = {
@@ -412,15 +412,15 @@ exports.getTeamNewDelayLoginUser = function (req, res, queryParams) {
         end_time: queryParams.end_time - weekTime
     };
     let promiseList = [getPromiseListData(req, res, queryParams, urls.getTeamNewDelayLoginUser), getPromiseListData(req, res, lastWeekParams, urls.getTeamNewDelayLoginUser)];
-    Promise.all(promiseList).then(function (resultList) {
+    Promise.all(promiseList).then(function(resultList) {
         emitter.emit("success", resultList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门登录超过x小时的统计表格数据
-exports.getTeamExceedLoginTime = function (req, res, queryParams) {
+exports.getTeamExceedLoginTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -428,15 +428,15 @@ exports.getTeamExceedLoginTime = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamExceedLoginTime));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
 };
 //获取各部门登录超过x小时的延期用统计表格数据
-exports.getTeamDelayUserLoginTime = function (req, res, queryParams) {
+exports.getTeamDelayUserLoginTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
@@ -444,9 +444,9 @@ exports.getTeamDelayUserLoginTime = function (req, res, queryParams) {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamDelayUserLoginTime));
     });
-    Promise.all(promiseList).then(function (lineList) {
+    Promise.all(promiseList).then(function(lineList) {
         emitter.emit("success", lineList);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
@@ -460,10 +460,10 @@ function getDataPromise(req, res, reqParams, url) {
                 req: req,
                 res: res
             }, reqParams, {
-                success: function (eventEmitter, result) {
+                success: function(eventEmitter, result) {
                     resolve(result);
                 },
-                error: function (eventEmitter, errorDesc) {
+                error: function(eventEmitter, errorDesc) {
                     reject(errorDesc.message);
                 }
             });

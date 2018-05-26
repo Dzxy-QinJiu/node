@@ -17,7 +17,7 @@ var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
 
 var BarChart = React.createClass({
     echartInstance: null,
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             list: [],
             title: Intl.get("oplate_customer_analysis.4", "团队统计"),
@@ -35,7 +35,7 @@ var BarChart = React.createClass({
             showLabel: false//是否展示柱状图上的数据
         };
     },
-    getLegend: function () {
+    getLegend: function() {
         if (!this.props.legend) {
             return {
                 show: false,
@@ -47,13 +47,13 @@ var BarChart = React.createClass({
             data: _.pluck(this.props.legend, 'name')
         };
     },
-    getCategorys: function () {
+    getCategorys: function() {
         return _.pluck(this.props.list, 'name');
     },
-    getSeries: function () {
+    getSeries: function() {
         var _this = this;
         var series = [];
-        _.each(this.props.legend, function (legendInfo, idx) {
+        _.each(this.props.legend, function(legendInfo, idx) {
             var currentColor = COLORMULTIPLE[idx];
             var line = {
                 name: legendInfo.name,
@@ -73,28 +73,28 @@ var BarChart = React.createClass({
         });
         return series;
     },
-    getTooltip: function () {
+    getTooltip: function() {
         var _this = this;
         return {
             trigger: 'item',
             enterable: true,
             extraCssText: echartsTooltipCssText,
-            formatter: function (obj) {
+            formatter: function(obj) {
                 var value = obj.value;
                 var name = obj.name;
 
-                var target = _.find(_this.props.list, function (obj) {
+                var target = _.find(_this.props.list, function(obj) {
                     return name === obj.name;
                 });
 
-                var allTotal = _.reduce(_this.props.list, function (sum, obj) {
+                var allTotal = _.reduce(_this.props.list, function(sum, obj) {
                     return sum + obj.total;
                 }, 0);
 
                 var list = [];
 
                 var currentTotal = 0, colorList;
-                _this.props.legend.map(function (legendInfo, idx) {
+                _this.props.legend.map(function(legendInfo, idx) {
                     var value = target[legendInfo.key];
                     var percent = (value * 100 / allTotal).toFixed(2);
                     colorList = COLORMULTIPLE;
@@ -129,7 +129,7 @@ var BarChart = React.createClass({
             }
         };
     },
-    getEchartOptions: function () {
+    getEchartOptions: function() {
         var option = {
             title: null,
             animation: false,
@@ -165,7 +165,7 @@ var BarChart = React.createClass({
                             color: '#939393',
                             align: 'center'
                         },
-                        formatter: function (text) {
+                        formatter: function(text) {
                             if (text === 'unknown') {
                                 text = Intl.get("user.unknown", "未知");
                             } else if (!text) {
@@ -197,7 +197,7 @@ var BarChart = React.createClass({
         };
         return option;
     },
-    renderChart: function () {
+    renderChart: function() {
         var _this = this;
         if (this.echartInstance) {
             packageTry(() => {
@@ -244,10 +244,10 @@ var BarChart = React.createClass({
             }
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate: function (prevProps) {
+    componentDidUpdate: function(prevProps) {
         if (
             this.props.list.length &&
             prevProps.list.length &&
@@ -258,7 +258,7 @@ var BarChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         if (this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -266,7 +266,7 @@ var BarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render: function () {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis_bar_chart" ref="wrap">
@@ -279,7 +279,7 @@ var BarChart = React.createClass({
                     (
                         <div>
                             <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart"
-                                 data-title={this.props.title}></div>
+                                data-title={this.props.title}></div>
                         </div>
                     )
                 }

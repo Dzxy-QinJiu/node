@@ -27,7 +27,7 @@ const PHONE_INPUT_ID = "phoneInput";
 
 function cx(classNames) {
     if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function (className) {
+        return Object.keys(classNames).filter(function(className) {
             return classNames[className];
         }).join(' ');
     } else {
@@ -36,7 +36,7 @@ function cx(classNames) {
 }
 var CRMAddForm = React.createClass({
     mixins: [Validation.FieldMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         var formData = {
             name: "",//客户名称
             industry: [],//行业
@@ -70,7 +70,7 @@ var CRMAddForm = React.createClass({
             isLoadingIndustry: false//是否正在加载行业列表
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
         CrmAction.getIndustries(result => {
@@ -81,7 +81,7 @@ var CRMAddForm = React.createClass({
             this.setState({isLoadingIndustry: false, industryList: list});
         });
     },
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
         var arr = item.split(".");
@@ -100,7 +100,7 @@ var CRMAddForm = React.createClass({
     },
 
     //更新地址
-    updateLocation: function (address) {
+    updateLocation: function(address) {
         var location = address.split('/');
         this.state.formData.province = location[0] || "";
         this.state.formData.city = location[1] || "";
@@ -109,7 +109,7 @@ var CRMAddForm = React.createClass({
     },
 
     //提交修改
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         var validation = this.refs.validation;
         validation.validate(valid => {
@@ -139,7 +139,7 @@ var CRMAddForm = React.createClass({
     },
 
     //添加客户
-    addCustomer: function () {
+    addCustomer: function() {
         this.state.isLoading = true;
         this.setState(this.state);
         var formData = JSON.parse(JSON.stringify(this.state.formData));
@@ -166,13 +166,13 @@ var CRMAddForm = React.createClass({
         });
     },
 
-    closeAddPanel: function () {
+    closeAddPanel: function() {
         this.setState(this.getInitialState());
         this.props.hideAddForm();
     },
 
     //根据客户名在地理信息接口获取该客户的信息并填充到对应字段
-    autofillGeoInfo: function (customerName) {
+    autofillGeoInfo: function(customerName) {
         const route = _.find(routeList, route => route.handler === "getGeoInfo");
 
         const arg = {
@@ -194,7 +194,7 @@ var CRMAddForm = React.createClass({
         });
     },
     //根据客户名获取客户的行政级别并填充到对应字段上
-    getAdministrativeLevelByName: function (customerName) {
+    getAdministrativeLevelByName: function(customerName) {
         crmAjax.getAdministrativeLevel({name: customerName}).then(result => {
             if (_.isEmpty(result)) return;
             this.state.formData.administrative_level = crmUtil.filterAdministrativeLevel(result.level);
@@ -202,7 +202,7 @@ var CRMAddForm = React.createClass({
         });
     },
     //客户名唯一性验证
-    checkOnlyCustomerName: function (e) {
+    checkOnlyCustomerName: function(e) {
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
@@ -230,7 +230,7 @@ var CRMAddForm = React.createClass({
         }
     },
     //客户名唯一性验证的提示信息
-    renderCustomerNameMsg: function () {
+    renderCustomerNameMsg: function() {
         if (this.state.customerNameExist) {
             let name = this.state.formData.name;
             const list = _.clone(this.state.existCustomerList);
@@ -248,7 +248,7 @@ var CRMAddForm = React.createClass({
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)"
-                           onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                     ) : (
                         <span>{customer.name} ({customer.user_name})</span>
                     )}
@@ -261,7 +261,7 @@ var CRMAddForm = React.createClass({
                                     <div>
                                         {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)"
-                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                                                onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                                             </div>
                                         ) : (
                                             <div>{customer.name} ({customer.user_name})</div>
@@ -282,7 +282,7 @@ var CRMAddForm = React.createClass({
         }
     },
     //客户名格式验证
-    checkCustomerName: function (rule, value, callback) {
+    checkCustomerName: function(rule, value, callback) {
         value = $.trim(value);
         if (value) {
             if (nameRegex.test(value)) {
@@ -322,32 +322,32 @@ var CRMAddForm = React.createClass({
             }
         }];
     },
-    handleRemarkInput: function (e) {
+    handleRemarkInput: function(e) {
         Trace.traceEvent(e, "添加备注");
     },
-    handleSelect: function () {
+    handleSelect: function() {
         Trace.traceEvent($(this.getDOMNode()).find("form div .ant-form-item label[for='industry']").next("div"), "选择行业");
     },
-    handleRoleSelect: function () {
+    handleRoleSelect: function() {
         Trace.traceEvent($(this.getDOMNode()).find("form div .ant-form-item label[for='role']").next("div"), "选择角色");
     },
-    getAdministrativeLevelOptions: function () {
+    getAdministrativeLevelOptions: function() {
         let options = crmUtil.administrativeLevels.map(obj => {
             return (<Option key={obj.id} value={obj.id}>{obj.level}</Option>);
         });
         options.unshift(<Option key="" value="">&nbsp;</Option>);
         return options;
     },
-    render: function () {
+    render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
         //角色下拉列表
-        var roleOptions = ContactUtil.roleArray.map(function (role, index) {
+        var roleOptions = ContactUtil.roleArray.map(function(role, index) {
             return (<Option value={role} key={index}>{role}</Option>);
         });
         let industryList = this.state.industryList || [];
         //行业下拉列表
-        var industryOptions = industryList.map(function (industry, index) {
+        var industryOptions = industryList.map(function(industry, index) {
             return (<Option key={index} value={industry}>{industry}</Option>);
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
@@ -369,11 +369,11 @@ var CRMAddForm = React.createClass({
                                 <Validator
                                     rules={[{validator: this.checkCustomerName}]}>
                                     <Input name="name" id="name"
-                                           value={formData.name}
-                                           onBlur={(e) => {
-                                               this.checkOnlyCustomerName(e);
-                                           }}
-                                           onChange={this.setField.bind(this, 'name')}
+                                        value={formData.name}
+                                        onBlur={(e) => {
+                                            this.checkOnlyCustomerName(e);
+                                        }}
+                                        onChange={this.setField.bind(this, 'name')}
                                     />
                                 </Validator>
                             </FormItem>
@@ -388,19 +388,19 @@ var CRMAddForm = React.createClass({
                             >
                                 {this.state.isLoadingIndustry ? (
                                     <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88"
-                                                                                                       defaultMessage="正在获取行业列表"/><Icon
+                                        defaultMessage="正在获取行业列表"/><Icon
                                         type="loading"/></div>) : (
                                     <Validator
                                         rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
                                         <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
-                                                searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
-                                                optionFilterProp="children"
-                                                notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
-                                                onChange={this.setField.bind(this, 'industry')}
-                                                value={formData.industry}
-                                                onSelect={(e) => {
-                                                    this.handleSelect(e);
-                                                }}
+                                            searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                                            optionFilterProp="children"
+                                            notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
+                                            onChange={this.setField.bind(this, 'industry')}
+                                            value={formData.industry}
+                                            onSelect={(e) => {
+                                                this.handleSelect(e);
+                                            }}
                                         >
                                             {industryOptions}
                                         </Select>
@@ -412,25 +412,25 @@ var CRMAddForm = React.createClass({
                                 wrapperCol={{span: 18}}
                             >
                                 <Select placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
-                                        name="administrative_level"
-                                        onChange={this.setField.bind(this, 'administrative_level')}
-                                        value={formData.administrative_level}
+                                    name="administrative_level"
+                                    onChange={this.setField.bind(this, 'administrative_level')}
+                                    value={formData.administrative_level}
                                 >
                                     {this.getAdministrativeLevelOptions()}
                                 </Select>
                             </FormItem >
                             <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}
-                                           placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
-                                           prov={formData.province} city={formData.city}
-                                           county={formData.county} updateLocation={this.updateLocation}/>
+                                placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                                prov={formData.province} city={formData.city}
+                                county={formData.county} updateLocation={this.updateLocation}/>
                             <FormItem
                                 label={Intl.get("realm.address", "地址")}
                                 labelCol={{span: 6}}
                                 wrapperCol={{span: 18}}
                             >
                                 <Input name="address" value={formData.address}
-                                       placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
-                                       onChange={this.setField.bind(this, 'address')}
+                                    placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
+                                    onChange={this.setField.bind(this, 'address')}
                                 />
                             </FormItem>
                             < FormItem
@@ -441,19 +441,19 @@ var CRMAddForm = React.createClass({
                                 validateStatus={this.renderValidateStyle('remarks')}
                             >
                                 <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
-                                       onChange={this.setField.bind(this, 'remarks')}
-                                       onBlur={(e) => {
-                                           this.handleRemarkInput(e);
-                                       }}
+                                    onChange={this.setField.bind(this, 'remarks')}
+                                    onBlur={(e) => {
+                                        this.handleRemarkInput(e);
+                                    }}
                                 />
                             </FormItem>
                             <div className="crm-contact-title"
-                                 style={{
-                                     fontSize: '14px',
-                                     textAlign: 'center',
-                                     marginTop: '20px',
-                                     marginBottom: '10px'
-                                 }}>
+                                style={{
+                                    fontSize: '14px',
+                                    textAlign: 'center',
+                                    marginTop: '20px',
+                                    marginBottom: '10px'
+                                }}>
                                 <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人"/>
                             </div>
                             <FormItem
@@ -470,9 +470,9 @@ var CRMAddForm = React.createClass({
                                     message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
                                 }]}>
                                     <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")}
-                                           value={formData.contacts0_name}
-                                           onChange={this.setField.bind(this, 'contacts0_name')}
-                                           data-tracename="填写联系人姓名"
+                                        value={formData.contacts0_name}
+                                        onChange={this.setField.bind(this, 'contacts0_name')}
+                                        data-tracename="填写联系人姓名"
                                     />
                                 </Validator>
                             </FormItem>
@@ -485,9 +485,9 @@ var CRMAddForm = React.createClass({
                             >
                                 <Validator rules={[{required: false, min: 1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
                                     <Input name="contacts0_position" placeholder={Intl.get("crm.92", "请输入联系人职位")}
-                                           value={formData.contacts0_position}
-                                           onChange={this.setField.bind(this, 'contacts0_position')}
-                                           data-tracename="填写联系人职位"
+                                        value={formData.contacts0_position}
+                                        onChange={this.setField.bind(this, 'contacts0_position')}
+                                        data-tracename="填写联系人职位"
                                     />
                                 </Validator>
                             </FormItem>
@@ -501,9 +501,9 @@ var CRMAddForm = React.createClass({
                             >
                                 <Validator rules={[{required: true, min: 1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
                                     <Select name="contacts0_role" placeholder={Intl.get("crm.94", "请输入角色")}
-                                            value={this.state.formData.contacts0_role}
-                                            onChange={this.setField.bind(this, 'contacts0_role')}
-                                            onSelect={this.handleRoleSelect}
+                                        value={this.state.formData.contacts0_role}
+                                        onChange={this.setField.bind(this, 'contacts0_role')}
+                                        onSelect={this.handleRoleSelect}
                                     >
                                         {roleOptions}
                                     </Select>
@@ -524,7 +524,7 @@ var CRMAddForm = React.createClass({
                                     <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                 </RightPanelCancel>
                                 <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
-                                                  data-tracename="点击保存添加客户信息按钮">
+                                    data-tracename="点击保存添加客户信息按钮">
                                     <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
                                 </RightPanelSubmit>
                             </FormItem>

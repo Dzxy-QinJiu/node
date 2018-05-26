@@ -156,7 +156,7 @@ class phoneStatusTop extends React.Component {
     };
 
     renderTraceItem() {
-        var onHide = function () {
+        var onHide = function() {
             phoneAlertAction.setSubmitErrMsg("");
         };
         const options = this.state.customerInfoArr.map((item) => (
@@ -168,14 +168,14 @@ class phoneStatusTop extends React.Component {
                 <div>
                     <div className="input-item">
                         <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
-                                  value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
+                            value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
                             <AlertTimer time={3000}
-                                        message={this.state.submittingTraceMsg}
-                                        type="error" showIcon
-                                        onHide={onHide}
+                                message={this.state.submittingTraceMsg}
+                                type="error" showIcon
+                                onHide={onHide}
                             />
                         ) : null}
                     </div>
@@ -194,7 +194,7 @@ class phoneStatusTop extends React.Component {
 
                             </div> : null}
                         <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
-                                data-tracename="保存跟进记录">
+                            data-tracename="保存跟进记录">
                             {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
                         </Button>
                     </div>

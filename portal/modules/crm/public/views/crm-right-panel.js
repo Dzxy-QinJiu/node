@@ -19,7 +19,7 @@ import BasicInfo from "./basic_info";
 import BasicOverview from "./basic-overview";
 import CustomerUsers from "./users";
 var CrmRightPanel = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             activeKey: "1",//tab激活页的key
             applyUserShowFlag: false,//申请用户界面是否展示
@@ -32,7 +32,7 @@ var CrmRightPanel = React.createClass({
         };
     },
 
-    componentWillMount: function () {
+    componentWillMount: function() {
         if (!this.state.curCustomer) {
             if (this.props.currentId) {
                 this.getCurCustomer(this.props.currentId);
@@ -41,7 +41,7 @@ var CrmRightPanel = React.createClass({
             }
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.setTabsContainerHeight();
         $(window).resize(e => {
             e.stopPropagation();
@@ -49,7 +49,7 @@ var CrmRightPanel = React.createClass({
         });
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.curCustomer && (nextProps.curCustomer.id !== this.state.curCustomer.id)) {
             this.state.applyUserShowFlag = false;
             this.state.openAppShowFlag = false;
@@ -62,16 +62,16 @@ var CrmRightPanel = React.createClass({
         }
     },
 
-    setTabsContainerHeight: function () {
+    setTabsContainerHeight: function() {
         let tabsContainerHeight = $("body").height() - $(".basic-info-contianer").outerHeight(true);
         this.setState({tabsContainerHeight: tabsContainerHeight});
     },
-    getCurCustomerDetailByPhone: function (phoneNum) {
+    getCurCustomerDetailByPhone: function(phoneNum) {
         this.state.curCustomer = this.props.clickCustomerData;
         this.setState(this.state);
     },
 
-    getCurCustomer: function (id) {
+    getCurCustomer: function(id) {
         let condition = {id: id};
         crmAjax.queryCustomer(condition).then(resData => {
             if (resData && _.isArray(resData.result) && resData.result.length) {
@@ -84,7 +84,7 @@ var CrmRightPanel = React.createClass({
     },
 
     //展示申请用户界面
-    showApplyUserForm: function (type, curOrder, apps) {
+    showApplyUserForm: function(type, curOrder, apps) {
         this.setState({
             applyType: type,
             apps: apps,
@@ -93,10 +93,10 @@ var CrmRightPanel = React.createClass({
             this.setState({applyUserShowFlag: true});
         });
     },
-    showOpenAppForm: function () {
+    showOpenAppForm: function() {
         this.setState({openAppShowFlag: true});
     },
-    returnInfoPanel: function () {
+    returnInfoPanel: function() {
         //申请、开通应用后返回
         this.setState({
             applyUserShowFlag: false,
@@ -104,7 +104,7 @@ var CrmRightPanel = React.createClass({
         });
     },
 
-    hideRightPanel: function (e) {
+    hideRightPanel: function(e) {
         Trace.traceEvent(e, "关闭客户详情");
         this.props.hideRightPanel();
         this.setState({
@@ -114,13 +114,13 @@ var CrmRightPanel = React.createClass({
         });
     },
     //切换tab时的处理
-    changeActiveKey: function (key) {
+    changeActiveKey: function(key) {
         Trace.traceEvent($(this.getDOMNode()).find(".ant-tabs-nav-wrap .ant-tabs-nav"), "查看" + tabNameList[key]);
         this.setState({
             activeKey: key
         });
     },
-    render: function () {
+    render: function() {
         var className = "right-panel-content";
         if (this.state.applyUserShowFlag) {
             //展示form面板时，整体左移
@@ -128,19 +128,19 @@ var CrmRightPanel = React.createClass({
         }
         return (
             <RightPanel showFlag={this.props.showFlag}
-                        className={this.state.applyUserShowFlag || this.state.openAppShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
-                        data-tracename="客户详情">
+                className={this.state.applyUserShowFlag || this.state.openAppShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
+                data-tracename="客户详情">
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hideRightPanel(e);
                 }}/>
                 <div className={className}>
                     <BasicInfo isRepeat={this.props.isRepeat}
-                               curCustomer={this.state.curCustomer}
-                               refreshCustomerList={this.props.refreshCustomerList}
-                               editCustomerBasic={this.props.editCustomerBasic}
-                               handleFocusCustomer={this.props.handleFocusCustomer}
-                               setTabsContainerHeight={this.setTabsContainerHeight}
-                               showRightPanel={this.props.showRightPanel}
+                        curCustomer={this.state.curCustomer}
+                        refreshCustomerList={this.props.refreshCustomerList}
+                        editCustomerBasic={this.props.editCustomerBasic}
+                        handleFocusCustomer={this.props.handleFocusCustomer}
+                        setTabsContainerHeight={this.setTabsContainerHeight}
+                        showRightPanel={this.props.showRightPanel}
                     />
                     <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                         {this.state.curCustomer ? (

@@ -45,7 +45,7 @@ const UserFreeRadioField = {
                 wrapperCol={{span: 24}}
             >
                 <RadioGroup onChange={onChange}
-                            value={currentValue}>
+                    value={currentValue}>
                     <Radio key="1" value="1"><ReactIntl.FormattedMessage id="user.yes" defaultMessage="是" /></Radio>
                     <Radio key="0" value="0"><ReactIntl.FormattedMessage id="user.no" defaultMessage="否" /></Radio>
                 </RadioGroup>

@@ -1,5 +1,5 @@
 let _ = require("underscore");
-exports.User = function (opts) {
+exports.User = function(opts) {
     this.userId = opts.user_id;
     //用户账号
     this.userName = opts.user_name || "";
@@ -19,7 +19,7 @@ exports.User = function (opts) {
     this.phoneOrder = opts.opts || "";
 };
 
-exports.toFrontObject = function (restObject) {
+exports.toFrontObject = function(restObject) {
     var frontObj = {};
     frontObj.id = restObject.user_id;
     frontObj.userName = restObject.user_name || "";
@@ -48,7 +48,7 @@ exports.toFrontObject = function (restObject) {
     return frontObj;
 };
 
-exports.toRestObject = function (frontObj) {
+exports.toRestObject = function(frontObj) {
     var restObject = {};
     restObject.user_id = frontObj.id;
     if (frontObj.userName) {
@@ -89,7 +89,7 @@ exports.toRestObject = function (frontObj) {
 };
 
 //停用、启用修改时，对象的转换
-exports.toRestStatusObject = function (frontObj) {
+exports.toRestStatusObject = function(frontObj) {
     var statusObj = {};
     statusObj.user_id = frontObj.id;
     statusObj.status = frontObj.status;

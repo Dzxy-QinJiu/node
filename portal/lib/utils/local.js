@@ -27,14 +27,14 @@ const Local = {
     },
     chooseLocale(lan) {
         switch (lan) {
-            case 'en':
-                return en_US;
-            case 'zh':
-                return zh_CN;
-            case 'es':
-                return es_VE;
-            default:
-                return zh_CN;
+        case 'en':
+            return en_US;
+        case 'zh':
+            return zh_CN;
+        case 'es':
+            return es_VE;
+        default:
+            return zh_CN;
         }
     }
 };

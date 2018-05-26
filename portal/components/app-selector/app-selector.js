@@ -264,7 +264,7 @@ var AppSelector = React.createClass({
                 <div className={cls} key={i} title={app.app_name}>
                     {!onlyEditRoleAndPermission ? (
                         <div className="application-img-delete icon-close iconfont"
-                             onClick={_this.removeApp.bind(_this, app)}
+                            onClick={_this.removeApp.bind(_this, app)}
                         ></div>
                     ) : null}
                     <DefaultUserLogoTitle
@@ -275,7 +275,7 @@ var AppSelector = React.createClass({
                     {
                         !doNotSetRolesAndPermission ?
                             (<div className={permissionNotSetClass} onClick={_this.showPermissionLayer.bind(_this,app)}>
-                                    {language.lan() == "zh"?null:Intl.get("user.setting.roles", "设置角色")}
+                                {language.lan() == "zh"?null:Intl.get("user.setting.roles", "设置角色")}
                             </div>) :
                             null
                     }
@@ -314,8 +314,8 @@ var AppSelector = React.createClass({
                     {!this.props.readOnly && unchoosenApps && unchoosenApps.length ? (
                         <div className="application-img-div" ref="addBtn">
                             <div className="icon-add iconfont"
-                                 onClick={this.showDropDown}
-                                 ref="addBtnButton"
+                                onClick={this.showDropDown}
+                                ref="addBtnButton"
                             ></div>
                             {
                                 this.state.appLayerShow && unchoosenApps && unchoosenApps.length ?

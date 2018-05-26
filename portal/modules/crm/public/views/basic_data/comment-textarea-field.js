@@ -10,18 +10,18 @@ let CrmBasicAjax = require("../../ajax/index");
 import Trace from "LIB_DIR/trace";
 let BasicEditInputField = React.createClass({
     mixins: [FieldMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             //是否能修改
             disabled: false,
             //显示的值
             remarks: '',
             //修改成功
-            modifySuccess: function () {
+            modifySuccess: function() {
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             loading: false,
             displayType: "text",
@@ -32,7 +32,7 @@ let BasicEditInputField = React.createClass({
             submitErrorMsg: ''
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.customerId != this.state.customerId) {
             //切换客户时,重新设置state数据
             let stateData = this.getInitialState();
@@ -43,21 +43,21 @@ let BasicEditInputField = React.createClass({
             this.setState(stateData);
         }
     },
-    setEditable: function () {
+    setEditable: function() {
         Trace.traceEvent(this.getDOMNode(),"点击设置备注按钮");
         this.setState({
             displayType: "edit"
         });
     },
     //回到展示状态
-    backToDisplay: function () {
+    backToDisplay: function() {
         this.setState({
             loading: false,
             displayType: 'text',
             submitErrorMsg: ''
         });
     },
-    handleSubmit: function () {
+    handleSubmit: function() {
         if (this.state.loading) return;
         if (this.state.remarks == this.props.remarks){
             this.backToDisplay();
@@ -95,7 +95,7 @@ let BasicEditInputField = React.createClass({
     },
 
 
-    handleCancel: function () {
+    handleCancel: function() {
         Trace.traceEvent(this.getDOMNode(),"点击取消保存备注按钮");
         this.setState({
             remarks: this.props.remarks,
@@ -104,19 +104,19 @@ let BasicEditInputField = React.createClass({
             loading: false
         });
     },
-    onInputChange: function (e) {
+    onInputChange: function(e) {
         this.setState({
             remarks: e.target.value
         });
     },
-    render: function () {
+    render: function() {
         let textBlock = this.state.displayType === 'text' ? (
             <div>
                 <span className="inline-block">{this.state.remarks}</span>
                 {
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get("user.remark.set.tip", "设置备注")}
-                           onClick={this.setEditable}/>
+                            onClick={this.setEditable}/>
                     ) : null
                 }
 
@@ -140,7 +140,7 @@ let BasicEditInputField = React.createClass({
         let inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <AutosizeTextarea rows="4" value={this.state.remarks}
-                                  onChange={this.onInputChange}
+                    onChange={this.onInputChange}
                 />
                 <div className="buttons">
                     {buttonBlock}

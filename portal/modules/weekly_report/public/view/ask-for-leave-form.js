@@ -78,7 +78,7 @@ class AskForLeaveForm extends React.Component {
     };
     //取消保存数据
     handleCancelLeaveData = () => {
-       this.addOrEditFunction("cancel");
+        this.addOrEditFunction("cancel");
     };
 
     //添加或者修改时提取出相似的方法

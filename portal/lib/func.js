@@ -5,7 +5,7 @@
 const calc = require("calculatorjs");
 
 //去除数字中的逗号
-export const removeCommaFromNum = function (value) {
+export const removeCommaFromNum = function(value) {
     if (/^[0-9,.]+$/.test(value) && value.toString().indexOf(",") > -1) {
         value = value.replace(/,/g, "");
     }
@@ -14,7 +14,7 @@ export const removeCommaFromNum = function (value) {
 };
 
 //小数转百分比
-export const decimalToPercent = function (rawValue = 0) {
+export const decimalToPercent = function(rawValue = 0) {
     let targetValue = parseFloat(rawValue);
 
     if (isNaN(targetValue)) {
@@ -34,7 +34,7 @@ export const decimalToPercent = function (rawValue = 0) {
 };
 
 //格式化金额，返回以万为单位的金额
-export const formatAmount = function (amount) {
+export const formatAmount = function(amount) {
     amount = parseFloat(amount);
     amount = isNaN(amount)? "" : calc.div(amount, 10000);
 
@@ -42,7 +42,7 @@ export const formatAmount = function (amount) {
 };
 
 //处理金额，未定义时赋空值及转成千分位格式等
-export const parseAmount = function (amount) {
+export const parseAmount = function(amount) {
     if (isNaN(amount)) amount = "";
 
     //每3位数字间用逗号分隔
@@ -52,7 +52,7 @@ export const parseAmount = function (amount) {
 };
 
 //在电话号码区号与号码之间加横线分隔
-export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
+export const addHyphenToPhoneNumber = function(value = "", initialValue = "") {
     const matched = value.toString().match(/^(010|02\d|0[^012]\d{2})(\d*)$/);
 
     if (matched) {
@@ -74,8 +74,8 @@ export const addHyphenToPhoneNumber = function (value = "", initialValue = "") {
 };
 
 //从浏览器端直接导出文件
-export const exportToCsv = function (filename, rows) {
-    var processRow = function (row) {
+export const exportToCsv = function(filename, rows) {
+    var processRow = function(row) {
         var finalVal = '';
         for (var j = 0; j < row.length; j++) {
             var innerValue = row[j] === null ? '' : row[j].toString();
@@ -119,29 +119,29 @@ export const exportToCsv = function (filename, rows) {
 };
 
 //是否是手机号
-export const isPhone = function (value) {
+export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
 
 //是否是邮箱
-export const isEmail = function (value) {
+export const isEmail = function(value) {
     return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
 };
 
 //两数组是否相等
-export const isEqualArray = function (array1, array2) {
+export const isEqualArray = function(array1, array2) {
     array1 = _.sortBy(array1);
     array2 = _.sortBy(array2);
     return _.isEqual(array1, array2);
 };
 
 //将字符串首字母改为大写
-export const capitalizeFirstLetter = function (str) {
+export const capitalizeFirstLetter = function(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 // 地图中显示颜色的判断
-export const mapColorList = function (dataList) {
+export const mapColorList = function(dataList) {
     // 返回的是字符串
     let valueArray = _.pluck(_.isArray(dataList) && dataList || [], 'value');
     valueArray = _.map(valueArray, item => parseInt(item));
@@ -191,7 +191,7 @@ export const mapColorList = function (dataList) {
 };
 
 // 封装原生try结构，统一catch处理(cb：写在try中的回调函数)
-export const packageTry = function (cb) {
+export const packageTry = function(cb) {
     try {
         if (_.isFunction(cb)) cb();
     } catch (e) {

@@ -7,12 +7,12 @@ var isInited = false;
 var config = require("../conf/config");
 var request = require('request');
 var proxyDir = config.staticFileProxyDir;
-module.exports = function (app) {
+module.exports = function(app) {
     if (isInited) {
         return;
     }
     isInited = true;
-    app.use('/resources/', function (req, res, next) {
+    app.use('/resources/', function(req, res, next) {
         req.pipe(request(proxyDir+req.originalUrl)).pipe(res);
     });
 };

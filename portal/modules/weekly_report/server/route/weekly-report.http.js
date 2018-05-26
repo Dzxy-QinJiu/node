@@ -6,7 +6,7 @@ require("../action/weekly-report-controller");
 module.exports = {
     module: "weekly_report/server/action/weekly-report-controller",
     routes: [
-       { // 获取团队信息
+        { // 获取团队信息
             "method": "get",
             "path": "/rest/get/sale/teams/:type",
             "handler": "getSaleGroupTeams",

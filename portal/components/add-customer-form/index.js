@@ -19,7 +19,7 @@ require("./index.less");
 import PhoneInput from "CMP_DIR/phone-input";
 import {AntcAreaSelection} from "antc";
 const userData = require("PUB_DIR/sources/user-data");
-const noop = function () {
+const noop = function() {
 };
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from "../../modules/common/route";
@@ -245,7 +245,7 @@ class AddCustomerForm extends React.Component {
 
                     {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)"
-                           onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                     ) : (
                         <span>{customer.name} ({customer.user_name})</span>
                     )}
@@ -259,7 +259,7 @@ class AddCustomerForm extends React.Component {
                                         {customer.user_id === curUserId ? (
                                             <div>
                                                 <a href="javascript:void(0)"
-                                                   onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                                             </div>
                                         ) : (
                                             <div>{customer.name} ({customer.user_name})</div>
@@ -367,11 +367,11 @@ class AddCustomerForm extends React.Component {
                         if (obj.id == this.state.formData.administrative_level) {
                             return (
                                 <button className="selected-adm" key={obj.id} value={obj.id}
-                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
+                                    onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
                         } else {
                             return (
                                 <button key={obj.id} value={obj.id}
-                                        onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
+                                    onClick={this.handleChangeAdminLevel.bind(this, obj.id)}>{obj.level}</button>);
                         }
 
                     })
@@ -406,11 +406,11 @@ class AddCustomerForm extends React.Component {
         };
         let industryList = this.state.industryList || [];
         //行业下拉列表
-        var industryOptions = industryList.map(function (industry, index) {
+        var industryOptions = industryList.map(function(industry, index) {
             return (<Option key={index} value={industry}>{industry}</Option>);
         });
         //角色下拉列表
-        var roleOptions = ContactUtil.roleArray.map(function (role, index) {
+        var roleOptions = ContactUtil.roleArray.map(function(role, index) {
             return (<Option value={role} key={index}>{role}</Option>);
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
@@ -492,7 +492,7 @@ class AddCustomerForm extends React.Component {
                                             initialValue: formData.address
                                         })(
                                             <Input name="address"
-                                                   placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
+                                                placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
                                             />
                                         )}
                                     </FormItem>
@@ -511,7 +511,7 @@ class AddCustomerForm extends React.Component {
                                     {this.state.isLoadingTagLists ? (
                                         <div className="industry-list-loading">
                                             <ReactIntl.FormattedMessage id="call.record.getting.tag.lists"
-                                                                        defaultMessage="正在获取标签列表"/>
+                                                defaultMessage="正在获取标签列表"/>
                                             <Icon type="loading"/>
                                         </div>) : (<div id="taglists-container">
                                         <div className="tag-list">
@@ -570,8 +570,8 @@ class AddCustomerForm extends React.Component {
                                     >
                                         {getFieldDecorator('contacts0_department', {rules: [{required: false}]})(
                                             <Input name="contacts0_department"
-                                                   placeholder={Intl.get("operation.report.department", "部门",)}
-                                                   data-tracename="填写联系人部门"/>)}
+                                                placeholder={Intl.get("operation.report.department", "部门",)}
+                                                data-tracename="填写联系人部门"/>)}
                                     </FormItem>
                                     <FormItem
                                         wrapperCol={{span: 24}}
@@ -579,8 +579,8 @@ class AddCustomerForm extends React.Component {
                                     >
                                         {getFieldDecorator('contacts0_position', {rules: [{required: false}]})(
                                             <Input name="contacts0_position"
-                                                   placeholder={Intl.get("crm.91", "职位")}
-                                                   data-tracename="填写联系人职位"/>)}
+                                                placeholder={Intl.get("crm.91", "职位")}
+                                                data-tracename="填写联系人职位"/>)}
                                     </FormItem>
                                     <FormItem
                                         id="role"
@@ -615,12 +615,12 @@ class AddCustomerForm extends React.Component {
                                     <FormItem
                                         wrapperCol={{span: 24}}>
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                                disabled={this.state.isLoading} data-tracename="点击保存添加客户信息按钮">
+                                            disabled={this.state.isLoading} data-tracename="点击保存添加客户信息按钮">
                                             <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
                                             {this.state.isLoading ? <Icon type="loading"/> : null}
                                         </Button>
                                         <Button className="cancel-btn" onClick={this.closeAddPanel}
-                                                data-tracename="点击取消添加客户信息按钮">
+                                            data-tracename="点击取消添加客户信息按钮">
                                             <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                         </Button>
                                     </FormItem>

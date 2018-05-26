@@ -15,33 +15,33 @@ function UserApplyActions() {
         , 'getApplyById'//根据id获取申请（实际是获取申请的详情）
     );
     //获取申请列表
-    this.getApplyList = function (obj) {
+    this.getApplyList = function(obj) {
         this.dispatch({loading: true, error: false});
         var _this = this;
-        UserAjax.getApplyList(obj).then(function (data) {
+        UserAjax.getApplyList(obj).then(function(data) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: data});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     //根据id获取申请
-    this.getApplyById = function (applyId) {
+    this.getApplyById = function(applyId) {
         this.dispatch({loading: true, error: false});
         var _this = this;
         //实际是获取详情组织申请项
-        UserAjax.getApplyDetail(applyId).then(function (detail, apps) {
+        UserAjax.getApplyDetail(applyId).then(function(detail, apps) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             _this.dispatch({loading: false, error: false, data: {detail: detail, apps: apps}});
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             _this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     //申请用户
-    this.applyUser = function (obj, cb) {
-        UserAjax.applyUser(obj).then(function (data) {
+    this.applyUser = function(obj, cb) {
+        UserAjax.applyUser(obj).then(function(data) {
             cb(data);
-        }, function (errorMsg) {
+        }, function(errorMsg) {
             cb(errorMsg);
         });
     };

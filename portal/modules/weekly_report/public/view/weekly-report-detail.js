@@ -45,7 +45,7 @@ const WeeklyReportDetail = React.createClass({
             this.getWeeklyReportData(); // 获取电话统计、、、 数据
         }
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedItem.teamId !== this.state.selectedItem.teamId || nextProps.selectedItem.nWeek !== this.state.selectedItem.nWeek) {
             this.setState({
                 selectedItem: nextProps.selectedItem,
@@ -62,13 +62,13 @@ const WeeklyReportDetail = React.createClass({
         WeeklyReportDetailStore.unlisten(this.onStoreChange);
     },
     //获取今年某周的开始日期
-    getBeginDateOfWeek: function (weekIndex) {
+    getBeginDateOfWeek: function(weekIndex) {
         var time = (weekIndex - 1) * 7 * oplateConsts.ONE_DAY_TIME_RANGE;
         return moment().startOf('year').valueOf() + time;
     },
 
     //获取某年某周的结束日期
-    getEndDateOfWeek: function (weekIndex) {
+    getEndDateOfWeek: function(weekIndex) {
         //获取今年第一天是周几
         var firstDayWeek = new Date(moment().startOf('year').valueOf()).getDay();
         var spendDay = 1;
@@ -79,21 +79,21 @@ const WeeklyReportDetail = React.createClass({
         return moment().startOf('year').valueOf() + time - 1;
     },
     //添加请假信息
-    handleAddAskForLeave: function (userId) {
+    handleAddAskForLeave: function(userId) {
         this.setState({
             formType: "add",
             isAddingLeaveUserId: userId
         });
     },
     //更新请假信息
-    handleUpdateAskForLeave: function (item) {
+    handleUpdateAskForLeave: function(item) {
         this.setState({
             formType: "edit",
             isEdittingItem: item
         });
 
     },
-    getWeeklyReportData: function () {
+    getWeeklyReportData: function() {
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
@@ -105,7 +105,7 @@ const WeeklyReportDetail = React.createClass({
     },
 
     //添加请假信息之后
-    afterAddLeave: function (resData) {
+    afterAddLeave: function(resData) {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg);
@@ -139,13 +139,13 @@ const WeeklyReportDetail = React.createClass({
         }
     },
     //取消添加请假信息
-    cancelAddLeave: function () {
+    cancelAddLeave: function() {
         this.setState({
             isAddingLeaveUserId: ""
         });
     },
     //更新请假信息之后
-    afterUpdateLeave: function (resData) {
+    afterUpdateLeave: function(resData) {
         //如果某天请假时间超过一天，返回 code为1 返回请假时间不能超过一天的提示信息
         if (resData.code === 1) {
             message.warning(resData.msg);
@@ -184,14 +184,14 @@ const WeeklyReportDetail = React.createClass({
         }
     },
     //取消更新请假信息之后
-    cancelUpdateLeave: function () {
+    cancelUpdateLeave: function() {
         this.setState({
             formType: "add",
             isEdittingItem: {}
         });
     },
     //删除某条请假信息
-    handleRemoveAskForLeave: function (deleteItem) {
+    handleRemoveAskForLeave: function(deleteItem) {
         var removedId = deleteItem.id;
         WeeklyReportDetailAction.deleteForLeave(removedId, () => {
             var salesPhoneList = this.state.salesPhone.list;
@@ -219,7 +219,7 @@ const WeeklyReportDetail = React.createClass({
         });
     },
     //没有请假信息的时候,是全勤的
-    renderFullWork: function (isAdding, userId) {
+    renderFullWork: function(isAdding, userId) {
         return (
             <div className="attendance-remark">
                 {isAdding ? (<div className="edit-for-leave-wrap">
@@ -233,17 +233,17 @@ const WeeklyReportDetail = React.createClass({
                         cancelAddLeave={this.cancelAddLeave}
                     />
                 </div>) : <div>
-                                 <span className="text-wrap">
-                               {Intl.get("weekly.report.full.work.day", "全勤")}
-                            </span>
+                    <span className="text-wrap">
+                        {Intl.get("weekly.report.full.work.day", "全勤")}
+                    </span>
                     <i className="iconfont icon-update"
-                       onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
+                        onClick={this.handleAddAskForLeave.bind(this, userId)}></i>
                 </div>}
             </div>
         );
     },
     //有请假信息的时候 展示请假信息列表
-    renderAskForLeave: function (record, userId) {
+    renderAskForLeave: function(record, userId) {
         return (
             <div className="leave-info-container">
                 {
@@ -267,9 +267,9 @@ const WeeklyReportDetail = React.createClass({
                             return (
                                 <div>
                                     <span>{moment(item.leave_time).format(oplateConsts.DATE_FORMAT) + leaveArr[0].label + Intl.get("weekly.report.n.days", "{n}天", {n: item.leave_days})}
-                                     </span>
+                                    </span>
                                     <i className="iconfont icon-update"
-                                       onClick={this.handleUpdateAskForLeave.bind(this, item)}></i>
+                                        onClick={this.handleUpdateAskForLeave.bind(this, item)}></i>
                                     <Popconfirm
                                         title={Intl.get("weekly.report.are.you.sure.del.remark", "确定要删除该条请假信息吗？")}
                                         onConfirm={this.handleRemoveAskForLeave.bind(this, item)}
@@ -277,11 +277,11 @@ const WeeklyReportDetail = React.createClass({
                                         cancelText={Intl.get("common.cancel", "取消")}
                                     >
                                         <Button className="remove-ask-leave" icon="delete"
-                                                title={Intl.get("common.delete", "删除")}/>
+                                            title={Intl.get("common.delete", "删除")}/>
                                     </Popconfirm>
                                     {index === record.leave_info_list.length - 1 ? (this.state.isAddingLeaveUserId === userId ? null :
                                         <div className="iconfont icon-add"
-                                             onClick={this.handleAddAskForLeave.bind(this, userId)}></div> ) : null }
+                                            onClick={this.handleAddAskForLeave.bind(this, userId)}></div> ) : null }
                                     {/*添加请假信息*/}
                                     {this.state.isAddingLeaveUserId === userId && index === record.leave_info_list.length - 1 ?
                                         <AskForLeaveForm
@@ -301,7 +301,7 @@ const WeeklyReportDetail = React.createClass({
         );
     },
     //合同数据
-    getContractListColumn: function () {
+    getContractListColumn: function() {
         let columns = [{
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'nickName',
@@ -326,7 +326,7 @@ const WeeklyReportDetail = React.createClass({
         return columns;
     },
     //回款数据
-    getRepaymentListColumn: function () {
+    getRepaymentListColumn: function() {
         let columns = [{
             title: Intl.get("crm.6", "负责人"),
             dataIndex: 'nickName',
@@ -351,7 +351,7 @@ const WeeklyReportDetail = React.createClass({
         return columns;
     },
     // 电话接通率的数据
-    getPhoneListColumn: function () {
+    getPhoneListColumn: function() {
         var _this = this;
         let columns = [{
             title: Intl.get("user.salesman", "销售人员"),
@@ -382,7 +382,7 @@ const WeeklyReportDetail = React.createClass({
             align: "left",
             className: "ask-leave-remark",
             width: '300',
-            render: function (text, record, index) {
+            render: function(text, record, index) {
                 var userObj = _.find(_this.props.memberList.list, (item) => {
                     return item.name === record.name;
                 });
@@ -424,10 +424,10 @@ const WeeklyReportDetail = React.createClass({
             });
         });
         columns.push({
-                title: Intl.get("common.summation", "合计"),
-                dataIndex: 'total',
-                align: "right",
-            });
+            title: Intl.get("common.summation", "合计"),
+            dataIndex: 'total',
+            align: "right",
+        });
         return columns;
     },
     getRegionOverlayListColumn(){
@@ -443,7 +443,7 @@ const WeeklyReportDetail = React.createClass({
             title: Intl.get("weekly.report.open.account", "开通数"),
             dataIndex: 'city_dredge_count',
             align: "right",
-            render: function (text, record, index) {
+            render: function(text, record, index) {
                 return (
                     <span>
                         {text ? text : 0}
@@ -459,7 +459,7 @@ const WeeklyReportDetail = React.createClass({
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'city_login_count',
             align: "right",
-            render: function (text, record, index) {
+            render: function(text, record, index) {
                 return (
                     <span>
                         {text ? text : 0}
@@ -482,7 +482,7 @@ const WeeklyReportDetail = React.createClass({
             title: Intl.get("weekly.report.open.account", "开通数"),
             dataIndex: 'district_dredge_count',
             align: "right",
-            render: function (text, record, index) {
+            render: function(text, record, index) {
                 return (
                     <span>
                         {text ? text : 0}
@@ -498,7 +498,7 @@ const WeeklyReportDetail = React.createClass({
             title: Intl.get("weekly.report.login.count", "登录数"),
             dataIndex: 'district_login_count',
             align: "right",
-            render: function (text, record, index) {
+            render: function(text, record, index) {
                 return (
                     <span>
                         {text ? text : 0}
@@ -581,31 +581,31 @@ const WeeklyReportDetail = React.createClass({
     renderDiffTypeTable(type){
         var data = {}, retryFunction = "", columns = {};
         switch (type) {
-            case 'callInfo'://电话接通率
-                data = this.state.salesPhone;
-                retryFunction = this.getCallInfoData;
-                columns = this.getPhoneListColumn();
-                break;
-            case 'contactInfo'://合同信息
-                data = this.state.contractData;
-                retryFunction = this.getContractData;
-                columns = this.getContractListColumn();
-                break;
-            case 'repaymentInfo'://回款信息
-                data = this.state.repaymentData;
-                retryFunction = this.getRepaymentData;
-                columns = this.getRepaymentListColumn();
-                break;
-            case 'regionOverlay'://区域覆盖情况
-                data = this.state.regionOverlayData;
-                retryFunction = this.getRegionOverlayData;
-                columns = this.getRegionOverlayListColumn();
-                break;
-            case 'customerStageInfo'://客户阶段统计
-                data = this.state.customerStageData;
-                retryFunction = this.getCustomerStageData;
-                columns = this.getCustomerStageListColumn();
-                break;
+        case 'callInfo'://电话接通率
+            data = this.state.salesPhone;
+            retryFunction = this.getCallInfoData;
+            columns = this.getPhoneListColumn();
+            break;
+        case 'contactInfo'://合同信息
+            data = this.state.contractData;
+            retryFunction = this.getContractData;
+            columns = this.getContractListColumn();
+            break;
+        case 'repaymentInfo'://回款信息
+            data = this.state.repaymentData;
+            retryFunction = this.getRepaymentData;
+            columns = this.getRepaymentListColumn();
+            break;
+        case 'regionOverlay'://区域覆盖情况
+            data = this.state.regionOverlayData;
+            retryFunction = this.getRegionOverlayData;
+            columns = this.getRegionOverlayListColumn();
+            break;
+        case 'customerStageInfo'://客户阶段统计
+            data = this.state.customerStageData;
+            retryFunction = this.getCustomerStageData;
+            columns = this.getCustomerStageListColumn();
+            break;
         }
 
         if (data.loading) {
@@ -645,14 +645,14 @@ const WeeklyReportDetail = React.createClass({
         };
     },
     //获取报告区域的高度
-    getReportDetailDivHeight: function () {
+    getReportDetailDivHeight: function() {
         if ($(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
         var height = $(window).height() - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.TOP_DELTA - WeekReportUtil.REPORT_TITLE_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
         return height;
     },
-    render: function () {
+    render: function() {
         var divHeight = this.getReportDetailDivHeight();
         return (
             <div className="weekly-report-detail-container">

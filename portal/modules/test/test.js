@@ -28,7 +28,7 @@ function start() {
     nock('http://localhost:9192')
         .persist()
         .get('/dev/test1')
-        .reply(function () {
+        .reply(function() {
             authRestIndex++;
             if (authRestIndex % 2 === 1) {
                 // eslint-disable-next-line no-console
@@ -49,8 +49,8 @@ function start() {
         .persist()
         .get('/dev/test2')
         .socketDelay(10000)
-        .reply(function (uri, requestBody, cb) {
-            setTimeout(function () {
+        .reply(function(uri, requestBody, cb) {
+            setTimeout(function() {
                 cb(null, [200, 'THIS IS THE REPLY BODY']);
             }, 10);
         });

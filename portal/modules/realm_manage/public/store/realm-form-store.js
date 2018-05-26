@@ -23,11 +23,11 @@ function RealmFormStore() {
 }
 
 //正在保存的属性设置
-RealmFormStore.prototype.setSaveFlag = function (flag) {
+RealmFormStore.prototype.setSaveFlag = function(flag) {
     this.isSaving = flag;
 };
 //保存后的处理
-RealmFormStore.prototype.afterSave = function (resultObj) {
+RealmFormStore.prototype.afterSave = function(resultObj) {
     //去掉正在保存的效果
     this.isSaving = false;
     this.saveResult = resultObj.saveResult;
@@ -35,28 +35,28 @@ RealmFormStore.prototype.afterSave = function (resultObj) {
     this.savedRealm = resultObj.realm;
 };
 //保存后的处理
-RealmFormStore.prototype.addRealm = function (resultObj) {
+RealmFormStore.prototype.addRealm = function(resultObj) {
     this.afterSave(resultObj);
 };
-RealmFormStore.prototype.addOwner = function (resultObj) {
+RealmFormStore.prototype.addOwner = function(resultObj) {
     this.isSaving = false;
     this.saveResult = resultObj.saveResult;
     this.saveMsg = resultObj.saveMsg;
 };
 
 //保存后的处理
-RealmFormStore.prototype.editRealm = function (resultObj) {
+RealmFormStore.prototype.editRealm = function(resultObj) {
     this.afterSave(resultObj);
 };
 
 //清空保存的提示信息
-RealmFormStore.prototype.resetSaveResult = function () {
+RealmFormStore.prototype.resetSaveResult = function() {
     this.saveMsg = "";
     this.saveResult = "";
 };
 
 //用户名唯一性的验证
-RealmFormStore.prototype.checkOnlyUserName = function (result) {
+RealmFormStore.prototype.checkOnlyUserName = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.userNameError = true;
@@ -68,7 +68,7 @@ RealmFormStore.prototype.checkOnlyUserName = function (result) {
 };
 
 //邮箱唯一性的验证
-RealmFormStore.prototype.checkOnlyOwnerEmail = function (result) {
+RealmFormStore.prototype.checkOnlyOwnerEmail = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.emailError = true;
@@ -79,7 +79,7 @@ RealmFormStore.prototype.checkOnlyOwnerEmail = function (result) {
 };
 
 //电话唯一性的验证
-RealmFormStore.prototype.checkOnlyOwnerPhone = function (result) {
+RealmFormStore.prototype.checkOnlyOwnerPhone = function(result) {
     if (_.isString(result)) {
         //验证出错！
         this.phoneError = true;
@@ -89,19 +89,19 @@ RealmFormStore.prototype.checkOnlyOwnerPhone = function (result) {
 };
 
 //重置用户验证的标志
-RealmFormStore.prototype.resetUserNameFlags = function () {
+RealmFormStore.prototype.resetUserNameFlags = function() {
     this.userNameExit = false;
     this.userNameError = false;
 };
 
 //重置电话验证的标志
-RealmFormStore.prototype.resetPhoneFlags = function () {
+RealmFormStore.prototype.resetPhoneFlags = function() {
     this.phoneExit = false;
     this.phoneError = false;
 };
 
 //重置邮箱验证的标志
-RealmFormStore.prototype.resetEmailFlags = function () {
+RealmFormStore.prototype.resetEmailFlags = function() {
     this.emailExit = false;
     this.emailError = false;
 };

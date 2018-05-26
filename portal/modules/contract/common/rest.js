@@ -7,7 +7,7 @@ const moment = require("moment");
 const path = require("path");
 
 routes.forEach(route => {
-    exports[route.handler] = function (req, res, next) {
+    exports[route.handler] = function(req, res, next) {
         const queryStr = querystring.stringify(req.query);
         let url = queryStr? route.path + "?" + queryStr : route.path;
         if(!_.isEmpty(req.params)) {
@@ -39,8 +39,8 @@ routes.forEach(route => {
         if (!next) return restRequest;
 
         restRequest.on("success", result => {
-                res.json(result);
-            })
+            res.json(result);
+        })
             .on("error", codeMessage => {
                 res.json(codeMessage);
             });

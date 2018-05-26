@@ -30,17 +30,17 @@ import reactIntlMixin from '../../../components/react-intl-mixin';
 
 var UserInfoPage = React.createClass({
     mixins: [reactIntlMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             ...UserInfoStore.getState(),
             userInfoContainerHeight: this.userInfoContainerHeightFnc()
         };
     },
 
-    onChange: function () {
+    onChange: function() {
         this.setState(UserInfoStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on("resize", this.resizeWindow);
         UserInfoStore.listen(this.onChange);
@@ -53,13 +53,13 @@ var UserInfoPage = React.createClass({
             load_size: this.state.loadSize
         });
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $("body").css("overflow", "auto");
         $(window).off("resize", this.resizeWindow);
         UserInfoStore.unlisten(this.onChange);
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         var height = this.userInfoContainerHeightFnc();
         this.setState({
             userInfoContainerHeight: height
@@ -67,7 +67,7 @@ var UserInfoPage = React.createClass({
     },
 
     //获取当前可展示区域的高度
-    userInfoContainerHeightFnc: function () {
+    userInfoContainerHeightFnc: function() {
         var width = $(".user-info-manage-container").width();
         var height = $(window).height() - topHeight - paddingBotton;
         if (width < minUserInfoContainerWidth) {
@@ -85,7 +85,7 @@ var UserInfoPage = React.createClass({
         });
     },
 
-    render: function () {
+    render: function() {
         var height = this.state.userInfoContainerHeight;
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
@@ -114,10 +114,10 @@ var UserInfoPage = React.createClass({
                                         defaultMessage={`以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}`}
                                         values={{
                                             editpassword: <span className="update-pwd">
-                                   <Link to="/user_info_manage/user_pwd" activeClassName="active">
-                                   <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                   </Link>
-                                </span>
+                                                <Link to="/user_info_manage/user_pwd" activeClassName="active">
+                                                    <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
+                                                </Link>
+                                            </span>
                                         }}
                                     />
 

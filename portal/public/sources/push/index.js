@@ -53,7 +53,7 @@ function updateUnreadByPushMessage(type, isAdd) {
             clearTimeout(timeoutFunc);
         }
         //向展示的组件发送数据
-        timeoutFunc = setTimeout(function () {
+        timeoutFunc = setTimeout(function() {
             //待审批数的刷新展示
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
             //刷新未读消息数
@@ -68,39 +68,39 @@ function updateUnreadByPushMessage(type, isAdd) {
 function listenOnMessage(data) {
     if (_.isObject(data)) {
         switch (data.message_type) {
-            case "apply":
-                //有新的未处理的申请消息时,只修改待审批数，不用展示
-                //申请审批列表弹出，有新数据，是否刷新数据的提示
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                //将待审批数加一（true）
-                updateUnreadByPushMessage("approve", true);
-                break;
-            case "reply":
-                //批复类型
-                if (!userData.hasRole("realm_manager")) {
-                    //批复类型的通知，不通知管理员
-                    notifyReplyInfo(data);
-                }
-                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
-                //将审批后的申请消息未读数加一（true）
-                updateUnreadByPushMessage("apply", true);
-                //待审批数减一
-                updateUnreadByPushMessage("approve", false);
-                break;
-            case "repay":
-                //回款类型
-                //notifyRepayInfo(data);
-                break;
-            case "customer":
-                //客户提醒(包含用户过期提醒)
-                notifyCustomerInfo(data);
-                //将客户提醒的未读数加一
-                updateUnreadByPushMessage("customer", true);
-                break;
-            case "system":
-                //系统通知
-                //notifySystemInfo(data);
-                break;
+        case "apply":
+            //有新的未处理的申请消息时,只修改待审批数，不用展示
+            //申请审批列表弹出，有新数据，是否刷新数据的提示
+            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+            //将待审批数加一（true）
+            updateUnreadByPushMessage("approve", true);
+            break;
+        case "reply":
+            //批复类型
+            if (!userData.hasRole("realm_manager")) {
+                //批复类型的通知，不通知管理员
+                notifyReplyInfo(data);
+            }
+            notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+            //将审批后的申请消息未读数加一（true）
+            updateUnreadByPushMessage("apply", true);
+            //待审批数减一
+            updateUnreadByPushMessage("approve", false);
+            break;
+        case "repay":
+            //回款类型
+            //notifyRepayInfo(data);
+            break;
+        case "customer":
+            //客户提醒(包含用户过期提醒)
+            notifyCustomerInfo(data);
+            //将客户提醒的未读数加一
+            updateUnreadByPushMessage("customer", true);
+            break;
+        case "system":
+            //系统通知
+            //notifySystemInfo(data);
+            break;
         }
     }
 }
@@ -153,21 +153,21 @@ function showDesktopNotification(title, tipContent, isClosedByClick) {
         icon: logoSrc,
         requireInteraction: isClosedByClick
     });
-    notification.onerror = function () {
+    notification.onerror = function() {
         notification.close();
     };
-    notification.onclick = function () {
+    notification.onclick = function() {
         //如果通知消息被点击,通知窗口将被激活
         window.focus();
         notification.close();
     },
-        notification.onshow = function () {
-            if (!isClosedByClick) {
-                setTimeout(function () {
-                    notification.close();
-                }, TIMEOUTDELAY.closeTimeDelay);
-            }
-        };
+    notification.onshow = function() {
+        if (!isClosedByClick) {
+            setTimeout(function() {
+                notification.close();
+            }, TIMEOUTDELAY.closeTimeDelay);
+        }
+    };
 }
 // 标签页是否可见（各种浏览器兼容）
 function documentIsHidden() {
@@ -198,39 +198,39 @@ function getReplyTipContent(data) {
     let userType = data.message.tag || "";//申请用户的类型：正式、试用用户
     let userNames = getUserNames(data.message);//申请用户的名称
     switch (data.approval_state) {
-        case "pass"://审批通过
-            // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            tipContent = Intl.get("reply.pass.tip.content",
-                "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
-                    approvalPerson: approvalPerson,
-                    salesName: salesName,
-                    customerName: customerName,
-                    userType: userType,
-                    userNames: userNames
-                });
-            break;
-        case "reject"://审批驳回
-            //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            tipContent = Intl.get("reply.reject.tip.content",
-                "{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
-                    approvalPerson: approvalPerson,
-                    salesName: salesName,
-                    customerName: customerName,
-                    userType: userType,
-                    userNames: userNames
-                });
-            break;
-        case "cancel"://撤销申请
-            //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
-            //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
-            tipContent = Intl.get("reply.cancel.tip.content",
-                "{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
-                    approvalPerson: approvalPerson,
-                    customerName: customerName,
-                    userType: userType,
-                    userNames: userNames
-                });
-            break;
+    case "pass"://审批通过
+        // xxx 通过了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+        tipContent = Intl.get("reply.pass.tip.content",
+            "{approvalPerson} 通过了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                approvalPerson: approvalPerson,
+                salesName: salesName,
+                customerName: customerName,
+                userType: userType,
+                userNames: userNames
+            });
+        break;
+    case "reject"://审批驳回
+        //xxx 驳回了 xxx(销售) 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+        tipContent = Intl.get("reply.reject.tip.content",
+            "{approvalPerson} 驳回了 {salesName} 给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                approvalPerson: approvalPerson,
+                salesName: salesName,
+                customerName: customerName,
+                userType: userType,
+                userNames: userNames
+            });
+        break;
+    case "cancel"://撤销申请
+        //xxx撤销了 给客户 xxx 申请的 正式/试用 用户 xxx，xxx
+        //只能销售自己撤销自己的申请，所以撤销时，不需要再加销售名称
+        tipContent = Intl.get("reply.cancel.tip.content",
+            "{approvalPerson} 撤销了给客户 {customerName} 申请的 {userType} 用户 {userNames}", {
+                approvalPerson: approvalPerson,
+                customerName: customerName,
+                userType: userType,
+                userNames: userNames
+            });
+        break;
     }
     return tipContent;
 }
@@ -265,7 +265,7 @@ function canPopDesktop() {
     return documentIsHidden() && window.Notification && Notification.permission === 'granted';
 }
 //点击拨打电话
-window.handleClickPhone = function (phoneObj) {
+window.handleClickPhone = function(phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
     var $modal = $("#phone-status-content");
     if ($modal && $modal.length > 0) {
@@ -373,7 +373,7 @@ function notifyReplyInfo(data) {
                     closeWith: ["button"],
                     timeout: TIMEOUTDELAY.closeTimeDelay,
                     callback: {
-                        onClose: function () {
+                        onClose: function() {
                             delete NotificationType['exist'];
                             approveTipCount = 0;
                         }
@@ -428,11 +428,11 @@ function listenOnOffline(userObj) {
         wrapClassName: 'socket-io',
         content: tipMsg,
         okText: '重新登录',
-        onOk: function () {
+        onOk: function() {
             window.location.href = '/logout';
         }
     });
-    setTimeout(function () {
+    setTimeout(function() {
         //设置提示框的样式
         var $modal = $("body >.ant-modal-container");
         if ($modal && $modal.length > 0) {
@@ -494,7 +494,7 @@ function startSocketIo() {
     var transportType = window.WebSocket ? 'websocket' : 'polling';
     socketIo = io({forceNew: true, transports: [transportType]});
     //监听 connect
-    socketIo.on('connect', function () {
+    socketIo.on('connect', function() {
         // 获取消息数后添加监听
         getMessageCount(unreadListener);
         //监听node端推送的登录踢出的信息
@@ -610,7 +610,7 @@ function getNotificationUnread(queryObj, callback) {
         data: queryObj,
         success: data => {
             var messages = {};
-            _.each(['apply', 'customer', 'system', 'approve'], function (key) {
+            _.each(['apply', 'customer', 'system', 'approve'], function(key) {
                 var value = data[key];
                 if (typeof value === 'number' && value > 0) {
                     messages[key] = value;
@@ -648,7 +648,7 @@ function updateGlobalUnreadStorage(message) {
             clearTimeout(timeoutFunc);
         }
         //向展示的组件发送数据
-        timeoutFunc = setTimeout(function () {
+        timeoutFunc = setTimeout(function() {
             //更新未读消息数
             notificationEmitter.emit(notificationEmitter.UPDATE_NOTIFICATION_UNREAD);
             //待审批数的刷新展示

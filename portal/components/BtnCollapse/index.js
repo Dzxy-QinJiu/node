@@ -8,7 +8,7 @@ var BtnCollapse = React.createClass({
         this.setState({tips: this.state.tips == "展开" ? "折叠" : "展开"});
         $("#app .row").toggleClass("extend");
     },
-    render: function () {
+    render: function() {
         return (
             <a onClick={this.handleClick}  className="toggle-nav-collapse" title={this.state.tips}><i className="iconfont">&#xe600;</i></a>
         );

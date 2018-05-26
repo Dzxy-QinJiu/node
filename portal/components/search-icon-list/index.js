@@ -143,7 +143,7 @@ class SearchIconList extends React.Component {
                             <Checkbox defaultChecked={false} onChange={this.toggleOnlyShowSelected.bind(this)}/>
                             <span>
                                 {Intl.get("user.show.select","只显示选中")}
-                                </span>
+                            </span>
                         </label>
                     </div>
                 </div>

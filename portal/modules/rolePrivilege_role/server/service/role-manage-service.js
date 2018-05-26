@@ -20,20 +20,20 @@ var roleRestApis = {
 exports.urls = roleRestApis;
 
 // 获取角色列表
-exports.getRoleList = function (req, res, clientID) {
+exports.getRoleList = function(req, res, clientID) {
     return restUtil.authRest.get(
         {
             url: roleRestApis.getRoleList + "/" + clientID,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isObject(data)) {
                     //权限组数据格式的修改
                     if (data.permissions) {
                         for (var key in data.permissions) {
-                            data.permissions[key] = data.permissions[key].map(function (permission) {
+                            data.permissions[key] = data.permissions[key].map(function(permission) {
                                 return {
                                     permissionId: permission.permission_id,
                                     permissionName: permission.permission_name,
@@ -45,7 +45,7 @@ exports.getRoleList = function (req, res, clientID) {
                     }
                     //角色列表数据格式的修改
                     if (_.isArray(data.roles) && data.roles.length > 0) {
-                        data.roles = data.roles.map(function (role) {
+                        data.roles = data.roles.map(function(role) {
                             return {
                                 roleId: role.role_id,
                                 roleName: role.role_name,
@@ -60,7 +60,7 @@ exports.getRoleList = function (req, res, clientID) {
 };
 
 // 添加角色
-exports.addRole = function (req, res, role) {
+exports.addRole = function(req, res, role) {
     return restUtil.authRest.post(
         {
             url: roleRestApis.addRole,
@@ -71,7 +71,7 @@ exports.addRole = function (req, res, role) {
 };
 
 // 编辑角色
-exports.editRole = function (req, res, role) {
+exports.editRole = function(req, res, role) {
     return restUtil.authRest.put(
         {
             url: roleRestApis.editRole,
@@ -82,7 +82,7 @@ exports.editRole = function (req, res, role) {
 };
 
 // 删除角色
-exports.deleteRole = function (req, res, roleID) {
+exports.deleteRole = function(req, res, roleID) {
     return restUtil.authRest.del(
         {
             url: roleRestApis.deleteRole + "/" + roleID,
@@ -93,7 +93,7 @@ exports.deleteRole = function (req, res, roleID) {
 };
 
 // 设置默认角色
-exports.setDefaultRole = function (req, res,param) {
+exports.setDefaultRole = function(req, res,param) {
     return restUtil.authRest.post(
         {
             url: roleRestApis.setDefaultRole,
@@ -103,7 +103,7 @@ exports.setDefaultRole = function (req, res,param) {
 };
 
 // 获取默认角色
-exports.getDefaultRole = function (req, res,appId) {    
+exports.getDefaultRole = function(req, res,appId) {    
     return restUtil.authRest.get(
         {
             url: roleRestApis.getDefaultRole,
@@ -113,7 +113,7 @@ exports.getDefaultRole = function (req, res,appId) {
 };
 
 // 删除默认角色
-exports.delDefaultRole = function (req, res, param) {
+exports.delDefaultRole = function(req, res, param) {
     return restUtil.authRest.del(
         {
             url: roleRestApis.delDefaultRole,

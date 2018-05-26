@@ -47,7 +47,7 @@ const messages = defineMessages({
 
 function cx(classNames) {
     if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function (className) {
+        return Object.keys(classNames).filter(function(className) {
             return classNames[className];
         }).join(' ');
     } else {
@@ -70,7 +70,7 @@ function getStateFromStore() {
 
 var UserPwdPage = React.createClass({
     mixins: [Validation.FieldMixin, reactIntlMixin],
-    getInitialState: function () {
+    getInitialState: function() {
         var datas = getStateFromStore();
         datas.status = {
             passwd: {},
@@ -86,7 +86,7 @@ var UserPwdPage = React.createClass({
         datas.passStrength = 'L';//密码强度
         return datas;
     },
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore();
         this.setState(datas);
         this.setState({
@@ -97,19 +97,19 @@ var UserPwdPage = React.createClass({
             this.handleReset();
         }
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $("body").css("overflow", "hidden");
         UserInfoStore.listen(this.onChange);
         UserInfoAction.getUserInfo();
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).unbind("resize");
         UserInfoStore.unlisten(this.onChange);
         $("body").css("overflow", "auto");
     },
 
 
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -158,9 +158,9 @@ var UserPwdPage = React.createClass({
         if (!value) {
             callback();
         } else {
-            setTimeout(function () {
+            setTimeout(function() {
 
-                userInfoAjax.checkUserInfoPwd({passwd: value}).then(function (checkPwdFlag) {
+                userInfoAjax.checkUserInfoPwd({passwd: value}).then(function(checkPwdFlag) {
                     if (!checkPwdFlag) {
                         callback(_this.formatMessage(messages.user_password_input_again));
                     } else {
@@ -176,11 +176,11 @@ var UserPwdPage = React.createClass({
         this.setState(this.getInitialState());
     },
     events: {
-        submitUserInfoForm: function (e) {
+        submitUserInfoForm: function(e) {
             e.preventDefault();
             var validation = this.refs.validation;
             var _this = this;
-            validation.validate(function (valid) {
+            validation.validate(function(valid) {
                 if (!valid) {
                     return;
                 } else {
@@ -199,25 +199,25 @@ var UserPwdPage = React.createClass({
         }
     },
 
-    md5Hash: function (passwd) {
+    md5Hash: function(passwd) {
         var md5Hash = crypto.createHash("md5");
         md5Hash.update(passwd);
         return md5Hash.digest("hex");
     },
 
-    renderIndicator: function () {
+    renderIndicator: function() {
         if (this.state.submitResult === 'loading') {
             return (
                 <Icon type="loading"/>
             );
         }
-        var hide = function () {
+        var hide = function() {
             UserInfoAction.hideSubmitTip();
         };
         if (this.state.submitResult === 'success') {
             return (
                 <AlertTimer time={3000} message={this.formatMessage(messages.user_password_change_password_succ)}
-                            type="success" showIcon onHide={hide}/>
+                    type="success" showIcon onHide={hide}/>
             );
         }
         if (this.state.submitResult === 'error') {
@@ -228,7 +228,7 @@ var UserPwdPage = React.createClass({
         return null;
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -256,14 +256,14 @@ var UserPwdPage = React.createClass({
                                             message: this.formatMessage(messages.user_password_input_initial_password)
                                         }]}>
                                         <Input type="password" id="password" name="passwd"
-                                               placeholder={this.formatMessage(messages.common_input_password)}
-                                               onContextMenu={noop}
-                                               onPaste={noop}
-                                               onCopy={noop}
-                                               onCut={noop}
-                                               autoComplete="off"
-                                               value={formData.passwd}
-                                               data-tracename="输入原密码"
+                                            placeholder={this.formatMessage(messages.common_input_password)}
+                                            onContextMenu={noop}
+                                            onPaste={noop}
+                                            onCopy={noop}
+                                            onCut={noop}
+                                            autoComplete="off"
+                                            value={formData.passwd}
+                                            data-tracename="输入原密码"
 
                                         />
 
@@ -334,12 +334,12 @@ var UserPwdPage = React.createClass({
                                         this.renderIndicator()
                                     }
                                     <Button type="primary" className="user-info-edit-pwd-submit-btn btn-primary-sure"
-                                            onClick={this.events.submitUserInfoForm.bind(_this)}
-                                            data-tracename="保存密码"
+                                        onClick={this.events.submitUserInfoForm.bind(_this)}
+                                        data-tracename="保存密码"
                                     >
 
                                         <ReactIntl.FormattedMessage id="user.password.save.password"
-                                                                    defaultMessage="保存密码"/>
+                                            defaultMessage="保存密码"/>
                                     </Button>
                                 </div>
                             </Validation>

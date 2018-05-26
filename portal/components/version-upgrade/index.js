@@ -25,13 +25,13 @@ var VersionUpgradeList = React.createClass({
             var retry = (
                 <span>
                     {this.props.getAppRecordErrorMsg}
-                        <a
-                            href="javascript:void(0)"
-                            onClick={this.props.retryGetAppRecordInfo}
-                        >
+                    <a
+                        href="javascript:void(0)"
+                        onClick={this.props.retryGetAppRecordInfo}
+                    >
                             请重试
-                        </a>
-                    </span>
+                    </a>
+                </span>
             );
             return <div className="alert-wrap">
                 <Alert
@@ -80,11 +80,11 @@ var VersionUpgradeList = React.createClass({
     },
 
     handleDeleteAppVersionError: function(){
-       var hide = () => {
-           this.setState({
-               deleteAppVersionErrMsg: ''
-           });
-       };
+        var hide = () => {
+            this.setState({
+                deleteAppVersionErrMsg: ''
+            });
+        };
         return (
             <AlertTimer
                 time={3000}
@@ -111,7 +111,7 @@ var VersionUpgradeList = React.createClass({
                     this.handleDeleteAppVersionError() : null
                 }
                 { this.props.list.length > 0  ?  this.props.list.map((item, index) => {
-                    var content = (item.content).replace(/\n+/g,function (ns) {
+                    var content = (item.content).replace(/\n+/g,function(ns) {
                         if(ns.length == 1){
                             return '  '+ns;
                         }
@@ -155,13 +155,13 @@ var VersionUpgradeList = React.createClass({
                         </div>
                     );
                 }) :  ( this.props.getAppRecordErrorMsg == '' && this.props.list.length == 0 &&  this.props.noDataShow  ?
-                        (<div>
-                            <Alert
-                                message="该应用没有升级记录"
-                                type="info"
-                                showIcon={true}
-                            />
-                        </div> ) : null
+                    (<div>
+                        <Alert
+                            message="该应用没有升级记录"
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div> ) : null
                 )}
             </div>);
     }

@@ -15,14 +15,14 @@ var restApis = {
 };
 exports.restUrls = restApis;
 //获取销售-电话列表
-exports.getSalesPhone = function (req, res, reqData, type) {
+exports.getSalesPhone = function(req, res, reqData, type) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesPhone.replace(":type", type),
             req: req,
             res: res
         }, reqData, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var salesPhone = salesObj.toFrontSalesPhone(data);
                 eventEmitter.emit("success", salesPhone);
@@ -31,7 +31,7 @@ exports.getSalesPhone = function (req, res, reqData, type) {
 };
 
 // 获取今天联系的客户
-exports.queryContactCustomer = function (req, res) {
+exports.queryContactCustomer = function(req, res) {
     var url = restApis.queryContactCustomer;
     var queryObj = {};
     queryObj.rang_params = JSON.parse(req.body.rangParams);
@@ -43,7 +43,7 @@ exports.queryContactCustomer = function (req, res) {
 };
 
 //获取过期或即将到期的客户
-exports.getExpireCustomer = function (req, res) {
+exports.getExpireCustomer = function(req, res) {
     var url = restApis.getExpiredCustomers;
     return restUtil.authRest.get({
         url: url.replace(":type", req.params.type),

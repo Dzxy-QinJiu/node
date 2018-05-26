@@ -9,13 +9,13 @@ var AppNoticeList = React.createClass({
             var retry = (
                 <span>
                     {this.props.getAppNoticeErrorMsg}
-                        <a
-                            href="javascript:void(0)"
-                            onClick={this.props.retryGetAppNoticeInfo}
-                        >
+                    <a
+                        href="javascript:void(0)"
+                        onClick={this.props.retryGetAppNoticeInfo}
+                    >
                             请重试
-                        </a>
-                    </span>
+                    </a>
+                </span>
             );
             return <div className="alert-wrap">
                 <Alert
@@ -72,15 +72,15 @@ var AppNoticeList = React.createClass({
                         </div>
                     );
                 }) :  ( this.props.getAppNoticeErrorMsg == '' && this.props.list.length == 0 &&  this.props.noDataShow  ?
-                        (<div>
-                            <Alert
-                                message="该应用没有公告"
-                                type="info"
-                                showIcon={true}
-                            />
-                        </div> ) : null
+                    (<div>
+                        <Alert
+                            message="该应用没有公告"
+                            type="info"
+                            showIcon={true}
+                        />
+                    </div> ) : null
                 )}
-        </div>);
+            </div>);
     }
 });
 

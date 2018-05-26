@@ -30,7 +30,7 @@ let stepMap = {
 };
 
 const ContractRightPanel = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isLoading: false,
             currentView: this.props.view,
@@ -38,34 +38,34 @@ const ContractRightPanel = React.createClass({
             currentTabKey: "1",
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.setContentHeight);
         this.setContentHeight();
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         const scrollBar = this.refs.gemiScrollBar;
 
         if (scrollBar) {
             this.setContentHeight();
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.setContentHeight);
     },
-    setContentHeight: function () {
+    setContentHeight: function() {
         const wrapper = $(".ant-tabs-tabpane");
         //新高度 = 窗口高度 - 容器距窗口顶部的距离 - 底部留空
         wrapper.height($(window).height() - $(".ant-tabs-content").offset().top - 70);
         this.updateScrollBar();
     },
-    updateScrollBar: function () {
+    updateScrollBar: function() {
         const scrollBar = this.refs.gemiScrollBar;
 
         if (!scrollBar) return;
 
         scrollBar.update();
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         //当前视图是否是合同基本信息添加表单
         const isOnAddForm = ["buyForm", "sellForm"].indexOf(this.state.currentView) > -1;
 
@@ -90,19 +90,19 @@ const ContractRightPanel = React.createClass({
 
         this.setState(this.state);
     },
-    changeCurrentTabKey: function (key) {
+    changeCurrentTabKey: function(key) {
         this.setState({
             currentTabKey: key
         });
     },
-    changeToView: function (view, category) {
+    changeToView: function(view, category) {
         Trace.traceEvent(this.getDOMNode(),"添加合同>选择'" + category + "'类型");
         if (view) this.state.currentView = view;
         if (category) this.state.currentCategory = category;
         this.state.currentTabKey = "1";
         this.setState(this.state);
     },
-    goPrev: function () {
+    goPrev: function() {
         //当验证通过时，发送点击事件信息
         if(validation) {
             Trace.traceEvent(this.getDOMNode(),"添加合同>进入上一步");
@@ -115,13 +115,13 @@ const ContractRightPanel = React.createClass({
         }
         this.setState(this.state);
     },
-    goNext: function () {
+    goNext: function() {
         let step = parseInt(this.state.currentTabKey);
         step++;
         this.state.currentTabKey = step.toString();
         this.setState(this.state);
     },
-    onNextStepBtnClick: function () {
+    onNextStepBtnClick: function() {
         let validation;
         
         if (this.state.currentView === "sellForm") {
@@ -157,13 +157,13 @@ const ContractRightPanel = React.createClass({
             }
         });
     },
-    showLoading: function () {
+    showLoading: function() {
         this.setState({isLoading: true});
     },
-    hideLoading: function () {
+    hideLoading: function() {
         this.setState({isLoading: false});
     },
-    handleSubmit: function (cb) {
+    handleSubmit: function(cb) {
         Trace.traceEvent(this.getDOMNode(), stepMap[this.state.currentTabKey] + "添加合同>点击完成按钮");
         this.showLoading();
 
@@ -248,14 +248,14 @@ const ContractRightPanel = React.createClass({
             message.error(errMsg || operateName + "失败");
         });
     },
-    handleCancel: function () {
+    handleCancel: function() {
         if (this.props.contract.id) {
             this.setState({isFormShow: false});
         } else {
             this.props.hideRightPanel();
         }
     },
-    render: function () {
+    render: function() {
         let endPaneKey = "3";
         if ([PROJECT, PURCHASE].indexOf(this.state.currentCategory) > -1) endPaneKey = "2";
         if (this.state.currentCategory === SERVICE) endPaneKey = "4";
@@ -264,266 +264,266 @@ const ContractRightPanel = React.createClass({
 
         sellFormPanes.push((
             <TabPane tab={Intl.get("user.user.basic", "基本信息")} key="1">
-            <GeminiScrollBar ref="gemiScrollBar">
-                <AddBasic
-                    ref="addBasic"
-                    contract={this.props.contract}
-                    teamList={this.props.teamList}
-                    userList={this.props.userList}
-                    getUserList={this.props.getUserList}
-                    isGetUserSuccess={this.props.isGetUserSuccess}
-                    validateNumRepeat={true}
-                />
-            </GeminiScrollBar>
+                <GeminiScrollBar ref="gemiScrollBar">
+                    <AddBasic
+                        ref="addBasic"
+                        contract={this.props.contract}
+                        teamList={this.props.teamList}
+                        userList={this.props.userList}
+                        getUserList={this.props.getUserList}
+                        isGetUserSuccess={this.props.isGetUserSuccess}
+                        validateNumRepeat={true}
+                    />
+                </GeminiScrollBar>
             </TabPane>
         ));
     
         if ([PRODUCT, SERVICE].indexOf(this.state.currentCategory) > -1) sellFormPanes.push((
             <TabPane tab={Intl.get("contract.95", "产品信息")} key="2">
-            <GeminiScrollBar ref="gemiScrollBar">
-                <AddProduct
-                    ref="addProduct"
-                    appList={this.props.appList}
-                    updateScrollBar={this.updateScrollBar}
-                />
-            </GeminiScrollBar>
+                <GeminiScrollBar ref="gemiScrollBar">
+                    <AddProduct
+                        ref="addProduct"
+                        appList={this.props.appList}
+                        updateScrollBar={this.updateScrollBar}
+                    />
+                </GeminiScrollBar>
             </TabPane>
         ));
     
         if (this.state.currentCategory === SERVICE) sellFormPanes.push((
             <TabPane tab={Intl.get("contract.96", "服务信息")} key="3">
-            <GeminiScrollBar ref="gemiScrollBar">
-                <AddReport
-                    ref="addReport"
-                    contract={this.props.contract}
-                    updateScrollBar={this.updateScrollBar}
-                />
-            </GeminiScrollBar>
+                <GeminiScrollBar ref="gemiScrollBar">
+                    <AddReport
+                        ref="addReport"
+                        contract={this.props.contract}
+                        updateScrollBar={this.updateScrollBar}
+                    />
+                </GeminiScrollBar>
             </TabPane>
         ));
     
         sellFormPanes.push((
             <TabPane tab={Intl.get("contract.97", "回款计划")} key={endPaneKey}>
-            <GeminiScrollBar ref="gemiScrollBar">
-                <AddRepayment
-                    ref="addRepayment"
-                    parent={this}
-                    rightPanel={this}
-                    updateScrollBar={this.updateScrollBar}
-                />
-            </GeminiScrollBar>
+                <GeminiScrollBar ref="gemiScrollBar">
+                    <AddRepayment
+                        ref="addRepayment"
+                        parent={this}
+                        rightPanel={this}
+                        updateScrollBar={this.updateScrollBar}
+                    />
+                </GeminiScrollBar>
             </TabPane>
         ));
 
         return (
             <div>
                 <RightPanelClose 
-                     onClick={this.props.hideRightPanel}
+                    onClick={this.props.hideRightPanel}
                 />
 
                 {this.state.currentView === "sellForm"? (
-                <RightPanelReturn 
-                     onClick={this.changeToView.bind(this, "chooseType")}
-                />
+                    <RightPanelReturn 
+                        onClick={this.changeToView.bind(this, "chooseType")}
+                    />
                 ) : null}
 
                 {this.state.currentView === "chooseType"? (
-                <Tabs defaultActiveKey="1" className="choose-type">
-                    <TabPane tab={Intl.get("contract.98", "添加合同")} key="1">
+                    <Tabs defaultActiveKey="1" className="choose-type">
+                        <TabPane tab={Intl.get("contract.98", "添加合同")} key="1">
                         选择类型：
-                        <ul>
-                        {CATEGORY.map((category, index) => {
-                            //将采购合同排除
-                            if (category === PURCHASE) return;
+                            <ul>
+                                {CATEGORY.map((category, index) => {
+                                    //将采购合同排除
+                                    if (category === PURCHASE) return;
 
-                            const className = category === this.state.currentCategory? "active" : "";
-                            const view = category === PURCHASE? "buyForm" : "sellForm";
-                            return (<li className={className}
-                                key={index}
-                                onClick={this.changeToView.bind(this, view, category)}
-                            >
-                                {category}
-                            </li>);
-                        })}
-                        </ul>
-                    </TabPane>
-                </Tabs>
+                                    const className = category === this.state.currentCategory? "active" : "";
+                                    const view = category === PURCHASE? "buyForm" : "sellForm";
+                                    return (<li className={className}
+                                        key={index}
+                                        onClick={this.changeToView.bind(this, view, category)}
+                                    >
+                                        {category}
+                                    </li>);
+                                })}
+                            </ul>
+                        </TabPane>
+                    </Tabs>
                 ) : null}
 
                 {this.state.currentView === "sellForm"? (
-                <div className="add-form">
-                    <Tabs activeKey={this.state.currentTabKey}>
-                        {sellFormPanes}
-                    </Tabs>
+                    <div className="add-form">
+                        <Tabs activeKey={this.state.currentTabKey}>
+                            {sellFormPanes}
+                        </Tabs>
 
-                    <div className="step-button">
-                        <Button
-                             onClick={this.goPrev}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
-                        </Button>
-                        {this.state.currentTabKey != endPaneKey? (
-                        <Button
-                             onClick={this.onNextStepBtnClick}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.next" defaultMessage="下一步" />
-                        </Button>
-                        ) : (
-                        <Button
-                             onClick={this.handleSubmit}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.finish" defaultMessage="完成" />
-                        </Button>
-                        )}
+                        <div className="step-button">
+                            <Button
+                                onClick={this.goPrev}
+                            >
+                                <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
+                            </Button>
+                            {this.state.currentTabKey != endPaneKey? (
+                                <Button
+                                    onClick={this.onNextStepBtnClick}
+                                >
+                                    <ReactIntl.FormattedMessage id="user.user.add.next" defaultMessage="下一步" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={this.handleSubmit}
+                                >
+                                    <ReactIntl.FormattedMessage id="user.user.add.finish" defaultMessage="完成" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                </div>
                 ) : null}
 
                 {this.state.currentView === "buyForm"? (
-                <div className="add-form">
-                    <Tabs activeKey={this.state.currentTabKey}>
-                        <TabPane tab={Intl.get("user.user.basic", "基本信息")} key="1">
-                            <AddBuyBasic
-                                ref="addBuyBasic"
-                                contract={this.props.contract}
-                                teamList={this.props.teamList}
-                                userList={this.props.userList}
-                                getUserList={this.props.getUserList}
-                                isGetUserSuccess={this.props.isGetUserSuccess}
-                                validateNumRepeat={true}
-                            />
-                        </TabPane>
+                    <div className="add-form">
+                        <Tabs activeKey={this.state.currentTabKey}>
+                            <TabPane tab={Intl.get("user.user.basic", "基本信息")} key="1">
+                                <AddBuyBasic
+                                    ref="addBuyBasic"
+                                    contract={this.props.contract}
+                                    teamList={this.props.teamList}
+                                    userList={this.props.userList}
+                                    getUserList={this.props.getUserList}
+                                    isGetUserSuccess={this.props.isGetUserSuccess}
+                                    validateNumRepeat={true}
+                                />
+                            </TabPane>
 
-                        <TabPane tab={Intl.get("contract.100", "付款计划")} key="2">
-                        <GeminiScrollBar ref="gemiScrollBar">
-                            <AddBuyPayment
-                                ref="addBuyPayment"
-                                rightPanel={this}
-                                updateScrollBar={this.updateScrollBar}
-                            />
-                        </GeminiScrollBar>
-                        </TabPane>
-                    </Tabs>
+                            <TabPane tab={Intl.get("contract.100", "付款计划")} key="2">
+                                <GeminiScrollBar ref="gemiScrollBar">
+                                    <AddBuyPayment
+                                        ref="addBuyPayment"
+                                        rightPanel={this}
+                                        updateScrollBar={this.updateScrollBar}
+                                    />
+                                </GeminiScrollBar>
+                            </TabPane>
+                        </Tabs>
 
-                    <div className="step-button">
-                        <Button
-                             onClick={this.goPrev}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
-                        </Button>
-                        {this.state.currentTabKey != "2"? (
-                        <Button
-                             onClick={this.onNextStepBtnClick}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.next" defaultMessage="下一步" />
-                        </Button>
-                        ) : (
-                        <Button
-                             onClick={this.handleSubmit}
-                        >
-                            <ReactIntl.FormattedMessage id="user.user.add.finish" defaultMessage="完成" />
-                        </Button>
-                        )}
+                        <div className="step-button">
+                            <Button
+                                onClick={this.goPrev}
+                            >
+                                <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
+                            </Button>
+                            {this.state.currentTabKey != "2"? (
+                                <Button
+                                    onClick={this.onNextStepBtnClick}
+                                >
+                                    <ReactIntl.FormattedMessage id="user.user.add.next" defaultMessage="下一步" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={this.handleSubmit}
+                                >
+                                    <ReactIntl.FormattedMessage id="user.user.add.finish" defaultMessage="完成" />
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                </div>
                 ) : null}
 
                 {this.state.currentView === "detailCost"? (
-                <div className="add-form">
-                    <Tabs activeKey={this.state.currentTabKey}>
-                        <TabPane tab={_.isEmpty(this.props.contract)? Intl.get("contract.127", "添加费用") : Intl.get("contract.129", "费用信息")} key="1">
-                            <DetailCost
-                                ref="detailCost"
-                                cost={this.props.contract}
-                                teamList={this.props.teamList}
-                                userList={this.props.userList}
-                                getUserList={this.props.getUserList}
-                                isGetUserSuccess={this.props.isGetUserSuccess}
-                                showLoading={this.showLoading}
-                                hideLoading={this.hideLoading}
-                                addContract={this.props.addContract}
-                                refreshCurrentContract={this.props.refreshCurrentContract}
-                                deleteContract={this.props.deleteContract}
-                                hideRightPanel={this.props.hideRightPanel}
-                            />
-                        </TabPane>
-                    </Tabs>
-                </div>
+                    <div className="add-form">
+                        <Tabs activeKey={this.state.currentTabKey}>
+                            <TabPane tab={_.isEmpty(this.props.contract)? Intl.get("contract.127", "添加费用") : Intl.get("contract.129", "费用信息")} key="1">
+                                <DetailCost
+                                    ref="detailCost"
+                                    cost={this.props.contract}
+                                    teamList={this.props.teamList}
+                                    userList={this.props.userList}
+                                    getUserList={this.props.getUserList}
+                                    isGetUserSuccess={this.props.isGetUserSuccess}
+                                    showLoading={this.showLoading}
+                                    hideLoading={this.hideLoading}
+                                    addContract={this.props.addContract}
+                                    refreshCurrentContract={this.props.refreshCurrentContract}
+                                    deleteContract={this.props.deleteContract}
+                                    hideRightPanel={this.props.hideRightPanel}
+                                />
+                            </TabPane>
+                        </Tabs>
+                    </div>
                 ) : null}
 
                 {this.state.currentView === "detail"? (
-                <div className="detail">
-                    {this.props.contract.type === "sell"? (
-                    <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
-                        <TabPane tab={Intl.get("contract.101", "合同信息")} key="1">
-                        <GeminiScrollBar ref="gemiScrollBar">
-                            <DetailBasic
-                                ref="detailBasic"
-                                contract={this.props.contract}
-                                teamList={this.props.teamList}
-                                userList={this.props.userList}
-                                getUserList={this.props.getUserList}
-                                isGetUserSuccess={this.props.isGetUserSuccess}
-                                appList={this.props.appList}
-                                handleSubmit={this.handleSubmit}
-                                updateScrollBar={this.updateScrollBar}
-                            />
-                        </GeminiScrollBar>
-                        </TabPane>
-                        <TabPane tab={Intl.get("contract.102", "合同回款")} key="2">
-                            <DetailRepayment
-                                ref="detailRepayment"
-                                contract={this.props.contract}
-                                showLoading={this.showLoading}
-                                hideLoading={this.hideLoading}
-                                refreshCurrentContract={this.props.refreshCurrentContract}
-                            />
-                        </TabPane>
-                        <TabPane tab={Intl.get("contract.103", "合同发票")} key="3">
-                        <GeminiScrollBar ref="gemiScrollBar">
-                            <DetailInvoice
-                                ref="detailInvoice"
-                                contract={this.props.contract}
-                                showLoading={this.showLoading}
-                                hideLoading={this.hideLoading}
-                                refreshCurrentContract={this.props.refreshCurrentContract}
-                                updateScrollBar={this.updateScrollBar}
-                            />
-                        </GeminiScrollBar>
-                        </TabPane>
-                    </Tabs>
-                    ) : (
-                    <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
-                        <TabPane tab={Intl.get("contract.101", "合同信息")} key="1">
-                            <DetailBuyBasic
-                                ref="detailBuyBasic"
-                                contract={this.props.contract}
-                                teamList={this.props.teamList}
-                                userList={this.props.userList}
-                                getUserList={this.props.getUserList}
-                                isGetUserSuccess={this.props.isGetUserSuccess}
-                                handleSubmit={this.handleSubmit}
-                            />
-                        </TabPane>
-                        <TabPane tab={Intl.get("contract.104", "合同付款")} key="2">
-                        <GeminiScrollBar ref="gemiScrollBar">
-                            <DetailBuyPayment
-                                ref="detailBuyPayment"
-                                contract={this.props.contract}
-                                showLoading={this.showLoading}
-                                hideLoading={this.hideLoading}
-                                refreshCurrentContract={this.props.refreshCurrentContract}
-                                updateScrollBar={this.updateScrollBar}
-                            />
-                        </GeminiScrollBar>
-                        </TabPane>
-                    </Tabs>
-                    )}
-                </div>
+                    <div className="detail">
+                        {this.props.contract.type === "sell"? (
+                            <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
+                                <TabPane tab={Intl.get("contract.101", "合同信息")} key="1">
+                                    <GeminiScrollBar ref="gemiScrollBar">
+                                        <DetailBasic
+                                            ref="detailBasic"
+                                            contract={this.props.contract}
+                                            teamList={this.props.teamList}
+                                            userList={this.props.userList}
+                                            getUserList={this.props.getUserList}
+                                            isGetUserSuccess={this.props.isGetUserSuccess}
+                                            appList={this.props.appList}
+                                            handleSubmit={this.handleSubmit}
+                                            updateScrollBar={this.updateScrollBar}
+                                        />
+                                    </GeminiScrollBar>
+                                </TabPane>
+                                <TabPane tab={Intl.get("contract.102", "合同回款")} key="2">
+                                    <DetailRepayment
+                                        ref="detailRepayment"
+                                        contract={this.props.contract}
+                                        showLoading={this.showLoading}
+                                        hideLoading={this.hideLoading}
+                                        refreshCurrentContract={this.props.refreshCurrentContract}
+                                    />
+                                </TabPane>
+                                <TabPane tab={Intl.get("contract.103", "合同发票")} key="3">
+                                    <GeminiScrollBar ref="gemiScrollBar">
+                                        <DetailInvoice
+                                            ref="detailInvoice"
+                                            contract={this.props.contract}
+                                            showLoading={this.showLoading}
+                                            hideLoading={this.hideLoading}
+                                            refreshCurrentContract={this.props.refreshCurrentContract}
+                                            updateScrollBar={this.updateScrollBar}
+                                        />
+                                    </GeminiScrollBar>
+                                </TabPane>
+                            </Tabs>
+                        ) : (
+                            <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
+                                <TabPane tab={Intl.get("contract.101", "合同信息")} key="1">
+                                    <DetailBuyBasic
+                                        ref="detailBuyBasic"
+                                        contract={this.props.contract}
+                                        teamList={this.props.teamList}
+                                        userList={this.props.userList}
+                                        getUserList={this.props.getUserList}
+                                        isGetUserSuccess={this.props.isGetUserSuccess}
+                                        handleSubmit={this.handleSubmit}
+                                    />
+                                </TabPane>
+                                <TabPane tab={Intl.get("contract.104", "合同付款")} key="2">
+                                    <GeminiScrollBar ref="gemiScrollBar">
+                                        <DetailBuyPayment
+                                            ref="detailBuyPayment"
+                                            contract={this.props.contract}
+                                            showLoading={this.showLoading}
+                                            hideLoading={this.hideLoading}
+                                            refreshCurrentContract={this.props.refreshCurrentContract}
+                                            updateScrollBar={this.updateScrollBar}
+                                        />
+                                    </GeminiScrollBar>
+                                </TabPane>
+                            </Tabs>
+                        )}
+                    </div>
                 ) : null}
 
                 {this.state.isLoading? (
-                <Spinner className="isloading"/>
+                    <Spinner className="isloading"/>
                 ) : null}
             </div>
         );

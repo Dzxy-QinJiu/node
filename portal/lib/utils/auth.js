@@ -25,7 +25,7 @@ function getUser(req) {
 function clean(req, res) {
     //defer机制
     var deferred = Q.defer();
-    req.session.destroy(function () {
+    req.session.destroy(function() {
         deferred.resolve();
     });
     return deferred.promise;
@@ -46,7 +46,7 @@ function saveUserInfo(req, user) {
     var userData = UserDto.toSessionData(req,user);
     req.session.user = userData.user;
     req.session["_USER_TOKEN_"] = userData["_USER_TOKEN_"];
-    req.session.save(function () {
+    req.session.save(function() {
         deferred.resolve();
     });
     return deferred.promise;

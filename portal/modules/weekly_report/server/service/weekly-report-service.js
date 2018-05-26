@@ -26,7 +26,7 @@ const restApis = {
 };
 
 // 获取团队信息
-exports.getSaleGroupTeams = function (req, res, params) {
+exports.getSaleGroupTeams = function(req, res, params) {
     return restUtil.authRest.get(
         {
             url: restApis.getSaleGroupTeams.replace(":type", params.type),
@@ -36,7 +36,7 @@ exports.getSaleGroupTeams = function (req, res, params) {
 };
 
 // 获取成员信息
-exports.getSaleMemberList = function (req, res, params) {
+exports.getSaleMemberList = function(req, res, params) {
     return restUtil.authRest.get(
         {
             url: restApis.getSaleMemberList.replace(":type", params.type),
@@ -45,7 +45,7 @@ exports.getSaleMemberList = function (req, res, params) {
         });
 };
 // 获取电话的接通情况
-exports.getCallInfo = function (req, res, params, reqData) {
+exports.getCallInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
             url: restApis.getCallInfo.replace(":type", params.type),
@@ -54,7 +54,7 @@ exports.getCallInfo = function (req, res, params, reqData) {
         }, reqData);
 };
 //添加员工请假信息
-exports.addAskForLeave = function (req, res, reqObj) {
+exports.addAskForLeave = function(req, res, reqObj) {
     return restUtil.authRest.post(
         {
             url: restApis.AskForLeave,
@@ -63,7 +63,7 @@ exports.addAskForLeave = function (req, res, reqObj) {
         }, reqObj);
 };
 //更新员工请假信息
-exports.updateAskForLeave = function (req, res, reqObj) {
+exports.updateAskForLeave = function(req, res, reqObj) {
     return restUtil.authRest.put(
         {
             url: restApis.AskForLeave,
@@ -72,7 +72,7 @@ exports.updateAskForLeave = function (req, res, reqObj) {
         }, reqObj);
 };
 //删除某条员工请假信息
-exports.deleteAskForLeave = function (req, res) {
+exports.deleteAskForLeave = function(req, res) {
     return restUtil.authRest.del(
         {
             url: restApis.AskForLeave + "?ids=" + req.params.id,
@@ -81,7 +81,7 @@ exports.deleteAskForLeave = function (req, res) {
         });
 };
 //获取合同情况
-exports.getContractInfo = function (req, res, params, reqData) {
+exports.getContractInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
             url: restApis.getContractInfo.replace(":type", params.type),
@@ -90,7 +90,7 @@ exports.getContractInfo = function (req, res, params, reqData) {
         }, reqData);
 };
 //获取回款情况
-exports.getRepaymentInfo = function (req, res, params, reqData) {
+exports.getRepaymentInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
             url: restApis.getRepaymentInfo.replace(":type", params.type),
@@ -99,7 +99,7 @@ exports.getRepaymentInfo = function (req, res, params, reqData) {
         }, reqData);
 };
 //获取区域覆盖情况
-exports.getRegionOverlayInfo = function (req, res, params, reqData) {
+exports.getRegionOverlayInfo = function(req, res, params, reqData) {
     return restUtil.authRest.get(
         {
             url: restApis.getRegionOverlay.replace(":type", params.type),
@@ -116,10 +116,10 @@ function getSalesStage(req, res) {
                 req: req,
                 res: res
             }, null, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resolve(data);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });
@@ -134,10 +134,10 @@ function getCustomerStageInfo(req, res, params, reqData) {
                 req: req,
                 res: res
             }, reqData, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resolve(data);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });
@@ -145,7 +145,7 @@ function getCustomerStageInfo(req, res, params, reqData) {
 }
 
 //获取客户阶段情况
-exports.getCustomerStageInfo = function (req, res, params, reqData) {
+exports.getCustomerStageInfo = function(req, res, params, reqData) {
     var emitter = new EventEmitter();
     let promiseList = [getCustomerStageInfo(req, res, params, reqData), getSalesStage(req, res)];
     Promise.all(promiseList).then((dataList) => {
@@ -153,7 +153,7 @@ exports.getCustomerStageInfo = function (req, res, params, reqData) {
         dataObj = dataList[0] || {};
         dataObj.stageList = dataList[1] ? dataList[1].result : [];
         emitter.emit("success", dataObj);
-    }, function (errorMsg) {
+    }, function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;

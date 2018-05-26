@@ -4,13 +4,13 @@ var appAjaxTrans = require("../../../common/public/ajax/app");
 exports.getUserApp = function(){
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().
-    success(function(data) {
-        Deferred.resolve(data);
-    }).error(function(xhr, code , errText) {
-        Deferred.resolve(xhr.responseJSON);
-    }).timeout(function() {
-        Deferred.resolve();
-    });
+        success(function(data) {
+            Deferred.resolve(data);
+        }).error(function(xhr, code , errText) {
+            Deferred.resolve(xhr.responseJSON);
+        }).timeout(function() {
+            Deferred.resolve();
+        });
     return Deferred.promise();
 };
 
@@ -27,7 +27,7 @@ exports.getAuditLogList = function(searchObj){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -51,7 +51,7 @@ exports.getSingleAuditLogList = function(searchObj){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -72,7 +72,7 @@ exports.getSingleUserAppList = function(searchObj){
         success : function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get('user.log.get.log.fail', '获取操作日志信息失败！'));
             }
@@ -97,7 +97,7 @@ exports.getUserLoginInfo = function(queryobj){
         success: function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取登录信息失败！'));
             }
@@ -122,7 +122,7 @@ exports.getUserLoginChartInfo = function(queryobj){
         success: function(data){
             Deferred.resolve(data);
         },
-        error: function (xhr,status) {
+        error: function(xhr,status) {
             if(status !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取登录信息失败！'));
             }

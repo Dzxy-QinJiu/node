@@ -11,7 +11,7 @@ function SingleUserLogStore(){
 }
 
 // 操作日志相关的初始变量
-SingleUserLogStore.prototype.logInitialState = function () {
+SingleUserLogStore.prototype.logInitialState = function() {
     this.curPage = 1;
     this.pageSize = 10;
     this.total = 0;
@@ -64,7 +64,7 @@ SingleUserLogStore.prototype.changUserIdKeepSearch = function() {
 };
 
 // 获取单个用户审计日志的信息
-SingleUserLogStore.prototype.getSingleAuditLogList = function (result) {
+SingleUserLogStore.prototype.getSingleAuditLogList = function(result) {
     this.isLoading = false;
     if (result.loading){
         this.logListLoading = "loading";
@@ -98,7 +98,7 @@ SingleUserLogStore.prototype.setSelectedAppId = function(appId){
 };
 
 // 记录搜索框中输入的内容
-SingleUserLogStore.prototype.handleSearchEvent = function (searchName) {
+SingleUserLogStore.prototype.handleSearchEvent = function(searchName) {
     this.searchName = searchName;
 };
 

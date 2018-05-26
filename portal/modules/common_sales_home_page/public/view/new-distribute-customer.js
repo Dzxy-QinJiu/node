@@ -48,7 +48,7 @@ class NewDistributeCustomer extends React.Component {
 }
 NewDistributeCustomer.defaultProps = {
     newDistributeCustomer: {},
-    openCustomerDetail: function () {
+    openCustomerDetail: function() {
 
     }
 

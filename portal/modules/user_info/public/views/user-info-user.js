@@ -36,7 +36,7 @@ function noop() {
 }
 function cx(classNames) {
     if (typeof classNames === 'object') {
-        return Object.keys(classNames).filter(function (className) {
+        return Object.keys(classNames).filter(function(className) {
             return classNames[className];
         }).join(' ');
     } else {
@@ -45,7 +45,7 @@ function cx(classNames) {
 }
 var UserInfo = React.createClass({
     mixins: [Validation.FieldMixin, reactIntlMixin],
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
             editUserInfo: noop,
             userInfoFormShow: false,
@@ -64,7 +64,7 @@ var UserInfo = React.createClass({
             }
         };
     },
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             status: {
                 userId: "",
@@ -87,31 +87,31 @@ var UserInfo = React.createClass({
             lang: Oplate.lang || "zh_CN"
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.refs.validation.reset();
         this.setState({
             formData: $.extend(true, {}, nextProps.userInfo),
             userInfoFormShow: nextProps.userInfoFormShow
         });
     },
-    componentDidUpdate: function () {
+    componentDidUpdate: function() {
         if (this.state.formData.id) {
             this.refs.validation.validate(noop);
         }
     },
     //编辑用户信息
-    showUserInfoForm: function () {
+    showUserInfoForm: function() {
         UserInfoAction.showUserInfoForm();
     },
 
     //取消编辑用户信息
-    handleCancel: function (e) {
+    handleCancel: function(e) {
         e.preventDefault();
         UserInfoAction.hideUserInfoForm();
     },
 
     //保存用户信息
-    handleSubmit: function (e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         var validation = this.refs.validation;
         var _this = this;
@@ -135,10 +135,10 @@ var UserInfo = React.createClass({
             }
         });
     },
-    hideSaveTooltip: function () {
+    hideSaveTooltip: function() {
         this.setState({saveErrorMsg: ""});
     },
-    renderValidateStyle: function (item) {
+    renderValidateStyle: function(item) {
         var formData = this.state.formData;
         var status = this.state.status;
 
@@ -152,7 +152,7 @@ var UserInfo = React.createClass({
     },
 
     //校验手机号码
-    checkPhone: function (rule, value, callback) {
+    checkPhone: function(rule, value, callback) {
         var _this = this;
         value = $.trim(value);
         if (value) {
@@ -168,13 +168,13 @@ var UserInfo = React.createClass({
         }
     },
 
-    uploadImg: function (src) {
+    uploadImg: function(src) {
         var formData = this.state.formData;
         formData.userLogo = src;
         this.setState({formData: formData});
     },
     //激活邮箱
-    activeUserEmail: function () {
+    activeUserEmail: function() {
         var _this = this;
         if (this.state.formData.emailEnable) {
             return;
@@ -189,7 +189,7 @@ var UserInfo = React.createClass({
             }
         });
     },
-    handleSubscribeCallback: function (resultObj) {
+    handleSubscribeCallback: function(resultObj) {
         if (resultObj.error) {
             message.error(resultObj.errorMsg);
         } else {
@@ -207,7 +207,7 @@ var UserInfo = React.createClass({
 
     },
     //设置邮箱订阅功能
-    handleSubscribe: function () {
+    handleSubscribe: function() {
         var formData = this.state.formData;
         var configObj = {"config": true};
         if (formData.reject < 1) {
@@ -217,16 +217,16 @@ var UserInfo = React.createClass({
             UserInfoAction.setSubscribeEmail(configObj, this.handleSubscribeCallback);
         }
     },
-    retryRealm: function () {
+    retryRealm: function() {
         UserInfoAction.getManagedRealm();
     },
-    renderRealm: function () {
+    renderRealm: function() {
 
         if (this.props.realmLoading) {
             return (<Icon type="loading"/>);
         } else if (this.props.realmErrorMsg) {
             var errMsg = <span>{this.props.realmErrorMsg}<a onClick={this.retryRealm}
-                                                            style={{marginLeft: "20px", marginTop: "20px"}}>
+                style={{marginLeft: "20px", marginTop: "20px"}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
             return (
@@ -241,10 +241,10 @@ var UserInfo = React.createClass({
             return (<span>{this.props.managedRealm.realm_name}</span>);
         }
     },
-    retryUserInfo: function () {
+    retryUserInfo: function() {
         UserInfoAction.getUserInfo();
     },
-    renderReceiveEmail: function () {
+    renderReceiveEmail: function() {
         var formData = this.state.formData;
         if (formData.reject !== "" && formData.reject < 1) {
             return (
@@ -277,7 +277,7 @@ var UserInfo = React.createClass({
             );
         }
     },
-    getLangOptions: function () {
+    getLangOptions: function() {
         return langArray.map(lang=> {
             return (
                 <Option key={lang.key} value={lang.key}>
@@ -286,18 +286,18 @@ var UserInfo = React.createClass({
             );
         });
     },
-    onSelectLang: function (lang) {
+    onSelectLang: function(lang) {
         this.setState({lang: lang});
     },
-    cancelEditLang: function () {
+    cancelEditLang: function() {
         this.setState({lang: Oplate.lang || "zh_CN"});
     },
-    afterEditLangSuccess: function (user) {
+    afterEditLangSuccess: function(user) {
         storageUtil.local.set("userLang",user["language"]);
         //刷新界面，浏览器重新从服务器请求资源,在http请求头中不会包含缓存标记
         location.reload(true);
     },
-    getLangDisplayText: function () {
+    getLangDisplayText: function() {
         let lang = _.find(langArray, langObj=>langObj.key == this.state.lang);
         if (lang && lang.val) {
             return lang.val;
@@ -305,12 +305,12 @@ var UserInfo = React.createClass({
             return "";
         }
     },
-    renderUserInfo: function () {
+    renderUserInfo: function() {
         var _this = this;
         var formData = this.state.formData;
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo}
-                                                               style={{marginLeft: "20px", marginTop: "20px"}}>
+                style={{marginLeft: "20px", marginTop: "20px"}}>
                 <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
             </a></span>;
             return (
@@ -344,22 +344,22 @@ var UserInfo = React.createClass({
                                         defaultMessage={`该用户没有任何邮箱信息，{add-email}`}
                                         values={{
                                             "add-email": <a data-tracename="点击添加邮箱" onClick={_this.showUserInfoForm}>{Intl.get("user.info.add.email","添加邮箱")}</a>,}}/>
-                            </span>}
+                                </span>}
                         </span>
                         {formData.email ? (formData.emailEnable ? <span>（
                             <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>
                             ）</span> :
                             <span>
                                 （
-                                 <ReactIntl.FormattedMessage
-                                     id="user.info.no.active"
-                                     defaultMessage={`未激活，请{active}`}
-                                     values={{
-                                         'active': <a onClick={_this.activeUserEmail} data-tracename="激活">
-                                             <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
-                                         </a>
-                                     }}
-                                 />
+                                <ReactIntl.FormattedMessage
+                                    id="user.info.no.active"
+                                    defaultMessage={`未激活，请{active}`}
+                                    values={{
+                                        'active': <a onClick={_this.activeUserEmail} data-tracename="激活">
+                                            <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
+                                        </a>
+                                    }}
+                                />
 
                                 ）
 
@@ -405,7 +405,7 @@ var UserInfo = React.createClass({
             );
         }
     },
-    render: function () {
+    render: function() {
         var _this = this;
         var formData = this.state.formData;
         var status = this.state.status;
@@ -413,22 +413,22 @@ var UserInfo = React.createClass({
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
                     <Button className="user-info-btn-class icon-update iconfont"
-                            onClick={_this.showUserInfoForm}
-                            style={{display: this.props.userInfoFormShow ? "none" : "block"}}
-                            data-tracename="编辑个人资料"/>
+                        onClick={_this.showUserInfoForm}
+                        style={{display: this.props.userInfoFormShow ? "none" : "block"}}
+                        data-tracename="编辑个人资料"/>
                     <div className="user-info-logo">
                         {
                             this.props.userInfoFormShow ?
                                 (<HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName} isEdit={true}
-                                           isNotShowUserName={true}
-                                           onChange={this.uploadImg}
-                                           userName={formData.userName}
-                                           nickName={formData.nickName}
-                                           isUserHeadIcon={true}/>) :
+                                    isNotShowUserName={true}
+                                    onChange={this.uploadImg}
+                                    userName={formData.userName}
+                                    nickName={formData.nickName}
+                                    isUserHeadIcon={true}/>) :
                                 (<HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName}
-                                           userName={formData.userName}
-                                           nickName={formData.nickName}
-                                           isUserHeadIcon={true}/>)
+                                    userName={formData.userName}
+                                    nickName={formData.nickName}
+                                    isUserHeadIcon={true}/>)
                         }
                     </div>
                 </div>
@@ -450,8 +450,8 @@ var UserInfo = React.createClass({
                                     message: this.formatMessage(messages.common_correct_email)
                                 }]}>
                                     <Input name="email" id="email" type="text" value={formData.email}
-                                           placeholder={this.formatMessage(messages.common_required_tip)}
-                                           onChange={this.setField.bind(this, 'email')}/>
+                                        placeholder={this.formatMessage(messages.common_required_tip)}
+                                        onChange={this.setField.bind(this, 'email')}/>
                                 </Validator>
                             </FormItem>
                             <FormItem
@@ -465,8 +465,8 @@ var UserInfo = React.createClass({
                             >
                                 <Validator rules={[{validator: this.checkPhone}]}>
                                     <Input name="phone" id="phone" value={formData.phone}
-                                           placeholder={this.formatMessage(messages.user_info_input_phone)}
-                                           onChange={this.setField.bind(this, 'phone')}/>
+                                        placeholder={this.formatMessage(messages.user_info_input_phone)}
+                                        onChange={this.setField.bind(this, 'phone')}/>
                                 </Validator>
                             </FormItem>
                             <FormItem
@@ -483,26 +483,26 @@ var UserInfo = React.createClass({
                                     message: this.formatMessage(messages.user_info_nickname_required)
                                 }]}>
                                     <Input name="nickName" id="nickName" value={formData.nickName}
-                                           placeholder={this.formatMessage(messages.common_required_tip)}
-                                           onChange={this.setField.bind(this, 'nickName')}/>
+                                        placeholder={this.formatMessage(messages.common_required_tip)}
+                                        onChange={this.setField.bind(this, 'nickName')}/>
                                 </Validator>
                             </FormItem>
                             <FormItem
                                 wrapperCol={{span: 22}}>
                                 <Button type="ghost" className="user-info-edit-cancel-btn btn-primary-cancel"
-                                        onClick={this.handleCancel} data-tracename="取消编辑个人资料">
+                                    onClick={this.handleCancel} data-tracename="取消编辑个人资料">
                                     <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                 </Button>
                                 <Button type="primary" className="user-info-edit-submit-btn btn-primary-sure"
-                                        onClick={this.handleSubmit} data-tracename="保存个人资料">
+                                    onClick={this.handleSubmit} data-tracename="保存个人资料">
                                     <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
                                 </Button>
                                 {this.state.isSaving ? (<Icon type="loading"/>) : (
                                     this.state.saveErrorMsg ? (<div className="indicator">
                                         <AlertTimer time={3000}
-                                                    message={this.state.saveErrorMsg}
-                                                    type={"error"} showIcon
-                                                    onHide={this.hideSaveTooltip}/>
+                                            message={this.state.saveErrorMsg}
+                                            type={"error"} showIcon
+                                            onHide={this.hideSaveTooltip}/>
                                     </div>) : null)
                                 }
                             </FormItem>

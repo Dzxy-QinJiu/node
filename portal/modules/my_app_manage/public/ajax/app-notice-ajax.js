@@ -18,7 +18,7 @@ exports.getAppNoticeList = function(searchObj){
         success : function(result){
             Deferred.resolve(result);
         },
-        error : function (xhr, state) {
+        error : function(xhr, state) {
             if ('abort' !== state){
                 Deferred.reject(xhr.responseJSON);
             }
@@ -35,10 +35,10 @@ exports.addAppNotice = function(newNoticeInfo){
         type: 'post',
         dateType: 'json',
         data: newNoticeInfo,
-        success: function (result) {
+        success: function(result) {
             Deferred.resolve(result);
         },
-        error : function (errorInfo) {
+        error : function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

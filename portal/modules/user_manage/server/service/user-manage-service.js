@@ -39,14 +39,14 @@ var userRestApis = {
 exports.urls = userRestApis;
 
 //获取用户
-exports.getUsers = function (req, res, condition, isGetAllUser) {
+exports.getUsers = function(req, res, condition, isGetAllUser) {
     return restUtil.authRest.get(
         {
             url: userRestApis.getUsers,
             req: req,
             res: res
         }, condition, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var userListObj = data;
                 var curUserList = userListObj.data ? userListObj.data : [];
@@ -69,14 +69,14 @@ exports.getUsers = function (req, res, condition, isGetAllUser) {
 };
 
 //通过用户id获取用户详细信息
-exports.getCurUserById = function (req, res, userId) {
+exports.getCurUserById = function(req, res, userId) {
     return restUtil.authRest.get(
         {
             url: userRestApis.getUserById + "/" + userId,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data) {
                     data = User.toFrontObject(data);
@@ -88,7 +88,7 @@ exports.getCurUserById = function (req, res, userId) {
 
 
 //添加用户
-exports.addUser = function (req, res, frontUser) {
+exports.addUser = function(req, res, frontUser) {
     var addUser = User.toRestObject(frontUser);
     addUser.realm_id = auth.getUser(req).auth.realm_id;
     return restUtil.authRest.post(
@@ -99,7 +99,7 @@ exports.addUser = function (req, res, frontUser) {
         },
         addUser,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isObject(data)) {
                     frontUser.id = data.user_id;
@@ -117,7 +117,7 @@ exports.addUser = function (req, res, frontUser) {
 };
 
 //修改用户
-exports.editUser = function (req, res, user) {
+exports.editUser = function(req, res, user) {
     return restUtil.authRest.put(
         {
             url: userRestApis.modifyUser,
@@ -127,7 +127,7 @@ exports.editUser = function (req, res, user) {
 };
 
 //修改用户所属团队
-exports.updateUserTeam = function (req, res, params) {
+exports.updateUserTeam = function(req, res, params) {
     return restUtil.authRest.put(
         {
             url: userRestApis.updateUserTeam + "/" + params.user_id + "/" + params.group_id,
@@ -136,7 +136,7 @@ exports.updateUserTeam = function (req, res, params) {
         }, null);
 };
 //修改成员角色
-exports.updateUserRoles = function (req, res, user) {
+exports.updateUserRoles = function(req, res, user) {
     return restUtil.authRest.put(
         {
             url: userRestApis.updateUserRoles,
@@ -145,7 +145,7 @@ exports.updateUserRoles = function (req, res, user) {
         }, user);
 };
 //启停用户
-exports.updateUserStatus = function (req, res, frontUser) {
+exports.updateUserStatus = function(req, res, frontUser) {
     var flag = frontUser.status == 0 ? "disable" : "enable";//成员的启停
     return restUtil.authRest.put(
         {
@@ -156,7 +156,7 @@ exports.updateUserStatus = function (req, res, frontUser) {
 };
 
 //获取用户日志
-exports.getUserLog = function (req, res, condition) {
+exports.getUserLog = function(req, res, condition) {
     return restUtil.authRest.get(
         {
             url: userRestApis.getUserLog + "/" + condition.user_name + "/" + condition.page_size + "/" + condition.num,
@@ -164,10 +164,10 @@ exports.getUserLog = function (req, res, condition) {
             res: res
         },
         null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data && data.list) {
-                    data.list = data.list.map(function (log) {
+                    data.list = data.list.map(function(log) {
                         return {
                             logTime: log.timestamp,
                             logInfo: log.operate
@@ -182,7 +182,7 @@ exports.getUserLog = function (req, res, condition) {
 
 
 //获取角色列表
-exports.getRoleList = function (req, res, clientId) {
+exports.getRoleList = function(req, res, clientId) {
     return restUtil.authRest.get(
         {
             url: userRestApis.getRoleList + "/" + clientId,
@@ -190,10 +190,10 @@ exports.getRoleList = function (req, res, clientId) {
             res: res
         },
         null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data) {
-                    data = data.map(function (role) {
+                    data = data.map(function(role) {
                         return {
                             roleId: role.role_id,
                             roleName: role.role_name
@@ -207,7 +207,7 @@ exports.getRoleList = function (req, res, clientId) {
 };
 
 //用户名唯一性验证
-exports.checkOnlyUserName = function (req, res, userName) {
+exports.checkOnlyUserName = function(req, res, userName) {
     return restUtil.authRest.get(
         {
             url: userRestApis.checkOnlyUser + "/username," + userName,
@@ -217,7 +217,7 @@ exports.checkOnlyUserName = function (req, res, userName) {
 };
 
 //电话唯一性验证
-exports.checkOnlyPhone = function (req, res, phone) {
+exports.checkOnlyPhone = function(req, res, phone) {
     return restUtil.authRest.get(
         {
             url: userRestApis.checkOnlyUser + "/phone," + phone,
@@ -227,7 +227,7 @@ exports.checkOnlyPhone = function (req, res, phone) {
 };
 
 //邮箱唯一性验证
-exports.checkOnlyEmail = function (req, res, email) {
+exports.checkOnlyEmail = function(req, res, email) {
     return restUtil.authRest.get(
         {
             url: userRestApis.checkOnlyUser + "/email," + email,
@@ -236,7 +236,7 @@ exports.checkOnlyEmail = function (req, res, email) {
         }, null);
 };
 //查询销售目标和提成比例
-exports.getSalesGoals = function (req, res) {
+exports.getSalesGoals = function(req, res) {
     return restUtil.authRest.get(
         {
             url: userRestApis.getAndSetSalesGoals,
@@ -245,7 +245,7 @@ exports.getSalesGoals = function (req, res) {
         }, req.query);
 };
 //设置销售目标或提成比例
-exports.setSalesGoals = function (req, res) {
+exports.setSalesGoals = function(req, res) {
     return restUtil.authRest.post(
         {
             url: userRestApis.getAndSetSalesGoals,

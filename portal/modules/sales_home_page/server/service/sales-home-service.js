@@ -47,11 +47,11 @@ function getGrantApplications(req, res, status) {
         }, {
             status: status
         }, {
-            success: function (eventEmitter, list) {
+            success: function(eventEmitter, list) {
                 if (!_.isArray(list)) {
                     list = [];
                 }
-                var responseList = list.map(function (originApp) {
+                var responseList = list.map(function(originApp) {
                     return originApp.client_id;
                 });
                 resolve(responseList);
@@ -61,7 +61,7 @@ function getGrantApplications(req, res, status) {
 
 }
 //获取当前销售所在销售团队的团队树
-exports.getSalesTeamTree = function (req, res, type) {
+exports.getSalesTeamTree = function(req, res, type) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesTeamTree.replace(":type", type),
@@ -70,7 +70,7 @@ exports.getSalesTeamTree = function (req, res, type) {
         }, null);
 };
 //获取各销售对应的通话状态
-exports.getSalesCallStatus=function (req, res, queryObj) {
+exports.getSalesCallStatus=function(req, res, queryObj) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesCallStatus.replace(":user_ids", queryObj.user_ids),
@@ -79,14 +79,14 @@ exports.getSalesCallStatus=function (req, res, queryObj) {
         }, null);
 };
 //获取销售-客户列表
-exports.getSalesCustomer = function (req, res, timeRange) {
+exports.getSalesCustomer = function(req, res, timeRange) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesCustomer,
             req: req,
             res: res
         }, timeRange, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var salesCustomer = salesObj.toFrontSalesCustomer(data);
                 eventEmitter.emit("success", salesCustomer);
@@ -95,14 +95,14 @@ exports.getSalesCustomer = function (req, res, timeRange) {
 };
 
 //获取销售-电话列表
-exports.getSalesPhone = function (req, res, reqData, type) {
+exports.getSalesPhone = function(req, res, reqData, type) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesPhone.replace(":type", type),
             req: req,
             res: res
         }, reqData, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var salesPhone = salesObj.toFrontSalesPhone(data);
                 eventEmitter.emit("success", salesPhone);
@@ -111,14 +111,14 @@ exports.getSalesPhone = function (req, res, reqData, type) {
 };
 
 //获取销售-用户列表
-exports.getSalesUser = function (req, res, timeRange) {
+exports.getSalesUser = function(req, res, timeRange) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesUser,
             req: req,
             res: res
         }, timeRange, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var salesUser = salesObj.toFrontSalesUser(data);
                 eventEmitter.emit("success", salesUser);
@@ -127,7 +127,7 @@ exports.getSalesUser = function (req, res, timeRange) {
 };
 
 //获取销售-合同列表
-exports.getSalesContract = function (req, res, timeRange) {
+exports.getSalesContract = function(req, res, timeRange) {
     return restUtil.authRest.get(
         {
             url: restApis.getSalesContract,
@@ -137,7 +137,7 @@ exports.getSalesContract = function (req, res, timeRange) {
 };
 
 //获取过期用户列表
-exports.getExpireUser = function (req, res) {
+exports.getExpireUser = function(req, res) {
     var queryObj = req.query;
     var url = restApis.getExpireUser ;
     if (!_.isEmpty(queryObj)){
@@ -154,7 +154,7 @@ exports.getExpireUser = function (req, res) {
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var expireUser = salesObj.toFrontExpireUser(data);
                 eventEmitter.emit("success", expireUser);
@@ -173,10 +173,10 @@ function getUserInfoEmail(req, res) {
                 req: req,
                 res: res
             }, null, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resolve(data);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });
@@ -192,7 +192,7 @@ function getWebsiteConfig(req, res, responseObj) {
                 req: req,
                 res: res
             }, null, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     //有数据,并且设置了不提醒
                     if (data && data.setting_notice_ignore === "yes"){
                         resolve(responseObj);
@@ -201,7 +201,7 @@ function getWebsiteConfig(req, res, responseObj) {
                         resolve(responseObj);
                     }
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     reject(errorObj.message);
                 }
             });
@@ -210,7 +210,7 @@ function getWebsiteConfig(req, res, responseObj) {
 
 
 //获取是否需要展示激活邮箱提示
-exports.getShowActiveEmailObj = function (req, res) {
+exports.getShowActiveEmailObj = function(req, res) {
     var emitter = new EventEmitter();
     getUserInfoEmail(req, res).then((data) => {
         var responseObj = {
@@ -235,7 +235,7 @@ exports.getShowActiveEmailObj = function (req, res) {
             //用户没有邮箱，提示添加邮箱
             emitter.emit("success", responseObj);
         }
-    }).catch(function (errorMsg) {
+    }).catch(function(errorMsg) {
         emitter.emit("error", errorMsg);
     });
     return emitter;
@@ -243,7 +243,7 @@ exports.getShowActiveEmailObj = function (req, res) {
 };
 
 //对网站进行个性化设置
-exports.setWebsiteConfig = function (req, res ,reqObj) {
+exports.setWebsiteConfig = function(req, res ,reqObj) {
     return restUtil.authRest.post(
         {
             url: restApis.websiteConfig,
@@ -253,7 +253,7 @@ exports.setWebsiteConfig = function (req, res ,reqObj) {
 };
 
 //获取回访列表
-exports.getCallBack = function (req, res, params, filterObj, queryObj) {
+exports.getCallBack = function(req, res, params, filterObj, queryObj) {
     let url = params.type === 'manager' ? restApis.managerCallRcordListUrl : restApis.callRecordListUrl;
     delete params.type;
     let paramsKeyArray = Object.keys(params);

@@ -76,7 +76,7 @@ function AppStore() {
     this.bindActions(AppActions);
 }
 
-AppStore.prototype.showAppCodeTrace = function () {
+AppStore.prototype.showAppCodeTrace = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -88,7 +88,7 @@ AppStore.prototype.showAppCodeTrace = function () {
     this.appCodeTraceShow = true;
 };
 //修改应用到期时间后的更新
-AppStore.prototype.afterUpdateAppExpireDate = function (appObj) {
+AppStore.prototype.afterUpdateAppExpireDate = function(appObj) {
     if (appObj.client_id) {
         //找到要更新的应用
         let updateApp = _.find(this.curAppList, app => app.id == appObj.client_id);
@@ -98,11 +98,11 @@ AppStore.prototype.afterUpdateAppExpireDate = function (appObj) {
 };
 
 //是否展示应用权限面板的设置
-AppStore.prototype.setAppSecretRefreshing = function (flag) {
+AppStore.prototype.setAppSecretRefreshing = function(flag) {
     this.appSecretRefreshing = flag;
 };
 //刷新应用密钥
-AppStore.prototype.refreshAppSecret = function (appObj) {
+AppStore.prototype.refreshAppSecret = function(appObj) {
     this.appSecretRefreshing = false;
     if (!_.isString(appObj)) {
         //找到刷新新密钥的应用
@@ -113,7 +113,7 @@ AppStore.prototype.refreshAppSecret = function (appObj) {
 };
 
 //是否展示应用权限面板的设置
-AppStore.prototype.showAppAuthPanel = function () {
+AppStore.prototype.showAppAuthPanel = function() {
     this.isAppAuthPanelShow = true;
     this.appAuthPanelShow = true;
     this.appInfoShow = false;
@@ -125,24 +125,24 @@ AppStore.prototype.showAppAuthPanel = function () {
     this.appCodeTraceShow = false;
 };
 //是否展示我的应用的角色、权限面板
-AppStore.prototype.showAuthRolePanel = function (appId) {
+AppStore.prototype.showAuthRolePanel = function(appId) {
     this.isShowAuthRolePanel = true;
     this.showAuthoRoleAppId = appId;
 };
 //设置我的应用的角色权限时，展示角色面板还是权限面板
-AppStore.prototype.setShowRoleAuthType = function (type) {
+AppStore.prototype.setShowRoleAuthType = function(type) {
     this.showRoleAuthType = type;
 };
 
 //关闭角色权限设置面板时的处理
-AppStore.prototype.closeAuthRolePanel = function () {
+AppStore.prototype.closeAuthRolePanel = function() {
     this.isShowAuthRolePanel = false;
     this.showAuthoRoleAppId = "";
     this.showRoleAuthType = "role";
 };
 
-AppStore.prototype.setCurAppDetail = function (appId) {
-    var curApp = _.find(this.curAppList, function (app) {
+AppStore.prototype.setCurAppDetail = function(appId) {
+    var curApp = _.find(this.curAppList, function(app) {
         if (app.id == appId) {
             return true;
         }
@@ -150,7 +150,7 @@ AppStore.prototype.setCurAppDetail = function (appId) {
     this.currentApp = curApp || emptyApp;
 };
 //公开方法，获取当前展示的列表
-AppStore.prototype.getMyAppList = function (resultObj) {
+AppStore.prototype.getMyAppList = function(resultObj) {
     this.isLoading = false;
     if (_.isString(resultObj)) {
         //错误提示的赋值
@@ -199,7 +199,7 @@ AppStore.prototype.getMyAppList = function (resultObj) {
     }
 };
 
-AppStore.prototype.getCurAppById = function (app) {
+AppStore.prototype.getCurAppById = function(app) {
     this.appIsLoading = false;
     this.currentApp = app;
     var curAppList = this.curAppList;
@@ -211,13 +211,13 @@ AppStore.prototype.getCurAppById = function (app) {
     }
 };
 
-AppStore.prototype.closeAddPanel = function () {
+AppStore.prototype.closeAddPanel = function() {
     this.appFormShow = false;
     this.rightPanelShow = false;
     
 };
 
-AppStore.prototype.getCurAppKeyById = function (result) {
+AppStore.prototype.getCurAppKeyById = function(result) {
     if (result.loading){
         this.getPiwikKeyLoading = result.loading;
         this.appPiwikKeyErrMsg = "";
@@ -233,7 +233,7 @@ AppStore.prototype.getCurAppKeyById = function (result) {
 };
 //通过id获取其姓名
 //通过id获取其姓名
-AppStore.prototype.getNickName = function (id) {
+AppStore.prototype.getNickName = function(id) {
     var nickName = '';
     var userList = AppFormStore.state.appManagerList;
     if (userList && userList.length > 0) {
@@ -247,7 +247,7 @@ AppStore.prototype.getNickName = function (id) {
 };
 
 //通过id获取app的名称
-AppStore.prototype.getAppNameById = function (id) {
+AppStore.prototype.getAppNameById = function(id) {
     var appName = id;
     var appList = AppFormStore.state.allAppList;
     if (appList && appList.length > 0) {
@@ -260,7 +260,7 @@ AppStore.prototype.getAppNameById = function (id) {
 };
 
 //修改完app后，app信息的更新
-AppStore.prototype.updateApp = function (appModified, curApp) {
+AppStore.prototype.updateApp = function(appModified, curApp) {
     if (appModified.hasOwnProperty('appAuthMap')) {
         curApp.appAuthMap = JSON.parse(appModified.appAuthMap);
     } else {
@@ -287,7 +287,7 @@ AppStore.prototype.updateApp = function (appModified, curApp) {
     }
 };
 
-AppStore.prototype.afterEditApp = function (appModified) {
+AppStore.prototype.afterEditApp = function(appModified) {
     if (_.isObject(appModified)) {
         //修改完后的处理
         var curAppList = this.curAppList;
@@ -300,7 +300,7 @@ AppStore.prototype.afterEditApp = function (appModified) {
     }
 };
 
-AppStore.prototype.showAppForm = function (type) {
+AppStore.prototype.showAppForm = function(type) {
     if (type === "add") {
         this.currentApp = emptyApp;
     }
@@ -319,7 +319,7 @@ AppStore.prototype.showAppForm = function (type) {
 };
 
 // 版本升级记录
-AppStore.prototype.showVersionUpgradePanel = function () {
+AppStore.prototype.showVersionUpgradePanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -334,7 +334,7 @@ AppStore.prototype.showVersionUpgradePanel = function () {
 };
 
 // 系统公告
-AppStore.prototype.showAppNoticePanel = function () {
+AppStore.prototype.showAppNoticePanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -349,7 +349,7 @@ AppStore.prototype.showAppNoticePanel = function () {
 };
 
 //用户类型设置
-AppStore.prototype.showUserTypeConfigPanel = function () {
+AppStore.prototype.showUserTypeConfigPanel = function() {
     this.isAppFormShow = false;
     this.appInfoShow = false;
     this.appFormShow = false;
@@ -363,23 +363,23 @@ AppStore.prototype.showUserTypeConfigPanel = function () {
     this.appCodeTraceShow = false;
 };
 
-AppStore.prototype.showModalDialog = function () {
+AppStore.prototype.showModalDialog = function() {
     this.modalDialogShow = true;
 };
 
-AppStore.prototype.hideModalDialog = function () {
+AppStore.prototype.hideModalDialog = function() {
     this.modalDialogShow = false;
 };
 
-AppStore.prototype.updateCurPage = function (curPage) {
+AppStore.prototype.updateCurPage = function(curPage) {
     this.curPage = curPage;
 };
 
-AppStore.prototype.updatePageSize = function (pageSize) {
+AppStore.prototype.updatePageSize = function(pageSize) {
     this.pageSize = pageSize;
 };
 
-AppStore.prototype.showAppInfo = function () {
+AppStore.prototype.showAppInfo = function() {
     this.appInfoShow = true;
     this.appIsLoading = true;
     this.appFormShow = false;
@@ -391,12 +391,12 @@ AppStore.prototype.showAppInfo = function () {
     this.appCodeTraceShow = false;
 };
 
-AppStore.prototype.updateSearchContent = function (searchContent) {
+AppStore.prototype.updateSearchContent = function(searchContent) {
     this.searchContent = searchContent;
 
 };
 
-AppStore.prototype.closeRightPanel = function () {
+AppStore.prototype.closeRightPanel = function() {
     this.versionUpgradeShow = false;
     this.appNoticePanelShow = false;
     this.userTypeConfigShow = false;
@@ -404,7 +404,7 @@ AppStore.prototype.closeRightPanel = function () {
     this.appCodeTraceShow = false;
 };
 
-AppStore.prototype.returnInfoPanel = function () {
+AppStore.prototype.returnInfoPanel = function() {
     this.appInfoShow = true;
     this.appFormShow = false;
     this.versionUpgradeShow = false;

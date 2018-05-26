@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 //获取客户跟踪记录列表
-exports.getCustomerTraceRecordList = function (queryObj) {
+exports.getCustomerTraceRecordList = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url : '/rest/customer/get_customer_trace_list',
@@ -21,7 +21,7 @@ exports.getCustomerTraceRecordList = function (queryObj) {
     return Deferred.promise();
 };
 //增加客户跟踪记录
-exports.addCustomerTrace = function (queryObj) {
+exports.addCustomerTrace = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url : '/rest/customer/add_customer_trace_list',
@@ -39,7 +39,7 @@ exports.addCustomerTrace = function (queryObj) {
 
 };
 //更新客户跟踪记录
-exports.updateCustomerTrace = function (queryObj) {
+exports.updateCustomerTrace = function(queryObj) {
 
     var Deferred = $.Deferred();
     $.ajax({

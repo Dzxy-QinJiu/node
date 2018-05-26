@@ -70,18 +70,18 @@ const ApplyUser = React.createClass({
     //渲染申请表单
     renderApplyFormCarousel() {
         if (this.state.applyFormShow) {
-        return (
-            <OperationScrollBar className="basic-data-form-wrap">
-                <ApplyUserForm
-                    apps={this.state.apps}
-                    users={this.props.users}
-                    customerId={this.props.customerId}
-                    cancelApply={this.props.cancelApply}
-                    ref="applyUserForm"
-                    emailData={this.props.emailData}
-                />
-            </OperationScrollBar>
-        );
+            return (
+                <OperationScrollBar className="basic-data-form-wrap">
+                    <ApplyUserForm
+                        apps={this.state.apps}
+                        users={this.props.users}
+                        customerId={this.props.customerId}
+                        cancelApply={this.props.cancelApply}
+                        ref="applyUserForm"
+                        emailData={this.props.emailData}
+                    />
+                </OperationScrollBar>
+            );
         }
     },
     onAppsChange(apps) {
@@ -131,37 +131,37 @@ const ApplyUser = React.createClass({
             <div className="user-manage-v2 user-manage-v2-applyuser">
                 <RightPanelClose onClick={this.closeAppUserForm}/>
                 <div>
-                            <OperationSteps
-                                title={Intl.get("user.apply.user", "申请用户")}
-                                current={this.state.step}
-                            >
-                                    <OperationSteps.Step action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
-                                    <OperationSteps.Step action={Intl.get("user.apply.user", "申请用户")}></OperationSteps.Step>
-                            </OperationSteps>
-                            <Carousel
-                                interval={0}
-                                indicators={false}
-                                controls={false}
-                                activeIndex={this.state.step}
-                                direction={this.state.stepDirection}
-                                slide={false}
-                            >
-                                    <CarouselItem>
-                                            {this.renderAppsCarousel()}
-                                    </CarouselItem>
-                                    <CarouselItem>
-                                            {this.renderApplyFormCarousel()}
-                                    </CarouselItem>
-                            </Carousel>
-                            <OperationStepsFooter
-                                currentStep={this.state.step}
-                                totalStep={2}
-                                onStepChange={this.turnStep}
-                                onFinish={this.onStepFinish}
-                                isSubmiting={this.state.isSubmiting}
-                            >
-                                <span className="operator_person">{Intl.get('user.operator','操作人')}:{this.state.operator}</span>
-                            </OperationStepsFooter>
+                    <OperationSteps
+                        title={Intl.get("user.apply.user", "申请用户")}
+                        current={this.state.step}
+                    >
+                        <OperationSteps.Step action={Intl.get("user.user.app.select", "选择应用")}></OperationSteps.Step>
+                        <OperationSteps.Step action={Intl.get("user.apply.user", "申请用户")}></OperationSteps.Step>
+                    </OperationSteps>
+                    <Carousel
+                        interval={0}
+                        indicators={false}
+                        controls={false}
+                        activeIndex={this.state.step}
+                        direction={this.state.stepDirection}
+                        slide={false}
+                    >
+                        <CarouselItem>
+                            {this.renderAppsCarousel()}
+                        </CarouselItem>
+                        <CarouselItem>
+                            {this.renderApplyFormCarousel()}
+                        </CarouselItem>
+                    </Carousel>
+                    <OperationStepsFooter
+                        currentStep={this.state.step}
+                        totalStep={2}
+                        onStepChange={this.turnStep}
+                        onFinish={this.onStepFinish}
+                        isSubmiting={this.state.isSubmiting}
+                    >
+                        <span className="operator_person">{Intl.get('user.operator','操作人')}:{this.state.operator}</span>
+                    </OperationStepsFooter>
                 </div>
             </div>
         );

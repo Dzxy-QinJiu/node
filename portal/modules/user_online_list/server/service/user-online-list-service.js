@@ -8,7 +8,7 @@ var urls = {
 };
 
 //获取在线用户列表
-exports.getOnlineUserList = function (req, res) {
+exports.getOnlineUserList = function(req, res) {
     var pageSize = req.params.pageSize;
     var pageNum = req.params.pageNum;
     var condition = req.body;
@@ -27,7 +27,7 @@ exports.getOnlineUserList = function (req, res) {
             req: req,
             res: res
         }, condition, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 eventEmitter.emit("success", data);
             }
         }

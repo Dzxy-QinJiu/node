@@ -145,14 +145,14 @@ const CallRecord = React.createClass({
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentId != prevProps.currentId) {
             var _this = this;
-            setTimeout(function () {
+            setTimeout(function() {
                 var callRecord = _this.state.callRecord;
                 callRecord.page = 1;
                 callRecord.data_list = [];
                 callRecord.listenScrollBottom = false;
                 _this.updateStore({
                     callRecord: callRecord
-                }, function () {
+                }, function() {
                     _this.getCallListByAjax();
                 });
             });
@@ -179,7 +179,7 @@ const CallRecord = React.createClass({
         this.setState({showRightPanel});
     },
     //计算表格高度
-    changeTableHeight: function () {
+    changeTableHeight: function() {
         var tableHeight = $(window).height() -
             LAYOUT_CONSTANTS.PADDING_TOP -
             LAYOUT_CONSTANTS.FIXED_THEAD -
@@ -270,7 +270,7 @@ const CallRecord = React.createClass({
         delete this.state.filterObj[filterKey];
         this.setState({ filterObj: this.state.filterObj });
     },
-    onSearchInputKeyUp: function (filterKey) {
+    onSearchInputKeyUp: function(filterKey) {
         if (searchInputTimeOut) {
             clearTimeout(searchInputTimeOut);
         }
@@ -432,17 +432,17 @@ const CallRecord = React.createClass({
             {filterKey == 'disposition' || filterKey == 'type' ? (
                 this.filterTypeStatusKeySelect(filterKey, columnLabel)
             ) : (
-                    <Input placeholder={placeholder} value={filterValue || ""}
-                        onChange={this.onChangeFilterObj.bind(this, filterKey)}
-                        onKeyUp={this.onSearchInputKeyUp.bind(this, filterKey)}
-                    />
-                )}
+                <Input placeholder={placeholder} value={filterValue || ""}
+                    onChange={this.onChangeFilterObj.bind(this, filterKey)}
+                    onKeyUp={this.onSearchInputKeyUp.bind(this, filterKey)}
+                />
+            )}
             {filterValue && filterKey != 'disposition' && filterKey != 'type' ? (<Icon type="cross-circle-o"
                 onClick={this.clearFilterContent.bind(this, filterKey)} />) : null}
         </div>) : columnLabel;
     },
     // 添加客户和联系人面板
-    showAddCustomerForm: function (phoneNumber) {
+    showAddCustomerForm: function(phoneNumber) {
         Trace.traceEvent(this.getDOMNode(), '点击+添加客户和联系人');
         this.setState({
             isAddFlag: true,
@@ -450,18 +450,18 @@ const CallRecord = React.createClass({
         });
     },
     // 隐藏添加客户和联系人面板
-    hideAddCustomerForm: function () {
+    hideAddCustomerForm: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".add-customer"), '关闭添加客户和联系人面板');
         this.setState({
             isAddFlag: false
         });
     },
-    addOne: function (customer) {
+    addOne: function(customer) {
         this.setState({
             isAddFlag: false
         });
     },
-    showRightPanel: function (id) {
+    showRightPanel: function(id) {
         //舆情秘书角色不让看详情
         if (userData.hasRole(userData.ROLE_CONSTANS.SECRETARY)) {
             return;
@@ -480,7 +480,7 @@ const CallRecord = React.createClass({
             }
         });
     },
-    hideRightPanel: function () {
+    hideRightPanel: function() {
         this.setState({
             rightPanelIsShow: false,
             seletedRecordId: ""
@@ -499,10 +499,10 @@ const CallRecord = React.createClass({
         return widthPixel;
     },
     //点击播放录音
-    handleAudioPlay: function (item) {
+    handleAudioPlay: function(item) {
         //如果是点击切换不同的录音，找到上次点击播放的那一条记录，把他的playSelected属性去掉
         var oldItemId = "";
-        var oldSelected = _.find(this.state.callRecord.data_list, function (item) { return item.playSelected; });
+        var oldSelected = _.find(this.state.callRecord.data_list, function(item) { return item.playSelected; });
         if (oldSelected) {
             delete oldSelected.playSelected;
             oldItemId = oldSelected.id;
@@ -530,13 +530,13 @@ const CallRecord = React.createClass({
         });
     },
     //处理点击客户,存放当前选中的通话记录id
-    handleClickCustomer: function (record) {
+    handleClickCustomer: function(record) {
         this.setState({
             selectedRecordId: record.id,
             showRightPanel: true
         });
     },
-    handleClickTextArea: function (item) {
+    handleClickTextArea: function(item) {
         item.showTextEdit = !item.showTextEdit;
         this.setState(this.state);
     },
@@ -623,7 +623,7 @@ const CallRecord = React.createClass({
                 sorter: true,
                 width: 100,
                 className: 'has-filter data-float-right has-sorter',
-                render: function (billsec) {
+                render: function(billsec) {
                     return <div>{TimeUtil.getFormatTime(billsec)}</div>;
                 }
             }, {
@@ -660,10 +660,10 @@ const CallRecord = React.createClass({
                                     <input type="hidden" value={record.customer_name} className="customer_name_hidden" />
                                 </div>
                             ) : (
-                                    <div title="点击添加客户和联系人" onClick={this.showAddCustomerForm.bind(this, record.dst)}>
-                                        <Icon type="plus"/>
-                                    </div>
-                                )}
+                                <div title="点击添加客户和联系人" onClick={this.showAddCustomerForm.bind(this, record.dst)}>
+                                    <Icon type="plus"/>
+                                </div>
+                            )}
                         </div>
                     );
                 }
@@ -700,9 +700,9 @@ const CallRecord = React.createClass({
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
                                     /> :
-                                    <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
-                                        {record.remark}
-                                    </span>
+                                        <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
+                                            {record.remark}
+                                        </span>
                                 }
                             </Popconfirm>
                         </div>
@@ -776,24 +776,24 @@ const CallRecord = React.createClass({
         });
     },
 
-    getRowKey: function (record, index) {
+    getRowKey: function(record, index) {
         return index;
     },
     // 过滤小于7位的号码，如114、12580...
     selectFilterPhone(value) {
         switch (value) {
-            case "114":
-                Trace.traceEvent("通话记录界面", '仅显示小于7位的号码');
-                break;
-            case "customer":
-                Trace.traceEvent("通话记录界面", '仅显示客户电话');
-                break;
-            case "invalid":
-                Trace.traceEvent("通话记录界面", '仅显示客服电话');
-                break;
-            default:
-                Trace.traceEvent("通话记录界面", '显示全部电话');
-                break;
+        case "114":
+            Trace.traceEvent("通话记录界面", '仅显示小于7位的号码');
+            break;
+        case "customer":
+            Trace.traceEvent("通话记录界面", '仅显示客户电话');
+            break;
+        case "invalid":
+            Trace.traceEvent("通话记录界面", '仅显示客服电话');
+            break;
+        default:
+            Trace.traceEvent("通话记录界面", '显示全部电话');
+            break;
         }
         CallRecordActions.filterPhone(value);
         setTimeout(() => {
@@ -821,10 +821,10 @@ const CallRecord = React.createClass({
     },
 
     //关闭音频播放按钮
-    closeAudioPlayContainer: function (e) {
+    closeAudioPlayContainer: function(e) {
         Trace.traceEvent(e, '关闭播放器按钮');
         //找到当前正在播放的那条记录
-        var oldSelected = _.find(this.state.callRecord.data_list, function (item) { return item.playSelected; });
+        var oldSelected = _.find(this.state.callRecord.data_list, function(item) { return item.playSelected; });
         if (oldSelected) {
             delete oldSelected.playSelected;
         }
@@ -872,10 +872,10 @@ const CallRecord = React.createClass({
         });
     },
     //提示框隐藏后的处理
-    hideErrTooltip:function () {
-      this.setState({
-          addingInvalidPhoneErrMsg:""
-      });
+    hideErrTooltip:function() {
+        this.setState({
+            addingInvalidPhoneErrMsg:""
+        });
     },
     render() {
         var scrollBarHeight = $(window).height() -
@@ -935,45 +935,45 @@ const CallRecord = React.createClass({
                     }
                 </div>
 
-            {/**
+                {/**
                      * 添加客户
                      */}
-            <div className="add-customer">
-                <CallAddCustomerForm
-                    showFlag={this.state.isAddFlag}
-                    hideAddForm={this.hideAddCustomerForm}
-                    addOne={this.addOne}
-                    showRightPanel={this.showRightPanel}
-                    phoneNumber={this.state.phoneNumber}
-                />
-            </div>
-            {/*
+                <div className="add-customer">
+                    <CallAddCustomerForm
+                        showFlag={this.state.isAddFlag}
+                        hideAddForm={this.hideAddCustomerForm}
+                        addOne={this.addOne}
+                        showRightPanel={this.showRightPanel}
+                        phoneNumber={this.state.phoneNumber}
+                    />
+                </div>
+                {/*
                         底部播放器
                     */}
-            <div className="audio-play-container">
-                {this.state.playingItemAddr ? (
-                    <AudioPlayer
-                        playingItemAddr={this.state.playingItemAddr}
-                        getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
-                        addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
-                        isAddingInvalidPhone={this.state.isAddingInvalidPhone}
-                        isShowReportButton={isShowReportButton}
-                        closeAudioPlayContainer={this.closeAudioPlayContainer}
-                        handleAddInvalidPhone={this.handleAddInvalidPhone}
-                        hideErrTooltip={this.hideErrTooltip}
-                    />
-                ) : null
-                }
-            </div>
+                <div className="audio-play-container">
+                    {this.state.playingItemAddr ? (
+                        <AudioPlayer
+                            playingItemAddr={this.state.playingItemAddr}
+                            getInvalidPhoneErrMsg={this.state.getInvalidPhoneErrMsg}
+                            addingInvalidPhoneErrMsg={this.state.addingInvalidPhoneErrMsg}
+                            isAddingInvalidPhone={this.state.isAddingInvalidPhone}
+                            isShowReportButton={isShowReportButton}
+                            closeAudioPlayContainer={this.closeAudioPlayContainer}
+                            handleAddInvalidPhone={this.handleAddInvalidPhone}
+                            hideErrTooltip={this.hideErrTooltip}
+                        />
+                    ) : null
+                    }
+                </div>
 
-            <RightPanel
-                className="call-analysis-panel"
-                showFlag={this.state.isShowCallAnalysisPanel}
-            >
-                <CallRecordAnalyis
-                    closeCallAnalysisPanel={this.closeCallAnalysisPanel}
-                />
-            </RightPanel>
+                <RightPanel
+                    className="call-analysis-panel"
+                    showFlag={this.state.isShowCallAnalysisPanel}
+                >
+                    <CallRecordAnalyis
+                        closeCallAnalysisPanel={this.closeCallAnalysisPanel}
+                    />
+                </RightPanel>
             </div>
         </RightContent >
         );
@@ -995,7 +995,7 @@ const CallRecord = React.createClass({
         callRecord.listenScrollBottom = false;
         this.updateStore({
             callRecord: callRecord
-        }, function () {
+        }, function() {
             _this.getCallListByAjax();
         });
     },
@@ -1069,13 +1069,13 @@ const CallRecord = React.createClass({
             </div>
         );
     },
-    showNoMoreDataTip: function () {
+    showNoMoreDataTip: function() {
         return !this.state.callRecord.is_loading &&
                this.state.callRecord.data_list.length >= this.state.callRecord.page_size &&
                !this.state.callRecord.listenScrollBottom;
     },
     //处理选中行的样式
-    handleRowClassName: function (record, index) {
+    handleRowClassName: function(record, index) {
         if ((record.id == this.state.selectedRecordId) && this.state.showRightPanel) {
             return "current_row";
         }

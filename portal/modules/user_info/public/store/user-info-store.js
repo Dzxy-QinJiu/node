@@ -54,7 +54,7 @@ function UserInfoStore() {
     this.bindActions(UserInfoActions);
 }
 
-UserInfoStore.prototype.getLogList = function (logListObj) {
+UserInfoStore.prototype.getLogList = function(logListObj) {
     this.logLoading = false;
     if (_.isString(logListObj)) {
         //获取操作记录失败
@@ -65,7 +65,7 @@ UserInfoStore.prototype.getLogList = function (logListObj) {
     } else if (logListObj && _.isObject(logListObj)) {
         this.logTotal = logListObj.total || 0;
         if (_.isArray(logListObj.list) && logListObj.list.length > 0) {
-            var processedLogList = logListObj.list.map(function (log) {
+            var processedLogList = logListObj.list.map(function(log) {
                 return {
                     loginTime: log.timestamp ? moment(parseInt(log.timestamp)).format(oplateConsts.DATE_TIME_FORMAT) : "",
                     loginAddress: (log.country && log.country != "null" ? log.country : "") + (log.province && log.province != "null" ? log.province : "") + (log.city && log.city != "null" ? log.city : ""),
@@ -93,7 +93,7 @@ UserInfoStore.prototype.getLogList = function (logListObj) {
         this.logTotal = 0;
     }
 };
-UserInfoStore.prototype.getUserInfo = function (result) {
+UserInfoStore.prototype.getUserInfo = function(result) {
     if (result.error){
         this.userInfoErrorMsg = result.errorMsg;
         this.userInfo = emptyUserInfo;
@@ -110,15 +110,15 @@ UserInfoStore.prototype.getUserInfo = function (result) {
 
 };
 
-UserInfoStore.prototype.showUserInfoForm = function () {
+UserInfoStore.prototype.showUserInfoForm = function() {
     this.userInfoFormShow = true;
 };
 
-UserInfoStore.prototype.hideUserInfoForm = function () {
+UserInfoStore.prototype.hideUserInfoForm = function() {
     this.userInfoFormShow = false;
 };
 //修改个人资料后的处理
-UserInfoStore.prototype.editUserInfo = function (modifiedUser) {
+UserInfoStore.prototype.editUserInfo = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
         _.extend(this.userInfo, modifiedUser);
     }
@@ -128,7 +128,7 @@ UserInfoStore.prototype.editUserInfo = function (modifiedUser) {
         userLogo: modifiedUser.userLogo
     });
 };
-UserInfoStore.prototype.editUserInfoPwd = function (result) {
+UserInfoStore.prototype.editUserInfoPwd = function(result) {
 
     if (result.error) {
         this.submitResult = "error";
@@ -150,7 +150,7 @@ UserInfoStore.prototype.editUserInfoPwd = function (result) {
     this.userInfoFormPwdShow = true;
 };
 //获取管理的安全域详情
-UserInfoStore.prototype.getManagedRealm = function (result) {
+UserInfoStore.prototype.getManagedRealm = function(result) {
     if (result.error) {
         this.realmErrorMsg = result.errorMsg;
         this.managedRealm = {};
@@ -167,7 +167,7 @@ UserInfoStore.prototype.getManagedRealm = function (result) {
 };
 
 //隐藏提交提示
-UserInfoStore.prototype.hideSubmitTip = function () {
+UserInfoStore.prototype.hideSubmitTip = function() {
     this.submitErrorMsg = "";
     this.submitResult = "";
 };

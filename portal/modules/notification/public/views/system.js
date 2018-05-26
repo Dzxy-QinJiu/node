@@ -30,7 +30,7 @@ const STATUS_ARRAY = [{
     value: STATUS.HANDLED
 }];
 let SystemNotification = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             isLoadingSystemNotices: false,//正在获取系统消息
             loadSystemNoticesErrorMsg: "",//获取系统消息的错误提示
@@ -47,29 +47,29 @@ let SystemNotification = React.createClass({
             CustomerInfoOfCurrUser: {}//当前展示用户所属客户的详情
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.getSystemNotices();
         //新系统消息的监听
         notificationEmitter.on(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
         $(window).on("resize", this.resizeWindowHeight);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         //销毁时，删除新系统消息监听器
         notificationEmitter.removeListener(notificationEmitter.SYSTEM_NOTICE_UPDATED, this.pushDataListener);
         $(window).off("resize", this.resizeWindowHeight);
     },
     //监听推送数据
-    pushDataListener: function (data) {
+    pushDataListener: function(data) {
         //有数据，将是否展示更新tip
         if (data) {
             this.setState({showUpdateTip: true});
         }
     },
-    resizeWindowHeight: function () {
+    resizeWindowHeight: function() {
         this.setState(this.state);
     },
-    getSystemNotices: function () {
+    getSystemNotices: function() {
         let queryObj = {
             notice_type: this.state.selectedNoticeType,//通知类型，"":全部类型
             page_size: PAGE_SIZE,//默认不传是5
@@ -102,17 +102,17 @@ let SystemNotification = React.createClass({
         });
     },
     //下拉加载
-    handleScrollBarBottom: function () {
+    handleScrollBarBottom: function() {
         if (this.state.totalSize > this.state.systemNotices.length) {
             this.getSystemNotices();
         }
     },
     //是否显示没有更多数据了
-    showNoMoreDataTip: function () {
+    showNoMoreDataTip: function() {
         return !this.state.isLoadingSystemNotices &&
             this.state.systemNotices.length >= 10 && !this.state.listenScrollBottom;
     },
-    openCustomerDetail: function (customer_id) {
+    openCustomerDetail: function(customer_id) {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
@@ -126,7 +126,7 @@ let SystemNotification = React.createClass({
             }
         });
     },
-    handleTypeChange: function (val) {
+    handleTypeChange: function(val) {
         Trace.traceEvent($(this.getDOMNode()).find(".notification-type-select"), "类型筛选");
         this.setState({
             selectedNoticeType: val,
@@ -137,7 +137,7 @@ let SystemNotification = React.createClass({
         });
 
     },
-    handleStatusChange: function (status) {
+    handleStatusChange: function(status) {
         Trace.traceEvent($(this.getDOMNode()).find(".notification-status-select"), "处理/未处理筛选");
         this.setState({
             status: status,
@@ -147,7 +147,7 @@ let SystemNotification = React.createClass({
             this.getSystemNotices();
         });
     },
-    renderHandledNotice: function (notice, idx) {
+    renderHandledNotice: function(notice, idx) {
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         return (
@@ -167,7 +167,7 @@ let SystemNotification = React.createClass({
             </li>
         );
     },
-    renderNoticeList: function () {
+    renderNoticeList: function() {
         let systemNotices = this.state.systemNotices;
         if (this.state.isLoadingSystemNotices && !this.state.lastSystemNoticeId) {//等待状态
             return <Spinner/>;
@@ -199,16 +199,16 @@ let SystemNotification = React.createClass({
             />);
         }
     },
-    closeRightCustomerPanel: function () {
+    closeRightCustomerPanel: function() {
         this.setState({curShowCustomerId: ""});
     },
-    openUserDetail: function (user_id) {
+    openUserDetail: function(user_id) {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
         this.setState({curShowUserId: user_id});
     },
-    renderUnHandledNoticeContent: function (notice) {
+    renderUnHandledNoticeContent: function(notice) {
         let showList = [];
         if (_.isArray(notice.detail) && notice.detail.length > 3 && !notice.showMore) {//超过三条时，只展示前三条
             showList = notice.detail.slice(0, 3);
@@ -228,7 +228,7 @@ let SystemNotification = React.createClass({
             </div>;
         });
     },
-    checkMore: function (notice) {
+    checkMore: function(notice) {
         _.some(this.state.systemNotices, item => {
             if (item.id === notice.id) {
                 item.showMore = !item.showMore;
@@ -236,7 +236,7 @@ let SystemNotification = React.createClass({
         });
         this.setState({systemNotices: this.state.systemNotices});
     },
-    setHandlingFlag: function (notice, flag) {
+    setHandlingFlag: function(notice, flag) {
         _.some(this.state.systemNotices, item => {
             if (item.id === notice.id) {
                 item.isHandling = flag;
@@ -245,7 +245,7 @@ let SystemNotification = React.createClass({
         this.setState({systemNotices: this.state.systemNotices});
     },
     //处理系统消息
-    handleSystemNotice: function (notice, e) {
+    handleSystemNotice: function(notice, e) {
         Trace.traceEvent(e, "处理系统消息");
         if (notice.isHandling) {
             return;
@@ -263,7 +263,7 @@ let SystemNotification = React.createClass({
         });
     },
     //未处理的系统消息
-    renderUnHandledNotice: function (notice, idx) {
+    renderUnHandledNotice: function(notice, idx) {
         let loginUser = userData.getUserData();
         let loginUserId = loginUser ? loginUser.user_id : "";//只可以处理自己的系统消息
         return (
@@ -284,17 +284,17 @@ let SystemNotification = React.createClass({
                         loginUserId === notice.member_id ?
                             <a className="notice-handled-set" onClick={this.handleSystemNotice.bind(this, notice)}>
                                 {Intl.get("notification.system.handled.set", "处理")}{notice.isHandling ?
-                                <Icon type="loading"/> : null}
+                                    <Icon type="loading"/> : null}
                             </a> : null
                     }
                 </div>
             </li>
         );
     },
-    closeRightUserPanel: function () {
+    closeRightUserPanel: function() {
         this.setState({curShowUserId: ""});
     },
-    refreshSystemNotice: function () {
+    refreshSystemNotice: function() {
         this.setState({
             lastSystemNoticeId: "",
             showUpdateTip: false
@@ -304,7 +304,7 @@ let SystemNotification = React.createClass({
         });
     },
     //展示更新提示
-    renderUpdateTip: function () {
+    renderUpdateTip: function() {
         if (this.state.showUpdateTip && this.state.status === STATUS.UNHANDLED) {//在未处理列表下，有新数据推送过来时
             return (<div className="system-notice-update">
                 <ReactIntl.FormattedMessage
@@ -320,19 +320,19 @@ let SystemNotification = React.createClass({
         }
         return null;
     },
-    ShowCustomerUserListPanel: function (data) {
+    ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
 
     },
-    closeCustomerUserListPanel: function () {
+    closeCustomerUserListPanel: function() {
         this.setState({
             isShowCustomerUserListPanel: false
         });
     },
-    render: function () {
+    render: function() {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
         return (
             <div className="notification_system" data-tracename="系统消息列表">
@@ -360,8 +360,8 @@ let SystemNotification = React.createClass({
                 {this.renderUpdateTip()}
                 <div style={{height: containerHeight}}>
                     <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
-                                     listenScrollBottom={this.state.listenScrollBottom}
-                                     itemCssSelector=".system_message_list>li">
+                        listenScrollBottom={this.state.listenScrollBottom}
+                        itemCssSelector=".system_message_list>li">
                         {this.renderNoticeList()}
                     </GeminiScrollbar>
                 </div>
@@ -386,9 +386,9 @@ let SystemNotification = React.createClass({
                 {
                     this.state.curShowUserId ?
                         <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default"
-                                    showFlag={this.state.curShowUserId}>
+                            showFlag={this.state.curShowUserId}>
                             <UserDetail userId={this.state.curShowUserId}
-                                        closeRightPanel={this.closeRightUserPanel}/>
+                                closeRightPanel={this.closeRightUserPanel}/>
                         </RightPanel>
                         : null
                 }

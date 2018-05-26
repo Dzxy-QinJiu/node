@@ -13,7 +13,7 @@ var RealmConfigRestApis = {
 exports.urls = RealmConfigRestApis;
 
 // 设置安全策略
-exports.setRealmStrategy = function (req, res, obj) {
+exports.setRealmStrategy = function(req, res, obj) {
     return restUtil.authRest.post({
         url: RealmConfigRestApis.setConfig,
         req: req,
@@ -22,7 +22,7 @@ exports.setRealmStrategy = function (req, res, obj) {
 };
 
 // 获取安全策略
-exports.getRealmStrategy = function (req, res) {
+exports.getRealmStrategy = function(req, res) {
     return restUtil.authRest.get({
         url: RealmConfigRestApis.getConfig,
         req: req,

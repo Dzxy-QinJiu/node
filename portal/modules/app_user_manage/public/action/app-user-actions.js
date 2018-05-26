@@ -77,7 +77,7 @@ function AppUserAction() {
         'batchPushChangeGrantUpdate',
         //批量推送，添加用户，更新用户列表
         'batchPushChangeUserCreate',
-		//根据应用id，获取应用角色信息
+        //根据应用id，获取应用角色信息
         'getRolesByAppId',
         //根据角色过滤用户
         'filterUserByRole',
@@ -140,10 +140,10 @@ function AppUserAction() {
        
         var _this = this;
         _this.dispatch({
-                            loading:true,
-                            error:false,
-                            customer_id : UserItem && UserItem.customer_id || ''
-                        });
+            loading:true,
+            error:false,
+            customer_id : UserItem && UserItem.customer_id || ''
+        });
         AppUserAjax.getAppUserList(UserItem).then(function(data) {
             //-----java端偶尔传过来的是一个json字符串-----
             if(typeof data === 'string' && data.indexOf('{') === 0) {
@@ -153,7 +153,7 @@ function AppUserAction() {
             }
             //----------
             if (UserItem && ('stopScroll' in UserItem)){
-                    data.app_id = UserItem.app_id;
+                data.app_id = UserItem.app_id;
                 _this.dispatch({loading:false,error:false,data:data, stopScroll: 'false'});
             }else{
                 _this.dispatch({loading:false,error:false,data:data});
@@ -165,7 +165,7 @@ function AppUserAction() {
         });
     };
     //获取用于展示的团队列表
-    this.getTeamLists = function (cb) {
+    this.getTeamLists = function(cb) {
         this.dispatch({error:false , loading:true});
         var _this = this;
         AppUserAjax.getTeamLists().then(function(teamLists) {
@@ -176,7 +176,7 @@ function AppUserAction() {
         });
     };
 
-    this.getRealmList = function () {
+    this.getRealmList = function() {
         AppUserAjax.getRealmList().then( (list) => {
             this.dispatch({error: false, list: list});
         },()=>{

@@ -28,87 +28,87 @@ var topHeight = 87; // 22 + 65 : 添加按钮高度+顶部导航高度
 var bootomHeight = 52; //距离底部高度
 
 var RolePage = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return getStateFromStore(this);
     },
 
-    onChange: function () {
+    onChange: function() {
         var datas = getStateFromStore(this);
         this.setState(datas);
     },
 
-    resizeWindow: function () {
+    resizeWindow: function() {
         this.setState({
             roleContainerHeight: this.roleContainerHeightFnc()
         });
     },
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         $(window).on("resize", this.resizeWindow);
         RoleStore.listen(this.onChange);
         RoleAction.getRoleList();
         RoleAction.getDefaultRole();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         $(window).off("resize", this.resizeWindow);
         RoleStore.unlisten(this.onChange);
         $("body").css("overflow", "auto");
     },
 
-    roleContainerHeightFnc: function () {
+    roleContainerHeightFnc: function() {
         return $(window).height() - topHeight;
     },
 
     events: {
         //展示编辑面板
-        showRoleForm: function () {
+        showRoleForm: function() {
             RoleAction.showRoleForm();
         },
         //隐藏编辑面板
-        hideRoleForm: function () {
+        hideRoleForm: function() {
             RoleAction.hideRoleForm();
         },
 
         //修改角色时展示编辑面板
-        editRole: function (role) {
+        editRole: function(role) {
             RoleAction.showRoleForm(role);
         },
 
         //删除角色
-        deleteRole: function (role) {
+        deleteRole: function(role) {
             RoleAction.deleteRole(role);
         },
 
         //添加角色
-        addRole: function () {
+        addRole: function() {
             RoleAction.showRoleForm();
         },
 
         //展示删除角色时的提示框
-        showModalDialog: function (role) {
+        showModalDialog: function(role) {
             RoleAction.showModalDialog(role);
         },
 
         //隐藏删除角色时的提示框
-        hideModalDialog: function (role) {
+        hideModalDialog: function(role) {
             RoleAction.hideModalDialog(role);
         },
 
         //清除删除失败的提示内容
-        clearDelErrorMsg: function () {
+        clearDelErrorMsg: function() {
             RoleAction.clearDelErrorMsg();
         }
     },
 
-    render: function () {
+    render: function() {
         var _this = this;
         var height = this.state.roleContainerHeight;
         var roleListDivHeight = height - bootomHeight;
         var repoListElement = "";
         var roleList = this.state.roleList;
         if (roleList && roleList.length > 0) {
-            repoListElement = roleList.map(function (role, i) {
+            repoListElement = roleList.map(function(role, i) {
                 //给当前要删除的角色列表传入删除角色失败的内容
                 var delRoleErrorMsg = (role.roleId == _this.state.delRoleId) ? _this.state.delRoleErrorMsg : "";
                 return (
@@ -137,8 +137,8 @@ var RolePage = React.createClass({
                         <TopNav.MenuList/>
                         <PrivilegeChecker check="ROLEP_RIVILEGE_ROLE_ADD" className="role-add-div">
                             <Button type="ghost" className="role-add-btn"
-                                    onClick={this.events.addRole.bind(this)}><ReactIntl.FormattedMessage
-                                id="role.add.role" defaultMessage="添加角色"/></Button>
+                                onClick={this.events.addRole.bind(this)}><ReactIntl.FormattedMessage
+                                    id="role.add.role" defaultMessage="添加角色"/></Button>
                         </PrivilegeChecker>
                     </TopNav>
                     <RoleForm

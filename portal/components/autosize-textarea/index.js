@@ -10,10 +10,10 @@ const { TextArea } = Input;
 const autosize = require("autosize");
 
 const AutosizeTextarea = React.createClass({
-    componentDidMount: function () {
+    componentDidMount: function() {
         autosize($(this.getDOMNode()).find("textarea"));
     },
-    render: function () {
+    render: function() {
         return <TextArea {...this.props} />;
     }
 });

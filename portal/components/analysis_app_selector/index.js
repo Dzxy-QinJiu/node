@@ -7,9 +7,9 @@ var userData = require("../../public/sources/user-data");
 var AnalysisAppSelector = React.createClass({
     //失败次数
     failCount : 0,
-    getDefaultProps: function () {
+    getDefaultProps: function() {
         return {
-            onSelectApp: function () {},
+            onSelectApp: function() {},
             //默认宽度没有限制
             type : "user",
             //是否默认选中第一个应用
@@ -29,7 +29,7 @@ var AnalysisAppSelector = React.createClass({
         }
         return false;
     },
-    selectApp: function (appId,hasAll,apps) {
+    selectApp: function(appId,hasAll,apps) {
         //bugfix（已完成）:如果是销售，没有应用列表，并且不展示所有应用，应该将appId置空
         if(!hasAll && appId === 'all' && !apps.length) {
             appId = '';
@@ -52,9 +52,9 @@ var AnalysisAppSelector = React.createClass({
             hasAll : false,
         };
     },
-    getAppList: function () {
+    getAppList: function() {
         var _this = this;
-        ajax.getAppList().then(function (data) {
+        ajax.getAppList().then(function(data) {
 
             var list = data.list;
             var hasAll = data.hasAll;
@@ -88,13 +88,13 @@ var AnalysisAppSelector = React.createClass({
             }
         });
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         this.getAppList();
     },
     onSelectedAppChange : function(app_id,name) {
         this.selectApp(app_id,this.state.hasAll,this.state.appList);
     },
-    render: function () {
+    render: function() {
         var appList = this.state.appList;
         var options = appList.map(function(appInfo) {
             return (

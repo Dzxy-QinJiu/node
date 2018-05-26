@@ -2,7 +2,7 @@ import {hasPrivilege} from "CMP_DIR/privilege/checker";
 //获取当前页的应用列表
 var getCallRecordAjax = null;
 
-exports.getCallRecordList = function (params, filterObj) {
+exports.getCallRecordList = function(params, filterObj) {
     let queryObj = {};
     $.extend(queryObj, filterObj, { phone_type: params.phone_type });
     if (queryObj.disposition && queryObj.disposition == 'ALL') {
@@ -44,10 +44,10 @@ exports.getCallRecordList = function (params, filterObj) {
         dataType: 'json',
         type: 'post',
         data: queryObj,
-        success: function (appList) {
+        success: function(appList) {
             Deferred.resolve(appList);
         },
-        error: function (xhr, textStatus) {
+        error: function(xhr, textStatus) {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -57,17 +57,17 @@ exports.getCallRecordList = function (params, filterObj) {
 };
 
 // 编辑通话记录中跟进内容
-exports.editCallTraceContent = function (queryObj) {
+exports.editCallTraceContent = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/call/edit/content',
         dataType: 'json',
         type: 'put',
         data: queryObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -75,17 +75,17 @@ exports.editCallTraceContent = function (queryObj) {
 };
 
 // 搜索电话号码号码时，提供推荐列表
-exports.getRecommendPhoneList = function (params, queryObj) {
+exports.getRecommendPhoneList = function(params, queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/call/search/phone_number/' + params.filter_phone,
         dataType: 'json',
         type: 'post',
         data: queryObj,
-        success: function (data) {
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error: function (xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON);
         }
     });

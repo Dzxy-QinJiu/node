@@ -62,7 +62,7 @@
     $.ajaxTrans = function() {
         //that 提供register和getAjax方法
         var that = {} ,
-        //map用来存储ajax配置
+            //map用来存储ajax配置
             map = {}  ;
         //register用来进行ajax注册
         that.register = function(ns , conf) {
@@ -94,20 +94,20 @@
                 //添加error方法，error方法上区分error和timeout,主动abort的不管。
                 opts.error = function(xhr, errType , errText) {
                     switch(errType) {
-                        case 'timeout':
-                            timeout && timeout.apply(this,arguments);
-                            break;
-                        case 'abort':
-                            break;
-                        default :
-                            error && error.apply(this,arguments);
+                    case 'timeout':
+                        timeout && timeout.apply(this,arguments);
+                        break;
+                    case 'abort':
+                        break;
+                    default :
+                        error && error.apply(this,arguments);
                     }
                 };
                 //检查请求头，并检查是否需要添加fields头，只获取指定的字段
                 if(!opts.headers && requestCfg.fields.length) {
-                   opts.headers = {
-                       fields : requestCfg.fields.join(",")
-                   };
+                    opts.headers = {
+                        fields : requestCfg.fields.join(",")
+                    };
                 } else if(opts.headers && requestCfg.fields.length && !opts.headers.fields) {
                     opts.headers.fields = requestCfg.fields.join(",");
                 }
@@ -117,7 +117,7 @@
                 var success,
                     error,
                     timeout,
-                //链式函数调用
+                    //链式函数调用
                     union = {
                         //请求成功的回调
                         success : function(s) {

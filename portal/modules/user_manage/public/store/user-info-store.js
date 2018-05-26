@@ -13,7 +13,7 @@ function UserInfoStore() {
 }
 
 //关闭右侧详情后，将数据置为
-UserInfoStore.prototype.setInitialData = function () {
+UserInfoStore.prototype.setInitialData = function() {
     //是否展示确认删除的模态框
     this.modalDialogShow = false;
     //销售提成和提成比例
@@ -31,22 +31,22 @@ UserInfoStore.prototype.setInitialData = function () {
     this.getUserDetailError = "";
     this.page_size = CONSTANTS.LOG_PAGE_SIZE;
 };
-UserInfoStore.prototype.changeLogNum = function (num) {
+UserInfoStore.prototype.changeLogNum = function(num) {
     this.logNum = num;
 };
-UserInfoStore.prototype.getSalesGoals = function (result) {
+UserInfoStore.prototype.getSalesGoals = function(result) {
     if (!result.loading && !result.error){
         this.saleGoalsAndCommissionRadio = result.data;
     }
 };
-UserInfoStore.prototype.showModalDialog = function () {
+UserInfoStore.prototype.showModalDialog = function() {
     this.modalDialogShow = true;
 };
 
-UserInfoStore.prototype.hideModalDialog = function () {
+UserInfoStore.prototype.hideModalDialog = function() {
     this.modalDialogShow = false;
 };
-UserInfoStore.prototype.setLogLoading = function (loadingState) {
+UserInfoStore.prototype.setLogLoading = function(loadingState) {
     this.logIsLoading = loadingState;
     if (loadingState) {
         //重新获取日志时，清空错误提示，重置获取控制翻页的参数
@@ -55,7 +55,7 @@ UserInfoStore.prototype.setLogLoading = function (loadingState) {
         this.logTotal = 0;
     }
 };
-UserInfoStore.prototype.getLogList = function (resObj) {
+UserInfoStore.prototype.getLogList = function(resObj) {
     var logListObj = resObj.logListObj;
     var condition = resObj.condition;
     this.logIsLoading = false;
@@ -66,7 +66,7 @@ UserInfoStore.prototype.getLogList = function (resObj) {
         this.logTotal = logListObj.total || 0;
         var curUserName = condition.user_name;
         if (_.isArray(logListObj.list)) {
-            this.logList = logListObj.list.map(function (log) {
+            this.logList = logListObj.list.map(function(log) {
                 log.userName = curUserName;
                 return log;
             });

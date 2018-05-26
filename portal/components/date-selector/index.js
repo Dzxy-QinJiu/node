@@ -171,24 +171,24 @@ class DateSelector extends React.Component{
         } else if(/today|yesterday|thisweek|lastweek|thismonth|lastmonth/.test(props.range)) {
             var timeObj;
             switch(props.range) {
-                case 'today':
-                    timeObj = Utils.getTodayTime();
-                    break;
-                case 'yesterday':
-                    timeObj = Utils.getYesterdayTime();
-                    break;
-                case 'thisweek':
-                    timeObj = Utils.getThisWeekTime();
-                    break;
-                case 'lastweek':
-                    timeObj = Utils.getLastWeekTime();
-                    break;
-                case 'thismonth':
-                    timeObj = Utils.getThisMonthTime();
-                    break;
-                case 'lastmonth':
-                    timeObj = Utils.getLastMonthTime();
-                    break;
+            case 'today':
+                timeObj = Utils.getTodayTime();
+                break;
+            case 'yesterday':
+                timeObj = Utils.getYesterdayTime();
+                break;
+            case 'thisweek':
+                timeObj = Utils.getThisWeekTime();
+                break;
+            case 'lastweek':
+                timeObj = Utils.getLastWeekTime();
+                break;
+            case 'thismonth':
+                timeObj = Utils.getThisMonthTime();
+                break;
+            case 'lastmonth':
+                timeObj = Utils.getLastMonthTime();
+                break;
             }
             start_time = timeObj.start_time;
             end_time = timeObj.end_time;
@@ -349,7 +349,7 @@ class DateSelector extends React.Component{
         //昨天特殊处理
         //本周特殊处理
         //本月特殊处理
-		//上月特殊处理
+        //上月特殊处理
         else if(/today|yesterday|thisweek|lastweek|thismonth|lastmonth/.test(range)) {
             var timeObj;
             if(range === 'today') {
@@ -753,7 +753,7 @@ class DateSelector extends React.Component{
         );
     }
     //显示选择“年份”的日历
-    showYearCalendar () {
+    showYearCalendar() {
         var showQuarterCalendar = !this.state.showQuarterCalendar;
         this.setState({
             showQuarterCalendar : showQuarterCalendar
@@ -764,7 +764,7 @@ class DateSelector extends React.Component{
         });
     }
     //选中某个季度
-    onQuarterSelect (obj) {
+    onQuarterSelect(obj) {
         var quarter = parseInt(obj.key);
         var year = new Date().getFullYear();
         if(this.state.start_time) {
@@ -784,7 +784,7 @@ class DateSelector extends React.Component{
         return `第${QUARTER_CHINESE_TEXT_LIST[this.state.quarter - 1]}季度`;
     }
     //计算要显示的季度
-     getDisplayQuarterList(year) {
+    getDisplayQuarterList(year) {
         if(!this.props.disableAfterToday || new Date().getFullYear() > year) {
             return QUARTER_CHINESE_TEXT_LIST;
         } else {
@@ -798,30 +798,30 @@ class DateSelector extends React.Component{
         }
     }
     //渲染季度菜单
-    renderQuarterMenu () {
+    renderQuarterMenu() {
         if(this.state.range !== 'quarter') {
             return null;
         }
         var menu = (<Menu
-                prefixCls="ant-menu"
-                onClick={this.onQuarterSelect.bind(this)}
-                className={CLASS_PREFIX + "-menu"}>
-                {
-                    this.state.displayQuarterList.map((text,num) => {
-                        var cls = classNames({
-                            active :  (num + 1) == this.state.quarter
-                        });
-                        return (
-                            <MenuItem
-                                key={num + 1}
-                                className={cls}
-                            >
+            prefixCls="ant-menu"
+            onClick={this.onQuarterSelect.bind(this)}
+            className={CLASS_PREFIX + "-menu"}>
+            {
+                this.state.displayQuarterList.map((text,num) => {
+                    var cls = classNames({
+                        active :  (num + 1) == this.state.quarter
+                    });
+                    return (
+                        <MenuItem
+                            key={num + 1}
+                            className={cls}
+                        >
                                 第{text}季度
-                            </MenuItem>
-                        );
-                    })
-                }
-            </Menu>);
+                        </MenuItem>
+                    );
+                })
+            }
+        </Menu>);
 
         return (<Dropdown
             getPopupContainer={()=>{return document.getElementById(this.componentId + "_quarter");}}
@@ -834,7 +834,7 @@ class DateSelector extends React.Component{
         </Dropdown>);
 
     }
-    render (){
+    render(){
         const props = this.props;
         const {start_time,end_time,range,onSelect,children,className,endTimeEndOfDay,getEndTimeTip,disableDateBeforeToday,disableDateBeforeRange,disableDateAfterToday,...restProps} = props;
         const cls = classNames(CLASS_PREFIX , className , CLASS_PREFIX + '_' + this.state.range);

@@ -18,10 +18,10 @@ function _getLeftMenus(req) {
 function _getPrivilegeModuleMap(req) {
     var map = {};
     let MenusAll = _getLeftMenus(req);
-    treeWalk.preorder(MenusAll, function (value, key, parent) {
+    treeWalk.preorder(MenusAll, function(value, key, parent) {
         if (key === "privileges") {
             var privilegeList = value, moduleId = parent.id.toLowerCase();
-            _.each(privilegeList, function (privilege) {
+            _.each(privilegeList, function(privilege) {
                 map[privilege] = moduleId;
             });
         }
@@ -33,10 +33,10 @@ function _getPrivilegeModuleMap(req) {
 function _getSubMenuMap(req) {
     var map = {};
     let MenusAll = _getLeftMenus(req);
-    treeWalk.preorder(MenusAll, function (value, key, parent) {
+    treeWalk.preorder(MenusAll, function(value, key, parent) {
         if (key === "subMenu" && value && value.length) {
             var subMenus = value;
-            _.each(subMenus, function (menu) {
+            _.each(subMenus, function(menu) {
                 map[menu.id] = parent.id;
             });
         }
@@ -48,7 +48,7 @@ function _getSubMenuMap(req) {
 function _getObjectById(id, req) {
     var obj;
     let MenusAll = _getLeftMenus(req);
-    treeWalk.preorder(MenusAll, function (value, key, parent) {
+    treeWalk.preorder(MenusAll, function(value, key, parent) {
         if (key === "id" && value === id) {
             obj = parent;
         }
@@ -62,12 +62,12 @@ function _getMenuChained(req) {
     var resultMap = {};
     var unshiftName;
     let MenusAll = _getLeftMenus(req);
-    treeWalk.preorder(MenusAll, function (value, key, parent) {
+    treeWalk.preorder(MenusAll, function(value, key, parent) {
         if (key === "showPrivileges" && value && value.length) {
             var privileges = value;
             var list = [];
             var target = parent;
-            unshiftName = function () {
+            unshiftName = function() {
                 if (target) {
                     var id = target.id;
                     var name = target.name;
@@ -87,7 +87,7 @@ function _getMenuChained(req) {
                 }
             };
             unshiftName();
-            _.each(privileges, function (privilege) {
+            _.each(privileges, function(privilege) {
                 resultMap[privilege] = list;
             });
         }
@@ -100,18 +100,18 @@ function getSidebarMenus(req) {
     var userInfo = auth.getUser(req);
     var userPrivileges = userInfo.privileges;
     var menus = _getMenuChained(req);
-    menus = _.filter(menus, function (value, key) {
+    menus = _.filter(menus, function(value, key) {
         return userPrivileges.indexOf(key) >= 0;
     });
     var values = _.values(menus);
-    values = _.map(values, function (item) {
+    values = _.map(values, function(item) {
         return item[0];
     });
     var groups = _.indexBy(values, 'routePath');
     values = _.values(groups);
 
     var filteredGroupMap = {};
-    values = _.filter(values, function (obj) {
+    values = _.filter(values, function(obj) {
         var name = obj.name;
         if (filteredGroupMap[name]) {
             return false;
@@ -126,7 +126,7 @@ function getSidebarMenus(req) {
 function _getModulesAllOrderMap(req) {
     var orderMap = {}, count = 0;
     let MenusAll = _getLeftMenus(req);
-    _.each(MenusAll, function (item) {
+    _.each(MenusAll, function(item) {
         if (item.subMenu) {
             orderMap[item.routePath] = ++count;
         } else {
@@ -140,13 +140,13 @@ function _getModulesAllOrderMap(req) {
 function _getSubModulesAllOrderMap(routePath, req) {
     var orderMap = {}, count = 0;
     let MenusAll = _getLeftMenus(req);
-    var target = _.find(MenusAll, function (item) {
+    var target = _.find(MenusAll, function(item) {
         if (item.subMenu && item.routePath === routePath) {
             return true;
         }
     });
     if (target && Array.isArray(target.subMenu)) {
-        _.each(target.subMenu, function (item) {
+        _.each(target.subMenu, function(item) {
             orderMap[item.routePath] = ++count;
         });
     }
@@ -161,7 +161,7 @@ function getModulesByUser(req) {
     var privilegeModuleMap = _getPrivilegeModuleMap(req);
     var set = new Set();
 
-    _.each(userPrivileges, function (privilege) {
+    _.each(userPrivileges, function(privilege) {
         var to_menu = menusAll[privilege];
         if (to_menu && to_menu.length === 1) {
             set.add(privilegeModuleMap[privilege]);
@@ -172,7 +172,7 @@ function getModulesByUser(req) {
 
     var orderMap = _getModulesAllOrderMap(req);
     var result = Array.from(set);
-    result = _.sortBy(result, function (str) {
+    result = _.sortBy(result, function(str) {
         return orderMap[str];
     });
     return result;
@@ -184,7 +184,7 @@ function getSubModulesByUser(req) {
     var userPrivileges = userInfo.privileges;
     var menusAll = _getMenuChained(req);
     var result = new Map();
-    _.each(userPrivileges, function (privilege) {
+    _.each(userPrivileges, function(privilege) {
         var to_menu = menusAll[privilege];
         if (to_menu && to_menu.length > 1) {
             var menuEntry = to_menu[0];
@@ -201,7 +201,7 @@ function getSubModulesByUser(req) {
     for (var key of result.keys()) {
         var orderMap = _getSubModulesAllOrderMap(key, req);
         var list = result.get(key);
-        list = _.sortBy(list, function (item) {
+        list = _.sortBy(list, function(item) {
             return orderMap[item.routePath];
         });
         result.set(key, list);
@@ -234,11 +234,11 @@ function getDataPromise(req, res, url, pathParams, queryObj) {
                 req: req,
                 res: res
             }, queryObj, {
-                success: function (eventEmitter, data) {
+                success: function(eventEmitter, data) {
                     resultObj.successData = data;
                     resolve(resultObj);
                 },
-                error: function (eventEmitter, errorObj) {
+                error: function(eventEmitter, errorObj) {
                     resultObj.errorData = errorObj;
                     resolve(resultObj);
                 }
@@ -247,7 +247,7 @@ function getDataPromise(req, res, url, pathParams, queryObj) {
 }
 
 //获取用户信息
-exports.getUserInfo = function (req, res, userId) {
+exports.getUserInfo = function(req, res, userId) {
     var emitter = new EventEmitter();
     //with_extentions:去掉额外信息的获取，只取基本信息，这样速度快
     var queryObj = {with_extentions: false};
@@ -315,7 +315,7 @@ function getIsCommonSalesByTeams(userId, teamTreeList) {
 }
 
 //邮箱激活接口，用于发邮件时，点击激活连接的跳转
-exports.activeEmail = function (req, res, activeCode) {
+exports.activeEmail = function(req, res, activeCode) {
     return restUtil.baseRest.get(
         {
             url: userInfoRestApis.activeEmail,
@@ -326,7 +326,7 @@ exports.activeEmail = function (req, res, activeCode) {
         }, {code: activeCode});
 };
 //获取用户语言
-exports.getUserLanguage = function (req, res) {
+exports.getUserLanguage = function(req, res) {
     return restUtil.authRest.get(
         {
             url: userInfoRestApis.getUserLanguage,
@@ -340,7 +340,7 @@ exports.getUserLanguage = function (req, res) {
  * @param res
  * @param message
  */
-exports.recordLog = function (req, res, message) {
+exports.recordLog = function(req, res, message) {
     pageLogger.info(message);
 };
 var userInfoRestApis = {

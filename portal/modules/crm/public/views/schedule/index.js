@@ -18,21 +18,21 @@ import RightPanelScrollBar from "../components/rightPanelScrollBar";
 import NoDataTip from "../components/no-data-tip";
 import ErrorDataTip from "../components/error-data-tip";
 var CrmSchedule = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             customerId: this.props.curCustomer.id || "",
             ...ScheduleStore.getState()
         };
     },
-    onStoreChange: function () {
+    onStoreChange: function() {
         this.setState(ScheduleStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         ScheduleStore.listen(this.onStoreChange);
         //获取日程管理列表
         this.getScheduleList();
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var nextCustomerId = nextProps.curCustomer.id || '';
         var oldCustomerId = this.props.curCustomer.id || '';
         if (nextCustomerId !== oldCustomerId) {
@@ -46,13 +46,13 @@ var CrmSchedule = React.createClass({
             });
         }
     },
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         ScheduleStore.unlisten(this.onStoreChange);
         setTimeout(() => {
             ScheduleAction.resetState();
         });
     },
-    getScheduleList: function () {
+    getScheduleList: function() {
         let queryObj = {
             customer_id: this.state.customerId || '',
             page_size: this.state.pageSize || 20,
@@ -62,7 +62,7 @@ var CrmSchedule = React.createClass({
         }
         ScheduleAction.getScheduleList(queryObj);
     },
-    addSchedule: function () {
+    addSchedule: function() {
         const newSchedule = {
             customer_id: this.props.curCustomer.id,
             customer_name: this.props.curCustomer.name,
@@ -76,12 +76,12 @@ var CrmSchedule = React.createClass({
         //滚动条滚动到顶端以显示添加表单
         GeminiScrollbar.scrollTo(this.refs.alertWrap, 0);
     },
-    editSchedule: function (alert) {
+    editSchedule: function(alert) {
         Trace.traceEvent(this.getDOMNode(), "编辑联系计划");
         ScheduleAction.showEditForm(alert);
     },
     //修改状态
-    handleItemStatus: function (item) {
+    handleItemStatus: function(item) {
         //只能修改自己创建的日程的状态
         if (user_id != item.member_id) {
             return;
@@ -104,7 +104,7 @@ var CrmSchedule = React.createClass({
             }
         });
     },
-    deleteSchedule: function (id) {
+    deleteSchedule: function(id) {
         const reqData = {id: id};
         Trace.traceEvent($(this.getDOMNode()).find(".item-wrapper .anticon-delete"), "删除联系计划");
         ScheduleAction.deleteSchedule(reqData, (resData) => {
@@ -119,14 +119,14 @@ var CrmSchedule = React.createClass({
         });
     },
     //下拉加载
-    handleScrollBarBottom: function () {
+    handleScrollBarBottom: function() {
         var currListLength = _.isArray(this.state.scheduleList) ? this.state.scheduleList.length : 0;
         // 判断加载的条件
         if (currListLength < this.state.total) {
             this.getScheduleList();
         }
     },
-    updateScheduleList: function (newItem, type) {
+    updateScheduleList: function(newItem, type) {
         //如果是新增一个提醒
         if (type == "add") {
             newItem.edit = false;
@@ -162,11 +162,11 @@ var CrmSchedule = React.createClass({
         } else {
             return (
                 <ScheduleItem item={item}
-                              hasSplitLine={hasSplitLine}
-                              isMerge={this.props.isMerge}
-                              toggleScheduleContact={this.toggleScheduleContact}
-                              deleteSchedule={this.deleteSchedule}
-                              handleItemStatus={this.handleItemStatus}
+                    hasSplitLine={hasSplitLine}
+                    isMerge={this.props.isMerge}
+                    toggleScheduleContact={this.toggleScheduleContact}
+                    deleteSchedule={this.deleteSchedule}
+                    handleItemStatus={this.handleItemStatus}
                 />);
         }
     },
@@ -177,13 +177,13 @@ var CrmSchedule = React.createClass({
                 {this.state.isLoadingScheduleList && !this.state.lastScheduleId ? <Spinner />
                     : this.state.getScheduleListErrmsg ? (
                         <ErrorDataTip errorMsg={this.state.getScheduleListErrmsg} isRetry={true}
-                                      retryFunc={this.getScheduleList}/>)
+                            retryFunc={this.getScheduleList}/>)
                         : this.renderScheduleLists()
                 }
             </div>);
     },
     //联系计划列表区域
-    renderScheduleLists: function () {
+    renderScheduleLists: function() {
         if (_.isArray(this.state.scheduleList) && this.state.scheduleList.length) {
             return (
                 <TimeLine
@@ -205,18 +205,18 @@ var CrmSchedule = React.createClass({
                 <span>{Intl.get("crm.right.schedule", "联系计划")}:</span>
                 {this.props.isMerge ? null : (
                     <span className="iconfont icon-add schedule-add-btn"
-                          title={Intl.get("crm.214", "添加联系计划")}
-                          onClick={this.addSchedule}/>)
+                        title={Intl.get("crm.214", "添加联系计划")}
+                        onClick={this.addSchedule}/>)
                 }
             </div>);
     },
     render(){
         return (
             <RightPanelScrollBar handleScrollBottom={this.handleScrollBarBottom}
-                                 listenScrollBottom={this.state.listenScrollBottom}>
+                listenScrollBottom={this.state.listenScrollBottom}>
                 <DetailCard title={this.renderScheduleTitle()}
-                            content={this.renderScheduleContent()}
-                            className="schedule-contianer"/>
+                    content={this.renderScheduleContent()}
+                    className="schedule-contianer"/>
             </RightPanelScrollBar>
         );
     }

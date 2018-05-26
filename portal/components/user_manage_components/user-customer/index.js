@@ -173,7 +173,7 @@ class UserCustomer extends React.Component{
             contentType: 'application/json',
             type: 'put',
             data: JSON.stringify(appUser),
-            success: function (bool) {
+            success: function(bool) {
                 if(bool === true) {
                     _this.setState({
                         error_message : '',
@@ -195,7 +195,7 @@ class UserCustomer extends React.Component{
                     });
                 }
             },
-            error: function (xhr) {
+            error: function(xhr) {
                 _this.setState({
                     submitType : 'error',
                     error_message : xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
@@ -233,7 +233,7 @@ class UserCustomer extends React.Component{
                     <span>{this.props.customer_name}</span>
                     {
                         canEdit ? <i className="iconfont icon-update"
-                                     onClick={this.changeDisplayType.bind(this,"select")}></i> : null
+                            onClick={this.changeDisplayType.bind(this,"select")}></i> : null
                     }
                 </div>
             );
@@ -252,7 +252,7 @@ class UserCustomer extends React.Component{
             </div>
         );
     }
-    render (){
+    render(){
         return (
             <div>
                 {
@@ -274,7 +274,7 @@ class UserCustomer extends React.Component{
                 <dl className="dl-horizontal user_detail_item  detail_item">
                     <dt>
                         {Intl.get("call.record.customer","客户")}
-                        </dt>
+                    </dt>
                     <dd>
                         {this.renderUserCustomer()}
                     </dd>

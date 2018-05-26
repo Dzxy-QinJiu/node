@@ -1,5 +1,5 @@
 //根据之前选中项和当前点击项获取新的选中项
-function getSelected (selected, curItem) {
+function getSelected(selected, curItem) {
     //如果之前选中的是“全部”
     if (!selected) {
         //如果当前点击的也是“全部”，不做处理

@@ -7,7 +7,7 @@
 var CommonUtil = require("./common-utils");
 var UserDto = {
     //转换成session格式的数据
-    toSessionData: function (req, userData) {
+    toSessionData: function(req, userData) {
         if (userData && ("object" === (typeof userData))) {
             var sessionData = {};
             sessionData["_USER_TOKEN_"] = {
@@ -40,7 +40,7 @@ var UserDto = {
         }
     },
     //转换成user对象数据
-    turnSessionDataToUser: function (sessionData) {
+    turnSessionDataToUser: function(sessionData) {
         if (sessionData && ("object" === (typeof sessionData))) {
             var user = {};
             user.auth = {

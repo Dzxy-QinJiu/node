@@ -13,7 +13,7 @@ var urls = {
 //导出url
 exports.urls = urls;
 //获取安全域数据
-exports.getRealmEstablishAnalysisData = function (req, res, startTime, endTime , unit) {
+exports.getRealmEstablishAnalysisData = function(req, res, startTime, endTime , unit) {
     return restUtil.authRest.get(
         {
             url: urls.getRealmEstablish,

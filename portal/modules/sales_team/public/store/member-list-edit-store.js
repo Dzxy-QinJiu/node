@@ -12,30 +12,30 @@ function MemberListEditStore() {
 }
 
 //清空保存结果和提示信息
-MemberListEditStore.prototype.setMemberListSaving = function (flag) {
+MemberListEditStore.prototype.setMemberListSaving = function(flag) {
     this.isMemberListSaving = flag;
 };
 
 //清空保存结果和提示信息
-MemberListEditStore.prototype.clearSaveFlags = function () {
+MemberListEditStore.prototype.clearSaveFlags = function() {
     this.saveMemberListResult = "";
     this.saveMemberListMsg = "";
 };
 
 //保存结果的处理
-MemberListEditStore.prototype.setSaveFlags = function (resultObj) {
+MemberListEditStore.prototype.setSaveFlags = function(resultObj) {
     //去掉正在保存的效果
     this.isMemberListSaving = false;
     this.saveMemberListResult = resultObj.saveResult;
     this.saveMemberListMsg = resultObj.saveMsg;
 };
 //清空保存结果和提示信息
-MemberListEditStore.prototype.addMember = function (resultObj) {
+MemberListEditStore.prototype.addMember = function(resultObj) {
     this.setSaveFlags(resultObj);
 };
 
 //清空保存结果和提示信息
-MemberListEditStore.prototype.editMember = function (resultObj) {
+MemberListEditStore.prototype.editMember = function(resultObj) {
     this.setSaveFlags(resultObj);
 };
 

@@ -12,7 +12,7 @@ var UserAuditLogStore = require("../store/user_audit_log_store");
 const UserAuditLog = React.createClass({
     selectedUserId : '',
     isShowRightPanel : false,
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             selectedUserId : this.selectedUserId,
             isShowRightPanel : this.isShowRightPanel
@@ -27,7 +27,7 @@ const UserAuditLog = React.createClass({
             isShowRightPanel : false
         });
     },
-    componentWillMount: function () {
+    componentWillMount: function() {
         emitter.on("user_detail_close_right_panel" , this.closeRightPanel);
     },
     
@@ -53,13 +53,13 @@ const UserAuditLog = React.createClass({
         });
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount: function() {
         this.selectedUserId = '';
         this.isShowRightPanel = false;
         emitter.removeListener("user_detail_close_right_panel" , this.closeRightPanel);
     },
    
-    render: function () {
+    render: function() {
         let selectedAppId = UserAuditLogStore.getState().selectAppId;
         return (
             <div>
@@ -67,7 +67,7 @@ const UserAuditLog = React.createClass({
                     <LogVIew isShowRightPanel={this.state.isShowRightPanel}/>
                 </div>
                 <RightPanel className="right-pannel-default app_user_manage_rightpanel white-space-nowrap"
-                            showFlag={this.state.isShowRightPanel}>
+                    showFlag={this.state.isShowRightPanel}>
                     {
                         this.state.selectedUserId ? (
                             <UserDetail userId={this.state.selectedUserId} selectedAppId={selectedAppId}/>

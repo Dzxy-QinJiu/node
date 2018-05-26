@@ -143,7 +143,7 @@ var Retention = React.createClass({
     render : function() {
         return (
             <div className="analysis-chart">
-               <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}>
+                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}>
                     {this.renderTable()}
                 </div>
             </div>

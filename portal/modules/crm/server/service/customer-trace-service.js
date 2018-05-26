@@ -15,7 +15,7 @@ var restApis = {
 };
 exports.restUrls = restApis;
 // 获取客户跟踪记录列表
-exports.getCustomerTraceList = function (req, res) {
+exports.getCustomerTraceList = function(req, res) {
     let data = req.body;
     let url = restApis.getCustomerTraceList;
     if (data.id && data.page_size) {
@@ -36,7 +36,7 @@ exports.getCustomerTraceList = function (req, res) {
         data);
 };
 // 添加客户跟踪记录
-exports.addCustomerTraceList = function (req, res, obj) {
+exports.addCustomerTraceList = function(req, res, obj) {
     var data = req.body;
     return restUtil.authRest.post(
         {
@@ -47,7 +47,7 @@ exports.addCustomerTraceList = function (req, res, obj) {
         data);
 };
 //更新客户跟踪记录
-exports.updateCustomerTraceList = function (req, res, obj) {
+exports.updateCustomerTraceList = function(req, res, obj) {
     var data = req.body;
     return restUtil.authRest.put(
         {
@@ -58,7 +58,7 @@ exports.updateCustomerTraceList = function (req, res, obj) {
         data);
 };
 //获取播放录音
-exports.getPhoneRecordAudio = function (req, res) {
+exports.getPhoneRecordAudio = function(req, res) {
     return restUtil.authRest.get(
         {
             url: req.url,

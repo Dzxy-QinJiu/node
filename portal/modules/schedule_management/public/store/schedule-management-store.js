@@ -16,7 +16,7 @@ function ScheduleManagementStore() {
         getViewDate: this.getViewDate
     });
 }
-ScheduleManagementStore.prototype.setInitState = function () {
+ScheduleManagementStore.prototype.setInitState = function() {
     this.scheduleExpiredList = [];//过期日程列表
     this.scheduleExpiredSize = 0;//过期日程列表的数量
     this.isLoadingScheduleExpired = false;//正在获取过期日程列表
@@ -29,7 +29,7 @@ ScheduleManagementStore.prototype.setInitState = function () {
     this.curViewDate = "";//当前页面展示的日期
 };
 //把数据转换成组件需要的类型
-ScheduleManagementStore.prototype.processForList =function (originList,dateType) {
+ScheduleManagementStore.prototype.processForList =function(originList,dateType) {
     if (!_.isArray(originList)) return [];
     let list = _.clone(originList);
     for (let i = 0, len = list.length; i < len; i++) {
@@ -48,32 +48,32 @@ ScheduleManagementStore.prototype.processForList =function (originList,dateType)
 };
 
 //查询日程列表
-ScheduleManagementStore.prototype.getScheduleList = function (data) {
+ScheduleManagementStore.prototype.getScheduleList = function(data) {
     //获取两个列表，一个是超时日程列表，一个是右侧日程管理中用的列表
-        //超时未完成的列表
-        if (data.loading) {
-            this.isLoadingScheduleExpired = true;
-            this.scheduleExpiredErrMsg = "";
-        } else if (data.error) {
-            this.isLoadingScheduleExpired = false;
-            this.scheduleExpiredErrMsg = data.errorMsg;
+    //超时未完成的列表
+    if (data.loading) {
+        this.isLoadingScheduleExpired = true;
+        this.scheduleExpiredErrMsg = "";
+    } else if (data.error) {
+        this.isLoadingScheduleExpired = false;
+        this.scheduleExpiredErrMsg = data.errorMsg;
+    } else {
+        let list = data.scheduleListObj ? data.scheduleListObj.list: [];
+        this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total :0 ;
+        if (this.lastScheduleExpiredId) {
+            this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
         } else {
-            let list = data.scheduleListObj ? data.scheduleListObj.list: [];
-            this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total :0 ;
-            if (this.lastScheduleExpiredId) {
-                this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
-            } else {
-                this.scheduleExpiredList = list;
-            }
-            this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : "";
-
-            this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
-            this.isLoadingScheduleExpired = false;
+            this.scheduleExpiredList = list;
         }
+        this.lastScheduleExpiredId = this.scheduleExpiredList.length ? _.last(this.scheduleExpiredList).id : "";
+
+        this.listenScrollBottom = this.scheduleExpiredSize > this.scheduleExpiredList.length;
+        this.isLoadingScheduleExpired = false;
+    }
 };
 
 //添加或更新跟进内容
-ScheduleManagementStore.prototype.handleScheduleStatus = function (result) {
+ScheduleManagementStore.prototype.handleScheduleStatus = function(result) {
     if (result.loading) {
         this.handleStatusLoading = true;
         this.handleStatusErrMsg = "";
@@ -86,15 +86,15 @@ ScheduleManagementStore.prototype.handleScheduleStatus = function (result) {
     }
 };
 //修改某个提醒的状态
-ScheduleManagementStore.prototype.afterHandleStatus = function (newStatusObj) {
+ScheduleManagementStore.prototype.afterHandleStatus = function(newStatusObj) {
     this.scheduleExpiredList = _.filter(this.scheduleExpiredList, (schedule)=>{return schedule.id !== newStatusObj.id;});
 };
 //获取当前页面展示的日期
-ScheduleManagementStore.prototype.getViewDate = function (date) {
+ScheduleManagementStore.prototype.getViewDate = function(date) {
     return this.curViewDate;
 };
 //设置当前页面展示的日期
-ScheduleManagementStore.prototype.setViewDate = function (date) {
-   this.curViewDate = date;
+ScheduleManagementStore.prototype.setViewDate = function(date) {
+    this.curViewDate = date;
 };
 module.exports = alt.createStore(ScheduleManagementStore, 'ScheduleManagementStore');

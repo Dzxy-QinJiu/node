@@ -13,28 +13,28 @@ var urls = {
 //导出url
 exports.urls = urls;
 //获取安全域数据
-exports.getRealmZoneAnalysisData = function (req, res, startTime, endTime) {
+exports.getRealmZoneAnalysisData = function(req, res, startTime, endTime) {
     return restUtil.authRest.get(
         {
             url: urls.getRealmZone,
             req: req,
             res: res
-    }, {
-        starttime : startTime,
-        endtime : endTime
-    }, {
-        success : function(emitter, data, restResp) {
+        }, {
+            starttime : startTime,
+            endtime : endTime
+        }, {
+            success : function(emitter, data, restResp) {
             //转换数据，计算是否一个安全域也没有
-            var ret = {
-                hasRealm : true,
-                list : data
-            };
+                var ret = {
+                    hasRealm : true,
+                    list : data
+                };
 
-            if(restResp.headers.norealm) {
-                ret.hasRealm = false;
+                if(restResp.headers.norealm) {
+                    ret.hasRealm = false;
+                }
+
+                emitter.emit("success" , ret);
             }
-
-            emitter.emit("success" , ret);
-        }
-    });
+        });
 };

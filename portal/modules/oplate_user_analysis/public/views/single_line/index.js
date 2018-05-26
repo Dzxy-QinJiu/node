@@ -71,7 +71,7 @@ var SingleLineChart = React.createClass({
                 trigger : "axis",
                 show : true,
                 extraCssText : echartsTooltipCssText,
-                position: function (mousePointer, params, tooltipDom) {
+                position: function(mousePointer, params, tooltipDom) {
                     return chartUtil.getTooltipPosition(_this, mousePointer, params, tooltipDom);
                 }
             },

@@ -448,7 +448,7 @@ class LeftMenuClass {
         ];
 
         var user_info_idx = -1;
-        var user_info_manage = _.find(leftMenuList, function (item, i) {
+        var user_info_manage = _.find(leftMenuList, function(item, i) {
             if (item.id === 'USER_INFO_MANAGE') {
                 user_info_idx = i;
                 return true;

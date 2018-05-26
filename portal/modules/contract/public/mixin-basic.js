@@ -29,7 +29,7 @@ const formItemLayout2 = {
 let queryCustomerTimeout = null;
 
 export default {
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             formData: JSON.parse(JSON.stringify(this.props.contract)),
             customerList: [],
@@ -37,7 +37,7 @@ export default {
         };
     },
     //输入客户名
-    enterCustomer: function (field, e) {
+    enterCustomer: function(field, e) {
         const value = e.target.value.trim();
 
         this.state.formData[field] = value;
@@ -47,7 +47,7 @@ export default {
         }
         this.setState(this.state);
     },
-    queryCustomer: function (field, keyword) {
+    queryCustomer: function(field, keyword) {
         this.state.formData[field] = keyword;
         this.setState(this.state);
 
@@ -65,7 +65,7 @@ export default {
             });
         }, 500);
     },
-    renderNumField: function () {
+    renderNumField: function() {
         let rules = [{required: true, message: Intl.get("contract.57", "请填写合同号")}];
 
         if (this.props.validateNumRepeat) {
@@ -74,80 +74,80 @@ export default {
 
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("contract.24", "合同号")}
-                 validateStatus={this.getValidateStatus("num")}
-                 help={this.getHelpMessage("num")}
+                {...formItemLayout}
+                label={Intl.get("contract.24", "合同号")}
+                validateStatus={this.getValidateStatus("num")}
+                help={this.getHelpMessage("num")}
             >
                 <Validator trigger="onBlur" rules={rules}>
-                <Input
-                    ref="num"
-                    name="num"
-                    value={this.state.formData.num}
-                    onChange={this.setField.bind(this, "num")}
-                />
+                    <Input
+                        ref="num"
+                        name="num"
+                        value={this.state.formData.num}
+                        onChange={this.setField.bind(this, "num")}
+                    />
                 </Validator>
             </FormItem>
         );
     },
-    getCustomerOptions: function () {
+    getCustomerOptions: function() {
         return this.state.customerList.map((customer, index) => {
             return <Option key={index} value={customer.customer_id}>{customer.customer_name}</Option>;
         });
     },
-    getBuyerOptions: function () {
+    getBuyerOptions: function() {
         return this.state.buyerList.map(buyer => {
             return <Option key={buyer.customer_name} value={buyer.customer_name}>{buyer.customer_name}</Option>;
         });
     },
-    renderCustomerField: function () {
+    renderCustomerField: function() {
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("crm.41", "客户名")}
-                 validateStatus={this.getValidateStatus("customer_name")}
-                 help={this.getHelpMessage("customer_name")}
+                {...formItemLayout}
+                label={Intl.get("crm.41", "客户名")}
+                validateStatus={this.getValidateStatus("customer_name")}
+                help={this.getHelpMessage("customer_name")}
             >
                 <Validator rules={[{required: true, message: Intl.get("contract.58", "请填写客户名")}]}>
-                <Input
-                    name="customer_name"
-                    value={this.state.formData.customer_name}
-                    onChange={this.enterCustomer.bind(this, "customer_name")}
-                />
+                    <Input
+                        name="customer_name"
+                        value={this.state.formData.customer_name}
+                        onChange={this.enterCustomer.bind(this, "customer_name")}
+                    />
                 </Validator>
             </FormItem>
         );
     },
-    renderBelongCustomerField: function () {
+    renderBelongCustomerField: function() {
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("common.belong.customer", "所属客户")}
-                 validateStatus={this.getValidateStatus("oplate_customer_name")}
-                 help={this.getHelpMessage("oplate_customer_name")}
+                {...formItemLayout}
+                label={Intl.get("common.belong.customer", "所属客户")}
+                validateStatus={this.getValidateStatus("oplate_customer_name")}
+                help={this.getHelpMessage("oplate_customer_name")}
             >
                 <Validator rules={[{required: true, message: Intl.get("contract.58", "请填写客户名")}]}>
-                <Select
-                    name="oplate_customer_name"
-                    combobox
-                    filterOption={false}
-                    searchPlaceholder={Intl.get("customer.search.by.customer.name", "请输入客户名称搜索")}
-                    value={this.state.formData.oplate_customer_name}
-                    onSearch={this.queryCustomer.bind(this, "oplate_customer_name")}
-                    onSelect={this.onCustomerChoosen}
-                    notFoundContent={Intl.get("contract.60", "暂无客户")}
-                >
-                    {this.getCustomerOptions()}
-                </Select>
+                    <Select
+                        name="oplate_customer_name"
+                        combobox
+                        filterOption={false}
+                        searchPlaceholder={Intl.get("customer.search.by.customer.name", "请输入客户名称搜索")}
+                        value={this.state.formData.oplate_customer_name}
+                        onSearch={this.queryCustomer.bind(this, "oplate_customer_name")}
+                        onSelect={this.onCustomerChoosen}
+                        notFoundContent={Intl.get("contract.60", "暂无客户")}
+                    >
+                        {this.getCustomerOptions()}
+                    </Select>
                 </Validator>
             </FormItem>
         );
     },
-    renderBuyerField: function () {
+    renderBuyerField: function() {
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("contract.4", "甲方")}
+                {...formItemLayout}
+                label={Intl.get("contract.4", "甲方")}
             >
                 <Input
                     name="buyer"
@@ -157,47 +157,47 @@ export default {
             </FormItem>
         );
     },
-    renderUserField: function () {
+    renderUserField: function() {
         const userOptions = this.props.userList.map(user => {
             return <Option key={user.user_id} value={user.user_id}>{user.nick_name}</Option>;
         });
 
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("crm.6", "负责人")}
-                 validateStatus={this.getValidateStatus("user_id")}
-                 help={this.getHelpMessage("user_id")}
+                {...formItemLayout}
+                label={Intl.get("crm.6", "负责人")}
+                validateStatus={this.getValidateStatus("user_id")}
+                help={this.getHelpMessage("user_id")}
             >
                 <Validator rules={[{required: true, message: Intl.get("contract.63", "请选择负责人")}]}>
-                <Select
-                    name="user_id"
-                    showSearch
-                    optionFilterProp="children"
-                    placeholder={Intl.get("contract.63", "请选择负责人")}
-                    value={this.state.formData.user_id}
-                    onSelect={this.onUserChoosen}
-                    notFoundContent={Intl.get("contract.64", "暂无负责人")}
-                >
-                    {userOptions}
-                </Select>
+                    <Select
+                        name="user_id"
+                        showSearch
+                        optionFilterProp="children"
+                        placeholder={Intl.get("contract.63", "请选择负责人")}
+                        value={this.state.formData.user_id}
+                        onSelect={this.onUserChoosen}
+                        notFoundContent={Intl.get("contract.64", "暂无负责人")}
+                    >
+                        {userOptions}
+                    </Select>
                 </Validator>
 
                 {this.props.isGetUserSuccess? null : (
-                <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="contract.65" defaultMessage="获取负责人列表失败" />，<ReactIntl.FormattedMessage id="contract.66" defaultMessage="点击" /><a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a></div>
+                    <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="contract.65" defaultMessage="获取负责人列表失败" />，<ReactIntl.FormattedMessage id="contract.66" defaultMessage="点击" /><a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a></div>
                 )}
             </FormItem>
         );
     },
-    renderTeamField: function () {
+    renderTeamField: function() {
         const teamOptions = this.props.teamList.map(team => {
             return <Option key={team.groupId} value={team.groupId}>{team.groupName}</Option>;
         });
 
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("crm.113", "部门")}
+                {...formItemLayout}
+                label={Intl.get("crm.113", "部门")}
             >
                 <Select
                     showSearch
@@ -212,33 +212,33 @@ export default {
             </FormItem>
         );
     },
-    renderAmountField: function () {
+    renderAmountField: function() {
         return (
             <FormItem 
-                 {...formItemLayout2}
-                 label="合同额"
-                 validateStatus={this.getValidateStatus("contract_amount")}
-                 help={this.getHelpMessage("contract_amount")}
+                {...formItemLayout2}
+                label="合同额"
+                validateStatus={this.getValidateStatus("contract_amount")}
+                help={this.getHelpMessage("contract_amount")}
             >
                 <Validator rules={[{required: true, message: Intl.get("contract.69", "请填写合同金额")}, this.getNumberValidateRule()]}>
-                <Input
-                    name="contract_amount"
-                    value={this.parseAmount(this.state.formData.contract_amount)}
-                    onChange={this.setField.bind(this, "contract_amount")}
-                />
+                    <Input
+                        name="contract_amount"
+                        value={this.parseAmount(this.state.formData.contract_amount)}
+                        onChange={this.setField.bind(this, "contract_amount")}
+                    />
                 </Validator>
             </FormItem>
         );
     },
-    renderDateField: function () {
+    renderDateField: function() {
         if (!this.state.formData.date) {
             this.state.formData.date = new Date;
         }
 
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("contract.34", "签订时间")}
+                {...formItemLayout}
+                label={Intl.get("contract.34", "签订时间")}
             >
                 <DatePicker
                     value={moment(this.state.formData.date)}
@@ -247,7 +247,7 @@ export default {
             </FormItem>
         );
     },
-    renderStageField: function () {
+    renderStageField: function() {
         const stageOptions = CONTRACT_STAGE.map(stage => {
             return <Option key={stage} value={stage}>{stage}</Option>;
         });
@@ -258,8 +258,8 @@ export default {
 
         return (
             <FormItem 
-                 {...formItemLayout2}
-                 label={Intl.get("contract.36", "合同阶段")}
+                {...formItemLayout2}
+                label={Intl.get("contract.36", "合同阶段")}
             >
                 <Select
                     placeholder={Intl.get("contract.70", "请选择合同阶段")}
@@ -272,7 +272,7 @@ export default {
             </FormItem>
         );
     },
-    renderLabelField: function () {
+    renderLabelField: function() {
         const labelOptions = CONTRACT_LABEL.map(label => {
             return <Option key={label.value} value={label.value}>{label.name}</Option>;
         });
@@ -283,8 +283,8 @@ export default {
 
         return (
             <FormItem 
-                 {...formItemLayout2}
-                 label={Intl.get("contract.164", "签约类型")}
+                {...formItemLayout2}
+                label={Intl.get("contract.164", "签约类型")}
             >
                 <Select
                     placeholder={Intl.get("contract.70", "请选择签约类型")}
@@ -297,15 +297,15 @@ export default {
             </FormItem>
         );
     },
-    renderCategoryField: function () {
+    renderCategoryField: function() {
         const categoryOptions = CATEGORY.map(category => {
             return <Option key={category} value={category}>{category}</Option>;
         });
 
         return (
             <FormItem 
-                 {...formItemLayout2}
-                 label={Intl.get("contract.37", "合同类型")}
+                {...formItemLayout2}
+                label={Intl.get("contract.37", "合同类型")}
             >
                 <Select
                     placeholder={Intl.get("contract.72", "请选择合同类型")}
@@ -318,11 +318,11 @@ export default {
             </FormItem>
         );
     },
-    renderRemarksField: function () {
+    renderRemarksField: function() {
         return (
             <FormItem 
-                 {...formItemLayout}
-                 label={Intl.get("common.remark", "备注")}
+                {...formItemLayout}
+                label={Intl.get("common.remark", "备注")}
             >
                 <AutosizeTextarea
                     value={this.state.formData.remarks}
@@ -331,7 +331,7 @@ export default {
             </FormItem>
         );
     },
-    onCustomerChoosen: function (value) {
+    onCustomerChoosen: function(value) {
         const selectedCustomer = _.find(this.state.customerList, customer => customer.customer_id === value);
 
         this.state.formData.oplate_customer_name = selectedCustomer.customer_name;
@@ -344,7 +344,7 @@ export default {
             this.handleValidate(this.state.status, formDataCopy);
         });
     },
-    onUserChoosen: function (value) {
+    onUserChoosen: function(value) {
         const selectedUser = _.find(this.props.userList, user => user.user_id === value);
 
         this.state.formData.user_id = value;
@@ -353,14 +353,14 @@ export default {
             this.onTeamChoosen(selectedUser.group_id);
         }
     },
-    onTeamChoosen: function (value) {
+    onTeamChoosen: function(value) {
         const selectedTeam = _.find(this.props.teamList, team => team.groupId === value);
         this.state.formData.sales_team_id = value;
         this.state.formData.sales_team = selectedTeam.groupName;
         this.setState(this.state);
     },
     //检查合同号是否已存在
-    checkNumExist: function (rule, value, callback) {
+    checkNumExist: function(rule, value, callback) {
         value = value? value.trim() : "";
 
         if (!value) {

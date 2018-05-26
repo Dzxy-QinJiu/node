@@ -20,14 +20,14 @@ var appRestApis = {
 };
 exports.urls = appRestApis;
 //获取应用
-exports.getApps = function (req, res, condition, isGetAllApp) {
+exports.getApps = function(req, res, condition, isGetAllApp) {
     return restUtil.authRest.get(
         {
             url: appRestApis.getApps,
             req: req,
             res: res
         }, condition, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 var appListObj = data;
                 if (_.isObject(appListObj)) {
@@ -52,14 +52,14 @@ exports.getApps = function (req, res, condition, isGetAllApp) {
 };
 
 //通过id获取应用的详细信息
-exports.getCurAppById = function (req, res, appId) {
+exports.getCurAppById = function(req, res, appId) {
     return restUtil.authRest.get(
         {
             url: appRestApis.getCurAppById + "/" + appId,
             req: req,
             res: res
         }, null, {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (data) {
                     data = App.toFrontObject(data);
@@ -70,7 +70,7 @@ exports.getCurAppById = function (req, res, appId) {
 };
 
 //添加应用
-exports.addApp = function (req, res, frontApp) {
+exports.addApp = function(req, res, frontApp) {
     var restApp = App.toRestObject(frontApp);
     return restUtil.authRest.post(
         {
@@ -80,7 +80,7 @@ exports.addApp = function (req, res, frontApp) {
         },
         restApp,
         {
-            success: function (eventEmitter, data) {
+            success: function(eventEmitter, data) {
                 //处理数据
                 if (_.isObject(data)) {
                     frontApp.id = data.client_id;
@@ -91,7 +91,7 @@ exports.addApp = function (req, res, frontApp) {
         });
 };
 //修改应用
-exports.editApp = function (req, res, frontApp) {
+exports.editApp = function(req, res, frontApp) {
     var editApp = {};
     if (frontApp.status || frontApp.status == 0) {
         //启用、停用的修改

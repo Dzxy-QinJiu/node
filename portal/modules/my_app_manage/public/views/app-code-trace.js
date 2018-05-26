@@ -14,26 +14,26 @@ require('../css/app-code-trace.less');
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {Icon} from 'antd';
 var AppCodeTrace = React.createClass({
-    getInitialState: function () {
+    getInitialState: function() {
         return AppStore.getState();
     },
 
-    onChange: function () {
+    onChange: function() {
         this.setState(AppStore.getState());
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         AppStore.listen(this.onChange);
         var appId = this.props.appId;
         AppAction.getCurAppKeyById(appId);
 
     },
-    componentWillReceiveProps : function (nextProps){
+    componentWillReceiveProps : function(nextProps){
         var appId = nextProps.appId;
         if (appId != this.props.appId) {
             AppAction.getCurAppKeyById(appId);
         }
     },
-    renderContent:function () {
+    renderContent:function() {
         var key = this.state.appPiwikKey;
         var text = `
         <!-- Oplate Track -->
@@ -62,40 +62,40 @@ var AppCodeTrace = React.createClass({
                 </div>
                 <div className="app-code-trace-content">
 
-                <div className="app-code-trace">
-                    <h3>{Intl.get("rightpanel_codetrace","跟踪代码")}</h3>
-                    <p className="app-code-tip">{tip}</p>
-                    <div className="app-code-block">
-                        <pre>
-                            <CopyToClipboard text={text}>
-                                         <Icon type="copy" style={{cursor: 'pointer'}}
-                                               title={Intl.get("user.log.copy", "点击可复制")}/>
-                                     </CopyToClipboard>
-                            <div className="app-code">
-                                {text}
-                            </div>
-                        </pre>
+                    <div className="app-code-trace">
+                        <h3>{Intl.get("rightpanel_codetrace","跟踪代码")}</h3>
+                        <p className="app-code-tip">{tip}</p>
+                        <div className="app-code-block">
+                            <pre>
+                                <CopyToClipboard text={text}>
+                                    <Icon type="copy" style={{cursor: 'pointer'}}
+                                        title={Intl.get("user.log.copy", "点击可复制")}/>
+                                </CopyToClipboard>
+                                <div className="app-code">
+                                    {text}
+                                </div>
+                            </pre>
+                        </div>
                     </div>
-                </div>
                 </div>
 
             </div>
         );
     },
-    retryGetAppKey:function () {
+    retryGetAppKey:function() {
         var appId = this.props.appId;
         AppAction.getCurAppKeyById(appId);
     },
-    renderCodeContent:function () {
+    renderCodeContent:function() {
         if (this.state.getPiwikKeyLoading) {
             return (<Spinner />);
         }else if (this.state.appPiwikKeyErrMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.appPiwikKeyErrMsg}
-                        <a onClick={this.retryGetAppKey} style={{marginLeft:"20px",marginTop:"20px"}}>
-                        <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
-                        </a>
-                         </span>;
+                <a onClick={this.retryGetAppKey} style={{marginLeft:"20px",marginTop:"20px"}}>
+                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
+                </a>
+            </span>;
             return (
                 <div className="alert-wrap">
                     <Alert
@@ -110,7 +110,7 @@ var AppCodeTrace = React.createClass({
         }
 
     },
-    render:function () {
+    render:function() {
         return(
             <div className="code-container">
                 {this.renderCodeContent()}
