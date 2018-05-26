@@ -658,7 +658,8 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
         callBackRecord.dataList = [];
     }
     if (result.loading) {
-        result.errorMsg = '';
+        callBackRecord.errorMsg = '';
+        callBackRecord.listenScrollBottom = false;
     } else {
         if (result.error) {
             callBackRecord.errorMsg = result.errorMsg || Intl.get("call.record.get.failed", "获取通话记录失败");
