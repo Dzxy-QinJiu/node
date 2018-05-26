@@ -11,66 +11,66 @@ const ID = 'user-organization';
 const CLASS_PREFIX = ID;
 //布局使用的常量
 const LAYOUT_CONSTANTS = {
-    MIN_WIDTH : 80,
-    RANGE_WARP_PADDING : 30,
-    MENU_ITEM_PADDING :10
+    MIN_WIDTH: 80,
+    RANGE_WARP_PADDING: 30,
+    MENU_ITEM_PADDING: 10
 };
 
 var Organization = React.createClass({
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.getOrganizationList();
     },
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            list : [],
-            user_id : '',
-            onChange : function(){},
-            showBtn : false,
-            organization_id : "",
-            onModifySuccess : function() {}
+            list: [],
+            user_id: '',
+            onChange: function(){},
+            showBtn: false,
+            organization_id: "",
+            onModifySuccess: function() {}
         };
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            list : [],
-            displayType : "text",
-            organization_id : this.props.organization_id,
-            organization_name : this.props.organization_name,
-            submitType : '',
-            errorMsg : ''
+            list: [],
+            displayType: "text",
+            organization_id: this.props.organization_id,
+            organization_name: this.props.organization_name,
+            submitType: '',
+            errorMsg: ''
         };
     },
-    getOrganizationList : function() {
+    getOrganizationList: function() {
         OrganizationAjax.getOrganizationListAjax().sendRequest().success((list) => {
             this.setState({
-                list : list
+                list: list
             });
         }).error((xhr, code , errText) => {
             this.setState({
-                list : []
+                list: []
             });
         }).timeout(function() {
             this.setState({
-                list : []
+                list: []
             });
         });
     },
-    componentId : _.uniqueId(ID),
-    onSelectChange : function(value,text) {
+    componentId: _.uniqueId(ID),
+    onSelectChange: function(value,text) {
         var trimValue = $.trim(value);
         if(!trimValue) {
             this.props.onChange("");
             this.setState({
-                organization_id : ""
+                organization_id: ""
             });
         } else {
             this.props.onChange(value);
             this.setState({
-                organization_id : value
+                organization_id: value
             });
         }
     },
-    getOrganizationOptions : function() {
+    getOrganizationOptions: function() {
         var list = this.state.list.map((item) => {
             return (<Option key={item.group_id} value={item.group_id}>{item.group_name}</Option>);
         });
@@ -79,28 +79,28 @@ var Organization = React.createClass({
         }
         return list;
     },
-    getSelectedText : function() {
+    getSelectedText: function() {
         var target = _.find(this.state.list , (item) => {
             return item.group_id == this.state.organization_id;
         });
         return target ? target.group_name : <span>&nbsp;</span>;
     },
-    changeDisplayType : function(type) {
+    changeDisplayType: function(type) {
         if(type === 'text') {
             this.setState({
-                organization_id : this.props.organization_id,
-                organization_name : this.props.organization_name,
-                displayType : type,
-                submitType : '',
-                errorMsg : ''
+                organization_id: this.props.organization_id,
+                organization_name: this.props.organization_name,
+                displayType: type,
+                submitType: '',
+                errorMsg: ''
             });
         } else {
             this.setState({
-                displayType : type
+                displayType: type
             });
         }
     },
-    submit : function() {
+    submit: function() {
         if(this.state.submitType === 'loading') {
             return;
         }
@@ -109,47 +109,47 @@ var Organization = React.createClass({
         //要提交的数据
         var appUser = {
             //用户id
-            user_id : this.props.user_id,
+            user_id: this.props.user_id,
             //属于
-            group_id : organization_id
+            group_id: organization_id
         };
         this.setState({
-            submitType : 'loading'
+            submitType: 'loading'
         });
         $.ajax({
             url: '/rest/global/organization/' + appUser.user_id + '/' + appUser.group_id,
             dataType: 'json',
             type: 'put',
-            success:  (bool) => {
+            success: (bool) => {
                 if(bool === true) {
                     this.setState({
-                        submitType : 'success'
+                        submitType: 'success'
                     });
                     this.props.onModifySuccess({organization_id,organization_name});
                     setTimeout(() => {
                         this.setState({
-                            submitType : '',
-                            displayType : "text",
-                            errorMsg : '',
-                            organization_name : organization_name
+                            submitType: '',
+                            displayType: "text",
+                            errorMsg: '',
+                            organization_name: organization_name
                         });
                     } , 1000);
                 } else {
                     this.setState({
-                        submitType : 'error',
-                        errorMsg : Intl.get("common.edit.failed", "修改失败")
+                        submitType: 'error',
+                        errorMsg: Intl.get("common.edit.failed", "修改失败")
                     });
                 }
             },
-            error:  (xhr) => {
+            error: (xhr) => {
                 this.setState({
-                    submitType : 'error',
-                    errorMsg : xhr.responseJSON
+                    submitType: 'error',
+                    errorMsg: xhr.responseJSON
                 });
             }
         });
     },
-    renderIndicator : function() {
+    renderIndicator: function() {
         if(!this.props.showBtn) {
             return null;
         }
@@ -159,8 +159,8 @@ var Organization = React.createClass({
         var _this = this;
         var onSuccessHide = function() {
             _this.setState({
-                submitType : '',
-                displayType : 'text'
+                submitType: '',
+                displayType: 'text'
             });
         };
         if(this.state.submitType === 'success') {
@@ -170,15 +170,15 @@ var Organization = React.createClass({
             return <Alert message={this.state.errorMsg || Intl.get("common.edit.failed", "修改失败")} type="error" showIcon/>;
         }
     },
-    render : function() {
+    render: function() {
 
         if(this.props.showBtn && this.state.displayType === 'text') {
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.state.organization_name}</span>
-                    { hasPrivilege("USER_ORGANIZATION_MEMBER_EDIT")&&hasPrivilege("APP_USER_EDIT")?
+                    { hasPrivilege("USER_ORGANIZATION_MEMBER_EDIT") && hasPrivilege("APP_USER_EDIT") ?
                         <i className="iconfont icon-update" onClick={this.changeDisplayType.bind(this,"edit")}/>
-                        :null
+                        : null
                     }
                 </div>
             );
@@ -195,7 +195,7 @@ var Organization = React.createClass({
                     optionFilterProp="children"
                     onChange={this.onSelectChange}
                     value={this.state.organization_id}
-                    notFoundContent={!options.length? Intl.get("user.no.organization", "暂无组织"):Intl.get("user.no.related.organization", "无相关组织")}
+                    notFoundContent={!options.length ? Intl.get("user.no.organization", "暂无组织") : Intl.get("user.no.related.organization", "无相关组织")}
                 >
                     {options}
                 </SelectFullWidth>

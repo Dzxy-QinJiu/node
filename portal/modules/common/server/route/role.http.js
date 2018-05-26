@@ -8,7 +8,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     },{
         //获取权限列表
         "method": "get",
@@ -17,6 +17,6 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     }]
 };

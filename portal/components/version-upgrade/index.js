@@ -20,7 +20,7 @@ var VersionUpgradeList = React.createClass({
             deleteAppVersionErrMsg: ''
         };
     },
-    returnMsgErrorFromServer : function(){
+    returnMsgErrorFromServer: function(){
         if(this.props.getAppRecordErrorMsg) {
             var retry = (
                 <span>
@@ -47,7 +47,7 @@ var VersionUpgradeList = React.createClass({
         Trace.traceEvent($(this.getDOMNode()).find(".app-version-delete"),"删除升级版本记录");
         confirm({
             title: '您是否确认要删除该条记录',
-            onOk: ()  => {
+            onOk: () => {
                 Trace.traceEvent($(this.getDOMNode()).find(".app-version-delete"),"确定删除升级版本记录");
                 versionAjax.deleteAppVersionRecord(record_id).then((result) => {
                     // 删除版本记录成功的处理
@@ -68,13 +68,13 @@ var VersionUpgradeList = React.createClass({
     },
 
     // 删除版本记录成功后，重新获取版本记录列表
-    getAfreshVersionData : function(){
+    getAfreshVersionData: function(){
         var appId = AppStore.getState().currentApp.id;
         VersionUpgradeLogAction.resetState();
         var searchObj = {
             appId: appId,
             page: 1,
-            pageSize:20
+            pageSize: 20
         };
         VersionUpgradeLogAction.getAppRecordsList(searchObj);
     },
@@ -96,7 +96,7 @@ var VersionUpgradeList = React.createClass({
         );
     },
 
-    render : function(){
+    render: function(){
         if(this.props.appVersionListResult == "loading" && this.props.page == 1){
             return (<div>
                 <Spinner />
@@ -104,16 +104,16 @@ var VersionUpgradeList = React.createClass({
         }
         return (
             <div className="version-content-list">
-                {this.props.getAppRecordErrorMsg? (
+                {this.props.getAppRecordErrorMsg ? (
                     this.returnMsgErrorFromServer()
                 ) : null}
                 {this.state.deleteAppVersionErrMsg != '' ?
                     this.handleDeleteAppVersionError() : null
                 }
-                { this.props.list.length > 0  ?  this.props.list.map((item, index) => {
+                { this.props.list.length > 0 ? this.props.list.map((item, index) => {
                     var content = (item.content).replace(/\n+/g,function(ns) {
                         if(ns.length == 1){
-                            return '  '+ns;
+                            return '  ' + ns;
                         }
                         return ns;
                     });
@@ -134,7 +134,7 @@ var VersionUpgradeList = React.createClass({
                                 <div >
                                     应用：<br />
                                     <span className="upgrade-log-upload-apk">
-                                        <a href={"/rest/app/record/download_file/"+ record_id }>
+                                        <a href={"/rest/app/record/download_file/" + record_id }>
                                             {item.file_name}
                                         </a>
                                         &nbsp;
@@ -146,7 +146,7 @@ var VersionUpgradeList = React.createClass({
                                         > </span>
                                     ) : null }
                                 </div>
-                            ): null}
+                            ) : null}
 
                             <div className="upgrade-version">
                                 {moment(item.create_date).format(oplateConsts.DATE_FORMAT)}&nbsp;&nbsp;
@@ -154,7 +154,7 @@ var VersionUpgradeList = React.createClass({
                             </div>
                         </div>
                     );
-                }) :  ( this.props.getAppRecordErrorMsg == '' && this.props.list.length == 0 &&  this.props.noDataShow  ?
+                }) : ( this.props.getAppRecordErrorMsg == '' && this.props.list.length == 0 && this.props.noDataShow ?
                     (<div>
                         <Alert
                             message="该应用没有升级记录"

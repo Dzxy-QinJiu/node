@@ -18,7 +18,7 @@ class ClueAnalysisPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showCustomerIds:[],//所有客户的id
+            showCustomerIds: [],//所有客户的id
             ...ClueAnalysisStore.getState()
         };
     }
@@ -63,13 +63,13 @@ class ClueAnalysisPanel extends React.Component {
             this.refreshClueAnalysisData();
         });
     };
-    handleAccessSelect = (access) =>{
+    handleAccessSelect = (access) => {
         ClueAnalysisAction.changeAccess(access);
         setTimeout(() => {
             this.refreshClueAnalysisData();
         });
     };
-    handleSourceSelect = (source) =>{
+    handleSourceSelect = (source) => {
         ClueAnalysisAction.changeSource(source);
         setTimeout(() => {
             this.refreshClueAnalysisData();
@@ -109,19 +109,19 @@ class ClueAnalysisPanel extends React.Component {
             </div>
         );
     }
-    handleShowCustomerInfo = (ids, label) =>{
+    handleShowCustomerInfo = (ids, label) => {
         var idsStr = ids.join(",");
         ClueAnalysisAction.getCustomerById(idsStr,label);
         this.setState({
             showCustomerIds: ids,
         });
     };
-    closeCustomersContentPanel=()=>{
+    closeCustomersContentPanel=() => {
         this.setState({
             showCustomerIds: []
         });
     };
-    closeClueAnalysisPanel = () =>{
+    closeClueAnalysisPanel = () => {
         ClueAnalysisAction.setInitState();
         this.props.closeClueAnalysisPanel();
     };
@@ -141,7 +141,7 @@ class ClueAnalysisPanel extends React.Component {
                 title: Intl.get("sales.stage.intention", "意向"),
                 align: "right",
                 width: 100,
-                render: (text, record, index) =>{
+                render: (text, record, index) => {
                     if (record.label === Intl.get("sales.stage.intention", "意向")){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
@@ -155,7 +155,7 @@ class ClueAnalysisPanel extends React.Component {
                 title: Intl.get("common.trial", "试用"),
                 align: "right",
                 width: 100,
-                render:(text, record, index)  => {
+                render: (text, record, index) => {
                     if (record.label === Intl.get("common.trial", "试用")){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
@@ -169,7 +169,7 @@ class ClueAnalysisPanel extends React.Component {
                 title: Intl.get("common.trial.qualified", "试用合格"),
                 align: "right",
                 width: 100,
-                render:(text, record, index) =>{
+                render: (text, record, index) => {
                     if (record.label === Intl.get("common.trial.qualified", "试用合格")){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
@@ -183,7 +183,7 @@ class ClueAnalysisPanel extends React.Component {
                 title: Intl.get("sales.stage.signed", "签约"),
                 align: "right",
                 width: 100,
-                render:(text, record, index) => {
+                render: (text, record, index) => {
                     if (record.label === Intl.get("sales.stage.signed", "签约")){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>
@@ -197,7 +197,7 @@ class ClueAnalysisPanel extends React.Component {
                 title: Intl.get("sales.stage.lost", "流失"),
                 align: "right",
                 width: 100,
-                render:(text, record, index) => {
+                render: (text, record, index) => {
                     if (record.label === Intl.get("sales.stage.lost", "流失")){
                         return (
                             <div className="customer-num" onClick={this.handleShowCustomerInfo.bind(this, record.customer_ids, record.label)}>

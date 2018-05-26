@@ -3,7 +3,7 @@
  */
 import AppUserAction from '../../action/app-user-actions';
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
-import UserDetailEditAppActions  from '../../action/v2/user-detail-edit-app-actions';
+import UserDetailEditAppActions from '../../action/v2/user-detail-edit-app-actions';
 import UserDetailEditAppStore from '../../store/v2/user-detail-edit-app-store';
 import AppPropertySetting from '../../../../../components/user_manage_components/app-property-setting';
 import {Tabs,Icon,Alert} from 'antd';
@@ -16,8 +16,8 @@ const TabPane = Tabs.TabPane;
 
 //记录上下留白布局
 const LAYOUT = {
-    TAB_TOP_HEIGHT : 66,
-    TAB_BOTTOM_PADDING : 60
+    TAB_TOP_HEIGHT: 66,
+    TAB_BOTTOM_PADDING: 60
 };
 
 
@@ -54,7 +54,7 @@ const UserDetailEditApp = React.createClass({
         AppUserAction.closeRightPanel();
     },
     //保存表单的值
-    appsSetting : {},
+    appsSetting: {},
     //表单值，改变了，会触发，保存到 this.appsSetting
     onAppPropertyChange(appsSetting) {
         this.appsSetting = appsSetting;
@@ -63,7 +63,7 @@ const UserDetailEditApp = React.createClass({
         let changeAppInfo = _.clone(submitData);
         changeAppInfo.app_id = changeAppInfo.client_id;
         changeAppInfo.app_name = this.props.appInfo.app_name;
-        changeAppInfo.start_time =  changeAppInfo.begin_date;
+        changeAppInfo.start_time = changeAppInfo.begin_date;
         changeAppInfo.end_time = changeAppInfo.end_date;
         changeAppInfo.is_disabled = changeAppInfo.status == '1' ? 'false' : 'true';
         changeAppInfo.create_time = this.props.appInfo.create_time;
@@ -130,12 +130,12 @@ const UserDetailEditApp = React.createClass({
         }
         let changeAppInfo = this.getChangeAppInfo(submitData);
         //修改用户
-        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag)=>{
+        UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag) => {
             //发出更新用户列表事件
             if (flag) {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO , {
-                    user_id : submitData.user_id,
-                    app_info  : changeAppInfo
+                    user_id: submitData.user_id,
+                    app_info: changeAppInfo
                 });
             }
             //面板向右滑
@@ -172,7 +172,7 @@ const UserDetailEditApp = React.createClass({
     render() {
         const height = $(window).height() - LAYOUT.TAB_TOP_HEIGHT - LAYOUT.TAB_BOTTOM_PADDING;
         return (
-            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height:"100%"}}>
+            <div className="user-manage-v2 user-detail-edit-app-v2" style={{height: "100%"}}>
                 <RightPanelReturn onClick={this.cancel}/>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <Tabs defaultActiveKey="editapp">

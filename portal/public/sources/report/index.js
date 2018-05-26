@@ -19,12 +19,12 @@ function getChildRoutes() {
 module.exports = {
     path: 'report',
     //在RightContent中用来做跳转,重要
-    routesExports : getChildRoutes(),
+    routesExports: getChildRoutes(),
 
-    getChildRoutes : function(location , cb) {
+    getChildRoutes: function(location , cb) {
 
         var childRoutes = getChildRoutes();
         cb(null , childRoutes);
     },
-    component : RightContent
+    component: RightContent
 };

@@ -6,7 +6,7 @@ require("../action/contract-template-controller");
 
 module.exports = {
     module: "contract/server/action/contract-template-controller",
-    routes:[
+    routes: [
         {
             // 销售合同模板
             "method": "get",

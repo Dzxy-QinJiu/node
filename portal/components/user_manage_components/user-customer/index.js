@@ -25,23 +25,23 @@ class UserCustomer extends React.Component{
         this.componentId = _.uniqueId("UserCustomer");
         this.state = {
             //客户id
-            customer_id : this.props.customer_id,
+            customer_id: this.props.customer_id,
             //客户名称
-            customer_name : this.props.customer_name,
+            customer_name: this.props.customer_name,
             //是显示文字text，还是显示操作区select
-            displayType : this.props.displayType,
+            displayType: this.props.displayType,
             //提交状态
-            submitType : '',
+            submitType: '',
             //错误信息
-            error_message : '',
+            error_message: '',
             //销售id
-            sales_id : this.props.sales_id,
+            sales_id: this.props.sales_id,
             //销售名称
-            sales_name : this.props.sales_name,
+            sales_name: this.props.sales_name,
             //销售id
-            sales_team_id : this.props.sales_team_id,
+            sales_team_id: this.props.sales_team_id,
             //销售名称
-            sales_team_name : this.props.sales_team_name
+            sales_team_name: this.props.sales_team_name
         };
     }
     componentWillReceiveProps(nextProps){
@@ -73,31 +73,31 @@ class UserCustomer extends React.Component{
         var customer_id = info && info.customer && info.customer.id || '';
         if(!customer_id) {
             this.setState({
-                customer_id : this.props.customer_id,
-                customer_name : this.props.customer_name,
-                sales_id : this.props.sales_id,
-                sales_name : this.props.sales_name,
-                sales_team_id : this.props.sales_team_id,
-                sales_team_name : this.props.sales_team_name
+                customer_id: this.props.customer_id,
+                customer_name: this.props.customer_name,
+                sales_id: this.props.sales_id,
+                sales_name: this.props.sales_name,
+                sales_team_id: this.props.sales_team_id,
+                sales_team_name: this.props.sales_team_name
             });
             return;
         }
         this.setState({
-            customer_id : customer_id,
-            customer_name : info && info.customer && info.customer.name || '',
+            customer_id: customer_id,
+            customer_name: info && info.customer && info.customer.name || '',
             //销售id
-            sales_id : info && info.sales && info.sales.id || '',
+            sales_id: info && info.sales && info.sales.id || '',
             //销售名称
-            sales_name : info && info.sales && info.sales.name || '',
+            sales_name: info && info.sales && info.sales.name || '',
             //销售id
-            sales_team_id : info && info.sales_team && info.sales_team.id || '',
+            sales_team_id: info && info.sales_team && info.sales_team.id || '',
             //销售名称
-            sales_team_name : info && info.sales_team && info.sales_team.name || ''
+            sales_team_name: info && info.sales_team && info.sales_team.name || ''
         });
     }
     renderCustomerBlock() {
         return (
-            <div className="select_text_wrap" style={{display : 'block'}}>
+            <div className="select_text_wrap" style={{display: 'block'}}>
                 <CustomerSuggest
                     required={true}
                     customer_id={this.state.customer_id}
@@ -112,9 +112,9 @@ class UserCustomer extends React.Component{
     }
     hideCustomerError() {
         this.setState({
-            show_customer_error : false,
-            submitType : "",
-            error_message : ''
+            show_customer_error: false,
+            submitType: "",
+            error_message: ''
         });
     }
     changeDisplayType(type) {
@@ -122,15 +122,15 @@ class UserCustomer extends React.Component{
             return;
         }
         this.setState({
-            displayType : type
+            displayType: type
         });
         if(type === 'text') {
             this.setState({
-                error_message : '',
-                submitType : '',
-                show_customer_error : false,
-                customer_id : this.props.customer_id,
-                customer_name : this.props.customer_name
+                error_message: '',
+                submitType: '',
+                show_customer_error: false,
+                customer_id: this.props.customer_id,
+                customer_name: this.props.customer_name
             });
             this.onCustomerChoosen();
         }
@@ -151,7 +151,7 @@ class UserCustomer extends React.Component{
                 this.state.sales_team_name = '';
             } else if(input_val !== this.props.customer_name) {
                 this.setState({
-                    show_customer_error : true
+                    show_customer_error: true
                 });
                 return;
             }
@@ -159,13 +159,13 @@ class UserCustomer extends React.Component{
         //要提交的数据
         var appUser = {
             //用户id
-            user_id : this.props.user_id,
+            user_id: this.props.user_id,
             //客户id
-            customer_id : this.state.customer_id
+            customer_id: this.state.customer_id
         };
         var _this = this;
         this.setState({
-            submitType : 'loading'
+            submitType: 'loading'
         });
         $.ajax({
             url: '/rest/appuser',
@@ -176,29 +176,29 @@ class UserCustomer extends React.Component{
             success: function(bool) {
                 if(bool === true) {
                     _this.setState({
-                        error_message : '',
-                        submitType : 'success'
+                        error_message: '',
+                        submitType: 'success'
                     });
                     _this.props.onChangeSuccess({
-                        user_id : _this.props.user_id,
-                        customer_id : _this.state.customer_id ,
-                        customer_name : _this.state.customer_name,
-                        sales_id : _this.state.sales_id,
-                        sales_name : _this.state.sales_name,
-                        sales_team_id : _this.state.sales_team_id,
-                        sales_team_name : _this.state.sales_team_name
+                        user_id: _this.props.user_id,
+                        customer_id: _this.state.customer_id ,
+                        customer_name: _this.state.customer_name,
+                        sales_id: _this.state.sales_id,
+                        sales_name: _this.state.sales_name,
+                        sales_team_id: _this.state.sales_team_id,
+                        sales_team_name: _this.state.sales_team_name
                     });
                 } else {
                     _this.setState({
-                        error_message : Intl.get("common.edit.failed", "修改失败"),
-                        submitType : 'error'
+                        error_message: Intl.get("common.edit.failed", "修改失败"),
+                        submitType: 'error'
                     });
                 }
             },
             error: function(xhr) {
                 _this.setState({
-                    submitType : 'error',
-                    error_message : xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
+                    submitType: 'error',
+                    error_message: xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
                 });
             }
         });
@@ -210,8 +210,8 @@ class UserCustomer extends React.Component{
         var _this = this;
         var onSuccessHide = function() {
             _this.setState({
-                submitType : '',
-                displayType : 'text'
+                submitType: '',
+                displayType: 'text'
             });
         };
         if(this.state.submitType === 'success') {
@@ -227,7 +227,7 @@ class UserCustomer extends React.Component{
 
         if(this.state.displayType === 'text') {
             //有修改用户的权限或者有修改用户所属客户的权限，并且有查询客户列表的权限时，才可以修改用户的所属客户
-            var canEdit = (hasPrivilege("APP_USER_EDIT")||hasPrivilege("CHANGE_USER_CUSTOMER")) && hasPrivilege("CRM_LIST_CUSTOMERS");
+            var canEdit = (hasPrivilege("APP_USER_EDIT") || hasPrivilege("CHANGE_USER_CUSTOMER")) && hasPrivilege("CRM_LIST_CUSTOMERS");
             return (
                 <div className="user-basic-edit-field">
                     <span>{this.props.customer_name}</span>
@@ -308,15 +308,15 @@ UserCustomer.defaultProps = getDefaultProps();
 //属性类型
 UserCustomer.propTypes = {
     //客户id
-    customer_id : PropTypes.string,
+    customer_id: PropTypes.string,
     //客户name
-    range : PropTypes.string,
+    range: PropTypes.string,
     //成功更改关联关系触发
-    onChangeSuccess : PropTypes.func,
+    onChangeSuccess: PropTypes.func,
     //class名
-    className : PropTypes.string,
+    className: PropTypes.string,
     //显示文字还是操作区
-    displayType : PropTypes.string
+    displayType: PropTypes.string
 };
 
 export default UserCustomer;

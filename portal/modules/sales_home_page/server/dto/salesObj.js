@@ -77,10 +77,10 @@ exports.toFrontSalesPhone = function(data) {
                     averageAnswer: parseInt(salesObj.average_num),//日均接通数
                     callinCount: salesObj.total_callin,//呼入次数
                     callinSuccess: salesObj.total_callin_success,//成功呼入
-                    callinRate:salesObj.callin_rate,//呼入接通率
+                    callinRate: salesObj.callin_rate,//呼入接通率
                     calloutCount: salesObj.total_callout,//呼出次数
                     calloutSuccess: salesObj.total_callout_success,//成功呼出
-                    calloutRate:salesObj.callout_rate//呼出接通率
+                    calloutRate: salesObj.callout_rate//呼出接通率
                 };
             });
         }

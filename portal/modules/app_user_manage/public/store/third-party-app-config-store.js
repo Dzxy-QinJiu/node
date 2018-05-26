@@ -2,8 +2,8 @@ import ThreePartyAppConfigActions from '../action/third-party-app-config-actions
 
 class ThreePartyAppConfigStore {
     constructor() {
-        this.resetState();  //初始化state数据
-        this.bindActions(ThreePartyAppConfigActions);  //绑定action
+        this.resetState(); //初始化state数据
+        this.bindActions(ThreePartyAppConfigActions); //绑定action
     }
     resetState() {
         this.isLoading = true; //默认loading状态

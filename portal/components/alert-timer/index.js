@@ -1,14 +1,14 @@
 var Alert = require("antd").Alert;
 var AlertTimer = React.createClass({
-    isUnmount : false,
+    isUnmount: false,
     getDefaultProps: function() {
         return {
             //默认两秒后消失
             time: 2000,
-            onHide : function() {}
+            onHide: function() {}
         };
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         this.isUnmount = true;
         clearTimeout(this.timer);
     },

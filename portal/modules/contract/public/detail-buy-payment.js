@@ -98,7 +98,7 @@ const DetailBuyPayment = React.createClass({
         });
     },
     renderForm: function(payment, index) {
-        index = isNaN(index)? "" : index;
+        index = isNaN(index) ? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
         let formData = this.state[key];
@@ -122,7 +122,7 @@ const DetailBuyPayment = React.createClass({
                         <DatePicker
                             name={"date" + index}
                             onChange={this.setField.bind(this, "date", index)}
-                            value={formData.date? moment(formData.date) : moment()}
+                            value={formData.date ? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
                     </Validator>
@@ -149,7 +149,7 @@ const DetailBuyPayment = React.createClass({
         payments = _.sortBy(payments, item => item.date).reverse();
         return (
             <div className="detail-payments">
-                {hasPrivilege("OPLATE_PAYMENT_ADD")? (
+                {hasPrivilege("OPLATE_PAYMENT_ADD") ? (
                     <div className="add-finance">
                         {this.renderForm()}
                         <Button
@@ -169,13 +169,13 @@ const DetailBuyPayment = React.createClass({
 
                                 return (
                                     <li key={index}>
-                                        {isFormShow? (
+                                        {isFormShow ? (
                                             <span className="add-finance">
                                                 {this.renderForm(payment, index)}
                                             </span>
                                         ) : (
                                             <span>
-                                                {payment.date? moment(payment.date).format(DATE_FORMAT) : ""}
+                                                {payment.date ? moment(payment.date).format(DATE_FORMAT) : ""}
                                         &nbsp;
                                                 <ReactIntl.FormattedMessage id="contract.91" defaultMessage="付款" />
                                                 {payment.amount}
@@ -183,7 +183,7 @@ const DetailBuyPayment = React.createClass({
                                             </span>
                                         )}
         
-                                        {hasPrivilege("OPLATE_PAYMENT_ADD")? (
+                                        {hasPrivilege("OPLATE_PAYMENT_ADD") ? (
                                             <span>
                                                 {isFormShow ? (
                                                     <span>

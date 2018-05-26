@@ -37,7 +37,7 @@ function AuthorityStore() {
     this.delAuthGroupErrorMsg = "";//删除权限组失败的提示信息
     this.delAuthGroupName = "";//要删除权限组的名称
     this.delAuthErrorMsg = "";//删除权限失败的提示信息
-    this.searchContent="",//搜索服务地址内容
+    this.searchContent = "",//搜索服务地址内容
 
     this.bindActions(AuthorityActions);
 }
@@ -68,7 +68,7 @@ AuthorityStore.prototype.refactorAuthorityGroups = function(authorityGroupsObj) 
             });
         }
     }
-    authorityGroupList.sort((group1, group2)=>group1.permissionGroupName.localeCompare(group2.permissionGroupName));
+    authorityGroupList.sort((group1, group2) => group1.permissionGroupName.localeCompare(group2.permissionGroupName));
     return authorityGroupList;
 };
 
@@ -234,7 +234,7 @@ AuthorityStore.prototype.showAuthorityGroupForm = function(authorityGroup) {
 AuthorityStore.prototype.closeAuthorityGroupForm = function() {
     this.authorityGroupFormShow = false;
     this.editAuthorityGroup = {};
-    this.searchContent="";
+    this.searchContent = "";
 };
 
 //展示右侧编辑面板
@@ -379,11 +379,11 @@ AuthorityStore.prototype.editAuthorityGroupName = function(authorityGroup) {
 };
 //设置状态seacrhContent
 AuthorityStore.prototype.setSearchContent = function(inputContent) {
-    this.searchContent=inputContent;
+    this.searchContent = inputContent;
 };
 //点击编辑按钮，判断是否要设置搜索框中的内容为空
 AuthorityStore.prototype.beforeEditAuthority = function(authorityGroup) {
-    if (authorityGroup.permissionGroupName!==this.editAuthorityGroup.permissionGroupName){
+    if (authorityGroup.permissionGroupName !== this.editAuthorityGroup.permissionGroupName){
         this.setSearchContent('');
     }
 };

@@ -73,7 +73,7 @@ exports.updateCluecustomerDetail = function(req, res) {
         });
 };
 //线索名、电话唯一性验证
-exports.checkOnlySalesClue=function(req, res) {
+exports.checkOnlySalesClue = function(req, res) {
     clueCustomerService.checkOnlySalesClue(req, res)
         .on("success", function(data) {
             res.status(200).json(data);

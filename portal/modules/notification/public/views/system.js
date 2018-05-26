@@ -10,7 +10,7 @@ import NoMoreDataTip from "CMP_DIR/no_more_data_tip";
 import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from "PUB_DIR/sources/utils/consts";
 import {scrollBarEmitter} from "PUB_DIR/sources/utils/emitters";
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import {RightPanel}  from "CMP_DIR/rightPanel";
+import {RightPanel} from "CMP_DIR/rightPanel";
 import SelectFullWidth from "CMP_DIR/select-fullwidth";
 import TopNav from "CMP_DIR/top-nav";
 import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";

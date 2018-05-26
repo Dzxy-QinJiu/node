@@ -6,18 +6,18 @@ import { message } from "antd";
 
 function IpConfigActions(){
     this.generateActions(
-        'getIpConfigList',  // 获取IP配置列表
+        'getIpConfigList', // 获取IP配置列表
         'getFilterIp' // 获取配置过滤内网信息
     );
     
     // 获取IP配置列表
     this.getIpConfigList = function(searchObj){
         var _this = this;
-        _this.dispatch({loading:true});
+        _this.dispatch({loading: true});
         IpConfigAjax.getIpConfigList(searchObj).then(function(resData) {
-            _this.dispatch({loading:false,error:false, resData: resData});
+            _this.dispatch({loading: false,error: false, resData: resData});
         },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 
@@ -36,9 +36,9 @@ function IpConfigActions(){
 
     this.getFilterIp = function() {
         IpConfigAjax.getFilterIp().then( (result) => {
-            this.dispatch({error:false, status: result});
+            this.dispatch({error: false, status: result});
         }, (errorMsg) => {
-            this.dispatch({error:true, errorMsg: errorMsg });
+            this.dispatch({error: true, errorMsg: errorMsg });
             message.error(errorMsg || Intl.get("common.get.filter.ip.err","获取配置过滤网段失败！"));
         } );
     };

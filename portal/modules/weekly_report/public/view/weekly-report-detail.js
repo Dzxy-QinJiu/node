@@ -129,7 +129,7 @@ const WeeklyReportDetail = React.createClass({
             //更新考核天数
             item.real_work_day = item.real_work_day - addLeaveItem.leave_days;
             //日接通数保留整数
-            item.average_num = formatRoundingData(item.total_callout_success /item.real_work_day,0);
+            item.average_num = formatRoundingData(item.total_callout_success / item.real_work_day,0);
             //日均时长保留一位小数
             item.average_time = formatRoundingData(item.total_time / item.real_work_day, 1);
             this.setState({
@@ -162,7 +162,7 @@ const WeeklyReportDetail = React.createClass({
                         if (updateObj.leave_days) {
                             obj.real_work_day = obj.real_work_day + (initailObj.leave_days - updateObj.leave_days);
                             //日接通数保留整数
-                            obj.average_num = formatRoundingData(obj.total_callout_success /obj.real_work_day,0);
+                            obj.average_num = formatRoundingData(obj.total_callout_success / obj.real_work_day,0);
                             //日均时长保留一位小数
                             obj.average_time = formatRoundingData(obj.total_time / obj.real_work_day, 1);
                             initailObj.leave_days = updateObj.leave_days;
@@ -202,7 +202,7 @@ const WeeklyReportDetail = React.createClass({
                         if (item.id === removedId) {
                             Obj.real_work_day = Obj.real_work_day + deleteItem.leave_days;
                             //日接通数保留整数
-                            Obj.average_num = formatRoundingData(Obj.total_callout_success /Obj.real_work_day,0);
+                            Obj.average_num = formatRoundingData(Obj.total_callout_success / Obj.real_work_day,0);
                             //日均时长保留一位小数
                             Obj.average_time = formatRoundingData(Obj.total_time / Obj.real_work_day, 1);
                             Obj.leave_info_list.splice(index, 1);

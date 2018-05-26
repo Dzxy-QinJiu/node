@@ -4,7 +4,7 @@ class IpConfigStore{
     constructor(){
         this.IpConfigList = []; // IP配置列表
         this.IpConfigloading = false;
-        this.getIpConfigErrMsg = "";  // 获取配置信息失败
+        this.getIpConfigErrMsg = ""; // 获取配置信息失败
         this.getFilterIpStatus = ""; // 获取安全域过滤内网网段的状态，true是过滤，false是不过滤
         this.filterErrMsg = ""; // 获取安全域过滤内网失败信息
         this.bindActions(IpConfigAction);

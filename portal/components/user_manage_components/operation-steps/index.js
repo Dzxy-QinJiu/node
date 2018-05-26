@@ -11,7 +11,7 @@ if (language.lan() == "es" || language.lan() == "en") {
     require('./index-es.less');
 }
 const PropTypes = React.PropTypes;
-import classNames  from "classnames";
+import classNames from "classnames";
 //步骤条
 class OperationSteps extends React.Component {
     //构造器
@@ -42,16 +42,16 @@ class OperationSteps extends React.Component {
 }
 //步骤条的默认值
 OperationSteps.defaultProps = {
-    current : 0,
-    title : '',
-    className : '',
-    style : {}
+    current: 0,
+    title: '',
+    className: '',
+    style: {}
 };
 OperationSteps.propTypes = {
-    current : PropTypes.number,
-    title : PropTypes.string,
+    current: PropTypes.number,
+    title: PropTypes.string,
     className: PropTypes.string,
-    style : PropTypes.object
+    style: PropTypes.object
 };
 //步骤
 class OperationStep extends React.Component {
@@ -72,17 +72,17 @@ class OperationStep extends React.Component {
 }
 //步骤的属性类型
 OperationStep.propTypes = {
-    action : PropTypes.string,
-    className : PropTypes.string,
-    style : PropTypes.object,
-    activeDot : PropTypes.bool
+    action: PropTypes.string,
+    className: PropTypes.string,
+    style: PropTypes.object,
+    activeDot: PropTypes.bool
 };
 //步骤的默认属性
 OperationStep.defaultProps = {
-    action : "",
-    className : "",
-    style : {},
-    activeDot : false
+    action: "",
+    className: "",
+    style: {},
+    activeDot: false
 };
 //挂载步骤
 OperationSteps.Step = OperationStep;

@@ -142,7 +142,7 @@ var SalesTeamPage = React.createClass({
                     onChange={this.onSalesTeamNameChange}
                     placeholder={Intl.get("sales.team.search.placeholder", "请输入团队名称")}/>
                 {this.state.saveSalesTeamMsg ? (<div className="indicator">
-                    <AlertTimer time={this.state.saveSalesTeamResult==CONSTANT.ERROR?3000:600}
+                    <AlertTimer time={this.state.saveSalesTeamResult == CONSTANT.ERROR ? 3000 : 600}
                         message={this.state.saveSalesTeamMsg}
                         type={this.state.saveSalesTeamResult} showIcon
                         onHide={this.hideSaveTooltip}/>
@@ -169,7 +169,7 @@ var SalesTeamPage = React.createClass({
                     <NoData msg={this.state.salesTeamLisTipMsg}/>) : (this.state.isLoadingSalesTeam ? (
                     <Spinner className="isloading"/>) : (
                     <div className="sales-team-table-block modal-container"
-                        style={{width:containerWidth,height:containerHeight}}>
+                        style={{width: containerWidth,height: containerHeight}}>
                         <LeftTree
                             containerHeight={containerHeight}
                             salesTeamList={salesTeamList}

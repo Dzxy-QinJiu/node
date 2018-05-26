@@ -1,7 +1,7 @@
 /**
  * 获取ip配置的列表
  * */
-var  IpConfigListAjax = null;
+var IpConfigListAjax = null;
 exports.getIpConfigList = function(searchObj){
     var queryObj = {
         page_size: searchObj.pageSize
@@ -54,7 +54,7 @@ exports.addIpConfigItem = function(addIpItem){
 exports.deleteIpConfigItem = function(id){
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/delete/ip_config/'+ id,
+        url: '/rest/delete/ip_config/' + id,
         type: 'delete',
         success: function(resData) {
             Deferred.resolve(resData);

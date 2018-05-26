@@ -48,7 +48,7 @@ const DetailBasic = React.createClass({
         return index;
     },
     handleSubmit: function(target) {
-        const ref = target === "app"? "addProduct" : "addBasic";
+        const ref = target === "app" ? "addProduct" : "addBasic";
 
         this.refs[ref].refs.validation.validate(valid => {
             if (!valid) {
@@ -114,28 +114,28 @@ const DetailBasic = React.createClass({
                 dataIndex: "commission_rate",
                 key: "commission_rate",
                 render: function(text) {
-                    return <span>{text? text + " %" : ""}</span>;
+                    return <span>{text ? text + " %" : ""}</span>;
                 }
             },
         ];
 
-        const start_time = contract.start_time? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : "";
+        const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : "";
 
-        const end_time = contract.end_time? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : "";
+        const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : "";
 
-        const date = contract.date? moment(contract.date).format(oplateConsts.DATE_FORMAT) : "";
+        const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : "";
 
         const isEditBtnShow = !this.state.isBasicInfoEdit && !this.state.isAppEdit && hasPrivilege("OPLATE_CONTRACT_UPDATE");
 
         return (
             <div className="detail-basic">
-                {isEditBtnShow? (
+                {isEditBtnShow ? (
                     <RightPanelEdit 
                         onClick={this.showBasicInfoForm}
                     />
                 ) : null}
 
-                {this.state.isBasicInfoEdit? (
+                {this.state.isBasicInfoEdit ? (
                     <div>
                         <AddBasic
                             ref="addBasic"
@@ -152,7 +152,7 @@ const DetailBasic = React.createClass({
                     </div>
                 ) : null}
 
-                {!this.state.isAppEdit && !this.state.isBasicInfoEdit? (
+                {!this.state.isAppEdit && !this.state.isBasicInfoEdit ? (
                     <div className="basic-info"> 
                         <div className="detail-item">
                             {Intl.get("contract.24", "合同号")}:
@@ -178,14 +178,14 @@ const DetailBasic = React.createClass({
                             {Intl.get("contract.25", "合同额")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.contract_amount)? "" : contract.contract_amount.toFixed(2))}}
+                                values={{"num": (isNaN(contract.contract_amount) ? "" : contract.contract_amount.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item">
                             {Intl.get("contract.26", "成本额")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.cost_price)? "" : contract.cost_price.toFixed(2))}}
+                                values={{"num": (isNaN(contract.cost_price) ? "" : contract.cost_price.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item">
@@ -196,42 +196,42 @@ const DetailBasic = React.createClass({
                             {Intl.get("contract.27", "合同毛利")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.gross_profit)? "" : contract.gross_profit.toFixed(2))}}
+                                values={{"num": (isNaN(contract.gross_profit) ? "" : contract.gross_profit.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item half">
                             {Intl.get("contract.28", "回款额")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.total_amount)? "" : contract.total_amount.toFixed(2))}}
+                                values={{"num": (isNaN(contract.total_amount) ? "" : contract.total_amount.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item">
                             {Intl.get("contract.29", "回款毛利")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.total_gross_profit)? "" : contract.total_gross_profit.toFixed(2))}}
+                                values={{"num": (isNaN(contract.total_gross_profit) ? "" : contract.total_gross_profit.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item half">
                             {Intl.get("contract.30", "应收款")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.total_plan_amount)? "" : contract.total_plan_amount.toFixed(2))}}
+                                values={{"num": (isNaN(contract.total_plan_amount) ? "" : contract.total_plan_amount.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item">
                             {Intl.get("contract.31", "已开发票额")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.159"
-                                values={{"num":(isNaN(contract.total_invoice_amount)? "" : contract.total_invoice_amount.toFixed(2))}}
+                                values={{"num": (isNaN(contract.total_invoice_amount) ? "" : contract.total_invoice_amount.toFixed(2))}}
                                 defaultMessage={`{num}元`} />
                         </div>
                         <div className="detail-item" style={{clear: "left"}}>
                             {Intl.get("contract.32", "合同份数")}:
                             <ReactIntl.FormattedMessage
                                 id="contract.33"
-                                values={{"num":contract.copy_number}}
+                                values={{"num": contract.copy_number}}
                                 defaultMessage={`{num}份`} />
                         </div>
                         <div className="detail-item">
@@ -271,7 +271,7 @@ const DetailBasic = React.createClass({
                     </div>
                 ) : null}
 
-                {this.state.isAppEdit? (
+                {this.state.isAppEdit ? (
                     <div>
                         <AddProduct
                             ref="addProduct"
@@ -286,7 +286,7 @@ const DetailBasic = React.createClass({
                     </div>
                 ) : null}
 
-                {!this.state.isAppEdit && !this.state.isBasicInfoEdit? (
+                {!this.state.isAppEdit && !this.state.isBasicInfoEdit ? (
                     <div>
                         <Table
                             dataSource={products}
@@ -294,7 +294,7 @@ const DetailBasic = React.createClass({
                             rowKey={this.getRowKey}
                             pagination={false}
                         />
-                        {hasPrivilege("OPLATE_CONTRACT_UPDATE")? (
+                        {hasPrivilege("OPLATE_CONTRACT_UPDATE") ? (
                             <div className="op-buttons">
                                 <RightPanelSubmit onClick={this.showAppForm}><ReactIntl.FormattedMessage id="contract.38" defaultMessage="编辑应用" /></RightPanelSubmit>
                             </div>

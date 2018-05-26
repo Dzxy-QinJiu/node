@@ -3,7 +3,7 @@ var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //座席号管理url抽取
 var urls = {
-    addPhoneOrder : "/rest/base/v1/realm/member/phoneorder", // 添加坐席号
+    addPhoneOrder: "/rest/base/v1/realm/member/phoneorder", // 添加坐席号
     getPhoneOrderList: "/rest/base/v1/realm/member/phoneorders", // 获取座席号列表
     getUnbindMemberList: "/rest/base/v1/realm/phoneorder/unbound/members", // 获取未绑定座席号的成员列表
     updatePhoneOrder: '/rest/base/v1/realm/phoneorder/update', // 修改座席号
@@ -31,7 +31,7 @@ exports.getPhoneOrderList = function(req, res, reqQuery) {
 exports.getUnbindMemberList = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: urls.getUnbindMemberList+"?realm=" + req.query.realm,
+            url: urls.getUnbindMemberList + "?realm=" + req.query.realm,
             req: req,
             res: res
         });

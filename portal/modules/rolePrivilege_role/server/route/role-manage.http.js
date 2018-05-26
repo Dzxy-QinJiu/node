@@ -21,7 +21,7 @@ module.exports = {
         "privileges": [
             "ROLEP_RIVILEGE_ROLE_LIST"//查看角色
         ]
-    },  {
+    }, {
         "method": "post",
         "path": "/rest/role",
         "handler": "addRole",

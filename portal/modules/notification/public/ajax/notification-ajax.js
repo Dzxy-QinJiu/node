@@ -24,7 +24,7 @@ exports.getSystemNotices = function(queryObj, status) {
 };
 //系统消息
 let handleSystemNoticeAjax;
-exports.handleSystemNotice =  function(noticeId) {
+exports.handleSystemNotice = function(noticeId) {
     if (handleSystemNoticeAjax) {
         handleSystemNoticeAjax.abort();
     }

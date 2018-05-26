@@ -11,12 +11,12 @@ function UserDetailChangeRecordStore(){
     this.bindActions(UserDetailChangeRecordAction);
 }
 UserDetailChangeRecordStore.prototype.resetState = function() {
-    this.changeRecord =[];//变更记录展示的列表
+    this.changeRecord = [];//变更记录展示的列表
     this.changeRecordLoading = true;//是否正在加载变更记录
     this.changeRecordErrMsg = '';//加载错误后的提示信息
     this.page_size = 200;//加载记录每页的条数
-    this.app='';//默认显示的app名称
-    this.getAppErrorMsg='';//加载app列表出错
+    this.app = '';//默认显示的app名称
+    this.getAppErrorMsg = '';//加载app列表出错
     this.getAppLoading = true;//正在加载app列表
     this.appLists = [];//app列表
 };

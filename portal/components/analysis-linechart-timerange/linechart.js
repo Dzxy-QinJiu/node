@@ -21,8 +21,8 @@ LineChart.prototype.judgeCreateData = function() {
     }
     this.dataList = _.range(9).map(function(i) {
         return {
-            timerange : {starttime:'',endtime:''},
-            value : 0
+            timerange: {starttime: '',endtime: ''},
+            value: 0
         };
     });
 };
@@ -50,60 +50,60 @@ LineChart.prototype.getEchartOptions = function() {
     }
     var label_count = 0;
     var idx = 0;
-    return  {
-        animation : _this.animation,
-        tooltip : _this.noData ? null : {
-            transitionDuration : 0,
-            enterable:true,
+    return {
+        animation: _this.animation,
+        tooltip: _this.noData ? null : {
+            transitionDuration: 0,
+            enterable: true,
             trigger: 'item',
-            backgroundColor : '#0b80e0',
-            textStyle : {
+            backgroundColor: '#0b80e0',
+            textStyle: {
                 color: '#fff'
             },
-            formatter : function(obj) {
+            formatter: function(obj) {
                 var idx = obj.dataIndex;
-                var tooltipDate =  DateSelectorUtils.getEchartTooltipDate(_this.dataList , idx , _this.unit);
+                var tooltipDate = DateSelectorUtils.getEchartTooltipDate(_this.dataList , idx , _this.unit);
                 var newObj = {
-                    name : tooltipDate,
-                    value : obj.value
+                    name: tooltipDate,
+                    value: obj.value
                 };
                 var html = _this.formatter(newObj);
                 return html;
             }
         },
-        grid : {
-            x : 20,
-            x2 : 20,
-            y : 20,
-            y2 : Math.floor(0.4 * _this.height)
+        grid: {
+            x: 20,
+            x2: 20,
+            y: 20,
+            y2: Math.floor(0.4 * _this.height)
         },
-        xAxis : [
+        xAxis: [
             {
                 type: "category",
-                splitLine : {
-                    lineStyle : {
-                        color:'#f2f2f2'
+                splitLine: {
+                    lineStyle: {
+                        color: '#f2f2f2'
                     }
                 },
-                axisLine : {
-                    show:false
+                axisLine: {
+                    show: false
                 },
-                axisTick : {
-                    show : false
+                axisTick: {
+                    show: false
                 },
-                axisLabel : {
-                    textStyle : {
-                        color:'#80959d'
+                axisLabel: {
+                    textStyle: {
+                        color: '#80959d'
                     },
-                    interval : function(id,label) {
+                    interval: function(id,label) {
                         idx++;
                         if(label.indexOf('\n') >= 0) {
-                            label_count ++;
+                            label_count++;
                             return true;
                         }
                         var start = label_count * label_interval;
                         if(idx >= start) {
-                            label_count ++;
+                            label_count++;
                             return true;
                         }
                         return false;
@@ -112,41 +112,41 @@ LineChart.prototype.getEchartOptions = function() {
                 data: _this.getCategorys()
             }
         ],
-        yAxis : [
+        yAxis: [
             {
-                type : 'value',
-                splitLine : {
-                    lineStyle : {
-                        color:'#f2f2f2'
+                type: 'value',
+                splitLine: {
+                    lineStyle: {
+                        color: '#f2f2f2'
                     }
                 },
-                axisLine : {
-                    lineStyle : {
-                        width:1,
-                        color:'#f2f2f2'
+                axisLine: {
+                    lineStyle: {
+                        width: 1,
+                        color: '#f2f2f2'
                     }
                 },
-                axisLabel : {
-                    textStyle : {
-                        color:'#81939e'
+                axisLabel: {
+                    textStyle: {
+                        color: '#81939e'
                     }
                 }
             }
         ],
-        series : [
+        series: [
             {
                 name: 'line',
                 type: 'line',
                 showAllSymbol: true,
                 symbolSize: _this.noData ? 0 : 6,
-                symbol:'emptyCircle',
-                smooth : true,
-                itemStyle : {
-                    normal : {
-                        color:'#4dafde'
+                symbol: 'emptyCircle',
+                smooth: true,
+                itemStyle: {
+                    normal: {
+                        color: '#4dafde'
                     },
                     emphasis: {
-                        color:'#4dafde'
+                        color: '#4dafde'
                     }
                 },
                 data: _this.getSeries()

@@ -183,7 +183,7 @@ export default {
                     </Select>
                 </Validator>
 
-                {this.props.isGetUserSuccess? null : (
+                {this.props.isGetUserSuccess ? null : (
                     <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="contract.65" defaultMessage="获取负责人列表失败" />，<ReactIntl.FormattedMessage id="contract.66" defaultMessage="点击" /><a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a></div>
                 )}
             </FormItem>
@@ -361,7 +361,7 @@ export default {
     },
     //检查合同号是否已存在
     checkNumExist: function(rule, value, callback) {
-        value = value? value.trim() : "";
+        value = value ? value.trim() : "";
 
         if (!value) {
             callback();

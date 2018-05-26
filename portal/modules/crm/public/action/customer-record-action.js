@@ -23,30 +23,30 @@ function CustomerRecordAction() {
     this.getCustomerTraceList = function(queryObj,callback) {
         customerRecordAjax.getCustomerTraceRecordList(queryObj).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({loading:false,error:false,data:data});
+            this.dispatch({loading: false,error: false,data: data});
             if(_.isFunction(callback)) callback();
-        },(errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
     //增加客户跟踪记录
     this.addCustomerTrace = function(queryObj, callback) {
-        this.dispatch({loading:true,error:false});
+        this.dispatch({loading: true,error: false});
         customerRecordAjax.addCustomerTrace(queryObj).then((data) => {
-            this.dispatch({loading:false,error:false,data:data});
+            this.dispatch({loading: false,error: false,data: data});
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
     //更新客户跟踪记录
     this.updateCustomerTrace = function(queryObj, callback) {
-        this.dispatch({loading:true,error:false});
+        this.dispatch({loading: true,error: false});
         customerRecordAjax.updateCustomerTrace(queryObj).then((data) => {
-            this.dispatch({loading:false,error:false,data:data});
+            this.dispatch({loading: false,error: false,data: data});
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
 }

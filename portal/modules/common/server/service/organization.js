@@ -2,8 +2,8 @@
  * url定义
  */
 var urls = {
-    getOrganizationList : "/rest/base/v1/usergroup/list",
-    changeOrganization : "/rest/base/v1/usergroup/user/:user_id/:group_id"
+    getOrganizationList: "/rest/base/v1/usergroup/list",
+    changeOrganization: "/rest/base/v1/usergroup/user/:user_id/:group_id"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("ant-auth-request").restUtil(restLogger);
@@ -17,7 +17,7 @@ exports.getOrganizationList = function(req,res,status) {
         res: res
     },{
     },{
-        success : function(emitter,list) {
+        success: function(emitter,list) {
             if(!_.isArray(list)) {
                 list = [];
             }

@@ -15,9 +15,9 @@ var CrmFilter = React.createClass({
         FilterStore.listen(this.onStoreChange);
     },
     //如果是从客户分析点击团队成员跳转过来时，将搜索框中的关键字置为点击的成员名称
-    componentWillReceiveProps:function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if (nextProps.crmFilterValue){
-            this.refs.searchInput.state.keyword = nextProps.crmFilterValue ;
+            this.refs.searchInput.state.keyword = nextProps.crmFilterValue;
         }
     },
     componentWillUnmount: function() {

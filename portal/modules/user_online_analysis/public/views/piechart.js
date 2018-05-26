@@ -11,32 +11,32 @@ import { packageTry } from 'LIB_DIR/func';
 //布局相关
 var LAYOUT = {
     //饼图中心点x坐标
-    CENTER_X : 103,
+    CENTER_X: 103,
     //饼图中心点y坐标
-    CENTER_Y : 115,
+    CENTER_Y: 115,
     //字体大小
-    FONT_SIZE : 20,
+    FONT_SIZE: 20,
     //饼图的边框宽度
-    BORDER_WIDTH : 3
+    BORDER_WIDTH: 3
 };
 
 var PieChart = React.createClass({
-    displayName : 'UserOnlineAnalysisPieChart',
+    displayName: 'UserOnlineAnalysisPieChart',
     //echart的实例
-    echartInstance : null,
+    echartInstance: null,
     //获取默认参数
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            list : [],
-            resultType : 'loading'
+            list: [],
+            resultType: 'loading'
         };
     },
     //组件挂载完毕
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
     //组件更新完毕
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -47,10 +47,10 @@ var PieChart = React.createClass({
         this.renderChart();
     },
     //获取tooltip配置
-    getTooltip : function() {
+    getTooltip: function() {
         return {
-            show : true,
-            formatter : function(arr) {
+            show: true,
+            formatter: function(arr) {
                 //修复tooltip不消失的问题
                 var title, color;
                 if(arr[0] === '详情') {
@@ -71,55 +71,55 @@ var PieChart = React.createClass({
             }
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         return _.pluck(this.props.list , 'name');
     },
-    getTitleOptions : function() {
+    getTitleOptions: function() {
         var total = numberFormatter.numberAddComma(this.props.total);
         var x = LAYOUT.CENTER_X - Math.floor(measureText.measureTextWidth(total , LAYOUT.FONT_SIZE) / 2);
         var y = LAYOUT.CENTER_Y - LAYOUT.FONT_SIZE / 2;
 
         return {
-            text : total,
-            x : x,
-            y : y,
-            textStyle : {
-                color : '#636e72',
-                fontSize:LAYOUT.FONT_SIZE,
-                fontWeight : 'normal'
+            text: total,
+            x: x,
+            y: y,
+            textStyle: {
+                color: '#636e72',
+                fontSize: LAYOUT.FONT_SIZE,
+                fontWeight: 'normal'
             }
         };
     },
     //获取echart配置
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
-            animation:false,
+            animation: false,
             title: this.getTitleOptions(),
-            tooltip : this.getTooltip(),
+            tooltip: this.getTooltip(),
             legend: {
-                show : false,
-                data : this.getLegend()
+                show: false,
+                data: this.getLegend()
             },
             toolbox: {
-                show : false
+                show: false
             },
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
     //获取饼图的配置
-    getSeries : function() {
+    getSeries: function() {
         //默认不显示label和labelLine
         var dataStyle = {
             normal: {
-                borderColor : '#e6edef',
-                borderWidth : LAYOUT.BORDER_WIDTH,
-                label: {show:false},
-                labelLine: {show:false}
+                borderColor: '#e6edef',
+                borderWidth: LAYOUT.BORDER_WIDTH,
+                label: {show: false},
+                labelLine: {show: false}
             },
-            emphasis : {
-                borderColor : '#e6edef',
-                borderWidth : LAYOUT.BORDER_WIDTH,
+            emphasis: {
+                borderColor: '#e6edef',
+                borderWidth: LAYOUT.BORDER_WIDTH,
             }
         };
         var outerColors = colors.pieOuterColors;
@@ -127,13 +127,13 @@ var PieChart = React.createClass({
         var series = [];
         var idx = 0;
         series.push({
-            name:'总计',
-            type:'pie',
-            center : [LAYOUT.CENTER_X,LAYOUT.CENTER_Y],
-            clockWise:false,
-            radius : [84, 90],
-            itemStyle : dataStyle,
-            data:this.props.list.map(function(obj,idx) {
+            name: '总计',
+            type: 'pie',
+            center: [LAYOUT.CENTER_X,LAYOUT.CENTER_Y],
+            clockWise: false,
+            radius: [84, 90],
+            itemStyle: dataStyle,
+            data: this.props.list.map(function(obj,idx) {
                 var color = outerColors[idx++];
                 if(!color) {
                     idx = 0;
@@ -141,11 +141,11 @@ var PieChart = React.createClass({
                 }
 
                 return {
-                    value : obj.total,
-                    name : obj.name + '-' + color,
-                    itemStyle : {
-                        normal : {
-                            color : color
+                    value: obj.total,
+                    name: obj.name + '-' + color,
+                    itemStyle: {
+                        normal: {
+                            color: color
                         }
                     }
                 };
@@ -164,10 +164,10 @@ var PieChart = React.createClass({
                         color = innerColors[idx++];
                     }
                     datas.push({
-                        value:obj[key],
-                        name: key  + '-' + obj.name + '-' + color,
-                        itemStyle : {
-                            normal : {
+                        value: obj[key],
+                        name: key + '-' + obj.name + '-' + color,
+                        itemStyle: {
+                            normal: {
                                 color: color
                             }
                         }
@@ -176,18 +176,18 @@ var PieChart = React.createClass({
             }
         });
         series.push({
-            name : '详情',
-            type:'pie',
-            center : [LAYOUT.CENTER_X,LAYOUT.CENTER_Y],
-            clockWise:false,
-            radius:[72, 80],
-            itemStyle:dataStyle,
-            data : datas
+            name: '详情',
+            type: 'pie',
+            center: [LAYOUT.CENTER_X,LAYOUT.CENTER_Y],
+            clockWise: false,
+            radius: [72, 80],
+            itemStyle: dataStyle,
+            data: datas
         });
         return series;
     },
     //渲染图表
-    renderChart : function() {
+    renderChart: function() {
         packageTry(() => {
             this.echartInstance && this.echartInstance.dispose();
         });
@@ -205,7 +205,7 @@ var PieChart = React.createClass({
         }
     },
     //图例鼠标悬浮
-    legendMouseEnter : function(system , name , color , event) {
+    legendMouseEnter: function(system , name , color , event) {
         var $em = $(event.currentTarget).find("em");
         var $span = $(event.currentTarget).find("span");
         var $b = $(event.currentTarget).find("b");
@@ -235,10 +235,10 @@ var PieChart = React.createClass({
         var serieses = this.echartInstance && this.echartInstance.getSeries();
         if(serieses) {
             var targetName = (system ? (system + '-') : '') + name + '-' + color;
-            for(var i = 0 , len = serieses.length ; i < len ; i++) {
+            for(var i = 0 , len = serieses.length; i < len; i++) {
                 var series = serieses[i];
                 var datas = series.data;
-                for(var j = 0, jLen = datas.length ; j < jLen ; j++) {
+                for(var j = 0, jLen = datas.length; j < jLen; j++) {
                     var item = datas[j];
                     if(item.name === targetName) {
                         var oldColor = item.itemStyle.normal.color;
@@ -251,7 +251,7 @@ var PieChart = React.createClass({
         }
     },
     //图例鼠标离开
-    legendMouseLeave : function(system , name , color , event) {
+    legendMouseLeave: function(system , name , color , event) {
         var $em = $(event.currentTarget).find("em");
         var $span = $(event.currentTarget).find("span");
         var $b = $(event.currentTarget).find("b");
@@ -267,10 +267,10 @@ var PieChart = React.createClass({
         var serieses = this.echartInstance && this.echartInstance.getSeries();
         if(serieses) {
             var targetName = (system ? (system + '-') : '') + name + '-' + color;
-            for(var i = 0 , len = serieses.length ; i < len ; i++) {
+            for(var i = 0 , len = serieses.length; i < len; i++) {
                 var series = serieses[i];
                 var datas = series.data;
-                for(var j = 0, jLen = datas.length ; j < jLen ; j++) {
+                for(var j = 0, jLen = datas.length; j < jLen; j++) {
                     var item = datas[j];
                     if(item.name === targetName) {
                         item.itemStyle.normal.color = item.itemStyle.normal.oldColor;
@@ -282,7 +282,7 @@ var PieChart = React.createClass({
         }
     },
     //渲染排行榜
-    renderRankList : function() {
+    renderRankList: function() {
         var outerColors = colors.pieOuterColors;
         var innerColors = colors.pieInnerColors;
         var totalIdx = 0;
@@ -305,9 +305,9 @@ var PieChart = React.createClass({
                                 color = innerColors[subIdx++];
                             }
                             list.push({
-                                name : key,
-                                total : obj[key],
-                                color : color
+                                name: key,
+                                total: obj[key],
+                                color: color
                             });
                         }
                     }
@@ -317,7 +317,7 @@ var PieChart = React.createClass({
                                 onMouseEnter={_this.legendMouseEnter.bind(_this , "" , obj.name , totalColor)}
                                 onMouseLeave={_this.legendMouseLeave.bind(_this , "" , obj.name , totalColor)}
                             >
-                                <em style={{backgroundColor:totalColor}}></em>
+                                <em style={{backgroundColor: totalColor}}></em>
                                 <span>{obj.name}</span>
                                 <b>{obj.total}</b>
                             </li>
@@ -329,7 +329,7 @@ var PieChart = React.createClass({
                                             onMouseEnter={_this.legendMouseEnter.bind(_this , subObj.name , obj.name , subObj.color)}
                                             onMouseLeave={_this.legendMouseLeave.bind(_this , subObj.name , obj.name , subObj.color)}
                                         >
-                                            <em style={{backgroundColor:subObj.color}}></em>
+                                            <em style={{backgroundColor: subObj.color}}></em>
                                             <span>{subObj.name === 'UNKNOWN' ? '未知' : subObj.name}</span>
                                             <b>{subObj.total}</b>
                                         </li>
@@ -342,7 +342,7 @@ var PieChart = React.createClass({
             </div>
         );
     },
-    render : function() {
+    render: function() {
         return (
             <div className="analysis_pie_chart">
                 {
@@ -351,7 +351,7 @@ var PieChart = React.createClass({
                             <div className="loadwrap">
                                 <Spinner/>
                             </div>
-                        ):
+                        ) :
                         (
                             <dl className="dl-horizontal">
                                 <dt>

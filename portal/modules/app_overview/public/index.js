@@ -30,14 +30,14 @@ var LAYOUT_CONSTANTS = {
 //地图的formatter
 function mapFormatter(obj) {
     return [
-        Intl.get("oplate_bd_analysis_realm_zone.1","省份")+'：' + obj.name ,
-        Intl.get("oplate_bd_analysis_realm_industry.6","个数")+'：' + (isNaN(obj.value) ? 0 : obj.value)
+        Intl.get("oplate_bd_analysis_realm_zone.1","省份") + '：' + obj.name ,
+        Intl.get("oplate_bd_analysis_realm_industry.6","个数") + '：' + (isNaN(obj.value) ? 0 : obj.value)
     ].join('<br/>');
 }
 
 const LAST_SELECT_APPS_KEY = 'app_over_view_app_id';
 
-const  ORIGINAL_DATA = {
+const ORIGINAL_DATA = {
     active: 0,
     percent: 0
 };
@@ -47,7 +47,7 @@ const AppOverView = React.createClass({
         return {
             app_id: '',
             appList: '',
-            weeklyActiveRate: ORIGINAL_DATA,  // 本周的活跃率和活跃数
+            weeklyActiveRate: ORIGINAL_DATA, // 本周的活跃率和活跃数
             monthlyActiveRate: ORIGINAL_DATA, // 本月的活跃率和活跃数
             ...AppOverViewStore.getState()
         };
@@ -65,7 +65,7 @@ const AppOverView = React.createClass({
         AppOverViewAjax.getAppList().then( (result) => {
             let appList = _.isArray(result) ? result : [];
             let storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-            let app_id = storageValue && storageValue[LAST_SELECT_APPS_KEY] ? storageValue[LAST_SELECT_APPS_KEY ]: '';
+            let app_id = storageValue && storageValue[LAST_SELECT_APPS_KEY] ? storageValue[LAST_SELECT_APPS_KEY ] : '';
             if (!app_id) {
                 app_id = appList[0] ? appList[0].app_id : '';
             }
@@ -136,7 +136,7 @@ const AppOverView = React.createClass({
     // 获取当前在线、今日上线、用户总数和新增用户的数量
     getAppUserCount() {
         AppOverViewActions.getOnlineUserList(1, 1, {client_id: this.state.app_id}); // 当前在线用户数
-        AppOverViewActions.getRecentLoginUsers(this.getTodayOnlineParams());  // 今日上线用户数
+        AppOverViewActions.getRecentLoginUsers(this.getTodayOnlineParams()); // 今日上线用户数
         let userCountParams = this.getQueryParams(TimeStampUtil.getNearlyWeekTimeStamp());
         AppOverViewActions.getUserTypeStatistics("total", userCountParams); // 用户总数
         AppOverViewActions.getAddedUserTypeStatistics("added", userCountParams); // 新增用户
@@ -150,7 +150,7 @@ const AppOverView = React.createClass({
         let queryParams = this.getQueryParams(timeStamp);
         AppOverViewAjax.getUserActiveNess("total", dateRange, queryParams).then( (result) => {
             if (_.isArray(result) && result.length) {
-                let resData = result[0].datas &&  _.isArray(result[0].datas) && result[0].datas[0];
+                let resData = result[0].datas && _.isArray(result[0].datas) && result[0].datas[0];
                 if (dateRange == 'weekly') {
                     this.setState({
                         weeklyActiveRate: resData
@@ -209,16 +209,16 @@ const AppOverView = React.createClass({
             <div className="clearfix">
                 <Row gutter={16}>
                     <Col xs={24} sm={12} md={6}>
-                        <AppUserInfo  title="当前在线" content={curOnLine} viewDetail={this.handleViewCurOnlineDetail}/>
+                        <AppUserInfo title="当前在线" content={curOnLine} viewDetail={this.handleViewCurOnlineDetail}/>
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <AppUserInfo  title="今日上线" content={todayOnLine} viewDetail={this.handleViewTodayUserDetail} />
+                        <AppUserInfo title="今日上线" content={todayOnLine} viewDetail={this.handleViewTodayUserDetail} />
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <AppUserInfo  title="用户总数" content={userTotal} viewDetail={this.handleViewTotalUserDetail}/>
+                        <AppUserInfo title="用户总数" content={userTotal} viewDetail={this.handleViewTotalUserDetail}/>
                     </Col>
                     <Col xs={24} sm={12} md={6}>
-                        <AppUserInfo  title="新增用户" content={addNewUser}/>
+                        <AppUserInfo title="新增用户" content={addNewUser}/>
                     </Col>
                 </Row>
             </div>
@@ -254,7 +254,7 @@ const AppOverView = React.createClass({
         let weeklyActiveRate = this.handleRateData(this.state.weeklyActiveRate);
         let monthlyActiveRate = this.handleRateData(this.state.monthlyActiveRate);
         const appUserRate = [{active: todayActiveRate.active, date: '今日', percent: todayActiveRate.percent},
-            {active: weeklyActiveRate.active, date: '本周', percent:weeklyActiveRate.percent},
+            {active: weeklyActiveRate.active, date: '本周', percent: weeklyActiveRate.percent},
             {active: monthlyActiveRate.active, date: '本月', percent: monthlyActiveRate.percent}
         ];
         const radioValue = [{value: 'daily', name: '日活'}, {value: 'weekly', name: '周活'},{value: 'monthly', name: '月活'}];
@@ -290,7 +290,7 @@ const AppOverView = React.createClass({
     // 新增用户,团队分布table列
     getAddNewUserColumns() {
         return [{title: '团队', dataIndex: 'name', key: 'team'},
-            {title: '试用', dataIndex: 'count', key: 'count', className: 'text-align-right',  width: '50'},
+            {title: '试用', dataIndex: 'count', key: 'count', className: 'text-align-right', width: '50'},
             {title: '签约', dataIndex: 'official', key: 'official', className: 'text-align-right', width: '50'}
         ];
     },
@@ -344,9 +344,9 @@ const AppOverView = React.createClass({
         var windowHeight = $(window).height() * 0.4;
         return {
             //地图的宽度
-            chinaMapWidth : windowWidth,
+            chinaMapWidth: windowWidth,
             //地图的高度
-            chinaMapHeight : windowHeight
+            chinaMapHeight: windowHeight
         };
     },
     // 新增用户、在线用户和全部用户切换，发送的请求
@@ -396,7 +396,7 @@ const AppOverView = React.createClass({
                                 <Spinner/>
                             </div>
                         ) : (
-                            <Table columns={columns} dataSource={data}  pagination={{pageSize: 12}}/>
+                            <Table columns={columns} dataSource={data} pagination={{pageSize: 12}}/>
                         )}
                     </div>
                 </div>
@@ -410,7 +410,7 @@ const AppOverView = React.createClass({
                 <Col className="add-new-user" xs={24} sm={24} md={24}>
                     {this.renderAddNewUser()}
                 </Col>
-                <Col className="user-map"  xs={24} sm={24} md={24}>
+                <Col className="user-map" xs={24} sm={24} md={24}>
                     {this.renderUserMap()}
                 </Col>
             </Row>
@@ -419,13 +419,13 @@ const AppOverView = React.createClass({
     onSelectedAppChange(app_id) {
         AppOverViewActions.resetData();
         if (app_id) {
-            let obj =  AppUserUtil.getLocalStorageObj(LAST_SELECT_APPS_KEY,app_id );
-            storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+            let obj = AppUserUtil.getLocalStorageObj(LAST_SELECT_APPS_KEY,app_id );
+            storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
         }
         //设置当前选中应用
         this.setState({
             app_id: app_id,
-            weeklyActiveRate: ORIGINAL_DATA,  // 本周的活跃率和活跃数
+            weeklyActiveRate: ORIGINAL_DATA, // 本周的活跃率和活跃数
             monthlyActiveRate: ORIGINAL_DATA
         }, () => this.getAppData());
     },
@@ -458,7 +458,7 @@ const AppOverView = React.createClass({
                         </SelectFullWidth>
                     </div>
                 </div>
-                <GeminiScrollbar  style={{ height: divHeight }}>
+                <GeminiScrollbar style={{ height: divHeight }}>
                     <div className="app-over-view-page clearfix">
                         <div className="user-info">{this.renderAppUserInfo()}</div>
                         <div className="user-active">{this.renderAppUserActive()}</div>

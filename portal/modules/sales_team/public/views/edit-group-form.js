@@ -110,7 +110,7 @@ var SalesTeamForm = React.createClass({
                     };
                     formData.isTeamSaving = true;
                     _this.setState({formData: formData});
-                    SalesTeamActions.saveEditGroup(editGroupData, result=> {
+                    SalesTeamActions.saveEditGroup(editGroupData, result => {
                         //保存结果
                         formData.saveTeamMsg = result.saveMsg;
                         formData.saveTeamResult = result.saveResult;
@@ -141,7 +141,7 @@ var SalesTeamForm = React.createClass({
                     }
                     formData.isTeamSaving = true;
                     _this.setState({formData: formData});
-                    SalesTeamActions.saveAddGroup(addGroupData, (result, addTeam)=> {
+                    SalesTeamActions.saveAddGroup(addGroupData, (result, addTeam) => {
                         //保存结果
                         formData.saveTeamMsg = result.saveMsg;
                         formData.saveTeamResult = result.saveResult;
@@ -172,7 +172,7 @@ var SalesTeamForm = React.createClass({
         } else {
             if (_.isArray(curSalesTeam.children) && curSalesTeam.children.length > 0) {
                 //子团队中是否含有此团队
-                return _.some(curSalesTeam.children, team=>this.findChildren(id, team));
+                return _.some(curSalesTeam.children, team => this.findChildren(id, team));
             } else {
                 return false;
             }
@@ -184,7 +184,7 @@ var SalesTeamForm = React.createClass({
         var teamOptions = [];
         var salesTeamList = this.props.salesTeamList, curTeam = this.props.salesTeam;
         if (_.isArray(salesTeamList) && salesTeamList.length > 0) {
-            salesTeamList.forEach(team=> {
+            salesTeamList.forEach(team => {
                 //过滤掉当前团队及其下级团队
                 if (!this.findChildren(team.group_id, curTeam)) {
                     teamOptions.push(<Option key={team.group_id} value={team.group_id}>
@@ -226,7 +226,7 @@ var SalesTeamForm = React.createClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.rules", "最少1个字符,最多8个字符")}]}>
+                                rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.rules", "最少1个字符,最多8个字符")}]}>
                                 <Input name="title" id="title" value={formData.title}
                                     onChange={this.setField.bind(this, 'title')}
                                     placeholder={Intl.get("common.required.tip", "必填项*")}
@@ -266,19 +266,19 @@ var SalesTeamForm = React.createClass({
                             wrapperCol={{span: 24}}>
                             {this.state.formData.isTeamSaving ? (<Icon type="loading"/>) : (
                                 editResult ? (<div className="indicator">
-                                    <AlertTimer time={editResult=="error"?3000:600}
+                                    <AlertTimer time={editResult == "error" ? 3000 : 600}
                                         message={this.state.formData.saveTeamMsg}
                                         type={editResult} showIcon
                                         onHide={this.hideSaveTooltip}/>
                                 </div>) : null)
                             }
                             <Button type="primary" className="btn-primary-sure member-form-btn"
-                                onClick={(e)=>{_this.handleSubmit(e);}}
+                                onClick={(e) => {_this.handleSubmit(e);}}
                             >
                                 <ReactIntl.FormattedMessage id="common.confirm" defaultMessage="确认"/>
                             </Button>
                             <Button type="ghost" className="btn-primary-cancel member-form-btn"
-                                onClick={(e)=>{_this.handleCancel(e);}}
+                                onClick={(e) => {_this.handleCancel(e);}}
 
                             >
                                 <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>

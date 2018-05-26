@@ -33,7 +33,7 @@ const ReportLayout = React.createClass({
                                     <div className="report-chart-container" style={chart.style || {}}>
                                         <div className="chart-descr">{index + 1}、{chart.name}</div>
                                         <div className="report-chart">
-                                            {chart.title? (
+                                            {chart.title ? (
                                                 <div className="report-chart-title">{chart.title}</div>
                                             ) : null}
                                             {chart.content}

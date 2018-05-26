@@ -13,7 +13,7 @@ var scheduleManagementAction = require("./action/schedule-management-action");
 var classNames = require("classnames");
 import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel}  from "CMP_DIR/rightPanel";
+import {RightPanel} from "CMP_DIR/rightPanel";
 //天视图组件
 import DayAgendaScheduleLists from './views/day-agenda-schedule-lists';
 //周视图组件
@@ -23,7 +23,7 @@ import BigCalendar from "react-big-calendar";
 import moment from "moment";
 BigCalendar.momentLocalizer(moment);
 const CALENDAR_LAYOUT = {
-    TOPANDBOTTOM:50
+    TOPANDBOTTOM: 50
 };
 //自定义的点击日程数字后，日程列表的样式
 import CustomEvent from "./views/customer-event";
@@ -38,9 +38,9 @@ const ScheduleManagement = React.createClass({
             dayLists: [],//天视图所用的日程数据
             weekLists: [],//周视图所用的日程数据
             calendarLists: [],//右侧日程列表中的日程数据
-            curViewName:"day",//当前被按下的视图的名称
-            curCustomerId:"",//查看详情的客户的id
-            filterScheduleType:"calls,visit,other",//要过滤的日程类型 默认展示全部类型的
+            curViewName: "day",//当前被按下的视图的名称
+            curCustomerId: "",//查看详情的客户的id
+            filterScheduleType: "calls,visit,other",//要过滤的日程类型 默认展示全部类型的
             ...scheduleManagementStore.getState()
         };
     },
@@ -56,7 +56,7 @@ const ScheduleManagement = React.createClass({
         this.getAgendaData({start_time: startTime, end_time: endTime}, "day");
     },
     //根据不同视图对日程数据进行处理
-    handleScheduleData:function(events,viewType) {
+    handleScheduleData: function(events,viewType) {
         var _this = this;
         if (viewType == "day"){
             this.setState({
@@ -64,9 +64,9 @@ const ScheduleManagement = React.createClass({
             });
         }else if (viewType == "week") {
             var weekScheduleLists = {
-                "Mon":[],"Tus":[],"Wed":[],"Thur":[],"Fri":[],"Sat":[],"Sun":[]
+                "Mon": [],"Tus": [],"Wed": [],"Thur": [],"Fri": [],"Sat": [],"Sun": []
             };
-            _.map(events, (even)=>{
+            _.map(events, (even) => {
                 //对数据进行处理
                 var Week = moment(even.start_time).format('dddd');
                 switch (Week){
@@ -101,9 +101,9 @@ const ScheduleManagement = React.createClass({
                     {
                         "start": item[0].start,//某个日程的开始时间
                         "end": item[0].end,//某个日程的结束时间
-                        "count": item.length >99 ? "99+" :item.length ,
+                        "count": item.length > 99 ? "99+" : item.length ,
                         "totalCustomerObj": item,
-                        "showCustomerDetail":_this.showCustomerDetail,
+                        "showCustomerDetail": _this.showCustomerDetail,
                     }
                 );
             }
@@ -129,7 +129,7 @@ const ScheduleManagement = React.createClass({
             end_time: endTime,
             sort_field: "start_time",//排序字段 按开始时间排序
             order: "ascend",//排序方式，按升序排列
-            type:this.state.filterScheduleType//过滤日程的类型
+            type: this.state.filterScheduleType//过滤日程的类型
         };
         $.ajax({
             url: '/rest/get/schedule/list',
@@ -261,7 +261,7 @@ const ScheduleManagement = React.createClass({
         var preViewName = this.state.curViewName;
         this.state.curViewName = viewName;
         this.setState({
-            curViewName:this.state.curViewName
+            curViewName: this.state.curViewName
         });
         //如果从月视图点击日期跳转到日视图，也会触发handleNavigateChange，先走changeView方法，这时候取到的日期是上一次的日期，取到的数据是上次的数据，走handleNavigateChange会取到正确的数据，但是不知道两次谁先返回，故会出现错误数据，所以在月视图跳转到日视图的时候，限制值发一次请求就可以了
         if (preViewName === "month" && viewName === "day"){
@@ -301,11 +301,11 @@ const ScheduleManagement = React.createClass({
         var dateObj = this.getDifTypeStartAndEnd(date, view);
         this.getAgendaData(dateObj, view);
     },
-    onCheckChange:function(checkedValue) {
+    onCheckChange: function(checkedValue) {
         var filterScheduleType = checkedValue.join(",");
         this.setState({
-            filterScheduleType:filterScheduleType
-        },()=>{
+            filterScheduleType: filterScheduleType
+        },() => {
             var viewName = this.state.curViewName;
             var dateObj = this.getDifTypeStartAndEnd(scheduleManagementStore.getViewDate(), viewName);
             //重新获取数据
@@ -323,7 +323,7 @@ const ScheduleManagement = React.createClass({
         //月视图顶部标题的日期样式
         var formats = {
             "monthHeaderFormat": (date, culture, localizer) => {
-                return localizer.format(date, "YYYY" + Intl.get("common.time.unit.year", "年")+ "MM" + Intl.get("common.time.unit.month", "月"), culture);
+                return localizer.format(date, "YYYY" + Intl.get("common.time.unit.year", "年") + "MM" + Intl.get("common.time.unit.month", "月"), culture);
             }
         };
         const options = [
@@ -340,7 +340,7 @@ const ScheduleManagement = React.createClass({
                     showCustomerDetail={this.showCustomerDetail}
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
-                    <div id="calendar" style={{height:height}}>
+                    <div id="calendar" style={{height: height}}>
                         <div className="check-group-container">
                             <CheckboxGroup options={options} defaultValue={['calls','visit','other']} onChange={this.onCheckChange} />
                         </div>
@@ -353,14 +353,14 @@ const ScheduleManagement = React.createClass({
                                 week: WeekAgendaScheduleLists,
                                 day: DayAgendaScheduleLists,
                             }}
-                            components={{event:CustomEvent}}
+                            components={{event: CustomEvent}}
                             messages = {{
-                                month:Intl.get("common.time.unit.month", "月"),
-                                week:Intl.get("common.time.unit.week", "周"),
-                                today:Intl.get("schedule.back.to.today","今"),
-                                previous:"<",
-                                next:">",
-                                allDay:Intl.get("crm.alert.full.day", "全天"),
+                                month: Intl.get("common.time.unit.month", "月"),
+                                week: Intl.get("common.time.unit.week", "周"),
+                                today: Intl.get("schedule.back.to.today","今"),
+                                previous: "<",
+                                next: ">",
+                                allDay: Intl.get("crm.alert.full.day", "全天"),
                                 day: Intl.get("common.time.unit.day", "天"),
                             }}
                             scheduleList={this.state.dayLists}//日视图数据

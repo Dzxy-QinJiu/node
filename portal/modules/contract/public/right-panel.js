@@ -24,9 +24,9 @@ import DetailCost from "./detail-cost";
 import Trace from "LIB_DIR/trace";
 
 let stepMap = {
-    "1":"基本信息",
-    "2":"产品信息",
-    "3":"回款计划"
+    "1": "基本信息",
+    "2": "产品信息",
+    "3": "回款计划"
 };
 
 const ContractRightPanel = React.createClass({
@@ -34,7 +34,7 @@ const ContractRightPanel = React.createClass({
         return {
             isLoading: false,
             currentView: this.props.view,
-            currentCategory: this.props.view === "buyForm"? PURCHASE : PRODUCT,
+            currentCategory: this.props.view === "buyForm" ? PURCHASE : PRODUCT,
             currentTabKey: "1",
         };
     },
@@ -321,13 +321,13 @@ const ContractRightPanel = React.createClass({
                     onClick={this.props.hideRightPanel}
                 />
 
-                {this.state.currentView === "sellForm"? (
+                {this.state.currentView === "sellForm" ? (
                     <RightPanelReturn 
                         onClick={this.changeToView.bind(this, "chooseType")}
                     />
                 ) : null}
 
-                {this.state.currentView === "chooseType"? (
+                {this.state.currentView === "chooseType" ? (
                     <Tabs defaultActiveKey="1" className="choose-type">
                         <TabPane tab={Intl.get("contract.98", "添加合同")} key="1">
                         选择类型：
@@ -336,8 +336,8 @@ const ContractRightPanel = React.createClass({
                                     //将采购合同排除
                                     if (category === PURCHASE) return;
 
-                                    const className = category === this.state.currentCategory? "active" : "";
-                                    const view = category === PURCHASE? "buyForm" : "sellForm";
+                                    const className = category === this.state.currentCategory ? "active" : "";
+                                    const view = category === PURCHASE ? "buyForm" : "sellForm";
                                     return (<li className={className}
                                         key={index}
                                         onClick={this.changeToView.bind(this, view, category)}
@@ -350,7 +350,7 @@ const ContractRightPanel = React.createClass({
                     </Tabs>
                 ) : null}
 
-                {this.state.currentView === "sellForm"? (
+                {this.state.currentView === "sellForm" ? (
                     <div className="add-form">
                         <Tabs activeKey={this.state.currentTabKey}>
                             {sellFormPanes}
@@ -362,7 +362,7 @@ const ContractRightPanel = React.createClass({
                             >
                                 <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
                             </Button>
-                            {this.state.currentTabKey != endPaneKey? (
+                            {this.state.currentTabKey != endPaneKey ? (
                                 <Button
                                     onClick={this.onNextStepBtnClick}
                                 >
@@ -379,7 +379,7 @@ const ContractRightPanel = React.createClass({
                     </div>
                 ) : null}
 
-                {this.state.currentView === "buyForm"? (
+                {this.state.currentView === "buyForm" ? (
                     <div className="add-form">
                         <Tabs activeKey={this.state.currentTabKey}>
                             <TabPane tab={Intl.get("user.user.basic", "基本信息")} key="1">
@@ -411,7 +411,7 @@ const ContractRightPanel = React.createClass({
                             >
                                 <ReactIntl.FormattedMessage id="user.user.add.back" defaultMessage="上一步" />
                             </Button>
-                            {this.state.currentTabKey != "2"? (
+                            {this.state.currentTabKey != "2" ? (
                                 <Button
                                     onClick={this.onNextStepBtnClick}
                                 >
@@ -428,10 +428,10 @@ const ContractRightPanel = React.createClass({
                     </div>
                 ) : null}
 
-                {this.state.currentView === "detailCost"? (
+                {this.state.currentView === "detailCost" ? (
                     <div className="add-form">
                         <Tabs activeKey={this.state.currentTabKey}>
-                            <TabPane tab={_.isEmpty(this.props.contract)? Intl.get("contract.127", "添加费用") : Intl.get("contract.129", "费用信息")} key="1">
+                            <TabPane tab={_.isEmpty(this.props.contract) ? Intl.get("contract.127", "添加费用") : Intl.get("contract.129", "费用信息")} key="1">
                                 <DetailCost
                                     ref="detailCost"
                                     cost={this.props.contract}
@@ -451,9 +451,9 @@ const ContractRightPanel = React.createClass({
                     </div>
                 ) : null}
 
-                {this.state.currentView === "detail"? (
+                {this.state.currentView === "detail" ? (
                     <div className="detail">
-                        {this.props.contract.type === "sell"? (
+                        {this.props.contract.type === "sell" ? (
                             <Tabs activeKey={this.state.currentTabKey} onChange={this.changeCurrentTabKey}>
                                 <TabPane tab={Intl.get("contract.101", "合同信息")} key="1">
                                     <GeminiScrollBar ref="gemiScrollBar">
@@ -522,7 +522,7 @@ const ContractRightPanel = React.createClass({
                     </div>
                 ) : null}
 
-                {this.state.isLoading? (
+                {this.state.isLoading ? (
                     <Spinner className="isloading"/>
                 ) : null}
             </div>

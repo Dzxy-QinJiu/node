@@ -27,13 +27,13 @@ var AppCodeTrace = React.createClass({
         AppAction.getCurAppKeyById(appId);
 
     },
-    componentWillReceiveProps : function(nextProps){
+    componentWillReceiveProps: function(nextProps){
         var appId = nextProps.appId;
         if (appId != this.props.appId) {
             AppAction.getCurAppKeyById(appId);
         }
     },
-    renderContent:function() {
+    renderContent: function() {
         var key = this.state.appPiwikKey;
         var text = `
         <!-- Oplate Track -->
@@ -82,17 +82,17 @@ var AppCodeTrace = React.createClass({
             </div>
         );
     },
-    retryGetAppKey:function() {
+    retryGetAppKey: function() {
         var appId = this.props.appId;
         AppAction.getCurAppKeyById(appId);
     },
-    renderCodeContent:function() {
+    renderCodeContent: function() {
         if (this.state.getPiwikKeyLoading) {
             return (<Spinner />);
         }else if (this.state.appPiwikKeyErrMsg){
             //加载完成，出错的情况
             var errMsg = <span>{this.state.appPiwikKeyErrMsg}
-                <a onClick={this.retryGetAppKey} style={{marginLeft:"20px",marginTop:"20px"}}>
+                <a onClick={this.retryGetAppKey} style={{marginLeft: "20px",marginTop: "20px"}}>
                     <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试"/>
                 </a>
             </span>;
@@ -110,7 +110,7 @@ var AppCodeTrace = React.createClass({
         }
 
     },
-    render:function() {
+    render: function() {
         return(
             <div className="code-container">
                 {this.renderCodeContent()}

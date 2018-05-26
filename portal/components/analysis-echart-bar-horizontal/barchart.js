@@ -19,9 +19,9 @@ BarChart.prototype.judgeCreateData = function() {
     }
     this.dataList = _.range(9).map(function(i) {
         return {
-            name : '-',
-            value : 2,
-            idx : i + 1
+            name: '-',
+            value: 2,
+            idx: i + 1
         };
     });
     this.total = 0;
@@ -54,11 +54,11 @@ BarChart.prototype.getTooltipOptions = function() {
     var _this = this;
     return {
         trigger: 'item',
-        backgroundColor : '#0b80e0',
-        textStyle : {
+        backgroundColor: '#0b80e0',
+        textStyle: {
             color: '#fff'
         },
-        formatter : function(obj) {
+        formatter: function(obj) {
             var newObj = $.extend(true,{},obj);
             newObj.total = _this.total;
             var html = originFormatter(newObj);
@@ -73,13 +73,13 @@ BarChart.prototype.getSeries = function() {
     return _.map(this.dataList , function(obj , i) {
         var color = noData ? '#f9f9f9' : colors[i % colors.length];
         return {
-            value : obj.value,
-            itemStyle : {
-                normal : {
-                    color : color
+            value: obj.value,
+            itemStyle: {
+                normal: {
+                    color: color
                 },
-                emphasis : {
-                    color : color
+                emphasis: {
+                    color: color
                 }
             }
         };
@@ -95,87 +95,87 @@ BarChart.prototype.getCategorys = function() {
 BarChart.prototype.getEchartOptions = function() {
     var _this = this;
     var option = {
-        animation : _this.animation,
-        tooltip : _this.noData ? null : _this.getTooltipOptions(),
-        xAxis : [
+        animation: _this.animation,
+        tooltip: _this.noData ? null : _this.getTooltipOptions(),
+        xAxis: [
             {
-                type : 'value',
-                splitLine:{
-                    show:false
+                type: 'value',
+                splitLine: {
+                    show: false
                 },
-                axisLine : {
-                    show:false
+                axisLine: {
+                    show: false
                 },
-                axisTick : {
-                    show:false
+                axisTick: {
+                    show: false
                 },
-                axisLabel : {
-                    show:false
+                axisLabel: {
+                    show: false
                 }
             }
         ],
-        grid : {
-            borderWidth:0,
-            y : 76,
-            x : 120,
-            width : '90%'
+        grid: {
+            borderWidth: 0,
+            y: 76,
+            x: 120,
+            width: '90%'
         },
-        yAxis : [
+        yAxis: [
             {
-                type : 'category',
-                data : _this.getCategorys(),
-                boundaryGap : false,
-                splitLine:{
-                    show:false
+                type: 'category',
+                data: _this.getCategorys(),
+                boundaryGap: false,
+                splitLine: {
+                    show: false
                 },
-                axisLine : {
-                    lineStyle : {
-                        width : 1,
-                        color:'#b5c2ca'
+                axisLine: {
+                    lineStyle: {
+                        width: 1,
+                        color: '#b5c2ca'
                     }
                 },
-                axisLabel : {
-                    textStyle : {
-                        color:'#82929f'
+                axisLabel: {
+                    textStyle: {
+                        color: '#82929f'
                     }
                 },
-                axisTick : {
-                    show:false
+                axisTick: {
+                    show: false
                 }
             }
         ],
-        series : [
+        series: [
             {
-                name:'柱状图',
-                type:'bar',
-                barWidth:25,
-                itemStyle : {
-                    normal : {
-                        label : {
-                            show : true,
-                            textStyle : {
+                name: '柱状图',
+                type: 'bar',
+                barWidth: 25,
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            textStyle: {
                                 color: '#81939f'
                             },
-                            formatter : function(obj) {
+                            formatter: function(obj) {
                                 if(_this.noData) {
                                     return '';
                                 }
                                 return [
                                     obj.value,
-                                    (obj.value * 100/ _this.total).toFixed(1) + '%'
+                                    (obj.value * 100 / _this.total).toFixed(1) + '%'
                                 ].join('   ');
                             }
                         }
                     },
-                    emphasis : {
-                        label : {
-                            textStyle : {
+                    emphasis: {
+                        label: {
+                            textStyle: {
                                 color: '#81939f'
                             }
                         }
                     }
                 },
-                data:_this.getSeries()
+                data: _this.getSeries()
             }
         ]
 

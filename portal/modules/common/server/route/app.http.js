@@ -8,7 +8,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     }, {
         //根据当前用户数据权限，获取“我的应用”列表
         "method": "get",
@@ -17,7 +17,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     }, {
         //路径 获取新增用户的团队统计
         "method": "get",

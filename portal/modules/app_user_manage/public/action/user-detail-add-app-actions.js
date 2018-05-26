@@ -9,14 +9,14 @@ var batchOperate = require("../../../../public/sources/push/batch");
 
 //操作对应关系
 var OperateTextMap = {
-    GRANT_DELAY : Intl.get("user.batch.delay", "批量延期"),
-    CHANGE_PASSWORD : Intl.get("common.edit.password", "修改密码"),
-    GRANT_CUSTOMER : Intl.get("common.belong.customer", "所属客户"),
-    GRANT_TYPE : Intl.get("user.batch.open.type", "开通类型"),
-    GRANT_STATUS : Intl.get("common.app.status", "开通状态"),
-    GRANT_PERIOD : Intl.get("user.open.cycle", "开通周期"),
-    GRANT_APPLICATION : Intl.get("user.batch.app.open", "开通产品"),
-    GRANT_ROLES : Intl.get("user.batch.auth.set", "权限设置")
+    GRANT_DELAY: Intl.get("user.batch.delay", "批量延期"),
+    CHANGE_PASSWORD: Intl.get("common.edit.password", "修改密码"),
+    GRANT_CUSTOMER: Intl.get("common.belong.customer", "所属客户"),
+    GRANT_TYPE: Intl.get("user.batch.open.type", "开通类型"),
+    GRANT_STATUS: Intl.get("common.app.status", "开通状态"),
+    GRANT_PERIOD: Intl.get("user.open.cycle", "开通周期"),
+    GRANT_APPLICATION: Intl.get("user.batch.app.open", "开通产品"),
+    GRANT_ROLES: Intl.get("user.batch.auth.set", "权限设置")
 };
 
 function UserDetailAddAppActions() {
@@ -80,9 +80,9 @@ function UserDetailAddAppActions() {
     this.getApps = function() {
         var _this = this;
         AppUserAjax.getApps().then(function(list) {
-            _this.dispatch({error : false, list : list});
+            _this.dispatch({error: false, list: list});
         } , function(errorMsg) {
-            _this.dispatch({error : true, errorMsg : errorMsg});
+            _this.dispatch({error: true, errorMsg: errorMsg});
         });
     };
     /**
@@ -95,7 +95,7 @@ function UserDetailAddAppActions() {
      */
     this.submitAddApp = function(obj) {
         var _this = this;
-        _this.dispatch({loading : true});
+        _this.dispatch({loading: true});
         var field = 'grant_application';
         var selectedAppId = "";
         if(obj.subType) {
@@ -127,7 +127,7 @@ function UserDetailAddAppActions() {
             } else {
                 var submitObj = {
                     user_ids: obj.data.user_ids,
-                    over_draft:obj.data.over_draft,
+                    over_draft: obj.data.over_draft,
                     application_ids: selectedAppId
                 };
                 let timeObj = {};
@@ -145,18 +145,18 @@ function UserDetailAddAppActions() {
                     //保存任务参数
                     batchOperate.saveTaskParamByTaskId(taskId , taskParams , {
                         //需要弹框
-                        showPop : true,
+                        showPop: true,
                         //在用户页面处理
-                        urlPath : '/user/list'
+                        urlPath: '/user/list'
                     });
                     //添加到任务列表，仅在当前页显示
                     batchOperate.addTaskIdToList(taskId);
                     //界面上立即显示一个初始化推送
                     batchOperate.batchOperateListener({
-                        taskId : taskId,
-                        total : userCount,
-                        running : userCount,
-                        typeText : OperateTextMap.GRANT_DELAY
+                        taskId: taskId,
+                        total: userCount,
+                        running: userCount,
+                        typeText: OperateTextMap.GRANT_DELAY
                     });
                     //返回成功
                     _this.dispatch({error: false});
@@ -180,7 +180,7 @@ function UserDetailAddAppActions() {
             var submitObj = {
                 user_ids: obj.data.user_ids,
                 remark: obj.data.remark,
-                status : obj.data.status,
+                status: obj.data.status,
                 application_ids: selectedAppId
             };
             //调用申请修改开通状态
@@ -196,23 +196,23 @@ function UserDetailAddAppActions() {
                 //保存任务参数
                 batchOperate.saveTaskParamByTaskId(taskId , taskParams , {
                     //需要弹框
-                    showPop : true,
+                    showPop: true,
                     //在用户页面处理
-                    urlPath : '/user/list'
+                    urlPath: '/user/list'
                 });
                 //保存到任务列表，仅在当前页显示
                 batchOperate.addTaskIdToList(taskId);
                 //界面上立即显示一个初始化推送
                 batchOperate.batchOperateListener({
-                    taskId : taskId,
-                    total : userCount,
-                    running : userCount,
-                    typeText : OperateTextMap[field && field.toUpperCase()] || ''
+                    taskId: taskId,
+                    total: userCount,
+                    running: userCount,
+                    typeText: OperateTextMap[field && field.toUpperCase()] || ''
                 });
                 //返回界面成功
-                _this.dispatch({error : false});
+                _this.dispatch({error: false});
             } , function(errorMsg) {
-                _this.dispatch({error : true, errorMsg : errorMsg});
+                _this.dispatch({error: true, errorMsg: errorMsg});
             });
         }
     };

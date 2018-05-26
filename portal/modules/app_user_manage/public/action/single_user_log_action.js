@@ -9,7 +9,7 @@ function handleLogParams(_this, getLogParam, userOwnAppList) {
     getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
     _this.dispatch(
         {
-            appId:  getLogParam.appid,
+            appId: getLogParam.appid,
             appList: userOwnAppList
         }
     );
@@ -18,12 +18,12 @@ function handleLogParams(_this, getLogParam, userOwnAppList) {
 function SingleUserLogAction() {
     this.generateActions(
         "dismiss", // 切换用户时，恢复到默认状态
-        "getSingleUserAppList",  //获取单个用户的应用列表
-        "getSingleAuditLogList",  // 获取个人日志信息
-        "setSelectedAppId",  // 设置应用的app
-        "changeSearchTime",  // 更改时间选择日志
-        "handleSearchEvent",  // 处理搜索框中内容的变化
-        "getLogsBySearch",  // 根据搜索内容显示日志信息
+        "getSingleUserAppList", //获取单个用户的应用列表
+        "getSingleAuditLogList", // 获取个人日志信息
+        "setSelectedAppId", // 设置应用的app
+        "changeSearchTime", // 更改时间选择日志
+        "handleSearchEvent", // 处理搜索框中内容的变化
+        "getLogsBySearch", // 根据搜索内容显示日志信息
         "changUserIdKeepSearch", //  切换用户时，保持搜索框内容
         'resetLogState',
         "toggleOperateDetail"//展开关闭操作详情
@@ -80,7 +80,7 @@ function SingleUserLogAction() {
             userAuditLogAjax.getSingleAuditLogList(searchObj).then( (data) => {
                 scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
                 this.dispatch({loading: false, error: false, data: data});
-            },  (errorMsg) =>{
+            }, (errorMsg) => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
         } else {

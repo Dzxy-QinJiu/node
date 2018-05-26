@@ -1,9 +1,9 @@
 /**
  * Created by zhoulianyi on  2016/5/29 15:41.
  */
-module.exports =  {
+module.exports = {
     path: "analysis",
-    getComponent : function(location, cb) {
+    getComponent: function(location, cb) {
         require.ensure([], function(require){
             cb(null, require('./public'));
         });

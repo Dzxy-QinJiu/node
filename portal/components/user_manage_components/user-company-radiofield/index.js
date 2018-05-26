@@ -10,9 +10,9 @@ const UserCompanyRadioField = {
     renderUserCompanyFieldBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalUserCompany : "0"
+            isCustomSetting: false,
+            appId: '',
+            globalUserCompany: "0"
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

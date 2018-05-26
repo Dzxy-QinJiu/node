@@ -9,7 +9,7 @@ var RightPanel = rightPanelUtil.RightPanel;
 var AppFilterAdv = require("./views/app-filter-adv");
 var AppFormAction = require("./action/app-form-actions");
 var VersionUpgradeLog = require('./views/version-upgrade-log');
-var UserTypeConfig=require('./views/user-type-config');
+var UserTypeConfig = require('./views/user-type-config');
 var AppNotice = require('./views/app-notice');
 var Spinner = require("../../../components/spinner");
 var classNames = require("classnames");
@@ -88,7 +88,7 @@ var AppManage = React.createClass({
             AppAction.showAppNoticePanel();
         },
         //用户类型设置
-        showUserTypeConfigPanel:function() {
+        showUserTypeConfigPanel: function() {
             AppAction.showUserTypeConfigPanel();
         },
         
@@ -234,7 +234,7 @@ var AppManage = React.createClass({
     //获取卡片展示所需的应用列表
     getCardShowAppList: function() {
         let appList = _.isArray(this.state.curAppList) ? this.state.curAppList : [];
-        return appList.map(app=> {
+        return appList.map(app => {
             let pageApp = {
                 id: app.id,
                 name: app.name,

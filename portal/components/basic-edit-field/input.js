@@ -113,7 +113,7 @@ var UserBasicEditField = React.createClass({
             }
         });
         this.props.onDisplayTypeChange("edit");
-        Trace.traceEvent(e,"点击编辑"+this.props.field);
+        Trace.traceEvent(e,"点击编辑" + this.props.field);
     },
     md5: function(value) {
         var md5Hash = crypto.createHash("md5");
@@ -123,7 +123,7 @@ var UserBasicEditField = React.createClass({
     handleSubmit: function(e) {
         var validation = this.refs.validation;
         var _this = this;
-        Trace.traceEvent(e,"保存对"+this.props.field+"的修改");
+        Trace.traceEvent(e,"保存对" + this.props.field + "的修改");
         validation.validate(function(valid) {
             if (!valid) {
                 return;
@@ -198,7 +198,7 @@ var UserBasicEditField = React.createClass({
             submitErrorMsg: ''
         });
         this.props.onDisplayTypeChange("text");
-        Trace.traceEvent(e,"取消对"+this.props.field+"的修改");
+        Trace.traceEvent(e,"取消对" + this.props.field + "的修改");
     },
     onFocusInput: function(type, event) {
         if (type === 'password') {
@@ -247,7 +247,7 @@ var UserBasicEditField = React.createClass({
                 {
                     !this.props.disabled ? (
                         <i className="inline-block iconfont icon-update" title={this.props.title}
-                            onClick={(e)=>{this.setEditable(e);}}></i>
+                            onClick={(e) => {this.setEditable(e);}}></i>
                     ) : null
                 }
 
@@ -263,9 +263,9 @@ var UserBasicEditField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
-                    onClick={(e)=>{this.handleSubmit(e);}}></i>
+                    onClick={(e) => {this.handleSubmit(e);}}></i>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                    onClick={(e)=>{this.handleCancel(e);}}></i>
+                    onClick={(e) => {this.handleCancel(e);}}></i>
             </div>
         );
 
@@ -273,7 +273,7 @@ var UserBasicEditField = React.createClass({
         var inputBlock = this.state.displayType === 'edit' ? (
             <div className="inputWrap" ref="inputWrap">
                 <Form horizontal autoComplete="off">
-                    <input type="password" style={{display:"none"}} name="input" autoComplete="off"/>
+                    <input type="password" style={{display: "none"}} name="input" autoComplete="off"/>
                     <Validation ref="validation" onValidate={this.handleValidate}>
                         <FormItem
                             label=""

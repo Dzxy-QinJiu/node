@@ -5,7 +5,7 @@ const processForTrace = function(item) {
         traceDsc: "",
         iconClass: "",
         title: "",
-        detail :""
+        detail: ""
     };
     if (_.isObject(item)) {
         //渲染时间线
@@ -90,7 +90,7 @@ exports.getCrmLabelCls = function(customer_label) {
     return customerLabelCls;
 };
 //行政级别
-exports.administrativeLevels = [{id:"1",level:"省部级"},{id:"2",level:"地市级"},{id:"3",level:"区县级"}];
+exports.administrativeLevels = [{id: "1",level: "省部级"},{id: "2",level: "地市级"},{id: "3",level: "区县级"}];
 exports.filterAdministrativeLevel = (level) => {
     //4：乡镇、街道，目前只要求展示到区县，所以此级别不展示
     return level > 0 && level !== 4 ? level + '' : '';
@@ -105,12 +105,12 @@ exports.CUSTOMER_TAGS = {
 };
 //tab页上对应的描述
 var tabNameList = {
-    "1":"基本资料",
-    "2":"联系人",
-    "3":"订单",
-    "4":"动态",
-    "5":"联系计划",
-    "6":"跟进记录" ,
+    "1": "基本资料",
+    "2": "联系人",
+    "3": "订单",
+    "4": "动态",
+    "5": "联系计划",
+    "6": "跟进记录" ,
 };
 exports.tabNameList = tabNameList;
 

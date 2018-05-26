@@ -406,7 +406,7 @@ var UserForm = React.createClass({
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon
                         headIcon={formData.image }
-                        iconDescr={formData.name||headDescr}
+                        iconDescr={formData.name || headDescr}
                         upLoadDescr={headDescr}
                         isEdit={true}
                         onChange={this.uploadImg}
@@ -414,7 +414,7 @@ var UserForm = React.createClass({
                         isUserHeadIcon={true}
                     />
                     <Input type="hidden" name="image" id="image" value={formData.image}/>
-                    <div className="user-form-scroll" style={{width:'420px'}}>
+                    <div className="user-form-scroll" style={{width: '420px'}}>
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
@@ -426,11 +426,11 @@ var UserForm = React.createClass({
                                     help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                 >
                                     <Validator
-                                        rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符") }]}>
+                                        rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符") }]}>
                                         <Input name="name" id="nickName" value={formData.name}
                                             placeholder={Intl.get("common.required.tip","必填项*")}
                                             onChange={this.setField.bind(this, 'name')}
-                                            onBlur={(e)=>{this.traceNickName(e);}}
+                                            onBlur={(e) => {this.traceNickName(e);}}
                                         />
                                     </Validator>
                                 </FormItem>
@@ -442,11 +442,11 @@ var UserForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('phone')}
                                     help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
                                 >
-                                    <Validator rules={[{validator:this.checkPhone}]}>
+                                    <Validator rules={[{validator: this.checkPhone}]}>
                                         <Input name="phone" id="phone" value={formData.phone}
-                                            className={this.state.phoneExist||this.state.phoneError?"input-red-border":""}
+                                            className={this.state.phoneExist || this.state.phoneError ? "input-red-border" : ""}
                                             onChange={this.setField.bind(this, 'phone')}
-                                            onBlur={(e)=>{this.checkOnlyPhone(e);}}
+                                            onBlur={(e) => {this.checkOnlyPhone(e);}}
 
                                         />
                                     </Validator>
@@ -460,11 +460,11 @@ var UserForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('email')}
                                     help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
                                 >
-                                    <Validator rules={[{validator:this.checkEmail}]}>
+                                    <Validator rules={[{validator: this.checkEmail}]}>
                                         <Input name="email" id="email" type="text" value={formData.email}
                                             placeholder={Intl.get("common.required.tip","必填项*")}
-                                            className={this.state.emailExist||this.state.emailError?"input-red-border":""}
-                                            onBlur={(e)=>{this.checkOnlyEmail(e);}}
+                                            className={this.state.emailExist || this.state.emailError ? "input-red-border" : ""}
+                                            onBlur={(e) => {this.checkOnlyEmail(e);}}
                                             onChange={this.setField.bind(this, 'email')}
                                         />
                                     </Validator>

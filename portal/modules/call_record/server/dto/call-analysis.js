@@ -15,10 +15,10 @@ exports.toFrontCallAnalysis = function(data) {
                     averageAnswer: parseInt(salesObj.average_num || 0),//日均接通数
                     callinCount: salesObj.total_callin || 0,//呼入次数
                     callinSuccess: salesObj.total_callin_success || 0,//成功呼入
-                    callinRate:salesObj.callin_rate || 0,//呼入接通率
+                    callinRate: salesObj.callin_rate || 0,//呼入接通率
                     calloutCount: salesObj.total_callout || 0,//呼出次数
                     calloutSuccess: salesObj.total_callout_success || 0,//成功呼出
-                    calloutRate:salesObj.callout_rate || 0//呼出接通率
+                    calloutRate: salesObj.callout_rate || 0//呼出接通率
                 };
             });
         }

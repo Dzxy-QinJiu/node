@@ -10,16 +10,16 @@ class CustomEvent extends React.Component {
         super(props);
         this.state = {
             visible: false,
-            curCustomerId:"",
+            curCustomerId: "",
         };
     }
 
     handleVisibleChange = (visible) => {
         this.setState({visible});
     };
-    handleClickEvent = (customer_id) =>{
+    handleClickEvent = (customer_id) => {
         this.setState({
-            curCustomerId:customer_id
+            curCustomerId: customer_id
         });
         this.props.event.showCustomerDetail(customer_id);
     };

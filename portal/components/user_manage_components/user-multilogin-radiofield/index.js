@@ -4,12 +4,12 @@ const RadioGroup = Radio.Group;
 const UserTypeRadioField = {
     showMultiLoginError() {
         this.setState({
-            show_multilogin_error : true
+            show_multilogin_error: true
         });
     },
     hideMultiLoginError() {
         this.setState({
-            show_multilogin_error : false
+            show_multilogin_error: false
         });
     },
     componentDidMount() {
@@ -25,16 +25,16 @@ const UserTypeRadioField = {
     renderMultiLoginRadioBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalMultiLogin : "0"
+            isCustomSetting: false,
+            appId: '',
+            globalMultiLogin: "0"
         },config);
 
         if(config.isCustomSetting && !config.appId) {
             return null;
         }
 
-        const callback = config.isCustomSetting ? (event)=>{
+        const callback = config.isCustomSetting ? (event) => {
             const value = event.target.value;
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
@@ -46,7 +46,7 @@ const UserTypeRadioField = {
             if(this.props.isSingleAppEdit) {
                 this.hideMultiLoginError();
             }
-        }:(event)=>{
+        } : (event) => {
             const value = event.target.value;
             const formData = this.state.formData;
             formData.multilogin = value;

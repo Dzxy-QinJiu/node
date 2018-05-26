@@ -193,10 +193,10 @@ exports.getCallCustomerZoneStage = function(authType, reqData) {
         dataType: 'json',
         type: 'get',
         data: reqData,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr, textStatus) => {
+        error: (xhr, textStatus) => {
             if (textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }

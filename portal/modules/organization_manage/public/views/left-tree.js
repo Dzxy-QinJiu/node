@@ -54,7 +54,7 @@ var LeftTree = React.createClass({
             OrganizationAction.cancelEditGroup(item);
         } else {
             OrganizationAction.cancelAddGroup(item);
-            setTimeout(()=>$(".organization-search-input-container .search-input").val(this.props.searchContent));
+            setTimeout(() => $(".organization-search-input-container .search-input").val(this.props.searchContent));
         }
     },
     bodyClickFun: function(e) {
@@ -192,18 +192,18 @@ var LeftTree = React.createClass({
                             item.category == CATEGORY_TYPE.TEAM ? null :
                                 <PrivilegeChecker check="USER_ORGANIZATION_ADD">
                                     <span className="icon-operation iconfont icon-add tree-operation-icon"
-                                        title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.add.department","添加部门"):Intl.get("common.add","添加")}
+                                        title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.add.department","添加部门") : Intl.get("common.add","添加")}
                                         onClick={this.addGroup.bind(this, item)}/>
                                 </PrivilegeChecker>
                         }
                         <PrivilegeChecker check="USER_ORGANIZATION_EDIT">
                             <span className="icon-operation iconfont icon-update tree-operation-icon"
-                                title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.edit.department","编辑部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.edit.team","编辑团队"):Intl.get("organization.edit.organization","编辑组织")}
+                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.edit.department","编辑部门") : item.category == CATEGORY_TYPE.TEAM ? Intl.get("organization.edit.team","编辑团队") : Intl.get("organization.edit.organization","编辑组织")}
                                 onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                             <span className="icon-operation iconfont icon-delete tree-operation-icon"
-                                title={item.category==CATEGORY_TYPE.DEPARTMENT?Intl.get("organization.del.department","删除部门"):item.category==CATEGORY_TYPE.TEAM?Intl.get("organization.del.team","删除团队"):Intl.get("organization.del.organization","删除组织")}
+                                title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get("organization.del.department","删除部门") : item.category == CATEGORY_TYPE.TEAM ? Intl.get("organization.del.team","删除团队") : Intl.get("organization.del.organization","删除组织")}
                                 onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                     </div>
@@ -224,7 +224,7 @@ var LeftTree = React.createClass({
             isMinusHeight = false;
         } else if (item.isEditGroup && item.category == CATEGORY_TYPE.DEPARTMENT) {//修改的是部门
             if (item.superiorTeam) {
-                parentGroup = _.find(this.props.organizationList, (group)=>group.group_id == item.superiorTeam);
+                parentGroup = _.find(this.props.organizationList, (group) => group.group_id == item.superiorTeam);
                 // 并且上级也是部门时，可以修改上级部门，所以不需要减高
                 if (parentGroup.category == CATEGORY_TYPE.DEPARTMENT) {
                     isMinusHeight = false;
@@ -314,7 +314,7 @@ var LeftTree = React.createClass({
             scrollHeight -= 40;//40：添加根组织按钮的高度
         }
         return (
-            <div className="organization-group" style={{height:this.props.containerHeight}}>
+            <div className="organization-group" style={{height: this.props.containerHeight}}>
                 <div className="organization-root-add item-border-style">
                     {this.props.isAddOrganizationRoot ? (
                         <div className="group-form-div group-form-no-superior">
@@ -339,7 +339,7 @@ var LeftTree = React.createClass({
                     </div>)
                     }
                 </div>
-                <div className="organization-tree-container" style={{height:scrollHeight}}>
+                <div className="organization-tree-container" style={{height: scrollHeight}}>
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <ul className="left-tree-ul">
                             {loop(organizationGroupList)}

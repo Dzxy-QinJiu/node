@@ -44,19 +44,19 @@ var AppNotice = React.createClass({
         var searchObj = {
             appId: appId,
             page: 1,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         AppNoticeAction.getAppNoticeList(searchObj);
     },
 
-    componentWillReceiveProps : function(nextProps){
+    componentWillReceiveProps: function(nextProps){
         var appId = nextProps.appId;
         if (appId != this.props.appId) {
             AppNoticeAction.resetState();
             var searchObj = {
                 appId: appId,
                 page: 1,
-                pageSize:this.state.pageSize
+                pageSize: this.state.pageSize
             };
             AppNoticeAction.getAppNoticeList(searchObj);
         }
@@ -74,23 +74,23 @@ var AppNotice = React.createClass({
         GeminiScrollbar.scrollTo( this.refs.scrolltoTop,0);
     },
 
-    getAppNoticeList : function(queryParams){
+    getAppNoticeList: function(queryParams){
         var searchObj = {
             appId: queryParams && 'appId' in queryParams ? queryParams.appId : this.props.appId,
             page: queryParams && 'page' in queryParams ? queryParams.page : this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         AppNoticeAction.getAppNoticeList(searchObj);
     },
 
-    handleScrollBarBottom : function(){
+    handleScrollBarBottom: function(){
         // 判断加载的条件
-        var totalPages = Math.ceil(this.state.total/this.state.pageSize);
+        var totalPages = Math.ceil(this.state.total / this.state.pageSize);
         if (this.state.curPage <= totalPages ){
             this.getAppNoticeList({page: this.state.curPage});
         } else {
             this.setState({
-                listenScrollBottom:false
+                listenScrollBottom: false
             });
         }
     },
@@ -110,12 +110,12 @@ var AppNotice = React.createClass({
     },
 
     // 重新获取系统公告
-    retryGetAppNoticeInfo : function(){
+    retryGetAppNoticeInfo: function(){
         var appId = this.props.appId;
         var searchObj = {
             appId: appId,
             page: this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         this.getAppNoticeList(searchObj);
     },

@@ -268,10 +268,10 @@ var AuthorityEditForm = React.createClass({
                 <Option value="DELETE">DELETE</Option>
             </Select>
             <Input name="permissionApisKey" id="permissionApisKey"
-                className={permissionApi.isNull?"auth-validate-error":""}
+                className={permissionApi.isNull ? "auth-validate-error" : ""}
                 value={permissionApi.permissionApiUrl}
-                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
-                onBlur={index==0?this.validatePermissionApi.bind(this,index):noop}
+                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
+                onBlur={index == 0 ? this.validatePermissionApi.bind(this,index) : noop}
                 onChange={this.onPermissionInputChange.bind(this,index)}
             />
             <div className="permission-inputgroup-btns-div">
@@ -331,10 +331,10 @@ var AuthorityEditForm = React.createClass({
                     permissionDatas.map(function(str, index) {
                         return <div className="permissionData-item" key={index}>
                             <Input name="permissionData" id="permissionData"
-                                className={permissionDataNull&&index==0?"auth-validate-error":""}
-                                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
+                                className={permissionDataNull && index == 0 ? "auth-validate-error" : ""}
+                                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
                                 value={permissionDatas[index]}
-                                onBlur={index==0?_this.validatePermissionData.bind(this,index):noop}
+                                onBlur={index == 0 ? _this.validatePermissionData.bind(this,index) : noop}
                                 onChange={_this.onPermissionDataChange.bind(_this , index)}
                             />
                             <div className="permission-inputgroup-btns-div">
@@ -379,7 +379,7 @@ var AuthorityEditForm = React.createClass({
     checkPermissionNameExist: function(rule, value, callback) {
         value = $.trim(value);
         const authority = this.props.authority;
-        const origName = _.isObject(authority)? authority.permissionName : "";
+        const origName = _.isObject(authority) ? authority.permissionName : "";
         if (value === origName) {
             callback();
         } else {
@@ -455,7 +455,7 @@ var AuthorityEditForm = React.createClass({
                                 wrapperCol={{span: wrapperCol}}
                             >
                                 <RadioGroup onChange={_this.setField.bind(_this, 'permissionType')}
-                                    value={formData.permissionType||"REST"}>
+                                    value={formData.permissionType || "REST"}>
                                     <Radio value="REST">REST</Radio>
                                     <Radio value="DATA">DATA</Radio>
                                 </RadioGroup>

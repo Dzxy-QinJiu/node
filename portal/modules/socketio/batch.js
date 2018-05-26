@@ -11,26 +11,26 @@ function getOperateTextMap(lang){
     let backendIntl = new BackendIntl(lang);
     return {
         //用户管理-批量操作
-        task_pwd_change : backendIntl.get('common.edit.password','修改密码'),//修改密码
-        task_customer_change : backendIntl.get('common.belong.customer','所属客户'),//所属客户
-        task_user_create : backendIntl.get('user.add.user','创建用户'),//创建用户
-        task_grant_type : backendIntl.get('user.batch.open.type','开通类型'),//开通类型
-        task_grant_status : backendIntl.get('common.app.status','开通状态'),//开通状态
-        task_grant_period : backendIntl.get('user.open.cycle','开通周期'),//开通周期
-        task_grant_delay : backendIntl.get('user.batch.delay','批量延期'),//批量延期
-        task_grant_update : backendIntl.get('user.batch.app.open','开通产品'),//开通产品
-        task_grant_roles : backendIntl.get('user.batch.auth.set','权限设置'),//权限设置
+        task_pwd_change: backendIntl.get('common.edit.password','修改密码'),//修改密码
+        task_customer_change: backendIntl.get('common.belong.customer','所属客户'),//所属客户
+        task_user_create: backendIntl.get('user.add.user','创建用户'),//创建用户
+        task_grant_type: backendIntl.get('user.batch.open.type','开通类型'),//开通类型
+        task_grant_status: backendIntl.get('common.app.status','开通状态'),//开通状态
+        task_grant_period: backendIntl.get('user.open.cycle','开通周期'),//开通周期
+        task_grant_delay: backendIntl.get('user.batch.delay','批量延期'),//批量延期
+        task_grant_update: backendIntl.get('user.batch.app.open','开通产品'),//开通产品
+        task_grant_roles: backendIntl.get('user.batch.auth.set','权限设置'),//权限设置
         //客户管理-批量操作
-        crm_batch_change_sales : backendIntl.get('crm.18','变更销售人员'),//变更销售人员
-        crm_batch_transfer_customer : backendIntl.get("crm.customer.transfer", "转出客户"),//转出客户
-        crm_batch_change_labels : backendIntl.get('crm.206','更新标签'),//变更标签
-        crm_batch_add_labels : backendIntl.get('crm.205','添加标签'),//添加标签
-        crm_batch_remove_labels : backendIntl.get('crm.204','移除标签'),//移除标签,
-        crm_batch_change_industry : backendIntl.get('crm.20','变更行业'),//变更行业
-        crm_batch_change_address : backendIntl.get('crm.21','变更地域'),//变更地域
+        crm_batch_change_sales: backendIntl.get('crm.18','变更销售人员'),//变更销售人员
+        crm_batch_transfer_customer: backendIntl.get("crm.customer.transfer", "转出客户"),//转出客户
+        crm_batch_change_labels: backendIntl.get('crm.206','更新标签'),//变更标签
+        crm_batch_add_labels: backendIntl.get('crm.205','添加标签'),//添加标签
+        crm_batch_remove_labels: backendIntl.get('crm.204','移除标签'),//移除标签,
+        crm_batch_change_industry: backendIntl.get('crm.20','变更行业'),//变更行业
+        crm_batch_change_address: backendIntl.get('crm.21','变更地域'),//变更地域
         crm_batch_change_level: backendIntl.get("crm.administrative.level.change", "变更行政级别"),//变更行政级别
         //异步创建安全域
-        task_realm_create : backendIntl.get('realm.create.realms','安全域创建')//安全域创建
+        task_realm_create: backendIntl.get('realm.create.realms','安全域创建')//安全域创建
     };
 }
 
@@ -76,7 +76,7 @@ Batch.prototype.listener = function(data) {
                 getSessionFromStore(socket, function(err, session) {
                     let lang = "zh_CN";
                     if (!err && session && session.lang) {
-                        lang=session.lang;
+                        lang = session.lang;
                     }
                     //判断是否是已知批量操作类型
                     var typeText = getOperateTextMap(lang)[type];
@@ -91,20 +91,20 @@ Batch.prototype.listener = function(data) {
                         tasks = [];
                     }
                     //创建失败的任务列表
-                    var failedTasks =  _.filter(tasks, (task) => task.taskStatus === 'failed');
+                    var failedTasks = _.filter(tasks, (task) => task.taskStatus === 'failed');
                     //成功后的任务列表
                     tasks = _.filter(tasks , (task) => task.taskStatus === 'success');
                     //当全部执行完的时候，推送详细内容
                     messageObj = {
-                        userId : userId,
-                        type : type,
-                        typeText : typeText,
-                        taskId : taskId,
-                        total : data.total,
-                        running : data.running,
-                        tasks : tasks,
-                        failed : data.failed,
-                        failedTasks :failedTasks
+                        userId: userId,
+                        type: type,
+                        typeText: typeText,
+                        taskId: taskId,
+                        total: data.total,
+                        running: data.running,
+                        tasks: tasks,
+                        failed: data.failed,
+                        failedTasks: failedTasks
                     };
                     socket.emit("batchOperate" , messageObj);
                 });

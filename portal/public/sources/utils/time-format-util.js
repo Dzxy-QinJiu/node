@@ -151,7 +151,7 @@ exports.getFutureTimeStr = function(time) {
         } else {
             let duration = moment.duration(time - moment().valueOf());
             if (duration > 0) {
-                let over_draft_days = duration.days();  //天
+                let over_draft_days = duration.days(); //天
                 if (duration.months() > 0) {//月
                     over_draft_days += duration.months() * 30;
                 }

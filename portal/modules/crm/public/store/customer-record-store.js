@@ -26,7 +26,7 @@ CustomerRecordStore.prototype.resetState = function() {
     this.addContentDetailShow = 'false';//增加详情的输入框是否显示
     this.detailContent = '';//增加详情的输入框中的内容
     this.initialDetailContent = '';//增加详情的输入框中的初始化中的内容
-    this.addDetailLoading = false ;//正在增加详情
+    this.addDetailLoading = false;//正在增加详情
     this.addDetailErrMsg = '';//增加详情保存错误
     this.addDetailSuccMsg = '';//正在增加详情保存成功
     this.updateId = '';//正在更新的某一条的id
@@ -61,7 +61,7 @@ CustomerRecordStore.prototype.getCustomerTraceList = function(result) {
             });
             this.customerRecord = this.customerRecord.concat(customerRecord);
             //过滤出所有电话类型的通话记录
-            var phoneTypeRecords = _.filter(this.customerRecord,(item)=>{
+            var phoneTypeRecords = _.filter(this.customerRecord,(item) => {
                 return item.type === "phone";
             });
             //找出最后一条电话跟进记录的id

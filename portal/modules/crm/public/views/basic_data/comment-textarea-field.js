@@ -74,7 +74,7 @@ let BasicEditInputField = React.createClass({
             this.backToDisplay();
         } else {
             this.setState({loading: true});
-            CrmBasicAjax.updateCustomer(submitData).then(result=> {
+            CrmBasicAjax.updateCustomer(submitData).then(result => {
                 if (result) {
                     this.setState({
                         loading: false,
@@ -85,7 +85,7 @@ let BasicEditInputField = React.createClass({
                     //更新列表中的客户名
                     this.props.modifySuccess(submitData);
                 }
-            }, errorMsg=> {
+            }, errorMsg => {
                 this.setState({
                     loading: false,
                     submitErrorMsg: errorMsg || Intl.get("crm.171", "修改客户备注失败")

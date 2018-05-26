@@ -48,7 +48,7 @@ const getRepaymentList = function(req, res, cb) {
         //构造合同查询参数
         const contractReqData = {
             query: reqData.query,
-            rang_params: dateRangeParam? [dateRangeParam] : [],
+            rang_params: dateRangeParam ? [dateRangeParam] : [],
         };
         //指定合同类型，否则按合同号查询时，有的关键字会导致报错
         contractReqData.query.type = "sell";
@@ -224,7 +224,7 @@ exports.exportData = function(req, res, next) {
         const head = columnTitles.join();
         let csvArr = [];
         csvArr.push(head);
-        const list = _.isArray(result.list)? result.list : [];
+        const list = _.isArray(result.list) ? result.list : [];
         const rows = list.map(item => {
             const values = columns.map(column => {
                 let value = item[column.dataIndex];
@@ -235,7 +235,7 @@ exports.exportData = function(req, res, next) {
                 }
 
                 if (column.dataIndex === "repayment_is_first") {
-                    value = value === "true"? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                    value = value === "true" ? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
                 }
 
                 return value;

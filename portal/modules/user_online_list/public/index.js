@@ -16,23 +16,23 @@ const statusList = [
 ];
 
 const UserOnlineList = React.createClass({
-    selectedUserId : '',
-    showRightPanel : false,
+    selectedUserId: '',
+    showRightPanel: false,
     getInitialState: function() {
         var state = OnlineUserIndexStore.getState();
         return {
             ...state,
-            selectedUserId : this.selectedUserId,
-            showRightPanel : this.showRightPanel
+            selectedUserId: this.selectedUserId,
+            showRightPanel: this.showRightPanel
         };
     },
-    closeRightPanel : function() {
+    closeRightPanel: function() {
         $(this.refs.wrap).find(".current_row").removeClass("current_row");
         this.selectedUserId = '';
         this.showRightPanel = false;
         this.setState({
-            selectedUserId : '',
-            showRightPanel : false
+            selectedUserId: '',
+            showRightPanel: false
         });
     },
     componentWillMount: function() {
@@ -46,7 +46,7 @@ const UserOnlineList = React.createClass({
         this.showRightPanel = false;
         emitter.removeListener("user_detail_close_right_panel" , this.closeRightPanel);
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
         $wrap.on("click" , "td.show-user-detail" , function() {
@@ -59,8 +59,8 @@ const UserOnlineList = React.createClass({
                 _this.selectedUserId = user_id;
                 _this.showRightPanel = true;
                 _this.setState({
-                    selectedUserId : user_id,
-                    showRightPanel : _this.showRightPanel
+                    selectedUserId: user_id,
+                    showRightPanel: _this.showRightPanel
                 });
             }
         });
@@ -69,7 +69,7 @@ const UserOnlineList = React.createClass({
         this.setState(this.getInitialState());
     },
     //选中某个应用
-    appSelected:function(appObj) {
+    appSelected: function(appObj) {
         OnlineUserIndexAction.setSelectedAppId(appObj);
     },
     render: function() {

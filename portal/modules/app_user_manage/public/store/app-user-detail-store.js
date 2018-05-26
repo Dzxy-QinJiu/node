@@ -18,49 +18,49 @@ AppUserDetailStore.prototype.resetState = function() {
     this.initialUser = {};
     //输入框
     this.editFields = {
-        user_name : {
-            showInput : false,
-            status : {},
-            formData : {},
-            isSubmiting : false,
-            submitErrorMsg : ''
+        user_name: {
+            showInput: false,
+            status: {},
+            formData: {},
+            isSubmiting: false,
+            submitErrorMsg: ''
         },
-        email : {
-            showInput : false,
-            status : {},
-            formData : {},
-            isSubmiting : false,
-            submitErrorMsg : ''
+        email: {
+            showInput: false,
+            status: {},
+            formData: {},
+            isSubmiting: false,
+            submitErrorMsg: ''
         },
-        phone : {
-            showInput : false,
-            status : {},
-            formData : {},
-            isSubmiting : false,
-            submitErrorMsg : ''
+        phone: {
+            showInput: false,
+            status: {},
+            formData: {},
+            isSubmiting: false,
+            submitErrorMsg: ''
         },
-        password : {
-            showInput : false,
-            status : {},
-            formData : {},
-            isSubmiting : false,
-            submitErrorMsg : ''
+        password: {
+            showInput: false,
+            status: {},
+            formData: {},
+            isSubmiting: false,
+            submitErrorMsg: ''
         },
-        customer_form : {
-            showInput : false,
-            status : {},
-            formData : {},
-            isSubmiting : false,
-            submitErrorMsg : ''
+        customer_form: {
+            showInput: false,
+            status: {},
+            formData: {},
+            isSubmiting: false,
+            submitErrorMsg: ''
         }
     };
     //modal状态
     this.modalStatus = {
-        disable_all : {
-            loading : false,
-            showModal : false,
-            success : false,
-            errorMsg : ''
+        disable_all: {
+            loading: false,
+            showModal: false,
+            success: false,
+            errorMsg: ''
         }
     };
     this.customer_id = '';
@@ -180,7 +180,7 @@ AppUserDetailStore.prototype.changeAppFieldSuccess = function(result) {
         //找到修改的应用
         var targetApp = _.find(this.initialUser.apps , (obj) => obj.app_id === result.client_id);
         if(targetApp) {
-            for(var i = 0, len = appFields.length ; i < len ; i++) {
+            for(var i = 0, len = appFields.length; i < len; i++) {
                 var key = appFields[i];
                 //如果存在，则修改
                 if(key in result) {

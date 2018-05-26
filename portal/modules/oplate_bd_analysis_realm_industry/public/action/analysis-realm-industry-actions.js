@@ -9,17 +9,17 @@ function AnalysisRealmIndustryActions() {
 
     this.generateActions({
         //从服务器获取安全域行业开通总数
-        'getRealmIndustryAnalysisDataByAjax':'getRealmIndustryAnalysisDataByAjax',
+        'getRealmIndustryAnalysisDataByAjax': 'getRealmIndustryAnalysisDataByAjax',
         //设置开始时间
-        'setStartTime' : 'setStartTime',
+        'setStartTime': 'setStartTime',
         //设置结束时间
-        'setEndTime' : 'setEndTime',
+        'setEndTime': 'setEndTime',
         //设置加载状态
-        'setLoadingState' : 'setLoadingState',
+        'setLoadingState': 'setLoadingState',
         //是否noData
         'setNoData': 'setNoData',
         //设置右侧标题
-        'setRankListTitle':'setRankListTitle'
+        'setRankListTitle': 'setRankListTitle'
     });
 
     /**
@@ -33,9 +33,9 @@ function AnalysisRealmIndustryActions() {
 
             _this.dispatch({
                 //服务器返回数据
-                realmIndustryAnalysisListByServer:realmIndustryAnalysisListByServer,
+                realmIndustryAnalysisListByServer: realmIndustryAnalysisListByServer,
                 //是否一个安全域都没有
-                noIndustryAtAll:noIndustryAtAll
+                noIndustryAtAll: noIndustryAtAll
             });
 
         });

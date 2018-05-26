@@ -12,7 +12,7 @@ const salesRoleRestApis = {
     setDefaultRole: "/rest/base/v1/group/teamrole/default/:role_id",
     changeSalesRole: "/rest/base/v1/user/member/teamrole",
     getSalesRoleByMemberId: "/rest/base/v1/user/member/teamrole",
-    setSalesRoleGoal:"/rest/base/v1/group/teamrole/customernum",//设置某个角色的客户容量
+    setSalesRoleGoal: "/rest/base/v1/group/teamrole/customernum",//设置某个角色的客户容量
 };
 
 //获取销售角色列表

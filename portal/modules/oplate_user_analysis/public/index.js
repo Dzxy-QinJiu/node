@@ -49,7 +49,7 @@ const USER_TYPES_WITH_TITLE = [{
     }]);
 
 //权限类型
-const authType = hasPrivilege("USER_ANALYSIS_MANAGER")? "manager" : "common";
+const authType = hasPrivilege("USER_ANALYSIS_MANAGER") ? "manager" : "common";
 
 //一周7天的中文名
 //Todo: 移到公共常量文件中
@@ -64,7 +64,7 @@ const WEEKDAY = [
 ];
 
 //范围类型
-const rangeType = hasPrivilege("CRM_MANAGER_APP_USER_COUNT")? "all" : "self";
+const rangeType = hasPrivilege("CRM_MANAGER_APP_USER_COUNT") ? "all" : "self";
 
 //是否是销售
 const isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) ||
@@ -584,7 +584,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                             title: Intl.get("oplate.user.analysis.23", "当天"),
                             dataIndex: "day0",
                             render: text => {
-                                text = isNaN(text)? "0" : text;
+                                text = isNaN(text) ? "0" : text;
                                 return <span>{text}</span>;
                             },
                         }, {
@@ -594,7 +594,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 if (moment().diff(record.timestamp, "day") <= 1) {
                                     text = "";
                                 } else {
-                                    text = isNaN(text)? "0" : text;
+                                    text = isNaN(text) ? "0" : text;
                                 }
                                 return <span>{text}</span>;
                             },
@@ -611,7 +611,7 @@ var OPLATE_USER_ANALYSIS = React.createClass({
                                 if (moment().diff(record.timestamp, "day") <= index) {
                                     text = "";
                                 } else {
-                                    text = isNaN(text)? "0" : text;
+                                    text = isNaN(text) ? "0" : text;
                                 }
                                 return <span>{text}</span>;
                             },

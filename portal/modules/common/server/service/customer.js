@@ -2,7 +2,7 @@
  * url定义
  */
 var urls = {
-    getCustomerSuggest : "/rest/customer/v2/customer/query/100/id/descend"
+    getCustomerSuggest: "/rest/customer/v2/customer/query/100/id/descend"
 };
 var restLogger = require("../../../../lib/utils/logger").getLogger('rest');
 var restUtil = require("ant-auth-request").restUtil(restLogger);
@@ -15,9 +15,9 @@ exports.getCustomerSuggest = function(req,res,q,fields) {
         req: req,
         res: res
     },{
-        name : q
+        name: q
     },{
-        success : function(emitter,obj) {
+        success: function(emitter,obj) {
             if(!_.isArray(obj.result)) {
                 obj.result = [];
             }

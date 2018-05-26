@@ -55,7 +55,7 @@ var UserRolePage = React.createClass({
             RoleAction.showRoleForm();
         },
 
-        setDefaultRole:function(param) {
+        setDefaultRole: function(param) {
             if (this.state.setDefaulting) {
                 return;
             }
@@ -119,7 +119,7 @@ var UserRolePage = React.createClass({
             });
         }
         return (
-            <div className="role-manage-container"  data-tracename="角色列表">
+            <div className="role-manage-container" data-tracename="角色列表">
                 <div className="role-table-block">
                     <div style={{ height: height, width: width }} className="role-container-scroll">
                         {

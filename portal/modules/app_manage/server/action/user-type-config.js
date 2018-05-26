@@ -4,14 +4,14 @@
 
 "use strict";
 
-var  userTypeConfig = require("../service/user-type-config-service");
+var userTypeConfig = require("../service/user-type-config-service");
 
 exports.getUserTypeConfig = function(req, res) {
     var clientID = req.query.client_id;
     var pageSize = req.query.page_size;
     var obj = {
-        client_id : clientID,
-        page_size : pageSize
+        client_id: clientID,
+        page_size: pageSize
     };
     if(req.query && req.query.user_type){
         obj.user_type = req.query.user_type;

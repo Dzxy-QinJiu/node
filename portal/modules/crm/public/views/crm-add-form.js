@@ -122,7 +122,7 @@ var CRMAddForm = React.createClass({
                     this.state.formData.contacts0_phone = values[PHONE_INPUT_ID].replace(/-/g, "");
                     //导入客户前先校验，是不是超过了本人的客户上限
                     let member_id = userData.getUserData().user_id;
-                    CrmAction.getCustomerLimit({member_id:member_id,num: 1}, (result)=>{
+                    CrmAction.getCustomerLimit({member_id: member_id,num: 1}, (result) => {
                         if (_.isNumber(result)){
                             if (result == 0){
                                 //可以添加

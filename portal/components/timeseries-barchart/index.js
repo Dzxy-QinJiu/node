@@ -17,28 +17,28 @@
 var echarts = require("echarts-eefung");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 var TimeSeriesBarchart = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            dataList : [],
+            dataList: [],
             isShowSplitArea: false,
-            tooltip : function() {}
+            tooltip: function() {}
         };
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            echartListCache : this.props.dataList
+            echartListCache: this.props.dataList
         };
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.drawEchart();
     },
-    componentDidUpdate : function() {
+    componentDidUpdate: function() {
         if(this.state.echartListCache !== this.props.dataList) {
             this.state.echartListCache = this.props.dataList;
             this.drawEchart();
         }
     },
-    transformDataList : function() {
+    transformDataList: function() {
         var resultList = this.props.dataList.map(function(item) {
             return [
                 new Date(item.date),
@@ -63,16 +63,16 @@ var TimeSeriesBarchart = React.createClass({
         }
         return resultList;
     },
-    drawEchart : function() {
+    drawEchart: function() {
         var series = this.transformDataList();
         var xInterval = null;
         if (series.length <= 5) {
-            xInterval = 24*60*60*1000;
+            xInterval = 24 * 60 * 60 * 1000;
         }
         var xValue = [];
         var yValue = [];
         // 获取所有y轴的刻度值和x轴的时间值
-        for (let i = 0; i < series.length; i ++) {
+        for (let i = 0; i < series.length; i++) {
             yValue.push(series[i][1]);
             xValue.push(series[i][0].getTime());
         }
@@ -86,53 +86,53 @@ var TimeSeriesBarchart = React.createClass({
         }
         var _this = this;
         var option = {
-            title : null,
-            animation : false,
+            title: null,
+            animation: false,
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            tooltip : { // 图表中的提示数据信息
+            calculable: false,
+            tooltip: { // 图表中的提示数据信息
                 trigger: 'item',
-                formatter : function(params) {
+                formatter: function(params) {
                     var timeText = moment(params && params.data && params.data[0] || Date.now()).format(oplateConsts.DATE_FORMAT);
                     var sum = params && params.data && params.data[1] || '0';
                     return _this.props.tooltip(timeText , sum);
                 }
             },
-            legend : {
-                data : ['']
+            legend: {
+                data: ['']
             },
             grid: {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
                     interval: xInterval,
-                    type : 'time',  // 类型为time，时间轴
-                    splitLine : false,
-                    splitArea : {
+                    type: 'time', // 类型为time，时间轴
+                    splitLine: false,
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         },
-                        formatter : function(d, index) {   // 显示的刻度值
+                        formatter: function(d, index) { // 显示的刻度值
                             if(series.length <= 5) {
                                 if (xValue.length > index){
                                     return moment(xValue[index]).format(oplateConsts.DATE_FORMAT);
@@ -152,38 +152,38 @@ var TimeSeriesBarchart = React.createClass({
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
                     minInterval: 1,
                     max: yMax,
-                    type : 'value',
-                    splitLine : false,
-                    splitArea : {
+                    type: 'value',
+                    splitLine: false,
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : [
+            series: [
                 {
                     name: '',
                     type: 'bar',
-                    barMaxWidth:40,
-                    barMinWidth : 4,
+                    barMaxWidth: 40,
+                    barMinWidth: 4,
                     data: series,
-                    itemStyle : {
-                        normal : {
-                            color : '#4d96d1'
+                    itemStyle: {
+                        normal: {
+                            color: '#4d96d1'
                         }
                     }
                 }
@@ -192,9 +192,9 @@ var TimeSeriesBarchart = React.createClass({
         var chart = echarts.init(this.refs.echart_wrap,macronsTheme);
         chart.setOption(option);
     },
-    render : function() {
+    render: function() {
         return (
-            <div className="echart_wrap" ref="echart_wrap" style={{width:'100%',height:'100%'}}></div>
+            <div className="echart_wrap" ref="echart_wrap" style={{width: '100%',height: '100%'}}></div>
         );
     }
 });

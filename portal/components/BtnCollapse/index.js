@@ -10,7 +10,7 @@ var BtnCollapse = React.createClass({
     },
     render: function() {
         return (
-            <a onClick={this.handleClick}  className="toggle-nav-collapse" title={this.state.tips}><i className="iconfont">&#xe600;</i></a>
+            <a onClick={this.handleClick} className="toggle-nav-collapse" title={this.state.tips}><i className="iconfont">&#xe600;</i></a>
         );
     }
 });

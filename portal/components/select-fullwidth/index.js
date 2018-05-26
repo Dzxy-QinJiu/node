@@ -21,20 +21,20 @@
 var Select = require("antd").Select;
 var measureText = require("../../public/sources/utils/measure-text");
 var SelectFullWidth = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            minWidth : 120,
-            maxWidth : 500,
-            onLayout : function() {}
+            minWidth: 120,
+            maxWidth: 500,
+            onLayout: function() {}
         };
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            width : this.props.minWidth,
-            textList : []
+            width: this.props.minWidth,
+            textList: []
         };
     },
-    computeWidth : function() {
+    computeWidth: function() {
         var textList = this.state.textList;
         //获取外层节点
         var wrapDom = ReactDOM.findDOMNode(this);
@@ -48,7 +48,7 @@ var SelectFullWidth = React.createClass({
             fontSize = 12;
         }
         var max = 0;
-        for(var i = 0, len = textList.length ; i < len ; i++) {
+        for(var i = 0, len = textList.length; i < len; i++) {
             var width = measureText.measureTextWidth(textList[i] , fontSize);
             if(width > max) {
                 max = width;
@@ -61,21 +61,21 @@ var SelectFullWidth = React.createClass({
             max = this.props.maxWidth;
         }
         this.setState({
-            width : max
+            width: max
         }, () => {
             this.props.onLayout({
-                width : width
+                width: width
             });
         });
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         var textList = React.Children.map(this.props.children, (ele , idx) => {
             return ele.props.children;
         });
         this.state.textList = textList;
         this.computeWidth();
     },
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         var textList = React.Children.map(nextProps.children, (ele , idx) => {
             return ele.props.children;
         });
@@ -84,7 +84,7 @@ var SelectFullWidth = React.createClass({
             this.computeWidth();
         }
     },
-    render : function() {
+    render: function() {
         var {style, children, ...props} = this.props;
         if(!style) {
             style = {};

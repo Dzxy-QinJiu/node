@@ -13,16 +13,16 @@ exports.getAppList = function() {
         success(function(list) {
             list = list.map(function(app) {
                 return {
-                    id : app.app_id,
-                    name : app.app_name,
-                    image : app.app_logo
+                    id: app.app_id,
+                    name: app.app_name,
+                    image: app.app_logo
                 };
             });
-            Deferred.resolve({list :list , hasAll : hasAll});
+            Deferred.resolve({list: list , hasAll: hasAll});
         }).error(function() {
-            Deferred.resolve({list :[] , hasAll : hasAll});
+            Deferred.resolve({list: [] , hasAll: hasAll});
         }).timeout(function() {
-            Deferred.resolve({list :[] , hasAll : hasAll});
+            Deferred.resolve({list: [] , hasAll: hasAll});
         });
 
     return Deferred.promise();

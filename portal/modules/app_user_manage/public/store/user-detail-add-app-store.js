@@ -53,7 +53,7 @@ function getMultipleSubType() {
 
 UserDetailAddAppStore.prototype.resetState = function() {
     //账号所属人
-    this.accountHolder =  userData.getUserData().nick_name;
+    this.accountHolder = userData.getUserData().nick_name;
     //选中的应用列表
     this.app_list = [];
     //显示未选择应用的错误提示
@@ -81,8 +81,8 @@ UserDetailAddAppStore.prototype.resetState = function() {
 
     //表单验证使用
     this.status = {
-        password : {},
-        repassword : {}
+        password: {},
+        repassword: {}
     };
 
     var timeObj = DateSelectorUtils.getHalfAMonthTime();
@@ -90,56 +90,56 @@ UserDetailAddAppStore.prototype.resetState = function() {
     //表单数据
     this.formData = {
         //选中的应用列表'(批量开通新应用)
-        selected_apps : [],
+        selected_apps: [],
         //开户类型
-        user_type : AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
+        user_type: AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
         //开通周期
-        range : "0.5m",
+        range: "0.5m",
         //开通时间
-        start_time : DateSelectorUtils.getMilliseconds(timeObj.start_time),
+        start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
         //到期时间
-        end_time : DateSelectorUtils.getMilliseconds(timeObj.end_time),
+        end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
         //到期不变
-        over_draft : "0",
+        over_draft: "0",
         //账号状态
-        user_status : "1",
+        user_status: "1",
         //密码
-        password : "",
+        password: "",
         //确认密码
-        repassword : "",
+        repassword: "",
         //角色
-        roles : [],
+        roles: [],
         //权限
-        permissions : [],
+        permissions: [],
         //要更改的客户对象
-        choosen_customer : {
-            id : '',
-            name : ''
+        choosen_customer: {
+            id: '',
+            name: ''
         },
         //要更改的客户对象，对应的销售
-        choosen_customer_sales : {
-            id : '',
-            name : ''
+        choosen_customer_sales: {
+            id: '',
+            name: ''
         },
         //延迟时间输入框，默认是1
-        delayTimeNumber : 1,
+        delayTimeNumber: 1,
         //延期时间范围，默认是天
-        delayTimeRange : "days",
+        delayTimeRange: "days",
         // 到期时间(选择到期时间)
         delayDeadlineTime: moment().add(1, 'days').valueOf(),
         //销售申请的备注
-        remark : {
+        remark: {
             //延期备注
-            delayRemark : "",
+            delayRemark: "",
             //启用、停用备注
-            statusRemark : "",
+            statusRemark: "",
             //修改密码备注
-            passwordRemark : ""
+            passwordRemark: ""
         },
         //批量审批选中的应用列表
-        batchSelectedApps : [],
+        batchSelectedApps: [],
         //权限设置的应用
-        rolePermissionApp : ''
+        rolePermissionApp: ''
     };
     //密码强度
     this.passBarShow = false;//是否显示密码强度

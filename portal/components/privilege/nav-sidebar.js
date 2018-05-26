@@ -20,7 +20,7 @@ var getLocalWebsiteConfigModuleRecord = websiteConfig.getLocalWebsiteConfigModul
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let history = require("../../public/sources/history");
 import ModalIntro from "../modal-intro";
-import CONSTS from  "LIB_DIR/consts";
+import CONSTS from "LIB_DIR/consts";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import { storageUtil } from "ant-utils";
 const session = storageUtil.session;
@@ -278,7 +278,7 @@ var NavSidebar = React.createClass({
         //重新渲染一次，需要使用高度
         this.setState({});
     },
-    getHasUnreadReply:function() {
+    getHasUnreadReply: function() {
         const APPLY_UNREAD_REPLY = "apply_unread_reply";
         let userId = userData.getUserData().user_id;
         //获取sessionStore中已存的未读回复列表

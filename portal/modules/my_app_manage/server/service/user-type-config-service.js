@@ -7,7 +7,7 @@ var restUtil = require("ant-auth-request").restUtil(restLogger);
 var AppUserRestApis = {
     getUserTypeConfig: "/rest/base/v1/application/extra/grantinfos",
     addUserTypeConfig: "/rest/base/v1/application/extra/grantinfo",
-    updateUserTypeConfig:"/rest/base/v1/application/extra/grantinfo"
+    updateUserTypeConfig: "/rest/base/v1/application/extra/grantinfo"
 
 };
 exports.urls = AppUserRestApis;

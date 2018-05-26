@@ -4,7 +4,7 @@ function CallRecordActions() {
     this.generateActions(
         'resetState',
         'filterPhone', // 过滤电话
-        'updateCallRecord',  // 添加客户后，更新对应的通话记录中的数据
+        'updateCallRecord', // 添加客户后，更新对应的通话记录中的数据
         'updateCallContent', // 编辑跟进内容，更新对应的更新内容中的数据
         'toggleConfirm', // 确认对话框
         'handleRefresh', // 刷新通话记录
@@ -25,7 +25,7 @@ function CallRecordActions() {
     this.getRecommendPhoneList = function(params, filterObj) {
         callRecordAjax.getRecommendPhoneList(params, filterObj).then( (resData) => {
             this.dispatch({ error: false, resData: resData, searchInputVal: filterObj.query.dst});
-        },  (errMsg) => {
+        }, (errMsg) => {
             this.dispatch({ error: true, errMsg: errMsg});
         });
     };

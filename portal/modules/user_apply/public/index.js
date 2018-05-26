@@ -14,7 +14,7 @@ require("../../app_user_manage/public/css/main-zh_CN.less");
 
 var ApplyView = require("./views/apply-view");
 var UserApply = React.createClass({
-    render:function() {
+    render: function() {
         return(
             <div data-tracename="用户审批">
                 <div className="user_apply_page">

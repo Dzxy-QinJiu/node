@@ -3,7 +3,7 @@ var Alert = require("antd").Alert;
 var rightPanelUtil = require("../../../../components/rightPanel");
 var RightPanelClose = rightPanelUtil.RightPanelClose;
 var RightPanelReturn = rightPanelUtil.RightPanelReturn;
-var VersionUpgradeLogStore =require("../store/version-upgrade-log-store");
+var VersionUpgradeLogStore = require("../store/version-upgrade-log-store");
 var VersionUpgradeLogAction = require("../action/version-upgrade-log-action");
 var VersionUpgradeList = require("../../../../components/version-upgrade");
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
@@ -24,7 +24,7 @@ var VersionUpgradeLog = React.createClass({
         };
     },
 
-    getInitialState : function(){
+    getInitialState: function(){
         return VersionUpgradeLogStore.getState();
     },
 
@@ -39,20 +39,20 @@ var VersionUpgradeLog = React.createClass({
         var searchObj = {
             appId: appId,
             page: 1,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         VersionUpgradeLogAction.getAppRecordsList(searchObj);
     },
 
 
-    componentWillReceiveProps : function(nextProps){
+    componentWillReceiveProps: function(nextProps){
         var appId = nextProps.appId;
-        if ( appId !=  this.props.appId){
+        if ( appId != this.props.appId){
             VersionUpgradeLogAction.resetState();
             var searchObj = {
                 appId: appId,
                 page: 1,
-                pageSize:this.state.pageSize
+                pageSize: this.state.pageSize
             };
             VersionUpgradeLogAction.getAppRecordsList(searchObj);
         }
@@ -71,33 +71,33 @@ var VersionUpgradeLog = React.createClass({
         this.props.returnInfoPanel(e);
     },
 
-    getAppRecordsList : function(queryParams){
+    getAppRecordsList: function(queryParams){
         var searchObj = {
             appId: queryParams && 'appId' in queryParams ? queryParams.appId : this.props.appId,
             page: queryParams && 'page' in queryParams ? queryParams.page : this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         VersionUpgradeLogAction.getAppRecordsList(searchObj);
     },
 
-    handleScrollBarBottom : function(){
+    handleScrollBarBottom: function(){
         // 判断加载的条件
-        var totalPages = Math.ceil(this.state.total/this.state.pageSize);
+        var totalPages = Math.ceil(this.state.total / this.state.pageSize);
         if (this.state.curPage <= totalPages ){
             this.getAppRecordsList({page: this.state.curPage});
         } else {
             this.setState({
-                listenScrollBottom:false
+                listenScrollBottom: false
             });
         }
     },
 
-    retryGetAppRecordInfo : function(){
+    retryGetAppRecordInfo: function(){
         var appId = this.props.appId;
         var searchObj = {
             appId: appId,
             page: this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         this.getAppRecordsList(searchObj);
     },

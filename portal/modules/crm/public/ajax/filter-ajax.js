@@ -5,9 +5,9 @@ exports.getAppList = function() {
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function(list) {
         list = list.map(function(app) {
             return {
-                client_id : app.app_id,
-                client_name : app.app_name,
-                client_logo : app.app_logo
+                client_id: app.app_id,
+                client_name: app.app_name,
+                client_logo: app.app_logo
             };
         });
         Deferred.resolve(list);
@@ -52,7 +52,7 @@ exports.getTeamList = function() {
 function traversingTeamTree(treeList,list) {
     if(_.isArray(treeList) && treeList.length){
         _.each(treeList, team => {
-            list.push({group_id:team.group_id,group_name:team.group_name});
+            list.push({group_id: team.group_id,group_name: team.group_name});
             if(team.child_groups){
                 traversingTeamTree(team.child_groups,list);
             }

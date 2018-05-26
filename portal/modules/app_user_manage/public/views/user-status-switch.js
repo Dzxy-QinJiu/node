@@ -41,7 +41,7 @@ const UserStatusFieldSwitch = React.createClass({
     },
     changeUserStatus: function(checked) {
         //展示修改用户状态并展示是否保存的提示框
-        this.setState({status: checked}, ()=> {
+        this.setState({status: checked}, () => {
             this.saveUserStatus();
         });
     },
@@ -52,7 +52,7 @@ const UserStatusFieldSwitch = React.createClass({
         };
         this.setState({resultType: 'loading', errorMsg: ''});
         //提交数据
-        AppUserAjax.editAppUser(submitObj).then((result)=> {
+        AppUserAjax.editAppUser(submitObj).then((result) => {
             if (result) {
                 this.setState({resultType: '', errorMsg: ''});
             } else {
@@ -61,7 +61,7 @@ const UserStatusFieldSwitch = React.createClass({
                     errorMsg: Intl.get("common.edit.failed", "修改失败"),
                 });
             }
-        }, (errorMsg)=> {
+        }, (errorMsg) => {
             this.setState({
                 resultType: 'error',
                 errorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")

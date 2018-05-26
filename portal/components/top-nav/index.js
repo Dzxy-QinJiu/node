@@ -8,7 +8,7 @@ var Dropdown = require("antd").Dropdown;
 var topNavEmitter = require("../../public/sources/utils/emitters").topNavEmitter;
 //顶部导航外层div
 var TopNav = React.createClass({
-    resizeHandler : function() {
+    resizeHandler: function() {
         //找到外层节点
         var $wrap = $(ReactDOM.findDOMNode(this.refs.topNav));
         //找到菜单列表
@@ -54,12 +54,12 @@ var TopNav = React.createClass({
             }
         }
     },
-    resizeFunc : function() {
+    resizeFunc: function() {
         clearTimeout(this.resizeFunc.timeout);
         this.resizeFunc.timeout = setTimeout(this.resizeHandler , 10);
     },
     //点击页面空白处，下拉菜单消失
-    clickBodyEmptySpace : function(event) {
+    clickBodyEmptySpace: function(event) {
         var $target = $(event.target);
         var $topNav = $(ReactDOM.findDOMNode(this.refs.topNav));
         var $topNavLinksWrap = $topNav.find(".topnav-links-wrap");
@@ -70,7 +70,7 @@ var TopNav = React.createClass({
         $("body").off("click" , this.clickBodyEmptySpace);
         $topNavLinksWrap.removeClass("fixed-layout");
     },
-    navBarToggle : function() {
+    navBarToggle: function() {
         var $topNav = $(ReactDOM.findDOMNode(this));
         var $topLinks = $topNav.find(".topnav-links-wrap");
         $topLinks.toggleClass("fixed-layout");
@@ -78,13 +78,13 @@ var TopNav = React.createClass({
             $("body").on("click" , this.clickBodyEmptySpace);
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         $(window).on("resize" , this.resizeFunc);
         $(ReactDOM.findDOMNode(this)).find(".navbar-toggle").on("click" , this.navBarToggle);
         this.resizeFunc();
         topNavEmitter.on(topNavEmitter.RELAYOUT , this.resizeFunc);
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         $(window).off("resize" , this.resizeFunc);
         $("body").off("click" , this.clickBodyEmptySpace);
         topNavEmitter.removeListener(topNavEmitter.RELAYOUT , this.resizeFunc);

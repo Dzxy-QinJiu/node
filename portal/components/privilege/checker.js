@@ -23,13 +23,13 @@ function getChildRoutes(preRoutePath , fullModuleList) {
 
 //检查权限的标签
 var PrivilegeChecker = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            check : '',
-            tagName : 'div'
+            check: '',
+            tagName: 'div'
         };
     },
-    canRenderChildren : function(check) {
+    canRenderChildren: function(check) {
         if(typeof check === 'string') {
             var userInfo = UserData.getUserData() || {};
             var privileges = userInfo.privileges || [];
@@ -43,19 +43,19 @@ var PrivilegeChecker = React.createClass({
             return check();
         }
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            hasChildNodes : this.canRenderChildren(this.props.check)
+            hasChildNodes: this.canRenderChildren(this.props.check)
         };
     },
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(typeof nextProps.check === 'function' || (nextProps.check !== this.props.check)) {
             this.setState({
-                hasChildNodes : this.canRenderChildren(nextProps.check)
+                hasChildNodes: this.canRenderChildren(nextProps.check)
             });
         }
     },
-    render : function() {
+    render: function() {
         if(!this.state.hasChildNodes) {
             return null;
         }

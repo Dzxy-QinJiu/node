@@ -82,7 +82,7 @@ export function processOrderStageChartData(stageList, data) {
     });
 
     //将维护阶段的统计数据加到处理后的数据的最后
-    let maintainStage = _.find(data, stage => stage.name ===Intl.get("oplate_customer_analysis.6", "维护阶段"));
+    let maintainStage = _.find(data, stage => stage.name === Intl.get("oplate_customer_analysis.6", "维护阶段"));
     if (maintainStage) processedData.push(maintainStage);
 
     return processedData;

@@ -10,7 +10,7 @@ var AppUserRestApis = {
     //获取用户审计日志列表
     getUserLogs: "/rest/analysis/auditlog/v1/app/drop_down_load",
     // 获取单个用户审计日志列表
-    getSingleAuditLogList : "/rest/analysis/auditlog/v1/app/userdetail/",
+    getSingleAuditLogList: "/rest/analysis/auditlog/v1/app/userdetail/",
     // 获取用户登录时长
     getLoginDuration: '/rest/analysis/auditlog/v1/:app_id/loginlong/:user_id',
     // 获取用户登录次数
@@ -49,22 +49,22 @@ exports.getSingleAuditLogList = function(req, res, obj,user_id){
 // 用户登录信息（时长、次数、首次和最后一次登录时间）
 exports.getUserLoginInfo = function(req, res, obj){
     let emitter = new EventEmitter();
-    let urlList = [{'duration':AppUserRestApis.getLoginDuration }, // 登录时长
+    let urlList = [{'duration': AppUserRestApis.getLoginDuration }, // 登录时长
         {'count': AppUserRestApis.getLoginCount }, // 登录次数
         {'first': AppUserRestApis.getFirstLoginTime }, // 首次登录
-        {'last': AppUserRestApis.getLastLoginTime }  // 最后一次登录
+        {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
     ];
     // 西语环境下，没有登录时长的统计
     if ( auth.getLang() == "es_VE") {
         urlList = [{'count': AppUserRestApis.getLoginCount }, // 登录次数
             {'first': AppUserRestApis.getFirstLoginTime }, // 首次登录
-            {'last': AppUserRestApis.getLastLoginTime }  // 最后一次登录
+            {'last': AppUserRestApis.getLastLoginTime } // 最后一次登录
         ];
     }
     let loginList = handleLogin(req, res, obj, urlList);
     Promise.all(loginList).then( (results) => {
         emitter.emit("success" , results);
-    }).catch( (errorMsg)=>{
+    }).catch( (errorMsg) => {
         emitter.emit("error" , errorMsg);
     } );
     return emitter;
@@ -84,13 +84,13 @@ exports.getUserLoginChartInfo = function(req, res, obj){
     let loginList = handleLogin(req, res, obj, urlList);
     Promise.all(loginList).then( (results) => {
         emitter.emit("success" , results);
-    }).catch( (errorMsg)=>{
+    }).catch( (errorMsg) => {
         emitter.emit("error" , errorMsg);
     } );
     return emitter;
 };
 
-function  handleLogin(req, res, obj, urlList) {
+function handleLogin(req, res, obj, urlList) {
     let loginList = [];
     _.each(urlList, (item) => {
         for (let props in item){
@@ -120,10 +120,10 @@ function handleLoginInfo(req, res, obj, url, param){
                     obj[param] = data;
                     resolve(obj);
                 } else {
-                    reject({message : "获取登录信息失败！"});
+                    reject({message: "获取登录信息失败！"});
                 }
             },
-            error : function(eventEmitter , errorDesc) {
+            error: function(eventEmitter , errorDesc) {
                 reject(errorDesc.message);
             }
         });

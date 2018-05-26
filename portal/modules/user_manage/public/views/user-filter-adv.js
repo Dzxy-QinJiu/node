@@ -1,5 +1,5 @@
 import { Button, Icon } from "antd";
-var DEFAULT_ALl = Intl.get("common.all", "全部") ;
+var DEFAULT_ALl = Intl.get("common.all", "全部");
 import Trace from "LIB_DIR/trace";
 var UserFilterAdv = React.createClass({
     roleSelected: function(role) {
@@ -25,7 +25,7 @@ var UserFilterAdv = React.createClass({
     render: function() {
 
         return (
-            <div className="user-filter-adv" style={{display:this.props.isFilterPanelShow ? "block" : "none"}} >
+            <div className="user-filter-adv" style={{display: this.props.isFilterPanelShow ? "block" : "none"}} >
                 <dl>
                     <dt>
                         <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>

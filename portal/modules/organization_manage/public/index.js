@@ -160,7 +160,7 @@ var OrganizationPage = React.createClass({
                     onChange={this.onOrganizationNameChange}
                     placeholder={this.formatMessage(messages.organization_input_placeholder)}/>
                 {this.state.saveOrganizationMsg ? (<div className="indicator">
-                    <AlertTimer time={this.state.saveOrganizationResult==CONSTANT.ERROR?3000:600}
+                    <AlertTimer time={this.state.saveOrganizationResult == CONSTANT.ERROR ? 3000 : 600}
                         message={this.state.saveOrganizationMsg}
                         type={this.state.saveOrganizationResult} showIcon
                         onHide={this.hideSaveTooltip}/>

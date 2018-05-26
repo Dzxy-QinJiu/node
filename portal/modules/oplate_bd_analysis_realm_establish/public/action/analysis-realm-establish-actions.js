@@ -10,17 +10,17 @@ function AnalysisRealmEstablishActions() {
 
     this.generateActions({
         //从服务器获取全国安全域开启时间统计
-        'getRealmEstablishAnalysisDataByAjax':'getRealmEstablishAnalysisDataByAjax',
+        'getRealmEstablishAnalysisDataByAjax': 'getRealmEstablishAnalysisDataByAjax',
         //设置开始时间
-        'setStartTime' : 'setStartTime',
+        'setStartTime': 'setStartTime',
         //设置结束时间
-        'setEndTime' : 'setEndTime',
+        'setEndTime': 'setEndTime',
         //设置加载状态
-        'setLoadingState' : 'setLoadingState',
+        'setLoadingState': 'setLoadingState',
         //是否noData
         'setNoData': 'setNoData',
         //设置右侧标题
-        'setRankListTitle':'setRankListTitle'
+        'setRankListTitle': 'setRankListTitle'
     });
 
     /**
@@ -34,11 +34,11 @@ function AnalysisRealmEstablishActions() {
         AnalysisRealmEstablishAjax.getRealmEstablishAnalysisData(startTime , endTime , unit).then(function(realmEstablishAnalysisListByServer , noRealmAtAll) {
             _this.dispatch({
                 //服务器返回数据
-                realmEstablishAnalysisListByServer:realmEstablishAnalysisListByServer,
+                realmEstablishAnalysisListByServer: realmEstablishAnalysisListByServer,
                 //是否一个安全域都没有
-                noRealmAtAll:noRealmAtAll,
+                noRealmAtAll: noRealmAtAll,
                 //按照 自然日、自然周、自然月 的显示单位
-                unit : unit
+                unit: unit
             });
         });
     };

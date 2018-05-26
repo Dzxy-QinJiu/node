@@ -25,7 +25,7 @@ class EmailServerForm extends React.Component {
             } else {
                 let realmId = this.props.realmId;
                 let realmConfigInfo = this.state.realmConfigInfo;
-                RealmAjax.settingEmailServer(realmId, values).then(  (result) => {
+                RealmAjax.settingEmailServer(realmId, values).then( (result) => {
                     if (result) {
                         realmConfigInfo.email_host = values.email_host;
                         realmConfigInfo.email_password = values.email_password;
@@ -93,7 +93,7 @@ class EmailServerForm extends React.Component {
                         initialValue: realmConfigInfo && realmConfigInfo.email_port || '',
                         rules: [{ message: EMAIL.portMessage}]
                     })(
-                        <Input  placeholder={EMAIL.portMessage}/>
+                        <Input placeholder={EMAIL.portMessage}/>
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label={EMAIL.protocolLabel}>
@@ -101,7 +101,7 @@ class EmailServerForm extends React.Component {
                         initialValue: realmConfigInfo && realmConfigInfo.email_protocol || '',
                         rules: [{ message: EMAIL.portMessage}]
                     })(
-                        <Input  placeholder={EMAIL.portMessage}/>
+                        <Input placeholder={EMAIL.portMessage}/>
                     )}
                 </FormItem>
                 <FormItem className="submit-button">

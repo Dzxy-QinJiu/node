@@ -56,7 +56,7 @@ var CallAddCustomerForm = React.createClass({
     componentDidMount: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true});
-        CrmAction.getIndustries(result=> {
+        CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
                 list = _.pluck(list, "industry");
@@ -153,7 +153,7 @@ var CallAddCustomerForm = React.createClass({
         var customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
-            CrmAction.checkOnlyCustomerName(customerName, (data)=> {
+            CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
@@ -189,21 +189,21 @@ var CallAddCustomerForm = React.createClass({
 
             return (
                 <div className="tip-customer-exist">
-                    {Intl.get("call.record.customer", "客户")} {existSame? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
+                    {Intl.get("call.record.customer", "客户")} {existSame ? Intl.get("crm.66", "已存在") : Intl.get("crm.67", "可能重复了")}，
 
-                    {customer.user_id === curUserId? (
+                    {customer.user_id === curUserId ? (
                         <a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                     ) : (
                         <span>{customer.name} ({customer.user_name})</span>
                     )}
 
-                    {list.length? (
+                    {list.length ? (
                         <div>
                             {Intl.get("crm.68", "相似的客户还有")}:
                             {list.map(customer => {
                                 return (
                                     <div>
-                                        {customer.user_id === curUserId? (
+                                        {customer.user_id === curUserId ? (
                                             <div><a href="javascript:void(0)" onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a></div>
                                         ) : (
                                             <div>{customer.name} ({customer.user_name})</div>
@@ -250,12 +250,12 @@ var CallAddCustomerForm = React.createClass({
             return transNumber;
         }
 
-        let threeAreaRegex = /^0[1|2]\d{8,9}$/;  // 3位区号
+        let threeAreaRegex = /^0[1|2]\d{8,9}$/; // 3位区号
         if (threeAreaRegex.test(phoneNumber)) {
             transNumber = phoneNumber.substring(0,3) + "-" + phoneNumber.substring(3);
             return transNumber;
         }
-        let fourAreaRegex = /^0[3|4|5|6|7|8|9]\d{9,10}$/;  // 4位区号
+        let fourAreaRegex = /^0[3|4|5|6|7|8|9]\d{9,10}$/; // 4位区号
         if (fourAreaRegex.test(phoneNumber)) {
             transNumber = phoneNumber.substring(0,4) + "-" + phoneNumber.substring(4);
             return transNumber;
@@ -346,29 +346,29 @@ var CallAddCustomerForm = React.createClass({
                             />
                         </FormItem>
                         <div className="crm-contact-title"
-                            style={{fontSize:'14px', textAlign: 'center', marginTop: '20px',marginBottom: '10px'}}>
+                            style={{fontSize: '14px', textAlign: 'center', marginTop: '20px',marginBottom: '10px'}}>
                             <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人" />
                         </div>
                         <FormItem
                             label={Intl.get("realm.change.owner.name", "姓名")}
-                            labelCol={{span:6}}
-                            wrapperCol={{span:18}}
+                            labelCol={{span: 6}}
+                            wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_name')}
                             help={status.contacts0_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min:1,max:50, message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}]}>
+                            <Validator rules={[{required: false,min: 1,max: 50, message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")}]}>
                                 <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")} value={formData.contacts0_name}
                                     onChange={this.setField.bind(this, 'contacts0_name')}/>
                             </Validator>
                         </FormItem>
                         <FormItem
                             label={Intl.get("crm.91", "职位")}
-                            labelCol={{span:6}}
-                            wrapperCol={{span:18}}
+                            labelCol={{span: 6}}
+                            wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_position')}
                             help={status.contacts0_position.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
                         >
-                            <Validator rules={[{required: false,min:1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
+                            <Validator rules={[{required: false,min: 1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
                                 <Input name="contacts0_position" placeholder={Intl.get("crm.92", "请输入联系人职位")}
                                     value={formData.contacts0_position}
                                     onChange={this.setField.bind(this, 'contacts0_position')}/>
@@ -376,12 +376,12 @@ var CallAddCustomerForm = React.createClass({
                         </FormItem>
                         <FormItem
                             label={Intl.get("user.apply.detail.table.role", "角色")}
-                            labelCol={{span:6}}
-                            wrapperCol={{span:18}}
+                            labelCol={{span: 6}}
+                            wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('contacts0_role')}
                             help={status.contacts0_role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
                         >
-                            <Validator rules={[{required: true,min:1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
+                            <Validator rules={[{required: true,min: 1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
                                 <Select name="contacts0_role" placeholder={Intl.get("crm.94", "请输入角色")}
                                     value={this.state.formData.contacts0_role}
                                     onChange={this.setField.bind(this, 'contacts0_role')}

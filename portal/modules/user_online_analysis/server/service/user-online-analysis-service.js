@@ -9,11 +9,11 @@ var restUtil = require("ant-auth-request").restUtil(restLogger);
 //用户在线统计api
 var UserOnlineAnalysisApis = {
     //获取各个应用在线统计基本情况
-    getOnlineAnalysisSummary : "/rest/analysis/v1/online/summary",
+    getOnlineAnalysisSummary: "/rest/analysis/v1/online/summary",
     //获取浏览器统计情况
-    getBrowserAnalysis : "/rest/analysis/v1/online/browser",
+    getBrowserAnalysis: "/rest/analysis/v1/online/browser",
     //获取地域统计情况
-    getZoneAnalysis : "/rest/analysis/v1/online/zone"
+    getZoneAnalysis: "/rest/analysis/v1/online/zone"
 };
 //导出用户在线统计的api
 exports.urls = UserOnlineAnalysisApis;

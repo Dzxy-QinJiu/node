@@ -36,7 +36,7 @@ var UserTypeConfigForm = React.createClass({
         return {
             handleCancel: function(){},
             handleSaveAppConfig: function(){},
-            appName:""
+            appName: ""
         };
     },
     getInitialState: function() {
@@ -51,7 +51,7 @@ var UserTypeConfigForm = React.createClass({
                 is_two_factor: this.props.item.is_two_factor + '',
                 user_type: this.props.item.user_type,
                 //开通周期 默认选中半个月
-                range : this.props.item.range,
+                range: this.props.item.range,
                 //配置名称
                 config_name: this.props.item.config_name,
                 selectedRoles: this.props.item.roles,
@@ -160,22 +160,22 @@ var UserTypeConfigForm = React.createClass({
         switch (range)
         {
         case '1w':
-            mills=24*60*60*1000*7;
+            mills = 24 * 60 * 60 * 1000 * 7;
             break;
         case '0.5m':
-            mills=24*60*60*1000*15;
+            mills = 24 * 60 * 60 * 1000 * 15;
             break;
         case '1m':
-            mills=24*60*60*1000*30;
+            mills = 24 * 60 * 60 * 1000 * 30;
             break;
         case '6m':
-            mills=24*60*60*1000*30*6;
+            mills = 24 * 60 * 60 * 1000 * 30 * 6;
             break;
         case '12m':
-            mills=24*60*60*1000*30*12;
+            mills = 24 * 60 * 60 * 1000 * 30 * 12;
             break;
         case 'forever':
-            mills=0;
+            mills = 0;
             break;
         }
         return mills;
@@ -209,7 +209,7 @@ var UserTypeConfigForm = React.createClass({
                 <Select
                     value={this.state.formData.range}
                     onChange={this.RangeModify}
-                    style={{'marginLeft':'1px'}}
+                    style={{'marginLeft': '1px'}}
                     onSelect={this.handleSelect}
                 >
                     <Option value="1w">1周</Option>

@@ -75,7 +75,7 @@ function AppStore() {
     this.getAppDetailError = "";
     this.isShowAppOverViewPanel = false; // 是否展示应用概览页
     this.AppOverViewAppId = ''; // 应用概览页的id
-    this.appList = [];  //应用列表
+    this.appList = []; //应用列表
     this.bindActions(AppActions);
 }
 
@@ -199,9 +199,9 @@ AppStore.prototype.getCurAppList = function(appListObj) {
         } else {
             //搜索无数据时的处理
             if (this.searchContent || this.selectStatus || this.selectTag != DEFAULT_TAG) {
-                this.appListTipMsg =Intl.get("app.app.search.no.data", "没有符合条件的应用!");
+                this.appListTipMsg = Intl.get("app.app.search.no.data", "没有符合条件的应用!");
             } else {
-                this.appListTipMsg =Intl.get("my.app.no.app", "暂无应用!");
+                this.appListTipMsg = Intl.get("my.app.no.app", "暂无应用!");
             }
         }
         if (this.curPage == 1) {
@@ -267,7 +267,7 @@ AppStore.prototype.updateApp = function(appModified, curApp) {
         var managers = [];
         if (_.isArray(appModified.managers) && appModified.managers.length) {
             let appManagerList = appFormState.appManagerList;
-            managers = appModified.managers.map(managerId=> {
+            managers = appModified.managers.map(managerId => {
                 return {managerId: managerId, managerName: this.getNickName(managerId , appManagerList)};
             });
         }

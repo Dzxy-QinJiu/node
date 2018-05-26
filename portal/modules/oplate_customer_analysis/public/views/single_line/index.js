@@ -13,56 +13,56 @@ import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import { packageTry } from 'LIB_DIR/func';
 
 var SingleLineChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            title : Intl.get("oplate_customer_analysis.14", "客户统计"),
-            width:'100%',
-            height:214,
-            resultType : 'loading',
-            endDate : '',
+            list: [],
+            title: Intl.get("oplate_customer_analysis.14", "客户统计"),
+            width: '100%',
+            height: 214,
+            resultType: 'loading',
+            endDate: '',
             /**
              * [
              *  {name : '正式',key : 'formal'}
              * ]
              */
-            legend : null
+            legend: null
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         if(!this.props.legend) {
             return {
-                show : false,
-                data :[]
+                show: false,
+                data: []
             };
         }
         var legend = _.pluck(this.props.legend , 'name');
         legend.push( Intl.get("oplate_customer_analysis.15", "客户总数"));
         return {
-            show : false,
-            data : legend
+            show: false,
+            data: legend
         };
     },
-    getCategorys : function() {
+    getCategorys: function() {
         return _.map(this.props.list , function(obj) {
             var m = moment(new Date(+obj.timestamp));
             return m.format(oplateConsts.DATE_FORMAT);
         });
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         var series = [];
         _.each(this.props.legend , function(legendInfo,idx) {
             var currentColor = COLORMULTIPLE[idx];
             var bar = {
-                name : legendInfo.name,
-                type : 'line',
-                smooth : true,
-                data : _.pluck(_this.props.list , legendInfo.key),
-                itemStyle : {
-                    normal : {
-                        color :currentColor
+                name: legendInfo.name,
+                type: 'line',
+                smooth: true,
+                data: _.pluck(_this.props.list , legendInfo.key),
+                itemStyle: {
+                    normal: {
+                        color: currentColor
                     }
                 }
             };
@@ -70,18 +70,18 @@ var SingleLineChart = React.createClass({
         });
         return series;
     },
-    getTooltip : function() {
+    getTooltip: function() {
         var _this = this;
         return {
             trigger: 'axis',
-            axisPointer : {
-                lineStyle : {
-                    color : '#9fc4e1',
-                    width:1
+            axisPointer: {
+                lineStyle: {
+                    color: '#9fc4e1',
+                    width: 1
                 }
             },
-            extraCssText : echartsTooltipCssText,
-            formatter : function(args) {
+            extraCssText: echartsTooltipCssText,
+            formatter: function(args) {
                 var name = args[0].name;
                 var target = _this.props.list[args[0].dataIndex];
                 var list = [];
@@ -106,67 +106,67 @@ var SingleLineChart = React.createClass({
             }
         };
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    data: this.getCategorys(),
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         }
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.clear();
@@ -190,10 +190,10 @@ var SingleLineChart = React.createClass({
             $(this.refs.chart).find(".nodata").remove();
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -204,7 +204,7 @@ var SingleLineChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -212,19 +212,19 @@ var SingleLineChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis_single_line_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

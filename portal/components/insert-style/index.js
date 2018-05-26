@@ -9,7 +9,7 @@ module.exports = function(css) {
     }
     head.appendChild(style);
     return {
-        destroy : function() {
+        destroy: function() {
             head.removeChild(style);
         }
     };

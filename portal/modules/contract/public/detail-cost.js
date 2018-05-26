@@ -119,7 +119,7 @@ const DetailCost = React.createClass({
                 validateStatus={this.getValidateStatus("sales_id")}
                 help={this.getHelpMessage("sales_id")}
             >
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <Validator rules={[{required: true, message: Intl.get("crm.17", "请选择销售人员")}]}>
                         <Select
                             name="sales_id"
@@ -139,7 +139,7 @@ const DetailCost = React.createClass({
                     </span>
                 )}
 
-                {this.props.isGetUserSuccess? null : (
+                {this.props.isGetUserSuccess ? null : (
                     <div className="no-user-list-tip"><ReactIntl.FormattedMessage id="user.get.sales.failed" defaultMessage="获取销售人员列表失败" />，<a href="javascript:void(0)" onClick={this.props.getUserList}><ReactIntl.FormattedMessage id="contract.138" defaultMessage="点击重新获取" /></a></div>
                 )}
             </FormItem>
@@ -162,7 +162,7 @@ const DetailCost = React.createClass({
                 {...formItemLayout}
                 label={Intl.get("user.sales.team", "销售团队")}
             >
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <Select
                         showSearch
                         optionFilterProp="children"
@@ -201,7 +201,7 @@ const DetailCost = React.createClass({
                 validateStatus={this.getValidateStatus("cost")}
                 help={this.getHelpMessage("cost")}
             >
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <Validator rules={[{required: true, message: Intl.get("contract.134", "请填写费用")}, this.getNumberValidateRule()]}>
                         <Input
                             name="cost"
@@ -227,14 +227,14 @@ const DetailCost = React.createClass({
                 {...formItemLayout}
                 label={Intl.get("common.login.time", "时间")}
             >
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <DatePicker
                         value={moment(this.state.formData.date)}
                         onChange={this.setField.bind(this, "date")}
                     />
                 ) : (
                     <span className="value-text">
-                        {this.props.cost.date? moment(this.props.cost.date).format(DATE_FORMAT) : null}
+                        {this.props.cost.date ? moment(this.props.cost.date).format(DATE_FORMAT) : null}
                     </span>
                 )}
             </FormItem>
@@ -250,7 +250,7 @@ const DetailCost = React.createClass({
                 {...formItemLayout2}
                 label={Intl.get("contract.135", "费用类型")}
             >
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <Select
                         placeholder={Intl.get("contract.136", "请选择费用类型")}
                         value={this.state.formData.type}
@@ -270,11 +270,11 @@ const DetailCost = React.createClass({
     render: function() {
         //编辑按钮是否显示
         const isEditBtnShow = !this.state.isFormShow && hasPrivilege("OPLATE_SALES_COST_ADD");
-        const detailOp = this.state.formData.id? "update" : "add";
+        const detailOp = this.state.formData.id ? "update" : "add";
 
         return (
             <div className="detail-cost">
-                {isEditBtnShow? (
+                {isEditBtnShow ? (
                     <div>
                         <RightPanelEdit 
                             onClick={this.showForm}
@@ -292,10 +292,10 @@ const DetailCost = React.createClass({
                         {this.renderDateField()}
                         {this.renderAmountField()}
                         {this.renderTypeField()}
-                        {this.state.isFormShow? (
+                        {this.state.isFormShow ? (
                             <Row>
                                 <Col span="13" offset="4">
-                                    {this.state.isAdd? null : (
+                                    {this.state.isAdd ? null : (
                                         <RightPanelCancel onClick={this.hideForm}><ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消" /></RightPanelCancel>
                                     )}
                                     <RightPanelSubmit onClick={this.handleSubmit.bind(this, detailOp)}><ReactIntl.FormattedMessage id="common.sure" defaultMessage="确定" /></RightPanelSubmit>

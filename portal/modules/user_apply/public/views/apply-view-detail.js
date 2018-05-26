@@ -1858,11 +1858,11 @@ const ApplyViewDetail = React.createClass({
             // 点击通过时，当用户数量大于1，并且改为用户数量为1时
             if (approval != "2" && applyMaxNumber > changeMaxNumber && changeMaxNumber === 1) {
                 if (this.state.isChangeUserName) { // 更改用户名时，校验
-                    if (UserNameTextfieldUtil.userInfo.length) {  // 同一客户下，用户名重名时
+                    if (UserNameTextfieldUtil.userInfo.length) { // 同一客户下，用户名重名时
                         this.renderDuplicationName();
                         return;
                     }
-                } else {  // 没有更改用户名时（之前没有触发校验，此处需要先通过接口校验用户名是否存在）
+                } else { // 没有更改用户名时（之前没有触发校验，此处需要先通过接口校验用户名是否存在）
                     let checkUserData = this.checkUserName();
                     if (_.isNumber(checkUserData) && checkUserData > 0) {
                         //用户名已存在的提示

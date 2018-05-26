@@ -243,13 +243,13 @@ var BarChart = React.createClass({
             <div className="analysis_bar_chart" ref="wrap">
                 {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
                     ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart"
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart"
                                 data-title={this.props.title}></div>
                         </div>
                     )

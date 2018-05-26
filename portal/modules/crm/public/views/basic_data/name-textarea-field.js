@@ -75,7 +75,7 @@ let NameTextareaField = React.createClass({
             return;
         }
         let validation = this.refs.validation;
-        validation.validate(valid=> {
+        validation.validate(valid => {
             if (!valid) {
                 return;
             }
@@ -90,13 +90,13 @@ let NameTextareaField = React.createClass({
                 this.backToDisplay();
             } else {
                 this.setState({loading: true});
-                CrmBasicAjax.updateCustomer(submitData).then(result=> {
+                CrmBasicAjax.updateCustomer(submitData).then(result => {
                     if (result) {
                         this.backToDisplay();
                         //更新列表中的客户名
                         this.props.modifySuccess(submitData);
                     }
-                }, errorMsg=> {
+                }, errorMsg => {
                     this.setState({
                         loading: false,
                         submitErrorMsg: errorMsg || Intl.get("crm.169", "修改客户名失败")
@@ -146,7 +146,7 @@ let NameTextareaField = React.createClass({
                 {
                     !this.state.disabled ? (
                         <i className="inline-block iconfont icon-update" title={Intl.get("crm.170", "设置客户名")}
-                            onClick={(e)=>this.setEditable(e)}/>
+                            onClick={(e) => this.setEditable(e)}/>
                     ) : null
                 }
 
@@ -157,8 +157,8 @@ let NameTextareaField = React.createClass({
             <Icon type="loading"/>
         ) : (
             <div>
-                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e)=>{this.handleSubmit(e);}}/>
-                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e)=>{this.handleCancel(e);}}/>
+                <i title={Intl.get("common.save", "保存")} className="inline-block iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}}/>
+                <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close" onClick={(e) => {this.handleCancel(e);}}/>
             </div>
         );
 

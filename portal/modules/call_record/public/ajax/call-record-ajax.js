@@ -17,7 +17,7 @@ exports.getCallRecordList = function(params, filterObj) {
     if (querAll || queryCustomer) {
         let filter_phone = queryCustomer;//是否过滤114和无效的电话号码
         let auth_type = hasPrivilege("CUSTOMER_CALLRECORD_MANAGER_ONLY") ? "manager" : "user";
-        url = '/rest/call_record/'+ auth_type +'/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
+        url = '/rest/call_record/' + auth_type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + "/" + params.sort_field + "/" + params.sort_order;
         if (params.lastId) {
             url += "?id=" + params.lastId;            
             url += "&filter_phone=" + queryCustomer; //是否过滤114和无效的电话号码(客户电话需要过滤)

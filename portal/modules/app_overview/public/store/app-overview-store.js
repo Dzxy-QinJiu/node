@@ -11,29 +11,29 @@ class AppOverViewStore {
         this.todayUserLine = 0; // 今日上线用户数
         // 用户类型统计（用户总数）
         this.userType = {
-            dataType : 'total',
-            resultType : 'loading' || '',
-            errorMsg : '',
-            data : [{count: 0, name: '试用'},{count: 0, name: '签约'}]
+            dataType: 'total',
+            resultType: 'loading' || '',
+            errorMsg: '',
+            data: [{count: 0, name: '试用'},{count: 0, name: '签约'}]
         };
         // 新增用户（总数，试用和签约）
         this.newUserType = {
-            dataType : 'added',
-            resultType : 'loading' || '',
-            errorMsg : '',
-            data : [{count: 0, name: '试用'},{count: 0, name: '签约'}]
+            dataType: 'added',
+            resultType: 'loading' || '',
+            errorMsg: '',
+            data: [{count: 0, name: '试用'},{count: 0, name: '签约'}]
         };
 
         //用户活跃度
         this.activeNess = {
-            dataType : "total",
-            dateRange : "daily", //数据类型（日活、周活、月活）默认是日活
+            dataType: "total",
+            dateRange: "daily", //数据类型（日活、周活、月活）默认是日活
             //loading error ''
-            resultType : 'loading' || '',
+            resultType: 'loading' || '',
             //错误信息
-            errorMsg : '',
+            errorMsg: '',
             //数据
-            data : []
+            data: []
         };
         // 今天的活跃率和活跃数
         this.todayActiveRate = {
@@ -43,17 +43,17 @@ class AppOverViewStore {
 
         //团队统计
         this.teamAnalysis = {
-            resultType : 'loading' || '',
-            dateRange : "today", //数据类型（今日、本周、本月）默认是今日
-            errorMsg : '',
-            data : []
+            resultType: 'loading' || '',
+            dateRange: "today", //数据类型（今日、本周、本月）默认是今日
+            errorMsg: '',
+            data: []
         };
         // 地域统计(新增用户、在线用户和全部用户)
         this.zoneAnalysis = {
-            resultType : 'loading' || '',
-            dateRange : "added", //数据类型（新增用户、在线用户和全部用户），默认是新增用户
-            errorMsg : '',
-            data : []
+            resultType: 'loading' || '',
+            dateRange: "added", //数据类型（新增用户、在线用户和全部用户），默认是新增用户
+            errorMsg: '',
+            data: []
         };
     }
     resetData() {
@@ -87,9 +87,9 @@ class AppOverViewStore {
             }
             userType.data = _.filter( result.data, (item) => {
                 if (item.name == Intl.get("common.trial.user", "试用用户")) {
-                    return  item.name = Intl.get("common.trial", "试用");
+                    return item.name = Intl.get("common.trial", "试用");
                 } else if (item.name == Intl.get("common.trial.official", "正式用户")) {
-                    return  item.name = Intl.get("common.official", "签约");
+                    return item.name = Intl.get("common.official", "签约");
                 }
             } );
         }
@@ -188,7 +188,7 @@ class AppOverViewStore {
             zoneAnalysis.errorMsg = '';
             zoneAnalysis.data = result.data || [];
             let zoneArray = [];
-            if (_.isArray( zoneAnalysis.data) &&  zoneAnalysis.data.length > 0) {
+            if (_.isArray( zoneAnalysis.data) && zoneAnalysis.data.length > 0) {
                 _.each(zoneAnalysis.data, (item) => {
                     if (item.name == 'unknown' || item.name == '') {
                         item.name = '未知';

@@ -15,10 +15,10 @@ exports.toRestObject = function(list) {
             dateText = '';
         }
         result.push({
-            user_id : item.user_id,
-            user_name : item.nick_name,
-            message : item.comment,
-            date : dateText
+            user_id: item.user_id,
+            user_name: item.nick_name,
+            message: item.comment,
+            date: dateText
         });
     });
     return result;

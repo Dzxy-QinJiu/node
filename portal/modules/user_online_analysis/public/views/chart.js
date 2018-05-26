@@ -8,41 +8,41 @@ var BarChart = require("./barchart");
 
 var LAYOUT = {
     //右侧面板顶部标题恒定高度(鹰击：更多在线统计)
-    TOP : 54,
+    TOP: 54,
     //左侧菜单宽度
-    LEFT_MENU_WIDTH : 75,
+    LEFT_MENU_WIDTH: 75,
     //右侧面板右侧padding
-    RIGHT_PANEL_PADDING_RIGHT : 32,
+    RIGHT_PANEL_PADDING_RIGHT: 32,
     //右侧面板左侧padding
-    RIGHT_PANEL_PADDING_LEFT : 43,
+    RIGHT_PANEL_PADDING_LEFT: 43,
     //柱状图右侧margin
-    BARCHART_MARGIN_RIGHT : 20
+    BARCHART_MARGIN_RIGHT: 20
 };
 var AnalysisChartView = React.createClass({
-    displayName : 'AnalysisChartView',
-    getInitialState : function() {
+    displayName: 'AnalysisChartView',
+    getInitialState: function() {
         return AnalysisStore.getState();
     },
-    onStoreChange : function() {
+    onStoreChange: function() {
         this.setState(AnalysisStore.getState());
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         AnalysisStore.listen(this.onStoreChange);
         AnalysisAction.getOnlineBrowserByApp({
-            app_id : this.state.selectedApp.app_id
+            app_id: this.state.selectedApp.app_id
         });
         AnalysisAction.getOnlineZoneByApp({
-            app_id : this.state.selectedApp.app_id
+            app_id: this.state.selectedApp.app_id
         });
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         AnalysisStore.unlisten(this.onStoreChange);
     },
     //隐藏右侧面板
-    hideRightPanel : function() {
+    hideRightPanel: function() {
         AnalysisAction.hideRightPanel();
     },
-    render : function() {
+    render: function() {
         var fixedHeight = $(window).height() - LAYOUT.TOP;
         var barChartWidth = $(window).width() -
                                 LAYOUT.LEFT_MENU_WIDTH -
@@ -55,7 +55,7 @@ var AnalysisChartView = React.createClass({
                     <p className="pull-left">{this.state.selectedApp.app_name}：更多在线统计</p>
                     <RightPanelClose onClick={this.hideRightPanel}/>
                 </header>
-                <div style={{height:fixedHeight}}>
+                <div style={{height: fixedHeight}}>
                     <GeminiScrollbar>
                         <section className="chart_section">
                             <p>在线用户客户端统计</p>

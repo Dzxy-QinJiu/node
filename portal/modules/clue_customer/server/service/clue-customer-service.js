@@ -20,19 +20,19 @@ const restApis = {
     //查询线索客户 管理员查询
     queryCluecustomerManager: "/rest/customer/v2/clue/query/manager",
     //添加跟进内容
-    addCluecustomerTrace:"/rest/customer/v2/clue/trace",
+    addCluecustomerTrace: "/rest/customer/v2/clue/trace",
     //把线索客户分配给对应的销售
-    distributeCluecustomerToSale:"/rest/customer/v2/clue/distribute/:type",
+    distributeCluecustomerToSale: "/rest/customer/v2/clue/distribute/:type",
     //对线索客户的详情进行更新
-    updateCluecustomerDetail:"/rest/customer/v2/clue/update/manager/:updateItem",
+    updateCluecustomerDetail: "/rest/customer/v2/clue/update/manager/:updateItem",
     //线索名、电话唯一性验证
-    checkOnlySalesClue:"/rest/customer/v2/clue/repeat/search",
+    checkOnlySalesClue: "/rest/customer/v2/clue/repeat/search",
     //将线索和客户进行关联
-    RelateClueAndCustomer:"/rest/customer/v2/customer/:type/customer_clue_relation",
+    RelateClueAndCustomer: "/rest/customer/v2/customer/:type/customer_clue_relation",
     //导入线索
-    upload:"/rest/customer/v2/clue/upload/preview",
+    upload: "/rest/customer/v2/clue/upload/preview",
     //确认导入线索预览
-    uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag",
+    uploadClueConfirm: "/rest/customer/v2/clue/upload/confirm/:flag",
     //删除某条线索
     deleteRepeatClue: "rest/customer/v2/clue/upload/preview/:index",
     //获取线索统计

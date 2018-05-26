@@ -53,7 +53,7 @@ var IndustrySelectField = React.createClass({
     getIndustryList: function() {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingList: true});
-        CrmAction.getIndustries(result=> {
+        CrmAction.getIndustries(result => {
             let list = _.isArray(result) ? result : [];
             if (list.length > 0) {
                 list = _.pluck(list, "industry");
@@ -109,7 +109,7 @@ var IndustrySelectField = React.createClass({
             this.backToDisplay();
             return;
         }
-        validation.validate(valid=> {
+        validation.validate(valid => {
             if (!valid) {
                 return;
             } else {
@@ -124,13 +124,13 @@ var IndustrySelectField = React.createClass({
                     this.backToDisplay();
                 } else {
                     this.setState({loading: true});
-                    CrmBasicAjax.updateCustomer(submitData).then(result=> {
+                    CrmBasicAjax.updateCustomer(submitData).then(result => {
                         if (result) {
                             this.backToDisplay();
                             //更新列表中的客户行业
                             this.props.modifySuccess(submitData);
                         }
-                    }, errorMsg=> {
+                    }, errorMsg => {
                         this.setState({
                             loading: false,
                             submitErrorMsg: errorMsg || Intl.get("crm.162", "修改客户行业失败")

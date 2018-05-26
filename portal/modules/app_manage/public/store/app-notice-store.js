@@ -8,16 +8,16 @@ function AppNoticeStore() {
     this.bindActions(AppNoticeAction);
 }
 
-AppNoticeStore.prototype.getAppNoticeList= function(resData){
+AppNoticeStore.prototype.getAppNoticeList = function(resData){
     if (resData.loading){
         this.appNoticeListResult = "loading";
     } else if (resData.error){
         this.getAppNoticeErrorMsg = resData.errorMsg;
-        this.appNoticeListResult="";
+        this.appNoticeListResult = "";
     } else {
         this.getAppNoticeErrorMsg = '';
-        this.appNoticeListResult="";
-        var list = _.isArray(resData.resData.list)? resData.resData.list : [];
+        this.appNoticeListResult = "";
+        var list = _.isArray(resData.resData.list) ? resData.resData.list : [];
         this.noticeList = this.noticeList.concat(list);
         this.curPage++;
         this.total = resData.resData.total;

@@ -9,8 +9,8 @@ var EventEmitter = require("events").EventEmitter;
 var Promise = require("bluebird");
 var _ = require("underscore");
 var urls = {
-    getAppLists:"/rest/base/v1/application/grant_applications",
-    addAppFeedback:"/rest/base/v1/notice/customer/application/feedback",
+    getAppLists: "/rest/base/v1/application/grant_applications",
+    addAppFeedback: "/rest/base/v1/notice/customer/application/feedback",
 };
 // 获取应用列表
 exports.getAppLists = function(req, res) {
@@ -37,9 +37,9 @@ exports.addAppFeedback = function(req, res, reqBody) {
     //     });
     // }
     var feedbackObj = {
-        app_id:reqBody.product,
-        topic:reqBody.topic,
-        content:reqBody.content
+        app_id: reqBody.product,
+        topic: reqBody.topic,
+        content: reqBody.content
     };
     promiseList.push(addFeedbackPromise(req, res, feedbackObj));
     Promise.all(promiseList).then(function(result) {

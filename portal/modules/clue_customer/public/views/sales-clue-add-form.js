@@ -8,7 +8,7 @@ import { Form, Input, Select, message, DatePicker} from "antd";
 const FormItem = Form.Item;
 import {RightPanel, RightPanelSubmit, RightPanelCancel, RightPanelClose} from "CMP_DIR/rightPanel";
 import GeminiScrollbar from "CMP_DIR/react-gemini-scrollbar";
-import FieldMixin  from 'CMP_DIR/antd-form-fieldmixin';
+import FieldMixin from 'CMP_DIR/antd-form-fieldmixin';
 import AlertTimer from "CMP_DIR/alert-timer";
 import Spinner from "CMP_DIR/spinner";
 import PhoneInput from "CMP_DIR/phone-input";
@@ -31,19 +31,19 @@ const SalesClueAddForm = React.createClass({
                 phone: {},//联系电话
                 email: {},//邮箱
                 qq: {},//QQ
-                weChat:{},//微信
+                weChat: {},//微信
                 clue_source: {},//线索来源
                 access_channel: {},//接入渠道
                 source: {},//线索描述
                 source_time: {}//线索时间
             },
             formData: {
-                name: defalutData.name ||  "",//客户名称
-                contact_name: defalutData.name ||  "",//联系人
+                name: defalutData.name || "",//客户名称
+                contact_name: defalutData.name || "",//联系人
                 phone: defalutData.phone || "",//联系电话
                 email: defalutData.email || "",//邮箱
                 qq: defalutData.qq || "",//QQ
-                weChat:defalutData.weChat || "",//微信
+                weChat: defalutData.weChat || "",//微信
                 clue_source: defalutData.clue_source || "",//线索来源
                 access_channel: defalutData.access_channel || "",//接入渠道
                 source: "",//线索描述
@@ -61,7 +61,7 @@ const SalesClueAddForm = React.createClass({
             isShowAssignAndRelate: false,//是否展示分配给某个销售或者关联客户的面板
             newAddClue: {},//新增加的线索
             clueNameExist: false,//线索名称是否存在
-            clueCustomerCheckErrMsg:""//线索名称校验失败
+            clueCustomerCheckErrMsg: ""//线索名称校验失败
         };
     },
     //验证客户名是否重复
@@ -69,7 +69,7 @@ const SalesClueAddForm = React.createClass({
         let customerName = $.trim(this.state.formData.name);
         //满足验证条件后再进行唯一性验证
         if (customerName && nameRegex.test(customerName)) {
-            clueCustomerAction.checkOnlyClueName(customerName, (data)=>{
+            clueCustomerAction.checkOnlyClueName(customerName, (data) => {
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({
@@ -286,7 +286,7 @@ const SalesClueAddForm = React.createClass({
                             >
                                 <Validator rules={[{validator: checkCustomerName}]}>
                                     <Input name="name"
-                                        className={this.state.clueNameExist||this.state.clueCustomerCheckErrMsg?"input-red-border":""}
+                                        className={this.state.clueNameExist || this.state.clueCustomerCheckErrMsg ? "input-red-border" : ""}
                                         placeholder={Intl.get("clue.customer.fillin.clue.name", "请填写线索名称")}
                                         value={formData.name}
                                         onBlur={this.checkOnlyClueCustomerName}

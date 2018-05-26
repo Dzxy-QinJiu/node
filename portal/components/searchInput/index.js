@@ -196,8 +196,8 @@ const SearchInput = React.createClass({
             this.refs.searchInput.value = "";
         }else if(this.props.type === "select") {
             this.setState({
-                keyword:'',
-                formData:{}
+                keyword: '',
+                formData: {}
             });
             this.state.keyword = '';
             this.state.formData = {};
@@ -234,8 +234,8 @@ const SearchInput = React.createClass({
                         {keywordOptions}
                     </Select>
                 )}
-                {(this.props.type === "input" && this.refs.searchInput && this.refs.searchInput.value)||
-                 (this.props.type === "select" && this.state.keyword)? (
+                {(this.props.type === "input" && this.refs.searchInput && this.refs.searchInput.value) ||
+                 (this.props.type === "select" && this.state.keyword) ? (
                         <Icon type="cross-circle-o" className="search-icon" onClick={this.closeSearchInput}/>
                     ) : (<Icon type="search" className="search-icon" onClick={this.onSearchButtonClick}/>
                     )}

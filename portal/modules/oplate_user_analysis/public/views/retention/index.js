@@ -7,22 +7,22 @@ var immutable = require("immutable");
 var Table = require("antd").Table;
 
 var Retention = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            data : [],
-            title : Intl.get("oplate.user.analysis.9", "用户留存"),
-            height:214,
-            resultType : 'loading',
+            data: [],
+            title: Intl.get("oplate.user.analysis.9", "用户留存"),
+            height: 214,
+            resultType: 'loading',
         };
     },
-    shouldComponentUpdate : function(nextProps) {
+    shouldComponentUpdate: function(nextProps) {
         if(immutable.is(this.props.data , nextProps.data) && this.props.resultType === nextProps.resultType) {
             return false;
         }
         return true;
     },
-    renderTable : function() {
+    renderTable: function() {
         var tableColumns = this.props.data.columns.map((item) => {
             var title = item;
             if(item === 'date') {
@@ -31,9 +31,9 @@ var Retention = React.createClass({
                 title = Intl.get("oplate.user.analysis.32", "新增数");
             }
             return {
-                title :title,
-                dataIndex : item,
-                render : function(data) {
+                title: title,
+                dataIndex: item,
+                render: function(data) {
                     if(item === 'date') {
                         return <b>{data}</b>;
                     } else {
@@ -46,16 +46,16 @@ var Retention = React.createClass({
             <Table columns={tableColumns} dataSource={this.props.data.tableJsonList} pagination={false}/>
         );
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="retention_table" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     this.renderTable()
                 }
             </div>

@@ -26,7 +26,7 @@ class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            curCustomerId:this.props.curCustomerId,
+            curCustomerId: this.props.curCustomerId,
             scheduleList: this.props.scheduleList,
             updateScrollBar: false,
         };
@@ -44,9 +44,9 @@ class DayAgendaScheduleLists extends React.Component {
             $(e.target).closest(".list-item").addClass("hover-item");
         });
         //鼠标移出的时候，如果有popover还在显示，就不能去掉标识背景颜色的类，如果没有popover显示，才去掉这个类
-        $("#content-block").on("mouseleave",".schedule-items-content",(e)=>{
+        $("#content-block").on("mouseleave",".schedule-items-content",(e) => {
             //调用popover隐藏方法比调用此方法慢，所以要加个延时
-            setTimeout(()=>{
+            setTimeout(() => {
                 if ($(".ant-popover:not(.ant-popover-hidden)").length){
                     return;
                 }else{
@@ -66,7 +66,7 @@ class DayAgendaScheduleLists extends React.Component {
         }
         if (nextProps.curCustomerId !== this.state.curCustomerId){
             this.setState({
-                curCustomerId:nextProps.curCustomerId
+                curCustomerId: nextProps.curCustomerId
             });
         }
     }
@@ -122,7 +122,7 @@ class DayAgendaScheduleLists extends React.Component {
         });
     }
 
-    handleClickCallOut = (phoneNumber, contactName, item)=>{
+    handleClickCallOut = (phoneNumber, contactName, item) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".column-contact-way"), "拨打电话");
         if (this.state.errMsg) {
             message.error(this.state.errMsg || Intl.get("crm.get.phone.failed", " 获取座机号失败!"));
@@ -154,7 +154,7 @@ class DayAgendaScheduleLists extends React.Component {
     renderPopoverContent(item){
         return (
             <div className="contacts-containers">
-                {_.map(item.contacts,(contact)=>{
+                {_.map(item.contacts,(contact) => {
                     var cls = classNames("contacts-item",
                         {"def-contact-item": contact.def_contancts === "true"});
                     return (
@@ -164,7 +164,7 @@ class DayAgendaScheduleLists extends React.Component {
                                 {contact.name}
                             </div>
                             <div className="contacts-phone-content">
-                                {_.map(contact.phone, (phone)=>{
+                                {_.map(contact.phone, (phone) => {
                                     return (
                                         <div className="phone-item">
                                             {phone}
@@ -209,12 +209,12 @@ class DayAgendaScheduleLists extends React.Component {
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={9}>
-                                    {item.contacts?  <Popover content={customerContent} placement="bottom">
+                                    {item.contacts ? <Popover content={customerContent} placement="bottom">
                                         <div className="schedule-customer-name">
                                             <i className={iconFontCls}></i>
                                             {item.customer_name || item.topic}
                                         </div>
-                                    </Popover>:
+                                    </Popover> :
                                         <div className="schedule-customer-name">
                                             <i className={iconFontCls}></i>
                                             {item.customer_name || item.topic}
@@ -290,13 +290,13 @@ DayAgendaScheduleLists.navigate = (date, action) => {
     }
 };
 DayAgendaScheduleLists.title = (date, { formats, culture }) => {
-    curWeek =  timeUtil.getCurrentWeek(date);
+    curWeek = timeUtil.getCurrentWeek(date);
     //初次渲染完组件后记录的时间
     scheduleManagementStore.setViewDate(moment(date).valueOf());
     return `${moment(date).format(oplateConsts.DATE_FORMAT)}`;
 };
 DayAgendaScheduleLists.defaultProps = {
-    curCustomerId:"",
+    curCustomerId: "",
     updateScrollBar: false,
     handleScheduleItemStatus: function() {},
     showCustomerDetail: function() {}

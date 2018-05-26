@@ -326,7 +326,7 @@ exports.getTotalIndustry = function(obj) {
 };
 //获取销售开通用户统计
 let salesOpenUserAjax;
-exports.getSalesOpenUserAnalysis= function(obj) {
+exports.getSalesOpenUserAnalysis = function(obj) {
     salesOpenUserAjax && salesOpenUserAjax.abort();
     obj = obj || {};
     var Deferred = $.Deferred();
@@ -746,10 +746,10 @@ exports.getAppsDownloadStatistics = (obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

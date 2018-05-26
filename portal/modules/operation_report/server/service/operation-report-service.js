@@ -142,7 +142,7 @@ exports.getAppLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppLoginComparison));
     });
@@ -158,7 +158,7 @@ exports.getAppWeeklyLoginTotalTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppWeeklyLoginTotalTime));
     });
@@ -175,7 +175,7 @@ exports.getAppExpiredLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppExpiredLoginComparison));
     });
@@ -191,7 +191,7 @@ exports.getAppFormalUserLoginComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppFormalUserLoginComparison));
     });
@@ -208,7 +208,7 @@ exports.getAppNewUserComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewUserComparison));
     });
@@ -224,7 +224,7 @@ exports.getAppNewDelayUserComparison = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getAppNewDelayUserComparison));
     });
@@ -240,7 +240,7 @@ exports.getUserActive = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;//appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserActive));
     });
@@ -257,7 +257,7 @@ exports.getUserDailyActive = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;//appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getUserDailyActive));
     });
@@ -274,7 +274,7 @@ exports.getTeamSignedLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamSignedLoginUser));
     });
@@ -290,7 +290,7 @@ exports.getTeamLoginUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamLoginUser));
     });
@@ -323,7 +323,7 @@ function getPromiseListData(req, res, reqParams, url) {
     return new Promise((resolve, reject) => {
         let appIdArray = reqParams.app_id.split(',');
         let promiseList = [];
-        appIdArray.forEach((appId)=> {
+        appIdArray.forEach((appId) => {
             reqParams.app_id = appId;
             promiseList.push(getDataPromise(req, res, reqParams, url));
         });
@@ -357,7 +357,7 @@ exports.getTeamNewTrialUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewTrialUser));
     });
@@ -373,7 +373,7 @@ exports.getTeamNewDelayUser = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamNewDelayUser));
     });
@@ -424,7 +424,7 @@ exports.getTeamExceedLoginTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamExceedLoginTime));
     });
@@ -440,7 +440,7 @@ exports.getTeamDelayUserLoginTime = function(req, res, queryParams) {
     var emitter = new EventEmitter();
     let appIdArray = queryParams.app_id.split(',');
     let promiseList = [];
-    appIdArray.forEach((appId)=> {
+    appIdArray.forEach((appId) => {
         queryParams.app_id = appId;
         promiseList.push(getDataPromise(req, res, queryParams, urls.getTeamDelayUserLoginTime));
     });

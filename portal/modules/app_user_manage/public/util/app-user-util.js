@@ -18,7 +18,7 @@ exports.getLocalStorageObj = function(property ,selectApp){
     let localObj = {};
     let localValue = storageUtil.local.get(JSON.stringify(UserData ? UserData.user_id : ""));
     if(localValue){
-        localObj =  JSON.parse(localValue);
+        localObj = JSON.parse(localValue);
     }
     localObj[property] = selectApp;
     return localObj;
@@ -27,31 +27,31 @@ exports.getLocalStorageObj = function(property ,selectApp){
 //emitter使用的事件提取常量
 exports.EMITTER_CONSTANTS = {
     //更新用户基本信息
-    UPDATE_USER_INFO : 'updateUserInfo',
+    UPDATE_USER_INFO: 'updateUserInfo',
     //更新用户的客户信息
-    UPDATE_CUSTOMER_INFO : 'updateCustomerInfo',
+    UPDATE_CUSTOMER_INFO: 'updateCustomerInfo',
     //重新获取用户列表
-    FETCH_USER_LIST : 'fetchUserList',
+    FETCH_USER_LIST: 'fetchUserList',
     //移除表格当前行样式
-    REMOVE_CURRENT_ROW_CLASS : 'removeCurrentRowClass',
+    REMOVE_CURRENT_ROW_CLASS: 'removeCurrentRowClass',
     //编辑单个应用
-    UPDATE_APP_INFO : "updateAppInfo",
+    UPDATE_APP_INFO: "updateAppInfo",
     //全部停用
-    UPDATE_DISABLE_ALL_APPS : "updateDisableAllApps",
+    UPDATE_DISABLE_ALL_APPS: "updateDisableAllApps",
     //添加应用之后，更新应用列表
-    UPDATE_ADD_APP_INFO : "updateAddAppInfo",
+    UPDATE_ADD_APP_INFO: "updateAddAppInfo",
     //向右滑动面板
-    PANEL_SWITCH_RIGHT : "panelSwitchRight",
+    PANEL_SWITCH_RIGHT: "panelSwitchRight",
     //向左滑动面板
-    PANEL_SWITCH_LEFT : "panelSwitchLeft",
+    PANEL_SWITCH_LEFT: "panelSwitchLeft",
     //更新应用单个字段
-    UPDATE_APP_FIELD : "updateAppField",
+    UPDATE_APP_FIELD: "updateAppField",
     //选中的行改变
-    SELECTED_USER_ROW_CHANGE : "selectedUserRowChange",
+    SELECTED_USER_ROW_CHANGE: "selectedUserRowChange",
     //用户列表滚动条置顶
-    CHANGE_USER_LIST_SCROLL_TOP : "changeUserListScrollTop",
+    CHANGE_USER_LIST_SCROLL_TOP: "changeUserListScrollTop",
     //回复列表滚动到最后
-    REPLY_LIST_SCROLL_TO_BOTTOM : "replyListScrollToBottom"
+    REPLY_LIST_SCROLL_TO_BOTTOM: "replyListScrollToBottom"
 };
 
 //获取当前视图
@@ -72,8 +72,8 @@ exports.getUserByFromUserList = function(userList,userId){
 };
 //右侧面板固定高度常量
 exports.LAYOUT_CONSTANTS = {
-    TOP_DELTA : 69,
-    BOTTOM_DELTA : 26
+    TOP_DELTA: 69,
+    BOTTOM_DELTA: 26
 };
 // 单个用户的日志面板固定高度常量
 exports.USER_LOG_LAYOUT_CONSTANTS = {
@@ -91,20 +91,20 @@ exports.getCustomerUserType = function() {
 
 //用户类型常量(数据库中的值)
 const USER_TYPE_VALUE_MAP = {
-    TRIAL_USER : "试用用户", //试用
-    SIGN_USER : "正式用户", //签约
-    PRESENT_USER : "special", //赠送
-    TRAINING_USER : "training",//培训
-    EMPLOYEE_USER : "internal"//员工
+    TRIAL_USER: "试用用户", //试用
+    SIGN_USER: "正式用户", //签约
+    PRESENT_USER: "special", //赠送
+    TRAINING_USER: "training",//培训
+    EMPLOYEE_USER: "internal"//员工
 };
 
 //用户类型文本的map
 const USER_TYPE_TEXT_MAP = {
-    TRIAL_USER : Intl.get("common.trial", "试用"),
-    SIGN_USER : Intl.get("common.official", "签约"),
-    PRESENT_USER : Intl.get("user.type.presented", "赠送"),
-    TRAINING_USER : Intl.get("user.type.train", "培训"),
-    EMPLOYEE_USER : Intl.get("user.type.employee", "员工")
+    TRIAL_USER: Intl.get("common.trial", "试用"),
+    SIGN_USER: Intl.get("common.official", "签约"),
+    PRESENT_USER: Intl.get("user.type.presented", "赠送"),
+    TRAINING_USER: Intl.get("user.type.train", "培训"),
+    EMPLOYEE_USER: Intl.get("user.type.employee", "员工")
 };
 
 //用户类型的值常量
@@ -122,24 +122,24 @@ exports.getUserTypeText = getUserTypeText;
 //批量操作权限
 var BATCH_PRIVILEGE = {
     //管理员有批量管理用户的权限
-    ADMIN : "USER_BATCH_OPERATE",
-    SALES : "GRANT_DELAY_APPLY",
+    ADMIN: "USER_BATCH_OPERATE",
+    SALES: "GRANT_DELAY_APPLY",
     //批量开通、修改应用
-    BATCH_GRANT_APPLICATION : "BATCH_GRANT_APPLICATION",
+    BATCH_GRANT_APPLICATION: "BATCH_GRANT_APPLICATION",
     //批量延期
-    BATCH_UPDATE_GRANT_DELAY : "BATCH_UPDATE_GRANT_DELAY",
+    BATCH_UPDATE_GRANT_DELAY: "BATCH_UPDATE_GRANT_DELAY",
     //批量修改开通时间
-    BATCH_UPDATE_GRANT_PERIOD : "BATCH_UPDATE_GRANT_PERIOD",
+    BATCH_UPDATE_GRANT_PERIOD: "BATCH_UPDATE_GRANT_PERIOD",
     //批量修改角色
-    BATCH_UPDATE_GRANT_ROLES : "BATCH_UPDATE_GRANT_ROLES",
+    BATCH_UPDATE_GRANT_ROLES: "BATCH_UPDATE_GRANT_ROLES",
     //批量修改开通状态
-    BATCH_UPDATE_GRANT_STATUS : "BATCH_UPDATE_GRANT_STATUS",
+    BATCH_UPDATE_GRANT_STATUS: "BATCH_UPDATE_GRANT_STATUS",
     //批量修改类型
-    BATCH_UPDATE_GRANT_TYPE : "BATCH_UPDATE_GRANT_TYPE",
+    BATCH_UPDATE_GRANT_TYPE: "BATCH_UPDATE_GRANT_TYPE",
     //批量修改用户所属客户
-    BATCH_UPDATE_USER_CUSTOMER : "BATCH_UPDATE_USER_CUSTOMER",
+    BATCH_UPDATE_USER_CUSTOMER: "BATCH_UPDATE_USER_CUSTOMER",
     //批量修改密码
-    BATCH_UPDATE_USER_PASSWORD : "BATCH_UPDATE_USER_PASSWORD",
+    BATCH_UPDATE_USER_PASSWORD: "BATCH_UPDATE_USER_PASSWORD",
 
 };
 
@@ -171,9 +171,9 @@ function formatTaskParams(batch_data , app_id , extranInfo) {
     delete dataParams.user_ids;
     var extra = $.extend(true,{},extranInfo);
     var taskParams = {
-        data : dataParams,
-        app_ids : app_ids,
-        extra : extra
+        data: dataParams,
+        app_ids: app_ids,
+        extra: extra
     };
     return taskParams;
 }
@@ -186,7 +186,7 @@ exports.getAppNameList = function(apps,rowData) {
     let appList = [];
     if(_.isArray(apps)){
         let cls = classNames({
-            app_ellipsis : apps.length > 1
+            app_ellipsis: apps.length > 1
         });
         appList = apps.map(function(app, i) {
             return (
@@ -208,7 +208,7 @@ exports.getAccountTypeList = function(apps,rowData) {
     let appList = [];
     if(_.isArray(apps)){
         let cls = classNames({
-            app_ellipsis : apps.length > 1
+            app_ellipsis: apps.length > 1
         });
         appList = apps.map(function(app, i) {
             var text = getUserTypeText(app.user_type);
@@ -232,7 +232,7 @@ exports.getTimeList = function(field,rowData) {
     let appList = [];
     if(_.isArray(apps)){
         let cls = classNames({
-            app_ellipsis : apps.length > 1
+            app_ellipsis: apps.length > 1
         });
         appList = apps.map(function(app, i) {
             let time = moment(new Date(+app[field])).format(oplateConsts.DATE_FORMAT);
@@ -260,13 +260,13 @@ exports.getAppStatusList = function(apps,rowData) {
     let appList = [];
     if(_.isArray(apps)){
         let cls = classNames({
-            app_ellipsis : apps.length > 1
+            app_ellipsis: apps.length > 1
         });
         appList = apps.map(function(app, i) {
-            var text = app.is_disabled === true || app.is_disabled === 'true' ? Intl.get("common.stop", "停用"): (app.is_disabled === false || app.is_disabled === 'false'? Intl.get("common.enabled", "启用"): '');
-            var disabled = (text === Intl.get("common.stop", "停用") ? 'is_disabled':'');
+            var text = app.is_disabled === true || app.is_disabled === 'true' ? Intl.get("common.stop", "停用") : (app.is_disabled === false || app.is_disabled === 'false' ? Intl.get("common.enabled", "启用") : '');
+            var disabled = (text === Intl.get("common.stop", "停用") ? 'is_disabled' : '');
             return (
-                <li key={i} className={cls +' '+ disabled} title={text}>
+                <li key={i} className={cls + ' ' + disabled} title={text}>
                     {text ? text : <span>&nbsp;</span>}
                 </li>
             );

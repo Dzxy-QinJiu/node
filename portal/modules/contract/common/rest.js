@@ -9,13 +9,13 @@ const path = require("path");
 routes.forEach(route => {
     exports[route.handler] = function(req, res, next) {
         const queryStr = querystring.stringify(req.query);
-        let url = queryStr? route.path + "?" + queryStr : route.path;
+        let url = queryStr ? route.path + "?" + queryStr : route.path;
         if(!_.isEmpty(req.params)) {
             url = url.replace(/\:([a-zA-Z_\-0-9]+)/g,function($0,$1) {
                 return req.params[$1];
             });
         }
-        let data = req.body.reqData? JSON.parse(req.body.reqData) : null;
+        let data = req.body.reqData ? JSON.parse(req.body.reqData) : null;
         let method = route.method;
         if (method === "delete") method = "del";
 

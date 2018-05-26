@@ -38,6 +38,6 @@ var sessionOptions = {
     store: store
 };
 //设置store
-config.sessionStore=store;
+config.sessionStore = store;
 var sessionMiddleware = exp_session(sessionOptions);
 module.exports = sessionMiddleware;

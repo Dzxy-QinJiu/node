@@ -27,7 +27,7 @@ function OrganizationStore() {
 
 //清空搜索条件时，还原所有组织及组织关系
 OrganizationStore.prototype.resetSearchOrganization = function() {
-    this.organizationList.forEach(group=> {
+    this.organizationList.forEach(group => {
         delete group.select;
         delete group.isLiSelect;
     });
@@ -45,7 +45,7 @@ OrganizationStore.prototype.setSearchContent = function(searchContent) {
  * @param filterGroupArray 将组织名中包含name的组织存入filterGroupArray中
  */
 OrganizationStore.prototype.findGroupListByName = function(groupList, name, filterGroupArray) {
-    groupList.forEach(group=> {
+    groupList.forEach(group => {
         if (group.title.indexOf(name) != -1) {
             filterGroupArray.push(group);
         } else if (_.isArray(group.children) && group.children.length > 0) {
@@ -55,7 +55,7 @@ OrganizationStore.prototype.findGroupListByName = function(groupList, name, filt
 };
 //递归遍历去掉之前选中的组织
 OrganizationStore.prototype.delSelectOrganization = function(groupList) {
-    groupList.forEach(group=> {
+    groupList.forEach(group => {
         delete group.select;
         delete group.isLiSelect;
         if (_.isArray(group.children) && group.children.length > 0) {
@@ -66,7 +66,7 @@ OrganizationStore.prototype.delSelectOrganization = function(groupList) {
 //根据组织名称搜索组织
 OrganizationStore.prototype.filterByOrganizationName = function(groupName) {
     //去掉之前选中的组织
-    this.organizationList.forEach(group=> {
+    this.organizationList.forEach(group => {
         delete group.select;
         delete group.isLiSelect;
     });
@@ -97,7 +97,7 @@ OrganizationStore.prototype.filterByOrganizationName = function(groupName) {
  */
 OrganizationStore.prototype.findGroupByIdAddGroup = function(treeGroupList, parentId, newGroup) {
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
-    _.some(treeGroupList, group=> {
+    _.some(treeGroupList, group => {
         //找到要添加子组织的组织
         if (group.key == parentId) {
             //有子组织时，直接push即可
@@ -143,7 +143,7 @@ OrganizationStore.prototype.refreshGroupListAfterAdd = function(addGroup) {
 
 //修改组织名称后更新列表中对应组织的名称
 OrganizationStore.prototype.updateOrganizationNameAfterEdit = function(editOrganization) {
-    let organization = _.find(this.organizationList, team=>team.group_id == editOrganization.key);
+    let organization = _.find(this.organizationList, team => team.group_id == editOrganization.key);
     organization.group_name = editOrganization.title;
     //递归遍历树形团队列表，根据id找团队并修改名称
     this.findGroupByIdEditName(this.organizationListArray, editOrganization);
@@ -155,7 +155,7 @@ OrganizationStore.prototype.updateOrganizationNameAfterEdit = function(editOrgan
  */
 OrganizationStore.prototype.findGroupByIdEditName = function(treeGroupList, editGroup) {
     //some:一旦找到符合条件的元素返回真值后，便中断list的遍历
-    _.some(treeGroupList, group=> {
+    _.some(treeGroupList, group => {
         //找到要修改名称的组织
         if (group.key == editGroup.key) {
             group.title = editGroup.title;
@@ -430,9 +430,9 @@ OrganizationStore.prototype.hideAllOperationArea = function() {
 OrganizationStore.prototype.saveDeleteGroup = function(result) {
     if (result.success) {
         //删除组织成功，过滤掉删除的组织
-        this.organizationList = _.filter(this.organizationList, team=> team.group_id != result.groupId);
+        this.organizationList = _.filter(this.organizationList, team => team.group_id != result.groupId);
         //刷新组织树
-        this.organizationList.forEach(group=> {
+        this.organizationList.forEach(group => {
             delete group.select;
             delete group.isLiSelect;
         });

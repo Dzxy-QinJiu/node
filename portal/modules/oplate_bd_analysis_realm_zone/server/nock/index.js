@@ -53,11 +53,11 @@ function random(start , end) {
 function generateData() {
     var list = [];
     var province = provinces.slice();
-    for(var i = 0 ; i < 10 ; i++) {
+    for(var i = 0; i < 10; i++) {
         var idx = random(0 , province.length - 1);
         list.push({
-            name : province.splice(idx , 1)[0],
-            value : random(1 , 100)
+            name: province.splice(idx , 1)[0],
+            value: random(1 , 100)
         });
     }
     return list;
@@ -75,7 +75,7 @@ exports.init = function() {
         .get(RealmZoneService.urls.getRealmZone)
         .query(true)
         .reply(function(uri , requestBody , cb) {
-            idx ++;
+            idx++;
             var req = new nockParser().setUrlParam('/oplate/v1/analysis/:realmId').setRequest(this.req).setBody(requestBody).parse();
             //获取开始、结束时间
             var startTime = req.query.starttime;
@@ -84,7 +84,7 @@ exports.init = function() {
             setTimeout(function() {
                 if(idx % 6 === 0) {
                     cb(null , [
-                        200, [],{'norealm':true}
+                        200, [],{'norealm': true}
                     ]);
                 }
                 //如果时间是大于当前时间的，返回没有数据

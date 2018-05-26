@@ -48,22 +48,22 @@
 (function($) {
     //$.ajaxTrans的默认ajax配置
     var defaultCfg = {
-        type : 'GET',
-        dataType : 'json',
-        timeout : 30 * 1000
+        type: 'GET',
+        dataType: 'json',
+        timeout: 30 * 1000
     };
     //辅助请求的ajax配置
     var requestDefaultCfg = {
         //需要哪些字段，默认为空数组需要全部字段
         //非空数组的时候，会在请求头中添加fields头，标识返回的数据需要的字段
-        fields : []
+        fields: []
     };
     //ajaxTrans 的意思是ajax transform,即ajax的转换，通过register和getAjax替代传统$.ajax
     $.ajaxTrans = function() {
         //that 提供register和getAjax方法
         var that = {} ,
             //map用来存储ajax配置
-            map = {}  ;
+            map = {};
         //register用来进行ajax注册
         that.register = function(ns , conf) {
             if(!ns || !conf || !conf.url) {
@@ -106,7 +106,7 @@
                 //检查请求头，并检查是否需要添加fields头，只获取指定的字段
                 if(!opts.headers && requestCfg.fields.length) {
                     opts.headers = {
-                        fields : requestCfg.fields.join(",")
+                        fields: requestCfg.fields.join(",")
                     };
                 } else if(opts.headers && requestCfg.fields.length && !opts.headers.fields) {
                     opts.headers.fields = requestCfg.fields.join(",");
@@ -120,22 +120,22 @@
                     //链式函数调用
                     union = {
                         //请求成功的回调
-                        success : function(s) {
+                        success: function(s) {
                             success = s;
                             return union;
                         },
                         //请求失败的回调
-                        error   : function(e) {
+                        error: function(e) {
                             error = e;
                             return union;
                         },
                         //请求超时的回调
-                        timeout : function(e) {
+                        timeout: function(e) {
                             timeout = e;
                             return union;
                         },
                         //使用原始ajax的abort方法
-                        abort : function() {
+                        abort: function() {
                             if(ajaxRet) {
                                 ajaxRet.abort();
                                 ajaxRet = null;
@@ -184,9 +184,9 @@
             }
             //将sendRequest和resolvePath定义为链式调用
             var chain = {
-                sendRequest : sendRequest,
-                resolvePath : resolvePath,
-                addQueryParam : addQueryParam
+                sendRequest: sendRequest,
+                resolvePath: resolvePath,
+                addQueryParam: addQueryParam
             };
             //返回链式调用入口
             return chain;

@@ -36,22 +36,22 @@ UserOnlineAnalysisStore.prototype.resetState = function() {
     //用户在线分析各个应用的数据
     this.analysisSummary = {
         //是否是第一次加载
-        firstLoading : true,
+        firstLoading: true,
         //数据总数
-        total : 0,
+        total: 0,
         //当前第几页
-        currentPage : 1,
+        currentPage: 1,
         //数据列表
-        list : [],
+        list: [],
         //错误信息
-        errorMsg : '',
+        errorMsg: '',
         //loading,error,状态
-        resultType : 'loading'
+        resultType: 'loading'
     };
     //选中的app，选中后，在右侧面板中展示
     this.selectedApp = {
-        app_id : '',
-        app_name : ''
+        app_id: '',
+        app_name: ''
     };
     //是否显示右侧面板
     this.isShowRightPanel = false;
@@ -59,15 +59,15 @@ UserOnlineAnalysisStore.prototype.resetState = function() {
     this.browserAnalysis = {
         resultType: "loading",
         errorMsg: "",
-        list : [],
-        total : 0
+        list: [],
+        total: 0
     };
     //地域统计信息
     this.zoneAnalysis = {
         resultType: "loading",
         errorMsg: "",
-        list : [],
-        total : 0
+        list: [],
+        total: 0
     };
 };
 
@@ -81,8 +81,8 @@ UserOnlineAnalysisStore.prototype.viewUserOnlineAnalysisByAppId = function(query
     var app_id = queryObj.app_id;
     var app_name = queryObj.app_name;
     this.selectedApp = {
-        app_id : app_id,
-        app_name : app_name
+        app_id: app_id,
+        app_name: app_name
     };
     this.isShowRightPanel = true;
 };

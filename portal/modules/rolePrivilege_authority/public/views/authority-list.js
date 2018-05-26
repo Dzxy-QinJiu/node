@@ -108,7 +108,7 @@ var AuthorityList = React.createClass({
                         </PrivilegeChecker>
                     </div>
                 </div>
-                <div className="authority-content" style={{height:authorityListDivHeight - 30}}>
+                <div className="authority-content" style={{height: authorityListDivHeight - 30}}>
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         {
                             authorityGroup.permissionList.map(function(authority, i) {

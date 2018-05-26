@@ -837,7 +837,7 @@ var SalesHomePage = React.createClass({
                                     setWebConfigStatus={this.state.setWebConfigStatus}
                                     jumpToUserInfo={this.jumpToUserInfo}
                                     addEmail={!this.state.emailShowObj.email}
-                                />: null}
+                                /> : null}
                             <StatisticTotal
                                 customerTotalObj={this.state.customerTotalObj}
                                 userTotalObj={this.state.userTotalObj}

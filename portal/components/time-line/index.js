@@ -20,7 +20,7 @@ const TimeLine = React.createClass({
             //时间字段名
             timeField: "",
             //左侧是否用相对时间显示
-            relativeDate:false,
+            relativeDate: false,
             //渲染函数，根据回调返回的列表项数据，渲染列表项html
             render: function(item){return null;},
         };
@@ -40,7 +40,7 @@ const TimeLine = React.createClass({
 
         return (
             <div className={className}>
-                {this.props.list.length? (
+                {this.props.list.length ? (
                     <Timeline>
                         {this.props.list.map((item, index) => {
                             let dayJsx = null;
@@ -80,7 +80,7 @@ const TimeLine = React.createClass({
                             }
 
                             return (
-                                <Timeline.Item key={index} className={dayJsx ? "day-first-item":""}>
+                                <Timeline.Item key={index} className={dayJsx ? "day-first-item" : ""}>
                                     {dayJsx}
                                     {this.props.render(item)}
                                 </Timeline.Item>
@@ -96,7 +96,7 @@ const TimeLine = React.createClass({
 TimeLine.propTypes = {
     list: PropTypes.array,
     groupByDay: PropTypes.bool,
-    relativeDate:PropTypes.bool,
+    relativeDate: PropTypes.bool,
     timeField: PropTypes.string,
     render: PropTypes.func,
 

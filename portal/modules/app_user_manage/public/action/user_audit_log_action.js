@@ -7,12 +7,12 @@ import { storageUtil } from "ant-utils";
 function UserAuditLogAction() {
     this.generateActions(
         "getUserApp", // 获取用户的应用
-        "getAuditLogList",  // 获取用户审计日志
+        "getAuditLogList", // 获取用户审计日志
         "handleSearchEvent", // 处理搜索框中内容的变化
-        "changeSearchTime",   // 某个时间内显示
-        'setUserLogSelectedAppId',   //设置选中的appid
-        "setSort",   // 设置排序选项
-        'handleFilterUserType',  // 用户类型的过滤
+        "changeSearchTime", // 某个时间内显示
+        'setUserLogSelectedAppId', //设置选中的appid
+        "setSort", // 设置排序选项
+        'handleFilterUserType', // 用户类型的过滤
         'handleRefresh', //刷新用户审计日志
         'resetState',
         'handleFilterLogType', // 审计日志类型的过滤
@@ -26,9 +26,9 @@ function UserAuditLogAction() {
             var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
             var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
             var app_id = '';
-            if (lastSelectAppId) {   //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
+            if (lastSelectAppId) { //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
                 app_id = lastSelectAppId;
-            } else {  // 首次登陆时
+            } else { // 首次登陆时
                 if (ShareObj.app_id) { // 已有用户选择的应用时，用户审计日志也要展示该应用的
                     app_id = ShareObj.app_id;
                 } else {

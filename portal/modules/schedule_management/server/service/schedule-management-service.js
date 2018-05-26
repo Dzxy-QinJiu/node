@@ -10,7 +10,7 @@ var _ = require("underscore");
 exports.getScheduleList = function(req, res) {
     var url = restApis.scheduleApis;
     if (req.query && req.query.page_size){
-        url = url + "list" + "?page_size="  + req.query.page_size;
+        url = url + "list" + "?page_size=" + req.query.page_size;
         if (req.query && req.query.customer_id){
             url = url + "&customer_id=" + req.query.customer_id;
         }

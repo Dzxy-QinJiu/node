@@ -13,7 +13,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-            "GET_APPLICATION_NOTICE"  // 查看应用系统公告
+            "GET_APPLICATION_NOTICE" // 查看应用系统公告
         ]
     }, {
         "method": "post",
@@ -23,7 +23,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-            "ADD_APPLICATION_NOTICE"    // 添加应用系统公告
+            "ADD_APPLICATION_NOTICE" // 添加应用系统公告
         ]
     }]
 };

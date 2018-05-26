@@ -75,7 +75,7 @@ SalesHomeStore.prototype.setInitState = function() {
     //统计团队内成员个数的列表
     this.teamMemberCountList = [];
     this.emailShowObj = {
-        isShowActiveEmail : false,  //是否展示邮箱激活提示
+        isShowActiveEmail: false, //是否展示邮箱激活提示
     };
 };
 // 重置回访记录列表状态

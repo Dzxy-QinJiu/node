@@ -71,7 +71,7 @@ var AppInfo = React.createClass({
         this.props.showUserTypeConfigPanel();
     },
     //到期时间的修改
-    showAppCodeTrace:function() {
+    showAppCodeTrace: function() {
         this.props.showAppCodeTrace();
     },
     //到期时间的修改
@@ -178,7 +178,7 @@ var AppInfo = React.createClass({
                         <span className="card-item-left"><ReactIntl.FormattedMessage id="common.captcha"
                             defaultMessage="验证码"/>:</span>
                         <span className="card-item-right">
-                            {Intl.get("secret.error", "密码输错") + "["  +(appInfo.captchaTime || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                            {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                         </span>
                     </span>
 
@@ -190,7 +190,7 @@ var AppInfo = React.createClass({
             {language.lan() == 'es' ? (
                 <div className="card-item left-label-null-style">
                     <span className="card-item-right">
-                        {Intl.get("secret.error", "密码输错") + "["  +(appInfo.captchaTime || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                        {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                     </span>
                 </div>
             ) : null}
@@ -198,13 +198,13 @@ var AppInfo = React.createClass({
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("session.overclock", "session超频") + "["  +(appInfo.sessionCaptcha || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get("session.overclock", "session超频") + "[" + (appInfo.sessionCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                 </span>
             </div>
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("ip.overclock", "IP超频") + "["  +(appInfo.ipCaptcha || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get("ip.overclock", "IP超频") + "[" + (appInfo.ipCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                 </span>
             </div>
             <div className="card-item">
@@ -252,7 +252,7 @@ var AppInfo = React.createClass({
                 expire_date: this.state.expireDate
             };
             this.setState({isSaving: true});
-            AppAction.updateAppExpireDate(submitData, data=> {
+            AppAction.updateAppExpireDate(submitData, data => {
                 if (_.isObject(data) && data.error) {
                     //修改失败
                     this.setState({isSaving: false});

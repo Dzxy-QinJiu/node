@@ -11,7 +11,7 @@ class BottomSaveCancel extends React.Component{
         super(props);
         this.state = {
             submitResult: "",//保存数据后的状态，共三种,loading success error
-            saveErrMsg:""//保存失败后的提示信息
+            saveErrMsg: ""//保存失败后的提示信息
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -30,7 +30,7 @@ class BottomSaveCancel extends React.Component{
                 <Button onClick={this.props.handleCancel} data-tracename="点击取消按钮">
                     <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                 </Button>
-                {this.state.submitResult == "success" ? (<AlertTimer time={2000} message={Intl.get("common.save.success", "保存成功")} type="success" showIcon onHide={this.props.handleCancel}/>): null}
+                {this.state.submitResult == "success" ? (<AlertTimer time={2000} message={Intl.get("common.save.success", "保存成功")} type="success" showIcon onHide={this.props.handleCancel}/>) : null}
                 {this.state.submitResult == "error" ? (<div className="alert-timer">
                     <Alert message={this.state.saveErrMsg} type="error" showIcon />
                 </div>) : null}
@@ -40,8 +40,8 @@ class BottomSaveCancel extends React.Component{
 
 }
 BottomSaveCancel.defaultProps = {
-    handleSubmit:function() {},
-    handleCancel:function() {},
-    isAddingAppFeedback:"",
+    handleSubmit: function() {},
+    handleCancel: function() {},
+    isAddingAppFeedback: "",
 };
 export default BottomSaveCancel;

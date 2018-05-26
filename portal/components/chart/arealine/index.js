@@ -16,40 +16,40 @@ const DATE_FORMAT_WITHOUT_DAY = oplateConsts.DATE_YEAR_MONTH_FORMAT;
 import { packageTry } from 'LIB_DIR/func';
 
 var AreaLine = React.createClass({
-    echartInstance : null,
+    echartInstance: null,
     //开始、结束时间不在同一年
-    isBiggerThanYear : false,
-    getDefaultProps : function() {
+    isBiggerThanYear: false,
+    getDefaultProps: function() {
         return {
-            list : [],
-            title : Intl.get("operation.report.activity", "活跃度"),
-            width:'100%',
-            height:240,
-            resultType : 'loading',
+            list: [],
+            title: Intl.get("operation.report.activity", "活跃度"),
+            width: '100%',
+            height: 240,
+            resultType: 'loading',
             //日活、周活、月活
-            dateRange : '',
+            dateRange: '',
             //时间范围改变的回调函数
-            onDataRangeChange : function(){},
+            onDataRangeChange: function(){},
             //开始查询时间
-            startTime : new Date().getTime(),
+            startTime: new Date().getTime(),
             //结束查询时间
-            endTime : new Date().getTime()
+            endTime: new Date().getTime()
         };
 
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            dateRange : this.props.dateRange
+            dateRange: this.props.dateRange
         };
     },
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(this.state.dateRange !== nextProps.dateRange) {
             this.setState({
-                dateRange : nextProps.dateRange
+                dateRange: nextProps.dateRange
             });
         }
     },
-    getCategorys : function() {
+    getCategorys: function() {
         var items = this.props.list || [];
         if(!items.length) {
             return items;
@@ -65,22 +65,22 @@ var AreaLine = React.createClass({
         var times = items.map(function(obj) {
             if(biggerThanYear) {
                 return moment(new Date(+obj.timestamp)).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
-            }  else {
+            } else {
                 return moment(new Date(+obj.timestamp)).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
             }
         });
         return times;
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         //普通线
         function getLine(name,list) {
             return {
-                symbol : "circle",
+                symbol: "circle",
                 showAllSymbol: true,
-                name : name,
-                type : 'line',
-                data : _.pluck(list , "active")
+                name: name,
+                type: 'line',
+                data: _.pluck(list , "active")
             };
         }
         var series = [];
@@ -89,14 +89,14 @@ var AreaLine = React.createClass({
         });
         return series;
     },
-    getTooltip : function() {
+    getTooltip: function() {
         var _this = this;
         return {
-            trigger : 'axis',
-            axisPointer : {
-                lineStyle : {
-                    color : '#bdd3e4',
-                    width:1
+            trigger: 'axis',
+            axisPointer: {
+                lineStyle: {
+                    color: '#bdd3e4',
+                    width: 1
                 }
             },
             position: function(mousePointer,params,tooltipDom) {
@@ -115,7 +115,7 @@ var AreaLine = React.createClass({
                     Math.floor((chartHeight - tooltipDomHeight) / 2) - 20,
                 ];
             },
-            formatter : function(lines) {
+            formatter: function(lines) {
                 var index = _.findIndex(_this.props.list , (item) => item.datas.length > 0);
                 var idx = lines[index].dataIndex;
                 var time = _this.props.list[index].datas[idx].timestamp;
@@ -173,10 +173,10 @@ var AreaLine = React.createClass({
                 tableHtmlList.push(`</tbody></table></div>`);
                 return tableHtmlList.join('');
             },
-            extraCssText : echartsTooltipCssText
+            extraCssText: echartsTooltipCssText
         };
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var _this = this;
         let series = this.getSeries();
         let data = series[0] && series[0].data || [];
@@ -191,35 +191,35 @@ var AreaLine = React.createClass({
             max = 5;
         }
         var options = {
-            animation:false,
+            animation: false,
             title: null,
             legend: null,
-            grid : {
-                x : 50,
-                y : 35,
-                x2 : 40,
-                borderWidth : 0
+            grid: {
+                x: 50,
+                y: 35,
+                x2: 40,
+                borderWidth: 0
             },
             xAxis: [
                 {
                     type: "category",
-                    splitArea : {
+                    splitArea: {
                         show: false
                     },
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#c4cacf'
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#c4cacf'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         }
                     },
                     data: this.getCategorys()
@@ -230,49 +230,49 @@ var AreaLine = React.createClass({
                     type: "value",
                     interval: yInterval,
                     max: max,
-                    name : Intl.get("operation.report.user.count", "用户数"),
-                    position : 'left',
-                    splitArea : {
+                    name: Intl.get("operation.report.user.count", "用户数"),
+                    position: 'left',
+                    splitArea: {
                         show: false
                     },
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#bec5cb'
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#bec5cb'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 },
                 {
                     type: "value",
-                    position:'right',
-                    name : Intl.get("operation.report.active", "活跃率"),
-                    min : 0,
-                    max : 100,
-                    splitArea : {
+                    position: 'right',
+                    name: Intl.get("operation.report.active", "活跃率"),
+                    min: 0,
+                    max: 100,
+                    splitArea: {
                         show: false
                     },
-                    splitLine : false,
-                    splitNumber:1,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#bec5cb'
+                    splitLine: false,
+                    splitNumber: 1,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#bec5cb'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            tooltip : _this.getTooltip(),
+            tooltip: _this.getTooltip(),
             toolbox: {
                 show: false
             },
@@ -281,7 +281,7 @@ var AreaLine = React.createClass({
         };
         return options;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -319,11 +319,11 @@ var AreaLine = React.createClass({
         });
     },
 
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
         $(window).on('resize', this.windowResize);
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -334,7 +334,7 @@ var AreaLine = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         $(window).off('resize', this.windowResize);
         if(this.echartInstance) {
             packageTry(() => {
@@ -343,26 +343,26 @@ var AreaLine = React.createClass({
             this.echartInstance = null;
         }
     },
-    onDataRangeChange : function(event) {
+    onDataRangeChange: function(event) {
         this.setState({
-            dateRange : event.target.value
+            dateRange: event.target.value
         });
         this.props.onDataRangeChange(event.target.value);
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div>
                 <div className="arealine-chart" ref="wrap">
-                    {this.props.resultType === 'loading'?
+                    {this.props.resultType === 'loading' ?
                         (
-                            <div className="loadwrap" style={{height:this.props.height}}>
+                            <div className="loadwrap" style={{height: this.props.height}}>
                                 <Spinner/>
                             </div>
-                        ):
+                        ) :
                         (
                             <div>
-                                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                                <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                             </div>
                         )
                     }

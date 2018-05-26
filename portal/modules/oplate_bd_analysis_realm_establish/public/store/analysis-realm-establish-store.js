@@ -28,36 +28,36 @@ function AnalysisRealmEstablishStore() {
     //绑定action方法
     this.bindListeners({
         //设置开始时间
-        setStartTime : AnalysisRealmEstablishActions.setStartTime,
+        setStartTime: AnalysisRealmEstablishActions.setStartTime,
         //设置结束时间
-        setEndTime : AnalysisRealmEstablishActions.setEndTime,
+        setEndTime: AnalysisRealmEstablishActions.setEndTime,
         //设置loading状态
-        setLoadingState : AnalysisRealmEstablishActions.setLoadingState,
+        setLoadingState: AnalysisRealmEstablishActions.setLoadingState,
         //设置是否有数据
-        setNoData : AnalysisRealmEstablishActions.setNoData,
+        setNoData: AnalysisRealmEstablishActions.setNoData,
         //服务端获取全国安全域数据
-        getRealmEstablishAnalysisDataByAjax : AnalysisRealmEstablishActions.getRealmEstablishAnalysisDataByAjax,
+        getRealmEstablishAnalysisDataByAjax: AnalysisRealmEstablishActions.getRealmEstablishAnalysisDataByAjax,
         //设置右侧排行榜标题
-        setRankListTitle : AnalysisRealmEstablishActions.setRankListTitle
+        setRankListTitle: AnalysisRealmEstablishActions.setRankListTitle
     });
     //绑定view方法
     this.exportPublicMethods({
         //获取总数
-        getRealmEstablishTotalCount : this.getRealmEstablishTotalCount,
+        getRealmEstablishTotalCount: this.getRealmEstablishTotalCount,
         //获取开通安全域列表
-        getRealmEstablishAnalysisList : this.getRealmEstablishAnalysisList,
+        getRealmEstablishAnalysisList: this.getRealmEstablishAnalysisList,
         //获取开始时间
-        getStartTime : this.getStartTime,
+        getStartTime: this.getStartTime,
         //获取结束时间
-        getEndTime : this.getEndTime,
+        getEndTime: this.getEndTime,
         //获取loading状态
-        getLoadingState : this.getLoadingState,
+        getLoadingState: this.getLoadingState,
         //获取是否有数据
-        getNoData : this.getNoData,
+        getNoData: this.getNoData,
         //获取是否一个安全域都没有
-        getNoRealmAtAll : this.getNoRealmAtAll,
+        getNoRealmAtAll: this.getNoRealmAtAll,
         //获取unit单位
-        getUnit : this.getUnit
+        getUnit: this.getUnit
     });
 
 }

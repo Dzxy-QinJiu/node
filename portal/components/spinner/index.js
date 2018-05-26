@@ -2,12 +2,12 @@ require("./index.less");
 var classNames = require("classnames");
 var Spinner = React.createClass({
     //获取默认属性
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            type : "load8"
+            type: "load8"
         };
     },
-    render : function() {
+    render: function() {
 
         if(this.props.type === 'load8') {
             var cls = classNames("load8",this.props.className);

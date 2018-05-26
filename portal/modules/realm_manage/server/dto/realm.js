@@ -61,7 +61,7 @@ class Realm {
     }
 
     //转成rest对象,并返回
-    static   toRestObject(frontObj) {
+    static toRestObject(frontObj) {
         var restObject = {};
         restObject.realm_id = frontObj.id;
         if (frontObj.realmName) {
@@ -121,4 +121,4 @@ class Realm {
     }
 
 }
-export  default Realm;
+export default Realm;

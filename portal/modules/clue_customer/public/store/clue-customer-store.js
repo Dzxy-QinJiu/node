@@ -5,14 +5,14 @@
  */
 var ClueCustomerAction = require("../action/clue-customer-action");
 import {addHyphenToPhoneNumber} from "LIB_DIR/func";
-const datePickerUtils= require("CMP_DIR/datepicker/utils");
+const datePickerUtils = require("CMP_DIR/datepicker/utils");
 function ClueCustomerStore() {
     //初始化state数据
     this.getState();
     this.bindActions(ClueCustomerAction);
 }
 ClueCustomerStore.prototype.getState = function() {
-    var timeObj = datePickerUtils.getThisWeekTime();  // 本周
+    var timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.salesManList = [];//销售列表
     this.listenScrollBottom = true;//是否监测下拉加载
     this.curCustomers = [];//查询到的线索客户列表
@@ -60,7 +60,7 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
             this.curCustomers = this.processForList(list);
         }
         this.lastCustomerId = this.curCustomers.length ? _.last(this.curCustomers).id : "";
-        this.customersSize = data ? data.total :0 ;
+        this.customersSize = data ? data.total : 0;
         this.listenScrollBottom = this.customersSize > this.curCustomers.length;
         this.isLoading = false;
         //跟据线索客户不同的状态进行排序
@@ -75,14 +75,14 @@ ClueCustomerStore.prototype.getClueCustomerList = function(clueCustomers) {
 };
 //更新线索客户的一些属性
 ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
-    var updateClue = _.find(this.curCustomers, clue=> updateObj.id == clue.id);
+    var updateClue = _.find(this.curCustomers, clue => updateObj.id == clue.id);
     if (updateClue){
         updateClue.availability = updateObj.availability;
     }
 };
 //标记线索为无效线索后，线索状态变成已跟进，在页面上不展示该条数据
 ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
-    this.curCustomers = _.filter(this.curCustomers, clue=> updateObj.id !== clue.id);
+    this.curCustomers = _.filter(this.curCustomers, clue => updateObj.id !== clue.id);
 };
 //添加或更新跟进内容
 ClueCustomerStore.prototype.addCluecustomerTrace = function(result) {

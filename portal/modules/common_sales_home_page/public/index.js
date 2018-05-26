@@ -16,7 +16,7 @@ import WillExpireItem from "./view/will-expire-item";
 import NewDistributeCustomer from "./view/new-distribute-customer";
 import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel}  from "CMP_DIR/rightPanel";
+import {RightPanel} from "CMP_DIR/rightPanel";
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 var userData = require("PUB_DIR/sources/user-data");
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
@@ -94,7 +94,7 @@ var SalesHomePage = React.createClass({
             customer_params: {
                 currentId: customer_id,
                 curCustomer: this.state.curCustomer,
-                ShowCustomerUserListPanel:this.ShowCustomerUserListPanel,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                 hideRightPanel: this.closeRightCustomerPanel
             }
         });
@@ -288,7 +288,7 @@ var SalesHomePage = React.createClass({
     },
     handleScrollBarBottom: function(listType) {
         switch (listType) {
-        case  ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
+        case ALL_LISTS_TYPE.WILL_EXPIRED_SCHEDULE_TODAY://今日超期的日程
             this.getScrollData(this.state.scheduleExpiredTodayObj, this.getExpiredScheduleList);
             break;
         case ALL_LISTS_TYPE.APP_ILLEAGE_LOGIN://停用客户登录
@@ -554,7 +554,7 @@ var SalesHomePage = React.createClass({
             );
         }else if (scheduleType === ALL_LISTS_TYPE.HAS_NO_CONNECTED_PHONE){
             //呼入未接通电话
-            var data =  this.state.missCallObj.data.list;
+            var data = this.state.missCallObj.data.list;
             return (
                 <div className="today-expired-schedule" ref="tableWrap">
                     {this.renderLoadingAndErrAndNodataContent(this.state.missCallObj)}

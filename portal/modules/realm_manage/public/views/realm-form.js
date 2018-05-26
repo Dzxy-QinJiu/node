@@ -168,9 +168,9 @@ var RealmForm = React.createClass({
                 if (_this.props.formType == "add") {
                     //设置正在保存中
                     RealmFormAction.setSaveFlag(true);
-                    RealmFormAction.addRealm(newRealm,(result)=>{
+                    RealmFormAction.addRealm(newRealm,(result) => {
                         //保存失败的情况在form组件中已有处理
-                        if (result.saveResult=="success"){
+                        if (result.saveResult == "success"){
                             var realmParams = {};
                             batchOperate.addTaskIdToList(result.taskId);
                             batchOperate.saveTaskParamByTaskId(result.taskId, realmParams, {
@@ -324,13 +324,13 @@ var RealmForm = React.createClass({
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
-                        iconDescr={formData.company||headDescr}
+                        iconDescr={formData.company || headDescr}
                         upLoadDescr={headDescr}
                         isEdit={true}
                         isUserHeadIcon={true}
                         onChange={this.uploadImg}/>
                     <Input type="hidden" name="image" id="image" value={formData.image}/>
-                    <div className="realm-form-scroll" style={{width:'420px'}}>
+                    <div className="realm-form-scroll" style={{width: '420px'}}>
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <FormItem
@@ -342,9 +342,9 @@ var RealmForm = React.createClass({
                                     help={status.realmName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.realmName.errors && status.realmName.errors.join(','))}
                                 >
                                     <Validator
-                                        rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")},{validator:this.checkRealmName}]}>
+                                        rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")},{validator: this.checkRealmName}]}>
                                         <Input name="realmName" id="realmName" placeholder="必填项*"
-                                            value={formData.realmName?formData.realmName.split(realmSuffix)[0]:""}
+                                            value={formData.realmName ? formData.realmName.split(realmSuffix)[0] : ""}
                                             onChange={this.setField.bind(this, 'realmName')}/>
                                     </Validator>
                                     <label className="realm-name-suffix">{realmSuffix}</label>
@@ -368,9 +368,9 @@ var RealmForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('phone')}
                                     help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
                                 >
-                                    <Validator rules={[{validator:this.checkPhone}]}>
+                                    <Validator rules={[{validator: this.checkPhone}]}>
                                         <Input name="phone" id="phone" value={formData.phone} placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
-                                            className={this.state.realmPhoneEmailCheck?"":"input-red-border"}
+                                            className={this.state.realmPhoneEmailCheck ? "" : "input-red-border"}
                                             onChange={this.setField.bind(this, 'phone')}
                                             onBlur={this.checkPhoneEmail.bind(this,'realm')}
                                             onFocus={this.resetPhoneEmailCheck.bind(this,'realm')}/>
@@ -386,9 +386,9 @@ var RealmForm = React.createClass({
                                     validateStatus={this.renderValidateStyle('email')}
                                     help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
                                 >
-                                    <Validator rules={[{validator:this.checkEmail}]}>
+                                    <Validator rules={[{validator: this.checkEmail}]}>
                                         <Input name="email" id="email" type="text" value={formData.email}
-                                            className={this.state.realmPhoneEmailCheck?"":"input-red-border"}
+                                            className={this.state.realmPhoneEmailCheck ? "" : "input-red-border"}
                                             placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
                                             onChange={this.setField.bind(this, 'email')}
                                             onBlur={this.checkPhoneEmail.bind(this,'realm')}
@@ -455,7 +455,7 @@ var RealmForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult=="error"?3000:600}
+                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
                                                     message={this.state.saveFlags.saveMsg}
                                                     type={this.state.saveFlags.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

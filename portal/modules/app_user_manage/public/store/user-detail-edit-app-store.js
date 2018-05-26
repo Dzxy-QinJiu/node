@@ -28,19 +28,19 @@ UserDetailEditAppStore.prototype.resetState = function() {
     //表单字段
     this.formData = {
         //选中的应用列表
-        selected_apps : [],
+        selected_apps: [],
         //开户类型
-        user_type : "1",
+        user_type: "1",
         //开通周期
-        range : "12",
+        range: "12",
         //开通时间
-        start_time : start_time,
+        start_time: start_time,
         //到期时间
-        end_time : end_time,
+        end_time: end_time,
         //到期停用
-        over_draft : "1",
+        over_draft: "1",
         //账号状态
-        user_status : "1",
+        user_status: "1",
     };
     //提交状态("",success,error,loading)
     this.submitResult = '';
@@ -103,7 +103,7 @@ UserDetailEditAppStore.prototype.timeChange = function({field,date}) {
 UserDetailEditAppStore.prototype.setEditAppDefaultValue = function(appInfo) {
     //将appInfo保存到formData的selectedApp
     this.formData.selected_apps = [appInfo];
-    this.formData.user_status = (appInfo.is_disabled === true || appInfo.is_disabled === 'true') ? '0':'1' ;
+    this.formData.user_status = (appInfo.is_disabled === true || appInfo.is_disabled === 'true') ? '0' : '1';
     this.formData.user_type = appInfo.account_type;
     if(appInfo.end_time === '0' || appInfo.end_time === 0) {
         this.formData.start_time = Intl.get("common.time.forever", "永久");
@@ -143,10 +143,10 @@ UserDetailEditAppStore.prototype.customRadioValueChange = function({field,value}
             this.formData.start_time = this.formData.end_time = Intl.get("common.time.forever", "永久");
         } else if(newRange === 'custom') {
             var now = moment().format(FORMAT);
-            if(this.formData.start_time ===Intl.get("common.time.forever", "永久")) {
+            if(this.formData.start_time === Intl.get("common.time.forever", "永久")) {
                 this.formData.start_time = now;
             }
-            if(this.formData.end_time ===Intl.get("common.time.forever", "永久")) {
+            if(this.formData.end_time === Intl.get("common.time.forever", "永久")) {
                 this.formData.end_time = moment().add("1","year").format(FORMAT);
             }
         } else {

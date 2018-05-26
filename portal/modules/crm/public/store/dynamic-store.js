@@ -9,7 +9,7 @@ function DynamicStore() {
     });
     //绑定view方法
     this.exportPublicMethods({
-        getDynamicListFromView : this.getDynamicListFromView
+        getDynamicListFromView: this.getDynamicListFromView
     });
 
 }

@@ -28,10 +28,10 @@ const SalesRoleManage = React.createClass({
             deleteErrMsg: '',
             //正在编辑客户容量的角色
             isEdittingItem: '',
-            updateRoleCustomerNum:0,//要更新某个销售角色的客户容量,默认值0
-            addRoleCustomerNum:'',//某个添加角色的客户容量
+            updateRoleCustomerNum: 0,//要更新某个销售角色的客户容量,默认值0
+            addRoleCustomerNum: '',//某个添加角色的客户容量
             isUpdateloading: false,
-            updateErrMsg:'',//修改客户容量失败后的错误信息
+            updateErrMsg: '',//修改客户容量失败后的错误信息
         });
     },
     //获取销售角色列表
@@ -125,7 +125,7 @@ const SalesRoleManage = React.createClass({
         let role = $.trim(this.refs.addSalesRole.value);
         if (role) {
             //看列表中是否有和输入的名称一样的名字
-            var targetItem =  _.find(this.state.salesRoleList, item => item.name == role);
+            var targetItem = _.find(this.state.salesRoleList, item => item.name == role);
             if (targetItem){
                 this.setState({
                     addErrMsg: Intl.get("config.sales.role.has.repeat", "该销售角色名称已存在")
@@ -216,15 +216,15 @@ const SalesRoleManage = React.createClass({
     },
     handleEditItem: function(item) {
         this.setState({
-            isEdittingItem:item.id,
-            updateErrMsg:''
+            isEdittingItem: item.id,
+            updateErrMsg: ''
         });
     },
     cancelEditCustomerNum: function() {
         this.setState({
             isEdittingItem: '',
             updateErrMsg: '',
-            updateRoleCustomerNum:0
+            updateRoleCustomerNum: 0
         });
     },
     submitUpdateCustomerNum: function(item) {
@@ -255,7 +255,7 @@ const SalesRoleManage = React.createClass({
                     this.setState({
                         salesRoleList: this.state.salesRoleList,
                         isUpdateloading: false,
-                        updateErrMsg:'',
+                        updateErrMsg: '',
                         isEdittingItem: ''
                     });
                 }
@@ -302,7 +302,7 @@ const SalesRoleManage = React.createClass({
                                 <div className="customer-container">
                                     {Intl.get("sales.role.config.customer.num","最大客户数")}:
                                     {this.state.isEdittingItem === item.id ? <span><InputNumber defaultValue={item.customer_num} onChange={this.onUpdateCustomerNumChange} min={1}/>
-                                        {this.state.isUpdateloading ?<Icon type="loading"/> : <span>
+                                        {this.state.isUpdateloading ? <Icon type="loading"/> : <span>
                                             <i className="iconfont icon-choose" onClick={this.submitUpdateCustomerNum.bind(this, item)} data-tracename="保存设置最大客户数量"></i><i className="iconfont icon-close" onClick={this.cancelEditCustomerNum} data-tracename="取消设置最大客户数量"></i>
                                         </span>}
                                     </span> : <span>{item.customer_num}<i className="iconfont icon-update" onClick={this.handleEditItem.bind(this, item)}></i></span>}
@@ -315,7 +315,7 @@ const SalesRoleManage = React.createClass({
                                 { this.state.DeletingItem === item.id ? (
                                     <Icon type="loading"/>
                                 ) : null}
-                                {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide): null}
+                                {this.state.updateErrMsg && this.state.isEdittingItem === item.id ? this.renderErrorAlert(this.state.updateErrMsg, hide) : null}
                             </div>
                         </li>);
                 }

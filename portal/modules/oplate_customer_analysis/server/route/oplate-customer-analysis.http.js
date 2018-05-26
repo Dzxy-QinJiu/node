@@ -18,7 +18,7 @@ module.exports = {
             "needLogin": true
         },
         //需要权限
-        "privileges":[
+        "privileges": [
             "OPLATE_CUSTOMER_ANALYSIS_ZONE"
         ]
     },{
@@ -33,7 +33,7 @@ module.exports = {
             "needLogin": true
         },
         //需要权限
-        "privileges":[
+        "privileges": [
             "OPLATE_CUSTOMER_ANALYSIS_ZONE"
         ]
     },{

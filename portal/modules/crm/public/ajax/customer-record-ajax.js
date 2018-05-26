@@ -7,14 +7,14 @@
 exports.getCustomerTraceRecordList = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/customer/get_customer_trace_list',
-        dataType : 'json',
-        type : 'post',
-        data : queryObj,
-        success : function(data) {
+        url: '/rest/customer/get_customer_trace_list',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error : function(xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("customer.fail.get.customer.trace", "获取客户跟踪记录列表失败"));
         }
     });
@@ -24,14 +24,14 @@ exports.getCustomerTraceRecordList = function(queryObj) {
 exports.addCustomerTrace = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/customer/add_customer_trace_list',
-        dataType : 'json',
-        type : 'post',
-        data : queryObj,
-        success : function(data) {
+        url: '/rest/customer/add_customer_trace_list',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error : function(xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("customer.fail.add.customer.trace", "增加客户跟踪记录列表失败"));
         }
     });
@@ -43,14 +43,14 @@ exports.updateCustomerTrace = function(queryObj) {
 
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/customer/update_customer_trace_list',
-        dataType : 'json',
-        type : 'put',
-        data : queryObj,
-        success : function(data) {
+        url: '/rest/customer/update_customer_trace_list',
+        dataType: 'json',
+        type: 'put',
+        data: queryObj,
+        success: function(data) {
             Deferred.resolve(data);
         },
-        error : function(xhr) {
+        error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("fail.add.customer.trace", "更新客户跟踪记录列表失败"));
         }
     });

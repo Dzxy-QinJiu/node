@@ -82,7 +82,7 @@ function AppActions() {
         appAjax.getCurAppKeyById(appId).then(function(data) {
             _this.dispatch({error: false, loading: false, data: data});
         }, function(errorMsg) {
-            _this.dispatch({error:true, loading: false, errorMsg:errorMsg || Intl.get("app.get.app.key.failed","获取piwik信息失败")});
+            _this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("app.get.app.key.failed","获取piwik信息失败")});
         });
     };
 

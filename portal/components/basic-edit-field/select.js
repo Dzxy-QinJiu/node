@@ -97,7 +97,7 @@ let BasicEditSelectField = React.createClass({
             displayType: "edit",
             formData: formData
         });
-        Trace.traceEvent(e,"点击编辑"+ this.props.field);
+        Trace.traceEvent(e,"点击编辑" + this.props.field);
     },
     handleSubmit: function(e) {
         var validation = this.refs.validation;
@@ -107,7 +107,7 @@ let BasicEditSelectField = React.createClass({
             if (!valid) {
                 return;
             }
-            Trace.traceEvent(e,"保存对"+ this.props.field +"的修改");
+            Trace.traceEvent(e,"保存对" + this.props.field + "的修改");
             var value = this.state.formData.select;
             var user = {id: this.props.id};
             user[this.props.field] = value;
@@ -150,7 +150,7 @@ let BasicEditSelectField = React.createClass({
         });
     },
     handleCancel: function(e) {
-        Trace.traceEvent(e,"取消对"+ this.props.field +"修改");
+        Trace.traceEvent(e,"取消对" + this.props.field + "修改");
         var formData = this.state.formData;
         var status = this.state.status;
         formData.select = this.props.value;
@@ -181,7 +181,7 @@ let BasicEditSelectField = React.createClass({
                 </span>
                 { this.props.disabled ? null : (
                     <i className="inline-block iconfont icon-update" title={this.props.title}
-                        onClick={(e)=>{this.setEditable(e);}}/>
+                        onClick={(e) => {this.setEditable(e);}}/>
                 )}
             </div>
         ) : null;
@@ -195,9 +195,9 @@ let BasicEditSelectField = React.createClass({
         ) : (
             <div>
                 <i title={Intl.get("common.update", "修改")} className="inline-block iconfont icon-choose"
-                    onClick={(e)=>{this.handleSubmit(e);}}/>
+                    onClick={(e) => {this.handleSubmit(e);}}/>
                 <i title={Intl.get("common.cancel", "取消")} className="inline-block iconfont icon-close"
-                    onClick={(e)=>{this.handleCancel(e);}}/>
+                    onClick={(e) => {this.handleCancel(e);}}/>
             </div>
         );
 

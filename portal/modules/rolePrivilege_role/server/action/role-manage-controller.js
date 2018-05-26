@@ -72,7 +72,7 @@ exports.deleteRole = function(req, res) {
 
 //设置默认角色
 exports.setDefaultRole = function(req, res) {     
-    let param = {app_id:req.body.app_id,base_role:req.body.base_role}; 
+    let param = {app_id: req.body.app_id,base_role: req.body.base_role}; 
     roleManageServic.setDefaultRole(req, res,param)
         .on("success", function(data) {
             res.status(200).json(data);
@@ -95,7 +95,7 @@ exports.getDefaultRole = function(req, res) {
 
 //删除默认角色
 exports.delDefaultRole = function(req,res) { 
-    var param = {app_id:req.body.app_id};
+    var param = {app_id: req.body.app_id};
     roleManageServic.delDefaultRole(req, res,param)
         .on("success", function(data) {            
             res.status(200).json(data);

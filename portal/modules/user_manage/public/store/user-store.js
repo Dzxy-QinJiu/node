@@ -178,7 +178,7 @@ UserStore.prototype.getCurUserById = function(user) {
     } else {
         this.getUserDetailError = "";
         this.currentUser = user;
-        let curUser = _.find(this.curUserList, curUser=>curUser.id == user.id);
+        let curUser = _.find(this.curUserList, curUser => curUser.id == user.id);
         if (curUser){
             curUser.roleIds = user.roleIds;
             curUser.roleNames = user.roleNames;
@@ -330,7 +330,7 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
             //角色的处理
             let roleList = UserFormStore.getState().roleList;
             if (_.isArray(roleList) && roleList.length) {
-                let role = _.filter(roleList, role=>newAddUser.roleIds.indexOf(role.roleId) != -1);
+                let role = _.filter(roleList, role => newAddUser.roleIds.indexOf(role.roleId) != -1);
                 if (_.isArray(role) && role.length) {
                     newAddUser.roleNames = _.pluck(role, "roleName");
                 }
@@ -340,7 +340,7 @@ UserStore.prototype.returnInfoPanel = function(newAddUser) {
         if (newAddUser.teamId) {
             let userTeamList = UserFormStore.getState().userTeamList, userTeam;
             if (_.isArray(userTeamList) && userTeamList.length) {
-                userTeam = _.find(userTeamList, team=>team.group_id == newAddUser.teamId);
+                userTeam = _.find(userTeamList, team => team.group_id == newAddUser.teamId);
             }
             newAddUser.teamName = userTeam ? userTeam.group_name : "";
         }

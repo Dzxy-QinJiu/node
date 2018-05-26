@@ -4,7 +4,7 @@ var Alert = require("antd").Alert;
 var Spinner = require("../spinner");
 var AppNoticeList = React.createClass({
 
-    returnMsgErrorFromServer : function(){
+    returnMsgErrorFromServer: function(){
         if(this.props.getAppNoticeErrorMsg) {
             var retry = (
                 <span>
@@ -27,7 +27,7 @@ var AppNoticeList = React.createClass({
         }
     },
     
-    render : function(){
+    render: function(){
         if(this.props.appNoticeListResult == "loading" && this.props.page == 1){
             return (<div>
                 <Spinner />
@@ -35,10 +35,10 @@ var AppNoticeList = React.createClass({
         }
         return (
             <div className="app-notice-list">
-                {this.props.getAppNoticeErrorMsg? (
+                {this.props.getAppNoticeErrorMsg ? (
                     this.returnMsgErrorFromServer()
                 ) : null}
-                { this.props.list.length > 0  ?  this.props.list.map(function(item, index){
+                { this.props.list.length > 0 ? this.props.list.map(function(item, index){
                     return (
                         <div className="app-notice-item" key={index}>
                             {item.type == "upgrade-notice" ? (
@@ -71,7 +71,7 @@ var AppNoticeList = React.createClass({
                             </div>
                         </div>
                     );
-                }) :  ( this.props.getAppNoticeErrorMsg == '' && this.props.list.length == 0 &&  this.props.noDataShow  ?
+                }) : ( this.props.getAppNoticeErrorMsg == '' && this.props.list.length == 0 && this.props.noDataShow ?
                     (<div>
                         <Alert
                             message="该应用没有公告"

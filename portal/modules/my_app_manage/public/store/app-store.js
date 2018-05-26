@@ -171,7 +171,7 @@ AppStore.prototype.getMyAppList = function(resultObj) {
         } else {
             //无数据时的处理
             if (this.searchContent) {
-                this.appListTipMsg =Intl.get("app.app.search.no.data", "没有符合条件的应用!");
+                this.appListTipMsg = Intl.get("app.app.search.no.data", "没有符合条件的应用!");
             } else {
                 this.appListTipMsg = Intl.get("my.app.no.app", "暂无应用!");
             }
@@ -251,7 +251,7 @@ AppStore.prototype.getAppNameById = function(id) {
     var appName = id;
     var appList = AppFormStore.state.allAppList;
     if (appList && appList.length > 0) {
-        let app = _.find(appList, app=>app.id == id);
+        let app = _.find(appList, app => app.id == id);
         if (app) {
             appName = app.name;
         }
@@ -270,7 +270,7 @@ AppStore.prototype.updateApp = function(appModified, curApp) {
         curApp.managers = appModified.managers;
         var managers = [];
         if (_.isArray(appModified.managers) && appModified.managers.length) {
-            managers = appModified.managers.map(managerId=> {
+            managers = appModified.managers.map(managerId => {
                 return {managerId: managerId, managerName: this.getNickName(managerId)};
             });
         }

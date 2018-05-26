@@ -47,7 +47,7 @@ const AddProduct = React.createClass({
         this.setState(this.state);
     },
     setField2: function(field, index, e) {
-        let value = _.isObject(e)? e.target.value : e;
+        let value = _.isObject(e) ? e.target.value : e;
 
         this.state.products[index][field] = value;
         this.setState(this.state);
@@ -64,7 +64,7 @@ const AddProduct = React.createClass({
         return (
             <Validation ref="validation" onValidate={this.handleValidate}>
                 {products.map((product, index) => {
-                    let value = product.name? (product.id + " " + product.name) : "";
+                    let value = product.name ? (product.id + " " + product.name) : "";
                     const existInAppList = _.findIndex(appList, app => app.app_name === product.name) > -1;
                     if (!existInAppList) {
                         appOptions.push(<Option key={value} value={value}>{product.name}</Option>);
@@ -73,7 +73,7 @@ const AddProduct = React.createClass({
                     return (
                         <Form key={index}>
                             <FormItem 
-                                label={index === 0? Intl.get("common.app.name", "应用名称") : ""}
+                                label={index === 0 ? Intl.get("common.app.name", "应用名称") : ""}
                             >
                                 <Select
                                     showSearch
@@ -86,7 +86,7 @@ const AddProduct = React.createClass({
                                 </Select>
                             </FormItem>
                             <FormItem 
-                                label={index === 0? Intl.get("contract.21", "版本号") : ""}
+                                label={index === 0 ? Intl.get("contract.21", "版本号") : ""}
                             >
                                 <Input
                                     value={product.version}
@@ -94,40 +94,40 @@ const AddProduct = React.createClass({
                                 />
                             </FormItem>
                             <FormItem 
-                                label={index === 0? "数量（个）" : ""}
+                                label={index === 0 ? "数量（个）" : ""}
                                 validateStatus={this.getValidateStatus("num" + index)}
                                 help={this.getHelpMessage("num" + index)}
                             >
                                 <Validator rules={[{required: true, message: Intl.get("contract.89", "请填写数量")}, {pattern: /^\d+$/, message: Intl.get("contract.45", "请填写数字")}]}>
                                     <Input
                                         name={"num" + index}
-                                        value={(isNaN(product.num)? "" : product.num).toString()}
+                                        value={(isNaN(product.num) ? "" : product.num).toString()}
                                         onChange={this.setField2.bind(this, "num", index)}
                                     />
                                 </Validator>
                             </FormItem>
                             <FormItem 
-                                label={index === 0? "总价" : ""}
+                                label={index === 0 ? "总价" : ""}
                                 validateStatus={this.getValidateStatus("total_price" + index)}
                                 help={this.getHelpMessage("total_price" + index)}
                             >
                                 <Validator rules={[{required: true, message: Intl.get("contract.90", "请填写总价")}, this.getNumberValidateRule()]}>
                                     <Input
                                         name={"total_price" + index}
-                                        value={(isNaN(product.total_price)? "" : product.total_price).toString()}
+                                        value={(isNaN(product.total_price) ? "" : product.total_price).toString()}
                                         onChange={this.setField2.bind(this, "total_price", index)}
                                     />
                                 </Validator>
                             </FormItem>
                             <FormItem 
-                                label={index === 0? Intl.get("contract.141", "提成比例") : ""}
+                                label={index === 0 ? Intl.get("contract.141", "提成比例") : ""}
                                 validateStatus={this.getValidateStatus("commission_rate" + index)}
                                 help={this.getHelpMessage("commission_rate" + index)}
                             >
                                 <Validator rules={[this.getNumberValidateRule()]}>
                                     <Input
                                         name={"commission_rate" + index}
-                                        value={(isNaN(product.commission_rate)? "" : product.commission_rate).toString()}
+                                        value={(isNaN(product.commission_rate) ? "" : product.commission_rate).toString()}
                                         onChange={this.setField2.bind(this, "commission_rate", index)}
                                     />
                                 </Validator>

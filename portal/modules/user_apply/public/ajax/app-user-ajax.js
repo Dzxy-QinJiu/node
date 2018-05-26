@@ -56,7 +56,7 @@ exports.getReplyList = function(id) {
         url: '/rest/appuser/replylist/' + id,
         dataType: 'json',
         type: 'get',
-        timeout : 180 * 1000,
+        timeout: 180 * 1000,
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -77,8 +77,8 @@ exports.submitApply = function(obj) {
         url: '/rest/appuser/apply/' + obj.message_id,
         dataType: 'json',
         type: 'post',
-        data : submitData,
-        timeout : 180 * 1000,
+        data: submitData,
+        timeout: 180 * 1000,
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -129,7 +129,7 @@ exports.addReply = function(data) {
 
 // 撤销申请
 exports.saleBackoutApply = function(obj) {
-    const ERROR_MSG =Intl.get("user.apply.detail.backout.error", "撤销申请失败");
+    const ERROR_MSG = Intl.get("user.apply.detail.backout.error", "撤销申请失败");
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/appuser/backout_apply',

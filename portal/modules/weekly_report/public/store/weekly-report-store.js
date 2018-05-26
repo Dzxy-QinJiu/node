@@ -9,9 +9,9 @@ function weeklyReportStore() {
 weeklyReportStore.prototype.setInitState = function() {
     // 团队数据
     this.teamList = {
-        loading:true,
+        loading: true,
         list: [],
-        errMsg: ''  // 获取失败的提示
+        errMsg: '' // 获取失败的提示
     };
     // 成员数据
     this.memberList = {
@@ -33,7 +33,7 @@ weeklyReportStore.prototype.getSaleGroupTeams = function(result) {
         this.teamList.errMsg = result.errMsg;
     } else if (result.resData) {
         this.teamList.errMsg = '';
-        let resData = _.filter(result.resData,(item)=>{
+        let resData = _.filter(result.resData,(item) => {
             return item.manager_ids;
         });
         if (_.isArray(resData) && resData.length) {
@@ -92,7 +92,7 @@ weeklyReportStore.prototype.setSelectedWeeklyReportItem = function({obj, idx}) {
 };
 //去除数组中为空的
 function removeEmptyArrayEle(arr){
-    _.filter(arr,(item)=>{
+    _.filter(arr,(item) => {
         return !item;
     });
 }

@@ -12,23 +12,23 @@ exports.getRealmEstablishAnalysisData = function(startTime,endTime,unit) {
     //使用jquery的ajax
     $.ajax({
         //定义路由
-        url : '/rest/analysis/realm-establish',
+        url: '/rest/analysis/realm-establish',
         //返回json格式
-        dataType : 'json',
+        dataType: 'json',
         //请求方式为get
-        type : 'get',
+        type: 'get',
         //请求数据
-        data : {
-            starttime : start_time,
-            endtime : end_time,
-            unit : unit
+        data: {
+            starttime: start_time,
+            endtime: end_time,
+            unit: unit
         },
         //成功回调
-        success : function(list,text,xhr) {
+        success: function(list,text,xhr) {
             var noEstablish = xhr.getResponseHeader("norealm");
             Deferred.resolve(list , !!noEstablish);
         },
-        error : function() {
+        error: function() {
             Deferred.resolve([] , false);
         }
     });

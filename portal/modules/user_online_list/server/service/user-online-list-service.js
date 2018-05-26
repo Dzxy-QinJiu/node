@@ -3,7 +3,7 @@ var restUtil = require("ant-auth-request").restUtil(restLogger);
 
 //在线用户列表url抽取
 var urls = {
-    onlineUserList : "/rest/analysis/user/v1/online/list",
+    onlineUserList: "/rest/analysis/user/v1/online/list",
     onlineKickUser: '/rest/base/v1/user/grant/kickout'
 };
 

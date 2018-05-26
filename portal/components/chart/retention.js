@@ -10,13 +10,13 @@ const DATE_FORMAT_WITH_YEAR = oplateConsts.DATE_FORMAT;
 const DATE_FORMAT_WITHOUT_YEAR = oplateConsts.DATE_MONTH_DAY_FORMAT;
 
 var Retention = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            chartData : [],
-            title :Intl.get("oplate.user.analysis.9", "用户留存"),
-            height:214,
-            resultType : 'loading',
+            chartData: [],
+            title: Intl.get("oplate.user.analysis.9", "用户留存"),
+            height: 214,
+            resultType: 'loading',
         };
     },
     getColumnName(index, diffDay) {
@@ -50,13 +50,13 @@ var Retention = React.createClass({
 
         return columnName;
     },
-    shouldComponentUpdate : function(nextProps) {
+    shouldComponentUpdate: function(nextProps) {
         if(immutable.is(this.props.chartData , nextProps.chartData) && this.props.resultType === nextProps.resultType) {
             return false;
         }
         return true;
     },
-    renderTable : function() {
+    renderTable: function() {
         if (!_.isArray(this.props.chartData) || !this.props.chartData.length) {
             return (<div className="nodata">{Intl.get("common.no.data","暂无数据")}</div>);
         }
@@ -125,9 +125,9 @@ var Retention = React.createClass({
                 title = Intl.get("oplate.user.analysis.32", "新增数");
             }
             return {
-                title :title,
-                dataIndex : item,
-                render : function(data) {
+                title: title,
+                dataIndex: item,
+                render: function(data) {
                     if(item === 'date') {
                         return <b>{data}</b>;
                     } else {
@@ -140,10 +140,10 @@ var Retention = React.createClass({
             <Table columns={tableColumns} dataSource={list} pagination={false}/>
         );
     },
-    render : function() {
+    render: function() {
         return (
             <div className="analysis-chart">
-                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}>
+                <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}>
                     {this.renderTable()}
                 </div>
             </div>

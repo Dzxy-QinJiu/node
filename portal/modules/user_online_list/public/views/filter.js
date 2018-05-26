@@ -123,7 +123,7 @@ const OnlineUserFilter = React.createClass({
                         value={this.state.condition.client_id}
                         onChange={this.appSelected}
                         optionFilterProp="children"
-                        notFoundContent={!appOptions.length? Intl.get("my.app.no.app", "暂无应用"):Intl.get("user.no.related.app", "无相关应用")}
+                        notFoundContent={!appOptions.length ? Intl.get("my.app.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
                     >
                         {appOptions}
                     </SelectFullWidth>

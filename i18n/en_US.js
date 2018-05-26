@@ -103,7 +103,7 @@ var en_US = {
     "common.input.confirm.password": "Please input the password again",//请输入确认密码
     "common.password.verify": "{errpassword}[{number}]{captcha}", // "密码有错[{number}]次，出现验证码"
     "common.session.verify": "{session}[{number}]{captcha}", // "session超频[{number}]次，出现验证码"
-    "common.ip.verify": "{ip}[{number}]{captcha}",  // "IP超频[{number}]次，出现验证码"
+    "common.ip.verify": "{ip}[{number}]{captcha}", // "IP超频[{number}]次，出现验证码"
     "secret.error": "password error", // 密码输错
     "show.captcha": "show captcha", // 次，出现验证码
     "session.overclock": "session overlock", // session超频
@@ -471,7 +471,7 @@ var en_US = {
     //修改了该用户的备注，改为{description}。
     "fail.to.get.record": "Failed to get change records",//获取用户变更记录失败
     "user.log.login.fail": "Failed to get the user of login information!", // 获取登录信息失败！
-    "user.log.get.log.fail": "Failed to get the user of log information!",  // 获取操作日志信息失败！
+    "user.log.get.log.fail": "Failed to get the user of log information!", // 获取操作日志信息失败！
     "user.log.param.error": "Request parameter error.", // 请求参数错误！
     "user.login.unnormal.location": "A long-distance login", // 异常登录地
     "user.login.normal.location": "Normal Login Location", // 常用登录地
@@ -667,7 +667,7 @@ var en_US = {
     "app.app.owner.search.placeholder": "Filter by name", // 输入名称进行过滤
     "app.app.no.owner": "no owner", //暂无所有者@
     "app.app.get.managers.list": "Getting manager list", // 正在获取管理员列表
-    "app.app.managers.placeholder": "please select manager",  // 请选择管理员*@
+    "app.app.managers.placeholder": "please select manager", // 请选择管理员*@
     "app.app.no.managers": "no manager", // 暂无管理员@
     "app.app.get.secret.list": "Getting secret order list", // 正在获取密令APP列表@
     "app.app.secret.placeholder": "please select order secret", // 请选择密令APP@
@@ -675,17 +675,17 @@ var en_US = {
     "app.app.secret.search.placeholder": "Filter by application name", // 请输入应用名称进行过滤@
     "app.app.disable.modal.content": "whether to enable", // 是否启用此应用？
     "app.app.enable.modal.content": "whether to disable", // 是否禁用此应用？@
-    "app.app.search.no.data": "no match application",  // 没有符合条件的应用!
+    "app.app.search.no.data": "no match application", // 没有符合条件的应用!
     "app.get.app.detail.failed": "Getting the detail of application was failed.", // 获取应用详情失败
     "app.add.tag": "Being added tags...", // 正在添加标签...
     //应用管理end
     //用户管理---用户审计日志start
-    "user.log.title": "user audit log",  // 用户审计日志@
-    "user.log.operate.detail": "the detail of operate",  // 操作详情
-    "user.log.copy": "click to copy",  // 点击可复制
-    "user.log.area": "business",  //运营商
-    "user.log.type": "the type of log",  // 类别
-    "user.log.total": "{number} logs",  // 共有{number}条日志记录
+    "user.log.title": "user audit log", // 用户审计日志@
+    "user.log.operate.detail": "the detail of operate", // 操作详情
+    "user.log.copy": "click to copy", // 点击可复制
+    "user.log.area": "business", //运营商
+    "user.log.type": "the type of log", // 类别
+    "user.log.total": "{number} logs", // 共有{number}条日志记录
     "user.log.all": "All Logs", // 全部日志
     "user.log.audit.log": "Audit Log", // 审计日志
     "user.log.heartbeat.service": "Heartbeat Service Log", // 心跳服务
@@ -696,54 +696,54 @@ var en_US = {
     //用户管理---用户审计日志end
     //我的应用start
     "my.app.role.auth.config.title": "configuration role and permission", // 设置角色、权限
-    "my.app.app.auth.title": "permission",  // 应用权限
+    "my.app.app.auth.title": "permission", // 应用权限
     "my.app.app.secret.key": "keys", // 密钥
     "my.app.app.secret.refresh": "{refresh}@",
-    "my.app.app.secret.modal.content": "Are you sure to refresh the key?",  // 确定要刷新密钥吗？
-    "my.app.change.expire.time": "change expire time",  // 修改到期时间
+    "my.app.app.secret.modal.content": "Are you sure to refresh the key?", // 确定要刷新密钥吗？
+    "my.app.change.expire.time": "change expire time", // 修改到期时间
     "my.app.change.expire.time.error": "failed to modify the expire time", // 修改应用到期时间失败
     "my.app.change.expire.time.placeholder": "please select expire time", // 请选择到期时间
     "my.app.no.auth": "no data, {clickTips}", // 暂无数据
     "my.app.click.add": 'click to add permission', // 点击添加
     "my.app.auth.method": "the method of request", // 请求方式
     "my.app.auth.path": "the path of request", // 请求路径
-    "my.app.get.app.failed": "failed to get apps",  // 获取我的应用失败
-    "my.app.no.app": "no apps",  // 暂无应用
+    "my.app.get.app.failed": "failed to get apps", // 获取我的应用失败
+    "my.app.no.app": "no apps", // 暂无应用
     //我的应用end
     // 安全域start
     "realm.title": "security field manage", // 安全域管理
     "realm.search.placeholder": "name/domain", //安全域名称/域名
     "realm.add.realm": "add security field", // 添加安全域
-    "realm.name": "domain",  // 域名
-    "realm.industry": "Industry",  // 行业
-    "realm.address": "address",  // 地址
+    "realm.name": "domain", // 域名
+    "realm.industry": "Industry", // 行业
+    "realm.address": "address", // 地址
     "realm.change.owner": "change owner", // 更换所有者
     "realm.change.owner.title": "add owner {realname}for security field", // 为安全域{realname}添加新所有者
-    "realm.change.owner.name": "Name",  // 姓名
+    "realm.change.owner.name": "Name", // 姓名
     "realm.change.owner.password.placeholder": "6 ~ 18 characters (numbers, letters or symbols)", // 6-18位字符(由数字，字母，符号组成)
-    "realm.change.owner.phone.tip": "call required or email required",  // 电话、邮箱必填一项！
+    "realm.change.owner.phone.tip": "call required or email required", // 电话、邮箱必填一项！
     "realm.edit.address.placeholder": "please select address", // 请选择地址
     "realm.edit.address.detail.placeholder": "Detailed address, such as street name, house number and other information", // 详细地址，例如街道名称，门牌号码等信息
     "realm.select.address.province": "province", // 省份
     "realm.select.address.city": "city", // 城市
     "realm.select.address.country": "country", // 县区
-    "realm.select.industry.placeholder": "please select industry",  // 请选择行业!
-    "realm.select.industry1": "Computer/Internet/communication/electronics",  // 计算机/互联网/通信/电子
+    "realm.select.industry.placeholder": "please select industry", // 请选择行业!
+    "realm.select.industry1": "Computer/Internet/communication/electronics", // 计算机/互联网/通信/电子
     "realm.select.industry2": "Trade/consumption/manufacture/operation", // 贸易/消费/制造/营运
     "realm.select.industry3": "Pharmaceutical/Medical", // 制药/医疗
-    "realm.select.industry4": "Advertising/Media",  // 广告/媒体
+    "realm.select.industry4": "Advertising/Media", // 广告/媒体
     "realm.select.industry5": "Real Estate/Buildings", // 房地产/建筑
-    "realm.select.industry6": "Professional services/Education/Training",  // 专业服务/教育/培训
-    "realm.select.industry7": "Service industry",  // 服务业
-    "realm.select.industry8": "Logistics/Transportation",  // 物流/运输
-    "realm.select.industry9": "Energy/Raw materials",  // 能源/原材料
-    "realm.select.industry10": "Government/Nonprofit/Other",  // 政府/非盈利机构/其他
-    "realm.disable.modal": "whether to disable?",  // 是否禁用此安全域？
+    "realm.select.industry6": "Professional services/Education/Training", // 专业服务/教育/培训
+    "realm.select.industry7": "Service industry", // 服务业
+    "realm.select.industry8": "Logistics/Transportation", // 物流/运输
+    "realm.select.industry9": "Energy/Raw materials", // 能源/原材料
+    "realm.select.industry10": "Government/Nonprofit/Other", // 政府/非盈利机构/其他
+    "realm.disable.modal": "whether to disable?", // 是否禁用此安全域？
     "realm.enable.modal": "whether to enable?", // 是否启用此安全域？
     "realm.check.realm.name.message": "Please fill in numbers, letters or connectors, the first letter can not be a connector", // 请输入数字、字母或连接符，首字母不能是连接符
     "realm.no.realm": "no security field", // 暂无安全域!
     "realm.no.match.realm": "no match security field", // 没有符合条件的安全域!
-    "realm.company": "company",  // 公司
+    "realm.company": "company", // 公司
     "realm.email.host": "Server Address", // 服务器地址
     "realm.email.host.message": "Please enter the mail server address", // 请输入邮件服务器地址
     "realm.email.port": "Port", // 端口
@@ -908,23 +908,23 @@ var en_US = {
     "call.record.team": "Team", // 团队
     "call.recoord.call.time": "Call Time", // 拨打时间
     "call.record.call.duration": "Duration", // 通话时长
-    "call.record.call.state": "Status",  // 通话状态
+    "call.record.call.state": "Status", // 通话状态
     "call.record.state.answer": "answered", // 已接听
-    "call.record.state.no.answer": "no answered",  // 未接听
-    "call.record.state.busy": "busy",  // 用户忙
+    "call.record.state.no.answer": "no answered", // 未接听
+    "call.record.state.busy": "busy", // 用户忙
     "call.record.customer": "Customer", // 客户
     "call.record.contacts": "Contacts", // 联系人
     "call.record.cancel.search": "Cancel Search", // 取消搜索
     "call.record.search.placeholder": "Filter by {search}", // 根据{search}过滤
     "call.record.customer.title": "Click to show the detail of customer", // 点击可查看客户详情
     "call.record.get.failed": "Getting the call record was failed.", // 获取通话记录失败
-    "call.record.follow.content": "Follow up the content",  // 跟进内容
+    "call.record.follow.content": "Follow up the content", // 跟进内容
     "call.record.filter.tip": "Filter less than 7 phone number.eg: 114,12580...", // 过滤小于7位的号码，如114、12580...
     "call.record.filter.tip.service": "Filter customer service's phone", // 过滤客服电话
     "call.record.call.center": "Call Center", // 呼叫中心
     "call.record.save.content.success": "Save follow-up content successfully.", // 保存跟进内容成功！
     "call.record.save.content.error": "Failed to save follow-up content.", // 保存跟进内容失败！
-    "call.record.is.save.content.title": "Are you  sure to save follow-up content?",  // 是否保存跟进内容？
+    "call.record.is.save.content.title": "Are you  sure to save follow-up content?", // 是否保存跟进内容？
     "call.record.trend.charts": "Call Trend(the latest month)", // 近一个月的通话趋势：
     "call.record.recommend.list": "Failed to get recommend list.", // 获取推荐列表失败！
     "call.record.servicecall.get.err": "Failed to get the statistic about customer services phones",//获取客服电话统计失败
@@ -952,19 +952,19 @@ var en_US = {
     "user.apply.list": "Apply List ", //申请列表
     "user.apply.search.placeholder": "presenter/customer/username", // 申请人/客户名/用户名
     "user.apply.pass": "passed", // 已通过
-    "user.apply.reject": "rejected",  // 已驳回
-    "user.apply.backout": "backouted",  // 已撤销
+    "user.apply.reject": "rejected", // 已驳回
+    "user.apply.backout": "backouted", // 已撤销
     "user.apply.applied": "approved", // 已审批
     "user.apply.false": "pending", // 待审批
-    "user.apply.user.official": "Apply for official users",  // 申请签约用户 ########
-    "user.apply.app.official": "Existing users applied official ",  // 已有用户申请签约用户 #######
+    "user.apply.user.official": "Apply for official users", // 申请签约用户 ########
+    "user.apply.app.official": "Existing users applied official ", // 已有用户申请签约用户 #######
     "user.apply.change.password": "change password", // 申请修改密码
     "user.apply.change.status.false": "disable application", // 申请禁用应用
     "user.apply.change.status.true": "enable application", // 申请启用应用
-    "user.apply.presenter": "presenter",  // 申请人
-    "user.apply.id": "Account apply",  // 账号申请
-    "user.apply.no.match.retry": "no match apply list",  // 暂无符合查询条件的用户申请
-    "user.apply.show.update.tip": "The data has been updated, Whether to",  // 数据已更新,是否
+    "user.apply.presenter": "presenter", // 申请人
+    "user.apply.id": "Account apply", // 账号申请
+    "user.apply.no.match.retry": "no match apply list", // 暂无符合查询条件的用户申请
+    "user.apply.show.update.tip": "The data has been updated, Whether to", // 数据已更新,是否
     "user.apply.no.apply": "no apply list", // 还没有用户审批诶...
     "user.apply.total.apply": "{number} applies {apply_type}", // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
     "user.apply.detail.order": "Order", // 订单
@@ -982,7 +982,7 @@ var en_US = {
     "user.apply.reply.no.content": "please input reply content", // 请填写回复内容
     "user.apply.reply.loading": "Trying to load the reply list", // 正在努力加载回复列表 ...... ###############
     "user.apply.detail.button.pass": "agree", // 通过
-    "user.apply.detail.backout": "revoke",  //Revoke the application  撤销申请
+    "user.apply.detail.backout": "revoke", //Revoke the application  撤销申请
     "user.apply.detail.suggest": "opinion", // opinion  意见
     "user.apply.detail.remark": "postil", // 批注
     "user.apply.detail.expanded.title": "returns the abbreviated content", // 返回缩略内容
@@ -1462,7 +1462,7 @@ var en_US = {
 
     // 应用的运营报告start
     "app_operation.0": "Ⅰ.Total User Statistics", // 一、用户总体统计
-    "app_operation.1": "Total (User)",  // 用户总数
+    "app_operation.1": "Total (User)", // 用户总数
     "app_operation.4": "Area Distribution(User)", // 用户地域分布
     "app_operation.5": "Industry Distribution(User)", // 用户行业分布
     "app_operation.6": "Activity(User)", // 用户活跃度
@@ -1636,10 +1636,10 @@ var en_US = {
     "oplate.user.analysis.app.status": "User Status", // 应用的启停用统计
     "oplate.user.label": "User Label",//用户标签
     "oplate.user.type": "User Type:", // 用户类型：
-    "oplate.app.status": "User Status:",  // 用户状态：
+    "oplate.app.status": "User Status:", // 用户状态：
     "oplate.user.zone": "Zone:", // 地域：
     "oplate.user.industry": "Industry:", // 行业：
-    "oplate.user.team": "Team:",  // 团队：
+    "oplate.user.team": "Team:", // 团队：
     "oplate.user.app.download": "Download version of the statistics", // 各版本下载统计
     "oplate.user.register.self": "Self registration",//自注册
     //活跃用户分析
@@ -2180,6 +2180,6 @@ var en_US = {
     "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import",//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     "clue.customer.belong.to.other.sales": "This phone is registered to {customer} and belongs to {sales}",//该电话属于客户{customer}，所属销售{sales}
     "phone.alert.select.customer": "Please select the customer to follow",//请选择要跟进的客户
-    "clue.analysis.consult.time":"Consult time:",//咨询时间：
+    "clue.analysis.consult.time": "Consult time:",//咨询时间：
 };
 export default en_US;

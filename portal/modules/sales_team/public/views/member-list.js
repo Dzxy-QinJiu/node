@@ -142,7 +142,7 @@ var MemberList = React.createClass({
                 //获取用户的详情
                 UserAction.setUserLoading(true);
                 UserAction.getCurUserById(salesTeamMember.userId);
-                setTimeout(()=>{
+                setTimeout(() => {
                     //获取团队列表
                     if (!Oplate.hideSomeItem) { // v8环境下，不显示所属团队，所以不用发请求
                         UserFormAction.setTeamListLoading(true);
@@ -887,12 +887,12 @@ var MemberList = React.createClass({
         }
         this.setState({
             isSavingTeamGoal: type == SALES_GOALS_TYPE.TEAM,
-            isSavingMemberGoal : type == SALES_GOALS_TYPE.MEMBER
+            isSavingMemberGoal: type == SALES_GOALS_TYPE.MEMBER
         });
         salesTeamAjax.saveSalesGoals(salesGoals).then(result => {
             this.setState({
                 isSavingTeamGoal: false,
-                isSavingMemberGoal:false
+                isSavingMemberGoal: false
             });
             if (result) {
                 SalesTeamAction.updateSalesGoals({type: type, salesGoals: result});
@@ -902,13 +902,13 @@ var MemberList = React.createClass({
         }, errorMsg => {
             this.setState({
                 isSavingTeamGoal: false,
-                isSavingMemberGoal:false
+                isSavingMemberGoal: false
             });
             message.error(errorMsg || Intl.get("common.edit.failed", "修改失败"));
             this.cancelSaveSalesGoals(type,false);
         });
     },
-    closeRightPanel:function() {
+    closeRightPanel: function() {
         //将数据清空
         UserAction.setInitialData();
         SalesTeamAction.closeRightPanel();
@@ -933,7 +933,7 @@ var MemberList = React.createClass({
     turnGoalToShowData: function(goal) {
         return _.isNumber(goal) && !_.isNaN(goal) ? (goal / 10000) : '';
     },
-    toggleBatchChangeTeamGoalBtn:function(flag) {
+    toggleBatchChangeTeamGoalBtn: function(flag) {
         this.setState({
             isShowBatchChangeTeamGoal: flag
         });
@@ -954,7 +954,7 @@ var MemberList = React.createClass({
                         value={this.turnGoalToShowData(this.state.salesGoals.goal)}
                         onChange={this.changeTeamSalesGoals}
                     />
-                    {this.state.isSavingTeamGoal ? <Icon type="loading"/>:    <span className="team-icon-container">
+                    {this.state.isSavingTeamGoal ? <Icon type="loading"/> : <span className="team-icon-container">
                         <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM)}></i>
                         <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.TEAM, true)}></i>
                     </span>}
@@ -962,13 +962,13 @@ var MemberList = React.createClass({
 
                     <span className="sales-goals-label">{Intl.get("contract.139", "万")}，</span>
                 </div>}
-                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)} data-tracename="批量设置个人销售目标">{Intl.get("common.batch.self.sales.target", "批量设置个人销售目标")}</Button> :<div className="sales-goals-item">
+                {this.state.isShowBatchChangeSelfGoal ? <Button className="self-sales-goal" onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)} data-tracename="批量设置个人销售目标">{Intl.get("common.batch.self.sales.target", "批量设置个人销售目标")}</Button> : <div className="sales-goals-item">
                     <span className="sales-goals-label">{Intl.get("sales.team.personal", "个人")}：</span>
                     <InputNumber className="member-goals-input"
                         value={this.turnGoalToShowData(this.state.salesGoals.member_goal)}
                         onChange={this.changeMemberSalesGoals}
                     />
-                    {this.state.isSavingMemberGoal ? <Icon type="loading"/> :  <span className="member-icon-container">
+                    {this.state.isSavingMemberGoal ? <Icon type="loading"/> : <span className="member-icon-container">
                         <i className="iconfont icon-choose" onClick={this.saveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER)}></i>
                         <i className="iconfont icon-close" onClick={this.cancelSaveSalesGoals.bind(this, SALES_GOALS_TYPE.MEMBER, true)}></i>
                     </span>}
@@ -978,7 +978,7 @@ var MemberList = React.createClass({
             </div>);
     },
     //修改用户的基本信息或者修改用户的状态后
-    changeUserFieldSuccess:function(user) {
+    changeUserFieldSuccess: function(user) {
         //修改用户的昵称
         SalesTeamAction.updateCurShowTeamMemberObj(user);
     },
@@ -988,7 +988,7 @@ var MemberList = React.createClass({
         this.changeUserFieldSuccess(updateObj);
     },
     //修改团队后的处理
-    afterEditTeamSuccess:function(user) {
+    afterEditTeamSuccess: function(user) {
         SalesTeamAction.updateCurShowTeamMemberObj(user);
         //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
@@ -1003,7 +1003,7 @@ var MemberList = React.createClass({
                     <div className="member-top-operation-div-title">
                         {this.state.curShowTeamMemberObj.groupName || ""}
                     </div>
-                    {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null :this.renderSalesGoals()}
+                    {this.state.isLoadingSalesGoal || this.state.getSalesGoalErrMsg ? null : this.renderSalesGoals()}
                     {this.createOperationBtn()}
                 </div>
                 <div className="member-list-div"

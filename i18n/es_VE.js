@@ -198,7 +198,7 @@ var en_VE = {
 
     "common.password.verify": "{errpassword}{number}{captcha}", // "密码有错[{number}]次，出现验证码"
     "common.session.verify": "{session}{number}{captcha}", // "session超频[{number}]次，出现验证码"
-    "common.ip.verify": "{ip}{number}{captcha}",  // "IP超频[{number}]次，出现验证码"
+    "common.ip.verify": "{ip}{number}{captcha}", // "IP超频[{number}]次，出现验证码"
     "secret.error": "Equivocar con la contraseña", // 密码输错
     "show.captcha": "veces, introduzca los captchas", // 次，出现验证码
     "session.overclock": "la visita de sesión sobrepasa", // session超频
@@ -374,7 +374,7 @@ var en_VE = {
 
     "user.login.times": "Veces de inicio de sesión",//登录次数
 
-    "user.login.days": "Días de inicio de sesión",  // 登录天数
+    "user.login.days": "Días de inicio de sesión", // 登录天数
 
     "user.remark.write.tip": "Rellene nota",//请填写备注
 

@@ -96,7 +96,7 @@ const DetailInvoice = React.createClass({
             this.props.hideLoading();
 
             if (result.code === 0) {
-                const targetName = target? Intl.get("contract.39", "发票额记录") : Intl.get("contract.40", "发票基本信息");
+                const targetName = target ? Intl.get("contract.39", "发票额记录") : Intl.get("contract.40", "发票基本信息");
 
                 message.success(OPERATE[type] + targetName + "成功");
                 this.props.refreshCurrentContract(this.props.contract.id);
@@ -107,7 +107,7 @@ const DetailInvoice = React.createClass({
         });
     },
     renderForm: function(invoice, index) {
-        index = isNaN(index)? "" : index;
+        index = isNaN(index) ? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
         let formData = this.state[key];
@@ -132,7 +132,7 @@ const DetailInvoice = React.createClass({
                         <DatePicker
                             name={"date" + index}
                             onChange={this.setField.bind(this, "date", index)}
-                            value={formData.date? moment(formData.date) : moment()}
+                            value={formData.date ? moment(formData.date) : moment()}
                             disabledDate={disabledDate}
                         />
                     </FormItem>
@@ -171,17 +171,17 @@ const DetailInvoice = React.createClass({
         //编辑按钮是否显示
         const isEditBtnShow = !this.state.isFormShow && hasPrivilege("CONTRACT_INVOICE_DETAIL_ADD");
 
-        const detailOp = invoiceDetail.id? "update" : "add";
+        const detailOp = invoiceDetail.id ? "update" : "add";
 
         return (
             <div className="detail-invoice">
-                {isEditBtnShow? (
+                {isEditBtnShow ? (
                     <RightPanelEdit 
                         onClick={this.showForm}
                     />
                 ) : null}
 
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <Form horizontal>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <FormItem 
@@ -278,7 +278,7 @@ const DetailInvoice = React.createClass({
                     </Form>
                 ) : (
                     <div className="invoice-info">
-                        {invoiceDetail.payer_name? (
+                        {invoiceDetail.payer_name ? (
                             <div className="info">
                                 <span className="field-name"><ReactIntl.FormattedMessage id="contract.47" defaultMessage="公司全称" /></span>：<span className="filed-value">{invoiceDetail.payer_name}</span><br/>
                                 <span className="field-name"><ReactIntl.FormattedMessage id="contract.49" defaultMessage="银行帐号" /></span>：<span className="filed-value">{invoiceDetail.account_number}</span><br/>
@@ -297,7 +297,7 @@ const DetailInvoice = React.createClass({
                             </div>
                         )}
                         <div className="extra">
-                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
+                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT") ? (
                                 <div className="add-invoice">
                                     {this.renderForm("", 0)}
                                     <Button
@@ -315,13 +315,13 @@ const DetailInvoice = React.createClass({
     
                                     return (
                                         <li key={index}>
-                                            {isFormShow? (
+                                            {isFormShow ? (
                                                 <span>
                                                     {this.renderForm(invoice, index)}
                                                 </span>
                                             ) : (
                                                 <span>
-                                                    {invoice.date? moment(invoice.date).format(DATE_FORMAT) : ""}
+                                                    {invoice.date ? moment(invoice.date).format(DATE_FORMAT) : ""}
                                             &nbsp;
                                                     <ReactIntl.FormattedMessage id="contract.43" defaultMessage="开出" />
                                             &nbsp;
@@ -332,7 +332,7 @@ const DetailInvoice = React.createClass({
                                                 </span>
                                             )}
             
-                                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT")? (
+                                            {hasPrivilege("CONTRACT_ADD_INVOICE_AMOUNT") ? (
                                                 <span>
                                                     {isFormShow ? (
                                                         <span>

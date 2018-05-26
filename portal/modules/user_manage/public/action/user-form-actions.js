@@ -59,7 +59,7 @@ function UserFormActions() {
         var _this = this;
         userAjax.addUser(user).then(function(savedUser) {
             //保存成功后的处理
-            let email = Intl.get("member.add.member.email", "新增成员的邮箱") ;
+            let email = Intl.get("member.add.member.email", "新增成员的邮箱");
             if (savedUser && savedUser.email) {
                 email = savedUser.email;
             }

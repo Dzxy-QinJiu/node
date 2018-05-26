@@ -20,7 +20,7 @@ AppUserFormStore.prototype.resetState = function() {
     var end_time = moment().add(12,'month').format(FORMAT);
     var start_time = moment().format(FORMAT);
 
-    this.accountHolder =  userData.getUserData().nick_name;
+    this.accountHolder = userData.getUserData().nick_name;
 
     this.app_list = [];
 
@@ -36,41 +36,41 @@ AppUserFormStore.prototype.resetState = function() {
     //表单数据
     this.formData = {
         //用户名
-        user_name : "",
+        user_name: "",
         //选中的应用列表'
-        selected_apps : [],
+        selected_apps: [],
         //客户
-        customer_id:"",
+        customer_id: "",
         //客户名称
-        customer_name : "",
+        customer_name: "",
         //开户类型
-        user_type : "1",
+        user_type: "1",
         //开通套数
-        count_number : 1,
+        count_number: 1,
         //开通周期
-        range : "12",
+        range: "12",
         //开通时间
-        start_time : start_time,
+        start_time: start_time,
         //到期时间
-        end_time : end_time,
+        end_time: end_time,
         //到期停用
-        over_draft : "1",
+        over_draft: "1",
         //账号状态
-        user_status : "1",
+        user_status: "1",
         //销售团队
-        sales_team : {
-            id : '',
-            name : ''
+        sales_team: {
+            id: '',
+            name: ''
         },
         //销售
-        sales : {
-            id : '',
-            name : ''
+        sales: {
+            id: '',
+            name: ''
         }
     };
     this.status = {
         user_name: {},
-        count_number : {}
+        count_number: {}
     };
 
 };
@@ -88,10 +88,10 @@ AppUserFormStore.prototype.customRadioValueChange = function({field,value}) {
             this.formData.start_time = this.formData.end_time = Intl.get("common.time.forever", "永久");
         } else if(newRange === 'custom') {
             var now = moment().format(FORMAT);
-            if(this.formData.start_time ===Intl.get("common.time.forever", "永久")){
+            if(this.formData.start_time === Intl.get("common.time.forever", "永久")){
                 this.formData.start_time = now;
             }
-            if(this.formData.end_time ===Intl.get("common.time.forever", "永久")){
+            if(this.formData.end_time === Intl.get("common.time.forever", "永久")){
                 this.formData.end_time = moment().add("1","year").format(FORMAT);
             }
         } else {
@@ -108,12 +108,12 @@ AppUserFormStore.prototype.customRadioValueChange = function({field,value}) {
 //选中客户
 AppUserFormStore.prototype.customerChoosen = function(resultObj) {
     this.formData.sales_team = {
-        id : resultObj.sales_team.id || '',
-        name : resultObj.sales_team.name || ''
+        id: resultObj.sales_team.id || '',
+        name: resultObj.sales_team.name || ''
     };
     this.formData.sales = {
-        id : resultObj.sales.id || '',
-        name : resultObj.sales.name || ''
+        id: resultObj.sales.id || '',
+        name: resultObj.sales.name || ''
     };
     this.formData.customer_name = resultObj.customer.name || '';
     this.formData.customer_id = resultObj.customer.id || '';

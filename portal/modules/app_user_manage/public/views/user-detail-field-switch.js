@@ -21,53 +21,53 @@ const CLS = 'user-detail-field-switch';
 var Switch = require("antd").Switch;
 var UserDetailFieldSwitch = React.createClass({
     //获取默认属性
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
             //用户id
-            userId : '',
+            userId: '',
             //应用id
-            appId : '',
+            appId: '',
             //属性原始值
-            originValue : '0',
+            originValue: '0',
             //选中状态下对应的值
-            checkedValue : '1',
+            checkedValue: '1',
             //未选中状态下对应的值
-            unCheckedValue : '0',
+            unCheckedValue: '0',
             //开启文字
-            checkedChildren : Intl.get("user.open.code", "开"),
+            checkedChildren: Intl.get("user.open.code", "开"),
             //关闭文字
-            unCheckedChildren : Intl.get("user.close.code", "关"),
+            unCheckedChildren: Intl.get("user.close.code", "关"),
             //选中状态下提交的值
-            checkedSubmitValue : '1',
+            checkedSubmitValue: '1',
             //未选中状态下提交的值
-            unCheckedSubmitValue : '0',
+            unCheckedSubmitValue: '0',
             //字段
-            field : 'status',
+            field: 'status',
             //修改成功之后的回调
-            onSubmitSuccess : function() {}
+            onSubmitSuccess: function() {}
         };
     },
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(nextProps.originValue != this.props.originValue) {
             this.setState({
-                value : nextProps.originValue
+                value: nextProps.originValue
             });
         }
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            timeout : null,
-            resultType : '',
-            errorMsg : '',
-            value : this.props.originValue
+            timeout: null,
+            resultType: '',
+            errorMsg: '',
+            value: this.props.originValue
         };
     },
     //获取提交对象
-    getSubmitObj : function() {
+    getSubmitObj: function() {
         //user_id和client_id是必传项
         var submitObj = {
-            user_id : this.props.userId,
-            client_id : this.props.appId
+            user_id: this.props.userId,
+            client_id: this.props.appId
         };
         //当前是否选中
         var checked = this.state.value == this.props.checkedValue;
@@ -76,10 +76,10 @@ var UserDetailFieldSwitch = React.createClass({
         return submitObj;
     },
     //发送ajax
-    sendAjax : function() {
+    sendAjax: function() {
         this.setState({
-            resultType : 'loading',
-            errorMsg : ''
+            resultType: 'loading',
+            errorMsg: ''
         });
         var submitObj = this.getSubmitObj();
         //保留this
@@ -87,13 +87,13 @@ var UserDetailFieldSwitch = React.createClass({
         //提交数据
         AppUserAjax.editAppField(submitObj).then(function(result) {
             _this.setState({
-                resultType : '',
-                errorMsg : ''
+                resultType: '',
+                errorMsg: ''
             });
             //multilogin这个字段太各应了！覃璐和郑鹏飞都写的是错的
             var successObj = {
-                user_id : submitObj.user_id,
-                client_id : submitObj.client_id
+                user_id: submitObj.user_id,
+                client_id: submitObj.client_id
             };
             var field = _this.props.field;
             if(field !== 'mutilogin') {
@@ -105,31 +105,31 @@ var UserDetailFieldSwitch = React.createClass({
             _this.props.onSubmitSuccess(successObj);
         },function(errorMsg) {
             _this.setState({
-                resultType : 'error',
-                errorMsg : errorMsg
+                resultType: 'error',
+                errorMsg: errorMsg
             });
         });
     },
     //当选项改变的时候，发送请求
-    onSwitchChange : function(checked) {
+    onSwitchChange: function(checked) {
         this.setState({
-            value : checked ? this.props.checkedValue : this.props.unCheckedValue
+            value: checked ? this.props.checkedValue : this.props.unCheckedValue
         });
         clearTimeout(this.state.timeout);
         this.state.timeout = setTimeout(this.sendAjax , 500);
     },
-    onHideAlert : function() {
+    onHideAlert: function() {
         this.setState({
-            resultType : '',
-            value : this.props.originValue
+            resultType: '',
+            value: this.props.originValue
         });
     },
-    render : function() {
+    render: function() {
         if(this.state.resultType === 'loading') {
             return <div className={CLS}><Icon type="loading" /></div>;
         }
         if(this.state.resultType === 'error') {
-            return <div  className={CLS}><AlertTimer time={2000} message={this.state.errorMsg} type="error" onHide={this.onHideAlert} showIcon/></div>;
+            return <div className={CLS}><AlertTimer time={2000} message={this.state.errorMsg} type="error" onHide={this.onHideAlert} showIcon/></div>;
         }
         return (
             <div className={CLS}>

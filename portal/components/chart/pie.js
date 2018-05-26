@@ -9,22 +9,22 @@ var immutable = require("immutable");
 import { packageTry } from 'LIB_DIR/func';
 
 var PieChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            chartData : [],
-            legend : [],
-            width:'100%',
-            height:214,
-            resultType : 'loading',
+            chartData: [],
+            legend: [],
+            width: '100%',
+            height: 214,
+            resultType: 'loading',
         };
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
-            animation : false,
-            tooltip : {
+            animation: false,
+            tooltip: {
                 trigger: 'item',
-                extraCssText : echartsTooltipCssText,
+                extraCssText: echartsTooltipCssText,
                 formatter: "<div class='echarts-tooltip'>{b} : {c} ({d}%)</div>"
             },
             legend: {
@@ -36,14 +36,14 @@ var PieChart = React.createClass({
                 },
                 data: this.getLegendData()
             },
-            series : this.getSeries(),
+            series: this.getSeries(),
         };
         return option;
     },
     getLegendData() {
         let legend = this.props.legend;
         if (!legend) {
-            const data = this.props.dataField? this.props.chartData[this.props.dataField] : this.props.chartData;
+            const data = this.props.dataField ? this.props.chartData[this.props.dataField] : this.props.chartData;
     
             legend = _.pluck(data, "name");
             const subField = this.props.subField;
@@ -54,17 +54,17 @@ var PieChart = React.createClass({
         }
         return legend;
     },
-    getSeries : function() {
+    getSeries: function() {
         let series = [];
         const serieObj = {
             name: '',
             type: 'pie',
-            radius : '70%',
+            radius: '70%',
             center: ['30%', '55%'],
             data: [],
-            label : {
-                normal : {
-                    formatter : "{c}"
+            label: {
+                normal: {
+                    formatter: "{c}"
                 }
             },
             itemStyle: {
@@ -78,7 +78,7 @@ var PieChart = React.createClass({
 
         const chartDataSeries = this.props.chartData.series;
         const subField = this.props.subField;
-        let chartData = this.props.chartData? JSON.parse(JSON.stringify(this.props.chartData)) : [];
+        let chartData = this.props.chartData ? JSON.parse(JSON.stringify(this.props.chartData)) : [];
         if (this.props.dataField) chartData = chartData[this.props.dataField];
 
         const maxSeries = this.props.maxSeries;
@@ -128,12 +128,12 @@ var PieChart = React.createClass({
 
         return series;
     },
-    getSerieData : function(data) {
+    getSerieData: function(data) {
         if (_.isArray(data)) {
             return data.map(item => {
                 return {
-                    name : item.name,
-                    value : item.count
+                    name: item.name,
+                    value: item.count
                 };
             });
         } else {
@@ -144,7 +144,7 @@ var PieChart = React.createClass({
             for (let key in data) {
                 const legendItem = _.find(legend, item => item.key === key);
 
-                const name = legendItem? legendItem.name : key;
+                const name = legendItem ? legendItem.name : key;
 
                 if (excludeKey.indexOf(key) === -1) {
                     serieData.push({
@@ -157,7 +157,7 @@ var PieChart = React.createClass({
             return serieData;
         }
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -171,10 +171,10 @@ var PieChart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.chartData &&
             prevProps.chartData &&
@@ -186,7 +186,7 @@ var PieChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -194,11 +194,11 @@ var PieChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis-chart">
-                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );
     }

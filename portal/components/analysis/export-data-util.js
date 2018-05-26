@@ -48,7 +48,7 @@ export function handlePieChartData(processData) {
             exportData.push([Intl.get("common.enabled", "启用"), processData.enabled]);
         }
         if (processData.disabled) {
-            exportData.push([ Intl.get("common.stop", "停用"), processData.disabled]);
+            exportData.push([Intl.get("common.stop", "停用"), processData.disabled]);
         }
         // 用户类型
         if (processData.formal) {
@@ -109,7 +109,7 @@ export function handleLineChartData(processData, valueField = "count") {
     let exportData = [];
     if (_.isArray(processData) && processData.length) {
         let titleArray = _.pluck(processData, 'timestamp');
-        let titleArrayName = titleArray.map( (time) =>{
+        let titleArrayName = titleArray.map( (time) => {
             return moment(+time).format(oplateConsts.DATE_FORMAT);
         });
         exportData.push(titleArrayName);
@@ -157,17 +157,17 @@ function handleUserType(userTypeData) {
         trainingArray.unshift(Intl.get('user.type.train', '培训'));
         userTypeArrayData.push(trainingArray);
     }
-    let internalArray =  _.pluck(userTypeData, 'internal');
+    let internalArray = _.pluck(userTypeData, 'internal');
     if (internalArray.length) {
         internalArray.unshift(Intl.get('user.type.employee', '员工'));
         userTypeArrayData.push(internalArray);
     }
-    let unknownArray =  _.pluck(userTypeData, 'unknown');
+    let unknownArray = _.pluck(userTypeData, 'unknown');
     if (unknownArray.length) {
         unknownArray.unshift(Intl.get('common.unknown', '未知'));
         userTypeArrayData.push(unknownArray);
     }
-    let totalArray =  _.pluck(userTypeData, 'total');
+    let totalArray = _.pluck(userTypeData, 'total');
     if (totalArray.length) {
         totalArray.unshift(Intl.get('operation.report.total.num', '总数'));
         userTypeArrayData.push(totalArray);
@@ -180,7 +180,7 @@ export function handleUserStatis(userAnalysisData) {
     if (_.isArray(userAnalysisData) && userAnalysisData.length) {
         if (userAnalysisData[0].app_name) { // 综合条件下
             let titleArray = _.pluck(userAnalysisData[0].data, 'timestamp');
-            let titleNameArray = titleArray.map( (time) =>{
+            let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
             titleNameArray.unshift(Intl.get('common.app.name', '应用名称'));
@@ -193,7 +193,7 @@ export function handleUserStatis(userAnalysisData) {
             } );
         } else { // 单个应用
             let titleArray = _.pluck(userAnalysisData, 'timestamp');
-            let titleNameArray = titleArray.map( (time) =>{
+            let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
             titleNameArray.unshift(Intl.get('user.user.type', '用户类型'));
@@ -237,7 +237,7 @@ export function handleActivelyData(processData) {
     if (_.isArray(processData) && processData.length) {
         let datas = processData[0].datas;
         let titleArray = _.pluck(datas, 'timestamp');
-        let titleNameArray = titleArray.map( (time) =>{
+        let titleNameArray = titleArray.map( (time) => {
             return moment(+time).format(oplateConsts.DATE_FORMAT);
         });
         titleNameArray.unshift(Intl.get('common.type', '类型'));
@@ -276,7 +276,7 @@ export function handleActiveTimesData(processData) {
     } );
     titleNameArray.unshift(Intl.get('common.login.time', '时间'));
     let exportData = [];
-    let  groupBy = _.groupBy(processData, (active) => {return active.week;} );
+    let groupBy = _.groupBy(processData, (active) => {return active.week;} );
     _.each(groupBy, (group) => {
         let week = group[0].week;
         let countArray = _.pluck(group, 'count');
@@ -310,7 +310,7 @@ export function handleActiveTimesData(processData) {
 // 各版本下载统计
 export function handleAppDownLoadData(processData, appTitleName) {
     let exportData = [];
-    let titleNameArray = appTitleName.map( (time) =>{
+    let titleNameArray = appTitleName.map( (time) => {
         return moment(new Date(+time)).format(oplateConsts.DATE_FORMAT);
     });
     titleNameArray.unshift(Intl.get('contract.21', '版本号'));
@@ -382,7 +382,7 @@ export function handleLoginTimesExport(data) {
     if (_.isArray(data) && data.length) {
         exportArr.push([Intl.get("oplate.user.analysis.loginTimes", "用户在线时间"), Intl.get("common.app.count", "数量")]);
         exportArr = exportArr.concat(data.map(x => {
-            return [x[0], (x[1] - 1)*60];
+            return [x[0], (x[1] - 1) * 60];
         }));
     }
     return exportArr;

@@ -12,7 +12,7 @@ var CommissionAndTarget = React.createClass({
     getDefaultProps: function() {
         return {
             //某条销售目标或者提成比例记录的id
-            id : '',
+            id: '',
             //某个用户的详情
             userInfo: {},
             //字段
@@ -82,7 +82,7 @@ var CommissionAndTarget = React.createClass({
                 //如果之前没有填写过销售目标和提成比例
                 if (!this.state.id && _.isFunction(this.props.afterModifySuccess)){
                     var updateObj = {
-                        id:result.id
+                        id: result.id
                     };
                     if (result.goal || result.goal === 0){
                         updateObj.goal = result.goal;
@@ -98,7 +98,7 @@ var CommissionAndTarget = React.createClass({
                     submitErrorMsg: Intl.get("common.edit.failed", "修改失败")
                 });
             }
-        },(errorMsg) =>  {
+        },(errorMsg) => {
             this.setState({
                 loading: false,
                 submitErrorMsg: errorMsg || Intl.get("common.edit.failed", "修改失败")

@@ -23,27 +23,27 @@ var UserInfoLog = React.createClass({
         var Columns = [{
             title: Intl.get("common.login.time","时间"),
             dataIndex: 'loginTime',
-            width:'16%'
+            width: '16%'
         }, {
             title: Intl.get("user.info.login.address","地点"),
             dataIndex: 'loginAddress',
-            width:'16%'
+            width: '16%'
         }, {
             title: 'IP',
             dataIndex: 'loginIP',
-            width:'16%'
+            width: '16%'
         }, {
             title: Intl.get("user.info.login.browser","浏览器"),
             dataIndex: 'loginBrowser',
-            width:'16%'
+            width: '16%'
         }, {
             title: Intl.get("common.login.equipment","设备"),
             dataIndex: 'loginEquipment',
-            width:'16%'
+            width: '16%'
         }, {
             title: Intl.get("common.operate","操作"),
             dataIndex: 'loginMessage',
-            width:'20%'
+            width: '20%'
         }];
         var rowKey = function(record) {
             return record.id;
@@ -64,7 +64,7 @@ var UserInfoLog = React.createClass({
         return (
             <div className="user-log-list-table-wrap scroll-load"
 
-                style={{display : doNotShow ? "none" : "block"}}
+                style={{display: doNotShow ? "none" : "block"}}
             >
                 <div className="log-table" style={{ height: this.props.height }}>
                     <AntcTable
@@ -83,7 +83,7 @@ var UserInfoLog = React.createClass({
                     this.props.logTotal ?
                         <div className="summary-info">
                             {Intl.get("user.log.total","共有{number}条日志记录", {number: this.props.logTotal})}
-                        </div>:null
+                        </div> : null
                 }
 
             </div>

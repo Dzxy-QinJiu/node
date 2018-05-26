@@ -15,7 +15,7 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": [
-                "CUSTOMER_INVALID_PHONE_ADD"  // 添加客服电话权限
+                "CUSTOMER_INVALID_PHONE_ADD" // 添加客服电话权限
             ]
         }, {
             // 获取客服电话
@@ -26,7 +26,7 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": [
-                "CUSTOMER_INVALID_PHONE_GET"  // 获取客服电话权限
+                "CUSTOMER_INVALID_PHONE_GET" // 获取客服电话权限
             ]
         }, {
             // 删除客服电话
@@ -37,7 +37,7 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": [
-                "CUSTOMER_INVALID_PHONE_DELETE"  // 删除客服电话权限
+                "CUSTOMER_INVALID_PHONE_DELETE" // 删除客服电话权限
             ]
         }
     ]

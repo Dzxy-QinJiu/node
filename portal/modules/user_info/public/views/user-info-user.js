@@ -278,7 +278,7 @@ var UserInfo = React.createClass({
         }
     },
     getLangOptions: function() {
-        return langArray.map(lang=> {
+        return langArray.map(lang => {
             return (
                 <Option key={lang.key} value={lang.key}>
                     {lang.val}
@@ -298,7 +298,7 @@ var UserInfo = React.createClass({
         location.reload(true);
     },
     getLangDisplayText: function() {
-        let lang = _.find(langArray, langObj=>langObj.key == this.state.lang);
+        let lang = _.find(langArray, langObj => langObj.key == this.state.lang);
         if (lang && lang.val) {
             return lang.val;
         } else {
@@ -337,7 +337,7 @@ var UserInfo = React.createClass({
                             <ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱"/>
                             ：</span>
                         <span>
-                            {formData.email ? formData.email:
+                            {formData.email ? formData.email :
                                 <span>
                                     <ReactIntl.FormattedMessage
                                         id="user.info.no.email"
@@ -377,7 +377,7 @@ var UserInfo = React.createClass({
                             ：</span>
                         <span>{formData.rolesName}</span>
                     </div>
-                    {  !Oplate.hideSomeItem &&  <dl className="dl-horizontal user-info-item">
+                    { !Oplate.hideSomeItem && <dl className="dl-horizontal user-info-item">
                         <dt>{Intl.get("common.user.lang", "语言")}：</dt>
                         <dd>
                             <BasicEditSelectField
@@ -386,7 +386,7 @@ var UserInfo = React.createClass({
                                 value={this.state.lang}
                                 field="language"
                                 selectOptions={this.getLangOptions()}
-                                disabled={hasPrivilege("MEMBER_LANGUAGE_SETTING")?false:true}
+                                disabled={hasPrivilege("MEMBER_LANGUAGE_SETTING") ? false : true}
                                 onSelectChange={this.onSelectLang}
                                 cancelEditField={this.cancelEditLang}
                                 saveEditSelect={UserInfoAjax.setUserLanguage}

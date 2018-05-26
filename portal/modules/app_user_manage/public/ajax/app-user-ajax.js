@@ -4,7 +4,7 @@ import { storageUtil } from "ant-utils";
 
 //获取近期登录的用户列表
 var recentLoginUsersAjax = null;
-exports.getRecentLoginUsers= function(params) {
+exports.getRecentLoginUsers = function(params) {
     var Deferred = $.Deferred();
     if(recentLoginUsersAjax) {
         recentLoginUsersAjax.abort();
@@ -44,7 +44,7 @@ exports.getAppUserList = function(obj) {
     //当前页
     obj.page_num = obj.page || 1,
     //一页多少条
-    obj.page_size = obj.page_size||20,
+    obj.page_size = obj.page_size || 20,
     //应用id
     obj.app_id = obj.app_id || '',
     //关键词
@@ -70,7 +70,7 @@ exports.getAppUserList = function(obj) {
     //异常登录
     obj.user_exception = obj.user_exception || '',
     //团队id
-    obj.team_ids = (obj.team_ids && (obj.team_ids.join(",")))|| '';
+    obj.team_ids = (obj.team_ids && (obj.team_ids.join(","))) || '';
 
     let queryObj = obj;
 
@@ -96,7 +96,7 @@ exports.getAppUserList = function(obj) {
     }
     var requestObj = {};
     for(var key in queryObj) {
-        if(queryObj[key] !== ''&& key !== "tag_all") {
+        if(queryObj[key] !== '' && key !== "tag_all") {
             requestObj[key] = queryObj[key];
         }
     }
@@ -111,7 +111,7 @@ exports.getAppUserList = function(obj) {
         dataType: 'json',
         type: 'get',
         data: requestObj,
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(data) {
             Deferred.resolve(data);
         },
@@ -132,7 +132,7 @@ exports.getUserDetail = function(userId) {
         url: '/rest/appuser/detail/' + userId,
         dataType: 'json',
         type: 'get',
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(userDetail) {
             Deferred.resolve(userDetail);
         },
@@ -156,7 +156,7 @@ exports.addAppUser = function(user) {
         contentType: 'application/json',
         type: 'post',
         data: JSON.stringify(user),
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -178,7 +178,7 @@ exports.editAppUser = function(user) {
         contentType: 'application/json',
         type: 'put',
         data: JSON.stringify(user),
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(newUser) {
             Deferred.resolve(newUser);
         },
@@ -217,7 +217,7 @@ exports.getSalesTeams = function(clientId) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error : function(codeMessage) {
+        error: function(codeMessage) {
             Deferred.reject(codeMessage && codeMessage.message || Intl.get("common.get.sale.lists.failed", "获取销售团队列表失败"));
         }
     });
@@ -236,7 +236,7 @@ exports.getTeamLists = function() {
         success: function(teamlists) {
             Deferred.resolve(teamlists);
         },
-        error : function(codeMessage) {
+        error: function(codeMessage) {
             Deferred.reject(codeMessage && codeMessage.message || Intl.get("common.get.team.list.failed", "获取团队列表失败"));
         }
     });
@@ -254,7 +254,7 @@ exports.getSales = function(groupId) {
         success: function(list) {
             Deferred.resolve(list);
         },
-        error : function(codeMessage) {
+        error: function(codeMessage) {
             Deferred.reject(codeMessage && codeMessage.message || '获取销售人员列表失败');
         }
     });
@@ -273,7 +273,7 @@ exports.disableAllAppsByUser = function(user_id) {
         data: {
             user_id: user_id,
         },
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -295,7 +295,7 @@ exports.addApp = function(appList) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(appList),
-        timeout: 180*1000,
+        timeout: 180 * 1000,
         success: function(result) {
             if(_.isArray(result)) {
                 Deferred.resolve(result);
@@ -320,11 +320,11 @@ exports.batchUpdate = function(field, submitData,selectedAppId) {
         url: '/rest/appuser/batch',
         type: 'put',
         data: {
-            application_ids:selectedAppId,
+            application_ids: selectedAppId,
             field: field,
             data: JSON.stringify(submitData)
         },
-        timeout : 180*1000,
+        timeout: 180 * 1000,
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -373,7 +373,7 @@ exports.editApp = function(appInfo) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(appInfo),
-        timeout: 180*1000,
+        timeout: 180 * 1000,
         success: function(flag) {
             if (flag) {
                 Deferred.resolve(flag);
@@ -491,7 +491,7 @@ exports.applyChangePassword = function(data) {
 };
 
 //申请其他类型的修改
-exports.applyChangeOther= function(data) {
+exports.applyChangeOther = function(data) {
     const ERROR_MSG = Intl.get("user.apply.other.failed", "申请修改其他类型失败");
     var Deferred = $.Deferred();
     $.ajax({

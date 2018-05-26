@@ -292,7 +292,7 @@ var AppAuthPanel = React.createClass({
                         id="my.app.no.auth"
                         defaultMessage={`暂无数据，{clickTips}`}
                         values={{
-                            "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
+                            "clickTips": <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
                         }}
                     />
                 </div>);
@@ -303,7 +303,7 @@ var AppAuthPanel = React.createClass({
                     id="my.app.no.auth"
                     defaultMessage={`暂无数据，{clickTips}`}
                     values={{
-                        "clickTips":  <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
+                        "clickTips": <a onClick={this.showEditAuthPanel}>{Intl.get("my.app.click.add", "点击添加")}</a>
                     }}
                 />
             </div>);
@@ -330,7 +330,7 @@ var AppAuthPanel = React.createClass({
                     <div className="app-auth-api-content">
                         {(appAuthArray && appAuthArray.length > 0 && appAuthArray[0].apiUrl) || this.state.isEditAppAuth ? (
                             <div className="api-header"><span>{Intl.get("my.app.auth.method","请求方式")}</span><span>{Intl.get("my.app.auth.path","请求路径")}</span></div>) : null}
-                        <div className="api-body" style={{height:apiLiHeight}}>
+                        <div className="api-body" style={{height: apiLiHeight}}>
                             <GeminiScrollbar className="geminiScrollbar-vertical">
                                 {this.state.isEditAppAuth ? (<div>
                                     {this.renderAppAuthApis()}
@@ -344,7 +344,7 @@ var AppAuthPanel = React.createClass({
                                         <div className="indicator">
                                             {this.state.saveResult ?
                                                 (
-                                                    <AlertTimer time={this.state.saveResult=="error"?3000:600}
+                                                    <AlertTimer time={this.state.saveResult == "error" ? 3000 : 600}
                                                         message={this.state.saveMsg}
                                                         type={this.state.saveResult} showIcon
                                                         onHide={this.hideSaveTooltip}/>

@@ -199,7 +199,7 @@ var ConfigManage = React.createClass({
                 <TopNav>
                     <TopNav.MenuList />
                 </TopNav>
-                <div className="config-container" style={{height:height}}>
+                <div className="config-container" style={{height: height}}>
                     <GeminiScrollBar>
                         <div className="box" data-tracename="行业配置">
                             <div className="box-title">

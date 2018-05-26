@@ -29,7 +29,7 @@ import AntcDropdown from "CMP_DIR/antc-dropdown";
 import { storageUtil } from "ant-utils";
 import AlertTimer from "CMP_DIR/alert-timer";
 import {SELECT_TYPE} from "./utils/clue-customer-utils";
-import CONSTS from  "LIB_DIR/consts";
+import CONSTS from "LIB_DIR/consts";
 import AutosizeTextarea from "CMP_DIR/autosize-textarea";
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from "PUB_DIR/sources/utils/consts";
 import clueCustomerAjax from "./ajax/clue-customer-ajax";
@@ -53,9 +53,9 @@ const ClueCustomer = React.createClass({
             accessChannelArray: accessChannelArray,//线索渠道
             clueSourceArray: clueSourceArray,//线索来源
             clueClassifyArray: clueClassifyArray,//线索分类
-            isRemarkingItem:'',//正在标记的那条线索
+            isRemarkingItem: '',//正在标记的那条线索
             clueImportTemplateFormShow: false,//线索导入面板是否展示
-            previewList:[],//预览列表
+            previewList: [],//预览列表
             clueAnalysisPanelShow: false,//线索分析面板是否展示
             ...clueCustomerStore.getState()
         };
@@ -102,7 +102,7 @@ const ClueCustomer = React.createClass({
         this.getUserPhoneNumber();
         clueEmitter.on(clueEmitter.IMPORT_CLUE, this.onClueImport);
     },
-    onClueImport:function(list) {
+    onClueImport: function(list) {
         this.setState({
             isPreviewShow: true,
             previewList: list,
@@ -200,7 +200,7 @@ const ClueCustomer = React.createClass({
     renderClueAnalysisBtn: function() {
         return (
             <div className="clue-analysis-btn-container">
-                <Button type="primary" className="call-analysis-btn"  title="线索分析" onClick={this.handleClueAnalysisPanel}>
+                <Button type="primary" className="call-analysis-btn" title="线索分析" onClick={this.handleClueAnalysisPanel}>
                     <i className="iconfont  icon-call-analysis call-analysis" data-tracename="点击线索分析按钮"></i>
                 </Button>
             </div>
@@ -237,7 +237,7 @@ const ClueCustomer = React.createClass({
                             {Intl.get("clue.manage.import.clue", "导入线索")}
                         </span>
                     </Button>
-                    :null}
+                    : null}
             </div>
         );
     },
@@ -310,9 +310,9 @@ const ClueCustomer = React.createClass({
                     return (
                         <div>
                             <span>{item}</span>
-                            {this.state.callNumber? <i className="iconfont icon-call-out call-out"
+                            {this.state.callNumber ? <i className="iconfont icon-call-out call-out"
                                 title={Intl.get("crm.click.call.phone", "点击拨打电话")}
-                                onClick={this.handleClickCallOut.bind(this, item, record)}></i>: null}
+                                onClick={this.handleClickCallOut.bind(this, item, record)}></i> : null}
                         </div>
                     );
                 }
@@ -451,7 +451,7 @@ const ClueCustomer = React.createClass({
     handleCancelTraceContent(item){
         item.addTraceContent = false;
         this.setState({
-            curCustomers:this.state.curCustomers
+            curCustomers: this.state.curCustomers
         });
     },
     showAddTraceContent(item){
@@ -461,7 +461,7 @@ const ClueCustomer = React.createClass({
         } else {
             item.addTraceContent = true;
             this.setState({
-                curCustomers:this.state.curCustomers
+                curCustomers: this.state.curCustomers
             });
         }
     },
@@ -476,7 +476,7 @@ const ClueCustomer = React.createClass({
             $updateWrap.find("textarea").val(originContent);
         });
         this.setState({
-            curCustomers:this.state.curCustomers
+            curCustomers: this.state.curCustomers
         });
     },
     handleClickRemarkBtn: function(item){
@@ -486,12 +486,12 @@ const ClueCustomer = React.createClass({
         }
         var submitObj = {
             id: item.id,
-            availability:updateValue
+            availability: updateValue
         };
         this.setState({
             isRemarkingItem: item.id,
         });
-        clueCustomerAction.updateCluecustomerDetail(submitObj,(result)=>{
+        clueCustomerAction.updateCluecustomerDetail(submitObj,(result) => {
             if (_.isString(result)){
                 this.setState({
                     isRemarkingItem: '',
@@ -500,9 +500,9 @@ const ClueCustomer = React.createClass({
             }else{
                 //如果线索标记为有效后，将状态改为已跟进状态
                 if (updateValue == "1"){
-                    clueCustomerAction.removeClueItem({id:item.id});
+                    clueCustomerAction.removeClueItem({id: item.id});
                 }
-                clueCustomerAction.updateClueProperty({id:item.id,availability:updateValue});
+                clueCustomerAction.updateClueProperty({id: item.id,availability: updateValue});
                 this.setState({
                     isRemarkingItem: ''
                 });
@@ -556,7 +556,7 @@ const ClueCustomer = React.createClass({
                 var addContent = "", addTime = "";
                 if (_.isArray(item.customer_traces) && item.customer_traces.length) {
                     addContent = item.customer_traces[0].remark;
-                    addTime = item.customer_traces[0].time ? moment(item.customer_traces[0].time).fromNow(): null;
+                    addTime = item.customer_traces[0].time ? moment(item.customer_traces[0].time).fromNow() : null;
                 }
                 var relativeSourceTime = this.getRelativeTime(item.source_time);
                 var relativeStartTime = this.getRelativeTime(item.start_time);
@@ -580,7 +580,7 @@ const ClueCustomer = React.createClass({
                                         <div className="contact-way">{this.getContactList(item.contact_way, item)}</div>
                                     </div>
                                     <p>
-                                        {item.source_time ? Intl.get("clue.customer.clue.time", "咨询于{relative}",{"relative": relativeSourceTime}): null}
+                                        {item.source_time ? Intl.get("clue.customer.clue.time", "咨询于{relative}",{"relative": relativeSourceTime}) : null}
                                     </p>
                                 </Col>
                                 <Col sm={6} lg={3}>
@@ -588,7 +588,7 @@ const ClueCustomer = React.createClass({
                                         {item.source_user_name}
                                     </div>
                                     <p>
-                                        {item.start_time ? Intl.get("cluecustomer.create.time", "创建于{startTime}", {"startTime": relativeStartTime}): null}
+                                        {item.start_time ? Intl.get("cluecustomer.create.time", "创建于{startTime}", {"startTime": relativeStartTime}) : null}
                                     </p>
                                 </Col>
                                 <Col sm={0} lg={3}>
@@ -624,8 +624,8 @@ const ClueCustomer = React.createClass({
                                                 : (addContent ?
                                                     <span className="trace-content">{addContent} {hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <i className="iconfont icon-update"
                                                         title={Intl.get("clue.customer.update.content", "编辑跟进内容按钮")}
-                                                        onClick={this.updateCluecustomerContent.bind(this, item)} data-tracename="点击编辑跟进内容"/> : null} </span> :( hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <span className="trace-content-flag"
-                                                        onClick={this.showAddTraceContent.bind(this, item)} data-tracename="点击填写跟进内容按钮">+ {Intl.get("call.record.follow.content", "跟进内容")}</span>: null)
+                                                        onClick={this.updateCluecustomerContent.bind(this, item)} data-tracename="点击编辑跟进内容"/> : null} </span> : ( hasPrivilege("CLUECUSTOMER_ADD_TRACE") ? <span className="trace-content-flag"
+                                                        onClick={this.showAddTraceContent.bind(this, item)} data-tracename="点击填写跟进内容按钮">+ {Intl.get("call.record.follow.content", "跟进内容")}</span> : null)
                                                 )}
 
                                         </div>
@@ -633,7 +633,7 @@ const ClueCustomer = React.createClass({
                                             {addTime}
                                         </p> : null}
                                     </div>
-                                </Col>: null}
+                                </Col> : null}
                                 {(hasPrivilege("CLUECUSTOMER_DISTRIBUTE_MANAGER") || hasPrivilege("CLUECUSTOMER_DISTRIBUTE_USER")) ?
                                     <Col sm={3} lg={2}>
                                         <div className="action-button-wrap">
@@ -675,12 +675,12 @@ const ClueCustomer = React.createClass({
             this.getClueCustomerList();
         }
     },
-    onTypeChange:function() {
+    onTypeChange: function() {
         clueCustomerAction.setLastCustomerId("");
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
-        setTimeout(()=>{
+        setTimeout(() => {
             this.getClueCustomerList();
         });
     },
@@ -748,28 +748,28 @@ const ClueCustomer = React.createClass({
         }
     },
     //更新线索来源列表
-    updateClueSource:function(newSource) {
+    updateClueSource: function(newSource) {
         this.state.clueSourceArray.push(newSource);
         this.setState({
-            clueSourceArray:this.state.clueSourceArray
+            clueSourceArray: this.state.clueSourceArray
         });
     },
     //更新线索渠道列表
-    updateClueChannel:function(newChannel) {
+    updateClueChannel: function(newChannel) {
         this.state.accessChannelArray.push(newChannel);
         this.setState({
-            accessChannelArray:this.state.accessChannelArray
+            accessChannelArray: this.state.accessChannelArray
         });
     },
     //更新线索分类
-    updateClueClassify:function(newClue) {
+    updateClueClassify: function(newClue) {
         this.state.clueClassifyArray.push(newClue);
         this.setState({
-            clueClassifyArray:this.state.clueClassifyArray
+            clueClassifyArray: this.state.clueClassifyArray
         });
     },
     //关闭导入线索模板
-    closeClueTemplatePanel:function() {
+    closeClueTemplatePanel: function() {
         this.setState({
             clueImportTemplateFormShow: false
         });
@@ -780,7 +780,7 @@ const ClueCustomer = React.createClass({
     confirmImport(flag, cb) {
         this.setState({isImporting: true});
         $.ajax({
-            url: "/rest/clue/confirm/upload/"+ flag,
+            url: "/rest/clue/confirm/upload/" + flag,
             dataType: "json",
             type: 'get',
             async: false,
@@ -811,7 +811,7 @@ const ClueCustomer = React.createClass({
             this.getClueCustomerList();
         });
     },
-    renderImportModalFooter:function() {
+    renderImportModalFooter: function() {
         const repeatCustomer = _.find(this.state.previewList, item => (item.repeat));
         const loading = this.state.isImporting || false;
 
@@ -834,7 +834,7 @@ const ClueCustomer = React.createClass({
         );
     },
     //删除重复的线索
-    deleteDuplicatImportClue:function(index) {
+    deleteDuplicatImportClue: function(index) {
         var _this = this;
         $.ajax({
             url: '/rest/clue/repeat/delete/' + index,
@@ -857,12 +857,12 @@ const ClueCustomer = React.createClass({
     },
     render: function() {
         var _this = this;
-        let previewColumns =[
+        let previewColumns = [
             {
                 title: Intl.get("clue.customer.clue.name", "线索名称"),
                 dataIndex: 'name',
                 render: function(text, record, index) {
-                    var cls = record.repeat ? "repeat-clue-name": "";
+                    var cls = record.repeat ? "repeat-clue-name" : "";
                     return (
                         <span className={cls}>
                             {record.name}
@@ -872,10 +872,10 @@ const ClueCustomer = React.createClass({
             },
             {
                 title: Intl.get("call.record.contacts", "联系人"),
-                render:function(text, record, index) {
+                render: function(text, record, index) {
                     if (_.isArray(record.contacts)){
                         return (
-                            <span>{record.contacts[0] ? record.contacts[0].name: null}</span>
+                            <span>{record.contacts[0] ? record.contacts[0].name : null}</span>
                         );
                     }
 
@@ -884,30 +884,30 @@ const ClueCustomer = React.createClass({
             },
             {
                 title: Intl.get("common.phone", "电话"),
-                render:function(text, record, index) {
+                render: function(text, record, index) {
                     if (_.isArray(record.contacts)){
                         return (
-                            <span>{record.contacts[0] ? record.contacts[0].phone: null}</span>
+                            <span>{record.contacts[0] ? record.contacts[0].phone : null}</span>
                         );
                     }
                 }
             },
             {
                 title: Intl.get("common.email", "邮箱"),
-                render:function(text, record, index) {
+                render: function(text, record, index) {
                     if (_.isArray(record.contacts)){
                         return (
-                            <span>{record.contacts[0] ? record.contacts[0].email: null}</span>
+                            <span>{record.contacts[0] ? record.contacts[0].email : null}</span>
                         );
                     }
                 }
             },
             {
                 title: "QQ",
-                render:function(text, record, index) {
+                render: function(text, record, index) {
                     if (_.isArray(record.contacts) && _.isArray(record.contacts[0].qq)){
                         return (
-                            <span>{record.contacts[0] ? record.contacts[0].qq[0]: null}</span>
+                            <span>{record.contacts[0] ? record.contacts[0].qq[0] : null}</span>
                         );
                     }
                 }
@@ -954,7 +954,7 @@ const ClueCustomer = React.createClass({
                         {this.renderImportClue()}
                         <div className="filter-block-line"></div>
                     </FilterBlock>
-                    {this.state.clueAddFormShow? (
+                    {this.state.clueAddFormShow ? (
                         <SalesClueAddForm
                             hideAddForm={this.hideClueAddForm}
                             accessChannelArray={this.state.accessChannelArray}
@@ -1009,7 +1009,7 @@ const ClueCustomer = React.createClass({
                             updateClueClassify={this.updateClueClassify}
                         />
                     ) : null}
-                    {this.state.clueAnalysisPanelShow ?  <RightPanel
+                    {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}
                     >
@@ -1018,7 +1018,7 @@ const ClueCustomer = React.createClass({
                             clueSourceArray={this.state.clueSourceArray}
                             closeClueAnalysisPanel={this.closeClueAnalysisPanel}
                         />
-                    </RightPanel>: null}
+                    </RightPanel> : null}
 
                 </div>
             </RightContent>

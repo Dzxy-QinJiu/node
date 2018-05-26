@@ -85,7 +85,7 @@ exports.getSaleMemberList = function(req, res) {
 };
 
 // 获取通话客户的地域和阶段分布
-exports.getCallCustomerZoneStage =  (req, res) => {
+exports.getCallCustomerZoneStage = (req, res) => {
     callAnalysisService.getCallCustomerZoneStage(req, res).on("success", (data) => {
         res.status(200).json(data);
     }).on("error", (codeMessage) => {

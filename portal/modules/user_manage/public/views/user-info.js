@@ -34,7 +34,7 @@ var UserInfo = React.createClass({
     getInitialState: function() {
         return {
             userInfo: $.extend(true, {}, this.props.userInfo),
-            userBasicDetail:{id:"",createDate:""},//要传用户的id和用户的创建时间
+            userBasicDetail: {id: "",createDate: ""},//要传用户的id和用户的创建时间
             modalStr: "",//模态框提示内容
             isDel: false,//是否删除
             userTeamList: UserFormStore.getState().userTeamList,
@@ -47,7 +47,7 @@ var UserInfo = React.createClass({
 
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.userInfo.id !== this.state.userInfo.id) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.getUserData(nextProps.userInfo);
             });
         }
@@ -71,7 +71,7 @@ var UserInfo = React.createClass({
         this.layout();
         UserFormStore.listen(this.onChange);
         UserInfoStore.listen(this.onChange);
-        setTimeout(()=>{
+        setTimeout(() => {
             this.getUserData(this.state.userInfo);
         });
         $(window).resize((e) => {
@@ -182,7 +182,7 @@ var UserInfo = React.createClass({
         }
     },
     changeUserFieldSuccess: function(user) {
-        _.isFunction(this.props.changeUserFieldSuccess) &&  this.props.changeUserFieldSuccess(user);
+        _.isFunction(this.props.changeUserFieldSuccess) && this.props.changeUserFieldSuccess(user);
     },
     //渲染角色下拉列表
     getRoleSelectOptions: function(userInfo) {

@@ -1,6 +1,6 @@
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
-import CONSTS from  "LIB_DIR/consts";
+import CONSTS from "LIB_DIR/consts";
 import { storageUtil } from "ant-utils";
 
 //设置网站个性化配置
@@ -18,7 +18,7 @@ var websiteConfig = {
             storageUtil.local.set(CONSTS.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG, JSON.stringify(curStorage));
             _.isFunction(onSuccess) && onSuccess(result);
         }, err => {
-            _.isFunction(onError) &&  onError(err);
+            _.isFunction(onError) && onError(err);
         });
     },
     //设置某个模块是否被点击过

@@ -6,19 +6,19 @@ exports.getAppRecordsList = function(searchObj){
     var queryObj = {
         application_id: searchObj.appId,
         page_size: searchObj.pageSize,
-        page_num : searchObj.page
+        page_num: searchObj.page
     };
     var Deferred = $.Deferred();
     appRecordsAjax && appRecordsAjax.abort();
     appRecordsAjax = $.ajax({
         url: '/rest/get_app/version/records',
         type: 'get',
-        data : queryObj,
+        data: queryObj,
         dateType: 'json',
-        success : function(result){
+        success: function(result){
             Deferred.resolve(result);
         },
-        error : function(xhr, state) {
+        error: function(xhr, state) {
             if ('abort' !== state){
                 Deferred.reject(xhr.responseJSON);
             }
@@ -49,16 +49,16 @@ exports.addAppVersion = function(versionContent){
 exports.addUploadVersion = function(formData){
     var Deferred = $.Deferred();
     $.ajax({
-        url:"/rest/my_app/upload/version_upgrade",
+        url: "/rest/my_app/upload/version_upgrade",
         type: "POST",
         data: formData,
         contentType: false,
         processData: false,
         cache: false,
-        success : function(result){
+        success: function(result){
             Deferred.resolve(result);
         },
-        error : function(errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

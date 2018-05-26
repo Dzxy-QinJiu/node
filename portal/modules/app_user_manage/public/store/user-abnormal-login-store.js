@@ -11,12 +11,12 @@ function UserAbnormalLoginStore(){
     this.bindActions(UserAbnormalLoginAction);
 }
 UserAbnormalLoginStore.prototype.resetState = function() {
-    this.abnormalLoginList =[];//异常登录展示的列表
+    this.abnormalLoginList = [];//异常登录展示的列表
     this.abnormalLoginLoading = true;//是否正在加载异常登录
     this.abnormalLoginErrMsg = '';//加载错误后的提示信息
     this.page_size = 10;//加载记录每页的条数
     this.appId = '';//选中app的id
-    this.getAppErrorMsg='';//加载app列表出错
+    this.getAppErrorMsg = '';//加载app列表出错
     this.getAppLoading = true;//正在加载app列表
     this.appLists = [];//app列表
     this.listenScrollBottom = true;//是否监听下拉加载
@@ -33,7 +33,7 @@ UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function(result) {
         this.abnormalLoginLoading = false;
         this.abnormalLoginErrMsg = "";
         if (result.data.length < this.page_size){
-            this.listenScrollBottom = false ;
+            this.listenScrollBottom = false;
             this.isNoMoreTipShow = true;
         }
         this.abnormalLoginList = this.abnormalLoginList.concat(result.data || []);
@@ -41,7 +41,7 @@ UserAbnormalLoginStore.prototype.getUserAbnormalLogin = function(result) {
 };
 UserAbnormalLoginStore.prototype.setApp = function(appId) {
 
-    this.abnormalLoginList =[];//变更记录展示的列表
+    this.abnormalLoginList = [];//变更记录展示的列表
     this.abnormalLoginLoading = true;//是否正在加载变更记录
     this.abnormalLoginErrMsg = '';//加载错误后的提示信息
     this.isNoMoreTipShow = false;
@@ -62,6 +62,6 @@ UserAbnormalLoginStore.prototype.getUserApp = function(result) {
     }
 };
 UserAbnormalLoginStore.prototype.deleteAbnormalLoginInfo = function(id) {
-    this.abnormalLoginList =_.filter(this.abnormalLoginList, itemLogin => itemLogin.id !== id);
+    this.abnormalLoginList = _.filter(this.abnormalLoginList, itemLogin => itemLogin.id !== id);
 };
 module.exports = alt.createStore(UserAbnormalLoginStore , 'UserAbnormalLoginStore');

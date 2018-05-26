@@ -22,7 +22,7 @@ CallAnalysisStore.prototype.setInitState = function() {
     this.callDurList = {
         loading: false, // loading
         data: [], //数据列表
-        errMsg: ''  // 获取失败的提示
+        errMsg: '' // 获取失败的提示
     };
     // 获取通话总次数TOP10的数据
     this.callTotalCountObj = {
@@ -39,9 +39,9 @@ CallAnalysisStore.prototype.setInitState = function() {
     // 获取通话数量和通话时长趋势图统计
     this.callList = {
         loading: false, // loading
-        count: [],  //通话数量
-        duration: [],  // 通话时长
-        errMsg: ''   // 获取失败的提示
+        count: [], //通话数量
+        duration: [], // 通话时长
+        errMsg: '' // 获取失败的提示
     };
     //每个团队的通话数量和通话时长趋势图统计数据
     this.eachTeamCallList = {
@@ -57,13 +57,13 @@ CallAnalysisStore.prototype.setInitState = function() {
         "114": {
             loading: false, // loading
             list: [],
-            errMsg: ''  // 获取失败的提示
+            errMsg: '' // 获取失败的提示
         },
         // 获取客服电话的数据
         "service": {
             loading: false, // loading
             list: [],
-            errMsg: ''  // 获取失败的提示
+            errMsg: '' // 获取失败的提示
         }
     };
     //通话时段（数量和时长）的数据
@@ -71,13 +71,13 @@ CallAnalysisStore.prototype.setInitState = function() {
         loading: false, // loading
         timeList: [],//时长的列表
         countList: [],//数量的列表
-        errMsg: ''  // 获取失败的提示
+        errMsg: '' // 获取失败的提示
     };
 
     // 团队数据
     this.teamList = {
         list: [],
-        errMsg: ''  // 获取失败的提示
+        errMsg: '' // 获取失败的提示
     };
     // 成员数据
     this.memberList = {
@@ -88,9 +88,9 @@ CallAnalysisStore.prototype.setInitState = function() {
     this.customerData = {
         loading: false, // loading
         zoneList: [], // 客户地域数据
-        customerPhase : [], // 客户阶段
+        customerPhase: [], // 客户阶段
         OrderPhase: [], // 订单阶段
-        errMsg: ''  // 获取失败的提示
+        errMsg: '' // 获取失败的提示
     };
     // 通话客户的地域和阶段分布返回的原始数据
     this.callZoneStageOriginalData = {};
@@ -187,11 +187,11 @@ CallAnalysisStore.prototype.getCallCountAndDurSeparately = function(result) {
                     let durationArray = [];
                     //通话数量
                     let countArray = [];
-                    var teamObj = _.find(this.teamList.list, (team)=> team.id == item.teamId);
+                    var teamObj = _.find(this.teamList.list, (team) => team.id == item.teamId);
                     if (teamObj && teamObj.name){
                         item.teamName = teamObj.name;
                     }
-                    _.each(item.teamData,(dataItem)=>{
+                    _.each(item.teamData,(dataItem) => {
                         durationArray.push({timestamp: dataItem.date, count: dataItem.sum});
                         countArray.push({timestamp: dataItem.date, count: dataItem.docments});
                     });
@@ -252,9 +252,9 @@ CallAnalysisStore.prototype.getCallInfo = function(result) {
             };
 
             if (memberTotal){
-                returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess)/memberTotal).toFixed(), //人均接通数
-                returnObj.personAverageTime = (getData(salesPhone.totalTime)/memberTotal).toFixed(),//人均通话时长
-                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime)/memberTotal).toFixed());//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
+                returnObj.personAverageAnswer = (getData(salesPhone.calloutSuccess) / memberTotal).toFixed(), //人均接通数
+                returnObj.personAverageTime = (getData(salesPhone.totalTime) / memberTotal).toFixed(),//人均通话时长
+                returnObj.personAverageTimeFormated = TimeUtil.getFormatTime((getData(salesPhone.totalTime) / memberTotal).toFixed());//人均通话时长页面上展示的样式，转换成XX:XX:XX格式
             }
 
             return returnObj;

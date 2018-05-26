@@ -12,7 +12,7 @@ class ThreePartyAppConfigActions {
         ThirdAjax.getAppConfigList(userId).then( (appConfigList) => {
             this.dispatch({loading: false, error: false, appConfigList: appConfigList});
         }, (errorMsg) => {
-            this.dispatch({loading : false,error : true , appConfigErrorMsg: errorMsg ||
+            this.dispatch({loading: false,error: true , appConfigErrorMsg: errorMsg ||
             Intl.get("user.third.get.app.failed", "获取应用配置信息失败")});
         });
     }

@@ -10,7 +10,7 @@
  *                         Support for Nodev0.6
  *                         */
 
-var fs         = require('fs');
+var fs = require('fs');
 
 module.exports = fs.existsSync || function existsSync(filePath){
     try{

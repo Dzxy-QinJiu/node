@@ -13,24 +13,24 @@ function TeleConfigActions(){
     //获取客服电话列表 
     this.getTeleList = function(param){
         var _this = this;
-        _this.dispatch({loading:true});
+        _this.dispatch({loading: true});
         TeleConfigAjax.getTeleList(param)
             .then(function(data) {
-                _this.dispatch({loading:false,error:false, data: data});
+                _this.dispatch({loading: false,error: false, data: data});
             },function(errorMsg) {
-                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+                _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
             });
     };   
 
     //删除电话
     this.delTele = function(param){
         var _this = this;
-        _this.dispatch({loading:true});
+        _this.dispatch({loading: true});
         TeleConfigAjax.delTele(param)
             .then(function(data) {
-                _this.dispatch({loading:false,error:false, data: data});
+                _this.dispatch({loading: false,error: false, data: data});
             },function(errorMsg) {
-                _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+                _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
             });
     };
     

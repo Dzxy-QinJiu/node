@@ -10,7 +10,7 @@ history.listenBefore(function(location) {
     var parseObj = url.parse(window.location.href);
     if (parseObj.pathname !== location.pathname) {
         alt.flush();
-        if (typeof(_paq) != "undefined") {
+        if (typeof (_paq) != "undefined") {
             var currentUrl = parseObj.href;
             _paq.push(['setReferrerUrl', currentUrl]);
             _paq.push(['setDocumentTitle', location.pathname]);

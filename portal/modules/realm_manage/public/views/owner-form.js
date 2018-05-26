@@ -363,7 +363,7 @@ var OwnerForm = React.createClass({
                 {(this.props.formType == "add" || !this.props.ownerFormShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
-                    <div className="realm-form-scroll" style={{width:'420px'}} data-tracename="更换所有者">
+                    <div className="realm-form-scroll" style={{width: '420px'}} data-tracename="更换所有者">
                         <GeminiScrollbar className="geminiScrollbar-vertical">
                             <Validation ref="validation" onValidate={this.handleValidate}>
                                 <div className="realm-owner-block">
@@ -386,7 +386,7 @@ var OwnerForm = React.createClass({
                                         help={status.nick_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.nick_name.errors && status.nick_name.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                             <Input name="nick_name" id="nick_name" value={formData.nick_name}
                                                 placeholder="必填项*"
                                                 onChange={this.setField.bind(this, 'nick_name')}/>
@@ -401,9 +401,9 @@ var OwnerForm = React.createClass({
                                         help={status.user_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.user_name.errors && status.user_name.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")},{validator:this.checkUserName}]}>
+                                            rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")},{validator: this.checkUserName}]}>
                                             <Input name="user_name" id="user_name" value={formData.user_name}
-                                                className={this.state.saveFlags.userNameExit||this.state.saveFlags.userNameError?"input-red-border":""}
+                                                className={this.state.saveFlags.userNameExit || this.state.saveFlags.userNameError ? "input-red-border" : ""}
                                                 placeholder="必填项*"
                                                 onBlur={this.checkOnlyUserName}
                                                 onChange={this.setField.bind(this, 'user_name')}/>
@@ -471,9 +471,9 @@ var OwnerForm = React.createClass({
                                         validateStatus={this.renderValidateStyle('phone')}
                                         help={status.phone.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.phone.errors && status.phone.errors.join(','))}
                                     >
-                                        <Validator rules={[{validator:this.checkPhone}]}>
+                                        <Validator rules={[{validator: this.checkPhone}]}>
                                             <Input name="phone" id="phone" value={formData.phone}
-                                                className={!this.state.phoneEmailCheck||this.state.saveFlags.phoneExit||this.state.saveFlags.phoneError?"input-red-border":""}
+                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.phoneExit || this.state.saveFlags.phoneError ? "input-red-border" : ""}
                                                 placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
                                                 onChange={this.setField.bind(this, 'phone')}
                                                 onBlur={this.checkOnlyPhone.bind(this,'owner')}
@@ -491,9 +491,9 @@ var OwnerForm = React.createClass({
                                         validateStatus={this.renderValidateStyle('email')}
                                         help={status.email.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.email.errors && status.email.errors.join(','))}
                                     >
-                                        <Validator rules={[{validator:this.checkEmail}]}>
+                                        <Validator rules={[{validator: this.checkEmail}]}>
                                             <Input name="email" id="email" type="text"
-                                                className={!this.state.phoneEmailCheck||this.state.saveFlags.emailExit||this.state.saveFlags.emailError?"input-red-border":""}
+                                                className={!this.state.phoneEmailCheck || this.state.saveFlags.emailExit || this.state.saveFlags.emailError ? "input-red-border" : ""}
                                                 value={formData.email}
                                                 placeholder={Intl.get("common.phone.email.tip", "电话、邮箱必填其中一项")}
                                                 onChange={this.setField.bind(this, 'email')}
@@ -510,7 +510,7 @@ var OwnerForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult=="error"?3000:600}
+                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
                                                     message={this.state.saveFlags.saveMsg}
                                                     type={this.state.saveFlags.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

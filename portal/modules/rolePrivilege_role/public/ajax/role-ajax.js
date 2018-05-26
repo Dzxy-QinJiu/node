@@ -44,10 +44,10 @@ exports.addRole = function(role, type) {
 exports.setDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url:"/rest/baserole/config",
+        url: "/rest/baserole/config",
         dataType: 'json',
         type: 'post',
-        data:param,
+        data: param,
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -62,10 +62,10 @@ exports.setDefaultRole = function(param) {
 exports.getDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url:"/rest/baserole/config",
+        url: "/rest/baserole/config",
         dataType: 'json',
         type: 'get',   
-        data:param,     
+        data: param,     
         success: function(result) {
             Deferred.resolve(result);
         },
@@ -80,10 +80,10 @@ exports.getDefaultRole = function(param) {
 exports.delDefaultRole = function(param) {
     var Deferred = $.Deferred();
     $.ajax({
-        url:"/rest/baserole/config",
+        url: "/rest/baserole/config",
         dataType: 'json',
         type: 'delete',
-        data:param,
+        data: param,
         success: function(result) {
             Deferred.resolve(result);
         },

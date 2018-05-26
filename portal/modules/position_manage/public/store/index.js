@@ -15,13 +15,13 @@ class PositionStore {
         this.positionList = {
             loading: true, // loading
             data: [], //数据列表
-            errMsg: '',  // 获取失败的提示
+            errMsg: '', // 获取失败的提示
             sortId: '' // 当前数据最后一条数据的id
         };
         // 未绑定座席号的成员数据
         this.unbindMember = {
             data: [], //数据列表
-            errMsg: ''  // 获取失败的提示
+            errMsg: '' // 获取失败的提示
         };
         // 下拉加载
         this.listenScrollBottom = true;
@@ -119,7 +119,7 @@ class PositionStore {
 
     // 设置排序参数
     setSort(sorter) {
-        this.sortField = sorter && sorter.sortField ;
+        this.sortField = sorter && sorter.sortField;
         this.sortOrder = sorter && sorter.sortOrder;
     }
 

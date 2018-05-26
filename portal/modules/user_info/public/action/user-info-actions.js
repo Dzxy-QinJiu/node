@@ -14,7 +14,7 @@ function UserInfoActions() {
         var user_id = userData.getUserData().user_id;
         _this.dispatch({error: false,loading: true});
         userInfoAjax.getUserInfo(user_id).then(function(userInfo) {
-            _this.dispatch({error: false,loading: false,userInfo:userInfo});
+            _this.dispatch({error: false,loading: false,userInfo: userInfo});
         },function(errorMsg) {
             _this.dispatch({error: true,loading: false,errorMsg: errorMsg || Intl.get("user.info.get.user.info.failed","获取用户信息失败")});
         });
@@ -44,7 +44,7 @@ function UserInfoActions() {
         userInfoAjax.setSubscribeEmail(configObj).then(function(data) {
             if (callback){
                 if (data){
-                    callback({error: false, data:Intl.get("user.info.setting.succeess","设置成功！")});
+                    callback({error: false, data: Intl.get("user.info.setting.succeess","设置成功！")});
                 }else{
                     callback({error: true,errorMsg: errorMsg || Intl.get("user.info.setting.failed","设置失败，请重新设置")});
                 }

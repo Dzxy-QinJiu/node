@@ -27,56 +27,56 @@ class AppUserFormStore {
         //表单数据
         this.formData = {
             //用户名
-            user_name : "",
+            user_name: "",
             //昵称
-            nick_name : "",
+            nick_name: "",
             //邮箱
-            email : "",
+            email: "",
             //手机号
-            phone : "",
+            phone: "",
             //个数
-            count_number : "1",
+            count_number: "1",
             //客户id
-            customer_id : "",
+            customer_id: "",
             //客户名
-            customer_name : "",
+            customer_name: "",
             //销售团队
-            sales_team : {
-                id : "",
-                name : ""
+            sales_team: {
+                id: "",
+                name: ""
             },
             //销售
-            sales : {
-                id : "",
-                name : ""
+            sales: {
+                id: "",
+                name: ""
             },
             //正式、试用
-            user_type : AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
+            user_type: AppUserUtil.USER_TYPE_VALUE_MAP.TRIAL_USER,
             //开始时间
-            start_time : DateSelectorUtils.getMilliseconds(timeObj.start_time),
+            start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
             //结束时间
-            end_time : DateSelectorUtils.getMilliseconds(timeObj.end_time),
+            end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
             //多人登录
-            multilogin : "0",
+            multilogin: "0",
             //开通周期 默认选中半个月
-            range : "0.5m",
+            range: "0.5m",
             //到期停用
-            over_draft : "1",
+            over_draft: "1",
             //二步认证
-            is_two_factor : "0",
+            is_two_factor: "0",
             //备注
-            description : ''
+            description: ''
         };
         //表单校验
         this.status = {
             //用户名
-            user_name : {},
+            user_name: {},
             //邮箱
-            email : {},
+            email: {},
             //手机号
-            phone : {},
+            phone: {},
             //昵称
-            nick_name : {}
+            nick_name: {}
         };
         //是否需要显示客户的错误提示
         this.isShowCustomerError = false;
@@ -113,19 +113,19 @@ class AppUserFormStore {
     //选中客户的回调
     customerChoosen(resultObj) {
         this.formData.sales_team = {
-            id : resultObj.sales_team.id || '',
-            name : resultObj.sales_team.name || ''
+            id: resultObj.sales_team.id || '',
+            name: resultObj.sales_team.name || ''
         };
         this.formData.sales = {
-            id : resultObj.sales.id || '',
-            name : resultObj.sales.name || ''
+            id: resultObj.sales.id || '',
+            name: resultObj.sales.name || ''
         };
         this.formData.customer_name = resultObj.customer.name || '';
         this.formData.customer_id = resultObj.customer.id || '';
     }
     //获取当前安全域下的应用
     getCurrentRealmApps(result) {
-        this.currentRealmAppsResult =  result.loading ? 'loading' : (result.error ? 'error' : '');
+        this.currentRealmAppsResult = result.loading ? 'loading' : (result.error ? 'error' : '');
         let resultList = result.list;
         if(!_.isArray(resultList) || !resultList[0]) {
             resultList = [];

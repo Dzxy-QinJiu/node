@@ -1,12 +1,12 @@
 exports.LAYOUTS = {
-    TOP : 84 + 62,
-    BOTTOM : 32,
+    TOP: 84 + 62,
+    BOTTOM: 32,
     //左侧的导航
-    LEFT_NAVBAR : 75,
+    LEFT_NAVBAR: 75,
     //左侧的padding
-    LEFT_PADDING : 42,
+    LEFT_PADDING: 42,
     //右侧的padding
-    RIGHT_PADDING : 45,
+    RIGHT_PADDING: 45,
     //时间选择器最大宽度
-    TIME_RANGE_WIDTH : 210
+    TIME_RANGE_WIDTH: 210
 };

@@ -5,14 +5,14 @@ var classNames = require("classnames");
 var immutable = require("immutable");
 //键盘按键
 var KeyCode = {
-    DOWN : 40,
-    UP : 38,
-    ENTER : 13
+    DOWN: 40,
+    UP: 38,
+    ENTER: 13
 };
 //布局使用的高度
 var LAYOUT = {
     ITEM_HEIGHT: 32,
-    MAX_HEIGHT : 250
+    MAX_HEIGHT: 250
 };
 /**
  * 显示一个搜索组件
@@ -24,55 +24,55 @@ var LAYOUT = {
  */
 var SearchList = React.createClass({
     //唯一id，做相对定位用
-    searchListId : _.uniqueId("oplate-search-list"),
+    searchListId: _.uniqueId("oplate-search-list"),
     //React组件的名称
-    displayName : 'SearchList',
+    displayName: 'SearchList',
     //获取默认属性
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
             //数组
-            list : [],
+            list: [],
             //需要指定宽度
-            width : 120,
+            width: 120,
             //选中的回调函数
-            onSelect : function() {},
+            onSelect: function() {},
             //样式名
-            className : "",
+            className: "",
             //内联样式
-            style : {},
+            style: {},
             //展示内容的字段
-            nameProp : 'name',
+            nameProp: 'name',
             //没有找到的提示
-            notFoundContent : Intl.get("common.not.found","无法找到"),
+            notFoundContent: Intl.get("common.not.found","无法找到"),
             //暂无数据提示
-            noDataCoutent : Intl.get("common.no.data","暂无数据")
+            noDataCoutent: Intl.get("common.no.data","暂无数据")
         };
     },
     //为传进来的list数据，添加一个uid属性
-    expandUniqueKeyForList : function(list) {
+    expandUniqueKeyForList: function(list) {
         return list.map(function(obj) {
             var expandObj = {
-                uid : _.uniqueId("search-list-key"),
-                data : obj
+                uid: _.uniqueId("search-list-key"),
+                data: obj
             };
             return expandObj;
         });
     },
     //获取组件初始状态
-    getInitialState : function() {
+    getInitialState: function() {
         return {
             //全部数据，每一个都添加了一个uid属性，用来辅助查找原始数据
-            itemLists : [],
+            itemLists: [],
             //根据关键词过滤之后，显示的结果
-            resultLists : [],
+            resultLists: [],
             //关键词
-            keyword : '',
+            keyword: '',
             //选中的当前下标
-            selectedIdx : 0
+            selectedIdx: 0
         };
     },
     //根据dropdown的方向设置SearchList的class，以便调整搜索组件的样式
-    setDirectionClassForSearchList : function() {
+    setDirectionClassForSearchList: function() {
         var isTopDirection = $(".ant-dropdown",this.refs.wrap).hasClass("ant-dropdown-placement-topLeft");
         var isBottomDirection = $(".ant-dropdown",this.refs.wrap).hasClass("ant-dropdown-placement-bottomLeft");
         if(isTopDirection) {
@@ -83,30 +83,30 @@ var SearchList = React.createClass({
         }
     },
     //组件加载完毕时触发
-    componentDidMount : function() {
+    componentDidMount: function() {
         var itemLists = this.expandUniqueKeyForList(this.props.list);
         this.setState({
-            itemLists : itemLists
+            itemLists: itemLists
         });
-        this.search({itemLists : itemLists});
+        this.search({itemLists: itemLists});
         this.setDirectionClassForSearchList();
     },
     //组件更新时触发
-    componentDidUpdate : function() {
+    componentDidUpdate: function() {
         this.setDirectionClassForSearchList();
     },
     //当组件重新接收属性时触发
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(!immutable.is(this.props.list , nextProps.list)) {
             var itemLists = this.expandUniqueKeyForList(nextProps.list);
             this.setState({
-                itemLists : itemLists
+                itemLists: itemLists
             });
-            this.search({itemLists : itemLists});
+            this.search({itemLists: itemLists});
         }
     },
     //当菜单被选中时，触发
-    onMenuSelect : function(info) {
+    onMenuSelect: function(info) {
         var target = _.find(this.state.itemLists, function(item) {
             return item.uid === info.key;
         });
@@ -116,13 +116,13 @@ var SearchList = React.createClass({
         }
     },
     //输入关键字后，进行搜索
-    search : function(args) {
+    search: function(args) {
         var keyword = args && 'keyword' in args ? args.keyword : this.state.keyword;
         var itemLists = args && 'itemLists' in args ? args.itemLists : this.state.itemLists;
         if(!keyword) {
             return this.setState({
-                keyword : '',
-                resultLists : itemLists
+                keyword: '',
+                resultLists: itemLists
             });
         }
         keyword = keyword.toLowerCase();
@@ -133,22 +133,22 @@ var SearchList = React.createClass({
             }
         });
         this.setState({
-            selectedIdx : 0,
-            keyword : keyword,
-            resultLists : resultLists
+            selectedIdx: 0,
+            keyword: keyword,
+            resultLists: resultLists
         });
     },
-    keywordValueChange : function(event) {
+    keywordValueChange: function(event) {
         var keyword = event.target.value;
         if(keyword !== this.state.keyword) {
             this.setState({
-                keyword : keyword
+                keyword: keyword
             });
-            this.search({keyword:keyword});
+            this.search({keyword: keyword});
         }
     },
     //重新按下
-    keyDownPress : function(event) {
+    keyDownPress: function(event) {
         if(!this.state.resultLists.length) {
             return;
         }
@@ -183,12 +183,12 @@ var SearchList = React.createClass({
             }
         }
         this.setState({
-            selectedIdx : idx
+            selectedIdx: idx
         } , function() {
             var ul = $(".oplate-search-list-menu",this.refs.wrap)[0];
             var elm = $("li.ant-dropdown-menu-item",ul)[idx];
             var pos = $(elm).position();
-            if(pos.top >=0 && (pos.top + LAYOUT.ITEM_HEIGHT) <= LAYOUT.MAX_HEIGHT) {
+            if(pos.top >= 0 && (pos.top + LAYOUT.ITEM_HEIGHT) <= LAYOUT.MAX_HEIGHT) {
                 return;
             }
             ul.scrollTop = 0;
@@ -196,18 +196,18 @@ var SearchList = React.createClass({
             var targetScrollTop = pos.top;
             if(direction === "down") {
                 if((targetScrollTop + LAYOUT.ITEM_HEIGHT - LAYOUT.MAX_HEIGHT) >= 0) {
-                    targetScrollTop = targetScrollTop + LAYOUT.ITEM_HEIGHT- LAYOUT.MAX_HEIGHT;
+                    targetScrollTop = targetScrollTop + LAYOUT.ITEM_HEIGHT - LAYOUT.MAX_HEIGHT;
                 }
             }
             ul.scrollTop = targetScrollTop;
         });
     },
-    onMouseEnterItem : function(idx) {
+    onMouseEnterItem: function(idx) {
         this.setState({
-            selectedIdx : idx
+            selectedIdx: idx
         });
     },
-    render : function() {
+    render: function() {
         var cls = classNames("oplate-search-list",this.props.className);
         var nameProp = this.props.nameProp;
         var notFound = this.state.resultLists.length === 0 && this.state.itemLists.length > 0;
@@ -215,7 +215,7 @@ var SearchList = React.createClass({
         var selectedIdx = this.state.selectedIdx;
         var _this = this;
         var menuLists = this.state.resultLists.map(function(obj,idx) {
-            var cls = classNames({active : selectedIdx === idx});
+            var cls = classNames({active: selectedIdx === idx});
             return (
                 <MenuItem
                     key={obj.uid}
@@ -227,23 +227,23 @@ var SearchList = React.createClass({
             );
         });
         if(notFound) {
-            menuLists.push(<MenuItem  key="notFound" disabled={true}>{this.props.notFoundContent}</MenuItem>);
+            menuLists.push(<MenuItem key="notFound" disabled={true}>{this.props.notFoundContent}</MenuItem>);
         }
         if(noData) {
-            menuLists.push(<MenuItem  key="noData" disabled={true}>{this.props.notFoundContent}</MenuItem>);
+            menuLists.push(<MenuItem key="noData" disabled={true}>{this.props.notFoundContent}</MenuItem>);
         }
         var menu = (
             <Menu
                 prefixCls="ant-menu"
                 onSelect={this.onMenuSelect}
                 className="oplate-search-list-menu"
-                style={{width:this.props.width}}>
+                style={{width: this.props.width}}>
                 {menuLists}
             </Menu>
         );
         var _this = this;
         return (
-            <span className={cls} style={{width:this.props.width}} id={this.searchListId} ref="wrap">
+            <span className={cls} style={{width: this.props.width}} id={this.searchListId} ref="wrap">
                 <Dropdown
                     getPopupContainer={function(){return document.getElementById(_this.searchListId);}}
                     overlay={menu}

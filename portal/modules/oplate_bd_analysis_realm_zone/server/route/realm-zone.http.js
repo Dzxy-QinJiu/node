@@ -19,7 +19,7 @@ module.exports = {
             "needLogin": true
         },
         //需要权限
-        "privileges":[
+        "privileges": [
             "OPLATE_BD_ANALYSIS_REALM_ZONE"
         ]
     }]

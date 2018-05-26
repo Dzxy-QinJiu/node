@@ -158,7 +158,7 @@ var UserManage = React.createClass({
     },
     getCardShowUserList: function() {
         let userList = _.isArray(this.state.curUserList) ? this.state.curUserList : [];
-        return userList.map(user=> {
+        return userList.map(user => {
             return {
                 id: user.id,
                 name: user.name,
@@ -223,7 +223,7 @@ var UserManage = React.createClass({
                         <TopNav.MenuList />
                         <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="block handle-btn-container"
                             onClick={this.events.showUserForm.bind(this,"add")}
-                            data-tracename="添加成员"  >
+                            data-tracename="添加成员" >
                             <ReactIntl.FormattedMessage id="common.add.member" defaultMessage="添加成员"/>
                         </PrivilegeChecker>
                     </TopNav>

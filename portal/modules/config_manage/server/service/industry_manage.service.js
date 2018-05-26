@@ -19,7 +19,7 @@ exports.getIndustries = function(req, res, obj) {
         req: req,
         res: res
     },{
-        page_size:obj.page_size
+        page_size: obj.page_size
     });
 };
 //添加行业信息
@@ -33,7 +33,7 @@ exports.addIndustries = function(req, res, obj) {
 //删除行业信息
 exports.deleteIndustries = function(req, res, delete_id) {
     return restUtil.authRest.del({
-        url: IndustryManageRestApis.Industries+'/'+delete_id,
+        url: IndustryManageRestApis.Industries + '/' + delete_id,
         req: req,
         res: res
     },null);

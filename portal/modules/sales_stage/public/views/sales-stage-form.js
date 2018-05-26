@@ -119,7 +119,7 @@ var SalesStageForm = React.createClass({
                                 validateStatus={this.renderValidateStyle('name')}
                                 hasFeedback
                                 help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}>
-                                <Validator rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                                <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                     <Input name="name" id="name" value={formData.name}
                                         onChange={this.setField.bind(this, 'name')}
                                         placeholder={Intl.get("common.required.tip", "必填项*")}
@@ -139,7 +139,7 @@ var SalesStageForm = React.createClass({
                                 help={status.description.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.description.errors && status.description.errors.join(','))}
                             >
                                 <Validator
-                                    rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                    rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                                     <Input name="description" id="description"
                                         value={formData.description}
                                         onChange={_this.setField.bind(_this, 'description')}

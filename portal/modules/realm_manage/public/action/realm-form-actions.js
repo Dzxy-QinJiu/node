@@ -26,11 +26,11 @@ function RealmFormActions() {
             RealmActions.updateSearchContent("");
             //将新创建的放在原有列表之前
             RealmActions.expandRealmLists(list);
-            cb({saveResult: "success" , taskId : list.taskId});
+            cb({saveResult: "success" , taskId: list.taskId});
         }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: "error", saveMsg: errorMsg || Intl.get("common.save.failed", "保存失败")});
-            cb({saveResult: "error", msg : errorMsg});
+            cb({saveResult: "error", msg: errorMsg});
         });
     };
 
@@ -40,7 +40,7 @@ function RealmFormActions() {
         var _this = this;
         realmAjax.addOwner(owner).then(function() {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg:Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
             //清空搜索内容
             RealmActions.updateSearchContent("");
             //添加成功后获取第一页的数据
@@ -59,7 +59,7 @@ function RealmFormActions() {
         var _this = this;
         realmAjax.editRealm(realm).then(function(realmModified) {
             //保存成功后的处理
-            _this.dispatch({saveResult: "success", saveMsg:Intl.get("common.save.success", "保存成功！")});
+            _this.dispatch({saveResult: "success", saveMsg: Intl.get("common.save.success", "保存成功！")});
             //修改成功后刷新左侧列表对应安全域卡片及其详情的数据
             RealmActions.afterEditRealm(realmModified);
         }, function(errorMsg) {

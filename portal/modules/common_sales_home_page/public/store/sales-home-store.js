@@ -160,7 +160,7 @@ SalesHomeStore.prototype.setInitState = function() {
     //新分配未联系的客户
     this.rangParamsDistribute = [{
         from: 0,
-        to:  moment().valueOf(),
+        to: moment().valueOf(),
         type: "time",
         name: "allot_time"
     }];

@@ -7,7 +7,7 @@ import Trace from "LIB_DIR/trace";
 
 var ImportFile = React.createClass({
 
-    handleCancel : function(e) {
+    handleCancel: function(e) {
         e.preventDefault();
         if (this.props.showRoleAuthType == "role") {
             Trace.traceEvent(e,"取消导入角色文件");
@@ -64,7 +64,7 @@ var ImportFile = React.createClass({
                                         id="common.download.template"
                                         defaultMessage={`点击下载{template}`}
                                         values={{
-                                            "template":  <a href="/rest/my_app/auth/download_template"
+                                            "template": <a href="/rest/my_app/auth/download_template"
                                                 data-tracename="权限角色模板"
                                             >{Intl.get("authority.template", "《权限模板》")}</a>
                                         }}

@@ -33,24 +33,24 @@ class AppUserFormActions {
         );
     }
     getCurrentRealmApps() {
-        this.dispatch({loading:true});
-        AppUserAjax.getApps().then((list)=>{
-            this.dispatch({list : list});
-        },()=>{
-            this.dispatch({error : true});
+        this.dispatch({loading: true});
+        AppUserAjax.getApps().then((list) => {
+            this.dispatch({list: list});
+        },() => {
+            this.dispatch({error: true});
         });
     }
     addAppUser(submitData,extraData,successCallback) {
-        this.dispatch({error : false , loading:true});
+        this.dispatch({error: false , loading: true});
         AppUserAjax.addAppUser(submitData).then((taskId) => {
             //创建用户的参数
             var taskParams = AppUserUtil.formatTaskParams(submitData , [] , extraData);
             //将参数存储到sessionStorage
             batchOperate.saveTaskParamByTaskId(taskId , taskParams , {
                 //需要弹框
-                showPop : true,
+                showPop: true,
                 //在用户页面处理
-                urlPath : '/user/list'
+                urlPath: '/user/list'
             });
             //添加任务id，仅在当前页显示
             batchOperate.addTaskIdToList(taskId);
@@ -58,16 +58,16 @@ class AppUserFormActions {
             var userCount = parseInt(submitData.number) || 0;
             //界面上立即显示一个初始化推送
             batchOperate.batchOperateListener({
-                taskId : taskId,
-                total : userCount,
-                running : userCount,
-                typeText : Intl.get("user.add.user", "创建用户")
+                taskId: taskId,
+                total: userCount,
+                running: userCount,
+                typeText: Intl.get("user.add.user", "创建用户")
             });
             //返回页面操作成功
-            this.dispatch({error : false});
+            this.dispatch({error: false});
             _.isFunction(successCallback) && successCallback();
         } , (errorMsg) => {
-            this.dispatch({error : true , errorMsg : errorMsg});
+            this.dispatch({error: true , errorMsg: errorMsg});
         });
     }
 }

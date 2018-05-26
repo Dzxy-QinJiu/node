@@ -8,7 +8,7 @@ var restUtil = require("ant-auth-request").restUtil(restLogger);
 //定义url
 var urls = {
     //获取安全域开通个数
-    getRealmEstablish : "/rest/analysis/realm/v1/realm_establish"
+    getRealmEstablish: "/rest/analysis/realm/v1/realm_establish"
 };
 //导出url
 exports.urls = urls;
@@ -20,15 +20,15 @@ exports.getRealmEstablishAnalysisData = function(req, res, startTime, endTime , 
             req: req,
             res: res
         }, {
-            starttime : startTime,
-            endtime : endTime,
-            unit : unit
+            starttime: startTime,
+            endtime: endTime,
+            unit: unit
         }, {
-            success : function(emitter, data, restResp) {
+            success: function(emitter, data, restResp) {
                 //转换数据，计算是否一个安全域也没有
                 var ret = {
-                    hasRealm : true,
-                    list : data
+                    hasRealm: true,
+                    list: data
                 };
 
                 if(restResp.headers.norealm) {

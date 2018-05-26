@@ -324,7 +324,7 @@ var AppForm = React.createClass({
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
-                        iconDescr={formData.name||logoDescr}
+                        iconDescr={formData.name || logoDescr}
                         upLoadDescr={logoDescr}
                         isEdit={true}
                         isUserHeadIcon={true}
@@ -342,7 +342,7 @@ var AppForm = React.createClass({
                                     help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                 >
                                     <Validator
-                                        rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                                        rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                         <Input name="name" id="name" value={formData.name}
                                             placeholder={Intl.get("common.required.tip", "必填项*")}
                                             onChange={this.setField.bind(this, 'name')}
@@ -383,7 +383,7 @@ var AppForm = React.createClass({
                                 >
                                     {this.state.isLoadingOwnerList ? (
                                         <div className="user-list-loading"><ReactIntl.FormattedMessage id="app.app.get.owner.list" defaultMessage="正在获取所有者列表" /><Icon type="loading"/></div>) : (
-                                        <Validator rules={[{required:true,message: Intl.get("app.app.owner.placeholder", "请选择所有者")}]}>
+                                        <Validator rules={[{required: true,message: Intl.get("app.app.owner.placeholder", "请选择所有者")}]}>
                                             <Select showSearch name="owner" id="owner" placeholder={Intl.get("app.app.owner.placeholder", "请选择所有者")}
                                                 value={formData.owner}
                                                 optionFilterProp="children" notFoundContent={Intl.get("common.no.match", "暂无匹配项")}
@@ -453,7 +453,7 @@ var AppForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult=="error"?3000:600}
+                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={this.state.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

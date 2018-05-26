@@ -6,18 +6,18 @@ var Option = Select.Option;
 var userData = require("../../public/sources/user-data");
 var AnalysisAppSelector = React.createClass({
     //失败次数
-    failCount : 0,
+    failCount: 0,
     getDefaultProps: function() {
         return {
             onSelectApp: function() {},
             //默认宽度没有限制
-            type : "user",
+            type: "user",
             //是否默认选中第一个应用
             isSelectFirstApp: false
         };
     },
     //是否选中第一个应用
-    isChoosenFirst : function() {
+    isChoosenFirst: function() {
         if (this.props.isSelectFirstApp) return true;
 
         var privileges = userData.getUserData().privileges || [];
@@ -45,11 +45,11 @@ var AnalysisAppSelector = React.createClass({
         }
         this.props.onSelectApp(appId,isChoosenAll,hasAll,apps);
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
             appList: [],
             selectedApp: '',
-            hasAll : false,
+            hasAll: false,
         };
     },
     getAppList: function() {
@@ -61,7 +61,7 @@ var AnalysisAppSelector = React.createClass({
 
             _this.setState({
                 appList: list,
-                hasAll : hasAll
+                hasAll: hasAll
             });
 
             //如果是产品总经理，需要选中第一个应用
@@ -91,7 +91,7 @@ var AnalysisAppSelector = React.createClass({
     componentDidMount: function() {
         this.getAppList();
     },
-    onSelectedAppChange : function(app_id,name) {
+    onSelectedAppChange: function(app_id,name) {
         this.selectApp(app_id,this.state.hasAll,this.state.appList);
     },
     render: function() {
@@ -112,7 +112,7 @@ var AnalysisAppSelector = React.createClass({
                 minWidth={150}
                 value={this.state.selectedApp}
                 onChange={this.onSelectedAppChange}
-                notFoundContent={!options.length? Intl.get("user.no.app", "暂无应用"):Intl.get("user.no.related.app", "无相关应用")}
+                notFoundContent={!options.length ? Intl.get("user.no.app", "暂无应用") : Intl.get("user.no.related.app", "无相关应用")}
             >
                 {options}
             </SelectFullWidth>

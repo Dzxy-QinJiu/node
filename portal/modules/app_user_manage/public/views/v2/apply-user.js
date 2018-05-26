@@ -22,7 +22,7 @@ var dynamicStyle;
 //布局常量
 const LAYOUT_CONSTANTS = {
     //应用选择组件顶部的高度
-    APPS_CHOOSEN_TOPBAR : 106
+    APPS_CHOOSEN_TOPBAR: 106
 };
 
 const ApplyUser = React.createClass({
@@ -95,7 +95,7 @@ const ApplyUser = React.createClass({
         var height = $(window).height() -
             OperationSteps.height -
             OperationStepsFooter.height -
-            LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR ;
+            LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR;
 
         dynamicStyle && dynamicStyle.destroy();
         dynamicStyle = insertStyle(`.user-manage-v2-applyuser .search-icon-list-content{max-height:${height}px;overflow-y:auto;overflow-x:hidden;`);

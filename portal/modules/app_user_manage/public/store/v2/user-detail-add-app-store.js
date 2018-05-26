@@ -28,19 +28,19 @@ class UserDetailAddAppStore {
         //表单数据
         this.formData = {
             //正式、试用
-            user_type : AppUserUtils.USER_TYPE_VALUE_MAP.TRIAL_USER,
+            user_type: AppUserUtils.USER_TYPE_VALUE_MAP.TRIAL_USER,
             //开始时间
-            start_time : DateSelectorUtils.getMilliseconds(timeObj.start_time),
+            start_time: DateSelectorUtils.getMilliseconds(timeObj.start_time),
             //结束时间
-            end_time : DateSelectorUtils.getMilliseconds(timeObj.end_time),
+            end_time: DateSelectorUtils.getMilliseconds(timeObj.end_time),
             //开通周期
-            range : "0.5m",
+            range: "0.5m",
             //到期停用
-            over_draft : "1",
+            over_draft: "1",
             //二步认证
-            is_two_factor : "0",
+            is_two_factor: "0",
             //多人登录
-            multilogin:"0"
+            multilogin: "0"
         };
         //选中的应用列表的数组
         this.selectedApps = [];

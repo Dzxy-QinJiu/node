@@ -22,9 +22,9 @@ exports.getAuditLogList = function(searchObj){
     auditLogAjax = $.ajax({
         url: '/rest/user/log',
         type: 'get',
-        data : searchObj,
+        data: searchObj,
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {
@@ -46,9 +46,9 @@ exports.getSingleAuditLogList = function(searchObj){
     singleAuditLogAjax = $.ajax({
         url: '/rest/log/app/user_detail/' + user_id,
         type: 'get',
-        data : searchObj,
+        data: searchObj,
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {
@@ -66,10 +66,10 @@ exports.getSingleUserAppList = function(searchObj){
     let Deferred = $.Deferred();
     singleUserLogAppAjax && singleUserLogAppAjax.abort();
     singleUserLogAppAjax = $.ajax({
-        url: '/rest/appuser/detail/'+ searchObj.user_id,
+        url: '/rest/appuser/detail/' + searchObj.user_id,
         type: 'get',
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {
@@ -84,7 +84,7 @@ exports.getSingleUserAppList = function(searchObj){
 // 用户登录信息（时长、次数、首次和最后一次登录时间）
 let UserLoginInfoAjax = null;
 exports.getUserLoginInfo = function(queryobj){
-    let loginInfoObj =  _.clone(queryobj);
+    let loginInfoObj = _.clone(queryobj);
     let user_id = loginInfoObj.user_id;
     delete loginInfoObj.user_id;
     let Deferred = $.Deferred();
@@ -109,7 +109,7 @@ exports.getUserLoginInfo = function(queryobj){
 // 用户登录统计图中登录时长、登录频次
 let UserLoginChartAjax = null;
 exports.getUserLoginChartInfo = function(queryobj){
-    let loginInfoChartObj =  _.clone(queryobj);
+    let loginInfoChartObj = _.clone(queryobj);
     let user_id = loginInfoChartObj.user_id;
     delete loginInfoChartObj.user_id;
     let Deferred = $.Deferred();

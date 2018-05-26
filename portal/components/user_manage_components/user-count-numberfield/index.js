@@ -8,9 +8,9 @@ const UserCountNumberFieldMixin = {
     renderUserCountNumberField(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalNumber : 1
+            isCustomSetting: false,
+            appId: '',
+            globalNumber: 1
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

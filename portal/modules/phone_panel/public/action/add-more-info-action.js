@@ -17,9 +17,9 @@ function AddMoreInfoAction() {
         });
     };
     this.addAppFeedback = function(submitObj, cb) {
-        phoneAlertAjax.addAppFeedback(submitObj).then((data)=>{
+        phoneAlertAjax.addAppFeedback(submitObj).then((data) => {
             cb(data);
-        },(errorMsg)=>{
+        },(errorMsg) => {
             cb( errorMsg || Intl.get("call.record.failed.add.app.feedback","添加产品反馈内容失败"));
         });
     };

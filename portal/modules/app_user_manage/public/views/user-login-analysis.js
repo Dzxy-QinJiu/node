@@ -140,7 +140,7 @@ const UserLoginAnalysis = React.createClass({
         let millisecond = this.state.loginInfo.duration;
         let timeObj = {timeDescr: ' '};
         if (millisecond !== '') {
-            timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond/1000));
+            timeObj = TimeUtil.secondsToHourMinuteSecond(Math.floor(millisecond / 1000));
         }
         let count = this.state.loginInfo.count;
         if (this.state.loginInfo.errorMsg) {
@@ -268,7 +268,7 @@ const UserLoginAnalysis = React.createClass({
         let LoadingBlock = this.state.isLoading ? (
             <Spinner />
         ) : null;
-        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ?  <div className="user-no-login">
+        let UserLoginBlock = this.state.loginInfo.count === 0 && this.state.loginInfo.duration === 0 ? <div className="user-no-login">
             {Intl.get('user.no.login.system', '该用户还没有登录过系统')}
         </div> : <div className="user-login-info">
             {this.renderUserLoginInfo()}

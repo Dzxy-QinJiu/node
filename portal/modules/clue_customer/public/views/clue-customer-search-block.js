@@ -44,11 +44,11 @@ class ClueCustomerSearchBlock extends React.Component {
         if (!end_time) {
             end_time = moment().endOf("day").valueOf();
         }
-        clueCustomerAction.setTimeRange({start_time:start_time, end_time:end_time});
+        clueCustomerAction.setTimeRange({start_time: start_time, end_time: end_time});
         this.props.onTypeChange();
     };
     //筛选不同的状态
-    onChange = (e)=>{
+    onChange = (e) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".radio-group-wrap"), "点击切换筛选线索客户类型");
         clueCustomerAction.setFilterType(e.target.value);
         this.props.onTypeChange();
@@ -56,7 +56,7 @@ class ClueCustomerSearchBlock extends React.Component {
     render() {
         //是否是运营人员
         var isOperation = this.isOperation();
-        var defaultValue = this.isSales() ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? "": "0");
+        var defaultValue = this.isSales() ? SELECT_TYPE.HAS_DISTRIBUTE : (isOperation ? "" : "0");
         return (
             <div className="block search-input-select-block" data-tracename="筛选线索客户">
                 <div className="radio-group-wrap">
@@ -64,7 +64,7 @@ class ClueCustomerSearchBlock extends React.Component {
                         {/*运营人员才展示全部这个按钮*/}
                         {isOperation ? <RadioButton value="">
                             {Intl.get("common.all", "全部")}
-                        </RadioButton>: null}
+                        </RadioButton> : null}
                         {this.isSales() ? null : <RadioButton value="0" >
                             {Intl.get("clue.customer.will.distribution","待分配")}
                         </RadioButton>}

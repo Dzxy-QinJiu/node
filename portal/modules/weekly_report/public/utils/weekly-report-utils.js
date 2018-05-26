@@ -27,11 +27,11 @@ exports.LEALVE_OPTION = [
 exports.LEALVE_DURATION_OPTION = [
     {
         value: "1",
-        label: Intl.get("weekly.report.n.days","{n}天",{n:1})
+        label: Intl.get("weekly.report.n.days","{n}天",{n: 1})
     },
     {
         value: "0.5",
-        label: Intl.get("weekly.report.n.days","{n}天",{n:0.5})
+        label: Intl.get("weekly.report.n.days","{n}天",{n: 0.5})
     },
 ];
 

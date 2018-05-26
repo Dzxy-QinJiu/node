@@ -13,22 +13,22 @@ function AppNoticeActions(){
     //获取应用的系统公告列表
     this.getAppNoticeList = function(searchObj) {
         var _this = this;
-        _this.dispatch({loading:true,error:false});
+        _this.dispatch({loading: true,error: false});
         noticeAjax.getAppNoticeList(searchObj).then(function(resData) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            _this.dispatch({loading:false,error:false, resData: resData});
+            _this.dispatch({loading: false,error: false, resData: resData});
         },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
     // 添加系统公告
     this.addAppNotice = function(newNoticeInfo){
         var _this = this;
         noticeAjax.addAppNotice(newNoticeInfo).then(function(resData){
-            var list = _.isArray(resData.list)? resData.list : [];
+            var list = _.isArray(resData.list) ? resData.list : [];
             _this.dispatch(list);
         },function(errorMsg) {
-            _this.dispatch({errorMsg:errorMsg});
+            _this.dispatch({errorMsg: errorMsg});
         });
     };
 }

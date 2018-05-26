@@ -4,18 +4,18 @@ var immutable = require("immutable");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import { packageTry } from 'LIB_DIR/func';
 var TimeSeriesLinechart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            dataList : [],
-            getToolTip : function() {}
+            dataList: [],
+            getToolTip: function() {}
         };
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
         $(window).on('resize', this.windowResize);
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.dataList &&
             prevProps.dataList &&
@@ -26,7 +26,7 @@ var TimeSeriesLinechart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         $(window).off('resize', this.windowResize);
         if(this.echartInstance) {
             packageTry(() => {
@@ -42,7 +42,7 @@ var TimeSeriesLinechart = React.createClass({
             this.renderChart();
         }, 300);
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.clear();
@@ -108,14 +108,14 @@ var TimeSeriesLinechart = React.createClass({
     },
     getEchartOptions: function() {
         return {
-            title : null,
+            title: null,
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            tooltip : { // 图表中的提示数据信息
+            calculable: false,
+            tooltip: { // 图表中的提示数据信息
                 trigger: 'axis',
-                formatter : (params) =>{
+                formatter: (params) => {
                     var timeText, count, teamArr;
                     if(_.isArray(params)){
                         if (params.length == 1) {
@@ -135,17 +135,17 @@ var TimeSeriesLinechart = React.createClass({
                     }
                 }
             },
-            legend : {
+            legend: {
                 data: this.getLegendData()
             },
             grid: {
-                x : 50,
-                y : 40,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+                x: 50,
+                y: 40,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
                     type: 'category',
                     splitLine: false,
@@ -156,13 +156,13 @@ var TimeSeriesLinechart = React.createClass({
                             color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         },
                         formatter: () => { // 不显示x轴数值
                             return "";
@@ -171,37 +171,37 @@ var TimeSeriesLinechart = React.createClass({
                     data: this.getCategorys(),
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
                     minInterval: 1,
-                    type : 'value',
-                    splitLine : false,
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         },
                         formatter: () => { // 不显示y轴数值
                             return "";
                         }
                     },
                     axisTick: { // y轴不显示刻度
-                        show:false
+                        show: false
                     }
                 }
             ],
             series: this.getDataSerise()
         };
     },
-    render : function() {
+    render: function() {
         return (
-            <div className="echart_wrap" ref="chart" style={{width:this.props.width, height:this.props.height}}></div>
+            <div className="echart_wrap" ref="chart" style={{width: this.props.width, height: this.props.height}}></div>
         );
     }
 });

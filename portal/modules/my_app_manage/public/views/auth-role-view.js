@@ -40,7 +40,7 @@ var AuthRoleView = React.createClass({
             ...authorityState,
             userInfoContainerHeight: this.userInfoContainerHeightFnc(),
             userInfoContainerWidth: this.userInfoContainerWidthFnc(),
-            uploadFileRightPanelShow : false
+            uploadFileRightPanelShow: false
         };
     },
     onChange: function() {
@@ -124,26 +124,26 @@ var AuthRoleView = React.createClass({
         }
     },
 
-    showUploadFile : function(e){
+    showUploadFile: function(e){
         {this.props.showRoleAuthType == "role" ? Trace.traceEvent($(this.getDOMNode()).find(".upload-role"),"导入角色") :
             Trace.traceEvent($(this.getDOMNode()).find(".upload-authority"),"导入权限");}
         this.setState({
-            uploadFileRightPanelShow : true
+            uploadFileRightPanelShow: true
         });
     },
 
-    closeUploadFile : function(e) {
+    closeUploadFile: function(e) {
         Trace.traceEvent(e,"关闭上传界面");
         this.setState({
-            uploadFileRightPanelShow : false
+            uploadFileRightPanelShow: false
         });
     },
 
     render: function() {
         var height = this.state.userInfoContainerHeight;
         var width = this.state.userInfoContainerWidth;
-        var isShowRoleButton =  _.isArray(RoleStore.getState().roleList) &&
-                                    RoleStore.getState().roleList.length > 0 ;
+        var isShowRoleButton = _.isArray(RoleStore.getState().roleList) &&
+                                    RoleStore.getState().roleList.length > 0;
         var isShowAuthorityButton = _.isArray(AuthorityStore.getState().authorityGroupList) &&
                                     AuthorityStore.getState().authorityGroupList.length > 0;
         return (
@@ -156,14 +156,14 @@ var AuthRoleView = React.createClass({
                                     {Intl.get("role.import.role", "导入角色")}
                                 </Button>
 
-                                {isShowRoleButton  ?
+                                {isShowRoleButton ?
                                     <a
-                                        href={"/rest/my_app/export_role/" +this.props.curAppId }
+                                        href={"/rest/my_app/export_role/" + this.props.curAppId }
                                         className="download-role"
                                         data-tracename="导出角色"
                                     >
                                         {Intl.get("role.export.role", "导出角色")}
-                                    </a>  : null
+                                    </a> : null
                                 }
 
                                 <Button type="ghost" className="role-add-btn custom-top-add-btn"
@@ -175,13 +175,13 @@ var AuthRoleView = React.createClass({
                                     <Button type="ghost" className="upload-authority" onClick={this.showUploadFile}>
                                         {Intl.get("authority.import.auth", "导入权限")}
                                     </Button>
-                                    {isShowAuthorityButton  ?
+                                    {isShowAuthorityButton ?
                                         <a
                                             href={"/rest/my_app/export_authority/" + this.props.curAppId }
                                             className="download-authority"
                                         >
                                             {Intl.get("authority.export.auth", "导出权限")}
-                                        </a>  :  null
+                                        </a> : null
                                     }
 
                                     <Button type="ghost" className="authority-add-btn custom-top-add-btn"

@@ -2,8 +2,8 @@
  * ajax url定义
  */
 var urls = {
-    getGrantApplications : "/rest/base/v1/application/grant_applications",
-    getMyApplications : "/rest/base/v1/user/manage_apps",
+    getGrantApplications: "/rest/base/v1/application/grant_applications",
+    getMyApplications: "/rest/base/v1/user/manage_apps",
     getAddedTeam: 'rest/analysis/user/v1/:auth_type/added/team', //获取新增用户的团队统计
     // 获取当前应用的在线用户的地域数据
     getOnLineUserZone: '/rest/analysis/user/v1/online/onlineStatistics/:client_id/:select_mode',
@@ -24,9 +24,9 @@ exports.getGrantApplications = function(req,res,status) {
         req: req,
         res: res
     },{
-        status : status
+        status: status
     },{
-        success : function(emitter,list) {
+        success: function(emitter,list) {
             if(!_.isArray(list)) {
                 list = [];
             }
@@ -44,7 +44,7 @@ exports.getMyApplications = function(req,res) {
         req: req,
         res: res
     },{},{
-        success : function(emitter,result) {
+        success: function(emitter,result) {
             //处理数据
             var dataObj = _.isObject(result) ? result : {};
             var list = _.isArray(dataObj.data) ? dataObj.data : [];
@@ -67,17 +67,17 @@ function getTeamCount(req, res, queryParams, type) {
     }
     delete tempParams.authType;
     tempParams.type = type;
-    return new Promise( (resolve, reject) =>  {
+    return new Promise( (resolve, reject) => {
         restUtil.authRest.get(
             {
                 url: url,
                 req: req,
                 res: res
             }, tempParams , {
-                success:  (eventEmitter, result) => {
+                success: (eventEmitter, result) => {
                     resolve(result);
                 },
-                error:  (eventEmitter, errorDesc) => {
+                error: (eventEmitter, errorDesc) => {
                     reject(errorDesc.message);
                 }
             });
@@ -85,12 +85,12 @@ function getTeamCount(req, res, queryParams, type) {
 }
 
 // 获取当前应用的新增用户的团队数据
-exports.getAddedTeam =  (req, res, queryParams) => {
+exports.getAddedTeam = (req, res, queryParams) => {
     var emitter = new EventEmitter();
-    Promise.all([getTeamCount(req, res, queryParams, '试用用户'), getTeamCount(req, res, queryParams,  '正式用户')]).then( (result) => {
+    Promise.all([getTeamCount(req, res, queryParams, '试用用户'), getTeamCount(req, res, queryParams, '正式用户')]).then( (result) => {
         let data = handleTeamData(result[0], result[1]);
         emitter.emit("success", data);
-    },  (errorMsg) => {
+    }, (errorMsg) => {
         emitter.emit("error", errorMsg);
     });
     return emitter;

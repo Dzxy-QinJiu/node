@@ -5,16 +5,16 @@ require("./index.less");
 import Trace from "LIB_DIR/trace";
 var Icon = require("antd").Icon;
 var SummaryNumber = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            desp : Intl.get("oplate_customer_analysis.7", "总客户"),
-            num : '',
-            active : false,
-            resultType : 'loading',
-            onClick : function(){}
+            desp: Intl.get("oplate_customer_analysis.7", "总客户"),
+            num: '',
+            active: false,
+            resultType: 'loading',
+            onClick: function(){}
         };
     },
-    renderLoading : function() {
+    renderLoading: function() {
         return (
             <div>
                 <p>
@@ -24,7 +24,7 @@ var SummaryNumber = React.createClass({
             </div>
         );
     },
-    renderContent : function() {
+    renderContent: function() {
         var number = '';
         if(this.props.num === 0 || this.props.num) {
             number = this.props.num + '';
@@ -47,16 +47,16 @@ var SummaryNumber = React.createClass({
         );
 
     },
-    render : function() {
+    render: function() {
         var activeClass = 'summary-number';
         if(this.props.active) {
             activeClass += ' active';
         }
         return (
-            <div className={activeClass} onClick={e => {Trace.traceEvent(e,"点击查询" + this.props.desp + "统计");return this.props.onClick();}}>
+            <div className={activeClass} onClick={e => {Trace.traceEvent(e,"点击查询" + this.props.desp + "统计"); return this.props.onClick();}}>
                 {
                     this.props.resultType === 'loading' ?
-                        this.renderLoading():
+                        this.renderLoading() :
                         this.renderContent()
                 }
             </div>

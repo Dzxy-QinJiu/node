@@ -36,7 +36,7 @@ var ClueImport = React.createClass({
         };
         return (
             <Upload {...props} className="import-clue">
-                {Intl.get("common.import", "导入")} {this.state.isLoading? <Icon type="loading" className="icon-loading"/> : null}
+                {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" className="icon-loading"/> : null}
             </Upload>
         );
     }

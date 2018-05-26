@@ -13,30 +13,30 @@ import Trace from "LIB_DIR/trace";
 import { packageTry } from 'LIB_DIR/func';
 
 var LineChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            chartData : [],
-            width:'100%',
-            height:214,
-            resultType : 'loading',
-            legend : null
+            chartData: [],
+            width: '100%',
+            height: 214,
+            resultType: 'loading',
+            legend: null
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         if(!this.props.legend) {
             return {
-                show : false,
-                data :[]
+                show: false,
+                data: []
             };
         }
         var legend = _.pluck(this.props.legend , 'name');
         return {
-            show : true,
-            data : legend
+            show: true,
+            data: legend
         };
     },
-    getCategorys : function() {
+    getCategorys: function() {
         let chartData = this.props.chartData;
 
         if (this.props.dataField !== undefined) {
@@ -61,42 +61,42 @@ var LineChart = React.createClass({
             }
         };
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         var series = [];
 
         if (this.props.valueField) {
             const dataField = this.props.dataField;
             const dataField2 = this.props.dataField2;
-            let list = dataField !==undefined? this.props.chartData[dataField] : this.props.chartData;
+            let list = dataField !== undefined ? this.props.chartData[dataField] : this.props.chartData;
 
             if (list && dataField2 !== undefined) list = list[dataField2];
 
             series.push({
-                symbol : "circle",
+                symbol: "circle",
                 showAllSymbol: true,
-                name : this.props.name,
-                type : 'line',
-                label : this.getLabel(),
-                data : _.pluck(list , this.props.valueField),
-                itemStyle : {
-                    normal : {
-                        color : COLORSINGLE
+                name: this.props.name,
+                type: 'line',
+                label: this.getLabel(),
+                data: _.pluck(list , this.props.valueField),
+                itemStyle: {
+                    normal: {
+                        color: COLORSINGLE
                     }
                 }
             });
         } else {
             _.each(this.props.legend , function(legendInfo,idx) {
                 var bar = {
-                    name : legendInfo.name,
-                    type : 'bar',
-                    stack : 'stack',
-                    barMinWidth : 4,
-                    barMaxWidth : 40,
-                    data : _.pluck(_this.props.chartData , legendInfo.key),
-                    itemStyle : {
-                        normal : {
-                            color : COLORSINGLE
+                    name: legendInfo.name,
+                    type: 'bar',
+                    stack: 'stack',
+                    barMinWidth: 4,
+                    barMaxWidth: 40,
+                    data: _.pluck(_this.props.chartData , legendInfo.key),
+                    itemStyle: {
+                        normal: {
+                            color: COLORSINGLE
                         }
                     }
                 };
@@ -104,94 +104,94 @@ var LineChart = React.createClass({
             });
             //添加折线图，能够体现出趋势
             var line = {
-                name : Intl.get("app_operation.1", "用户总数"),
-                type : "line",
-                symbol:'none',
+                name: Intl.get("app_operation.1", "用户总数"),
+                type: "line",
+                symbol: 'none',
                 smooth: true,
-                label : this.getLabel(),
-                data : _.pluck(_this.props.chartData , 'total')
+                label: this.getLabel(),
+                data: _.pluck(_this.props.chartData , 'total')
             };
             series.push(line);
         }
 
         return series;
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var _this = this;
         var option = {
-            title:null,
-            animation : false,
-            tooltip : {
-                trigger : "axis",
-                show : true,
-                extraCssText : echartsTooltipCssText,
+            title: null,
+            animation: false,
+            tooltip: {
+                trigger: "axis",
+                show: true,
+                extraCssText: echartsTooltipCssText,
             },
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
-                    splitLine : {
-                        lineStyle : {
-                            color:'#f2f2f2'
+                    type: 'category',
+                    data: this.getCategorys(),
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f2f2f2'
                         }
                     },
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
+                    axisLabel: {
+                        textStyle: {
                             color: XAXIS_COLOR,
-                            align:'center'
+                            align: 'center'
                         }
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
-                    splitLine : {
-                        lineStyle : {
-                            color:'#f2f2f2'
+                    type: 'value',
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f2f2f2'
                         }
                     },
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -224,10 +224,10 @@ var LineChart = React.createClass({
         }
 
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -238,7 +238,7 @@ var LineChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -246,7 +246,7 @@ var LineChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         return (
             <div className="analysis-chart">
                 <div ref="chart" style={{width: this.props.width, height: this.props.height}} className="chart"

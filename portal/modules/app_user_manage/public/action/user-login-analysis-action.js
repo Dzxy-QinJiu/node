@@ -9,13 +9,13 @@ const AppUserDetailStore = require('../store/app-user-detail-store');
 function UserLoginAnalysisAction() {
     this.generateActions(
         "resetState", // 切换用户时，恢复到默认状态
-        "getSingleUserAppList",  //获取单个用户的应用列表
-        "setSelectedAppId",  // 设置应用的app
+        "getSingleUserAppList", //获取单个用户的应用列表
+        "setSelectedAppId", // 设置应用的app
         'getUserLoginInfo', // 用户登录信息（时长、次数、首次和最后一次登录时间）
         'getUserLoginChartInfo', // 用户登录统计图中登录时长、登录频次
     );
     // 获取单个用户的应用列表
-    this.getSingleUserAppList =  function(searchObj, selectedAppId){
+    this.getSingleUserAppList = function(searchObj, selectedAppId){
         userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
             let userOwnAppArray = result.apps;
             // 存储应用id的变量
@@ -27,7 +27,7 @@ function UserLoginAnalysisAction() {
             let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
             let index = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
             // 获取UI界面上的app
-            let selectApp =  selectedAppId||AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
+            let selectApp = selectedAppId || AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
                 UserAuditLogStore.getState().selectAppId;
             let selectedLogAppId = '';
             // selectAPP == ''是针对全部应用
@@ -58,7 +58,7 @@ function UserLoginAnalysisAction() {
                     appList: userOwnAppArray
                 }
             );
-        },  () => {
+        }, () => {
             // 用户登录统计图中登录时长、登录频次
             this.actions.getUserLoginChartInfo();
             this.dispatch(
@@ -71,11 +71,11 @@ function UserLoginAnalysisAction() {
     };
 
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
-    this.getUserLoginInfo =  function(loginParam){
+    this.getUserLoginInfo = function(loginParam){
         if (loginParam && loginParam.appid) {
             this.dispatch({loading: true, error: false});
             userAuditLogAjax.getUserLoginInfo(loginParam).then( (data) => {
-                this.dispatch({loading: false, error: false, data:data});
+                this.dispatch({loading: false, error: false, data: data});
             },(errorMsg) => {
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
@@ -85,11 +85,11 @@ function UserLoginAnalysisAction() {
     };
 
     // 用户登录统计图中登录时长、登录频次
-    this.getUserLoginChartInfo =  function(loginParam){
+    this.getUserLoginChartInfo = function(loginParam){
         if (loginParam && loginParam.appid) {
             this.dispatch({loading: true, error: false});
             userAuditLogAjax.getUserLoginChartInfo(loginParam).then((data) => {
-                this.dispatch({loading: false, error: false, data:data});
+                this.dispatch({loading: false, error: false, data: data});
             },(errorMsg) => {
                 this.dispatch({loading: false,error: true, errorMsg: errorMsg});
             });

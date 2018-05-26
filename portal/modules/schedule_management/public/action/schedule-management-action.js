@@ -32,7 +32,7 @@ function ScheduleManagementActions() {
         this.dispatch({error: false, loading: true});
         scheduleManagementAjax.handleScheduleStatus(reqData).then((resData) => {
             cb(resData);
-        }, (errMsg)=>{
+        }, (errMsg) => {
             this.dispatch({error: false, loading: false, result: resData});
             cb(errMsg || Intl.get("crm.failed.alert.todo.list","修改待办事项状态失败"));
         });

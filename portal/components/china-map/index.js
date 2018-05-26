@@ -15,7 +15,7 @@ var ChinaMap = React.createClass({
     provinceName(name) {
         return MAP_PROVINCE[name];
     },
-    echartInstance : null,
+    echartInstance: null,
     renderMap() {
         if(this.props.height > 0 && this.props.width > 0) {
             if(this.echartInstance) {
@@ -24,10 +24,10 @@ var ChinaMap = React.createClass({
             var chartWrap = this.refs.chartWrap;
             var _this = this;
             var mapUtil = new MapChart({
-                domWrap : chartWrap,
-                dataList : _this.props.dataList,
-                formatter : _this.props.formatter,
-                height : _this.props.height
+                domWrap: chartWrap,
+                dataList: _this.props.dataList,
+                formatter: _this.props.formatter,
+                height: _this.props.height
             });
             var options = mapUtil.getEchartOptions();
             this.echartInstance = echarts.init(chartWrap,macronsTheme);
@@ -50,7 +50,7 @@ var ChinaMap = React.createClass({
             }
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderMap();
     },
     componentWillUnmount() {
@@ -74,12 +74,12 @@ var ChinaMap = React.createClass({
     },
     getDefaultProps() {
         return {
-            width : 500,
-            height : 500,
-            className : "china-map-wrapper",
-            style : {},
-            dataList : [],
-            formatter : function(){}
+            width: 500,
+            height: 500,
+            className: "china-map-wrapper",
+            style: {},
+            dataList: [],
+            formatter: function(){}
         };
     },
     returnChinaMap() {
@@ -94,7 +94,7 @@ var ChinaMap = React.createClass({
         return (
             <div>
                 {this.state.showReturnBtn ? (<Button type="primary" onClick={this.returnChinaMap}>{Intl.get("call.analysis.map.return", "返回上一级")}</Button>) : null}
-                <div ref="chartWrap" style={{width:this.props.width,height:this.props.height,borderBottom:'1px solid transparent',...this.props.style}} className={this.props.className}></div>
+                <div ref="chartWrap" style={{width: this.props.width,height: this.props.height,borderBottom: '1px solid transparent',...this.props.style}} className={this.props.className}></div>
             </div>
         );
     }

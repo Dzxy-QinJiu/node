@@ -10,28 +10,28 @@ if (language.lan() == "es" || language.lan() == "en") {
 var UserAuditLogStore = require("../store/user_audit_log_store");
 
 const UserAuditLog = React.createClass({
-    selectedUserId : '',
-    isShowRightPanel : false,
+    selectedUserId: '',
+    isShowRightPanel: false,
     getInitialState: function() {
         return {
-            selectedUserId : this.selectedUserId,
-            isShowRightPanel : this.isShowRightPanel
+            selectedUserId: this.selectedUserId,
+            isShowRightPanel: this.isShowRightPanel
         };
     },
-    closeRightPanel : function() {
+    closeRightPanel: function() {
         $(this.refs.wrap).find(".current_row").removeClass("current_row");
         this.selectedUserId = '';
         this.isShowRightPanel = false;
         this.setState({
-            selectedUserId : '',
-            isShowRightPanel : false
+            selectedUserId: '',
+            isShowRightPanel: false
         });
     },
     componentWillMount: function() {
         emitter.on("user_detail_close_right_panel" , this.closeRightPanel);
     },
     
-    componentDidMount : function() {
+    componentDidMount: function() {
         var $wrap = $(this.refs.wrap);
         var _this = this;
         $wrap.on("click" , "td.click-show-user-detail" , function() {
@@ -45,8 +45,8 @@ const UserAuditLog = React.createClass({
                     _this.selectedUserId = user_id;
                     _this.isShowRightPanel = true;
                     _this.setState({
-                        selectedUserId : user_id,
-                        isShowRightPanel : _this.isShowRightPanel
+                        selectedUserId: user_id,
+                        isShowRightPanel: _this.isShowRightPanel
                     });
                 }
             }

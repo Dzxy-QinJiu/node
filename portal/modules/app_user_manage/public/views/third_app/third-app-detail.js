@@ -1,10 +1,10 @@
 require("../../css/third-app-detail.less");
 import { Button, Select, Form, Input, message, Spin, Checkbox, Tabs, Icon, Alert, DatePicker } from 'antd';
-var ThirdAppDetailActions =require('../../action/third-app-detail-actions');
+var ThirdAppDetailActions = require('../../action/third-app-detail-actions');
 var AlertTimer = require("CMP_DIR/alert-timer");
 import Spinner from 'CMP_DIR/spinner';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
-var AppUserPanelSwitchAction =require('../../action/app-user-panelswitch-actions');
+var AppUserPanelSwitchAction = require('../../action/app-user-panelswitch-actions');
 var ThirdAppDetailStore = require ('../../store/third-app-detail-store');
 import { RightPanelClose, RightPanelReturn } from "CMP_DIR/rightPanel";
 import AppUserUtil from '../../util/app-user-util';
@@ -36,7 +36,7 @@ class ThirdAppEdit extends React.Component {
     constructor(props) {
         super(props);
         //根据是否传入appId判断是否是添加状态
-        props.appId? ThirdAppDetailActions.changePanelStatus("display"): ThirdAppDetailActions.changePanelStatus("add");        
+        props.appId ? ThirdAppDetailActions.changePanelStatus("display") : ThirdAppDetailActions.changePanelStatus("add");        
         this.state = {
             ...ThirdAppDetailStore.getState(),
             appId: props.appId || "",
@@ -114,7 +114,7 @@ class ThirdAppEdit extends React.Component {
                 return;
             }           
             let {app} = val;
-            app.logo = this.state.app.logo||"";
+            app.logo = this.state.app.logo || "";
             app.user_id = this.props.userId;
             if(app.create_time) {
                 app.create_time = app.create_time.toISOString();
@@ -135,7 +135,7 @@ class ThirdAppEdit extends React.Component {
     renderIndicator() {        
         let error = null;
         _.each(this.state.errMsg,(value, key) => {
-            if(value!="") {
+            if(value != "") {
                 error = value;
             }
         });
@@ -159,11 +159,11 @@ class ThirdAppEdit extends React.Component {
         }  
         return (            
             <GeminiScrollBar style={{ height }}>                
-                {this.displayOnly()?
+                {this.displayOnly() ?
                     <DefaultUserLogoTitle
                         nickName={this.state.app.name}
                         userLogo={this.state.app.logo}
-                    />: 
+                    /> : 
                     <HeadIcon 
                         headIcon={this.state.app.logo}
                         upLoadDescr={logoDescr}
@@ -230,12 +230,12 @@ class ThirdAppEdit extends React.Component {
                         )
                     }
                 </FormItem>
-                { this.displayOnly()? 
+                { this.displayOnly() ? 
                     <FormItem {...itemLayout} label={Intl.get("member.create.time", "创键时间")}>
                         {
                             this.state.app.create_time
                         }
-                    </FormItem>: null }
+                    </FormItem> : null }
                 <FormItem {...itemLayout} label={Intl.get("user.third.thirdapp.des", "应用简介")}>
                     {
                         this.displayOnly() ? this.state.app.about : getFieldDecorator("app.about", {
@@ -268,7 +268,7 @@ class ThirdAppEdit extends React.Component {
         return (
             <div className="user-manage-v2 user-detail-edit-app-v2" id="third-app-detail-wrapper" data-tracename="第三方应用配置详情">                
                 <PrivilegeChecker check={"THIRD_PARTY_MANAGE"}>
-                    { this.state.status === "add"? null: this.renderStatusBtn() }
+                    { this.state.status === "add" ? null : this.renderStatusBtn() }
                     {
                         this.displayOnly() ?
                             <div className="icon-update circle-button iconfont app_user_manage_rightpanel right-pannel-default"
@@ -276,7 +276,7 @@ class ThirdAppEdit extends React.Component {
                                 onClick={this.changeStatus.bind(this, "edit")}
                                 style={{ right: "62px", top: "18px" }}
                             ></div>
-                            : this.state.status === "edit"? <RightPanelReturn onClick={this.cancel.bind(this)} />: null
+                            : this.state.status === "edit" ? <RightPanelReturn onClick={this.cancel.bind(this)} /> : null
                     }
                 </PrivilegeChecker>
                 <RightPanelClose onClick={this.closeRightPanel.bind(this)} />

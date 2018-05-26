@@ -10,7 +10,7 @@ class StepScrollBar extends React.Component {
         const props = this.props;
         const {children,...restProps} = props;
         return (
-            <div style={{height:divHeight}} {...restProps}>
+            <div style={{height: divHeight}} {...restProps}>
                 <GeminiScrollBar>
                     {children}
                 </GeminiScrollBar>

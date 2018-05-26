@@ -4,14 +4,14 @@ import PositionStore from '../store/index';
 exports.addPhoneOrder = function(queryObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/add/phoneorder',
-        dataType : 'json',
-        type : 'post',
-        data : queryObj,
-        success : (data) =>{
+        url: '/rest/add/phoneorder',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error : (xhr) => {
+        error: (xhr) => {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -21,14 +21,14 @@ exports.addPhoneOrder = function(queryObj) {
 exports.getPhoneOrderList = function(reqObj) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/get/phoneorder',
-        dataType : 'json',
-        type : 'get',
+        url: '/rest/get/phoneorder',
+        dataType: 'json',
+        type: 'get',
         data: reqObj,
-        success : (data) =>{
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error : (xhr) => {
+        error: (xhr) => {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -38,14 +38,14 @@ exports.getPhoneOrderList = function(reqObj) {
 exports.getUnbindMemberList = function(reqRealm) {
     var Deferred = $.Deferred();
     $.ajax({
-        url : '/rest/get/unbind/member/list',
-        dataType : 'json',
-        type : 'get',
+        url: '/rest/get/unbind/member/list',
+        dataType: 'json',
+        type: 'get',
         data: reqRealm,
-        success : (data) =>{
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error : (xhr) => {
+        error: (xhr) => {
             Deferred.reject(xhr.responseJSON);
         }
     });
@@ -80,7 +80,7 @@ exports.updatePhoneOrder = function(phoneObj) {
 exports.memberBindPhoneOrder = function(reqObj) {
     var memberList = PositionStore.getState().unbindMember.data;
     let filterData = _.filter(memberList, (item) => {
-        return  item.nick_name == reqObj.user_id;
+        return item.nick_name == reqObj.user_id;
     });
     if (_.isArray(filterData) && filterData.length) {
         reqObj.user_id = filterData[0].user_id;

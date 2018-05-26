@@ -13,9 +13,9 @@ var roleRestApis = {
     addRole: "/rest/base/v1/role",
     editRole: "/rest/base/v1/role",
     deleteRole: "/rest/base/v1/role",
-    setDefaultRole:"/rest/base/v1/application/baserole/config",
-    getDefaultRole:"/rest/base/v1/application/baserole/config",
-    delDefaultRole:"/rest/base/v1/application/baserole/config"
+    setDefaultRole: "/rest/base/v1/application/baserole/config",
+    getDefaultRole: "/rest/base/v1/application/baserole/config",
+    delDefaultRole: "/rest/base/v1/application/baserole/config"
 };
 exports.urls = roleRestApis;
 
@@ -109,7 +109,7 @@ exports.getDefaultRole = function(req, res,appId) {
             url: roleRestApis.getDefaultRole,
             req: req,
             res: res
-        },{app_id:appId});
+        },{app_id: appId});
 };
 
 // 删除默认角色

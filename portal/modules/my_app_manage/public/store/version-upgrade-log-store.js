@@ -9,16 +9,16 @@ function VersionUpgradeLogStore() {
 }
 
 // 获取版本记录列表
-VersionUpgradeLogStore.prototype.getAppRecordsList= function(resData){
+VersionUpgradeLogStore.prototype.getAppRecordsList = function(resData){
     if (resData.loading){
         this.appVersionListResult = "loading";
     }else if(resData.error){
-        this.getAppRecordErrorMsg=resData.errorMsg;
-        this.appVersionListResult="";
+        this.getAppRecordErrorMsg = resData.errorMsg;
+        this.appVersionListResult = "";
     } else {
         this.getAppRecordErrorMsg = "";
-        this.appVersionListResult="";
-        var list = _.isArray(resData.resData.list)? resData.resData.list : [];
+        this.appVersionListResult = "";
+        var list = _.isArray(resData.resData.list) ? resData.resData.list : [];
         this.versionList = this.versionList.concat(list);
         this.curPage++;
         this.total = resData.resData.total;

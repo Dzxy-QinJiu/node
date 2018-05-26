@@ -59,10 +59,10 @@ UserAuditLogStore.prototype.getUserApp = function(result){
     } else {
         this.userAppArray = result.data;
         var storageValue = JSON.parse(storageUtil.local.get(AppUserUtil.saveSelectAppKeyUserId));
-        var lastSelectAppId = storageValue && storageValue.logViewAppId ?  storageValue.logViewAppId : '';
+        var lastSelectAppId = storageValue && storageValue.logViewAppId ? storageValue.logViewAppId : '';
         if(lastSelectAppId){
             //缓存中存在最后一次选择的应用，直接查看该应用的审计日志
-            this.selectAppId=lastSelectAppId;
+            this.selectAppId = lastSelectAppId;
         }else{
             // 不存在（首次）
             if(ShareObj.app_id){
@@ -135,7 +135,7 @@ UserAuditLogStore.prototype.setUserLogSelectedAppId = function(appId){
 
 // 设置排序参数
 UserAuditLogStore.prototype.setSort = function(sorter){
-    this.sortField = sorter && sorter.sortField ;
+    this.sortField = sorter && sorter.sortField;
     this.sortOrder = sorter && sorter.sortOrder;
     this.sortId = '';
     this.auditLogList = [];

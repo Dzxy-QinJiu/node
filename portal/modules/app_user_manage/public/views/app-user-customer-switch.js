@@ -154,10 +154,10 @@ var AppUserCustomerSwitch = React.createClass({
         return columns;
     },
     //使用jquery更新跳转到的页面，ant-design有bug，！！！
-    updateJumpPageByJquery : function() {
+    updateJumpPageByJquery: function() {
         TableUtil.updatePaginationJumpNewPage(this.refs.tableWrap , this.state.customerUserPage);
     },
-    onShowSizeChange : function(current , pageSize) {
+    onShowSizeChange: function(current , pageSize) {
         storageUtil.local.set(AppUserUtil.localStorageCustomerViewPageSizeKey , pageSize);
         //改变界面上看到的页数
         AppUserCustomerSwitchActions.setCustomerPageSize(pageSize);
@@ -169,16 +169,16 @@ var AppUserCustomerSwitch = React.createClass({
         }
         //重新发请求获取数据
         this.fetchCustomerUserList({
-            num : changeToPage
+            num: changeToPage
         });
     },
     getPagination: function() {
         var basicConfig = {
-            total : this.state.customerUserCount,
-            pageSize : this.state.pageSize,
-            current : this.state.customerUserPage,
-            showSizeChanger : true,
-            onShowSizeChange : this.onShowSizeChange
+            total: this.state.customerUserCount,
+            pageSize: this.state.pageSize,
+            current: this.state.customerUserPage,
+            showSizeChanger: true,
+            onShowSizeChange: this.onShowSizeChange
         };
         var page = Math.ceil(basicConfig.total / basicConfig.pageSize);
         if(page > 10) {
@@ -192,7 +192,7 @@ var AppUserCustomerSwitch = React.createClass({
             onSelect: function(currentRow, isSelected, allSelectedRows) {
                 AppUserCustomerSwitchActions.setSelectedCustomerUserRows(allSelectedRows);
             },
-            onSelectAll : function(isSelectedAll , allSelectedRows) {
+            onSelectAll: function(isSelectedAll , allSelectedRows) {
                 AppUserCustomerSwitchActions.setSelectedCustomerUserRows(allSelectedRows);
             }
         };
@@ -232,7 +232,7 @@ var AppUserCustomerSwitch = React.createClass({
                         id="user.total.data"
                         defaultMessage={`共{number}个用户`}
                         values={{
-                            'number':this.state.customerUserCount || ' '
+                            'number': this.state.customerUserCount || ' '
                         }}
                     />
                 </div>
@@ -245,7 +245,7 @@ var AppUserCustomerSwitch = React.createClass({
         });
     },
     //获取邮箱使用的字段
-    getEmailDatas : function() {
+    getEmailDatas: function() {
         var selectedRows = this.state.selectedCustomerUserRows;
 
         var email_customer_names = [];
@@ -259,8 +259,8 @@ var AppUserCustomerSwitch = React.createClass({
             email_user_names.push(obj.user && obj.user.user_name || '');
         });
         return {
-            email_customer_names : email_customer_names.join('、'),
-            email_user_names : email_user_names.join('、')
+            email_customer_names: email_customer_names.join('、'),
+            email_user_names: email_user_names.join('、')
         };
     },
     render: function() {

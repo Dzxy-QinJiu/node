@@ -5,7 +5,7 @@
  */
 "use strict";
 
-var  userDetailChangeRecord = require("../service/user_detail_change_record.service");
+var userDetailChangeRecord = require("../service/user_detail_change_record.service");
 // 获取用户详情变更记录
 exports.getUserDetailChangeRecord = function(req, res) {
     userDetailChangeRecord.getUserChangeRecord(req, res, req.query).on("success", function(data) {

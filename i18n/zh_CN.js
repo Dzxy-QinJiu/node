@@ -103,7 +103,7 @@ var zh_CN = {
     "common.input.confirm.password": "请输入确认密码",
     "common.password.verify": "{errpassword}{number}{captcha}", // "密码有错[{number}]次，出现验证码"
     "common.session.verify": "{session}{number}{captcha}", // "session超频[{number}]次，出现验证码"
-    "common.ip.verify": "{ip}{number}{captcha}",  // "IP超频[{number}]次，出现验证码"
+    "common.ip.verify": "{ip}{number}{captcha}", // "IP超频[{number}]次，出现验证码"
     "secret.error": "密码输错", // 密码输错
     "show.captcha": "次，出现验证码", // 次，出现验证码
     "session.overclock": "session超频", // session超频
@@ -2203,9 +2203,9 @@ var zh_CN = {
     "clue.customer.import.clue.failed": "导入线索失败",
     "clue.delete.duplicate.failed": "删除重复线索失败",
     "clue.repeat.delete": "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入",
-    "clue.customer.belong.to.other.sales":"该电话属于客户{customer}，所属销售{sales}",
-    "phone.alert.select.customer":"请选择要跟进的客户",
-    "clue.analysis.consult.time":"咨询时间：",
+    "clue.customer.belong.to.other.sales": "该电话属于客户{customer}，所属销售{sales}",
+    "phone.alert.select.customer": "请选择要跟进的客户",
+    "clue.analysis.consult.time": "咨询时间：",
 
 
 };

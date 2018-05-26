@@ -50,13 +50,13 @@ var CustomerSuggest = require("./customer_suggest/customer_suggest");
 const SELECT_CUSTOM_TIME_TYPE = 'custom';
 
 var UserDetailAddApp = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
             //初始用户
-            initialUser : {}
+            initialUser: {}
         };
     },
-    closeRightPanel : function() {
+    closeRightPanel: function() {
         AppUserDetailAction.dismiss();
         AppUserPanelSwitchAction.resetState();
         //面板向右滑
@@ -64,19 +64,19 @@ var UserDetailAddApp = React.createClass({
         AppUserAction.closeRightPanel();
         UserDetailAddAppAction.resetState();
     },
-    md5 : function(value) {
+    md5: function(value) {
         var md5Hash = crypto.createHash("md5");
         md5Hash.update(value);
         return md5Hash.digest("hex");
     },
-    getDelayTimeMillis : function() {
+    getDelayTimeMillis: function() {
         //延期周期
         var delayTimeRange = this.state.formData.delayTimeRange;
         var delayTimeNumber = this.state.formData.delayTimeNumber;
         var millis = moment.duration(+delayTimeNumber , delayTimeRange).valueOf();
         return millis;
     },
-    handleSubmit : function(e) {
+    handleSubmit: function(e) {
         e.preventDefault();
         var formData = this.state.formData || {};
         var batchSelectedApps = this.state.formData.batchSelectedApps;
@@ -115,7 +115,7 @@ var UserDetailAddApp = React.createClass({
                 //向data中添加备注
                 result.remark = _this.state.formData.remark.delayRemark;
                 //到期是否停用
-                result.over_draft=formData.over_draft;
+                result.over_draft = formData.over_draft;
                 //销售的要构造发邮件数据
                 if(isSales){
                     //申请审批的，需要传入用户名，客户，应用名，发邮件时候使用
@@ -157,8 +157,8 @@ var UserDetailAddApp = React.createClass({
                 //添加权限和角色
                 formData.selected_apps.forEach(function(item) {
                     products[item.app_id] = {
-                        roles : item.roles,
-                        permissions : item.permissions
+                        roles: item.roles,
+                        permissions: item.permissions
                     };
                 });
                 products = JSON.stringify(products);
@@ -212,11 +212,11 @@ var UserDetailAddApp = React.createClass({
             }
             //调用action进行更新
             UserDetailAddAppAction.submitAddApp({
-                data : result,
-                selectedAppId : selectedAppId,
-                subType : _this.state.multipleSubType,
-                isSales : privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES),
-                extra : extra
+                data: result,
+                selectedAppId: selectedAppId,
+                subType: _this.state.multipleSubType,
+                isSales: privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES),
+                extra: extra
             });
         }
         //开通类型、开通状态、开通周期、批量延期需要选择应用
@@ -288,14 +288,14 @@ var UserDetailAddApp = React.createClass({
             submit();
         }
     },
-    cancel : function() {
+    cancel: function() {
         UserDetailAddAppAction.resetState();
         AppUserAction.closeRightPanel();
     },
-    addApp : function(app) {
+    addApp: function(app) {
         UserDetailAddAppAction.addApp(app);
     },
-    removeApp : function(app) {
+    removeApp: function(app) {
         UserDetailAddAppAction.removeApp(app);
     },
     customRadioValueChange: function(field, value) {
@@ -311,11 +311,11 @@ var UserDetailAddApp = React.createClass({
         var value = event.target.value;
         UserDetailAddAppAction.radioValueChange({field, value});
     },
-    onWindowResize : function() {
+    onWindowResize: function() {
         this.setState({});
     },
     //选中的行变了之后，检查已经选中的批量应用列表，
-    checkSelectedBatchAppList : function(currentRows) {
+    checkSelectedBatchAppList: function(currentRows) {
         if(currentRows.length) {
             UserDetailAddAppAction.setBatchSelectedAppError(false);
         } else {
@@ -357,7 +357,7 @@ var UserDetailAddApp = React.createClass({
     onStoreChange: function() {
         this.setState(UserDetailAddAppStore.getState());
     },
-    renderIndicator : function() {
+    renderIndicator: function() {
         if(this.state.submitResult === 'loading') {
             return (
                 <Icon type="loading" />
@@ -378,7 +378,7 @@ var UserDetailAddApp = React.createClass({
         }
         return null;
     },
-    getAppNotSelected : function(full_list , selected_list) {
+    getAppNotSelected: function(full_list , selected_list) {
         full_list = full_list || [];
         selected_list = selected_list || [];
 
@@ -392,7 +392,7 @@ var UserDetailAddApp = React.createClass({
 
         return result;
     },
-    batchTabChange : function(selectedTab) {
+    batchTabChange: function(selectedTab) {
         UserDetailAddAppAction.changeMultipleSubType(selectedTab);
     },
     //grant_application
@@ -400,7 +400,7 @@ var UserDetailAddApp = React.createClass({
     //grant_status
     //grant_period
     //是否添加应用
-    hasApplyAppBlock : function() {
+    hasApplyAppBlock: function() {
         if(this.state.multipleSubType === 'grant_application') {
             return true;
         } else {
@@ -408,7 +408,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有修改密码
-    hasChangePassword : function() {
+    hasChangePassword: function() {
         if(this.state.multipleSubType === 'change_password') {
             return true;
         } else {
@@ -416,7 +416,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有开通类型
-    hasApplyTypeBlock : function() {
+    hasApplyTypeBlock: function() {
         if(this.state.multipleSubType === 'grant_application' || this.state.multipleSubType === 'grant_type') {
             return true;
         } else {
@@ -424,7 +424,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有开通周期
-    hasApplyTimeBlock : function() {
+    hasApplyTimeBlock: function() {
         if(this.state.multipleSubType === 'grant_application' || this.state.multipleSubType === 'grant_period') {
             return true;
         } else {
@@ -432,7 +432,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有开通状态
-    hasApplyStatusBlock : function() {
+    hasApplyStatusBlock: function() {
         if(this.state.multipleSubType === 'grant_application' || this.state.multipleSubType === 'grant_status') {
             return true;
         } else {
@@ -440,7 +440,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有销售申请开通状态
-    hasSalesApplyStatusBlock : function() {
+    hasSalesApplyStatusBlock: function() {
         if(this.state.multipleSubType === 'sales_grant_status') {
             return true;
         } else {
@@ -448,7 +448,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //是否有销售申请修改密码
-    hasSalesChangePasswordBlock : function() {
+    hasSalesChangePasswordBlock: function() {
         if(this.state.multipleSubType === 'sales_change_password') {
             return true;
         } else {
@@ -456,7 +456,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //获取tab的padding
-    getTabPadding : function() {
+    getTabPadding: function() {
         if(privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN)) {
             return 6;
         } else {
@@ -464,7 +464,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //渲染批量操作的tab
-    renderTabForBatch : function() {
+    renderTabForBatch: function() {
         var hasPrivilege = privilegeChecker.hasPrivilege;
         var selectUserCount = AppUserStore.getState().selectUserCount;
         var subType = this.state.multipleSubType;
@@ -474,46 +474,46 @@ var UserDetailAddApp = React.createClass({
         if(isAdmin) {
             //批量开通、修改应用
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_GRANT_APPLICATION)) {
-                options.push({name:Intl.get("user.batch.app.open", "开通产品"),value:"grant_application"});
+                options.push({name: Intl.get("user.batch.app.open", "开通产品"),value: "grant_application"});
             }
             //批量修改密码
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_PASSWORD)) {
-                options.push({name:Intl.get("common.edit.password", "修改密码"),value:"change_password"});
+                options.push({name: Intl.get("common.edit.password", "修改密码"),value: "change_password"});
             }
             //批量修改类型
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_TYPE)) {
-                options.push({name:Intl.get("user.batch.open.type", "开通类型"),value:"grant_type"});
+                options.push({name: Intl.get("user.batch.open.type", "开通类型"),value: "grant_type"});
             }
             //批量修改开通状态
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_STATUS)) {
-                options.push({name:Intl.get("common.app.status", "开通状态"),value:"grant_status"});
+                options.push({name: Intl.get("common.app.status", "开通状态"),value: "grant_status"});
             }
             //批量修改开通时间
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_PERIOD)) {
-                options.push({name:Intl.get("user.open.cycle", "开通周期"),value:"grant_period"});
+                options.push({name: Intl.get("user.open.cycle", "开通周期"),value: "grant_period"});
             }
             //批量修改用户所属客户
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_CUSTOMER)) {
-                options.push({name:Intl.get("common.belong.customer", "所属客户"),value:"grant_customer"});
+                options.push({name: Intl.get("common.belong.customer", "所属客户"),value: "grant_customer"});
             }
             //批量修改角色、权限
             if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_ROLES)) {
-                options.push({name:Intl.get("user.batch.auth.set", "权限设置"),value:"grant_roles"});
+                options.push({name: Intl.get("user.batch.auth.set", "权限设置"),value: "grant_roles"});
             }
         }
 
         if(this.hasDelayTimeTab()) {
             if(isAdmin) {
                 if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_DELAY)) {
-                    options.push({name : Intl.get("user.batch.delay", "批量延期") , value:"grant_delay"});
+                    options.push({name: Intl.get("user.batch.delay", "批量延期") , value: "grant_delay"});
                 }
             } else {
-                options.push({name : Intl.get("user.batch.apply.delay", "申请延期") , value:"grant_delay"});
+                options.push({name: Intl.get("user.batch.apply.delay", "申请延期") , value: "grant_delay"});
             }
         }
         if(!isAdmin) {
-            options.push({name : Intl.get("common.app.status", "开通状态"),value:"sales_grant_status"});
-            options.push({name : Intl.get("common.edit.password", "修改密码"),value:"sales_change_password"});
+            options.push({name: Intl.get("common.app.status", "开通状态"),value: "sales_grant_status"});
+            options.push({name: Intl.get("common.edit.password", "修改密码"),value: "sales_change_password"});
         }
         return (
             <div className="user-batch-operator-style">
@@ -521,7 +521,7 @@ var UserDetailAddApp = React.createClass({
                     <ReactIntl.FormattedMessage
                         id="user.batch.selected.num"
                         defaultMessage={`已选择{num}个用户`}
-                        values={{'num':<span className="the-number">{selectUserCount}</span>}}
+                        values={{'num': <span className="the-number">{selectUserCount}</span>}}
                     />
                 </div>
                 <dl className="dl-horizontal">
@@ -539,16 +539,16 @@ var UserDetailAddApp = React.createClass({
             </div>
         );
     },
-    selectedAppChange : function(selected_apps) {
+    selectedAppChange: function(selected_apps) {
         UserDetailAddAppAction.setSelectedApps(selected_apps);
 
     },
-    onScrollBarHeightChange : function() {
+    onScrollBarHeightChange: function() {
         if(this.refs.gemini) {
             this.refs.gemini.update();
         }
     },
-    renderAppsBlock : function(belong) {
+    renderAppsBlock: function(belong) {
         if(!this.hasApplyAppBlock()) {
             return null;
         }
@@ -574,7 +574,7 @@ var UserDetailAddApp = React.createClass({
                             this.state.show_app_error && !formData.selected_apps.length ?
                                 (
                                     <div className="has-error"><span className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.please" defaultMessage="请选择应用" /></span></div>
-                                ):
+                                ) :
                                 null
                         }
                     </div>
@@ -584,7 +584,7 @@ var UserDetailAddApp = React.createClass({
     },
 
     //检验密码
-    checkPass : function(rule, value, callback) {
+    checkPass: function(rule, value, callback) {
         if (value && value.match(passwdStrengthFile.passwordRegex)) {
             //获取密码强度及是否展示
             var passStrengthObj = passwdStrengthFile.getPassStrenth(value);
@@ -604,7 +604,7 @@ var UserDetailAddApp = React.createClass({
             callback(Intl.get("common.password.validate.rule", "请输入6-18位数字、字母、符号组成的密码"));
         }
     },
-    checkPass2 : function(rule, value, callback) {
+    checkPass2: function(rule, value, callback) {
         if (value && value !== this.state.formData.password) {
             callback( Intl.get("common.password.unequal", "两次输入密码不一致！"));
         } else {
@@ -612,7 +612,7 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //渲染修改密码
-    renderChangePassword : function() {
+    renderChangePassword: function() {
         if(!this.hasChangePassword()) {
             return null;
         }
@@ -620,7 +620,7 @@ var UserDetailAddApp = React.createClass({
         var status = this.state.status;
         return (
             <div>
-                <input type="password" name="password" style={{display:'none'}}/>
+                <input type="password" name="password" style={{display: 'none'}}/>
                 <FormItem
                     label={Intl.get("common.password", "密码")}
                     id="password1"
@@ -685,15 +685,15 @@ var UserDetailAddApp = React.createClass({
         );
     },
     //渲染开通类型
-    renderApplyType : function() {
+    renderApplyType: function() {
         if(!this.hasApplyTypeBlock()) {
             return null;
         }
         var formData = this.state.formData;
         var options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP , (value,KEY) => {
             return {
-                name : AppUserUtil.USER_TYPE_TEXT_MAP[KEY],
-                value : value
+                name: AppUserUtil.USER_TYPE_TEXT_MAP[KEY],
+                value: value
             };
         });
         return (
@@ -703,7 +703,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("user.batch.open.type", "开通类型")}
                     labelCol={labelCol}
-                    wrapperCol={{span:((language.lan() == "es" || language.lan() == "en")?18:16)}}
+                    wrapperCol={{span: ((language.lan() == "es" || language.lan() == "en") ? 18 : 16)}}
                 >
                     <CustomRadioGroup
                         options={options}
@@ -716,14 +716,14 @@ var UserDetailAddApp = React.createClass({
 
         );
     },
-    delayTimeChange : function(value) {
+    delayTimeChange: function(value) {
         UserDetailAddAppAction.delayTimeChange(value);
     },
-    dateChange : function(start_time,end_time,range) {
+    dateChange: function(start_time,end_time,range) {
         UserDetailAddAppAction.timeChange({start_time,end_time,range});
     },
     //渲染开通时间
-    renderApplyTime : function() {
+    renderApplyTime: function() {
         if(!this.hasApplyTimeBlock()) {
             return null;
         }
@@ -734,13 +734,13 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("user.open.cycle", "开通周期")}
                     labelCol={labelCol}
-                    wrapperCol={{span:20}}
+                    wrapperCol={{span: 20}}
                 >
                     <DateSelector
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
-                        getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点到期",{'date':date});}}
+                        getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点到期",{'date': date});}}
                         range={formData.range}
                         onSelect={this.dateChange}>
                         <DateSelector.Option value="1w"><ReactIntl.FormattedMessage id="user.time.one.week" defaultMessage="1周" /></DateSelector.Option>
@@ -756,7 +756,7 @@ var UserDetailAddApp = React.createClass({
         );
     },
     //渲染开通状态
-    renderApplyStatus : function() {
+    renderApplyStatus: function() {
         if(!this.hasApplyStatusBlock()) {
             return null;
         }
@@ -791,7 +791,7 @@ var UserDetailAddApp = React.createClass({
         );
     },
     //销售申请重置密码
-    renderSalesChangePassword : function() {
+    renderSalesChangePassword: function() {
         if(!this.hasSalesChangePasswordBlock()) {
             return null;
         }
@@ -801,7 +801,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("common.remark", "备注")}
                     labelCol={labelCol}
-                    wrapperCol={{span:13}}
+                    wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
                         rows="5"
@@ -813,7 +813,7 @@ var UserDetailAddApp = React.createClass({
         );
     },
     //销售申请启用、停用
-    renderSalesApplyStatus : function() {
+    renderSalesApplyStatus: function() {
         if(!this.hasSalesApplyStatusBlock()) {
             return null;
         }
@@ -835,7 +835,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("common.remark", "备注")}
                     labelCol={labelCol}
-                    wrapperCol={{span:13}}
+                    wrapperCol={{span: 13}}
                 >
                     <AutosizeTextarea
                         rows="5"
@@ -846,25 +846,25 @@ var UserDetailAddApp = React.createClass({
             </div>
         );
     },
-    hasCustomerBlock : function() {
+    hasCustomerBlock: function() {
         if(this.state.multipleSubType === 'grant_customer') {
             return true;
         } else {
             return false;
         }
     },
-    onCustomerChoosen : function(resultObj) {
+    onCustomerChoosen: function(resultObj) {
         UserDetailAddAppAction.onCustomerChoosen(resultObj);
         if(resultObj.customer.id) {
             UserDetailAddAppAction.hideCustomerError();
         }
     },
     //是否有申请延期的tab
-    hasDelayTimeTab : function() {
+    hasDelayTimeTab: function() {
         return privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) || privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN);
     },
     //是否当前在申请延期/批量延期的tab下面
-    hasDelayTimeBlock : function() {
+    hasDelayTimeBlock: function() {
         if(this.state.multipleSubType === 'grant_delay') {
             return true;
         } else {
@@ -872,18 +872,18 @@ var UserDetailAddApp = React.createClass({
         }
     },
     //备注信息修改
-    remarkChange : function(field,event) {
+    remarkChange: function(field,event) {
         UserDetailAddAppAction.remarkChange({
-            field : field,
-            value : event.target.value
+            field: field,
+            value: event.target.value
         });
     },
     //延期时间范围改变
-    delayTimeRangeChange : function(value,text) {
+    delayTimeRangeChange: function(value,text) {
         UserDetailAddAppAction.delayTimeRangeChange(value);
     },
     //延期时间数字改变
-    delayTimeNumberChange : function(value) {
+    delayTimeNumberChange: function(value) {
         UserDetailAddAppAction.delayTimeNumberChange(value);
     },
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
@@ -896,25 +896,25 @@ var UserDetailAddApp = React.createClass({
         return current && current.valueOf() < Date.now();
     },
 
-    getBatchAppJsonList : function() {
+    getBatchAppJsonList: function() {
         var userRowList = AppUserStore.getState().selectedUserRows;
         var userApps = _.chain(userRowList).pluck('apps').union().flatten().uniq((app) => app.app_id).map((app) => {
-            return {app_id : app.app_id , app_name : app.app_name};
+            return {app_id: app.app_id , app_name: app.app_name};
         }).value();
         return userApps;
     },
     //获取应用选项
-    getBatchAppOptions : function() {
+    getBatchAppOptions: function() {
         var appList = this.getBatchAppJsonList();
         return _.map(appList , (app) => {
             return <Option key={app.app_id} value={app.app_id}>{app.app_name}</Option>;
         });
     },
     //批量应用改变
-    batchAppChange : function(values) {
+    batchAppChange: function(values) {
         UserDetailAddAppAction.batchAppChange(values);
     },
-    renderBatchApps : function() {
+    renderBatchApps: function() {
         var batchApps = this.getBatchAppOptions();
         return (
             <Select
@@ -931,7 +931,7 @@ var UserDetailAddApp = React.createClass({
         );
     },
     //渲染批量选择应用区域
-    renderMultiAppSelectBlock : function() {
+    renderMultiAppSelectBlock: function() {
         if(this.state.multipleSubType === 'grant_application') {
             return null;
         }
@@ -940,7 +940,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("common.app", "应用")}
                     labelCol={labelCol}
-                    wrapperCol={{span:20}}
+                    wrapperCol={{span: 20}}
                 >
                     {this.renderBatchApps()}
                     {
@@ -955,17 +955,17 @@ var UserDetailAddApp = React.createClass({
     },
 
     //申请延期
-    renderDelayTime : function() {
+    renderDelayTime: function() {
         if(!this.hasDelayTimeBlock()) {
             return null;
         }
         var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
-        var divWidth = (language.lan() == "zh")?'80px':'74px';
+        var divWidth = (language.lan() == "zh") ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE) {
             label = Intl.get(" user.time.end", "到期时间");
         } else {
-            label =  Intl.get("common.delay.time", "延期时间");
+            label = Intl.get("common.delay.time", "延期时间");
         }
         return (
             <div>
@@ -974,7 +974,7 @@ var UserDetailAddApp = React.createClass({
                     <FormItem
                         label={label}
                         labelCol={labelCol}
-                        wrapperCol={{span:20}}
+                        wrapperCol={{span: 20}}
                     >
                         {this.state.formData.delayTimeRange == SELECT_CUSTOM_TIME_TYPE ? (
                             <DatePicker placeholder={Intl.get("my.app.change.expire.time.placeholder", "请选择到期时间")}
@@ -988,7 +988,7 @@ var UserDetailAddApp = React.createClass({
                             <InputNumber
                                 value={this.state.formData.delayTimeNumber}
                                 onChange={this.delayTimeNumberChange}
-                                style={{width:'80px',height: '30px'}}
+                                style={{width: '80px',height: '30px'}}
                                 min={1}
                                 max={10000}
                             />
@@ -996,7 +996,7 @@ var UserDetailAddApp = React.createClass({
 
                         <Select
                             value={this.state.formData.delayTimeRange}
-                            style={{width:divWidth}}
+                            style={{width: divWidth}}
                             onChange={this.delayTimeRangeChange}
                         >
                             <Option value="days"><ReactIntl.FormattedMessage id="common.time.unit.day" defaultMessage="天" /></Option>
@@ -1025,7 +1025,7 @@ var UserDetailAddApp = React.createClass({
                         <FormItem
                             label={Intl.get("common.remark", "备注")}
                             labelCol={labelCol}
-                            wrapperCol={{span:13}}
+                            wrapperCol={{span: 13}}
                         >
                             <AutosizeTextarea
                                 rows="5"
@@ -1033,12 +1033,12 @@ var UserDetailAddApp = React.createClass({
                                 value={this.state.formData.remark.delayRemark}
                             />
                         </FormItem>
-                    ):null
+                    ) : null
                 }
             </div>
         );
     },
-    renderCustomer : function() {
+    renderCustomer: function() {
         if(!this.hasCustomerBlock()) {
             return null;
         }
@@ -1055,17 +1055,17 @@ var UserDetailAddApp = React.createClass({
             </FormItem>
         );
     },
-    hasRolesBlock : function() {
+    hasRolesBlock: function() {
         if(this.state.multipleSubType === 'grant_roles') {
             return true;
         } else {
             return false;
         }
     },
-    updateScrollBar : function() {
+    updateScrollBar: function() {
         this.refs.gemini && this.refs.gemini.update();
     },
-    renderRolesBlock : function() {
+    renderRolesBlock: function() {
         if(!this.hasRolesBlock()) {
             return null;
         }
@@ -1076,7 +1076,7 @@ var UserDetailAddApp = React.createClass({
                 <FormItem
                     label={Intl.get("common.app", "应用")}
                     labelCol={labelCol}
-                    wrapperCol={{span:20}}
+                    wrapperCol={{span: 20}}
                 >
                     <Select
                         placeholder={Intl.get("user.app.select.please", "请选择应用")}
@@ -1097,8 +1097,8 @@ var UserDetailAddApp = React.createClass({
                 {
                     selectedApp ? <FormItem
                         label=""
-                        labelCol={{span:0}}
-                        wrapperCol={{span:24}}
+                        labelCol={{span: 0}}
+                        wrapperCol={{span: 24}}
                     >
                         <AppRolePermission
                             className="grant_roles"
@@ -1120,29 +1120,29 @@ var UserDetailAddApp = React.createClass({
             </div>
         );
     },
-    rolesPermissionsChange : function(roles,permissions){
+    rolesPermissionsChange: function(roles,permissions){
         UserDetailAddAppAction.rolesPermissionsChange({roles,permissions});
     },
-    render : function() {
+    render: function() {
 
         var fixedHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA;
 
         return (
-            <div style={{height:"100%"}}>
+            <div style={{height: "100%"}}>
                 <RightPanelClose onClick={this.closeRightPanel}/>
                 <div className="user-detail-add-app">
                     <Form horizontal action="javascript:void(0)">
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <Tabs defaultActiveKey="addapp">
                                 <TabPane tab={Intl.get("user.batch.change", "批量变更")} key="addapp">
-                                    <div className="user_manage_user_detail_addapp" style={{height:fixedHeight}}>
+                                    <div className="user_manage_user_detail_addapp" style={{height: fixedHeight}}>
                                         <GeminiScrollbar ref="gemini">
                                             <div className="addapp_major_items">
                                                 {
                                                     this.renderTabForBatch()
                                                 }
                                             </div>
-                                            <div className="addapp_minor_items" style={{display : this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}>
+                                            <div className="addapp_minor_items" style={{display: this.state.multipleSubType === 'grant_roles' ? 'none' : 'block'}}>
                                                 {
                                                     this.renderAppsBlock("inner")
                                                 }

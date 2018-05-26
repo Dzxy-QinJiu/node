@@ -5,7 +5,7 @@
  */
 "use strict";
 
-var  userAbnormalLogin = require("../service/user_abnormal_login.service");
+var userAbnormalLogin = require("../service/user_abnormal_login.service");
 // 获取用户详情变更记录
 exports.getUserAbnormalLogin = function(req, res) {
     userAbnormalLogin.getUserAbnormalLogin(req, res, req.query).on("success", function(data) {
@@ -17,9 +17,9 @@ exports.getUserAbnormalLogin = function(req, res) {
 // 忽略异常登录地
 exports.ignoreAbnormalLogin = (req, res) => {
     var id = req.body.id;
-    userAbnormalLogin.ignoreAbnormalLogin(req, res, id).on("success",  (data) => {
+    userAbnormalLogin.ignoreAbnormalLogin(req, res, id).on("success", (data) => {
         res.status(200).json(data);
-    }).on("error",  (codeMessage) => {
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

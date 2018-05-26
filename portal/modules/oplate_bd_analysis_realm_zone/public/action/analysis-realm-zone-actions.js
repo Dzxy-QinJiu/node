@@ -9,17 +9,17 @@ function AnalysisRealmZoneActions() {
 
     this.generateActions({
         //从服务器获取全国安全域开通总数
-        'getRealmZoneAnalysisDataByAjax':'getRealmZoneAnalysisDataByAjax',
+        'getRealmZoneAnalysisDataByAjax': 'getRealmZoneAnalysisDataByAjax',
         //设置开始时间
-        'setStartTime' : 'setStartTime',
+        'setStartTime': 'setStartTime',
         //设置结束时间
-        'setEndTime' : 'setEndTime',
+        'setEndTime': 'setEndTime',
         //设置加载状态
-        'setLoadingState' : 'setLoadingState',
+        'setLoadingState': 'setLoadingState',
         //是否noData
         'setNoData': 'setNoData',
         //设置右侧标题
-        'setRankListTitle':'setRankListTitle'
+        'setRankListTitle': 'setRankListTitle'
     });
 
     /**
@@ -32,9 +32,9 @@ function AnalysisRealmZoneActions() {
         AnalysisRealmZoneAjax.getRealmZoneAnalysisData(startTime , endTime).then(function(realmZoneAnalysisListByServer , noRealmAtAll) {
             _this.dispatch({
                 //服务器返回数据
-                realmZoneAnalysisListByServer:realmZoneAnalysisListByServer,
+                realmZoneAnalysisListByServer: realmZoneAnalysisListByServer,
                 //是否一个安全域都没有
-                noRealmAtAll:noRealmAtAll
+                noRealmAtAll: noRealmAtAll
             });
         });
     };

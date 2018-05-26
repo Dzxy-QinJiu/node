@@ -35,19 +35,19 @@ const ContractDashboard = React.createClass({
             <div>
                 <div>{args.title}</div>
                 <div className="count-content">
-                    {Intl.get("sales.home.new.add", "新增")} <span className="count-value">{args.type === "repay"? formatAmount(value) : value}</span> {args.unit}
+                    {Intl.get("sales.home.new.add", "新增")} <span className="count-value">{args.type === "repay" ? formatAmount(value) : value}</span> {args.unit}
                 </div>
-                {args.type === "contract" && this.state.amount? (
+                {args.type === "contract" && this.state.amount ? (
                     <div className="count-content">
                         {Intl.get("contract.25", "合同额")} <span className="count-value">{formatAmount(this.state.amount)}</span> {Intl.get("contract.139", "万")}
                     </div>
                 ) : null}
-                {args.type === "contract" && this.state.grossProfit? (
+                {args.type === "contract" && this.state.grossProfit ? (
                     <div className="count-content">
                         {Intl.get("contract.109", "毛利")} <span className="count-value">{formatAmount(this.state.grossProfit)}</span> {Intl.get("contract.139", "万")}
                     </div>
                 ) : null}
-                {args.type === "repay" && this.state.repayGrossProfit? (
+                {args.type === "repay" && this.state.repayGrossProfit ? (
                     <div className="count-content">
                         {Intl.get("contract.109", "毛利")} <span className="count-value">{formatAmount(this.state.repayGrossProfit)}</span> {Intl.get("contract.139", "万")}
                     </div>
@@ -270,7 +270,7 @@ const ContractDashboard = React.createClass({
                 <div className="main-content">
                     <div className="main-left">
                         {charts.map(chart => {
-                            return chart.hide? null : (
+                            return chart.hide ? null : (
                                 <div className="chart-wrap" style={chart.style || {}}>
                                     {chart.title && !chart.isTitleHide ? (
                                         <CardContainer title={chart.title}>

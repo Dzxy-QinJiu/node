@@ -1,11 +1,11 @@
 //将ajax请求的url提取出来
 var urls = {
     //一个应用为一个卡片，分页展示各个应用的用户在线统计数据
-    getUserOnlineAnalysisList : '/rest/online/analysis/summary',
+    getUserOnlineAnalysisList: '/rest/online/analysis/summary',
     //获取某个应用的浏览器统计
-    getOnlineBrowserByApp : '/rest/online/analysis/browser',
+    getOnlineBrowserByApp: '/rest/online/analysis/browser',
     //获取某个应用的地域信息
-    getOnlineZoneByApp : '/rest/online/analysis/zone'
+    getOnlineZoneByApp: '/rest/online/analysis/zone'
 };
 
 //多次翻页时，abort掉上一次的请求

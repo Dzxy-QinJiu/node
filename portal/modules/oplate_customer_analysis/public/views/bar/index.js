@@ -235,7 +235,7 @@ var BarChart = React.createClass({
                     let query = {
                         start_date: startTime,
                         end_date: endTime,
-                        analysis_filter_value: filterVal||""
+                        analysis_filter_value: filterVal || ""
                     };
                     if (jumpProps.query) _.extend(query, jumpProps.query);
                     //跳转到客户列表
@@ -272,13 +272,13 @@ var BarChart = React.createClass({
             <div className="analysis_bar_chart" ref="wrap">
                 {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
                     ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart"
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart"
                                 data-title={this.props.title}></div>
                         </div>
                     )

@@ -60,7 +60,7 @@ exports.getCallDurTopTen = function(req, res, params, reqBody) {
 exports.getCallCountAndDur = function(req, res, params, reqBody) {
     // 团队
     let url = restApis.getCallCountAndDur;
-    if (reqBody && reqBody.user_id) {  // 销售个人
+    if (reqBody && reqBody.user_id) { // 销售个人
         url = restApis.getSingleUserCallCountAndDur;
     }
     return restUtil.authRest.post(
@@ -157,11 +157,11 @@ exports.getCallInfo = function(req, res, params, reqData) {
         });
     } else {
         let promiseList = [batchGetCallInfo(req, res, params, reqData), getActiveSalesInTeams(req, res)];
-        Promise.all(promiseList).then((dataList)=>{
+        Promise.all(promiseList).then((dataList) => {
             var result = dataList[0] ? dataList[0] : [];
             //所有团队列表
             var teamList = dataList[1];
-            _.each(result.salesPhoneList, (data)=>{
+            _.each(result.salesPhoneList, (data) => {
                 var team = _.find(teamList,teamItem => teamItem.team_name == data.name);
                 if (team && team.available){
                     //某个团队中在职人员的个数

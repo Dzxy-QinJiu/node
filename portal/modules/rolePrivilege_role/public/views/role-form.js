@@ -253,7 +253,7 @@ var RoleForm = React.createClass({
 
         let allAuthIsShow = !this.state.allAuthIsShow;//展示、收起所有权限分组的切换
         if (_.isArray(this.state.formData.permissionGroups) && this.state.formData.permissionGroups.length > 0) {
-            this.state.formData.permissionGroups.forEach(permisssionGroup=> {
+            this.state.formData.permissionGroups.forEach(permisssionGroup => {
                 permisssionGroup.isShow = allAuthIsShow;
             });
         }
@@ -286,7 +286,7 @@ var RoleForm = React.createClass({
                             wrapperCol={{span: 18}}
                             validateStatus={this.renderValidateStyle('roleName')}
                             help={status.roleName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.roleName.errors && status.roleName.errors.join(','))}>
-                            <Validator rules={[{required: true, min: 1, max : 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
+                            <Validator rules={[{required: true, min: 1, max: 20 , message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")}]}>
                                 <Input name="roleName" id="edit-roleName" value={formData.roleName}
                                     onChange={this.setField.bind(this, 'roleName')}
                                     placeholder={Intl.get("common.required.tip", "必填项*")}
@@ -310,7 +310,7 @@ var RoleForm = React.createClass({
                                 }
                                 </div>
                                 <div className="right-form-scroll-div" ref="roleFormScroll"
-                                    style={{height:scrollHeight}}  data-tracename ="选择权限">
+                                    style={{height: scrollHeight}} data-tracename ="选择权限">
                                     <GeminiScrollbar className="geminiScrollbar-vertical">
                                         {permissionGroups.map(function(permissionGroup, j) {
                                             return (
@@ -362,7 +362,7 @@ var RoleForm = React.createClass({
                                     id="role.no.set.auth.add"
                                     defaultMessage={`暂无权限,请先{add}`}
                                     values={{
-                                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get("role.add.auth", "添加权限")}</a>): (
+                                        "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}>{Intl.get("role.add.auth", "添加权限")}</a>) : (
                                             <Link to="/backgroundManagement/authority" activeClassName="active">
                                                 {Intl.get("role.add.auth", "添加权限")}</Link>
                                         ))

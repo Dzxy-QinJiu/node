@@ -377,7 +377,7 @@ var AuthorityGroupForm = React.createClass({
             if (isShown) {
                 return (<li className="edit-role-content-label" key={i}>
                     <div className="authority-name-li"
-                        hidden={authority.showInfoFlag||authority.showEditFormFlag}>
+                        hidden={authority.showInfoFlag || authority.showEditFormFlag}>
                         <label>
                             <Checkbox id={authority.permissionId}
                                 className="ant-checkbox-vertical edit-role-checkbox"
@@ -558,7 +558,7 @@ var AuthorityGroupForm = React.createClass({
                                         help={status.permissionGroupName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.permissionGroupName.errors && status.permissionGroupName.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                            rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                                             <Input name="permissionGroupName" id="permissionGroupName"
                                                 disabled={this.state.isSavingGroupName}
                                                 value={formData.permissionGroupName}
@@ -569,7 +569,7 @@ var AuthorityGroupForm = React.createClass({
                                         {this.state.isSavingGroupName ? (
                                             <div className="group-name-saving">
                                                 {Intl.get("authority.saving.group.name", "正在保存组名")}...</div>) : this.state.saveGroupNameResult ? (<div
-                                            className={"group-name-save-"+this.state.saveGroupNameResult}>
+                                            className={"group-name-save-" + this.state.saveGroupNameResult}>
                                             {this.state.saveGroupNameMsg}</div>) : null}
                                     </FormItem>
                                 </Validation>
@@ -610,7 +610,7 @@ var AuthorityGroupForm = React.createClass({
                                     </Button>
                                 </div>
                                 <PrivilegeChecker check={_this.props.delStr}
-                                    className={hasSelectedLi?"autority-turn-del-btn cursor-pointer":"autority-turn-del-btn"}>
+                                    className={hasSelectedLi ? "autority-turn-del-btn cursor-pointer" : "autority-turn-del-btn"}>
                                     {
                                         hasSelectedLi ? (<Dropdown overlay={menu}>
                                             <span className="iconfont icon-turn-arrow"/>

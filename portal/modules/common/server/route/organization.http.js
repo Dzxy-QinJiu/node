@@ -8,7 +8,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     },{
         //获取组织列表
         "method": "put",
@@ -17,6 +17,6 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     }]
 };

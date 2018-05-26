@@ -13,12 +13,12 @@ function VersionUpgradeLogActions(){
     //获取版本升级日志列表
     this.getAppRecordsList = function(searchObj) {
         var _this = this;
-        _this.dispatch({loading:true,error:false});
+        _this.dispatch({loading: true,error: false});
         versionAjax.getAppRecordsList(searchObj).then(function(resData) {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            _this.dispatch({loading:false,error:false, resData: resData});
+            _this.dispatch({loading: false,error: false, resData: resData});
         },function(errorMsg) {
-            _this.dispatch({loading:false,error:true, errorMsg:errorMsg});
+            _this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };
 }

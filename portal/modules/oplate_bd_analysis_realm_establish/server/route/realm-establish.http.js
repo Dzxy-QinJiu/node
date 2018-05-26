@@ -18,7 +18,7 @@ module.exports = {
             "needLogin": true
         },
         //需要的权限
-        "privileges":[
+        "privileges": [
             "OPLATE_BD_ANALYSIS_REALM_ESTABLISH"
         ]
     }]

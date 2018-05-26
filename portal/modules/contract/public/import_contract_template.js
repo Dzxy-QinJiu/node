@@ -6,7 +6,7 @@ var ContractImport = require("./import");
 import Trace from "LIB_DIR/trace";
 var ImportContractTemplate = React.createClass({
 
-    handleCancel : function(e) {
+    handleCancel: function(e) {
         Trace.traceEvent(this.getDOMNode(),"点击取消导入合同按钮");
         e.preventDefault();
         this.props.closeContractTemplatePanel();

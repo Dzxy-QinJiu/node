@@ -3,9 +3,9 @@ exports.toRestObject = function(list) {
     list = list || [];
     list.forEach(function(item) {
         result.push({
-            app_id:item.client_id,
+            app_id: item.client_id,
             app_name: item.client_name,
-            app_logo : item.client_logo
+            app_logo: item.client_logo
         });
     });
     return result;

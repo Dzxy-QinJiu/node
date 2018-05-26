@@ -39,7 +39,7 @@ class AudioPlayer extends React.Component {
                     <div className="report-wrap">
                         <span className="report-tip">
                             {Intl.get("call.record.customer.phone", "这是一个客服电话")}
-                            {this.state.isShowReportButton? "。":"？"}
+                            {this.state.isShowReportButton ? "。" : "？"}
                         </span>
                         {this.state.isShowReportButton ?
                             null :
@@ -61,7 +61,7 @@ class AudioPlayer extends React.Component {
     }
 }
 AudioPlayer.defaultProps = {
-    isShowReportButton:false,
+    isShowReportButton: false,
     playingItemAddr: "",//正在播放的录音的地址
     getInvalidPhoneErrMsg: "",//获取无效电话失败的提示
     addingInvalidPhoneErrMsg: "",//上报无效电话时出错

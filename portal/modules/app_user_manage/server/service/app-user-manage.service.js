@@ -18,7 +18,7 @@ var EventEmitter = require("events").EventEmitter;
 var CONSTANTS = {
     APPLY_USER_OFFICIAL: 'apply_user_official', //申请正式用户
     APPLY_USER_TRIAL: 'apply_user_trial', //申请试用用户
-    EXIST_APPLY_TRIAL: 'apply_app_trial',  //已有用户开通试用
+    EXIST_APPLY_TRIAL: 'apply_app_trial', //已有用户开通试用
     EXIST_APPLY_FORMAL: 'apply_app_official', //已有用户开通正式
     APPLY_GRANT_DELAY: 'apply_grant_delay',// 延期
     APPLY_PWD_CHANGE: 'apply_pwd_change',// 修改开通状态
@@ -297,7 +297,7 @@ exports.batchUpdate = function(req, res, field, data, application_ids) {
 exports.getApplyList = function(req, res, obj) {
     let url = AppUserRestApis.getApplyList;
     //获取有未读回复的申请列表
-    if (obj.isUnreadApply=="true") {
+    if (obj.isUnreadApply == "true") {
         obj = {id: obj.id, page_size: obj.page_size};
         url = AppUserRestApis.getUnreadApplyList;
     } else {
@@ -381,7 +381,7 @@ exports.getApplyDetail = function(req, res, apply_id) {
                     let obj = {
                         client_id: appIdList.join(','),
                         user_type: user_type,
-                        with_addition: 'true'  // 附加字段，true时，获取额角色和权限的名称，false时，不获取额外的对应的名称
+                        with_addition: 'true' // 附加字段，true时，获取额角色和权限的名称，false时，不获取额外的对应的名称
                     };
                     getAppExtraConfigInfo(req, res, obj).then((list) => {
                         let applyDetailInfo = getExtraAppInfo(applyBasicDetail, list);
@@ -470,7 +470,7 @@ function getAppExtraPermissionNames(applyBasicDetail, appPermissionNames) {
 // 获取用户详情的基本信息
 function getApplyBasicDetail(req, res, apply_id) {
     let obj = {
-        with_addition: 'true'  // 附加字段，true时，获取额应用对应的名称
+        with_addition: 'true' // 附加字段，true时，获取额应用对应的名称
     };
     return new Promise((resolve, reject) => {
         return restUtil.authRest.get({
@@ -486,10 +486,10 @@ function getApplyBasicDetail(req, res, apply_id) {
                     } else if (data.message.type === CONSTANTS.APPLY_PWD_CHANGE ||// 更改密码
                         data.message.type === CONSTANTS.APPLY_GRANT_OTHER_CHANGE) {// 更改其他信息
                         detailObj = applyDto.toDetailChangePwdOtherRestObject(data);
-                    } else if (data.message.type === CONSTANTS.APPLY_GRANT_STATUS_CHANGE) {  // 更改状态
+                    } else if (data.message.type === CONSTANTS.APPLY_GRANT_STATUS_CHANGE) { // 更改状态
                         detailObj = applyDto.toDetailStatusRestObject(data);
                     } else {
-                        detailObj = applyDto.toDetailRestObject(data);  // 待审批、已审批、已驳回（用户申请应用）
+                        detailObj = applyDto.toDetailRestObject(data); // 待审批、已审批、已驳回（用户申请应用）
                     }
                     if (detailObj && detailObj.customer_id) {
                         getQueryCustomerById(req, res, detailObj.customer_id).then((result) => {

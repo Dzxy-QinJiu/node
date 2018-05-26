@@ -107,7 +107,7 @@ let CustomerRepeat = React.createClass({
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
-                isRepeat:true,
+                isRepeat: true,
                 refreshCustomerList: this.refreshRepeatCustomerList,
                 curCustomer: this.state.curCustomer,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
@@ -246,14 +246,14 @@ let CustomerRepeat = React.createClass({
         return ( <div>{columnLabel}<Icon type="search" onClick={this.showSearchInput.bind(this, filterKey)}
             className="repeat-customer-search-icon"/></div>);
     },
-    ShowCustomerUserListPanel:function(data) {
+    ShowCustomerUserListPanel: function(data) {
         this.setState({
             isShowCustomerUserListPanel: true,
             CustomerInfoOfCurrUser: data.customerObj
         });
 
     },
-    closeCustomerUserListPanel:function() {
+    closeCustomerUserListPanel: function() {
         this.setState({
             isShowCustomerUserListPanel: false
         });

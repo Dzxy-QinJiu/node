@@ -132,7 +132,7 @@ SalesCallRecordStore.prototype.handleRefresh = function() {
 // 搜索电话号码号码时，提供推荐列表
 SalesCallRecordStore.prototype.getRecommendPhoneList = function(result) {
     if (result.error) {
-        this.recommendList.errMsg = result.errMsg || Intl.get("call.record.recommend.list",  '获取推荐列表失败！');
+        this.recommendList.errMsg = result.errMsg || Intl.get("call.record.recommend.list", '获取推荐列表失败！');
     } else {
         this.recommendList.errMsg = '';
         if (result.resData) {

@@ -9,14 +9,14 @@ exports.getRealmZoneAnalysisData = function(startTime,endTime) {
     var start_time = startTime ? moment(new Date(+startTime)).format(FORMAT) : '';
     var end_time = endTime ? moment(new Date(+endTime)).format(FORMAT) : '';
     $.ajax({
-        url : '/rest/analysis/realm-zone',
-        dataType : 'json',
-        type : 'get',
-        data : {
-            starttime : start_time,
-            endtime : end_time
+        url: '/rest/analysis/realm-zone',
+        dataType: 'json',
+        type: 'get',
+        data: {
+            starttime: start_time,
+            endtime: end_time
         },
-        success : function(list,text,xhr) {
+        success: function(list,text,xhr) {
             var noRealm = xhr.getResponseHeader("norealm");
             Deferred.resolve(list , !!noRealm);
         }

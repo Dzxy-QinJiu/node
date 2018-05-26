@@ -6,7 +6,7 @@ import PositionAjax from '../ajax/index';
 import PositionAction from '../action/index';
 import PositionStore from '../store/index';
 import {Form, Input, Select} from 'antd';
-import * as  LANGLOBAL  from '../consts';
+import * as LANGLOBAL from '../consts';
 const Validation = require('rc-form-validation');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -44,7 +44,7 @@ const PositionInfo = React.createClass({
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
         if (formData.realm_id != nextState.formData.realm_id && nextState.formData.realm_id) {
-            let SelectId  = this.getOrganizationId(nextState.formData.realm_id)[0];
+            let SelectId = this.getOrganizationId(nextState.formData.realm_id)[0];
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
     },
@@ -84,7 +84,7 @@ const PositionInfo = React.createClass({
         let organizationList = PositionStore.getState().realmList;
         if (_.isArray(organizationList) && organizationList.length > 0) {
             organizationOption = organizationList.map( (item) => {
-                return (<Option  key={item.realm_id} value={item.realm_name}>
+                return (<Option key={item.realm_id} value={item.realm_name}>
                     {item.realm_name}
                 </Option>);
             });
@@ -99,7 +99,7 @@ const PositionInfo = React.createClass({
         let positionInfo = this.state.positionInfo;
         if (_.isArray(memberList) && memberList.length > 0) {
             return memberList.map((item) => {
-                return (<Option  key={item.user_id} value={item.nick_name}>
+                return (<Option key={item.user_id} value={item.nick_name}>
                     {item.nick_name}
                 </Option>);
             });
@@ -117,14 +117,14 @@ const PositionInfo = React.createClass({
         this.state.positionInfo.user_id = selectId;
         this.state.positionInfo.nick_name = selectObj.nick_name;
         this.setState({
-            positionInfo: $.extend(true, {},  this.state.positionInfo)
+            positionInfo: $.extend(true, {}, this.state.positionInfo)
         });
     },
     // 获取地域下拉列表
     getLocationOptions() {
         let locationList = [{id: 'changsha', name: LANGLOBAL.CITY.cs}, {id: 'jinan', name: LANGLOBAL.CITY.jn}, {id: 'beijing', name: LANGLOBAL.CITY.bj}];
         return locationList.map((item) => {
-            return (<Option  key={item.id} value={item.id}>
+            return (<Option key={item.id} value={item.id}>
                 {item.name}
             </Option>);
         });
@@ -133,7 +133,7 @@ const PositionInfo = React.createClass({
     onSelectLocation(location) {
         this.state.positionInfo.phone_order_location = location;
         this.setState({
-            positionInfo: $.extend(true, {},  this.state.positionInfo)
+            positionInfo: $.extend(true, {}, this.state.positionInfo)
         });
     },
     // 获取用户id
@@ -156,7 +156,7 @@ const PositionInfo = React.createClass({
                 this.state.positionInfo.realm_id = this.state.formData.realm_id;
                 this.state.positionInfo.user_id = this.state.formData.member;
                 this.setState({
-                    positionInfo: $.extend(true, {},  this.state.positionInfo)
+                    positionInfo: $.extend(true, {}, this.state.positionInfo)
                 });
                 this.props.closeRightPanel();
                 PositionAction.getPhoneOrderList({order: PositionStore.getState().sortOrder}); // 获取座席号列表
@@ -176,12 +176,12 @@ const PositionInfo = React.createClass({
         });
     },
     render() {
-        let  selectRowObj = this.state.positionInfo;
+        let selectRowObj = this.state.positionInfo;
         let formData = this.state.formData;
         const areaObj = {
             'jinan': LANGLOBAL.CITY.jn, // 济南
             'changsha': LANGLOBAL.CITY.cs, // 长沙
-            'beijing': LANGLOBAL.CITY.bj  // 北京
+            'beijing': LANGLOBAL.CITY.bj // 北京
         };
         return(
             <RightPanel showFlag={this.props.showFlag} className='white-space-nowrap'>
@@ -196,7 +196,7 @@ const PositionInfo = React.createClass({
                                     value={selectRowObj.phone_order}
                                     field='phone_order'
                                     type='text'
-                                    validators={[{validator:this.checkPhoneOrder}]}
+                                    validators={[{validator: this.checkPhoneOrder}]}
                                     placeholder={LANGLOBAL.POSITION.placeholder}// 请输入座席号
                                     saveEditInput={PositionAjax.updatePhoneOrder}
                                     modifySuccess={this.changePhoneFieldSuccess}
@@ -301,7 +301,7 @@ const PositionInfo = React.createClass({
                                             {this.renderOrganizationOptions()}
                                         </Select>
                                     </FormItem>
-                                    {formData.realm_id &&  <div>
+                                    {formData.realm_id && <div>
                                         <FormItem
                                             label={LANGLOBAL.USER.bind} //'绑定用户'
                                             id='member'

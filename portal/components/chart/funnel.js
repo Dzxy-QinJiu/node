@@ -10,36 +10,36 @@ import Trace from "LIB_DIR/trace";
 import { packageTry } from 'LIB_DIR/func';
 
 var FunnelChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            chartData : [],
-            title : "",
-            width:'100%',
+            chartData: [],
+            title: "",
+            width: '100%',
             height: 600,
-            resultType : 'loading',
+            resultType: 'loading',
         };
     },
-    getSeries : function() {
+    getSeries: function() {
         const series1 = {
-            type:'funnel',
+            type: 'funnel',
             x: 10,
             y: 10,
-            data : this.props.chartData,
-            sort : this.props.sort || "descending",
-            minSize : this.props.minSize || "0%",
-            itemStyle : {
-                normal : {
-                    label : {
+            data: this.props.chartData,
+            sort: this.props.sort || "descending",
+            minSize: this.props.minSize || "0%",
+            itemStyle: {
+                normal: {
+                    label: {
                         textStyle: {
                             color: "#506470"
                         }
                     },
-                    labelLine : {
-                        show : false
+                    labelLine: {
+                        show: false
                     }
                 },
-                emphasis : {
+                emphasis: {
                 }
             },
         };
@@ -69,7 +69,7 @@ var FunnelChart = React.createClass({
 
         return [series1, series2];
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
             title: {
                 text: this.props.title,
@@ -80,16 +80,16 @@ var FunnelChart = React.createClass({
                     fontWeight: "normal"
                 }
             },
-            animation : false,
+            animation: false,
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            series : this.getSeries(),
+            calculable: false,
+            series: this.getSeries(),
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -116,10 +116,10 @@ var FunnelChart = React.createClass({
             });
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -130,7 +130,7 @@ var FunnelChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -138,10 +138,10 @@ var FunnelChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         return (
-            <div className="analysis-chart" ref="wrap" style={{width:this.props.width, float:"left"}}>
-                <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+            <div className="analysis-chart" ref="wrap" style={{width: this.props.width, float: "left"}}>
+                <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
             </div>
         );
     }

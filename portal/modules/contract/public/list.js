@@ -82,7 +82,7 @@ const List = React.createClass({
         if (e.currentTarget.className === "ant-table-selection-column") return;
         const $tr = $(e.target).closest("tr");
         $tr.addClass("current-row").siblings().removeClass("current-row");
-        const view = this.props.type === "cost"? "detailCost" : "detail";
+        const view = this.props.type === "cost" ? "detailCost" : "detail";
         this.state.selectedItemId = record.id;
         this.setState(this.state);
         this.props.showRightPanel(view, index);
@@ -182,7 +182,7 @@ const List = React.createClass({
 
     buildFilterSelect: function(column, list, key) {
         let options = list.map(item => {
-            const value = key? item[key] : item;
+            const value = key ? item[key] : item;
             return (<Option
                 title={value}
                 key={value}
@@ -322,7 +322,7 @@ const List = React.createClass({
 
             if (["date", "start_time", "end_time", "repayment_date"].indexOf(column.dataIndex) > -1) {
                 column.render = function(text) {
-                    let time = text? moment(text).format(DATE_FORMAT) : "";
+                    let time = text ? moment(text).format(DATE_FORMAT) : "";
                     return <span>{time}</span>;
                 };
             }
@@ -340,7 +340,7 @@ const List = React.createClass({
                 column.render = function(text) {
                     if (column.dataIndex === "cost") {
                         text = parseFloat(text);
-                        text = isNaN(text)? "" : text.toFixed(2);
+                        text = isNaN(text) ? "" : text.toFixed(2);
                     } else {
                         text = formatAmount(text);
                     }
@@ -363,7 +363,7 @@ const List = React.createClass({
 
             if (column.dataIndex === "category") {
                 column.render = function(text) {
-                    text = text? text : "";
+                    text = text ? text : "";
                     return <span>{text}</span>;
                 };
             }
@@ -374,7 +374,7 @@ const List = React.createClass({
 
             if (column.dataIndex === "repayment_is_first") {
                 column.render = function(text, record) {
-                    text = text === "true"? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
+                    text = text === "true" ? Intl.get("user.yes", "是") : Intl.get("user.no", "否");
                     return <span>{text}</span>;
                 };
             }
@@ -391,7 +391,7 @@ const List = React.createClass({
                 } else if (column.dataIndex === "sales_name") {
                     this.buildFilterSelect(column, this.props.userList, "nick_name");
                 } else if (column.dataIndex === "category" && this.props.type === "sell") {
-                    const typeList = _.filter(this.props.typeList, type => type !==Intl.get("contract.9", "采购合同"));
+                    const typeList = _.filter(this.props.typeList, type => type !== Intl.get("contract.9", "采购合同"));
                     this.buildFilterSelect(column, typeList);
                 } else if (column.dataIndex === "stage") {
                     this.buildFilterSelect(column, CONTRACT_STAGE);
@@ -438,7 +438,7 @@ const List = React.createClass({
                         onChange={this.onChange}
                     />
                 </div>
-                {this.props.isTheadFilterShow? (
+                {this.props.isTheadFilterShow ? (
                     <div className="custom-thead-filter">
                         <Table
                             columns={filterColumns}
@@ -473,11 +473,11 @@ const List = React.createClass({
                         <ReactIntl.FormattedMessage
                             id="contract.124"
                             values={{
-                                "num":this.props.contractCount + '',
+                                "num": this.props.contractCount + '',
                                 "type": typeName
                             }}
                             defaultMessage={`共{num}个符合当前查询条件的{type}`} />
-                        {this.props.type === "cost"? null : (
+                        {this.props.type === "cost" ? null : (
                             <span>
                                 <span>, </span>
                                 <ReactIntl.FormattedMessage
@@ -509,7 +509,7 @@ const List = React.createClass({
                     onOk={this.doImport}
                     onCancel={this.cancelImport}
                 >
-                    {this.state.isPreviewShow? (
+                    {this.state.isPreviewShow ? (
                         <Table
                             dataSource={this.state.previewList}
                             columns={columns}

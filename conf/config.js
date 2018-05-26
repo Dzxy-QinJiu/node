@@ -132,7 +132,7 @@ var config = {
     session: {
         casterMapName: process.env.CASTER_MAP_NAME || "oplate_session",//hazelcast中的map名
         maxAge: process.env.SESSIONTTL || 60 * 60 * 1000, //session默认一小时
-        secret: "CV193WIC"   //加密session id使用的秘钥
+        secret: "CV193WIC" //加密session id使用的秘钥
     },
     proxy: {
         "protocal": "http://",
@@ -145,7 +145,7 @@ var config = {
     restTimeout: 1000 * 30,
     //跟踪实例
     traceConfig: {
-        zipkinUrl: process.env.ZIPKINURL || "http://172.19.103.39:9002",   //将跟踪记录到服务器的url
+        zipkinUrl: process.env.ZIPKINURL || "http://172.19.103.39:9002", //将跟踪记录到服务器的url
         serviceName: "ketao_web"
     },
     //没有配置推送服务地址，并且从协调服务中根据id获取不到可用的服务地址时用的默认的推送服务地址

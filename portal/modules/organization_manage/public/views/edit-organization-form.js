@@ -116,7 +116,7 @@ var OrganizationForm = React.createClass({
                     };
                     formData.isOrganizationSaving = true;
                     _this.setState({formData: formData});
-                    OrganizationActions.saveEditGroup(editGroupData, result=> {
+                    OrganizationActions.saveEditGroup(editGroupData, result => {
                         //保存结果
                         formData.saveOrganizationMsg = result.saveMsg;
                         formData.saveOrganizationResult = result.saveResult;
@@ -157,7 +157,7 @@ var OrganizationForm = React.createClass({
                     }
                     formData.isOrganizationSaving = true;
                     _this.setState({formData: formData});
-                    OrganizationActions.saveAddGroup(addGroupData, (result, addGroup)=> {
+                    OrganizationActions.saveAddGroup(addGroupData, (result, addGroup) => {
                         //保存结果
                         formData.saveOrganizationMsg = result.saveMsg;
                         formData.saveOrganizationResult = result.saveResult;
@@ -188,7 +188,7 @@ var OrganizationForm = React.createClass({
         } else {
             if (_.isArray(curOrganization.children) && curOrganization.children.length > 0) {
                 //子组织中是否含有此组织
-                return _.some(curOrganization.children, organization=>this.findChildren(id, organization));
+                return _.some(curOrganization.children, organization => this.findChildren(id, organization));
             } else {
                 return false;
             }
@@ -199,7 +199,7 @@ var OrganizationForm = React.createClass({
         var teamOptions = [];
         var organizationList = this.props.organizationList, curOrganization = this.props.organization;
         if (_.isArray(organizationList) && organizationList.length > 0) {
-            organizationList.forEach(team=> {
+            organizationList.forEach(team => {
                 //过滤掉当前部门的下级部门
                 if (team.category == CATEGORY_TYPE.DEPARTMENT && !this.findChildren(team.group_id, curOrganization)) {
                     teamOptions.push(<Option key={team.group_id} value={team.group_id}>
@@ -261,7 +261,7 @@ var OrganizationForm = React.createClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? (this.formatMessage(messages.common_is_validiting)) : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{required: true, min: 1, max : 20 , message: this.formatMessage(messages.common_input_character_rules)}]}>
+                                rules={[{required: true, min: 1, max: 20 , message: this.formatMessage(messages.common_input_character_rules)}]}>
                                 <Input name="title" id="title" value={formData.title}
                                     onChange={this.setField.bind(this, 'title')}
                                     placeholder={this.formatMessage(messages.common_required_tip)}/>
@@ -299,7 +299,7 @@ var OrganizationForm = React.createClass({
                             wrapperCol={{span: 23}}>
                             {this.state.formData.isOrganizationSaving ? (<Icon type="loading"/>) : (
                                 editResult ? (<div className="indicator">
-                                    <AlertTimer time={editResult=="error"?3000:600}
+                                    <AlertTimer time={editResult == "error" ? 3000 : 600}
                                         message={this.state.formData.saveOrganizationMsg}
                                         type={editResult} showIcon
                                         onHide={this.hideSaveTooltip}/>

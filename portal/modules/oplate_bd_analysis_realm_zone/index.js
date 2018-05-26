@@ -6,7 +6,7 @@ module.exports = {
     //路由路径
     path: 'zone',
     //实际业务逻辑在public/index.js中
-    getComponent : function(location, cb) {
+    getComponent: function(location, cb) {
         require.ensure([], function(require){
             cb(null, require('./public'));
         });

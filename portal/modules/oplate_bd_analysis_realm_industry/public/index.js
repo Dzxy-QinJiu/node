@@ -28,55 +28,55 @@ var AnalysisMenu = require("../../../components/analysis_menu");
 require("./css/index.less");
 //布局使用的计算的常量
 var LAYOUT = {
-    TOP : 65 + 20,
-    BOTTOM : 32
+    TOP: 65 + 20,
+    BOTTOM: 32
 };
 
 //行业分析-安全域开通
 var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
     //获取state中使用的数据
-    getStateData : function() {
+    getStateData: function() {
         return {
             //开始时间
-            startTime : AnalysisRealmIndustryStore.getStartTime(),
+            startTime: AnalysisRealmIndustryStore.getStartTime(),
             //结束时间
-            endTime  : AnalysisRealmIndustryStore.getEndTime(),
+            endTime: AnalysisRealmIndustryStore.getEndTime(),
             //当前安全域行业开通总数
-            realmIndustryTotalCount : AnalysisRealmIndustryStore.getRealmIndustryTotalCount(),
+            realmIndustryTotalCount: AnalysisRealmIndustryStore.getRealmIndustryTotalCount(),
             //当前安全域行业开通列表
-            realmIndustryAnalysisList : AnalysisRealmIndustryStore.getRealmIndustryAnalysisList(),
+            realmIndustryAnalysisList: AnalysisRealmIndustryStore.getRealmIndustryAnalysisList(),
             //右侧标题
-            rankListTitle : AnalysisRealmIndustryStore.getState().rankListTitle,
+            rankListTitle: AnalysisRealmIndustryStore.getState().rankListTitle,
             //窗口宽度
-            windowWidth : $(window).width(),
+            windowWidth: $(window).width(),
             //当前loading状态
-            isLoading : AnalysisRealmIndustryStore.getLoadingState(),
+            isLoading: AnalysisRealmIndustryStore.getLoadingState(),
             //是否没有数据
-            noData : AnalysisRealmIndustryStore.getNoData(),
+            noData: AnalysisRealmIndustryStore.getNoData(),
             //是否一个安全域都没有
-            noIndustryAtAll : AnalysisRealmIndustryStore.getNoIndustryAtAll()
+            noIndustryAtAll: AnalysisRealmIndustryStore.getNoIndustryAtAll()
         };
     },
     //store变化的时候重新渲染
-    onChange : function() {
+    onChange: function() {
         var stateData = this.getStateData();
         this.setState(stateData);
     },
     //计算获取图表大小
-    getChartDimension:function() {
+    getChartDimension: function() {
         //不渲染的时候返回0
         if(!this.refs.chart) {
             return {
                 //柱状图的宽度
-                chartWidth : 0,
+                chartWidth: 0,
                 //柱状图的高度
-                chartHeight : 0
+                chartHeight: 0
             };
         }
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
         var chartWidth = $(this.refs.chart).width();
-        var chartHeight ;
+        var chartHeight;
         //小于992的时候，宽度和高度相同
         if(windowWidth < Oplate.layout['screen-md']) {
             chartHeight = chartWidth;
@@ -86,37 +86,37 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
         }
         return {
             //图的宽度
-            chartWidth : chartWidth,
+            chartWidth: chartWidth,
             //图的高度
-            chartHeight : chartHeight
+            chartHeight: chartHeight
         };
     },
     //柱状图的formatter
-    BarChartFormatter : function(obj) {
+    BarChartFormatter: function(obj) {
         var percent = ((obj.value / obj.total) * 100).toFixed(1);
         if(percent === 'NaN' || percent === '0.0') {
             percent = '0%';
         }
         return [
-            Intl.get("realm.industry","行业")+'：' + obj.name ,
-            Intl.get("oplate_bd_analysis_realm_industry.6","个数")+'：' + (isNaN(obj.value) ? 0 : obj.value),
-            Intl.get("oplate_bd_analysis_realm_industry.7","占比")+'：' + (isNaN(obj.value) ? '0%' : percent + '%')
+            Intl.get("realm.industry","行业") + '：' + obj.name ,
+            Intl.get("oplate_bd_analysis_realm_industry.6","个数") + '：' + (isNaN(obj.value) ? 0 : obj.value),
+            Intl.get("oplate_bd_analysis_realm_industry.7","占比") + '：' + (isNaN(obj.value) ? '0%' : percent + '%')
         ].join('<br/>');
     },
     //获取初始state
-    getInitialState : function() {
+    getInitialState: function() {
         return this.getStateData();
     },
     //resize的延迟
-    resizeTimeout : null,
+    resizeTimeout: null,
     //窗口resize的处理函数
-    resizeWindow : function() {
+    resizeWindow: function() {
         clearTimeout(this.resizeTimeout);
         var _this = this;
         this.resizeTimeout = setTimeout(function() {
             _this.setState({
                 //窗口的宽度
-                windowWidth : $(window).width()
+                windowWidth: $(window).width()
             });
         } , Oplate.layout['sidebar-transition-time']);
     },
@@ -124,7 +124,7 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
     //绑定store
     //使用action获取安全域行业数据
     //绑定window的resize事件
-    componentDidMount : function() {
+    componentDidMount: function() {
         AnalysisRealmIndustryStore.listen(this.onChange);
         AnalysisRealmIndustryActions.getRealmIndustryAnalysisDataByAjax(
             this.state.startTime,
@@ -137,16 +137,16 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
     //解绑store
     //解除window的resize事件
     //body有滚动条
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         AnalysisRealmIndustryStore.unlisten(this.onChange);
         $(window).off('resize' , this.resizeWindow);
         $('body').css({
-            'overflow-x':'visible',
-            'overflow-y':'visible'
+            'overflow-x': 'visible',
+            'overflow-y': 'visible'
         });
     },
     /*当日期更改的时候的操作*/
-    onSelectDate : function(startTime , endTime, range,label) {
+    onSelectDate: function(startTime , endTime, range,label) {
         if(range === 'all') {
             AnalysisRealmIndustryActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数"));
         } else if(range === 'custom') {
@@ -169,21 +169,21 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
         );
     },
     //render函数，渲染的逻辑写在这里
-    render : function() {
+    render: function() {
         //定义div高度
         //定义是否有滚动条
         var divHeight = 'auto' , GeminiScrollbarEnabled = false;
         //宽屏不出现滚动条
         if($(window).width() < Oplate.layout['screen-md']) {
             $('body').css({
-                'overflow-x':'visible',
-                'overflow-y':'visible'
+                'overflow-x': 'visible',
+                'overflow-y': 'visible'
             });
         //窄屏出现滚动条
         } else {
             $('body').css({
-                'overflow-x':'hidden',
-                'overflow-y':'hidden'
+                'overflow-x': 'hidden',
+                'overflow-y': 'hidden'
             });
             //div高度为屏幕高度减去margin
             divHeight = $(window).height() - LAYOUT.TOP - LAYOUT.BOTTOM;
@@ -198,9 +198,9 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
         var chartHeight = chartInfo.chartHeight;
         //样式判断
         var outerClass = classNames({
-            analysis_realm_industry:true,
-            clearfix : true,
-            analysis_realm_industry_nodata : this.state.noIndustryAtAll
+            analysis_realm_industry: true,
+            clearfix: true,
+            analysis_realm_industry_nodata: this.state.noIndustryAtAll
         });
         //定义外层样式
         return (
@@ -213,7 +213,7 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
                     {/*没有数据的标签*/}
                     <NoData />
                     {/*图表外层区域*/}
-                    <div className="col-md-8 chartindustrywrap" style={{height:divHeight}}>
+                    <div className="col-md-8 chartindustrywrap" style={{height: divHeight}}>
                         {/*图表区域*/}
                         <div ref="chart" className="chart">
                             {/*时间选择器区域*/}
@@ -242,8 +242,8 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
                              */}
                             {
                                 this.state.isLoading ?
-                                    (<Spinner className="isloading"/>):
-                                    (<AnalysisEchartBarHorizontal width={chartWidth} height={chartHeight} dataList={this.state.realmIndustryAnalysisList} formatter={this.BarChartFormatter} style={{marginLeft:'-25px',marginTop:'-25px'}} noData={this.state.noData}/>)
+                                    (<Spinner className="isloading"/>) :
+                                    (<AnalysisEchartBarHorizontal width={chartWidth} height={chartHeight} dataList={this.state.realmIndustryAnalysisList} formatter={this.BarChartFormatter} style={{marginLeft: '-25px',marginTop: '-25px'}} noData={this.state.noData}/>)
                             }
 
                         </div>
@@ -251,7 +251,7 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
                     {/*排行榜外层区域*/}
                     <div className="col-md-4 ranklistwrap">
                         {/*使用GeminiScrollbar外层div需要限定一个高度*/}
-                        <div className="scrollwrap" style={{height:divHeight}}>
+                        <div className="scrollwrap" style={{height: divHeight}}>
                             {/*
                              *当处于loading状态，显示loading
                              *非loading状态时，显示排行榜
@@ -263,7 +263,7 @@ var OPLATE_BD_ANALYSIS_REALM_INDUSTRY = React.createClass({
                              */}
                             {
                                 this.state.isLoading ?
-                                    (<Spinner className="isloading"/>):
+                                    (<Spinner className="isloading"/>) :
                                     (
                                         <GeminiScrollbar enabled={GeminiScrollbarEnabled}>
                                             <div className="ranklist">

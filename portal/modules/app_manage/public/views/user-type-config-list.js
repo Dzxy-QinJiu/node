@@ -63,7 +63,7 @@ var UserTypeConfigList = React.createClass({
                     {user_type: 'internal', id: ''}
                 ],
                 firstloading: true
-            }, ()=> {
+            }, () => {
                 _this.getRoleList();
             });
         }
@@ -161,7 +161,7 @@ var UserTypeConfigList = React.createClass({
     handleErrResult: function() {
         var _this = this;
         var errMsg = <span>{_this.state.errMsg}<a onClick={_this.retry}
-            style={{marginLeft:"20px",marginTop:"20px"}}>请重试</a></span>;
+            style={{marginLeft: "20px",marginTop: "20px"}}>请重试</a></span>;
         return (
             <div>
                 <Alert
@@ -207,7 +207,7 @@ var UserTypeConfigList = React.createClass({
         var _this = this;
         //展示数据
         var list = _this.state.showData;
-        return (list.map((item)=> {
+        return (list.map((item) => {
             var listId = item.id;
             //有配置信息的类型
             if (listId != '') {

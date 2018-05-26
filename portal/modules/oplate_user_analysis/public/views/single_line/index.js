@@ -11,132 +11,132 @@ var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-cs
 let chartUtil = require("../../utils/chart-util");
 import { packageTry } from 'LIB_DIR/func';
 var SingleLineChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            title : Intl.get("user.analysis.total", "用户统计"),
-            width:'100%',
-            height:234,
-            resultType : 'loading',
+            list: [],
+            title: Intl.get("user.analysis.total", "用户统计"),
+            width: '100%',
+            height: 234,
+            resultType: 'loading',
             /**
              * [
              *  {name : Intl.get("user.analysis.formal", "正式"),key : 'formal'}
              * ]
              */
-            legend : null,
+            legend: null,
             isShowSplitLine: false,
             isShowSplitArea: false
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         if(!this.props.legend) {
             return {
-                show : false,
-                data :[]
+                show: false,
+                data: []
             };
         }
         return {
-            show : true
+            show: true
         };
     },
-    getCategorys : function() {
+    getCategorys: function() {
         return _.map(this.props.list , function(obj) {
             var m = moment(new Date(+obj.timestamp));
             return m.format(oplateConsts.DATE_FORMAT);
         });
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         var series = [];
         _.each(this.props.legend , function(legendInfo,idx) {
             var bar = {
-                name : legendInfo.name,
-                type : 'bar',
-                stack : 'stack',
-                barMinWidth : 4,
-                barMaxWidth : 40,
-                data : _.pluck(_this.props.list , legendInfo.key),
+                name: legendInfo.name,
+                type: 'bar',
+                stack: 'stack',
+                barMinWidth: 4,
+                barMaxWidth: 40,
+                data: _.pluck(_this.props.list , legendInfo.key),
             };
             series.push(bar);
         });        
         return series;
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var _this = this;
         var option = {
-            title:null,
-            animation : false,
-            tooltip : {
-                trigger : "axis",
-                show : true,
-                extraCssText : echartsTooltipCssText,
+            title: null,
+            animation: false,
+            tooltip: {
+                trigger: "axis",
+                show: true,
+                extraCssText: echartsTooltipCssText,
                 position: function(mousePointer, params, tooltipDom) {
                     return chartUtil.getTooltipPosition(_this, mousePointer, params, tooltipDom);
                 }
             },
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    splitArea : {
+                    type: 'category',
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    data : this.getCategorys(),
-                    splitLine : this.props.isShowSplitLine,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    data: this.getCategorys(),
+                    splitLine: this.props.isShowSplitLine,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         }
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
-                    splitLine : this.props.isShowSplitLine,
-                    splitArea : {
+                    type: 'value',
+                    splitLine: this.props.isShowSplitLine,
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -159,10 +159,10 @@ var SingleLineChart = React.createClass({
             $(this.refs.chart).find(".nodata").remove();
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -173,7 +173,7 @@ var SingleLineChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -181,19 +181,19 @@ var SingleLineChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis_single_line_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

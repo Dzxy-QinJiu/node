@@ -11,7 +11,7 @@ class CardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dateRange : this.props.dateRange,
+            dateRange: this.props.dateRange,
             radioValue: this.props.radioValue,
             exportData: this.props.exportData, // 导出数据
             csvFileName: this.props.csvFileName, // csv文件名
@@ -31,7 +31,7 @@ class CardContainer extends React.Component {
     }
     onDateRangeChange(event) {
         this.setState({
-            dateRange : event.target.value
+            dateRange: event.target.value
         });
         this.props.onDateRangeChange(event.target.value);
     }
@@ -83,7 +83,7 @@ CardContainer.defaultProps = {
     title: '', // 标题
     dateRange: '',
     radioValue: [], // 切换的按钮的值
-    onDateRangeChange : function(){}, //时间范围改变的回调函数
+    onDateRangeChange: function(){}, //时间范围改变的回调函数
     exportData: '' , // 导出的数据
     csvFileName: '' // 导出csv文件名
 };

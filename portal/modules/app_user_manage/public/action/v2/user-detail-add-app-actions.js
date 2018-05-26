@@ -16,20 +16,20 @@ class UserDetailAddAppActions {
         );
     }
     getCurrentRealmApps() {
-        this.dispatch({loading:true});
-        AppUserAjax.getApps().then((list)=>{
-            this.dispatch({list:list});
-        },()=>{
-            this.dispatch({error:true});
+        this.dispatch({loading: true});
+        AppUserAjax.getApps().then((list) => {
+            this.dispatch({list: list});
+        },() => {
+            this.dispatch({error: true});
         });
     }
     addUserApps(submitData,successCallback) {
-        this.dispatch({error : false , loading:true});
+        this.dispatch({error: false , loading: true});
         AppUserAjax.addApp(submitData).then((apps) => {
-            this.dispatch({error : false , apps:apps});
+            this.dispatch({error: false , apps: apps});
             _.isFunction(successCallback) && successCallback(apps);
         } , (errorMsg) => {
-            this.dispatch({error : true , errorMsg : errorMsg});
+            this.dispatch({error: true , errorMsg: errorMsg});
         });
     }
 }

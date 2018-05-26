@@ -74,10 +74,10 @@ class ModalIntro extends React.Component {
     }
 }
 ModalIntro.defaultProps = {
-    message:"",
-    introModalLayout:{},
-    $introElement:"",
-    hideModalIntro:function() {},
+    message: "",
+    introModalLayout: {},
+    $introElement: "",
+    hideModalIntro: function() {},
     handleOnclickHole: function() {},
 };
 export default ModalIntro;

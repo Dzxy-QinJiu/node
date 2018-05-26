@@ -19,7 +19,7 @@ exports.getSalesTeamTree = function(req, res) {
 };
 
 //获取销售对应的通话状态
-exports.getSalesCallStatus=function(req, res) {
+exports.getSalesCallStatus = function(req, res) {
     salesHomeService.getSalesCallStatus(req, res, req.query).on("success", function(data) {
         res.status(200).json(data);
     }).on("error", function(codeMessage) {

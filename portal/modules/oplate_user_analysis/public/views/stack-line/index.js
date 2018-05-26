@@ -10,35 +10,35 @@ var echartsTooltipCssText = require("../../../../../lib/utils/echarts-tooltip-cs
 let chartUtil = require("../../utils/chart-util");
 import { packageTry } from 'LIB_DIR/func';
 var StackLineChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            width:'100%',
-            height:234,
-            resultType : 'loading',
-            legend : null
+            list: [],
+            width: '100%',
+            height: 234,
+            resultType: 'loading',
+            legend: null
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         if(!this.props.legend) {
             return {
-                show : false,
-                data :[]
+                show: false,
+                data: []
             };
         } else {
             return {
-                data:_.pluck(this.props.legend , 'version')
+                data: _.pluck(this.props.legend , 'version')
             };
         }
     },
-    getCategorys : function() {
+    getCategorys: function() {
         let timeArray = _.uniq(_.pluck(this.props.legend, 'time')); // 时间点
         return _.map(timeArray , (time) => {
             return moment(time).format(oplateConsts.DATE_FORMAT);
         });
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var _this = this;
         let countArray = _.pluck(this.props.legend, 'count');
         let yMax = 0, max = null;
@@ -52,81 +52,81 @@ var StackLineChart = React.createClass({
             max = 5;
         }
         var option = {
-            title:null,
-            animation : false,
-            tooltip : {
-                trigger : "axis",
-                show : true,
-                extraCssText : echartsTooltipCssText,
+            title: null,
+            animation: false,
+            tooltip: {
+                trigger: "axis",
+                show: true,
+                extraCssText: echartsTooltipCssText,
                 position: function(mousePointer, params, tooltipDom) {
                     return chartUtil.getTooltipPosition(_this, mousePointer, params, tooltipDom);
                 }
             },
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
+                    type: 'category',
+                    data: this.getCategorys(),
                     boundaryGap: false,
-                    splitLine : false,
-                    splitArea : {
+                    splitLine: false,
+                    splitArea: {
                         show: false
                     },
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         }
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
+                    type: 'value',
                     interval: yInterval,
                     max: max,
-                    splitArea : {
+                    splitArea: {
                         show: false
                     },
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.props.list
+            series: this.props.list
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -149,10 +149,10 @@ var StackLineChart = React.createClass({
             $(this.refs.chart).find(".nodata").remove();
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -163,7 +163,7 @@ var StackLineChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -171,18 +171,18 @@ var StackLineChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         return (
             <div className="analysis_single_line_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

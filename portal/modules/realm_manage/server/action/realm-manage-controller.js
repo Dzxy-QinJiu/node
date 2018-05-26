@@ -82,7 +82,7 @@ exports.updateRealmStatus = function(req, res) {
 
 // 修改邮箱服务器设置信息
 exports.setEmailServer = (req, res) => {
-    realmManageService.setServer(req, res, req.params.realm_id, req.body).on("success",  (data) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body).on("success", (data) => {
         res.status(200).json(data);
     }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -91,18 +91,18 @@ exports.setEmailServer = (req, res) => {
 
 // 修改安全域短信服务器配置信息
 exports.setSmsServer = (req, res) => {
-    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'sms').on("success",  (data) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'sms').on("success", (data) => {
         res.status(200).json(data);
-    }).on("error",  (codeMessage) => {
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
 
 // 修改安全域微信配置信息
 exports.setWeChat = (req, res) => {
-    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'wechat').on("success",  (data) => {
+    realmManageService.setServer(req, res, req.params.realm_id, req.body, 'wechat').on("success", (data) => {
         res.status(200).json(data);
-    }).on("error",  (codeMessage) => {
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

@@ -58,7 +58,7 @@ var ImportData = React.createClass({
         if (this.props.type == "role") {
             var props = {
                 name: 'import_role',
-                action: '/rest/my_app/import_role/'+ client_id,
+                action: '/rest/my_app/import_role/' + client_id,
                 accept: fileTypes.join(),
                 showUploadList: false,
                 beforeUpload(file) {
@@ -72,13 +72,13 @@ var ImportData = React.createClass({
             };
             return (
                 <Upload {...props} className="upload-role">
-                    {Intl.get("common.import", "导入")} {this.state.isLoading? <Icon type="loading" style={{marginLeft: 12}}/> : null}
+                    {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 12}}/> : null}
                 </Upload>
             );
         } else {
             var props = {
                 name: 'import_authority',
-                action: '/rest/my_app/import_authority/'+ client_id,
+                action: '/rest/my_app/import_authority/' + client_id,
                 accept: fileTypes.join(),
                 showUploadList: false,
                 beforeUpload(file) {
@@ -92,7 +92,7 @@ var ImportData = React.createClass({
             };
             return (
                 <Upload {...props} className="upload-authority">
-                    {Intl.get("common.import", "导入")} {this.state.isLoading? <Icon type="loading" style={{marginLeft: 12}}/> : null}
+                    {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 12}}/> : null}
                 </Upload>
             );
         }

@@ -10,36 +10,36 @@ var immutable = require("immutable");
 import { packageTry } from 'LIB_DIR/func';
 
 var SingleAppBarChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            title : Intl.get("user.analysis.team", "团队统计"),
-            width:'100%',
-            height:234,
-            resultType : 'loading',
-            xAxisInterval:'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
-            xAxisLabelAlign:'center',//x轴坐标label位置，默认：剧中（居左、右）
-            xAxisRotate:0, //x轴坐标label倾斜的角度（避免重叠时设置）
+            list: [],
+            title: Intl.get("user.analysis.team", "团队统计"),
+            width: '100%',
+            height: 234,
+            resultType: 'loading',
+            xAxisInterval: 'auto',//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
+            xAxisLabelAlign: 'center',//x轴坐标label位置，默认：剧中（居左、右）
+            xAxisRotate: 0, //x轴坐标label倾斜的角度（避免重叠时设置）
             isShowSplitLine: false,
             isShowSplitArea: false
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         return {
-            show : true
+            show: true
         };
     },
     // 横坐标的值
-    getCategorys : function() {
+    getCategorys: function() {
         return _.pluck(this.props.list , 'name');
     },
 
-    getTooltip : function() {
+    getTooltip: function() {
         return {
-            show : true,
-            extraCssText : echartsTooltipCssText,
-            formatter : function(obj) {
+            show: true,
+            extraCssText: echartsTooltipCssText,
+            formatter: function(obj) {
                 var name = obj.name;
                 if(!name) {
                     name = 'null';
@@ -53,7 +53,7 @@ var SingleAppBarChart = React.createClass({
         };
     },
 
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         let yValue = _.pluck(this.props.list , 'count');
         // 获取最大的y轴刻度值
         let yValueMax = _.max(yValue);
@@ -64,46 +64,46 @@ var SingleAppBarChart = React.createClass({
             yMax = 5;
         }
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 30,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 30,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
-                    splitLine : this.props.isShowSplitLine,
-                    splitArea : {
+                    type: 'category',
+                    data: this.getCategorys(),
+                    splitLine: this.props.isShowSplitLine,
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
                             align: this.props.xAxisLabelAlign
                         },
                         interval: this.props.xAxisInterval,
                         rotate: this.props.xAxisRotate,
-                        formatter : function(text) {
+                        formatter: function(text) {
                             if(text === 'unknown') {
                                 text = Intl.get("user.unknown", "未知");
                             } else if(!text) {
@@ -114,38 +114,38 @@ var SingleAppBarChart = React.createClass({
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
                     minInterval: 1,
                     max: yMax,
-                    type : 'value',
-                    splitArea : {
+                    type: 'value',
+                    splitArea: {
                         show: this.props.isShowSplitArea
                     },
-                    splitLine : this.props.isShowSplitLine,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    splitLine: this.props.isShowSplitLine,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : [{
-                type : 'bar',
-                barMaxWidth:40,
-                barMinWidth : 4,
-                data : _.pluck(this.props.list , 'count')
+            series: [{
+                type: 'bar',
+                barMaxWidth: 40,
+                barMinWidth: 4,
+                data: _.pluck(this.props.list , 'count')
             }]
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -171,10 +171,10 @@ var SingleAppBarChart = React.createClass({
             });
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -185,7 +185,7 @@ var SingleAppBarChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -193,18 +193,18 @@ var SingleAppBarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         return (
             <div className="analysis_bar_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

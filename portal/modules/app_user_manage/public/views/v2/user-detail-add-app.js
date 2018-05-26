@@ -8,7 +8,7 @@ import {Form,Icon,Alert} from 'antd';
 import Spinner from '../../../../../components/spinner';
 import AlertTimer from '../../../../../components/alert-timer';
 import {Carousel,CarouselItem} from 'react-bootstrap';
-import FieldMixin  from '../../../../../components/antd-form-fieldmixin';
+import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 
 import UserDetailAddAppActions from '../../action/v2/user-detail-add-app-actions';
 import AppUserDetailAction from '../../action/app-user-detail-actions';
@@ -36,12 +36,12 @@ var dynamicStyle;
 //布局常量
 const LAYOUT_CONSTANTS = {
     //应用选择组件顶部的高度
-    APPS_CHOOSEN_TOPBAR : 106
+    APPS_CHOOSEN_TOPBAR: 106
 };
 
 const UserDetailAddApp = React.createClass({
     //mixin
-    mixins : [
+    mixins: [
         FieldMixin,
         UserTypeRadioField,
         UserTimeRangeField,
@@ -88,7 +88,7 @@ const UserDetailAddApp = React.createClass({
         // 这个时候，要把第三步的应用属性同步到通用配置属性上
         if(apps.length === 1) {
             //渲染是异步的，加setTimeout能够获取到最新的配置信息
-            setTimeout(()=>{
+            setTimeout(() => {
                 //将应用的特殊设置同步到全局设置
                 UserDetailAddAppActions.syncCustomAppSettingToGlobalSetting();
             });
@@ -115,7 +115,7 @@ const UserDetailAddApp = React.createClass({
                         id="user.app.list.error.tip"
                         defaultMessage={`应用列表获取失败，{retry}`}
                         values={{
-                            'retry':<a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
+                            'retry': <a href="javascript:void(0)" onClick={UserDetailAddAppActions.getCurrentRealmApps}><ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取" /></a>}}
                     />
                 </span>}/>
             );
@@ -124,7 +124,7 @@ const UserDetailAddApp = React.createClass({
         var height = $(window).height() -
             OperationSteps.height -
             OperationStepsFooter.height -
-            LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR ;
+            LAYOUT_CONSTANTS.APPS_CHOOSEN_TOPBAR;
         dynamicStyle = insertStyle(`.user-detail-add-app-v2 .search-icon-list-content{max-height:${height}px;overflow-y:auto;overflow-x:hidden;`);
         return (
             <div>
@@ -171,7 +171,7 @@ const UserDetailAddApp = React.createClass({
                             {this.renderUserTwoFactorBlock()}
                         </div>
                     </div> }
-                    { !Oplate.hideSomeItem &&  <div className="form-item">
+                    { !Oplate.hideSomeItem && <div className="form-item">
                         <div className="form-item-label"><ReactIntl.FormattedMessage id="user.multi.login" defaultMessage="多人登录" /></div>
                         <div className="form-item-content">
                             {this.renderMultiLoginRadioBlock()}
@@ -185,14 +185,14 @@ const UserDetailAddApp = React.createClass({
     renderRolesCarousel() {
         const formData = this.state.formData;
         const defaultSettings = {
-            user_type:formData.user_type,
-            over_draft:formData.over_draft,
-            is_two_factor:formData.is_two_factor,
-            multilogin : formData.multilogin,
-            time:{
-                start_time : formData.start_time,
-                end_time : formData.end_time,
-                range : formData.range
+            user_type: formData.user_type,
+            over_draft: formData.over_draft,
+            is_two_factor: formData.is_two_factor,
+            multilogin: formData.multilogin,
+            time: {
+                start_time: formData.start_time,
+                end_time: formData.end_time,
+                range: formData.range
             }
         };
         const height = $(window).height() - OperationSteps.height - OperationStepsFooter.height;
@@ -324,18 +324,18 @@ const UserDetailAddApp = React.createClass({
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
         if (noSelectRoleApps.length) {
-            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName:noSelectRoleApps.join('、') }));
+            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get("user.add.apps.role.select.tip", "{appName}未设置角色", {appName: noSelectRoleApps.join('、') }));
             return;
         } else {
             UserDetailAddAppActions.noSelectRoleError('');
         }
         //添加应用
-        UserDetailAddAppActions.addUserApps(submitData,(apps)=>{
+        UserDetailAddAppActions.addUserApps(submitData,(apps) => {
             if(apps && _.isArray(apps)) {
                 //添加一个应用之后，更新应用列表
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.UPDATE_ADD_APP_INFO , {
-                    user_id : this.props.initialUser.user.user_id,
-                    app_info_array : apps
+                    user_id: this.props.initialUser.user.user_id,
+                    app_info_array: apps
                 });
             }
 
@@ -343,7 +343,7 @@ const UserDetailAddApp = React.createClass({
             AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT);
             //添加应用成功后，返回详情页面
             AppUserPanelSwitchAction.resetState();
-            setTimeout(()=>{
+            setTimeout(() => {
                 UserDetailAddAppActions.resetState();
             });
         });

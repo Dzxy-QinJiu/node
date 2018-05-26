@@ -15,8 +15,8 @@ exports.init = function() {
             setTimeout(function() {
                 cb(null, [
                     200, {
-                        user_logo : 'test',
-                        user_name : 'test'
+                        user_logo: 'test',
+                        user_name: 'test'
                     } , {}
                 ]);
             } , 100);

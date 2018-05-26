@@ -56,27 +56,27 @@ module.exports = [{
     "method": "get",
     "path": customerCommonAnalysisUrl + ":type/:property",
     "handler": "getCustomerCommonAnalysisData",
-    "passport":{
+    "passport": {
         "needLogin": true
     },
-    "privileges":[
+    "privileges": [
         "CUSTOMER_ANALYSIS_COMMON"
     ]
 },{
     "method": "get",
     "path": customerManagerAnalysisUrl + ":type/:property",
     "handler": "getCustomerManagerAnalysisData",
-    "passport":{
+    "passport": {
         "needLogin": true
     },
-    "privileges":[
+    "privileges": [
         "CUSTOMER_ANALYSIS_MANAGER"
     ]
 },{
     "method": "get",
     "path": "/rest/analysis/customer/stage/label/:type/summary",
     "handler": "getCustomerStageAnalysis",
-    "passport":{
+    "passport": {
         "needLogin": true
     },
 }, {

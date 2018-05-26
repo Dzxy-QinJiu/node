@@ -13,7 +13,7 @@ exports.handleSelectAppId = (userOwnAppList) => {
                 selectAppId = userOwnAppList[0].app_id;
             }
         } else {
-            selectAppId = userOwnAppList[0].app_id ;
+            selectAppId = userOwnAppList[0].app_id;
         }
     }
     return selectAppId;

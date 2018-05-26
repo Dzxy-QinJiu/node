@@ -43,19 +43,19 @@ const DetailBuyBasic = React.createClass({
     render: function() {
         const contract = this.props.contract;
 
-        const date = contract.date? moment(contract.date).format(oplateConsts.DATE_FORMAT) : "";
+        const date = contract.date ? moment(contract.date).format(oplateConsts.DATE_FORMAT) : "";
 
         const isEditBtnShow = !this.state.isFormShow && hasPrivilege("OPLATE_CONTRACT_UPDATE");
 
         return (
             <div className="detail-basic">
-                {isEditBtnShow? (
+                {isEditBtnShow ? (
                     <RightPanelEdit 
                         onClick={this.showForm}
                     />
                 ) : null}
 
-                {this.state.isFormShow? (
+                {this.state.isFormShow ? (
                     <div>
                         <AddBuyBasic
                             ref="addBuyBasic"

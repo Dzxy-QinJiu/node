@@ -103,8 +103,8 @@ var initController = function(app) {
  */
 var setAppConfig = function(app) {
     util._extend(app.locals, {
-        isProduction : config.isProduction,
-        webpackMode : config.webpackMode
+        isProduction: config.isProduction,
+        webpackMode: config.webpackMode
     });
 };
 

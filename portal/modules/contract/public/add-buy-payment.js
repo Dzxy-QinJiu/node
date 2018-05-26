@@ -115,7 +115,7 @@ const AddBuyPayment = React.createClass({
                     </Validation>
                 </div>
 
-                {this.state.payments.length? (
+                {this.state.payments.length ? (
                     <div className="finance-list">
                         <ul>
                             {this.state.payments.map((payment, index) => { return (
@@ -130,7 +130,7 @@ const AddBuyPayment = React.createClass({
                                     <ReactIntl.FormattedMessage
                                         id="contract.84"
                                         defaultMessage={`应付金额{num}元`}
-                                        values={{'num':payment.amount}}
+                                        values={{'num': payment.amount}}
                                     />
                                 </li>
                             );})}

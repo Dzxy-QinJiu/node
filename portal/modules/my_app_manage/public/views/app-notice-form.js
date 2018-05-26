@@ -12,7 +12,7 @@ var AlertTimer = require("../../../../components/alert-timer");
 import Trace from "LIB_DIR/trace";
 
 var AppNoticeForm = React.createClass({
-    mixins:[FieldMixin],
+    mixins: [FieldMixin],
     getInitialState: function(){
         return {
             formData: {
@@ -20,14 +20,14 @@ var AppNoticeForm = React.createClass({
                 content: ""
             },
             status: {
-                content:{}
+                content: {}
             },
             errMsg: '',
             isLoading: false
         };
     },
 
-    handleSubmit : function(e){
+    handleSubmit: function(e){
         e.preventDefault();
         Trace.traceEvent(e,"保存添加公告信息");
         var _this = this;
@@ -42,7 +42,7 @@ var AppNoticeForm = React.createClass({
             } else {
                 var newContent = {
                     application_id: _this.props.appId,
-                    type:_this.state.formData.value,
+                    type: _this.state.formData.value,
                     content: _this.state.formData.content
                 };
                 NoticeAjax.addAppNotice(newContent).then(function(){
@@ -62,13 +62,13 @@ var AppNoticeForm = React.createClass({
         });
     },
     
-    handleCancel : function(e){
+    handleCancel: function(e){
         e.preventDefault();
         Trace.traceEvent(e,"取消添加公告信息");
         AppNoticeAction.hideForm();
     },
 
-    changeChoiceNoticeType : function(e) {
+    changeChoiceNoticeType: function(e) {
         this.state.formData.value = e.target.value;
         this.setState({
             formData: this.state.formData
@@ -76,12 +76,12 @@ var AppNoticeForm = React.createClass({
     },
 
     // 添加系统公告，重新获取版本系统公告
-    getData : function(){
+    getData: function(){
         AppNoticeAction.resetState();
         var searchObj = {
             appId: this.props.appId,
             page: 1,
-            pageSize:20
+            pageSize: 20
         };
         AppNoticeAction.getAppNoticeList(searchObj);
     },
@@ -107,13 +107,13 @@ var AppNoticeForm = React.createClass({
         );
     },
 
-    render : function(){
+    render: function(){
         var status = this.state.status;
         return (
             <div className="add-app-notice">
                 <Form horizontal className="form" autoComplete="off">
                     <div className="app-form-scroll">
-                        <Validation ref="validation"  onValidate={this.handleValidate}>
+                        <Validation ref="validation" onValidate={this.handleValidate}>
 
                             <FormItem
                                 label="公告类型："
@@ -163,7 +163,7 @@ var AppNoticeForm = React.createClass({
                                         onClick={this.handleSubmit}
                                         id="appNoticeSaveBtn"
                                     >
-                                        保存{this.state.isLoading? <Icon type="loading" style={{marginLeft: 12}}/> : null}
+                                        保存{this.state.isLoading ? <Icon type="loading" style={{marginLeft: 12}}/> : null}
                                     </Button>
                                     <Button
                                         type="ghost"

@@ -33,7 +33,7 @@ function NotificationAction() {
     //清除未读数
     this.clearUnreadNum = function(type, callback) {
         let clearTip = Intl.get("notification.clear.unread.failed", "全部标为已读失败！"), error = true;
-        NotificationAjax.clearUnreadNum(type).then(data=> {
+        NotificationAjax.clearUnreadNum(type).then(data => {
             if (data) {
                 //清除未读数后，更新申请消息/客户提醒的未读数
                 updateUnread(type, 0);
@@ -44,7 +44,7 @@ function NotificationAction() {
                 callback({error: error, clearTip: clearTip});
             }
             this.dispatch(data);
-        }, errorMsg=> {
+        }, errorMsg => {
             this.dispatch();
             //重新获取未读数
             if (callback) {

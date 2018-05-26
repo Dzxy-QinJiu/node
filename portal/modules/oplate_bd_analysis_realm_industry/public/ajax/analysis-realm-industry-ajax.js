@@ -12,18 +12,18 @@ exports.getRealmIndustryAnalysisData = function(startTime,endTime) {
     //使用jquery做ajax
     $.ajax({
         //ajax 的地址
-        url : '/rest/analysis/realm-industry',
+        url: '/rest/analysis/realm-industry',
         //返回json格式数据
-        dataType : 'json',
+        dataType: 'json',
         //事情方式为get
-        type : 'get',
+        type: 'get',
         //请求数据
-        data : {
-            starttime : start_time,
-            endtime : end_time
+        data: {
+            starttime: start_time,
+            endtime: end_time
         },
         //请求成功的回调函数
-        success : function(list,text,xhr) {
+        success: function(list,text,xhr) {
             var noIndustry = xhr.getResponseHeader("norealm");
             Deferred.resolve(list , !!noIndustry);
         }

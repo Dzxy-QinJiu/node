@@ -134,14 +134,14 @@ var RealmManage = React.createClass({
             RealmAction.updatePageSize(count);
         },
         //删除创建失败的安全域
-        removeFailRealm:function(taskId) {
+        removeFailRealm: function(taskId) {
             RealmAction.removeFailRealm(taskId);
         }
     },
     //获取卡片展示所需的安全域列表
     getCardShowRealmList: function() {
         let realmList = _.isArray(this.state.curRealmList) ? this.state.curRealmList : [];
-        return realmList.map(realm=> {
+        return realmList.map(realm => {
             let pageRealm = {
                 id: realm.id,
                 name: realm.company,
@@ -162,8 +162,8 @@ var RealmManage = React.createClass({
                     showOnCard: true
                 },
                 status: realm.status,
-                taskId: realm.taskId ||'',
-                createMsg :realm.createMsg||'',
+                taskId: realm.taskId || '',
+                createMsg: realm.createMsg || '',
             };
             return pageRealm;
         });

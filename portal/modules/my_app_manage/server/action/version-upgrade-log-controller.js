@@ -1,6 +1,6 @@
 "use strict";
 
-var  versionUpgradeLog = require("../service/version-upgrade-log-service");
+var versionUpgradeLog = require("../service/version-upgrade-log-service");
 var multiparty = require('multiparty');
 var fs = require("fs");
 
@@ -13,7 +13,7 @@ exports.getAppRecordsList = function(req, res) {
     var queryObj = {
         application_id: application_id,
         page_size: page_size,
-        page_num : page_num
+        page_num: page_num
     };
     versionUpgradeLog.getAppRecordsList(req, res, queryObj).on("success", function(data) {
         res.status(200).json(data);
@@ -56,9 +56,9 @@ exports.uploadVersionUpgrade = function(req, res){
                 content: fields.content,
                 forced: fields.forced,
                 application_id: fields.application_id,
-                apk:{
-                    value:fs.createReadStream(tmpPath),
-                    options:{
+                apk: {
+                    value: fs.createReadStream(tmpPath),
+                    options: {
                         filename: filename
                     }
                 }

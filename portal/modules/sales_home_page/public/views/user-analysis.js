@@ -34,7 +34,7 @@ var UserAnlyis = React.createClass({
             startTime: this.props.startTime,
             endTime: this.props.endTime,
             originSalesTeamTree: this.props.originSalesTeamTree,
-            updateScrollBar:false
+            updateScrollBar: false
         };
     },
     onStateChange: function() {
@@ -54,11 +54,11 @@ var UserAnlyis = React.createClass({
         this.setState(timeObj);
         if (nextProps.updateScrollBar){
             this.setState({
-                updateScrollBar:true
-            },()=>{
-                setTimeout(()=>{
+                updateScrollBar: true
+            },() => {
+                setTimeout(() => {
                     this.setState({
-                        updateScrollBar:false
+                        updateScrollBar: false
                     });
                 },delayConstant);
             });
@@ -286,7 +286,7 @@ var UserAnlyis = React.createClass({
             </div>
         );
     },
-    renderContent:function() {
+    renderContent: function() {
         if(this.state.updateScrollBar){
             return this.renderChartContent();
 

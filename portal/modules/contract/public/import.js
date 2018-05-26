@@ -36,7 +36,7 @@ const ContractImport = React.createClass({
         };
         return (
             <Upload {...props} className="import-contract">
-                {Intl.get("common.import", "导入")} {this.state.isLoading? <Icon type="loading" style={{marginLeft: 8}}/> : null}
+                {Intl.get("common.import", "导入")} {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 8}}/> : null}
             </Upload>
         );
     }

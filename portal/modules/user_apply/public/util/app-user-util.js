@@ -13,7 +13,7 @@ exports.saveSelectAppKeyUserId = JSON.stringify(UserData.user_id);
 //emitter使用的事件提取常量
 exports.EMITTER_CONSTANTS = {
     //回复列表滚动到最后
-    REPLY_LIST_SCROLL_TO_BOTTOM : "replyListScrollToBottom"
+    REPLY_LIST_SCROLL_TO_BOTTOM: "replyListScrollToBottom"
 };
 
 //暴露一个emitter，做自定义事件
@@ -22,24 +22,24 @@ exports.emitter = new EventEmitter();
 
 //申请列表滚动条参数
 exports.APPLY_LIST_LAYOUT_CONSTANTS = {
-    TOP_DELTA : 150,
-    BOTTOM_DELTA : 83
+    TOP_DELTA: 150,
+    BOTTOM_DELTA: 83
 };
 //申请详情滚动条参数
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS = {
-    TOP_DELTA : 150,
-    BOTTOM_DELTA : 102
+    TOP_DELTA: 150,
+    BOTTOM_DELTA: 102
 };
 //申请详情滚动条-表单
 exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
     //顶部距离
-    TOP_DELTA : 150,
+    TOP_DELTA: 150,
     //底部距离
-    BOTTOM_DELTA : 100,
+    BOTTOM_DELTA: 100,
     //订单号高度
-    ORDER_DIV_HEIGHT:47,
+    ORDER_DIV_HEIGHT: 47,
     //返回按钮高度
-    OPERATION_BTN_HEIGHT:47
+    OPERATION_BTN_HEIGHT: 47
 };
 
 

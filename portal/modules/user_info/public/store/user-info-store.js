@@ -11,7 +11,7 @@ var emptyUserInfo = {
     email: "",
     roles: "",
     rolesName: "",
-    reject:""
+    reject: ""
 };
 
 function UserInfoStore() {

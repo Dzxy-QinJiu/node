@@ -199,7 +199,7 @@ var SingleUserLog = React.createClass({
             this.state.auditLogList.length >= 10 && !this.state.listenScrollBottom;
     },
     //展开收起操作详情
-    toggleOperateDetail:function(userLog) {
+    toggleOperateDetail: function(userLog) {
         SingleUserLogAction.toggleOperateDetail(userLog);
     },
 
@@ -228,10 +228,10 @@ var SingleUserLog = React.createClass({
                     </div>
                     { this.state.auditLogList.map((userLogInformation, index) => {
                         let operateClass = classNames("iconfont",{
-                            "icon-down-twoline":!userLogInformation.detailShow,
-                            "icon-up-twoline":userLogInformation.detailShow
+                            "icon-down-twoline": !userLogInformation.detailShow,
+                            "icon-up-twoline": userLogInformation.detailShow
                         });
-                        let operateTitle = userLogInformation.detailShow ? Intl.get("crm.basic.detail.hide", "收起详情"):
+                        let operateTitle = userLogInformation.detailShow ? Intl.get("crm.basic.detail.hide", "收起详情") :
                             Intl.get("crm.basic.detail.show", "展开详情");
                         return (
                             <div className="log-info-item" key={index}>
@@ -241,13 +241,13 @@ var SingleUserLog = React.createClass({
                                 <div>
                                     <div className="log-detail">
                                         {userLogInformation.operate}
-                                        {userLogInformation.operate_detail?(
-                                            <span className={operateClass} title={operateTitle} onClick={this.toggleOperateDetail.bind(this,userLogInformation)}/>):null}
+                                        {userLogInformation.operate_detail ? (
+                                            <span className={operateClass} title={operateTitle} onClick={this.toggleOperateDetail.bind(this,userLogInformation)}/>) : null}
                                     </div>
-                                    {userLogInformation.detailShow ?(
+                                    {userLogInformation.detailShow ? (
                                         <div className="log-operate-detail">
                                             {userLogInformation.operate_detail}
-                                        </div>):null}
+                                        </div>) : null}
                                 </div>
                                 <p>
                                     <span className="log-detail">{userLogInformation.user_ip }</span>

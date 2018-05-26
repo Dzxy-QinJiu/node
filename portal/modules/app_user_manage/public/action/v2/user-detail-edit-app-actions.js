@@ -10,12 +10,12 @@ class UserDetailEditAppActions {
         );
     }
     editUserApps(submitData, changeAppInfo, successCallback) {
-        this.dispatch({error : false , loading:true});
+        this.dispatch({error: false , loading: true});
         AppUserAjax.editApp(submitData).then((flag) => {
-            this.dispatch({error : false , apps: [changeAppInfo]});
+            this.dispatch({error: false , apps: [changeAppInfo]});
             _.isFunction(successCallback) && successCallback([changeAppInfo]);
         } , (errorMsg) => {
-            this.dispatch({error : true , errorMsg : errorMsg});
+            this.dispatch({error: true , errorMsg: errorMsg});
         });
     }
 }

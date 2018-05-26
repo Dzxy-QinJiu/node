@@ -30,7 +30,7 @@ import OperationSteps from '../../../../../components/user_manage_components/ope
 import AppUserUtil from '../../util/app-user-util';
 import {Form, Icon, Input, Alert} from 'antd';
 const FormItem = Form.Item;
-import FieldMixin  from '../../../../../components/antd-form-fieldmixin';
+import FieldMixin from '../../../../../components/antd-form-fieldmixin';
 import OperationScrollBar from '../../../../../components/user_manage_components/operation-scrollbar';
 import UserNameTextField from '../../../../../components/user_manage_components/user-name-textfield';
 import UserCountNumberField from '../../../../../components/user_manage_components/user-count-numberfield';
@@ -127,7 +127,7 @@ const AddOrEditUser = React.createClass({
             if (_.isArray(result)) {
                 if (result.length == 1 && result[0] == formData.user_name) { // 建议用户名和添加用户名一致时，则点击下一步时通过
                     AppUserFormActions.turnStep(direction);
-                } else {  // 否则，则不通过
+                } else { // 否则，则不通过
                     this.setState({
                         suggestNames: result
                     });
@@ -167,8 +167,8 @@ const AddOrEditUser = React.createClass({
             if (tempSuggestNames.length && _.indexOf(tempSuggestNames, formData.user_name) != -1) {
                 //检验通过了，切换到下一步
                 AppUserFormActions.turnStep(direction);
-            } else if (formData.count_number == 1) {  // 申请一个用户名时，提示用户名
-                if (formData.customer_id) {  // 存在customer_id，才提示用户名
+            } else if (formData.count_number == 1) { // 申请一个用户名时，提示用户名
+                if (formData.customer_id) { // 存在customer_id，才提示用户名
                     this.renderAddOneUserIsTips(direction);
                 } else { // customer_id为空时，通过
                     //检验通过了，切换到下一步

@@ -75,7 +75,7 @@ function AppFormActions() {
                     AppActions.afterEditApp(app);
                 }
             } else {
-                const editResult = {saveResult: "error", saveMsg:Intl.get("common.save.failed", "保存失败")};
+                const editResult = {saveResult: "error", saveMsg: Intl.get("common.save.failed", "保存失败")};
                 if (callback) {
                     callback.call(_this, editResult);
                 } else {

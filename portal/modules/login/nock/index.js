@@ -97,7 +97,7 @@ exports.init = function() {
                     "BGM_SALES_TEAM_EDIT",//销售团队修改
                     "NOTIFICATION_CUSTOMER_LIST",//查看通知-客户提醒
                     "NOTIFICATION_APPLYFOR_LIST",//查看通知-申请消息
-                    "NOTIFICATION_SYSTEM_LIST",   //查看通知-系统公告
+                    "NOTIFICATION_SYSTEM_LIST", //查看通知-系统公告
                     "OPLATE_ONLINE_USER_ANALYSIS",//在线用户-用户统计
                     "OPLATE_ONLINE_USER_LIST"//在线用户-用户列表
                 ]

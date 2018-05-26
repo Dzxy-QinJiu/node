@@ -247,7 +247,7 @@ var AppForm = React.createClass({
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
                 <Form horizontal className="form" autoComplete="off">
                     <HeadIcon headIcon={formData.image}
-                        iconDescr={formData.name||logoDescr}
+                        iconDescr={formData.name || logoDescr}
                         upLoadDescr={logoDescr}
                         isEdit={isAppOwner}
                         isUserHeadIcon={true}
@@ -269,7 +269,7 @@ var AppForm = React.createClass({
                                     }
                                 >
                                     <Validator
-                                        rules={[{required: true, min: 1, max : 20 ,
+                                        rules={[{required: true, min: 1, max: 20 ,
                                             message: Intl.get("common.input.character.prompt", "最少1个字符,最多20个字符")
                                         }
                                         ]}
@@ -299,7 +299,7 @@ var AppForm = React.createClass({
                                             wrapperCol={{span: 12}}
                                         >
                                             <RadioGroup onChange={this.onStatusChange}
-                                                value={formData.status||formData.status==0?formData.status.toString():""}>
+                                                value={formData.status || formData.status == 0 ? formData.status.toString() : ""}>
                                                 <Radio key="1" value="1"><ReactIntl.FormattedMessage id="common.enabled"
                                                     defaultMessage="启用"/></Radio>
                                                 <Radio key="0" value="0"><ReactIntl.FormattedMessage
@@ -378,11 +378,11 @@ var AppForm = React.createClass({
                                             id="common.password.verify"
                                             defaultMessage={`{errpassword}{number}{captcha}`}
                                             values={{
-                                                "errpassword":<span className="captcha-time-span">{Intl.get("secret.error", "密码输错")}</span>,
+                                                "errpassword": <span className="captcha-time-span">{Intl.get("secret.error", "密码输错")}</span>,
                                                 "number": <InputNumber min={1} max={100000} name="captchaTime" id="captchaTime"
                                                     value={formData.captchaTime}
                                                     onChange={this.setField.bind(this, 'captchaTime')}/>,
-                                                "captcha":<span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -396,11 +396,11 @@ var AppForm = React.createClass({
                                             id="common.session.verify"
                                             defaultMessage={`{session}{number}{captcha}`}
                                             values={{
-                                                "session":<span className="captcha-time-span">{Intl.get("session.overclock", " session超频")}</span>,
+                                                "session": <span className="captcha-time-span">{Intl.get("session.overclock", " session超频")}</span>,
                                                 "number": <InputNumber min={1} max={100000} name="sessionCaptcha" id="sessionCaptcha"
                                                     value={formData.sessionCaptcha}
                                                     onChange={this.setField.bind(this, 'sessionCaptcha')}/>,
-                                                "captcha":<span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -414,11 +414,11 @@ var AppForm = React.createClass({
                                             id="common.ip.verify"
                                             defaultMessage={`{ip}{number}{captcha}`}
                                             values={{
-                                                "ip":<span className="captcha-time-span">{Intl.get("ip.overclock", "IP超频")} </span>,
+                                                "ip": <span className="captcha-time-span">{Intl.get("ip.overclock", "IP超频")} </span>,
                                                 "number": <InputNumber min={1} max={100000} name="ipCaptcha" id="ipCaptcha"
                                                     value={formData.ipCaptcha}
                                                     onChange={this.setField.bind(this, 'ipCaptcha')}/>,
-                                                "captcha":<span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
+                                                "captcha": <span className="captcha-time-span">{Intl.get("show.captcha", "次，出现验证码")}</span>
                                             }}
                                         />
                                     </FormItem>
@@ -428,7 +428,7 @@ var AppForm = React.createClass({
                                     <div className="indicator">
                                         {saveResult ?
                                             (
-                                                <AlertTimer time={saveResult=="error"?3000:600}
+                                                <AlertTimer time={saveResult == "error" ? 3000 : 600}
                                                     message={this.state.saveMsg}
                                                     type={this.state.saveResult} showIcon
                                                     onHide={this.hideSaveTooltip}/>

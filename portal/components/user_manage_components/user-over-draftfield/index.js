@@ -10,9 +10,9 @@ const UserOverDraftField = {
     renderUserOverDraftBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalOverDraft : "1"
+            isCustomSetting: false,
+            appId: '',
+            globalOverDraft: "1"
         } , config);
 
         if(config.isCustomSetting && !config.appId) {

@@ -129,7 +129,7 @@ const TeamTree = React.createClass({
     buildBreadcrumb(teamId) {
         this.state.breadcrumb = [];
 
-        const loop = (list, id)  => {
+        const loop = (list, id) => {
             const team = _.find(list, item => item.group_id === id);
             if (team) {
                 this.state.breadcrumb.unshift(team);

@@ -91,7 +91,7 @@ var AreaLineChart = React.createClass({
     getLabel: function() {
         return {
             normal: {
-                show: typeof this.props.showLabel === "boolean"? this.props.showLabel : false,
+                show: typeof this.props.showLabel === "boolean" ? this.props.showLabel : false,
                 position: "top",
                 formatter: this.props.labelFormatter || "{c}"
             }
@@ -438,7 +438,7 @@ var AreaLineChart = React.createClass({
         }
         return (
             <div ref="legend" className="legend">
-                <Icon type="caret-up" style={{visibility:this.state.topIconEnable ? 'visible' : 'hidden'}}
+                <Icon type="caret-up" style={{visibility: this.state.topIconEnable ? 'visible' : 'hidden'}}
                     onClick={this.handleScrollUp}/>
                 <ul className="list-unstyled" ref="legendWrap" onWheel={this.onMouseWheel}>
                     {
@@ -454,14 +454,14 @@ var AreaLineChart = React.createClass({
                                     onMouseEnter={_this.legendMouseenter.bind(_this,obj,idx)}
                                     onMouseLeave={_this.legendMouseleave.bind(_this,obj,idx)}
                                 >
-                                    <em style={{background:color}}></em>
+                                    <em style={{background: color}}></em>
                                     <span title={obj.appName}>{obj.appName}</span>
                                 </li>
                             );
                         })
                     }
                 </ul>
-                <Icon type="caret-down" style={{visibility:this.state.bottomIconEnable ? 'visible' : 'hidden'}}
+                <Icon type="caret-down" style={{visibility: this.state.bottomIconEnable ? 'visible' : 'hidden'}}
                     onClick={this.handleScrollDown}/>
             </div>
         );
@@ -473,7 +473,7 @@ var AreaLineChart = React.createClass({
             <div>
                 <div className="title">
                     {this.props.title}
-                    <div style={{float:'right'}}>
+                    <div style={{float: 'right'}}>
                         <RadioGroup value={this.state.dataRange} onChange={this.onDataRangeChange}>
                             <Radio value="daily" key="daily"><ReactIntl.FormattedMessage
                                 id="operation.report.day.active" defaultMessage="日活"/></Radio>
@@ -487,13 +487,13 @@ var AreaLineChart = React.createClass({
                 <div className="analysis_active_arealine_chart" ref="wrap">
                     {this.props.resultType === 'loading' ?
                         (
-                            <div className="loadwrap" style={{height:this.props.height}}>
+                            <div className="loadwrap" style={{height: this.props.height}}>
                                 <Spinner/>
                             </div>
                         ) :
                         (
                             <div>
-                                <div ref="chart" style={{width:chartWidth,height:this.props.height}}
+                                <div ref="chart" style={{width: chartWidth,height: this.props.height}}
                                     className="chart" data-title={this.props.title}></div>
                                 {this.renderLegend()}
                             </div>

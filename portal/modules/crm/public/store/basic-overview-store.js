@@ -49,7 +49,7 @@ CRMStore.prototype.getNotCompletedScheduleList = function(result) {
     }
 };
 CRMStore.prototype.afterHandleStatus = function(newStatusObj) {
-    var curSchedule = _.filter(this.scheduleList, (schedule)=>{return schedule.id == newStatusObj.id;});
+    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id == newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 

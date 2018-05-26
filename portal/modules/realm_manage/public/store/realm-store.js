@@ -57,10 +57,10 @@ function RealmStore() {
 RealmStore.prototype.createRealms = function(result) {
     var detail = result[0];
     // 找到当前正在创建的安全域
-    var realm = _.find(this.curRealmList, realm=>realm.taskId && realm.taskId == detail.taskId);
+    var realm = _.find(this.curRealmList, realm => realm.taskId && realm.taskId == detail.taskId);
     if (detail.failed == 0) {
         //创建成功后，把推送过来的id加到有对应taskId的安全域中，并修改该安全域的status，createMsg属性
-        if (detail.tasks.length>0){
+        if (detail.tasks.length > 0){
             realm.id = detail.tasks[0].taskDetail.realmId;
             realm.status = 1;
             realm.createMsg = "success";
@@ -72,8 +72,8 @@ RealmStore.prototype.createRealms = function(result) {
 };
 //在页面上删除创建失败的安全域
 RealmStore.prototype.removeFailRealm = function(realmtaskId) {
-    this.curRealmList= _.filter(this.curRealmList,function(item) {
-        return item.taskId!==realmtaskId;
+    this.curRealmList = _.filter(this.curRealmList,function(item) {
+        return item.taskId !== realmtaskId;
     });
 };
 

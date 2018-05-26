@@ -24,14 +24,14 @@ const UserNameTextFieldMixin = {
     renderUserNameTextField(config) {
         number = config.number;
         config = $.extend({
-            existCheck : false
+            existCheck: false
         } , config);
 
         const status = this.state.status;
         const formData = this.state.formData;
         let validators = [];
         if(config.existCheck) {
-            validators.push({validator:this.checkUserExist});
+            validators.push({validator: this.checkUserExist});
         }
 
         return (

@@ -28,29 +28,29 @@ import ThirdPartyAppConfig from './third_app/third-party-app-config';
 import ThirdAppDetail from "./third_app/third-app-detail";
 
 var UserDetail = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            userId : '1',
-            appLists:[],
+            userId: '1',
+            appLists: [],
         };
     },
-    reLayout : function() {
+    reLayout: function() {
         this.onStoreChange();
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
             activeKey: "1",//tab激活页的key
             ...AppUserPanelSwitchStore.getState()
         };
     },
-    onStoreChange : function() {
-        var stateData =  AppUserPanelSwitchStore.getState();
+    onStoreChange: function() {
+        var stateData = AppUserPanelSwitchStore.getState();
         this.setState(stateData);
     },
     //滑动的延时
-    panelSwitchTimeout : null,
+    panelSwitchTimeout: null,
     //面板向左滑
-    panelSwitchLeft : function(timeout) {
+    panelSwitchLeft: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
         if(!timeout) {
             $(this.refs.wrap).addClass("move_left");
@@ -61,7 +61,7 @@ var UserDetail = React.createClass({
         }
     },
     //面板向右滑
-    panelSwitchRight : function(timeout) {
+    panelSwitchRight: function(timeout) {
         clearTimeout(this.panelSwitchTimeout);
         if(!timeout) {
             $(this.refs.wrap).removeClass("move_left");
@@ -71,19 +71,19 @@ var UserDetail = React.createClass({
             } , timeout);
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         $(window).on("resize" , this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         $(window).off("resize" , this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT , this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT , this.panelSwitchRight);
     },
-    closeRightPanel : function() {
+    closeRightPanel: function() {
         if(_.isFunction(this.props.closeRightPanel)){
             this.props.closeRightPanel();
         }else{
@@ -94,13 +94,13 @@ var UserDetail = React.createClass({
         emitter.emit("user_detail_close_right_panel");
     },
 
-    changeTab : function(key){
+    changeTab: function(key){
         this.setState({
             activeKey: key
         });
     },
 
-    render : function() {
+    render: function() {
         var moveView = null;
         if(this.state.panel_switch_currentView) {
             let {thirdApp} = this.state;
@@ -131,40 +131,40 @@ var UserDetail = React.createClass({
         }
         var tabPaneList = [
             <TabPane tab={Intl.get("user.basic.info", "基本资料")} key="1">
-                {this.state.activeKey=="1" ? <div className="user_manage_user_detail">
-                    <UserDetailBasic userId={this.props.userId}  selectApp={selectApp}/>
-                </div>: null}
+                {this.state.activeKey == "1" ? <div className="user_manage_user_detail">
+                    <UserDetailBasic userId={this.props.userId} selectApp={selectApp}/>
+                </div> : null}
             </TabPane>
         ];
         if(hasPrivilege("USER_AUDIT_LOG_LIST")) {
             tabPaneList.push(
                 <TabPane tab="用户分析" key="2">
-                    {this.state.activeKey=="2" ? <div className="user-analysis">
+                    {this.state.activeKey == "2" ? <div className="user-analysis">
                         <UserLoginAnalysis userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
-                    </div>: null}
+                    </div> : null}
                 </TabPane>
             );
             tabPaneList.push(
                 <TabPane tab="审计日志" key="3">
-                    {this.state.activeKey=="3" ? <div className="user-log">
+                    {this.state.activeKey == "3" ? <div className="user-log">
                         <SingleUserLog 
                             userId={this.props.userId} 
                             selectedAppId={this.props.selectedAppId}
                             appLists={this.props.appLists}
                         />
-                    </div>: null}
+                    </div> : null}
                 </TabPane>
             );
         }
         if(hasPrivilege("USER_TIME_LINE")) {
             tabPaneList.push(
                 <TabPane tab={Intl.get("user.change.record", "变更记录")} key="4">
-                    {this.state.activeKey=="4" ?  <div className="user_manage_user_record">
+                    {this.state.activeKey == "4" ? <div className="user_manage_user_record">
                         <UserDetailChangeRecord
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                         />
-                    </div>: null}
+                    </div> : null}
                 </TabPane>
             );
         }
@@ -172,12 +172,12 @@ var UserDetail = React.createClass({
         if (hasPrivilege("GET_LOGIN_EXCEPTION_USERS") && this.props.isShownExceptionTab){
             tabPaneList.push(
                 <TabPane tab={Intl.get("user.login.abnormal", "异常登录")} key="5">
-                    {this.state.activeKey=="5" ?   <div className="user_manage_login_abnormal">
+                    {this.state.activeKey == "5" ? <div className="user_manage_login_abnormal">
                         <UserAbnormalLogin
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                         />
-                    </div>: null}
+                    </div> : null}
                 </TabPane>
             );
         }

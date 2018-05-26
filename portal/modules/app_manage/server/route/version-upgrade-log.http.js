@@ -13,7 +13,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-            "GET_APPLICATION_RECORD"  //查看应用版本升级记录
+            "GET_APPLICATION_RECORD" //查看应用版本升级记录
         ]
     }]
 };

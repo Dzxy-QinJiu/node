@@ -11,46 +11,46 @@ import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
-    displayName : 'UserOnelineAnalysisBarChart',
-    echartInstance : null,
-    getDefaultProps : function() {
+    displayName: 'UserOnelineAnalysisBarChart',
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            width:'100%',
-            height:300,
-            resultType : 'loading'
+            list: [],
+            width: '100%',
+            height: 300,
+            resultType: 'loading'
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         return {
-            show : false,
-            data :[]
+            show: false,
+            data: []
         };
     },
-    getCategorys : function() {
+    getCategorys: function() {
         return _.pluck(this.props.list , 'province');
     },
-    getSeries : function() {
+    getSeries: function() {
         return [{
-            name : '',
-            type:'bar',
-            barWidth : 4,
-            data:_.pluck(this.props.list , 'count'),
-            itemStyle : {
-                normal : {
-                    color : colors.barChartColor
+            name: '',
+            type: 'bar',
+            barWidth: 4,
+            data: _.pluck(this.props.list , 'count'),
+            itemStyle: {
+                normal: {
+                    color: colors.barChartColor
                 }
             }
         }];
     },
-    getTooltip : function() {
+    getTooltip: function() {
         var _this = this;
         return {
             trigger: 'item',
-            formatter : function(obj) {
+            formatter: function(obj) {
                 var value = obj.value;
                 var name = obj.name;
-                var nameText = name === 'unknown' ? '未知':name;
+                var nameText = name === 'unknown' ? '未知' : name;
                 var percent = (value * 100 / _this.props.total).toFixed(2);
 
                 return `<div class="analysis_tooltip">
@@ -62,44 +62,44 @@ var BarChart = React.createClass({
             }
         };
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : 50,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: 50,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    data: this.getCategorys(),
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        interval : 0,
-                        textStyle : {
-                            color:'#939393',
-                            align:'center'
+                    axisLabel: {
+                        interval: 0,
+                        textStyle: {
+                            color: '#939393',
+                            align: 'center'
                         },
-                        formatter : function(text) {
+                        formatter: function(text) {
                             if(text === 'unknown') {
                                 text = '未知';
                             }
@@ -108,28 +108,28 @@ var BarChart = React.createClass({
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -152,10 +152,10 @@ var BarChart = React.createClass({
             $(this.refs.chart).find(".nodata").remove();
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -166,7 +166,7 @@ var BarChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -174,19 +174,19 @@ var BarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis_bar_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

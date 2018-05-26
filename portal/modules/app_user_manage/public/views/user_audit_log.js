@@ -31,11 +31,11 @@ var LAYOUT_CONSTANTS = {
 // 用户类型的常量
 const USER_TYPE_OPTION = {
     ALL: '', //  全部类型
-    TRIAL: '试用用户',  // 试用
-    OFFICIAL: '正式用户',   // 签约
+    TRIAL: '试用用户', // 试用
+    OFFICIAL: '正式用户', // 签约
     PRESENTED: 'special', // 赠送
-    TRAIN: 'training',  // 培训
-    EMPLOYEE: 'internal'  // 员工
+    TRAIN: 'training', // 培训
+    EMPLOYEE: 'internal' // 员工
 };
 
 var LogView = React.createClass({
@@ -82,7 +82,7 @@ var LogView = React.createClass({
     // 根据选择条件获取对应的数据
     getAuditLog: function(queryParams) {
         var searchObj = {
-            load_size: this.state.loadSize,  // 每次加载的条数
+            load_size: this.state.loadSize, // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
             sort_field: queryParams.sort_field || this.state.sortField,
             sort_order: queryParams.sort_order || this.state.sortOrder,
@@ -184,8 +184,8 @@ var LogView = React.createClass({
                 key: 'user_name',
                 render: function($1, row) {
                     var userInputClass = classnames({
-                        'user_id_hidden': true,  // 点击查看详情的类
-                        'userNoIdClass': row.user_id ? false : true   // userId为空时的类
+                        'user_id_hidden': true, // 点击查看详情的类
+                        'userNoIdClass': row.user_id ? false : true // userId为空时的类
                     });
                     return (
                         <div>
@@ -578,7 +578,7 @@ var LogView = React.createClass({
                                 'number': this.state.total
                             }}
                         />
-                    </div>:null}
+                    </div> : null}
             </div>
         );
     },

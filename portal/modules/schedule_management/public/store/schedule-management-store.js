@@ -29,7 +29,7 @@ ScheduleManagementStore.prototype.setInitState = function() {
     this.curViewDate = "";//当前页面展示的日期
 };
 //把数据转换成组件需要的类型
-ScheduleManagementStore.prototype.processForList =function(originList,dateType) {
+ScheduleManagementStore.prototype.processForList = function(originList,dateType) {
     if (!_.isArray(originList)) return [];
     let list = _.clone(originList);
     for (let i = 0, len = list.length; i < len; i++) {
@@ -58,8 +58,8 @@ ScheduleManagementStore.prototype.getScheduleList = function(data) {
         this.isLoadingScheduleExpired = false;
         this.scheduleExpiredErrMsg = data.errorMsg;
     } else {
-        let list = data.scheduleListObj ? data.scheduleListObj.list: [];
-        this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total :0 ;
+        let list = data.scheduleListObj ? data.scheduleListObj.list : [];
+        this.scheduleExpiredSize = data.scheduleListObj ? data.scheduleListObj.total : 0;
         if (this.lastScheduleExpiredId) {
             this.scheduleExpiredList = this.scheduleExpiredList.concat(list);
         } else {
@@ -87,7 +87,7 @@ ScheduleManagementStore.prototype.handleScheduleStatus = function(result) {
 };
 //修改某个提醒的状态
 ScheduleManagementStore.prototype.afterHandleStatus = function(newStatusObj) {
-    this.scheduleExpiredList = _.filter(this.scheduleExpiredList, (schedule)=>{return schedule.id !== newStatusObj.id;});
+    this.scheduleExpiredList = _.filter(this.scheduleExpiredList, (schedule) => {return schedule.id !== newStatusObj.id;});
 };
 //获取当前页面展示的日期
 ScheduleManagementStore.prototype.getViewDate = function(date) {

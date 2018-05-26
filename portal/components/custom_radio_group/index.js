@@ -1,36 +1,36 @@
 require("./index.less");
 
 var CustomRadioGroup = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            options : [],
-            extraData : {},
-            value : "",
-            marginRight : 30,
-            padding:14,
-            onChange : function() {},
-            onClick : function() {}
+            options: [],
+            extraData: {},
+            value: "",
+            marginRight: 30,
+            padding: 14,
+            onChange: function() {},
+            onClick: function() {}
         };
     },
-    getInitialState : function() {
+    getInitialState: function() {
         var value = this.props.value;
         return {
-            value : value
+            value: value
         };
     },
     componentWillReceiveProps: function(nextProps) {
         this.setState({
-            value:nextProps.value
+            value: nextProps.value
         });
     },
-    onClickRadio : function(value , name) {
+    onClickRadio: function(value , name) {
         this.props.onClick(value,name,this.props.extraData);
         this.props.onChange(value,name,this.props.extraData);
         this.setState({
-            value : value
+            value: value
         });
     },
-    render : function() {
+    render: function() {
         var _this = this;
         var value = this.state.value;
         var props = this.props;
@@ -43,7 +43,7 @@ var CustomRadioGroup = React.createClass({
                             cls += " custom_radio_active";
                         }
                         return (
-                            <div className={cls} style={{marginRight:props.marginRight,paddingLeft:props.padding,paddingRight:props.padding}} onClick={_this.onClickRadio.bind(_this , option.value , option.name)} key={option.value}>
+                            <div className={cls} style={{marginRight: props.marginRight,paddingLeft: props.padding,paddingRight: props.padding}} onClick={_this.onClickRadio.bind(_this , option.value , option.name)} key={option.value}>
                                 {option.name}
                             </div>
                         );

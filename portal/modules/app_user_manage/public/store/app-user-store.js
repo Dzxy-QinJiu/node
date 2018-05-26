@@ -58,26 +58,26 @@ AppUserStore.prototype.resetState = function() {
     //角色过滤相关属性
     this.filterRoles = {
         //只有oplate成员有GET_USERLIST_BY_ROLE权限，才在界面上显示
-        shouldShow : hasPrivilege("GET_USERLIST_BY_ROLE"),
+        shouldShow: hasPrivilege("GET_USERLIST_BY_ROLE"),
         //当前应用对应的角色列表
-        roles : [],
+        roles: [],
         //选中的角色
-        selectedRole : '',
+        selectedRole: '',
         //角色当前处在的状态(loading,error,'')
-        rolesResult : 'loading',
+        rolesResult: 'loading',
         //错误信息
-        errorMsg : ''
+        errorMsg: ''
     };
     //团队过滤相关属性
     this.filterTeams = {
         //当前团队的列表
-        teamlists:[],
+        teamlists: [],
         //选中的团队列表
-        selectedTeams:[],
+        selectedTeams: [],
         //角色当前处在的状态(loading,error,'')
-        teamsResult : 'loading',
+        teamsResult: 'loading',
         //错误信息
-        errorMsg : ''
+        errorMsg: ''
     };
     // 选中的用户数
     this.selectUserCount = 0;
@@ -144,9 +144,9 @@ AppUserStore.prototype.getAppUserList = function(result) {
             currentList = [];
         }
         if(result.data.total > 0) {
-            for(var i=0, len=currentList.length;i<len;i++){
+            for(var i = 0, len = currentList.length; i < len; i++){
                 currentList[i].isShownExceptionTab = (
-                    _.find(currentList[i].apps, app =>{return app.exception_mark_date;})? true: false
+                    _.find(currentList[i].apps, app => {return app.exception_mark_date;}) ? true : false
                 );
             }
             if(this.appUserPage === 1) {
@@ -220,12 +220,12 @@ AppUserStore.prototype.setAppUserPage = function(page) {
 AppUserStore.prototype.setSelectedAppId = function(appId) {
     var oldSelectedAppId = this.selectedAppId;
     this.selectedAppId = appId;
-    ShareObj.app_id = this.selectedAppId ;
+    ShareObj.app_id = this.selectedAppId;
     this.selectedAppId = ShareObj.app_id;
     // this.selectedAppId 为空时，对应的是全部应用
     if(this.selectedAppId){
-        let obj =  AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
-        storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId,  JSON.stringify(obj));
+        let obj = AppUserUtil.getLocalStorageObj('logViewAppId',this.selectedAppId );
+        storageUtil.local.set(AppUserUtil.saveSelectAppKeyUserId, JSON.stringify(obj));
     }
     this.appUserPage = 1;
     //切换应用的时候，清除刚才选中的行
@@ -254,7 +254,7 @@ AppUserStore.prototype.getAppList = function(obj) {
         ShareObj.share_app_list = this.appList;
         if(obj.selected_app_id) {
             this.selectedAppId = obj.selected_app_id;
-            ShareObj.app_id = this.selectedAppId ;
+            ShareObj.app_id = this.selectedAppId;
         }
     }
 };
@@ -262,9 +262,9 @@ AppUserStore.prototype.getAppList = function(obj) {
 AppUserStore.prototype.showNoUserData = function() {
     //调用获取用户，设置列表为空，总数为0
     this.getAppUserList({
-        data : {
-            data : [],
-            total : 0
+        data: {
+            data: [],
+            total: 0
         }
     });
 };
@@ -288,7 +288,7 @@ AppUserStore.prototype.setRightPanelType = function(type) {
 
 //从右侧面板更改（昵称，备注），同步到用户列表中
 AppUserStore.prototype.updateUserInfo = function(userInfo) {
-    var targetUser = _.find(this.appUserList , (singleUser)=> {
+    var targetUser = _.find(this.appUserList , (singleUser) => {
         var userId = singleUser.user && singleUser.user.user_id;
         return userId === userInfo.user_id;
     });
@@ -299,7 +299,7 @@ AppUserStore.prototype.updateUserInfo = function(userInfo) {
 // 用户生成线索客户之后，把刚才的用户的apps中的clue_created属性设置为true
 AppUserStore.prototype.updateUserAppsInfo = function(userInfo) {
     var editUserId = userInfo.user && userInfo.user.user_id;
-    var targetUser = _.find(this.appUserList , (singleUser)=> {
+    var targetUser = _.find(this.appUserList , (singleUser) => {
         var userId = singleUser.user && singleUser.user.user_id;
         return userId === editUserId;
     });
@@ -311,7 +311,7 @@ AppUserStore.prototype.updateUserAppsInfo = function(userInfo) {
 
 //从右侧面板更改“客户”。同步到用户列表中
 AppUserStore.prototype.updateCustomerInfo = function({tag,customer_id,customer_name,user_id,sales_id,sales_name}) {
-    var targetUser = _.find(this.appUserList , (singleUser)=> {
+    var targetUser = _.find(this.appUserList , (singleUser) => {
         var userId = singleUser.user && singleUser.user.user_id;
         return userId === user_id;
     });
@@ -343,7 +343,7 @@ AppUserStore.prototype.toggleSearchField = function({field,value}) {
         }
     } else {
         //如果是按团队搜索，按团队搜索支持多选
-        if (field =='team_ids'){
+        if (field == 'team_ids'){
             !filterFieldMap[field] && (filterFieldMap.team_ids = []);
             //在已有团队列表中搜索当前选中的团队
             var index = filterFieldMap[field].indexOf(value);
@@ -444,7 +444,7 @@ AppUserStore.prototype.updateAppField = function(result) {
         if(_.isArray(target_user.apps)) {
             var target_app = _.find(target_user.apps , (app) => app && app.app_id === result.client_id);
             if(target_app) {
-                for(var i = 0, len = appFields.length ; i < len ; i++) {
+                for(var i = 0, len = appFields.length; i < len; i++) {
                     var key = appFields[i];
                     //如果存在，则修改
                     if(key in result) {
@@ -781,7 +781,7 @@ AppUserStore.prototype.batchPushChangeGrantDelay = function(result) {
     //对应用做哈希，加快遍历速度
     var targetAppIdsMap = _.groupBy(targetAppIds);
     //延期时间没有的话，就不更新了
-    if(!taskParams.data || (!taskParams.data.delay  &&  !taskParams.data.end_date)) {
+    if(!taskParams.data || (!taskParams.data.delay && !taskParams.data.end_date)) {
         return;
     }
     //遍历用户列表
@@ -802,7 +802,7 @@ AppUserStore.prototype.batchPushChangeGrantDelay = function(result) {
                         end_time = parseInt(end_time);
                         if(end_time > 0) {
                             if (taskParams.data) {
-                                if (taskParams.data.delay) {  // 延期时间
+                                if (taskParams.data.delay) { // 延期时间
                                     app.end_time += taskParams.data.delay;
                                 } else if (taskParams.data.end_date) { // 到期时间
                                     app.end_time = taskParams.data.end_date;
@@ -911,7 +911,7 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
                 var targetEditApp = _.find(user_apps , (app) => app.app_id === selectedAppId);
                 //找不到就不更新了
                 if(!targetEditApp) {
-                    return ;
+                    return;
                 }
                 updateAppProps(targetEditApp);
             }
@@ -948,13 +948,13 @@ AppUserStore.prototype.batchPushChangeGrantUpdate = function(result) {
                             app_name = appWithName.app_name;
                         }
                         var newApp = {
-                            app_id : appId,
-                            app_name : app_name,
-                            create_time : new Date().getTime(),
-                            start_time : null,
-                            end_time : null,
-                            is_disabled : null,
-                            user_type : null
+                            app_id: appId,
+                            app_name: app_name,
+                            create_time: new Date().getTime(),
+                            start_time: null,
+                            end_time: null,
+                            is_disabled: null,
+                            user_type: null
                         };
                         //更新应用信息
                         updateAppProps(newApp);
@@ -1033,22 +1033,22 @@ AppUserStore.prototype.batchPushChangeUserCreate = function(result) {
         var userName = task.taskDetail.userName;
         var userId = task.taskDefine;
         var userObj = {
-            user : {
-                user_id : userId,
-                user_name : userName,
-                nick_name : taskParamsData.number === '1' ? taskParamsData.nick_name : '',
-                description : taskParamsData.description
+            user: {
+                user_id: userId,
+                user_name: userName,
+                nick_name: taskParamsData.number === '1' ? taskParamsData.nick_name : '',
+                description: taskParamsData.description
             },
             key: userId,
-            sales : {
-                sales_id : taskParamsExtra.sales_id,
-                sales_name : taskParamsExtra.sales_name
+            sales: {
+                sales_id: taskParamsExtra.sales_id,
+                sales_name: taskParamsExtra.sales_name
             },
-            customer : {
-                customer_id : taskParamsData.customer,
-                customer_name : taskParamsExtra.customer_name
+            customer: {
+                customer_id: taskParamsData.customer,
+                customer_name: taskParamsExtra.customer_name
             },
-            apps : []
+            apps: []
         };
         var userApps = [];
         //解析json出错，就不更新了
@@ -1075,17 +1075,17 @@ AppUserStore.prototype.batchPushChangeUserCreate = function(result) {
             //是否禁用
             var is_disabled = '';
             if(/^\d+$/.test(app.status)) {
-                is_disabled =  app.status == '1' ? 'false' : 'true';
+                is_disabled = app.status == '1' ? 'false' : 'true';
             }
             //生成应用对象
             var newApp = {
-                app_id : app.client_id,
-                app_name : appName,
-                create_time : new Date().getTime(),
-                start_time : start_time,
-                end_time : end_time,
-                user_type : app.user_type,
-                is_disabled : is_disabled
+                app_id: app.client_id,
+                app_name: appName,
+                create_time: new Date().getTime(),
+                start_time: start_time,
+                end_time: end_time,
+                user_type: app.user_type,
+                is_disabled: is_disabled
             };
             userObj.apps.push(newApp);
         });
@@ -1144,7 +1144,7 @@ AppUserStore.prototype.getRolesByAppId = function(result) {
 
 //获取团队列表信息
 AppUserStore.prototype.getTeamLists = function(result) {
-    var  filterTeams = this.filterTeams;
+    var filterTeams = this.filterTeams;
     if (result.loading){
         filterTeams.teamlists = [];
         filterTeams.teamsResult = 'loading';
@@ -1156,7 +1156,7 @@ AppUserStore.prototype.getTeamLists = function(result) {
     }else{
         filterTeams.teamsResult = '';
         filterTeams.errorMsg = '';
-        result.teamLists.map((item)=> {
+        result.teamLists.map((item) => {
             var obj = {};
             obj.group_name = item.group_name;
             obj.group_id = item.group_id;

@@ -11,45 +11,45 @@ var immutable = require("immutable");
 import { packageTry } from 'LIB_DIR/func';
 
 var PieChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            data : [],
-            legend : [],
-            title : Intl.get("oplate.user.analysis.6", "在线时长统计"),
-            width:'100%',
-            height:214,
-            resultType : 'loading',
+            data: [],
+            legend: [],
+            title: Intl.get("oplate.user.analysis.6", "在线时长统计"),
+            width: '100%',
+            height: 214,
+            resultType: 'loading',
         };
     },
-    getCategorys : function() {
+    getCategorys: function() {
         return _.pluck(this.props.list , 'name');
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         var option = {
-            animation : false,
-            title : null,
-            tooltip : {
+            animation: false,
+            title: null,
+            tooltip: {
                 trigger: 'item',
-                extraCssText : echartsTooltipCssText,
+                extraCssText: echartsTooltipCssText,
                 formatter: "<div class='echarts-tooltip'>{b} : {c} ({d}%)</div>"
             },
             legend: {
                 orient: 'vertical',
                 right: '2%',
-                top : '2%',
+                top: '2%',
                 data: this.props.legend
             },
-            series : [
+            series: [
                 {
                     name: '',
                     type: 'pie',
-                    radius : '70%',
+                    radius: '70%',
                     center: ['40%', '60%'],
-                    data:this.getSeries(),
-                    label : {
-                        normal : {
-                            formatter : "{c}"
+                    data: this.getSeries(),
+                    label: {
+                        normal: {
+                            formatter: "{c}"
                         }
                     },
                     itemStyle: {
@@ -64,17 +64,17 @@ var PieChart = React.createClass({
         };
         return option;
     },
-    getSeries : function() {
+    getSeries: function() {
         var list = this.props.data || [];
         var legend = this.props.legend || [];
         return legend.map((legendName,idx) => {
             return {
-                name : legendName,
-                value : list[idx].count
+                name: legendName,
+                value: list[idx].count
             };
         });
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -100,10 +100,10 @@ var PieChart = React.createClass({
             });
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.data &&
             prevProps.data &&
@@ -115,7 +115,7 @@ var PieChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -123,19 +123,19 @@ var PieChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         return (
             <div className="analysis_pie_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

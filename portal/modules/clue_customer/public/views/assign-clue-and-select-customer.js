@@ -17,7 +17,7 @@ const RELATEAUTHS = {
 var crmAjax = require("MOD_DIR/crm/public/ajax");
 import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
-import {RightPanel}  from "CMP_DIR/rightPanel";
+import {RightPanel} from "CMP_DIR/rightPanel";
 class AssignClueAndSelectCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -36,13 +36,13 @@ class AssignClueAndSelectCustomer extends React.Component {
             isShowCustomerUserListPanel: false,
             CustomerInfoOfCurrUser: {},
             //是否显示客户名后面的对号和叉号
-            ShowUpdateOrClose : true,
+            ShowUpdateOrClose: true,
             //关联客户所的推荐的客户列表
             recommendCustomerLists: [],
             recommendByPhone: false,//通过电话查询的客户
             recommendByName: false,//通过名称查询的客户
-            checked:false,//是否选中某个客户
-            checkedCustomerItem:""//选中客户的id
+            checked: false,//是否选中某个客户
+            checkedCustomerItem: ""//选中客户的id
         };
     }
     //是否是销售领导
@@ -61,28 +61,28 @@ class AssignClueAndSelectCustomer extends React.Component {
                     if (data.result.length) {
                         this.setState({
                             relatedCustomer: data.result[0],
-                            relatedCustomerName:data.result[0].name,
-                            relatedCustomerId:data.result[0].id
+                            relatedCustomerName: data.result[0].name,
+                            relatedCustomerId: data.result[0].id
                         });
                     } else {
                         this.setState({
                             relatedCustomer: {},
-                            relatedCustomerName:"",
-                            relatedCustomerId:""
+                            relatedCustomerName: "",
+                            relatedCustomerId: ""
                         });
                     }
                 }
             }, () => {
                 this.setState({
                     relatedCustomer: {},
-                    relatedCustomerName:"",
-                    relatedCustomerId:""
+                    relatedCustomerName: "",
+                    relatedCustomerId: ""
                 });
             });
         }
     }
     getCustomerByPhoneOrName(queryType,condition, rangParams, pageSize, sorter, queryObj){
-        crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((data)=>{
+        crmAjax.queryCustomer(condition, rangParams, pageSize, sorter, queryObj).then((data) => {
             if (data && _.isArray(data.result)){
                 if (data.result.length){
                     if (queryType === "phone"){
@@ -106,7 +106,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                     });
                 }
             }
-        },()=>{
+        },() => {
             this.setState({
                 recommendCustomerLists: [],
                 recommendByPhone: false,
@@ -131,7 +131,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             this.getCustomerByPhoneOrName("phone", condition, 1, 20);
         }else if (clueName){
             condition.name = clueName;
-            this.getCustomerByPhoneOrName("name", condition, [{"type":"time","name":"start_time"}], 20,{field: "id", order: "ascend"},{"total_size":0, "cursor":true,"id":""});
+            this.getCustomerByPhoneOrName("name", condition, [{"type": "time","name": "start_time"}], 20,{field: "id", order: "ascend"},{"total_size": 0, "cursor": true,"id": ""});
         }
     }
 
@@ -140,8 +140,8 @@ class AssignClueAndSelectCustomer extends React.Component {
             this.queryCustomerByClueId(nextProps.curClueDetail.id);
             this.setState({
                 curClueDetail: nextProps.curClueDetail,
-                recommendCustomerLists:[]
-            },()=>{
+                recommendCustomerLists: []
+            },() => {
                 this.getRecommendAssociatedCustomer();
             });
         }
@@ -179,7 +179,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         }
     };
     //是否显示对号和叉号
-    isShowUpdateOrClose = (flag) =>{
+    isShowUpdateOrClose = (flag) => {
         this.setState({
             ShowUpdateOrClose: flag
         });
@@ -236,7 +236,7 @@ class AssignClueAndSelectCustomer extends React.Component {
             contentType: 'application/json',
             type: 'put',
             data: JSON.stringify(submitObj),
-            success: () =>{
+            success: () => {
                 this.setState({
                     error_message: '',
                     submitType: 'success',
@@ -244,11 +244,11 @@ class AssignClueAndSelectCustomer extends React.Component {
                     relatedCustomerId: this.state.customer_id
                 });
             },
-            error:  (xhr) =>{
+            error: (xhr) => {
                 this.setState({
                     submitType: 'error',
-                    relatedCustomerName:"",
-                    relatedCustomerId:"",
+                    relatedCustomerName: "",
+                    relatedCustomerId: "",
                     error_message: xhr.responseJSON || Intl.get("common.edit.failed", "修改失败")
                 });
             }
@@ -287,7 +287,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         //如果原来有选中状态的客户，将客户设置为空
         if (this.state.checkedCustomerItem){
             this.setState({
-                checkedCustomerItem:""
+                checkedCustomerItem: ""
             });
         }
         this.setState({
@@ -356,7 +356,7 @@ class AssignClueAndSelectCustomer extends React.Component {
     renderTextCustomer() {
         //是否有修改线索所属客户的权利
         var canEdit = hasPrivilege(RELATEAUTHS.RELATEALL) || hasPrivilege(RELATEAUTHS.RELATESELF);
-        var relatedCustomerName = this.state.relatedCustomerName ? this.state.relatedCustomerName : (this.state.recommendCustomerLists.length ? Intl.get("clue.customer.no.related.customer", "上述客户都不是相关联的客户，搜索客户"): Intl.get("clue.customer.selected.customer", "请搜索客户进行关联"));
+        var relatedCustomerName = this.state.relatedCustomerName ? this.state.relatedCustomerName : (this.state.recommendCustomerLists.length ? Intl.get("clue.customer.no.related.customer", "上述客户都不是相关联的客户，搜索客户") : Intl.get("clue.customer.selected.customer", "请搜索客户进行关联"));
         return (
             <div className="user-basic-edit-field">
                 <span className="customer-name" onClick={this.clickShowCustomerDetail.bind(this, this.state.relatedCustomerId)} data-tracename="点击查看客户详情">{relatedCustomerName}</span>
@@ -368,7 +368,7 @@ class AssignClueAndSelectCustomer extends React.Component {
         );
 
     }
-    onCheckedItemChange = (checkedItem) =>{
+    onCheckedItemChange = (checkedItem) => {
         if (this.state.displayType === "select"){
             message.warning(Intl.get("clue.customer.close.customer.search", "请先关闭客户搜索框"));
             return;
@@ -384,10 +384,10 @@ class AssignClueAndSelectCustomer extends React.Component {
             <div className="recommend-customer-container">
                 <p>{Intl.get("clue.customer.may.associate.customer", "该线索可能关联的客户")}（
                     {this.state.recommendByName ? Intl.get("clue.customer.customer.name.similar","客户名相似") : null}
-                    {this.state.recommendByPhone ? Intl.get("clue.customer.phone.same","电话一致"): null}
+                    {this.state.recommendByPhone ? Intl.get("clue.customer.phone.same","电话一致") : null}
                     ）</p>
                 {
-                    _.map(this.state.recommendCustomerLists, (recommendItem,index)=>{
+                    _.map(this.state.recommendCustomerLists, (recommendItem,index) => {
                         var checked = recommendItem.id == this.state.checkedCustomerItem ? true : false;
                         return (
                             <p className="recommend-customer-item">
@@ -398,7 +398,7 @@ class AssignClueAndSelectCustomer extends React.Component {
                                     <span onClick={this.clickShowCustomerDetail.bind(this, recommendItem.id)} > {recommendItem.name}</span>
                                     <input type="hidden" className="recommend_customer_hidden" value={recommendItem.id}/>
                                 </Checkbox>
-                                {this.state.checkedCustomerItem && index === (this.state.recommendCustomerLists.length -1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
+                                {this.state.checkedCustomerItem && index === (this.state.recommendCustomerLists.length - 1) ? <span> <i className="iconfont icon-choose" onClick={this.submit.bind(this)}
                                     data-tracename="保存关联客户"></i>
                                 <i className="iconfont icon-close"
                                     onClick={this.changeDisplayCustomerType.bind(this, "text")} data-tracename="取消保存关联客户"></i></span> : null}

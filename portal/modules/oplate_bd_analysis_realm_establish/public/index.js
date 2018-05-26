@@ -38,52 +38,52 @@ function lineFormatter(obj) {
 
 //布局计算使用的常量
 var LAYOUT = {
-    TOP : 65 + 20,
-    BOTTOM : 32
+    TOP: 65 + 20,
+    BOTTOM: 32
 };
 
 //地域分析-安全域开通时间
 var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
     //获取state中使用的数据
-    getStateData : function() {
+    getStateData: function() {
         return {
             //开始时间
-            startTime : AnalysisRealmEstablishStore.getStartTime(),
+            startTime: AnalysisRealmEstablishStore.getStartTime(),
             //结束时间
-            endTime  : AnalysisRealmEstablishStore.getEndTime(),
+            endTime: AnalysisRealmEstablishStore.getEndTime(),
             //当前安全域开通总数
-            realmEstablishTotalCount : AnalysisRealmEstablishStore.getRealmEstablishTotalCount(),
+            realmEstablishTotalCount: AnalysisRealmEstablishStore.getRealmEstablishTotalCount(),
             //当前全国安全域开通列表
-            realmEstablishAnalysisList : AnalysisRealmEstablishStore.getRealmEstablishAnalysisList(),
+            realmEstablishAnalysisList: AnalysisRealmEstablishStore.getRealmEstablishAnalysisList(),
             //右侧标题
-            rankListTitle : AnalysisRealmEstablishStore.getState().rankListTitle,
+            rankListTitle: AnalysisRealmEstablishStore.getState().rankListTitle,
             //窗口宽度
-            windowWidth : $(window).width(),
+            windowWidth: $(window).width(),
             //当前loading状态
-            isLoading : AnalysisRealmEstablishStore.getLoadingState(),
+            isLoading: AnalysisRealmEstablishStore.getLoadingState(),
             //是否没有数据
-            noData : AnalysisRealmEstablishStore.getNoData(),
+            noData: AnalysisRealmEstablishStore.getNoData(),
             //是否一个安全域都没有
-            noRealmAtAll : AnalysisRealmEstablishStore.getNoRealmAtAll(),
+            noRealmAtAll: AnalysisRealmEstablishStore.getNoRealmAtAll(),
             //获取unit
-            unit : AnalysisRealmEstablishStore.getUnit()
+            unit: AnalysisRealmEstablishStore.getUnit()
         };
     },
     //store变化的时候重新render
-    onChange : function() {
+    onChange: function() {
         var stateData = this.getStateData();
         this.setState(stateData);
     },
     //获取图表的尺寸
-    getChartDimension:function() {
+    getChartDimension: function() {
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
         if(!this.refs.chart) {
             return {
                 //图的宽度
-                chartWidth : 0,
+                chartWidth: 0,
                 //图的高度
-                chartHeight : 0
+                chartHeight: 0
             };
         }
         var chartWidth = $(this.refs.chart).width() , chartHeight;
@@ -103,25 +103,25 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
         }
         return {
             //地图的宽度
-            chartWidth : chartWidth,
+            chartWidth: chartWidth,
             //地图的高度
-            chartHeight : chartHeight - 60
+            chartHeight: chartHeight - 60
         };
     },
     //获取初始状态
-    getInitialState : function() {
+    getInitialState: function() {
         return this.getStateData();
     },
     //resize的延迟
-    resizeTimeout : null,
+    resizeTimeout: null,
     //resize的时候重新render
-    resizeWindow : function() {
+    resizeWindow: function() {
         clearTimeout(this.resizeTimeout);
         var _this = this;
         this.resizeTimeout = setTimeout(function() {
             _this.setState({
                 //窗口的宽度
-                windowWidth : $(window).width()
+                windowWidth: $(window).width()
             });
         } , Oplate.layout['sidebar-transition-time']);
     },
@@ -129,7 +129,7 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
     //1.绑定store
     //2.通过action获取数据
     //3.绑定window的resize
-    componentDidMount : function() {
+    componentDidMount: function() {
         AnalysisRealmEstablishStore.listen(this.onChange);
         AnalysisRealmEstablishActions.getRealmEstablishAnalysisDataByAjax(
             this.state.startTime,
@@ -142,13 +142,13 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
     //2.解绑store
     //3.解绑window的resize
     //4.清除timeout
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         AnalysisRealmEstablishStore.unlisten(this.onChange);
         $(window).off('resize' , this.resizeWindow);
         clearTimeout(this.resizeTimeout);
     },
     //时间改变的时候触发
-    onSelectDate : function(startTime , endTime,range , label) {
+    onSelectDate: function(startTime , endTime,range , label) {
         if(range === 'all') {
             AnalysisRealmEstablishActions.setRankListTitle(Intl.get("oplate_bd_analysis_realm_establish.5", "当前安全域开通总数"));
         } else if(range === 'custom') {
@@ -171,20 +171,20 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
         );
     },
     //react的render函数
-    render : function() {
+    render: function() {
         //div的高度
         var divHeight = 'auto';
         //如果小于992，body有滚动条
         if($(window).width() < Oplate.layout['screen-md']) {
             $('body').css({
-                'overflow-x':'visible',
-                'overflow-y':'visible'
+                'overflow-x': 'visible',
+                'overflow-y': 'visible'
             });
         } else {
             //如果大于992，body没有滚动条
             $('body').css({
-                'overflow-x':'hidden',
-                'overflow-y':'hidden'
+                'overflow-x': 'hidden',
+                'overflow-y': 'hidden'
             });
             //计算div的高度为窗口的高度-上下margin
             divHeight = $(window).height() - LAYOUT.TOP - LAYOUT.BOTTOM;
@@ -198,9 +198,9 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
         var chartHeight = chartInfo.chartHeight;
         //样式判断
         var outerClass = classNames({
-            analysis_realm_establish:true,
-            clearfix : true,
-            analysis_realm_establish_nodata : this.state.noRealmAtAll
+            analysis_realm_establish: true,
+            clearfix: true,
+            analysis_realm_establish_nodata: this.state.noRealmAtAll
         });
         //设置外层的class
         return (
@@ -213,7 +213,7 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
                     {/*没有数据的时候显示nodata*/}
                     <NoData />
                     {/*图表外层容器，设置高度*/}
-                    <div className="chartwrap" ref="chart" style={{height:divHeight}}>
+                    <div className="chartwrap" ref="chart" style={{height: divHeight}}>
                         {/*时间选择器和计数*/}
                         <div className="timepicker" ref="timepicker">
                             {/*时间选择器*/}
@@ -241,7 +241,7 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
                         */}
                         {
                             this.state.isLoading ?
-                                (null):
+                                (null) :
                                 (<div className="chartcontainer">
                                     <AnalysisLineChartTimeRange
                                         width={chartWidth}
@@ -256,7 +256,7 @@ var OPLATE_BD_ANALYSIS_REALM_ESTABLISH = React.createClass({
                         {/*loading状态的时候，显示loading状态*/}
                         {
                             this.state.isLoading ?
-                                (<Spinner className="isloading"/>):
+                                (<Spinner className="isloading"/>) :
                                 (null)
                         }
                     </div>

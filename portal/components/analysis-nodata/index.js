@@ -6,12 +6,12 @@ if (language.lan() == "es" || language.lan() == "en") {
     require("./index-zh_CN.less");
 }
 var NoData = React.createClass({
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            msg : Intl.get("organization.no.realms", "还没有安全域诶...")
+            msg: Intl.get("organization.no.realms", "还没有安全域诶...")
         };
     },
-    render : function() {
+    render: function() {
         return (
             <div className="nodata-msg-block">
                 <p>{this.props.msg}</p>

@@ -30,7 +30,7 @@ class IndustrySelector extends React.Component {
             this.props.onChange(value);
         });
     }
-    getIndustry=()=> {
+    getIndustry=() => {
         this.setState({
             loading: true
         }, () => {

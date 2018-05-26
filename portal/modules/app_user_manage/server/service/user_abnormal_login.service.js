@@ -21,7 +21,7 @@ exports.getUserAbnormalLogin = function(req, res, obj){
 };
 
 // 忽略异常登录地
-exports.ignoreAbnormalLogin =  (req, res, id) => {
+exports.ignoreAbnormalLogin = (req, res, id) => {
     return restUtil.authRest.post({
         url: UserAbnormalLoginApis.ignoreAbnormalLogin.replace(":id", id),
         req: req,

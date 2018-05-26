@@ -15,10 +15,10 @@ class SearchIconList extends React.Component {
         const totalList = this.expandListProp(props.totalList, selectedIds);
         this.searchCount = totalList.length;
         this.state = {
-            keyword : "",
-            totalList : totalList,
-            selectedList : props.selectedList,
-            onlyShowSelected : false,
+            keyword: "",
+            totalList: totalList,
+            selectedList: props.selectedList,
+            onlyShowSelected: false,
         };
     }
     getSearchResult(args) {
@@ -59,12 +59,12 @@ class SearchIconList extends React.Component {
      */
     expandListProp(totalList , selectedList) {
         if(!_.isArray(selectedList) || !selectedList[0]) {
-            return _.map(totalList , (obj)=> {
+            return _.map(totalList , (obj) => {
                 return {
-                    selected : false,
-                    entity : obj,
-                    searched : true,
-                    image : null
+                    selected: false,
+                    entity: obj,
+                    searched: true,
+                    image: null
                 };
             });
         } else {
@@ -72,9 +72,9 @@ class SearchIconList extends React.Component {
             return _.map(totalList , (obj) => {
                 const id = obj[id_field];
                 return {
-                    selected : selectedList.indexOf(id) >= 0,
-                    entity : obj,
-                    searched : true,
+                    selected: selectedList.indexOf(id) >= 0,
+                    entity: obj,
+                    searched: true,
                 };
             });
         }
@@ -86,7 +86,7 @@ class SearchIconList extends React.Component {
             const selectedIds = _.pluck(selectedList, id_field);
             let totalList = this.expandListProp(nextProps.totalList , selectedIds);
             totalList = this.getSearchResult({
-                totalList : totalList
+                totalList: totalList
             });
             this.setState({totalList, selectedList});
         }
@@ -154,7 +154,7 @@ class SearchIconList extends React.Component {
                         ) : null
                     }
                     {
-                        this.state.totalList.map((item)=> {
+                        this.state.totalList.map((item) => {
                             const obj = item.entity;
                             const id = obj[id_field];
                             const name = obj[name_field];
@@ -163,9 +163,9 @@ class SearchIconList extends React.Component {
                                 hide = !item.selected;
                             }
                             const cls = classNames({
-                                "icon-item" : true,
-                                "selected" : item.selected,
-                                "icon-hide" :  hide
+                                "icon-item": true,
+                                "selected": item.selected,
+                                "icon-hide": hide
                             });
 
                             return (
@@ -184,22 +184,22 @@ class SearchIconList extends React.Component {
 function noop(){}
 
 SearchIconList.defaultProps = {
-    totalList : [],
-    selectedList : [],
-    name_field : "app_name",
-    id_field : "app_id",
-    search_fields : ["app_name"],
-    notFoundContent : Intl.get("user.no.related.app","暂无符合条件的应用"),
-    onItemsChange : noop
+    totalList: [],
+    selectedList: [],
+    name_field: "app_name",
+    id_field: "app_id",
+    search_fields: ["app_name"],
+    notFoundContent: Intl.get("user.no.related.app","暂无符合条件的应用"),
+    onItemsChange: noop
 };
 
 SearchIconList.propTypes = {
-    totalList : PropTypes.array,
-    selectedList : PropTypes.array,
-    name_field : PropTypes.string,
-    search_fields : PropTypes.array,
-    onItemsChange : PropTypes.func,
-    notFoundContent : PropTypes.string
+    totalList: PropTypes.array,
+    selectedList: PropTypes.array,
+    name_field: PropTypes.string,
+    search_fields: PropTypes.array,
+    onItemsChange: PropTypes.func,
+    notFoundContent: PropTypes.string
 };
 
 export default SearchIconList;

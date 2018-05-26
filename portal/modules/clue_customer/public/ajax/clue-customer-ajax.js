@@ -9,8 +9,8 @@ const AUTHS = {
     "GETSELF": "CLUECUSTOMER_QUERY_USER"
 };
 const DISTRIBUTEAUTHS = {
-    "DISTRIBUTEALL":"CLUECUSTOMER_DISTRIBUTE_MANAGER",
-    "DISTRIBUTESELF":"CLUECUSTOMER_DISTRIBUTE_USER"
+    "DISTRIBUTEALL": "CLUECUSTOMER_DISTRIBUTE_MANAGER",
+    "DISTRIBUTESELF": "CLUECUSTOMER_DISTRIBUTE_USER"
 };
 let salesmanAjax = require("../../../common/public/ajax/salesman");
 let teamAjax = require("../../../common/public/ajax/team");
@@ -203,7 +203,7 @@ exports.updateCluecustomerDetail = function(submitObj) {
         //客户的id
         updateObj.id = submitObj.user_id;
         //联系人的id
-        updateObj.contacts = [{"id":submitObj.contact_id}];
+        updateObj.contacts = [{"id": submitObj.contact_id}];
         delete submitObj.contact_id;
         delete submitObj.user_id;
         for (var key in submitObj){

@@ -618,7 +618,7 @@ class PhonePanel extends React.Component {
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
                     {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
-                        <CustomerDetail  {...paramObj.customer_params}
+                        <CustomerDetail {...paramObj.customer_params}
                             hideRightPanel={this.hideRightPanel.bind(this)}
                             showApplyUserForm={this.showApplyUserForm.bind(this)}
                         />) : null

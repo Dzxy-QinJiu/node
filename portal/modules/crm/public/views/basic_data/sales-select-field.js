@@ -271,7 +271,7 @@ var SalesSelectField = React.createClass({
         //在转出或者变更销售之前，先检查是否会超过该销售所拥有客户的数量
         if (this.state.displayType === "edit" || this.state.displayType === "transfer"){
             this.setState({loading: true});
-            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result)=>{
+            CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
                 //result>0 ，不可转入或变更客户
                 if (_.isNumber(result) && result > 0){
                     message.warn(Intl.get("crm.should.reduce.customer","该销售拥有客户数量已达到上限！"));

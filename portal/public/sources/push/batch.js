@@ -65,7 +65,7 @@ function batchOperateListener(data) {
         return;
     }
     //当类型为批量操作，一直有弹框，或者是创建安全域创建完成且失败的时候有弹框
-    if (data.type!= TASK_REALM_CREATE || (data.type == TASK_REALM_CREATE && data.running == 0 && data.failed != 0)) {
+    if (data.type != TASK_REALM_CREATE || (data.type == TASK_REALM_CREATE && data.running == 0 && data.failed != 0)) {
         //不同的类型，展示内容不同
         //拼出不同title和content
         if (data.type == TASK_REALM_CREATE) {
@@ -78,7 +78,7 @@ function batchOperateListener(data) {
 //批量操作安全域，只有错误的情况下有提示,只会将notify提示框渲染一次
 function handleBatchCreateRealm(data) {
     var content = '';
-    var title  = `${data.tasks[0].taskDefine}${Intl.get('user.fail.create.realms','安全域创建失败')}`;
+    var title = `${data.tasks[0].taskDefine}${Intl.get('user.fail.create.realms','安全域创建失败')}`;
     var taskId = data.taskId;
     updateNotifyContentOnce(title,content,taskId);
 }
@@ -88,7 +88,7 @@ function handleBatchOperation(data) {
     var title = '';
     var operate_type = data.typeText;
     var taskId = data.taskId;
-    content = Intl.get('user.complete.ratio','完成进度')+`:${data.total - data.running}/${data.total}`;
+    content = Intl.get('user.complete.ratio','完成进度') + `:${data.total - data.running}/${data.total}`;
     title = Intl.get('user.batch.operation','批量操作');
     if (operate_type) {
         title += `-${operate_type}`;
@@ -114,9 +114,9 @@ function updateNotifyContentGeneral(title,content,taskId,data) {
         //获取已经存在的通知节点
         var notify = NotificationMap[taskId];
         //如果存在创建失败的任务列表，将错误提示都展示出来
-        if (data.failedTasks && data.failedTasks.length!==0){
+        if (data.failedTasks && data.failedTasks.length !== 0){
             data.failedTasks.forEach(function(failedTask) {
-                failedTask.taskDetail && (errTip += failedTask.taskDetail.remark+'<br/>');
+                failedTask.taskDetail && (errTip += failedTask.taskDetail.remark + '<br/>');
             });
             notificationUtil.updateText(notify, {
                 title: title,

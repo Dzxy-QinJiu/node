@@ -15,61 +15,61 @@ var defaultIcon = require("../../../../components/default-image-base64").Default
 //进行布局的对象
 var LAYOUT = {
     //顶部导航高度
-    TOPNAV_HEIGHT : 65,
+    TOPNAV_HEIGHT: 65,
     //列表上面的margin
-    LIST_MARGIN_TOP : 44,
+    LIST_MARGIN_TOP: 44,
     //分页高度
-    PAGINATION_HEIGHT : 28,
+    PAGINATION_HEIGHT: 28,
     //翻页上边距
-    PAGINATION_PADDING_TOP:16,
+    PAGINATION_PADDING_TOP: 16,
     //翻页下边距
-    PAGINATION_PADDING_BOTTOM:40
+    PAGINATION_PADDING_BOTTOM: 40
 };
 
 var AnalysisListView = React.createClass({
     displayName: 'AnalysisListView',
     //获取初始state
-    getInitialState : function() {
+    getInitialState: function() {
         return AnalysisStore.getState();
     },
     //store数据变化的时候，重新渲染界面
-    onStoreChange : function() {
+    onStoreChange: function() {
         this.setState(AnalysisStore.getState());
     },
     //获取在线用户分析列表
-    fetchAnalysisList : function(obj) {
+    fetchAnalysisList: function(obj) {
         AnalysisAction.getUserOnlineAnalysisList({
-            page : obj && 'page' in obj ? obj.page : this.state.analysisSummary.currentPage,
-            page_size : 16
+            page: obj && 'page' in obj ? obj.page : this.state.analysisSummary.currentPage,
+            page_size: 16
         });
     },
     //节点挂载完毕
-    componentDidMount : function() {
+    componentDidMount: function() {
         AnalysisStore.listen(this.onStoreChange);
         this.fetchAnalysisList();
         this.dynamicStyle = insertStyle(".app-logo-img-tooltip.tooltip{margin-left:7px}");
     },
     //节点将要被移除
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         AnalysisStore.unlisten(this.onStoreChange);
         this.dynamicStyle.destroy();
     },
     //渲染loading效果
-    renderLoadingBlock : function() {
+    renderLoadingBlock: function() {
         if(!this.state.analysisSummary.firstLoading || this.state.analysisSummary.resultType !== 'loading') {
             return null;
         }
         return (<Spinner className="first-loading"/>);
     },
     //查看一个应用的详情
-    viewAppDetail : function(app_id,app_name) {
+    viewAppDetail: function(app_id,app_name) {
         AnalysisAction.viewUserOnlineAnalysisByAppId({
-            app_id : app_id,
-            app_name : app_name
+            app_id: app_id,
+            app_name: app_name
         });
     },
     //渲染列表
-    renderList : function() {
+    renderList: function() {
         if(this.state.analysisSummary.resultType !== '' && this.state.analysisSummary.firstLoading) {
             return null;
         }
@@ -89,7 +89,7 @@ var AnalysisListView = React.createClass({
         var _this = this;
 
         return (
-            <div className="user_online_analysis_list_content" style={{height:listWrapHeight}}>
+            <div className="user_online_analysis_list_content" style={{height: listWrapHeight}}>
                 <GeminiScrollbar>
                     <ul className="list list-unstyled">
                         {
@@ -135,13 +135,13 @@ var AnalysisListView = React.createClass({
         );
     },
     //分页参数改变
-    paginationChange : function(page) {
+    paginationChange: function(page) {
         AnalysisAction.analysisSummaryPaginationChange(page);
         //重新获取数据
-        this.fetchAnalysisList({page:page});
+        this.fetchAnalysisList({page: page});
     },
     //渲染分页
-    renderPagination : function() {
+    renderPagination: function() {
         if(this.state.analysisSummary.resultType !== '' && this.state.analysisSummary.firstLoading) {
             return null;
         }
@@ -165,7 +165,7 @@ var AnalysisListView = React.createClass({
             </div>
         );
     },
-    render : function() {
+    render: function() {
         return (
             <div className="user_online_analysis_list">
                 {this.renderLoadingBlock()}

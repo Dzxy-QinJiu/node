@@ -15,24 +15,24 @@ import { packageTry } from 'LIB_DIR/func';
 var COLORSINGLE = '#1790cf';
 var COLORMULTIPLE = ['#1790cf', '#1bb2d8'];
 var BarChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            chartData : [],
-            width:'100%',
-            height:214,
-            resultType : 'loading',
+            chartData: [],
+            width: '100%',
+            height: 214,
+            resultType: 'loading',
             startDate: '',
-            endDate : '',
+            endDate: '',
             showLabel: false,//是否展示柱状图上的数据
             //超过多少的柱子时横轴文字需要倾斜显示
             xAxisRotateLength: 12,
         };
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.chartData.length &&
             prevProps.chartData.length &&
@@ -43,7 +43,7 @@ var BarChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -51,7 +51,7 @@ var BarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    adjustXaxis : function(categories, xAxisOptions) {
+    adjustXaxis: function(categories, xAxisOptions) {
         const length = categories.length;
         if (length < 40) {
             //横坐标展示所有的种类
@@ -67,7 +67,7 @@ var BarChart = React.createClass({
             }
         }
     },
-    getLegend : function() {
+    getLegend: function() {
         if (!this.props.legend) {
             return {
                 show: false,
@@ -75,11 +75,11 @@ var BarChart = React.createClass({
             };
         }
         return {
-            show : true,
-            data :_.pluck(this.props.legend , 'name')
+            show: true,
+            data: _.pluck(this.props.legend , 'name')
         };
     },
-    getCategories : function() {
+    getCategories: function() {
         let chartData = this.props.chartData;
 
         if (this.props.dataField) {
@@ -93,7 +93,7 @@ var BarChart = React.createClass({
         }
         return categories;
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         let chartData = this.props.chartData;
 
@@ -102,7 +102,7 @@ var BarChart = React.createClass({
         }
 
         const serieTpl = {
-            name:this.props.name || "",
+            name: this.props.name || "",
             type: "bar",
             barMaxWidth: 40,
             barMinWidth: 4,
@@ -142,7 +142,7 @@ var BarChart = React.createClass({
             });
         }
     },
-    getMargin : function() {
+    getMargin: function() {
         let chartData = this.props.chartData;
 
         if (this.props.dataField) {
@@ -153,13 +153,13 @@ var BarChart = React.createClass({
             return 80;
         }
         var marginList = _.map(industry , function(text) {
-            text = text === 'unknown' ? Intl.get("user.unknown", "未知"):text;
+            text = text === 'unknown' ? Intl.get("user.unknown", "未知") : text;
             return textWidth.measureTextWidth(text , 12);
         });
         var maxMargin = _.max(marginList) + 10;
         return maxMargin;
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         const categories = this.getCategories();
         const xAxisOptions = {
             interval: "auto",//x轴坐标label间隔的控制,默认：自动调整，（0：所有label全部展示）
@@ -172,54 +172,54 @@ var BarChart = React.createClass({
         }
 
         const labelConf = {
-            show: typeof this.props.showLabel === "boolean"? this.props.showLabel : true,
+            show: typeof this.props.showLabel === "boolean" ? this.props.showLabel : true,
             position: "outside",
-            formatter : this.props.labelFormatter || "{c}"
+            formatter: this.props.labelFormatter || "{c}"
         };
 
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            label : {
-                normal : labelConf,
-                emphasis : labelConf,
+            label: {
+                normal: labelConf,
+                emphasis: labelConf,
             },
-            calculable : false,
-            grid : {
-                x : 50,
-                y : 20,
-                x2 : 30,
-                y2 : this.props.gridY2 || 60,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: 50,
+                y: 20,
+                x2: 30,
+                y2: this.props.gridY2 || 60,
+                borderWidth: 0
             },
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'category',
-                    data : categories,
-                    splitLine : false,
-                    splitArea :  false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    data: categories,
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
+                    axisLabel: {
+                        textStyle: {
                             color: XAXIS_COLOR,
                             align: this.props.xAxisLabelAlign || xAxisOptions.labelAlign
                         },
                         interval: this.props.xAxisInterval || xAxisOptions.interval,
                         rotate: this.props.xAxisRotate || xAxisOptions.rotate,
-                        formatter : function(text) {
+                        formatter: function(text) {
                             if(text === 'unknown') {
                                 text = Intl.get("common.unknown", "未知");
                             } else if(!text) {
@@ -230,29 +230,29 @@ var BarChart = React.createClass({
                     }
                 }
             ],
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'value',
-                    splitLine : false,
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    getReverseEchartOptions : function() {
+    getReverseEchartOptions: function() {
         //grid上的margin
         var maxMargin = this.getMargin();
         const categories = this.getCategories();
@@ -267,51 +267,51 @@ var BarChart = React.createClass({
         }
 
         const labelConf = {
-            show: typeof this.props.showLabel === "boolean"? this.props.showLabel : true,
+            show: typeof this.props.showLabel === "boolean" ? this.props.showLabel : true,
             position: "outside",
-            formatter : this.props.labelFormatter || "{c}"
+            formatter: this.props.labelFormatter || "{c}"
         };
 
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            label : {
-                normal : labelConf,
-                emphasis : labelConf,
+            label: {
+                normal: labelConf,
+                emphasis: labelConf,
             },
-            calculable : false,
-            grid : {
-                x : maxMargin,
-                y : 40,
-                x2 : 33,
-                y2 : 0,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: maxMargin,
+                y: 40,
+                x2: 33,
+                y2: 0,
+                borderWidth: 0
             },
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'category',
-                    data : categories,
-                    splitLine : false,
-                    splitArea : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    data: categories,
+                    splitLine: false,
+                    splitArea: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
+                    axisLabel: {
+                        textStyle: {
                             color: XAXIS_COLOR,
                         },
-                        formatter : function(text) {
+                        formatter: function(text) {
                             if(text === 'unknown') {
                                 text = Intl.get("common.unknown", "未知");
                             } else if(!text) {
@@ -322,35 +322,35 @@ var BarChart = React.createClass({
                     }
                 }
             ],
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'value',
-                    splitLine : false,
-                    splitArea : false,
-                    position : 'top',
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    splitArea: false,
+                    position: 'top',
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    getTooltip : function() {
+    getTooltip: function() {
         var _this = this;
         return {
-            show : true,
-            extraCssText : echartsTooltipCssText,
-            formatter : function(obj) {
+            show: true,
+            extraCssText: echartsTooltipCssText,
+            formatter: function(obj) {
                 var name = obj.name;
                 if(!name) {
                     name = 'null';
@@ -358,12 +358,12 @@ var BarChart = React.createClass({
                     name = Intl.get("common.unknown", "未知"); 
                 }
                 var seriesName = obj.seriesName;
-                let timeDesc =  Intl.get("oplate_customer_analysis.12", "至{time}为止", {time: _this.props.endDate});
+                let timeDesc = Intl.get("oplate_customer_analysis.12", "至{time}为止", {time: _this.props.endDate});
                 if(_this.props.startDate){
                     if(_this.props.startDate == _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
-                        timeDesc = _this.props.startDate + Intl.get("common.time.connector", "至") +  _this.props.endDate;
+                        timeDesc = _this.props.startDate + Intl.get("common.time.connector", "至") + _this.props.endDate;
                     }
                 }
                 var colorList = COLORMULTIPLE;
@@ -380,7 +380,7 @@ var BarChart = React.createClass({
             }
         };
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();

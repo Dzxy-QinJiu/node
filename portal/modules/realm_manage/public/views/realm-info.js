@@ -22,12 +22,12 @@ import {defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
 import Trace from "LIB_DIR/trace";
 const messages = defineMessages({
-    member_is_or_not:{id:'member.is.or.not'}//"是否{modalStr}{modalType}"
+    member_is_or_not: {id: 'member.is.or.not'}//"是否{modalStr}{modalType}"
 });
 import EmailServer from './email-server-form';
-import SmsServer from  './sms-server-form';
-import WeChat from  './wechat-server-form';
-import * as  LAN_GLOBAL  from '../consts';
+import SmsServer from './sms-server-form';
+import WeChat from './wechat-server-form';
+import * as LAN_GLOBAL from '../consts';
 
 var RealmInfo = React.createClass({
     mixins: [reactIntlMixin],
@@ -41,7 +41,7 @@ var RealmInfo = React.createClass({
             saveResult: "",
             //保存后的提示信息
             saveMsg: "",
-            isShowSetOrUpdateEmailFlag: false,  // 显示或更新邮箱服务器的设置的标志
+            isShowSetOrUpdateEmailFlag: false, // 显示或更新邮箱服务器的设置的标志
             isShowSetOrUpdateSmsFlag: false, // 显示或更新短信服务器的设置的标志
             isShowSetOrUpdateWeChatFlag: false, // 显示或更新微信设置的标志
 
@@ -83,7 +83,7 @@ var RealmInfo = React.createClass({
         this.props.showAppNoticePanel();
     },
     //展示用户类型设置页面
-    showUserTypeConfigPanel:function() {
+    showUserTypeConfigPanel: function() {
         this.props.showUserTypeConfigPanel();
     },
     //展示是否禁用、启用的模态框
@@ -114,7 +114,7 @@ var RealmInfo = React.createClass({
             Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击确认按钮");
         }
     },
-    renderRealmItems:function() {
+    renderRealmItems: function() {
         let realmInfo = this.state.realmInfo;
         return (
             <div data-tracename="查看安全域详情">
@@ -227,7 +227,7 @@ var RealmInfo = React.createClass({
 
     render: function() {
         //当前要展示的信息
-        var modalContent = this.formatMessage(messages.member_is_or_not,{modalStr:this.state.modalStr,modalType:this.props.modalType});var className = "right-panel-content";
+        var modalContent = this.formatMessage(messages.member_is_or_not,{modalStr: this.state.modalStr,modalType: this.props.modalType}); var className = "right-panel-content";
         if (!this.props.realmInfoShow) {
             if (this.props.realmFormShow ||
                     this.props.versionUpgradeShow ||
@@ -249,7 +249,7 @@ var RealmInfo = React.createClass({
                         <PrivilegeChecker check={"REALM_MANAGE_EDIT_REALM"}>
                             <RightPanelEdit onClick={this.showEditForm}/>
                             <RightPanelForbid onClick={this.showForbidModalDialog}
-                                isActive={realmInfo.status==0}/>
+                                isActive={realmInfo.status == 0}/>
                         </PrivilegeChecker>
                     ) : null}
                     <PrivilegeChecker check={"REALM_MANAGE_DELETE_REALM"}>

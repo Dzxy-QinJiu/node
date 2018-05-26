@@ -80,7 +80,7 @@ function weeklyReportDetailActions() {
     this.getCustomerStageInfo = function(reqData, type) {
         this.dispatch({loading: true, error: false});
         weeklyReportAjax.getCustomerStageInfo(reqData, type).then((resData) => {
-            this.dispatch({loading: false, error: false, resData: resData.result, stageList:resData.stageList});
+            this.dispatch({loading: false, error: false, resData: resData.result, stageList: resData.stageList});
         }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errMsg: errorMsg});
         }

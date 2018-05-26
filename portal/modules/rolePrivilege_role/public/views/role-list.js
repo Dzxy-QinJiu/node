@@ -122,7 +122,7 @@ var RoleList = React.createClass({
                     values={{
                         "add": (_this.props.appId ? ( <a onClick={_this.turnToAuthPanel}
                             data-tracename ="添加权限"
-                        >{Intl.get("role.add.auth", "添加权限")}</a>): (
+                        >{Intl.get("role.add.auth", "添加权限")}</a>) : (
                             <Link to="/backgroundManagement/authority" activeClassName="active">
                                 {Intl.get("role.add.auth", "添加权限")}</Link>
                         ))

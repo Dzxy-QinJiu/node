@@ -26,11 +26,11 @@ function UserDetailEditAppActions() {
      */
     this.submitEditApp = function(obj) {
         var _this = this;
-        _this.dispatch({loading : true});
+        _this.dispatch({loading: true});
         AppUserAjax.addApp(obj.operation , obj.data).then(function(newAppObj) {
-            _this.dispatch({error : false, app : newAppObj});
+            _this.dispatch({error: false, app: newAppObj});
         } , function(errorMsg) {
-            _this.dispatch({error : true, errorMsg : errorMsg});
+            _this.dispatch({error: true, errorMsg: errorMsg});
         });
     };
 

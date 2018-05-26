@@ -4,39 +4,39 @@
  * Created by zhangshujuan on 2017/10/19.
  */
 import { Alert, Button ,Icon} from 'antd';
-import classNames  from "classnames";
+import classNames from "classnames";
 function noop() {}
 class ActiveEmailTip extends React.Component {
     constructor(props){
         super (props);
         this.state = {
-            isAnimateShow : this.props.isAnimateShow,
-            isAnimateHide : this.props.isAnimateHide,
-            setWebConfigStatus : this.props.setWebConfigStatus
+            isAnimateShow: this.props.isAnimateShow,
+            isAnimateHide: this.props.isAnimateHide,
+            setWebConfigStatus: this.props.setWebConfigStatus
         };
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.isAnimateShow != this.props.isAnimateShow ) {
             this.setState({
-                isAnimateShow:nextProps.isAnimateShow
+                isAnimateShow: nextProps.isAnimateShow
             });
         }
         if (nextProps.isAnimateHide != this.props.isAnimateHide ) {
             this.setState({
-                isAnimateHide:nextProps.isAnimateHide
+                isAnimateHide: nextProps.isAnimateHide
             });
         }
         if (nextProps.setWebConfigStatus !== this.props.setWebConfigStatus){
             this.setState({
-                setWebConfigStatus:nextProps.setWebConfigStatus
+                setWebConfigStatus: nextProps.setWebConfigStatus
             });
         }
     }
     render(){
         //外层父组件加载完成后再由上到下推出提示框
         var cls = classNames('active-email-tip-container',{
-            'animate-show':this.state.isAnimateShow,
-            'animate-hide':this.state.isAnimateHide
+            'animate-show': this.state.isAnimateShow,
+            'animate-hide': this.state.isAnimateHide
         });
         var warningText = (
             <div>
@@ -48,14 +48,14 @@ class ActiveEmailTip extends React.Component {
                             {Intl.get("user.info.user.info","个人资料")}
                         </span>
                     }}
-                />:<div>
+                /> : <div>
                     <span>
                         {Intl.get("sales.frontpage.active.info","请激活邮箱，以免影响收取审批邮件！")}
                     </span>
                     <Button type="primary" size="small" onClick={this.props.activeUserEmail}>{Intl.get("sales.frontpage.active.email","激活邮箱")}</Button>
                     <span className="no-tip" onClick={this.props.handleClickNoTip}>
                         {Intl.get("sale.homepage.no.tip.more","不再提示")}
-                        {this.state.setWebConfigStatus === "loading" ? <Icon type="loading"/>: null}
+                        {this.state.setWebConfigStatus === "loading" ? <Icon type="loading"/> : null}
                     </span>
                 </div>}
 
@@ -67,12 +67,12 @@ class ActiveEmailTip extends React.Component {
             </div>);
     }
 }
-ActiveEmailTip.defaultProps ={
-    isAnimateShow : false,
-    isAnimateHide : false,
+ActiveEmailTip.defaultProps = {
+    isAnimateShow: false,
+    isAnimateHide: false,
     setWebConfigStatus: "",
-    handleClickNoTip:noop,
-    activeUserEmail:noop,
-    jumpToUserInfo:noop
+    handleClickNoTip: noop,
+    activeUserEmail: noop,
+    jumpToUserInfo: noop
 };
 export default ActiveEmailTip;

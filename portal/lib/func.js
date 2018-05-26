@@ -36,7 +36,7 @@ export const decimalToPercent = function(rawValue = 0) {
 //格式化金额，返回以万为单位的金额
 export const formatAmount = function(amount) {
     amount = parseFloat(amount);
-    amount = isNaN(amount)? "" : calc.div(amount, 10000);
+    amount = isNaN(amount) ? "" : calc.div(amount, 10000);
 
     return amount;
 };
@@ -163,23 +163,23 @@ export const mapColorList = function(dataList) {
         // 间隔
         let delta = Math.floor((maxVal - minVal) / 5) - 1;
         let start = minVal;
-        for(let i = 1, total = 5; i <= total ; i++) {
+        for(let i = 1, total = 5; i <= total; i++) {
             let obj = {};
             if(i === 1) {
                 obj = {
-                    start : start,
-                    end : start + delta
+                    start: start,
+                    end: start + delta
                 };
                 start += delta + 1;
             } else if (i === total){
-                obj ={
-                    start : start,
-                    end : maxVal
+                obj = {
+                    start: start,
+                    end: maxVal
                 };
             } else {
-                obj ={
+                obj = {
                     start: start,
-                    end : start + delta
+                    end: start + delta
                 };
                 start += delta + 1;
             }

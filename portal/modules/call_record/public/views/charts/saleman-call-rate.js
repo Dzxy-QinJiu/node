@@ -7,19 +7,19 @@ var immutable = require("immutable");
 import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import { packageTry } from 'LIB_DIR/func';
 var PieChart = React.createClass({
-    echartInstance : null,
+    echartInstance: null,
 
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            dataList : [],
+            dataList: [],
             height: 400
         };
     },
 
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -27,7 +27,7 @@ var PieChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.dataList &&
             prevProps.dataList &&
@@ -38,7 +38,7 @@ var PieChart = React.createClass({
         this.renderChart();
     },
 
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.clear();
@@ -48,38 +48,38 @@ var PieChart = React.createClass({
         var options = this.getEchartOptions();
         this.echartInstance.setOption(options,true);
     },
-    getSeries : function() {
+    getSeries: function() {
         var list = this.props.dataList || [];
-        var legend =  _.pluck(this.props.dataList, 'name')|| [];
+        var legend = _.pluck(this.props.dataList, 'name') || [];
         return legend.map((legendName,idx) => {
             return {
-                name : legendName,
-                value : list[idx].num  // 注意：饼图中，value是key
+                name: legendName,
+                value: list[idx].num // 注意：饼图中，value是key
             };
         });
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         return {
-            tooltip : {
+            tooltip: {
                 trigger: 'item',
                 formatter: "<div class='echarts-tooltip'>{b} : {c} ({d}%)</div>"
             },
             legend: {
                 orient: 'vertical',
                 right: '2%',
-                top : '2%',
+                top: '2%',
                 data: _.pluck(this.props.dataList, 'name')
             },
 
-            series : [
+            series: [
                 {
                     type: 'pie',
-                    radius : '55%',
+                    radius: '55%',
                     center: ['50%', '60%'],
                     data: this.getSeries(),
-                    label : {
-                        normal : {
-                            formatter : "{c}"
+                    label: {
+                        normal: {
+                            formatter: "{c}"
                         }
                     },
                     itemStyle: {
@@ -93,9 +93,9 @@ var PieChart = React.createClass({
             ]
         };
     },
-    render : function() {
+    render: function() {
         return (
-            <div ref="chart" style={{width: '100%' ,height:this.props.height}}></div>
+            <div ref="chart" style={{width: '100%' ,height: this.props.height}}></div>
         );
     }
 });

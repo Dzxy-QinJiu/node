@@ -19,7 +19,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[
+        "privileges": [
             "CRM_DELETE_CONTACT"
         ]
     },{
@@ -29,7 +29,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[
+        "privileges": [
             "CRM_ADD_CONTACT"
         ]
     },{
@@ -39,7 +39,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[
+        "privileges": [
             "CRM_EDIT_CONTACT"
         ]
     },{
@@ -49,7 +49,7 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[
+        "privileges": [
             "CRM_EDIT_CONTACT"
         ]
     }]

@@ -221,7 +221,7 @@ exports.getSalesGoals = function(queryObj) {
         url: '/rest/get/contract/goal/users',
         dataType: 'json',
         type: 'get',
-        data:queryObj,
+        data: queryObj,
         success: function(list) {
             Deferred.resolve(list);
         }, error: function(errorInfo) {

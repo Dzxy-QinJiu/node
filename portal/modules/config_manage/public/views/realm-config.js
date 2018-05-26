@@ -22,7 +22,7 @@ const RealmConfig = React.createClass({
     getInitialState() {
         return {
             ...RealmConfigStore.getState(),
-            setRealmConfigErrMsg: '',  // 修改密码策略失败信息    
+            setRealmConfigErrMsg: '', // 修改密码策略失败信息    
             getRealmConfigErrMsg: '',
             isLoading: false,
             strategy: "1",
@@ -68,14 +68,14 @@ const RealmConfig = React.createClass({
         let value = e.target.value;
         this.setState({
             showConfirm: true,
-            strategy:value
+            strategy: value
         });
     },
     save() {
-        RealmConfigAction.updateRealmStrategy({pwd_strategy:this.state.strategy});
+        RealmConfigAction.updateRealmStrategy({pwd_strategy: this.state.strategy});
     },
     confirm() {
-        let newVal = this.state.strategy == "1"?"MD5":"删除前4位的MD5";
+        let newVal = this.state.strategy == "1" ? "MD5" : "删除前4位的MD5";
         Trace.traceEvent("密码策略","修改密码策略为'" + newVal + "'");
         this.save();
         this.setState({
@@ -85,7 +85,7 @@ const RealmConfig = React.createClass({
     cancel() {
         this.setState({
             showConfirm: false,
-            strategy: this.strategy == "1"?"2":"1"
+            strategy: this.strategy == "1" ? "2" : "1"
         });
     },
     render() {

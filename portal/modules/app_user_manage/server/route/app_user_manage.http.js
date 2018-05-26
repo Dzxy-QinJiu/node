@@ -183,32 +183,32 @@ module.exports = {
             "needLogin": true
         }
     },{
-        "method":"put",
-        "path":"/rest/user/appdetail",
-        "handler":"editAppDetail",
+        "method": "put",
+        "path": "/rest/user/appdetail",
+        "handler": "editAppDetail",
         "passport": {
-            "needLogin":true
+            "needLogin": true
         }
     },{
-        "method":"post",
-        "path":"/rest/user/apply/password",
-        "handler":"applyChangePassword",
+        "method": "post",
+        "path": "/rest/user/apply/password",
+        "handler": "applyChangePassword",
         "passport": {
-            "needLogin":true
+            "needLogin": true
         }
     },{
-        "method":"post",
-        "path":"/rest/user/apply/other",
-        "handler":"applyChangeOther",
+        "method": "post",
+        "path": "/rest/user/apply/other",
+        "handler": "applyChangeOther",
         "passport": {
-            "needLogin":true
+            "needLogin": true
         }
     },{
-        "method":"post",
-        "path":"/rest/user/apply/status",
-        "handler":"applyChangeStatus",
+        "method": "post",
+        "path": "/rest/user/apply/status",
+        "handler": "applyChangeStatus",
         "passport": {
-            "needLogin":true
+            "needLogin": true
         }
     }, {
         "method": "get",

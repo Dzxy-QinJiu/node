@@ -99,7 +99,7 @@ const DetailRepayment = React.createClass({
         });
     },
     renderForm: function(repayment, index) {
-        index = isNaN(index)? "" : index;
+        index = isNaN(index) ? "" : index;
         const ref = "validation" + index;
         const key = "formData" + index;
         let formData = this.state[key];
@@ -123,7 +123,7 @@ const DetailRepayment = React.createClass({
                     <DatePicker
                         name={"date" + index}
                         onChange={this.setField.bind(this, "date", index)}
-                        value={formData.date? moment(formData.date) : moment()}
+                        value={formData.date ? moment(formData.date) : moment()}
                         disabledDate={disabledDate}
                     />
                 </FormItem>
@@ -173,7 +173,7 @@ const DetailRepayment = React.createClass({
         repayments = _.sortBy(repayments, item => item.date).reverse();
         return (
             <div className="detail-repayments">
-                {hasPrivilege("OPLATE_REPAYMENT_ADD")? (
+                {hasPrivilege("OPLATE_REPAYMENT_ADD") ? (
                     <div className="add-finance">
                         {this.renderForm()}
                         <Button
@@ -193,20 +193,20 @@ const DetailRepayment = React.createClass({
 
                                 return (
                                     <li key={index}>
-                                        {isFormShow? (
+                                        {isFormShow ? (
                                             <span className="add-finance">
                                                 {this.renderForm(repayment, index)}
                                             </span>
                                         ) : (
                                             <span>
-                                                {repayment.date? moment(repayment.date).format(DATE_FORMAT) : ""}
+                                                {repayment.date ? moment(repayment.date).format(DATE_FORMAT) : ""}
                                         &nbsp;
                                                 <ReactIntl.FormattedMessage id="contract.108" defaultMessage="回款" />
                                                 {repayment.amount || 0}
                                                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />，<ReactIntl.FormattedMessage id="contract.109" defaultMessage="毛利" />
                                                 {repayment.gross_profit || 0}
                                                 <ReactIntl.FormattedMessage id="contract.155" defaultMessage="元" />
-                                                {repayment.is_first === "true"? (
+                                                {repayment.is_first === "true" ? (
                                                     <span>
                                         , <ReactIntl.FormattedMessage id="contract.167" defaultMessage="首笔回款" />
                                                     </span>
@@ -214,7 +214,7 @@ const DetailRepayment = React.createClass({
                                             </span>
                                         )}
         
-                                        {hasPrivilege("OPLATE_REPAYMENT_ADD")? (
+                                        {hasPrivilege("OPLATE_REPAYMENT_ADD") ? (
                                             <span>
                                                 {isFormShow ? (
                                                     <span>

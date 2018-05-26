@@ -22,7 +22,7 @@ const AddBuyBasic = React.createClass({
                     {this.renderDateField()}
                     {this.renderAmountField()}
                     {this.renderStageField()}
-                    {formData.category? this.renderCategoryField() : null}
+                    {formData.category ? this.renderCategoryField() : null}
                     {this.renderRemarksField()}
                 </Validation>
             </Form>

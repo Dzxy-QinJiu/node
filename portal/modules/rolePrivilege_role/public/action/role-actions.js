@@ -88,9 +88,9 @@ function RoleActions() {
             _this.dispatch({
                 result: false
             });
-            return ;
+            return;
         }
-        roleAjax.getDefaultRole({app_id:clientId}).then(function(data) {              
+        roleAjax.getDefaultRole({app_id: clientId}).then(function(data) {              
             var getResultObj = {
                 result: data
             };            
@@ -99,7 +99,7 @@ function RoleActions() {
             _this.dispatch({
                 result: false
             });
-            if(errorMsg.status!=200) {
+            if(errorMsg.status != 200) {
                 message.error(Intl.get("role.default.get.failed", "获取默认角色失败"));
             }
         });

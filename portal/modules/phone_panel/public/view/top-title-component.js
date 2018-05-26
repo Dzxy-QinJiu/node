@@ -18,6 +18,6 @@ class TopTitle extends React.Component{
 
 }
 TopTitle.defaultProps = {
-    titleText :""
+    titleText: ""
 };
 export default TopTitle;

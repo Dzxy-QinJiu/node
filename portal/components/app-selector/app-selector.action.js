@@ -25,7 +25,7 @@ function AppSelectorAction() {
     this.getImageSrcByAjax = function(app) {
         var _this = this;
         appSelectorAjax.getAppInfo(app.app_id).then(function(data) {
-            _this.dispatch({app : app , src : data.image});
+            _this.dispatch({app: app , src: data.image});
         });
     };
 }

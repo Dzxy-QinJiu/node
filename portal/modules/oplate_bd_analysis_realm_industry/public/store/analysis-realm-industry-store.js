@@ -26,34 +26,34 @@ function AnalysisRealmIndustryStore() {
     //绑定action方法
     this.bindListeners({
         //设置开始时间
-        setStartTime : AnalysisRealmIndustryActions.setStartTime,
+        setStartTime: AnalysisRealmIndustryActions.setStartTime,
         //设置结束时间
-        setEndTime : AnalysisRealmIndustryActions.setEndTime,
+        setEndTime: AnalysisRealmIndustryActions.setEndTime,
         //设置loading状态
-        setLoadingState : AnalysisRealmIndustryActions.setLoadingState,
+        setLoadingState: AnalysisRealmIndustryActions.setLoadingState,
         //设置是否有数据
-        setNoData : AnalysisRealmIndustryActions.setNoData,
+        setNoData: AnalysisRealmIndustryActions.setNoData,
         //服务端获取安全域行业数据
-        getRealmIndustryAnalysisDataByAjax : AnalysisRealmIndustryActions.getRealmIndustryAnalysisDataByAjax,
+        getRealmIndustryAnalysisDataByAjax: AnalysisRealmIndustryActions.getRealmIndustryAnalysisDataByAjax,
         //设置右侧排行榜标题
-        setRankListTitle : AnalysisRealmIndustryActions.setRankListTitle
+        setRankListTitle: AnalysisRealmIndustryActions.setRankListTitle
     });
     //绑定view方法
     this.exportPublicMethods({
         //获取安全域总数
-        getRealmIndustryTotalCount : this.getRealmIndustryTotalCount,
+        getRealmIndustryTotalCount: this.getRealmIndustryTotalCount,
         //按照行业分组，获取安全域列表数据
-        getRealmIndustryAnalysisList : this.getRealmIndustryAnalysisList,
+        getRealmIndustryAnalysisList: this.getRealmIndustryAnalysisList,
         //获取开始时间
-        getStartTime : this.getStartTime,
+        getStartTime: this.getStartTime,
         //获取结束时间
-        getEndTime : this.getEndTime,
+        getEndTime: this.getEndTime,
         //获取loading状态
-        getLoadingState : this.getLoadingState,
+        getLoadingState: this.getLoadingState,
         //获取当前查询条件是否没有数据
-        getNoData : this.getNoData,
+        getNoData: this.getNoData,
         //获取是否一个安全域都没有
-        getNoIndustryAtAll : this.getNoIndustryAtAll
+        getNoIndustryAtAll: this.getNoIndustryAtAll
     });
 
 }
@@ -127,8 +127,8 @@ AnalysisRealmIndustryStore.prototype.getRealmIndustryAnalysisDataByAjax = functi
                 value = 0;
             }
             realmIndustryAnalysisList.push({
-                name : obj.name,
-                value : value
+                name: obj.name,
+                value: value
             });
         }
     });

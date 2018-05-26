@@ -43,7 +43,7 @@ var AppUserManage = React.createClass({
         return {
             ...AppUserStoreData,
             ...AppUserPanelSwitchStoreData,
-            customer_name:this.props.customer_name//从客户页面跳转过来传过的客户名字
+            customer_name: this.props.customer_name//从客户页面跳转过来传过的客户名字
         };
     },
     onStoreChange: function() {
@@ -262,7 +262,7 @@ var AppUserManage = React.createClass({
     getUserRowsTooltip: function() {
         return <span><ReactIntl.FormattedMessage id="user.user.list.click" defaultMessage="请在用户列表中点击"/><i
             className="iconfont icon-radio"
-            style={{fontSize:'20px',verticalAlign:'middle',position:'relative',top:'-3px'}}/><ReactIntl.FormattedMessage
+            style={{fontSize: '20px',verticalAlign: 'middle',position: 'relative',top: '-3px'}}/><ReactIntl.FormattedMessage
             id="user.user.list.select" defaultMessage="选择用户"/></span>;
     },
     //发邮件使用的参数
@@ -304,7 +304,7 @@ var AppUserManage = React.createClass({
         return null;
     },
     //是否显示批量变更按钮
-    isShowBatchOperateBtn:function(){
+    isShowBatchOperateBtn: function(){
         //当前视图
         let currentView = AppUserUtil.getCurrentView();
         //是否是从某个客户详情中跳转过来的
@@ -436,8 +436,8 @@ var AppUserManage = React.createClass({
             'none': currentView !== 'user'
         });
         var topNavLeftClass = classNames({
-            'pull-left':true,
-            'user_manage_return_block':true
+            'pull-left': true,
+            'user_manage_return_block': true
         });
 
         var showView = null;
@@ -499,7 +499,7 @@ var AppUserManage = React.createClass({
                                     </div>
                                 )
                             }
-                            { !Oplate.hideSomeItem  && !this.state.customer_id ? <PrivilegeChecker
+                            { !Oplate.hideSomeItem && !this.state.customer_id ? <PrivilegeChecker
                                 onClick={this.showRecentLoginPanel}
                                 check="APP_USER_LIST"
                                 className="inline-block recent-login-btn">

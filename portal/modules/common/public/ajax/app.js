@@ -1,10 +1,10 @@
 var trans = $.ajaxTrans();
 //根据当前用户数据权限，获取应用列表
-trans.register('grantApplicationList' , {url : '/rest/global/grant_applications',type : 'get'});
+trans.register('grantApplicationList' , {url: '/rest/global/grant_applications',type: 'get'});
 //根据当前用户数据权限，获取“我的应用”列表
-trans.register('ownerAppList' , {url : '/rest/global/my_applications' , type : 'get'});
+trans.register('ownerAppList' , {url: '/rest/global/my_applications' , type: 'get'});
 // 获取各应用的默认配置（到期停用\不变\降级）
-trans.register('appsDefaultConfig' , {url : '/rest/global/apps/default_config' , type : 'get'});
+trans.register('appsDefaultConfig' , {url: '/rest/global/apps/default_config' , type: 'get'});
 
 //暴露方法 获取应用列表
 exports.getGrantApplicationListAjax = function() {

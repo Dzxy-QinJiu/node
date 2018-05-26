@@ -12,7 +12,7 @@ function lan() {
     }else if (lan.indexOf('zh') > -1){
         language = 'zh';
     }else if (lan.indexOf('en') > -1){
-        language ='en';
+        language = 'en';
     }else{
         language = 'zh';
     }

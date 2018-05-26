@@ -14,7 +14,7 @@ class LeftMenuClass {
                 name: backendIntl.get("menu.realm", "安全域管理"),
                 routePath: "realm",
                 privileges: [
-                    "REALM_MANAGE_ADD_REALM",  //添
+                    "REALM_MANAGE_ADD_REALM", //添
                     "REALM_MANAGE_EDIT_REALM", //改
                     "REALM_MANAGE_DELETE_REALM",//删
                     "REALM_MANAGE_LIST_REALMS",//查
@@ -37,7 +37,7 @@ class LeftMenuClass {
                 name: backendIntl.get("menu.app", "应用管理"),
                 routePath: "app",
                 privileges: [
-                    "APP_MANAGE_ADD_APP",  //添
+                    "APP_MANAGE_ADD_APP", //添
                     "APP_MANAGE_EDIT_APP", //改
                     //"APP_MANAGE_DELETE_APP",//删
                     "APP_MANAGE_LIST_APPS",//查
@@ -141,22 +141,22 @@ class LeftMenuClass {
                     //有这个权限，才显示入口图标
                     showPrivileges: ["USER_ORGANIZATION_LIST"]
                 }, {
-                    id: "USER_AUDIT_LOG",  // 用户审计日志的唯一标识
+                    id: "USER_AUDIT_LOG", // 用户审计日志的唯一标识
                     name: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
                     displayName: backendIntl.get("menu.appuser.auditlog", "用户审计日志"),
                     routePath: "user/log",
                     privileges: [
-                        "USER_AUDIT_LOG_LIST"     // 查看用户审计日志
+                        "USER_AUDIT_LOG_LIST" // 查看用户审计日志
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ["USER_AUDIT_LOG_LIST"]
                 }, {
-                    id: "POSITION_MANAGE",  // 座席号管理的唯一标识
+                    id: "POSITION_MANAGE", // 座席号管理的唯一标识
                     name: backendIntl.get("menu.appuser.position", "座席号管理"),
                     displayName: backendIntl.get("menu.appuser.position", "座席号管理"),
                     routePath: "user/position",
                     privileges: [
-                        "MEMBER_PHONE_ORDER_MANAGE"  // （实际权限）座席号添加、修改、删除、绑定，显示列表
+                        "MEMBER_PHONE_ORDER_MANAGE" // （实际权限）座席号添加、修改、删除、绑定，显示列表
                     ],
                     //有这个权限，才显示入口图标
                     showPrivileges: ["MEMBER_PHONE_ORDER_MANAGE"]
@@ -173,7 +173,7 @@ class LeftMenuClass {
                         name: backendIntl.get("menu.user", "成员管理"),
                         routePath: "background_management/user",
                         privileges: [
-                            "USER_MANAGE_ADD_USER",  //添
+                            "USER_MANAGE_ADD_USER", //添
                             "USER_MANAGE_EDIT_USER", //改
                             //"USER_MANAGE_DELETE_USER",//删
                             "USER_MANAGE_LIST_USERS",//查

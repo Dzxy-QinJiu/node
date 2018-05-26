@@ -16,18 +16,18 @@ exports.getAppList = function() {
 
 // 获取在前在线用户总数
 var onlineUserListAjax;
-exports.getOnlineUserList =  (pageSize, pageNum, condition)  => {
+exports.getOnlineUserList = (pageSize, pageNum, condition) => {
     var Deferred = $.Deferred();
     onlineUserListAjax && onlineUserListAjax.abort();
     onlineUserListAjax = $.ajax({
         url: "/rest/online/list/" + pageSize + "/" + pageNum,
         dataType: "json",
         type: "post",
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
         data: condition,
-        error:  (xhr,statusText) => {
+        error: (xhr,statusText) => {
             if(statusText !== 'abort') {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -38,7 +38,7 @@ exports.getOnlineUserList =  (pageSize, pageNum, condition)  => {
 
 //获取今日上线的用户数
 var recentLoginUsersAjax = null;
-exports.getRecentLoginUsers=  (params) => {
+exports.getRecentLoginUsers = (params) => {
     var Deferred = $.Deferred();
     if(recentLoginUsersAjax) {
         recentLoginUsersAjax.abort();
@@ -48,10 +48,10 @@ exports.getRecentLoginUsers=  (params) => {
         dataType: 'json',
         type: 'get',
         data: params,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr , textStatus) => {
+        error: (xhr , textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseJSON || Intl.get("user.list.get.failed", "获取用户列表失败"));
             }
@@ -71,10 +71,10 @@ exports.getUserTypeStatistics = (dataType,obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -94,10 +94,10 @@ exports.getAddedUserTypeStatistics = (dataType,obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -115,10 +115,10 @@ exports.getUserActiveNess = (dataType,dateRange,obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -129,7 +129,7 @@ exports.getUserActiveNess = (dataType,dateRange,obj) => {
 
 //获取新增用户的团队统计
 var addedTeamAjax;
-exports.getAddedTeam = (obj)  => {
+exports.getAddedTeam = (obj) => {
     addedTeamAjax && addedTeamAjax.abort();
     obj = obj || {};
     var Deferred = $.Deferred();
@@ -138,10 +138,10 @@ exports.getAddedTeam = (obj)  => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -161,10 +161,10 @@ exports.getAddedZone = (obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }
@@ -207,10 +207,10 @@ exports.getTotalZone = (obj) => {
         dataType: 'json',
         type: 'get',
         data: obj,
-        success:  (data) => {
+        success: (data) => {
             Deferred.resolve(data);
         },
-        error:  (xhr,textStatus) => {
+        error: (xhr,textStatus) => {
             if(textStatus !== 'abort') {
                 Deferred.reject(xhr.responseText);
             }

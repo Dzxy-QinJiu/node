@@ -58,7 +58,7 @@ function start() {
         .persist()
         .post('/rest/user', {
             name: "zhangsan",
-            password:"aaa"
+            password: "aaa"
         }).reply(200, {name: "name must be lisi", pw: "password must start with a"});
 }
 

@@ -113,10 +113,36 @@
     //防止没有children的组件的额外结束标签
     "react/self-closing-comp": 0,
     /**react end **/
-    //    "indent": [
-    //      "warn",
-    //      4
-    //    ],
+    //强制使用一致的缩进
+    "indent": [
+      "warn",
+      4
+    ],
+    //强制在 function的左括号之前使用一致的空格,不是用空格
+    "space-before-function-paren": [
+      "warn",
+      "never"
+    ],
+    //要求操作符周围有空格
+    "space-infix-ops": "error",
+    //禁止使用多个空格
+    "no-multi-spaces": "error",
+    //强制数组方括号中使用一致的空格
+    "array-bracket-spacing": "error",
+    //强制在一元操作符前后使用一致的空格
+    "space-unary-ops": "error",
+    //强制箭头函数的箭头前后使用一致的空格
+    "arrow-spacing": "error",
+    //强制分号之前和之后使用一致的空格
+    "semi-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    //冒号前后的空格
+    "key-spacing": "error",
     "linebreak-style": 0,
     "quotes": [
       "off",

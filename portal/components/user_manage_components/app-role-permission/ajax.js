@@ -4,9 +4,9 @@ var roleAjax = require("../../../modules/common/public/ajax/role");
 exports.getRoleList = function(appId) {
     var Deferred = $.Deferred();
     roleAjax.getRolesByAppId().resolvePath({
-        app_id : appId
+        app_id: appId
     }).sendRequest({
-        permission_ids : "true"
+        permission_ids: "true"
     }).success(function(data) {
         Deferred.resolve(data);
     }).error(function(xhr) {
@@ -21,7 +21,7 @@ exports.getRoleList = function(appId) {
 exports.getPermissionMap = function(appId) {
     var Deferred = $.Deferred();
     roleAjax.getPrivilegeGroupsByAppId().resolvePath({
-        app_id : appId
+        app_id: appId
     }).sendRequest().success(function(data) {
         Deferred.resolve(data);
     }).error(function(xhr) {

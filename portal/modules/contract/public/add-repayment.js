@@ -130,7 +130,7 @@ const AddRepayment = React.createClass({
                     </Validation>
                 </div>
 
-                {this.state.repayments.length? (
+                {this.state.repayments.length ? (
                     <div className="finance-list">
                         <ul>
                             {this.state.repayments.map((repayment, index) => { return (

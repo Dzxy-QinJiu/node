@@ -13,7 +13,7 @@ exports.getUserAbnormalLogin = function(data){
         type: 'get',
         data: data,
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {
@@ -35,10 +35,10 @@ exports.ignoreAbnormalLogin = function(id) {
         dataType: 'json',
         type: 'post',
         data: { id: id },
-        success:  (result) => {
+        success: (result) => {
             Deferred.resolve(result);
         },
-        error:  (xhr) => {
+        error: (xhr) => {
             Deferred.reject(xhr.responseJSON || Intl.get("user.login.abnormal.failed", "忽略异常登录地失败！"));
         }
     });

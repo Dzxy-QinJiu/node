@@ -26,7 +26,7 @@ class SmsServerForm extends React.Component {
             } else {
                 let realmId = this.props.realmId;
                 let realmConfigInfo = this.state.realmConfigInfo;
-                RealmAjax.settingSmsServer(realmId, values).then(  (result) => {
+                RealmAjax.settingSmsServer(realmId, values).then( (result) => {
                     if (result) {
                         realmConfigInfo.sms_gate_username = values.sms_gate_username;
                         realmConfigInfo.sms_gate_password = values.sms_gate_username;
@@ -84,7 +84,7 @@ class SmsServerForm extends React.Component {
                         <Input type="password" autoComplete="new-password" placeholder={SMS.passwordMessage}/>
                     )}
                 </FormItem>
-                <FormItem  className="submit-button">
+                <FormItem className="submit-button">
                     <Button type="primary" htmlType="submit">{COMMON.sure}</Button>
                     <Button onClick={this.props.cancelSetOrUpdateSms}>{COMMON.cancel}</Button>
                 </FormItem>

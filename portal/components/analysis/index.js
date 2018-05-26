@@ -7,7 +7,7 @@ import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
 import { AntcBarPieChart, AntcHorizontalStageChart } from "antc";
 import Retention from "../chart/retention";
-import Funnel from  "../chart/funnel";
+import Funnel from "../chart/funnel";
 import Box from "../chart/box";
 import SigningStatistics from "../chart/signing-statistics";
 import routeList from "../../modules/common/route";
@@ -44,8 +44,8 @@ const Analysis = React.createClass({
             valueField: "value",
             sendRequest: true,
             reverseChart: false,
-            errAndRightBothShow:false,//出错后的提示和正确时的展示同时显示出来
-            notShowLoading:false//不展示loading效果
+            errAndRightBothShow: false,//出错后的提示和正确时的展示同时显示出来
+            notShowLoading: false//不展示loading效果
         };
     },
     getInitialState() {
@@ -81,7 +81,7 @@ const Analysis = React.createClass({
         }
     },
     componentWillReceiveProps(nextProps) {
-        const sendRequest = _.isBoolean(nextProps.sendRequest) ? nextProps.sendRequest: this.props.sendRequest;
+        const sendRequest = _.isBoolean(nextProps.sendRequest) ? nextProps.sendRequest : this.props.sendRequest;
         if (
             (nextProps.type != this.props.type && sendRequest)
             ||
@@ -154,7 +154,7 @@ const Analysis = React.createClass({
         const arg = {
             url: route.path,
             params: {
-                type: props.type === "app_id"? this.state.app_id : props.type,
+                type: props.type === "app_id" ? this.state.app_id : props.type,
                 property: props.property ? props.property : '_null',
             },
             query: {
@@ -208,7 +208,7 @@ const Analysis = React.createClass({
                 if (_.isFunction(props.processData)){
                     result = props.processData(result,"");
                 }
-                this.setState({ chartData: result, resultType: "",resultErrorMsg:""});
+                this.setState({ chartData: result, resultType: "",resultErrorMsg: ""});
             }
         }, errorMsg => {
             this.handleErrorCase(props, errorMsg);
@@ -301,7 +301,7 @@ const Analysis = React.createClass({
             startTime: this.props.startTime || this.state.starttime,
             endTime: this.props.endTime || this.state.endtime,
             resultType: this.state.resultType,
-            reverseChart:this.props.reverseChart
+            reverseChart: this.props.reverseChart
         };
 
         if (this.props.presetLegend === "userType") {
@@ -317,7 +317,7 @@ const Analysis = React.createClass({
 
         const chartType = CHART_TYPE_MAP[props.chartType];
         return (
-            <div style={{height:this.props.height}} className="analysis-container">
+            <div style={{height: this.props.height}} className="analysis-container">
                 {this.renderChartContent(chartType, props)}
             </div>
         );

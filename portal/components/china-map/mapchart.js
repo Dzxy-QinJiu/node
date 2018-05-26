@@ -36,11 +36,11 @@ MapChart.prototype.getTooltipOptions = function() {
 
     return {
         trigger: 'item',
-        backgroundColor : '#0b80e0',
-        textStyle : {
+        backgroundColor: '#0b80e0',
+        textStyle: {
             color: '#fff'
         },
-        formatter : function(obj) {
+        formatter: function(obj) {
             getTooltipDom();
             if(obj.name === '南海诸岛') {
                 $tooltipDom.addClass("notshow");
@@ -86,33 +86,33 @@ MapChart.prototype.getSplitList = function() {
 //获取echart的地图配置
 MapChart.prototype.getEchartOptions = function() {
     var option = {
-        tooltip : this.getTooltipOptions(),
+        tooltip: this.getTooltipOptions(),
         dataRange: {
             x: 'left',
             y: 'bottom',
-            orient : 'horizontal',
-            itemGap : 1,
-            itemWidth:22,
-            itemHeight:19,
+            orient: 'horizontal',
+            itemGap: 1,
+            itemWidth: 22,
+            itemHeight: 19,
             splitList: this.getSplitList(),
             color: oplateConsts.MAP_COLOR,
-            text : ['多','少'],
-            textStyle : {
-                color:'#80949d'
+            text: ['多','少'],
+            textStyle: {
+                color: '#80949d'
             }
         },
-        series : [
+        series: [
             {
                 name: '中国',
                 type: 'map',
                 mapType: 'china',
                 roam: false,
-                mapLocation : {
-                    top : 0
+                mapLocation: {
+                    top: 0
                 },
-                itemStyle:{
-                    normal:{label:{show:true}},
-                    emphasis:{label:{show:true}}
+                itemStyle: {
+                    normal: {label: {show: true}},
+                    emphasis: {label: {show: true}}
                 },
                 data: this.getSeries()
             }

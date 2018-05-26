@@ -6,12 +6,12 @@ const UserTimeRangeField = {
     renderUserTimeRangeBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalTime : {
-                range : "12m",
-                start_time : new Date().getTime(),
-                end_time : new Date().getTime()
+            isCustomSetting: false,
+            appId: '',
+            globalTime: {
+                range: "12m",
+                start_time: new Date().getTime(),
+                end_time: new Date().getTime()
             }
         } , config);
 
@@ -19,7 +19,7 @@ const UserTimeRangeField = {
             return null;
         }
 
-        const onSelectDate = !config.isCustomSetting ? (start_time,end_time,range)=>{
+        const onSelectDate = !config.isCustomSetting ? (start_time,end_time,range) => {
             const formData = this.state.formData;
             formData.start_time = start_time;
             formData.end_time = end_time;
@@ -75,7 +75,7 @@ const UserTimeRangeField = {
                         disableDateBeforeRange={true}
                         disableDateBeforeToday={true}
                         endTimeEndOfDay={false}
-                        getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点过期",{'date':date});}}
+                        getEndTimeTip={function(date){return Intl.get("user.open.cycle.date.tip","将在{date}的0点过期",{'date': date});}}
                         onSelect={onSelectDate}
                         range={currentRange}
                         start_time={currentStartTime}

@@ -68,11 +68,11 @@ function SalesTeamAction() {
         });
     };
     //获取销售目标
-    this.getSalesGoals= function(teamId) {
-        this.dispatch({loading:true, error:false});
-        SalesTeamAjax.getSalesGoals(teamId).then((salesGoals)=>{
-            this.dispatch({loading: false, error: false, result:salesGoals});
-        }, (errorMsg)=> {
+    this.getSalesGoals = function(teamId) {
+        this.dispatch({loading: true, error: false});
+        SalesTeamAjax.getSalesGoals(teamId).then((salesGoals) => {
+            this.dispatch({loading: false, error: false, result: salesGoals});
+        }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get("sales.team.get.sales.team.member.list.failed", "获取销售目标失败")});
         });
     };

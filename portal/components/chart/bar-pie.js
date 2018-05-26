@@ -13,15 +13,15 @@ import { packageTry } from 'LIB_DIR/func';
 
 class AntcBarPieChart extends React.Component {
     static defaultProps = {
-        chartData : [],
-        legend : [],
+        chartData: [],
+        legend: [],
         //最多显示的系列数
         maxSeries: 10,
         //多数在总数中的占比
         proportion: 0.9,
-        width : '100%',
-        height : 214,
-        resultType : 'loading',
+        width: '100%',
+        height: 214,
+        resultType: 'loading',
     }
 
     constructor(props) {
@@ -57,8 +57,8 @@ class AntcBarPieChart extends React.Component {
 
     getEchartOptions() {
         var option = {
-            animation : false,
-            tooltip : {
+            animation: false,
+            tooltip: {
                 show: false
             },
             legend: {
@@ -81,7 +81,7 @@ class AntcBarPieChart extends React.Component {
                 splitLine: false,
                 splitArea: false,
             },
-            series : this.getSeries(),
+            series: this.getSeries(),
         };
         return option;
     }
@@ -147,7 +147,7 @@ class AntcBarPieChart extends React.Component {
                 //如果该比值大于设定的阀值，说明到了临界点
                 //开始对临界索引进行累加
                 if (proportion > this.props.proportion) {
-                    boundaryIndex ++;
+                    boundaryIndex++;
                 }
 
                 //若临界索引值为1，说明当前数据为多数派中的最后一个数据
@@ -252,7 +252,7 @@ class AntcBarPieChart extends React.Component {
             if (minorChartData.length) {
                 series.push({
                     type: 'pie',
-                    radius : '50%',
+                    radius: '50%',
                     center: ['60%', '50%'],
                     label: {
                         normal: {
@@ -271,8 +271,8 @@ class AntcBarPieChart extends React.Component {
         if (_.isArray(data)) {
             return data.map(item => {
                 return {
-                    name : item.name,
-                    value : item.count
+                    name: item.name,
+                    value: item.count
                 };
             });
         }
@@ -289,7 +289,7 @@ class AntcBarPieChart extends React.Component {
         }
 
         this.echartInstance = echarts.init(this.refs.chart,macronsTheme);
-        var chartData = this.props.chartData? JSON.parse(JSON.stringify(this.props.chartData)) : [];
+        var chartData = this.props.chartData ? JSON.parse(JSON.stringify(this.props.chartData)) : [];
         if (this.props.dataField) chartData = chartData[this.props.dataField];
         if (_.isEmpty(chartData)) {
             if(this.echartInstance) {
@@ -308,15 +308,15 @@ class AntcBarPieChart extends React.Component {
     render() {
         return (
             <div className="analysis-chart">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:this.props.height}}>
+                        <div className="loadwrap" style={{height: this.props.height}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:this.props.height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: this.props.height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

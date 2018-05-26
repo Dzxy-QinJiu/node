@@ -40,7 +40,7 @@ var BootstrapDatepicker = React.createClass({
         }
 
         if (props.dateSelectRange) {
-            options.startDate = new Date(Date.now() - props.dateSelectRange) ;
+            options.startDate = new Date(Date.now() - props.dateSelectRange);
         }
 
         if (props.disableDateBeforeToday) {
@@ -159,8 +159,8 @@ var BootstrapDatepicker = React.createClass({
         }
         return {
             value: value,
-            start_time: this.props.start_time||"",
-            end_time: this.props.end_time||""
+            start_time: this.props.start_time || "",
+            end_time: this.props.end_time || ""
         };
     }
     ,

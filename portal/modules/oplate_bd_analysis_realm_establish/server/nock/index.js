@@ -13,8 +13,8 @@ function generateData() {
     var value;
     while (len++ < 200) {
         d.push({
-            name : new Date(2014, 9, 1, 0, len * 10000).getTime(),
-            value : (Math.random()*30).toFixed(2) - 0
+            name: new Date(2014, 9, 1, 0, len * 10000).getTime(),
+            value: (Math.random() * 30).toFixed(2) - 0
         });
     }
     return d;
@@ -32,7 +32,7 @@ exports.init = function() {
         .get(RealmEstablishService.urls.getRealmEstablish)
         .query(true)
         .reply(function(uri , requestBody , cb) {
-            idx ++;
+            idx++;
             var req = new nockParser().setRequest(this.req).setBody(requestBody).parse();
             //获取开始、结束时间
             var startTime = req.query.starttime;
@@ -41,7 +41,7 @@ exports.init = function() {
             setTimeout(function() {
                 if(idx % 6 === 0) {
                     cb(null , [
-                        200, [],{'norealm':true}
+                        200, [],{'norealm': true}
                     ]);
                 }
                 //如果时间是大于当前时间的，返回没有数据

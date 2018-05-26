@@ -13,7 +13,7 @@ module.exports = function(app) {
     }
     isInited = true;
     app.use('/resources/', function(req, res, next) {
-        req.pipe(request(proxyDir+req.originalUrl)).pipe(res);
+        req.pipe(request(proxyDir + req.originalUrl)).pipe(res);
     });
 };
 

@@ -12,18 +12,18 @@ class ApplyViewDetailStore {
         //审批的详情数据
         this.detailInfoObj = {
             // "" loading error
-            loadingResult : "loading",
+            loadingResult: "loading",
             //获取的详情信息
-            info : {},
+            info: {},
             //错误信息
-            errorMsg : ""
+            errorMsg: ""
         };
         //审批之后数据存储
         this.applyResult = {
             //提交状态  "" loading error success
-            submitType : "",
+            submitType: "",
             //错误信息
-            errorMsg : ""
+            errorMsg: ""
         };
         //是否显示右侧面板
         this.showRightPanel = false;
@@ -43,21 +43,21 @@ class ApplyViewDetailStore {
         this.applyIsExpanded = false;
         //用户名，昵称，审批备注，延期时间
         this.formData = {
-            user_name : "",
-            nick_name:"",
-            comment : "",
+            user_name: "",
+            nick_name: "",
+            comment: "",
             //延迟时间，默认数字是1
-            delayTimeNumber : 1,
+            delayTimeNumber: 1,
             //延期时间的单位，默认是天
-            delayTimeUnit : "days",
+            delayTimeUnit: "days",
             // 到期时间(选择到期时间)
             end_date: moment().add('days',1).valueOf(),
             // 延期时间
             delay_time: '',
             //审批修改密码
-            apply_detail_password : "",
+            apply_detail_password: "",
             //确认密码
-            confirmPassword:""
+            confirmPassword: ""
         };
         //各个应用的配置
         this.appsSetting = {};
@@ -71,11 +71,11 @@ class ApplyViewDetailStore {
         this.returnDelayTimeShow = true;
         //表单验证用户名
         this.status = {
-            user_name : {},
+            user_name: {},
             nick_name: {},
-            apply_detail_password : {},
+            apply_detail_password: {},
             //确认密码
-            confirmPassword:{}
+            confirmPassword: {}
         };
         //密码强度
         this.passStrength = {
@@ -84,29 +84,29 @@ class ApplyViewDetailStore {
         //回复列表
         this.replyListInfo = {
             //三种状态,loading,error,''
-            result : "loading",
+            result: "loading",
             //列表数组
-            list : [],
+            list: [],
             //服务端错误信息
-            errorMsg : ""
+            errorMsg: ""
         };
         //回复表单
         this.replyFormInfo = {
             //三种状态,loading,error,success,''
-            result : "",
+            result: "",
             //服务端错误信息
-            errorMsg : ""
+            errorMsg: ""
         };
         // 是否显示没有设置角色的弹框(管理员批准的时候，
         // 如果是创建正式、创建试用、已有用户申请开通新应用正式、已有用户申请开通新应用试用，
         // 需要先检查角色，没有设置角色的时候，要显示一个弹框)
         this.rolesNotSettingModalDialog = {
             //模态框是否显示
-            show : false,
+            show: false,
             //应用名称列表
-            appNames : [],
+            appNames: [],
             //是否继续提交
-            continueSubmit : false
+            continueSubmit: false
         };
 
         // 应用的默认配置信息
@@ -162,9 +162,9 @@ class ApplyViewDetailStore {
     getApplyDetail(obj) {
         //没有角色的时候，显示模态框，重置
         this.rolesNotSettingModalDialog = {
-            show : false,
-            appNames : [],
-            continueSubmit : false
+            show: false,
+            appNames: [],
+            continueSubmit: false
         };
         if(obj.error) {
             this.detailInfoObj.loadingResult = 'error';
@@ -182,10 +182,10 @@ class ApplyViewDetailStore {
             this.detailInfoObj.errorMsg = '';
             this.createAppsSetting();
             if(_.isArray(this.detailInfoObj.info.user_names)) {
-                this.formData.user_name =  this.detailInfoObj.info.user_names[0];
+                this.formData.user_name = this.detailInfoObj.info.user_names[0];
             }
             if(_.isArray(this.detailInfoObj.info.nick_names)) {
-                this.formData.nick_name =  this.detailInfoObj.info.nick_names[0];
+                this.formData.nick_name = this.detailInfoObj.info.nick_names[0];
             }
             let delayTime = 0;
             if(this.detailInfoObj.info.type == 'apply_grant_delay'){
@@ -236,19 +236,19 @@ class ApplyViewDetailStore {
             }
             this.appsSetting[app_id] = {
                 //开通个数
-                number : 'number' in appInfo ? appInfo.number : 1,
+                number: 'number' in appInfo ? appInfo.number : 1,
                 //到期停用
-                over_draft:'over_draft' in appInfo ? appInfo.over_draft + '' : '1',
+                over_draft: 'over_draft' in appInfo ? appInfo.over_draft + '' : '1',
                 //时间
-                time:{
-                    start_time : start_time,
-                    end_time : end_time,
-                    range : range
+                time: {
+                    start_time: start_time,
+                    end_time: end_time,
+                    range: range
                 },
                 //角色
-                roles :  appInfo.roles || [],
+                roles: appInfo.roles || [],
                 //权限
-                permissions : appInfo.permissions || []
+                permissions: appInfo.permissions || []
             };
         });
     }
@@ -394,10 +394,10 @@ class ApplyViewDetailStore {
         this.returnDelayTimeShow = false;
         this.isModifyDelayTime = false;
         if (this.formData.delayTimeUnit != 'custom') {
-            this.formData.delay_time  = delay;
+            this.formData.delay_time = delay;
             this.formData.end_date = '';
         } else {
-            this.formData.end_date  = delay;
+            this.formData.end_date = delay;
             this.formData.delay_time = '';
         }
 
@@ -492,8 +492,8 @@ class ApplyViewDetailStore {
         if(this.replyFormInfo.result === 'success') {
             //回复表单重置
             this.replyFormInfo = {
-                result : "",
-                errorMsg : ""
+                result: "",
+                errorMsg: ""
             };
         }
     }

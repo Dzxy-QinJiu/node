@@ -82,7 +82,7 @@ class AskForLeaveForm extends React.Component {
     };
 
     //添加或者修改时提取出相似的方法
-    addOrEditFunction = (type) =>{
+    addOrEditFunction = (type) => {
         //添加请假信息时
         if (this.props.formType === "add") {
             if (type === "save"){
@@ -97,7 +97,7 @@ class AskForLeaveForm extends React.Component {
         } else if (this.props.formType === "edit") {
             if (type === "save"){
                 //更新请假信息时
-                var reqData = _.extend({},{id:this.props.isEdittingItem.id},this.state.submitObj);
+                var reqData = _.extend({},{id: this.props.isEdittingItem.id},this.state.submitObj);
                 WeeklyReportDetailAction.updateForLeave(reqData, (result) => {
                     this.props.afterUpdateLeave(result);
                 });

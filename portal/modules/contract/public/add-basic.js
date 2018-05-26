@@ -94,7 +94,7 @@ const AddBasic = React.createClass({
                         label={Intl.get("contract.35", "起始时间")}
                     >
                         <DatePicker
-                            value={formData.start_time? moment(formData.start_time) : ""}
+                            value={formData.start_time ? moment(formData.start_time) : ""}
                             onChange={this.setField.bind(this, "start_time")}
                         />
                     </FormItem>
@@ -103,7 +103,7 @@ const AddBasic = React.createClass({
                         label={Intl.get("contract.105", "结束时间")}
                     >
                         <DatePicker
-                            value={formData.end_time? moment(formData.end_time) : ""}
+                            value={formData.end_time ? moment(formData.end_time) : ""}
                             onChange={this.setField.bind(this, "end_time")}
                         />
                     </FormItem>
@@ -135,7 +135,7 @@ const AddBasic = React.createClass({
                     </FormItem>
                     {this.renderStageField()}
                     {this.renderLabelField()}
-                    {formData.category? this.renderCategoryField() : null}
+                    {formData.category ? this.renderCategoryField() : null}
                     {this.renderRemarksField()}
                     {this.renderBelongCustomerField()}
                 </Validation>

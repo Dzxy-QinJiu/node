@@ -128,7 +128,7 @@ var AuthorityForm = React.createClass({
                     return;
                 }
                 //是否有没有通过验证的数据权限
-                let hasNotValidPermissionData = _.some(_this.state.multiFormNumArr, index=>_this.state.formData[CONSTANT.PERMISSION_DATA_NUll + index]);
+                let hasNotValidPermissionData = _.some(_this.state.multiFormNumArr, index => _this.state.formData[CONSTANT.PERMISSION_DATA_NUll + index]);
                 //有没通过验证的数据权限，不可保存
                 if (hasNotValidPermissionData) {
                     return;
@@ -292,15 +292,15 @@ var AuthorityForm = React.createClass({
         var status = this.state.status;
         var multiFormNumArr = this.state.multiFormNumArr;
 
-        delete  formData[CONSTANT.PERMISSION_NAME + index];
+        delete formData[CONSTANT.PERMISSION_NAME + index];
         delete formData[CONSTANT.PERMISSION_TYPE + index];
-        delete  formData[CONSTANT.PERMISSION_DEFINE + index];
-        delete  formData[CONSTANT.PERMISSION_API_ARRAY + index];
+        delete formData[CONSTANT.PERMISSION_DEFINE + index];
+        delete formData[CONSTANT.PERMISSION_API_ARRAY + index];
 
-        delete  status[CONSTANT.PERMISSION_NAME + index];
-        delete  status[CONSTANT.PERMISSION_TYPE + index];
-        delete  status[CONSTANT.PERMISSION_DEFINE + index];
-        delete  status[CONSTANT.PERMISSION_API_ARRAY + index];
+        delete status[CONSTANT.PERMISSION_NAME + index];
+        delete status[CONSTANT.PERMISSION_TYPE + index];
+        delete status[CONSTANT.PERMISSION_DEFINE + index];
+        delete status[CONSTANT.PERMISSION_API_ARRAY + index];
 
         multiFormNumArr.splice(jQuery.inArray(index, multiFormNumArr), 1);
         this.setState({
@@ -410,10 +410,10 @@ var AuthorityForm = React.createClass({
                 <Option value="DELETE">DELETE</Option>
             </Select>
             <Input name="permissionApisKey" id="permissionApisKey"
-                className={permissionApi.isNull?"auth-validate-error":""}
+                className={permissionApi.isNull ? "auth-validate-error" : ""}
                 value={permissionApi.permissionApiUrl}
-                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
-                onBlur={index==0?this.validatePermissionApi.bind(this,index,permissionIndex):noop}
+                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
+                onBlur={index == 0 ? this.validatePermissionApi.bind(this,index,permissionIndex) : noop}
                 onChange={this.onPermissionInputChange.bind(this,index,permissionIndex)}
             />
             <div className="permission-inputgroup-btns-div">
@@ -497,10 +497,10 @@ var AuthorityForm = React.createClass({
                     permissionDatas.map(function(str, index) {
                         return <div className="permissionData-item" key={index}>
                             <Input name="permissionData" id="permissionData"
-                                className={permissionDataNull&&index==0?"auth-validate-error":""}
-                                placeholder={index==0?Intl.get("authority.need.write.one", "必填一项*"):""}
+                                className={permissionDataNull && index == 0 ? "auth-validate-error" : ""}
+                                placeholder={index == 0 ? Intl.get("authority.need.write.one", "必填一项*") : ""}
                                 value={permissionDatas[index]}
-                                onBlur={index==0?_this.validatePermissionData.bind(this,index,permissionIndex):noop}
+                                onBlur={index == 0 ? _this.validatePermissionData.bind(this,index,permissionIndex) : noop}
                                 onChange={_this.onPermissionDataChange.bind(_this , index,permissionIndex)}
                             />
                             <div className="permission-inputgroup-btns-div">
@@ -606,7 +606,7 @@ var AuthorityForm = React.createClass({
                         help={status[permissionNameID].isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status[permissionNameID].errors && status[permissionNameID].errors.join(','))}
                     >
                         <Validator
-                            rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                            rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                             <Input name={permissionNameID} id={permissionNameID}
                                 value={formData[permissionNameID]}
                                 placeholder={Intl.get("common.required.tip", "必填项*")}
@@ -621,7 +621,7 @@ var AuthorityForm = React.createClass({
                         wrapperCol={{span: wrapperCol}}
                     >
                         <RadioGroup onChange={_this.setField.bind(_this, permissionTypeID)}
-                            value={formData[permissionTypeID]||"REST"}>
+                            value={formData[permissionTypeID] || "REST"}>
                             <Radio value="REST">REST</Radio>
                             <Radio value="DATA">DATA</Radio>
                         </RadioGroup>
@@ -653,7 +653,7 @@ var AuthorityForm = React.createClass({
                         help={status[permissionDefineID].isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status[permissionDefineID].errors && status[permissionDefineID].errors.join(','))}
                     >
                         <Validator
-                            rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                            rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                             <Input name={permissionDefineID} id={permissionDefineID}
                                 value={formData[permissionDefineID]}
                                 onChange={_this.setField.bind(_this, permissionDefineID)}
@@ -689,7 +689,7 @@ var AuthorityForm = React.createClass({
                                         help={status.classifyName.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.classifyName.errors && status.classifyName.errors.join(','))}
                                     >
                                         <Validator
-                                            rules={[{required: true, min: 1, max : 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
+                                            rules={[{required: true, min: 1, max: 200 , message: Intl.get("authority.input.length.tip", "最少1个字符,最多200个字符")}]}>
                                             <Input name="classifyName" id="classifyName"
                                                 value={formData.classifyName}
                                                 onChange={this.setField.bind(this, 'classifyName')}
@@ -713,7 +713,7 @@ var AuthorityForm = React.createClass({
                             </Button>
                             {this.state.saveGroupResult ? (
                                 <div className="indicator">
-                                    <AlertTimer time={this.state.saveGroupResult=="error"?3000:600}
+                                    <AlertTimer time={this.state.saveGroupResult == "error" ? 3000 : 600}
                                         message={this.state.saveGroupMsg}
                                         type={this.state.saveGroupResult} showIcon
                                         onHide={this.hideSaveTooltip}/>

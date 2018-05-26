@@ -45,7 +45,7 @@ const AnalysisFilter = React.createClass({
     render() {
         return (
             <div className="analysis-filter">
-                {this.props.isAppSelectorShow? (
+                {this.props.isAppSelectorShow ? (
                     <span>
                         <AnalysisAppSelector
                             onSelectApp={this.onSelectApp}

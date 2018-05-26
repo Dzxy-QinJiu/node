@@ -46,10 +46,10 @@ var SalesStageInfo = React.createClass({
         var _this = this;
         var salesStage = this.props.salesStage;
         var width = this.props.width;
-        var modalContent = Intl.get("sales.stage.delete.sales.stage","确定删除这个销售阶段麽")+'?';
+        var modalContent = Intl.get("sales.stage.delete.sales.stage","确定删除这个销售阶段麽") + '?';
         return (
-            <div className="sales-stage-timeline-item-content modal-container" style={{width:width}} data-tracename="销售阶段列表">
-                <div className="sales-stage-content" style={{width:width -100}}>
+            <div className="sales-stage-timeline-item-content modal-container" style={{width: width}} data-tracename="销售阶段列表">
+                <div className="sales-stage-content" style={{width: width - 100}}>
                     <div className="sales-stage-content-name">{salesStage.name}</div>
                     <div
                         className="sales-stage-content-describe">{salesStage.description}</div>

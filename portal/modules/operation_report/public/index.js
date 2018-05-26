@@ -53,7 +53,7 @@ let OperationReport = React.createClass({
     },
     //获取应用列表
     getAppList(){
-        OperationReportAction.getAppList(data=> {
+        OperationReportAction.getAppList(data => {
             //获取本地缓存中保存的上次选择的appId列表
             let selectAppList = this.getLastSelectAppIds();
             // 缓存中有保存的上次所选的应用列表
@@ -95,11 +95,11 @@ let OperationReport = React.createClass({
         let isInit = false;//是否是首次加载
         if (selectAppList) {
             //过滤掉空的
-            selectAppList = _.filter(selectAppList, appId=>appId);
+            selectAppList = _.filter(selectAppList, appId => appId);
             isInit = true;
         } else {
             //过滤掉空的
-            selectAppList = _.filter(this.state.selectAppList, appId=>appId);
+            selectAppList = _.filter(this.state.selectAppList, appId => appId);
         }
 
         if (_.isArray(selectAppList) && selectAppList.length) {
@@ -126,7 +126,7 @@ let OperationReport = React.createClass({
                 app_id: appId,
                 starttime: oneWeekParams.start_time,
                 endtime: oneWeekParams.end_time,
-                authType:this.getAnalysisDataType()
+                authType: this.getAnalysisDataType()
             });
             //近四周用户活跃度
             OperationReportAction.getUserActive(fourWeekParams);
@@ -136,7 +136,7 @@ let OperationReport = React.createClass({
             OperationReportAction.getUserDailyActive(oneWeekParams);
             if (isInit) {
                 //首次获取数据时，团队数据获取之前先获取团队列表
-                OperationReportAction.getTeamList(()=> {
+                OperationReportAction.getTeamList(() => {
                     this.getTeamReportData(oneWeekParams);
                 });
             } else {
@@ -197,7 +197,7 @@ let OperationReport = React.createClass({
         this.state.yearTime = yearTime;
         this.setState({
             yearTime: this.state.yearTime
-        }, ()=> {
+        }, () => {
             this.getReportData();
         });
         Trace.traceEvent("运营报告","时间范围-选择年");
@@ -210,7 +210,7 @@ let OperationReport = React.createClass({
         this.state.weekTime = week;
         this.setState({
             weekTime: week
-        }, ()=> {
+        }, () => {
             this.getReportData();
         });
         Trace.traceEvent("运营报告","时间范围-选择周");
@@ -220,7 +220,7 @@ let OperationReport = React.createClass({
         OperationReportAction.setSelectAppList(appIdList);
         //将选择的应用列表保存根据userId保存到本地缓存中
         this.saveSelectAppId(appIdList);
-        setTimeout(()=> {
+        setTimeout(() => {
             this.getReportData();
         });     
         Trace.traceEvent("运营报告","选择应用");
@@ -424,15 +424,15 @@ let OperationReport = React.createClass({
         if (_.isArray(selectAppList) && selectAppList.length) {
             let width = 100 / (selectAppList.length + 2);//宽度用剩下的60%平分，2：总计+部门
             columns[0].width = width + '%';
-            selectAppList.forEach((appId, i)=> {
-                let app = _.find(appList, app=>app.id == appId);
+            selectAppList.forEach((appId, i) => {
+                let app = _.find(appList, app => app.id == appId);
                 if (app && app.name) {
                     columns.push({
                         title: app.name,
                         dataIndex: appId,
                         key: 'count' + i,
                         width: width + '%',
-                        className:"data-float-right"
+                        className: "data-float-right"
                     });
                 }
             });
@@ -441,7 +441,7 @@ let OperationReport = React.createClass({
                 dataIndex: 'total',
                 key: 'count',
                 width: width + '%',
-                className:"data-float-right"
+                className: "data-float-right"
             });
         }
         return columns;
@@ -461,12 +461,12 @@ let OperationReport = React.createClass({
                     bordered
                 />
             </div>
-            <div className="team-table-body" ref="tbody" style={{height:tableHeight}}>
+            <div className="team-table-body" ref="tbody" style={{height: tableHeight}}>
                 <Table
                     dataSource={data}
                     columns={columns}
                     pagination={false}
-                    loading={resultType=="loading"?true:false}
+                    loading={resultType == "loading" ? true : false}
                     bordered
                 />
             </div>
@@ -616,9 +616,9 @@ let OperationReport = React.createClass({
         let dataList = this.state.appFormalLoginComparison.data;//近四周登录系统的签约用户统计数据
         let totalDataList = this.state.appSignedUser.data || [];//各应用的签约用户总数
         if (_.isArray(dataList) && dataList.length) {
-            appSignedUserTips = _.map(dataList, appObj=> {
+            appSignedUserTips = _.map(dataList, appObj => {
                 let total = 0, count = 0, lastWeekCount = 0;
-                let totalData = _.find(totalDataList, data=>data.app_id == appObj.app_id);
+                let totalData = _.find(totalDataList, data => data.app_id == appObj.app_id);
                 total = totalData ? totalData.count : 0;
                 if (_.isArray(appObj.data)) {
                     count = appObj.data[3] ? appObj.data[3].count : 0;
@@ -659,7 +659,7 @@ let OperationReport = React.createClass({
         let tips = [];
         let appDataList = this.state.expiredUserExceedLoginTime.data;//各应用过期用户周在线时长超过1小时的用户数列表
         if (_.isArray(appDataList) && appDataList.length) {
-            _.each(appDataList, appData=> {
+            _.each(appDataList, appData => {
                 tips.push(Intl.get("operation.report.app.online.expired.user.count", "{appName}{count}个，", {
                     appName: appData.appName,
                     count: appData.count
@@ -702,7 +702,7 @@ let OperationReport = React.createClass({
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.this.week.total.login.tip"
                                         defaultMessage={`1、本周共有{num}个（上周{lastWeekNum}个）用户登录了应用`}
-                                        values={{num:this.state.appLoginUserObj.total+"", lastWeekNum:this.state.appLoginUserObj.lastWeekTotal+""}}/>
+                                        values={{num: this.state.appLoginUserObj.total + "", lastWeekNum: this.state.appLoginUserObj.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -781,7 +781,7 @@ let OperationReport = React.createClass({
                                     <ReactIntl.FormattedMessage id="operation.report.expire.user.login.tip"
                                         defaultMessage={`1、本周共有{num}个(上周{lastWeekNum}个)过期用户登录了应用`}
                                         values={{num: this.state.teamExpiredLoginUser.total + "",
-                                            lastWeekNum:this.state.teamExpiredLoginUser.lastWeekTotal+""}}/>
+                                            lastWeekNum: this.state.teamExpiredLoginUser.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamExpiredLoginUserTable()}
@@ -797,7 +797,7 @@ let OperationReport = React.createClass({
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.total.average.login.tip"
                                         defaultMessage={`共有{num}个(上周{lastWeekNum}个)过期用户一周内平均每天登录8个小时以上，具体情况如下表所示：`}
-                                        values={{num: this.state.teamExpiredUserLoginTime.total + "",lastWeekNum:this.state.teamExpiredUserLoginTime.lastWeekTotal+""}}/>
+                                        values={{num: this.state.teamExpiredUserLoginTime.total + "",lastWeekNum: this.state.teamExpiredUserLoginTime.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderExpiredUserLoginTimeTable()}
@@ -827,7 +827,7 @@ let OperationReport = React.createClass({
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.open.trial.app.distribute"
                                         defaultMessage={`1、本周共开设{num}个(上周{lastWeekNum}个)试用用户，应用分布情况如下图所示：`}
-                                        values={{num: this.state.appNewTrialUser.total + "",lastWeekNum:this.state.appNewTrialUser.lastWeekTotal+""}}/>
+                                        values={{num: this.state.appNewTrialUser.total + "",lastWeekNum: this.state.appNewTrialUser.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -859,11 +859,11 @@ let OperationReport = React.createClass({
                                     <ReactIntl.FormattedMessage id="operation.report.open.trial.login.tip"
                                         defaultMessage={`4、新开通试用用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
                                         values={{count: this.state.teamNewTrialLoginUser.total + "",
-                                            lastWeekCount:this.state.teamNewTrialLoginUser.lastWeekTotal+"",
-                                            percent:this.getPercentData(this.state.teamNewTrialLoginUser.total,this.state.appNewTrialUser.total),
-                                            allCount:this.state.appNewTrialUser.total+"",
-                                            lastWeekPercent:this.getPercentData(this.state.teamNewTrialLoginUser.lastWeekTotal,this.state.appNewTrialUser.lastWeekTotal),
-                                            lastWeekAllCount:this.state.appNewTrialUser.lastWeekTotal+""}}/>
+                                            lastWeekCount: this.state.teamNewTrialLoginUser.lastWeekTotal + "",
+                                            percent: this.getPercentData(this.state.teamNewTrialLoginUser.total,this.state.appNewTrialUser.total),
+                                            allCount: this.state.appNewTrialUser.total + "",
+                                            lastWeekPercent: this.getPercentData(this.state.teamNewTrialLoginUser.lastWeekTotal,this.state.appNewTrialUser.lastWeekTotal),
+                                            lastWeekAllCount: this.state.appNewTrialUser.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamNewTrialLoginUserTable()}
@@ -889,10 +889,10 @@ let OperationReport = React.createClass({
                                     <ReactIntl.FormattedMessage id="operation.report.singed.user.login.percent.tip"
                                         defaultMessage={`1、本周共有{count}个(上周{lastWeekCount})签约用户登录各应用,占本周登录总用户数的{percent}({count}/{allCount}),上周{lastWeekPercent}（{lastWeekCount}/{allCount}）,部门分布情况如下表所示:`}
                                         values={{count: this.state.appFormalLoginComparison.total + "",
-                                            lastWeekCount:this.state.appFormalLoginComparison.lastWeekTotal + "",
-                                            percent:this.getPercentData(this.state.appFormalLoginComparison.total,this.state.appUserTotal),
-                                            allCount:this.state.appUserTotal+"",
-                                            lastWeekPercent:this.getPercentData(this.state.appFormalLoginComparison.lastWeekTotal,this.state.appUserTotal)
+                                            lastWeekCount: this.state.appFormalLoginComparison.lastWeekTotal + "",
+                                            percent: this.getPercentData(this.state.appFormalLoginComparison.total,this.state.appUserTotal),
+                                            allCount: this.state.appUserTotal + "",
+                                            lastWeekPercent: this.getPercentData(this.state.appFormalLoginComparison.lastWeekTotal,this.state.appUserTotal)
                                         }}/>
                                 </div>
                                 {this.renderAppSignedUserTips()}
@@ -927,7 +927,7 @@ let OperationReport = React.createClass({
                                 <div className="chart-descr">
                                     <ReactIntl.FormattedMessage id="operation.report.delay.user.app.distribute"
                                         defaultMessage={`1、本周新增{num}个(上周{lastWeekNum}个)延期用户，应用分布情况如下图所示：`}
-                                        values={{num: this.state.appNewDelayUser.total + "",lastWeekNum:this.state.appNewDelayUser.lastWeekTotal+""}}/>
+                                        values={{num: this.state.appNewDelayUser.total + "",lastWeekNum: this.state.appNewDelayUser.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     <div className="report-chart-title"><ReactIntl.FormattedMessage
@@ -958,11 +958,11 @@ let OperationReport = React.createClass({
                                     <ReactIntl.FormattedMessage id="operation.report.delay.user.login.tip"
                                         defaultMessage={`4、新增延期用户共登录{count}个（上周{lastWeekCount}个）,占比{percent}({count}/{allCount}),上周占比{lastWeekPercent}({lastWeekCount}/{lastWeekAllCount}),部门分布情况如下表所示:`}
                                         values={{count: this.state.teamNewDelayLoginUser.total + "",
-                                            lastWeekCount:this.state.teamNewDelayLoginUser.lastWeekTotal+"",
-                                            percent:this.getPercentData(this.state.teamNewDelayLoginUser.total,this.state.appNewDelayUser.total),
-                                            allCount:this.state.appNewDelayUser.total+"",
-                                            lastWeekPercent:this.getPercentData(this.state.teamNewDelayLoginUser.lastWeekTotal,this.state.appNewDelayUser.lastWeekTotal),
-                                            lastWeekAllCount:this.state.appNewDelayUser.lastWeekTotal+""}}/>
+                                            lastWeekCount: this.state.teamNewDelayLoginUser.lastWeekTotal + "",
+                                            percent: this.getPercentData(this.state.teamNewDelayLoginUser.total,this.state.appNewDelayUser.total),
+                                            allCount: this.state.appNewDelayUser.total + "",
+                                            lastWeekPercent: this.getPercentData(this.state.teamNewDelayLoginUser.lastWeekTotal,this.state.appNewDelayUser.lastWeekTotal),
+                                            lastWeekAllCount: this.state.appNewDelayUser.lastWeekTotal + ""}}/>
                                 </div>
                                 <div className="report-chart">
                                     {this.renderTeamDelayLoginUserTable()}

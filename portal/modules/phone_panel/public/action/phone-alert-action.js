@@ -24,30 +24,30 @@ function PhoneAlertAction() {
             type: "time",
             name: "start_time"
         }];
-        var queryObj = {"total_size":1,"cursor":true,"id":""};
+        var queryObj = {"total_size": 1,"cursor": true,"id": ""};
         var data = {
-            data: JSON.stringify({"id":customerId}),
+            data: JSON.stringify({"id": customerId}),
             rangParams: JSON.stringify(rangParams),
             queryObj: JSON.stringify(queryObj)
         };
         if (hasPrivilege(AUTHS.GETALL)) {
             data.hasManageAuth = true;
         }
-        this.dispatch({loading:true,error:false});
+        this.dispatch({loading: true,error: false});
         phoneAlertAjax.getCustomerById(data).then((data) => {
-            this.dispatch({loading:false,error:false,data:data});
-        }, (errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+            this.dispatch({loading: false,error: false,data: data});
+        }, (errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
     //更新客户跟踪记录
     this.updateCustomerTrace = function(queryObj, callback) {
-        this.dispatch({loading:true,error:false});
+        this.dispatch({loading: true,error: false});
         customerRecordAjax.updateCustomerTrace(queryObj).then((data) => {
-            this.dispatch({loading:false,error:false,data:data});
+            this.dispatch({loading: false,error: false,data: data});
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
-            this.dispatch({loading:false,error:true,errorMsg:errorMsg});
+        },(errorMsg) => {
+            this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
 }

@@ -70,7 +70,7 @@ var AppInfo = React.createClass({
         this.props.showAppNoticePanel();
     },
     //展示用户类型设置页面
-    showUserTypeConfigPanel:function() {
+    showUserTypeConfigPanel: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".edit-buttons"),"点击查看用户类型按钮");
         this.props.showUserTypeConfigPanel();
     },
@@ -188,7 +188,7 @@ var AppInfo = React.createClass({
                 {this.state.isSaving ? (
                     <div className="app-tag-saving">{Intl.get("app.add.tag", "正在添加标签...")} </div>) : ""}
                 {(!this.state.isSaving && this.state.saveResult) ? (
-                    <div className={"app-tag-save-"+this.state.saveResult}>
+                    <div className={"app-tag-save-" + this.state.saveResult}>
                         {this.state.saveMsg}
                     </div>) : ""}
             </div>
@@ -253,7 +253,7 @@ var AppInfo = React.createClass({
                         <span className="card-item-left"><ReactIntl.FormattedMessage id="common.captcha"
                             defaultMessage="验证码"/>:</span>
                         <span className="card-item-right">
-                            {Intl.get("secret.error", "密码输错") + "["  +(appInfo.captchaTime || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                            {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                         </span>
                     </span>
 
@@ -265,7 +265,7 @@ var AppInfo = React.createClass({
             {language.lan() == 'es' ? (
                 <div className="card-item left-label-null-style">
                     <span className="card-item-right">
-                        {Intl.get("secret.error", "密码输错") + "["  +(appInfo.captchaTime || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                        {Intl.get("secret.error", "密码输错") + "[" + (appInfo.captchaTime || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                     </span>
                 </div>
             ) : null}
@@ -273,13 +273,13 @@ var AppInfo = React.createClass({
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("session.overclock", "session超频") + "["  +(appInfo.sessionCaptcha || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get("session.overclock", "session超频") + "[" + (appInfo.sessionCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                 </span>
             </div>
             <div className="card-item left-label-null-style">
                 <span className="card-item-left">   </span>
                 <span className="card-item-right">
-                    {Intl.get("ip.overclock", "IP超频") + "["  +(appInfo.ipCaptcha || " ")  + "]" + Intl.get("show.captcha", "次，出现验证码")}
+                    {Intl.get("ip.overclock", "IP超频") + "[" + (appInfo.ipCaptcha || " ") + "]" + Intl.get("show.captcha", "次，出现验证码")}
                 </span>
             </div>
             <div className="card-item">
@@ -304,8 +304,8 @@ var AppInfo = React.createClass({
         //当前要展示的信息
         var appInfo = this.state.appInfo;
         var modalContent = Intl.get("member.is.or.not","是否{modalStr}{modalType}",{
-            "modalStr":this.state.modalStr,
-            "modalType":this.props.modalType
+            "modalStr": this.state.modalStr,
+            "modalType": this.props.modalType
         });
         var className = "right-panel-content";
         if (!this.props.appInfoShow) {
@@ -329,7 +329,7 @@ var AppInfo = React.createClass({
                     <PrivilegeChecker check={"APP_MANAGE_EDIT_APP"}>
                         <RightPanelEdit onClick={this.showEditForm}/>
                         <RightPanelForbid onClick={this.showForbidModalDialog}
-                            isActive={this.state.appInfo.status==0}/>
+                            isActive={this.state.appInfo.status == 0}/>
                     </PrivilegeChecker>
                     {/**v8环境，不显示系统公告、版本升级记录、用户类型设置*/}
                     { !Oplate.hideSomeItem &&
@@ -342,7 +342,7 @@ var AppInfo = React.createClass({
                         </PrivilegeChecker>}
                     { !Oplate.hideSomeItem &&
                         <PrivilegeChecker check={"GET_APP_EXTRA_GRANTS"}>
-                            <RightPanelUserTypeConfig  onClick={this.showUserTypeConfigPanel}/>
+                            <RightPanelUserTypeConfig onClick={this.showUserTypeConfigPanel}/>
                         </PrivilegeChecker> }
                 </div>
                 <HeadIcon headIcon={this.state.appInfo.image} iconDescr={this.state.appInfo.name}
@@ -360,7 +360,7 @@ var AppInfo = React.createClass({
                                 <Spin size="small"/>) : this.renderAppItems()
                             }
                         </div>
-                        {this.props.appTagList && hasPrivilege("APP_MANAGE_EDIT_APP")? (
+                        {this.props.appTagList && hasPrivilege("APP_MANAGE_EDIT_APP") ? (
                             <Form horizontal className="card-info-tag-form" autoComplete="off"
                                 onSubmit={this.cancelEnter}>
                                 <FormItem

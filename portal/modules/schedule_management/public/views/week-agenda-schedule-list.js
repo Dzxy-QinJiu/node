@@ -20,7 +20,7 @@ class WeekAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            curCustomerId:this.props.curCustomerId,
+            curCustomerId: this.props.curCustomerId,
             weekLists: this.props.weekLists,
             updateScrollBar: false,
             containToday: containToday.flag,// 今天所在的周  和today这两个状态共同判断给哪一天是今天，给今天加背景颜色
@@ -70,7 +70,7 @@ class WeekAgendaScheduleLists extends React.Component {
         }
         if (nextProps.curCustomerId !== this.state.curCustomerId){
             this.setState({
-                curCustomerId:nextProps.curCustomerId
+                curCustomerId: nextProps.curCustomerId
             });
         }
     }
@@ -221,7 +221,7 @@ WeekAgendaScheduleLists.title = (date, {formats, culture}) => {
         "Sun": Intl.get("user.time.sunday", "周日") + " " + endTime,
     };
     //如果当前时间是在标题展示那一周的范围之内，就是今天所在的周
-    if (moment().valueOf() >=  moment(date).startOf("week").valueOf() && moment().valueOf() <= moment(date).endOf("week").valueOf()) {
+    if (moment().valueOf() >= moment(date).startOf("week").valueOf() && moment().valueOf() <= moment(date).endOf("week").valueOf()) {
         containToday.flag = true;
     } else {
         containToday.flag = false;
@@ -229,7 +229,7 @@ WeekAgendaScheduleLists.title = (date, {formats, culture}) => {
     return `${startTime} ${Intl.get("contract.83", "至")} ${endTime}`;
 };
 WeekAgendaScheduleLists.defaultProps = {
-    curCustomerId:"",
+    curCustomerId: "",
     showCustomerDetail: function() {}
 
 };

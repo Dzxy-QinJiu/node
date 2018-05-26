@@ -169,7 +169,7 @@ exports.settingEmailServer = (realmId, reqData) => {
         success: (resData) => {
             Deferred.resolve(resData);
         },
-        error:  (xhr, textStatus) => {
+        error: (xhr, textStatus) => {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -191,7 +191,7 @@ exports.settingSmsServer = (realmId, reqData) => {
         success: (resData) => {
             Deferred.resolve(resData);
         },
-        error:  (xhr, textStatus) => {
+        error: (xhr, textStatus) => {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }
@@ -213,7 +213,7 @@ exports.settingWeChat = (realmId, reqData) => {
         success: (resData) => {
             Deferred.resolve(resData);
         },
-        error:  (xhr, textStatus) => {
+        error: (xhr, textStatus) => {
             if ('abort' !== textStatus) {
                 Deferred.reject(xhr.responseJSON);
             }

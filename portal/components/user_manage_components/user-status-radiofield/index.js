@@ -6,9 +6,9 @@ const UserStatusRadioField = {
     renderUserStatusRadioBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalStatus : "1"
+            isCustomSetting: false,
+            appId: '',
+            globalStatus: "1"
         },config);
 
         if(config.isCustomSetting && !config.appId) {

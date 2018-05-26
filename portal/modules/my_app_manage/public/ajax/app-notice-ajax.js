@@ -4,7 +4,7 @@ var appNoticeAjax = null;
 exports.getAppNoticeList = function(searchObj){
     var queryObj = {
         application_id: searchObj.appId,
-        page_num : searchObj.page,
+        page_num: searchObj.page,
         page_size: searchObj.pageSize
     };
     var Deferred = $.Deferred();
@@ -13,12 +13,12 @@ exports.getAppNoticeList = function(searchObj){
     appNoticeAjax = $.ajax({
         url: '/rest/get_app/notice',
         type: 'get',
-        data : queryObj,
+        data: queryObj,
         dateType: 'json',
-        success : function(result){
+        success: function(result){
             Deferred.resolve(result);
         },
-        error : function(xhr, state) {
+        error: function(xhr, state) {
             if ('abort' !== state){
                 Deferred.reject(xhr.responseJSON);
             }
@@ -38,7 +38,7 @@ exports.addAppNotice = function(newNoticeInfo){
         success: function(result) {
             Deferred.resolve(result);
         },
-        error : function(errorInfo) {
+        error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

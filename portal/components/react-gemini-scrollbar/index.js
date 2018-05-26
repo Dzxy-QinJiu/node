@@ -42,7 +42,7 @@ var ReactScrollBar = React.createClass({
         enabled: React.PropTypes.bool,
         listenScrollBottom: React.PropTypes.bool,
         handleScrollBottom: React.PropTypes.func,
-        itemCssSelector : React.PropTypes.string
+        itemCssSelector: React.PropTypes.string
     },
 
     getDefaultProps: function getDefaultProps() {
@@ -53,7 +53,7 @@ var ReactScrollBar = React.createClass({
             listenScrollBottom: false,
             handleScrollBottom: function() {},
             //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
-            itemCssSelector : ''
+            itemCssSelector: ''
         };
     },
 
@@ -115,7 +115,7 @@ var ReactScrollBar = React.createClass({
             createElements: false,
             handleScrollBottom: this.handleScrollBottom,
             //用于大尺寸显示器下，加载完一页数据以后，自动判断是否加载下一页数据
-            itemCssSelector : this.props.itemCssSelector
+            itemCssSelector: this.props.itemCssSelector
         }).create();
     },
     //更新滚动条位置，大小

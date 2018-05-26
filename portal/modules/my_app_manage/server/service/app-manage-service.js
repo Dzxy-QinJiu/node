@@ -151,7 +151,7 @@ exports.uploadRole = function(req, res, clientID, data) {
 // 获取用户类型配置
 exports.getCurAppKey = function(req, res, appId){
     return restUtil.authRest.get({
-        url: appRestApis.getCurAppKey+ "/" + appId,
+        url: appRestApis.getCurAppKey + "/" + appId,
         req: req,
         res: res
     }, null);

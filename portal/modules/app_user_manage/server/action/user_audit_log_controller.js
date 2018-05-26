@@ -1,7 +1,7 @@
 
 "use strict";
 
-var  userAuditLog = require("../service/user_audit_log.service");
+var userAuditLog = require("../service/user_audit_log.service");
 
 // 获取用户审计日志列表
 exports.getUserLogList = function(req, res) {
@@ -14,7 +14,7 @@ exports.getUserLogList = function(req, res) {
 
 // 获取单个用户审计日志列表
 exports.getSingleAuditLogList = function(req, res) {
-    userAuditLog.getSingleAuditLogList(req, res,  req.query, req.params.user_id).on("success", function(data) {
+    userAuditLog.getSingleAuditLogList(req, res, req.query, req.params.user_id).on("success", function(data) {
         res.status(200).json(data);
     }).on("error", function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -25,9 +25,9 @@ exports.getSingleAuditLogList = function(req, res) {
 exports.getUserLoginInfo = function(req, res){
     let obj = req.query;
     obj.user_id = req.params.user_id;
-    userAuditLog.getUserLoginInfo(req, res, obj).on("success",  (data) => {
+    userAuditLog.getUserLoginInfo(req, res, obj).on("success", (data) => {
         res.status(200).json(data);
-    }).on("error",  (codeMessage) => {
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
@@ -36,9 +36,9 @@ exports.getUserLoginInfo = function(req, res){
 exports.getUserLoginChartInfo = function(req, res){
     let obj = req.query;
     obj.user_id = req.params.user_id;
-    userAuditLog.getUserLoginChartInfo(req, res, obj).on("success",  (data) => {
+    userAuditLog.getUserLoginChartInfo(req, res, obj).on("success", (data) => {
         res.status(200).json(data);
-    }).on("error",  (codeMessage) => {
+    }).on("error", (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };

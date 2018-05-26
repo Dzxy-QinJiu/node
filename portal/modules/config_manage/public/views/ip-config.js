@@ -11,8 +11,8 @@ const IpConfig = React.createClass({
     getInitialState(){
         return {
             ...IpConfigStore.getState(),
-            addIpErrMsg: '',  // 添加IP失败信息
-            deleteErrMsg: '',  // 删除IP失败信息
+            addIpErrMsg: '', // 添加IP失败信息
+            deleteErrMsg: '', // 删除IP失败信息
             isLoading: false,
             deleteIpId: 0 // 删除IP配置
         };
@@ -24,7 +24,7 @@ const IpConfig = React.createClass({
 
     componentDidMount(){
         IpConfigStore.listen(this.onStoreChange);
-        IpConfigAction.getIpConfigList({pageSize:1000});
+        IpConfigAction.getIpConfigList({pageSize: 1000});
         IpConfigAction.getFilterIp();
     },
 
@@ -34,7 +34,7 @@ const IpConfig = React.createClass({
 
     // 获取配置IP列表
     getIpConfigList(){
-        IpConfigAction.getIpConfigList({pageSize:1000});
+        IpConfigAction.getIpConfigList({pageSize: 1000});
     },
     
     // 提交保存按钮
@@ -201,7 +201,7 @@ const IpConfig = React.createClass({
                 />
                 <button className="btn mb-add-button" type="submit" id="addIpConfigSaveBtn">
                     <ReactIntl.FormattedMessage id="common.add" defaultMessage="添加"/>
-                    {this.state.isLoading? <Icon type="loading" style={{marginLeft: 12}}/> : null}
+                    {this.state.isLoading ? <Icon type="loading" style={{marginLeft: 12}}/> : null}
                 </button>
                 {this.state.addIpErrMsg != '' ? this.handleAddIpConfigFail() : null}
             </form>
@@ -220,7 +220,7 @@ const IpConfig = React.createClass({
         var status = e.target.checked;
         this.setState({
             checked: e.target.checked
-        },()=>{
+        },() => {
             IpConfigAction.filterIp(status);
         } );
     },
@@ -231,7 +231,7 @@ const IpConfig = React.createClass({
                 <div className="box-title">
                     <ReactIntl.FormattedMessage id="config.manage.ip.config" defaultMessage="IP配置"/>
                     &nbsp;&nbsp;
-                    <span onClick={this.reloadGetIpConfigList}  className="reload-ip-config" style={{marginRight: '30px' }} 	data-tracename="点击获取IP刷新按钮"
+                    <span onClick={this.reloadGetIpConfigList} className="reload-ip-config" style={{marginRight: '30px' }} 	data-tracename="点击获取IP刷新按钮"
                     >
                         <Icon
                             type="reload"

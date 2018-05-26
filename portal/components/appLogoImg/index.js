@@ -4,22 +4,22 @@ var Ajax = require("./app-logo-ajax");
 var DefaultUserLogoTitle = require("../default-user-logo-title");
 
 var AppLogoImg = React.createClass({
-    propTypes : {
-        id : React.PropTypes.string.isRequired,
-        title : React.PropTypes.string,
-        showTooltip : React.PropTypes.bool
+    propTypes: {
+        id: React.PropTypes.string.isRequired,
+        title: React.PropTypes.string,
+        showTooltip: React.PropTypes.bool
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         this.isUnmounted = true;
     },
-    retryCount : 0,
-    isUnmounted : false,
-    getImageSrc :  function() {
+    retryCount: 0,
+    isUnmounted: false,
+    getImageSrc: function() {
         var _this = this;
         Ajax.getAppInfo(this.props.id).then(function(obj) {
             if(!_this.isUnmounted) {
                 _this.setState({
-                    src : obj.image,
+                    src: obj.image,
                     title: obj.name
                 });
             }
@@ -27,43 +27,43 @@ var AppLogoImg = React.createClass({
             _this.retryCount++;
             if(_this.retryCount >= 3) {
                 _this.setState({
-                    getFromServerFail : true
+                    getFromServerFail: true
                 });
                 return;
             }
             _this.getImageSrc();
         });
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.getImageSrc();
     },
-    getDefaultProps : function() {
+    getDefaultProps: function() {
         return {
-            size  : 60,
-            id : '',
-            title : '',
-            showTooltip : false
+            size: 60,
+            id: '',
+            title: '',
+            showTooltip: false
         };
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
-            src : '',
+            src: '',
             title: this.props.title,
-            getFromServerFail : false
+            getFromServerFail: false
         };
     },
-    renderImageContent : function() {
+    renderImageContent: function() {
         var props = {
-            nickName : this.state.title,
-            userLogo : this.state.src
+            nickName: this.state.title,
+            userLogo: this.state.src
         };
         if(!this.state.title) {
             props.style = {
-                opacity : 0
+                opacity: 0
             };
         }
         return (
-            <div className="img-logo-wrap" style={{'display':'inline-block','vertical-align':'top'}}>
+            <div className="img-logo-wrap" style={{'display': 'inline-block','vertical-align': 'top'}}>
                 <DefaultUserLogoTitle {...props} />
             </div>
         );
@@ -72,7 +72,7 @@ var AppLogoImg = React.createClass({
     //1.没有app_name，不展示
     //2.有logo的情况,展示logo
     //3.没有logo的情况，默认首字母
-    render : function() {
+    render: function() {
         //如果获取3次数据，还是失败，则不显示图标
         //这种情况属于系统异常，在数据库中删除了应用
         if(this.state.getFromServerFail && !this.state.title) {

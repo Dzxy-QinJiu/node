@@ -43,4 +43,4 @@ function ThirdAppDetailActions() {
 
 }
 
-module.exports=  alt.createActions(ThirdAppDetailActions);
+module.exports = alt.createActions(ThirdAppDetailActions);

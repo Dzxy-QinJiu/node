@@ -15,20 +15,20 @@ function UserAbnormalLoginAction() {
     );
     this.getUserAbnormalLogin = function(data) {
         this.dispatch({loading: true, error: false});
-        userAbnormalLoginAjax.getUserAbnormalLogin(data).then((data) =>{
+        userAbnormalLoginAjax.getUserAbnormalLogin(data).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false, error: false, data: data});
-        },  (errorMsg) => {
+        }, (errorMsg) => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     // 根据用户的ID获取应用列表appId和应用的名称
     this.getUserApp = function(userId,callback) {
         this.dispatch({loading: true,error: false});
-        userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result)=> {
+        userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result) => {
             this.dispatch({loading: false,error: false, dataObj: result.apps});
             callback && callback();
-        }, (errorMsg)=> {
+        }, (errorMsg) => {
             this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     };

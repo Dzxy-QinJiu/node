@@ -139,7 +139,7 @@ var MyAppManage = React.createClass({
             AppAction.hideModalDialog();
         },
         //应用代码跟踪
-        showAppCodeTrace:function() {
+        showAppCodeTrace: function() {
             AppAction.showAppCodeTrace();
         },
 
@@ -287,7 +287,7 @@ var MyAppManage = React.createClass({
     //获取卡片展示所需的应用列表
     getCardShowAppList: function() {
         let appList = _.isArray(this.state.curAppList) ? this.state.curAppList : [];
-        return appList.map(app=> {
+        return appList.map(app => {
             let pageApp = {
                 id: app.id,
                 name: app.name,
@@ -309,7 +309,7 @@ var MyAppManage = React.createClass({
             var expireDate = app.expireDate ? moment(app.expireDate).format(FORMAT) : "";
             if (expireDate) {
                 pageApp.date = {
-                    label: createDate +Intl.get("common.time.connector", " 至") + expireDate,
+                    label: createDate + Intl.get("common.time.connector", " 至") + expireDate,
                     value: "",
                     showOnCard: true
                 };

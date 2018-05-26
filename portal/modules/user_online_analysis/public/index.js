@@ -13,18 +13,18 @@ var insertStyle = require("../../../components/insert-style");
 
 //布局使用的配置
 var LAYOUT = {
-    NAV_SIDEBAR_WIDTH : 75
+    NAV_SIDEBAR_WIDTH: 75
 };
 
 var UserOnlineAnalysis = React.createClass({
-    displayName : 'UserOnlineAnalysis',
-    getInitialState : function() {
+    displayName: 'UserOnlineAnalysis',
+    getInitialState: function() {
         return AnalysisStore.getState();
     },
-    onStoreChange : function() {
+    onStoreChange: function() {
         this.setState(AnalysisStore.getState());
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         AnalysisStore.listen(this.onStoreChange);
         $(window).on("resize",this.onStoreChange);
         this.dynamicStyle = insertStyle(`.user_online_analysis_panel.right-pannel-default{
@@ -35,7 +35,7 @@ var UserOnlineAnalysis = React.createClass({
                                             display:block;
                                       }`);
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         AnalysisStore.unlisten(this.onStoreChange);
         $(window).off("resize",this.onStoreChange);
         this.dynamicStyle.destroy();

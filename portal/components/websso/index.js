@@ -36,4 +36,4 @@ const buildRefreshCaptchaUrl = function() {
     return ssoLogin.buildCaptchaUrl();
 };
 
-export   {callBackUrl, ssoLogin, buildRefreshCaptchaUrl};
+export {callBackUrl, ssoLogin, buildRefreshCaptchaUrl};

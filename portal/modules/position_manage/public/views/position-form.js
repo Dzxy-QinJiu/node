@@ -8,7 +8,7 @@ import { RightPanelClose, RightPanelCancel, RightPanelSubmit } from 'CMP_DIR/rig
 import PositionAjax from '../ajax/index';
 import PositionStore from '../store/index';
 import PositionAction from '../action/index';
-import * as  LANGLOBAL  from '../consts';
+import * as LANGLOBAL from '../consts';
 const POSITION_AREA_OPTIONS = {
     CS: 'changsha',
     JN: 'jinan',
@@ -39,7 +39,7 @@ const BatchPositionForm = React.createClass({
     componentWillUpdate(nextProps, nextState) {
         let formData = this.state.formData;
         if (formData.realm_id != nextState.formData.realm_id && nextState.formData.realm_id) {
-            let SelectId  = this.getOrganizationId(nextState.formData.realm_id)[0];
+            let SelectId = this.getOrganizationId(nextState.formData.realm_id)[0];
             PositionAction.getUnbindMemberList({realm: SelectId});
         }
     },
@@ -72,7 +72,7 @@ const BatchPositionForm = React.createClass({
             if (/^[0-9]*$/.test(value)) {
                 callback();
             } else {
-                callback(new Error(LANGLOBAL.POSITION.tips));  // 请输入数字
+                callback(new Error(LANGLOBAL.POSITION.tips)); // 请输入数字
             }
         } else {
             callback();
@@ -98,7 +98,7 @@ const BatchPositionForm = React.createClass({
     handleSubmit() {
         let queryObj = {
             phone_order: this.state.formData.phoneOrder,
-            phone_order_location:  this.state.areaValue
+            phone_order_location: this.state.areaValue
         };
         if (this.state.isBindMember) {
             queryObj.realm = this.getOrganizationId(this.state.formData.realm_id)[0];
@@ -134,7 +134,7 @@ const BatchPositionForm = React.createClass({
         let organizationList = PositionStore.getState().realmList;
         if (_.isArray(organizationList) && organizationList.length > 0) {
             organizationOption = organizationList.map( (item) => {
-                return (<Option  key={item.realm_id} value={item.realm_name}>
+                return (<Option key={item.realm_id} value={item.realm_name}>
                     {item.realm_name}
                 </Option>);
             });
@@ -150,7 +150,7 @@ const BatchPositionForm = React.createClass({
         var unbindMemberList = PositionStore.getState().unbindMember.data;
         if (_.isArray(unbindMemberList) && unbindMemberList.length > 0) {
             unbindMemberOptions = unbindMemberList.map( (item) => {
-                return (<Option  key={item.user_id} value={item.nick_name}>
+                return (<Option key={item.user_id} value={item.nick_name}>
                     {item.nick_name}
                 </Option>);
             });
@@ -208,7 +208,7 @@ const BatchPositionForm = React.createClass({
                                 validateStatus={this.renderValidateStyle('phoneOrder')}
                                 help={status.phoneOrder.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.phoneOrder.errors && status.phoneOrder.errors.join(','))}
                             >
-                                <Validator rules={[{validator:this.checkPhoneOrder}]}>
+                                <Validator rules={[{validator: this.checkPhoneOrder}]}>
                                     <Input name='phoneOrder' id='phoneOrder' value={formData.phoneOrder}
                                         onChange={this.setField.bind(this, 'phoneOrder')}
                                         onFocus ={this.focusPositionInput}
@@ -216,14 +216,14 @@ const BatchPositionForm = React.createClass({
                                 </Validator>
                             </FormItem>
                             {this.state.errMsg && <div className='has-error-tips'>{this.state.errMsg}</div>}
-                            <FormItem  wrapperCol={{span: 22}}>
+                            <FormItem wrapperCol={{span: 22}}>
                                 <Checkbox
                                     name='isBindMember'
                                     id='isBindMember'
                                     checked={this.state.isBindMember}
                                     onChange={this.handleCheckBox}
                                 />
-                                <span  style={{'fontSize':'14px','color':'#5d5d5d'}}>{LANGLOBAL.USER.bind}</span>
+                                <span style={{'fontSize': '14px','color': '#5d5d5d'}}>{LANGLOBAL.USER.bind}</span>
                             </FormItem>
                             {this.state.isBindMember && <FormItem
                                 label={LANGLOBAL.ORGANIZATION.select} // 选择组织
@@ -243,7 +243,7 @@ const BatchPositionForm = React.createClass({
                                     {this.renderOrganizationOptions()}
                                 </Select>
                             </FormItem> }
-                            {this.state.isBindMember && formData.realm_id &&  <FormItem
+                            {this.state.isBindMember && formData.realm_id && <FormItem
                                 label={LANGLOBAL.USER.bind} // 绑定用户
                                 id='member'
                                 labelCol={{span: 4}}

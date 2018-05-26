@@ -16,8 +16,8 @@ var CONSTANTS = {
 };
 // 单个卡片的宽度和高度（正常）
 var CARDCONSTANTS = {
-    CARD_WIDTH: 360,  //  卡片的宽度
-    CARD_HEIGHT: 135  // 卡片的高度
+    CARD_WIDTH: 360, //  卡片的宽度
+    CARD_HEIGHT: 135 // 卡片的高度
 };
 
 // 卡片的最小宽度为332
@@ -162,7 +162,7 @@ var CardList = React.createClass({
         var cols = 1;
         var rows = 1;
         // 调整后卡片的宽度
-        var newCardWidth =  this.adjustCardWidth();
+        var newCardWidth = this.adjustCardWidth();
         // 计算卡片容器的高度和高度
         var cardListHeight = this.getCardListHeight();
         var cardListWidth = $(".card-list-content").width();
@@ -282,11 +282,11 @@ var CardList = React.createClass({
             }
         }
         return (
-            <div className="card-list-container" style={{paddingTop:paddingTop}}>
+            <div className="card-list-container" style={{paddingTop: paddingTop}}>
                 {
                     this.props.listTipMsg ? (<NoData msg={this.props.listTipMsg}/>) : (
                         <div ref="scrolltoTop">
-                            <div className="card-list" style={{height:cardListHeight}}>
+                            <div className="card-list" style={{height: cardListHeight}}>
                                 <GeminiScrollbar
                                     handleScrollBottom={this.handleScrollBottom}
                                     listenScrollBottom={this.state.listenScrollBottom}

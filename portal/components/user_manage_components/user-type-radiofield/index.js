@@ -5,12 +5,12 @@ const FormItem = Form.Item;
 const UserTypeRadioField = {
     showUserTypeError() {
         this.setState({
-            show_user_type_error : true
+            show_user_type_error: true
         });
     },
     hideUserTypeError() {
         this.setState({
-            show_user_type_error : false
+            show_user_type_error: false
         });
     },
     componentDidMount() {
@@ -26,16 +26,16 @@ const UserTypeRadioField = {
     renderUserTypeRadioBlock(config) {
 
         config = $.extend({
-            isCustomSetting : false,
-            appId  : '',
-            globalUserType : "1"
+            isCustomSetting: false,
+            appId: '',
+            globalUserType: "1"
         },config);
 
         if(config.isCustomSetting && !config.appId) {
             return null;
         }
 
-        const callback = config.isCustomSetting ? (value)=>{
+        const callback = config.isCustomSetting ? (value) => {
             const appPropSettingsMap = this.state.appPropSettingsMap;
             const formData = appPropSettingsMap[config.appId] || {};
             formData.user_type.value = value;
@@ -46,7 +46,7 @@ const UserTypeRadioField = {
             if(this.props.isSingleAppEdit) {
                 this.hideUserTypeError();
             }
-        }:(value)=>{
+        } : (value) => {
             const formData = this.state.formData;
             formData.user_type = value;
             this.setState({formData});
@@ -62,8 +62,8 @@ const UserTypeRadioField = {
 
         var options = _.map(AppUserUtil.USER_TYPE_VALUE_MAP , (value,KEY) => {
             return {
-                name : AppUserUtil.USER_TYPE_TEXT_MAP[KEY],
-                value : value
+                name: AppUserUtil.USER_TYPE_TEXT_MAP[KEY],
+                value: value
             };
         });
 

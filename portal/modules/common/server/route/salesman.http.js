@@ -11,6 +11,6 @@ module.exports = {
         "passport": {
             "needLogin": true
         },
-        "privileges":[]
+        "privileges": []
     }]
 };

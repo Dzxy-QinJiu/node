@@ -26,34 +26,34 @@ function AnalysisRealmZoneStore() {
     //绑定action方法
     this.bindListeners({
         //设置开始时间
-        setStartTime : AnalysisRealmZoneActions.setStartTime,
+        setStartTime: AnalysisRealmZoneActions.setStartTime,
         //设置结束时间
-        setEndTime : AnalysisRealmZoneActions.setEndTime,
+        setEndTime: AnalysisRealmZoneActions.setEndTime,
         //设置loading状态
-        setLoadingState : AnalysisRealmZoneActions.setLoadingState,
+        setLoadingState: AnalysisRealmZoneActions.setLoadingState,
         //设置是否有数据
-        setNoData : AnalysisRealmZoneActions.setNoData,
+        setNoData: AnalysisRealmZoneActions.setNoData,
         //服务端获取全国安全域数据
-        getRealmZoneAnalysisDataByAjax : AnalysisRealmZoneActions.getRealmZoneAnalysisDataByAjax,
+        getRealmZoneAnalysisDataByAjax: AnalysisRealmZoneActions.getRealmZoneAnalysisDataByAjax,
         //设置右侧排行榜标题
-        setRankListTitle : AnalysisRealmZoneActions.setRankListTitle
+        setRankListTitle: AnalysisRealmZoneActions.setRankListTitle
     });
     //绑定view方法
     this.exportPublicMethods({
         //获取安全域总数
-        getRealmZoneTotalCount : this.getRealmZoneTotalCount,
+        getRealmZoneTotalCount: this.getRealmZoneTotalCount,
         //获取安全域列表
-        getRealmZoneAnalysisList : this.getRealmZoneAnalysisList,
+        getRealmZoneAnalysisList: this.getRealmZoneAnalysisList,
         //获取查询开始时间
-        getStartTime : this.getStartTime,
+        getStartTime: this.getStartTime,
         //获取查询结束时间
-        getEndTime : this.getEndTime,
+        getEndTime: this.getEndTime,
         //获取是否是loading状态
-        getLoadingState : this.getLoadingState,
+        getLoadingState: this.getLoadingState,
         //获取是否没有数据
-        getNoData : this.getNoData,
+        getNoData: this.getNoData,
         //获取是否一个安全域也没有
-        getNoRealmAtAll : this.getNoRealmAtAll
+        getNoRealmAtAll: this.getNoRealmAtAll
     });
 
 }
@@ -131,8 +131,8 @@ AnalysisRealmZoneStore.prototype.getRealmZoneAnalysisDataByAjax = function(ret) 
                 value = 0;
             }
             realmZoneAnalysisList.push({
-                name : obj.name,
-                value : value
+                name: obj.name,
+                value: value
             });
         }
     });

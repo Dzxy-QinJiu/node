@@ -38,21 +38,21 @@ function AppUserDetailAction() {
     this.getUserDetail = function(userId) {
         var _this = this;
         AppUserAjax.getUserDetail(userId).then(function(userDetail) {
-            _this.dispatch({loading : false,error : false,userDetail:userDetail});
+            _this.dispatch({loading: false,error: false,userDetail: userDetail});
         },function(errorMsg) {
-            _this.dispatch({loading : false,error : true , userDetailErrorMsg: errorMsg || Intl.get("user.get.user.detail.failed", "获取用户详情失败")});
+            _this.dispatch({loading: false,error: true , userDetailErrorMsg: errorMsg || Intl.get("user.get.user.detail.failed", "获取用户详情失败")});
         });
     };
 
     //全部停用
     this.submitDisableAllApps = function({user_id},callback) {
         var _this = this;
-        this.dispatch({loading : true});
+        this.dispatch({loading: true});
         AppUserAjax.disableAllAppsByUser(user_id).then(function(result) {
-            _this.dispatch({error : false,result:result});
+            _this.dispatch({error: false,result: result});
             _.isFunction(callback) && callback(user_id);
         },function(errorMsg) {
-            _this.dispatch({error : true , errorMsg:errorMsg});
+            _this.dispatch({error: true , errorMsg: errorMsg});
         });
     };
 

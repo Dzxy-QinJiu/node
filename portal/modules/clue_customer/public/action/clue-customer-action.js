@@ -57,7 +57,7 @@ function ClueCustomerActions() {
     };
     //线索名称唯一性校验
     this.checkOnlyClueName = function(clueName, callback, customerId) {
-        let queryObj= {name: clueName};
+        let queryObj = {name: clueName};
         if(customerId){
             queryObj.customer_id = customerId;
         }
@@ -81,29 +81,29 @@ function ClueCustomerActions() {
     //添加或更新跟进内容
     this.addCluecustomerTrace = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
-        clueCustomerAjax.addCluecustomerTrace(submitObj).then((result)=>{
+        clueCustomerAjax.addCluecustomerTrace(submitObj).then((result) => {
             this.dispatch({error: false, loading: false, submitTip: result});
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
+        },(errorMsg) => {
             this.dispatch({error: true, loading: false, errorMsg: errorMsg || Intl.get("failed.submit.trace.content","添加跟进内容失败")});
         });
     };
     //把线索客户分配给对应的销售
     this.distributeCluecustomerToSale = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
-        clueCustomerAjax.distributeCluecustomerToSale(submitObj).then((result)=>{
+        clueCustomerAjax.distributeCluecustomerToSale(submitObj).then((result) => {
             this.dispatch({error: false, loading: false});
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
+        },(errorMsg) => {
             this.dispatch({error: true, loading: false});
             _.isFunction(callback) && callback({errorMsg: errorMsg || Intl.get("failed.distribute.cluecustomer.to.sales","把线索客户分配给对应的销售失败")});
         });
     };
     //标记线索是否有效
     this.updateCluecustomerDetail = function(submitObj,callback) {
-        clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result)=>{
+        clueCustomerAjax.updateCluecustomerDetail(submitObj).then((result) => {
             _.isFunction(callback) && callback();
-        },(errorMsg)=>{
+        },(errorMsg) => {
             _.isFunction(callback) && callback(errorMsg || Intl.get("common.edit.failed", "修改失败"));
         });
     };

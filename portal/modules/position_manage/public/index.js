@@ -7,10 +7,10 @@ import PositionAction from './action/index';
 import AddPositionForm from './views/position-form';
 import PositionInfo from './views/position-info';
 import Spinner from 'CMP_DIR/spinner';
-const AntTableCommon = require('CMP_DIR/antd-table-pagination');  // 调整表格的head和body对齐
+const AntTableCommon = require('CMP_DIR/antd-table-pagination'); // 调整表格的head和body对齐
 import ScrollLoad from "CMP_DIR/scroll-load";
 import { topNavEmitter } from 'OPLATE_EMITTER';
-import * as  LANGLOBAL  from './consts';
+import * as LANGLOBAL from './consts';
 import SearchInput from "CMP_DIR/searchInput";
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -44,12 +44,12 @@ const PositionManage = React.createClass({
     // 获取座席号列表
     getPhoneOrderList(queryParams) {
         let reqObj = {
-            page_size: this.state.pageSize,  // 每次加载的条数
+            page_size: this.state.pageSize, // 每次加载的条数
             sort_field: queryParams && queryParams.sort_field || this.state.sortField,
             order: queryParams && queryParams.order || this.state.sortOrder
         };
         // 日志信息的id
-        var id =  queryParams && 'id' in queryParams ? queryParams.id : this.state.positionList.sortId;
+        var id = queryParams && 'id' in queryParams ? queryParams.id : this.state.positionList.sortId;
         let nick_name = queryParams && queryParams.nick_name || this.state.nick_name;
         let phone_order = queryParams && queryParams.phone_order || this.state.phone_order;
         if ( nick_name) {
@@ -195,9 +195,9 @@ const PositionManage = React.createClass({
             <div
                 className="user-list-table-wrap scroll-load"
                 id="new-table"
-                style={{display : doNotShow ? 'none' : 'block'}}
+                style={{display: doNotShow ? 'none' : 'block'}}
             >
-                <div className="position-list-table-wrap " ref="table" style={{height:tableHeight}} >
+                <div className="position-list-table-wrap " ref="table" style={{height: tableHeight}} >
                     <ScrollLoad
                         listenScrollBottom={this.state.listenScrollBottom}
                         handleScrollBottom={this.handleScrollBottom}

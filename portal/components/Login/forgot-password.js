@@ -68,10 +68,10 @@ var ForgotPassword = React.createClass({
         });
     },
     renderCaptchaBlock: function(hasWindow) {
-        const type = this.state.currentView === VIEWS.SEND_AUTH_CODE? VIEWS.RESET_PASSWORD : "";
+        const type = this.state.currentView === VIEWS.SEND_AUTH_CODE ? VIEWS.RESET_PASSWORD : "";
 
         return (this.state.captchaCode ? (<div className="input-item captcha_wrap clearfix">
-            <input placeholder={hasWindow?Intl.get("common.captcha", "验证码"):null} type="text"
+            <input placeholder={hasWindow ? Intl.get("common.captcha", "验证码") : null} type="text"
                 name="retcode" autoComplete="off"
                 tabIndex="3"
                 onChange={this.handleCaptchaCodeValueChange}
@@ -85,7 +85,7 @@ var ForgotPassword = React.createClass({
     getSuccessMsgBlock() {
         const msg = this.state.successMsg;
 
-        return msg? (
+        return msg ? (
             <div className="success-msg">
                 {msg}
             </div>
@@ -152,11 +152,11 @@ var ForgotPassword = React.createClass({
 
         const viewIndex = views.indexOf(view);
 
-        const step = viewIndex > -1? viewIndex : 0;
+        const step = viewIndex > -1 ? viewIndex : 0;
 
         this.props.setErrorMsg("");
 
-        this.setState({ currentView: view, step, captchaCode: "",  successMsg: "" }, () => {
+        this.setState({ currentView: view, step, captchaCode: "", successMsg: "" }, () => {
             const firstInput = $("input")[0];
             if (firstInput) firstInput.focus();
         });
@@ -355,28 +355,28 @@ var ForgotPassword = React.createClass({
 
                 <div className="input-area">
 
-                    {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
+                    {this.state.currentView === VIEWS.SEND_AUTH_CODE ? (
                         <div className="input-item">
-                            <input tabIndex="1"  placeholder={Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱")} onChange={this.handleContactInfoChange.bind(this)} />
+                            <input tabIndex="1" placeholder={Intl.get("login.please_input_phone_or_email", "请输入手机号或邮箱")} onChange={this.handleContactInfoChange.bind(this)} />
                         </div>
                     ) : null}
 
-                    {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
+                    {this.state.currentView === VIEWS.VERIFY_AUTH_CODE ? (
                         <div className="input-item">
-                            <input tabIndex="1"  placeholder={Intl.get("login.please_enter_contact_type_verification_code", "请输入{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName})} onChange={this.handleAuthCodeChange} />
+                            <input tabIndex="1" placeholder={Intl.get("login.please_enter_contact_type_verification_code", "请输入{contactTypeName}验证码", {contactTypeName: this.state.contactTypeName})} onChange={this.handleAuthCodeChange} />
                         </div>
                     ) : null}
 
-                    {this.state.currentView === VIEWS.RESET_PASSWORD? (
+                    {this.state.currentView === VIEWS.RESET_PASSWORD ? (
                         <div className="input-item">
-                            <input tabIndex="1"  type="password" placeholder={Intl.get("login.please_enter_new_password", "请输入新密码")} onChange={this.handleNewPasswordChange} />
+                            <input tabIndex="1" type="password" placeholder={Intl.get("login.please_enter_new_password", "请输入新密码")} onChange={this.handleNewPasswordChange} />
                         </div>
                     ) : null}
 
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
 
-                {this.state.currentView === VIEWS.SEND_AUTH_CODE? (
+                {this.state.currentView === VIEWS.SEND_AUTH_CODE ? (
                     <button className="login-button" type="button"
                         tabIndex="3"
                         onClick={this.sendMsg}
@@ -386,7 +386,7 @@ var ForgotPassword = React.createClass({
                     </button>
                 ) : null}
 
-                {this.state.currentView === VIEWS.VERIFY_AUTH_CODE? (
+                {this.state.currentView === VIEWS.VERIFY_AUTH_CODE ? (
                     <button className="login-button" type="button"
                         tabIndex="3"
                         onClick={this.getTicket}
@@ -396,7 +396,7 @@ var ForgotPassword = React.createClass({
                     </button>
                 ) : null}
 
-                {this.state.currentView === VIEWS.RESET_PASSWORD? (
+                {this.state.currentView === VIEWS.RESET_PASSWORD ? (
                     <button className="login-button" type="button"
                         tabIndex="3"
                         onClick={this.resetPassword}
@@ -406,7 +406,7 @@ var ForgotPassword = React.createClass({
                     </button>
                 ) : null}
 
-                {this.state.currentView === VIEWS.DONE? (
+                {this.state.currentView === VIEWS.DONE ? (
                     <div tabIndex="1"></div>
                 ) : null}
             </form>

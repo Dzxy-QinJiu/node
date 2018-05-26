@@ -16,66 +16,66 @@ import macronsTheme from "CMP_DIR/echarts-theme/macrons";
 import { packageTry } from 'LIB_DIR/func';
 
 var BarChart = React.createClass({
-    echartInstance : null,
-    getDefaultProps : function() {
+    echartInstance: null,
+    getDefaultProps: function() {
         return {
-            list : [],
-            title : Intl.get("oplate_customer_analysis.16", "新增客户行业分布"),
-            width:'100%',
-            resultType : 'loading',
+            list: [],
+            title: Intl.get("oplate_customer_analysis.16", "新增客户行业分布"),
+            width: '100%',
+            resultType: 'loading',
             startDate: '',
-            endDate : '',
+            endDate: '',
             /**
              * [
              *  {name : '正式',key : 'formal'}
              * ]
              */
-            legend : null,
+            legend: null,
             showLabel: false//是否展示柱状图上的数据
         };
     },
-    getLegend : function() {
+    getLegend: function() {
         if(!this.props.legend) {
             return {
-                show : false,
-                data :[]
+                show: false,
+                data: []
             };
         }
         return {
-            show : false,
-            data :_.pluck(this.props.legend , 'name')
+            show: false,
+            data: _.pluck(this.props.legend , 'name')
         };
     },
-    getMargin : function() {
+    getMargin: function() {
         var industry = _.pluck(this.props.list.slice().reverse() , 'name');
         if(!industry.length) {
             return 80;
         }
         var marginList = _.map(industry , function(text) {
-            text = text === 'unknown' ? Intl.get("user.unknown", "未知"):text;
+            text = text === 'unknown' ? Intl.get("user.unknown", "未知") : text;
             return textWidth.measureTextWidth(text , 12);
         });
         var maxMargin = _.max(marginList) + 20;
         return maxMargin;
     },
-    getCategorys : function() {
+    getCategorys: function() {
         return _.pluck(this.props.list.slice().reverse() , 'name');
     },
-    getSeries : function() {
+    getSeries: function() {
         var _this = this;
         var series = [];
         _.each(this.props.legend , function(legendInfo,idx) {
             var currentColor = COLOR_MULTIPLE[idx];
             var line = {
-                name : legendInfo.name,
-                type : 'bar',
-                barMaxWidth:40,
-                barMinWidth : 4,
-                stack : 'stack',
-                data : _.pluck(_this.props.list.slice().reverse() , legendInfo.key),
-                itemStyle : {
-                    normal : {
-                        color :currentColor,
+                name: legendInfo.name,
+                type: 'bar',
+                barMaxWidth: 40,
+                barMinWidth: 4,
+                stack: 'stack',
+                data: _.pluck(_this.props.list.slice().reverse() , legendInfo.key),
+                itemStyle: {
+                    normal: {
+                        color: currentColor,
                         label: {show: _this.props.showLabel, position: 'right'}
                     }
                 }
@@ -84,12 +84,12 @@ var BarChart = React.createClass({
         });
         return series;
     },
-    getTooltip : function() {
+    getTooltip: function() {
         var _this = this;
         return {
             trigger: 'item',
-            extraCssText : echartsTooltipCssText,
-            formatter : function(obj) {
+            extraCssText: echartsTooltipCssText,
+            formatter: function(obj) {
                 var value = obj.value;
                 var name = obj.name;
 
@@ -128,7 +128,7 @@ var BarChart = React.createClass({
                     if(_this.props.startDate == _this.props.endDate) {
                         timeDesc = _this.props.startDate;
                     }else{
-                        timeDesc = _this.props.startDate + " 至 " +  _this.props.endDate;
+                        timeDesc = _this.props.startDate + " 至 " + _this.props.endDate;
                     }
                 }
                 return `<div class="echarts-tooltip">
@@ -140,44 +140,44 @@ var BarChart = React.createClass({
             }
         };
     },
-    getEchartOptions : function() {
+    getEchartOptions: function() {
         //grid上的margin
         var maxMargin = this.getMargin();
         var option = {
-            title:null,
-            animation : false,
-            tooltip : this.getTooltip(),
+            title: null,
+            animation: false,
+            tooltip: this.getTooltip(),
             legend: this.getLegend(),
             toolbox: {
-                show : false
+                show: false
             },
-            calculable : false,
-            grid : {
-                x : maxMargin,
-                y : 40,
-                x2 : 33,
-                y2 : 0,
-                borderWidth : 0
+            calculable: false,
+            grid: {
+                x: maxMargin,
+                y: 40,
+                x2: 33,
+                y2: 0,
+                borderWidth: 0
             },
-            yAxis : [
+            yAxis: [
                 {
-                    type : 'category',
-                    data : this.getCategorys(),
-                    splitLine : false,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'category',
+                    data: this.getCategorys(),
+                    splitLine: false,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisTick : {
-                        show : false
+                    axisTick: {
+                        show: false
                     },
-                    axisLabel : {
-                        textStyle : {
+                    axisLabel: {
+                        textStyle: {
                             color: '#939393'
                         },
-                        formatter : function(text) {
+                        formatter: function(text) {
                             if(text === 'unknown') {
                                 text = Intl.get("user.unknown", "未知");
                             } else if(!text) {
@@ -188,31 +188,31 @@ var BarChart = React.createClass({
                     }
                 }
             ],
-            xAxis : [
+            xAxis: [
                 {
-                    type : 'value',
-                    splitLine : false,
-                    position : 'top',
-                    min : 0,
-                    axisLine : {
-                        lineStyle : {
-                            width:1,
-                            color:'#d1d1d1'
+                    type: 'value',
+                    splitLine: false,
+                    position: 'top',
+                    min: 0,
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#d1d1d1'
                         }
                     },
-                    axisLabel : {
-                        textStyle : {
-                            color:'#939393',
-                            align:'right'
+                    axisLabel: {
+                        textStyle: {
+                            color: '#939393',
+                            align: 'right'
                         }
                     }
                 }
             ],
-            series : this.getSeries()
+            series: this.getSeries()
         };
         return option;
     },
-    renderChart : function() {
+    renderChart: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.clear();
@@ -236,10 +236,10 @@ var BarChart = React.createClass({
             $(this.refs.chart).find(".nodata").remove();
         }
     },
-    componentDidMount : function() {
+    componentDidMount: function() {
         this.renderChart();
     },
-    componentDidUpdate : function(prevProps) {
+    componentDidUpdate: function(prevProps) {
         if(
             this.props.list.length &&
             prevProps.list.length &&
@@ -250,7 +250,7 @@ var BarChart = React.createClass({
         }
         this.renderChart();
     },
-    componentWillUnmount : function() {
+    componentWillUnmount: function() {
         if(this.echartInstance) {
             packageTry(() => {
                 this.echartInstance.dispose();
@@ -258,20 +258,20 @@ var BarChart = React.createClass({
             this.echartInstance = null;
         }
     },
-    render : function() {
+    render: function() {
         var _this = this;
         var height = this.props.height;
         return (
             <div className="analysis_bar_reverse_chart" ref="wrap">
-                {this.props.resultType === 'loading'?
+                {this.props.resultType === 'loading' ?
                     (
-                        <div className="loadwrap" style={{height:minHeight}}>
+                        <div className="loadwrap" style={{height: minHeight}}>
                             <Spinner/>
                         </div>
-                    ):
+                    ) :
                     (
                         <div>
-                            <div ref="chart" style={{width:this.props.width,height:height}} className="chart" data-title={this.props.title}></div>
+                            <div ref="chart" style={{width: this.props.width,height: height}} className="chart" data-title={this.props.title}></div>
                         </div>
                     )
                 }

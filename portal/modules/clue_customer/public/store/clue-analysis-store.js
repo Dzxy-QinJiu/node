@@ -62,7 +62,7 @@ ClueAnalysisStore.prototype.getCustomerById = function(result) {
         this.getCustomersErrMsg = "";
         if (_.isArray(result.data.result)){
             this.customersList = result.data.result;
-            _.each(this.customersList,(item)=>{
+            _.each(this.customersList,(item) => {
                 item.customer_name = item.name;
                 item.customer_id = item.id;
                 if (result.label){

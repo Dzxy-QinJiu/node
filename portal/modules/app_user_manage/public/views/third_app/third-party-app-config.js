@@ -3,7 +3,7 @@
 import Spinner from 'CMP_DIR/spinner';
 import { Alert } from 'antd';
 import AppUserUtil, { LAYOUT_CONSTANTS } from '../../util/app-user-util'; //右侧面板常量
-import { PrivilegeChecker } from  'CMP_DIR/privilege/checker';
+import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import ThirdPartyAppConfigStore from '../../store/third-party-app-config-store';
 import ThirdPartyAppConfigAction from '../../action/third-party-app-config-actions';
@@ -35,7 +35,7 @@ const ThreePartyAppConfig = React.createClass({
     componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
         if (prevProps.userId != newUserId) {
-            setTimeout( () =>{
+            setTimeout( () => {
                 ThirdPartyAppConfigAction.dismiss();
                 ThirdPartyAppConfigAction.getAppConfigList(newUserId);
             }, 0);
@@ -86,7 +86,7 @@ const ThreePartyAppConfig = React.createClass({
     renderAddAppBtn() {
         return (
             <PrivilegeChecker
-                check="THIRD_PARTY_MANAGE"  // 只有管理员可以查看应用详情、添加、编辑和停用应用
+                check="THIRD_PARTY_MANAGE" // 只有管理员可以查看应用详情、添加、编辑和停用应用
                 tagName="a"
                 className="a_button"
                 href="javascript:void(0)"
@@ -129,7 +129,7 @@ const ThreePartyAppConfig = React.createClass({
                                 ) : null
                             }
                             <PrivilegeChecker
-                                check="THIRD_PARTY_MANAGE"  // 只有管理员可以查看应用详情、添加、编辑和停用应用
+                                check="THIRD_PARTY_MANAGE" // 只有管理员可以查看应用详情、添加、编辑和停用应用
                                 tagName="div"
                                 className="operate"
                             >
@@ -145,7 +145,7 @@ const ThreePartyAppConfig = React.createClass({
                     <div>
                         <span>{Intl.get("my.app.no.app", "暂无应用")}</span>
                         <PrivilegeChecker
-                            check="THIRD_PARTY_MANAGE"  // 只有管理员可以查看应用详情、添加、编辑和停用应用
+                            check="THIRD_PARTY_MANAGE" // 只有管理员可以查看应用详情、添加、编辑和停用应用
                             tagName="span"
                             className="operate"
                         >

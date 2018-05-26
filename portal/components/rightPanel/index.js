@@ -73,7 +73,7 @@ var RightPanelEdit = React.createClass({
 //渲染详情中的编辑按钮
 var DetailEditBtn = React.createClass({
     render: function() {
-        return (<span  {...this.props} className="iconfont icon-edit-btn"/>);
+        return (<span {...this.props} className="iconfont icon-edit-btn"/>);
     }
 });
 

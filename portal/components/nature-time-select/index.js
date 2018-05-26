@@ -56,7 +56,7 @@ var TimeSelect = React.createClass({
         var yearOptions = [];
         var curYear = moment().year();
         for (var i = 0; i <= 10; i++) {
-            yearOptions.push(<Option key={i} Value={curYear-i}>{curYear - i}年</Option>);
+            yearOptions.push(<Option key={i} Value={curYear - i}>{curYear - i}年</Option>);
         }
         return yearOptions;
     },

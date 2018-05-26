@@ -142,7 +142,7 @@ SalesTeamStore.prototype.filterByTeamName = function(teamName) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(()=>{
+        setTimeout(() => {
             SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
         });
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
@@ -177,7 +177,7 @@ SalesTeamStore.prototype.filterByUserName = function(filterTeamList) {
         //获取第一个团队的成员
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(()=>{
+        setTimeout(() => {
             SalesTeamActions.getSalesGoals(filterTeamArray[0].key);
         });
         SalesTeamActions.getSalesTeamMemberList(filterTeamArray[0].key);
@@ -826,7 +826,7 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
     if (salesTeamArray.length > 0 && !flag) {
         this.setTeamMemberLoading(true);
         //第一个团队的销售目标
-        setTimeout(()=>{
+        setTimeout(() => {
             SalesTeamActions.getSalesGoals(salesTeamArray[0].key);
         });
         SalesTeamActions.getSalesTeamMemberList(salesTeamArray[0].key);

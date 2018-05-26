@@ -12,86 +12,86 @@ var customerAjax = require("../../../../common/public/ajax/customer");
 var userData = require("../../../../../public/sources/user-data");
 var classNames = require("classnames");
 var CustomerSuggest = React.createClass({
-    suggestTimer : null,
-    getDefaultProps : function() {
+    suggestTimer: null,
+    getDefaultProps: function() {
         return {
             //是否是必填项
-            required : true,
+            required: true,
             //是否显示错误提示，一般在点击提交的时候，这个值为true
-            show_error : false,
+            show_error: false,
             //客户的id
-            customer_id : '',
+            customer_id: '',
             //客户的name
-            customer_name : '',
+            customer_name: '',
             //当选中了customer的时候，会调用这个函数
-            onCustomerChoosen : function() {},
+            onCustomerChoosen: function() {},
             //告诉调用的父组件，隐藏错误提示
-            hideCustomerError : function() {},
+            hideCustomerError: function() {},
             //搜索关键词
-            keyword : ''
+            keyword: ''
         };
     },
-    componentWillReceiveProps : function(nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         if(this.props.customer_id != nextProps.customer_id || this.props.customer_name != nextProps.customer_name) {
             this.setState({
-                customer : {
-                    id : nextProps.customer_id,
-                    name : nextProps.customer_name
+                customer: {
+                    id: nextProps.customer_id,
+                    name: nextProps.customer_name
                 }
             });
             //没有客户的时候，将销售、销售团队置空
             if(!nextProps.customer_id) {
                 this.setState({
-                    list : [],
-                    keyword : '',
-                    sales_team : {
-                        id : '',
-                        name : ''
+                    list: [],
+                    keyword: '',
+                    sales_team: {
+                        id: '',
+                        name: ''
                     },
-                    sales : {
-                        id : '',
-                        name : ''
+                    sales: {
+                        id: '',
+                        name: ''
                     }
                 });
             }
         }
     },
-    getInitialState : function() {
+    getInitialState: function() {
         return {
             //类型
-            result_type : '',
+            result_type: '',
             //从服务端获取的客户列表
-            list : [],
+            list: [],
             //显示提示
-            show_tip : false,
+            show_tip: false,
             //联想接口错误时候的提示信息
-            suggest_error_msg : '',
+            suggest_error_msg: '',
             //销售团队
-            sales_team : {
-                id : '',
-                name : ''
+            sales_team: {
+                id: '',
+                name: ''
             },
             //销售
-            sales : {
-                id : '',
-                name : ''
+            sales: {
+                id: '',
+                name: ''
             },
             //客户
-            customer : {
-                id : this.props.customer_id,
-                name : this.props.customer_name
+            customer: {
+                id: this.props.customer_id,
+                name: this.props.customer_name
             },
-            keyword : this.props.customer_name
+            keyword: this.props.customer_name
         };
     },
-    customerAjaxReq : null,
-    getCustomerList : function(suggestWord) {
+    customerAjaxReq: null,
+    getCustomerList: function(suggestWord) {
         var Deferred = $.Deferred();
         if(this.customerAjaxReq) {
             this.customerAjaxReq.abort();
         }
         this.customerAjaxReq = customerAjax.getCustomerSuggestListAjax().sendRequest({
-            q : suggestWord
+            q: suggestWord
         }).success(function(list) {
             Deferred.resolve(list);
         }).error(function(xhr,statusText) {
@@ -104,7 +104,7 @@ var CustomerSuggest = React.createClass({
         return Deferred.promise();
     },
     //调整右侧面板客户联想宽度
-    adjustDropDownRightPos : function() {
+    adjustDropDownRightPos: function() {
         var $dropDown = $(".customer_combobox_search.ant-select-dropdown");
         if($dropDown[0]){
             $dropDown.css("right","auto");
@@ -121,10 +121,10 @@ var CustomerSuggest = React.createClass({
         //是否展示客户名后的对号或者叉号
         _.isFunction(this.props.isShowUpdateOrClose) && this.props.isShowUpdateOrClose(false);
         this.setState({
-            result_type : 'loading',
-            suggest_error_msg : '',
-            list : [],
-            show_tip : false
+            result_type: 'loading',
+            suggest_error_msg: '',
+            list: [],
+            show_tip: false
         },() => {
             this.adjustDropDownRightPos();
         });
@@ -134,20 +134,20 @@ var CustomerSuggest = React.createClass({
         this.suggestTimer = setTimeout(function() {
             _this.getCustomerList(value).then(function(list) {
                 _this.setState({
-                    result_type : '',
-                    suggest_error_msg : '',
-                    list : list,
-                    show_tip : list.length <= 0
+                    result_type: '',
+                    suggest_error_msg: '',
+                    list: list,
+                    show_tip: list.length <= 0
                 },() => {
                     _this.adjustDropDownRightPos();
                     _.isFunction(_this.props.isShowUpdateOrClose) && _this.props.isShowUpdateOrClose(true);
                 });
             } , function(errorMsg) {
                 _this.setState({
-                    result_type : 'error',
-                    suggest_error_msg : errorMsg,
-                    show_tip : true,
-                    list : []
+                    result_type: 'error',
+                    suggest_error_msg: errorMsg,
+                    show_tip: true,
+                    list: []
                 },() => {
                     _this.adjustDropDownRightPos();
                     _.isFunction(_this.props.isShowUpdateOrClose) && _this.props.isShowUpdateOrClose(true);
@@ -155,7 +155,7 @@ var CustomerSuggest = React.createClass({
             });
         } , 300);
     },
-    customerChoosen : function(value,field) {
+    customerChoosen: function(value,field) {
         var selectedCustomer = _.find(this.state.list , function(item) {
             if(item.customer_id === value) {
                 return true;
@@ -163,69 +163,69 @@ var CustomerSuggest = React.createClass({
         });
         if(selectedCustomer) {
             var result = {
-                keyword : value,
-                sales_team : {
-                    id : selectedCustomer.sales_team_id,
-                    name : selectedCustomer.sales_team_name
+                keyword: value,
+                sales_team: {
+                    id: selectedCustomer.sales_team_id,
+                    name: selectedCustomer.sales_team_name
                 },
-                sales : {
-                    id : selectedCustomer.sales_id,
-                    name : selectedCustomer.sales_name
+                sales: {
+                    id: selectedCustomer.sales_id,
+                    name: selectedCustomer.sales_name
                 },
-                customer : {
-                    id : value,
-                    name : selectedCustomer.customer_name
+                customer: {
+                    id: value,
+                    name: selectedCustomer.customer_name
                 }
             };
 
             this.setState({
                 ...result,
-                show_tip : false
+                show_tip: false
             });
             var resultClone = JSON.parse(JSON.stringify(result));
             this.props.onCustomerChoosen(resultClone);
         } else {
             var result = {
-                keyword : value,
-                sales_team : {
-                    id : '',
-                    name : ''
+                keyword: value,
+                sales_team: {
+                    id: '',
+                    name: ''
                 },
-                sales : {
-                    id : '',
-                    name : ''
+                sales: {
+                    id: '',
+                    name: ''
                 },
-                customer : {
-                    id : '',
-                    name : ''
+                customer: {
+                    id: '',
+                    name: ''
                 }
             };
             this.setState({
                 ...result,
-                show_tip : false,
-                list : []
+                show_tip: false,
+                list: []
             });
             var resultClone = JSON.parse(JSON.stringify(result));
             this.props.onCustomerChoosen(resultClone);
         }
     },
-    getCustomerSearchInput : function() {
+    getCustomerSearchInput: function() {
         var $search_input = $(".ant-select-search__field",this.refs.customer_searchbox);
         return $search_input;
     },
-    retrySuggest : function() {
+    retrySuggest: function() {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         this.suggestChange(search_input_val);
     },
-    getCustomerLoadingBlock : function() {
+    getCustomerLoadingBlock: function() {
         if(this.state.result_type === 'loading') {
             return (
                 <Icon type="loading"/>
             );
         }
     },
-    getCustomerTipBlock : function() {
+    getCustomerTipBlock: function() {
         var $search_input = this.getCustomerSearchInput();
         var search_input_val = $search_input.val();
         if(this.props.show_error) {
@@ -259,38 +259,38 @@ var CustomerSuggest = React.createClass({
             }
         }
     },
-    resetCustomer : function() {
+    resetCustomer: function() {
 
         var result = {
-            keyword : '',
-            sales_team : {
-                id : '',
-                name : ''
+            keyword: '',
+            sales_team: {
+                id: '',
+                name: ''
             },
-            sales : {
-                id : '',
-                name : ''
+            sales: {
+                id: '',
+                name: ''
             },
-            customer : {
-                id : '',
-                name : ''
+            customer: {
+                id: '',
+                name: ''
             }
         };
 
         this.setState({
-            customer_list : [],
+            customer_list: [],
             ...result,
-            show_tip : false,
-            list : []
+            show_tip: false,
+            list: []
         });
 
         var resultClone = JSON.parse(JSON.stringify(result));
         this.props.onCustomerChoosen(resultClone);
     },
-    render : function() {
+    render: function() {
         if(this.state.sales.name) {
             return (
-                <div ref="customer_searchbox"  className="customer_searchbox_wrap customer_searchbox_text_wrap">
+                <div ref="customer_searchbox" className="customer_searchbox_wrap customer_searchbox_text_wrap">
                     <div className="customer_choosen" title={Intl.get("user.customer.suggest.reselect","点击重新选择")} onClick={this.resetCustomer}>
                         <span>{this.state.customer.name}</span>
                         <i className="iconfont"></i>
@@ -300,12 +300,12 @@ var CustomerSuggest = React.createClass({
         } else {
 
             var wrapClassName = classNames({
-                customer_searchbox_wrap : true,
-                customer_searchbox_error : this.props.show_error && this.props.required
+                customer_searchbox_wrap: true,
+                customer_searchbox_error: this.props.show_error && this.props.required
             });
 
             return (
-                <div ref="customer_searchbox"  className={wrapClassName}>
+                <div ref="customer_searchbox" className={wrapClassName}>
                     <Select
                         combobox
                         searchPlaceholder={Intl.get("customer.search.by.customer.name", "请输入客户名称搜索")}

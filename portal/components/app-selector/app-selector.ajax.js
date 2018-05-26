@@ -20,13 +20,13 @@ exports.getRoleList = function(appId) {
 exports.getAppInfo = function(appId) {
     var Def = $.Deferred();
     $.ajax({
-        type : 'get',
-        url : '/rest/app/' + appId ,
-        dataType : 'json',
-        success : function(info) {
+        type: 'get',
+        url: '/rest/app/' + appId ,
+        dataType: 'json',
+        success: function(info) {
             Def.resolve(info);
         },
-        error : function(obj) {
+        error: function(obj) {
             Def.reject(obj);
         }
     });

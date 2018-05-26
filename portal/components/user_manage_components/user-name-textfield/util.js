@@ -56,28 +56,28 @@ function clickUserName(user_id, username_block) {
 exports.checkUserExist = function(rule, obj, callback, number, username_block) {
     clearTimeout(userExistTimeout);
     userExistTimeout = setTimeout(() => {
-        checkUserExistAjax(obj).then((result) => {  // 通过验证情况
+        checkUserExistAjax(obj).then((result) => { // 通过验证情况
             userInfo = result;
             if (result.length == 0) {
                 callback();
-            } else {   // 不通过验证的情况，分为两种情况
+            } else { // 不通过验证的情况，分为两种情况
                 // 第一种情况：同一个客户下，用户数多个时，通过， 一个时，不通过（提示用户名已存在，并且可以查看同名的用户详情信息）
                 // 第二种情况：不同客户下，不通过，有多个用户名前缀相同时（提示用户名已存在）,有一个相同时，(提示用户名已存在，并且可以查看同名的用户详情信息)
                 let customerIdArray = _.pluck(result, 'customer_id');
                 let index = _.indexOf(customerIdArray, obj.customer_id);
-                if (index != -1) {  // 有相同的customer_id
+                if (index != -1) { // 有相同的customer_id
                     if (result.length == 1) { // 重复的用户数只有一个
-                        if (number == 1) {  // 申请的用户数为1， 不通过
+                        if (number == 1) { // 申请的用户数为1， 不通过
                             callback(Intl.get("user.user.exist.tip", "用户已存在"));
                             clickUserName(result[0].id, username_block);
-                        } else {  // 申请的用户数为多个，通过
+                        } else { // 申请的用户数为多个，通过
                             callback();
                         }
-                    } else {  // 重复的用户数为多个，通过
+                    } else { // 重复的用户数为多个，通过
                         callback();
                     }
 
-                } else {  // 没有相同的customer_id
+                } else { // 没有相同的customer_id
                     if (result.length == 1) {
                         callback(Intl.get("user.user.exist.tip", "用户已存在"));
                         clickUserName(result[0].id, username_block);

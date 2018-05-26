@@ -12,7 +12,7 @@ class ClueImportTemplate extends React.Component {
     constructor(props){
         super(props);
     }
-    handleCancel= (e) =>{
+    handleCancel= (e) => {
         e.preventDefault();
         this.props.closeClueTemplatePanel();
     };
@@ -28,7 +28,7 @@ class ClueImportTemplate extends React.Component {
                                 id="common.download.template"
                                 defaultMessage={`点击下载{template}`}
                                 values={{
-                                    "template":  <a data-tracename="点击导入线索模板" href="/rest/clue/download_template">{Intl.get("clue.manage.import.clue.template", "导入线索模板")}</a>
+                                    "template": <a data-tracename="点击导入线索模板" href="/rest/clue/download_template">{Intl.get("clue.manage.import.clue.template", "导入线索模板")}</a>
                                 }}
                             />
                         </p>

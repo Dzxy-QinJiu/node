@@ -1,7 +1,7 @@
 const MOMENT_DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const momentMap = {
-    "w" : "weeks",
-    "m" : "months"
+    "w": "weeks",
+    "m": "months"
 };
 //获取日期字符串
 exports.getDateStr = function(dateStr) {
@@ -53,7 +53,7 @@ exports.getThisWeekTime = function(endOfToday) {
     var end_time = "";
     if(endOfToday){
         //截止到今天
-        end_time=moment().format(MOMENT_DATE_FORMAT);
+        end_time = moment().format(MOMENT_DATE_FORMAT);
     }else{
         //截止到周日
         end_time = moment().weekday(6).format(MOMENT_DATE_FORMAT);
@@ -85,36 +85,36 @@ exports.getLastMonthTime = function() {
 //获取一周时间
 exports.getOneWeekTime = function() {
     return {
-        start_time : moment().format(MOMENT_DATE_FORMAT),
-        end_time : moment().add(7 , "days")
+        start_time: moment().format(MOMENT_DATE_FORMAT),
+        end_time: moment().add(7 , "days")
     };
 };
 //获取半个月时间
 exports.getHalfAMonthTime = function() {
     return {
-        start_time : moment().format(MOMENT_DATE_FORMAT),
-        end_time : moment().add(15 , "days").format(MOMENT_DATE_FORMAT)
+        start_time: moment().format(MOMENT_DATE_FORMAT),
+        end_time: moment().add(15 , "days").format(MOMENT_DATE_FORMAT)
     };
 };
 //获取月份时间
 exports.getMonthTime = function(num) {
     return {
-        start_time : moment().format(MOMENT_DATE_FORMAT),
-        end_time : moment().add(num , "month").format(MOMENT_DATE_FORMAT)
+        start_time: moment().format(MOMENT_DATE_FORMAT),
+        end_time: moment().add(num , "month").format(MOMENT_DATE_FORMAT)
     };
 };
 //获取永久时间
 exports.getForeverTime = function() {
     return {
-        start_time : moment().format(MOMENT_DATE_FORMAT),
-        end_time : '0'
+        start_time: moment().format(MOMENT_DATE_FORMAT),
+        end_time: '0'
     };
 };
 //获取全部时间
 exports.getAllTime = function() {
     return {
-        start_time : '',
-        end_time : ''
+        start_time: '',
+        end_time: ''
     };
 };
 
@@ -128,8 +128,8 @@ exports.getLastTime = function(word) {
     var start_time = moment().subtract(result[1],unit).format(MOMENT_DATE_FORMAT);
     var end_time = moment().format(MOMENT_DATE_FORMAT);
     return {
-        start_time : start_time,
-        end_time : end_time
+        start_time: start_time,
+        end_time: end_time
     };
 };
 
@@ -139,8 +139,8 @@ exports.getNatureUnit = function(startTime,endTime) {
         return 'month';
     }
     var result = {
-        startTime:startTime,
-        endTime : endTime
+        startTime: startTime,
+        endTime: endTime
     };
     var startMoment = moment(new Date(+result.startTime));
     var endMoment = moment(new Date(+result.endTime));
@@ -162,8 +162,8 @@ exports.getQuarterTime = function(which,year) {
     }
     year = year || new Date().getFullYear();
     return {
-        start_time : moment().year(year).quarter(which).startOf("quarter").format(MOMENT_DATE_FORMAT),
-        end_time : moment().year(year).quarter(which).endOf("quarter").format(MOMENT_DATE_FORMAT)
+        start_time: moment().year(year).quarter(which).startOf("quarter").format(MOMENT_DATE_FORMAT),
+        end_time: moment().year(year).quarter(which).endOf("quarter").format(MOMENT_DATE_FORMAT)
     };
 };
 

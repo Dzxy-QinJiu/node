@@ -10,11 +10,11 @@ if (language.lan() == "es" || language.lan() == "en") {
 var CardItem = require("./cardItem");
 var Icon = require("antd").Icon;
 var DefaultUserLogoTitle = require("../default-user-logo-title");
-const  DELETE_CREATEREALM_DELAYTIME= 4000;
+const DELETE_CREATEREALM_DELAYTIME = 4000;
 import Trace from "LIB_DIR/trace";
 
 var Card = React.createClass({
-    getDefaultProps : function(){
+    getDefaultProps: function(){
         return {
             cardWidth: "auto"
         };
@@ -33,7 +33,7 @@ var Card = React.createClass({
         Trace.traceEvent(event,"查看应用详情");
         var curCard = this.props.curCard;
         //curCard.id =='' 如果是在创建中的安全域card是不能点击的
-        if (event.target.className.indexOf("icon-role-auth-config") >= 0 || curCard.id =='') {
+        if (event.target.className.indexOf("icon-role-auth-config") >= 0 || curCard.id == '') {
             return;
         }
         this.props.showCardInfo(curCard);
@@ -71,22 +71,22 @@ var Card = React.createClass({
         }
         if (card.createMsg === 'error') {
             //右上角通知3s后关闭，在通知关闭后再在页面上移除创建失败的安全域card
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.props.removeFailRealm(card.taskId);
             }, DELETE_CREATEREALM_DELAYTIME);
         }
         var userName = card.userName ? card.userName.value : "";
         return (
-            <div className="card-layout-container " style={{width:this.props.cardWidth}}>
+            <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className="card-box" onClick={this.showCardInfo}>
-                    <div className="card-stop-layer" style={{display:card.status==0 ? 'block' : 'none'}}>
+                    <div className="card-stop-layer" style={{display: card.status == 0 ? 'block' : 'none'}}>
                         <div className="card-stop-bg"></div>
                         <div className="stop-icon">
                             <ReactIntl.FormattedMessage id="common.stop" defaultMessage="停用"/>
                         </div>
                         <div className="stop-triangle"></div>
                     </div>
-                    {card.id? null:(
+                    {card.id ? null : (
                         <div className="card-stop-layer">
                             <div className="card-stop-bg"></div>
                             <div className="building-icon">
@@ -110,7 +110,7 @@ var Card = React.createClass({
                         </div>
 
                         <Icon className={iconClass} type="check-circle-o"
-                            style={{display:this.props.bulkOpersShow ? 'block' : 'none'}}
+                            style={{display: this.props.bulkOpersShow ? 'block' : 'none'}}
                             onClick={this.selectCardEvent}/>
                         {this.props.type == "myApp" ? (<div className="iconfont icon-role-auth-config"
                             onClick={this.showRightFullScreen} title={Intl.get("my.app.role.auth.config.title","设置角色、权限")}></div>) : null}

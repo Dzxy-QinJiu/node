@@ -337,7 +337,7 @@ exports.getCallBackList = function(paramsObj, filterObj) {
     const queryCustomer = paramsObj.query.phone_type === 'customer'; // 客户电话的类型过滤
     let filter_phone = queryCustomer; // 是否过滤114和无效的电话号码
     let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager/' : 'user/';
-    let url = '/rest/call_record/'+ auth_type;
+    let url = '/rest/call_record/' + auth_type;
     let paramsArray = Object.values(paramsObj.params);
     url += paramsArray.join('/');
     url += '?';

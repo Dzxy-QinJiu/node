@@ -26,7 +26,7 @@ class WeChatForm extends React.Component {
             } else {
                 let realmId = this.props.realmId;
                 let realmConfigInfo = this.state.realmConfigInfo;
-                RealmAjax.settingWeChat(realmId, values).then(  (result) => {
+                RealmAjax.settingWeChat(realmId, values).then( (result) => {
                     if (result) {
                         realmConfigInfo.wechat_client_id = values.wechat_client_id;
                         realmConfigInfo.wechat_client_secret = values.wechat_client_secret;
@@ -76,7 +76,7 @@ class WeChatForm extends React.Component {
                         initialValue: realmConfigInfo && realmConfigInfo.wechat_client_secret,
                         rules: [{message: WECHAT.secretMessage}]
                     })(
-                        <Input  type="text" placeholder={WECHAT.secretMessage}/>
+                        <Input type="text" placeholder={WECHAT.secretMessage}/>
                     )}
                 </FormItem>
                 <FormItem className="submit-button">

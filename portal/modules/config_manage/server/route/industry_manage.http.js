@@ -29,7 +29,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": [
-            "DELETE_CONFIG_INDUSTRY"  // 删除行业配置权限
+            "DELETE_CONFIG_INDUSTRY" // 删除行业配置权限
         ]
     }
     ]

@@ -45,7 +45,7 @@ const CallRecordList = React.createClass({
         this.closeRightPanel();
         callReordEmitter.removeListener(callReordEmitter.CLOSE_RIGHT_PANEL, this.closeRightPanel);
     },
-    showRightPanel:function(customerId) {
+    showRightPanel: function(customerId) {
         this.setState({
             rightPanelCustomerId: customerId,
             showRightPanel: true
@@ -55,7 +55,7 @@ const CallRecordList = React.createClass({
             customer_params: {
                 currentId: customerId,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                hideRightPanel:this.closeRightPanel
+                hideRightPanel: this.closeRightPanel
             }
         });
     },

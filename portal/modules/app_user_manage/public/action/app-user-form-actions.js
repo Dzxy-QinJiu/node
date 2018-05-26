@@ -42,9 +42,9 @@ function AppUserFormAction() {
     this.getApps = function() {
         var _this = this;
         AppUserAjax.getApps().then(function(list) {
-            _this.dispatch({error : false, list : list});
+            _this.dispatch({error: false, list: list});
         } , function(errorMsg) {
-            _this.dispatch({error : true, errorMsg : errorMsg});
+            _this.dispatch({error: true, errorMsg: errorMsg});
         });
     };
     /**
@@ -52,11 +52,11 @@ function AppUserFormAction() {
      */
     this.addAppUser = function(user) {
         var _this = this;
-        _this.dispatch({error : false , loading:true});
+        _this.dispatch({error: false , loading: true});
         AppUserAjax.addAppUser(user).then(function(user) {
-            _this.dispatch({error : false , user:user});
+            _this.dispatch({error: false , user: user});
         } , function(errorMsg){
-            _this.dispatch({error : true , errorMsg : errorMsg});
+            _this.dispatch({error: true , errorMsg: errorMsg});
         });
     };
 

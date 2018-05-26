@@ -45,7 +45,7 @@ var LeftTree = React.createClass({
             SalesTeamAction.cancelEditGroup(item);
         } else {
             SalesTeamAction.cancelAddGroup(item);
-            setTimeout(()=>$(".sales-team-search-input-container .search-input").val(this.props.searchContent));
+            setTimeout(() => $(".sales-team-search-input-container .search-input").val(this.props.searchContent));
         }
     },
 
@@ -298,7 +298,7 @@ var LeftTree = React.createClass({
             scrollHeight -= 40;//40：添加根团队按钮的高度
         }
         return (
-            <div className="sales-team-group" style={{height:this.props.containerHeight}} data-tracename="团队管理左侧列表">
+            <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
                 <div className="sales-team-root-add item-border-style">
                     {this.props.isAddSalesTeamRoot ? (
                         <div className="group-form-div group-form-no-superior">
@@ -317,14 +317,14 @@ var LeftTree = React.createClass({
                         </div>
                         <div className="add-sales-team-root-div">
                             <Button type="ghost" className="add-root-sales-team-btn"
-                                onClick={(e)=>{this.addSalesTeamRoot(e);}}
+                                onClick={(e) => {this.addSalesTeamRoot(e);}}
                             ><ReactIntl.FormattedMessage id="sales.team.add.team"
                                     defaultMessage="添加团队"/></Button>
                         </div>
                     </div>)
                     }
                 </div>
-                <div className="sales-team-tree-container" style={{height:scrollHeight}} data-tracename="团队列表">
+                <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <ul className="left-tree-ul">
                             {loop(salesTeamGroupList)}

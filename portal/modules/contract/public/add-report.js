@@ -26,7 +26,7 @@ const AddReport = React.createClass({
         });
     },
     setField2: function(field, index, e) {
-        let value = _.isObject(e)? e.target.value : e;
+        let value = _.isObject(e) ? e.target.value : e;
         const currentItem = this.state.reports[index];
         currentItem[field] = value;
 
@@ -91,7 +91,7 @@ const AddReport = React.createClass({
                                             {serviceTypeOption}
                                         </Select>
                                     </FormItem>
-                                    {report.type === REPORT_SERVICE? (
+                                    {report.type === REPORT_SERVICE ? (
                                         <FormItem 
                                             label={Intl.get("contract.77", "报告类型")}
                                         >
@@ -104,7 +104,7 @@ const AddReport = React.createClass({
                                             </Select>
                                         </FormItem>
                                     ) : null}
-                                    {report.type !== REPORT_SERVICE? (
+                                    {report.type !== REPORT_SERVICE ? (
                                         <FormItem 
                                             label="数量（个）"
                                             validateStatus={this.getValidateStatus("num" + index)}
@@ -140,7 +140,7 @@ const AddReport = React.createClass({
                                         <Validator rules={[this.getNumberValidateRule()]}>
                                             <Input
                                                 name={"commission_rate" + index}
-                                                value={(isNaN(report.commission_rate)? "" : report.commission_rate).toString()}
+                                                value={(isNaN(report.commission_rate) ? "" : report.commission_rate).toString()}
                                                 onChange={this.setField2.bind(this, "commission_rate", index)}
                                             />
                                         </Validator>

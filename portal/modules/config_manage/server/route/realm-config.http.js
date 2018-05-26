@@ -14,7 +14,7 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": [
-                "GET_CONFIG_PWD_STRATEGY"  // 获取安全域密码策略
+                "GET_CONFIG_PWD_STRATEGY" // 获取安全域密码策略
             ]
         }, {
             "method": "post",
@@ -24,7 +24,7 @@ module.exports = {
                 "needLogin": true
             },
             "privileges": [
-                "CREATE_CONFIG_PWD_STRATEGY"  // 设置安全域密码策略
+                "CREATE_CONFIG_PWD_STRATEGY" // 设置安全域密码策略
             ]
         }
     ]

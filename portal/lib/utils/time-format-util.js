@@ -8,10 +8,10 @@ exports.secondsToHourMinuteSecond = function(timeSeconds) {
         timeDescr = hours + "小时";
     }
     if (minutes > 0) {
-        timeDescr += minutes +  "分";
+        timeDescr += minutes + "分";
     }
     if (seconds > 0) {
-        timeDescr += seconds +  "秒";
+        timeDescr += seconds + "秒";
     }
     return {
         hours: hours,

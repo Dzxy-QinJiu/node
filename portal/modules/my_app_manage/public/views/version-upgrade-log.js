@@ -43,19 +43,19 @@ var VersionUpgradeLog = React.createClass({
         var searchObj = {
             appId: appId,
             page: 1,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         VersionUpgradeLogAction.getAppRecordsList(searchObj);
     },
 
-    componentWillReceiveProps : function(nextProps){
+    componentWillReceiveProps: function(nextProps){
         var appId = nextProps.appId;
         if (appId != this.props.appId) {
             VersionUpgradeLogAction.resetState();
             var searchObj = {
                 appId: appId,
                 page: 1,
-                pageSize:this.state.pageSize
+                pageSize: this.state.pageSize
             };
             VersionUpgradeLogAction.getAppRecordsList(searchObj);
         }
@@ -86,33 +86,33 @@ var VersionUpgradeLog = React.createClass({
         this.props.returnInfoPanel();
     },
 
-    getAppRecordsList : function(queryParams){
+    getAppRecordsList: function(queryParams){
         var searchObj = {
             appId: queryParams && 'appId' in queryParams ? queryParams.appId : this.props.appId,
             page: queryParams && 'page' in queryParams ? queryParams.page : this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         VersionUpgradeLogAction.getAppRecordsList(searchObj);
     },
 
-    handleScrollBarBottom : function(){
+    handleScrollBarBottom: function(){
         // 判断加载的条件
-        var totalPages = Math.ceil(this.state.total/this.state.pageSize);
+        var totalPages = Math.ceil(this.state.total / this.state.pageSize);
         if (this.state.curPage <= totalPages ){
             this.getAppRecordsList({page: this.state.curPage});
         } else {
             this.setState({
-                listenScrollBottom:false
+                listenScrollBottom: false
             });
         }
     },
 
-    retryGetAppRecordInfo : function(){
+    retryGetAppRecordInfo: function(){
         var appId = this.props.appId;
         var searchObj = {
             appId: appId,
             page: this.state.curPage,
-            pageSize:this.state.pageSize
+            pageSize: this.state.pageSize
         };
         this.getAppRecordsList(searchObj);
     },
@@ -127,7 +127,7 @@ var VersionUpgradeLog = React.createClass({
                 <RightPanelClose onClick={this.closePanel}/>
                 {(this.props.cardInfoShow || !this.props.versionUpgradeShow) ? null : (
                     <RightPanelReturn onClick={this.returnInfoPanel}/>)}
-                <div className="version-list" style={{height: divHeight}}  ref="scrolltoTop">
+                <div className="version-list" style={{height: divHeight}} ref="scrolltoTop">
                     <GeminiScrollbar
                         handleScrollBottom={this.handleScrollBarBottom}
                         listenScrollBottom={this.state.listenScrollBottom}

@@ -65,7 +65,7 @@ var AppFilterAdv = React.createClass({
         });
 
         return (
-            <div className="app-filter-adv" style={{display:this.props.isFilterPanelShow ? "block" : "none"}}>
+            <div className="app-filter-adv" style={{display: this.props.isFilterPanelShow ? "block" : "none"}}>
                 <dl>
                     <dt>{Intl.get("common.tag", "标签")}:</dt>
                     <dd>

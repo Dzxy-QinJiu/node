@@ -126,7 +126,7 @@ var UserInfoAuthority = React.createClass({
         return (
             <div className="authority-manage-container">
                 <div className="authority-table-block">
-                    <div style={{height: height, width :width}} className="authority-container-scroll">
+                    <div style={{height: height, width: width}} className="authority-container-scroll">
                         {_this.state.authListIsLoadding ? (<Spinner className="isloading"/>) : (
                             _this.state.listTipMsg ? (<NoData msg={_this.state.listTipMsg}/>) : (
                                 <GeminiScrollbar className="geminiScrollbar-div authority-geminiScrollbar-div">

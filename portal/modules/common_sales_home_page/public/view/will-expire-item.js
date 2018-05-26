@@ -37,14 +37,14 @@ class WillExpireItem extends React.Component {
                 </div>
                 <div className="will-customer-content">
                     {Intl.get("common.sales.fronpage.user.login", "{relativedata}有应用到期", {
-                        relativedata:this.props.willExpiredTime
+                        relativedata: this.props.willExpiredTime
                     })}
                 </div>
                 {_.isArray(expireItem.contact_list) && expireItem.contact_list.length ? <ContactItem
                     contacts={expireItem.contact_list}
                     callNumber={this.props.callNumber}
                     errMsg={this.props.errMsg}
-                /> :null}
+                /> : null}
             </div>
         );
     }
@@ -54,7 +54,7 @@ WillExpireItem.defaultProps = {
     openCustomerDetail: function() {
 
     },
-    willExpiredTime:""//即将到期的时间
+    willExpiredTime: ""//即将到期的时间
 
 
 };

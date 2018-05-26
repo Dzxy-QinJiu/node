@@ -12,9 +12,9 @@ exports.getUserDetailChangeRecord = function(searchObj){
     userDetailChangeRecordAjax = $.ajax({
         url: '/rest/user/record',
         type: 'get',
-        data:searchObj,
+        data: searchObj,
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {
@@ -31,10 +31,10 @@ exports.getSingleUserAppList = function(userId){
     let Deferred = $.Deferred();
     singleUserLogAppAjax && singleUserLogAppAjax.abort();
     singleUserLogAppAjax = $.ajax({
-        url: '/rest/appuser/detail/'+ userId,
+        url: '/rest/appuser/detail/' + userId,
         type: 'get',
         dateType: 'json',
-        success : function(data){
+        success: function(data){
             Deferred.resolve(data);
         },
         error: function(xhr,status) {

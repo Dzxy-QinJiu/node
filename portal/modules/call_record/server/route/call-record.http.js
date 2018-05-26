@@ -30,7 +30,7 @@ module.exports = {
             "needLogin": true
         },
         "privileges": []
-    }, {  // 搜索电话号码号码时，提供推荐列表
+    }, { // 搜索电话号码号码时，提供推荐列表
         "method": "post",
         "path": "/rest/call/search/phone_number/:filter_phone",
         "handler": "getRecommendPhoneList",
