@@ -30,9 +30,8 @@ const TIMEOUTDELAY = {
     renderTimeDelay: 2000,
     phoneRenderDelay: 2000
 };
-import PhoneAlert from "MOD_DIR/phone-alert/public";
 import crmAjax from 'MOD_DIR/crm/public/ajax/index';
-let callNumber = "",getCallNumErrMsg = "";//用户的坐席号
+let callNumber = "", getCallNumErrMsg = "";//用户的坐席号
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -248,18 +247,16 @@ function setInitialPhoneObj() {
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
+    const PHONE_STATUS = ["ALERT", "ANSWERED", "phone"];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
-    if (hasPrivilege("CRM_LIST_CUSTOMERS") && (phonemsgObj.type === "ALERT" || phonemsgObj.type === "ANSWERED" || phonemsgObj.type === "phone")) {
-        if (phonemsgObj.type === "phone" && !phonemsgObj.customers){
+    if (hasPrivilege("CRM_LIST_CUSTOMERS") && PHONE_STATUS.indexOf(phonemsgObj.type) != -1) {
+        if (!phonemsgObj.customers) {
             phonemsgObj.customers = [];
         }
-        console.log(phonemsgObj);
-        ReactDOM.render(
-            <Translate Template={<PhoneAlert phonemsgObj={phonemsgObj} contactNameObj={contactNameObj} setInitialPhoneObj={setInitialPhoneObj}/>}></Translate>,
-            document.getElementById('phone-alert-modal')
-        );
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
+        });
     }
-
 }
 
 //可否弹出桌面通知
@@ -270,8 +267,8 @@ function canPopDesktop() {
 //点击拨打电话
 window.handleClickPhone = function (phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
-    var $modal = $("body >#phone-alert-modal #phone-alert-container");
-    if ($modal && $modal.length > 0){
+    var $modal = $("#phone-status-content");
+    if ($modal && $modal.length > 0) {
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName, customerId = phoneObj.customerId;
@@ -311,7 +308,7 @@ function getUserPhoneNumber() {
         if (result.phone_order) {
             callNumber = result.phone_order;
         }
-    },(errMsg)=>{
+    }, (errMsg) => {
         getCallNumErrMsg = errMsg || Intl.get("crm.get.phone.failed", "获取座机号失败!");
     });
 }
@@ -345,7 +342,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += "<p class='phone-item'>" + "<i class='iconfont icon-phone-call-out' title='"+ Intl.get("crm.click.call.phone", "点击拨打电话") + "' onclick='handleClickPhone(" + JSON.stringify(phoneObj) + ")'></i>" + "<span class='customer-name' title='" + phoneItem.customer_name + "'>" + phoneItem.customer_name + "</span>" + " " + phoneItem.phone + "</p>";
+            phoneHtml += "<p class='phone-item'>" + "<i class='iconfont icon-phone-call-out' title='" + Intl.get("crm.click.call.phone", "点击拨打电话") + "' onclick='handleClickPhone(" + JSON.stringify(phoneObj) + ")'></i>" + "<span class='customer-name' title='" + phoneItem.customer_name + "'>" + phoneItem.customer_name + "</span>" + " " + phoneItem.phone + "</p>";
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({

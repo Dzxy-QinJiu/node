@@ -17,9 +17,10 @@ var Option = Select.Option;
 var batchChangeAction = require("MOD_DIR/crm/public/action/batch-change-actions");
 require("./index.less");
 import PhoneInput from "CMP_DIR/phone-input";
-import { AntcAreaSelection } from "antc";
+import {AntcAreaSelection} from "antc";
 const userData = require("PUB_DIR/sources/user-data");
-const noop = function () {};
+const noop = function () {
+};
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from "../../modules/common/route";
 import ajax from "../../modules/common/ajax";
@@ -56,6 +57,7 @@ class AddCustomerForm extends React.Component {
             formLayout: 'horizontal',//表单的布局方式
         };
     }
+
     componentDidMount = () => {
         //获取后台管理中设置的行业列表
         this.setState({isLoadingIndustry: true, isLoadingTagLists: true});
@@ -200,24 +202,25 @@ class AddCustomerForm extends React.Component {
     //添加客户
     addCustomer = (values) => {
         this.setState({
-            isLoading:true
+            isLoading: true
         });
-        CrmAction.addCustomer(values, result => {
+        CrmAction.addCustomer(values, data => {
             this.setState({
-                isLoading:false
+                isLoading: false
             });
-            if (result.code == 0) {
+            if (data.code == 0) {
                 message.success(Intl.get("user.user.add.success", "添加成功"));
                 if (_.isFunction(this.props.addOne)) {
                     this.props.addOne();
                 }
+                let newAddCustomer = _.isArray(data.result) && data.result[0];
                 //拨打电话时，若客户列表中没有此号码，需添加客户
-                if (_.isFunction(this.props.updateCustomer)) {
-                    this.props.updateCustomer(result.result);
+                if (_.isFunction(this.props.updateCustomer) && newAddCustomer) {
+                    this.props.updateCustomer(newAddCustomer);
                 }
                 this.constructor();
             } else {
-                message.error(result);
+                message.error(data);
             }
         });
     };
@@ -233,7 +236,7 @@ class AddCustomerForm extends React.Component {
             if (existSame) customer = list.splice(index, 1)[0];
             else customer = list.shift();
             var curUserId = "";
-            if (userData.getUserData()){
+            if (userData.getUserData()) {
                 curUserId = userData.getUserData().user_id;
             }
             return (
@@ -256,7 +259,7 @@ class AddCustomerForm extends React.Component {
                                         {customer.user_id === curUserId ? (
                                             <div>
                                                 <a href="javascript:void(0)"
-                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
+                                                   onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
                                             </div>
                                         ) : (
                                             <div>{customer.name} ({customer.user_name})</div>
@@ -323,14 +326,14 @@ class AddCustomerForm extends React.Component {
     };
     handleChangeSeletedTag = (tag, isAdd) => {
         //不可以操作'线索'、'转出'标签
-        if(isClueTag(tag) || isTurnOutTag(tag)) {
+        if (isClueTag(tag) || isTurnOutTag(tag)) {
             return;
         }
         var tagIndex = _.indexOf(this.state.formData.labels, tag);
         if (tagIndex > -1) {
             if (isAdd) return;
             this.state.formData.labels.splice(tagIndex, 1);
-        }else {
+        } else {
             this.state.formData.labels.push(tag);
             if (this.state.tagList.indexOf(tag) === -1) {
                 this.state.tagList.push(tag);
@@ -348,8 +351,8 @@ class AddCustomerForm extends React.Component {
         const tag = e.target.value.trim();
         if (!tag) return;
         //”线索“、”转出“标签”不可以添加
-        if(isClueTag(tag) || isTurnOutTag(tag)) {
-            message.error(Intl.get("crm.sales.clue.add.disable","不能手动添加'{label}'标签",{label:tag}));
+        if (isClueTag(tag) || isTurnOutTag(tag)) {
+            message.error(Intl.get("crm.sales.clue.add.disable", "不能手动添加'{label}'标签", {label: tag}));
             return;
         }
         this.handleChangeSeletedTag(tag, true);
@@ -384,21 +387,21 @@ class AddCustomerForm extends React.Component {
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
-                sm: {span: 3},
+                sm: {span: 4},
             },
             wrapperCol: {
                 xs: {span: 24},
-                sm: {span: 21},
+                sm: {span: 20},
             },
         };
         const formItemXsLayout = {
             labelCol: {
                 xs: {span: 24},
-                sm: {span: 3},
+                sm: {span: 4},
             },
             wrapperCol: {
                 xs: {span: 24},
-                sm: {span: 9},
+                sm: {span: 8},
             },
         };
         let industryList = this.state.industryList || [];
@@ -437,7 +440,9 @@ class AddCustomerForm extends React.Component {
                                             <Input
                                                 name="name"
                                                 id="name"
-                                                onBlur={() => {this.checkOnlyCustomerName();}}
+                                                onBlur={() => {
+                                                    this.checkOnlyCustomerName();
+                                                }}
                                             />
                                         )}
                                     </FormItem>
@@ -445,7 +450,7 @@ class AddCustomerForm extends React.Component {
                                     <FormItem
                                         label={Intl.get("realm.industry", "行业")}
                                         id="industry"
-                                        {...formItemXsLayout}
+                                        {...formItemLayout}
                                     >
                                         {this.state.isLoadingIndustry ? (
                                             <div className="industry-list-loading">
@@ -469,8 +474,8 @@ class AddCustomerForm extends React.Component {
                                     </FormItem>
                                     <div id="area-container">
                                         <AntcAreaSelection
-                                            labelCol="6"
-                                            wrapperCol="18"
+                                            labelCol="7"
+                                            wrapperCol="17"
                                             label={Intl.get("realm.address", "地址")}
                                             placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
                                             prov={formData.province}
@@ -494,7 +499,7 @@ class AddCustomerForm extends React.Component {
                                     <FormItem
                                         id="tag"
                                         label={Intl.get("common.tag", "标签")}
-                                        {...formItemXsLayout}
+                                        {...formItemLayout}
                                     >
                                         <Input
                                             name="tag"
@@ -509,17 +514,19 @@ class AddCustomerForm extends React.Component {
                                                                         defaultMessage="正在获取标签列表"/>
                                             <Icon type="loading"/>
                                         </div>) : (<div id="taglists-container">
-                                        {_.map(this.state.tagList, (tag) => {
-                                            return (
-                                                <CheckableTag
-                                                    key={tag}
-                                                    checked={this.state.formData.labels.indexOf(tag) > -1}
-                                                    onChange={() => this.handleChangeSeletedTag(tag)}
-                                                >
-                                                    {tag}
-                                                </CheckableTag>
-                                            );
-                                        })}
+                                        <div className="tag-list">
+                                            {_.map(this.state.tagList, (tag) => {
+                                                return (
+                                                    <CheckableTag
+                                                        key={tag}
+                                                        checked={this.state.formData.labels.indexOf(tag) > -1}
+                                                        onChange={() => this.handleChangeSeletedTag(tag)}
+                                                    >
+                                                        {tag}
+                                                    </CheckableTag>
+                                                );
+                                            })}
+                                        </div>
                                     </div>)}
                                     <FormItem
                                         label={Intl.get("common.remark", "备注")}
@@ -546,8 +553,8 @@ class AddCustomerForm extends React.Component {
                                     </h5>
                                     <FormItem
                                         label={Intl.get("call.record.contacts", "联系人")}
-                                        labelCol={{span: 6}}
-                                        wrapperCol={{span: 18}}
+                                        labelCol={{span: 8}}
+                                        wrapperCol={{span: 16}}
                                     >
                                         {getFieldDecorator('contacts0_name', {rules: [{required: false}]})(
                                             <Input
@@ -627,10 +634,10 @@ class AddCustomerForm extends React.Component {
     }
 }
 AddCustomerForm.defaultProps = {
-    phoneNum:"",
-    hideAddForm:noop,
-    updateCustomer:noop,
-    showRightPanel:noop,
-    scrollLayOut:""
+    phoneNum: "",
+    hideAddForm: noop,
+    updateCustomer: noop,
+    showRightPanel: noop,
+    scrollLayOut: ""
 };
 export default Form.create()(AddCustomerForm);

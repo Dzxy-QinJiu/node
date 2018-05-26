@@ -26,21 +26,25 @@ PhoneAlertStore.prototype.resetState = function () {
 };
 //恢复默认状态
 PhoneAlertStore.prototype.setInitialState = function () {
-  this.resetState();
+    this.resetState();
 };
-
+//查看、收起客户详情的操作
+PhoneAlertStore.prototype.toggleCustomerDetail = function (id) {
+    let curCustomer = _.find(this.customerInfoArr, item => item.id === id);
+    curCustomer.isShowDetail = !curCustomer.isShowDetail;
+};
 //跟据客户的id获取客户的详情
 PhoneAlertStore.prototype.getCustomerById = function (result) {
-    if (result.loading){
+    if (result.loading) {
         this.isGettingCustomer = true;
         this.getCustomerErrMsg = "";
-    }else if (result.error){
+    } else if (result.error) {
         this.getCustomerErrMsg = result.errorMsg;
         this.isGettingCustomer = false;
-    }else {
+    } else {
         this.isGettingCustomer = false;
         this.getCustomerErrMsg = "";
-        if (_.isObject(result.data) && _.isArray(result.data.result) && result.data.result.length){
+        if (_.isObject(result.data) && _.isArray(result.data.result) && result.data.result[0]) {
             this.customerInfoArr.push(result.data.result[0]);
             this.customerInfoArr = crmStore.processForList(this.customerInfoArr);
         }
@@ -48,7 +52,7 @@ PhoneAlertStore.prototype.getCustomerById = function (result) {
 };
 //添加客户成功后把新添加的客户资料放在state上，不用再去发请求获取了
 PhoneAlertStore.prototype.setAddCustomerInfo = function (addCustomerInfo) {
-    this.customerInfoArr = addCustomerInfo;
+    this.customerInfoArr = [addCustomerInfo];
 };
 PhoneAlertStore.prototype.setContent = function (value) {
     this.inputContent = value;
@@ -58,15 +62,15 @@ PhoneAlertStore.prototype.setEditStatus = function (statusObj) {
     this.submittingTraceMsg = statusObj.submittingTraceMsg;
 };
 PhoneAlertStore.prototype.updateCustomerTrace = function (result) {
-    if (result.loading){
+    if (result.loading) {
         this.submittingTrace = true;
         this.submittingTraceMsg = "";
-    }else if (result.error){
-        this.submittingTraceMsg = result.errorMsg || Intl.get("crm.phone.failed.add.trace","添加跟进记录失败");
+    } else if (result.error) {
+        this.submittingTraceMsg = result.errorMsg || Intl.get("crm.phone.failed.add.trace", "添加跟进记录失败");
         this.submittingTrace = false;
-    }else {
+    } else {
         this.submittingTrace = false;
-        this.submittingTraceMsg = Intl.get("crm.phone.success.add.trace","添加跟进记录成功");
+        this.submittingTraceMsg = Intl.get("crm.phone.success.add.trace", "添加跟进记录成功");
         this.isEdittingTrace = false;
     }
 };
@@ -81,4 +85,4 @@ PhoneAlertStore.prototype.setCustomerInfoArr = function (obj) {
 PhoneAlertStore.prototype.setInitialCustomerArr = function () {
     this.customerInfoArr = [];
 };
-module.exports = alt.createStore(PhoneAlertStore , 'PhoneAlertStore');
+module.exports = alt.createStore(PhoneAlertStore, 'PhoneAlertStore');

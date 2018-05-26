@@ -10,9 +10,10 @@ exports.scrollBarEmitter.STOP_LOADED_DATA = "stopScrollLoadedData";
 exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = "scrollBar.hideBottomLoading";
 //拨打电话emitter
 exports.phoneMsgEmitter = new EventEmitter();
+//打开拨打电话的面板emitter
+exports.phoneMsgEmitter.OPEN_PHONE_PANEL = "openPhonePanel";
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = "sendPhoneNumber";
 //关闭拨打电话模态框emitter
-exports.phoneMsgEmitter = new EventEmitter();
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = "closePhoneModal";
 //日程管理界面emitter
 exports.scheduleManagementEmitter = new EventEmitter();

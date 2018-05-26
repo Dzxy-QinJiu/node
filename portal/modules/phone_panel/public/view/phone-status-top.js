@@ -3,9 +3,10 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/5/23.
  */
-import {Button, Tag, Select} from "antd";
+import {Button, Tag, Select, Input} from "antd";
 const Option = Select.Option;
-const TAG_COLOR = "#223440";
+const {TextArea} = Input;
+const TAG_COLOR = "#2196f3";
 import Trace from "LIB_DIR/trace";
 var phoneAlertAction = require("../action/phone-alert-action");
 var phoneAlertStore = require("../store/phone-alert-store");
@@ -43,11 +44,14 @@ class phoneStatusTop extends React.Component {
             selectedCustomerId: "",//跟进记录要绑定的客户
             addTraceItemId: "",//添加某条跟进记录的id
             isConnected: false,//电话是否接通
+            detailCustomerId: this.props.detailCustomerId,//客户详情中打电话时，客户的id
+            phonemsgObj: this.props.phonemsgObj,
             customerInfoArr: phoneAlertStore.getState().customerInfoArr,
             isEdittingTrace: phoneAlertStore.getState().isEdittingTrace,
             submittingTraceMsg: phoneAlertStore.getState().submittingTraceMsg,
             inputContent: phoneAlertStore.getState().inputContent,
-            showAddFeedback:phoneAlertStore.getState().showAddFeedback,//是否展示反馈
+            showAddFeedback: false,//是否展示反馈
+            isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo
         };
     }
 
@@ -66,32 +70,29 @@ class phoneStatusTop extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         var phonemsgObj = nextProps.phonemsgObj;
+        this.setState({
+            detailCustomerId: nextProps.detailCustomerId,
+            phonemsgObj: phonemsgObj,
+            isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo
+        });
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             this.setState({
                 isConnected: true
             });
         }
-        var addTraceItemId = phonemsgObj.id || "";
-        if (addTraceItemId) {
-            this.setState({
-                addTraceItemId: addTraceItemId,
-            });
-        }
-        var $modal = $("body >#phone-alert-modal #phone-alert-container");
-        if ($modal && $modal.length > 0 && (phonemsgObj.type == PHONERINGSTATUS.ALERT) && (phonemsgObj.type == PHONERINGSTATUS.phone)) {
+        var $modal = $("#phone-status-content");
+        if ($modal && $modal.length > 0 && phonemsgObj.type == PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
-        //如果外面通话结束后点击关闭按钮
-        if (!nextProps.isModalShown && phonemsgObj && phonemsgObj.type == PHONERINGSTATUS.phone){
-            this.setInitialData();
-        }
     }
-    setInitialData(){
+
+    setInitialData() {
         this.setState({
             isConnected: false,
-            addTraceItemId: "",
-            selectedCustomerId:""
+            // addTraceItemId: "",
+            selectedCustomerId: "",
+            showAddFeedback: false,//是否展示反馈
         });
     }
 
@@ -99,18 +100,32 @@ class phoneStatusTop extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find(".icon-update"), "点击编辑跟进记录按钮");
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ""});
     };
-    //提交跟进记录
-    handleTraceSubmit = () => {
-        var customer_id = this.state.customerInfoArr[0].id;
-        if (this.state.selectedCustomerId) {
+    //获取添加跟进记录的客户id
+    getSaveTraceCustomerId() {
+        let customerInfoArr = this.state.customerInfoArr;
+        //默认保存到获取的客户列表中的第一个客户上
+        let customer_id = _.isArray(customerInfoArr) && customerInfoArr[0] ? customerInfoArr[0].id : "";
+        //从客户详情中打电话时，跟进记录直接加到当前详情中展示的客户上
+        if (this.state.detailCustomerId) {
+            customer_id = this.state.detailCustomerId;
+        } else if (this.state.selectedCustomerId) {//该电话对应多个客户时，将跟进记录加到选择的客户上
             customer_id = this.state.selectedCustomerId;
         }
-        if (!this.state.addTraceItemId) {
+        return customer_id;
+    }
+
+    //提交跟进记录
+    handleTraceSubmit = () => {
+        let customer_id = this.getSaveTraceCustomerId();
+        //跟进记录的id，只有当通话结束后(type=phone时)，推送过来的数据中才会有id
+        let trace_id = this.state.phonemsgObj && this.state.phonemsgObj.id;
+        if (!customer_id) return;
+        if (!trace_id) {
             phoneAlertAction.setSubmitErrMsg(Intl.get("phone.delay.save", "通话记录正在同步，请稍等再保存！"));
             return;
         }
         const submitObj = {
-            id: this.state.addTraceItemId,
+            id: trace_id,
             customer_id: customer_id,
             last_callrecord: "true",
             remark: this.state.inputContent
@@ -122,12 +137,9 @@ class phoneStatusTop extends React.Component {
                 updateData.last_contact_time = new Date().getTime();
             }
             CrmAction.updateCurrentCustomerRemark(updateData);
-            var height = $(".trace-content").outerHeight(true);
-            $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
-            $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: height + RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT + RESPONSE_LAYOUT_CONSTANTS.MARGIN});
             this.setState({
-                selectedCustomerId:"",
-                isConnected:false,
+                selectedCustomerId: "",
+                isConnected: false,
                 showAddFeedback: true,
                 customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
             });
@@ -142,6 +154,7 @@ class phoneStatusTop extends React.Component {
             selectedCustomerId: customerId
         });
     };
+
     renderTraceItem() {
         var onHide = function () {
             phoneAlertAction.setSubmitErrMsg("");
@@ -154,8 +167,8 @@ class phoneStatusTop extends React.Component {
             return (
                 <div>
                     <div className="input-item">
-                        <textarea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
-                                  value={this.state.inputContent}/>
+                        <TextArea placeholder="请填写本次跟进内容" onChange={this.handleInputChange}
+                                  value={this.state.inputContent} autosize={{minRows: 2, maxRows: 6}}/>
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
@@ -180,7 +193,7 @@ class phoneStatusTop extends React.Component {
                                 </Select>
 
                             </div> : null}
-                        <Button type="primary" className="modal-submit-btn" onClick={this.handleTraceSubmit}
+                        <Button className="modal-submit-btn" onClick={this.handleTraceSubmit}
                                 data-tracename="保存跟进记录">
                             {this.state.submittingTrace ? (Intl.get("retry.is.submitting", "提交中...")) : (Intl.get("common.save", "保存"))}
                         </Button>
@@ -196,17 +209,18 @@ class phoneStatusTop extends React.Component {
             );
         }
     }
+
     //获取页面上的描述
     getPhoneTipMsg(phonemsgObj) {
         //拨号的描述
         //如果是系统内拨号，展示联系人和电话，如果是从座机拨号，只展示所拨打的电话
-        var phoneNum = this.props.contactNameObj.contact ? this.props.contactNameObj.contact + "-" : "";
-        if (phonemsgObj.call_type === "IN"){
+        var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + "-" : "";
+        if (phonemsgObj.call_type === "IN") {
             phoneNum += phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone){
+            if (phonemsgObj.type === PHONERINGSTATUS.phone) {
                 phoneNum += phonemsgObj.dst;
             }
-        }else{
+        } else {
             phoneNum += phonemsgObj.to || phonemsgObj.dst;
         }
         var desTipObj = {
@@ -214,9 +228,9 @@ class phoneStatusTop extends React.Component {
             tip: ""
         };
         if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == "IN"){
+            if (phonemsgObj.call_type == "IN") {
                 desTipObj.tip = `${Intl.get("call.record.call.in.pick.phone", "有电话打入，请拿起话机")}`;
-            }else{
+            } else {
                 desTipObj.tip = `${Intl.get("call.record.phone.alerting", "已振铃，等待对方接听")}`;
             }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
@@ -234,38 +248,37 @@ class phoneStatusTop extends React.Component {
 
     render() {
         var iconFontCls = "modal-icon iconfont";
-        var phonemsgObj = this.props.phonemsgObj;
-        if (phonemsgObj.type == PHONERINGSTATUS.RING || phonemsgObj.type == PHONERINGSTATUS.ALERT) {
-            if (phonemsgObj.call_type == "OU"){
+        var phonemsgObj = this.state.phonemsgObj;
+        if (phonemsgObj.type == PHONERINGSTATUS.ALERT) {
+            if (phonemsgObj.call_type == "OU") {
                 iconFontCls += " icon-callrecord-out";
-            }else if (phonemsgObj.call_type == "IN"){
+            } else if (phonemsgObj.call_type == "IN") {
                 iconFontCls += " icon-callrecord-in";
             }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             iconFontCls += " icon-phone-answering";
         } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
             iconFontCls += " icon-phone-bye";
-            //打完电话后，并且不是在编辑状态下，已有客户增加跟进记录，自动将textare增大
-            if (!(_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length == 0) && !this.state.submittingTraceMsg) {
-                $("body #phone-alert-modal .phone-alert-modal-content .trace-content-container").animate({height: DIVLAYOUT.TRACELAYOUT});
-                $("body #phone-alert-modal .phone-alert-modal-content .phone-alert-modal-title").animate({height: DIVLAYOUT.TRACE_CONTAINER_LAYOUT});
-            }
         }
         //获取页面描述
         var phoneDes = this.getPhoneTipMsg(phonemsgObj);
         return (
             <div className={this.props.phoneAlertModalTitleCls}>
-                <span id="iconfont-tip">
+                <div id="iconfont-tip">
                     <i className={iconFontCls}></i>
-                </span>
-                <span className="contact-phone-title">
-                    {phoneDes.phoneNum}
-                 </span>
-                <span className="status-tip-title">
-                    {phoneDes.tip}
-                </span>
+                </div>
+                <div className="phone-status-tip">
+                    <div className="contact-phone-title">
+                        {phoneDes.phoneNum}
+                    </div>
+                    <div className="status-tip-title">
+                        {phoneDes.tip}
+                    </div>
+                </div>
                 <div className="trace-content-container">
-                    {(!(_.isArray(this.props.phonemsgObj.customers) && this.props.phonemsgObj.customers.length == 0)) ? this.renderTraceItem() : null}
+                    {   //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
+                        phonemsgObj.type === PHONERINGSTATUS.phone && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
+                    }
                 </div>
                 {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
                     <div className="add-more-info-container">
@@ -281,6 +294,6 @@ phoneStatusTop.defaultProps = {
     addMoreInfoCls: "",
     phoneAlertModalTitleCls: "",
     phonemsgObj: {},
-    addTraceItemId:""
+    addTraceItemId: ""
 };
 export default phoneStatusTop;

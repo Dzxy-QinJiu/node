@@ -540,6 +540,9 @@ const CustomerRecord = React.createClass({
             let basicInfoHeight = parseInt($(".basic-info-contianer").outerHeight(true));
             //减头部的客户基本信息高度
             divHeight -= basicInfoHeight;
+            if ($(".phone-alert-modal-title").size()) {
+                divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+            }
             //减添加跟进记录面版的高度
             if (this.state.addRecordPanelShow) {
                 divHeight -= LAYOUT_CONSTANTS.ADD_TRACE_HEIGHHT;

@@ -15,7 +15,7 @@ const RELATEAUTHS = {
     "RELATESELF": "CRM_USER_CUSTOMER_CLUE_ID"//普通销售通过线索id查询客户的权限
 };
 var crmAjax = require("MOD_DIR/crm/public/ajax");
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
 class AssignClueAndSelectCustomer extends React.Component {
@@ -329,6 +329,14 @@ class AssignClueAndSelectCustomer extends React.Component {
         this.setState({
             curShowCustomerId: customerId
         });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.closeRightCustomerPanel
+            }
+        });
     };
 
     closeRightCustomerPanel = () => {
@@ -432,16 +440,6 @@ class AssignClueAndSelectCustomer extends React.Component {
                              {this.state.displayType === 'text' ? this.renderTextCustomer() : this.renderEditCustomer()}
                          </div>
                     </div>
-                    {
-                        this.state.curShowCustomerId ? <CrmRightPanel
-                            currentId={this.state.curShowCustomerId}
-                            showFlag={true}
-                            hideRightPanel={this.closeRightCustomerPanel}
-                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                            refreshCustomerList={function () {
-                            }}
-                        /> : null
-                    }
                     {/*该客户下的用户列表*/}
                     <RightPanel
                         className="customer-user-list-panel"

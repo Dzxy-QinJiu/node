@@ -11,7 +11,7 @@ const CheckboxGroup = Checkbox.Group;
 var scheduleManagementStore = require("./store/schedule-management-store");
 var scheduleManagementAction = require("./action/schedule-management-action");
 var classNames = require("classnames");
-import CrmRightPanel  from 'MOD_DIR/crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
 //天视图组件
@@ -213,6 +213,14 @@ const ScheduleManagement = React.createClass({
             curCustomerId: customer_id,
             rightPanelIsShow: true
         });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
     },
     //关闭右侧客户详情
     hideRightPanel: function () {
@@ -365,16 +373,6 @@ const ScheduleManagement = React.createClass({
                         />
                     </div>
                 </div>
-                {/*右侧客户详情*/}
-                {this.state.rightPanelIsShow ? (
-                    <CrmRightPanel
-                        showFlag={this.state.rightPanelIsShow}
-                        currentId={this.state.curCustomerId}
-                        hideRightPanel={this.hideRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    />) : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

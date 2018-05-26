@@ -14,7 +14,7 @@ import ScheduleItem from "./view/schedule-item";
 import CustomerNoticeMessage from "./view/customer-notice-message";
 import WillExpireItem from "./view/will-expire-item";
 import NewDistributeCustomer from "./view/new-distribute-customer";
-import CrmRightPanel from 'MOD_DIR/crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
 import {RightPanel}  from "CMP_DIR/rightPanel";
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
@@ -89,6 +89,15 @@ var SalesHomePage = React.createClass({
             this.closeRightUserPanel();
         }
         this.setState({curShowCustomerId: customer_id});
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id,
+                curCustomer: this.state.curCustomer,
+                ShowCustomerUserListPanel:this.ShowCustomerUserListPanel,
+                hideRightPanel: this.closeRightCustomerPanel
+            }
+        });
     },
     openUserDetail: function (user_id) {
         if (this.state.curShowCustomerId) {
@@ -809,16 +818,6 @@ var SalesHomePage = React.createClass({
                             </div>
                         </GeminiScrollbar>
                     </div>
-                    {
-                        this.state.curShowCustomerId ? <CrmRightPanel
-                            currentId={this.state.curShowCustomerId}
-                            showFlag={true}
-                            hideRightPanel={this.closeRightCustomerPanel}
-                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                            refreshCustomerList={function () {
-                            }}
-                        /> : null
-                    }
                     {/*该客户下的用户列表*/}
                     <RightPanel
                         className="customer-user-list-panel"

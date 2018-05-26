@@ -24,7 +24,7 @@ import {hasPrivilege} from '../../../../components/privilege/checker';
 /*在审批界面显示用户的右侧面板开始*/
 require("../css/main.less");
 import UserDetail from '../../../app_user_manage/public/views/user-detail';
-import CrmRightPanel  from '../../../crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import {RightPanel} from "../../../../components/rightPanel";
 import {getPassStrenth, PassStrengthBar, passwordRegex} from "CMP_DIR/password-strength-bar";
 import AppUserManage from "MOD_DIR/app_user_manage/public";
@@ -1171,6 +1171,14 @@ const ApplyViewDetail = React.createClass({
     //显示客户详情
     showCustomerDetail: function (customerId) {
         ApplyViewDetailActions.showCustomerDetail(customerId);
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                hideRightPanel: this.closeRightPanel
+            }
+        });
     },
     //密码的验证
     checkPassword: function (rule, value, callback) {
@@ -2092,24 +2100,17 @@ const ApplyViewDetail = React.createClass({
                 {this.renderApplyDetailInfo()}
                 {this.renderApplyFormResult()}
                 {this.renderBackoutApply()}
-                {
-                    this.state.rightPanelCustomerId ? <CrmRightPanel
-                        currentId={this.state.rightPanelCustomerId}
-                        showFlag={true}
-                        hideRightPanel={this.closeRightPanel}
-                        refreshCustomerList={function () {
-                        }}
-                        ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    /> : (
-                        <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
-                                    showFlag={this.state.showRightPanel}>
-                            {
-                                this.state.rightPanelUserId ? <UserDetail
-                                    userId={this.state.rightPanelUserId}
-                                /> : null
-                            }
-                            {
-                                this.state.rightPanelAppConfig ? <UserTypeConfigForm
+                {this.state.showRightPanel && (this.state.rightPanelUserId || this.state.rightPanelAppConfig) ?
+                    <RightPanel className="app_user_manage_rightpanel apply_detail_rightpanel"
+                                showFlag={this.state.showRightPanel}>
+                        {
+                            this.state.rightPanelUserId ? <UserDetail
+                                userId={this.state.rightPanelUserId}
+                            /> : null
+                        }
+                        {
+                            this.state.rightPanelAppConfig ?
+                                <UserTypeConfigForm
                                     togglePageChange={this.showAppConfigRightPanle}
                                     addUserTypeConfigInfoShow={true}
                                     appId={this.state.rightPanelAppConfig.app_id}
@@ -2118,22 +2119,25 @@ const ApplyViewDetail = React.createClass({
                                     handleCancel={this.handleCancel}
                                     handleSaveAppConfig={this.handleSaveAppConfig}
                                 /> : null
-                            }
-                        </RightPanel>)
-                }
+                        }
+                    </RightPanel> : null}
                 {/*该客户下的用户列表*/}
-                <RightPanel
-                    className="customer-user-list-panel"
-                    showFlag={this.state.isShowCustomerUserListPanel}
-                >
-                    {this.state.isShowCustomerUserListPanel ?
-                        <AppUserManage
-                            customer_id={this.state.CustomerInfoOfCurrUser.id}
-                            hideCustomerUserList={this.closeCustomerUserListPanel}
-                            customer_name={this.state.CustomerInfoOfCurrUser.name}
-                        /> : null
-                    }
-                </RightPanel>
+                {
+                    this.state.isShowCustomerUserListPanel ?
+                        <RightPanel
+                            className="customer-user-list-panel"
+                            showFlag={this.state.isShowCustomerUserListPanel}
+                        >
+                            {this.state.isShowCustomerUserListPanel ?
+                                <AppUserManage
+                                    customer_id={this.state.CustomerInfoOfCurrUser.id}
+                                    hideCustomerUserList={this.closeCustomerUserListPanel}
+                                    customer_name={this.state.CustomerInfoOfCurrUser.name}
+                                /> : null
+                            }
+                        </RightPanel> : null
+                }
+
             </div>
 
         );

@@ -13,7 +13,7 @@ import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 import CallAddCustomerForm from './call-add-customer-form';  // 添加客户
 import userData from 'PUB_DIR/sources/user-data';
 import CrmAction from '../../../crm/public/action/crm-actions';
-import CrmRightPanel from '../../../crm/public/views/crm-right-panel';
+import {phoneMsgEmitter} from "PUB_DIR/sources/utils/emitters";
 import CallRecordAjax from '../ajax/call-record-ajax';
 var classNames = require("classnames");
 import rightPanelUtil from "CMP_DIR/rightPanel";
@@ -470,6 +470,14 @@ const CallRecord = React.createClass({
         this.setState({
             rightPanelIsShow: true,
             currentId: id
+        });
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: id,
+                hideRightPanel: this.hideRightPanel,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel
+            }
         });
     },
     hideRightPanel: function () {
@@ -939,18 +947,6 @@ const CallRecord = React.createClass({
                     phoneNumber={this.state.phoneNumber}
                 />
             </div>
-            {/**
-             添加客户时，客户名已存在，可以点开查看客户详情
-                     */}
-            {this.state.rightPanelIsShow ? (
-                <CrmRightPanel
-                    showFlag={this.state.rightPanelIsShow}
-                    currentId={this.state.currentId}
-                    hideRightPanel={this.hideRightPanel}
-                    refreshCustomerList={function () { }}
-                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                />
-            ) : null}
             {/*
                         底部播放器
                     */}

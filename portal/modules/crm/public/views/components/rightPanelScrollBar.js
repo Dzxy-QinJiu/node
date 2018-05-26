@@ -27,6 +27,9 @@ class RightPanelScrollBar extends React.Component {
         let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.MARGIN_BOTTOM;
         //减头部的客户基本信息高度
         divHeight -= parseInt($(".basic-info-contianer").outerHeight(true));
+        if ($(".phone-alert-modal-title").size()) {
+            divHeight -= $(".phone-alert-modal-title").outerHeight(true);
+        }
         //合并面板，去掉客户选择框的高度
         if (this.props.isMerge) {
             divHeight = divHeight - LAYOUT_CONSTANTS.MERGE_SELECT_HEIGHT;

@@ -1,3 +1,5 @@
+
+//根据客户id获取客户信息
 exports.getCustomerById = function (data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
@@ -17,6 +19,7 @@ exports.getCustomerById = function (data) {
     });
     return Deferred.promise();
 };
+
 //获取应用列表
 var getAppListsAjax;
 exports.getAppLists = function () {
