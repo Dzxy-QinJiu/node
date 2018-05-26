@@ -40,7 +40,7 @@ class CustomerStageTable extends React.Component {
         $(window).off("resize", this.changeTableHeight);
     }
 
-    hideRightPanel() {
+    hideRightPanel = () => {
         this.setState({
             showRightPanel: false
         });
