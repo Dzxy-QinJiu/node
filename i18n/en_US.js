@@ -205,6 +205,11 @@ var en_US = {
     "common.app.minute": "minutes",//"分钟",
     "common.load.more": "load more",//"加载更多",
     "common.request.timeout": "Error. Request timeout",//"请求超时",
+    "common.callback": "Callback", //"回访",
+    "common.callback.time": "Callback time", // "回访时间"
+    "common.callback.person": "Callback person", // "回访人",
+    "common.has.callback": "Has callback", // "已回访",
+    "common.callback.customer": "Callback customer", // "回访客户",
     //公共部分--end
     "login.login": "Login",//登录
     "login.service.error": "Sorry for the abnormal condition of the server",//很抱歉,服务器出现了异常状况
@@ -467,6 +472,7 @@ var en_US = {
     "fail.to.get.record": "Failed to get change records",//获取用户变更记录失败
     "user.log.login.fail": "Failed to get the user of login information!", // 获取登录信息失败！
     "user.log.get.log.fail": "Failed to get the user of log information!",  // 获取操作日志信息失败！
+    "user.log.param.error": "Request parameter error.", // 请求参数错误！
     "user.login.unnormal.location": "A long-distance login", // 异常登录地
     "user.login.normal.location": "Normal Login Location", // 常用登录地
     "user.suggest.name.two": "Create username {user01} or {user02}", // 创建{user01}或{user02}
@@ -2173,6 +2179,7 @@ var en_US = {
     "clue.delete.duplicate.failed": "Failed to delete clue",//删除重复线索失败
     "clue.repeat.delete": "Some repeated clues already in the system,  have been marked in red color, please delete these record fist, then import",//存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入
     "clue.customer.belong.to.other.sales": "This phone is registered to {customer} and belongs to {sales}",//该电话属于客户{customer}，所属销售{sales}
-    "phone.alert.select.customer": "Please select the customer to follow"//请选择要跟进的客户
+    "phone.alert.select.customer": "Please select the customer to follow",//请选择要跟进的客户
+    "clue.analysis.consult.time":"Consult time:",//咨询时间：
 };
 export default en_US;

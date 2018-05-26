@@ -113,6 +113,14 @@ module.exports = {
             passport: {
                 "needLogin": true
             }
+        },
+        {
+            method: "post",
+            path: "/rest/clue/analysis",
+            handler: "getClueAnalysis",
+            passport: {
+                "needLogin": true
+            }
         }
     ]
 };

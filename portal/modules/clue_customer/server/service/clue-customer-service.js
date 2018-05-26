@@ -35,6 +35,8 @@ const restApis = {
     uploadClueConfirm:"/rest/customer/v2/clue/upload/confirm/:flag",
     //删除某条线索
     deleteRepeatClue: "rest/customer/v2/clue/upload/preview/:index",
+    //获取线索统计
+    getClueAnalysis: "/rest/analysis/customer/v2/clue/customer/label"
 
 };
 //查询客户
@@ -169,4 +171,13 @@ exports.deleteRepeatClue = function (req, res) {
             req: req,
             res: res
         }, null);
+};
+
+exports.getClueAnalysis = function (req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getClueAnalysis,
+            req: req,
+            res: res
+        }, req.body);
 };

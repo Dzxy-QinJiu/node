@@ -379,4 +379,4 @@ const SalesRoleManage = React.createClass({
     }
 });
 
-module.exports = SalesRoleManage;
+module.exports = SalesRoleManage;

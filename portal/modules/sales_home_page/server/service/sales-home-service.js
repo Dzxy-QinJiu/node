@@ -8,6 +8,7 @@ var salesObj = require("../dto/salesObj");
 var EventEmitter = require("events").EventEmitter;
 var Promise = require('bluebird');
 var _ = require("underscore");
+import querystring from 'querystring';
 var restApis = {
     //获取销售团队
     getSalesTeamTree: "/rest/base/v1/group/teams/tree/:type",
@@ -27,6 +28,10 @@ var restApis = {
     websiteConfig:"/rest/base/v1/user/website/config",
     //获取各销售对应的通话状态
     getSalesCallStatus: "/rest/customer/v2/phone/phone/status/:user_ids",
+    // 获取全部和客户电话的列表（团队）
+    callRecordListUrl: '/rest/callrecord/v2/callrecord/query/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
+    // 获取全部和客户电话的列表（所有的，包括不在团队里的数据）
+    managerCallRcordListUrl: '/rest/callrecord/v2/callrecord/query/manager/trace/call_date/:start_time/:end_time/:page_size/:sort_field/:sort_order',
     //获取个人资料中邮箱是否激活
     getUserInfo: "/rest/base/v1/user/id",
 };
@@ -245,4 +250,29 @@ exports.setWebsiteConfig = function (req, res ,reqObj) {
             req: req,
             res: res
         }, reqObj);
+};
+
+//获取回访列表
+exports.getCallBack = function (req, res, params, filterObj, queryObj) {
+    let url = params.type === 'manager' ? restApis.managerCallRcordListUrl : restApis.callRecordListUrl;
+    delete params.type;
+    let paramsKeyArray = Object.keys(params);
+    for (let i = 0; i < paramsKeyArray.length; i++) {
+        url = url.replace(':' + paramsKeyArray[i], params[paramsKeyArray]);
+    }
+    if (queryObj) {
+        url += '?';
+        if (queryObj.id) {
+            url += querystring.stringify({id: queryObj.id, filter_phone: queryObj.filter_phone, filter_invalid_phone: queryObj.filter_phone}); // 是否过滤114电话号码和无效的电话号码（客服电话）
+        } else {
+            url += querystring.stringify({filter_phone: queryObj.filter_phone, filter_invalid_phone: queryObj.filter_phone}); // 是否过滤114电话号码和无效的电话号码（客服电话）
+        }   
+    }
+
+    return restUtil.authRest.post(
+        {
+            url: url,
+            req: req,
+            res: res
+        }, filterObj);
 };

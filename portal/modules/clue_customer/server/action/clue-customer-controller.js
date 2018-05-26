@@ -124,3 +124,12 @@ exports.deleteRepeatClue = function (req, res) {
             res.status(500).json(err.message);
         });
 };
+//获取线索统计
+exports.getClueAnalysis = function (req, res) {
+    clueCustomerService.getClueAnalysis(req, res)
+        .on("success", function (data) {
+            res.status(200).json(data);
+        }).on("error", function (err) {
+        res.status(500).json(err.message);
+    });
+};

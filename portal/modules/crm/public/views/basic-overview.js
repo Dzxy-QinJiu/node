@@ -3,7 +3,7 @@ import DetailCard from "CMP_DIR/detail-card";
 import {hasPrivilege} from "CMP_DIR/privilege/checker";
 import TagCard from "CMP_DIR/detail-card/tag-card";
 import SalesTeamCard from "./basic_info/sales-team-card";
-import {isClueTag, isTurnOutTag} from "../utils/crm-util";
+import {isClueTag, isTurnOutTag, isHasCallBackTag} from "../utils/crm-util";
 import classNames from 'classnames';
 var basicOverviewStore = require("../store/basic-overview-store");
 var basicOverviewAction = require("../action/basic-overview-actions");
@@ -50,8 +50,8 @@ var BasicOverview = React.createClass({
     getRecommendTags: function () {
         batchAjax.getRecommendTags().then(data => {
             if (_.isArray(data.result) && data.result.length) {
-                //过滤掉线索、转出标签，保证selectedTagsArray中有”线索“、“转出”标签，则只展示，没有就不展示
-                let recommendTags = _.filter(data.result, tag => !isClueTag(tag) && !isTurnOutTag(tag));
+                // 过滤掉线索、转出、已回访标签，保证selectedTagsArray中有”线索“、“转出”、“已回访”标签，则只展示，没有就不展示
+                let recommendTags = _.filter(data.result, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
                 this.setState({recommendTags: recommendTags});
             }
         });
@@ -141,8 +141,8 @@ var BasicOverview = React.createClass({
     },
     //保存修改后的标签
     saveEditTags: function (tags, successFunc, errorFunc) {
-        //保存前先过滤掉线索、转出标签
-        tags = _.filter(tags, tag => !isClueTag(tag) && !isTurnOutTag(tag));
+        // 保存前先过滤掉线索、转出、已回访标签
+        tags = _.filter(tags, tag => !isClueTag(tag) && !isTurnOutTag(tag) && !isHasCallBackTag(tag));
         let submitData = {
             id: this.state.basicData.id,
             type: "label",

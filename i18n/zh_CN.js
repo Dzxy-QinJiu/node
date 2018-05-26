@@ -205,6 +205,11 @@ var zh_CN = {
     "common.app.minute": "分钟",
     "common.load.more": "加载更多",
     "common.request.timeout": "请求超时",
+    "common.callback": "回访",
+    "common.callback.time": "回访时间",
+    "common.callback.person": "回访人",
+    "common.has.callback": "已回访",
+    "common.callback.customer": "回访客户",
 
     //公共部分--end
     "login.login": "登录",
@@ -467,6 +472,7 @@ var zh_CN = {
     "fail.to.get.record": "获取用户变更记录失败",
     "user.log.login.fail": "获取登录信息失败！",
     "user.log.get.log.fail": "获取操作日志信息失败！",
+    "user.log.param.error": "请求参数错误！",
     "user.login.unnormal.location": "异常登录地",
     "user.login.normal.location": "常用登录地",
     "user.suggest.name.two": "创建{user01}或{user02}？",
@@ -2197,7 +2203,10 @@ var zh_CN = {
     "clue.customer.import.clue.failed": "导入线索失败",
     "clue.delete.duplicate.failed": "删除重复线索失败",
     "clue.repeat.delete": "存在和系统中重复的线索名或联系方式，已用红色标出，请先在上方预览表格中删除这些记录，然后再导入",
-    "clue.customer.belong.to.other.sales": "该电话属于客户{customer}，所属销售{sales}",
-    "phone.alert.select.customer": "请选择要跟进的客户"
+    "clue.customer.belong.to.other.sales":"该电话属于客户{customer}，所属销售{sales}",
+    "phone.alert.select.customer":"请选择要跟进的客户",
+    "clue.analysis.consult.time":"咨询时间：",
+
+
 };
-export default zh_CN;
+export default zh_CN;

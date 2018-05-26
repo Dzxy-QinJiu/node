@@ -147,7 +147,11 @@ var UserDetail = React.createClass({
             tabPaneList.push(
                 <TabPane tab="审计日志" key="3">
                     {this.state.activeKey=="3" ? <div className="user-log">
-                        <SingleUserLog userId={this.props.userId} selectedAppId={this.props.selectedAppId}/>
+                        <SingleUserLog 
+                            userId={this.props.userId} 
+                            selectedAppId={this.props.selectedAppId}
+                            appLists={this.props.appLists}
+                        />
                     </div>: null}
                 </TabPane>
             );

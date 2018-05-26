@@ -28,6 +28,24 @@ SalesHomeStore.prototype.setInitState = function () {
     this.salesPhoneList = [];//销售-电话列表
     this.salesUserList = [];//销售-用户列表
     this.salesUserData = [];//销售-用户列表数据源
+    this.callBackRecord = {
+        //是否加载中
+        isLoading: true,
+        //一页多少条
+        pageSize: 20,
+        //当前第几页
+        page: 1,
+        //总共多少条
+        total: 0,
+        //是否监听下拉加载
+        listenScrollBottom: true,
+        //数据列表
+        dataList: [],
+        //排序字段
+        sortField: 'call_date',
+        //排序方向
+        sortOrder: 'descend'
+    }; // 回访列表
     this.originSalesTeamTree = {};//销售所在团队及其子团队树
     this.resetSalesTeamListObj();
     this.resetSalesTeamMembersObj();
@@ -58,6 +76,27 @@ SalesHomeStore.prototype.setInitState = function () {
     this.teamMemberCountList = [];
     this.emailShowObj = {
         isShowActiveEmail : false,  //是否展示邮箱激活提示
+    };
+};
+// 重置回访记录列表状态
+SalesHomeStore.prototype.resetCallBackRecord = function () {
+    this.callBackRecord = {
+        //是否加载中
+        isLoading: true,
+        //一页多少条
+        pageSize: 20,
+        //当前第几页
+        page: 1,
+        //总共多少条
+        total: 0,
+        //是否监听下拉加载
+        listenScrollBottom: true,
+        //数据列表
+        dataList: [],
+        //排序字段
+        sortField: 'call_date',
+        //排序方向
+        sortOrder: 'descend'
     };
 };
 // 获取通话总次数、总时长TOP10的数据
@@ -418,7 +457,6 @@ SalesHomeStore.prototype.getUserTotal = function (result) {
     }
 };
 
-
 //设置正在获取数据的标识
 SalesHomeStore.prototype.setListIsLoading = function (type) {
     switch (type) {
@@ -611,4 +649,40 @@ SalesHomeStore.prototype.setWebsiteConfig = function (userInfo) {
         this.setWebConfigStatus = "loading";
     }
 };
+// 获取回访列表
+SalesHomeStore.prototype.getCallBackList = function (result) {
+    let newData = result.resData;
+    let callBackRecord = this.callBackRecord;
+    callBackRecord.isLoading = result.loading;
+    if (callBackRecord.page === 1) {
+        callBackRecord.dataList = [];
+    }
+    if (result.loading) {
+        result.errorMsg = '';
+    } else {
+        if (result.error) {
+            callBackRecord.errorMsg = result.errorMsg || Intl.get("call.record.get.failed", "获取通话记录失败");
+        } else {
+            callBackRecord.errorMsg = '';
+            callBackRecord.total = newData.total;
+            if (newData.result) {
+                let dataList = newData.result;
+                if (!_.isArray(dataList)) {
+                    dataList = [];
+                }
+                // 累加
+                callBackRecord.dataList = callBackRecord.dataList.concat(dataList);
+                // 页数加1
+                callBackRecord.page++;
+            }
+            //是否监听下拉加载的处理
+            if (_.isArray(callBackRecord.dataList) && callBackRecord.dataList.length < callBackRecord.total) {
+                callBackRecord.listenScrollBottom = true;
+            } else {
+                callBackRecord.listenScrollBottom = false;
+            }
+        }
+    }
+};
+
 module.exports = alt.createStore(SalesHomeStore, 'SalesHomeStore');
