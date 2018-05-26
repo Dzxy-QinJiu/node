@@ -658,7 +658,7 @@ SalesHomeStore.prototype.getCallBackList = function(result) {
         callBackRecord.dataList = [];
     }
     if (result.loading) {
-        result.errorMsg = '';
+        callBackRecord.errorMsg = '';
         callBackRecord.listenScrollBottom = false;
     } else {
         if (result.error) {
