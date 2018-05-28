@@ -230,11 +230,17 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                 valueField: "showValue",
                 minSize: "5%",
             },
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/stage",
             chartType: "horizontalStage",
             processData: this.processOrderStageData,
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
             url: "/rest/analysis/customer/v2/statistic/all/industry/stage/region/overlay",
@@ -247,6 +253,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     delete query.starttime;
                     delete query.endtime;
                 }
+            },
+            noShowCondition: {
+                tab: ["!", "total"],
             },
             chartType: "table",
             option: {
@@ -382,6 +391,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     delete query.starttime;
                     delete query.endtime;
                 }
+            },
+            noShowCondition: {
+                tab: ["!", "total"],
             },
             chartType: "table",
             option: {
