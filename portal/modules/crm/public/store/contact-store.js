@@ -103,10 +103,11 @@ ContactStore.prototype.hideEditContactForm = function(contact) {
 };
 
 //FromAction-提交修改联系人表单
-ContactStore.prototype.submitEditContact = function(contact) {
+ContactStore.prototype.submitEditContact = function(result) {
+    let contact = result.errorMsg ? result.contact : result;
     var targetContact = ContactUtils.getContactFromContactListView(this.contactList, contact);
-    if (typeof contact === 'string') {
-        targetContact.submitEditContactErrorMsg = contact;
+    if (result.errorMsg) {
+        targetContact.submitEditContactErrorMsg = result.errorMsg;
     } else {
         this.hideEditContactForm(targetContact);
         targetContact.submitEditContactErrorMsg = "";
