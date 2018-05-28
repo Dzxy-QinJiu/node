@@ -109,11 +109,11 @@ function ContactAction() {
                 if (_.isFunction(cb)) cb({contact: contact});
             } else {
                 let errorMsg = Intl.get("crm.181", "修改联系人失败");
-                _this.dispatch(errorMsg);
+                _this.dispatch({errorMsg, contact});
                 if (_.isFunction(cb)) cb({errorMsg: errorMsg});
             }
         }, function(errorMsg) {
-            _this.dispatch(errorMsg);
+            _this.dispatch({errorMsg, contact});
             if (_.isFunction(cb)) cb({errorMsg: errorMsg});
         });
     };
