@@ -57,8 +57,8 @@ exports.editContact = function(contact, editType) {
         dataType: 'json',
         type: 'put',
         data: contact,
-        success: function(contact) {
-            Deferred.resolve(contact);
+        success: function(result) {
+            Deferred.resolve(result);
         },
         error: function(xhr) {
             Deferred.reject(xhr.responseJSON || Intl.get("crm.181", "修改联系人失败"));
