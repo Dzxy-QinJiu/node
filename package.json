@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "alt": "0.17.9",
+    "ant-ajax": "^1.0.1",
     "ant-auth-request": "^1.0.7",
     "ant-utils": "^1.0.1",
     "antc": "~1.0.39",

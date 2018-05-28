@@ -1,62 +1,8 @@
 @import "../../../../public/css/common-variables.less";
-#app{
-  .oplate_customer_analysis {
-    .topNav:before{
-      border-bottom: none;
-    }
-  }
-}
 .oplate_customer_analysis {
+  background-color: rgb(243, 245, 245);
   padding-top:@top_nav_height;
-  background-color: #f3f5f5;
-  .analysis_chart {
-    padding-right: 0;
-    overflow:hidden;
-  }
-  .analysis-selector-wrap {
-    display:inline-block;
-    margin-left:10px;
-  }
-  .date-range-wrap {
-    position:absolute;
-    top:22px;
-    right:50px;
-  }
-  .summary-numbers {
-    margin: 20px @container_padding 10px;
-    background-color: #fff;
-    .anticon {
-      position:absolute;
-      width:14px;
-      height:14px;
-      top:30px;
-      left:0;
-      right:0;
-      bottom:0;
-      margin:auto;
-    }
-  }
-  .chart_list {
-    padding: 0 24px 0 9px;
-    margin-bottom:-3px;
-  }
-  .charts-select-fix .card-container-sub-title {    
-    float: left;
-    .ant-select {
-      margin-right: 5px;
-    }
-  }
-  .chart-holder {
-    margin-bottom: 21px;
-    height: 285px;
-    .alert-timer {
-      display: inline-block;
-      margin-top: 30px;
-      margin-left: 40%;
-    }
-    .analysis-chart{
-      padding-left: 10px;
-      padding-bottom: 10px;
-    }
+  .topNav:before {
+    border-bottom: 0 !important;
   }
 }
