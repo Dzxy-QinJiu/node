@@ -214,6 +214,9 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             url: "/rest/analysis/customer/v1/:auth_type/:tab/industry",
             chartType: "bar",
             nameValueMap: unknownDataMap,
+            customOption: {
+                reverse: true
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.4", "团队统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/team",
@@ -493,6 +496,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
                     charts={charts}
                     emitters={this.getEmitters()}
                     isUseScrollBar={true}
+                    chartHeight={240}
                     conditions={[{
                         name: "app_id",
                         value: "all",
