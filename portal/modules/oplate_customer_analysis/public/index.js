@@ -221,6 +221,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             title: Intl.get("oplate_customer_analysis.4", "团队统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/team",
             chartType: "bar",
+            nameValueMap: unknownDataMap,
         }, {
             title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
             url: "/rest/analysis/customer/stage/label/:auth_type/summary",
