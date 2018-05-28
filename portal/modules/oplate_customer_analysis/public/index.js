@@ -139,6 +139,11 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         return processedData;
     },
 
+    //处理图表点击事件
+    handleChartClick(name, value, conditions) {
+        console.log(name,value,conditions)
+    },
+
     //获取图表定义
     getCharts() {
         return [{
@@ -209,6 +214,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             url: "/rest/analysis/customer/v1/:auth_type/:tab/zone",
             chartType: "bar",
             nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "zone"),
         }, {
             title: Intl.get("oplate_customer_analysis.5", "行业统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/industry",
