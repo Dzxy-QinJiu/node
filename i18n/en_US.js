@@ -1273,6 +1273,8 @@ var en_US = {
     "crm.sales.transfer.confirm": "Transfer confirm",//确认转出
     "crm.detail.no.data": "The customer has been deleted or turned away",//该客户已被删除或转走
     "crm.detail.get.error": "Failure to get customer details",//获取客户详情失败
+    "crm.schedule.set.compelete": "Set to complete",//标为已完成
+    "crm.schedule.set.unfinished": "Set to unfinished",//标为未完成
     // 客户管理end
 
     //客户分析 start
