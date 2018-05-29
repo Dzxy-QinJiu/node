@@ -1291,6 +1291,8 @@ var zh_CN = {
     "crm.sales.transfer.confirm": "确认转出",
     "crm.detail.no.data": "该客户已被删除或转走",
     "crm.detail.get.error": "获取客户详情失败",
+    "crm.schedule.set.compelete": "标为已完成",
+    "crm.schedule.set.unfinished": "标为未完成",
     // 客户管理end
 
     // 客户分析start
@@ -2209,4 +2211,4 @@ var zh_CN = {
 
 
 };
-export default zh_CN;
+export default zh_CN;

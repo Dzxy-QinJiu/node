@@ -122,7 +122,7 @@ class ScheduleItem extends React.Component {
                         {user_id === item.member_id ?
                             <Button className="schedule-status-btn" onClick={this.handleItemStatus.bind(this, item)}
                                 size="small">
-                                {item.status == "false" ? Intl.get("crm.alert.not.finish", "未完成") : Intl.get("user.user.add.finish", "完成")}
+                                {item.status == "false" ? Intl.get("crm.schedule.set.compelete","标为已完成") : Intl.get("crm.schedule.set.unfinished","标为未完成")}
                             </Button> : null}
                         <span className="right-handle-buttons">
                             {item.socketio_notice && item.alert_time ? (<Popover

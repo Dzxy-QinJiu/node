@@ -2,10 +2,10 @@ const util = require("../utils/contact-util");
 const crmAjax = require("../ajax");
 const scheduleAjax = require('../ajax/schedule-ajax');
 function CRMActions() {
-    this.generateActions({
-        'setBasicState': 'setBasicState',
-        'afterHandleStatus': 'afterHandleStatus'
-    });
+    this.generateActions(
+        'setBasicState',
+        'afterHandleStatus'
+    );
 
     this.getBasicData = function(curCustomer) {
         var basicData = curCustomer || {};

@@ -392,13 +392,13 @@ var ContactForm = React.createClass({
     //添加、删除联系方式的按钮
     renderContactWayBtns(index, size, type){
         return (<div className="contact-way-buttons">
-            {index === size - 1 ? ( <div className="circle-empty-button" onClick={this.addContactWay(type)}>
-                <Icon type="plus"/>
-            </div>) : null}
             {index == 0 && index === size - 1 ? null : <div className="circle-empty-button crm-contact-contactway-minus"
                 onClick={this.removeContactWay(type, index)}>
                 <Icon type="minus"/>
             </div>}
+            {index === size - 1 ? ( <div className="circle-empty-button" onClick={this.addContactWay(type)}>
+                <Icon type="plus"/>
+            </div>) : null}
         </div>);
     },
     /**
