@@ -517,6 +517,7 @@ class PhonePanel extends React.Component {
         //清空存储的通话id和时间
         phoneRecordObj.callid = "";
         phoneRecordObj.received_time = "";//通话时间
+        phoneAlertAction.setInitialState();
     }
 
     //获取详情中打电话时的客户id

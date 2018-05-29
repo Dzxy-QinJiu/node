@@ -140,8 +140,7 @@ class phoneStatusTop extends React.Component {
             this.setState({
                 selectedCustomerId: "",
                 isConnected: false,
-                showAddFeedback: true,
-                customerLayoutHeight: $(window).height() - height - RESPONSE_LAYOUT_CONSTANTS.TITLE_HEIGHT - RESPONSE_LAYOUT_CONSTANTS.MARGIN - DIVLAYOUT.TRACE_CONTAINER_PADDING
+                showAddFeedback: true
             });
         });
     };
