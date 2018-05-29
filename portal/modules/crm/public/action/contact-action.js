@@ -98,23 +98,22 @@ function ContactAction() {
     };
     //提交修改联系人
     this.submitEditContact = function(contact, editType, cb) {
-        var _this = this;
-        contactAjax.editContact(contact, editType).then(function(result) {
+        contactAjax.editContact(contact, editType).then(result => {
             if(result) {
                 contact.phone = contact.phone ? JSON.parse(contact.phone) : [];
                 contact.qq = contact.qq ? JSON.parse(contact.qq) : [];
                 contact.weChat = contact.weChat ? JSON.parse(contact.weChat) : [];
                 contact.email = contact.email ? JSON.parse(contact.email) : [];
-                _this.dispatch(contact);
-                if (_.isFunction(cb)) cb({contact: contact});
+                this.dispatch({contact});
+                if (_.isFunction(cb)) cb({contact});
             } else {
                 let errorMsg = Intl.get("crm.181", "修改联系人失败");
-                _this.dispatch({errorMsg, contact});
-                if (_.isFunction(cb)) cb({errorMsg: errorMsg});
+                this.dispatch({errorMsg, contact});
+                if (_.isFunction(cb)) cb({errorMsg});
             }
-        }, function(errorMsg) {
-            _this.dispatch({errorMsg, contact});
-            if (_.isFunction(cb)) cb({errorMsg: errorMsg});
+        }, errorMsg => {
+            this.dispatch({errorMsg, contact});
+            if (_.isFunction(cb)) cb({errorMsg});
         });
     };
     //添加一个联系方式
