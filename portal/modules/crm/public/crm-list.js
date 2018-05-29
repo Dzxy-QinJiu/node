@@ -443,23 +443,23 @@ var Crm = React.createClass({
 
         rightPanelShow = true;
         CrmAction.setCurrentCustomer(id);
-        setTimeout(() => {
-            //触发打开带拨打电话状态的客户详情面板
-            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                customer_params: {
-                    currentId: this.state.currentId,
-                    refreshCustomerList: this.refreshCustomerList,
-                    curCustomer: this.state.curCustomer,
-                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                    updateCustomerDefContact: CrmAction.updateCustomerDefContact,
-                    handleFocusCustomer: this.handleFocusCustomer,
-                    showRightPanel: this.showRightPanel,
-                    hideRightPanel: this.hideRightPanel
-                }
-            });
+    },
+    renderCustomerDetail: function() {
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: this.state.currentId,
+                refreshCustomerList: this.refreshCustomerList,
+                curCustomer: this.state.curCustomer,
+                ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                updateCustomerDefContact: CrmAction.updateCustomerDefContact,
+                handleFocusCustomer: this.handleFocusCustomer,
+                showRightPanel: this.showRightPanel,
+                hideRightPanel: this.hideRightPanel
+            }
         });
-    }
-    , hideRightPanel: function() {
+    },
+    hideRightPanel: function() {
         this.state.rightPanelIsShow = false;
         rightPanelShow = false;
         this.setState(this.state);
@@ -1272,6 +1272,9 @@ var Crm = React.createClass({
         //初始加载，客户列表数据还没有取到时，不显示表格
         const shouldTableShow = (this.state.isLoading && !this.state.curPageCustomers.length) ? false : true;
         let selectCustomerLength = this.state.selectedCustomer.length;
+        if (this.state.rightPanelIsShow) {
+            this.renderCustomerDetail();
+        }
         return (<RightContent>
             <div className="crm_content" data-tracename="客户列表">
                 {
@@ -1279,11 +1282,11 @@ var Crm = React.createClass({
                         <FilterBlock>
                             {selectCustomerLength ? (
                                 <div className="crm-list-selected-tip">
-                                    <span className="iconfont icon-sys-notice" />
+                                    <span className="iconfont icon-sys-notice"/>
                                     {this.renderSelectCustomerTips()}
                                 </div>
                             ) : null}
-                            <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
+                            <div style={{display: selectCustomerLength ? 'none' : 'block'}}>
                                 <CrmFilter
                                     ref="crmFilter"
                                     search={this.search.bind(this, true)}

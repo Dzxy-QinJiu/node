@@ -141,9 +141,28 @@ var BasicData = React.createClass({
     //关注客户的处理
     handleFocusCustomer: function(basicData) {
         Trace.traceEvent(this.getDOMNode(), basicData.interest === "true" ? "取消关注客户" : "关注客户");
-        if (_.isFunction(this.props.handleFocusCustomer)) {
-            this.props.handleFocusCustomer(basicData);
+        //请求数据
+        let interestObj = {
+            id: basicData.id,
+            type: "customer_interest",
+        };
+        if (basicData.interest == "true") {
+            interestObj.interest = "false";
+        } else {
+            interestObj.interest = "true";
         }
+        basicData.interest = interestObj.interest;
+        this.setState({basicData: basicData});
+        CrmAction.updateCustomer(interestObj, (errorMsg) => {
+            if (errorMsg) {
+                //将星星的颜色修改回原来的状态
+                basicData.interest = interestObj.interest == 'true' ? 'false' : 'true';
+                this.setState({basicData: basicData});
+            } else {
+                delete interestObj.type;
+                CrmAction.editBasicSuccess(interestObj);
+            }
+        });
     },
     //渲染客户的基本信息
     renderBasicBlock: function(basicData) {
@@ -270,7 +289,8 @@ var BasicData = React.createClass({
                                 title={this.state.showDetailFlag ? Intl.get("crm.basic.detail.hide", "收起详情") :
                                     Intl.get("crm.basic.detail.show", "展开详情")}
                                 onClick={this.toggleBasicDetail}/>
-                            {this.props.isMerge ? (<span className={interestClass} title={interestTitle}/> ) : (
+                            {this.props.isMerge ? (
+                                <span className={interestClass} title={interestTitle}/> ) : (
                                 <span className={interestClass}
                                     title={interestTitle}
                                     onClick={this.handleFocusCustomer.bind(this, basicData)}

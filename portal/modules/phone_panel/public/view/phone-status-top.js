@@ -13,14 +13,7 @@ var phoneAlertStore = require("../store/phone-alert-store");
 var CrmAction = require("MOD_DIR/crm/public/action/crm-actions");
 var AlertTimer = require("CMP_DIR/alert-timer");
 import {isEqualArray} from "LIB_DIR/func";
-
-const PHONERINGSTATUS = {
-    //对方已振铃
-    ALERT: "ALERT",
-    //对方已应答
-    ANSWERED: "ANSWERED",
-    phone: "phone",//通话结束后，后端推送过来的状态
-};
+import {PHONERINGSTATUS} from "../consts";
 const DIVLAYOUT = {
     //出现跟进内容输入框后的高度
     TRACELAYOUT: 160,
@@ -216,7 +209,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + "-" : "";
         if (phonemsgObj.call_type === "IN") {
             phoneNum += phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone) {
+            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -234,7 +227,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             desTipObj.tip = `${Intl.get("call.record.phone.answered", "正在通话中")}`;
-        } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
+        } else if (phonemsgObj.type == PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
             desTipObj.tip = `${Intl.get("call.record.phone.unknown", "结束通话")}`;
         }
         return desTipObj;
@@ -256,7 +249,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type == PHONERINGSTATUS.ANSWERED) {
             iconFontCls += " icon-phone-answering";
-        } else if (phonemsgObj.type == PHONERINGSTATUS.phone) {
+        } else if (phonemsgObj.type == PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) {
             iconFontCls += " icon-phone-bye";
         }
         //获取页面描述
@@ -276,7 +269,7 @@ class phoneStatusTop extends React.Component {
                 </div>
                 <div className="trace-content-container">
                     { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                        phonemsgObj.type === PHONERINGSTATUS.phone && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
+                        (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type == PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem() : null
                     }
                 </div>
                 {!this.state.isAddingMoreProdctInfo && this.state.showAddFeedback ? (
