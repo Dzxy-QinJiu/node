@@ -225,9 +225,14 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/trend",
             chartType: "line",
+            overide: {
+                condition: {
+                    app_id: "all",
+                },
                 customOption: {
                     multi: true,
                 },
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.3", "地域统计"),
             url: "/rest/analysis/customer/v1/:auth_type/:tab/zone",
