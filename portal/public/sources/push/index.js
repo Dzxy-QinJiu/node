@@ -246,6 +246,7 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
+    sendMessage && sendMessage(JSON.stringify(phonemsgObj));
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     const PHONE_STATUS = ["ALERT", "ANSWERED", "phone"];
     //过滤掉其他状态 只展示alert answered  phone状态的数据
