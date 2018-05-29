@@ -68,6 +68,7 @@ class PhonePanel extends React.Component {
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
+            applyFormCustomerName: ""//申请用面板用到的客户名
         };
     }
 
@@ -487,11 +488,12 @@ class PhonePanel extends React.Component {
     };
 
     //展示申请用户界面
-    showApplyUserForm(type, curOrder, apps) {
+    showApplyUserForm(type, curOrder, apps, customerName) {
         this.setState({
             applyType: type,
             apps: apps,
-            curOrder: curOrder
+            curOrder: curOrder,
+            applyFormCustomerName: customerName
         }, () => {
             this.setState({applyUserShowFlag: true});
         });
@@ -634,7 +636,7 @@ class PhonePanel extends React.Component {
                                 applyType={this.state.applyType}
                                 apps={this.state.apps}
                                 order={this.state.curOrder}
-                                customerName={paramObj.customer_params.curCustomer.name}
+                                customerName={this.state.applyFormCustomerName}
                                 cancelApply={this.returnInfoPanel.bind(this)}
                             />
                         </div>
