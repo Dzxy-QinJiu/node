@@ -90,6 +90,13 @@ var CrmRightPanel = React.createClass({
         });
     },
 
+    //展示申请用户界面
+    showApplyUserForm: function(type, curOrder, apps) {
+        if (_.isFunction(this.props.showApplyUserForm)) {
+            let customerName = this.state.curCustomer ? this.state.curCustomer.name : "";
+            this.props.showApplyUserForm(type, curOrder, apps, customerName);
+        }
+    },
     hideRightPanel: function(e) {
         Trace.traceEvent(e, "关闭客户详情");
         this.props.hideRightPanel();
@@ -172,6 +179,8 @@ var CrmRightPanel = React.createClass({
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
                                         userViewShowCustomerUserListPanel={this.props.userViewShowCustomerUserListPanel}
+                                        showOpenAppForm={this.props.showOpenAppForm}
+                                        closeOpenAppPanel={this.props.returnInfoPanel}
                                     />
                                 ) : null}
                             </TabPane>
@@ -184,7 +193,7 @@ var CrmRightPanel = React.createClass({
                                         closeRightPanel={this.props.hideRightPanel}
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
-                                        showApplyUserForm={this.props.showApplyUserForm}
+                                        showApplyUserForm={this.showApplyUserForm}
                                     />
                                 ) : null}
                             </TabPane>
