@@ -68,7 +68,7 @@ class PhonePanel extends React.Component {
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
-            applyFormCustomerName: "",//申请用面板用到的客户名
+            applyFormCustomerName: "",//申请用户面板用到的客户名
             openAppShowFlag: false//是否展示开通应用面板
         };
     }
