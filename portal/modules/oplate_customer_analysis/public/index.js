@@ -12,6 +12,7 @@ const TopNav = require("CMP_DIR/top-nav");
 const AnalysisMenu = require("CMP_DIR/analysis_menu");
 const userData = require("PUB_DIR/sources/user-data");
 const emitters = require("PUB_DIR/sources/utils/emitters");
+const querystring = require("querystring");
 
 //从 unknown 到 未知 的对应关系对象
 const unknownObj = {name: Intl.get("user.unknown", "未知"), key: "unknown"};
@@ -141,7 +142,25 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
 
     //处理图表点击事件
     handleChartClick(name, value, conditions) {
-        console.log(name,value,conditions)
+        let conditionObj = {};
+
+        _.each(conditions, condition => {
+            conditionObj[condition.name] = condition.value;
+        });
+
+        const query = {
+            app_id: conditionObj.app_id,
+            login_begin_date: conditionObj.starttime,
+            login_end_date: conditionObj.endtime,
+            analysis_filter_value: value,
+            analysis_filter_field: name,
+            customerType: conditionObj.tab,
+        };
+
+        const url = "/crm?" + querystring.stringify(query);
+
+        //跳转到客户列表
+        window.open(url);
     },
 
     //获取图表定义
@@ -220,6 +239,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             url: "/rest/analysis/customer/v1/:auth_type/:tab/industry",
             chartType: "bar",
             nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "industry"),
             customOption: {
                 reverse: true
             },
@@ -228,6 +248,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
             url: "/rest/analysis/customer/v1/:auth_type/:tab/team",
             chartType: "bar",
             nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "team"),
         }, {
             title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
             url: "/rest/analysis/customer/stage/label/:auth_type/summary",
