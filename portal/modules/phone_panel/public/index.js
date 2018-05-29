@@ -68,7 +68,8 @@ class PhonePanel extends React.Component {
             CustomerInfoOfCurrUser: {},//当前展示用户所属客户的详情
             isInitialHeight: true, //恢复到初始的高度
             addCustomer: false,//是否需要添加客户 true代码需要添加客户，false代表不需要添加客户
-            applyFormCustomerName: ""//申请用面板用到的客户名
+            applyFormCustomerName: "",//申请用面板用到的客户名
+            openAppShowFlag: false//是否展示开通应用面板
         };
     }
 
@@ -152,7 +153,7 @@ class PhonePanel extends React.Component {
         } else {
             phoneNum = phonemsgObj.to || phonemsgObj.dst;
         }
-        this.setState({phoneNum: phoneNum, isAddFlag: false});
+        this.setState({phoneNum: phoneNum, isAddFlag: false, applyUserShowFlag: false, openAppShowFlag: false});
         //恢复初始数据
         phoneAlertAction.setInitialState();
         sendMessage && sendMessage("座机拨打电话，之前弹屏已打开" + phoneNum);
@@ -269,7 +270,7 @@ class PhonePanel extends React.Component {
                 { myCustomer ? (//我的客户可以查看客户详情
                     <p className="show-customer-detail">
                         <Button type="primary" onClick={this.toggleCustomerDetail.bind(this, customer.id)}
-                            data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
+                                data-tracename={myCustomer.isShowDetail ? "收起客户详情" : "查看客户详情"}>
                             {myCustomer.isShowDetail ? Intl.get("crm.basic.detail.hide", "收起详情") : Intl.get("call.record.show.customer.detail", "查看详情")}
                         </Button>
                     </p>) : null
@@ -295,14 +296,7 @@ class PhonePanel extends React.Component {
         } else if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {//客户存在时，展示客户的信息
             if (phonemsgObj.customers.length === 1) {//该电话只对应一个客户时的处理
                 if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//该电话是自己客户的，展示客户详情
-                    return (
-                        <CustomerDetail currentId={customerInfoArr[0].id}
-                            curCustomer={customerInfoArr[0]}
-                            editCustomerBasic={this.editCustomerBasic}
-                            hideRightPanel={this.hideRightPanel.bind(this)}
-                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                            showApplyUserForm={this.showApplyUserForm.bind(this)}
-                        />);
+                    return this.renderCustomerDetail(customerInfoArr[0]);
                 } else {//该电话不是自己客户的
                     return this.renderCustomerCard(phonemsgObj.customers[0]);
                 }
@@ -312,16 +306,10 @@ class PhonePanel extends React.Component {
                     return (
                         <div className="show-customer-detail">
                             <a className="return-customer-cards"
-                                onClick={this.toggleCustomerDetail.bind(this, showDetailCustomer.id)}>
+                               onClick={this.toggleCustomerDetail.bind(this, showDetailCustomer.id)}>
                                 <span className="iconfont icon-return-btn"/> {Intl.get("crm.52", "返回")}
                             </a>
-                            <CustomerDetail currentId={showDetailCustomer.id}
-                                curCustomer={showDetailCustomer}
-                                editCustomerBasic={this.editCustomerBasic}
-                                hideRightPanel={this.hideRightPanel.bind(this)}
-                                ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                                showApplyUserForm={this.showApplyUserForm.bind(this)}
-                            />
+                            {this.renderCustomerDetail(showDetailCustomer)}
                         </div>);
                 } else {
                     let height = $("body").height() - DIVLAYOUT.CUSTOMER_COUNT_TIP_H;//去掉有几个客户的提示的高度
@@ -345,14 +333,7 @@ class PhonePanel extends React.Component {
                 }
             }
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
-            return (
-                <CustomerDetail currentId={customerInfoArr[0].id}
-                    curCustomer={customerInfoArr[0]}
-                    editCustomerBasic={this.editCustomerBasic}
-                    hideRightPanel={this.hideRightPanel.bind(this)}
-                    ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
-                    showApplyUserForm={this.showApplyUserForm.bind(this)}
-                />);
+            return this.renderCustomerDetail(customerInfoArr[0]);
         } else {
             //客户不存在时，展示添加客户的按钮(添加完客户后，此提示不再提示添加客户)
             return (
@@ -361,6 +342,19 @@ class PhonePanel extends React.Component {
                 </span>
             );
         }
+    }
+
+    renderCustomerDetail(customer) {
+        return (
+            <CustomerDetail currentId={customer.id}
+                            curCustomer={customer}
+                            editCustomerBasic={this.editCustomerBasic}
+                            hideRightPanel={this.hideRightPanel.bind(this)}
+                            ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
+                            showApplyUserForm={this.showApplyUserForm.bind(this)}
+                            showOpenAppForm={this.showOpenAppForm.bind(this)}
+                            returnInfoPanel={this.returnInfoPanel.bind(this)}
+            />);
     }
 
     //修改客户的基本信息
@@ -499,11 +493,16 @@ class PhonePanel extends React.Component {
         });
     }
 
-    //申请后返回
+    //申请、开通应用后返回
     returnInfoPanel() {
         this.setState({
-            applyUserShowFlag: false
+            applyUserShowFlag: false,
+            openAppShowFlag: false
         });
+    }
+
+    showOpenAppForm() {
+        this.setState({openAppShowFlag: true});
     }
 
     hidePhonePanel(e) {
@@ -612,8 +611,8 @@ class PhonePanel extends React.Component {
         let className = classNames("right-panel-content", {"crm-right-panel-content-slide": this.state.applyUserShowFlag});
         return (
             <RightPanel showFlag={this.props.showFlag}
-                className={this.state.applyUserShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
-                data-tracename={paramObj.call_params ? "电话弹屏" : "客户详情"}>
+                        className={this.state.applyUserShowFlag || this.state.openAppShowFlag ? "apply-user-form-panel  white-space-nowrap table-btn-fix" : "crm-right-panel  white-space-nowrap table-btn-fix"}
+                        data-tracename={paramObj.call_params ? "电话弹屏" : "客户详情"}>
                 <span className="iconfont icon-close" onClick={(e) => {
                     this.hidePhonePanel(e);
                 }}/>
@@ -622,8 +621,10 @@ class PhonePanel extends React.Component {
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
                     {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
                         <CustomerDetail {...paramObj.customer_params}
-                            hideRightPanel={this.hideRightPanel.bind(this)}
-                            showApplyUserForm={this.showApplyUserForm.bind(this)}
+                                        hideRightPanel={this.hideRightPanel.bind(this)}
+                                        showApplyUserForm={this.showApplyUserForm.bind(this)}
+                                        showOpenAppForm={this.showOpenAppForm.bind(this)}
+                                        returnInfoPanel={this.returnInfoPanel.bind(this)}
                         />) : null
                     }
                 </div>
@@ -649,12 +650,12 @@ class PhonePanel extends React.Component {
 
 PhonePanel
     .defaultProps = {
-        showFlag: false,
-        paramObj: {
-            call_params: null,//后端推送过来的电话状态相关的参数
-            customer_params: null//客户详情相关的参数
-        }
-    };
+    showFlag: false,
+    paramObj: {
+        call_params: null,//后端推送过来的电话状态相关的参数
+        customer_params: null//客户详情相关的参数
+    }
+};
 export
 default
 PhonePanel;
