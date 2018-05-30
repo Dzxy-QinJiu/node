@@ -29,6 +29,10 @@
       color: @btn_color;
     }
   }
+  //无数据的提示
+  .no-data-tip{
+    float: left;
+  }
   //每个订单展示的卡片样式
   .item-delete-border {
     border: 1px solid @delete_confirm_color;
@@ -162,57 +166,64 @@
     }
 
   }
-}
 
-//应用列表编辑面板
-.order-app-edit-block {
-  float: left;
-  width: 100%;
-  &:extend(.break_line);
-  .search-icon-list {
-    margin-top: 4px;
-    .icon-item {
-      font-size: 12px;
-      border: 1px solid #e8edf3;
-    }
-    .icon-item.selected {
-      background-color: #d7e6f7;
-      border-color: #d7e6f7;
-      color: #4c8ec4;
-    }
-    .search-icon-list-content {
-      background: transparent;
-      border: 1px solid #d3eafc;
-      border-radius: 4px;
-      padding: 8px 0 10px 10px;
-      margin: 0;
-    }
-  }
-}
-
-form.order-form {
-  position: relative;
-  .ant-form-item {
-    width: 100%;
-    margin-bottom: 6px;
-    label {
-      text-align: left;
-    }
-    input, textarea {
-      width: 100%;
-    }
-  }
-  .ant-form-item-label {
-    text-align: right;
-    label {
-      color: @font_color;
-    }
-  }
+  //应用列表编辑面板
   .order-app-edit-block {
-    z-index: 1;
+    float: left;
+    width: 100%;
+    &:extend(.break_line);
+    .search-icon-list {
+      margin-top: 0;
+      .search-icon-list-header{
+        padding: 0;
+        .search-wrap{
+          width: 220px;
+        }
+      }
+      .icon-item {
+        font-size: 12px;
+        border: 1px solid #e8edf3;
+      }
+      .icon-item.selected {
+        background-color: #d7e6f7;
+        border-color: #d7e6f7;
+        color: #4c8ec4;
+      }
+      .search-icon-list-content {
+        background: transparent;
+        border: 1px solid #d3eafc;
+        border-radius: 4px;
+        padding: 8px 0 10px 10px;
+        margin: 0;
+      }
+    }
+  }
+
+  form.order-form {
+    position: relative;
+    .ant-form-item {
+      width: 100%;
+      margin-bottom: 6px;
+      label {
+        text-align: left;
+      }
+      input, textarea {
+        width: 100%;
+      }
+    }
     .ant-form-item-label {
-      line-height: 20px;
+      text-align: right;
+      label {
+        color: @font_color;
+      }
+    }
+    .order-app-edit-block {
+      z-index: 1;
+      .ant-form-item-label {
+        line-height: 20px;
+      }
     }
   }
 }
+
 

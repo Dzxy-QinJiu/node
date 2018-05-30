@@ -22,7 +22,7 @@ let unknownDataMap = {};
 unknownDataMap[unknownObj.key] = unknownObj.name;
 
 //权限类型
-const authType = hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")? "manager" : "common";
+const authType = hasPrivilege("CUSTOMER_ANALYSIS_MANAGER") ? "manager" : "common";
 
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
     getInitialState() {
@@ -134,7 +134,7 @@ var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
         });
     
         //将维护阶段的统计数据加到处理后的数据的最后
-        let maintainStage = _.find(data, stage => stage.name ===Intl.get("oplate_customer_analysis.6", "维护阶段"));
+        let maintainStage = _.find(data, stage => stage.name === Intl.get("oplate_customer_analysis.6", "维护阶段"));
         if (maintainStage) processedData.push(maintainStage);
     
         return processedData;

@@ -134,7 +134,7 @@ const OrderForm = React.createClass({
                         className="order-app-edit-block"
                         label={Intl.get("common.app", "应用")}
                         labelCol={{span: 4}}
-                        wrapperCol={{span: 24}}
+                        wrapperCol={{span: 20}}
                     >
                         <SearchIconList
                             totalList={this.props.appList}
