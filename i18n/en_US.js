@@ -1298,6 +1298,11 @@ var en_US = {
     "oplate_customer_analysis.projected": "Quotation stage Customer",//立项报价阶段客户
     "oplate_customer_analysis.negotiated": "Negotiation stage customer",//谈判阶段客户
     "oplate_customer_analysis.customer_stage": "Customer stage analysis",//客户阶段统计
+    "active.customer.trends.last.month": "active customer trends in the last month",//近一月活跃客户趋势
+    "effective.customer.activity.rate": "effective customer activity rate",//有效用户活跃率
+    "active.customer.number": "active customer number",//活跃客户数
+    "effective.customer.number": "efficient customer number",//有效客户数
+    "effective.customer.statistics": "efficient customer statistics",//有效客户统计
     "oplate_customer_analysis.industryCustomerOverlay": "Trial customer coverage rate of all industries", //"各行业试用客户覆盖率",
     "oplate_customer_analysis.overlay": "Coverage rate",//覆盖率
     "oplate_customer_analysis.countryCount": "country count", //"区县总数",
@@ -2105,6 +2110,11 @@ var en_US = {
     "operation.report.new.account.statistic": "New user statistics",//新开通用户统计
     "my_app": "Default",//默认
     "oplate_customer_analysis.customer.stage": "Customer phase statistics",//客户阶段统计
+    "active.customer.trends.last.month": "active customer trends in the last month",//近一月活跃客户趋势
+    "effective.customer.activity.rate": "effective customer activity rate",//有效用户活跃率
+    "active.customer.number": "active customer number",//活跃客户数
+    "effective.customer.number": "efficient customer number",//有效客户数
+    "effective.customer.statistics": "efficient customer statistics",//有效客户统计
     "user.third.thirdapp.secret.reuqired": "Please fill in APP secret",//请填写APP Secret
     "call.record.trend.failed": "Failed to get call count and call duration",//获取通话数量和通话时长数据失败
     "call.record.service.phone": "Customer service phone",//客服电话
