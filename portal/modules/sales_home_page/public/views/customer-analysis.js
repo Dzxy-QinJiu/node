@@ -2,6 +2,7 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
+import { AntcAnalysis } from "antc";
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -825,6 +826,50 @@ var CustomerAnalysis = React.createClass({
         );
 
     },
+    //获取有效客户图表
+    getEfficientCustomerChart() {
+        const charts = [{
+            title: Intl.get("effective.customer.statistics", "有效客户统计"),
+            url: "/rest/customer/v2/customer/:range_type/app/user/count",
+            chartType: "table",
+            layout: {
+                sm: 24,
+            },
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: [
+                    {
+                        title: Intl.get("user.user.team", "团队"),
+                        dataIndex: "team",
+                    },
+                ],
+            },
+            resultType: "",
+            data: [
+                {
+                    team: "客户部",
+                },
+            ],
+            customOption: {
+            },
+        }];
+
+        const emitters = [
+        ];
+
+        const conditions = [
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                emitters={emitters}
+                conditions={conditions}
+                cardContainer={false}
+            />
+        );
+    },
     renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
@@ -839,6 +884,16 @@ var CustomerAnalysis = React.createClass({
                             {this.getCustomerChart()}
                         </div>
                     </div>) : null}
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title={Intl.get("effective.customer.statistics", "有效客户统计")}>
+                    <div className="chart-holder" data-tracename="有效客户统计">
+                        <div className="title">
+                            <ReactIntl.FormattedMessage id="effective.customer.statistics"
+                                defaultMessage="客户阶段统计" />
+                        </div>
+                        {this.getEfficientCustomerChart()}
+                    </div>
+                </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
                     data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
                     <div className="chart-holder" data-tracename="客户阶段统计">
