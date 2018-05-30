@@ -210,7 +210,7 @@ var Crm = React.createClass({
             delete query.analysis_filter_field;
             delete query.analysis_filter_value;
             //设置选中的APP名称
-            if (filterAppId.split(',').length > 1) {
+            if (filterAppId === "all") {
                 FilterAction.setApp("");
             } else {
                 FilterAction.setApp(filterAppId);
