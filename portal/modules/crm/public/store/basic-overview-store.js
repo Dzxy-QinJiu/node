@@ -16,6 +16,10 @@ function CRMStore() {
     this.scheduleList = [];//未完成的日程列表
     this.bindActions(CRMActions);
 }
+
+CRMStore.prototype.setCrmUserList = function(list) {
+    this.crmUserList = _.isArray(list) ? list : [];
+};
 //获取客户开通的用户列表
 CRMStore.prototype.getCrmUserList = function(resultObj) {
     if (resultObj.loading) {

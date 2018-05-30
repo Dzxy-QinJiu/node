@@ -61,12 +61,15 @@ var BasicOverview = React.createClass({
         if (curCustomer && curCustomer.id) {
             //该客户开通的用户个数
             let appUserLength = curCustomer && _.isArray(curCustomer.app_user_ids) ? curCustomer.app_user_ids.length : 0;
-            if (!appUserLength) return;
-            basicOverviewAction.getCrmUserList({
-                customer_id: curCustomer.id,
-                page_num: 1,
-                page_size: appUserLength
-            });
+            if (appUserLength) {
+                basicOverviewAction.getCrmUserList({
+                    customer_id: curCustomer.id,
+                    page_num: 1,
+                    page_size: appUserLength
+                });
+            } else {
+                basicOverviewAction.setCrmUserList([]);
+            }
         }
     },
     //获取未完成的日程列表

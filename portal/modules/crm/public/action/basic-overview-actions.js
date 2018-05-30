@@ -4,7 +4,8 @@ const scheduleAjax = require('../ajax/schedule-ajax');
 function CRMActions() {
     this.generateActions(
         'setBasicState',
-        'afterHandleStatus'
+        'afterHandleStatus',
+        'setCrmUserList'
     );
 
     this.getBasicData = function(curCustomer) {
