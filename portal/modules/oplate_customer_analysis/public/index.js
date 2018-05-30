@@ -1,753 +1,565 @@
 /**
- * 说明：统计分析-客户分析
+ * 客户分析
  */
-//顶部导航
+
 require("./css/oplate-customer-analysis.less");
-var TopNav = require("../../../components/top-nav");
-var AnalysisMenu = require("../../../components/analysis_menu");
-var GeminiScrollbar = require("../../../components/react-gemini-scrollbar");
-var AnalysisLayout = require("./utils/analysis-layout");
-var OplateCustomerAnalysisAction = require("./action/oplate-customer-analysis.action");
-var OplateCustomerAnalysisStore = require("./store/oplate-customer-analysis.store");
-const Emitters = require("../../../public/sources/utils/emitters");
-const dateSelectorEmitter = Emitters.dateSelectorEmitter;
-const appSelectorEmitter = Emitters.appSelectorEmitter;
-import Analysis from "CMP_DIR/analysis";
-import { processCustomerStageChartData, processOrderStageChartData } from "CMP_DIR/analysis/utils";
-import AnalysisFilter from "../../../components/analysis/filter";
-import { hasPrivilege, getDataAuthType } from "CMP_DIR/privilege/checker";
-import SummaryNumber from "CMP_DIR/analysis-summary-number";
-import { Row, Col, Alert } from "antd";
-var Spinner = require("CMP_DIR/spinner");
-import { AntcCardContainer, AntcTable } from "antc";
-const localStorageAppIdKey = "customer_analysis_stored_app_id";
-var classnames = require("classnames");
-const CHART_HEIGHT = 240;
-const BOX_CHARTTYPE = 86;//头部数字区域的高度
-import IndustrySelector from "./views/component/industry-seletor";
-import StageSelector from "./views/component/stage-selector";
-import { storageUtil } from "ant-utils";
-const QUALIFY_CONSTS = {//1：当前合格 2：历史合格
-    PASS: 1,
-    HISTORY_PASS: 2
-};
-//客户分析
+import ajax from "ant-ajax";
+import { AntcAnalysis } from "antc";
+import AnalysisFilter from "CMP_DIR/analysis/filter";
+import { hasPrivilege } from "CMP_DIR/privilege/checker";
+import { parseAmount } from "LIB_DIR/func";
+const TopNav = require("CMP_DIR/top-nav");
+const AnalysisMenu = require("CMP_DIR/analysis_menu");
+const userData = require("PUB_DIR/sources/user-data");
+const emitters = require("PUB_DIR/sources/utils/emitters");
+const querystring = require("querystring");
+
+//从 unknown 到 未知 的对应关系对象
+const unknownObj = {name: Intl.get("user.unknown", "未知"), key: "unknown"};
+
+//从 unknown 到 未知 的映射
+let unknownDataMap = {};
+unknownDataMap[unknownObj.key] = unknownObj.name;
+
+//权限类型
+const authType = hasPrivilege("CUSTOMER_ANALYSIS_MANAGER")? "manager" : "common";
+
 var OPLATE_CUSTOMER_ANALYSIS = React.createClass({
-    onStateChange: function() {
-        this.setState(OplateCustomerAnalysisStore.getState());
+    getInitialState() {
+        return {
+            //行业列表
+            industry: [],
+            //订单阶段列表
+            stageList: [],
+        };
     },
-    getInitialState: function() {
-        return OplateCustomerAnalysisStore.getState();
+
+    componentDidMount() {
+        this.getIndustry();
+        this.getStageList();
     },
-    //缩放延时，避免页面卡顿
-    resizeTimeout: null,
-    //窗口缩放时候的处理函数
-    windowResize: function() {
-        clearTimeout(this.resizeTimeout);
-        var _this = this;
-        this.resizeTimeout = setTimeout(function() {
-            //窗口缩放的时候，调用setState，重新走render逻辑渲染
-            _this.setState(OplateCustomerAnalysisStore.getState());
-        }, 300);
-    },
-    componentDidMount: function() {
-        appSelectorEmitter.on(appSelectorEmitter.SELECT_APP, this.onAppChange);
-        dateSelectorEmitter.on(dateSelectorEmitter.SELECT_DATE, this.onDateChange);
-        OplateCustomerAnalysisStore.listen(this.onStateChange);
-        OplateCustomerAnalysisAction.getUserType();
-        OplateCustomerAnalysisAction.getSalesStageList();
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: 0,//覆盖率接口规定start_time 固定为0
-                end_time: this.state.endTime
-            }
-        });
-        OplateCustomerAnalysisAction.getNewCustomerCount({
-            queryObj: {
-                start_time: this.state.startTime,
-                end_time: this.state.endTime
-            }
-        });
-        $('body').css('overflow', 'hidden');
-        //绑定window的resize，进行缩放处理
-        $(window).on('resize', this.windowResize);
-    },
-    componentWillUnmount: function() {
-        appSelectorEmitter.removeListener(appSelectorEmitter.SELECT_APP, this.onAppChange);
-        dateSelectorEmitter.removeListener(dateSelectorEmitter.SELECT_DATE, this.onDateChange);
-        OplateCustomerAnalysisStore.unlisten(this.onStateChange);
-        $('body').css('overflow', 'visible');
-        //组件销毁时，清除缩放的延时
-        clearTimeout(this.resizeTimeout);
-        //解除window上绑定的resize函数
-        $(window).off('resize', this.windowResize);
-    },
-    onAppChange(app_id) {
-        //传空查询全部应用下数据
-        if (app_id.includes(",") || app_id === "all") {
-            app_id = "";
-        }
-        //获取销售新开客户数
-        OplateCustomerAnalysisAction.getNewCustomerCount({
-            queryObj: {
-                app_ids: app_id,
-                start_time: this.state.startTime,
-                end_time: this.state.endTime,
-            }
-        });        
-    },
-    onDateChange(starttime, endtime) {
-        //获取各行业试用客户覆盖率
-        OplateCustomerAnalysisAction.getIndustryCustomerOverlay({
-            queryObj: {
-                start_time: 0,
-                end_time: endtime
-            }
-        });
-        //获取销售新开客户数
-        OplateCustomerAnalysisAction.getNewCustomerCount({
-            queryObj: {
-                start_time: starttime,
-                end_time: endtime
-            }
+
+    //获取行业列表
+    getIndustry() {
+        ajax.send({
+            url: "/rest/customer/v2/customer/industries"
+        }).then(result => {
+            this.setState({industry: result.result});
         });
     },
-    getComponent(component, props) {
-        if (!props) props = {};
-        props.height = (props.height ? props.height : 214);
-        props.localStorageAppIdKey = localStorageAppIdKey;
 
-        props.ref = (ref) => { this.refs[props.refName] = ref; };
-
-        return React.createElement(component, props, null);
+    //获取订单阶段列表
+    getStageList() {
+        ajax.send({
+            url: "/rest/customer/v2/salestage"
+        }).then(result => {
+            this.setState({stageList: result.result});
+        });
     },
-    /**
-     * @param appId 应用id
-     * @param isChoosenAll  是否选中的是“全部应用”
-     * @param hasAll 是否含有“全部应用”选项
-     * @param list 应用列表的list
-     */
-    processTrendChartData: function(trendData) {
-        if (trendData[0] && trendData[0].data) {
-            trendData = trendData[0].data;
-        } else {
-            _.map(trendData, trend => trend.count = trend.total);
-        }
-        return trendData;
-    },
-    //趋势统计
-    getCustomerChart: function() {
-        return (
-            this.getComponent(Analysis, {
-                refName: "qu_shi_tong_ji",
-                chartType: "line",
-                target: "Customer" + getDataAuthType(),
-                type: this.state.currentTab,
-                height: CHART_HEIGHT,
-                property: "trend",
-                valueField: "count",
-                showLabel: false,
-                legend: false,
-                processData: this.processTrendChartData,
-                name: Intl.get("oplate_customer_analysis.1", "趋势统计"),
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: "trend",
-                        customerType: this.state.currentTab
-                    },
-                },
-                query: {
-                    customerType: this.state.currentTab,
-                    customerProperty: "trend"
+    
+    //处理客户阶段统计数据
+    processCustomerStageData(data) {
+        const customerStages = [
+            {
+                tagName: Intl.get("sales.stage.message", "信息"),
+                tagValue: "message",
+            },
+            {
+                tagName: Intl.get("sales.stage.intention", "意向"),
+                tagValue: "intention",
+            },
+            {
+                tagName: Intl.get("common.trial", "试用"),
+                tagValue: "trial",
+            },
+            {
+                tagName: Intl.get("common.qualified", "合格"),
+                tagValue: "qualified",
+            },
+            {
+                tagName: Intl.get("sales.stage.signed", "签约"),
+                tagValue: "signed",
+            },
+        ];
+    
+        let processedData = [];
+        let prevStageValue;
+    
+        customerStages.forEach(stage => {
+            let stageValue = data[stage.tagValue];
+    
+            if (stageValue) {
+                //保留原始值，用于在图表上显示
+                const showValue = stageValue;
+    
+                //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
+                if (prevStageValue && stageValue > prevStageValue) {
+                    stageValue = prevStageValue * 0.8;
                 }
-            })
-        );
-
+    
+                //将暂存的上一阶段的值更新为当前阶段的值，以供下一循环中使用
+                prevStageValue = stageValue;
+    
+                processedData.push({
+                    name: stage.tagName,
+                    value: stageValue,
+                    showValue,
+                });
+            }
+        });
+    
+        return processedData;
     },
-    //地域统计
-    getZoneChart: function() {
-        // var endDate = this.getEndDateText();
-        var legend = [{ name: Intl.get("oplate_customer_analysis.2", "总数"), key: "total" }];
-        return (
-            this.getComponent(Analysis, {
-                refName: "di_yu_tong_ji",
-                chartType: "bar",
-                target: "Customer" + getDataAuthType(),
-                type: this.state.currentTab,
-                property: "zone",
-                valueField: "total",
-                height: CHART_HEIGHT,
-                gridY2: 30,
-                legend: false,
-                name: Intl.get("oplate_customer_analysis.2", "总数"),
-                showLabel: false,
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: "zone",
-                        customerType: this.state.currentTab
-                    },
-                },
-                query: {
-                    customerType: this.state.currentTab,
-                    customerProperty: "zone"
-                }
-            })
-        );
-    },
-    //团队统计
-    getTeamChart: function() {
-        var userType = "team";
-        //基层销售主管或舆情秘书看到的是其团队成员的统计数据
-        if (this.state.userType && (this.state.userType.indexOf("salesmanager") > -1 || this.state.userType.indexOf("salesleader") > -1)) {
-            userType = "team_member";
-        }
-        return (
-            this.getComponent(Analysis, {
-                refName: "tuan_dui_tong_ji",
-                chartType: "bar",
-                target: "Customer" + getDataAuthType(),
-                type: this.state.currentTab,
-                property: userType,
-                valueField: "total",
-                height: CHART_HEIGHT,
-                gridY2: 30,
-                showLabel: false,
-                name: Intl.get("oplate_customer_analysis.2", "总数"),
-                isGetDataOnMount: true,
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: userType,
-                        customerType: this.state.currentTab,
-                    },
-                },
-                query: {
-                    customerType: this.state.currentTab,
-                    customerProperty: userType
-                }
-
-            })
-        );
-    },
-    getIndustryChart: function() {
-        return (
-            this.getComponent(Analysis, {
-                refName: "hang_ye_tong_ji",
-                chartType: "bar",
-                target: "Customer" + getDataAuthType(),
-                type: this.state.currentTab,
-                property: "industry",
-                valueField: "total",
-                height: CHART_HEIGHT,
-                legend: false,
-                name: Intl.get("oplate_customer_analysis.2", "总数"),
-                showLabel: false,
-                gridY2: 30,
-                reverseChart: true,
-                jumpProps: {
-                    url: "/crm",
-                    query: {
-                        analysis_filter_field: "industry",
-                        customerType: this.state.currentTab
-                    },
-                },
-                query: {
-                    customerType: this.state.currentTab,
-                    customerProperty: "industry"
-                }
-            })
-        );
-    },
-    //获取客户阶段统计图
-    getCustomerStageChart: function() {
-        return (
-            this.getComponent(Analysis, {
-                refName: "ke_hu_jie_duan_tong_ji",
-                handler: "getCustomerStageAnalysis",
-                type: getDataAuthType().toLowerCase(),
-                chartType: "funnel",
-                isGetDataOnMount: true,
-                processData: processCustomerStageChartData,
-                valueField: "showValue",
-                sendRequest: this.state.sendRequest,
-                showLabel: false,
-                width: this.chartWidth,
-                height: CHART_HEIGHT,
-                minSize: "5%",
-            })
-        );
-    },
-    //处理订单阶段数据
+    
+    //处理订单阶段统计数据
     processOrderStageData(data) {
-        return processOrderStageChartData(this.state.salesStageList, data);
-    },
-    //获取订单阶段统计图
-    getOrderStageChart: function() {
-        return (
-            this.getComponent(Analysis, {
-                refName: "ding_dan_jie_duan_tong_ji",
-                target: "Customer" + getDataAuthType(),
-                chartType: "horizontalStage",
-                isGetDataOnMount: true,
-                type: this.state.currentTab,
-                sendRequest: this.state.sendRequest,
-                property: "stage",
-                width: this.chartWidth,
-                height: CHART_HEIGHT,
-                chartHeight: 100,
-                processData: this.processOrderStageData,
-            })
-        );
-    },
-    handleTableComponent: (Table, propsObj) => {
-        const { loading, errorMsg } = propsObj;
-        const renderError = () => {
-            if (errorMsg) {
-                return (
-                    (
-                        <div className="alert-timer" >
-                            <Alert message={errorMsg} type="error" showIcon />
-                        </div>
-                    )
-                );
+        //接口返回数据里没有value字段，但是图表渲染需要该字段，所以需要补上该字段
+        _.map(data, stage => {
+            stage.value = stage.total;
+            if (_.isNumber(stage.budget)) {
+                //对预算额做千分位分隔及加单位处理
+                stage.budget = parseAmount(stage.budget) + Intl.get("contract.139", "万");
             }
-        };
-        const renderLoading = () => {
-            if (loading && !errorMsg) {
-                return (
-                    <Spinner />
-                );
+        });
+    
+        const stageList = this.state.stageList || [];
+        let processedData = [];
+    
+        //将统计数据按销售阶段列表顺序排序
+        _.each(stageList, stage => {
+            const dataItem = _.find(data, item => item.name === stage.name);
+            if (dataItem) {
+                processedData.push(dataItem);
             }
-        };
-        return (
-            <div
-                {...propsObj}
-                style={{ minHeight: CHART_HEIGHT }}
-            >
-                {renderError()}
-                {renderLoading()}
-                {!loading && !errorMsg &&
-                    <Table
-                    />}
-            </div>
-        );
+        });
+    
+        //将维护阶段的统计数据加到处理后的数据的最后
+        let maintainStage = _.find(data, stage => stage.name ===Intl.get("oplate_customer_analysis.6", "维护阶段"));
+        if (maintainStage) processedData.push(maintainStage);
+    
+        return processedData;
     },
-    //获取各行业试用客户覆盖率
-    getIndustryCustomerOverlayTable() {
-        const { loading, errorMsg } = this.state.industryCustomerOverlay;
-        const columns = [
-            {
-                title: Intl.get("user.sales.team", "销售团队"),
-                dataIndex: "team_name",
-                key: "team_name",
-                render: (text, item, index) => {
-                    return {
-                        children: text,
-                        props: {
-                            rowSpan: item.rowSpan
-                        },
-                    };
-                },
-                width: 100
-            },
-            {
-                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
-                dataIndex: "province_name",
-                key: "province_name",
-                width: 70
-            }, {
-                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
-                dataIndex: "city_count",
-                key: "city_count",
-                align: "right",
-                width: 50
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "city_dredge_count",
-                key: "city_dredge_count",
-                align: "right",
-                width: 50
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "city_dredge_scale",
-                key: "city_dredge_scale",
-                align: "right",
-                width: 70,
-                render: text => `${Number(text * 100).toFixed(2)}%`
-            }, {
-                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
-                dataIndex: "district_count",
-                key: "district_count",
-                align: "right",
-                width: 50,
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "district_dredge_count",
-                key: "district_dredge_count",
-                align: "right",
-                width: 50,
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "district_dredge_scale",
-                key: "district_dredge_scale",
-                align: "right",
-                width: 70,
-                render: text => `${Number(text * 100).toFixed(2)}%`
-            },
-        ];
 
-        const Table = () => (
-            <div style={{ minHeight: "200px" }}>
-                <AntcTable
-                    columns={columns}
-                    scroll={{ x: true, y: 200 }}
-                    pagination={false}
-                    dataSource={this.state.industryCustomerOverlay.data}
-                />
-            </div>
-        );
-        return (
-            this.handleTableComponent(Table, {
-                loading: this.state.industryCustomerOverlay.loading,
-                errorMsg: this.state.industryCustomerOverlay.errorMsg,
-                height: BOX_CHARTTYPE,
-                refName: "shiyong_yonghu_fugailv",
-                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.industryCustomerOverlay.data),
-            })
-        );
-    },
-    // 获取销售新开客户数
-    getNewCustomerCountTable() {
-        const columns = [
-            {
-                title: Intl.get("user.sales.team", "销售团队"),
-                dataIndex: "team_name",
-                key: "team_name",
-                render: (text, item, index) => {
-                    return {
-                        children: text,
-                        props: {
-                            rowSpan: item.rowSpan
-                        },
-                    };
-                },
-                width: 100
-            },
-            {
-                title: Intl.get("user.salesman", "销售人员"),
-                dataIndex: "user_name",
-                key: "user_name",
-                width: 80
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.newCustomerCount", "新开客户数"),
-                dataIndex: "newly_customer",
-                key: "newly_customer",
-                align: "right",
-                width: 80
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.tatolNewCustomerCount", "新开账号数总数"),
-                dataIndex: "tatol_newly_users",
-                key: "tatol_newly_users",
-                align: "right",
-                width: 80
-            },
-            {
-                title: Intl.get("oplate_customer_analysis.customerLoginCount", "新开通客户登录数"),
-                dataIndex: "customer_login",
-                key: "customer_login",
-                align: "right",
-                width: 80
-            }
-        ];       
-        const Table = () => (
-            <div style={{ minHeight: "200px" }}>
-                <AntcTable
-                    columns={columns}
-                    scroll={{ x: true, y: 200 }}
-                    pagination={false}
-                    dataSource={this.state.newCustomerCount.data}
-                />
-            </div>
-        );
-        return (
-            this.handleTableComponent(Table, {
-                loading: this.state.newCustomerCount.loading,
-                errorMsg: this.state.newCustomerCount.errorMsg,
-                height: BOX_CHARTTYPE,
-                refName: "xiaoshou_xinkai_kehushu",
-                exportData: this.handleNewCustomerCountExportData.bind(this, columns, this.state.newCustomerCount.data),
-            })
-        );
-    },
-    changeCurrentTab: function(tabName, event) {
-        OplateCustomerAnalysisAction.changeCurrentTab(tabName);
-        var sendRequest = ["total", "added"].indexOf(tabName) > -1 ? true : false;
-        this.setState({
-            currentTab: tabName,
-            sendRequest: sendRequest,
+    //处理图表点击事件
+    handleChartClick(name, value, conditions) {
+        let conditionObj = {};
+
+        _.each(conditions, condition => {
+            conditionObj[condition.name] = condition.value;
         });
+
+        const query = {
+            app_id: conditionObj.app_id,
+            login_begin_date: conditionObj.starttime,
+            login_end_date: conditionObj.endtime,
+            analysis_filter_value: value,
+            analysis_filter_field: name,
+            customerType: conditionObj.tab,
+        };
+
+        const url = "/crm?" + querystring.stringify(query);
+
+        //跳转到客户列表
+        window.open(url);
     },
-    processSummaryNumberData: function(data, resultType) {
-        this.state.summaryNumbers.data = data;
-        this.state.summaryNumbers.resultType = resultType;
-        return data;
-    },    
-    //处理销售新开客户数导出
-    handleNewCustomerCountExportData: (columns, data) => {
-        let exportArr = [];        
-        if (_.isArray(data) && data.length) {
-            exportArr.push(columns.map(x => x.title));
-            exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
-        }
-        return exportArr;
-    },   
-    //处理 行业试用客户覆盖率 切换筛选条件
-    handleSelectChange: function(key, value) {
-        this.state.industryCustomerOverlay.paramObj[key] = value;
-        if (key == "customer_label") {
-            //"试用合格"标签需要特殊处理
-            if(value == Intl.get("common.trial.qualified", "试用合格")) {
-                this.state.industryCustomerOverlay.paramObj[key] = Intl.get("common.trial", "试用");
-                this.state.industryCustomerOverlay.paramObj.qualify_label = QUALIFY_CONSTS.PASS;
-            } else {
-                delete this.state.industryCustomerOverlay.paramObj.qualify_label;
-            }
-        }
-        this.setState({
-            industryCustomerOverlay: this.state.industryCustomerOverlay
-        }, () => {
-            const paramObj = {
-                queryObj: {
-                    ...this.state.industryCustomerOverlay.paramObj,
-                    start_time: 0,
-                    end_time: this.state.endTime
-                }
-            };
-            
-            OplateCustomerAnalysisAction.getIndustryCustomerOverlay(paramObj);
-        });
-       
-    },
-    //处理行业试用客户覆盖率导出
-    handleIndustryTrialOverlayExportData: (data) => {
-        let exportArr = [];
-        const columns = [
-            {
-                title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
-                dataIndex: "province_name",
-            }, {
-                title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
-                dataIndex: "city_count",
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "city_dredge_count",
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "city_dredge_scale",
-            }, {
-                title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
-                dataIndex: "district_count",
-            }, {
-                title: Intl.get("weekly.report.open.account", "开通数"),
-                dataIndex: "district_dredge_count",
-            }, {
-                title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
-                dataIndex: "district_dredge_scale",
-            },
-        ];
-        if (_.isArray(data) && data.length) {
-            exportArr.push(columns.map(x => x.title));
-            exportArr = exportArr.concat(data.map(x => columns.map(item => x[item.dataIndex])));
-        }
-        return exportArr;
-    },   
-    renderSummaryCountBoxContent: function() {
-        return (
-            <Row>
-                <Col xs={24} sm={8} md={4}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.7", "总客户")}
-                        num={this.state.summaryNumbers.data.total}
-                        active={this.state.currentTab === 'total'}
-                        onClick={this.changeCurrentTab.bind(this, 'total')} />
-                </Col>
-                <Col xs={24} sm={8} md={4}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.8", "新增客户")}
-                        num={this.state.summaryNumbers.data.added}
-                        active={this.state.currentTab === 'added'}
-                        onClick={this.changeCurrentTab.bind(this, 'added')} />
-                </Col>
-                <Col xs={24} sm={8} md={3}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.tried", "试用阶段客户")}
-                        num={this.state.summaryNumbers.data.tried}
-                        active={this.state.currentTab === 'tried'}
-                        onClick={this.changeCurrentTab.bind(this, 'tried')} />
-                </Col>
-                <Col xs={24} sm={6} md={4}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.projected", "立项报价阶段客户")}
-                        num={this.state.summaryNumbers.data.projected}
-                        active={this.state.currentTab === 'projected'}
-                        onClick={this.changeCurrentTab.bind(this, 'projected')} />
-                </Col>
-                <Col xs={24} sm={6} md={3}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.negotiated", "谈判阶段客户")}
-                        num={this.state.summaryNumbers.data.negotiated}
-                        active={this.state.currentTab === 'negotiated'}
-                        onClick={this.changeCurrentTab.bind(this, 'negotiated')} />
-                </Col>
-                <Col xs={24} sm={6} md={3}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.9", "成交阶段客户")}
-                        num={this.state.summaryNumbers.data.dealed}
-                        active={this.state.currentTab === 'dealed'}
-                        onClick={this.changeCurrentTab.bind(this, 'dealed')} />
-                </Col>
-                <Col xs={24} sm={6} md={3}>
-                    <SummaryNumber
-                        resultType={this.state.summaryNumbers.resultType}
-                        desp={Intl.get("oplate_customer_analysis.10", "执行阶段客户")}
-                        num={this.state.summaryNumbers.data.executed}
-                        active={this.state.currentTab === 'executed'}
-                        onClick={this.changeCurrentTab.bind(this, 'executed')} />
-                </Col>
-            </Row>
-        );
-    },
-    getCharts: function() {
+
+    //获取图表定义
+    getCharts() {
         return [{
+            title: "Tabs",
+            url: "/rest/analysis/customer/v1/:auth_type/summary",
+            chartType: "tab",
+            tabs: [
+                {
+                    key: "total",
+                    title: Intl.get("oplate.user.analysis.11", "总客户"),
+                    layout: {
+                        sm: 3,
+                    },
+                    active: true,
+                },
+                {
+                    key: "added",
+                    title: Intl.get("oplate.user.analysis.12", "新增客户"),
+                    layout: {
+                        sm: 3,
+                    },
+                },
+                {
+                    key: 'tried',
+                    title: Intl.get("oplate_customer_analysis.tried", "试用阶段客户"),
+                    layout: {
+                        sm: 4,
+                    },
+                },
+                {
+                    key: 'projected',
+                    title: Intl.get("oplate_customer_analysis.projected", "立项报价阶段客户"),
+                    layout: {
+                        sm: 4,
+                    },
+                },
+                {
+                    key: 'negotiated',
+                    title: Intl.get("oplate_customer_analysis.negotiated", "谈判阶段客户"),
+                    layout: {
+                        sm: 4,
+                    },
+                },
+                {
+                    key: 'dealed',
+                    title: Intl.get("oplate_customer_analysis.9", "成交阶段客户"),
+                    layout: {
+                        sm: 3,
+                    },
+                },
+                {
+                    key: 'executed',
+                    title: Intl.get("oplate_customer_analysis.10", "执行阶段客户"),
+                    layout: {
+                        sm: 3,
+                    },
+                },
+            ],
+        }, {
             title: Intl.get("oplate_customer_analysis.1", "趋势统计"),
-            content: this.getCustomerChart(),
+            url: "/rest/analysis/customer/v1/:auth_type/:tab/trend",
+            chartType: "line",
+            overide: {
+                condition: {
+                    app_id: "all",
+                },
+                customOption: {
+                    multi: true,
+                },
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.3", "地域统计"),
-            content: this.getZoneChart(),
+            url: "/rest/analysis/customer/v1/:auth_type/:tab/zone",
+            chartType: "bar",
+            nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "zone"),
         }, {
             title: Intl.get("oplate_customer_analysis.5", "行业统计"),
-            content: this.getIndustryChart(),
+            url: "/rest/analysis/customer/v1/:auth_type/:tab/industry",
+            chartType: "bar",
+            nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "industry"),
+            customOption: {
+                reverse: true
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.4", "团队统计"),
-            content: this.getTeamChart(),
+            url: "/rest/analysis/customer/v1/:auth_type/:tab/team",
+            chartType: "bar",
+            nameValueMap: unknownDataMap,
+            chartClickRedirectCallback: this.handleChartClick.bind(this, "team"),
         }, {
             title: Intl.get("oplate_customer_analysis.customer_stage", "客户阶段统计"),
-            content: this.getCustomerStageChart(),
-            hide: this.state.currentTab !== "total",
+            url: "/rest/analysis/customer/stage/label/:auth_type/summary",
+            chartType: "funnel",
+            processData: this.processCustomerStageData,
+            customOption: {
+                valueField: "showValue",
+                minSize: "5%",
+            },
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
         }, {
             title: Intl.get("oplate_customer_analysis.11", "订单阶段统计"),
-            content: this.getOrderStageChart(),
-            hide: this.state.currentTab !== "total",
-        },
-        {
+            url: "/rest/analysis/customer/v1/:auth_type/:tab/stage",
+            chartType: "horizontalStage",
+            processData: this.processOrderStageData,
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
+        }, {
             title: Intl.get("oplate_customer_analysis.industryCustomerOverlay", "各行业试用客户覆盖率"),
-            content: this.getIndustryCustomerOverlayTable(),
-            hide: this.state.currentTab !== "total",
-            subTitle: <div>
-                <IndustrySelector
-                    onChange={this.handleSelectChange.bind(this, "industry")}
-                />
-                <StageSelector
-                    onChange={this.handleSelectChange.bind(this, "customer_label")}
-                />
-            </div>
-        },
-        {
+            url: "/rest/analysis/customer/v2/statistic/all/industry/stage/region/overlay",
+            argCallback: (arg) => {
+                const query = arg.query;
+
+                if (query && query.starttime && query.endtime) {
+                    query.start_time = 0;
+                    query.end_time = query.endtime;
+                    delete query.starttime;
+                    delete query.endtime;
+                }
+            },
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
+            chartType: "table",
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: [
+                    {
+                        title: Intl.get("user.sales.team", "销售团队"),
+                        dataIndex: "team_name",
+                        render: (text, item, index) => {
+                            return {
+                                children: text,
+                                props: {
+                                    rowSpan: item.rowSpan
+                                },
+                            };
+                        },
+                        width: 100
+                    },
+                    {
+                        title: Intl.get("oplate_bd_analysis_realm_zone.1", "省份"),
+                        dataIndex: "province_name",
+                        width: 70
+                    }, {
+                        title: Intl.get("oplate_customer_analysis.cityCount", "地市总数"),
+                        dataIndex: "city_count",
+                        align: "right",
+                        width: 50
+                    }, {
+                        title: Intl.get("weekly.report.open.account", "开通数"),
+                        dataIndex: "city_dredge_count",
+                        align: "right",
+                        width: 50
+                    }, {
+                        title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                        dataIndex: "city_dredge_scale",
+                        align: "right",
+                        width: 70,
+                        render: text => `${Number(text * 100).toFixed(2)}%`
+                    }, {
+                        title: Intl.get("oplate_customer_analysis.countryCount", "区县总数"),
+                        dataIndex: "district_count",
+                        align: "right",
+                        width: 50,
+                    }, {
+                        title: Intl.get("weekly.report.open.account", "开通数"),
+                        dataIndex: "district_dredge_count",
+                        align: "right",
+                        width: 50,
+                    }, {
+                        title: Intl.get("oplate_customer_analysis.overlay", "覆盖率"),
+                        dataIndex: "district_dredge_scale",
+                        align: "right",
+                        width: 70,
+                        render: text => `${Number(text * 100).toFixed(2)}%`
+                    },
+                ],
+            },
+            customOption: {
+                dataProcessor: (data) => {
+                    let tempData = [];
+                    let list = [];
+                    if (data.result) {
+                        _.each(data.result, (value, key) => {
+                            tempData.push({
+                                team_name: key, team_result: value
+                            });
+                        });
+                        tempData.forEach(teamItem => {
+                            teamItem.team_result.forEach(sale => {
+                                sale.team_name = teamItem.team_name;
+                                //list中已有当前数据的团队名，不展示对应单元格(rowSpan==0)
+                                if (list.find(item => item.team_name == teamItem.team_name)) {
+                                    sale.rowSpan = 0;
+                                } else {
+                                    //为第一条存在团队名的数据设置列合并(rowSpan)
+                                    sale.rowSpan = teamItem.team_result.length;
+                                }
+                                list.push(sale);
+                            });
+                        });
+                    }
+
+                    return list;
+                },
+            },
+            cardContainer: {
+                selectors: [{
+                    optionsCallback: () => {
+                        return [
+                            {
+                                name: Intl.get("oplate_customer_analysis.allIndustries", "全部行业"), 
+                                value: "",
+                            },
+                        ].concat(this.state.industry);
+                    },
+                    activeOption: "",
+                    conditionName: "industry",
+                }, {
+                    options: [
+                        {
+                            name: Intl.get("oplate_customer_analysis.allLabel", "全部标签"), 
+                            value: "",
+                        },
+                        Intl.get("sales.stage.message", "信息"),
+                        Intl.get("sales.stage.intention", "意向"),
+                        Intl.get("common.trial", "试用"),
+                        Intl.get("common.trial.qualified", "试用合格"),
+                        Intl.get("sales.stage.signed", "签约"),
+                        Intl.get("contract.163", "续约"),
+                        Intl.get("sales.stage.lost", "流失")
+                    ],
+                    activeOption: "",
+                    conditionName: "customer_label",
+                }],
+            },
+            conditions: [{
+                name: "industry",
+                value: "",
+            }, {
+                name: "customer_label",
+                value: "",
+            }],
+        }, {
             title: Intl.get("oplate_customer_analysis.salesNewCustomerCount", "销售新开客户数统计"),
-            content: this.getNewCustomerCountTable(),
-            hide: this.state.currentTab !== "total",                
-        }
-        ];
+            url: "/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new",
+            argCallback: (arg) => {
+                const query = arg.query;
+
+                if (query && query.starttime && query.endtime) {
+                    query.start_time = query.starttime;
+                    query.end_time = query.endtime;
+                    delete query.starttime;
+                    delete query.endtime;
+                }
+            },
+            noShowCondition: {
+                tab: ["!", "total"],
+            },
+            chartType: "table",
+            option: {
+                pagination: false,
+                bordered: true,
+                columns: [
+                    {
+                        title: Intl.get("user.sales.team", "销售团队"),
+                        dataIndex: "team_name",
+                        isSetCsvValueBlank: true,
+                        render: (text, item, index) => {
+                            return {
+                                children: text,
+                                props: {
+                                    rowSpan: item.rowSpan
+                                },
+                            };
+                        },
+                        width: 100
+                    },
+                    {
+                        title: Intl.get("user.salesman", "销售人员"),
+                        dataIndex: "customer_name",
+                        width: 80
+                    },
+                    {
+                        title: Intl.get("oplate_customer_analysis.newCustomerCount", "新开客户数"),
+                        dataIndex: "newly_customer",
+                        align: "right",
+                        width: 80
+                    },
+                    {
+                        title: Intl.get("oplate_customer_analysis.tatolNewCustomerCount", "新开账号数总数"),
+                        dataIndex: "tatol_newly_users",
+                        align: "right",
+                        width: 80
+                    },
+                    {
+                        title: Intl.get("oplate_customer_analysis.customerLoginCount", "新开通客户登录数"),
+                        dataIndex: "customer_login",
+                        align: "right",
+                        width: 80
+                    }
+                ],
+            },
+            customOption: {
+                dataProcessor: (data) => {
+                    let list = [];
+                    if (data.list && data.list.length > 0) {
+                        data.list.forEach(teamItem => {
+                            teamItem.team_result.forEach((sale, index) => {
+                                sale.team_name = teamItem.team_name;
+                                if (list.find(item => item.team_name == teamItem.team_name)) {                    
+                                    sale.rowSpan = 0;
+                                } else {                    
+                                    sale.rowSpan = teamItem.team_result.length;
+                                }
+                                list.push(sale);
+                                //在每个团队最后一个销售的数据后加上合计
+                                if (index == teamItem.team_result.length - 1) {
+                                    list.push($.extend({}, teamItem.team_total, {
+                                        customer_name: Intl.get("sales.home.total.compute", "总计")
+                                    }));
+                                }                
+                            });
+                        });
+                        //在数据最后添加总的合计
+                        if (data.total) {
+                            list.push($.extend({}, data.total, {
+                                team_name: Intl.get("sales.home.total.compute", "总计")
+                            }));
+                        }
+                    }
+
+                    return list;
+                },
+            },
+        }];
     },
-    render: function() {
-        var chartListHeight = $(window).height() - AnalysisLayout.LAYOUTS.TOP;
-        var windowWidth = $(window).width();
-        if (windowWidth >= Oplate.layout['screen-md']) {
-            this.chartWidth = Math.floor(($(window).width() - AnalysisLayout.LAYOUTS.LEFT_NAVBAR - AnalysisLayout.LAYOUTS.CHART_LIST_PADDING * 2 - AnalysisLayout.LAYOUTS.CHART_PADDING * 4) / 2);
-        } else {
-            this.chartWidth = Math.floor($(window).width() - AnalysisLayout.LAYOUTS.LEFT_NAVBAR - AnalysisLayout.LAYOUTS.CHART_LIST_PADDING * 2 - AnalysisLayout.LAYOUTS.CHART_PADDING * 2);
-        }
 
-        var leftSpace = AnalysisLayout.LAYOUTS.LEFT_NAVBAR + AnalysisLayout.LAYOUTS.ANALYSIS_MENU;
-        var rightSpace = AnalysisLayout.LAYOUTS.RIGHT_PADDING + AnalysisLayout.LAYOUTS.TIME_RANGE_WIDTH;
+    getEmitters() {
+        return [{
+            instance: emitters.appSelectorEmitter,
+            event: emitters.appSelectorEmitter.SELECT_APP,
+            callbackArgs: [{
+                name: "app_id",
+            }],
+        }, {
+            instance: emitters.dateSelectorEmitter,
+            event: emitters.dateSelectorEmitter.SELECT_DATE,
+            callbackArgs: [{
+                name: "starttime",
+            }, {
+                name: "endtime",
+            }],
+        }];
+    },
 
-        var appSelectorMaxWidth = $(window).width() - leftSpace - rightSpace;
-        const storedAppId = storageUtil.local.get(localStorageAppIdKey);
-
+    render() {
         const charts = this.getCharts();
 
         return (
-            <div className="oplate_customer_analysis" data-tracename="客户分析">
+            <div className="oplate_customer_analysis"
+                data-tracename="客户分析"
+            >
                 <TopNav>
                     <AnalysisMenu />
-                    <div className="analysis-selector-wrap">
-                        <AnalysisFilter isSelectFirstApp={!storedAppId} selectedApp={storedAppId} />
-                    </div>
-
+                    <AnalysisFilter />
                 </TopNav>
-                <div className="summary-numbers">
-                    {
-                        this.getComponent(Analysis, {
-                            chartType: "box",
-                            target: "Customer" + getDataAuthType(),
-                            type: "summary",
-                            valueField: "total",
-                            legend: false,
-                            height: BOX_CHARTTYPE,
-                            errAndRightBothShow: true,//出错后的提示和正确时的展示都显示出来
-                            notShowLoading: true,//不需要展示loading效果
-                            processData: this.processSummaryNumberData,
-                            renderContent: this.renderSummaryCountBoxContent.bind(this, {
-                                type: "contract",
-                            }),
-                        }
-                        )
-                    }
 
-                </div>
-                <div ref="chart_list" style={{ height: chartListHeight }}>
-                    <GeminiScrollbar>
-                        <div className="chart_list">
-                            {charts.map(chart => {
-                                const props = chart.content.props;
-                                const refName = props.refName;
-                                const ref = this.refs[refName];
-                                const exportData = () => {
-                                    if (!ref && !props.exportData) return;
-                                    const exportFunc = (ref && ref.getProcessedData) || props.exportData;
-                                    return exportFunc();
-                                };
-                                return chart.hide ? null : (
-                                    <div className="analysis_chart col-md-6 col-sm-12 charts-select-fix" data-title={chart.title}>
-                                        <div className="chart-holder" ref="chartWidthDom" data-tracename={chart.title}>
-                                            <AntcCardContainer
-                                                subTitle={chart.subTitle}
-                                                title={chart.title}
-                                                csvFileName={refName + ".csv"}
-                                                exportData={exportData.bind(this)}
-                                            >
-                                                {chart.content}
-                                            </AntcCardContainer>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </GeminiScrollbar>
-                </div>
+                <AntcAnalysis
+                    charts={charts}
+                    emitters={this.getEmitters()}
+                    isUseScrollBar={true}
+                    chartHeight={240}
+                    conditions={[{
+                        name: "app_id",
+                        value: "all",
+                    }, {
+                        name: "starttime",
+                        value: moment().startOf("isoWeek").valueOf(),
+                    }, {
+                        name: "endtime",
+                        value: moment().valueOf(),
+                    }, {
+                        name: "auth_type",
+                        value: authType,
+                        type: "params",
+                    }]}
+                />
             </div>
         );
-    }
+    },
 });
-//返回react对象
+
 module.exports = OPLATE_CUSTOMER_ANALYSIS;
