@@ -842,6 +842,19 @@ var CustomerAnalysis = React.createClass({
                     {
                         title: Intl.get("user.user.team", "团队"),
                         dataIndex: "team",
+                        width: 80,
+                    },
+                    {
+                        title: Intl.get("effective.customer.number": "有效客户数"),
+                        dataIndex: "effective_customer_num",
+                    },
+                    {
+                        title: Intl.get("active.customer.number": "活跃客户数"),
+                        dataIndex: "active_customer_num",
+                    },
+                    {
+                        title: Intl.get("effective.customer.activity.rate": "有效客户活跃率"),
+                        dataIndex: "effective_customer_active_rate",
                     },
                 ],
             },
