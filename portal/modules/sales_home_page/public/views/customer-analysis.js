@@ -827,10 +827,10 @@ var CustomerAnalysis = React.createClass({
 
     },
     //获取有效客户图表
-    getEfficientCustomerChart() {
+    getEffectiveCustomerChart() {
         const charts = [{
             title: Intl.get("effective.customer.statistics", "有效客户统计"),
-            url: "/rest/customer/v2/customer/range_type/app/user/count",
+            url: "/rest/customer/v2/effective",
             chartType: "table",
             layout: {
                 sm: 24,
@@ -923,11 +923,93 @@ var CustomerAnalysis = React.createClass({
             />
         );
     },
+    //获取近一月活跃客户趋势图
+    getLastMonthActiveCustomerChart() {
+        const charts = [{
+            title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
+            url: "/rest/customer/v2/lastmonth",
+            chartType: "line",
+            option: {
+            },
+            resultType: "",
+            data: [
+                {
+                    team: "客户部",
+                },
+            ],
+            customOption: {
+            },
+        }];
+
+        const emitters = [
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: "team_id",
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: "member_id",
+                }],
+            },
+        ];
+
+        const conditions = [
+            {
+                name: "starttime",
+                value: momoent().substract(1, "months").valueOf(),
+            },
+            {
+                name: "endtime",
+                value: momoent().valueOf(),
+            },
+            {
+                name: "team_id",
+                value: "",
+            },
+            {
+                name: "member_id",
+                value: "",
+            },
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                emitters={emitters}
+                conditions={conditions}
+                cardContainer={false}
+                isGetDataOnMount={true}
+            />
+        );
+    },
     renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title="有效客户统计">
+                    <div className="chart-holder" data-tracename="有效客户统计">
+                        <div className="title">
+                            {Intl.get("effective.customer.statistics", "有效客户统计")}
+                        </div>
+                        {this.getEffectiveCustomerChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title="有效客户统计">
+                    <div className="chart-holder" data-tracename="有效客户统计">
+                        <div className="title">
+                            {Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势")}
+                        </div>
+                        {this.getEffectiveCustomerChart()}
+                    </div>
+                </div>
                 {this.state.timeType != "day" ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>
@@ -937,16 +1019,6 @@ var CustomerAnalysis = React.createClass({
                             {this.getCustomerChart()}
                         </div>
                     </div>) : null}
-                <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title={Intl.get("effective.customer.statistics", "有效客户统计")}>
-                    <div className="chart-holder" data-tracename="有效客户统计">
-                        <div className="title">
-                            <ReactIntl.FormattedMessage id="effective.customer.statistics"
-                                defaultMessage="客户阶段统计" />
-                        </div>
-                        {this.getEfficientCustomerChart()}
-                    </div>
-                </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
                     data-title={Intl.get("oplate_customer_analysis.customer.stage", "客户阶段统计")}>
                     <div className="chart-holder" data-tracename="客户阶段统计">
