@@ -830,7 +830,7 @@ var CustomerAnalysis = React.createClass({
     getEfficientCustomerChart() {
         const charts = [{
             title: Intl.get("effective.customer.statistics", "有效客户统计"),
-            url: "/rest/customer/v2/customer/:range_type/app/user/count",
+            url: "/rest/customer/v2/customer/range_type/app/user/count",
             chartType: "table",
             layout: {
                 sm: 24,
@@ -878,6 +878,20 @@ var CustomerAnalysis = React.createClass({
                     name: "endtime",
                 }],
             },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: "team_id",
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_MEMBER,
+                callbackArgs: [{
+                    name: "member_id",
+                }],
+            },
         ];
 
         const conditions = [
@@ -888,6 +902,14 @@ var CustomerAnalysis = React.createClass({
             {
                 name: "endtime",
                 value: this.props.endTime,
+            },
+            {
+                name: "team_id",
+                value: "",
+            },
+            {
+                name: "member_id",
+                value: "",
             },
         ];
 
