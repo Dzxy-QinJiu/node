@@ -837,12 +837,10 @@ var CustomerAnalysis = React.createClass({
             },
             option: {
                 pagination: false,
-                bordered: true,
                 columns: [
                     {
                         title: Intl.get("user.user.team", "团队"),
                         dataIndex: "team",
-                        width: 80,
                     },
                     {
                         title: Intl.get("effective.customer.number": "有效客户数"),
@@ -922,6 +920,7 @@ var CustomerAnalysis = React.createClass({
                 conditions={conditions}
                 cardContainer={false}
                 isGetDataOnMount={false}
+                style={{padding: 0}}
             />
         );
     },
