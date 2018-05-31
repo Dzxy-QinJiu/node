@@ -992,6 +992,7 @@ var CustomerAnalysis = React.createClass({
                 conditions={conditions}
                 cardContainer={false}
                 isGetDataOnMount={false}
+                style={{padding: 0}}
             />
         );
     },
@@ -1003,7 +1004,7 @@ var CustomerAnalysis = React.createClass({
                 <div className="analysis_chart col-md-6 col-sm-12"
                     data-title="有效客户统计">
                     <div className="chart-holder" data-tracename="有效客户统计">
-                        <div className="title" style={{marginBottom: 10}}>
+                        <div className="title">
                             {Intl.get("effective.customer.statistics", "有效客户统计")}
                         </div>
                         {this.getEffectiveCustomerChart()}
