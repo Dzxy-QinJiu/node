@@ -449,7 +449,7 @@ var CustomerAnalysis = React.createClass({
                 type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
                 appId: "all",
-                isGetDataOnMount: true,
+                isGetDataOnMount: false,
                 processData: processCustomerStageChartData,
                 valueField: "showValue",
                 height: 260,
@@ -919,7 +919,7 @@ var CustomerAnalysis = React.createClass({
                 emitters={emitters}
                 conditions={conditions}
                 cardContainer={false}
-                isGetDataOnMount={true}
+                isGetDataOnMount={false}
             />
         );
     },
@@ -934,10 +934,18 @@ var CustomerAnalysis = React.createClass({
             resultType: "",
             data: [
                 {
-                    team: "客户部",
+                    name: "05-21",
+                    value: 1,
+                },
+                {
+                    name: "05-22",
+                    value: 2,
                 },
             ],
             customOption: {
+            },
+            processOption: (option, chartProps) => {
+                console.log(option, chartProps)
             },
         }];
 
@@ -983,7 +991,7 @@ var CustomerAnalysis = React.createClass({
                 emitters={emitters}
                 conditions={conditions}
                 cardContainer={false}
-                isGetDataOnMount={true}
+                isGetDataOnMount={false}
             />
         );
     },
@@ -995,7 +1003,7 @@ var CustomerAnalysis = React.createClass({
                 <div className="analysis_chart col-md-6 col-sm-12"
                     data-title="有效客户统计">
                     <div className="chart-holder" data-tracename="有效客户统计">
-                        <div className="title">
+                        <div className="title" style={{marginBottom: 10}}>
                             {Intl.get("effective.customer.statistics", "有效客户统计")}
                         </div>
                         {this.getEffectiveCustomerChart()}
