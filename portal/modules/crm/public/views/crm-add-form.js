@@ -353,8 +353,11 @@ var CRMAddForm = React.createClass({
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
         var initialValue = this.props.phoneNum || "";
         return (
+
+
             <RightPanel showFlag={true} data-tracename="添加客户">
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
+                <div className="add-form-wrap">
                 <GeminiScrollbar>
                     <Form horizontal className="crm-add-form">
                         <Validation ref="validation" onValidate={this.handleValidate}>
@@ -536,7 +539,9 @@ var CRMAddForm = React.createClass({
                             (null)
                     }
                 </GeminiScrollbar>
+                </div>
             </RightPanel>
+
         );
     }
 });
