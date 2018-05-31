@@ -961,11 +961,11 @@ var CustomerAnalysis = React.createClass({
         const conditions = [
             {
                 name: "starttime",
-                value: momoent().substract(1, "months").valueOf(),
+                value: moment().subtract(1, "months").valueOf(),
             },
             {
                 name: "endtime",
-                value: momoent().valueOf(),
+                value: moment().valueOf(),
             },
             {
                 name: "team_id",
@@ -1007,7 +1007,7 @@ var CustomerAnalysis = React.createClass({
                         <div className="title">
                             {Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势")}
                         </div>
-                        {this.getEffectiveCustomerChart()}
+                        {this.getLastMonthActiveCustomerChart()}
                     </div>
                 </div>
                 {this.state.timeType != "day" ? (
