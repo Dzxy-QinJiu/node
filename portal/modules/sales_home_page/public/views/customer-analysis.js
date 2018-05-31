@@ -869,9 +869,26 @@ var CustomerAnalysis = React.createClass({
         }];
 
         const emitters = [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: "starttime",
+                }, {
+                    name: "endtime",
+                }],
+            },
         ];
 
         const conditions = [
+            {
+                name: "starttime",
+                value: this.props.startTime,
+            },
+            {
+                name: "endtime",
+                value: this.props.endTime,
+            },
         ];
 
         return (
@@ -880,6 +897,7 @@ var CustomerAnalysis = React.createClass({
                 emitters={emitters}
                 conditions={conditions}
                 cardContainer={false}
+                isGetDataOnMount={true}
             />
         );
     },
