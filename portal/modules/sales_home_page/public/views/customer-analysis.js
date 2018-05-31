@@ -866,6 +866,8 @@ var CustomerAnalysis = React.createClass({
             ],
             customOption: {
             },
+            processOption: (option, chartProps) => {
+            },
         }];
 
         const emitters = [
@@ -945,7 +947,6 @@ var CustomerAnalysis = React.createClass({
             customOption: {
             },
             processOption: (option, chartProps) => {
-                console.log(option, chartProps)
             },
         }];
 
