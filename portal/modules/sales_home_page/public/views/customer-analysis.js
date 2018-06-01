@@ -929,7 +929,6 @@ var CustomerAnalysis = React.createClass({
             },
             chartType: "line",
             processOption: (option, chartProps) => {
-                console.log(option, chartProps)
                 let activeCustomerData = [];
                 let effectiveCustomerData = [];
                 let categoryData = [];
@@ -939,6 +938,7 @@ var CustomerAnalysis = React.createClass({
                     activeCustomerData.push({
                         name: dataItem.date_str,
                         value: dataItem.active,
+                        active_rate: dataItem.active_rate,
                     });
 
                     effectiveCustomerData.push({
@@ -959,7 +959,19 @@ var CustomerAnalysis = React.createClass({
 
                 option.xAxis[0].data = categoryData;
                 option.grid.right = 0;
-                console.log(option)
+                option.tooltip.formatter = params => {
+                        const dateStr = params[0].name;
+                        const activeNum = params[0].value;
+                        const activeRate = params[0].data.active_rate;
+                        const effectiveNum = params[1].value;
+
+                        return `
+                            ${dateStr}<br>
+                            ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}<br>
+                            ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
+                            ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}
+                        `;
+                };
             },
         }];
 
