@@ -923,8 +923,42 @@ var CustomerAnalysis = React.createClass({
             title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
             url: "/rest/analysis/customer/v2/all/customer/active_rate",
             ajaxInstanceFlag: "lastMonthActiveCustomerTrend",
+            layout: {
+                sm: 24,
+            },
             chartType: "line",
             processOption: (option, chartProps) => {
+                console.log(option, chartProps)
+                let activeCustomerData = [];
+                let effectiveCustomerData = [];
+                let categoryData = [];
+                const data = chartProps.data && chartProps.data.total;
+
+                _.each(data, dataItem => {
+                    activeCustomerData.push({
+                        name: dataItem.date_str,
+                        value: dataItem.active,
+                    });
+
+                    effectiveCustomerData.push({
+                        name: dataItem.date_str,
+                        value: dataItem.valid,
+                    });
+
+                    categoryData.push(dataItem.date_str.substr(5));
+                });
+
+                option.series = [{
+                    type: "line",
+                    data: activeCustomerData,
+                }, {
+                    type: "line",
+                    data: effectiveCustomerData,
+                }];
+
+                option.xAxis[0].data = categoryData;
+                option.grid.right = 0;
+                console.log(option)
             },
         }];
 
