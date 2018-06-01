@@ -960,17 +960,17 @@ var CustomerAnalysis = React.createClass({
                 option.xAxis[0].data = categoryData;
                 option.grid.right = 0;
                 option.tooltip.formatter = params => {
-                        const dateStr = params[0].name;
-                        const activeNum = params[0].value;
-                        const activeRate = this.numToPercent(params[0].data.active_rate);
-                        const effectiveNum = params[1].value;
+                    const dateStr = params[0].name;
+                    const activeNum = params[0].value;
+                    const activeRate = this.numToPercent(params[0].data.active_rate);
+                    const effectiveNum = params[1].value;
 
-                        return `
-                            ${dateStr}<br>
-                            ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}<br>
-                            ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
-                            ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}
-                        `;
+                    return `
+                        ${dateStr}<br>
+                        ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}<br>
+                        ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
+                        ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}
+                    `;
                 };
             },
         }];
