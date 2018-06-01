@@ -855,6 +855,7 @@ var CustomerAnalysis = React.createClass({
                     {
                         title: firstColumnName,
                         dataIndex: "name",
+                        width: 80,
                     },
                     {
                         title: Intl.get("effective.customer.number": "有效客户数"),
