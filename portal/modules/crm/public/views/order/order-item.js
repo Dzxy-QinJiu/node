@@ -17,6 +17,7 @@ import DetailCard from "CMP_DIR/detail-card";
 import {DetailEditBtn} from "CMP_DIR/rightPanel";
 import SaveCancelButton from "CMP_DIR/detail-card/save-cancel-button";
 import classNames from "classnames";
+import ApplyUserForm from "../apply-user-form";
 
 const OrderItem = React.createClass({
     getInitialState: function() {
@@ -31,6 +32,10 @@ const OrderItem = React.createClass({
             apps: this.props.order.apps,
             stage: this.props.order.sale_stages,
             formData: JSON.parse(JSON.stringify(this.props.order)),
+            isShowApplyUserForm: false,//是否展示申请用户的表单
+            applyType: 2,//申请用户的类型，2：试用，3：签约
+            applyUserApps: [],//申请用户对应的应用列表
+            customerName: this.props.customerName//申请用户时用客户名作为昵称
         };
     },
 
@@ -39,7 +44,8 @@ const OrderItem = React.createClass({
             this.setState({
                 formData: JSON.parse(JSON.stringify(nextProps.order)),
                 stage: nextProps.order.sale_stages,
-                apps: nextProps.order.apps
+                apps: nextProps.order.apps,
+                customerName: nextProps.customerName
             });
         }
     },
@@ -99,10 +105,21 @@ const OrderItem = React.createClass({
             }, 3000);
             return;
         }
-
-        this.props.showApplyUserForm(applyType, order, apps);
+        this.setState({
+            isShowApplyUserForm: true,
+            applyType: applyType,
+            applyUserApps: apps
+        });
+        // this.props.showApplyUserForm(applyType, order, apps);
     },
-
+    cancelApply: function() {
+        this.setState({
+            isAlertShow: false,
+            isShowApplyUserForm: false,
+            applyType: 2,
+            applyUserApps: []
+        });
+    },
     showStageSelect: function() {
         Trace.traceEvent($(this.getDOMNode()).find(".order-introduce-div .ant-btn-circle"), "编辑销售阶段");
         this.setState({isStageSelectShow: true});
@@ -449,9 +466,21 @@ const OrderItem = React.createClass({
         let containerClassName = classNames("order-item-container", {
             "item-delete-border": this.state.modalDialogFlag
         });
-        return (<DetailCard title={this.renderOrderTitle()}
-            content={this.renderOrderContent()}
-            className={containerClassName}/>);
+        return (
+            <div>
+                <DetailCard title={this.renderOrderTitle()}
+                    content={this.renderOrderContent()}
+                    className={containerClassName}/>
+                {this.state.isShowApplyUserForm ? (
+                    <ApplyUserForm
+                        applyType={this.state.applyType}
+                        apps={this.state.applyUserApps}
+                        order={this.state.formData}
+                        customerName={this.state.customerName}
+                        cancelApply={this.cancelApply}
+                    />
+                ) : null}
+            </div>);
     }
 });
 

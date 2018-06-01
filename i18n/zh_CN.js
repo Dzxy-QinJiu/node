@@ -1293,6 +1293,8 @@ var zh_CN = {
     "crm.detail.get.error": "获取客户详情失败",
     "crm.schedule.set.compelete": "标为已完成",
     "crm.schedule.set.unfinished": "标为未完成",
+    "crm.apply.user.unified.config": "统一配置",
+    "crm.apply.user.separate.config": "分别配置",
     // 客户管理end
 
     // 客户分析start

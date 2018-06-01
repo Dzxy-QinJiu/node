@@ -2,23 +2,24 @@
 *客户订单中用户申请界面的样式设置
 */
 @import "../../../../public/css/common-variables";
-.crm-right-panel {
-  .right-panel-content > .return-btn {
-    position: relative;
-    right: -610px;
-    z-index: 2;
-  }
-}
+//.crm-right-panel {
+//  .right-panel-content > .return-btn {
+//    position: relative;
+//    right: -610px;
+//    z-index: 2;
+//  }
+//}
 
 .right-pannel-default {
-  .crm_apply_user_form {
+  .apply-user-form-container {
     .ant-form-item {
-      width: auto;
-      margin-right: 12px;
+      width: 100%;
       margin-bottom: 5px;
-      padding: 0 0 0 20px;
       .ant-form-explain {
         float: none;
+      }
+      input,textarea,.ant-select {
+        width: 100%;
       }
     }
     .apply-user-label {

@@ -2,7 +2,7 @@ const Validation = require("rc-form-validation");
 const Validator = Validation.Validator;
 require("../css/apply-user-form.less");
 require("../../../../public/css/antd-vertical-tabs.css");
-import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox} from "antd";
+import {Tabs, Tooltip, Form, Input, Radio, InputNumber, Select, message, Checkbox, Tag} from "antd";
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -21,11 +21,19 @@ import commonAppAjax from "MOD_DIR/common/public/ajax/app";
 import contactAjax from "../ajax/contact-ajax";
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 
+import DetailCard from "CMP_DIR/detail-card";
+import SquareLogoTag from "./components/square-logo-tag";
+import ApplyUserAppConfig from "./components/apply-user-app-config";
+
 const applyTitles = [Intl.get("crm.100", "老用户申请试用用户"), Intl.get("crm.101", "老用户转签约用户"), Intl.get("common.apply.user.trial", "申请试用用户"), Intl.get("user.apply.user.official", "申请签约用户")];
 const TRIAL_USER_TYPES = [0, 2];//0：老用户申请试用用户，2：申请试用用户
 //顶部tab标题的高度
 const LAY_CONSTS = {
     TAB_TITLE_HEIGHT: 80
+};
+const CONFIG_TYPE = {
+    UNIFIED_CONFIG: "unified_config",//统一配置
+    SEPARATE_CONFIG: "separate_config"//分别配置
 };
 const ApplyUserForm = React.createClass({
     mixins: [ValidateMixin, UserTimeRangeField],
@@ -39,7 +47,7 @@ const ApplyUserForm = React.createClass({
             appDefaultConfigList: [],//应用默认配置列表
             isLoading: false,
             onlyOneUser: false,//是否只能开通一个用户（用户名是邮箱格式时）
-            setAllChecked: false,//是否设置到所有应用上
+            configType: CONFIG_TYPE.UNIFIED_CONFIG,//配置类型：统一配置、分别配置
             customerContacts: []//客户的联系人列表
         };
     },
@@ -340,8 +348,10 @@ const ApplyUserForm = React.createClass({
             return input;
         }
     },
-
-    render: function() {
+    changeConfigType: function(configType) {
+        this.setState({configType});
+    },
+    renderApplyUserForm: function() {
         const appFormData = this.state.appFormData;
         const fixedHeight = $(window).height() - LAY_CONSTS.TAB_TITLE_HEIGHT;
         const formData = this.state.formData;
@@ -362,144 +372,171 @@ const ApplyUserForm = React.createClass({
             isCustomSetting: true,
             appId: "applyUser"
         };
-
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
+        };
         return (
-            <div className="full_size wrap_padding crm_apply_user_form_wrap">
-                <Tabs defaultActiveKey="form">
-                    <TabPane tab={applyTitles[this.props.applyType]} key="form">
-                        <div className="crm_apply_user_form" style={{height: fixedHeight}} ref="scrollWrap">
-                            <GeminiScrollbar>
-                                <Form horizontal>
-                                    <Validation ref="validation" onValidate={this.handleValidate}>
-                                        <div className="user-name-textfield-block" ref="username_block">
-                                            <FormItem
-                                                label={Intl.get("common.username", "用户名")}
-                                                labelCol={{span: 4}}
-                                                wrapperCol={{span: 14}}
-                                                validateStatus={this.getValidateStatus("user_name")}
-                                                help={this.getHelpMessage("user_name")}
-                                            >
-                                                <Validator rules={[{validator: this.checkUserExist}]}>
-                                                    {this.renderUserNameInput(formData.user_name)}
-                                                </Validator>
-                                            </FormItem>
-                                        </div>
-                                        <FormItem
-                                            label={Intl.get("common.nickname", "昵称")}
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 14}}
-                                            validateStatus={this.getValidateStatus("nick_name")}
-                                            help={this.getHelpMessage("nick_name")}
-                                        >
-                                            <Validator rules={[{
-                                                required: true,
-                                                message: Intl.get("user.nickname.write.tip", "请填写昵称")
-                                            }]}>
-                                                <Input
-                                                    name="nick_name"
-                                                    placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
-                                                    value={formData.nick_name}
-                                                    onChange={this.onNickNameChange}/>
-                                            </Validator>
-                                        </FormItem>
-                                        <FormItem
-                                            label={Intl.get("common.remark", "备注")}
-                                            labelCol={{span: 4}}
-                                            wrapperCol={{span: 14}}
-                                        >
-                                            <Input
-                                                type="textarea"
-                                                placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
-                                                value={formData.remark}
-                                                onChange={this.onRemarkChange}/>
-                                        </FormItem>
-                                    </Validation>
-                                    <div className="app-user-info ant-form-item" style={{maxHeight: fixedHeight}}>
-                                        <Tabs tabPosition="left" onChange={this.onAppChange}
-                                            prefixCls="antd-vertical-tabs">
-                                            {this.props.apps.map(app => {
-                                                //应用到所有应用或只能申请一个应用的验证未通过，并且不是当前展示应用时，不可切换到其他应用
-                                                let disabled = (this.state.setAllChecked || this.state.onlyOneUser) && app.client_id != appFormData.client_id;
-                                                return (<TabPane key={app.client_id}
-                                                    tab={this.renderTabToolTip(app.client_name)}
-                                                    disabled={disabled}>
-                                                    <div className="set-all-check-box col-22">
-                                                        <Checkbox checked={this.state.setAllChecked}
-                                                            onChange={this.toggleCheckbox}/>
-                                                        <span className="checkbox-title" onClick={this.toggleCheckbox}>
-                                                            {Intl.get("user.all.app.set", "设置到所有应用上")}
-                                                        </span>
-                                                        {/*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*/}
-                                                    </div>
-                                                    <div className="app-tab-pane col-22">
-                                                        <FormItem
-                                                            label={Intl.get("user.batch.open.count", "开通个数")}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            <InputNumber
-                                                                prefixCls={this.state.onlyOneUser ? "number-error-border ant-input-number" : "ant-input-number"}
-                                                                value={appFormData.number}
-                                                                min={1}
-                                                                max={999}
-                                                                onChange={this.onCountChange}/>
-                                                        </FormItem>
-                                                        {this.state.onlyOneUser ?
-                                                            <div className="only-one-user-tip">
-                                                                {Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}
-                                                        <FormItem
-                                                            label={Intl.get("user.open.cycle", "开通周期")}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            {this.renderUserTimeRangeBlock(timePickerConfig)}
-                                                        </FormItem>
-                                                        <FormItem
-                                                            label={Intl.get("user.expire.select", "到期可选")}
-                                                            labelCol={{span: 5}}
-                                                            wrapperCol={{span: 19}}
-                                                        >
-                                                            <RadioGroup onChange={this.onOverDraftChange}
-                                                                value={appFormData.over_draft.toString()}>
-                                                                <Radio key="1" value="1"><ReactIntl.FormattedMessage
-                                                                    id="user.status.stop" defaultMessage="停用"/></Radio>
-                                                                <Radio key="2" value="2"><ReactIntl.FormattedMessage
-                                                                    id="user.status.degrade" defaultMessage="降级"/></Radio>
-                                                                <Radio key="0" value="0"><ReactIntl.FormattedMessage
-                                                                    id="user.status.immutability"
-                                                                    defaultMessage="不变"/></Radio>
-                                                            </RadioGroup>
-                                                        </FormItem>
-                                                    </div>
-                                                </TabPane>);
-                                            })}
-                                        </Tabs>
-                                        {
-                                            this.state.isLoading ?
-                                                (<Spinner className="isloading"/>) :
-                                                (null)
-                                        }
-                                        {/*<b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>*/}
-                                    </div>
-                                    <FormItem
-                                        wrapperCol={{span: 23}}
-                                    >
-                                        <RightPanelCancel onClick={this.handleCancel}
-                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>
-                                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                        </RightPanelCancel>
-                                        <RightPanelSubmit onClick={this.handleSubmit}
-                                            style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}
-                                            disabled={this.state.isLoading}>
-                                            <ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请"/>
-                                        </RightPanelSubmit>
-                                    </FormItem>
-                                </Form>
-                            </GeminiScrollbar>
-                        </div>
-                    </TabPane>
-                </Tabs>
-            </div>);
+            <Form horizontal className="apply-user-form">
+                <Validation ref="validation" onValidate={this.handleValidate}>
+                    <div className="user-name-textfield-block" ref="username_block">
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get("common.username", "用户名")}
+                            validateStatus={this.getValidateStatus("user_name")}
+                            help={this.getHelpMessage("user_name")}
+                            required
+                        >
+                            <Validator rules={[{validator: this.checkUserExist}]}>
+                                {this.renderUserNameInput(formData.user_name)}
+                            </Validator>
+                        </FormItem>
+                    </div>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.nickname", "昵称")}
+                        validateStatus={this.getValidateStatus("nick_name")}
+                        help={this.getHelpMessage("nick_name")}
+                        required
+                    >
+                        <Validator rules={[{
+                            required: true,
+                            message: Intl.get("user.nickname.write.tip", "请填写昵称")
+                        }]}>
+                            <Input
+                                name="nick_name"
+                                placeholder={Intl.get("user.nickname.write.tip", "请填写昵称")}
+                                value={formData.nick_name}
+                                onChange={this.onNickNameChange}/>
+                        </Validator>
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.app", "应用")}
+                        required
+                    >
+                        { _.map(this.props.apps, app => {
+                            return (
+                                <SquareLogoTag name={app ? app.client_name : ""}
+                                    logo={app ? app.client_logo : ""}
+                                />);
+                        })}
+                    </FormItem>
+                    <ApplyUserAppConfig apps={this.props.apps}
+                        appsFormData={formData.products}
+                        configType={this.state.configType}
+                        onlyOneUser={this.state.onlyOneUser}
+                        changeConfigType={this.changeConfigType}
+                        renderUserTimeRangeBlock={this.renderUserTimeRangeBlock}
+                        onCountChange={this.onCountChange}
+                        onOverDraftChange={this.onOverDraftChange}
+                    />
+                    <FormItem
+                        {...formItemLayout}
+                        label={Intl.get("common.remark", "备注")}
+                    >
+                        <Input
+                            type="textarea"
+                            placeholder={Intl.get("user.remark.write.tip", "请填写备注")}
+                            value={formData.remark}
+                            onChange={this.onRemarkChange}/>
+                    </FormItem>
+                </Validation>
+                {/*<div className="app-user-info ant-form-item" style={{maxHeight: fixedHeight}}>*/}
+                {/*<Tabs tabPosition="left" onChange={this.onAppChange}*/}
+                {/*prefixCls="antd-vertical-tabs">*/}
+                {/*{this.props.apps.map(app => {*/}
+                {/*//应用到所有应用或只能申请一个应用的验证未通过，并且不是当前展示应用时，不可切换到其他应用*/}
+                {/*let disabled = (this.state.setAllChecked || this.state.onlyOneUser) && app.client_id != appFormData.client_id;*/}
+                {/*return (<TabPane key={app.client_id}*/}
+                {/*tab={this.renderTabToolTip(app.client_name)}*/}
+                {/*disabled={disabled}>*/}
+                {/*<div className="set-all-check-box col-22">*/}
+                {/*<Checkbox checked={this.state.setAllChecked}*/}
+                {/*onChange={this.toggleCheckbox}/>*/}
+                {/*<span className="checkbox-title" onClick={this.toggleCheckbox}>*/}
+                {/*{Intl.get("user.all.app.set", "设置到所有应用上")}*/}
+                {/*</span>*/}
+                {/*/!*<span className="checkbox-notice">(<ReactIntl.FormattedMessage id="crm.105" defaultMessage="注：若想设置单个应用，请取消此项的勾选" />)</span>*!/*/}
+                {/*</div>*/}
+                {/*<div className="app-tab-pane col-22">*/}
+                {/*<FormItem*/}
+                {/*label={Intl.get("user.batch.open.count", "开通个数")}*/}
+                {/*labelCol={{span: 5}}*/}
+                {/*wrapperCol={{span: 19}}*/}
+                {/*>*/}
+                {/*<InputNumber*/}
+                {/*prefixCls={this.state.onlyOneUser ? "number-error-border ant-input-number" : "ant-input-number"}*/}
+                {/*value={appFormData.number}*/}
+                {/*min={1}*/}
+                {/*max={999}*/}
+                {/*onChange={this.onCountChange}/>*/}
+                {/*</FormItem>*/}
+                {/*{this.state.onlyOneUser ?*/}
+                {/*<div className="only-one-user-tip">*/}
+                {/*{Intl.get("crm.201", "用户名是邮箱格式时，只能申请1个用户")}</div> : null}*/}
+                {/*<FormItem*/}
+                {/*label={Intl.get("user.open.cycle", "开通周期")}*/}
+                {/*labelCol={{span: 5}}*/}
+                {/*wrapperCol={{span: 19}}*/}
+                {/*>*/}
+                {/*{this.renderUserTimeRangeBlock(timePickerConfig)}*/}
+                {/*</FormItem>*/}
+                {/*<FormItem*/}
+                {/*label={Intl.get("user.expire.select", "到期可选")}*/}
+                {/*labelCol={{span: 5}}*/}
+                {/*wrapperCol={{span: 19}}*/}
+                {/*>*/}
+                {/*<RadioGroup onChange={this.onOverDraftChange}*/}
+                {/*value={appFormData.over_draft.toString()}>*/}
+                {/*<Radio key="1" value="1"><ReactIntl.FormattedMessage*/}
+                {/*id="user.status.stop" defaultMessage="停用"/></Radio>*/}
+                {/*<Radio key="2" value="2"><ReactIntl.FormattedMessage*/}
+                {/*id="user.status.degrade" defaultMessage="降级"/></Radio>*/}
+                {/*<Radio key="0" value="0"><ReactIntl.FormattedMessage*/}
+                {/*id="user.status.immutability"*/}
+                {/*defaultMessage="不变"/></Radio>*/}
+                {/*</RadioGroup>*/}
+                {/*</FormItem>*/}
+                {/*</div>*/}
+                {/*</TabPane>);*/}
+                {/*})}*/}
+                {/*</Tabs>*/}
+                {/*{*/}
+                {/*this.state.isLoading ?*/}
+                {/*(<Spinner className="isloading"/>) :*/}
+                {/*(null)*/}
+                {/*}*/}
+                {/*<b style={{height: shadowHeight, top: shadowTop, left: shadowLeft,}}></b>*/}
+                {/*</div>*/}
+                {/*<FormItem*/}
+                {/*wrapperCol={{span: 23}}*/}
+                {/*>*/}
+                {/*<RightPanelCancel onClick={this.handleCancel}*/}
+                {/*style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}>*/}
+                {/*<ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>*/}
+                {/*</RightPanelCancel>*/}
+                {/*<RightPanelSubmit onClick={this.handleSubmit}*/}
+                {/*style={{visibility: this.state.submitResult === 'success' ? 'hidden' : 'visible'}}*/}
+                {/*disabled={this.state.isLoading}>*/}
+                {/*<ReactIntl.FormattedMessage id="crm.109" defaultMessage="申请"/>*/}
+                {/*</RightPanelSubmit>*/}
+                {/*</FormItem>*/}
+            </Form>
+        );
+    },
+    render: function() {
+        return (
+            <DetailCard title={applyTitles[this.props.applyType]}
+                className="apply-user-form-container"
+                content={this.renderApplyUserForm()}
+                isEdit={true}
+                loading={this.state.loading}
+                saveErrorMsg={this.state.submitErrorMsg}
+                handleSubmit={this.handleSubmit.bind(this)}
+                handleCancel={this.handleCancel.bind(this)}
+            />);
     }
 });
 
