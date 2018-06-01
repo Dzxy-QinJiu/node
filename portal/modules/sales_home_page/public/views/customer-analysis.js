@@ -2,6 +2,7 @@
  * 客户分析
  * Created by wangliping on 2016/11/24.
  */
+import { AntcAnalysis } from "antc";
 var GeminiScrollbar = require("../../../../components/react-gemini-scrollbar");
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 var getDataAuthType = require('../../../../components/privilege/checker').getDataAuthType;
@@ -825,11 +826,215 @@ var CustomerAnalysis = React.createClass({
         );
 
     },
+    //数字转百分比
+    numToPercent(num) {
+        return (num * 100).toFixed(2) + "%";
+    },
+    //获取有效客户图表
+    getEffectiveCustomerChart() {
+        const charts = [{
+            title: Intl.get("effective.customer.statistics", "有效客户统计"),
+            url: "/rest/analysis/customer/v2/all/customer/active_rate",
+            chartType: "table",
+            layout: {
+                sm: 24,
+            },
+            dataField: "list",
+            option: {
+                pagination: false,
+                scroll: {y: 170},
+                columns: [
+                    {
+                        title: Intl.get("common.definition", "名称"),
+                        dataIndex: "name",
+                        width: 80,
+                    },
+                    {
+                        title: Intl.get("effective.customer.number": "有效客户数"),
+                        dataIndex: "valid",
+                    },
+                    {
+                        title: Intl.get("active.customer.number": "活跃客户数"),
+                        dataIndex: "active",
+                    },
+                    {
+                        title: Intl.get("effective.customer.activity.rate": "有效客户活跃率"),
+                        dataIndex: "active_rate",
+                        render: text => {
+                            return <span>{this.numToPercent(text)}</span>;
+                        }
+                    },
+                ],
+            },
+        }];
+
+        const emitters = [
+            {
+                instance: dateSelectorEmitter,
+                event: dateSelectorEmitter.SELECT_DATE,
+                callbackArgs: [{
+                    name: "start_time",
+                }, {
+                    name: "end_time",
+                }],
+            },
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: "team_ids",
+                }],
+            },
+        ];
+
+        const conditions = [
+            {
+                name: "start_time",
+                value: this.props.startTime,
+            },
+            {
+                name: "end_time",
+                value: this.props.endTime,
+            },
+            {
+                name: "interval",
+                value: "day",
+            },
+            {
+                name: "team_ids",
+                value: "",
+            },
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                emitters={emitters}
+                conditions={conditions}
+                cardContainer={false}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
+            />
+        );
+    },
+    //获取近一月活跃客户趋势图
+    getLastMonthActiveCustomerChart() {
+        const charts = [{
+            title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
+            url: "/rest/analysis/customer/v2/all/customer/active_rate",
+            ajaxInstanceFlag: "lastMonthActiveCustomerTrend",
+            layout: {
+                sm: 24,
+            },
+            chartType: "line",
+            processOption: (option, chartProps) => {
+                let activeCustomerData = [];
+                let effectiveCustomerData = [];
+                let categoryData = [];
+                const data = chartProps.data && chartProps.data.total;
+
+                _.each(data, dataItem => {
+                    activeCustomerData.push({
+                        name: dataItem.date_str,
+                        value: dataItem.active,
+                        active_rate: dataItem.active_rate,
+                        valid: dataItem.valid,
+                    });
+
+                    effectiveCustomerData.push({
+                        name: dataItem.date_str,
+                        value: dataItem.valid,
+                    });
+
+                    categoryData.push(dataItem.date_str.substr(5));
+                });
+
+                option.series = [{
+                    type: "line",
+                    data: activeCustomerData,
+                }];
+
+                option.xAxis[0].data = categoryData;
+                option.grid.right = 0;
+                option.tooltip.formatter = params => {
+                    const dateStr = params[0].name;
+                    const activeNum = params[0].value;
+                    const activeRate = this.numToPercent(params[0].data.active_rate);
+                    const effectiveNum = params[0].data.valid;
+
+                    return `
+                        ${dateStr}<br>
+                        ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
+                        ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}<br>
+                        ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}
+                    `;
+                };
+            },
+        }];
+
+        const emitters = [
+            {
+                instance: teamTreeEmitter,
+                event: teamTreeEmitter.SELECT_TEAM,
+                callbackArgs: [{
+                    name: "team_ids",
+                }],
+            },
+        ];
+
+        const conditions = [
+            {
+                name: "start_time",
+                value: moment().subtract(1, "months").valueOf(),
+            },
+            {
+                name: "end_time",
+                value: moment().valueOf(),
+            },
+            {
+                name: "interval",
+                value: "day",
+            },
+            {
+                name: "team_ids",
+                value: "",
+            },
+        ];
+
+        return (
+            <AntcAnalysis
+                charts={charts}
+                emitters={emitters}
+                conditions={conditions}
+                cardContainer={false}
+                isGetDataOnMount={true}
+                style={{padding: 0}}
+            />
+        );
+    },
     renderChartContent: function() {
         //销售不展示团队的数据统计
         let hideTeamChart = userData.hasRole(userData.ROLE_CONSTANS.SALES) || this.props.currShowSalesman;
         return (
             <div className="chart_list">
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title="有效客户统计">
+                    <div className="chart-holder" data-tracename="有效客户统计">
+                        <div className="title">
+                            {Intl.get("effective.customer.statistics", "有效客户统计")}
+                        </div>
+                        {this.getEffectiveCustomerChart()}
+                    </div>
+                </div>
+                <div className="analysis_chart col-md-6 col-sm-12"
+                    data-title="近一月活跃客户趋势">
+                    <div className="chart-holder" data-tracename="近一月活跃客户趋势">
+                        <div className="title">
+                            {Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势")}
+                        </div>
+                        {this.getLastMonthActiveCustomerChart()}
+                    </div>
+                </div>
                 {this.state.timeType != "day" ? (
                     <div className="analysis_chart col-md-6 col-sm-12"
                         data-title={Intl.get("customer.analysis.add.trend", "新增趋势")}>

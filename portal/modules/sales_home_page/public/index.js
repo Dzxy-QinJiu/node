@@ -1,4 +1,6 @@
 require("./css/index.less");
+const Emitters = require("PUB_DIR/sources/utils/emitters");
+const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 import {Table, Icon, Select, message} from "antd";
 import {AntcTable} from "antc";
 import Trace from "LIB_DIR/trace";
@@ -675,6 +677,7 @@ var SalesHomePage = React.createClass({
         let timeObj = {startTime: startTime, endTime: endTime, timeType: timeType};
         SalesHomeAction.changeSearchTime(timeObj);
         SalesHomeAction.resetCallBackRecord();
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime);
         setTimeout(() => {
             //刷新统计数据
             this.refreshSalesListData();
@@ -797,7 +800,7 @@ var SalesHomePage = React.createClass({
                     <div className="date-range-wrap">
                         <DatePicker
                             disableDateAfterToday={true}
-                            range="day"
+                            range="week"
                             onSelect={this.onSelectDate}>
                             <DatePicker.Option value="all">{Intl.get("user.time.all", "全部时间")}</DatePicker.Option>
                             <DatePicker.Option value="day">{Intl.get("common.time.unit.day", "天")}</DatePicker.Option>
