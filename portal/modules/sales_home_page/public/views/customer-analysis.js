@@ -921,23 +921,9 @@ var CustomerAnalysis = React.createClass({
     getLastMonthActiveCustomerChart() {
         const charts = [{
             title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
-            url: "/rest/analysis/customer/v2/all/customer/active_rater/v2/lastmonth",
+            url: "/rest/analysis/customer/v2/all/customer/active_rate",
+            ajaxInstanceFlag: "lastMonthActiveCustomerTrend",
             chartType: "line",
-            option: {
-            },
-            resultType: "",
-            data: [
-                {
-                    name: "05-21",
-                    value: 1,
-                },
-                {
-                    name: "05-22",
-                    value: 2,
-                },
-            ],
-            customOption: {
-            },
             processOption: (option, chartProps) => {
             },
         }];
@@ -973,8 +959,8 @@ var CustomerAnalysis = React.createClass({
                 value: "",
             },
             {
-                name: "member_id",
-                value: "",
+                name: "interval",
+                value: "day",
             },
         ];
 
@@ -984,7 +970,7 @@ var CustomerAnalysis = React.createClass({
                 emitters={emitters}
                 conditions={conditions}
                 cardContainer={false}
-                isGetDataOnMount={false}
+                isGetDataOnMount={true}
                 style={{padding: 0}}
             />
         );
