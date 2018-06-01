@@ -951,9 +951,6 @@ var CustomerAnalysis = React.createClass({
                 option.series = [{
                     type: "line",
                     data: activeCustomerData,
-                }, {
-                    type: "line",
-                    data: effectiveCustomerData,
                 }];
 
                 option.xAxis[0].data = categoryData;
@@ -962,11 +959,9 @@ var CustomerAnalysis = React.createClass({
                     const dateStr = params[0].name;
                     const activeNum = params[0].value;
                     const activeRate = this.numToPercent(params[0].data.active_rate);
-                    const effectiveNum = params[1].value;
 
                     return `
                         ${dateStr}<br>
-                        ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}<br>
                         ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
                         ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}
                     `;
