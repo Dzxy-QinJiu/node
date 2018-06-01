@@ -865,8 +865,6 @@ var CustomerAnalysis = React.createClass({
                     },
                 ],
             },
-            processOption: (option, chartProps) => {
-            },
         }];
 
         const emitters = [
