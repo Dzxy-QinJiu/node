@@ -91,14 +91,14 @@ var CustomerAnalysis = React.createClass({
             });
         }
     },
-    onTeamChange(team_ids, allSubTeamIds) {
-        let teamId = team_ids;
+    onTeamChange(team_id, allSubTeamIds) {
+        let teamId = team_id;
         if (allSubTeamIds && allSubTeamIds.length > 0) {
             teamId = allSubTeamIds.join(",");
         }        
         OplateCustomerAnalysisAction.teamChange(teamId);
         setTimeout(() => this.getCustomerStageAnalysis({
-            team_ids
+            team_id
         }));
     },
     onMemberChange(member_id) {
@@ -164,17 +164,17 @@ var CustomerAnalysis = React.createClass({
         }
         let paramsObj = {
             ...params,
-            start_time: this.state.startTime,
-            end_time: this.state.endTime,
+            starttime: this.state.startTime,
+            endtime: this.state.endTime,
             app_id: "all",
-            team_ids: teamId
+            team_id: teamId
         };
         OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
     },
     getChartData: function() {
         const queryParams = {
-            start_time: this.state.startTime,
-            end_time: this.state.endTime,
+            starttime: this.state.startTime,
+            endtime: this.state.endTime,
             urltype: 'v2',
             dataType: this.getDataType()
         };
@@ -185,7 +185,7 @@ var CustomerAnalysis = React.createClass({
             queryParams.member_id = this.props.currShowSalesman.userId;
         } else if (this.props.currShowSalesTeam) {
             //查看当前选择销售团队内所有下级团队/成员的统计数据
-            queryParams.team_ids = this.props.currShowSalesTeam.group_id;
+            queryParams.team_id = this.props.currShowSalesTeam.group_id;
             //团队统计
             customerPropertys.push("team");
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {//普通销售不展示团队信息
@@ -365,13 +365,13 @@ var CustomerAnalysis = React.createClass({
         if (currShowSalesTeam) {
             if (_.isArray(currShowSalesTeam.child_groups) && currShowSalesTeam.child_groups.length) {
                 //查看当前选择销售团队内所有下级团队新增用户的统计数据
-                analysis_filter_field = "team_idss";
+                analysis_filter_field = "team_ids";
             }
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             let originSalesTeamTree = this.state.originSalesTeamTree;
             if (_.isArray(originSalesTeamTree.child_groups) && originSalesTeamTree.child_groups.length) {
                 //首次进来时，如果不是销售就获取下级团队新增用户的统计数据
-                analysis_filter_field = "team_idss";
+                analysis_filter_field = "team_ids";
             }
         }
         return {
@@ -449,7 +449,7 @@ var CustomerAnalysis = React.createClass({
                 type: getDataAuthType().toLowerCase(),
                 chartType: "funnel",
                 appId: "all",
-                isGetDataOnMount: false,
+                isGetDataOnMount: true,
                 processData: processCustomerStageChartData,
                 valueField: "showValue",
                 height: 260,
