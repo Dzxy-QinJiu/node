@@ -886,13 +886,6 @@ var CustomerAnalysis = React.createClass({
                     name: "team_ids",
                 }],
             },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_MEMBER,
-                callbackArgs: [{
-                    name: "member_id",
-                }],
-            },
         ];
 
         const conditions = [
@@ -988,13 +981,6 @@ var CustomerAnalysis = React.createClass({
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
                     name: "team_ids",
-                }],
-            },
-            {
-                instance: teamTreeEmitter,
-                event: teamTreeEmitter.SELECT_MEMBER,
-                callbackArgs: [{
-                    name: "member_id",
                 }],
             },
         ];
