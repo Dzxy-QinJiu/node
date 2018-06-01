@@ -995,12 +995,12 @@ var CustomerAnalysis = React.createClass({
                 value: moment().valueOf(),
             },
             {
-                name: "team_ids",
-                value: "",
-            },
-            {
                 name: "interval",
                 value: "day",
+            },
+            {
+                name: "team_ids",
+                value: "",
             },
         ];
 
