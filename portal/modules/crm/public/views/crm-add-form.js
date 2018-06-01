@@ -355,188 +355,191 @@ var CRMAddForm = React.createClass({
         return (
             <RightPanel showFlag={true} data-tracename="添加客户">
                 <RightPanelClose onClick={this.closeAddPanel} data-tracename="点击关闭添加客户面板"/>
-                <GeminiScrollbar>
-                    <Form horizontal className="crm-add-form">
-                        <Validation ref="validation" onValidate={this.handleValidate}>
-                            <FormItem
-                                label={Intl.get("crm.4", "客户名称")}
-                                id="crm-name"
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('name')}
-                                help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
-                            >
-                                <Validator
-                                    rules={[{validator: this.checkCustomerName}]}>
-                                    <Input name="name" id="name"
-                                        value={formData.name}
-                                        onBlur={(e) => {
-                                            this.checkOnlyCustomerName(e);
-                                        }}
-                                        onChange={this.setField.bind(this, 'name')}
-                                    />
-                                </Validator>
-                            </FormItem>
-                            {this.renderCustomerNameMsg()}
-                            <FormItem
-                                label={Intl.get("realm.industry", "行业")}
-                                id="industry"
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('industry')}
-                                help={status.industry.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.industry.errors && status.industry.errors.join(','))}
-                            >
-                                {this.state.isLoadingIndustry ? (
-                                    <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88"
-                                        defaultMessage="正在获取行业列表"/><Icon
-                                        type="loading"/></div>) : (
-                                    <Validator
-                                        rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
-                                        <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
-                                            searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
-                                            optionFilterProp="children"
-                                            notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
-                                            onChange={this.setField.bind(this, 'industry')}
-                                            value={formData.industry}
-                                            onSelect={(e) => {
-                                                this.handleSelect(e);
-                                            }}
-                                        >
-                                            {industryOptions}
-                                        </Select>
-                                    </Validator>)}
-                            </FormItem >
-                            <FormItem
-                                label={Intl.get("crm.administrative.level", "行政级别")}
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                            >
-                                <Select placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
-                                    name="administrative_level"
-                                    onChange={this.setField.bind(this, 'administrative_level')}
-                                    value={formData.administrative_level}
+                <div className="add-form-wrap">
+                    <GeminiScrollbar>
+                        <Form horizontal className="crm-add-form">
+                            <Validation ref="validation" onValidate={this.handleValidate}>
+                                <FormItem
+                                    label={Intl.get("crm.4", "客户名称")}
+                                    id="crm-name"
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('name')}
+                                    help={status.name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.name.errors && status.name.errors.join(','))}
                                 >
-                                    {this.getAdministrativeLevelOptions()}
-                                </Select>
-                            </FormItem >
-                            <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}
-                                placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
-                                prov={formData.province} city={formData.city}
-                                county={formData.county} updateLocation={this.updateLocation}/>
-                            <FormItem
-                                label={Intl.get("realm.address", "地址")}
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                            >
-                                <Input name="address" value={formData.address}
-                                    placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
-                                    onChange={this.setField.bind(this, 'address')}
-                                />
-                            </FormItem>
-                            < FormItem
-                                label={Intl.get("common.remark", "备注")}
-                                id="remarks"
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('remarks')}
-                            >
-                                <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
-                                    onChange={this.setField.bind(this, 'remarks')}
-                                    onBlur={(e) => {
-                                        this.handleRemarkInput(e);
-                                    }}
-                                />
-                            </FormItem>
-                            <div className="crm-contact-title"
-                                style={{
-                                    fontSize: '14px',
-                                    textAlign: 'center',
-                                    marginTop: '20px',
-                                    marginBottom: '10px'
-                                }}>
-                                <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人"/>
-                            </div>
-                            <FormItem
-                                label={Intl.get("realm.change.owner.name", "姓名")}
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('contacts0_name')}
-                                help={status.contacts0_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
-                            >
-                                <Validator rules={[{
-                                    required: false,
-                                    min: 1,
-                                    max: 50,
-                                    message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
-                                }]}>
-                                    <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")}
-                                        value={formData.contacts0_name}
-                                        onChange={this.setField.bind(this, 'contacts0_name')}
-                                        data-tracename="填写联系人姓名"
-                                    />
-                                </Validator>
-                            </FormItem>
-                            <FormItem
-                                label={Intl.get("crm.91", "职位")}
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('contacts0_position')}
-                                help={status.contacts0_position.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
-                            >
-                                <Validator rules={[{required: false, min: 1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
-                                    <Input name="contacts0_position" placeholder={Intl.get("crm.92", "请输入联系人职位")}
-                                        value={formData.contacts0_position}
-                                        onChange={this.setField.bind(this, 'contacts0_position')}
-                                        data-tracename="填写联系人职位"
-                                    />
-                                </Validator>
-                            </FormItem>
-                            <FormItem
-                                label={Intl.get("user.apply.detail.table.role", "角色")}
-                                labelCol={{span: 6}}
-                                id="role"
-                                wrapperCol={{span: 18}}
-                                validateStatus={this.renderValidateStyle('contacts0_role')}
-                                help={status.contacts0_role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
-                            >
-                                <Validator rules={[{required: true, min: 1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
-                                    <Select name="contacts0_role" placeholder={Intl.get("crm.94", "请输入角色")}
-                                        value={this.state.formData.contacts0_role}
-                                        onChange={this.setField.bind(this, 'contacts0_role')}
-                                        onSelect={this.handleRoleSelect}
+                                    <Validator
+                                        rules={[{validator: this.checkCustomerName}]}>
+                                        <Input name="name" id="name"
+                                            value={formData.name}
+                                            onBlur={(e) => {
+                                                this.checkOnlyCustomerName(e);
+                                            }}
+                                            onChange={this.setField.bind(this, 'name')}
+                                        />
+                                    </Validator>
+                                </FormItem>
+                                {this.renderCustomerNameMsg()}
+                                <FormItem
+                                    label={Intl.get("realm.industry", "行业")}
+                                    id="industry"
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('industry')}
+                                    help={status.industry.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.industry.errors && status.industry.errors.join(','))}
+                                >
+                                    {this.state.isLoadingIndustry ? (
+                                        <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88"
+                                            defaultMessage="正在获取行业列表"/><Icon
+                                            type="loading"/></div>) : (
+                                        <Validator
+                                            rules={[{required: true, message: Intl.get("crm.22", "请选择行业")}]}>
+                                            <Select showSearch placeholder={Intl.get("crm.22", "请选择行业")} name="industry"
+                                                searchPlaceholder={Intl.get("crm.89", "输入行业进行搜索")}
+                                                optionFilterProp="children"
+                                                notFoundContent={!industryList.length ? Intl.get("crm.24", "暂无行业") : Intl.get("crm.23", "无相关行业")}
+                                                onChange={this.setField.bind(this, 'industry')}
+                                                value={formData.industry}
+                                                onSelect={(e) => {
+                                                    this.handleSelect(e);
+                                                }}
+                                            >
+                                                {industryOptions}
+                                            </Select>
+                                        </Validator>)}
+                                </FormItem >
+                                <FormItem
+                                    label={Intl.get("crm.administrative.level", "行政级别")}
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                >
+                                    <Select placeholder={Intl.get("crm.administrative.level.placeholder", "请选择行政级别")}
+                                        name="administrative_level"
+                                        onChange={this.setField.bind(this, 'administrative_level')}
+                                        value={formData.administrative_level}
                                     >
-                                        {roleOptions}
+                                        {this.getAdministrativeLevelOptions()}
                                     </Select>
-                                </Validator>
-                            </FormItem>
-                            <PhoneInput
-                                wrappedComponentRef={(inst) => this.phoneInputRef = inst}
-                                placeholder={Intl.get("crm.95", "请输入联系人电话")}
-                                validateRules={this.getPhoneInputValidateRules()}
-                                onChange={this.setField.bind(this, 'contacts0_phone')}
-                                initialValue={initialValue}
-                                id={PHONE_INPUT_ID}
-                            />
+                                </FormItem >
+                                <AntcAreaSelection labelCol="6" wrapperCol="18" width="420" label={Intl.get("crm.96", "地域")}
+                                    placeholder={Intl.get("crm.address.placeholder", "请选择地域")}
+                                    prov={formData.province} city={formData.city}
+                                    county={formData.county} updateLocation={this.updateLocation}/>
+                                <FormItem
+                                    label={Intl.get("realm.address", "地址")}
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                >
+                                    <Input name="address" value={formData.address}
+                                        placeholder={Intl.get("crm.detail.address.placeholder", "请输入详细地址")}
+                                        onChange={this.setField.bind(this, 'address')}
+                                    />
+                                </FormItem>
+                                < FormItem
+                                    label={Intl.get("common.remark", "备注")}
+                                    id="remarks"
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('remarks')}
+                                >
+                                    <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
+                                        onChange={this.setField.bind(this, 'remarks')}
+                                        onBlur={(e) => {
+                                            this.handleRemarkInput(e);
+                                        }}
+                                    />
+                                </FormItem>
+                                <div className="crm-contact-title"
+                                    style={{
+                                        fontSize: '14px',
+                                        textAlign: 'center',
+                                        marginTop: '20px',
+                                        marginBottom: '10px'
+                                    }}>
+                                    <ReactIntl.FormattedMessage id="call.record.contacts" defaultMessage="联系人"/>
+                                </div>
+                                <FormItem
+                                    label={Intl.get("realm.change.owner.name", "姓名")}
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('contacts0_name')}
+                                    help={status.contacts0_name.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_name.errors && status.contacts0_name.errors.join(','))}
+                                >
+                                    <Validator rules={[{
+                                        required: false,
+                                        min: 1,
+                                        max: 50,
+                                        message: Intl.get("crm.contact.name.length", "请输入最多50个字符的姓名")
+                                    }]}>
+                                        <Input name="contacts0_name" placeholder={Intl.get("crm.90", "请输入姓名")}
+                                            value={formData.contacts0_name}
+                                            onChange={this.setField.bind(this, 'contacts0_name')}
+                                            data-tracename="填写联系人姓名"
+                                        />
+                                    </Validator>
+                                </FormItem>
+                                <FormItem
+                                    label={Intl.get("crm.91", "职位")}
+                                    labelCol={{span: 6}}
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('contacts0_position')}
+                                    help={status.contacts0_position.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
+                                >
+                                    <Validator rules={[{required: false, min: 1, message: Intl.get("crm.92", "请输入联系人职位")}]}>
+                                        <Input name="contacts0_position" placeholder={Intl.get("crm.92", "请输入联系人职位")}
+                                            value={formData.contacts0_position}
+                                            onChange={this.setField.bind(this, 'contacts0_position')}
+                                            data-tracename="填写联系人职位"
+                                        />
+                                    </Validator>
+                                </FormItem>
+                                <FormItem
+                                    label={Intl.get("user.apply.detail.table.role", "角色")}
+                                    labelCol={{span: 6}}
+                                    id="role"
+                                    wrapperCol={{span: 18}}
+                                    validateStatus={this.renderValidateStyle('contacts0_role')}
+                                    help={status.contacts0_role.isValidating ? Intl.get("common.is.validiting", "正在校验中..") : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
+                                >
+                                    <Validator rules={[{required: true, min: 1, message: Intl.get("crm.93", "请输入联系人角色")}]}>
+                                        <Select name="contacts0_role" placeholder={Intl.get("crm.94", "请输入角色")}
+                                            value={this.state.formData.contacts0_role}
+                                            onChange={this.setField.bind(this, 'contacts0_role')}
+                                            onSelect={this.handleRoleSelect}
+                                        >
+                                            {roleOptions}
+                                        </Select>
+                                    </Validator>
+                                </FormItem>
+                                <PhoneInput
+                                    wrappedComponentRef={(inst) => this.phoneInputRef = inst}
+                                    placeholder={Intl.get("crm.95", "请输入联系人电话")}
+                                    validateRules={this.getPhoneInputValidateRules()}
+                                    onChange={this.setField.bind(this, 'contacts0_phone')}
+                                    initialValue={initialValue}
+                                    id={PHONE_INPUT_ID}
+                                />
 
-                            <FormItem
-                                wrapperCol={{span: 24}}>
-                                <RightPanelCancel onClick={this.closeAddPanel} data-tracename="点击取消添加客户信息按钮">
-                                    <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                </RightPanelCancel>
-                                <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
-                                    data-tracename="点击保存添加客户信息按钮">
-                                    <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                </RightPanelSubmit>
-                            </FormItem>
-                        </Validation>
-                    </Form>
-                    {
-                        this.state.isLoading ?
-                            (<Spinner className="isloading crm-add-form-loading"/>) :
-                            (null)
-                    }
-                </GeminiScrollbar>
+                                <FormItem
+                                    wrapperCol={{span: 24}}>
+                                    <RightPanelCancel onClick={this.closeAddPanel} data-tracename="点击取消添加客户信息按钮">
+                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
+                                    </RightPanelCancel>
+                                    <RightPanelSubmit onClick={this.handleSubmit} disabled={this.state.isLoading}
+                                        data-tracename="点击保存添加客户信息按钮">
+                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                                    </RightPanelSubmit>
+                                </FormItem>
+                            </Validation>
+                        </Form>
+                        {
+                            this.state.isLoading ?
+                                (<Spinner className="isloading crm-add-form-loading"/>) :
+                                (null)
+                        }
+                    </GeminiScrollbar>
+                </div>
             </RightPanel>
+
         );
     }
 });
