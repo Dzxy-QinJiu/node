@@ -838,6 +838,7 @@ var CustomerAnalysis = React.createClass({
             dataField: "list",
             option: {
                 pagination: false,
+                scroll: {y: 170},
                 columns: [
                     {
                         title: Intl.get("user.user.team", "团队"),
