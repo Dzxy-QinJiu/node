@@ -693,7 +693,6 @@ var SalesHomePage = React.createClass({
     //切换销售团队、销售时，刷新数据
     refreshDataByChangeSales: function() {
         //刷新统计数据
-        this.refreshSalesListData();
         if (this.state.activeView == viewConstant.CUSTOMER) {
             //刷新客户分析数据
             this.refs.customerView.getChartData();
