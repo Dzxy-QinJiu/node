@@ -938,6 +938,7 @@ var CustomerAnalysis = React.createClass({
                         name: dataItem.date_str,
                         value: dataItem.active,
                         active_rate: dataItem.active_rate,
+                        valid: dataItem.valid,
                     });
 
                     effectiveCustomerData.push({
@@ -959,11 +960,13 @@ var CustomerAnalysis = React.createClass({
                     const dateStr = params[0].name;
                     const activeNum = params[0].value;
                     const activeRate = this.numToPercent(params[0].data.active_rate);
+                    const effectiveNum = params[0].data.valid;
 
                     return `
                         ${dateStr}<br>
                         ${Intl.get("active.customer.number": "活跃客户数")}: ${activeNum}<br>
-                        ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}
+                        ${Intl.get("effective.customer.activity.rate": "有效客户活跃率")}: ${activeRate}<br>
+                        ${Intl.get("effective.customer.number": "有效客户数")}: ${effectiveNum}
                     `;
                 };
             },
