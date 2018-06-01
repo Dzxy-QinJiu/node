@@ -826,6 +826,10 @@ var CustomerAnalysis = React.createClass({
         );
 
     },
+    //数字转百分比
+    numToPercent(num) {
+        return (num * 100).toFixed(2) + "%";
+    },
     //获取有效客户图表
     getEffectiveCustomerChart() {
         const charts = [{
@@ -855,6 +859,9 @@ var CustomerAnalysis = React.createClass({
                     {
                         title: Intl.get("effective.customer.activity.rate": "有效客户活跃率"),
                         dataIndex: "active_rate",
+                        render: text => {
+                            return <span>{this.numToPercent(text)}</span>;
+                        }
                     },
                 ],
             },
@@ -962,7 +969,7 @@ var CustomerAnalysis = React.createClass({
                 option.tooltip.formatter = params => {
                         const dateStr = params[0].name;
                         const activeNum = params[0].value;
-                        const activeRate = params[0].data.active_rate;
+                        const activeRate = this.numToPercent(params[0].data.active_rate);
                         const effectiveNum = params[1].value;
 
                         return `
