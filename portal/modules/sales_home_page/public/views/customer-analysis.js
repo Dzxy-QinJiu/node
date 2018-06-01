@@ -91,14 +91,14 @@ var CustomerAnalysis = React.createClass({
             });
         }
     },
-    onTeamChange(team_id, allSubTeamIds) {
-        let teamId = team_id;
+    onTeamChange(team_ids, allSubTeamIds) {
+        let teamId = team_ids;
         if (allSubTeamIds && allSubTeamIds.length > 0) {
             teamId = allSubTeamIds.join(",");
         }        
         OplateCustomerAnalysisAction.teamChange(teamId);
         setTimeout(() => this.getCustomerStageAnalysis({
-            team_id
+            team_ids
         }));
     },
     onMemberChange(member_id) {
@@ -164,17 +164,17 @@ var CustomerAnalysis = React.createClass({
         }
         let paramsObj = {
             ...params,
-            starttime: this.state.startTime,
-            endtime: this.state.endTime,
+            start_time: this.state.startTime,
+            end_time: this.state.endTime,
             app_id: "all",
-            team_id: teamId
+            team_ids: teamId
         };
         OplateCustomerAnalysisAction.getCustomerStageAnalysis(paramsObj);
     },
     getChartData: function() {
         const queryParams = {
-            starttime: this.state.startTime,
-            endtime: this.state.endTime,
+            start_time: this.state.startTime,
+            end_time: this.state.endTime,
             urltype: 'v2',
             dataType: this.getDataType()
         };
@@ -185,7 +185,7 @@ var CustomerAnalysis = React.createClass({
             queryParams.member_id = this.props.currShowSalesman.userId;
         } else if (this.props.currShowSalesTeam) {
             //查看当前选择销售团队内所有下级团队/成员的统计数据
-            queryParams.team_id = this.props.currShowSalesTeam.group_id;
+            queryParams.team_ids = this.props.currShowSalesTeam.group_id;
             //团队统计
             customerPropertys.push("team");
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {//普通销售不展示团队信息
@@ -365,13 +365,13 @@ var CustomerAnalysis = React.createClass({
         if (currShowSalesTeam) {
             if (_.isArray(currShowSalesTeam.child_groups) && currShowSalesTeam.child_groups.length) {
                 //查看当前选择销售团队内所有下级团队新增用户的统计数据
-                analysis_filter_field = "team_ids";
+                analysis_filter_field = "team_idss";
             }
         } else if (!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             let originSalesTeamTree = this.state.originSalesTeamTree;
             if (_.isArray(originSalesTeamTree.child_groups) && originSalesTeamTree.child_groups.length) {
                 //首次进来时，如果不是销售就获取下级团队新增用户的统计数据
-                analysis_filter_field = "team_ids";
+                analysis_filter_field = "team_idss";
             }
         }
         return {
@@ -830,39 +830,32 @@ var CustomerAnalysis = React.createClass({
     getEffectiveCustomerChart() {
         const charts = [{
             title: Intl.get("effective.customer.statistics", "有效客户统计"),
-            url: "/rest/customer/v2/effective",
+            url: "/rest/analysis/customer/v2/all/customer/active_rate",
             chartType: "table",
             layout: {
                 sm: 24,
             },
+            dataField: "list",
             option: {
                 pagination: false,
                 columns: [
                     {
                         title: Intl.get("user.user.team", "团队"),
-                        dataIndex: "team",
+                        dataIndex: "name",
                     },
                     {
                         title: Intl.get("effective.customer.number": "有效客户数"),
-                        dataIndex: "effective_customer_num",
+                        dataIndex: "valid",
                     },
                     {
                         title: Intl.get("active.customer.number": "活跃客户数"),
-                        dataIndex: "active_customer_num",
+                        dataIndex: "active",
                     },
                     {
                         title: Intl.get("effective.customer.activity.rate": "有效客户活跃率"),
-                        dataIndex: "effective_customer_active_rate",
+                        dataIndex: "active_rate",
                     },
                 ],
-            },
-            resultType: "",
-            data: [
-                {
-                    team: "客户部",
-                },
-            ],
-            customOption: {
             },
             processOption: (option, chartProps) => {
             },
@@ -873,16 +866,16 @@ var CustomerAnalysis = React.createClass({
                 instance: dateSelectorEmitter,
                 event: dateSelectorEmitter.SELECT_DATE,
                 callbackArgs: [{
-                    name: "starttime",
+                    name: "start_time",
                 }, {
-                    name: "endtime",
+                    name: "end_time",
                 }],
             },
             {
                 instance: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
-                    name: "team_id",
+                    name: "team_ids",
                 }],
             },
             {
@@ -896,19 +889,19 @@ var CustomerAnalysis = React.createClass({
 
         const conditions = [
             {
-                name: "starttime",
+                name: "start_time",
                 value: this.props.startTime,
             },
             {
-                name: "endtime",
+                name: "end_time",
                 value: this.props.endTime,
             },
             {
-                name: "team_id",
-                value: "",
+                name: "interval",
+                value: "day",
             },
             {
-                name: "member_id",
+                name: "team_ids",
                 value: "",
             },
         ];
@@ -919,7 +912,7 @@ var CustomerAnalysis = React.createClass({
                 emitters={emitters}
                 conditions={conditions}
                 cardContainer={false}
-                isGetDataOnMount={false}
+                isGetDataOnMount={true}
                 style={{padding: 0}}
             />
         );
@@ -928,7 +921,7 @@ var CustomerAnalysis = React.createClass({
     getLastMonthActiveCustomerChart() {
         const charts = [{
             title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
-            url: "/rest/customer/v2/lastmonth",
+            url: "/rest/analysis/customer/v2/all/customer/active_rater/v2/lastmonth",
             chartType: "line",
             option: {
             },
@@ -954,7 +947,7 @@ var CustomerAnalysis = React.createClass({
                 instance: teamTreeEmitter,
                 event: teamTreeEmitter.SELECT_TEAM,
                 callbackArgs: [{
-                    name: "team_id",
+                    name: "team_ids",
                 }],
             },
             {
@@ -968,15 +961,15 @@ var CustomerAnalysis = React.createClass({
 
         const conditions = [
             {
-                name: "starttime",
+                name: "start_time",
                 value: moment().subtract(1, "months").valueOf(),
             },
             {
-                name: "endtime",
+                name: "end_time",
                 value: moment().valueOf(),
             },
             {
-                name: "team_id",
+                name: "team_ids",
                 value: "",
             },
             {
