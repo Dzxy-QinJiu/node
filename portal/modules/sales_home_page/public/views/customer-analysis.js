@@ -832,14 +832,6 @@ var CustomerAnalysis = React.createClass({
     },
     //获取有效客户图表
     getEffectiveCustomerChart() {
-        //表格第一列名称
-        let firstColumnName = Intl.get("common.name", "姓名");
-        const teamTree = this.state.originSalesTeamTree;
-
-        if (teamTree && teamTree.child_groups) {
-            firstColumnName = Intl.get("user.user.team", "团队");
-        }
-
         const charts = [{
             title: Intl.get("effective.customer.statistics", "有效客户统计"),
             url: "/rest/analysis/customer/v2/all/customer/active_rate",
@@ -853,7 +845,7 @@ var CustomerAnalysis = React.createClass({
                 scroll: {y: 170},
                 columns: [
                     {
-                        title: firstColumnName,
+                        title: Intl.get("common.definition", "名称"),
                         dataIndex: "name",
                         width: 80,
                     },
