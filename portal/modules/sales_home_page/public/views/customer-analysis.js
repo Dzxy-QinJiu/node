@@ -1024,8 +1024,8 @@ var CustomerAnalysis = React.createClass({
                     </div>
                 </div>
                 <div className="analysis_chart col-md-6 col-sm-12"
-                    data-title="有效客户统计">
-                    <div className="chart-holder" data-tracename="有效客户统计">
+                    data-title="近一月活跃客户趋势">
+                    <div className="chart-holder" data-tracename="近一月活跃客户趋势">
                         <div className="title">
                             {Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势")}
                         </div>
