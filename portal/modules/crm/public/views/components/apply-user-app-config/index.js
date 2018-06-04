@@ -26,25 +26,27 @@ class ApplyUserAppConfig extends React.Component {
 
     renderConfigTabs(apps, appsFormData) {
         return (
-            <Tabs type="card" activeKey={this.props.configType} onChange={this.changeConfigType.bind(this)}>
-                <TabPane tab={Intl.get("crm.apply.user.unified.config", "统一配置")} key={CONFIG_TYPE.UNIFIED_CONFIG}>
-                    <AppConfigForm appFormData={appsFormData[0]} {...this.props}/>
-                </TabPane>
-                <TabPane tab={Intl.get("crm.apply.user.separate.config", "分别配置")} key={CONFIG_TYPE.SEPARATE_CONFIG}>
-                    {_.map(apps, app => {
-                        let formData = _.find(appsFormData, data => data.client_id === app.client_id);
-                        return (
-                            <div className="app-config-item">
-                                <div className="app-config-title">
-                                    <SquareLogoTag name={app ? app.client_name : ""}
-                                        logo={app ? app.client_logo : ""}
-                                    />
-                                </div>
-                                <AppConfigForm appFormData={formData} {...this.props}/>
-                            </div>);
-                    })}
-                </TabPane>
-            </Tabs>);
+            <div className="app-config-tab-container">
+                <Tabs type="card" activeKey={this.props.configType} onChange={this.changeConfigType.bind(this)}>
+                    <TabPane tab={Intl.get("crm.apply.user.unified.config", "统一配置")} key={CONFIG_TYPE.UNIFIED_CONFIG}>
+                        <AppConfigForm appFormData={appsFormData[0]} {...this.props}/>
+                    </TabPane>
+                    <TabPane tab={Intl.get("crm.apply.user.separate.config", "分别配置")} key={CONFIG_TYPE.SEPARATE_CONFIG}>
+                        {_.map(apps, app => {
+                            let formData = _.find(appsFormData, data => data.client_id === app.client_id);
+                            return (
+                                <div className="app-config-item">
+                                    <div className="app-config-title">
+                                        <SquareLogoTag name={app ? app.client_name : ""}
+                                                       logo={app ? app.client_logo : ""}
+                                        />
+                                    </div>
+                                    <AppConfigForm appFormData={formData} {...this.props}/>
+                                </div>);
+                        })}
+                    </TabPane>
+                </Tabs>
+            </div>);
     }
 
     render() {
@@ -55,7 +57,7 @@ class ApplyUserAppConfig extends React.Component {
                 <Col span={20} className="app-config-wrap">
                     {apps.length === 1 ? (
                         <AppConfigForm {...this.props}
-                            appFormData={appsFormData[0]}/> ) : apps.length > 1 ? this.renderConfigTabs(apps, appsFormData) : null}
+                                       appFormData={appsFormData[0]}/> ) : apps.length > 1 ? this.renderConfigTabs(apps, appsFormData) : null}
                 </Col>
             </div>);
     }
