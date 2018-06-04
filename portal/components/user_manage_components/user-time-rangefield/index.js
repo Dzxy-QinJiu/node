@@ -3,7 +3,7 @@ import DateSelector from '../../date-selector';
 const FormItem = Form.Item;
 
 const UserTimeRangeField = {
-    renderUserTimeRangeBlock(config) {
+    renderUserTimeRangeBlock(config, app) {//客户详情中，新版的用户申请，需要用到app，来查找要修改的应用配置表单
 
         config = $.extend({
             isCustomSetting: false,
@@ -27,7 +27,7 @@ const UserTimeRangeField = {
             this.setState({formData});
         } : (start_time,end_time,range) => {
             if (config.appId === "applyUser") {
-                this.onTimeChange(start_time, end_time, range);
+                this.onTimeChange(start_time, end_time, range, app);
             } else {
                 const appPropSettingsMap = this.state.appPropSettingsMap;
                 const formData = appPropSettingsMap[config.appId].time;
@@ -47,9 +47,10 @@ const UserTimeRangeField = {
         let currentRange, currentStartTime, currentEndTime;
         if(config.isCustomSetting) {
             if (config.appId === "applyUser") {
-                currentRange = this.state.appFormData.range;
-                currentStartTime = this.state.appFormData.begin_date;
-                currentEndTime = this.state.appFormData.end_date;
+                let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+                currentRange = appFormData.range;
+                currentStartTime = appFormData.begin_date;
+                currentEndTime = appFormData.end_date;
             }
             else {
                 const appPropSettingsMap = this.state.appPropSettingsMap;

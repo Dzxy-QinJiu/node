@@ -857,6 +857,7 @@ class DateSelector extends React.Component{
             <div className={cls} {...restProps}>
                 <div className="border_wrap">
                     <Dropdown
+                        trigger={['click']}
                         getPopupContainer={() => {return document.getElementById(this.componentId + "_range");}}
                         overlay={menu}
                         prefixCls="ant-dropdown">
