@@ -482,7 +482,11 @@ const AppPropertySetting = React.createClass({
         return (
             <div className={cls}>
                 <div className="app-property-container">
-                    <Tabs tabPosition="left" onChange={this.currentTabChange} prefixCls="antd-vertical-tabs">
+                    <Tabs
+                        tabPosition="left"
+                        onChange={this.currentTabChange}
+                        style={{height: height}}
+                    >
                         {
                             this.props.selectedApps.map((app) => {
                                 return <TabPane tab={this.renderTabToolTip(app.app_name)} key={app.app_id}>
