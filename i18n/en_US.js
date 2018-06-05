@@ -310,13 +310,12 @@ var en_US = {
     "user.time.custom": "Customize",//自定义
     "user.time.all": "All",//全部时间
     "user.time.today": "Today",//今天
-    "user.time.today1": "Today",//今日
+    "user.time.today1": "Will be expired try users today",//今日即将到期的试用用户
     "user.time.yesterday": "Yesterday",//昨天
-    "user.time.this.week": "This week",//本周
+    "user.time.this.week": "Will be expired try users this week",//本周即将到期的试用用户
     "user.time.prev.week": "Last week",//上周
-    "user.time.this.month": "This month",//本月
     "user.time.prev.month": "Last month",//上月
-    "user.time.half.year": "Half year",//半年内
+    "user.time.half.year": "Will be expired formal users in half year",//半年内即将到期的签约用户
     "user.time.half.year1": "Half year",//半年
     "user.time.sunday": "Sunday",//周日
     "user.time.monday": "Monday",//周一
@@ -1513,7 +1512,6 @@ var en_US = {
     "sales.home.user": "Users",//用户@
     "sales.home.no.sales": "No Sellers",//暂无销售成员@
     "sales.home.no.team": "No sales teams",//暂无销售团队@
-    "sales.home.expired.tip": "{appName} has {num} expired {userType}",//{appName}有{num}名{userType}过期!@
     "sales.home.no.expired.alert": "No reminders of expired users!",//没有过期用户提醒!@
     "sales.home.filter.tip": "Filter by keywords",//请输入关键字进行过滤@
     "sales.home.total.compute": "Total",//总计@
@@ -1943,7 +1941,7 @@ var en_US = {
     "sales.frontpage.active.info": "Please activate your mailbox, so as not to affect the receipt of approval emails!",//请激活邮箱，以免影响收取审批邮件！
     "sales.frontpage.active.email": "Activate mailbox",//激活邮箱
     "crm.customer.user": "users of {customer}",//{customer}客户的用户
-    "sales.homepage.will.expire.user": "Will Expired Account",//即将到期账号
+    "sales.homepage.will.expire.user": "Will Expired Account",//即将到期用户
     "failed.get.crm.list": "Failed to get the customer list",//获取客户列表失败
     "sale.homepage.no.tip.more": "Never show",//不再提示
     "failed.set.no.email.tip": "Failed to setting not to show this tip ever",//设置不再提示邮箱激活提醒失败

@@ -599,22 +599,38 @@
         margin: auto;
       }
       .tipitem {
-        margin-bottom: 30px;
+        margin-right: 10px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eeeeee;
         //提示标题
         .tiptitle {
           font-size: 14px;
-
+          font-weight: bold;
         }
         //提示内容
         .tipcontent {
           font-size: 14px;
           margin-bottom: 3px;
-          margin-right: 10px;
           i {
             font-style: normal;
-            font-size: 26px;
             font-weight: bold;
             cursor: pointer;
+          }
+          .app-container{
+            overflow: hidden;
+            padding-right: 10px;
+            margin: 5px 0;
+            .app-name{
+              display: inline-block;
+              max-width: 140px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            .app-num{
+              float: right;
+            }
           }
         }
 
