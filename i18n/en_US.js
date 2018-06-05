@@ -1513,7 +1513,7 @@ var en_US = {
     "sales.home.user": "Users",//用户@
     "sales.home.no.sales": "No Sellers",//暂无销售成员@
     "sales.home.no.team": "No sales teams",//暂无销售团队@
-    "sales.home.expired.tip": "{appName} has {num} expired {userType}",//{appName}有{num}名{userType}过期!@
+    "sales.home.expired.tip": "{appName} has {num} expired {userType}",//{appName}有{num}个{userType}过期!@
     "sales.home.no.expired.alert": "No reminders of expired users!",//没有过期用户提醒!@
     "sales.home.filter.tip": "Filter by keywords",//请输入关键字进行过滤@
     "sales.home.total.compute": "Total",//总计@
@@ -1943,7 +1943,7 @@ var en_US = {
     "sales.frontpage.active.info": "Please activate your mailbox, so as not to affect the receipt of approval emails!",//请激活邮箱，以免影响收取审批邮件！
     "sales.frontpage.active.email": "Activate mailbox",//激活邮箱
     "crm.customer.user": "users of {customer}",//{customer}客户的用户
-    "sales.homepage.will.expire.user": "Will Expired Account",//即将到期账号
+    "sales.homepage.will.expire.user": "Will Expired Account",//即将到期用户
     "failed.get.crm.list": "Failed to get the customer list",//获取客户列表失败
     "sale.homepage.no.tip.more": "Never show",//不再提示
     "failed.set.no.email.tip": "Failed to setting not to show this tip ever",//设置不再提示邮箱激活提醒失败

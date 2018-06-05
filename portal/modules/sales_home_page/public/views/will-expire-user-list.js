@@ -11,6 +11,7 @@ let constantUtil = require("../util/constant");
 var delayConstant = constantUtil.DELAY.TIMERANG;
 let history = require("../../../../public/sources/history");
 import Trace from "LIB_DIR/trace";
+var classNames = require("classnames");
 class WillExpireUserList extends React.Component {
     constructor(props) {
         super(props);
@@ -60,6 +61,9 @@ class WillExpireUserList extends React.Component {
     showExpireUserItem(items) {
         return items.map((item) => {
             let num = item.user_type == Intl.get("common.trial.official", "正式用户") ? item.formalNum : item.trialNum;
+            let cls = classNames({
+              'office-user': item.user_type == Intl.get("common.trial.official", "正式用户")
+            });
             return (<div>
                 <ReactIntl.FormattedMessage
                     id="sales.home.expired.tip"
@@ -67,7 +71,9 @@ class WillExpireUserList extends React.Component {
                     values={{
                         "appName": item.app_name,
                         "num": <i onClick={this.gotoUserList.bind(this, item)}>{num}</i>,
-                        "userType": item.user_type == '正式用户' ? '签约用户' : item.user_type
+                        "userType": <span className={cls}>
+                            {item.user_type == Intl.get("common.trial.official", "正式用户") ? Intl.get("user.signed.user", "签约用户") : item.user_type}
+                        </span>
                     }}
                 />
             </div>);
@@ -163,7 +169,7 @@ class WillExpireUserList extends React.Component {
     renderExpireUserContent() {
         let salesListHeight = this.props.getWillExpireUserListHeight();
         let salesListLi = this.showExpireUsers();
-        let salesTitle = Intl.get("sales.homepage.will.expire.user", "即将到期账号");
+        let salesTitle = Intl.get("sales.homepage.will.expire.user", "即将到期用户");
         return (
             <div>
                 <div className="user-list-top">
