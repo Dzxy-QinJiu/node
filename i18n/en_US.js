@@ -310,11 +310,10 @@ var en_US = {
     "user.time.custom": "Customize",//自定义
     "user.time.all": "All",//全部时间
     "user.time.today": "Today",//今天
-    "user.time.today1": "Today {expired}",//今日
+    "user.time.today1": "Will be expired try users today",//今日即将到期的试用用户
     "user.time.yesterday": "Yesterday",//昨天
     "user.time.this.week": "This week {expired}",//本周
     "user.time.prev.week": "Last week",//上周
-    "user.time.this.month": "This month {expired}",//本月
     "user.time.prev.month": "Last month",//上月
     "user.time.half.year": "Half year {expired}",//半年内
     "user.time.half.year1": "Half year",//半年

@@ -107,11 +107,7 @@ class WillExpireUserList extends React.Component {
                     <div>
                         {!expireUserLists['day'] ? null :
                             <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.today1", "今日{expired}",{
-                                    "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
-                                        "tryandassigned": Intl.get("common.trial.user", "试用用户")
-                                    })
-                                })}</div>
+                                <div className="tiptitle">{Intl.get("user.time.today1", "今日即将到期的试用用户")}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['day'])}
                                 </div>
@@ -119,11 +115,7 @@ class WillExpireUserList extends React.Component {
                         }
                         {!expireUserLists['week'] ? null :
                             <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.this.week", "本周{expired}",{
-                                    "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
-                                        "tryandassigned": Intl.get("common.trial.user", "试用用户")
-                                    })
-                                })}</div>
+                                <div className="tiptitle">{Intl.get("user.time.this.week", "本周即将到期的试用用户")}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['week'])}
                                 </div>
@@ -131,11 +123,7 @@ class WillExpireUserList extends React.Component {
                         }
                         {!expireUserLists['half_year'] ? null :
                             <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.half.year", "半年内{expired}",{
-                                    "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
-                                        "tryandassigned": Intl.get("user.signed.user", "签约用户")
-                                    })
-                                })}</div>
+                                <div className="tiptitle">{Intl.get("user.time.half.year", "半年内即将到期的签约用户")}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['half_year'])}
                                 </div>
