@@ -1544,7 +1544,6 @@ var zh_CN = {
     "sales.home.user": "用户",
     "sales.home.no.sales": "暂无销售成员",
     "sales.home.no.team": "暂无销售团队",
-    "sales.home.expired.tip": "{appName}有{num}个{userType}过期!",
     "sales.home.no.expired.alert": "没有过期用户提醒!",
     "sales.home.filter.tip": "请输入关键字进行过滤",
     "sales.home.total.compute": "总计",

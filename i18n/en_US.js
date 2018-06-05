@@ -312,10 +312,10 @@ var en_US = {
     "user.time.today": "Today",//今天
     "user.time.today1": "Will be expired try users today",//今日即将到期的试用用户
     "user.time.yesterday": "Yesterday",//昨天
-    "user.time.this.week": "This week {expired}",//本周
+    "user.time.this.week": "Will be expired try users this week",//本周即将到期的试用用户
     "user.time.prev.week": "Last week",//上周
     "user.time.prev.month": "Last month",//上月
-    "user.time.half.year": "Half year {expired}",//半年内
+    "user.time.half.year": "Will be expired formal users in half year",//半年内即将到期的签约用户
     "user.time.half.year1": "Half year",//半年
     "user.time.sunday": "Sunday",//周日
     "user.time.monday": "Monday",//周一
@@ -1512,7 +1512,6 @@ var en_US = {
     "sales.home.user": "Users",//用户@
     "sales.home.no.sales": "No Sellers",//暂无销售成员@
     "sales.home.no.team": "No sales teams",//暂无销售团队@
-    "sales.home.expired.tip": "{appName} has {num} expired {userType}",//{appName}有{num}个{userType}过期!@
     "sales.home.no.expired.alert": "No reminders of expired users!",//没有过期用户提醒!@
     "sales.home.filter.tip": "Filter by keywords",//请输入关键字进行过滤@
     "sales.home.total.compute": "Total",//总计@
