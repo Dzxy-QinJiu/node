@@ -1,0 +1,23 @@
+//带方形图标的标签样式
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.square-logo-tag {
+  float: left;
+  padding: 4px;
+  margin: 3px 8px 3px 0;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
+  cursor: default;
+  .square-logo-tag-text {
+    float: left;
+    max-width: 280px;
+    line-height: 16px;
+    padding: 0 4px;
+    font-size: 14px;
+    &:extend(.text-ellipsis);
+  }
+}

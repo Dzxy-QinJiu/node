@@ -1275,6 +1275,8 @@ var en_US = {
     "crm.detail.get.error": "Failure to get customer details",//获取客户详情失败
     "crm.schedule.set.compelete": "Set to complete",//标为已完成
     "crm.schedule.set.unfinished": "Set to unfinished",//标为未完成
+    "crm.apply.user.unified.config": "Unified configuration",//统一配置
+    "crm.apply.user.separate.config": "Separate configuration",//分别配置
     // 客户管理end
 
     //客户分析 start
