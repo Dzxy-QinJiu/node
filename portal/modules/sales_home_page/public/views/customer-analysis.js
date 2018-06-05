@@ -834,7 +834,7 @@ var CustomerAnalysis = React.createClass({
     getEffectiveCustomerChart() {
         const charts = [{
             title: Intl.get("effective.customer.statistics", "有效客户统计"),
-            url: "/rest/analysis/customer/v2/all/customer/active_rate",
+            url: "/rest/analysis/customer/v2/:data_type/customer/active_rate",
             chartType: "table",
             layout: {
                 sm: 24,
@@ -904,6 +904,11 @@ var CustomerAnalysis = React.createClass({
                 name: "team_ids",
                 value: "",
             },
+            {
+                name: "data_type",
+                value: this.getDataType(),
+                type: "params",
+            },
         ];
 
         return (
@@ -921,7 +926,7 @@ var CustomerAnalysis = React.createClass({
     getLastMonthActiveCustomerChart() {
         const charts = [{
             title: Intl.get("active.customer.trends.last.month": "近一月活跃客户趋势"),
-            url: "/rest/analysis/customer/v2/all/customer/active_rate",
+            url: "/rest/analysis/customer/v2/:data_type/customer/active_rate",
             ajaxInstanceFlag: "lastMonthActiveCustomerTrend",
             layout: {
                 sm: 24,
@@ -998,6 +1003,11 @@ var CustomerAnalysis = React.createClass({
             {
                 name: "team_ids",
                 value: "",
+            },
+            {
+                name: "data_type",
+                value: this.getDataType(),
+                type: "params",
             },
         ];
 
