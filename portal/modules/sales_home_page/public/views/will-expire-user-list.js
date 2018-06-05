@@ -111,7 +111,7 @@ class WillExpireUserList extends React.Component {
                                     "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
                                         "tryandassigned": Intl.get("common.trial.user", "试用用户")
                                     })
-                                })}:</div>
+                                })}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['day'])}
                                 </div>
@@ -123,21 +123,9 @@ class WillExpireUserList extends React.Component {
                                     "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
                                         "tryandassigned": Intl.get("common.trial.user", "试用用户")
                                     })
-                                })}:</div>
+                                })}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['week'])}
-                                </div>
-                            </div>
-                        }
-                        {!expireUserLists['month'] ? null :
-                            <div className="tipitem">
-                                <div className="tiptitle">{Intl.get("user.time.this.month", "本月{expired}",{
-                                    "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
-                                        "tryandassigned": Intl.get("common.trial.user", "试用用户")
-                                    })
-                                })}:</div>
-                                <div className="tipcontent">
-                                    {_this.showExpireUserItem(expireUserLists['month'])}
                                 </div>
                             </div>
                         }
@@ -147,7 +135,7 @@ class WillExpireUserList extends React.Component {
                                     "expired": Intl.get("user.time.will.expired", "即将到期的{tryandassigned}",{
                                         "tryandassigned": Intl.get("user.signed.user", "签约用户")
                                     })
-                                })}:</div>
+                                })}</div>
                                 <div className="tipcontent">
                                     {_this.showExpireUserItem(expireUserLists['half_year'])}
                                 </div>
